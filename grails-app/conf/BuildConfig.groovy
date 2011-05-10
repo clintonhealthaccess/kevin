@@ -19,12 +19,14 @@ grails.project.dependency.resolution = {
         // from public Maven repositories
         mavenLocal()
         mavenCentral()
-        mavenRepo "http://snapshots.repository.codehaus.org"
-        mavenRepo "http://repository.codehaus.org"
-        mavenRepo "http://download.java.net/maven/2/"
-        mavenRepo "http://mirrors.ibiblio.org/pub/mirrors/maven2/"
-        mavenRepo "http://repository.jboss.org/nexus/"
+//        mavenRepo "http://snapshots.repository.codehaus.org"
+//        mavenRepo "http://repository.codehaus.org"
+//        mavenRepo "http://download.java.net/maven/2/"
+//        mavenRepo "http://mirrors.ibiblio.org/pub/mirrors/maven2/"
+//        mavenRepo "http://repository.jboss.org/nexus/"
+		mavenRepo "https://maven.nuxeo.org/nexus/"
         mavenRepo "http://www.intalio.org/public/maven2/"
+		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 
 	/**
 	 * Configure our resolver.
@@ -56,6 +58,9 @@ grails.project.dependency.resolution = {
 		compile ('org.hisp.dhis:dhis-service-aggregationengine-default:2.2-SNAPSHOT')
 		compile ('org.hisp.dhis:dhis-api:2.2-SNAPSHOT') {
 			excludes "xml-apis"
+		}
+		compile ('org.hisp.dhis:dhis-support-hibernate:2.2-SNAPSHOT') {
+			excludes "hibernate-ehcache"
 		}
 				
 		compile( "org.quartz-scheduler:quartz:1.8.4" ) {
