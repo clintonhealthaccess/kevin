@@ -127,4 +127,3 @@ log4j = {
 //	trace  'org.hibernate.type'
 
 }
-
