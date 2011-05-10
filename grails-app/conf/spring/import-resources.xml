@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+      
+
+  <bean id="cacheManager" class="org.hisp.dhis.CacheManager">
+  </bean>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- ImportDataValueStore                                          -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<bean id="org.hisp.dhis.importexport.ImportDataValueStore"
+		class="org.hisp.dhis.importexport.hibernate.HibernateImportDataValueStore">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- ImportObjectStore                                             -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<bean id="org.hisp.dhis.importexport.ImportObjectStore"
+		class="org.hisp.dhis.importexport.hibernate.HibernateImportObjectStore">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- ImportDataValueService                                        -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<bean id="org.hisp.dhis.importexport.ImportDataValueService"
+		class="org.hisp.dhis.importexport.service.DefaultImportDataValueService">
+		<property name="importDataValueStore"
+			ref="org.hisp.dhis.importexport.ImportDataValueStore" />
+	</bean>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- ImportObjectManager                                           -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<bean id="org.hisp.dhis.importexport.ImportObjectManager"
+		class="org.hisp.dhis.importexport.service.DefaultImportObjectManager">
+		<property name="batchHandlerFactory" ref="batchHandlerFactory"/>
+		<property name="objectMappingGenerator"
+			ref="org.hisp.dhis.importexport.mapping.ObjectMappingGenerator" />
+		<property name="importObjectStore" ref="org.hisp.dhis.importexport.ImportObjectStore" />
+		<property name="categoryService"
+			ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
+		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+		<property name="dataDictionaryService" ref="org.hisp.dhis.datadictionary.DataDictionaryService" />
+		<property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
+		<property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />
+		<property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
+		<property name="validationRuleService" ref="org.hisp.dhis.validation.ValidationRuleService" />
+<!--		<property name="olapURLService" ref="org.hisp.dhis.olap.OlapURLService" />-->
+		<property name="expressionService" ref="org.hisp.dhis.expression.ExpressionService" />
+		<property name="importDataValueService"	ref="org.hisp.dhis.importexport.ImportDataValueService" />
+<!--		<property name="reportService" ref="org.hisp.dhis.report.ReportService"/>-->
+<!--		<property name="reportTableService" ref="org.hisp.dhis.reporttable.ReportTableService" />-->
+<!--		<property name="chartService" ref="org.hisp.dhis.chart.ChartService"/>-->
+		<property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+		<property name="aggregatedDataValueService" ref="org.hisp.dhis.aggregation.AggregatedDataValueService" />
+	</bean>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- ImportObjectService                                           -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<bean id="org.hisp.dhis.importexport.ImportObjectService"
+		class="org.hisp.dhis.importexport.service.DefaultImportObjectService">
+		<property name="importObjectStore" ref="org.hisp.dhis.importexport.ImportObjectStore" />
+		<property name="importDataValueService"
+			ref="org.hisp.dhis.importexport.ImportDataValueService" />
+		<property name="importObjectManager"
+			ref="org.hisp.dhis.importexport.ImportObjectManager" />
+		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+		<property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
+		<property name="dataDictionaryService"
+			ref="org.hisp.dhis.datadictionary.DataDictionaryService" />
+		<property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />
+		<property name="organisationUnitService"
+			ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+		<property name="organisationUnitGroupService"
+			ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
+		<property name="validationRuleService"
+			ref="org.hisp.dhis.validation.ValidationRuleService" />
+<!--		<property name="reportService" ref="org.hisp.dhis.report.ReportService"/>-->
+<!--		<property name="reportTableService" ref="org.hisp.dhis.reporttable.ReportTableService" />-->
+<!--		<property name="chartService" ref="org.hisp.dhis.chart.ChartService"/>-->
+<!--		<property name="olapURLService" ref="org.hisp.dhis.olap.OlapURLService" />-->
+		<property name="dataValueService" ref="org.hisp.dhis.datavalue.DataValueService" />
+<!--		<property name="cacheManager" ref="cacheManager"/>-->
+	</bean>
+
+<!--	<bean id="internal-process-ImportPreview" class="org.hisp.dhis.importexport.ImportPreviewInternalProcess"-->
+<!--		scope="prototype">-->
+<!--		<property name="statementManager" ref="statementManager" />-->
+<!--		<property name="importObjectService"-->
+<!--			ref="org.hisp.dhis.importexport.ImportObjectService" />-->
+<!--	</bean>-->
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- DHIS 1.4 XML Import                                           -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<bean id="internal-process-DHIS14XMLImportService" class="org.hisp.dhis.importexport.ImportInternalProcess"
+		scope="prototype">
+		<property name="statementManager" ref="statementManager" />
+		<property name="importService"
+			ref="org.hisp.dhis.importexport.Dhis14XMLImportService" />
+	</bean>
+
+	<bean id="org.hisp.dhis.importexport.Dhis14XMLImportService"
+		class="org.hisp.dhis.importexport.dhis14.xml.importer.DefaultDhis14XMLImportService">
+		<property name="categoryService"
+			ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
+		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+		<property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
+		<property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+		<property name="organisationUnitService"
+			ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+		<property name="importObjectService"
+			ref="org.hisp.dhis.importexport.ImportObjectService" />
+		<property name="batchHandlerFactory" ref="batchHandlerFactory" />
+		<property name="objectMappingGenerator"
+			ref="org.hisp.dhis.importexport.mapping.ObjectMappingGenerator" />
+		<property name="converterInvoker"
+			ref="org.hisp.dhis.importexport.invoker.ConverterInvoker" />
+		<property name="expressionService" ref="org.hisp.dhis.expression.ExpressionService"/>
+<!--		<property name="cacheManager" ref="cacheManager"/>-->
+	</bean>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- DHIS 1.4 File Import                                          -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<!--	<bean id="internal-process-DHIS14FILEImportService" class="org.hisp.dhis.importexport.ImportInternalProcess"-->
+<!--		scope="prototype">-->
+<!--		<property name="statementManager" ref="statementManager" />-->
+<!--		<property name="importService"-->
+<!--			ref="org.hisp.dhis.importexport.Dhis14FILEImportService" />-->
+<!--	</bean>-->
+
+<!--	<bean id="org.hisp.dhis.importexport.Dhis14FILEImportService"-->
+<!--		class="org.hisp.dhis.importexport.dhis14.file.importer.DefaultDhis14FileImportService"-->
+<!--		scope="prototype">-->
+<!--		<property name="queryManager"-->
+<!--			ref="org.hisp.dhis.importexport.dhis14.file.query.QueryManager" />-->
+<!--		<property name="objectMappingGenerator"-->
+<!--			ref="org.hisp.dhis.importexport.mapping.ObjectMappingGenerator" />-->
+<!--		<property name="batchHandlerFactory" ref="batchHandlerFactory" />-->
+<!--		<property name="importObjectService"-->
+<!--			ref="org.hisp.dhis.importexport.ImportObjectService" />-->
+<!--		<property name="expressionService" ref="org.hisp.dhis.expression.ExpressionService" />-->
+<!--		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />-->
+<!--		<property name="categoryService"-->
+<!--			ref="org.hisp.dhis.dataelement.DataElementCategoryService" />-->
+<!--		<property name="periodService" ref="org.hisp.dhis.period.PeriodService" />-->
+<!--		<property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />-->
+<!--		<property name="organisationUnitService"-->
+<!--			ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />-->
+<!--		<property name="organisationUnitGroupService"-->
+<!--			ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />-->
+<!--		<property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />-->
+<!--		<property name="aggregatedDataValueService" ref="org.hisp.dhis.aggregation.AggregatedDataValueService" />-->
+<!--		<property name="cacheManager" ref="cacheManager"/>-->
+<!--	</bean>-->
+
+<!--	<bean-->
+<!--		id="org.hisp.dhis.importexport.dhis14.file.sqlmap.SqlMapClientProvider"-->
+<!--		class="org.hisp.dhis.importexport.dhis14.file.sqlmap.IbatisSqlMapClientProvider">-->
+<!--		<property name="configurationFile" value="sqlMapConfiguration.xml" />-->
+<!--		<property name="configurationManager"-->
+<!--			ref="org.hisp.dhis.importexport.IbatisConfigurationManager" />-->
+<!--	</bean>-->
+
+<!--	<bean id="org.hisp.dhis.importexport.dhis14.file.query.QueryManager"-->
+<!--		class="org.hisp.dhis.importexport.dhis14.file.query.IbatisQueryManager">-->
+<!--		<property name="sqlMapClientProvider"-->
+<!--			ref="org.hisp.dhis.importexport.dhis14.file.sqlmap.SqlMapClientProvider" />-->
+<!--	</bean>-->
+
+<!--	<bean id="org.hisp.dhis.importexport.IbatisConfigurationManager"-->
+<!--		class="org.hisp.dhis.importexport.dhis14.file.configuration.DefaultIbatisConfigurationManager">-->
+<!--		<property name="configDir" value="importexport" />-->
+<!--		<property name="configFile" value="ibatisConfiguration.xml" />-->
+<!--		<property name="locationManager" ref="locationManager"/>-->
+<!--		<property name="configurationManager" ref="configurationManager"/>-->
+<!--	</bean>-->
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- DXF Import                                                    -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<bean id="internal-process-DXFImportService" class="org.hisp.dhis.importexport.ImportInternalProcess"
+		scope="prototype">
+		<property name="statementManager" ref="statementManager" />
+		<property name="importService" ref="org.hisp.dhis.importexport.ImportService" />
+	</bean>
+
+	<bean id="dxfv1-Converter"
+         class="org.hisp.dhis.importexport.dxf.converter.DXFConverter" >
+        <property name="sessionFactory"
+        		  ref="sessionFactory" /> 
+        <property name="importObjectService"
+                  ref="org.hisp.dhis.importexport.ImportObjectService" />
+        <property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+        <property name="conceptService"
+                  ref="org.hisp.dhis.concept.ConceptService" />
+        <property name="categoryService"
+                  ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
+        <property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
+        <property name="dataDictionaryService"
+                  ref="org.hisp.dhis.datadictionary.DataDictionaryService" />
+        <property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />
+        <property name="organisationUnitService"
+                  ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+        <property name="organisationUnitGroupService"
+                  ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
+        <property name="expressionService" ref="org.hisp.dhis.expression.ExpressionService" />
+        <property name="validationRuleService"
+                  ref="org.hisp.dhis.validation.ValidationRuleService" />
+<!--		<property name="reportService" ref="org.hisp.dhis.report.ReportService"/>-->
+<!--        <property name="reportTableService" ref="org.hisp.dhis.reporttable.ReportTableService" />-->
+<!--		<property name="chartService" ref="org.hisp.dhis.chart.ChartService"/>-->
+<!--        <property name="olapURLService" ref="org.hisp.dhis.olap.OlapURLService" />-->
+        <property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
+		<property name="aggregatedDataValueService" ref="org.hisp.dhis.aggregation.AggregatedDataValueService" />
+        <property name="batchHandlerFactory" ref="batchHandlerFactory" />
+        <property name="objectMappingGenerator"
+                  ref="org.hisp.dhis.importexport.mapping.ObjectMappingGenerator" />
+        <property name="converterInvoker"
+                  ref="org.hisp.dhis.importexport.invoker.ConverterInvoker" />
+		<property name="cacheManager" ref="cacheManager"/>
+    </bean>
+
+    <bean id="org.hisp.dhis.importexport.ImportService"
+          class="org.hisp.dhis.importexport.DefaultImportService">
+		  <property name="converter" ref="dxfv1-Converter"/>
+		  <property name="preConverter" ref="preConverter"/>
+    </bean>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- XSLT based import                                                    -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<bean id="xsltLocator" class="org.hisp.dhis.importexport.xml.LocManagerXSLTLocator">
+		<property name="locationManager" ref="locationManager"/>
+	</bean>
+	
+	<bean id="preConverter" class="org.hisp.dhis.importexport.xml.XMLPreConverter">
+		<property name="xsltLocator" ref="xsltLocator"/>
+		<property name="dhisResolver" ref="dhisResolver"/>
+	</bean>
+
+    <bean id="org.hisp.dhis.importexport.invoker.ConverterInvoker"
+          class="org.hisp.dhis.importexport.invoker.DefaultConverterInvoker" />
+		  
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- Mapping                                                       -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<bean id="org.hisp.dhis.importexport.mapping.ObjectMappingGenerator"
+		class="org.hisp.dhis.importexport.mapping.DefaultObjectMappingGenerator">
+		<property name="batchHandlerFactory" ref="batchHandlerFactory"/>
+		<property name="periodStore" ref="org.hisp.dhis.period.PeriodStore" />
+		<property name="categoryService"
+			ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
+	</bean>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- Locking                                                       -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<!--	<bean id="org.hisp.dhis.importexport.locking.LockingManager"-->
+<!--		class="org.hisp.dhis.importexport.locking.DefaultLockingManager">-->
+<!--		<property name="objectMappingGenerator"-->
+<!--			ref="org.hisp.dhis.importexport.mapping.ObjectMappingGenerator" />-->
+<!--		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />-->
+<!--		<property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />-->
+<!--		<property name="periodService" ref="org.hisp.dhis.period.PeriodService" />-->
+<!--		<property name="organisationUnitService"-->
+<!--			ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />-->
+<!--		<property name="dataSetLockService" ref="org.hisp.dhis.datalock.DataSetLockService" />-->
+<!--	</bean>-->
+
+  <bean id="org.hisp.dhis.importexport.dxf2.service.DataValueSetService" 
+    class="org.hisp.dhis.importexport.dxf2.service.DataValueSetService">
+    <property name="categoryService" ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
+    <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+    <property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+    <property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />
+    <property name="dataValueService" ref="org.hisp.dhis.datavalue.DataValueService" />
+    <property name="registrationService" ref="org.hisp.dhis.dataset.CompleteDataSetRegistrationService" />
+    <property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
+  </bean>
+  
+
+  <bean id="dhisResolver" class="org.hisp.dhis.external.location.DefaultLocationManagerResolver">
+	<property name="locationManager" ref="locationManager"/>
+  </bean>
+  
+  <bean id="locationManager" class="org.hisp.dhis.external.location.DefaultLocationManager" init-method="init">
+    <property name="environmentVariable" value="DHIS2_HOME"/> <!-- Change environment variable -->
+    <property name="systemProperty" value="dhis2.home"/>
+  </bean>
+  
+
+</beans>

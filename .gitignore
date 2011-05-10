@@ -1,0 +1,11 @@
+target
+*.class
+.bzr
+*.log
+.classpath
+.project
+classes
+.sass-cache
+.DS_Store
+.settings
+eclipse_workspace_settings.epf

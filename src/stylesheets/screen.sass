@@ -1,0 +1,564 @@
+// This import applies a global reset to any page that imports this stylesheet.
+@import blueprint/reset
+// To configure blueprint, edit the partials/base.sass file.
+@import partials/base
+// Import all the default blueprint modules so that we can access their mixins.
+@import blueprint
+// Import the non-default scaffolding module.
+@import blueprint/modules/scaffolding
+
+@import "compass/utilities/tables/scaffolding"
+@import "compass/utilities/lists/horizontal-list"
+@import "compass/utilities/lists/inline-list"
+@import "compass/utilities/lists/inline-block-list"
+@import "compass/css3/border-radius"
+
+// To generate css equivalent to the blueprint css but with your configuration applied, uncomment:
+// +blueprint
++blueprint-global-reset
+
+//Recommended Blueprint configuration with scoping and semantic layout:
+body.bp
+  +blueprint-typography
+  +blueprint-utilities
+  +blueprint-debug
+  +blueprint-interaction
+  // Remove the scaffolding when you're ready to start doing visual design.
+  // Or leave it in if you're happy with how blueprint looks out-of-the-box
+  // +blueprint-scaffolding
+form.bp
+  +blueprint-form
+
+html
+  height: 100%
+
+body
+  background-color: $background-color
+  font-size: 77%
+  +normal-text
+  height: 100%
+  
+// reset table
+body.bp table
+  th
+    background-color: inherit
+    font-weight: inherit
+    
+// Page layout can be done using mixins applied to your semantic classes and IDs:
+body.two-columns
+  #container
+    +container
+    +white-box
+    padding-left: 20px
+    padding-right: 30px
+    border-bottom-width: 0px
+    border-top-width: 0px
+    padding-top: 0px
+    padding-bottom: 0px
+    height: 100%
+    min-height: 100%
+    height: auto !important
+    
+  #footer
+    text-align: center
+    margin: auto
+    width: 100%
+    margin-top: 10px
+    margin-bottom: 10px
+    
+  #header
+    padding-top: 20px
+    padding-bottom: 20px
+    
+.spinner
+  position: fixed
+  top: 300px
+  left: 50%
+  margin-left: -50px /* half width of the spinner gif */
+  margin-top: -50px /* half height of the spinner gif */
+  text-align: center
+  z-index: 1234
+  overflow: auto
+  width: 100px /* width of the spinner gif */
+  height: 102px /*hight of the spinner gif +2px to fix IE8 issue */
+
+body.bp .entity-list
+  +grey-box
+  float: left
+  width: 100%    
+  	    
+  h5
+    float: left
+    margin-bottom: 10px
+  	    
+  .list table
+    thead td, thead th
+      background-color: #AAAAAA
+
+    tr.odd td
+      background-color: inherit
+    
+    tr.even td
+      background-color: #DDDDDD
+
+
+body.bp .dropdown
+  .dropdown-list
+    +white-box
+    border-width: 2px
+    position: absolute
+
+  ul
+    +inline-block-list
+    
+    li
+      display: block
+      margin: 4px
+      
+  div.dropdown-list
+    margin-top: -14px
+
+body.bp h5
+  margin-bottom: 0px
+  
+table.nice-table
+  .cell.value
+    opacity: 0.2
+
+  .highlighted.cell
+    opacity: 1
+    
+  .selected.cell
+    opacity: 1
+      
+  .highlighted.label, .selected.label
+    font-weight: bold
+    
+  .cell.me-selected
+    font-weight: bold
+    
+  .cell
+    cursor: default
+
+body.bp .explanation-row 
+  .explanation-cell
+    display: none
+  
+.italic
+  font-style: italic
+  
+body.bp ul.filtered
+  border: 1px solid lightGrey
+  padding: 4px
+  height: 270px
+  overflow: auto
+  
+  li
+    display: block
+    white-space: nowrap
+    
+    span
+      color: grey
+      
+  li:hover
+    background-color: yellow
+
+.entity-form-container
+  +white-box
+  float: left
+  margin: 8px
+      
+form
+  position: relative
+  border: none
+  background-color: inherit
+  
+  .row
+    width: 300px
+    margin: 4px
+    margin-bottom: 12px
+    
+    .error-list
+      height: 14px
+
+    h5
+      float: left
+      
+  input, textarea
+    width: 290px
+  
+  label
+    font-weight: bold
+    margin-bottom: 2px
+    
+  button
+    float: right
+    
+  .errors 
+    color: red
+    
+  .error-list
+    font-size: 75%
+    ul
+      +inline-block-list
+      
+      li
+        display: block
+        white-space: normal
+  
+#cost
+  #top
+    +column(24)
+    margin-bottom: 10px
+    
+    .filter
+      float: left
+      margin-right: 20px
+    
+    li span
+      margin-right: 4px
+    
+    h5, .dropdown
+      float: left
+      margin-right: 4px	
+  	    
+  #center
+    +column(24)
+    
+#cost #center table
+  tbody th.header
+    background-color: white
+    border: 1px solid #CCCCCC
+    font-weight: bold
+    
+  tbody th.label, thead th.empty
+    width: 500px    
+    
+  .explanation-row div
+    background-color: white
+    border: 1px solid #CCCCCC
+    
+    table
+      margin-bottom: 0px
+      
+    th
+      width: 480px
+  	    
+#dashboard
+  #corner
+    +column(3)
+    float: left
+    
+    h5
+      float: left
+      
+    .dropdown
+      float: right
+
+  #top
+    +column(20, true)
+    float: left
+    margin-bottom: 10px
+    .float
+      +float-left
+      +column(2)
+    ul
+      +horizontal-list
+    h5
+      margin-bottom: 0px
+        
+  #bottom
+    +column(24, true)
+    #left
+      +column(3)
+      ul
+        +inline-block-list
+        li
+          display: block
+            
+#dashboard #center
+  +column(20, true)
+
+  table
+    width: auto
+    float: left
+
+    th, td
+      margin: 0
+      padding: 0
+  
+  .header .row .cell
+    height: inherit
+  
+  .explanation-row
+    td
+      float: left
+      width: 750px
+      padding-left: 8px
+  
+  .cell
+    +column(2, true)
+    div
+      display: block
+      +border-radius(2px)
+      height: 2em
+      margin:
+        top: 2px
+        bottom: 2px
+        right: 4px
+
+  .cell.value
+    cursor: pointer
+    text-align: center
+  
+  .value, .label.left
+    span
+      top: 25%
+      position: relative
+    
+  .label.top
+    text-align: center
+    div
+      height: auto
+
+  .label.left
+    width: 140px
+
+
+#dashboard-explanation
+  +white-box
+  float: left
+  padding: 4px
+  
+  #dashboard-explanation-content
+    float: left
+  
+  .highlighted div, .selected div, .highlighted, .selected
+    background: yellow
+    font-weight: bold
+ 
+  h5
+    margin-bottom: 4px
+ 
+  .average
+    clear: both
+    width: 488px
+    h5
+      float: left
+      padding-top: 4px
+    span
+      float: right
+      color: red
+      font-size: 140%
+    a
+      padding-top: 4px
+      margin-left: 4px
+      float: right
+
+  .values
+    float: left
+    clear: both
+    ul
+      +column(12, true)
+      +inline-block-list
+      
+      .header
+        font-weight: bold
+        
+      li
+        display: block
+        float: left
+        
+        .organisation
+          +column(4, true)
+          white-space: normal
+          
+        .objective
+          +column(6)
+          white-space: normal
+          
+        .weight
+          +column(2, true)
+          text-align: right
+          padding-right: 10px
+          float: left
+          
+        .value
+          +column(1.5, true)
+          float: left
+          margin-right: 25px
+          text-align: right
+ 
+  .expressions
+    float: left
+    clear: both
+
+  .expression-explanation
+    float: left
+    clear: both
+    margin-top: 4px
+      
+  .left-pane
+    float: left
+    
+    .expression
+      margin-bottom: 12px
+      
+    .equation
+      position: relative
+      +column(9, true)
+    
+    .formula
+      +column(8)
+      
+      .element
+        &:hover
+          cursor: pointer
+      
+    .value
+      position: absolute
+      bottom: 0px
+      right: 0px
+      color: red
+      font-weight: bold
+      font-size: 120%
+    
+  .right-pane
+    float: left
+    margin-left: 4px
+    
+    ul
+      +inline-block-list
+      li
+        display: block
+        white-space: normal
+        
+    .id
+      +column(1,true)
+      &:hover
+        cursor: pointer
+        
+    .name
+      +column(7, true)
+      
+    .value
+      float: left 
+            
+#add-expression
+  #add-expression-col
+    float: left
+
+  .row
+    width: 290px
+    
+  input, textarea 
+    width: 280px
+    
+  input.radio
+    width: auto
+    
+  #data-col
+    float: left
+    
+    label
+      font-weight: bold
+      margin-bottom: 2px
+    
+    button
+      margin-top: -64px
+      
+    #data
+      width: 300px
+     
+#add-ramp-up
+  .row
+    width: 250px
+    
+  input, textarea 
+    width: 240px
+
+#cluetip-inner
+  .type
+    font-weight: bold
+
+  .row
+    margin-bottom: 4px
+  
+  .enum
+    ul
+      +inline-block-list
+      
+    li
+      display: block
+      clear: both
+      
+      .name
+        +column(6, true)
+        white-space: normal
+        
+      .value
+        +column(3, true)
+        
+.red
+  color: red
+
+.hidden
+  display: none
+
+body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
+  text-decoration: none
+  color: black
+  
+.float-left
+  float: left  
+
+.float-right
+  float: right
+
+.box
+  +grey-box
+  	    
+.ruler
+  +colruler
+
+.spacer
+  +colspacer
+ 
+.targetna
+  background-color: #AAA
+
+.target0
+  background-color: #fd7272
+
+.target0:hover
+  background-color: #fc0404
+
+.target1
+  background-color: #fd8472
+
+.target1:hover
+  background-color: #fc2704
+
+.target2
+  background-color: #fd9772
+
+.target2:hover
+  background-color: #fc4404
+
+.target3
+  background-color: #fdaa72
+
+.target3:hover
+  background-color: #fc6704
+
+.target4
+  background-color: #9afba5
+
+.target4:hover
+  background-color: #0af626
+
+.target5
+  background-color: #79fa88
+
+.target5:hover
+  background-color: #0af626
