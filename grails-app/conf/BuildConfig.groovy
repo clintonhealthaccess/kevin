@@ -59,9 +59,6 @@ grails.project.dependency.resolution = {
 		compile ('org.hisp.dhis:dhis-api:2.2-SNAPSHOT') {
 			excludes "xml-apis"
 		}
-		compile ('org.hisp.dhis:dhis-support-hibernate:2.2-SNAPSHOT') {
-			excludes "hibernate-ehcache"
-		}
 				
 		compile( "org.quartz-scheduler:quartz:1.8.4" ) {
 			excludes "slf4j-api"

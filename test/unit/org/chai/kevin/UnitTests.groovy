@@ -10,7 +10,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.MonthlyPeriodType;
 import org.hisp.dhis.period.Period;
 
-class UnitTests extends UnitSpec {
+abstract class UnitTests extends UnitSpec {
 
 	static Date mar01 = Initializer.getDate( 2005, 3, 1 );
 	static Date mar31 = Initializer.getDate( 2005, 3, 31 );
