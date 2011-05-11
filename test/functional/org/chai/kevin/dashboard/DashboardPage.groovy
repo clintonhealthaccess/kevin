@@ -27,9 +27,13 @@ class DashboardPage extends ReportPage {
 	}
 	
 	def clickOnFirstCell() {
-		dashboardCells.first().click()
+		dashboardCells.first().jquery.click()
 		waitFor {
 			explanation.present
+		}
+		waitFor {
+			Thread.sleep 1000
+			true
 		}
 	}
 	
@@ -40,7 +44,7 @@ class DashboardPage extends ReportPage {
 	}
 	
 	def clickRefresh() {
-		refresh.click()
+		refresh.jquery.click()
 	}
 		
 	def getObjective(def text) {

@@ -1,5 +1,5 @@
 <div id="add-constant" class="entity-form-container">
-	<g:form name="add-constant-form" id="add-constant-form" url="[controller:'constant', action:'save']" useToken="true">
+	<g:form url="[controller:'constant', action:'save']" useToken="true">
 		<div class="row ${hasErrors(bean:constant,field:'name','errors')}">
 			<label for="name">Name</label>		
 			<input name="name" value="${fieldValue(bean:constant,field:'name')}"></input>
@@ -27,7 +27,7 @@
 		
 		<div class="row">
 			<button type="submit">Save Constant</button>
-			<button id="add-constant-cancel">Cancel</button>
+			<button id="cancel-button">Cancel</button>
 		</div>
 	</g:form>
 </div>

@@ -16,7 +16,7 @@ abstract class ReportPage extends KevinPage {
 	}
 	
 	def addTarget() {
-		addTarget.click()
+		addTarget.jquery.click()
 		waitFor {
 			try { 
 				ReportPage.log.debug("waiting for creation pane to be displayed");
@@ -25,10 +25,14 @@ abstract class ReportPage extends KevinPage {
 				false;
 			} 
 		}
+		waitFor {
+			Thread.sleep 1000
+			true
+		}
 	}
 	
 	def addObjective() {
-		addObjective.click()
+		addObjective.jquery.click()
 		waitFor { 
 			try {
 				ReportPage.log.debug("waiting for creation pane to be displayed");
@@ -36,6 +40,10 @@ abstract class ReportPage extends KevinPage {
 			} catch (RequiredPageContentNotPresent e) {
 				false;
 			}
+		}
+		waitFor {
+			Thread.sleep 1000
+			true
 		}
 	}
 	

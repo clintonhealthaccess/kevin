@@ -65,6 +65,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
 
+	$('.search-form').bind('click', function(){$(this).submit(); return false;});
 	$('.search-form').bind('submit', function() {
 		var element = this;
 		$.ajax({

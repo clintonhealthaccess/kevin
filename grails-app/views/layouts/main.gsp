@@ -87,6 +87,7 @@
 					$(element).bind('click', function() {
 						$.ajax({
 							type : 'GET',
+							dataType: 'json',
 							url : $(this).attr('href'),
 							success : function(data) {
 								if (data.result == 'success') {
@@ -107,6 +108,7 @@
 					$(element).bind('click', function() {
 						$.ajax({
 							type : 'POST',
+							dataType: 'json',
 							url : $(this).attr('href'),
 							success : function() {
 								location.reload();
@@ -129,10 +131,12 @@
 					});
 					return false;	
 				});
-				
+
+				$(form).bind('click', function() {$(this).submit(); return false;})				
 				$(form).bind('submit', function() {
 					$.ajax({
 						type : 'POST',
+						dataType: 'json',
 						data : $(this).serialize(),
 						url : $(this).attr('action'),
 						success : function(data, textStatus) {

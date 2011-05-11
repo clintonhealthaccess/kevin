@@ -10,7 +10,7 @@ import geb.error.RequiredPageContentNotPresent;
 class CreateCostTargetModule extends EntityFormWithExpressionsModule {
 
 	static content = {
-		entityFormContainer { $("div", id:"add-cost-objective") }
+		entityFormContainer { $("div", id:"add-cost-target") }
 		nameField { $("input", name: "name") }
 		orderField { $("input", name: "order") }
 	}

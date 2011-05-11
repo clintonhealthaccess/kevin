@@ -60,7 +60,6 @@ class CostSpec extends GebTests {
 		then:
 			browser.at(CostPage)
 			createTarget.hasError(createTarget.nameField)
-			createTarget.hasError(createTarget.weightField)
 	}
 	
 	def "cancel new expression and save target works"() {
@@ -70,13 +69,12 @@ class CostSpec extends GebTests {
 			createTarget.addExpression()
 			createTarget.createExpression.cancel()
 			createTarget.nameField.value("Test Target")
-			createTarget.weightField.value("1")
 			createTarget.orderField.value("10")
 			createTarget.save()
 			
 		then:
 			browser.at(CostPage)
-			!createTarget.displayed
+			costTable.displayed
 			getTarget("Test Target").unique().text().contains "Test Target"
 	}
 	

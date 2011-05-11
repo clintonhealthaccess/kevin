@@ -12,6 +12,8 @@ class CostPage extends ReportPage {
 		addTarget { $("a", id:"add-cost-target-link") }
 		addObjective { $("a", id:"add-cost-objective-link") }
 		
+		costTable { $('div', id:'values') }
+		
 		createTarget(required: false) { module CreateCostTargetModule }
 		createObejctive(required: false) { module CreateCostObjectiveModule }
 	}

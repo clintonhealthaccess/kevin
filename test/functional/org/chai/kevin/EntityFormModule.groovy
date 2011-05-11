@@ -10,25 +10,30 @@ class EntityFormModule extends Module {
 	private static final Log log = LogFactory.getLog(EntityFormModule)
 	
 	static content = {
-		saveButton { entityFormContainer.find("button", type: "submit") }
+		saveButton { entityFormContainer.find("button", type: "submit").first() }
 		cancelButton { entityFormContainer.find("button", id: "cancel-button") }
 	}
 	
 	def save() {
-		saveButton.click()
-		waitFor { 
-			EntityFormModule.log.debug("testing if connections are active")
-			def active = js.exec ("return jQuery.active")
-			EntityFormModule.log.debug ("connections active test: ${active}")
-			active == 0
+		saveButton.jquery.click()
+		waitFor {
+			Thread.sleep(1000)
+			true
 		}
+//		waitFor {
+//			present?(entityFormContainer.find(".errors")):true
+//		}
 	}
 	
 	
 	def cancel() {
-		cancelButton.click()
+		cancelButton.jquery.click()
 		waitFor { 
 			!entityFormContainer.displayed 
+		}
+		waitFor {
+			Thread.sleep(2000)
+			true
 		}
 	}
 	

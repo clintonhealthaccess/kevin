@@ -20,7 +20,7 @@ abstract class EntityFormWithExpressionsModule extends EntityFormModule {
 	}
 	
 	def addExpression() {
-		addExpression.click()
+		addExpression.jquery.click()
 		waitFor {
 			try {
 				EntityFormWithExpressionsModule.log.debug("waiting for creation pane to be displayed");
@@ -28,6 +28,10 @@ abstract class EntityFormWithExpressionsModule extends EntityFormModule {
 			} catch (RequiredPageContentNotPresent e) {
 				false;
 			}
+		}
+		waitFor {
+			Thread.sleep 1000
+			true
 		}
 	}
 	

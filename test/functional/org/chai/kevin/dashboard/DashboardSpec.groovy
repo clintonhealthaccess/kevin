@@ -9,8 +9,6 @@ import geb.Browser;
 
 class DashboardSpec extends GebTests {
 
-	def transactional = true
-	
 	def setupSpec() {
 		Initializer.createUsers();
 		Initializer.createDummyStructure();
@@ -45,6 +43,7 @@ class DashboardSpec extends GebTests {
 			clickOnFirstCell()
 			
 		then:
+			browser.at(DashboardPage)
 			explanation.present
 			explanation.hasValues()
 	}
@@ -77,6 +76,7 @@ class DashboardSpec extends GebTests {
 			createTarget.save()
 			
 		then:
+			browser.at(DashboardPage)
 			createTarget.hasError(createTarget.nameField)
 			createTarget.hasError(createTarget.weightField)
 	}
@@ -89,6 +89,7 @@ class DashboardSpec extends GebTests {
 			createTarget.save()
 			
 		then:
+			browser.at(DashboardPage)
 			createTarget.hasError(createTarget.nameField)
 			createTarget.hasError(createTarget.weightField)
 			createTarget.expressionFields.each { it.value() == "1" }
@@ -101,6 +102,7 @@ class DashboardSpec extends GebTests {
 			createObjective.save()
 			
 		then:
+			browser.at(DashboardPage)
 			createObjective.hasError(createObjective.nameField)
 			createObjective.hasError(createObjective.weightField)
 	}
@@ -116,7 +118,7 @@ class DashboardSpec extends GebTests {
 			
 		then:
 			browser.at(DashboardPage)
-			!createTarget.displayed
+			dashboard.displayed
 			dashboardHeader.displayed
 			getTarget("Test Target").unique().text().contains "Test Target"
 	}
@@ -132,7 +134,7 @@ class DashboardSpec extends GebTests {
 			
 		then:
 			browser.at(DashboardPage)
-			!createObjective.displayed
+			dashboard.displayed
 			dashboardHeader.displayed
 			getObjective("Test Objective").unique().text().contains "Test Objective"
 	}
@@ -161,7 +163,7 @@ class DashboardSpec extends GebTests {
 			
 		then:
 			browser.at(DashboardPage)
-			!createTarget.createExpression.displayed
+			!createTarget.createExpression.entityFormContainer.displayed
 			createTarget.hasExpression("Test Expression")
 //			addObjectiveContainer.displayed
 			// TODO list contains expression + change select value
@@ -210,7 +212,7 @@ class DashboardSpec extends GebTests {
 			
 		then:
 			browser.at(DashboardPage)
-			!createTarget.displayed
+			dashboard.displayed
 			dashboardHeader.displayed
 			getTarget("Test Target").unique().text().contains "Test Target"
 	}
@@ -223,6 +225,7 @@ class DashboardSpec extends GebTests {
 			createTarget.createExpression.searchDataElement()
 			
 		then:
+			browser.at(DashboardPage)
 			createTarget.createExpression.hasDataElements()
 	}
 	

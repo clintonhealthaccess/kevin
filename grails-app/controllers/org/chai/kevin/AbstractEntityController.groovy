@@ -53,6 +53,7 @@ abstract class AbstractEntityController {
 	}
 	
 	def save = {
+		log.debug ('saving entity with params:'+params)
 		withForm {
 			def entity = getEntity(params.id);
 			if (entity == null) {

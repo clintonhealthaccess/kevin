@@ -81,7 +81,7 @@
 		
 		<div class="row ${hasErrors(bean:target,field:'order','errors')}">
 			<label for="order">Order</label>
-			<input type="text" id="order" name="order" value="${fieldValue(bean:target,field:'order')}"></input>
+			<input type="text" name="order" value="${fieldValue(bean:target,field:'order')}"></input>
 			<div class="error-list"><g:renderErrors bean="${target}" field="order" /></div>
 		</div>
 		

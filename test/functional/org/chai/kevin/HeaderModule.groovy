@@ -14,7 +14,7 @@ public class HeaderModule extends Module {
 	}
 
 	def click(def text) {
-		navigation.find("a", text: contains(text)).click()
+		navigation.find("a", text: contains(text)).jquery.click()
 	}
 	
 }
