@@ -75,18 +75,18 @@ environments {
 //	}
 //}
 
-environments {
-	production {
-		log4j = {
-			appenders {
-				file name: 'log-error', file:'log-error.log'
-				file name: 'migration', file:'migration_error.log'
-			}
-			
-			rootLogger: 'error,log-error'
-		}
-	}
-}
+//environments {
+//	production {
+//		log4j = {
+//			appenders {
+//				file name: 'log-error', file:'log-error.log'
+//				file name: 'migration', file:'migration_error.log'
+//			}
+//			
+//			rootLogger: 'error,log-error'
+//		}
+//	}
+//}
 
 // log4j configuration
 log4j = {

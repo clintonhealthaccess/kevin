@@ -15,7 +15,7 @@ def defaultOrganisationlevel;
 switch(GrailsUtil.environment) {
 	case "production":
 		defaultSkipLevels = [4]
-		defaultOrganisationlevel = 4
+		defaultOrganisationlevel = 5
 	break
 	case "development":
 	case "test":

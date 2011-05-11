@@ -80,6 +80,8 @@ public class CostTableService {
 	}
 	
 	private Map<Integer, Cost> getCostForLeafOrganisation(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
+		log.debug("getCostForLeafOrganisation(target="+target+", organisation:"+organisation+", period:"+period+", groupCollection:"+collection+")");
+		
 		Map<Integer, Cost> result = new HashMap<Integer, Cost>();
 		if (appliesToOrganisation(target, organisation, collection)) {
 			boolean hasMissingValues = false;
@@ -115,6 +117,8 @@ public class CostTableService {
 		else {
 			log.debug("skipping organisation: "+organisation);
 		}
+		
+		log.debug("getCostForLeafTarget(): "+result);
 		return result;
 	}
 	
