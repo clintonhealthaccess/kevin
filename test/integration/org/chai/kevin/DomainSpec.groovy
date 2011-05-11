@@ -56,4 +56,34 @@ class DomainSpec extends IntegrationTests {
 		
 	}
 	
+	def "constant constraint: short name cannot be blank"() {
+		when:
+		new Constant(name:"Constant", shortName:"", value:"1").save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "constant constraint: short name can be null"() {
+		when:
+		new Constant(name:"Constant", shortName:null, value:"1").save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "constant constraint: short name is unique"() {
+		when:
+		new Constant(name:"Constant", shortName:"Unique", value:"1").save(failOnError:true)
+		
+		then:
+		Constant.count() == 1
+		
+		when:
+		new Constant(name:"Constant", shortName:"Unique", value:"1").save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
 }

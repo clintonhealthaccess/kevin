@@ -36,6 +36,7 @@ class DomainSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
+	
 	def "ramp up constraint: name cannot be null"() {
 		when:
 		new CostRampUp().save(failOnError: true)
