@@ -132,7 +132,7 @@
 					return false;	
 				});
 
-				$(form).bind('click', function() {$(this).submit(); return false;})				
+				$(form).find("button[type=submit]").bind('click', function() {$(this).submit(); return false;})				
 				$(form).bind('submit', function() {
 					$.ajax({
 						type : 'POST',

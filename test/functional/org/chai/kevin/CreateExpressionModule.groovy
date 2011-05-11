@@ -9,8 +9,8 @@ class CreateExpressionModule extends EntityFormModule {
 		nameField { entityFormContainer.find("input", name: "name") }
 		expressionField { entityFormContainer.find("textarea", name: "expression") }
 		shortNameField { entityFormContainer.find("input", name: "shortName") }
-		searchButton { $("form", name:"search-data-form").find("button", type: "submit") }
-		dataElements { $("ul", id:"data") }
+		searchButton { entityFormContainer.find("form", name:"search-data-form").find("button", type: "submit") }
+		dataElements { entityFormContainer.find("ul", id:"data") }
 	}
 
 	def searchDataElement() {
