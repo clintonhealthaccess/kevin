@@ -61,7 +61,8 @@
         <script type="text/javascript">
 			$(document).ready(function() {
 				$('#constants').flow({
-					addLinks: '#add-constant-link',
+					addLinks: '#add-constant-link, td.edit-constant-link a',
+					deleteLinks: 'td.delete-constant-link a',
 					onSuccess: function(data) {
 						if (data.result == 'success') {
 							location.reload();

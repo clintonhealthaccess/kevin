@@ -1,6 +1,26 @@
 package org.chai.kevin
 
+import org.hisp.dhis.dataelement.Constant;
+
 class ConstantSpec extends GebTests {
+
+	def setup() {
+		Initializer.createUsers();
+		Initializer.createDummyStructure();
+		Initializer.createDataElementsAndExpressions();
+	}
+	
+
+	def "edit constant works"() {
+		when:
+			browser.to(ConstantPage)
+			editConstant("Constant")
+		
+		then:
+			browser.at(ConstantPage)
+			createConstant.entityFormContainer.displayed
+		
+	}
 
 	def "add constant works"() {
 		when:
@@ -33,6 +53,7 @@ class ConstantSpec extends GebTests {
 			browser.at(ConstantPage)
 			createConstant.entityFormContainer.displayed
 			createConstant.hasError(createConstant.nameField)
+			createConstant.hasError(createConstant.shortNameField)
 			createConstant.hasError(createConstant.valueField)
 	}
 	
@@ -41,6 +62,7 @@ class ConstantSpec extends GebTests {
 			browser.to(ConstantPage)
 			addConstant()
 			createConstant.nameField.value("Test Constant")
+			createConstant.shortNameField.value("TESTCONST")
 			createConstant.valueField.value("100")
 			createConstant.save()
 		
@@ -49,5 +71,6 @@ class ConstantSpec extends GebTests {
 			constants.displayed
 			hasConstant("Test Constant")
 	}
+	
 	
 }

@@ -42,5 +42,21 @@ class ConstantPage extends KevinPage {
 		entityRows.find("td", text: contains(text))
 	}
 	
+	def editConstant(def text) {
+		entityRows.find("td.edit-constant-link a", text: contains(text)).first().jquery.click()
+		waitFor {
+			try {
+				ConstantPage.log.debug("waiting for creation pane to be displayed");
+				createConstant.present?createConstant.saveButton.displayed:false
+			} catch (RequiredPageContentNotPresent e) {
+				false;
+			}
+		}
+		waitFor {
+			Thread.sleep 1000
+			true
+		}
+	}
+	
 }
 

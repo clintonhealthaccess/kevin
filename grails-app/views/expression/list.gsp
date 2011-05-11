@@ -52,7 +52,8 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 				$('#expressions').flow({
-					addLinks: '#add-expression-link',
+					addLinks: '#add-expression-link, td.edit-expression-link a',
+					deleteLinks: 'td.delete-expression-link a',
 					onSuccess: function(data) {
 						if (data.result == 'success') {
 							location.reload();
