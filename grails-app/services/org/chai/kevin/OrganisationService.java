@@ -44,7 +44,8 @@ public class OrganisationService {
 	}
 	
 	public int getLevel(Organisation organisation) {
-		return organisationUnitService.getLevelOfOrganisationUnit(organisation.getOrganisationUnit());
+		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation.getOrganisationUnit());
+		return level;
 	}
 	
 	public List<Organisation> getOrganisationsOfLevel(int level) {
@@ -83,7 +84,7 @@ public class OrganisationService {
 	
 	public Organisation getOrganisationTreeUntilLevel(int level) {
 		Organisation rootOrganisation = getRootOrganisation();
-		loadUntilLevel(rootOrganisation, level);
+		loadUntilLevel(rootOrganisation, level-skipLevels.size());
 		return rootOrganisation;
 	} 
 	

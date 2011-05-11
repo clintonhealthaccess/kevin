@@ -34,7 +34,7 @@ class DashboardController extends AbstractReportController {
 	def explain = {
 		Period period = getPeriod()
 		Objective objective = getObjective()
-		Organisation organisation = getOrganisation()
+		Organisation organisation = getOrganisation(false)
 
 		def explanation = dashboardService.getExplanation(organisation, objective, period)
 		def groups = new GroupCollection(OrganisationUnitGroup.list())
@@ -53,7 +53,7 @@ class DashboardController extends AbstractReportController {
 		
 		Period period = getPeriod()
 		Objective objective = getStrategicObjective()
-		Organisation organisation = getOrganisation()
+		Organisation organisation = getOrganisation(true)
 		
 		if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", objective: "+objective.id+", organisation:"+ organisation.id);
 		redirectIfDifferent(period, objective, organisation)
@@ -68,7 +68,7 @@ class DashboardController extends AbstractReportController {
 		
 		Period period = getPeriod()
 		Objective objective = getStrategicObjective()
-		Organisation organisation = getOrganisation()
+		Organisation organisation = getOrganisation(false)
 		
 		if (log.isInfoEnabled()) log.info("refresh dashboard for period: "+period.id+", objective: "+objective.id+", organisation:"+ organisation.id);
 		def runningJob = getRunningJob(period, organisation, objective)
@@ -91,7 +91,7 @@ class DashboardController extends AbstractReportController {
 		
 		Period period = getPeriod()
 		Objective objective = getStrategicObjective()
-		Organisation organisation = getOrganisation()
+		Organisation organisation = getOrganisation(false)
 		
 		def runningJob = getRunningJob(period, organisation, objective)
 		if (runningJob != null) {
@@ -106,7 +106,7 @@ class DashboardController extends AbstractReportController {
 		
 		Period period = getPeriod()
 		Objective objective = getStrategicObjective()
-		Organisation organisation = getOrganisation()
+		Organisation organisation = getOrganisation(false)
 		
 		def runningJob = getRunningJob(period, organisation, objective)
 		if (runningJob != null) {

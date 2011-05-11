@@ -18,7 +18,7 @@ class CostController extends AbstractReportController {
 		
 		Period period = getPeriod()
 		CostTarget target = getCostTarget()
-		Organisation organisation = getOrganisation()
+		Organisation organisation = getOrganisation(false)
 		
 		def explanation = costTableService.getExplanation(period, target, organisation);
 		[ explanation: explanation ]
@@ -28,7 +28,7 @@ class CostController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("cost.view, params:"+params)
 		
 		Period period = getPeriod()
-		Organisation organisation = getOrganisation()
+		Organisation organisation = getOrganisation(false)
 		CostObjective objective = getCostObjective()
 		
 		if (log.isInfoEnabled()) log.info("view cost for period: "+period.id);
@@ -38,10 +38,11 @@ class CostController extends AbstractReportController {
 		
 		if (log.isDebugEnabled()) log.debug('costTable: '+costTable)
 		[
-			costTable: costTable, 
+			costTable: costTable,
 			objectives: CostObjective.list(), 
-			periods: Period.list(), 
-			organisationTree: organisationService.getOrganisationTreeUntilLevel(new Integer(costTableService.getOrganisationLevel()).intValue()-1) 
+			periods: Period.list(),
+			organisationTree: organisationService.getOrganisationTreeUntilLevel(new Integer(costTableService.getOrganisationLevel()).intValue()-1),
+			displayLinkUntil: 3
 		]
 	}
 	

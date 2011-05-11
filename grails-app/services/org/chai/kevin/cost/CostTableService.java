@@ -27,7 +27,7 @@ public class CostTableService {
 	private String organisationLevel;
 	
 	public CostTable getCostTable(Period period, CostObjective objective, Organisation organisation) {
-		if (objective == null) return new CostTable(period, costService.getYears(), organisation);
+		if (objective == null || organisation == null) return new CostTable(period, objective, new ArrayList<CostTarget>(), costService.getYears(), organisation, new HashMap<CostTarget, Map<Integer,Cost>>());
 		List<CostTarget> targets = objective.getTargets();
 		
 		return new CostTable(period, objective, targets, costService.getYears(), organisation, getValues(period, targets, organisation));
@@ -40,9 +40,19 @@ public class CostTableService {
 		organisationService.loadChildren(organisation);
 		
 		for (Organisation child : organisation.getChildren()) {
-			explanationMap.put(child, getCost(target, child, period, collection));
+			if (	organisationService.getLevel(child) != new Integer(organisationLevel).intValue() 
+					|| 
+					appliesToOrganisation(target, child, collection)
+			) {
+				explanationMap.put(child, getCost(target, child, period, collection));
+			}
 		}
-		return new Explanation(target, target.getParent(), period, organisation.getChildren(), costService.getYears(), explanationMap);
+		
+		List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
+		for (String groupUuid : CostService.getGroupUuids(target.getGroupUuidString())) {
+			groups.add(collection.getGroupByUuid(groupUuid));
+		}
+		return new Explanation(target, groups, target.getParent(), period, new ArrayList<Organisation>(explanationMap.keySet()), costService.getYears(), explanationMap);
 	}
 	
 	private boolean appliesToOrganisation(CostTarget target, Organisation organisation, GroupCollection collection) {
@@ -80,7 +90,7 @@ public class CostTableService {
 	}
 	
 	private Map<Integer, Cost> getCostForLeafOrganisation(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
-		log.debug("getCostForLeafOrganisation(target="+target+", organisation:"+organisation+", period:"+period+", groupCollection:"+collection+")");
+		if (log.isDebugEnabled()) log.debug("getCostForLeafOrganisation(target="+target+", organisation:"+organisation+", period:"+period+", groupCollection:"+collection+")");
 		
 		Map<Integer, Cost> result = new HashMap<Integer, Cost>();
 		if (appliesToOrganisation(target, organisation, collection)) {

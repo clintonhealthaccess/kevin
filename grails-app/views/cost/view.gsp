@@ -17,7 +17,7 @@
 							<ul>
 								<g:each in="${periods}" var="period">
 									<li>
-										<a href="${createLink(controller: "cost", action:"view", params:[period: period.id, objective: costTable.currentObjectiveId, organisation: costTable.currentOrganisation.id])}">
+										<a href="${createLink(controller: "cost", action:"view", params:[period: period.id, objective: costTable.currentObjectiveId, organisation: costTable.currentOrganisationId])}">
 											<span><g:dateFormat format="yyyy" date="${period.startDate}"/></span>
 										</a>
 									</li>
@@ -29,10 +29,15 @@
 				<div class="filter">
 					<h5>Organisation:</h5>
 					<div class="dropdown">
-						<a href="#">${costTable.currentOrganisation.name}</a>
+						<g:if test="${costTable.currentOrganisation != null}">
+							<a href="#">${costTable.currentOrganisation.name}</a>
+						</g:if>
+						<g:else>
+							<a href="#">no organisation selected</a>
+						</g:else>
 						<div class="hidden dropdown-list">
 							<ul>
-								<g:render template="/templates/organisationTree" model="[controller: 'cost', action: 'view', organisation: organisationTree, params:[period: costTable.currentPeriod.id, objective: costTable.currentObjectiveId]]"/>
+								<g:render template="/templates/organisationTree" model="[controller: 'cost', action: 'view', organisation: organisationTree, params:[period: costTable.currentPeriod.id, objective: costTable.currentObjectiveId], displayLinkUntil: displayLinkUntil]"/>
 							</ul>
 						</div>
 					</div>
@@ -52,7 +57,7 @@
 									<g:each in="${objectives}" var="objective">
 										<li>
 											<span>
-												<a href="${createLink(controller: "cost", action:"view", params:[period: costTable.currentPeriod.id, objective: objective.id, organisation: costTable.currentOrganisation.id])}">
+												<a href="${createLink(controller: "cost", action:"view", params:[period: costTable.currentPeriod.id, objective: objective.id, organisation: costTable.currentOrganisationId])}">
 													${objective.name}
 												</a>
 											</span>
@@ -78,7 +83,7 @@
 			</div>
     		<div id="center" class="box">
     			<div id="values">
-    				<g:if test="${costTable.currentObjective != null}">
+    				<g:if test="${costTable.currentObjective != null && costTable.currentOrganisation != null}">
 						<table class="nice-table">
 							<thead>
 								<tr>
@@ -100,7 +105,7 @@
 										<tr>
 											<th class="cell label row-${target.id}" data-row="${target.id}">
 												<span>
-													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: costTable.currentOrganisation.id])}">${target.name}</a>
+													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: costTable.currentOrganisationId])}">${target.name}</a>
 												</span>
 												<span id="edit-cost-target-link">
 													<g:link controller="costTarget" action="edit" id="${target.id}" class="flow-edit">(edit)</g:link>
@@ -131,6 +136,9 @@
 						</g:if>
 						<!-- ADMIN SECTION END -->
 					</g:if>
+					<g:else>
+						<div>Please select an organisation / objective</div>
+					</g:else>
 				</div>
 				<!-- ADMIN SECTION -->
 		    	<g:if test="${true || user.admin}">

@@ -81,6 +81,13 @@ public class Organisation {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Organisation [organisationUnit=" + organisationUnit + ", level=" + level + "]";
+	}
+	
+	
 	
 }
 

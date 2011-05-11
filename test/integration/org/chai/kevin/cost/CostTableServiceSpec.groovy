@@ -1,9 +1,12 @@
 package org.chai.kevin.cost
 
+import java.util.List;
+
 import org.chai.kevin.Expression;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
+import org.chai.kevin.Organisation;
 import org.chai.kevin.cost.CostTarget.CostType;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -122,6 +125,34 @@ class CostTableServiceSpec extends IntegrationTests {
 		
 	}
 	
+	def "explanation applies to correct organisation"() {
+		setup:
+		def costObjective = new CostObjective(name:"Test Objective")
+		costObjective.addTarget new CostTarget(name:"Test Target", expression: Expression.findByName("Constant 10"), costRampUp: CostRampUp.findByName("Constant"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
+		costObjective.save(failOnError: true)
+		
+		when:
+		def period = Period.list()[0]
+		def target = CostTarget.findByName("Test Target")
+		def explanation = costTableService.getExplanation(period, target, getOrganisation("Burera"))
+		
+		then:
+		explanation.organisations.containsAll getOrganisations(["Butaro DH"])
+		explanation.organisations.size() == 1
+		
+	}
+	
+	private static def getOrganisations(List<String> names) {
+		def organisations = []
+		for (String name : names) {
+			organisations.add getOrganisation(name)
+		}
+		return organisations;
+	}
+	
+	private static def getOrganisation(def name) {
+		return new Organisation(OrganisationUnit.findByName(name));
+	}
 	
 	private static def getTargets(def targetList) {
 		def result = [];

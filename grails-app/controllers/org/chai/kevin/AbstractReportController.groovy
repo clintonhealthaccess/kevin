@@ -82,13 +82,13 @@ abstract class AbstractReportController {
 		return objective
 	}
 	
-	protected def getOrganisation() {
+	protected def getOrganisation(def defaultIfNull) {
 		Organisation organisation = null;
 		try {
 			if (NumberUtils.isNumber(params['organisation'])) {
 				organisation = organisationService.getOrganisation(new Integer(params['organisation']))
 			}
-			if (organisation == null) {
+			if (organisation == null && defaultIfNull) {
 				organisation = organisationService.getRootOrganisation();
 			}
 		}

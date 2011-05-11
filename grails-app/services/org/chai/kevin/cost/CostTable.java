@@ -25,21 +25,22 @@ public class CostTable {
 			Map<CostTarget, Map<Integer, Cost>> values) {
 		super();
 		this.currentPeriod = currentPeriod;
-		this.currentObjective = currentObjective;
-		this.targets = targets;
 		this.years = years;
-		this.currentOrganisation = currentOrganisation;
 		this.values = values;
+		this.targets = targets;
+		
+		this.currentObjective = currentObjective;
+		this.currentOrganisation = currentOrganisation;
 	}
 	
-	public CostTable(Period currentPeriod, List<Integer> years,
-			Organisation currentOrganisation) {
-		this.currentPeriod = currentPeriod;
-		this.years = years;
-		this.currentOrganisation = currentOrganisation;
-		this.targets = new ArrayList<CostTarget>();
-		this.values = new HashMap<CostTarget, Map<Integer,Cost>>();
-	}
+//	public CostTable(Period currentPeriod, List<Integer> years,
+//			Organisation currentOrganisation) {
+//		this.currentPeriod = currentPeriod;
+//		this.years = years;
+//		this.currentOrganisation = currentOrganisation;
+//		this.targets = new ArrayList<CostTarget>();
+//		this.values = new HashMap<CostTarget, Map<Integer,Cost>>();
+//	}
 
 	public Period getCurrentPeriod() {
 		return currentPeriod;
@@ -59,6 +60,10 @@ public class CostTable {
 	
 	public Organisation getCurrentOrganisation() {
 		return currentOrganisation;
+	}
+	
+	public Integer getCurrentOrganisationId() {
+		return currentOrganisation!=null?currentOrganisation.getId():null;
 	}
 	
 	public List<CostTarget> getTargetsOfType(CostType type) {

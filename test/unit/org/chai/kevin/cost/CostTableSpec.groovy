@@ -39,4 +39,5 @@ class CostTableSpec extends UnitTests {
 		costTable.currentPeriod == period
 		costTable.targets == []
 	}	
+	
 }

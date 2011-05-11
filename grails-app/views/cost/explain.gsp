@@ -7,6 +7,12 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
+    	<div class="italic">
+    		Applies to:
+    		<g:each in="${explanation.groups}" var="group" status="i">
+    			<span>${group.name}</span><g:if test="${i < explanation.groups.size() - 1}">,</g:if>
+    		</g:each>
+    	</div>
     	<table>
 			<g:each in="${explanation.organisations}" var="organisation">
 				<tr>

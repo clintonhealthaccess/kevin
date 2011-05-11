@@ -43,7 +43,7 @@ public class Cost {
 	}
 	
 	public Integer getRoundedValue() {
-		return value.intValue();
+		return new Double(value/1000).intValue();
 	}
 	
 	public boolean isHasMissingValue() {
