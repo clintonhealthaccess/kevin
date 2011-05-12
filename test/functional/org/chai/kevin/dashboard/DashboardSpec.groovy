@@ -47,6 +47,52 @@ class DashboardSpec extends GebTests {
 			explanation.present
 			explanation.hasValues()
 	}
+		
+	def "cancel new expression and save empty target displays error"() {
+		when:
+			browser.to(DashboardPage)
+			addTarget()
+			createTarget.addExpression()
+			createTarget.createExpression.save()
+			createTarget.createExpression.cancel()
+			createTarget.save()
+			
+		then:
+			browser.at(DashboardPage)
+			createTarget.hasError(createTarget.nameField)
+			createTarget.hasError(createTarget.weightField)
+	}
+	
+	def "cancel new expression and save target works"() {
+		when:
+			browser.to(DashboardPage)
+			addTarget()
+			createTarget.addExpression()
+			createTarget.createExpression.save()
+			createTarget.createExpression.cancel()
+			createTarget.nameField.value("Test Target")
+			createTarget.weightField.value("1")
+			createTarget.orderField.value("10")
+			createTarget.save()
+			
+		then:
+			browser.at(DashboardPage)
+			dashboard.displayed
+			dashboardHeader.displayed
+			getTarget("Test Target").unique().text().contains "Test Target"
+	}
+	
+	def "show data elements in expression creation"() {
+		when:
+			browser.to(DashboardPage)
+			addTarget()
+			createTarget.addExpression()
+			createTarget.createExpression.searchDataElement()
+			
+		then:
+			browser.at(DashboardPage)
+			createTarget.createExpression.hasDataElements()
+	}
 	
 	def "add target entry gets displayed"() {
 		when:
@@ -70,7 +116,7 @@ class DashboardSpec extends GebTests {
 	}
 	
 	def "save empty target displays error message"() {
-		when: 
+		when:
 			browser.to(DashboardPage)
 			addTarget()
 			createTarget.save()
@@ -82,7 +128,7 @@ class DashboardSpec extends GebTests {
 	}
 	
 	def "save target preserves indicator values"() {
-		when: 
+		when:
 			browser.to(DashboardPage)
 			addTarget()
 			createTarget.expressionFields.each { it.value("1") }
@@ -182,53 +228,6 @@ class DashboardSpec extends GebTests {
 			!createTarget.hasError(createTarget.nameField)
 			createTarget.hasExpression("Constant 10")
 	}
-	
-	def "cancel new expression and save empty target displays error"() {
-		when:
-			browser.to(DashboardPage)
-			addTarget()
-			createTarget.addExpression()
-			createTarget.createExpression.save()
-			createTarget.createExpression.cancel()
-			createTarget.save()
-			
-		then:
-			browser.at(DashboardPage)
-			createTarget.hasError(createTarget.nameField)
-			createTarget.hasError(createTarget.weightField)
-	}
-	
-	def "cancel new expression and save target works"() {
-		when:
-			browser.to(DashboardPage)
-			addTarget()
-			createTarget.addExpression()
-			createTarget.createExpression.save()
-			createTarget.createExpression.cancel()
-			createTarget.nameField.value("Test Target")
-			createTarget.weightField.value("1")
-			createTarget.orderField.value("10")
-			createTarget.save()
-			
-		then:
-			browser.at(DashboardPage)
-			dashboard.displayed
-			dashboardHeader.displayed
-			getTarget("Test Target").unique().text().contains "Test Target"
-	}
-	
-	def "show data elements in expression creation"() {
-		when:
-			browser.to(DashboardPage)
-			addTarget()
-			createTarget.addExpression()
-			createTarget.createExpression.searchDataElement()
-			
-		then:
-			browser.at(DashboardPage)
-			createTarget.createExpression.hasDataElements()
-	}
-	
 
 	
 	def "explain leaf target"() {

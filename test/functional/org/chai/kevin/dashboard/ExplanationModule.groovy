@@ -8,13 +8,11 @@ import geb.error.RequiredPageContentNotPresent;
 class ExplanationModule extends Module {
 
 	static content = {
-		explanationCell { $("div", id: "explanation")}
+		explanationCell { $("div", id: "dashboard-explanation")}
 	}
 	
 	def hasValues() {
-		return 
-			dashboard.find("div.value", text: contains("%")) ||
-			dashboard.find("div.value", text: contains("N/A"))
+		return explanationCell.find("span.value", text: contains("%"))
 	}
 	
 }

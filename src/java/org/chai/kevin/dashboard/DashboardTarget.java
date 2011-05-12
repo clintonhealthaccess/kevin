@@ -29,8 +29,8 @@ public class DashboardTarget extends DashboardEntry {
 		this.calculations = new HashMap<String, DashboardCalculation>();
 	}
 	
-	@OneToMany(cascade={CascadeType.ALL}, targetEntity=DashboardCalculation.class)
-	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+	@OneToMany(targetEntity=DashboardCalculation.class)
+	@Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	@MapKey(name="groupUuid")
 	@JoinColumn
 	public Map<String, DashboardCalculation> getCalculations() {

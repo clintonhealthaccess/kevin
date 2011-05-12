@@ -311,7 +311,7 @@ class Initializer {
 			
 			def root = new DashboardObjective(root: true, name:"Strategic Objectives", description: "Strategic Objectives", weightedObjectives: [])
 			root.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByName("Human Resources for Health"), weight: 1, order: 1)
-			root.save(failOnError: true)
+			root.save(failOnError: true, flush: true)
 		}
 	}
 	

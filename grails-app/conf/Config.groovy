@@ -127,3 +127,7 @@ log4j = {
 //	trace  'org.hibernate.type'
 
 }
+
+cloudbees.api.url='https://api.cloudbees.com/api'
+cloudbees.api.key=System.properties ['bees.key']
+cloudbees.api.secret=System.properties ['bees.secret']

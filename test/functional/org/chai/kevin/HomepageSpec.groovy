@@ -26,6 +26,7 @@ class HomepageSpec extends GebTests {
 			header.hasLink("Dashboard")
 			header.hasLink("Costing")
 			header.hasLink("Indicators")
+			header.hasLink("Constants")
 	}
 	
 	def "dashboard link works"() {

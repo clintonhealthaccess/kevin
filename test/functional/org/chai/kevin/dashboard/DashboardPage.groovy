@@ -38,13 +38,11 @@ class DashboardPage extends ReportPage {
 	}
 	
 	def hasValues() {
-		return 
-			dashboard.find("span", text: contains("%"))
-//			|| dashboard.find("span", text: contains("N/A"))
+		return dashboardCells.find("span a", text: contains("%"))
 	}
 	
 	def clickRefresh() {
-		refresh.jquery.click()
+		refresh.click()
 	}
 		
 	def getObjective(def text) {

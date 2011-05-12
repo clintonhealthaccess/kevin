@@ -17,7 +17,7 @@ class EntityFormModule extends Module {
 	def save() {
 		saveButton.jquery.click()
 		waitFor {
-			Thread.sleep(1000)
+			Thread.sleep(2000)
 			true
 		}
 //		waitFor {

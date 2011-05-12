@@ -15,6 +15,13 @@ class CreateExpressionModule extends EntityFormModule {
 
 	def searchDataElement() {
 		searchButton.jquery.click()
+		waitFor {
+			hasDataElements()
+		}
+		waitFor {
+			Thread.sleep(1000)
+			true
+		}
 	}
 	
 	def hasDataElements() {

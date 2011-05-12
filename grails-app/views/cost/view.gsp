@@ -149,7 +149,7 @@
 							$('#values').flow({
 								onSuccess: function(data) {
 									if (data.result == 'success') {
-										location.reload
+										location.reload();
 									}
 								}
 							});
