@@ -46,7 +46,7 @@ grails.project.dependency.resolution = {
 		compile ('javassist:javassist:3.11.0.GA')
 		
 		compile ('org.hisp.dhis:dhis-service-core:2.2-SNAPSHOT') {
-			excludes "xml-apis", "xercesImpl", "xmlParserAPIs",
+			excludes "xml-apis", "xmlParserAPIs",
 			         "hibernate-core",
 					 "hibernate-annotations",
 					 "velocity"
@@ -57,7 +57,7 @@ grails.project.dependency.resolution = {
 		}
 		compile ('org.hisp.dhis:dhis-service-aggregationengine-default:2.2-SNAPSHOT')
 		compile ('org.hisp.dhis:dhis-api:2.2-SNAPSHOT') {
-			excludes "xml-apis", "xercesImpl", "xmlParserAPIs"
+			excludes "xml-apis", "xmlParserAPIs"
 		}
 				
 		compile( "org.quartz-scheduler:quartz:1.8.4" ) {
@@ -70,7 +70,7 @@ grails.project.dependency.resolution = {
 //		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
 		test("org.seleniumhq.selenium:selenium-chrome-driver:2.0b3")
 		test("org.seleniumhq.selenium:selenium-htmlunit-driver:latest.release") {
-			excludes "xml-apis", "xercesImpl", "xmlParserAPIs"
+			excludes "xml-apis", "xmlParserAPIs"
 		}
 		test 'org.gmock:gmock:0.8.1'
 		
