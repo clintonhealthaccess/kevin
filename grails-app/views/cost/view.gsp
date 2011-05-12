@@ -107,8 +107,8 @@
 												<span>
 													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: costTable.currentOrganisationId])}">${target.name}</a>
 												</span>
-												<span id="edit-cost-target-link">
-													<g:link controller="costTarget" action="edit" id="${target.id}" class="flow-edit">(edit)</g:link>
+												<span>
+													<a href=${createLink(controller:"costTarget", action:"edit", id: target.id)} class="flow-edit">(edit)</a>
 												</span>
 											</th>
 											<g:each in="${costTable.years}" var="year">

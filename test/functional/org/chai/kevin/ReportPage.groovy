@@ -31,6 +31,22 @@ abstract class ReportPage extends KevinPage {
 		}
 	}
 	
+	def editTarget() {
+		editLinks.first().jquery.click()
+		waitFor {
+			try {
+				ReportPage.log.debug("waiting for creation pane to be displayed");
+				createTarget.present?createTarget.saveButton.displayed:false
+			} catch (RequiredPageContentNotPresent e) {
+				false;
+			}
+		}
+		waitFor {
+			Thread.sleep 1000
+			true
+		}
+	}
+	
 	def addObjective() {
 		addObjective.jquery.click()
 		waitFor { 

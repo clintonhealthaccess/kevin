@@ -55,7 +55,6 @@ class CostSpec extends GebTests {
 			getTarget("Test Target").unique().text().contains "Test Target"
 	}
 	
-	
 	def "add target gets displayed"() {
 		when:
 			browser.to(CostPage)
@@ -68,6 +67,19 @@ class CostSpec extends GebTests {
 			createTarget.saveButton.present
 			!createTarget.hasError(createTarget.nameField)
 			createTarget.hasExpression("Constant 10")
+	}
+	
+	def "edit target gets displayed"() {
+		when:
+			browser.to(CostPage)
+			pickOrganisation("Burera")
+			pickObjective("Geographical Access")
+			editTarget()
+			
+		then:
+			browser.at(CostPage)
+			createTarget.saveButton.present
+			!createTarget.hasError(createTarget.nameField)
 	}
 	
 	def "add empty target displays error"() {

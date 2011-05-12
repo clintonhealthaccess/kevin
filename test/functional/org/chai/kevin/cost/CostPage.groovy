@@ -13,6 +13,7 @@ class CostPage extends ReportPage {
 		addObjective { $("a", id:"add-cost-objective-link") }
 		
 		costTable { $('div', id:'values') }
+		editLinks { costTable.find('tbody th.cell a', text: contains('edit')) }
 		
 		createTarget(required: false) { module CreateCostTargetModule }
 		createObejctive(required: false) { module CreateCostObjectiveModule }
