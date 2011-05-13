@@ -19,6 +19,8 @@
 	    <mapping class="org.chai.kevin.cost.CostRampUpYear" />	
 	    <mapping class="org.chai.kevin.cost.CostTarget" />	
 	
+	    <mapping class="org.chai.kevin.maps.MapsTarget" />	
+	
 	<!--
 		<mapping package='com.books' />
 		<mapping class='com.books.Book' />
@@ -48,10 +50,10 @@
 		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitGroupSet.hbm.xml"/>
 		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitLevel.hbm.xml"/>
 		
-<!-- 		<mapping resource="org/hisp/dhis/indicator/hibernate/Indicator.hbm.xml"/> -->
-<!-- 		<mapping resource="org/hisp/dhis/indicator/hibernate/IndicatorType.hbm.xml"/> -->
-<!-- 		<mapping resource="org/hisp/dhis/indicator/hibernate/IndicatorGroupSet.hbm.xml"/> -->
-<!-- 		<mapping resource="org/hisp/dhis/indicator/hibernate/IndicatorGroup.hbm.xml"/> -->
+		<mapping resource="org/hisp/dhis/indicator/hibernate/Indicator.hbm.xml"/>
+		<mapping resource="org/hisp/dhis/indicator/hibernate/IndicatorType.hbm.xml"/>
+		<mapping resource="org/hisp/dhis/indicator/hibernate/IndicatorGroupSet.hbm.xml"/>
+		<mapping resource="org/hisp/dhis/indicator/hibernate/IndicatorGroup.hbm.xml"/>
 		
 		<mapping resource="org/hisp/dhis/period/hibernate/Period.hbm.xml"/>
 		<mapping resource="org/hisp/dhis/datavalue/hibernate/DataValue.hbm.xml"/>

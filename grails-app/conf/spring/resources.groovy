@@ -7,6 +7,7 @@ import org.chai.kevin.dashboard.DashboardController;
 import org.chai.kevin.dashboard.DashboardService;
 import org.chai.kevin.dashboard.ExplanationCalculator;
 import org.chai.kevin.dashboard.PercentageCalculator;
+import org.chai.kevin.maps.MapsService;
 import org.hisp.dhis.dataelement.ConstantService;
 
 def defaultSkipLevels;
@@ -25,6 +26,11 @@ switch(GrailsUtil.environment) {
 }
 
 beans = {
+	mapsService(MapsService) {
+		aggregationService = ref("aggregationService")
+		organisationService = ref("organisationService")
+	}
+	
 	costTableService(CostTableService) {
 		costService = ref("costService")
 		expressionService = ref("expressionService")

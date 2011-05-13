@@ -53,6 +53,7 @@ class BootStrap {
 			Initializer.createDataElementsAndExpressions();
 			Initializer.createDashboard();
 			Initializer.createCost();
+			Initializer.createMaps();
 			
 			break;
 		}

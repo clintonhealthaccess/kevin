@@ -6,6 +6,7 @@ import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveService;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
+import org.chai.kevin.maps.MapsTarget;
 import org.hisp.dhis.period.Period;
 
 abstract class AbstractReportController {
@@ -56,6 +57,23 @@ abstract class AbstractReportController {
 		try {
 			if (NumberUtils.isNumber(params['objective'])) {
 				target = CostTarget.get(params['objective']);
+			}
+		}
+		catch (IllegalStateException e) {
+			// TODO
+			redirect (controller: '', action: '')
+		}
+		return target
+	}
+	
+	protected def getMapsTarget() {
+		MapsTarget target = null
+		try {
+			if (NumberUtils.isNumber(params['objective'])) {
+				target = MapsTarget.get(params['objective']);
+			}
+			if (target == null) {
+				target = MapsTarget.list()[0]
 			}
 		}
 		catch (IllegalStateException e) {

@@ -46,6 +46,7 @@
 				<ul class="menu">
 					<li><a href="${createLink(controller: 'dashboard', action:'view')}">Dashboard</a></li>
 					<li><a href="${createLink(controller: 'cost', action:'view')}">Costing</a></li>
+					<li><a href="${createLink(controller: 'maps', action:'view')}">Maps</a></li>
 				</ul>
 				<ul class="menu">
 					<li><a href="${createLink(controller: 'expression', action:'list')}">Indicators</a></li>

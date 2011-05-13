@@ -5,6 +5,8 @@ class UrlMappings {
 		
 		"/cost/$action/$period?/$objective?/$organisation?"(controller:"cost")
 		
+		"/maps/$action/$period?/$objective?/$organisation?"(controller:"maps")
+		
 		"/$controller/$action?/$id?"{
 			constraints {
 				// apply constraints here
@@ -12,7 +14,7 @@ class UrlMappings {
 		}
 
 		// temporary redirect to dashboard
-		"/"(controller:"cost", action:"index")
+		"/"(controller:"maps", action:"index")
 		"500"(view:'/error')
 	}
 }

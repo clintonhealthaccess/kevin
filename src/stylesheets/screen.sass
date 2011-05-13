@@ -59,6 +59,9 @@ body.two-columns
     min-height: 100%
     height: auto !important
     
+    #content
+      height: 100%
+    
   #footer
     text-align: center
     margin: auto
@@ -208,7 +211,6 @@ form
   
 #cost
   #top
-    +column(24)
     margin-bottom: 10px
     
     .filter
@@ -221,9 +223,7 @@ form
     h5, .dropdown
       float: left
       margin-right: 4px	
-  	    
-  #center
-    +column(24)
+
     
 #cost #center table
   tbody th.header
@@ -248,6 +248,18 @@ form
     th
       width: 480px
       
+#maps
+  height: 100%
+  
+  #top
+    margin-bottom: 10px
+      
+  #center
+    height: 100%
+    
+    #map_canvas
+      height: 650px
+      width: 100%
   	    
 #dashboard
   #corner
