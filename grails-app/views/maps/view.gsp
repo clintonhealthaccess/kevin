@@ -103,6 +103,9 @@
     	</div>
     	
     	<script type="text/javascript">
+    		var opacity = 0.6;
+    		var opacitySelected = 0.9;
+    	
     		var centerLatLng = new google.maps.LatLng(-1.93,29.84);
     		var centerZoom = 9;
     		
@@ -229,10 +232,10 @@
 								var polygon = new google.maps.Polygon({
 									paths: polygon,
 									strokeColor: element.color,
-									strokeOpacity: 0.8,
+									strokeOpacity: opacitySelected,
 									strokeWeight: 2,
 									fillColor: element.color,
-									fillOpacity: 0.35
+									fillOpacity: opacity
 								});
 								polygon.organisation = element.organisation;
 								polygon.organisation.bounds = polygonBounds;
@@ -245,20 +248,20 @@
 								});
 								google.maps.event.addListener(polygon, 'click', function() {
 									$.each(polygons, function(key, element) {
-										overrideOptions(element, {fillOpacity: 0.35});
+										overrideOptions(element, {fillOpacity: opacity});
 										polygon.selected = false
 									});
 									polygon.selected = true
-									overrideOptions(polygon, {fillOpacity: 0.8})
+									overrideOptions(polygon, {fillOpacity: opacitySelected})
 								});
 								google.maps.event.addListener(polygon, 'mouseover', function() {
 									$.each(polygons, function(key, element) {
-										if (!element.selected) overrideOptions(element, {fillOpacity: 0.35});
+										if (!element.selected) overrideOptions(element, {fillOpacity: opacity});
 									});
-									overrideOptions(polygon, {fillOpacity: 0.8})
+									overrideOptions(polygon, {fillOpacity: opacitySelected})
 								});
 								google.maps.event.addListener(polygon, 'mouseout', function() {
-									if (!polygon.selected) overrideOptions(polygon, {fillOpacity: 0.35});
+									if (!polygon.selected) overrideOptions(polygon, {fillOpacity: opacity});
 								});
 							})
     					}
