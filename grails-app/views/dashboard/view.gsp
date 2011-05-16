@@ -122,7 +122,7 @@
 										<g:set var="percentage" value="${dashboard.getPercentage(organisation, objective)}"/>
 										<td class="highlighted value cell row-${organisation.id} col-${objective.id}" data-row="${organisation.id}" data-col="${objective.id}">
 											<g:if test="${percentage!=null}">
-												<div style="background-color:'${percentage.color}'">
+												<div style="background-color: ${percentage.color};">
 												    <span>
 												    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[objective: objective.id, organisation: organisation.id, period: dashboard.currentPeriod.id])}">
 													    	<g:if test="${percentage.valid}">
