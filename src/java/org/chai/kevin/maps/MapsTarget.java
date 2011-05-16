@@ -1,9 +1,12 @@
 package org.chai.kevin.maps;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.chai.kevin.Expression;
 import org.chai.kevin.Objective;
 import org.hisp.dhis.indicator.Indicator;
 
@@ -11,15 +14,26 @@ import org.hisp.dhis.indicator.Indicator;
 @Table(name="dhsst_maps_target")
 public class MapsTarget extends Objective {
 
-	private Indicator indicator;
+	private Expression expression;
+	private Integer order;
 	
-	@ManyToOne(targetEntity=Indicator.class, optional=false)
-	public Indicator getIndicator() {
-		return indicator;
+	@ManyToOne(targetEntity=Expression.class, optional=false)
+	public Expression getExpression() {
+		return expression;
 	}
 	
-	public void setIndicator(Indicator indicator) {
-		this.indicator = indicator;
+	public void setExpression(Expression expression) {
+		this.expression = expression;
 	}
+	
+	@Basic(optional=true)
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
+	}
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+	
 	
 }

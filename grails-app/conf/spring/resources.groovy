@@ -29,6 +29,7 @@ beans = {
 	mapsService(MapsService) {
 		aggregationService = ref("aggregationService")
 		organisationService = ref("organisationService")
+		organisationLevel = defaultOrganisationlevel
 	}
 	
 	costTableService(CostTableService) {

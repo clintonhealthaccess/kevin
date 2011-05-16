@@ -40,7 +40,7 @@ public class CostTableService {
 		organisationService.loadChildren(organisation);
 		
 		for (Organisation child : organisation.getChildren()) {
-			if (	organisationService.getLevel(child) != new Integer(organisationLevel).intValue() 
+			if (	organisationService.getLevel(child).getLevel() != new Integer(organisationLevel).intValue() 
 					|| 
 					appliesToOrganisation(target, child, collection)
 			) {
@@ -66,7 +66,7 @@ public class CostTableService {
 	private Map<Integer, Cost> getCost(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
 		organisationService.loadChildren(organisation);
 		
-		if (organisationService.getLevel(organisation) == new Integer(organisationLevel).intValue()) {
+		if (organisationService.getLevel(organisation).getLevel() == new Integer(organisationLevel).intValue()) {
 			return getCostForLeafOrganisation(target, organisation, period, collection);
 		}
 		else {

@@ -71,7 +71,7 @@ public class PercentageCalculator {
 				continue;
 			}
 			Integer weight = child.getWeight();
-			if (childPercentage.isValidPercentage()) {
+			if (childPercentage.isValid()) {
 				sum += childPercentage.getValue() * weight;
 				totalWeight += weight;
 			}
@@ -110,7 +110,7 @@ public class PercentageCalculator {
 		boolean hasMissingValue = false;
 		for (Organisation child : organisation.getChildren()) {
 			DashboardPercentage childPercentage = percentageService.getPercentage(child.getOrganisationUnit(), target, period);
-			if (childPercentage.isValidPercentage()) {
+			if (childPercentage.isValid()) {
 				sum += childPercentage.getValue();
 				total++;
 			}

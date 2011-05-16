@@ -12,7 +12,7 @@
 			<div id="corner" class="box">
 				<h5>Iteration</h5>
 				<div class="dropdown">
-					<a href="#"><g:dateFormat format="yyyy" date="${dashboard.currentPeriod.startDate}"/></a>
+					<a class="selected" href="#"><g:dateFormat format="yyyy" date="${dashboard.currentPeriod.startDate}"/></a>
 					<div class="hidden dropdown-list">
 						<ul>
 							<g:each in="${periods}" var="period">
@@ -77,23 +77,23 @@
 								    		<g:if test="${true || user.admin}">
 							    				<g:if test="${!objective.isTarget()}">
 													<span>
-														<a class="flow-edit" href="${createLink(controller:'dashboardObjective',action:'edit',id:'objectiveEntry.id')}">(edit)</a>
+														<a class="flow-edit" href="${createLink(controller:'dashboardObjective',action:'edit',id:objectiveEntry.id)}">(edit)</a>
 													</span>
 												</g:if>
 												<g:else>
 													<span>
-														<a class="flow-edit" href="${createLink(controller:'dashboardTarget',action:'edit',id:'objectiveEntry.id')}">(edit)</a>
+														<a class="flow-edit" href="${createLink(controller:'dashboardTarget',action:'edit',id:objectiveEntry.id)}">(edit)</a>
 													</span>
 												</g:else>
 												<g:if test="${!objective.hasChildren()}">
 													<g:if test="${!objective.isTarget()}">
 														<span>
-															<a class="flow-delete" href="${createLink(controller:'dashboardObjective',action:'delete',id:'objectiveEntry.id')}">(delete)</a>
+															<a class="flow-delete" href="${createLink(controller:'dashboardObjective',action:'delete',id:objectiveEntry.id)}">(delete)</a>
 														</span>
 													</g:if>
 													<g:else>
 														<span>
-															<a class="flow-delete" href="${createLink(controller:'dashboardTarget',action:'delete',id:'objectiveEntry.id')}">(delete)</a>
+															<a class="flow-delete" href="${createLink(controller:'dashboardTarget',action:'delete',id:objectiveEntry.id)}">(delete)</a>
 														</span>
 													</g:else>
 												</g:if>
@@ -122,25 +122,23 @@
 										<g:set var="percentage" value="${dashboard.getPercentage(organisation, objective)}"/>
 										<td class="highlighted value cell row-${organisation.id} col-${objective.id}" data-row="${organisation.id}" data-col="${objective.id}">
 											<g:if test="${percentage!=null}">
-												<g:if test="${percentage.validPercentage}">
-													<div class="target${percentage.valueClass}">
-													    <span>
-													    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[objective: objective.id, organisation: organisation.id, period: dashboard.currentPeriod.id])}">${percentage.roundedValue}%</a>
-													    </span>
-													</div>
-												</g:if>
-												<g:else>
-													<div class="targetna">
-													    <span>
-													    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[objective: objective.id, organisation: organisation.id, period: dashboard.currentPeriod.id])}">N/A</a>
-													   	</span>	
-													</div>
-												</g:else>
+												<div style="background-color:'${percentage.color}'">
+												    <span>
+												    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[objective: objective.id, organisation: organisation.id, period: dashboard.currentPeriod.id])}">
+													    	<g:if test="${percentage.valid}">
+																${percentage.roundedValue}%
+															</g:if>
+															<g:else>
+																N/A
+															</g:else>
+												    	</a>
+												    </span>
+												</div>
 												<g:if test="${percentage.isHasMissingValue()}">
 													<span><!-- missing value --></span>
 												</g:if>
 												<g:if test="${percentage.isHasMissingExpression()}">
-													<span><!-- missing indicator --></span>
+													<span><!-- missing expression --></span>
 												</g:if>
 												</div>
 											</g:if>

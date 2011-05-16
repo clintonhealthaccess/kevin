@@ -10,11 +10,11 @@
 		<div id="dashboard-explanation">
 			<h3>${explanation.entry.name} in ${explanation.organisation.name}</h3>
 			<g:if test="${explanation.average.status == Status.MISSING_EXPRESSION || (explanation.leaf && explanation.average.isHasMissingExpression())}">
-				<div class="red bold">No indicator is defined for this objective.</div>
+				<div class="red bold">This group doesn't have any associated expression.</div>
 			</g:if>
 			<g:else>
 				<g:if test="${explanation.average.isHasMissingValue()}">
-					<div class="red bold">This indicator has missing values.</div>
+					<div class="red bold">Some values are missing.</div>
 				</g:if>
 				
 				<div id="dashboard-explanation-content">		
@@ -29,7 +29,7 @@
 							</g:else>
 							<a href="#" onclick="$('#values-${explanation.entry.id}-${explanation.organisation.id}').slideToggle(); return false;">(scores)</a>
 							<span class="value">
-								<g:if test="${explanation.average.validPercentage}">
+								<g:if test="${explanation.average.valid}">
 									<g:formatNumber number="${explanation.average.value * 100}" format="#0.0"/>%
 								</g:if>
 								<g:else>
@@ -49,7 +49,7 @@
 											<li class="data">
 												<div class="organisation">${value.key.name}</div>
 												<div class="value">
-													<g:if test="${value.value.validPercentage}">
+													<g:if test="${value.value.valid}">
 														<g:formatNumber number="${value.value.value * 100}" format="#0.0"/>%
 													</g:if>
 													<g:else>
@@ -72,7 +72,7 @@
 													<div class="objective">${objective.key.entry.name}</div>
 													<div class="weight">${objective.key.weight}</div>
 													<div class="value">
-														<g:if test="${objective.value.validPercentage}">
+														<g:if test="${objective.value.valid}">
 															<g:formatNumber number="${objective.value.value * 100}" format="#0.0"/>%
 														</g:if>
 														<g:else>
@@ -97,10 +97,10 @@
 								<g:set var="calculation" value="${expressionExplanation.calculation}"/>
 								<h5>
 									<g:if test="${!explanation.leaf}">
-										<a href="#" onclick="$('#calculation-${calculation.id}').slideToggle(); return false;">Indicator for ${groups.getGroupByUuid(calculation.groupUuid).name}</a>
+										<a href="#" onclick="$('#calculation-${calculation.id}').slideToggle(); return false;">Expression for ${groups.getGroupByUuid(calculation.groupUuid).name}</a>
 									</g:if>
 									<g:else>
-										Indicator for ${groups.getGroupByUuid(calculation.groupUuid).name}
+										Expression for ${groups.getGroupByUuid(calculation.groupUuid).name}
 									</g:else>
 								</h5>
 								<div id="calculation-${calculation.id}" class="left-pane ${!explanation.leaf?'hidden':''}">
@@ -118,7 +118,7 @@
 												</div>
 												<g:if test="${explanation.leaf}">
 													<div class="value">
-														<g:if test="${expressionExplanation.percentage.validPercentage}">
+														<g:if test="${expressionExplanation.percentage.valid}">
 															<g:formatNumber number="${expressionExplanation.percentage.value * 100}" format="#0.0"/>%
 														</g:if>
 														<g:else>

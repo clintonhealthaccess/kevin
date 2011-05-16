@@ -93,7 +93,7 @@ class DashboardServiceSpec extends IntegrationTests {
 		
 		then:
 		dashboard.getPercentage(organisation, objective).status == Status.MISSING_EXPRESSION;
-		explanation.average.validPercentage == false
+		explanation.average.valid == false
 		
 	}
 	

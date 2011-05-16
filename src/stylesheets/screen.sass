@@ -110,6 +110,7 @@ body.bp .dropdown
     +white-box
     border-width: 2px
     position: absolute
+    z-index: 10
 
   ul
     +inline-block-list
@@ -120,6 +121,17 @@ body.bp .dropdown
       
   div.dropdown-list
     margin-top: -14px
+
+.filter
+  float: left
+  margin-right: 20px
+
+  li span
+    margin-right: 4px
+
+  h5, .dropdown
+    float: left
+    margin-right: 4px
 
 body.bp h5
   margin-bottom: 0px
@@ -213,16 +225,7 @@ form
   #top
     margin-bottom: 10px
     
-    .filter
-      float: left
-      margin-right: 20px
-    
-    li span
-      margin-right: 4px
-    
-    h5, .dropdown
-      float: left
-      margin-right: 4px	
+	
 
     
 #cost #center table
@@ -541,41 +544,3 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
 .spacer
   +colspacer
  
-.targetna
-  background-color: #AAA
-
-.target0
-  background-color: #fd7272
-
-.target0:hover
-  background-color: #fc0404
-
-.target1
-  background-color: #fd8472
-
-.target1:hover
-  background-color: #fc2704
-
-.target2
-  background-color: #fd9772
-
-.target2:hover
-  background-color: #fc4404
-
-.target3
-  background-color: #fdaa72
-
-.target3:hover
-  background-color: #fc6704
-
-.target4
-  background-color: #9afba5
-
-.target4:hover
-  background-color: #0af626
-
-.target5
-  background-color: #79fa88
-
-.target5:hover
-  background-color: #0af626

@@ -49,7 +49,7 @@
 					<li><a href="${createLink(controller: 'maps', action:'view')}">Maps</a></li>
 				</ul>
 				<ul class="menu">
-					<li><a href="${createLink(controller: 'expression', action:'list')}">Indicators</a></li>
+					<li><a href="${createLink(controller: 'expression', action:'list')}">Expressions</a></li>
 					<li><a href="${createLink(controller: 'constant', action:'list')}">Constants</a></li>
 				</ul>
 			</div>
@@ -84,7 +84,7 @@
 				var container = this.next(this.config.container).first();
 				 
 				var self = this;
-				this.find(this.config.addLinks).each(function(index, element){
+				$(document).find(this.config.addLinks).each(function(index, element){
 					$(element).bind('click', function() {
 						$.ajax({
 							type : 'GET',
@@ -267,8 +267,9 @@
 			/**
 			 * date drop-down
 			 **/
-			$(".dropdown a").click(function() {
+			$(".dropdown .selected").live('click', function() {
 				$(this).parent(".dropdown").find("div.dropdown-list").toggle();
+				return false;
 			});
 
 			$(document).bind('click', function(e) {
@@ -277,8 +278,7 @@
 					if (clicked != this) {
 						$(this).parent(".dropdown").find("div.dropdown-list").hide();	
 					}
-				})
-				
+				});
 			});
 			
 			/**

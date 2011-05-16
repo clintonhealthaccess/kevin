@@ -20,7 +20,7 @@
 			<div id="expressions-block">
 				<g:each status="i" in="${groups}" var="group">
 					<div id="group-${group.id}" class="group-list">
-						<label for="entry.calculations[${group.uuid}].expression.id">Indicator for ${group.name}:</label>
+						<label for="entry.calculations[${group.uuid}].expression.id">Expression for ${group.name}:</label>
 						<select class="expression-list" name="entry.calculations[${group.uuid}].expression.id">
 							<option value="null">-- disabled --</option>
 							<g:each in="${expressions}" var="expression">

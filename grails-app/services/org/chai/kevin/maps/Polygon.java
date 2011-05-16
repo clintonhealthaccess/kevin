@@ -1,8 +1,9 @@
 package org.chai.kevin.maps;
 
+import org.chai.kevin.Gradient;
 import org.chai.kevin.Organisation;
 
-public class Polygon {
+public class Polygon extends Gradient {
 
 	private Organisation organisation;
 	private Double value;
@@ -20,15 +21,10 @@ public class Polygon {
 		return value;
 	}
 	
-	public String getColor() {
-		return "#444444";
-	}
-	
 	public String toJson() {
 		return 
 			"{" +
-				"\"name\":\""+organisation.getOrganisationUnit().getName()+"\","+
-				"\"coordinates\":"+organisation.getOrganisationUnit().getCoordinates()+","+
+				"\"organisation\":"+organisation.toJson()+",\n"+
 				"\"value\":"+value+","+
 				"\"color\":\""+getColor()+"\""+
 			"}";

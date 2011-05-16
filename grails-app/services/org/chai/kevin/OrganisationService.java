@@ -11,6 +11,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
+import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 
 public class OrganisationService {
@@ -43,9 +44,22 @@ public class OrganisationService {
 		return result;
 	}
 	
-	public int getLevel(Organisation organisation) {
+	public List<OrganisationUnitLevel> getChildren(OrganisationUnitLevel level) {
+		List<OrganisationUnitLevel> result = new ArrayList<OrganisationUnitLevel>();
+		
+		for (OrganisationUnitLevel organisationUnitLevel : organisationUnitService.getOrganisationUnitLevels()) {
+			if (organisationUnitLevel.getLevel() > level.getLevel() && !skipLevels.contains(organisationUnitLevel.getLevel())) {
+				result.add(organisationUnitLevel);
+			}
+		}
+		return result;
+	}
+	
+	public OrganisationUnitLevel getLevel(Organisation organisation) {
 		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation.getOrganisationUnit());
-		return level;
+		OrganisationUnitLevel organisationUnitLevel = organisationUnitService.getOrganisationUnitLevelByLevel(level);
+		organisation.setLevel(organisationUnitLevel);
+		return organisationUnitLevel;
 	}
 	
 	public List<Organisation> getOrganisationsOfLevel(int level) {
@@ -89,8 +103,8 @@ public class OrganisationService {
 	} 
 	
 	private void loadUntilLevel(Organisation organisation, int level) {
-		organisation.setLevel(organisationUnitService.getLevelOfOrganisationUnit(organisation.getOrganisationUnit()));
-		if (organisation.getLevel() < level) {
+		getLevel(organisation);
+		if (organisation.getLevel().getLevel() < level) {
 			loadChildren(organisation);
 			for (Organisation child : organisation.getChildren()) {
 				loadUntilLevel(child, level);
@@ -118,6 +132,29 @@ public class OrganisationService {
 			return getParent(organisationUnit.getParent());
 		}
 		return organisationUnit.getParent();
+	}
+	
+	public List<Organisation> getChildrenOfLevel(Organisation organisation, OrganisationUnitLevel level) {
+		List<OrganisationUnit> children = getChildrenOfLevel(organisation.getOrganisationUnit(), level.getLevel());
+		List<Organisation> result = new ArrayList<Organisation>();
+		for (OrganisationUnit child : children) {
+			result.add(createOrganisation(child));
+		}
+		return result;
+	}
+	
+	private List<OrganisationUnit> getChildrenOfLevel(OrganisationUnit organisation, int level) {
+		List<OrganisationUnit> result = new ArrayList<OrganisationUnit>();
+		for (OrganisationUnit child : organisation.getChildren()) {
+			int childLevel = organisationUnitService.getLevelOfOrganisationUnit(child);
+			if (level == childLevel) {
+				result.add(child);
+			}
+			else {
+				result.addAll(getChildrenOfLevel(child, level));
+			}
+		}
+		return result;
 	}
 	
 	private List<OrganisationUnit> getChildren(OrganisationUnit organisation) {

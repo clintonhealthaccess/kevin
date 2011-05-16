@@ -1,11 +1,11 @@
 <li>
 	<% params['organisation'] = organisation.id %>
-	<g:if test="${organisation.level < displayLinkUntil}">
-		<span>${organisation.name}</span>
+	<g:if test="${organisation.level.level < displayLinkUntil}">
+		${organisation.name}
 	</g:if>
 	<g:else>
-		<a href="${createLink(controller:controller, action:action, params:params)}">
-			<span>${organisation.name}</span>
+		<a class="parameter" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:params)}">
+			${organisation.name}
 		</a>
 	</g:else>
 	<g:if test="${organisation.children != null}">

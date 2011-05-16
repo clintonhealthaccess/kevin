@@ -26,7 +26,7 @@
 			<input type="hidden" name="type" value="VALUE"></input>
 			
 			<div class="row">
-				<button type="submit">Save Indicator</button>
+				<button type="submit">Save Expression</button>
 				<button id="cancel-button">Cancel</button>
 			</div>
 		</g:form>

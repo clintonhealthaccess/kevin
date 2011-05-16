@@ -103,7 +103,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		}
 		
 		then:
-		percentage.validPercentage == true
+		percentage.valid == true
 		percentage.status == Status.VALID
 		percentage.value == 15
 	}
@@ -170,7 +170,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		}
 		
 		then:
-		percentage.validPercentage == false
+		percentage.valid == false
 		percentage.isHasMissingExpression() == true
 	}
 	
@@ -190,7 +190,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		}
 		
 		then:
-		percentage.validPercentage == true
+		percentage.valid == true
 		percentage.value == 15
 	}
 

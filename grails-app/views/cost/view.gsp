@@ -12,7 +12,7 @@
 				<div class="filter">
 					<h5>Iteration</h5>
 					<div class="dropdown">
-						<a href="#"><g:dateFormat format="yyyy" date="${costTable.currentPeriod.startDate}"/></a>
+						<a href="#" class="selected"><g:dateFormat format="yyyy" date="${costTable.currentPeriod.startDate}"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
 								<g:each in="${periods}" var="period">
@@ -30,10 +30,10 @@
 					<h5>Organisation:</h5>
 					<div class="dropdown">
 						<g:if test="${costTable.currentOrganisation != null}">
-							<a href="#">${costTable.currentOrganisation.name}</a>
+							<a href="#" class="selected">${costTable.currentOrganisation.name}</a>
 						</g:if>
 						<g:else>
-							<a href="#">no organisation selected</a>
+							<a href="#" class="selected">no organisation selected</a>
 						</g:else>
 						<div class="hidden dropdown-list">
 							<ul>
@@ -46,10 +46,10 @@
 					<h5>Strategic Objective:</h5>
 					<div class="dropdown">
 						<g:if test="${costTable.currentObjective != null}">
-							<a href="#">${costTable.currentObjective.name}</a>
+							<a href="#" class="selected">${costTable.currentObjective.name}</a>
 						</g:if>
 						<g:else>
-							<a href="#">no objective selected</a>
+							<a href="#" class="selected">no objective selected</a>
 						</g:else>
 						<div class="hidden dropdown-list">
 							<g:if test="${!objectives.empty}">
@@ -76,7 +76,7 @@
 				</div>
 				<g:if test="${true || user.admin}">
 					<div>
-						<a id="add-cost-objective-link" href="${createLink(controller:'costObjective', action:'create')}" class="flow-add">add objective</a>
+						<a class="flow-add" id="add-cost-objective-link" href="${createLink(controller:'costObjective', action:'create')}">add objective</a>
 					</div>
 				</g:if>
 				
@@ -157,6 +157,7 @@
 					</script>
 		    	</g:if>
 		    	<!-- ADMIN SECTION END -->
+				<div class="clear"></div>
     		</div>
     	</div>
     	

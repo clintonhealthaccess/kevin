@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Gradient;
 import org.chai.kevin.Objective;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -27,7 +28,7 @@ import org.hisp.dhis.period.Period;
 	}
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class DashboardPercentage {
+public class DashboardPercentage extends Gradient {
 	
 
 	private Integer id;
@@ -154,27 +155,6 @@ public class DashboardPercentage {
 	public Boolean isHasMissingValue() {
 		return hasMissingValue;
 	}
-
-	
-	@Transient
-	public Integer getRoundedValue() {
-		return new Double(value * 100).intValue();
-	}
-	
-	@Transient
-	public Integer getValueClass() {
-		return new Double(value / 0.2d).intValue();
-	}
-
-	@Transient
-	public boolean isValidPercentage() {
-		return value != null && !value.isNaN() && value != -1;
-	}
-	
-//	@Transient
-//	public boolean isLeaf() {
-//		return organisation.getChildren().size() == 0;
-//	}
 
 	
 	public void setId(Integer id) {

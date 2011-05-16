@@ -7,6 +7,7 @@ import org.chai.kevin.dashboard.DashboardObjectiveService;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.maps.MapsTarget;
+import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
 
 abstract class AbstractReportController {
@@ -69,8 +70,8 @@ abstract class AbstractReportController {
 	protected def getMapsTarget() {
 		MapsTarget target = null
 		try {
-			if (NumberUtils.isNumber(params['objective'])) {
-				target = MapsTarget.get(params['objective']);
+			if (NumberUtils.isNumber(params['target'])) {
+				target = MapsTarget.get(params['target']);
 			}
 			if (target == null) {
 				target = MapsTarget.list()[0]
@@ -115,6 +116,20 @@ abstract class AbstractReportController {
 			redirect (controller: '', action: '')
 		}
 		return organisation
+	}
+	
+	protected def getOrganisationUnitLevel() {
+		OrganisationUnitLevel level = null;
+		try {
+			if (NumberUtils.isNumber(params['level'])) {
+				level = OrganisationUnitLevel.findByLevel(new Integer(params['level']))
+			}
+		}
+		catch (IllegalStateException e) {
+			// TODO
+			redirect (controller: '', action: '')
+		}
+		return level
 	}
 	
 	protected def getPeriod() {
