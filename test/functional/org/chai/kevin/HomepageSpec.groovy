@@ -25,7 +25,7 @@ class HomepageSpec extends GebTests {
 			!header.hasLink("Non-existing Link")
 			header.hasLink("Dashboard")
 			header.hasLink("Costing")
-			header.hasLink("Indicators")
+			header.hasLink("Expressions")
 			header.hasLink("Constants")
 	}
 	
@@ -41,7 +41,7 @@ class HomepageSpec extends GebTests {
 	def "expression link works"() {
 		when:
 			browser.to(HomepagePage)
-			header.click("Indicators")
+			header.click("Expressions")
 			
 		then:
 			browser.at(ExpressionPage)

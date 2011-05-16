@@ -73,9 +73,6 @@ abstract class AbstractReportController {
 			if (NumberUtils.isNumber(params['target'])) {
 				target = MapsTarget.get(params['target']);
 			}
-			if (target == null) {
-				target = MapsTarget.list()[0]
-			}
 		}
 		catch (IllegalStateException e) {
 			// TODO

@@ -36,6 +36,8 @@ public class MapsService {
 			level = levels.iterator().next();
 		}
 		
+		if (target == null) return new Maps(polygons, organisation, organisationService.getChildren(organisation.getLevel()), level);
+		
 		for (Organisation child : organisationService.getChildrenOfLevel(organisation, level)) {
 			organisationService.getLevel(child);
 			Map values = new HashMap();

@@ -35,11 +35,11 @@
 							<a class="selected" data-organisation="${currentOrganisation.id}" href="#">${currentOrganisation.name}</a>
 						</g:if>
 						<g:else>
-							<a href="#">no organisation selected</a>
+							<a class="selected" href="#">no organisation selected</a>
 						</g:else>
 						<div class="hidden dropdown-list">
 							<ul>
-								<g:render template="/templates/organisationTree" model="[controller: 'maps', action: 'view', organisation: organisationTree, params:[period: currentPeriod.id, objective: currentTarget.id], displayLinkUntil: displayLinkUntil]"/>
+								<g:render template="/templates/organisationTree" model="[controller: 'maps', action: 'view', organisation: organisationTree, params:[period: currentPeriod.id, objective: currentTarget?.id], displayLinkUntil: displayLinkUntil]"/>
 							</ul>
 						</div>
 					</div>
@@ -51,7 +51,7 @@
 							<a class="selected" href="#" data-target="${currentTarget.id}">${currentTarget.name}</a>
 						</g:if>
 						<g:else>
-							<a href="#">no target selected</a>
+							<a class="selected" href="#">no target selected</a>
 						</g:else>
 						<div class="hidden dropdown-list">
 							<g:if test="${!targets.empty}">
