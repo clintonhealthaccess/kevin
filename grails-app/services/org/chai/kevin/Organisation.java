@@ -88,7 +88,7 @@ public class Organisation {
 		return 
 		"{" +
 			"\"name\":\""+getOrganisationUnit().getName()+"\","+
-			"\"coordinates\":"+getOrganisationUnit().getCoordinates()+","+
+			(getOrganisationUnit().getCoordinates()!=null?"\"coordinates\":"+getOrganisationUnit().getCoordinates()+",":"")+
 			"\"id\":"+getOrganisationUnit().getId()+","+
 			(getParent()!=null?"\"parent\":"+getParent().getId()+",":"")+
 			"\"level\":"+getLevel().getLevel()+

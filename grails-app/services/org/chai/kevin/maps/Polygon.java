@@ -25,7 +25,6 @@ public class Polygon extends Gradient {
 		return 
 			"{" +
 				"\"organisation\":"+organisation.toJson()+",\n"+
-				"\"value\":"+value+","+
 				"\"color\":\""+getColor()+"\""+
 			"}";
 	}
