@@ -100,13 +100,13 @@ public class CostTableService {
 			List<Integer> years = costService.getYears();
 			Map<AbstractNameableObject, Object> values = new HashMap<AbstractNameableObject, Object>();
 
-			Double baseCost = (Double)expressionService.getValue(target.getExpression(), period, organisation.getOrganisationUnit(), values);
+			Double baseCost = (Double)expressionService.getValue(target.getExpression(), period, organisation, values);
 			if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
 			
 			Double steps = 0d;
 			if (target.isAverage()) {
 				values.clear();
-				Double endCost = (Double)expressionService.getValue(target.getExpressionEnd(), period, organisation.getOrganisationUnit(), values);
+				Double endCost = (Double)expressionService.getValue(target.getExpressionEnd(), period, organisation, values);
 				if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
 				steps = (endCost - baseCost)/(years.size()-1);
 			}

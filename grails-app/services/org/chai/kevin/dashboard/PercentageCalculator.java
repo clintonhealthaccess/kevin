@@ -92,7 +92,7 @@ public class PercentageCalculator {
 	}
 
 	protected DashboardPercentage getValueForLeafTarget(Expression expression, DashboardTarget target, Organisation organisation, Period period, Map<AbstractNameableObject, Object> values) {
-		Double value = (Double)expressionService.getValue(expression, period, organisation.getOrganisationUnit(), values);
+		Double value = (Double)expressionService.getValue(expression, period, organisation, values);
 		
 		if (ExpressionService.hasNullValues(values.values())) {
 			return new DashboardPercentage(Status.MISSING_VALUE, organisation.getOrganisationUnit(), target, period);

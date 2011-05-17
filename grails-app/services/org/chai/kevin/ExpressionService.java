@@ -2,11 +2,16 @@ package org.chai.kevin;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.dashboard.DashboardPercentage;
 import org.hisp.dhis.aggregation.AggregationService;
 import org.hisp.dhis.common.AbstractNameableObject;
 import org.hisp.dhis.dataelement.Constant;
@@ -16,6 +21,8 @@ import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
 import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.hisp.dhis.dataelement.DataElementOperand;
 import org.hisp.dhis.dataelement.DataElementService;
+import org.hisp.dhis.indicator.Indicator;
+import org.hisp.dhis.indicator.IndicatorType;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.system.util.MathUtils;
@@ -23,6 +30,8 @@ import org.nfunk.jep.JEP;
 
 public class ExpressionService {
 
+	private static final Log log = LogFactory.getLog(ExpressionService.class);
+	
     private final Pattern FORMULA_PATTERN = Pattern.compile("\\[.+?\\]");
     private final Pattern CONSTANT_PATTERN = Pattern.compile("\\[c.+?\\]");
 	
@@ -30,8 +39,11 @@ public class ExpressionService {
 	private DataElementService dataElementService;
 	private AggregationService aggregationService;
 	private DataElementCategoryService dataElementCategoryService;
+	private OrganisationService organisationService;
 	
 	private org.hisp.dhis.expression.ExpressionService dhisExpressionService;
+	
+	private String facilityLevel;
 	
 	private static JEP getJEPParser() {
     	final JEP parser = new JEP();
@@ -47,9 +59,82 @@ public class ExpressionService {
         return parser.getValueAsObject();
 	}
 	
-	public Object getValue(Expression expression, Period period, OrganisationUnit organisationUnit, Map<AbstractNameableObject, Object> values) {
-		String stringExpression = generateExpression(expression.getExpression(), period.getStartDate(), period.getEndDate(), organisationUnit, values);
+	public Object getValue(Expression expression, Period period, Organisation organisation, Map<AbstractNameableObject, Object> values) {
+		String stringExpression = generateExpression(expression.getExpression(), period.getStartDate(), period.getEndDate(), organisation.getOrganisationUnit(), values);
 		return evaluate(stringExpression);
+	}
+	
+	public Double getAggregatedValue(Expression expression, Period period, Organisation organisation, Map<Organisation, Map<AbstractNameableObject, Object>> values) {
+		if (log.isDebugEnabled()) log.debug("getAggregatedValue(expression="+expression+",period="+period+",organisation="+organisation+")");
+		
+		Set<DataElement> elements = dhisExpressionService.getDataElementsInExpression(expression.getExpression());
+		
+		// TODO maybe we want to calculate this in another way,
+		// or let the user decide
+		boolean aggregatable = true;
+		for (DataElement dataElement : elements) {
+			if (!dataElement.isAggregatable()) aggregatable = false;
+		}
+		
+		Double value;
+		
+		Indicator tmpIndicator = new Indicator();
+		tmpIndicator.setName("Temporary Indicator holding expression: "+expression.getName());
+		tmpIndicator.setNumerator(expression.getExpression());
+		tmpIndicator.setDenominator("1");
+		tmpIndicator.setIndicatorType(new IndicatorType("tmp", 1, true));
+		
+		if (aggregatable) {
+			Map<AbstractNameableObject, Object> valuesForOrganisation = new HashMap<AbstractNameableObject, Object>();
+			values.put(organisation, valuesForOrganisation);
+			value = getValueForFacility(tmpIndicator, period, organisation, valuesForOrganisation);
+		}
+		else {
+			value = getAverageValue(tmpIndicator, period, organisation, values);
+		}
+		return value;
+	}
+		
+		
+	private Double getAverageValue(Indicator indicator, Period period, Organisation organisation, Map<Organisation, Map<AbstractNameableObject, Object>> values) {
+		organisationService.getLevel(organisation);
+		
+		Double value;
+		if (organisation.getLevel().getLevel() == new Integer(facilityLevel).intValue()) {
+			Map<AbstractNameableObject, Object> valuesForOrganisation = new HashMap<AbstractNameableObject, Object>();
+			values.put(organisation, valuesForOrganisation);
+			value = getValueForFacility(indicator, period, organisation, valuesForOrganisation);
+			if (ExpressionService.hasNullValues(valuesForOrganisation.values())) value = null;
+		}
+		else {
+			value = getValueFromChildren(indicator, period, organisation, values);
+		}
+		return value;
+	}
+	
+	private Double getValueFromChildren(Indicator indicator, Period period, Organisation organisation, Map<Organisation, Map<AbstractNameableObject, Object>> values) {
+		if (log.isDebugEnabled()) log.debug("getAggregatedValueFromChildren(indicator="+indicator+",period="+period+",organisation="+organisation+")");
+		organisationService.loadChildren(organisation);
+		
+		Double sum = 0.0d;
+		Integer total = 0;
+		for (Organisation child : organisation.getChildren()) {
+			Double childValue = getAverageValue(indicator, period, child, values);
+			if (childValue != null) {
+				sum += childValue;
+				total++;
+			}
+			else {
+				// we skip it
+			}
+		}
+		return sum / total;
+	}
+	
+	private Double getValueForFacility(Indicator indicator, Period period, Organisation organisation, Map<AbstractNameableObject, Object> values) {
+		if (log.isDebugEnabled()) log.debug("getAggregatedValueForFacility(indicator="+indicator+",period="+period+",organisation="+organisation+")");
+
+		return aggregationService.getAggregatedIndicatorValue(indicator, period.getStartDate(), period.getEndDate(), organisation.getOrganisationUnit(), values);
 	}
 	
 	public static boolean hasNullValues(Collection<Object> values) {
@@ -182,6 +267,14 @@ public class ExpressionService {
 	
 	public void setDhisExpressionService(org.hisp.dhis.expression.ExpressionService dhisExpressionService) {
 		this.dhisExpressionService = dhisExpressionService;
+	}
+	
+	public void setOrganisationService(OrganisationService organisationService) {
+		this.organisationService = organisationService;
+	}
+	
+	public void setFacilityLevel(String facilityLevel) {
+		this.facilityLevel = facilityLevel;
 	}
 
 }

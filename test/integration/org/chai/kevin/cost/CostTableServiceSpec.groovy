@@ -142,24 +142,5 @@ class CostTableServiceSpec extends IntegrationTests {
 		
 	}
 	
-	private static def getOrganisations(List<String> names) {
-		def organisations = []
-		for (String name : names) {
-			organisations.add getOrganisation(name)
-		}
-		return organisations;
-	}
-	
-	private static def getOrganisation(def name) {
-		return new Organisation(OrganisationUnit.findByName(name));
-	}
-	
-	private static def getTargets(def targetList) {
-		def result = [];
-		targetList.each {
-			result.add CostTarget.findByName(it)	
-		}
-		return result
-	}
-	
+
 }

@@ -52,9 +52,6 @@ public class DashboardPercentage extends Gradient {
 		MISSING_VALUE
 	}
 	
-//	public static final Percentage MISSING_VALUE = new Percentage(Status.MISSING_VALUE);
-//	public static final Percentage MISSING_INDICATOR = new Percentage(Status.MISSING_INDICATOR);
-	
 	public DashboardPercentage() {}
 	
 	public DashboardPercentage(Status status, OrganisationUnit organisationUnit, DashboardEntry entry, Period period) {
@@ -99,17 +96,6 @@ public class DashboardPercentage extends Gradient {
 		this.hasMissingExpression = hasMissingExpressionStatus;
 //		this.percentages = null;
 	}
-	
-//	public Percentage(Double value, List<Percentage> percentages, Organisation organisation, Objective objective, Period period) {
-//		this.value = value;
-//		this.status = null;
-//		
-//		this.organisation = organisation;
-//		this.objective = objective;
-//		this.period = period;
-//		
-//		this.percentages = percentages;
-//	}
 	
 	@Id
 	@GeneratedValue

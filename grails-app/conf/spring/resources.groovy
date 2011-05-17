@@ -27,7 +27,7 @@ switch(GrailsUtil.environment) {
 
 beans = {
 	mapsService(MapsService) {
-		aggregationService = ref("aggregationService")
+		expressionService = ref("expressionService")
 		organisationService = ref("organisationService")
 		organisationLevel = defaultOrganisationlevel
 	}
@@ -45,6 +45,8 @@ beans = {
 		aggregationService = ref("aggregationService")
 		dataElementCategoryService = ref("dataElementCategoryService")
 		dhisExpressionService = ref("dhisExpressionService")
+		organisationService = ref("organisationService")
+		facilityLevel = defaultOrganisationlevel
 	}
 	
 	dashboardService(DashboardService) {

@@ -36,4 +36,24 @@ abstract class IntegrationTests extends IntegrationSpec {
 		aggregationCache.clearCache()
 	}
 
+	
+	static def getOrganisationUnitLevels(def levels) {
+		def result = []
+		for (def level : levels) {
+			result.add OrganisationUnitLevel.findByLevel(new Integer(level).intValue())
+		}
+		return result;
+	}
+	
+	static def getOrganisation(def name) {
+		return new Organisation(OrganisationUnit.findByName(name))
+	}
+	
+	static def getOrganisations(def names) {
+		def result = []
+		for (String name : names) {
+			result.add(getOrganisation(name))
+		}
+		return result
+	}
 }
