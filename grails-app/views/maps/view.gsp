@@ -1,5 +1,3 @@
-<%@ page import="org.chai.kevin.cost.CostTarget.CostType" %>
-
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -14,12 +12,12 @@
 				<div class="filter">
 					<h5>Iteration</h5>
 					<div class="dropdown dropdown-period">
-						<a class="selected" href="#" data-period="${currentPeriod.id}"><g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/></a>
+						<a class="selected" href="#" data-period="${currentPeriod.id}" data-type="period"><g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
 								<g:each in="${periods}" var="period">
 									<li>
-										<a class="parameter" href="#" data-period="${period.id}">
+										<a class="parameter" href="#" data-period="${period.id}" data-type="period">
 											<g:dateFormat format="yyyy" date="${period.startDate}"/>
 										</a>
 									</li>
@@ -32,10 +30,10 @@
 					<h5>Organisation:</h5>
 					<div class="dropdown dropdown-organisation">
 						<g:if test="${currentOrganisation != null}">
-							<a class="selected" data-organisation="${currentOrganisation.id}" href="#">${currentOrganisation.name}</a>
+							<a class="selected" href="#" data-organisation="${currentOrganisation.id}" data-type="organisation">${currentOrganisation.name}</a>
 						</g:if>
 						<g:else>
-							<a class="selected" href="#">no organisation selected</a>
+							<a class="selected" href="#" data-type="organisation">no organisation selected</a>
 						</g:else>
 						<div class="hidden dropdown-list">
 							<ul>
@@ -48,17 +46,17 @@
 					<h5>Target:</h5>
 					<div class="dropdown dropdown-target">
 						<g:if test="${currentTarget != null}">
-							<a class="selected" href="#" data-target="${currentTarget.id}">${currentTarget.name}</a>
+							<a class="selected" href="#" data-target="${currentTarget.id}" data-type="target">${currentTarget.name}</a>
 						</g:if>
 						<g:else>
-							<a class="selected" href="#">no target selected</a>
+							<a class="selected" href="#" data-type="target">no target selected</a>
 						</g:else>
 						<div class="hidden dropdown-list">
 							<g:if test="${!targets.empty}">
 								<ul>
 									<g:each in="${targets}" var="target">
 										<li>
-											<a class="parameter" href="#" data-target="${target.id}">
+											<a class="parameter" href="#" data-target="${target.id}" data-type="target">
 												${target.name}
 											</a>
 											<span><g:link class="flow-edit" controller="mapsTarget" action="edit" id="${target.id}" class="flow-edit">(edit)</g:link></span>
@@ -105,17 +103,16 @@
     	<script type="text/javascript">
     		var opacity = 0.6;
     		var opacitySelected = 0.9;
-    	
-    		var centerLatLng = new google.maps.LatLng(-1.93,29.84);
     		var centerZoom = 9;
+    		var centerLatLng = new google.maps.LatLng(-1.93,29.84);
     		
+    		// holds state for the level, 
+    		// HTML holds the state for the other parameters
     		var levelControl;
     		
     		var map;
     		var polygons = {};
     		
-    		var parent = null;
-    	
     		function LevelControl(controlDiv) {
     			// Set CSS styles for the DIV containing the control
 				// Setting padding to 5 px will offset the control
@@ -136,9 +133,10 @@
 				controlDiv.appendChild(this.controlUI);
 				
 				this.setLevels = function(levels, selectedLevel) {
-					var controlUI = this.controlUI;
+					var self = this;
+					self.selectedLevel = selectedLevel
 				
-					controlUI.innerHTML = '';
+					this.controlUI.innerHTML = '';
 					$.each(levels, function(key, element){
 						var controlText = document.createElement('DIV');
 						controlText.style.fontFamily = 'Arial,sans-serif';
@@ -157,7 +155,7 @@
 						controlText.innerHTML = element.name;
 
 						google.maps.event.addDomListener(controlText, 'click', function() {
-							load(controlText.level);
+							load({level: controlText.level});
 						});
 						google.maps.event.addDomListener(controlText, 'mouseover', function() {
 							controlText.style.backgroundColor = 'lightBlue';
@@ -165,7 +163,7 @@
 						google.maps.event.addDomListener(controlText, 'mouseout', function() {
 							if (!controlText.selected) controlText.style.backgroundColor = 'white';
 						});
-						controlUI.appendChild(controlText);
+						self.controlUI.appendChild(controlText);
 					});
 				}
 				
@@ -183,8 +181,7 @@
 				
 				map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
 				google.maps.event.addListener(map, 'dblclick', function(){
-					selectOrganisation(parent);
-					load();
+					load({organisation: getParent('organisation', $('.dropdown-organisation .selected').data('organisation')), level: null});
 				});
 				
 				// Create the DIV to hold the control and call the HomeControl() constructor
@@ -201,68 +198,76 @@
     			map.setCenter(centerLatLng);
     		}
     	
-    		function drawMap(period, target, organisation, level) {
+    		function drawMap(parameters) {
     			$.ajax({
     				type: 'GET',
     				url: "${createLink(controller: 'maps', action: 'map')}",
-    				data: {period: period, target: target, organisation: organisation, level: level},
+    				data: {period: parameters.period, target: parameters.target, organisation: parameters.organisation, level: parameters.level},
     				success: function(data) {
     					if (data.result == 'success') {
     						clearMap();
+
+							window.location.hash = 'period='+data.map.selectedPeriod+'&organisation='+data.map.selectedOrganisation+'&level='+data.map.selectedLevel+'&target='+data.map.selectedTarget;
+	
+    						levelControl.setLevels(data.map.levels, data.map.selectedLevel);
+    						select('organisation', data.map.selectedOrganisation)
+    						select('target', data.map.selectedTarget)
+    						select('period', data.map.selectedPeriod)
     					
-    						parent = data.map.selectedOrganisation.parent;
-    						if (data.map.selectedOrganisation.coordinates != null) {
-	    						var bounds = getPolygonBounds(data.map.selectedOrganisation.coordinates[0][0]);
+    						if (data.map.selectedCoordinates != null) {
+	    						var bounds = getPolygonBounds(data.map.selectedCoordinates[0][0]);
 	    						map.fitBounds(bounds);
     						}
     						else {
     							recenter();
     						}
     						
-    						levelControl.setLevels(data.map.levels, data.map.selectedLevel);
-    					
     						$.each(data.map.polygons, function(key, element){
 	    						var polygon = [];
-	    						$.each(element.organisation.coordinates[0][0], function(key, element){
-									var point = new google.maps.LatLng(element[1], element[0])
-									polygon.push(point)
-								});
-	    						var polygonBounds = getPolygonBounds(element.organisation.coordinates[0][0])
-	    						
-								var polygon = new google.maps.Polygon({
-									paths: polygon,
-									strokeColor: element.color,
-									strokeOpacity: opacitySelected,
-									strokeWeight: 2,
-									fillColor: element.color,
-									fillOpacity: opacity
-								});
-								polygon.organisation = element.organisation;
-								polygon.organisation.bounds = polygonBounds;
-								polygons[element.organisation.id] = polygon;
-									
-								polygon.setMap(map);
-								google.maps.event.addListener(polygon, 'dblclick', function() {
-									selectOrganisation(polygon.organisation.id);
-									load();
-								});
-								google.maps.event.addListener(polygon, 'click', function() {
-									$.each(polygons, function(key, element) {
-										overrideOptions(element, {fillOpacity: opacity});
-										polygon.selected = false
+		    					if (element.organisation.coordinates != null) {
+		    						$.each(element.organisation.coordinates[0][0], function(key, element){
+										var point = new google.maps.LatLng(element[1], element[0])
+										polygon.push(point)
 									});
-									polygon.selected = true
-									overrideOptions(polygon, {fillOpacity: opacitySelected})
-								});
-								google.maps.event.addListener(polygon, 'mouseover', function() {
-									$.each(polygons, function(key, element) {
-										if (!element.selected) overrideOptions(element, {fillOpacity: opacity});
+		    						var polygonBounds = getPolygonBounds(element.organisation.coordinates[0][0])
+		    						
+		    						var polygon = new google.maps.Polygon({
+										paths: polygon,
+										strokeColor: element.color,
+										strokeOpacity: opacitySelected,
+										strokeWeight: 2,
+										fillColor: element.color,
+										fillOpacity: opacity
 									});
-									overrideOptions(polygon, {fillOpacity: opacitySelected})
-								});
-								google.maps.event.addListener(polygon, 'mouseout', function() {
-									if (!polygon.selected) overrideOptions(polygon, {fillOpacity: opacity});
-								});
+									polygon.organisation = element.organisation;
+									polygon.organisation.bounds = polygonBounds;
+									polygons[element.organisation.id] = polygon;
+										
+									polygon.setMap(map);
+									google.maps.event.addListener(polygon, 'dblclick', function() {
+										load({organisation: polygon.organisation.id, level: null});
+									});
+									google.maps.event.addListener(polygon, 'click', function() {
+										$.each(polygons, function(key, element) {
+											overrideOptions(element, {fillOpacity: opacity});
+											polygon.selected = false
+										});
+										polygon.selected = true
+										overrideOptions(polygon, {fillOpacity: opacitySelected})
+									});
+									google.maps.event.addListener(polygon, 'mouseover', function() {
+										$.each(polygons, function(key, element) {
+											if (!element.selected) overrideOptions(element, {fillOpacity: opacity});
+										});
+										overrideOptions(polygon, {fillOpacity: opacitySelected})
+									});
+									google.maps.event.addListener(polygon, 'mouseout', function() {
+										$.each(polygons, function(key, element) {
+											if (!element.selected) overrideOptions(element, {fillOpacity: opacity});
+										});
+										if (!polygon.selected) overrideOptions(polygon, {fillOpacity: opacity});
+									});
+	    						}
 							})
     					}
     				},
@@ -283,30 +288,53 @@
 				return polygonBounds;
     		}
     		
-    		function selectOrganisation(organisation, level) {
-    			$('.dropdown-organisation .parameter').each(function(key, element){
-    				if ($(element).data('organisation') == organisation) $(element).click();
-    			});
-    		}
-    	
     		function clearMap() {
     			$.each(polygons, function(key, element){
     				element.setMap(null);
     			});
+    			// polygons = [];
+    		}
+    		
+    		function getParent(type, id) {
+    			var result = null;
+    			$('.dropdown-'+type+' .parameter').each(function(key, element){
+    				if ($(element).data(type) == id) {
+    					result = $(element).closest('li').closest('ul').closest('li').children('.parameter').data(type);
+    				}
+    			});
+    			return result;
+    		}
+    		
+    		function select(type, id) {
+    			$('.dropdown-'+type+' .parameter').each(function(key, element){
+    				if ($(element).data(type) == id) {
+    					var newLink = $(element).clone().removeClass('parameter').addClass('selected');
+						$(element).parents('.dropdown').find('.selected').replaceWith(newLink);
+    				}
+    			});
     		}
     	
-    		function load(level) {
-    			drawMap($('.dropdown-period .selected').data('period'), $('.dropdown-target .selected').data('target'), $('.dropdown-organisation .selected').data('organisation'), level);
+    		function load(options) {
+    			var current = {
+    				period: $('.dropdown-period .selected').data('period'), 
+    				target: $('.dropdown-target .selected').data('target'), 
+    				organisation: $('.dropdown-organisation .selected').data('organisation'), 
+    				level: levelControl.selectedLevel
+    			}
+    			drawMap($.extend({},current,options));
     		}
     	
 			jQuery(document).ready(function() {
 				initialize();
-				load();
+				load({period: $.url().fparam('period'), organisation: $.url().fparam('organisation'), level: $.url().fparam('level'), target: $.url().fparam('target')});
 				
 				$('.parameter').bind('click', function() {
-					var newLink = $(this).clone().removeClass('parameter').addClass('selected');
-					$(this).parents('.dropdown').find('.selected').replaceWith(newLink);
-					load();
+					var options = {level: null};
+					var type = $(this).data('type');
+					options[type] = $(this).data(type);
+					load(options);
+					
+					return false;
 				});
 			});
     	</script>

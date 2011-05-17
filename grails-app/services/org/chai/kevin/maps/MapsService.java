@@ -31,12 +31,18 @@ public class MapsService {
 		organisationService.loadParent(organisation);
 		organisationService.getLevel(organisation);
 		
+		if (level != null && level.getLevel() <= organisation.getLevel().getLevel()) {
+			// TODO let's not to this but throw an exception
+			level = null;
+		}
+		
 		if (level == null) {
+			// TODO check this
 			List<OrganisationUnitLevel> levels = organisationService.getChildren(organisation.getLevel());
 			level = levels.iterator().next();
 		}
-		
-		if (target == null) return new Maps(polygons, organisation, organisationService.getChildren(organisation.getLevel()), level);
+
+		if (target == null) return new Maps(period, target, organisation, level, polygons, organisationService.getChildren(organisation.getLevel()));
 		
 		for (Organisation child : organisationService.getChildrenOfLevel(organisation, level)) {
 			organisationService.getLevel(child);
@@ -52,7 +58,7 @@ public class MapsService {
 			polygons.add(new Polygon(child, value));
 		}
 
-		return new Maps(polygons, organisation, organisationService.getChildren(organisation.getLevel()), level);
+		return new Maps(period, target, organisation, level, polygons, organisationService.getChildren(organisation.getLevel()));
 	}
 
 	

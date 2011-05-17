@@ -39,9 +39,9 @@ class MapsController extends AbstractReportController {
 		OrganisationUnitLevel level = getOrganisationUnitLevel()
 		
 		org.chai.kevin.maps.Maps map = mapsService.getMap(period, organisation, level, target);
-
+		
 		if (log.isDebugEnabled()) log.debug("displaying map: "+map)		
-		render(contentType:"text/json", text:'{"result":"success","map":'+map.toJson()+"}")
+		render(contentType:"text/json", text:'{"result":"success","map":'+map.toJson()+'}');
 	}
-	
+
 }

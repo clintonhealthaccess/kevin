@@ -5,7 +5,9 @@ class UrlMappings {
 		
 		"/cost/$action/$period?/$objective?/$organisation?"(controller:"cost")
 		
-		"/maps/$action/$period?/$target?/$organisation?"(controller:"maps")
+		"/maps/view"(controller:"maps", action:"view")
+		
+		"/maps/map/$period?/$organisation?/$level?/$target?"(controller:"maps", action: "map")
 		
 		"/$controller/$action?/$id?"{
 			constraints {

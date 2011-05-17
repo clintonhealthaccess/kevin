@@ -4,7 +4,7 @@
 		${organisation.name}
 	</g:if>
 	<g:else>
-		<a class="parameter" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:params)}">
+		<a class="parameter" data-type="organisation" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:params)}">
 			${organisation.name}
 		</a>
 	</g:else>

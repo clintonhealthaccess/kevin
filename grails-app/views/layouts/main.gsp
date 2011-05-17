@@ -28,6 +28,7 @@
 	<g:javascript src="jquery/fieldselection/jquery.fieldselection.js" />
 	<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
 	<g:javascript src="jquery/periodicalupdater/jquery.periodicalupdater.js" />
+	<g:javascript src="jquery/url/jquery.url.js" />
 
 	<g:javascript library="application" />
 	
@@ -265,13 +266,17 @@
 		
 		$(document).ready(function() {
 			/**
-			 * date drop-down
+			 * drop-down menus
 			 **/
 			$(".dropdown .selected").live('click', function() {
 				$(this).parent(".dropdown").find("div.dropdown-list").toggle();
 				return false;
 			});
 
+			$(".dropdown-list a").bind('click', function() {
+				$(this).parents('.dropdown-list').hide();
+			});
+			
 			$(document).bind('click', function(e) {
 				var clicked = e.target;
 				$(".dropdown a").each(function(){

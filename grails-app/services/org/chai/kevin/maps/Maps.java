@@ -5,27 +5,45 @@ import java.util.List;
 import org.chai.kevin.Organisation;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
+import org.hisp.dhis.period.Period;
 
 public class Maps {
 
-	private List<Polygon> polygons;
-	private Organisation selectedOrganisation;
-	private List<OrganisationUnitLevel> levels;
-	private OrganisationUnitLevel selectedLevel;
+	private Organisation organisation;
+	private OrganisationUnitLevel level;
+	private Period period;
+	private MapsTarget target;
 	
-	public Maps(List<Polygon> polygons, Organisation selectedOrganisation, List<OrganisationUnitLevel> levels, OrganisationUnitLevel selectedLevel) {
+	private List<Polygon> polygons;
+	private List<OrganisationUnitLevel> levels;
+	
+	public Maps(Period period, MapsTarget target, Organisation organisation, OrganisationUnitLevel level, List<Polygon> polygons, List<OrganisationUnitLevel> levels) {
+		this.period = period;
+		this.target = target;
 		this.polygons = polygons;
-		this.selectedOrganisation = selectedOrganisation;
+		this.organisation = organisation;
 		this.levels = levels;
-		this.selectedLevel = selectedLevel;
+		this.level = level;
+	}
+	
+	public Period getPeriod() {
+		return period;
+	}
+	
+	public MapsTarget getTarget() {
+		return target;
+	}
+	
+	public Organisation getOrganisation() {
+		return organisation;
+	}
+	
+	public OrganisationUnitLevel getLevel() {
+		return level;
 	}
 	
 	public List<Polygon> getPolygons() {
 		return polygons;
-	}
-	
-	public Organisation getSelectedOrganisation() {
-		return selectedOrganisation;
 	}
 	
 	
@@ -52,9 +70,19 @@ public class Maps {
 		if (levels.size() != 0) builder.deleteCharAt(builder.length()-1);
 		builder.append("]");
 		builder.append(",");
-		builder.append("\"selectedOrganisation\":"+selectedOrganisation.toJson());
+		builder.append("\"selectedOrganisation\":"+organisation.getId());
 		builder.append(",");
-		builder.append("\"selectedLevel\":"+selectedLevel.getLevel());
+		if (organisation.getOrganisationUnit().getCoordinates() != null) {
+			builder.append("\"selectedCoordinates\":"+organisation.getOrganisationUnit().getCoordinates());
+			builder.append(",");
+		}
+		builder.append("\"selectedLevel\":"+level.getLevel());
+		builder.append(",");
+		builder.append("\"selectedPeriod\":"+period.getId());
+		if (target != null) {
+			builder.append(",");
+			builder.append("\"selectedTarget\":"+target.getId());
+		}
 		builder.append("}");
 		return builder.toString();
 	}
