@@ -16,7 +16,9 @@ import org.chai.kevin.OrganisationService;
 import org.hisp.dhis.common.AbstractNameableObject;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 public class CostTableService {
 
 	private final static Log log = LogFactory.getLog(CostTableService.class);

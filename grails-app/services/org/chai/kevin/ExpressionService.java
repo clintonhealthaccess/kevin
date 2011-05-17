@@ -27,7 +27,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.system.util.MathUtils;
 import org.nfunk.jep.JEP;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly=true)
 public class ExpressionService {
 
 	private static final Log log = LogFactory.getLog(ExpressionService.class);

@@ -4,6 +4,7 @@ import org.chai.kevin.Objective;
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
+import org.springframework.transaction.annotation.Transactional;
 
 class PercentageService {
 	

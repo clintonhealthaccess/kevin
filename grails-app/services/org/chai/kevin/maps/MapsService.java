@@ -12,7 +12,9 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly=true)
 public class MapsService {
 
 	private static final Log log = LogFactory.getLog(MapsService.class);

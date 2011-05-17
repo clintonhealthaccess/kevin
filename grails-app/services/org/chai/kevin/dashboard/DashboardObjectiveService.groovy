@@ -5,6 +5,7 @@ import java.util.List;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
+import org.springframework.transaction.annotation.Transactional;
 
 class DashboardObjectiveService {
 

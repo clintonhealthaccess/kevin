@@ -20,6 +20,7 @@ import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 public class DashboardService {
 
 	private Log log = LogFactory.getLog(DashboardService.class);
@@ -31,7 +32,6 @@ public class DashboardService {
 	private ExpressionService expressionService;
 	private PeriodService periodService;
 	
-	@Transactional(readOnly = true)
 	public Dashboard getDashboard(Organisation organisation, DashboardObjective objective, Period period) {
 		organisationService.loadChildren(organisation);
 		for (Organisation child : organisation.getChildren()) {
@@ -51,7 +51,6 @@ public class DashboardService {
 				organisationPath, objectivePath, getValues(organisations, weightedObjectives, period));
 	}
 
-	@Transactional(readOnly = true)
 	public Explanation getExplanation(Organisation organisation, DashboardEntry entry, Period period) {
 		organisationService.loadChildren(organisation);
 		organisationService.loadParent(organisation);
@@ -70,7 +69,6 @@ public class DashboardService {
 		return calculator;
 	}
 
-	@Transactional(readOnly = false)
 	public void refreshDashboard(Organisation organisation, DashboardObjective objective, Period period, ProgressListener listener) {
 		if (log.isInfoEnabled()) log.info("refreshDashboard(organisation="+organisation+", objective="+objective+", period="+period+")");
 		
@@ -97,7 +95,6 @@ public class DashboardService {
 		}
 	}
 	
-	@Transactional(readOnly = false)
 	public void refreshEntireDashboard(ProgressListener listener) {
 		Organisation rootOrganisation = organisationService.getRootOrganisation();
 		Set<DashboardEntry> targets = new HashSet<DashboardEntry>(dashboardObjectiveService.getTargets());

@@ -13,7 +13,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly=true)
 public class OrganisationService {
 	
 	private static final Log log = LogFactory.getLog(OrganisationService.class);
