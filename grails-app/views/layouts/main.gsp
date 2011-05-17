@@ -36,7 +36,7 @@
 <body class="bp two-columns">
 
 	<div id="spinner" class="spinner" style="display: none;">
-		<img src="${resource(dir:'images',file:'spinner.gif')}" alt="${message(code:'spinner.alt',default:'Loading...')}" />
+		<img src="${resource(dir:'images',file:'ajax-loader.gif')}" alt="${message(code:'spinner.alt',default:'Loading...')}" />
 	</div>
 
 	<div id="container" class="">
