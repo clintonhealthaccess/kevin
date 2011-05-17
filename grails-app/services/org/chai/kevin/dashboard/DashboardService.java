@@ -69,6 +69,7 @@ public class DashboardService {
 		return calculator;
 	}
 
+	@Transactional
 	public void refreshDashboard(Organisation organisation, DashboardObjective objective, Period period, ProgressListener listener) {
 		if (log.isInfoEnabled()) log.info("refreshDashboard(organisation="+organisation+", objective="+objective+", period="+period+")");
 		
@@ -95,6 +96,7 @@ public class DashboardService {
 		}
 	}
 	
+	@Transactional
 	public void refreshEntireDashboard(ProgressListener listener) {
 		Organisation rootOrganisation = organisationService.getRootOrganisation();
 		Set<DashboardEntry> targets = new HashSet<DashboardEntry>(dashboardObjectiveService.getTargets());
