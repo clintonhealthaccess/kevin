@@ -2,7 +2,7 @@ package org.chai.kevin
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.hisp.dhis.dataelement.Constant;
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 
 class ExpressionController extends AbstractEntityController {
 
@@ -87,7 +87,7 @@ class ExpressionController extends AbstractEntityController {
 			dataElement = DataElement.get(params['dataElement'])
 		}
 		def enume = null;
-		if (dataElement != null) enume = dataElement.getDetailedEnumType();
+		if (dataElement != null) enume = dataElement.getEnume()
 		
 		if (dataElement == null) {
 			render(contentType:"text/json") {

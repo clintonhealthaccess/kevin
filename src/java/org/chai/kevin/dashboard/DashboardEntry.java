@@ -14,7 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Objective;
+import org.chai.kevin.Translatable;
 import org.chai.kevin.Organisation;
 import org.hibernate.annotations.Cascade;
 import org.hisp.dhis.period.Period;
@@ -22,10 +22,20 @@ import org.hisp.dhis.period.Period;
 @Entity(name="DashboardEntry")
 @Table(name="dhsst_dashboard_entry")
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class DashboardEntry extends Objective {
+public abstract class DashboardEntry extends Translatable {
 
+	private Integer id;
 	private DashboardObjectiveEntry parent;
 	private Boolean root = false;
+	
+	@Id
+	@GeneratedValue
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 	@OneToOne(cascade=CascadeType.REMOVE, targetEntity=DashboardObjectiveEntry.class, mappedBy="entry")
 	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)

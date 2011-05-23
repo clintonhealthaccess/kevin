@@ -16,7 +16,7 @@ import org.chai.kevin.UnitTests;
 import org.chai.kevin.dashboard.DashboardPercentage.Status;
 import org.gmock.WithGMock;
 import org.hisp.dhis.aggregation.AggregationService
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.period.MonthlyPeriodType;
@@ -110,7 +110,7 @@ class PercentageCalculatorSpec extends UnitTests {
 	
 	def "test absent value on target"() {
 		setup:
-		def dataElement = new DataElement(name:"Element 1", shortName: "Element 1", code: "CODE", type: DataElement.VALUE_TYPE_INT, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM)
+		def dataElement = new DataElement(name:"Element 1", shortName: "Element 1", code: "CODE", type: DataElementType.INT, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM)
 		mockDomain(DataElement, [dataElement])
 		def expression = new Expression(name:"Expression Element 1", expression: "["+dataElement.id+"]", denominator: "1", type: ExpressionType.VALUE)
 		mockDomain(Expression, [expression])

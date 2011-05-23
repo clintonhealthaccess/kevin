@@ -1,7 +1,7 @@
 package org.chai.kevin
 
 import org.hisp.dhis.dataelement.Constant;
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 
 import grails.plugin.spock.UnitSpec;
 

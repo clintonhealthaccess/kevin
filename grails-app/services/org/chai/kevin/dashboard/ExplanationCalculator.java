@@ -14,7 +14,7 @@ import org.chai.kevin.Expression;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.dashboard.TargetExplanation.RelevantData;
 import org.hisp.dhis.common.AbstractNameableObject;
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.Period;
@@ -83,11 +83,11 @@ public class ExplanationCalculator extends PercentageCalculator {
 		List<RelevantData> relevantDatas = null;
 		if (organisation.getChildren().size() == 0) {
 			// we calculate the values
-			Map<AbstractNameableObject, Object> valueMap = new LinkedHashMap<AbstractNameableObject, Object>();
+			Map<DataElement, Object> valueMap = new LinkedHashMap<DataElement, Object>();
 			value = getValueForLeafTarget(expression, target, organisation, period, valueMap);
 			
 			relevantDatas = new ArrayList<RelevantData>();
-			for (Entry<AbstractNameableObject, Object> entry : valueMap.entrySet()) {
+			for (Entry<DataElement, Object> entry : valueMap.entrySet()) {
 				relevantDatas.add(new RelevantData(entry.getKey(), entry.getValue()));
 			}
 		}
@@ -105,7 +105,7 @@ public class ExplanationCalculator extends PercentageCalculator {
 		if (log.isDebugEnabled()) log.debug("getHTMLFormula(formula="+formula+")");
 		
 		Set<DataElement> dataElements = expressionService.getDataElementsInExpression(formula);
-		Map<Integer, String> replacement = new HashMap<Integer, String>();
+		Map<Long, String> replacement = new HashMap<Long, String>();
 		for (DataElement dataElement : dataElements) {
 			replacement.put(dataElement.getId(), "<span data-organisation=\""+organisation.getOrganisationUnit().getId()+"\" data-objective=\""+entry.getId()+"\" data-id=\""+dataElement.getId()+"\" class=\"element\" id=\"element-"+organisation.getOrganisationUnit().getId()+"-"+entry.getId()+"-"+dataElement.getId()+"\">["+dataElement.getId()+"]</span>");
 		}

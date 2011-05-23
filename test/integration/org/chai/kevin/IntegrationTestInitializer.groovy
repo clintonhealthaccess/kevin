@@ -14,9 +14,9 @@ import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.hisp.dhis.dataelement.Constant;
-import org.hisp.dhis.dataelement.DataElement;
-import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
-import org.hisp.dhis.datavalue.DataValue;
+import org.chai.kevin.DataElement;
+import org.chai.kevin.DataElement.DataElementType;
+import org.chai.kevin.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.MonthlyPeriodType;
 import org.hisp.dhis.period.Period;
@@ -70,7 +70,7 @@ class IntegrationTestInitializer {
 	}
 	
 	static def createDataElements() {
-		def dataElement = new DataElement(name:"Element 1", shortName: "Element 1", code: "CODE", description: "Description", type: DataElement.VALUE_TYPE_INT, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM)
+		def dataElement = new DataElement(name:"Element 1", shortName: "Element 1", code: "CODE", description: "Description", type: DataElementType.INT)
 		dataElement.save(failOnError: true)
 	}
 	
@@ -78,15 +78,15 @@ class IntegrationTestInitializer {
 		// Data Elements
 		// data value
 		new DataValue(
-			dataElement: DataElement.findByName("Element 1"),
-			period: Period.list()[1],
-			optionCombo: DataElementCategoryOptionCombo.list()[0],
-			source: OrganisationUnit.findByName("Butaro DH"),
+				dataElement: DataElement.findByName("Element 1"),
+				period: Period.list()[1],
+	//			optionCombo: DataElementCategoryOptionCombo.list()[0],
+				source: OrganisationUnit.findByName("Butaro DH"),
 			value: "40",
-			comment: "Comment",
-			storedBy: "StoredBy",
+//			comment: "Comment",
+//			storedBy: "StoredBy",
 			timestamp: new Date(),
-			followup: false,
+//			followup: false,
 		).save(failOnError: true)
 		
 		// Indicators on data elements

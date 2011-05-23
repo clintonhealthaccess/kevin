@@ -2,7 +2,7 @@ package org.hisp.dhis.dataelement
 
 import org.chai.kevin.AbstractEntityController;
 import org.hisp.dhis.dataelement.Constant;
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 
 class ConstantController extends AbstractEntityController {
 	

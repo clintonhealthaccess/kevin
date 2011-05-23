@@ -2,19 +2,17 @@ package org.hisp.dhis
 
 import java.util.Date;
 
+import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
-import org.hisp.dhis.aggregation.AggregationService;
-import org.hisp.dhis.aggregation.impl.cache.AggregationCache;
-import org.hisp.dhis.dataelement.DataElement;
-import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 class AggregationSpec extends IntegrationTests {
 
-	AggregationService aggregationService;
+	ExpressionService expressionService;
 	
 	def setup() {
 		Initializer.createDummyStructure();
@@ -27,13 +25,12 @@ class AggregationSpec extends IntegrationTests {
 	def "call twice in a row"() {
 		
 		when:
+		def period = Period.list()[1]
 		def dataElement = DataElement.findByName(dataElementName)
 		def organisation = OrganisationUnit.findByName(organisationName)
 		
 		then:
-		aggregationService.getNonAggregatedDataValue(dataElement, null, Initializer.mar011, Initializer.mar311, organisation) == value+""
-		aggregationService.getAggregatedDataValue(dataElement, null, Initializer.mar011, Initializer.mar311, organisation) == new Double(value)
-
+		expressionService.getDataValue(dataElement, period, organisation) == value+""
 				
 		where:
 		dataElementName	| organisationName	| value

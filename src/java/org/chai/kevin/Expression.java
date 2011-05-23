@@ -10,13 +10,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity(name="Expression")
 @Table(name="dhsst_expression", uniqueConstraints={@UniqueConstraint(columnNames="name")})
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Expression {
 
-
 	public static enum ExpressionType {VALUE("VALUE"), STRING("STRING"), BOOL("BOOL"), ENUM("ENUM");
-
 		final String value;
 
 		ExpressionType(String value) { this.value = value; }

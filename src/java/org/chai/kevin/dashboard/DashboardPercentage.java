@@ -15,9 +15,10 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Gradient;
-import org.chai.kevin.Objective;
+import org.chai.kevin.Translatable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -70,7 +71,9 @@ public class DashboardPercentage extends Gradient {
 	public DashboardPercentage(Double value, OrganisationUnit organisationUnit, DashboardEntry entry, Period period) {
 		assert value != null;
 		
-		this.value = value;
+		if (value.isNaN()) this.value = -1d;
+		else this.value = value;
+		
 		this.status = Status.VALID;
 
 		this.organisationUnit = organisationUnit;
@@ -85,7 +88,9 @@ public class DashboardPercentage extends Gradient {
 	public DashboardPercentage(Double value, OrganisationUnit organisationUnit, DashboardEntry entry, Period period, Boolean hasMissingValueStatus, Boolean hasMissingExpressionStatus) {
 		assert value != null;
 		
-		this.value = value;
+		if (value.isNaN()) this.value = -1d;
+		else this.value = value;
+		
 		this.status = Status.VALID;
 
 		this.organisationUnit = organisationUnit;
@@ -103,16 +108,19 @@ public class DashboardPercentage extends Gradient {
 		return id;
 	}
 
+	@NaturalId
 	@ManyToOne(targetEntity=DashboardEntry.class, optional=false)
 	public DashboardEntry getEntry() {
 		return entry;
 	}
 	
+	@NaturalId
 	@ManyToOne(targetEntity=Period.class, optional=false)
 	public Period getPeriod() {
 		return period;
 	}
 	
+	@NaturalId
 	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false)
 	public OrganisationUnit getOrganisationUnit() {
 		return organisationUnit;

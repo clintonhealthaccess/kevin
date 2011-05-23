@@ -54,8 +54,8 @@
 			ref="org.hisp.dhis.importexport.mapping.ObjectMappingGenerator" />
 		<property name="importObjectStore" ref="org.hisp.dhis.importexport.ImportObjectStore" />
 		<property name="categoryService"
-			ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
-		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+			ref="org.chai.kevin.DataElementCategoryService" />
+		<property name="dataElementService" ref="org.chai.kevin.DataElementService" />
 		<property name="dataDictionaryService" ref="org.hisp.dhis.datadictionary.DataDictionaryService" />
 		<property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
 		<property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />
@@ -83,7 +83,7 @@
 			ref="org.hisp.dhis.importexport.ImportDataValueService" />
 		<property name="importObjectManager"
 			ref="org.hisp.dhis.importexport.ImportObjectManager" />
-		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+		<property name="dataElementService" ref="org.chai.kevin.DataElementService" />
 		<property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
 		<property name="dataDictionaryService"
 			ref="org.hisp.dhis.datadictionary.DataDictionaryService" />
@@ -98,7 +98,7 @@
 <!--		<property name="reportTableService" ref="org.hisp.dhis.reporttable.ReportTableService" />-->
 <!--		<property name="chartService" ref="org.hisp.dhis.chart.ChartService"/>-->
 <!--		<property name="olapURLService" ref="org.hisp.dhis.olap.OlapURLService" />-->
-		<property name="dataValueService" ref="org.hisp.dhis.datavalue.DataValueService" />
+		<property name="dataValueService" ref="org.chai.kevin.DataValueService" />
 <!--		<property name="cacheManager" ref="cacheManager"/>-->
 	</bean>
 
@@ -123,8 +123,8 @@
 	<bean id="org.hisp.dhis.importexport.Dhis14XMLImportService"
 		class="org.hisp.dhis.importexport.dhis14.xml.importer.DefaultDhis14XMLImportService">
 		<property name="categoryService"
-			ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
-		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+			ref="org.chai.kevin.DataElementCategoryService" />
+		<property name="dataElementService" ref="org.chai.kevin.DataElementService" />
 		<property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
 		<property name="periodService" ref="org.hisp.dhis.period.PeriodService" />
 		<property name="organisationUnitService"
@@ -162,9 +162,9 @@
 <!--		<property name="importObjectService"-->
 <!--			ref="org.hisp.dhis.importexport.ImportObjectService" />-->
 <!--		<property name="expressionService" ref="org.hisp.dhis.expression.ExpressionService" />-->
-<!--		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />-->
+<!--		<property name="dataElementService" ref="org.chai.kevin.DataElementService" />-->
 <!--		<property name="categoryService"-->
-<!--			ref="org.hisp.dhis.dataelement.DataElementCategoryService" />-->
+<!--			ref="org.chai.kevin.DataElementCategoryService" />-->
 <!--		<property name="periodService" ref="org.hisp.dhis.period.PeriodService" />-->
 <!--		<property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />-->
 <!--		<property name="organisationUnitService"-->
@@ -214,11 +214,11 @@
         		  ref="sessionFactory" /> 
         <property name="importObjectService"
                   ref="org.hisp.dhis.importexport.ImportObjectService" />
-        <property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+        <property name="dataElementService" ref="org.chai.kevin.DataElementService" />
         <property name="conceptService"
                   ref="org.hisp.dhis.concept.ConceptService" />
         <property name="categoryService"
-                  ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
+                  ref="org.chai.kevin.DataElementCategoryService" />
         <property name="indicatorService" ref="org.hisp.dhis.indicator.IndicatorService" />
         <property name="dataDictionaryService"
                   ref="org.hisp.dhis.datadictionary.DataDictionaryService" />
@@ -276,7 +276,7 @@
 		<property name="batchHandlerFactory" ref="batchHandlerFactory"/>
 		<property name="periodStore" ref="org.hisp.dhis.period.PeriodStore" />
 		<property name="categoryService"
-			ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
+			ref="org.chai.kevin.DataElementCategoryService" />
 	</bean>
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -287,7 +287,7 @@
 <!--		class="org.hisp.dhis.importexport.locking.DefaultLockingManager">-->
 <!--		<property name="objectMappingGenerator"-->
 <!--			ref="org.hisp.dhis.importexport.mapping.ObjectMappingGenerator" />-->
-<!--		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />-->
+<!--		<property name="dataElementService" ref="org.chai.kevin.DataElementService" />-->
 <!--		<property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />-->
 <!--		<property name="periodService" ref="org.hisp.dhis.period.PeriodService" />-->
 <!--		<property name="organisationUnitService"-->
@@ -297,11 +297,11 @@
 
   <bean id="org.hisp.dhis.importexport.dxf2.service.DataValueSetService" 
     class="org.hisp.dhis.importexport.dxf2.service.DataValueSetService">
-    <property name="categoryService" ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
+    <property name="categoryService" ref="org.chai.kevin.DataElementCategoryService" />
     <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
-    <property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+    <property name="dataElementService" ref="org.chai.kevin.DataElementService" />
     <property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />
-    <property name="dataValueService" ref="org.hisp.dhis.datavalue.DataValueService" />
+    <property name="dataValueService" ref="org.chai.kevin.DataValueService" />
     <property name="registrationService" ref="org.hisp.dhis.dataset.CompleteDataSetRegistrationService" />
     <property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
   </bean>

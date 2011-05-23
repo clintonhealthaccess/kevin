@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.DataElement;
 import org.chai.kevin.Expression;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.GroupCollection;
@@ -45,7 +46,7 @@ public class PercentageCalculator {
 		}
 		else {
 			if (isValid(matchingCalculation)) {
-				percentage = getValueForLeafTarget(matchingCalculation.getExpression(), target, organisation, period, new HashMap<AbstractNameableObject, Object>());
+				percentage = getValueForLeafTarget(matchingCalculation.getExpression(), target, organisation, period, new HashMap<DataElement, Object>());
 			}
 			else {
 				percentage = getValueForNonLeafTarget(target, organisation, period, new HashMap<Organisation, DashboardPercentage>());
@@ -91,7 +92,7 @@ public class PercentageCalculator {
 		return new DashboardPercentage(sum / totalWeight, organisation.getOrganisationUnit(), objective, period, hasMissingValue, hasMissingExpression);
 	}
 
-	protected DashboardPercentage getValueForLeafTarget(Expression expression, DashboardTarget target, Organisation organisation, Period period, Map<AbstractNameableObject, Object> values) {
+	protected DashboardPercentage getValueForLeafTarget(Expression expression, DashboardTarget target, Organisation organisation, Period period, Map<DataElement, Object> values) {
 		Double value = (Double)expressionService.getValue(expression, period, organisation, values);
 		
 		if (ExpressionService.hasNullValues(values.values())) {

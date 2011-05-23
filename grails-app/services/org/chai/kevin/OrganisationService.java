@@ -46,22 +46,21 @@ public class OrganisationService {
 		return result;
 	}
 	
-	public List<OrganisationUnitLevel> getChildren(OrganisationUnitLevel level) {
+	public List<OrganisationUnitLevel> getChildren(int level) {
 		List<OrganisationUnitLevel> result = new ArrayList<OrganisationUnitLevel>();
 		
 		for (OrganisationUnitLevel organisationUnitLevel : organisationUnitService.getOrganisationUnitLevels()) {
-			if (organisationUnitLevel.getLevel() > level.getLevel() && !skipLevels.contains(organisationUnitLevel.getLevel())) {
+			if (organisationUnitLevel.getLevel() > level && !skipLevels.contains(organisationUnitLevel.getLevel())) {
 				result.add(organisationUnitLevel);
 			}
 		}
 		return result;
 	}
 	
-	public OrganisationUnitLevel getLevel(Organisation organisation) {
+	public int getLevel(Organisation organisation) {
 		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation.getOrganisationUnit());
-		OrganisationUnitLevel organisationUnitLevel = organisationUnitService.getOrganisationUnitLevelByLevel(level);
-		organisation.setLevel(organisationUnitLevel);
-		return organisationUnitLevel;
+		organisation.setLevel(level);
+		return level;
 	}
 	
 	public List<Organisation> getOrganisationsOfLevel(int level) {
@@ -106,7 +105,7 @@ public class OrganisationService {
 	
 	private void loadUntilLevel(Organisation organisation, int level) {
 		getLevel(organisation);
-		if (organisation.getLevel().getLevel() < level) {
+		if (organisation.getLevel() < level) {
 			loadChildren(organisation);
 			for (Organisation child : organisation.getChildren()) {
 				loadUntilLevel(child, level);
@@ -136,8 +135,8 @@ public class OrganisationService {
 		return organisationUnit.getParent();
 	}
 	
-	public List<Organisation> getChildrenOfLevel(Organisation organisation, OrganisationUnitLevel level) {
-		List<OrganisationUnit> children = getChildrenOfLevel(organisation.getOrganisationUnit(), level.getLevel());
+	public List<Organisation> getChildrenOfLevel(Organisation organisation, int level) {
+		List<OrganisationUnit> children = getChildrenOfLevel(organisation.getOrganisationUnit(), level);
 		List<Organisation> result = new ArrayList<Organisation>();
 		for (OrganisationUnit child : children) {
 			result.add(createOrganisation(child));
@@ -145,15 +144,21 @@ public class OrganisationService {
 		return result;
 	}
 	
-	private List<OrganisationUnit> getChildrenOfLevel(OrganisationUnit organisation, int level) {
+	private List<OrganisationUnit> getChildrenOfLevel(OrganisationUnit organisation, final int level) {
 		List<OrganisationUnit> result = new ArrayList<OrganisationUnit>();
-		for (OrganisationUnit child : organisation.getChildren()) {
-			int childLevel = organisationUnitService.getLevelOfOrganisationUnit(child);
-			if (level == childLevel) {
-				result.add(child);
-			}
-			else {
-				result.addAll(getChildrenOfLevel(child, level));
+		if (organisationUnitService.getLevelOfOrganisationUnit(organisation) == level) {
+			result.add(organisation);
+		}
+		else {
+			int childLevel = organisationUnitService.getLevelOfOrganisationUnit(organisation);
+			// we optimize by assuming that the level of the children is <level of parent> + 1
+			for (OrganisationUnit child : organisation.getChildren()) {
+				if (level == childLevel+1) {
+					result.add(child);
+				}
+				else {
+					result.addAll(getChildrenOfLevel(child, level));
+				}
 			}
 		}
 		return result;
@@ -161,9 +166,10 @@ public class OrganisationService {
 	
 	private List<OrganisationUnit> getChildren(OrganisationUnit organisation) {
 		List<OrganisationUnit> result = new ArrayList<OrganisationUnit>();
+		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation);
 		for (OrganisationUnit child : organisation.getChildren()) {
-			int level = organisationUnitService.getLevelOfOrganisationUnit(child);
-			if (skipLevels.contains(level)) {
+			// we optimize by assuming that the level of the children is <level of parent> + 1
+			if (skipLevels.contains(level+1)) {
 				if (log.isInfoEnabled()) log.info("skipping child: "+child+" of level: "+level);
 				result.addAll(getChildren(child));
 			}

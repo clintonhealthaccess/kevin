@@ -11,22 +11,22 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
-        grailsPlugins()
-        grailsHome()
-        grailsCentral()
+//        grailsPlugins()
+//        grailsHome()
+//        grailsCentral()
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
-        mavenLocal()
-        mavenCentral()
+//        mavenLocal()
+//        mavenCentral()
 //        mavenRepo "http://snapshots.repository.codehaus.org"
 //        mavenRepo "http://repository.codehaus.org"
 //        mavenRepo "http://download.java.net/maven/2/"
 //        mavenRepo "http://mirrors.ibiblio.org/pub/mirrors/maven2/"
 //        mavenRepo "http://repository.jboss.org/nexus/"
-		mavenRepo "https://maven.nuxeo.org/nexus/"
-        mavenRepo "http://www.intalio.org/public/maven2/"
-		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
+//		mavenRepo "https://maven.nuxeo.org/nexus/"
+//        mavenRepo "http://www.intalio.org/public/maven2/"
+//		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 
 	/**
 	 * Configure our resolver.
@@ -45,7 +45,10 @@ grails.project.dependency.resolution = {
 		compile ('org.aspectj:aspectjweaver:1.6.8')
 		compile ('javassist:javassist:3.11.0.GA')
 		
-		compile ('org.hisp.dhis:dhis-service-core:2.2-SNAPSHOT') {
+		compile ('org.hisp.dhis:dhis-api:2.3-SNAPSHOT') {
+			excludes "xml-apis", "xmlParserAPIs"
+		}
+		compile ('org.hisp.dhis:dhis-service-core:2.3-SNAPSHOT') {
 			excludes "xml-apis", "xmlParserAPIs",
 			         "hibernate-core",
 					 "hibernate-annotations",
@@ -55,10 +58,7 @@ grails.project.dependency.resolution = {
 					 //"dhis-support-jdbc"
 					 //"dhis-support-system"
 		}
-		compile ('org.hisp.dhis:dhis-service-aggregationengine-default:2.2-SNAPSHOT')
-		compile ('org.hisp.dhis:dhis-api:2.2-SNAPSHOT') {
-			excludes "xml-apis", "xmlParserAPIs"
-		}
+//		compile ('org.hisp.dhis:dhis-service-aggregationengine-default:2.2-SNAPSHOT')
 				
 		compile( "org.quartz-scheduler:quartz:1.8.4" ) {
 			excludes "slf4j-api"

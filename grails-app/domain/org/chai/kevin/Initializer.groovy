@@ -1,6 +1,8 @@
 package org.chai.kevin
 
 import java.util.Date;
+
+import org.chai.kevin.DataElement.DataElementType;
 import org.chai.kevin.Expression.ExpressionType;
 import org.chai.kevin.cost.CostObjective;
 import org.chai.kevin.cost.CostRampUp;
@@ -12,16 +14,14 @@ import org.chai.kevin.dashboard.DashboardCalculation;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.dsr.DsrObjective;
+import org.chai.kevin.dsr.DsrTarget;
 import org.hisp.dhis.dataelement.Constant;
-import org.hisp.dhis.dataelement.DataElement;
-import org.hisp.dhis.dataelement.DataElementCategory;
-import org.hisp.dhis.dataelement.DataElementCategoryCombo;
-import org.hisp.dhis.dataelement.DataElementCategoryOption;
-import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
-import org.hisp.dhis.dataelement.Enum;
-import org.hisp.dhis.dataelement.EnumOption;
+import org.chai.kevin.DataElement;
+import org.chai.kevin.Enum;
+import org.chai.kevin.EnumOption;
 import org.hisp.dhis.dataset.DataSet;
-import org.hisp.dhis.datavalue.DataValue;
+import org.chai.kevin.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
@@ -56,20 +56,20 @@ class Initializer {
 			period2.save(failOnError: true)
 		}
 		
-		if (!DataElementCategory.count()) {
-			// Categories
-			def categoryOption = new DataElementCategoryOption(name: DataElementCategoryOption.DEFAULT_NAME)
-			categoryOption.save(failOnError: true)
-			def category = new DataElementCategory( name: DataElementCategory.DEFAULT_NAME )
-			category.categoryOptions = [categoryOption]
-			category.save(failOnError: true)
-			def categoryCombo = new DataElementCategoryCombo(name: DataElementCategoryCombo.DEFAULT_CATEGORY_COMBO_NAME)
-			categoryCombo.categories = [category]
-			categoryCombo.save(failOnError: true)
-			def categoryOptionCombo = new DataElementCategoryOptionCombo(categoryCombo: categoryCombo)
-			categoryOption.categoryOptionCombos = [categoryOptionCombo]
-			categoryOptionCombo.save(failOnError: true)
-		}
+//		if (!DataElementCategory.count()) {
+//			// Categories
+//			def categoryOption = new DataElementCategoryOption(name: DataElementCategoryOption.DEFAULT_NAME)
+//			categoryOption.save(failOnError: true)
+//			def category = new DataElementCategory( name: DataElementCategory.DEFAULT_NAME )
+//			category.categoryOptions = [categoryOption]
+//			category.save(failOnError: true)
+//			def categoryCombo = new DataElementCategoryCombo(name: DataElementCategoryCombo.DEFAULT_CATEGORY_COMBO_NAME)
+//			categoryCombo.categories = [category]
+//			categoryCombo.save(failOnError: true)
+//			def categoryOptionCombo = new DataElementCategoryOptionCombo(categoryCombo: categoryCombo)
+//			categoryOption.categoryOptionCombos = [categoryOptionCombo]
+//			categoryOptionCombo.save(failOnError: true)
+//		}
 		
 		if (!OrganisationUnit.count()) {	
 			// organisation level
@@ -135,62 +135,62 @@ class Initializer {
 		
 		if (!DataElement.count()) {
 			// Data Elements
-			def dataElement1 = new DataElement(name:"Element 1", shortName: "Element 1", code:"CODE1", type: DataElement.VALUE_TYPE_INT, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM)
-			def dataElement2 = new DataElement(name:"Element 2", shortName: "Element 2", code:"CODE2", type: DataElement.VALUE_TYPE_INT, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM)
-			def dataElement3 = new DataElement(name:"Element 3", shortName: "Element 3", code:"CODE3", type: DataElement.VALUE_TYPE_ENUM, enumType: Enum.findByName('Enum 1'), aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM)
+			def dataElement1 = new DataElement(name:"Element 1", shortName: "Element 1", code:"CODE1", type: DataElementType.INT)
+			def dataElement2 = new DataElement(name:"Element 2", shortName: "Element 2", code:"CODE2", type: DataElementType.INT)
+			def dataElement3 = new DataElement(name:"Element 3", shortName: "Element 3", code:"CODE3", type: DataElementType.ENUM, enumType: Enum.findByName('Enum 1'))
 			// Data Sets
-			def dataSet1 = new DataSet(name:"Dataset 1", shortName: "Dataset 1", code:"DATASET1", periodType: MonthlyPeriodType.list()[0])
-			def dataSet2 = new DataSet(name:"Dataset 2", shortName: "Dataset 2", code:"DATASET2", periodType: MonthlyPeriodType.list()[0])
+//			def dataSet1 = new DataSet(name:"Dataset 1", shortName: "Dataset 1", code:"DATASET1", periodType: MonthlyPeriodType.list()[0])
+//			def dataSet2 = new DataSet(name:"Dataset 2", shortName: "Dataset 2", code:"DATASET2", periodType: MonthlyPeriodType.list()[0])
 	
-			dataElement1.dataSets = [dataSet1]
-			dataElement2.dataSets = [dataSet2]
-			dataSet1.dataElements.add dataElement1
-			dataSet2.dataElements.add dataElement2
+//			dataElement1.dataSets = [dataSet1]
+//			dataElement2.dataSets = [dataSet2]
+//			dataSet1.dataElements.add dataElement1
+//			dataSet2.dataElements.add dataElement2
 			dataElement1.save(failOnError: true)
 			dataElement2.save(failOnError: true)
-			dataSet1.save(failOnError: true)
-			dataSet2.save(failOnError: true)
+//			dataSet1.save(failOnError: true)
+//			dataSet2.save(failOnError: true)
 			
 			dataElement3.save(failOnError: true)
 			
 			// data value
 			new DataValue(
-				dataElement: DataElement.findByName("Element 1"),
-				period: Period.list()[1],
-				optionCombo: DataElementCategoryOptionCombo.list()[0],
-				source: OrganisationUnit.findByName("Butaro DH"),
+					dataElement: DataElement.findByName("Element 1"),
+					period: Period.list()[1],
+	//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					source: OrganisationUnit.findByName("Butaro DH"),
 				value: "30",
-				comment: "Comment",
-				storedBy: "StoredBy",
+//				comment: "Comment",
+//				storedBy: "StoredBy",
 				timestamp: new Date(),
-				followup: false,
+//				followup: false,
 			).save(failOnError: true)
 	
 			
 			// data value
 			new DataValue(
-				dataElement: DataElement.findByName("Element 1"),
-				period: Period.list()[1],
-				optionCombo: DataElementCategoryOptionCombo.list()[0],
-				source: OrganisationUnit.findByName("Kivuye HC"),
-				value: "40",
-				comment: "Comment",
-				storedBy: "StoredBy",
+					dataElement: DataElement.findByName("Element 1"),
+					period: Period.list()[1],
+	//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					source: OrganisationUnit.findByName("Kivuye HC"),
+					value: "40",
+//				comment: "Comment",
+//				storedBy: "StoredBy",
 				timestamp: new Date(),
-				followup: false,
+//				followup: false,
 			).save(failOnError: true)
 	
 			// data value
 			new DataValue(
-				dataElement: DataElement.findByName("Element 3"),
-				period: Period.list()[1],
-				optionCombo: DataElementCategoryOptionCombo.list()[0],
-				source: OrganisationUnit.findByName("Kivuye HC"),
+					dataElement: DataElement.findByName("Element 3"),
+					period: Period.list()[1],
+	//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					source: OrganisationUnit.findByName("Kivuye HC"),
 				value: "value1",
-				comment: "Comment",
-				storedBy: "StoredBy",
+//				comment: "Comment",
+//				storedBy: "StoredBy",
 				timestamp: new Date(),
-				followup: false,
+//				followup: false,
 			).save(failOnError: true)
 		}
 		
@@ -361,18 +361,61 @@ class Initializer {
 		}
 	}
 	
-	static def createUsers() {
-		// users
-		if (!User.count()) {
-			new User(surname: "admin", firstName: "admin").save(failOnError: true)
-		}
-		if (!UserAuthorityGroup.count()) {
-			new UserAuthorityGroup(name: "Superuser", authorities: ["ALL"]).save(failOnError: true)
-		}
-		if (!UserCredentials.count()) {
-			new UserCredentials(user: User.findBySurname("admin"), userAuthorityGroups: [UserAuthorityGroup.findByName("Superuser")],username: "admin", password: "48e8f1207baef1ef7fe478a57d19f2e5").save(failOnError: true)
-		}
+	static def createDsr() {
+		if (!DsrTarget.count()) {
+			new DsrTarget(
+					name: "Accountant", description: "Accountant",
+					expression: Expression.findByName("Constant 10"), category:" "
+					).save(failOnError:true)
+	
+			new DsrTarget(
+					name: "Days Of Nurse Training", description: "Days Of Nurse Training",
+					expression: Expression.findByName("Constant 20"), category:" "
+					).save(failOnError:true)
+	
+			new DsrTarget(
+					name:"A1", description: "A1",
+					expression: Expression.findByName("Constant 10"), category: "Nurses"
+					).save(failOnError:true)
+	
+			new DsrTarget(
+					name:"A2", description: "A2",
+					expression: Expression.findByName("Constant 20"), category: "Nurses"
+					).save(failOnError:true)
+	
+			new DsrTarget(
+					name:"A3", description:"A3",
+					expression: Expression.findByName("Constant 10"), category: "Nurses"
+					).save(failOnError:true)
+	
+			new DsrTarget(
+					name:"Testing Category", description:"Testing Category",
+					expression: Expression.findByName("Constant 20"), category: " "
+					).save(failOnError:true)
+	
+			def hmr = new DsrObjective(name: "Human Resources", description: "Human Resources")
+			hmr.addTarget(DsrTarget.findByName("Accountant"));
+			hmr.addTarget(DsrTarget.findByName("Days Of Nurse Training"));
+			hmr.addTarget(DsrTarget.findByName("A1"));
+			hmr.addTarget(DsrTarget.findByName("A2"));
+			hmr.addTarget(DsrTarget.findByName("A3"));
+			hmr.addTarget(DsrTarget.findByName("Testing Category"));
+			hmr.save(failOnError:true)
+		}	
 	}
+	
+//	static def createUsers() {
+//		// users
+//		if (!User.count()) {
+//			new User(surname: "admin", firstName: "admin").save(failOnError: true)
+//		}
+//		if (!UserAuthorityGroup.count()) {
+//			new UserAuthorityGroup(name: "Superuser", authorities: ["ALL"]).save(failOnError: true)
+//		}
+//		if (!UserCredentials.count()) {
+//			new UserCredentials(user: User.findBySurname("admin"), userAuthorityGroups: [UserAuthorityGroup.findByName("Superuser")],username: "admin", password: "48e8f1207baef1ef7fe478a57d19f2e5").save(failOnError: true)
+//		}
+//	}
 	
 	static def createRootObjective() {
 		// users

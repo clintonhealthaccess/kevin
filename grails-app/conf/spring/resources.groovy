@@ -1,5 +1,6 @@
 import grails.util.GrailsUtil;
 
+import org.chai.kevin.DataValueService;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.cost.CostTableService;
@@ -7,8 +8,11 @@ import org.chai.kevin.dashboard.DashboardController;
 import org.chai.kevin.dashboard.DashboardService;
 import org.chai.kevin.dashboard.ExplanationCalculator;
 import org.chai.kevin.dashboard.PercentageCalculator;
+import org.chai.kevin.dashboard.PercentageService;
+import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.maps.MapsService;
 import org.hisp.dhis.dataelement.ConstantService;
+import org.springframework.format.number.PercentFormatter;
 
 def defaultSkipLevels;
 def defaultOrganisationlevel;
@@ -26,6 +30,19 @@ switch(GrailsUtil.environment) {
 }
 
 beans = {
+	dsrService(DsrService){
+		expressionService = ref("expressionService")
+		organisationService = ref("organisationService")
+	}
+	
+	percentageService(PercentageService) {
+		sessionFactory = ref("sessionFactory")
+	}
+	
+	dataValueService(DataValueService) {
+		sessionFactory = ref("sessionFactory")
+	}
+	
 	mapsService(MapsService) {
 		expressionService = ref("expressionService")
 		organisationService = ref("organisationService")
@@ -41,10 +58,8 @@ beans = {
 	
 	expressionService(ExpressionService) {
 		constantService = ref("constantService")
-		dataElementService = ref("dataElementService")
-		aggregationService = ref("aggregationService")
-		dataElementCategoryService = ref("dataElementCategoryService")
-		dhisExpressionService = ref("dhisExpressionService")
+		dataService = ref("dataService")
+		dataValueService = ref("dataValueService")
 		organisationService = ref("organisationService")
 		facilityLevel = defaultOrganisationlevel
 	}

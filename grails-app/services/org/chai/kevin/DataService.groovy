@@ -2,13 +2,18 @@ package org.chai.kevin
 
 import org.apache.commons.lang.StringUtils;
 import org.hisp.dhis.dataelement.Constant;
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.dataset.DataSet;
 
 class DataService {
 
     static transactional = true
 
+	DataElement getDataElement(Long id) {
+		return DataElement.get(id)
+	}
+	
+	
 	def searchConstants(String text) {
 		def constants = Constant.list()
 		StringUtils.split(text).each { chunk ->

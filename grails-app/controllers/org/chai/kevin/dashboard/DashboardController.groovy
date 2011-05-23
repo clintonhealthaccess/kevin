@@ -3,7 +3,7 @@ package org.chai.kevin.dashboard
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.GroupCollection;
-import org.chai.kevin.Objective;
+import org.chai.kevin.Translatable;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.ProgressListener;
 import org.chai.kevin.dashboard.Dashboard;
@@ -13,7 +13,7 @@ import org.chai.kevin.dashboard.PercentageCalculator;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.hibernate.cache.ReadWriteCache.Item;
 import org.hisp.dhis.aggregation.AggregationService;
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -33,7 +33,7 @@ class DashboardController extends AbstractReportController {
 	
 	def explain = {
 		Period period = getPeriod()
-		Objective objective = getObjective()
+		Translatable objective = getObjective()
 		Organisation organisation = getOrganisation(false)
 
 		def explanation = dashboardService.getExplanation(organisation, objective, period)
@@ -52,7 +52,7 @@ class DashboardController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)
 		
 		Period period = getPeriod()
-		Objective objective = getStrategicObjective()
+		Translatable objective = getStrategicObjective()
 		Organisation organisation = getOrganisation(true)
 		
 		if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", objective: "+objective.id+", organisation:"+ organisation.id);
@@ -67,7 +67,7 @@ class DashboardController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("dashboard.refresh, params:"+params)
 		
 		Period period = getPeriod()
-		Objective objective = getStrategicObjective()
+		Translatable objective = getStrategicObjective()
 		Organisation organisation = getOrganisation(false)
 		
 		if (log.isInfoEnabled()) log.info("refresh dashboard for period: "+period.id+", objective: "+objective.id+", organisation:"+ organisation.id);
@@ -90,7 +90,7 @@ class DashboardController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("dashboard.progress, params:"+params)
 		
 		Period period = getPeriod()
-		Objective objective = getStrategicObjective()
+		Translatable objective = getStrategicObjective()
 		Organisation organisation = getOrganisation(false)
 		
 		def runningJob = getRunningJob(period, organisation, objective)
@@ -105,7 +105,7 @@ class DashboardController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("dashboard.progress, params:"+params)
 		
 		Period period = getPeriod()
-		Objective objective = getStrategicObjective()
+		Translatable objective = getStrategicObjective()
 		Organisation organisation = getOrganisation(false)
 		
 		def runningJob = getRunningJob(period, organisation, objective)

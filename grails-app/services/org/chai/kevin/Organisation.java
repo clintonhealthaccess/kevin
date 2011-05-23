@@ -10,7 +10,7 @@ public class Organisation {
 	private List<Organisation> children;
 	private OrganisationUnit organisationUnit;
 	private Organisation parent;
-	private OrganisationUnitLevel level;
+	private int level;
 	
 	public Organisation(OrganisationUnit organisationUnit) {
 		this.organisationUnit = organisationUnit;
@@ -44,11 +44,11 @@ public class Organisation {
 		this.parent = parent;
 	}
 	
-	public OrganisationUnitLevel getLevel() {
+	public int getLevel() {
 		return level;
 	}
 	
-	public void setLevel(OrganisationUnitLevel level) {
+	public void setLevel(int level) {
 		this.level = level;
 	}
 	
@@ -91,7 +91,7 @@ public class Organisation {
 			(getOrganisationUnit().getCoordinates()!=null?"\"coordinates\":"+getOrganisationUnit().getCoordinates()+",":"")+
 			"\"id\":"+getOrganisationUnit().getId()+","+
 			(getParent()!=null?"\"parent\":"+getParent().getId()+",":"")+
-			"\"level\":"+getLevel().getLevel()+
+			"\"level\":"+getLevel()+
 		"}";
 	}
 	

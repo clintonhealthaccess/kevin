@@ -5,7 +5,7 @@ import grails.plugin.spock.IntegrationSpec;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 
-class OrganisationServiceSpec extends IntegrationSpec {
+class OrganisationServiceSpec extends IntegrationTests {
 
 	def organisationService;
 	
@@ -41,8 +41,7 @@ class OrganisationServiceSpec extends IntegrationSpec {
 	
 	def "get children level for level"() {
 		when:
-		def organisationUnitLevel = OrganisationUnitLevel.findByLevel(level);
-		def children = organisationService.getChildren(organisationUnitLevel);
+		def children = organisationService.getChildren(level);
 		
 		then:
 		children.containsAll getOrganisationUnitLevels(expectedLevels);
@@ -59,8 +58,7 @@ class OrganisationServiceSpec extends IntegrationSpec {
 	def "get children of level for organisation"() {
 		when:
 		def organisation = getOrganisation(organisationName)
-		def organisationUnitLevel = OrganisationUnitLevel.findByLevel(level)
-		def organisations = organisationService.getChildrenOfLevel(organisation, organisationUnitLevel)
+		def organisations = organisationService.getChildrenOfLevel(organisation, level)
 		
 		then:
 		organisations.containsAll getOrganisations(expectedOrganisations)

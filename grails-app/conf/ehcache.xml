@@ -29,5 +29,54 @@
            maxElementsInMemory="10000"
            timeToIdleSeconds="300"
     />
+    
+    <cache name="org.hisp.dhis.organisationunit.OrganisationUnit.children"
+           maxElementsInMemory="5000"
+           timeToIdleSeconds="300"
+    />
+    
+    <cache name="org.hisp.dhis.period.Period"
+           maxElementsInMemory="10"
+           timeToIdleSeconds="300"
+    />
+    
+    <cache name="org.chai.kevin.DataElement"
+           maxElementsInMemory="5000"
+           timeToIdleSeconds="300"
+    />
+    
+    <cache name="org.chai.kevin.Expression"
+           maxElementsInMemory="5000"
+           timeToIdleSeconds="300"
+    />
+    
+    
+    <cache name="org.hibernate.cache.dashboard.DashboardPercentage"
+           maxElementsInMemory="500000"
+           timeToIdleSeconds="300"    	
+    />
+    
+    <cache name="org.hisp.dhis.organisationunit.OrganisationUnit"
+           maxElementsInMemory="5000"
+           timeToIdleSeconds="300"
+    />
+    
+    <cache name="org.chai.kevin.DataValue"
+           maxElementsInMemory="1000000"
+           timeToIdleSeconds="300"
+    />
+    
+    <!-- not sure it is used -->
+    <cache name="org.hibernate.cache.DataValueQueryCache"
+           maxElementsInMemory="1000000"
+           timeToIdleSeconds="300"
+    />
+    
+    <!-- not sure it is used -->
+    <cache name="org.hibernate.cache.DashboardPercentageQueryCache"
+           maxElementsInMemory="100000"
+           timeToIdleSeconds="300"
+    />
+
 
 </ehcache>

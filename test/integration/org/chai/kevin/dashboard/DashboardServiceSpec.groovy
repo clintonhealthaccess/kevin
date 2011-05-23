@@ -1,10 +1,7 @@
 package org.chai.kevin.dashboard
 
-import org.hisp.dhis.dataelement.DataElementCategoryOption;
-import org.hisp.dhis.dataelement.DataElementCategory;
-
 import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.datavalue.DataValue;
+import org.chai.kevin.DataValue;
 
 import java.util.Date;
 import java.util.Calendar;
@@ -16,10 +13,7 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.ProgressListener;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.dashboard.DashboardPercentage.Status;
-import org.hisp.dhis.dataelement.DataElement;
-import org.hisp.dhis.dataelement.DataElementCategory;
-import org.hisp.dhis.dataelement.DataElementCategoryCombo;
-import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
@@ -120,7 +114,7 @@ class DashboardServiceSpec extends IntegrationTests {
 		
 		
 		then:
-		explanation.organisation == OrganisationUnit.findByName(organisationName)
+		explanation.expressionExplanations[0].organisation == OrganisationUnit.findByName(organisationName)
 		explanation.entry == objective
 		// TODO
 //		explanation.expression.name == expressionName

@@ -5,7 +5,7 @@ import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.Expression;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 import com.sun.tools.javac.code.Type.ForAll;

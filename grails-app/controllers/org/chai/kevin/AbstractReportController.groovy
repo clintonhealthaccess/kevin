@@ -6,6 +6,7 @@ import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveService;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
+import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.maps.MapsTarget;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
@@ -16,7 +17,7 @@ abstract class AbstractReportController {
 	OrganisationService organisationService;
 	
 	protected def getObjective() {
-		Objective objective = null
+		Translatable objective = null
 		try {
 			if (NumberUtils.isNumber(params['objective'])) {
 				objective = DashboardObjective.get(params['objective']);
@@ -82,7 +83,7 @@ abstract class AbstractReportController {
 	}
 	
 	protected def getStrategicObjective() {
-		Objective objective = null
+		Translatable objective = null
 		try {
 			if (NumberUtils.isNumber(params['objective'])) {
 				objective = DashboardObjective.get(params['objective']);
@@ -144,6 +145,25 @@ abstract class AbstractReportController {
 			redirect (controller: '', action: '')
 		}
 		return period
+	}
+	
+	protected def getStrategicObjectiveDsr() {
+		DsrObjective objective = null
+		try {
+			if (NumberUtils.isNumber(params['objective'])) {
+				objective = DsrObjective.get(params['objective']);
+			}
+			
+			if (objective == null) {
+				objective = DsrObjective.list()[0]
+				//objective = dsrObjectiveService.getRootObjective()
+			}
+		}
+		catch (IllegalStateException e) {
+			// TODO
+			redirect (controller: '', action: '')
+		}
+		return objective
 	}
 	
 	

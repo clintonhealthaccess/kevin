@@ -1,30 +1,22 @@
 package org.chai.kevin.cost;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Basic;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.Expression;
-import org.chai.kevin.Objective;
+import org.chai.kevin.Translatable;
 
 @Entity(name="CostTarget")
 @Table(name="dhsst_cost_target")
-public class CostTarget extends Objective implements Comparable<CostTarget> {
+public class CostTarget extends Translatable implements Comparable<CostTarget> {
 
 	public static enum CostType {
 		INVESTMENT("INVESTMENT", "Investment"), OPERATION("OPERATION", "Operation");
@@ -39,6 +31,7 @@ public class CostTarget extends Objective implements Comparable<CostTarget> {
 	    String getKey() { return name(); }
 	};
 	
+	private Integer id;
 	private Expression expression;
 	private Expression expressionEnd;
 	
@@ -48,6 +41,15 @@ public class CostTarget extends Objective implements Comparable<CostTarget> {
 	private String groupUuidString;
 	
 	private Integer order;
+	
+	@Id
+	@GeneratedValue
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 	@ManyToOne(targetEntity=Expression.class, optional=false)
 	public Expression getExpression() {

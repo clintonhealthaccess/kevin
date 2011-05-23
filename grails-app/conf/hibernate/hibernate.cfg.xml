@@ -6,7 +6,13 @@
 <hibernate-configuration>
 
 	<session-factory>
+		<mapping class="org.chai.kevin.Translation"/>
+	
 	    <mapping class="org.chai.kevin.Expression" />
+	    <mapping class="org.chai.kevin.DataElement" />
+	    <mapping class="org.chai.kevin.DataValue" />
+	    <mapping class="org.chai.kevin.Enum" />
+	    <mapping class="org.chai.kevin.EnumOption" />
 	
 	    <mapping class="org.chai.kevin.dashboard.DashboardTarget" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardObjective" />
@@ -19,6 +25,9 @@
 	    <mapping class="org.chai.kevin.cost.CostRampUpYear" />	
 	    <mapping class="org.chai.kevin.cost.CostTarget" />	
 	
+	    <mapping class="org.chai.kevin.dsr.DsrTarget" />
+		<mapping class="org.chai.kevin.dsr.DsrObjective" />	
+	
 	    <mapping class="org.chai.kevin.maps.MapsTarget" />	
 	
 	<!--
@@ -26,24 +35,23 @@
 		<mapping class='com.books.Book' />
 		<mapping resource='someresource.hbm.xml'/>
 	-->
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElement.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementCategoryCombo.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementCategory.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementCategoryOption.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementCategoryOptionCombo.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/concept/hibernate/Concept.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementGroup.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementGroupSet.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataset/hibernate/DataSet.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataset/hibernate/Section.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataentryform/hibernate/DataEntryForm.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/period/hibernate/PeriodType.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementOperand.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/source/hibernate/Source.hbm.xml"/>
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElement.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementCategoryCombo.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementCategory.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementCategoryOption.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementCategoryOptionCombo.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/concept/hibernate/Concept.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementGroup.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementGroupSet.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataset/hibernate/DataSet.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataset/hibernate/Section.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataentryform/hibernate/DataEntryForm.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/DataElementOperand.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/source/hibernate/Source.hbm.xml"/> -->
 		
-		<mapping resource="org/hisp/dhis/user/hibernate/User.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/user/hibernate/UserAuthorityGroup.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/user/hibernate/UserCredentials.hbm.xml"/>
+<!-- 		<mapping resource="org/hisp/dhis/user/hibernate/User.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/user/hibernate/UserAuthorityGroup.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/user/hibernate/UserCredentials.hbm.xml"/> -->
 		
 		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnit.hbm.xml"/>
 		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitGroup.hbm.xml"/>
@@ -56,10 +64,11 @@
 <!-- 		<mapping resource="org/hisp/dhis/indicator/hibernate/IndicatorGroup.hbm.xml"/> -->
 		
 		<mapping resource="org/hisp/dhis/period/hibernate/Period.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/datavalue/hibernate/DataValue.hbm.xml"/>
+		<mapping resource="org/hisp/dhis/period/hibernate/PeriodType.hbm.xml"/>
+<!-- 		<mapping resource="org/hisp/dhis/datavalue/hibernate/DataValue.hbm.xml"/> -->
 		
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/Enum.hbm.xml"/>
-		<mapping resource="org/hisp/dhis/dataelement/hibernate/EnumOption.hbm.xml"/>
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/Enum.hbm.xml"/> -->
+<!-- 		<mapping resource="org/hisp/dhis/dataelement/hibernate/EnumOption.hbm.xml"/> -->
 
 		<mapping resource="org/hisp/dhis/dataelement/hibernate/Constant.hbm.xml"/>
 		

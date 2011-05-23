@@ -142,5 +142,13 @@ class CostTableServiceSpec extends IntegrationTests {
 		
 	}
 	
+	def getTargets(def targets) {
+		def result = []
+		targets.each {
+			result.add CostTarget.findByName(it)
+		}
+		return result
+	}
+	
 
 }

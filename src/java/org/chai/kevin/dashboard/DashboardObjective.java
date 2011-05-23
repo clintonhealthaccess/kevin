@@ -22,7 +22,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Objective;
+import org.chai.kevin.Translatable;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.dashboard.Explanation;
 import org.chai.kevin.dashboard.ExplanationCalculator;

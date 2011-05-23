@@ -1,8 +1,6 @@
 package org.hisp.dhis
 
-import org.hisp.dhis.expression.DefaultExpressionService;
-import org.hisp.dhis.expression.Expression;
-import org.hisp.dhis.expression.ExpressionService;
+import org.chai.kevin.ExpressionService;
 
 import grails.plugin.spock.UnitSpec;
 
@@ -11,7 +9,7 @@ class ExpressionServiceSpec extends UnitSpec {
 	ExpressionService expressionService;
 	
 	def setup() {
-		expressionService = new DefaultExpressionService();
+		expressionService = new ExpressionService();
 	}
 	
 	def "test value"() {

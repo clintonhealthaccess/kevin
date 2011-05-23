@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.chai.kevin.DataElement;
 import org.chai.kevin.Organisation;
 import org.hisp.dhis.common.AbstractNameableObject;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
@@ -45,16 +46,16 @@ public class TargetExplanation extends Explanation {
 
 	public static class RelevantData {
 
-		AbstractNameableObject element;
+		DataElement element;
 		Object value;
 		
-		public RelevantData(AbstractNameableObject element, Object value) {
+		public RelevantData(DataElement element, Object value) {
 			super();
 			this.element = element;
 			this.value = value;
 		}
 		
-		public AbstractNameableObject getElement() {
+		public DataElement getElement() {
 			return element;
 		}
 

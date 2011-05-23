@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.DataElement;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
@@ -42,7 +43,7 @@ public class CostTableService {
 		organisationService.loadChildren(organisation);
 		
 		for (Organisation child : organisation.getChildren()) {
-			if (	organisationService.getLevel(child).getLevel() != new Integer(organisationLevel).intValue() 
+			if (	organisationService.getLevel(child) != new Integer(organisationLevel).intValue() 
 					|| 
 					appliesToOrganisation(target, child, collection)
 			) {
@@ -68,7 +69,7 @@ public class CostTableService {
 	private Map<Integer, Cost> getCost(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
 		organisationService.loadChildren(organisation);
 		
-		if (organisationService.getLevel(organisation).getLevel() == new Integer(organisationLevel).intValue()) {
+		if (organisationService.getLevel(organisation) == new Integer(organisationLevel).intValue()) {
 			return getCostForLeafOrganisation(target, organisation, period, collection);
 		}
 		else {
@@ -100,7 +101,7 @@ public class CostTableService {
 
 			log.debug("target "+target+" applies to organisation "+organisation);
 			List<Integer> years = costService.getYears();
-			Map<AbstractNameableObject, Object> values = new HashMap<AbstractNameableObject, Object>();
+			Map<DataElement, Object> values = new HashMap<DataElement, Object>();
 
 			Double baseCost = (Double)expressionService.getValue(target.getExpression(), period, organisation, values);
 			if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;

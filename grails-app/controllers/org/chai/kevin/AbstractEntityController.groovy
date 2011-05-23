@@ -1,7 +1,7 @@
 package org.chai.kevin
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.dataset.DataSet;
 
 abstract class AbstractEntityController {

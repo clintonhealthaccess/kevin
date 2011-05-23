@@ -1,6 +1,6 @@
 <li>
 	<% params['organisation'] = organisation.id %>
-	<g:if test="${organisation.level.level < displayLinkUntil}">
+	<g:if test="${organisation.level < displayLinkUntil}">
 		${organisation.name}
 	</g:if>
 	<g:else>

@@ -6,7 +6,7 @@ import org.chai.kevin.GroupCollection;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.hisp.dhis.dataelement.DataElement;
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 

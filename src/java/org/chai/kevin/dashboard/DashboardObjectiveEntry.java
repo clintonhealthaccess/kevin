@@ -12,7 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.Objective;
+import org.chai.kevin.Translatable;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
 

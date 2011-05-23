@@ -16,15 +16,11 @@ import org.chai.kevin.dashboard.DashboardCalculation;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.hisp.dhis.dataelement.DataElement;
-import org.hisp.dhis.dataelement.DataElementCategory;
-import org.hisp.dhis.dataelement.DataElementCategoryCombo;
-import org.hisp.dhis.dataelement.DataElementCategoryOption;
-import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
-import org.hisp.dhis.dataelement.Enum;
-import org.hisp.dhis.dataelement.EnumOption;
+import org.chai.kevin.DataElement;
+import org.chai.kevin.Enum;
+import org.chai.kevin.EnumOption;
 import org.hisp.dhis.dataset.DataSet;
-import org.hisp.dhis.datavalue.DataValue;
+import org.chai.kevin.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
@@ -42,17 +38,18 @@ class BootStrap {
 
 		switch (GrailsUtil.environment) {
 		case "production":
-			Initializer.createUsers()
+//			Initializer.createUsers()
 			Initializer.createRootObjective()
 //			Initializer.createIndicatorType()
 			
 			break;
 		case "development":
-			Initializer.createUsers();
+//			Initializer.createUsers();
 			Initializer.createDummyStructure();
 			Initializer.createDataElementsAndExpressions();
 			Initializer.createDashboard();
 			Initializer.createCost();
+			Initializer.createDsr();
 			Initializer.createMaps();
 			
 			break;

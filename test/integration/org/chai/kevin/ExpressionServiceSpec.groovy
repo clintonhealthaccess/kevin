@@ -2,14 +2,12 @@ package org.chai.kevin
 
 import java.util.Date;
 
+import org.chai.kevin.DataElement.DataElementType;
 import org.chai.kevin.Expression.ExpressionType;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Initializer;
-import org.hisp.dhis.aggregation.AggregationService;
-import org.hisp.dhis.aggregation.impl.cache.AggregationCache;
-import org.hisp.dhis.dataelement.DataElement;
-import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
-import org.hisp.dhis.datavalue.DataValue;
+import org.chai.kevin.DataElement;
+import org.chai.kevin.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -25,55 +23,55 @@ class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "aggregated value"() {
 		setup:
-		new DataElement(name:"Element Enum", shortName: "Element Enum", code: "CODEENUM", description: "Description", type: DataElement.VALUE_TYPE_ENUM, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM).save(faileOnError: true)
-		new DataElement(name:"Element Int", shortName: "Element Int", code: "CODEINT", description: "Description", type: DataElement.VALUE_TYPE_INT, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM).save(faileOnError: true)
+		new DataElement(name:"Element Enum", shortName: "Element Enum", code: "CODEENUM", description: "Description", type: DataElementType.ENUM).save(faileOnError: true)
+		new DataElement(name:"Element Int", shortName: "Element Int", code: "CODEINT", description: "Description", type: DataElementType.INT).save(faileOnError: true)
 		
 		new DataValue(
-			dataElement: DataElement.findByName("Element Enum"),
-			period: Period.list()[1],
-			optionCombo: DataElementCategoryOptionCombo.list()[0],
-			source: OrganisationUnit.findByName("Butaro DH"),
+				dataElement: DataElement.findByName("Element Enum"),
+				period: Period.list()[1],
+				source: OrganisationUnit.findByName("Butaro DH"),
+//			optionCombo: DataElementCategoryOptionCombo.list()[0],
 			value: "test",
-			comment: "Comment",
-			storedBy: "StoredBy",
+//			comment: "Comment",
+//			storedBy: "StoredBy",
 			timestamp: new Date(),
-			followup: false,
+//			followup: false,
 		).save(failOnError: true)
 		
 		new DataValue(
-			dataElement: DataElement.findByName("Element Enum"),
-			period: Period.list()[1],
-			optionCombo: DataElementCategoryOptionCombo.list()[0],
-			source: OrganisationUnit.findByName("Kivuye HC"),
+				dataElement: DataElement.findByName("Element Enum"),
+				period: Period.list()[1],
+	//			optionCombo: DataElementCategoryOptionCombo.list()[0],
+				source: OrganisationUnit.findByName("Kivuye HC"),
 			value: "absent",
-			comment: "Comment",
-			storedBy: "StoredBy",
+//			comment: "Comment",
+//			storedBy: "StoredBy",
 			timestamp: new Date(),
-			followup: false,
+//			followup: false,
 		).save(failOnError: true)
 		
 		new DataValue(
-			dataElement: DataElement.findByName("Element Int"),
-			period: Period.list()[1],
-			optionCombo: DataElementCategoryOptionCombo.list()[0],
-			source: OrganisationUnit.findByName("Butaro DH"),
+				dataElement: DataElement.findByName("Element Int"),
+				period: Period.list()[1],
+	//			optionCombo: DataElementCategoryOptionCombo.list()[0],
+				source: OrganisationUnit.findByName("Butaro DH"),
 			value: "20",
-			comment: "Comment",
-			storedBy: "StoredBy",
+//			comment: "Comment",
+//			storedBy: "StoredBy",
 			timestamp: new Date(),
-			followup: false,
+//			followup: false,
 		).save(failOnError: true)
 		
 		new DataValue(
-			dataElement: DataElement.findByName("Element Int"),
-			period: Period.list()[1],
-			optionCombo: DataElementCategoryOptionCombo.list()[0],
-			source: OrganisationUnit.findByName("Kivuye HC"),
+				dataElement: DataElement.findByName("Element Int"),
+				period: Period.list()[1],
+	//			optionCombo: DataElementCategoryOptionCombo.list()[0],
+				source: OrganisationUnit.findByName("Kivuye HC"),
 			value: "10",
-			comment: "Comment",
-			storedBy: "StoredBy",
+//			comment: "Comment",
+//			storedBy: "StoredBy",
 			timestamp: new Date(),
-			followup: false,
+//			followup: false,
 		).save(failOnError: true)
 		
 		new Expression(name:"Enum", expression: "if(\"["+DataElement.findByName("Element Enum").id+"]\"==\"test\",20,10)", type: ExpressionType.VALUE).save(failOnError: true)

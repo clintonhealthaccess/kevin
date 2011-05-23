@@ -30,7 +30,7 @@ public class MapsService {
 		organisationService.loadParent(organisation);
 		organisationService.getLevel(organisation);
 		
-		if (level != null && level.getLevel() <= organisation.getLevel().getLevel()) {
+		if (level != null && level.getLevel() <= organisation.getLevel()) {
 			// TODO let's not to this but throw an exception
 			level = null;
 		}
@@ -43,12 +43,12 @@ public class MapsService {
 
 		if (target == null) return new Maps(period, target, organisation, level, polygons, organisationService.getChildren(organisation.getLevel()));
 		
-		for (Organisation child : organisationService.getChildrenOfLevel(organisation, level)) {
+		for (Organisation child : organisationService.getChildrenOfLevel(organisation, level.getLevel())) {
 			organisationService.getLevel(child);
 			Map values = new HashMap();
 			
 			Double value = expressionService.getAggregatedValue(target.getExpression(), period, child, values);
-//			if (ExpressionService.hasNullValues(values.values())) value = null;
+			if (ExpressionService.hasNullValues(values.values())) value = null;
 			polygons.add(new Polygon(child, value));
 		}
 

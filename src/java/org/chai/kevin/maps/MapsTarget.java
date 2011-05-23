@@ -3,19 +3,31 @@ package org.chai.kevin.maps;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.chai.kevin.Expression;
-import org.chai.kevin.Objective;
+import org.chai.kevin.Translatable;
 import org.hisp.dhis.indicator.Indicator;
 
 @Entity(name="MapsTarget")
 @Table(name="dhsst_maps_target")
-public class MapsTarget extends Objective {
+public class MapsTarget extends Translatable {
 
+	private Integer id;
 	private Expression expression;
 	private Integer order;
+	
+	@Id
+	@GeneratedValue
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 	@ManyToOne(targetEntity=Expression.class, optional=false)
 	public Expression getExpression() {
