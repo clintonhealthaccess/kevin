@@ -18,12 +18,12 @@ class ObjectiveServiceSpec extends IntegrationTests {
     
 	def setup() {
 		
-		def target = new DashboardTarget(name: "target")
+		def target = new DashboardTarget(names:j(["en":"target"]), code:"TARGET")
 		target.save()
-		def objective = new DashboardObjective(name: "objective", objectiveEntries: [])
+		def objective = new DashboardObjective(names:j(["en":"objective"]), code:"OBJ", objectiveEntries: [])
 		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: target, weight: 1, order: 10)
 		objective.save()
-		def root = new DashboardObjective(name: "root", objectiveEntries: [])
+		def root = new DashboardObjective(names:j(["en":"root"]), code:"ROOT", objectiveEntries: [])
 		root.addObjectiveEntry new DashboardObjectiveEntry(entry: objective, weight: 1, order: 10, parent: root)
 		root.save()
 	}
@@ -31,23 +31,23 @@ class ObjectiveServiceSpec extends IntegrationTests {
 	def "get parent"() {
 		
 		when:
-		def child = DashboardTarget.findByName(childName)
+		def child = DashboardTarget.findByCode(childCode)
 		def parent = child.parent.parent
 		
 		then:
 		parent != null
-		parent.name == parentName
+		parent.code == parentCode
 		
 		where:
-		childName	| parentName
-		"target"	| "objective"
+		childCode	| parentCode
+		"TARGET"	| "OBJ"
 //		"objective"	| "root"
 	}
 	
 	def "get parent of root"() {
 		
 		when:
-		def child = DashboardObjective.findByName("root")
+		def child = DashboardObjective.findByCode("ROOT")
 		def parent = child.parent
 		
 		then:
@@ -57,8 +57,8 @@ class ObjectiveServiceSpec extends IntegrationTests {
 	def "exception when multiple parents"() {
 		
 		setup:
-		def root = new DashboardObjective(name: "root2", objectiveEntries: [])
-		root.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByName("objective"), weight: 1, order: 10)
+		def root = new DashboardObjective(names:j(["en":"root2"]), code:"ROOT2", objectiveEntries: [])
+		root.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("OBJ"), weight: 1, order: 10)
 	
 		when:
 		root.save()

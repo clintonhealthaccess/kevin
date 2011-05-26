@@ -2,6 +2,7 @@ package org.chai.kevin.maps;
 
 import grails.validation.ValidationException;
 
+import org.chai.kevin.Expression;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 

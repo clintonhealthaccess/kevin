@@ -29,10 +29,14 @@ class DashboardTargetController extends AbstractObjectiveController {
 	}
 	
 	def bindParams(def objectiveEntry) {
+		log.error(params);
+		
 		// FIXME GRAILS-6388 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6388
 		objectiveEntry.entry.calculations.each() { key, value ->
-			value.expression = params['objective.calculations['+key+'].expression.id'] != 'null'?new Expression():null
+			log.error('entry.calculations['+key+'].expression.id');
+			log.error(params['entry.calculations['+key+'].expression.id'])
+			value.expression = params['entry.calculations['+key+'].expression.id'] != 'null'?new Expression():null
 		}
 		
 		// FIXME GRAILS-6967 makes this necessary

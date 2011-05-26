@@ -21,9 +21,10 @@ class DataService {
 		def constants = Constant.list()
 		StringUtils.split(text).each { chunk ->
 			constants.retainAll { element ->
-				DataService.matches(chunk, element.id+"")
+				DataService.matches(chunk, element.id+"") ||
 				DataService.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
-				DataService.matches(chunk, element.code) 
+				DataService.matches(chunk, element.code) ||
+				DataService.matches(chunk, element.info)
 			}
 		}
 		return constants.sort {it.names[localeService.getCurrentLanguage()]}
@@ -39,7 +40,7 @@ class DataService {
 //		}
 		StringUtils.split(text).each { chunk ->
 			dataElements.retainAll { element ->
-				DataService.matches(chunk, element.id+"")
+				DataService.matches(chunk, element.id+"") ||
 				DataService.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
 				DataService.matches(chunk, element.code)
 			}

@@ -122,7 +122,7 @@ class DomainSpec extends IntegrationTests {
 	def "save objective saves target"() {
 		when:
 		def costObjective = new CostObjective(names:j(["en":"Test Objective"]), code:"TEST")
-		costObjective.addTarget new CostTarget(names:j(["en":"Test Target"]), code:"TEST", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByName("Constant"), costType: CostType.INVESTMENT)
+		costObjective.addTarget new CostTarget(names:j(["en":"Test Target"]), code:"TEST", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT)
 		costObjective.save();
 		
 		then:
@@ -134,8 +134,8 @@ class DomainSpec extends IntegrationTests {
 	def "save target preserves order"() {
 		when:
 		def costObjective = new CostObjective(names:j(["en":"Test Objective"]), code:"TEST")
-		costObjective.addTarget new CostTarget(names:j(["en":"Test 4"]), code:"TEST1", expression: Expression.findByCode("COSNT10"), costRampUp: CostRampUp.findByName("Constant"), costType: CostType.INVESTMENT, order: 4)
-		costObjective.addTarget new CostTarget(names:j(["en":"Test 3"]), code:"TEST2", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByName("Constant"), costType: CostType.INVESTMENT, order: 3)
+		costObjective.addTarget new CostTarget(names:j(["en":"Test 4"]), code:"TEST1", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 4)
+		costObjective.addTarget new CostTarget(names:j(["en":"Test 3"]), code:"TEST2", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 3)
 		costObjective.save();
 		
 		then:
@@ -147,7 +147,7 @@ class DomainSpec extends IntegrationTests {
 	
 	def "save target preserves groups"() {
 		when:
-		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: 'group1', expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByName("Constant"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
+		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: 'group1', expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
 		
 		then:
 		CostService.getGroupUuids(CostTarget.findByCode("TEST").groupUuidString).size() == 1
@@ -155,7 +155,7 @@ class DomainSpec extends IntegrationTests {
 	
 	def "save target erases old groups"() {
 		when:
-		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: 'group1', expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByName("Constant"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
+		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: 'group1', expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
 		CostTarget.findByCode("TEST").groupUuidString = ["group2"]
 		
 		then:

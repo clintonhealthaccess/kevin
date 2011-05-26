@@ -46,7 +46,7 @@ class DashboardServiceSpec extends IntegrationTests {
 		dashboardService.refreshDashboard(currentOrganisation, currentObjective, period, new ProgressListener());
 		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period);
 		def organisation = new Organisation(OrganisationUnit.findByName(organisationName));
-		def objective = DashboardTarget.findByName(objectiveName);
+		def objective = DashboardTarget.findByCode(objectiveName);
 		if (objective == null) objective = DashboardObjective.findByCode(objectiveName);
 		def percentage = dashboard.getPercentage(organisation, objective)
 		
@@ -77,12 +77,12 @@ class DashboardServiceSpec extends IntegrationTests {
 		when:
 		def period = Period.list()[1]
 		def currentOrganisation = new Organisation(OrganisationUnit.findByName("Burera"));
-		def currentObjective = DashboardObjective.findByName("Staffing");
+		def currentObjective = DashboardObjective.findByCode("STAFFING");
 		dashboardService.refreshDashboard(currentOrganisation, currentObjective, period, new ProgressListener());
 		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period);
 		def organisation = new Organisation(OrganisationUnit.findByName("Resasa HC"));
-		def objective = DashboardTarget.findByName("Nurse A1");
-		if (objective == null) objective = DashboardObjective.findByName("Nurse A1");
+		def objective = DashboardTarget.findByCode("A1");
+		if (objective == null) objective = DashboardObjective.findByCode("A1");
 		def explanation = dashboardService.getExplanation(organisation, objective, period);
 		
 		then:
@@ -107,22 +107,22 @@ class DashboardServiceSpec extends IntegrationTests {
 		when:
 		def period = Period.list()[1]
 		def organisation = new Organisation(OrganisationUnit.findByName(organisationName));
-		def objective = DashboardTarget.findByName(objectiveName);
-		def dataElement = DataElement.findByName(elementName);
+		def objective = DashboardTarget.findByCode(objectiveCode);
+		def dataElement = DataElement.findByCode(elementCode);
 		dashboardService.refreshEntireDashboard(new ProgressListener());
 		def explanation = dashboardService.getExplanation(organisation, objective, period);
 		
 		
 		then:
-		explanation.expressionExplanations[0].organisation == OrganisationUnit.findByName(organisationName)
+		explanation.expressionExplanations[0].percentage.organisation == OrganisationUnit.findByName(organisationName)
 		explanation.entry == objective
 		// TODO
 //		explanation.expression.name == expressionName
 //		explanation.htmlFormula == htmlFormula
 		
 		where:
-		organisationName	| objectiveName	| expressionName		| elementName	| htmlFormula
-		"Butaro DH"			| "Target 1"	| "Expression Element 1"| "Element 1"	| "<span class=\"element\" id=\"element-code\">[CODE]</span>"
+		organisationName	| objectiveCode	| expressionName		| elementCode	| htmlFormula
+		"Butaro DH"			| "TARGET1"		| "Expression Element 1"| "CODE"		| "<span class=\"element\" id=\"element-code\">[CODE]</span>"
 		
 	}
 
@@ -131,7 +131,7 @@ class DashboardServiceSpec extends IntegrationTests {
 		when:
 		def period = Period.list()[1]
 		def organisation = new Organisation(OrganisationUnit.findByName(organisationName));
-		def objective = DashboardObjective.findByName(objectiveName);
+		def objective = DashboardObjective.findByCode(objectiveCode);
 		dashboardService.refreshDashboard(organisation, objective, period, new ProgressListener());
 		def dashboard = dashboardService.getDashboard(organisation, objective, period);
 		
@@ -147,34 +147,34 @@ class DashboardServiceSpec extends IntegrationTests {
 		dashboard.objectivePath == getObjectives(expectedObjectivePath)
 		
 		where:
-		organisationName	| objectiveName	| expectedOrganisations			| expectedObjectives		| expectedOrganisationPath	| expectedObjectivePath
-		"Burera"			| "Staffing"	| ["Butaro DH", "Kivuye HC"]	| ["Nurse A1", "Nurse A2"]	| ["Rwanda", "North"]		| ["Strategic Objectives", "Human Resources for Health"]
+		organisationName	| objectiveCode	| expectedOrganisations			| expectedObjectives		| expectedOrganisationPath	| expectedObjectivePath
+		"Burera"			| "STAFFING"	| ["Butaro DH", "Kivuye HC"]	| ["A1", "A2"]	| ["Rwanda", "North"]		| ["Strategic Objectives", "Human Resources for Health"]
 		
 	}
 	
-	def getOrganisations(List<String> names) {
+	def getOrganisations(List<String> codes) {
 		def organisations = []
-		for (String name : names) {
-			organisations.add(new Organisation(OrganisationUnit.findByName(name)));
+		for (String code : codes) {
+			organisations.add(new Organisation(OrganisationUnit.findByCode(code)));
 		}
 		return organisations;
 	}
 	
-	def getObjectives(List<String> names) {
+	def getObjectives(List<String> codes) {
 		def objectives = []
-		for (String name : names) {
-			def objective = DashboardTarget.findByName(name);
-			if (objective == null) objective = DashboardObjective.findByName(name);
+		for (String code : codes) {
+			def objective = DashboardTarget.findByCode(code);
+			if (objective == null) objective = DashboardObjective.findByCode(code);
 			objectives.add(objective)
 		}
 		return objectives;
 	}
 	
-	def getWeightedObjectives(List<String> names) {
+	def getWeightedObjectives(List<String> codes) {
 		def objectives = []
-		for (String name : names) {
-			def objective = DashboardTarget.findByName(name);
-			if (objective == null) objective = DashboardObjective.findByName(name);
+		for (String code : codes) {
+			def objective = DashboardTarget.findByCode(code);
+			if (objective == null) objective = DashboardObjective.findByCode(code);
 			objectives.add(objective.getParent());
 		}
 		return objectives;

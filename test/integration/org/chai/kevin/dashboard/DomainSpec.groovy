@@ -23,7 +23,7 @@ class DomainSpec extends IntegrationTests {
 	def "test calculations"() {
 		expect:
 		DashboardCalculation.count() == 4
-		def nurse = DashboardTarget.findByName("Nurse A1");
+		def nurse = DashboardTarget.findByCode("A1");
 		nurse.save();
 		DashboardCalculation.count() == 4
 	}
@@ -31,36 +31,36 @@ class DomainSpec extends IntegrationTests {
 	def "call twice in a row"() {
 		
 		expect:
-		DashboardObjective.findByName(objectiveName).objectiveEntries.size() == expectedSize
+		DashboardObjective.findByCode(objectiveCode).objectiveEntries.size() == expectedSize
 		
 		where:
-		objectiveName				| expectedSize
-		"Staffing"					| 2
-		"Staffing"					| 2
-		"Human Resources for Health"| 1
+		objectiveCode	| expectedSize
+		"STAFFING"		| 2
+		"STAFFING"		| 2
+		"HRH"			| 1
 		
 	}
 	
 	def "objective order can be null"() {
 		when:
-		def objective = DashboardObjective.findByName("Human Resources for Health");
-		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(name:"Test"), weight: 1);
+		def objective = DashboardObjective.findByCode("HRH");
+		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:j(["en":"Test"]), code:"TEST"), weight: 1);
 		objective.save(flush: true)
 		
 		then:
-		def newObjective = DashboardObjective.findByName("Human Resources for Health");
+		def newObjective = DashboardObjective.findByCode("HRH");
 		newObjective.objectiveEntries.size() == 2
 	}
 	
 	def "objective save preserves order"() {
 		when:
-		def objective = DashboardObjective.findByName("Human Resources for Health");
-		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(name:"Test 5"), weight: 1, order: 5);
-		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(name:"Test 4"), weight: 1, order: 4);
+		def objective = DashboardObjective.findByCode("HRH");
+		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:j(["en":"Test 4"]), code:"TEST4"), weight: 1, order: 5);
+		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:j(["en":"Test 5"]), code:"TEST5"), weight: 1, order: 4);
 		objective.save(flush: true)
 		
 		then:
-		def newObjective = DashboardObjective.findByName("Human Resources for Health");
+		def newObjective = DashboardObjective.findByCode("HRH");
 		newObjective.objectiveEntries.size() == 3
 		newObjective.objectiveEntries[2].order == 5
 		newObjective.objectiveEntries[1].order == 4
@@ -70,7 +70,7 @@ class DomainSpec extends IntegrationTests {
 	def "weighted objective cascade"() {
 		
 		when:
-		def objective = DashboardObjective.findByName("Staffing");
+		def objective = DashboardObjective.findByCode("STAFFING");
 		
 		then:
 		objective.objectiveEntries.size() == 2
@@ -80,7 +80,7 @@ class DomainSpec extends IntegrationTests {
 	def "objective cascade delete dashboard objective entries"() {
 		when:
 		def dashboardTargetCount = DashboardTarget.count()
-		def objective = DashboardObjective.findByName("Staffing");
+		def objective = DashboardObjective.findByCode("STAFFING");
 		objective.parent.parent.objectiveEntries.remove(objective.parent)
 		objective.delete(flush: true)
 		
@@ -93,7 +93,7 @@ class DomainSpec extends IntegrationTests {
 		when:
 		def dashboardObjectiveEntryCount = DashboardObjectiveEntry.count()
 		def dashboardTargetCount = DashboardTarget.count()
-		def objective = DashboardObjective.findByName("Staffing");
+		def objective = DashboardObjective.findByCode("STAFFING");
 		new ArrayList(objective.objectiveEntries).each { 
 			objective.objectiveEntries.remove(it);
 			it.delete(flush: true); 
@@ -108,7 +108,7 @@ class DomainSpec extends IntegrationTests {
 		when:
 		def dashboardObjectiveEntryCount = DashboardObjectiveEntry.count()
 		def dashboardTargetCount = DashboardTarget.count()
-		def objective = DashboardObjective.findByName("Staffing");
+		def objective = DashboardObjective.findByCode("STAFFING");
 		objective.objectiveEntries.clear()
 		objective.save(flush: true)
 		
@@ -121,7 +121,7 @@ class DomainSpec extends IntegrationTests {
 		when:
 		def dashboardObjectiveEntryCount = DashboardObjectiveEntry.count()
 		def dashboardTargetCount = DashboardTarget.count()
-		def objective = DashboardTarget.findByName("Nurse A1");
+		def objective = DashboardTarget.findByCode("A1");
 		objective.parent.parent.objectiveEntries.remove(objective.parent)
 		objective.delete(flush: true)
 		
@@ -140,7 +140,7 @@ class DomainSpec extends IntegrationTests {
 	// integration test
 	def "weighted objectives for target"() {
 		when:
-		def objective = DashboardObjective.findByName("Staffing");
+		def objective = DashboardObjective.findByCode("STAFFING");
 		def objectiveEntry = DashboardObjectiveEntry.findByEntry(objective);
 		
 		then:
@@ -153,7 +153,7 @@ class DomainSpec extends IntegrationTests {
 		when:
 		def dashboardTargetCount = DashboardTarget.count()
 		def target = new DashboardTarget(name: "Test");
-		def objective = DashboardObjective.findByName("Staffing");
+		def objective = DashboardObjective.findByCode("STAFFING");
 		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: target, weight: 1, order: 1)
 		objective.save();
 		
