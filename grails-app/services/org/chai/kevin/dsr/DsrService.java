@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.DataElement;
 import org.chai.kevin.ExpressionService;
+import org.chai.kevin.LocaleService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.hisp.dhis.common.AbstractNameableObject;
@@ -20,7 +21,7 @@ public class DsrService {
 	
 	private OrganisationService organisationService;
 	private ExpressionService expressionService;
-
+	private LocaleService localeService;
 
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective,
@@ -42,7 +43,7 @@ public class DsrService {
 		for (Organisation orgChildren : organisations) {
 			Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
 			for (DsrTarget target : targets) {
-				if(target.getCategory().equals(null) || target.getCategory().equals("")){
+				if(target.getCategories().get(localeService.getCurrentLanguage()) == null || target.getCategories().get(localeService.getCurrentLanguage()).equals("")){
 					orgDsr.put(
 							target,
 							new Dsr(
@@ -88,4 +89,8 @@ public class DsrService {
 		this.expressionService = expressionService;
 	}
 
+	public void setLocaleService(LocaleService localeService) {
+		this.localeService = localeService;
+	}
+	
 }

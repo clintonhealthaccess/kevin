@@ -1,6 +1,5 @@
 package org.chai.kevin
 
-import org.hisp.dhis.dataelement.Constant;
 import org.chai.kevin.DataElement;
 
 import grails.plugin.spock.UnitSpec;
@@ -35,7 +34,7 @@ class ExpressionControllerSpec extends IntegrationTests {
 		expressionController = new ExpressionController()
 		
 		when:
-		expressionController.params.constant = Constant.findByName("Constant 1000").id+''
+		expressionController.params.constant = Constant.findByCode("CONST1").id+''
 		def model = expressionController.getConstantDescription()
 		
 		then:
@@ -70,7 +69,7 @@ class ExpressionControllerSpec extends IntegrationTests {
 		expressionController = new ExpressionController()
 		
 		when:
-		expressionController.params.dataElement = DataElement.findByName("Element 1").id+''
+		expressionController.params.dataElement = DataElement.findByCode("CODE").id+''
 		def model = expressionController.getDataElementDescription()
 		
 		then:

@@ -23,7 +23,7 @@ class DashboardControllerSpec extends IntegrationTests {
 	def "delete objective with children"() {
 		setup:
 		dashboardObjectiveController = new DashboardObjectiveController()
-		dashboardObjectiveController.params.id = DashboardObjective.findByName("Human Resources for Health").objectiveEntries[0].id
+		dashboardObjectiveController.params.id = DashboardObjective.findByCode("HRH").objectiveEntries[0].id
 		
 		when:
 		dashboardObjectiveController.delete()
@@ -35,7 +35,7 @@ class DashboardControllerSpec extends IntegrationTests {
 	def "delete objective without children"() {
 		setup:
 		dashboardObjectiveController = new DashboardObjectiveController()
-		dashboardObjectiveController.params.id = DashboardObjective.findByName("Staffing").objectiveEntries[0].id
+		dashboardObjectiveController.params.id = DashboardObjective.findByCode("STAFFING").objectiveEntries[0].id
 		
 		when:
 		dashboardObjectiveController.delete()

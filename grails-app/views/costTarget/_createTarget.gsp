@@ -1,17 +1,18 @@
 <%@ page import="org.chai.kevin.cost.CostTarget.CostType" %>
 
-<div id="add-cost-target" class="entity-form-container">
+<div id="add-cost-target" class="entity-form-container togglable">
+
+	<div class="entity-form-header">
+		<h3 class="title">Costing target</h3>
+		<g:locales/>
+		<div class="clear"></div>
+	</div>
+
 	<g:form url="[controller:'costTarget', action:'save']" useToken="true">
-		<div class="row ${hasErrors(bean:target,field:'name','errors')}">
-			<label for="name">Name</label>		
-			<input name="name" value="${fieldValue(bean:target,field:'name')}"></input>
-			<div class="error-list"><g:renderErrors bean="${target}" field="name" /></div>
-		</div>
-		<div class="row ${hasErrors(bean:target,field:'description','errors')}">
-			<label for="description">Description</label>
-			<textarea name="description" rows="5">${fieldValue(bean:target,field:'description')}</textarea>
-			<div class="error-list"><g:renderErrors bean="${target}" field="description" /></div>
-		</div>
+		<g:i18nInput name="names" bean="${target}" value="${target.names}" label="Name" field="names"/>
+		<g:i18nInput name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
+		<g:input name="code" label="Code" bean="${target}" field="code"/>
+
 		<div class="row">
 			<h5>Expressions</h5>
 			<div class="float-right">
@@ -27,7 +28,7 @@
 							<option value="null">-- select an expression --</option>
 							<g:each in="${expressions}" var="expression">
 								<option value="${expression.id}" ${expression.id+''==fieldValue(bean: target, field: 'expression'+suffix+'.id')+''?'selected="selected"':''}>
-									${expression.name}
+									<g:i18n field="${expression.names}"/>
 								</option>
 							</g:each>
 						</select>
@@ -59,7 +60,7 @@
 			<select name="costRampUp.id" class="ramp-up-list">
 				<g:each in="${costRampUps}" var="costRampUp">
 					<option value="${costRampUp.id}" ${costRampUp.id+''==fieldValue(bean:target, field: 'costRampUp.id')+''?'selected="selected"':''}>
-						${costRampUp.name}
+						<g:i18n field="${costRampUp.names}"/>
 					</option>
 				</g:each>
 			</select>
@@ -67,23 +68,8 @@
 			
 		</div>		
 		
-		<div class="row ${hasErrors(bean:target,field:'costType','errors')}">
-			<label for="costType">Type</label>
-			<select name="costType">
-				<g:each in="${CostType.values()}" var="costType">
-					<option value="${costType.key}" ${costType.key+''==fieldValue(bean:target, field:'costType.key')+''?'selected="selected"':''}>
-						${costType}
-					</option>
-				</g:each>
-			</select>
-			<div class="error-list"><g:renderErrors bean="${target}" field="costType" /></div>
-		</div>
-		
-		<div class="row ${hasErrors(bean:target,field:'order','errors')}">
-			<label for="order">Order</label>
-			<input type="text" name="order" value="${fieldValue(bean:target,field:'order')}"></input>
-			<div class="error-list"><g:renderErrors bean="${target}" field="order" /></div>
-		</div>
+		<g:selectFromEnum name="costType" bean="${target}" values="${CostType.values()}" field="costType" label="Type"/>
+		<g:input name="order" label="Order" bean="${target}" field="order"/>
 		
 		<g:if test="${currentObjective != null}">
 			<input type="hidden" name="currentObjective" value="${currentObjective.id}"></input>
@@ -109,7 +95,7 @@
 			onSuccess: function(data) {
 				if (data.result == 'success') {
 					var rampUp = data.newEntity;
-					$('.ramp-up-list').append('<option value="'+rampUp.id+'">'+rampUp.name+'</option>');
+					$('.ramp-up-list').append('<option value="'+rampUp.id+'">'+rampUp.names[data.locale]+'</option>');
 // 					$.sexyCombo.changeOptions('.ramp-up-list');
 				}
 			}
@@ -120,7 +106,7 @@
 			onSuccess: function(data) {
 				if (data.result == 'success') {
 					var expression = data.newEntity
-					$('.expression-list').append('<option value="'+expression.id+'">'+expression.name+'</option>');
+					$('.expression-list').append('<option value="'+expression.id+'">'+expression.names[data.locale]+'</option>');
 					$.sexyCombo.changeOptions('.expression-list');
 				}
 			}

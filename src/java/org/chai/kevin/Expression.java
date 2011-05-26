@@ -14,24 +14,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="Expression")
-@Table(name="dhsst_expression", uniqueConstraints={@UniqueConstraint(columnNames="name")})
+@Table(name="dhsst_expression", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class Expression {
+public class Expression extends Translatable {
 
-	public static enum ExpressionType {VALUE("VALUE"), STRING("STRING"), BOOL("BOOL"), ENUM("ENUM");
-		final String value;
-
-		ExpressionType(String value) { this.value = value; }
-
-	    public String toString() { return value; } 
-	    String getKey() { return name(); }
-	};
-	
 	private Long id;
-	private String name;
-	private String description;
 	
-	private ExpressionType type;
+	private ValueType type;
 	private String expression;
 	
 	@Id
@@ -43,28 +32,12 @@ public class Expression {
 		this.id = id;
 	}
 	
-	@Basic
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	@Basic
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable=false)
-	public ExpressionType getType() {
+	public ValueType getType() {
 		return type;
 	}
-	public void setType(ExpressionType type) {
+	public void setType(ValueType type) {
 		this.type = type;
 	}
 	
@@ -78,13 +51,13 @@ public class Expression {
 	
 	@Override
 	public String toString() {
-		return "Expression [name=" + name + ", expression=" + expression + "]";
+		return "Expression [code=" + code + ", expression=" + expression + "]";
 	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		return result;
 	}
 	@Override
@@ -96,10 +69,10 @@ public class Expression {
 		if (getClass() != obj.getClass())
 			return false;
 		Expression other = (Expression) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (code == null) {
+			if (other.code != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!code.equals(other.code))
 			return false;
 		return true;
 	}

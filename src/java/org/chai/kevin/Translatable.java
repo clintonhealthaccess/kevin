@@ -3,101 +3,62 @@ package org.chai.kevin;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.MapKey;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
-import org.chai.kevin.dashboard.DashboardCalculation;
-import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Target;
 
 @MappedSuperclass
 public abstract class Translatable implements Serializable {
 
 	private static final long serialVersionUID = 5282731214725130450L;
 	
-	private String name;
-	private String description;
+	protected Translation names = new Translation();
+	protected Translation descriptions = new Translation();
+
+	protected String code;
 	
-	private Map<String, Translation> descriptions;
-	private Map<String, Translation> names;
-	
-	@Basic
-	public String getName() {
-		return name;
-	}
-	
-	@Basic
-	public String getDescription() {
-		return description;
-	}
-	
-	@OneToMany(targetEntity=Translation.class)
-	@Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-	@MapKey(name="locale")
-	@JoinColumn
-	public Map<String, Translation> getDescriptions() {
-		return descriptions;
-	}
-	
-	@OneToMany(targetEntity=Translation.class)
-	@Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-	@MapKey(name="locale")
-	@JoinColumn
-	public Map<String, Translation> getNames() {
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
+	})
+	public Translation getNames() {
 		return names;
 	}
+	
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+	})
+	public Translation getDescriptions() {
+		return descriptions;
+	}
 
-	public void setName(String name) {
-		this.name = name;
+	@Basic
+	public String getCode() {
+		return code;
 	}
 	
-	public void setDescription(String description) {
-		this.description = description;
+
+	public void setCode(String code) {
+		this.code = code;
 	}
-	
-	public void setDescriptions(Map<String, Translation> descriptions) {
-		this.descriptions = descriptions;
-	}
-	
-	public void setNames(Map<String, Translation> names) {
+
+	public void setNames(Translation names) {
 		this.names = names;
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Translatable other = (Translatable) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
 	}
 
-	@Override
-	public String toString() {
-		return "Objective [name=" + name + "]";
-	}
-	
 }

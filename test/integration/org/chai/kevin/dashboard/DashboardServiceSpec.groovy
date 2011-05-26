@@ -42,12 +42,12 @@ class DashboardServiceSpec extends IntegrationTests {
 		when:
 		def period = Period.list()[1]
 		def currentOrganisation = new Organisation(OrganisationUnit.findByName(currentOrganisationName));
-		def currentObjective = DashboardObjective.findByName(currentObjectiveName);
+		def currentObjective = DashboardObjective.findByCode(currentObjectiveName);
 		dashboardService.refreshDashboard(currentOrganisation, currentObjective, period, new ProgressListener());
 		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period);
 		def organisation = new Organisation(OrganisationUnit.findByName(organisationName));
 		def objective = DashboardTarget.findByName(objectiveName);
-		if (objective == null) objective = DashboardObjective.findByName(objectiveName);
+		if (objective == null) objective = DashboardObjective.findByCode(objectiveName);
 		def percentage = dashboard.getPercentage(organisation, objective)
 		
 		then:
@@ -56,16 +56,16 @@ class DashboardServiceSpec extends IntegrationTests {
 		else percentage.value == value
 		
 		where:
-		currentOrganisationName	| currentObjectiveName			| organisationName	| objectiveName 				| status				| value
-		"Burera"				| "Staffing"					| "Butaro DH"		| "Target 1"					| Status.VALID			| 40.0d
-		"Burera"				| "Staffing"					| "Butaro DH"		| "Nurse A1"					| Status.VALID			| 10.0d
-		"Burera"				| "Staffing"					| "Butaro DH"		| "Nurse A2"					| Status.VALID			| 20.0d
-		"Burera"				| "Staffing"					| "Kivuye HC"		| "Target 1"					| Status.MISSING_VALUE	| null  // TODO check this !
-		"Burera"				| "Staffing"					| "Kivuye HC"		| "Nurse A1"					| Status.VALID			| 10.0d
-		"Burera"				| "Staffing"					| "Kivuye HC"		| "Nurse A2"					| Status.VALID			| 20.0d
-		"Burera"				| "Human Resources for Health"	| "Butaro DH"		| "Staffing"					| Status.VALID			| 23.0d
-		"Burera"				| "Human Resources for Health"	| "Kivuye HC"		| "Staffing"					| Status.VALID			| 15.0d
-		"Rwanda"				| "Strategic Objectives"		| "North"			| "Human Resources for Health"	| Status.VALID			| 23.0d
+		currentOrganisationName	| currentObjectiveName			| organisationName	| objectiveName 	| status				| value
+		"Burera"				| "STAFFING"					| "Butaro DH"		| "TARGET1"			| Status.VALID			| 40.0d
+		"Burera"				| "STAFFING"					| "Butaro DH"		| "A1"				| Status.VALID			| 10.0d
+		"Burera"				| "STAFFING"					| "Butaro DH"		| "A2"				| Status.VALID			| 20.0d
+		"Burera"				| "STAFFING"					| "Kivuye HC"		| "TARGET1"			| Status.MISSING_VALUE	| null  // TODO check this !
+		"Burera"				| "STAFFING"					| "Kivuye HC"		| "A1"				| Status.VALID			| 10.0d
+		"Burera"				| "STAFFING"					| "Kivuye HC"		| "A2"				| Status.VALID			| 20.0d
+		"Burera"				| "HRH"							| "Butaro DH"		| "STAFFING"		| Status.VALID			| 23.0d
+		"Burera"				| "HRH"							| "Kivuye HC"		| "STAFFING"		| Status.VALID			| 15.0d
+		"Rwanda"				| "OBJ"							| "North"			| "HRH"				| Status.VALID			| 23.0d
 	}
 	
 	def "test missing organisation group"() {

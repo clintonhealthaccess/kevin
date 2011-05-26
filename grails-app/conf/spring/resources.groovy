@@ -3,6 +3,7 @@ import grails.util.GrailsUtil;
 import org.chai.kevin.DataValueService;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.binding.TranslationPropertyEditorRegistrar;
 import org.chai.kevin.cost.CostTableService;
 import org.chai.kevin.dashboard.DashboardController;
 import org.chai.kevin.dashboard.DashboardService;
@@ -11,7 +12,6 @@ import org.chai.kevin.dashboard.PercentageCalculator;
 import org.chai.kevin.dashboard.PercentageService;
 import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.maps.MapsService;
-import org.hisp.dhis.dataelement.ConstantService;
 import org.springframework.format.number.PercentFormatter;
 
 def defaultSkipLevels;
@@ -33,6 +33,7 @@ beans = {
 	dsrService(DsrService){
 		expressionService = ref("expressionService")
 		organisationService = ref("organisationService")
+		localeService = ref("localeService")
 	}
 	
 	percentageService(PercentageService) {
@@ -57,7 +58,6 @@ beans = {
 	}
 	
 	expressionService(ExpressionService) {
-		constantService = ref("constantService")
 		dataService = ref("dataService")
 		dataValueService = ref("dataValueService")
 		organisationService = ref("organisationService")
@@ -78,5 +78,9 @@ beans = {
 		organisationUnitGroupService = ref("organisationUnitGroupService")
 		skipLevels = defaultSkipLevels
 		groups = ['Type']
+	}
+	
+	beans = {
+		customPropertyEditorRegistrar(TranslationPropertyEditorRegistrar)
 	}
 }

@@ -10,7 +10,6 @@ import geb.Browser;
 class DashboardSpec extends GebTests {
 
 	def setupSpec() {
-		Initializer.createUsers();
 		Initializer.createDummyStructure();
 		Initializer.createDataElementsAndExpressions();
 		Initializer.createDashboard();

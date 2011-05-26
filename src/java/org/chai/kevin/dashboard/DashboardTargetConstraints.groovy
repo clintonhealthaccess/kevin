@@ -1,7 +1,7 @@
 package org.chai.kevin.dashboard
 
 constraints = {
-	name (blank: false)
+	code (nullable: false, blank: false, unique: true)
 	// shortName(blank: false, unique: true)
 
 }

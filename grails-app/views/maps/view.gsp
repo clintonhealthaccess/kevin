@@ -46,7 +46,7 @@
 					<h5>Target:</h5>
 					<div class="dropdown dropdown-target">
 						<g:if test="${currentTarget != null}">
-							<a class="selected" href="#" data-target="${currentTarget.id}" data-type="target">${currentTarget.name}</a>
+							<a class="selected" href="#" data-target="${currentTarget.id}" data-type="target"><g:i18n field="${currentTarget.names}"/></a>
 						</g:if>
 						<g:else>
 							<a class="selected" href="#" data-type="target">no target selected</a>
@@ -57,7 +57,7 @@
 									<g:each in="${targets}" var="target">
 										<li>
 											<a class="parameter" href="#" data-target="${target.id}" data-type="target">
-												${target.name}
+												<g:i18n field="${target.names}"/>
 											</a>
 											<span><g:link class="flow-edit" controller="mapsTarget" action="edit" id="${target.id}" class="flow-edit">(edit)</g:link></span>
 										</li>

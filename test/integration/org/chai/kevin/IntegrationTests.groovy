@@ -48,4 +48,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 		}
 		return result
 	}
+	
+	static j(def map) {
+		return Initializer.j(map)
+	}
 }

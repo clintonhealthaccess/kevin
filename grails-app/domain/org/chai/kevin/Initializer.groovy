@@ -2,8 +2,6 @@ package org.chai.kevin
 
 import java.util.Date;
 
-import org.chai.kevin.DataElement.DataElementType;
-import org.chai.kevin.Expression.ExpressionType;
 import org.chai.kevin.cost.CostObjective;
 import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostRampUpYear;
@@ -16,7 +14,6 @@ import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTarget;
-import org.hisp.dhis.dataelement.Constant;
 import org.chai.kevin.DataElement;
 import org.chai.kevin.Enum;
 import org.chai.kevin.EnumOption;
@@ -58,12 +55,12 @@ class Initializer {
 		
 //		if (!DataElementCategory.count()) {
 //			// Categories
-//			def categoryOption = new DataElementCategoryOption(name: DataElementCategoryOption.DEFAULT_NAME)
+//			def categoryOption = new DataElementCategoryOption(names: DataElementCategoryOption.DEFAULT_NAME)
 //			categoryOption.save(failOnError: true)
-//			def category = new DataElementCategory( name: DataElementCategory.DEFAULT_NAME )
+//			def category = new DataElementCategory( names: DataElementCategory.DEFAULT_NAME )
 //			category.categoryOptions = [categoryOption]
 //			category.save(failOnError: true)
-//			def categoryCombo = new DataElementCategoryCombo(name: DataElementCategoryCombo.DEFAULT_CATEGORY_COMBO_NAME)
+//			def categoryCombo = new DataElementCategoryCombo(names: DataElementCategoryCombo.DEFAULT_CATEGORY_COMBO_NAME)
 //			categoryCombo.categories = [category]
 //			categoryCombo.save(failOnError: true)
 //			def categoryOptionCombo = new DataElementCategoryOptionCombo(categoryCombo: categoryCombo)
@@ -101,7 +98,7 @@ class Initializer {
 			
 			rwanda.save(failOnError: true, flush: true)
 			
-			def groupSet = new OrganisationUnitGroupSet(name:"Type")
+			def groupSet = new OrganisationUnitGroupSet(name: "Type")
 			groupSet.save(failOnError: true)
 			
 			// organisation groups
@@ -124,9 +121,9 @@ class Initializer {
 		
 		if (!Enum.count()) {
 			// Enumerations
-			def enume = new Enum(name:"Enum 1", code:"ENUM1");
-			def enumOption1 = new EnumOption(name:"Value 1", value:"value1", code:"OPTION1", enume: enume);
-			def enumOption2 = new EnumOption(name:"Value 2", value:"value2", code:"OPTION2", enume: enume);
+			def enume = new Enum(names:j(["en":"Enum 1"]), descriptions:j([:]), code:"ENUM1");
+			def enumOption1 = new EnumOption(names:j(["en":"Value 1"]), descriptions:j([:]), value:"value1", code:"OPTION1", enume: enume);
+			def enumOption2 = new EnumOption(names:j(["en":"Value 2"]), descriptions:j([:]), value:"value2", code:"OPTION2", enume: enume);
 			enume.enumOptions = [enumOption1, enumOption2]
 			enume.save(failOnError: true)
 			enumOption1.save(failOnError: true)
@@ -135,12 +132,12 @@ class Initializer {
 		
 		if (!DataElement.count()) {
 			// Data Elements
-			def dataElement1 = new DataElement(name:"Element 1", shortName: "Element 1", code:"CODE1", type: DataElementType.INT)
-			def dataElement2 = new DataElement(name:"Element 2", shortName: "Element 2", code:"CODE2", type: DataElementType.INT)
-			def dataElement3 = new DataElement(name:"Element 3", shortName: "Element 3", code:"CODE3", type: DataElementType.ENUM, enumType: Enum.findByName('Enum 1'))
+			def dataElement1 = new DataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: ValueType.VALUE)
+			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: ValueType.VALUE)
+			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: ValueType.ENUM, enumType: Enum.findByCode('ENUM1'))
 			// Data Sets
-//			def dataSet1 = new DataSet(name:"Dataset 1", shortName: "Dataset 1", code:"DATASET1", periodType: MonthlyPeriodType.list()[0])
-//			def dataSet2 = new DataSet(name:"Dataset 2", shortName: "Dataset 2", code:"DATASET2", periodType: MonthlyPeriodType.list()[0])
+//			def dataSet1 = new DataSet(names:j(["en":"Dataset 1"]), shortName: "Dataset 1", code:"DATASET1", periodType: MonthlyPeriodType.list()[0])
+//			def dataSet2 = new DataSet(names:j(["en":"Dataset 2"]), shortName: "Dataset 2", code:"DATASET2", periodType: MonthlyPeriodType.list()[0])
 	
 //			dataElement1.dataSets = [dataSet1]
 //			dataElement2.dataSets = [dataSet2]
@@ -155,10 +152,10 @@ class Initializer {
 			
 			// data value
 			new DataValue(
-					dataElement: DataElement.findByName("Element 1"),
+					dataElement: DataElement.findByCode("CODE1"),
 					period: Period.list()[1],
 	//				optionCombo: DataElementCategoryOptionCombo.list()[0],
-					source: OrganisationUnit.findByName("Butaro DH"),
+					organisationUnit: OrganisationUnit.findByName("Butaro DH"),
 				value: "30",
 //				comment: "Comment",
 //				storedBy: "StoredBy",
@@ -169,10 +166,10 @@ class Initializer {
 			
 			// data value
 			new DataValue(
-					dataElement: DataElement.findByName("Element 1"),
+					dataElement: DataElement.findByCode("CODE1"),
 					period: Period.list()[1],
 	//				optionCombo: DataElementCategoryOptionCombo.list()[0],
-					source: OrganisationUnit.findByName("Kivuye HC"),
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: "40",
 //				comment: "Comment",
 //				storedBy: "StoredBy",
@@ -182,10 +179,10 @@ class Initializer {
 	
 			// data value
 			new DataValue(
-					dataElement: DataElement.findByName("Element 3"),
+					dataElement: DataElement.findByCode("CODE3"),
 					period: Period.list()[1],
 	//				optionCombo: DataElementCategoryOptionCombo.list()[0],
-					source: OrganisationUnit.findByName("Kivuye HC"),
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 				value: "value1",
 //				comment: "Comment",
 //				storedBy: "StoredBy",
@@ -194,41 +191,46 @@ class Initializer {
 			).save(failOnError: true)
 		}
 		
+		
 		if (!Expression.count()) {
 			// indicators
-	//		new IndicatorType(name:"one", factor: 100).save(failOnError: true)
-			new Expression(name:"Constant 10", expression: "10", type: ExpressionType.VALUE).save(failOnError: true)
-			new Expression(name:"Constant 20", expression: "20", type: ExpressionType.VALUE).save(failOnError: true)
-			new Expression(name:"Element 1", expression: "["+DataElement.findByName("Element 1").id+"] + ["+DataElement.findByName("Element 1").id+"]", type: ExpressionType.VALUE).save(failOnError: true)
-			new Expression(name:"Element 2", expression: "["+DataElement.findByName("Element 2").id+"]", type: ExpressionType.VALUE).save(failOnError: true)
-			new Expression(name:"Element 3", expression: "["+DataElement.findByName("Element 3").id+"]", type: ExpressionType.VALUE).save(failOnError: true)
+	//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
+			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: ValueType.VALUE).save(failOnError: true)
+			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: ValueType.VALUE).save(failOnError: true)
+			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "["+DataElement.findByCode("CODE1").id+"] + ["+DataElement.findByCode("CODE1").id+"]", type: ValueType.VALUE).save(failOnError: true)
+			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "["+DataElement.findByCode("CODE2").id+"]", type: ValueType.VALUE).save(failOnError: true)
+			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\"["+DataElement.findByCode("CODE3").id+"]\"", type: ValueType.VALUE).save(failOnError: true)
 		}
 		
 		if (!Constant.count()) {
-			new Constant(name:"Constant 1000", shortName:"CONST1", value: "1000", description: "Description").save(failOnError: true)
+			new Constant(names:j(["en":"Constant 1000"]), code:"CONST1", type: ValueType.VALUE, value: "1000", descriptions:j(["en":"Description"])).save(failOnError: true)
 		}
 	}
 	
 	static def createMaps() {
 		if (!MapsTarget.count()) {
 			
-//			new IndicatorType(name:"one", factor: 1).save(failOnError: true)
+//			new IndicatorType(names:j(["en":"one"]), factor: 1).save(failOnError: true)
 			new Expression(
-				name:"Map Expression 2",
-				type: ExpressionType.VALUE,
-				expression: "["+DataElement.findByName("Element 1").id+"] / 100",
+				names:j(["en":"Map Expression 2"]),
+				descriptions:j([:]),
+				code:"Map Expression 2",
+				type: ValueType.VALUE,
+				expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
 //				shortName:"MAP2",
 //				code: "MAP2",
 //				indicatorType: IndicatorType.findByName("one"),
 //				numerator: "["+DataElement.findByName("Element 1").id+"]",
 //				denominator: "100"
 			).save(failOnError: true)
-			new MapsTarget(name:"Map Target 2", expression: Expression.findByName("Map Expression 2")).save(failOnError: true)
+			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2")).save(failOnError: true)
 			
 
 			new Expression(
-				name:"Map Expression", 
-				type: ExpressionType.VALUE,
+				names:j(["en":"Map Expression"]),
+				descriptions:j([:]),
+				code:"Map Expression", 
+				type: ValueType.VALUE,
 				expression: "10 / 100",
 //				shortName:"MAP", 
 //				code: "MAP",
@@ -236,14 +238,14 @@ class Initializer {
 //				numerator: "10",
 //				denominator: "100"
 			).save(failOnError: true)
-			new MapsTarget(name:"Map Target", expression: Expression.findByName("Map Expression")).save(failOnError: true)
+			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression")).save(failOnError: true)
 		}
 	}
 	
 	static def createCost() {
 		if (!CostRampUp.count()) {
 			// Cost
-			new CostRampUp(name: "Constant", years: [
+			new CostRampUp(names:j(["en":"Constant"]), descriptions:j([:]), code:"CONST", years: [
 				1: new CostRampUpYear(year: 1, value: 0.2),
 				2: new CostRampUpYear(year: 2, value: 0.2),
 				3: new CostRampUpYear(year: 3, value: 0.2),
@@ -254,45 +256,45 @@ class Initializer {
 	
 		if (!CostObjective.count()) {
 			new CostTarget(
-				name: "Annual Internet Access Cost", description: "Annual Internet Access Cost",
-				expression: Expression.findByName("Constant 10"),
+				names:j(["en":"Annual Internet Access Cost"]), code:"Internet Cost", descriptions:j(["en":"Annual Internet Access Cost"]),
+				expression: Expression.findByCode("Constant 10"),
 				costType: CostType.OPERATION,
-				costRampUp: CostRampUp.findByName("Constant"),
+				costRampUp: CostRampUp.findByCode("CONST"),
 				groupUuidString: "District Hospital,Health Center"
 			).save(failOnError: true)
 			
 			new CostTarget(
-				name: "Connecting Facilities to the Internet", description: "Connecting Facilities to the Internet",
-				expression: Expression.findByName("Constant 10"),
+				names:j(["en":"Connecting Facilities to the Internet"]), code:"Connecting Facilities", descriptions:j(["en":"Connecting Facilities to the Internet"]),
+				expression: Expression.findByCode("Constant 10"),
 				costType: CostType.INVESTMENT,
-				costRampUp: CostRampUp.findByName("Constant"),
+				costRampUp: CostRampUp.findByCode("CONST"),
 				groupUuidString: "District Hospital,Health Center"
 			).save(failOnError: true)
 			
 			new CostTarget(
-				name: "New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance", description: "New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance",
-				expression: Expression.findByName("Constant 10"),
+				names:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]), code:"New Phones CHW", descriptions:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]),
+				expression: Expression.findByCode("Constant 10"),
 				costType: CostType.INVESTMENT,
-				costRampUp: CostRampUp.findByName("Constant"),
+				costRampUp: CostRampUp.findByCode("CONST"),
 				groupUuidString: "District Hospital,Health Center"
 			).save(failOnError: true)
 			
-			def ga = new CostObjective(name: "Geographical Access", description: "Geographical Access",)
-			ga.addTarget(CostTarget.findByName("Annual Internet Access Cost"));
-			ga.addTarget(CostTarget.findByName("Connecting Facilities to the Internet"));
-			ga.addTarget(CostTarget.findByName("New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"));
+			def ga = new CostObjective(names:j(["en":"Geographical Access"]), code:"Geographical Access", descriptions:j(["en":"Geographical Access"]),)
+			ga.addTarget(CostTarget.findByCode("Internet Cost"));
+			ga.addTarget(CostTarget.findByCode("Connecting Facilities"));
+			ga.addTarget(CostTarget.findByCode("New Phones CHW"));
 			ga.save(failOnError: true)
 			
 			
 			new CostTarget(
-				name: "Facility Staff Training", description: "Facility Staff Training",
-				expression: Expression.findByName("Constant 10"),
+				names:j(["en":"Facility Staff Training"]), code:"Facility Staff Training", descriptions:j(["en":"Facility Staff Training"]),
+				expression: Expression.findByCode("Constant 10"),
 				costType: CostType.INVESTMENT,
-				costRampUp: CostRampUp.findByName("Constant")
+				costRampUp: CostRampUp.findByCode("CONST")
 			).save(failOnError: true)
 			
-			def hrh = new CostObjective(name: "Human Resources for Health", description: "Human Resources for Health",)
-			hrh.addTarget(CostTarget.findByName("Facility Staff Training"));
+			def hrh = new CostObjective(names:j(["en":"Human Resources for Health"]), code:"HRH", descriptions:j(["en":"Human Resources for Health"]),)
+			hrh.addTarget(CostTarget.findByCode("Facility Staff Training"));
 			hrh.save(failOnError: true)
 		}		
 	}
@@ -301,62 +303,62 @@ class Initializer {
 		if (!DashboardObjective.count()) {
 			// objectives and targets for dashboard
 			new DashboardTarget(
-					name: "Nurse A1", description: "Nurse A1",
+					names:j(["en":"Nurse A1"]), code:"NURSE A1", descriptions:j(["en":"Nurse A1"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByName("Constant 10")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByName("Constant 10"))
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 10")),
+						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 10"))
 					]
 				).save(failOnError: true)
 			new DashboardTarget(
-					name: "Nurse A2", description: "Nurse A2",
+					names:j(["en":"Nurse A2"]), code:"NURSE A2", descriptions:j(["en":"Nurse A2"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByName("Constant 20")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByName("Constant 10"))
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 20")),
+						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 10"))
 					]
 				).save(failOnError: true)
 			new DashboardTarget(
-					name: "Target 1", description: "Target 1",
+					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByName("Element 1")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByName("Element 1"))
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 1")),
+						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 1"))
 					]
 				).save(failOnError: true)
 			new DashboardTarget(
-					name: "Missing Expression", description: "Missing Expression",
+					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByName("Element 1")),
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 1")),
 					]
 				).save(failOnError: true)
 			new DashboardTarget(
-					name: "Missing Data", description: "Missing Data",
+					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByName("Element 2")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByName("Element 2"))
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 2")),
+						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 2"))
 					]
 				).save(failOnError: true)
 			new DashboardTarget(
-					name: "Enum", description: "Enum",
+					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByName("Element 3")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByName("Element 3"))
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 3")),
+						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 3"))
 					]
 				).save(failOnError: true)
 				
-			def staffing = new DashboardObjective(root: false, name:"Staffing", description: "Staffing", weightedObjectives: [])
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByName("Nurse A1"), weight: 1, order: 1)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByName("Nurse A2"), weight: 1, order: 2)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByName("Target 1"), weight: 1, order: 3)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByName("Missing Expression"), weight: 1, order: 4)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByName("Missing Data"), weight: 1, order: 5)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByName("Enum"), weight: 1, order: 6)
+			def staffing = new DashboardObjective(root: false, code:"STAFFING", names:j(["en":"Staffing"]), descriptions:j(["en":"Staffing"]), weightedObjectives: [])
+			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("NURSE A1"), weight: 1, order: 1)
+			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("NURSE A2"), weight: 1, order: 2)
+			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("TARGET1"), weight: 1, order: 3)
+			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("MISSING EXPRESSION"), weight: 1, order: 4)
+			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("MISSING DATA"), weight: 1, order: 5)
+			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("ENUM"), weight: 1, order: 6)
 			staffing.save(failOnError: true)
 			
-			def hrh = new DashboardObjective(root: false, name:"Human Resources for Health", description: "Human Resources for Health", weightedObjectives: [])
-			hrh.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByName("Staffing"), weight: 1, order: 1)
+			def hrh = new DashboardObjective(root: false, code:"HRH", names:j(["en":"Human Resources for Health"]), descriptions:j(["en":"Human Resources for Health"]), weightedObjectives: [])
+			hrh.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("STAFFING"), weight: 1, order: 1)
 			hrh.save(failOnError: true)
 			
-			def root = new DashboardObjective(root: true, name:"Strategic Objectives", description: "Strategic Objectives", weightedObjectives: [])
-			root.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByName("Human Resources for Health"), weight: 1, order: 1)
+			def root = new DashboardObjective(root: true, code:"Strategic Objectives", names:j(["en":"Strategic Objectives"]), descriptions:j(["en":"Strategic Objectives"]), weightedObjectives: [])
+			root.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("HRH"), weight: 1, order: 1)
 			root.save(failOnError: true, flush: true)
 		}
 	}
@@ -364,42 +366,42 @@ class Initializer {
 	static def createDsr() {
 		if (!DsrTarget.count()) {
 			new DsrTarget(
-					name: "Accountant", description: "Accountant",
-					expression: Expression.findByName("Constant 10"), category:" "
+					names:j(["en":"Accountant"]), code:"ACCOUNT", descriptions:j(["en":"Accountant"]),
+					expression: Expression.findByCode("Constant 10"), category:" "
 					).save(failOnError:true)
 	
 			new DsrTarget(
-					name: "Days Of Nurse Training", description: "Days Of Nurse Training",
-					expression: Expression.findByName("Constant 20"), category:" "
+					names:j(["en":"Days Of Nurse Training"]), code:"NURSE TRAINING", descriptions:j(["en":"Days Of Nurse Training"]),
+					expression: Expression.findByCode("Constant 20"), category:" "
 					).save(failOnError:true)
 	
 			new DsrTarget(
-					name:"A1", description: "A1",
-					expression: Expression.findByName("Constant 10"), category: "Nurses"
+					names:j(["en":"A1"]), code:"A1", descriptions:j(["en":"A1"]),
+					expression: Expression.findByCode("Constant 10"), category: "Nurses"
 					).save(failOnError:true)
 	
 			new DsrTarget(
-					name:"A2", description: "A2",
-					expression: Expression.findByName("Constant 20"), category: "Nurses"
+					names:j(["en":"A2"]), code:"A2", descriptions:j(["en":"A2"]),
+					expression: Expression.findByCode("Constant 20"), category: "Nurses"
 					).save(failOnError:true)
 	
 			new DsrTarget(
-					name:"A3", description:"A3",
-					expression: Expression.findByName("Constant 10"), category: "Nurses"
+					names:j(["en":"A3"]), code:"A3", descriptions:j(["en":"A3"]),
+					expression: Expression.findByCode("Constant 10"), category: "Nurses"
 					).save(failOnError:true)
 	
 			new DsrTarget(
-					name:"Testing Category", description:"Testing Category",
-					expression: Expression.findByName("Constant 20"), category: " "
+					names:j(["en":"Testing Category"]), code:"TEST", descriptions:j(["en":"Testing Category"]),
+					expression: Expression.findByCode("Constant 20"), category: " "
 					).save(failOnError:true)
 	
-			def hmr = new DsrObjective(name: "Human Resources", description: "Human Resources")
-			hmr.addTarget(DsrTarget.findByName("Accountant"));
-			hmr.addTarget(DsrTarget.findByName("Days Of Nurse Training"));
-			hmr.addTarget(DsrTarget.findByName("A1"));
-			hmr.addTarget(DsrTarget.findByName("A2"));
-			hmr.addTarget(DsrTarget.findByName("A3"));
-			hmr.addTarget(DsrTarget.findByName("Testing Category"));
+			def hmr = new DsrObjective(names:j(["en":"Human Resources"]), code:"HRH", descriptions:j(["en":"Human Resources"]))
+			hmr.addTarget(DsrTarget.findByCode("ACCOUNT"));
+			hmr.addTarget(DsrTarget.findByCode("NURSE TRAINING"));
+			hmr.addTarget(DsrTarget.findByCode("A1"));
+			hmr.addTarget(DsrTarget.findByCode("A2"));
+			hmr.addTarget(DsrTarget.findByCode("A3"));
+			hmr.addTarget(DsrTarget.findByCode("TEST"));
 			hmr.save(failOnError:true)
 		}	
 	}
@@ -407,27 +409,27 @@ class Initializer {
 //	static def createUsers() {
 //		// users
 //		if (!User.count()) {
-//			new User(surname: "admin", firstName: "admin").save(failOnError: true)
+//			new User(surnames:j(["en":"admin"]), firstName: "admin").save(failOnError: true)
 //		}
 //		if (!UserAuthorityGroup.count()) {
-//			new UserAuthorityGroup(name: "Superuser", authorities: ["ALL"]).save(failOnError: true)
+//			new UserAuthorityGroup(names:j(["en":"Superuser"]), authorities: ["ALL"]).save(failOnError: true)
 //		}
 //		if (!UserCredentials.count()) {
-//			new UserCredentials(user: User.findBySurname("admin"), userAuthorityGroups: [UserAuthorityGroup.findByName("Superuser")],username: "admin", password: "48e8f1207baef1ef7fe478a57d19f2e5").save(failOnError: true)
+//			new UserCredentials(user: User.findBySurname("admin"), userAuthorityGroups: [UserAuthorityGroup.findByName("Superuser")],userName: "admin", password: "48e8f1207baef1ef7fe478a57d19f2e5").save(failOnError: true)
 //		}
 //	}
 	
 	static def createRootObjective() {
 		// users
 		if (!DashboardObjective.count()) {
-			def root = new DashboardObjective(root: true, name:"Strategic Objectives", description: "Strategic Objectives", weightedObjectives: [])
+			def root = new DashboardObjective(root: true, names:j(["en":"Strategic Objectives"]), code:"Strategic Objectives", descriptions:j(["en":"Strategic Objectives"]), weightedObjectives: [])
 			root.save(failOnError: true)
 		}
 	}
 	
 //	static def createIndicatorType() {
 //		if (!IndicatorType.count()) {
-//			new IndicatorType(name:"one", factor: 100).save(failOnError: true)
+//			new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
 //		}
 //	}
 	
@@ -442,5 +444,9 @@ class Initializer {
 
 		return calendar.getTime();
 	}
-	
+
+	public static Translation j(def map) {
+		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
+	}
+		
 }

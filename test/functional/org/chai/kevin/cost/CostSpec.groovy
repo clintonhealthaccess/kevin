@@ -10,7 +10,6 @@ class CostSpec extends GebTests {
 	def transactional = true
 	
 	def setupSpec() {
-		Initializer.createUsers();
 		Initializer.createDummyStructure();
 		Initializer.createDataElementsAndExpressions();
 		Initializer.createCost();

@@ -1,24 +1,18 @@
-<div id="add-expression" class="entity-form-container">
+<div id="add-expression" class="entity-form-container togglable">
+	
+	<div class="entity-form-header">
+		<h3 class="title">Expression</h3>
+		<g:locales/>
+		<div class="clear"></div>
+	</div>
+	
 	<div id="add-expression-col">
 		<g:form url="[controller:'expression', action:'save']" useToken="true">
-			<div class="row ${hasErrors(bean:expression,field:'name','errors')}">
-				<label for="name">Name</label>		
-				<input name="name" value="${fieldValue(bean:expression,field:'name')}"></input>
-				<div class="error-list"><g:renderErrors bean="${expression}" field="name" /></div>
-			</div>
-			<div class="row ${hasErrors(bean:expression,field:'description','errors')}">
-				<label for="description">Description</label>
-				<textarea name="description" rows="5">${fieldValue(bean:expression,field:'description')}</textarea>
-				<div class="error-list"><g:renderErrors bean="${expression}" field="description" /></div>
-			</div>
+			<g:i18nInput name="names" bean="${expression}" value="${expression.names}" label="Name" field="names"/>
+			<g:i18nInput name="descriptions" bean="${expression}" value="${expression.descriptions}" label="Description" field="descriptions"/>
+			<g:input name="code" label="Code" bean="${expression}" field="code"/>
+			<g:textarea name="expression" label="Expression" bean="${expression}" field="expression" rows="5"/>
 			
-			<div class="row">
-				<div class="${hasErrors(bean:expression,field:'expression','errors')}">
-					<label for="expression">Expression</label>
-					<textarea name="expression" id="expression" rows="5">${fieldValue(bean:expression,field:'expression')}</textarea>
-					<div class="error-list"><g:renderErrors bean="${expression}" field="expression" /></div>
-				</div>
-			</div>
 			<g:if test="${expression.id != null}">
 				<input type="hidden" name="id" value="${expression.id}"></input>
 			</g:if>
@@ -37,15 +31,6 @@
 				<label for="searchText">Search: </label>
 		    	<input name="searchText"></input>
 		    </div>
-		    <div class="row">
-		    	<label for="dataSetFilter">Categories: </label>
-				<select name="dataSetFilter">
-					<option value="all">-- all categories --</option>
-					<g:each in="${dataSets}" var="dataSet">
-						<option value="${dataSet.id}">${dataSet.name}</option>
-					</g:each>
-				</select>
-			</div>
 			<div class="row">
 				<label for="type">Search for: </label>
 				<input class="radio" type="radio" name="type" value="data-element" checked="checked"/>Data elements
@@ -72,31 +57,34 @@ $(document).ready(function() {
 			type: 'GET', data: $(element).serialize(), url: $(element).attr('action'), 
 			success: function(data, textStatus){
 				if (data.result == 'success') {
-					$(element).parent('div').find('.filtered').html(data.html);
-					$(element).parent('div').find('.filtered a').cluetip(cluetipOptions);
+					var filtered = $(element).parent('div').find('.filtered');
+					
+					filtered.html(data.html);
+					filtered.find('a').cluetip(cluetipOptions);
+					
+					filtered.find('li').bind('mousedown',
+						function(event){
+							if ($('.in-edition').size() == 1) {
+								var edition = $('.in-edition')[0]
+								$(edition).replaceSelection('['+$(this).data('code')+']');
+							}
+						}
+					);
+					
+					filtered.find('li')
 				}
 			}
 		});
 		return false;
 	});
 
-
-	$('.filtered li')
-	.live('mousedown',
-		function(event){
-			if ($('.in-edition').size() == 1) {
-				var edition = $('.in-edition')[0]
-				$(edition).replaceSelection('['+$(this).data('code')+']');
-			}
-		}
-	);
-	$('#expression')
-	.live('click keypress focus',
+	$('#add-expression textarea')
+	.bind('click keypress focus',
 		function(){
 			$(this).addClass('in-edition');
 		}
 	)
-	.live('blur',
+	.bind('blur',
 		function(){
 			$(this).removeClass('in-edition');
 		}

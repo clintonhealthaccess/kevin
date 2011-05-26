@@ -1,7 +1,6 @@
 package org.chai.kevin
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.hisp.dhis.dataelement.Constant;
 import org.chai.kevin.DataElement;
 
 class ExpressionController extends AbstractEntityController {
@@ -21,7 +20,7 @@ class ExpressionController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		return [expression: entity, dataSets: dataService.getDataSets()]
+		return [expression: entity, /*dataSets: dataService.getDataSets()*/]
 	}
 
 	def validate(def entity) {
@@ -34,6 +33,11 @@ class ExpressionController extends AbstractEntityController {
 	
 	def bindParams(def entity) {
 		entity.properties = params
+		
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = entity.descriptions
 	}
 	
 	def list = {
@@ -61,10 +65,10 @@ class ExpressionController extends AbstractEntityController {
 	}
 	
 	def getData = {
-		def dataSet = null
-		if (NumberUtils.isNumber(params['dataSetFilter'])) {
-			dataSet = DataSet.get(params['dataSetFilter'])
-		}
+//		def dataSet = null
+//		if (NumberUtils.isNumber(params['dataSetFilter'])) {
+//			dataSet = DataSet.get(params['dataSetFilter'])
+//		}
 		if (params['type'] == 'constant') {
 			def constants = dataService.searchConstants(params['searchText']);
 			render(contentType:"text/json") {
@@ -73,7 +77,7 @@ class ExpressionController extends AbstractEntityController {
 			}
 		}
 		else {
-			def dataElements = dataService.searchDataElements(params['searchText'], dataSet);
+			def dataElements = dataService.searchDataElements(params['searchText']);
 			render(contentType:"text/json") {
 				result = 'success'
 				html = g.render(template:'dataElements', model:[dataElements: dataElements])

@@ -1,7 +1,7 @@
 package org.chai.kevin.cost
 
 constraints = {
-	name (blank: false)
+	code(nullable: false, blank: false, unique: true)
 	expression (nullable: false)
 	costRampUp (nullable: false)
 	costType (nullable: false)

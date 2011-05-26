@@ -1,16 +1,16 @@
-<div class="entity-form-container" id="add-dashboard-objective">
+<div class="entity-form-container togglable" id="add-dashboard-objective">
+	
+	<div class="entity-form-header">
+		<h3 class="title">Dashboard objective</h3>
+		<g:locales/>
+		<div class="clear"></div>
+	</div>
+
 	<g:form url="[controller:'dashboardObjective', action:'save']" useToken="true">
-		<div class="row ${hasErrors(bean:objectiveEntry?.entry,field:'name','errors')}">
-			<label for="entry.name">Name</label>		
-			<input name="entry.name" value="${fieldValue(bean:objectiveEntry?.entry,field:'name')}"></input>
-			<div class="error-list"><g:renderErrors bean="${objectiveEntry?.entry}" field="name" /></div>
-		</div>
-		<div class="row ${hasErrors(bean:objectiveEntry?.entry,field:'description','errors')}">
-			<label for="entry.description">Description</label>
-			<textarea name="entry.description" rows="5">${fieldValue(bean:objectiveEntry?.entry,field:'description')}</textarea>
-			<div class="error-list"><g:renderErrors bean="${objectiveEntry?.entry}" field="description" /></div>
-		</div>
-		
+		<g:i18nInput name="entry.names" label="Name" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.names}" field="names"/>
+		<g:i18nInput name="entry.descriptions" label="Description" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.descriptions}" field="descriptions"/>
+		<g:input name="entry.code" label="Code" bean="${objectiveEntry?.entry}" field="code"/>
+
 		<g:if test="${currentObjective != null}">
 			<input type="hidden" name="currentObjective" value="${currentObjective.id}"></input>
 		</g:if>
@@ -19,17 +19,8 @@
 			<input type="hidden" name="id" value="${objectiveEntry.id}"></input>
 		</g:else>
 		
-		<div class="row ${hasErrors(bean:objectiveEntry,field:'weight','errors')}">
-			<label for="weight">Weight</label>
-			<input type="text" name="weight" value="${fieldValue(bean:objectiveEntry,field:'weight')}"></input>
-			<div class="error-list"><g:renderErrors bean="${objectiveEntry}" field="weight" /></div>
-		</div>
-		
-		<div class="row ${hasErrors(bean:objectiveEntry,field:'order','errors')}">
-			<label for="order">Order</label>
-			<input type="text" name="order" value="${fieldValue(bean:objectiveEntry,field:'order')}"></input>
-			<div class="error-list"><g:renderErrors bean="${objectiveEntry}" field="order" /></div>
-		</div>
+		<g:input name="weight" label="Weight" bean="${objectiveEntry}" field="weight"/>
+		<g:input name="order" label="Order" bean="${objectiveEntry}" field="order"/>
 		
 		<div class="row">
 			<button type="submit">Save objective</button>

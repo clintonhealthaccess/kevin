@@ -46,7 +46,7 @@
 					<h5>Strategic Objective:</h5>
 					<div class="dropdown">
 						<g:if test="${costTable.currentObjective != null}">
-							<a href="#" class="selected">${costTable.currentObjective.name}</a>
+							<a href="#" class="selected"><g:i18n field="${costTable.currentObjective.names}"/></a>
 						</g:if>
 						<g:else>
 							<a href="#" class="selected">no objective selected</a>
@@ -58,7 +58,7 @@
 										<li>
 											<span>
 												<a href="${createLink(controller: "cost", action:"view", params:[period: costTable.currentPeriod.id, objective: objective.id, organisation: costTable.currentOrganisationId])}">
-													${objective.name}
+													<g:i18n field="${objective.names}"/>
 												</a>
 											</span>
 											<span>
@@ -105,7 +105,7 @@
 										<tr>
 											<th class="cell label row-${target.id}" data-row="${target.id}">
 												<span>
-													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: costTable.currentOrganisationId])}">${target.name}</a>
+													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: costTable.currentOrganisationId])}"><g:i18n field="${target.names}"/></a>
 												</span>
 												<span>
 													<a href=${createLink(controller:"costTarget", action:"edit", id: target.id)} class="flow-edit">(edit)</a>

@@ -2,8 +2,6 @@ dataSource {
 	pooled = true
 	driverClassName = "com.mysql.jdbc.Driver"
 	// driverClassName = "org.hsqldb.jdbcDriver"
-	username = "dhis2"
-	password = "dhis2"
 
 	properties {
 		maxActive = 50
@@ -61,7 +59,10 @@ environments {
 	production {
 		dataSource {
 			dbCreate = "update"
-			url = "jdbc:mysql://localhost:8889/dhis2"
+			url = "jdbc:mysql://localhost:8889/kevin"
+			
+			username = "root"
+			password = "root"
 		}
 	}
 }

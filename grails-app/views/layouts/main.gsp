@@ -41,6 +41,7 @@
 
 	<div id="container" class="">
 		<div id="header">
+		
 			<h1>Welcome to Kevin</h1>
 
 			<div id="navigation">
@@ -68,6 +69,7 @@
 
 	<!-- utilities -->
 	<script type="text/javascript">
+	
 		/**
 		 * edition pane functionality
 		 */
@@ -167,8 +169,11 @@
 			}
 			
 		})(jQuery);
-		
-		
+		// end of edition pane functionality
+
+		/**
+		 * options for cluetip plugin
+		 */		
 		var cluetipOptions = {
 			ajaxProcess : function(data) {
 				return data.html;
@@ -181,7 +186,6 @@
 			dropShadow : false,
 			width : '400px'
 		};
-		// end of edition pane functionality
 
 		/**
 		 * nice table functionality
@@ -266,10 +270,26 @@
 		// END of explanation functionality
 		
 		$(document).ready(function() {
+		
+			$(document).delegate('.togglable a.toggle-link', 'click', function(){
+				var togglable = $(this).parents('.togglable');
+				var toggle = $(this).data('toggle')
+				$(togglable).find('.toggle-entry').each(function(key, value){
+					if (toggle != $(this).data('toggle')) $(this).hide();
+					else $(this).show();
+				});
+				$(togglable).find('.toggle-link').each(function(key, value){
+					if (toggle != $(this).data('toggle')) $(this).removeClass('no-link');
+					else $(this).addClass('no-link');
+				});
+				return false;
+			});
+		
 			/**
 			 * drop-down menus
+			 * TODO transform in jQuery Plugin style
 			 **/
-			$(".dropdown .selected").live('click', function() {
+			$(document).delegate('.dropdown .selected', 'click', function() {
 				$(this).parent(".dropdown").find("div.dropdown-list").toggle();
 				return false;
 			});

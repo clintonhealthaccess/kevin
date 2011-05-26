@@ -18,12 +18,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
+import org.chai.kevin.Translatable;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Columns;
 
 @Entity(name="CostRampUp")
 @Table(name="dhsst_cost_ramp_up")
-public class CostRampUp {
+public class CostRampUp extends Translatable {
 
 	private Long id;
 	private String name;
@@ -47,14 +48,6 @@ public class CostRampUp {
 	}
 	public void setYears(Map<Integer, CostRampUpYear> years) {
 		this.years = years;
-	}
-	
-	@Basic(optional=false)
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 }

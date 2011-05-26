@@ -37,16 +37,16 @@
 					<div id="top" class="box">
 						<table>
 							<tr>
-								<td><h5 class="float">Objctives:</h5>${dsrTable.objective.name}</td>
+								<td><h5 class="float">Objctives:</h5><g:i18n field="${dsrTable.objective.names}"/></td>
 							</tr>
 						</table>
 					</div>
 					<div id="right" class="box">
 						<table>
 							<tr>
-								<td>${dsrTable.objective.name}</td>
+								<td><g:i18n field="${dsrTable.objective.names}"/></td>
 								<g:each in="${dsrTable.targets}" var="target">
-									<td>${target.name}</td>
+									<td><g:i18n field="${target.names}"/></td>
 								</g:each>
 							</tr>
 							<tr>

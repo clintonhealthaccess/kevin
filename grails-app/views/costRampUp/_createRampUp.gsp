@@ -1,12 +1,17 @@
 <%@ page import="org.chai.kevin.cost.CostTarget.CostType" %>
 
-<div id="add-ramp-up" class="entity-form-container">
+<div id="add-ramp-up" class="entity-form-container togglable">
+
+	<div class="entity-form-header">
+		<h3 class="title">Costing ramp-up</h3>
+		<g:locales/>
+		<div class="clear"></div>
+	</div>
+	
 	<g:form url="[controller:'costRampUp', action:'save']" useToken="true">
-		<div class="row ${hasErrors(bean:rampUp,field:'name','errors')}">
-			<label for="name">Name</label>		
-			<input name="name" value="${fieldValue(bean:rampUp,field:'name')}"></input>
-			<div class="error-list"><g:renderErrors bean="${rampUp}" field="name" /></div>
-		</div>
+		<g:i18nInput name="names" bean="${rampUp}" value="${rampUp.names}" label="Name" field="names"/>
+		<g:i18nInput name="descriptions" bean="${rampUp}" value="${rampUp.descriptions}" label="Description" field="descriptions"/>
+		<g:input name="code" label="Code" bean="${rampUp}" field="code"/>
 		
 		<g:if test="${rampUp != null}">
 			<input type="hidden" name="id" value="${rampUp.id}"></input>

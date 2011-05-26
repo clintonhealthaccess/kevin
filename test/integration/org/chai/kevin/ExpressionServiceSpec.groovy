@@ -2,8 +2,6 @@ package org.chai.kevin
 
 import java.util.Date;
 
-import org.chai.kevin.DataElement.DataElementType;
-import org.chai.kevin.Expression.ExpressionType;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.DataElement;
@@ -23,64 +21,64 @@ class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "aggregated value"() {
 		setup:
-		new DataElement(name:"Element Enum", shortName: "Element Enum", code: "CODEENUM", description: "Description", type: DataElementType.ENUM).save(faileOnError: true)
-		new DataElement(name:"Element Int", shortName: "Element Int", code: "CODEINT", description: "Description", type: DataElementType.INT).save(faileOnError: true)
+		new DataElement(names:j(["en":"Element Enum"]), code: "CODEENUM", descriptions:j(["en":"Description"]), type: ValueType.ENUM).save(faileOnError: true)
+		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: ValueType.VALUE).save(faileOnError: true)
 		
 		new DataValue(
-				dataElement: DataElement.findByName("Element Enum"),
+				dataElement: DataElement.findByCode("CODEENUM"),
 				period: Period.list()[1],
-				source: OrganisationUnit.findByName("Butaro DH"),
+				organisationUnit: OrganisationUnit.findByName("Butaro DH"),
 //			optionCombo: DataElementCategoryOptionCombo.list()[0],
 			value: "test",
 //			comment: "Comment",
 //			storedBy: "StoredBy",
-			timestamp: new Date(),
+			timestamp: new Date()
 //			followup: false,
 		).save(failOnError: true)
 		
 		new DataValue(
-				dataElement: DataElement.findByName("Element Enum"),
+				dataElement: DataElement.findByCode("CODEENUM"),
 				period: Period.list()[1],
 	//			optionCombo: DataElementCategoryOptionCombo.list()[0],
-				source: OrganisationUnit.findByName("Kivuye HC"),
+				organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 			value: "absent",
 //			comment: "Comment",
 //			storedBy: "StoredBy",
-			timestamp: new Date(),
+			timestamp: new Date()
 //			followup: false,
 		).save(failOnError: true)
 		
 		new DataValue(
-				dataElement: DataElement.findByName("Element Int"),
+				dataElement: DataElement.findByCode("CODEINT"),
 				period: Period.list()[1],
 	//			optionCombo: DataElementCategoryOptionCombo.list()[0],
-				source: OrganisationUnit.findByName("Butaro DH"),
+				organisationUnit: OrganisationUnit.findByName("Butaro DH"),
 			value: "20",
 //			comment: "Comment",
 //			storedBy: "StoredBy",
-			timestamp: new Date(),
+			timestamp: new Date()
 //			followup: false,
 		).save(failOnError: true)
 		
 		new DataValue(
-				dataElement: DataElement.findByName("Element Int"),
+				dataElement: DataElement.findByCode("CODEINT"),
 				period: Period.list()[1],
 	//			optionCombo: DataElementCategoryOptionCombo.list()[0],
-				source: OrganisationUnit.findByName("Kivuye HC"),
+				organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 			value: "10",
 //			comment: "Comment",
 //			storedBy: "StoredBy",
-			timestamp: new Date(),
+			timestamp: new Date()
 //			followup: false,
 		).save(failOnError: true)
 		
-		new Expression(name:"Enum", expression: "if(\"["+DataElement.findByName("Element Enum").id+"]\"==\"test\",20,10)", type: ExpressionType.VALUE).save(failOnError: true)
-		new Expression(name:"Int", expression: "["+DataElement.findByName("Element Int").id+"]", type: ExpressionType.VALUE).save(failOnError: true)
+		new Expression(names:j(["en":"Enum"]), code:"EXPRENUM", expression: "if(\"["+DataElement.findByCode("CODEENUM").id+"]\"==\"test\",20,10)", type: ValueType.VALUE).save(failOnError: true)
+		new Expression(names:j(["en":"Int"]), code:"EXPRINT", expression: "["+DataElement.findByCode("CODEINT").id+"]", type: ValueType.VALUE).save(failOnError: true)
 		
 		
 		when:
 		def period = Period.list()[1]
-		def expression = Expression.findByName(expressionName)
+		def expression = Expression.findByCode(expressionName)
 		def organisation = IntegrationTests.getOrganisation(organisationName)
 		Double value = expressionService.getAggregatedValue(expression, period, organisation, new HashMap())
 		
@@ -89,16 +87,16 @@ class ExpressionServiceSpec extends IntegrationTests {
 				
 		where:
 		expressionName	| organisationName	| expectedValue
-		"Constant 10"	| "Butaro DH"		| 10d
-		"Constant 10"	| "Kivuye HC"		| 10d
-		"Constant 10"	| "Burera"			| 10d
-		"Constant 10"	| "North"			| 10d
-		"Enum"			| "Butaro DH"		| 20d
-		"Enum"			| "Kivuye HC"		| 10d
-		"Enum"			| "Burera"			| 15d
-		"Int"			| "Butaro DH"		| 20d
-		"Int"			| "Kivuye HC"		| 10d
-		"Int"			| "Burera"			| 30d
+		"CONST10"		| "Butaro DH"		| 10d
+		"CONST10"		| "Kivuye HC"		| 10d
+		"CONST10"		| "Burera"			| 10d
+		"CONST10"		| "North"			| 10d
+		"EXPRENUM"		| "Butaro DH"		| 20d
+		"EXPRENUM"		| "Kivuye HC"		| 10d
+		"EXPRENUM"		| "Burera"			| 15d
+		"EXPRINT"		| "Butaro DH"		| 20d
+		"EXPRINT"		| "Kivuye HC"		| 10d
+		"EXPRINT"		| "Burera"			| 30d
 		
 		
 	}

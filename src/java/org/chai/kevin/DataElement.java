@@ -20,61 +20,58 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DataElement extends Translatable {
 
-	public enum DataElementType {
-		BOOL, ENUM, INT, DATE, STRING
-	};
-	
+	private static final long serialVersionUID = -5866136027581146157L;
+
 	private Long id;
-	private String code;
 	
-	private DataElementType type;
+	private ValueType type;
 	private Enum enume;
+	private String info;
 
 	@Id
 	@GeneratedValue
-	@Column(name="dataelementid")
+	@Column
 	public Long getId() {
 		return id;
 	}
 	
-	@Basic
-	public String getCode() {
-		return code;
-	}
-	
 	@Enumerated(EnumType.STRING)
-	@Column(nullable=false, name="valuetype")
-	public DataElementType getType() {
+	@Column(nullable=false)
+	public ValueType getType() {
 		return type;
 	}
 	
 	@ManyToOne(targetEntity=Enum.class)
-	@JoinColumn(name="enumid")
+	@JoinColumn
 	public Enum getEnume() {
 		return enume;
 	}
 	
+	@Basic
+	public String getInfo() {
+		return info;
+	}
+	
 	@Transient
 	public boolean isAggregatable() {
-		return getType() == DataElementType.INT;
+		return getType() == ValueType.VALUE;
 	}
 	
 	public void setId(Long id) {
 		this.id = id;
 	}
 	
-	public void setCode(String code) {
-		this.code = code;
-	}
-	
 	public void setEnume(Enum enume) {
 		this.enume = enume;
 	}
 	
-	public void setType(DataElementType type) {
+	public void setType(ValueType type) {
 		this.type = type;
 	}
 	
+	public void setInfo(String info) {
+		this.info = info;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -103,10 +100,8 @@ public class DataElement extends Translatable {
 
 	@Override
 	public String toString() {
-		return "DataElement [name=" + getName() + ", code=" + code + ", type="
+		return "DataElement [code=" + getCode() + ", type="
 				+ type + ", enume=" + enume + "]";
 	}
-	
-	
 	
 }

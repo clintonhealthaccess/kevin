@@ -27,45 +27,45 @@ class CostTableServiceSpec extends IntegrationTests {
 	def "cost service returns expected values"() {
 		when:
 		def period = Period.list()[0]
-		def objective = CostObjective.findByName("Human Resources for Health")
+		def objective = CostObjective.findByCode("HRH")
 		def costTable = costTableService.getCostTable(period, objective, organisationService.getRootOrganisation())
-		def expectedTarget = CostTarget.findByName(targetName)
+		def expectedTarget = CostTarget.findByCode(targetCode)
 		
 		then:
 		costTable.getCost(expectedTarget, year).value == value
 		
 		where:
-		targetName	| year	| value
-		"Training"	| 1		| 4.0d
-		"Training"	| 2		| 4.0d
-		"Training"	| 3		| 4.0d
-		"Training"	| 4		| 4.0d
-		"Training"	| 5		| 4.0d
-		"Average"	| 1		| 4.0d
-		"Average"	| 2		| 5.0d
-		"Average"	| 3		| 6.0d
-		"Average"	| 4		| 7.0d
-		"Average"	| 5		| 8.0d
+		targetCode	| year	| value
+		"TRAINING"	| 1		| 4.0d
+		"TRAINING"	| 2		| 4.0d
+		"TRAINING"	| 3		| 4.0d
+		"TRAINING"	| 4		| 4.0d
+		"TRAINING"	| 5		| 4.0d
+		"AVERAGE"	| 1		| 4.0d
+		"AVERAGE"	| 2		| 5.0d
+		"AVERAGE"	| 3		| 6.0d
+		"AVERAGE"	| 4		| 7.0d
+		"AVERAGE"	| 5		| 8.0d
 	}
 	
 	def "cost service takes into account only selected groups"() {
 		setup:
-		def costObjective = new CostObjective(name:"Test Objective")
-		costObjective.addTarget new CostTarget(name:"Test Target", expression: Expression.findByName("Constant 10"), costRampUp: CostRampUp.findByName("Constant"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
+		def costObjective = new CostObjective(code:"Test Objective")
+		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
 		costObjective.save(failOnError: true)
 		
 		when:
 		def period = Period.list()[0]
-		def objective = CostObjective.findByName("Test Objective")
+		def objective = CostObjective.findByCode("Test Objective")
 		def costTable = costTableService.getCostTable(period, objective, organisationService.getRootOrganisation())
-		def expectedTarget = CostTarget.findByName(targetName)
+		def expectedTarget = CostTarget.findByCode(targetCode)
 		
 		
 		then:
 		costTable.getCost(expectedTarget, year).value == value
 		
 		where:
-		targetName		| year	| value
+		targetCode		| year	| value
 		"Test Target"	| 1		| 2.0d
 		"Test Target"	| 2		| 2.0d
 		"Test Target"	| 3		| 2.0d
@@ -77,7 +77,7 @@ class CostTableServiceSpec extends IntegrationTests {
 	def "cost service returns expected years and targets"() {
 		when:
 		def period = Period.list()[0]
-		def objective = CostObjective.findByName("Human Resources for Health")
+		def objective = CostObjective.findByCode("HRH")
 		def costTable = costTableService.getCostTable(period, objective, organisationService.getRootOrganisation())
 		
 		then:
@@ -86,13 +86,13 @@ class CostTableServiceSpec extends IntegrationTests {
 		
 		where:
 		expectedTargets			| expectedYears
-		["Training", "Average"]	| [1, 2, 3, 4, 5]
+		["TRAINING", "AVERAGE"]	| [1, 2, 3, 4, 5]
 	}
 	
 	def "cost service returns correct explanation"() {
 		when:
 		def period = Period.list()[0]
-		def target = CostTarget.findByName(targetName)
+		def target = CostTarget.findByCode(targetCode)
 		def organisation = organisationService.getOrganisation(OrganisationUnit.findByName(organisationName).id)
 		def explanation = costTableService.getExplanation(period, target, organisation)
 		
@@ -101,39 +101,39 @@ class CostTableServiceSpec extends IntegrationTests {
 		cost.value == expectedValue
 		
 		where:
-		targetName	| organisationName	| expectedOrganisationName	| year	| expectedValue
-		"Training"	| "Rwanda"			| "North"					| 1		| 4.0d
-		"Training"	| "Rwanda"			| "North"					| 2		| 4.0d
-		"Training"	| "Rwanda"			| "North"					| 3		| 4.0d
-		"Training"	| "Rwanda"			| "North"					| 4		| 4.0d
-		"Training"	| "Rwanda"			| "North"					| 5		| 4.0d
-		"Training"	| "North"			| "Burera"					| 1		| 4.0d
-		"Training"	| "North"			| "Burera"					| 2		| 4.0d
-		"Training"	| "North"			| "Burera"					| 3		| 4.0d
-		"Training"	| "North"			| "Burera"					| 4		| 4.0d
-		"Training"	| "North"			| "Burera"					| 5		| 4.0d
-		"Training"	| "Burera"			| "Kivuye HC"				| 1		| 2.0d
-		"Training"	| "Burera"			| "Kivuye HC"				| 2		| 2.0d
-		"Training"	| "Burera"			| "Kivuye HC"				| 3		| 2.0d
-		"Training"	| "Burera"			| "Kivuye HC"				| 4		| 2.0d
-		"Training"	| "Burera"			| "Kivuye HC"				| 5		| 2.0d
-		"Training"	| "Burera"			| "Butaro DH"				| 1		| 2.0d
-		"Training"	| "Burera"			| "Butaro DH"				| 2		| 2.0d
-		"Training"	| "Burera"			| "Butaro DH"				| 3		| 2.0d
-		"Training"	| "Burera"			| "Butaro DH"				| 4		| 2.0d
-		"Training"	| "Burera"			| "Butaro DH"				| 5		| 2.0d
+		targetCode	| organisationName	| expectedOrganisationName	| year	| expectedValue
+		"TRAINING"	| "Rwanda"			| "North"					| 1		| 4.0d
+		"TRAINING"	| "Rwanda"			| "North"					| 2		| 4.0d
+		"TRAINING"	| "Rwanda"			| "North"					| 3		| 4.0d
+		"TRAINING"	| "Rwanda"			| "North"					| 4		| 4.0d
+		"TRAINING"	| "Rwanda"			| "North"					| 5		| 4.0d
+		"TRAINING"	| "North"			| "Burera"					| 1		| 4.0d
+		"TRAINING"	| "North"			| "Burera"					| 2		| 4.0d
+		"TRAINING"	| "North"			| "Burera"					| 3		| 4.0d
+		"TRAINING"	| "North"			| "Burera"					| 4		| 4.0d
+		"TRAINING"	| "North"			| "Burera"					| 5		| 4.0d
+		"TRAINING"	| "Burera"			| "Kivuye HC"				| 1		| 2.0d
+		"TRAINING"	| "Burera"			| "Kivuye HC"				| 2		| 2.0d
+		"TRAINING"	| "Burera"			| "Kivuye HC"				| 3		| 2.0d
+		"TRAINING"	| "Burera"			| "Kivuye HC"				| 4		| 2.0d
+		"TRAINING"	| "Burera"			| "Kivuye HC"				| 5		| 2.0d
+		"TRAINING"	| "Burera"			| "Butaro DH"				| 1		| 2.0d
+		"TRAINING"	| "Burera"			| "Butaro DH"				| 2		| 2.0d
+		"TRAINING"	| "Burera"			| "Butaro DH"				| 3		| 2.0d
+		"TRAINING"	| "Burera"			| "Butaro DH"				| 4		| 2.0d
+		"TRAINING"	| "Burera"			| "Butaro DH"				| 5		| 2.0d
 		
 	}
 	
 	def "explanation applies to correct organisation"() {
 		setup:
-		def costObjective = new CostObjective(name:"Test Objective")
-		costObjective.addTarget new CostTarget(name:"Test Target", expression: Expression.findByName("Constant 10"), costRampUp: CostRampUp.findByName("Constant"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
+		def costObjective = new CostObjective(code:"Test Objective")
+		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
 		costObjective.save(failOnError: true)
 		
 		when:
 		def period = Period.list()[0]
-		def target = CostTarget.findByName("Test Target")
+		def target = CostTarget.findByCode("Test Target")
 		def explanation = costTableService.getExplanation(period, target, getOrganisation("Burera"))
 		
 		then:
@@ -145,7 +145,7 @@ class CostTableServiceSpec extends IntegrationTests {
 	def getTargets(def targets) {
 		def result = []
 		targets.each {
-			result.add CostTarget.findByName(it)
+			result.add CostTarget.findByCode(it)
 		}
 		return result
 	}

@@ -1,5 +1,5 @@
 
-<%@ page import="org.hisp.dhis.dataelement.Constant" %>
+<%@ page import="org.chai.kevin.Constant" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -26,8 +26,6 @@
 	
 	                            <g:sortableColumn property="value" title="${message(code: 'constant.value.label', default: 'Value')}" />
 	                        
-	                            <g:sortableColumn property="shortName" title="${message(code: 'constant.shortName.label', default: 'Short Name')}" />
-	                        
 	                            <g:sortableColumn property="description" title="${message(code: 'constant.description.label', default: 'Description')}" />
 	                        
 	                        	<td></td>
@@ -36,13 +34,11 @@
 	                    <tbody>
 	                    <g:each in="${constants}" status="i" var="constant">
 	                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-	                            <td class="edit-constant-link"><g:link action="edit" id="${constant.id}">${fieldValue(bean: constant, field: "name")}</g:link></td>
+	                            <td class="edit-constant-link"><g:link action="edit" id="${constant.id}"><g:i18n field="${constant.names}"/></g:link></td>
 	                        
-	                            <td>${fieldValue(bean: constant, field: "value")}</td>
+	                            <td>${constant.value}</td>
 	                        
-	                            <td>${fieldValue(bean: constant, field: "shortName")}</td>
-	                        
-	                            <td>${fieldValue(bean: constant, field: "description")}</td>
+	                            <td><g:i18n field="${constant.descriptions}"/></td>
 	                        
 	                        	<td class="delete-constant-link"><a href="${createLink(controller:'constant', action:'delete', id:constant.id)}">delete</a></td>
 	                        </tr>

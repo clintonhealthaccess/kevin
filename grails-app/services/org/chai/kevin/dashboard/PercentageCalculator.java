@@ -93,14 +93,22 @@ public class PercentageCalculator {
 	}
 
 	protected DashboardPercentage getValueForLeafTarget(Expression expression, DashboardTarget target, Organisation organisation, Period period, Map<DataElement, Object> values) {
-		Double value = (Double)expressionService.getValue(expression, period, organisation, values);
-		
-		if (ExpressionService.hasNullValues(values.values())) {
+		Object objectValue = expressionService.getValue(expression, period, organisation, values);
+		try {
+			Double value = Double.parseDouble(String.valueOf(objectValue));
+			if (ExpressionService.hasNullValues(values.values())) {
+				return new DashboardPercentage(Status.MISSING_VALUE, organisation.getOrganisationUnit(), target, period);
+			}
+			else {
+				return new DashboardPercentage(value, organisation.getOrganisationUnit(), target, period);
+			}
+		}
+		catch (NumberFormatException e) {
+			log.error("could not transform value to double: "+objectValue);
+			// TODO use other status -> INVALID
 			return new DashboardPercentage(Status.MISSING_VALUE, organisation.getOrganisationUnit(), target, period);
 		}
-		else {
-			return new DashboardPercentage(value, organisation.getOrganisationUnit(), target, period);
-		}
+		
 	}
 	
 	protected DashboardPercentage getValueForNonLeafTarget(DashboardTarget target, Organisation organisation, Period period, Map<Organisation, DashboardPercentage> values) {

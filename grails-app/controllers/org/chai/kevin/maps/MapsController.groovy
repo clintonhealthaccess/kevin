@@ -26,7 +26,7 @@ class MapsController extends AbstractReportController {
 			organisationTree: organisationService.getOrganisationTreeUntilLevel(new Integer(mapsService.getOrganisationLevel()).intValue()-1),
 			currentPeriod: period, 
 			currentTarget: target,
-			currentOrganisation: organisation 
+			currentOrganisation: organisation
 		]
 	}
 	

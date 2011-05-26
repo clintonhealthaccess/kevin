@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hisp.dhis.dataelement.Constant;
-import org.hisp.dhis.dataelement.ConstantService;
 import org.chai.kevin.DataElement;
 import org.chai.kevin.DataValue;
 import org.hisp.dhis.period.Period;
@@ -30,7 +28,6 @@ public class ExpressionService {
 	
     final String NULL_REPLACEMENT = "0";
 
-	private ConstantService constantService;
 	private DataService dataService;
 	private DataValueService dataValueService;
 	private OrganisationService organisationService;
@@ -45,10 +42,13 @@ public class ExpressionService {
     }
 	
 	private static Object evaluate(String expression) {
+		log.debug("evaluate(expression="+expression+")");
 		JEP parser = getJEPParser();
         
         parser.parseExpression( expression );
-        return parser.getValueAsObject();
+        Object value = parser.getValueAsObject();
+        log.debug("evaluate(...)="+value);
+        return value;
 	}
 	
 	/**
@@ -160,8 +160,9 @@ public class ExpressionService {
 			while (matcher.find()) {
 				String match = matcher.group();
 				match = match.replaceAll("[\\[c\\]]", "");
-				Constant constant = constantService.getConstant(Integer.parseInt(match));
+				Constant constant = dataService.getConstant(Long.parseLong(match));
 				
+				// TODO constant does not exist
 				Object value = constant.getValue();
 
 				matcher.appendReplacement(buffer, String.valueOf(value));
@@ -180,6 +181,7 @@ public class ExpressionService {
 				
 				DataElement dataElement = dataService.getDataElement(Long.parseLong(match));
 
+				// TODO constant does not exist
 				Object value = getDataValue(dataElement, period, organisation, values);
 				
 				valuesForOrganisation.put(dataElement, value==null?null:String.valueOf(value));
@@ -240,7 +242,7 @@ public class ExpressionService {
 			String match = matcher.group();
 			match = match.replaceAll("[\\[c\\]]", "");
 			try {
-				if (!constantService.constantExists(Integer.parseInt(match))) {
+				if ( dataService.getConstant( Long.parseLong(match)) == null ) {
 	                return "constant_does_not_exist";
 				}
 			}
@@ -318,10 +320,6 @@ public class ExpressionService {
         }
         return convertedFormula.toString();
     }
-    
-	public void setConstantService(ConstantService constantService) {
-		this.constantService = constantService;
-	}
 	
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;

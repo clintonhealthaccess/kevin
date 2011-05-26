@@ -1,8 +1,8 @@
 package org.chai.kevin;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,20 +19,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class Enum extends Translatable {
 
 	private Long id;
-	private String code;
 
-	private List<EnumOption> enumOptions;
+	private List<EnumOption> enumOptions = new ArrayList<EnumOption>();
 	
 	@Id
 	@GeneratedValue
-	@Column(name="enumid")
+	@Column
 	public Long getId() {
 		return id;
-	}
-	
-	@Basic
-	public String getCode() {
-		return code;
 	}
 	
 	@OneToMany(mappedBy="enume", targetEntity=EnumOption.class)
@@ -42,10 +36,6 @@ public class Enum extends Translatable {
 	
 	public void setId(Long id) {
 		this.id = id;
-	}
-	
-	public void setCode(String code) {
-		this.code = code;
 	}
 	
 	public void setEnumOptions(List<EnumOption> enumOptions) {

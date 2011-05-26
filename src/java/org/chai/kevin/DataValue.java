@@ -20,7 +20,7 @@ import org.hisp.dhis.period.Period;
 
 @Entity(name="DataValue")
 @Table(name="datavalue",
-		uniqueConstraints=@UniqueConstraint(columnNames={"dataelementid", "periodid", "sourceid"})
+		uniqueConstraints=@UniqueConstraint(columnNames={"dataElement", "period", "organisationUnit"})
 )
 @Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 public class DataValue {
@@ -42,33 +42,33 @@ public class DataValue {
 
 	@NaturalId
 	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false)
-	@JoinColumn(name="sourceid", nullable=false)
-	public OrganisationUnit getSource() {
+	@JoinColumn(nullable=false)
+	public OrganisationUnit getOrganisationUnit() {
 		return organisationUnit;
 	}
 	
 	@NaturalId
 	@ManyToOne(targetEntity=Period.class, optional=false)
-	@JoinColumn(name="periodid", nullable=false)
+	@JoinColumn(nullable=false)
 	public Period getPeriod() {
 		return period;
 	}
 	
 	@NaturalId
 	@ManyToOne(targetEntity=DataElement.class, optional=false)
-	@JoinColumn(name="dataelementid", nullable=false)
+	@JoinColumn(nullable=false)
 	public DataElement getDataElement() {
 		return dataElement;
 	}
 	
 	@Basic(optional=false)
-	@Column(nullable=false)
+	@Column(nullable=false, length=511)
 	public String getValue() {
 		return value;
 	}
 	
 	@Basic
-	@Column(name="lastupdated")
+	@Column
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -78,7 +78,7 @@ public class DataValue {
 		this.id = id;
 	}
 	
-	public void setSource(OrganisationUnit organisationUnit) {
+	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
 		this.organisationUnit = organisationUnit;
 	}
 	

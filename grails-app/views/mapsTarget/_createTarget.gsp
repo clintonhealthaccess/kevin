@@ -1,15 +1,9 @@
 <div id="add-cost-target" class="entity-form-container">
 	<g:form url="[controller:'mapsTarget', action:'save']" useToken="true">
-		<div class="row ${hasErrors(bean:target,field:'name','errors')}">
-			<label for="name">Name</label>		
-			<input name="name" value="${fieldValue(bean:target,field:'name')}"></input>
-			<div class="error-list"><g:renderErrors bean="${target}" field="name" /></div>
-		</div>
-		<div class="row ${hasErrors(bean:target,field:'description','errors')}">
-			<label for="description">Description</label>
-			<textarea name="description" rows="5">${fieldValue(bean:target,field:'description')}</textarea>
-			<div class="error-list"><g:renderErrors bean="${target}" field="description" /></div>
-		</div>
+		<g:i18nInput name="names" bean="${target}" value="${target.names}" label="Name" field="names"/>
+		<g:i18nInput name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
+		<g:input name="code" label="Code" bean="${target}" field="code"/>
+	
 		<div class="row">
 			<h5>Expressions</h5>
 			<div class="float-right">
@@ -24,7 +18,7 @@
 						<option value="null">-- select an expression --</option>
 						<g:each in="${expressions}" var="expression">
 							<option value="${expression.id}" ${expression.id+''==fieldValue(bean: target, field: 'expression.id')+''?'selected="selected"':''}>
-								${expression.name}
+								<g:i18n field="${expression.names}"/>
 							</option>
 						</g:each>
 					</select>

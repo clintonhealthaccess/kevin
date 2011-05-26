@@ -30,9 +30,9 @@
 	                    <tbody>
 	                    <g:each in="${expressions}" status="i" var="expression">
 	                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-	                            <td class="edit-expression-link"><g:link action="edit" id="${expression.id}">${fieldValue(bean: expression, field: "name")}</g:link></td>
+	                            <td class="edit-expression-link"><g:link action="edit" id="${expression.id}"><g:i18n field="${expression.names}"/></g:link></td>
 	                        
-	                            <td>${fieldValue(bean: expression, field: "description")}</td>
+	                            <td><g:i18n field="${expression.descriptions}"/></td>
 	                        
 	                        	<td class="delete-expression-link"><a href="${createLink(controller:'expression', action:'delete', id:expression.id)}">delete</a></td>
 	                        </tr>

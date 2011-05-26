@@ -45,7 +45,7 @@ abstract class AbstractEntityController {
 	def create = {
 		def entity = createEntity()
 		bindParams(entity);
-
+		
 		render(contentType:"text/json") {
 			result = 'success'
 			html = g.render(template:getTemplate(), model:getModel(entity))
@@ -60,6 +60,7 @@ abstract class AbstractEntityController {
 				entity = createEntity()
 			}
 			bindParams(entity)
+			log.debug('bound params, entity: '+entity)
 			if (!validate(entity)) {
 				log.info ("validation error in ${entity}: ${entity.errors}}")
 				def htmlText = g.render (template:getTemplate(), model:getModel(entity))
@@ -97,5 +98,6 @@ abstract class AbstractEntityController {
 	protected abstract def createEntity();
 	
 	protected abstract def getTemplate();
+	
 	
 }

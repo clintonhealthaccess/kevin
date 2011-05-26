@@ -25,7 +25,7 @@ public class DataValueService {
          .add(Restrictions.naturalId()
         		 .set("dataElement", dataElement)
         		 .set("period", period)
-        		 .set("source", organisation.getOrganisationUnit())
+        		 .set("organisationUnit", organisation.getOrganisationUnit())
          )
          .setCacheRegion("org.hibernate.cache.DataValueQueryCache")
          .setCacheable(true);

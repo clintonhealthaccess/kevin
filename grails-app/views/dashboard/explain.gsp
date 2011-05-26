@@ -8,7 +8,7 @@
     </head>
     <body>
 		<div id="dashboard-explanation">
-			<h3>${explanation.entry.name} in ${explanation.organisation.name}</h3>
+			<h3><g:i18n field="${explanation.entry.names}"/> in ${explanation.organisation.name}</h3>
 			<g:if test="${explanation.average.status == Status.MISSING_EXPRESSION || (explanation.leaf && explanation.average.isHasMissingExpression())}">
 				<div class="red bold">This group doesn't have any associated expression.</div>
 			</g:if>
@@ -25,7 +25,7 @@
 								<h5>${explanation.level.name} average:</h5>
 							</g:if>
 							<g:else>
-								<h5>${explanation.entry.name} average:</h5>
+								<h5><g:i18n field="${explanation.entry.names}"/> average:</h5>
 							</g:else>
 							<a href="#" onclick="$('#values-${explanation.entry.id}-${explanation.organisation.id}').slideToggle(); return false;">(scores)</a>
 							<span class="value">
@@ -69,7 +69,7 @@
 											<g:each in="${explanation.objectives}">
 												<g:set var="objective" value="${it}"/>
 												<li class="data">
-													<div class="objective">${objective.key.entry.name}</div>
+													<div class="objective"><g:i18n field="${objective.key.entry.names}"/></div>
 													<div class="weight">${objective.key.weight}</div>
 													<div class="value">
 														<g:if test="${objective.value.valid}">
@@ -107,7 +107,7 @@
 									<div class="box float-left">
 										<div class="expression">
 											<div>
-												<a href="${createLink(controller:'expression', action:'edit', id:calculation.expression.id)}">${calculation.expression.name}</a>
+												<a href="${createLink(controller:'expression', action:'edit', id:calculation.expression.id)}"><g:i18n field="${calculation.expression.names}"/></a>
 											</div>
 										</div>
 										<div class="equation">
@@ -139,10 +139,10 @@
 												<li class="data" id="data-${explanation.organisation.id}-${explanation.entry.id}-${data.element.id}">
 													<div class="id">[${data.element.id}]</div>
 													<div class="name">
-													<a	onclick="return false;" title="${data.element.name}"
+													<a	onclick="return false;" title="${i18n(field:data.element.names)}"
 														href="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: data.element.id])}"
 														rel="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: data.element.id])}">
-														${data.element.name}
+														<g:i18n field="${data.element.names}"/>
 													</a>
 													</div>
 													<g:if test="${data.value == null}">

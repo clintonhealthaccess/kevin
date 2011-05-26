@@ -23,8 +23,13 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 		return 'createObjective';
 	}
 	
-	def bindParams(def entity) {
-		entity.properties = params;
+	def bindParams(def objectiveEntry) {
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.entry?.names!=null) objectiveEntry.entry.names = params.entry?.names
+		if (params.entry?.descriptions!=null) objectiveEntry.entry.descriptions = params.entry?.descriptions
+		
+		objectiveEntry.properties = params;
 	}
 	
 }

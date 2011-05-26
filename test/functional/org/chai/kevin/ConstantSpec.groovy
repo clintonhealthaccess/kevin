@@ -1,11 +1,8 @@
 package org.chai.kevin
 
-import org.hisp.dhis.dataelement.Constant;
-
 class ConstantSpec extends GebTests {
 
 	def setup() {
-		Initializer.createUsers();
 		Initializer.createDummyStructure();
 		Initializer.createDataElementsAndExpressions();
 	}

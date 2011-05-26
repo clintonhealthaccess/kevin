@@ -42,4 +42,8 @@ abstract class UnitTests extends UnitSpec {
 		mockDomain(OrganisationUnitLevel, [level1, level2, level3, level4])
 	}
 	
+	static def j(def map) {
+		return Initializer.j(map);
+	} 
+	
 }

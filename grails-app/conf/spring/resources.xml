@@ -188,12 +188,12 @@
 <!-- 		<property name="statementManager" ref="statementManager"/> -->
 <!-- 	</bean> -->
 
-	<bean id="org.hisp.dhis.dataelement.ConstantStore"
-		class="org.hisp.dhis.dataelement.hibernate.HibernateConstantStore">
-		<property name="clazz" value="org.hisp.dhis.dataelement.Constant"/>
-		<property name="sessionFactory" ref="sessionFactory"/>
+<!-- 	<bean id="org.hisp.dhis.dataelement.ConstantStore" -->
+<!-- 		class="org.hisp.dhis.dataelement.hibernate.HibernateConstantStore"> -->
+<!-- 		<property name="clazz" value="org.hisp.dhis.dataelement.Constant"/> -->
+<!-- 		<property name="sessionFactory" ref="sessionFactory"/> -->
 <!-- 		<property name="statementManager" ref="statementManager"/> -->
-	</bean>
+<!-- 	</bean> -->
 
 <!-- 	<bean id="org.chai.kevin.DataElementGroupStore" class="org.hisp.dhis.hibernate.HibernateGenericStore"> -->
 <!-- 		<property name="clazz" value="org.chai.kevin.DataElementGroup" /> -->
@@ -417,10 +417,10 @@
 <!-- 		<property name="i18nService" ref="org.hisp.dhis.i18n.I18nService" /> -->
 <!-- 	</bean> -->
 	
-	<bean id="org.hisp.dhis.dataelement.ConstantService" class="org.hisp.dhis.dataelement.DefaultConstantService">
-		<property name="constantStore" ref="org.hisp.dhis.dataelement.ConstantStore" />
-		<property name="i18nService" ref="org.hisp.dhis.i18n.I18nService" />
-	</bean>
+<!-- 	<bean id="org.hisp.dhis.dataelement.ConstantService" class="org.hisp.dhis.dataelement.DefaultConstantService"> -->
+<!-- 		<property name="constantStore" ref="org.hisp.dhis.dataelement.ConstantStore" /> -->
+<!-- 		<property name="i18nService" ref="org.hisp.dhis.i18n.I18nService" /> -->
+<!-- 	</bean> -->
 	
 
 <!-- 	<bean id="org.hisp.dhis.minmax.MinMaxDataElementService" class="org.hisp.dhis.minmax.DefaultMinMaxDataElementService"> -->
@@ -1582,7 +1582,7 @@
 <!--   </bean> -->
 	
 <!-- 	<alias name="org.chai.kevin.DataElementCategoryService" alias="dataElementCategoryService" /> -->
-	<alias name="org.hisp.dhis.dataelement.ConstantService" alias="constantService" />
+<!-- 	<alias name="org.hisp.dhis.dataelement.ConstantService" alias="constantService" /> -->
 <!-- 	<alias name="org.chai.kevin.DataElementService" alias="dataElementService" /> -->
 	<alias name="org.hisp.dhis.organisationunit.OrganisationUnitService" alias="organisationUnitService" />
 <!-- 	<alias name="org.hisp.dhis.aggregation.AggregationService" alias="aggregationService"/> -->

@@ -8,11 +8,11 @@ import groovy.mock.interceptor.MockFor
 import groovy.mock.interceptor.StubFor;
 
 import org.chai.kevin.Expression;
-import org.chai.kevin.Expression.ExpressionType;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.UnitTests;
+import org.chai.kevin.ValueType;
 import org.chai.kevin.dashboard.DashboardPercentage.Status;
 import org.gmock.WithGMock;
 import org.hisp.dhis.aggregation.AggregationService
@@ -32,31 +32,31 @@ class PercentageCalculatorSpec extends UnitTests {
 		addBasicData()
 		
 		// indicators
-//		def one = new IndicatorType(name:"one", factor: 1)
+//		def one = new IndicatorType(jsonNames:j(["en":"one"]), factor: 1)
 //		mockDomain(IndicatorType, [one])
-//		def const10 = new Indicator(name:"Constant 10", shortName: "Constant 10", code: "CONST10", numerator: "10", denominator: "1", indicatorType: IndicatorType.findByName("one"))
-//		def const20 = new Indicator(name:"Constant 20", shortName: "Constant 20", code: "CONST20", numerator: "20", denominator: "1", indicatorType: IndicatorType.findByName("one"))
-		def const10 = new Expression(name:"Constant 10", expression: "10", type: ExpressionType.VALUE)
-		def const20 = new Expression(name:"Constant 20", expression: "20", type: ExpressionType.VALUE)
+//		def const10 = new Indicator(jsonNames:j(["en":"Constant 10"]), shortName: "Constant 10", code: "CONST10", numerator: "10", denominator: "1", indicatorType: IndicatorType.findByName("one"))
+//		def const20 = new Indicator(jsonNames:j(["en":"Constant 20"]), shortName: "Constant 20", code: "CONST20", numerator: "20", denominator: "1", indicatorType: IndicatorType.findByName("one"))
+		def const10 = new Expression(jsonNames:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: ValueType.VALUE)
+		def const20 = new Expression(jsonNames:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: ValueType.VALUE)
 		mockDomain(Expression, [const10, const20])
 		
 		// objectives and targets for dashboard
 		def nursea1 = new DashboardTarget(
-			name: "Nurse A1", description: "Nurse A1",
+			jsonNames:j(["en":"Nurse A1"]), code:"A1", jsonDescriptions:j(["en":"Nurse A1"]),
 			calculations: ["District Hospital":
-				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByName("Constant 10")),
+				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
 			]
 		)
 		def nursea2 = new DashboardTarget(
-			name: "Nurse A2", description: "Nurse A2",
+			jsonNames:j(["en":"Nurse A2"]), code:"A2", jsonDescriptions:j(["en":"Nurse A2"]),
 			calculations: ["District Hospital":
-				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByName("Constant 20")),
+				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
 			]
 		)
 		mockDomain(DashboardTarget, [nursea1, nursea2])
-		def staffing = new DashboardObjective(root: false, name:"Staffing", description: "Staffing", objectiveEntries: [])
-		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByName("Nurse A1"), weight: 1, order: 1)
-		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByName("Nurse A2"), weight: 1, order: 2)
+		def staffing = new DashboardObjective(root: false, jsonNames:j(["en":"Staffing"]), code:"STAFFING", jsonDescriptions:j(["en":"Staffing"]), objectiveEntries: [])
+		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A1"), weight: 1, order: 1)
+		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A2"), weight: 1, order: 2)
 		mockDomain(DashboardObjective, [staffing])
 		
 		def monthly = new MonthlyPeriodType();
@@ -77,7 +77,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		when:
 		DashboardPercentage percentage
 		play {
-			percentage = percentageCalculator.getPercentage(DashboardTarget.findByName('Nurse A1'), new Organisation(OrganisationUnit.findByName('Butaro DH')), Period.list()[0]);
+			percentage = percentageCalculator.getPercentage(DashboardTarget.findByCode('A1'), new Organisation(OrganisationUnit.findByName('Butaro DH')), Period.list()[0]);
 		}
 		
 		then:
@@ -99,7 +99,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		when:
 		DashboardPercentage percentage = null;
 		play {
-			percentage = percentageCalculator.getPercentage(DashboardObjective.findByName('Staffing'), new Organisation(OrganisationUnit.findByName('Butaro DH')), Period.list()[0]);
+			percentage = percentageCalculator.getPercentage(DashboardObjective.findByCode('STAFFING'), new Organisation(OrganisationUnit.findByName('Butaro DH')), Period.list()[0]);
 		}
 		
 		then:
@@ -110,15 +110,15 @@ class PercentageCalculatorSpec extends UnitTests {
 	
 	def "test absent value on target"() {
 		setup:
-		def dataElement = new DataElement(name:"Element 1", shortName: "Element 1", code: "CODE", type: DataElementType.INT, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM)
+		def dataElement = new DataElement(jsonNames:j(["en":"Element 1"]), code: "CODE", type: ValueType.VALUE, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM)
 		mockDomain(DataElement, [dataElement])
-		def expression = new Expression(name:"Expression Element 1", expression: "["+dataElement.id+"]", denominator: "1", type: ExpressionType.VALUE)
+		def expression = new Expression(jsonNames:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: ValueType.VALUE)
 		mockDomain(Expression, [expression])
 		
 		def target = new DashboardTarget(
-			name: "Target 1", description: "Target 1",
+			jsonNames:j(["en":"Target 1"]), code:"TARGET1", jsonDescriptions:j(["en":"Target 1"]),
 			calculations: ["District Hospital":
-				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByName("Expression Element 1")),
+				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CODE")),
 			]
 		)
 		mockDomain(DashboardTarget, [target])
@@ -132,7 +132,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		when:
 		DashboardPercentage percentage
 		play {
-			percentage = percentageCalculator.getPercentage(DashboardTarget.findByName('Target 1'), new Organisation(OrganisationUnit.findByName('Butaro DH')), Period.list()[0]);
+			percentage = percentageCalculator.getPercentage(DashboardTarget.findByCode('TARGET1'), new Organisation(OrganisationUnit.findByName('Butaro DH')), Period.list()[0]);
 		}
 		
 		then:
@@ -148,7 +148,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		organisation.children = new ArrayList();
 		
 		when:
-		DashboardPercentage percentage = percentageCalculator.getPercentage(DashboardTarget.findByName('Nurse A1'), organisation, Period.list()[0]);
+		DashboardPercentage percentage = percentageCalculator.getPercentage(DashboardTarget.findByCode('A1'), organisation, Period.list()[0]);
 		
 		then:
 		percentage.status == Status.MISSING_EXPRESSION
@@ -166,7 +166,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		when:
 		DashboardPercentage percentage;
 		play {
-			percentage = percentageCalculator.getPercentage(DashboardObjective.findByName('Staffing'), new Organisation(OrganisationUnit.findByName('Kivuye HC')), Period.list()[0]);
+			percentage = percentageCalculator.getPercentage(DashboardObjective.findByCode('STAFFING'), new Organisation(OrganisationUnit.findByName('Kivuye HC')), Period.list()[0]);
 		}
 		
 		then:
@@ -186,7 +186,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		when:
 		DashboardPercentage percentage;
 		play {
-			percentage = percentageCalculator.getPercentage(DashboardObjective.findByName('Staffing'), new Organisation(OrganisationUnit.findByName('Burera')), Period.list()[0]);
+			percentage = percentageCalculator.getPercentage(DashboardObjective.findByCode('STAFFING'), new Organisation(OrganisationUnit.findByName('Burera')), Period.list()[0]);
 		}
 		
 		then:

@@ -15,6 +15,7 @@ abstract class AbstractReportController {
 
 	DashboardObjectiveService dashboardObjectiveService;
 	OrganisationService organisationService;
+	LocaleService localeService;
 	
 	protected def getObjective() {
 		Translatable objective = null

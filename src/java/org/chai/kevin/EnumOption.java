@@ -25,15 +25,11 @@ public class EnumOption extends Translatable {
 
 	@Id
 	@GeneratedValue
-	@Column(name="enumoptionid")
+	@Column
 	public Long getId() {
 		return id;
 	}
 	
-	@Basic
-	public String getCode() {
-		return code;
-	}
 	
 	@Basic(optional=false)
 	@Column(nullable=false)
@@ -42,17 +38,13 @@ public class EnumOption extends Translatable {
 	}
 	
 	@ManyToOne(targetEntity=Enum.class, optional=false)
-	@JoinColumn(name="enumid", nullable=false)
+	@JoinColumn(nullable=false)
 	public Enum getEnume() {
 		return enume;
 	}
 	
 	public void setId(Long id) {
 		this.id = id;
-	}
-	
-	public void setCode(String code) {
-		this.code = code;
 	}
 	
 	public void setValue(String value) {

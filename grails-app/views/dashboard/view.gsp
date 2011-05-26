@@ -33,11 +33,11 @@
 		    		<g:each in="${dashboard.objectivePath}">
 		    			<g:set var="objective" value="${it}"/>
 			    		<li>
-			    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]">${objective.name}</g:link>
+			    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
 			    		</li>
 		    		</g:each>
 		    		<li>
-		    			${dashboard.currentObjective.name}
+		    			<g:i18n field="${dashboard.currentObjective.names}"/>
 		    		</li>
 		    	</ul>
 	    	</div>
@@ -68,10 +68,10 @@
 						    			<th class="cell label top col-${objective.id}" data-col="${objective.id}">
 						    				<div><span>
 						    				<g:if test="${!objective.isTarget()}">
-												<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]">${objective.name}</g:link>
+												<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
 											</g:if>
 											<g:else>
-												${objective.name}
+												<g:i18n field="${objective.names}"/>
 											</g:else>
 			
 								    		<g:if test="${true || user.admin}">

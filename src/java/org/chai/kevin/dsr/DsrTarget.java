@@ -1,13 +1,23 @@
 package org.chai.kevin.dsr;
 
+import java.util.Map;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Expression;
+import org.chai.kevin.JSONUtils;
 import org.chai.kevin.Translatable;
+import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -18,7 +28,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class DsrTarget extends Translatable {
 	private DsrObjective parent;
 	private Expression expression;
-	private String category;
+	
+	private Translation categories = new Translation();
 	
 	private Integer id;
 	
@@ -49,12 +60,16 @@ public class DsrTarget extends Translatable {
 		return parent;
 	}
 
-	public void setCategory(String category) {
-		this.category = category;
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonCategories", nullable=false))
+	})
+	public Translation getCategories() {
+		return categories;
 	}
-
-	public String getCategory() {
-		return category;
+	
+	public void setCategories(Translation categories) {
+		this.categories = categories;
 	}
-
+	
 }

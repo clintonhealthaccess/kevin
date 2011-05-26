@@ -1,5 +1,5 @@
 package org.chai.kevin.cost
 
 constraints = {
-	name (nullable: false, blank: false)
+	code (nullable: false, blank: false, unique: true)
 }
