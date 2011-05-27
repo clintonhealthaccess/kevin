@@ -147,7 +147,7 @@ class DomainSpec extends IntegrationTests {
 	
 	def "save target preserves groups"() {
 		when:
-		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: 'group1', expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
+		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: "group1", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
 		
 		then:
 		CostService.getGroupUuids(CostTarget.findByCode("TEST").groupUuidString).size() == 1
@@ -155,12 +155,13 @@ class DomainSpec extends IntegrationTests {
 	
 	def "save target erases old groups"() {
 		when:
-		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: 'group1', expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
-		CostTarget.findByCode("TEST").groupUuidString = ["group2"]
+		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: "group1", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
+		CostTarget.findByCode("TEST").groupUuidString = "group2"
 		
 		then:
-		CostService.getGroupUuids(CostTarget.findByCode("TEST").groupUuidString).size() == 1
-		CostService.getGroupUuids(CostTarget.findByCode("TEST").groupUuidString) == new HashSet(["group2"])
+		def target = CostTarget.findByCode("TEST")
+		CostService.getGroupUuids(target.groupUuidString).size() == 1
+		(new HashSet(["group2"])).equals(CostService.getGroupUuids(target.groupUuidString))
 	}
 	
 	

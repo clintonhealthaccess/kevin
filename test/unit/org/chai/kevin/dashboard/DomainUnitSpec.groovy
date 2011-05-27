@@ -9,10 +9,10 @@ class DomainUnitSpec extends UnitSpec {
 		mockDomain(DashboardObjective)
 		
         when:
-        new DashboardObjective(name: "target", root: false).save()
+        new DashboardObjective(code: "target", root: false).save()
 
         then:
-        DashboardObjective.findByName("target") != null
+        DashboardObjective.findByCodee("target") != null
     }
 	
 	def "ordering strategic objective"() {

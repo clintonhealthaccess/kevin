@@ -30,11 +30,11 @@ class AggregationSpec extends IntegrationTests {
 		def organisation = getOrganisation(organisationName)
 		
 		then:
-		expressionService.getDataValue(dataElement, period, organisation, [:]) == value+""
+		expressionService.getDataValue(dataElement, period, organisation, [:]) == value
 				
 		where:
 		dataElementCode	| organisationName	| value
-		"CODE"			| "Butaro DH"		| 40
+		"CODE"			| "Butaro DH"		| 40d
 		
 	}
 	

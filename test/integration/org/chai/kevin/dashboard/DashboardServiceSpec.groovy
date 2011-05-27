@@ -148,16 +148,8 @@ class DashboardServiceSpec extends IntegrationTests {
 		
 		where:
 		organisationName	| objectiveCode	| expectedOrganisations			| expectedObjectives		| expectedOrganisationPath	| expectedObjectivePath
-		"Burera"			| "STAFFING"	| ["Butaro DH", "Kivuye HC"]	| ["A1", "A2"]	| ["Rwanda", "North"]		| ["Strategic Objectives", "Human Resources for Health"]
+		"Burera"			| "STAFFING"	| ["Butaro DH", "Kivuye HC"]	| ["A1", "A2"]				| ["Rwanda", "North"]		| ["OBJ", "HRH"]
 		
-	}
-	
-	def getOrganisations(List<String> codes) {
-		def organisations = []
-		for (String code : codes) {
-			organisations.add(new Organisation(OrganisationUnit.findByCode(code)));
-		}
-		return organisations;
 	}
 	
 	def getObjectives(List<String> codes) {

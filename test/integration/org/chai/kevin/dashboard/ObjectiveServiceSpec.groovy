@@ -55,12 +55,12 @@ class ObjectiveServiceSpec extends IntegrationTests {
 	}
 	
 	def "exception when multiple parents"() {
-		
-		setup:
-		def root = new DashboardObjective(names:j(["en":"root2"]), code:"ROOT2", objectiveEntries: [])
-		root.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("OBJ"), weight: 1, order: 10)
-	
 		when:
+		def root = new DashboardObjective(names:j(["en":"root2"]), code:"ROOT2", objectiveEntries: [])
+		root.save()
+		def entry = new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("OBJ"), weight: 1, order: 10)
+		root.addObjectiveEntry entry
+		entry.save()
 		root.save()
 			
 		then:

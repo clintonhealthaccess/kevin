@@ -77,15 +77,18 @@ class DomainSpec extends IntegrationTests {
 	}
 	
 	// integration test
-	def "objective delete cascade deletes parent"() {
+	def "objective delete cascade deletes objective entry"() {
 		when:
 		def dashboardTargetCount = DashboardTarget.count()
 		def objective = DashboardObjective.findByCode("STAFFING");
 		objective.parent.parent.objectiveEntries.remove(objective.parent)
+		new ArrayList(objective.objectiveEntries).each { 
+			it.parent = null
+		}
 		objective.delete(flush: true)
 		
 		then:
-		DashboardObjectiveEntry.count() == 1
+		DashboardObjectiveEntry.count() == 3
 		DashboardTarget.count() == dashboardTargetCount;
 	}
 
@@ -101,10 +104,10 @@ class DomainSpec extends IntegrationTests {
 		
 		then:
 		DashboardObjectiveEntry.count() == dashboardObjectiveEntryCount - 2
-		DashboardTarget.count() == dashboardTargetCount;
+		DashboardTarget.count() == dashboardTargetCount - 2;
 	}
 	
-	def "objective save removes objective entries"() {
+	def "objective save does not cascade objective entries"() {
 		when:
 		def dashboardObjectiveEntryCount = DashboardObjectiveEntry.count()
 		def dashboardTargetCount = DashboardTarget.count()
@@ -113,7 +116,7 @@ class DomainSpec extends IntegrationTests {
 		objective.save(flush: true)
 		
 		then:
-		DashboardObjectiveEntry.count() == dashboardObjectiveEntryCount - 2
+		DashboardObjectiveEntry.count() == dashboardObjectiveEntryCount
 		DashboardTarget.count() == dashboardTargetCount;
 	}
 	
@@ -149,16 +152,4 @@ class DomainSpec extends IntegrationTests {
 		
 	}
 	
-	def "save objective entry saves target"() {
-		when:
-		def dashboardTargetCount = DashboardTarget.count()
-		def target = new DashboardTarget(name: "Test");
-		def objective = DashboardObjective.findByCode("STAFFING");
-		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: target, weight: 1, order: 1)
-		objective.save();
-		
-		then:
-		DashboardObjectiveEntry.count() == 5
-		DashboardTarget.count() == dashboardTargetCount + 1
-	}
 }

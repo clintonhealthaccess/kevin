@@ -11,7 +11,11 @@ class CostService {
 	}
 	
 	static Set<String> getGroupUuids(String groupUuidString) {
-		return groupUuidString!=null?new HashSet<String>(Arrays.asList(StringUtils.split(groupUuidString, ','))):[]
+		Set<String> result = new HashSet<String>();
+		if (groupUuidString != null) {
+			result.addAll(StringUtils.split(groupUuidString, ','))
+		}
+		return result;
 	}
 	
 	static String getGroupUuidString(def groupUuids) {

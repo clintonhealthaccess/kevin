@@ -18,9 +18,9 @@ class ExpressionServiceUnitSpec extends UnitSpec {
 		newExpression == expressionService.convertStringExpression(expression, map)
 				
 		where:
-		expression	| map			| newExpression
-		"1"			| new HashMap()	| "1"
-		"[1]"		| [1: "test"]	| "test"
+		expression	| map					| newExpression
+		"1"			| new HashMap()			| "1"
+		"[1]"		| [(new Long(1)): "test"]	| "test"
 	}
 	
 	def "test bad value"() {

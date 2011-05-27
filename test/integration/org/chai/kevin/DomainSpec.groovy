@@ -172,9 +172,9 @@ class DomainSpec extends IntegrationTests {
 		
 		then:
 		def dataElement = DataElement.findByCode("TEST");
-		dataElement.names == j(["en":"English", "fr":"Francais"])
+		(new HashMap(["en":"English", "fr":"Francais"])).equals(dataElement.names)
 		dataElement.names["en"] == "English"
-		dataElement.names["fr"] == "Anglais"
+		dataElement.names["fr"] == "Francais"
 	}
 	
 	
@@ -196,14 +196,14 @@ class DomainSpec extends IntegrationTests {
 		when:
 		new DataElement(names:new Translation(), code:"TEST", type: ValueType.VALUE).save(failOnError:true)
 		def dataElement = DataElement.findByCode("TEST")
-		dataElement.names = new Translation(jsonText: j([en: "English", fr: "Anglais"]));
+		dataElement.names = new Translation(jsonText: JSONUtils.getJSONFromMap([en: "English", fr: "Anglais"]));
 		dataElement.save(failOnError:true)
-		dataElement.names = new Translation(jsonText: j([en: "English"]));
+		dataElement.names = new Translation(jsonText: JSONUtils.getJSONFromMap([en: "English"]));
 		dataElement.save(failOnError: true)
 		dataElement = DataElement.findByCode("TEST");
 		
 		then:
-		dataElement.names.jsonText == new JSONObject().put("en", "English").toString()
+		dataElement.names.getJsonText() == new JSONObject().put("en", "English").toString()
 		dataElement.names["en"] == "English"
 		dataElement.names["fr"] == null
 	}

@@ -134,7 +134,9 @@ class PercentageCalculatorSpec extends UnitTests {
 		when:
 		DashboardPercentage percentage
 		play {
-			percentage = percentageCalculator.getPercentage(DashboardTarget.findByCode('TARGET1'), new Organisation(OrganisationUnit.findByName('Butaro DH')), Period.list()[0]);
+			def organisation = new Organisation(OrganisationUnit.findByName('Butaro DH'));
+			organisation.children = []
+			percentage = percentageCalculator.getPercentage(DashboardTarget.findByCode('TARGET1'), organisation, Period.list()[0]);
 		}
 		
 		then:

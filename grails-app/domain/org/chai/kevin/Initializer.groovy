@@ -50,7 +50,7 @@ class Initializer {
 			period.save(failOnError: true)
 			
 			def period2 = new Period(periodType: monthly, startDate: mar011, endDate: mar311)
-			period2.save(failOnError: true)
+			period2.save(failOnError: true, flush: true)
 		}
 		
 //		if (!DataElementCategory.count()) {
@@ -112,7 +112,7 @@ class Initializer {
 			hc.save(failOnError: true)
 			
 			groupSet.organisationUnitGroups = [dh, hc]
-			groupSet.save(failOnError: true)
+			groupSet.save(failOnError: true, flush: true)
 		}
 		
 	}
@@ -127,7 +127,7 @@ class Initializer {
 			enume.enumOptions = [enumOption1, enumOption2]
 			enume.save(failOnError: true)
 			enumOption1.save(failOnError: true)
-			enumOption2.save(failOnError: true)
+			enumOption2.save(failOnError: true, flush:true)
 		}
 		
 		if (!DataElement.count()) {
@@ -188,7 +188,7 @@ class Initializer {
 //				storedBy: "StoredBy",
 				timestamp: new Date(),
 //				followup: false,
-			).save(failOnError: true)
+			).save(failOnError: true, flush:true)
 		}
 		
 		
@@ -203,7 +203,7 @@ class Initializer {
 		}
 		
 		if (!Constant.count()) {
-			new Constant(names:j(["en":"Constant 1000"]), code:"CONST1", type: ValueType.VALUE, value: "1000", descriptions:j(["en":"Description"])).save(failOnError: true)
+			new Constant(names:j(["en":"Constant 1000"]), code:"CONST1", type: ValueType.VALUE, value: "1000", descriptions:j(["en":"Description"])).save(failOnError: true, flush:true)
 		}
 	}
 	
@@ -238,7 +238,7 @@ class Initializer {
 //				numerator: "10",
 //				denominator: "100"
 			).save(failOnError: true)
-			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression")).save(failOnError: true)
+			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression")).save(failOnError: true, flush:true)
 		}
 	}
 	
@@ -295,7 +295,7 @@ class Initializer {
 			
 			def hrh = new CostObjective(names:j(["en":"Human Resources for Health"]), code:"HRH", descriptions:j(["en":"Human Resources for Health"]),)
 			hrh.addTarget(CostTarget.findByCode("Facility Staff Training"));
-			hrh.save(failOnError: true)
+			hrh.save(failOnError: true, flush:true)
 		}		
 	}
 	
@@ -316,15 +316,15 @@ class Initializer {
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 10")),
+						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 20"))
 					]
 				), weight: 1, order: 1)
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 20")),
+						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 20"))
 					]
 				), weight: 1, order: 2)
 			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -370,7 +370,7 @@ class Initializer {
 			missdata.save(failOnError: true)
 			enume.save(failOnError: true)
 			
-			staffing.save(failOnError: true)
+			staffing.save(failOnError: true, flush:true)
 		}
 	}
 	
@@ -413,7 +413,7 @@ class Initializer {
 			hmr.addTarget(DsrTarget.findByCode("A2"));
 			hmr.addTarget(DsrTarget.findByCode("A3"));
 			hmr.addTarget(DsrTarget.findByCode("TEST"));
-			hmr.save(failOnError:true)
+			hmr.save(failOnError:true, flush:true)
 		}	
 	}
 	
@@ -434,7 +434,7 @@ class Initializer {
 		// users
 		if (!DashboardObjective.count()) {
 			def root = new DashboardObjective(root: true, names:j(["en":"Strategic Objectives"]), code:"Strategic Objectives", descriptions:j(["en":"Strategic Objectives"]), weightedObjectives: [])
-			root.save(failOnError: true)
+			root.save(failOnError: true, flush:true)
 		}
 	}
 	

@@ -12,7 +12,7 @@ class CreateDashboardTargetModule extends EntityFormWithExpressionsModule {
 	static content = {
 		entityFormContainer { $("div", id:"add-dashboard-target") }
 		weightField { entityFormContainer.find("input", name: "weight") }
-		codeField { entityFormContainer.find("input", code: "code") }
+		codeField { entityFormContainer.find("input", name: "entry.code") }
 		nameField { entityFormContainer.find("input", name: "entry.names.en") }
 		orderField { entityFormContainer.find("input", name: "order") }
 	}

@@ -78,8 +78,8 @@ class OrganisationServiceSpec extends IntegrationTests {
 		def level = organisationService.getLevel(organisation)
 		
 		then:
-		level == OrganisationUnitLevel.findByLevel(expectedLevel)
-		organisation.getLevel() == OrganisationUnitLevel.findByLevel(expectedLevel)
+		level == OrganisationUnitLevel.findByLevel(expectedLevel).level
+		organisation.getLevel() == OrganisationUnitLevel.findByLevel(expectedLevel).level
 		
 		where:
 		organisationName	| expectedLevel
