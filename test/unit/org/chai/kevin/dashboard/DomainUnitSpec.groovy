@@ -12,7 +12,7 @@ class DomainUnitSpec extends UnitSpec {
         new DashboardObjective(code: "target", root: false).save()
 
         then:
-        DashboardObjective.findByCodee("target") != null
+        DashboardObjective.findByCode("target") != null
     }
 	
 	def "ordering strategic objective"() {

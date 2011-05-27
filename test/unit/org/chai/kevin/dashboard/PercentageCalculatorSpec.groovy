@@ -130,12 +130,12 @@ class PercentageCalculatorSpec extends UnitTests {
 		def percentageCalculator = new PercentageCalculator();
 		percentageCalculator.expressionService = expressionService
 		percentageCalculator.groupCollection = new GroupCollection(OrganisationUnitGroup.list())
-		
+		def organisation = new Organisation(OrganisationUnit.findByName('Butaro DH'))
+		organisation.children = []
+
 		when:
 		DashboardPercentage percentage
 		play {
-			def organisation = new Organisation(OrganisationUnit.findByName('Butaro DH'));
-			organisation.children = []
 			percentage = percentageCalculator.getPercentage(DashboardTarget.findByCode('TARGET1'), organisation, Period.list()[0]);
 		}
 		

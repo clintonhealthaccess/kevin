@@ -8,6 +8,8 @@ import org.hisp.dhis.dataset.DataSet;
 
 abstract class AbstractEntityController {
 	
+	def localeService
+	
 	def index = {
         redirect(action: "list", params: params)
     }
@@ -84,9 +86,10 @@ abstract class AbstractEntityController {
 			
 			render(contentType:"text/json") {
 				result = 'success'
+				language = localeService.getCurrentLanguage()
 				newEntity = {
 					id = entity.id
-					if (entity.hasProperty("name")) name = entity.name
+					if (entity.hasProperty("names")) names = entity.names
 				}
 			}
 		}

@@ -65,7 +65,7 @@
 			onSuccess: function(data) {
 				if (data.result == 'success') {
 					var expression = data.newEntity
-					$('.expression-list').append('<option value="'+expression.id+'">'+expression.name+'</option>');
+					$('.expression-list').append('<option value="'+expression.id+'">'+expression.names[data.language]+'</option>');
 					$.sexyCombo.changeOptions('.expression-list');
 				}
 			}

@@ -68,7 +68,9 @@
 						    			<th class="cell label top col-${objective.id}" data-col="${objective.id}">
 						    				<div><span>
 						    				<g:if test="${!objective.isTarget()}">
-												<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
+												<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]">
+													<g:i18n field="${objective.names}"/>
+												</g:link>
 											</g:if>
 											<g:else>
 												<g:i18n field="${objective.names}"/>
