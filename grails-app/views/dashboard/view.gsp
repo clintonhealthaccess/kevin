@@ -58,19 +58,6 @@
 				    	</ul>
 			    	</div>
 			    	
-			    	<div class="box">
-			    		<h5>Facility types</h5>
-				    	<ul>
-				    		<g:each in="${dashboard.organisationPath}" var="organisation">
-					    		<li>
-					    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: dashboard.currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
-					    		</li>
-				    		</g:each>
-				    		<li>
-				    			${dashboard.currentOrganisation.name}
-				    		</li>
-				    	</ul>
-			    	</div>
 		    	</div>
 		    
 		    	<div id="center" class="box">
