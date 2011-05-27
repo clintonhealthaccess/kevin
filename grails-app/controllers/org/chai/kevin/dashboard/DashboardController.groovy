@@ -148,4 +148,24 @@ class DashboardController extends AbstractReportController {
 		redirect (controller: 'dashboard', action: 'view', params: params);
 	}
 	
+	def getDescription = {
+		def objective = null;
+		if (NumberUtils.isNumber(params['id'])) {
+			objective = DashboardObjective.get(params['id'])
+			if (objective == null) DashboardObjective.get(params['id'])
+		}
+		
+		if (objective == null) {
+			render(contentType:"text/json") {
+				result = 'error'
+			}
+		}
+		else {
+			render(contentType:"text/json") {
+				result = 'success'
+				html = g.render (template: 'description', model: [objective: objective])
+			}
+		}
+	}
+	
 }

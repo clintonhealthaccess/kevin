@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.chai.kevin.Organisation;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
 public class Dashboard {
@@ -18,6 +19,8 @@ public class Dashboard {
 	
 	private List<Organisation> organisationPath;
 	private List<DashboardObjective> objectivePath;
+	
+	private List<OrganisationUnitGroup> facilityTypes;
 	
 	private Map<Organisation, Map<DashboardEntry, DashboardPercentage>> values;
 	

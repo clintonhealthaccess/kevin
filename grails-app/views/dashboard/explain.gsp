@@ -46,7 +46,7 @@
 									<g:if test="${explanation.target}">
 										<ul><g:each in="${explanation.values}">
 											<g:set var="value" value="${it}"/>
-											<li class="data">
+											<li>
 												<div class="organisation">${value.key.name}</div>
 												<div class="value">
 													<g:if test="${value.value.valid}">
@@ -61,14 +61,14 @@
 									</g:if>
 									<g:else>
 										<ul>
-											<li class="data header">
+											<li class="header">
 												<div class="objective">&nbsp;</div>
 												<div class="weight">Weight</div>
 												<div class="value">Score</div>
 											</li>
 											<g:each in="${explanation.objectives}">
 												<g:set var="objective" value="${it}"/>
-												<li class="data">
+												<li>
 													<div class="objective"><g:i18n field="${objective.key.entry.names}"/></div>
 													<div class="weight">${objective.key.weight}</div>
 													<div class="value">
@@ -107,7 +107,7 @@
 									<div class="box float-left">
 										<div class="expression">
 											<div>
-												<a href="${createLink(controller:'expression', action:'edit', id:calculation.expression.id)}"><g:i18n field="${calculation.expression.names}"/></a>
+												<a href="#" onclick="return false;" rel="${createLink(controller:'expression', action:'getDescription', id:calculation.expression.id)}"><g:i18n field="${calculation.expression.names}"/></a>
 											</div>
 										</div>
 										<div class="equation">
@@ -136,10 +136,10 @@
 											<h5>Data</h5>
 											<ul><g:each in="${expressionExplanation.relevantDatas}">
 												<g:set var="data" value="${it}"/>
-												<li class="data" id="data-${explanation.organisation.id}-${explanation.entry.id}-${data.element.id}">
+												<li id="data-${explanation.organisation.id}-${explanation.entry.id}-${data.element.id}">
 													<div class="id">[${data.element.id}]</div>
 													<div class="name">
-													<a	onclick="return false;" title="${i18n(field:data.element.names)}"
+													<a	onclick="return false;" title="${i18n(field:data.element.names)}" class="cluetip"
 														href="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: data.element.id])}"
 														rel="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: data.element.id])}">
 														<g:i18n field="${data.element.names}"/>

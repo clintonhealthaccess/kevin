@@ -8,7 +8,7 @@
 
 	<g:form url="[controller:'dashboardTarget', action:'save']" useToken="true" class="flow-form">
 		<g:i18nInput name="entry.names" label="Name" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.names}" field="names"/>
-		<g:i18nInput name="entry.descriptions" label="Description" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.descriptions}" field="descriptions"/>
+		<g:i18nTextarea name="entry.descriptions" label="Description" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.descriptions}" field="descriptions"/>
 		<g:input name="entry.code" label="Code" bean="${objectiveEntry?.entry}" field="code"/>
 		
 		<div class="row">

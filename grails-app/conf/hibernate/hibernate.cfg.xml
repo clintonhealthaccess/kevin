@@ -17,6 +17,7 @@
 	    <mapping class="org.chai.kevin.Enum" />
 	    <mapping class="org.chai.kevin.EnumOption" />
 	
+	    <mapping class="org.chai.kevin.dashboard.DashboardEntry" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardTarget" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardObjective" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardObjectiveEntry" />

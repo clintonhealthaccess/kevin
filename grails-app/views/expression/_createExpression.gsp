@@ -9,7 +9,7 @@
 	<div id="add-expression-col">
 		<g:form url="[controller:'expression', action:'save']" useToken="true">
 			<g:i18nInput name="names" bean="${expression}" value="${expression.names}" label="Name" field="names"/>
-			<g:i18nInput name="descriptions" bean="${expression}" value="${expression.descriptions}" label="Description" field="descriptions"/>
+			<g:i18nTextarea name="descriptions" bean="${expression}" value="${expression.descriptions}" label="Description" field="descriptions"/>
 			<g:input name="code" label="Code" bean="${expression}" field="code"/>
 			<g:textarea name="expression" label="Expression" bean="${expression}" field="expression" rows="5"/>
 			
@@ -60,7 +60,7 @@ $(document).ready(function() {
 					var filtered = $(element).parent('div').find('.filtered');
 					
 					filtered.html(data.html);
-					filtered.find('a').cluetip(cluetipOptions);
+					filtered.find('a.cluetip').cluetip(cluetipOptions);
 					
 					filtered.find('li').bind('mousedown',
 						function(event){

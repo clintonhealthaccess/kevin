@@ -8,7 +8,7 @@
 	
 	<g:form url="[controller:'costObjective', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${objective}" value="${objective.names}" label="Name" field="names"/>
-		<g:i18nInput name="descriptions" bean="${objective}" value="${objective.descriptions}" label="Description" field="descriptions"/>
+		<g:i18nTextarea name="descriptions" bean="${objective}" value="${objective.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${objective}" field="code"/>
 		<g:input name="order" label="Order" bean="${objective}" field="order"/>
 	

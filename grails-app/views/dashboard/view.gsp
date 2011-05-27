@@ -43,18 +43,34 @@
 	    	</div>
 	    	
 	    	<div id="bottom">
-		    	<div id="left" class="box">
-		    		<h5>Organisations</h5>
-			    	<ul>
-			    		<g:each in="${dashboard.organisationPath}" var="organisation">
+	    		<div id="left">
+			    	<div class="box">
+			    		<h5>Organisations</h5>
+				    	<ul>
+				    		<g:each in="${dashboard.organisationPath}" var="organisation">
+					    		<li>
+					    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: dashboard.currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
+					    		</li>
+				    		</g:each>
 				    		<li>
-				    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: dashboard.currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
+				    			${dashboard.currentOrganisation.name}
 				    		</li>
-			    		</g:each>
-			    		<li>
-			    			${dashboard.currentOrganisation.name}
-			    		</li>
-			    	</ul>
+				    	</ul>
+			    	</div>
+			    	
+			    	<div class="box">
+			    		<h5>Facility types</h5>
+				    	<ul>
+				    		<g:each in="${dashboard.organisationPath}" var="organisation">
+					    		<li>
+					    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: dashboard.currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
+					    		</li>
+				    		</g:each>
+				    		<li>
+				    			${dashboard.currentOrganisation.name}
+				    		</li>
+				    	</ul>
+			    	</div>
 		    	</div>
 		    
 		    	<div id="center" class="box">
@@ -68,12 +84,19 @@
 						    			<th class="cell label top col-${objective.id}" data-col="${objective.id}">
 						    				<div><span>
 						    				<g:if test="${!objective.isTarget()}">
-												<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]">
+												<a class="cluetip" 
+													title="${i18n(field:objective.names)}"
+													href="${createLink(controller:'dashboard', action:'view', params:[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id])}"
+												   	rel="${createLink(controller:'dashboard', action:'getDescription', id:objective.id)}">
 													<g:i18n field="${objective.names}"/>
-												</g:link>
+												</a>
 											</g:if>
 											<g:else>
-												<g:i18n field="${objective.names}"/>
+												<a 	class="no-link cluetip" href="#" onclick="return false;" 
+													title="${i18n(field:objective.names)}"
+													rel="${createLink(controller:'dashboard', action:'getDescription', id:objective.id)}">
+													<g:i18n field="${objective.names}"/>
+												</a>
 											</g:else>
 			
 								    		<g:if test="${true || user.admin}">
@@ -199,6 +222,11 @@
     		$(document).ready(function() {
     		
     			/**
+    			 * cluetip
+    			 **/
+    			$('a.cluetip').cluetip(cluetipOptions);
+    			 
+    			/**
     			 * dashboard
     			 **/
     			$('.cell.value').bind('click', function() {
@@ -220,6 +248,12 @@
 	    				$(elementId).toggleClass('highlighted');
 	    				$(this).toggleClass('highlighted');
 	    			});
+    				$(this).bind('mouseenter', function() {
+    					$(elementId).find('a.cluetip').mouseover();    					
+    				});
+    				$(this).bind('mouseleave', function() {
+    					$(elementId).find('a.cluetip').mouseleave();
+    				});
 	    			$(this).bind('click', function() {
 	    				if (!$(this).hasClass('selected')) {
 							$('.element').removeClass('selected');
@@ -230,7 +264,7 @@
 		   			});
     			});
     			
-    			$('.right-pane .data a').cluetip(cluetipOptions);
+    			$('a.cluetip').cluetip(cluetipOptions);
     		}
     	</script>
     	<!-- explanation -->

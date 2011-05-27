@@ -184,7 +184,8 @@
 			cluetipClass : 'jtip',
 			hoverIntent : false,
 			dropShadow : false,
-			width : '400px'
+			width : '400px',
+			clickThrough : true
 		};
 
 		/**

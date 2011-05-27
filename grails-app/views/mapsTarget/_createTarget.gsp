@@ -1,7 +1,7 @@
 <div id="add-cost-target" class="entity-form-container">
 	<g:form url="[controller:'mapsTarget', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${target}" value="${target.names}" label="Name" field="names"/>
-		<g:i18nInput name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
+		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${target}" field="code"/>
 	
 		<div class="row">

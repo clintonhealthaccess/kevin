@@ -10,7 +10,7 @@
 	
 	<g:form url="[controller:'costRampUp', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${rampUp}" value="${rampUp.names}" label="Name" field="names"/>
-		<g:i18nInput name="descriptions" bean="${rampUp}" value="${rampUp.descriptions}" label="Description" field="descriptions"/>
+		<g:i18nTextarea name="descriptions" bean="${rampUp}" value="${rampUp.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${rampUp}" field="code"/>
 		
 		<g:if test="${rampUp != null}">
