@@ -1,11 +1,13 @@
 package org.chai.kevin
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.chai.kevin.DataElement;
 import org.hisp.dhis.dataset.DataSet;
 
 abstract class AbstractEntityController {
-
+	
 	def index = {
         redirect(action: "list", params: params)
     }
@@ -16,7 +18,7 @@ abstract class AbstractEntityController {
 		
 		if (entity != null) {
 			try {
-				entity.delete(flush: true)
+				deleteEntity(entity)
 				render(contentType:"text/json") {
 					result = 'success'
 				}
@@ -53,43 +55,50 @@ abstract class AbstractEntityController {
 	}
 	
 	def save = {
-		log.debug ('saving entity with params:'+params)
 		withForm {
-			def entity = getEntity(params.id);
-			if (entity == null) {
-				entity = createEntity()
-			}
-			bindParams(entity)
-			log.debug('bound params, entity: '+entity)
-			if (!validate(entity)) {
-				log.info ("validation error in ${entity}: ${entity.errors}}")
-				def htmlText = g.render (template:getTemplate(), model:getModel(entity))
-				render(contentType:"text/json") {
-					result = 'error'
-					html = htmlText
-				}
-			}
-			else {
-				save(entity);
-				
-				render(contentType:"text/json") {
-					result = 'success'
-					newEntity = {
-						id = entity.id
-						if (entity.hasProperty("name")) name = entity.name
-					}
-				}
-			}
+			saveWithoutTokenCheck()
 		}.invalidToken {
 			log.warn("clicked twice");
 		}
 	}
 	
+	def saveWithoutTokenCheck = {
+		log.debug ('saving entity with params:'+params)
+		
+		def entity = getEntity(params.id);
+		if (entity == null) {
+			entity = createEntity()
+		}
+		bindParams(entity)
+		log.debug('bound params, entity: '+entity)
+		if (!validateEntity(entity)) {
+			log.info ("validation error in ${entity}: ${entity.errors}}")
+			def htmlText = g.render (template:getTemplate(), model:getModel(entity))
+			render(contentType:"text/json") {
+				result = 'error'
+				html = htmlText
+			}
+		}
+		else {
+			saveEntity(entity);
+			
+			render(contentType:"text/json") {
+				result = 'success'
+				newEntity = {
+					id = entity.id
+					if (entity.hasProperty("name")) name = entity.name
+				}
+			}
+		}
+	}
+	
 	protected abstract def bindParams(def entity);
 	
-	protected abstract def save(def entity);
+	protected abstract def saveEntity(def entity);
 	
-	protected abstract def validate(def entity);
+	protected abstract def deleteEntity(def entity);
+	
+	protected abstract def validateEntity(def entity);
 	
 	protected abstract def getModel(def entity);
 		

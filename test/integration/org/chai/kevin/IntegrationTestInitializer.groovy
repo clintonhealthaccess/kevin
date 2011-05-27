@@ -35,34 +35,37 @@ class IntegrationTestInitializer extends Initializer {
 	static def createDashboard() {
 //		log.debug("creating database, data values: "+DataValue.list()+", organisations: "+OrganisationUnit.list()+", periods: "+Period.list());
 		
-		// objectives and targets for dashboard
-		new DashboardTarget(
+		def root = new DashboardObjective(root: true, names:j(["en":"Strategic Objectives"]), code:"OBJ", descriptions:j(["en":"Strategic Objectives"]), objectiveEntries: []).save(failOnError:true)
+		def hrh = new DashboardObjectiveEntry(entry: new DashboardObjective(root: false, names:j(["en":"Human Resources for Health"]), code:"HRH", descriptions:j(["en":"Human Resources for Health"]), objectiveEntries: []), weight: 1, order: 1)
+		root.addObjectiveEntry(hrh)
+		hrh.save(failOnError: true)
+		root.save(failOnError: true)
+		
+		def staffing = new DashboardObjectiveEntry(entry: new DashboardObjective(root: false, names:j(["en":"Staffing"]), code:"STAFFING", descriptions:j(["en":"Staffing"]), objectiveEntries: []), weight: 1, order: 1)
+		hrh.entry.addObjectiveEntry(staffing)
+		staffing.save(failOnError: true)
+		hrh.save(failOnError: true)
+		
+		def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 				names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
 				calculations: [
 					"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
 					"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
 				]
-			).save(failOnError: true)
-		new DashboardTarget(
+			), weight: 1, order: 1)
+		def target2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 				names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
 				calculations: [
 					"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
 					"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
 				]
-			).save(failOnError: true)
-			
-		def staffing = new DashboardObjective(root: false, names:j(["en":"Staffing"]), code:"STAFFING", descriptions:j(["en":"Staffing"]), objectiveEntries: [])
-		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A1"), weight: 1, order: 1)
-		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A2"), weight: 1, order: 2)
-		staffing.save(failOnError: true)
+			), weight: 1, order: 2)
 		
-		def hrh = new DashboardObjective(root: false, names:j(["en":"Human Resources for Health"]), code:"HRH", descriptions:j(["en":"Human Resources for Health"]), objectiveEntries: [])
-		hrh.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("STAFFING"), weight: 1, order: 1)
-		hrh.save(failOnError: true)
-		
-		def root = new DashboardObjective(root: true, names:j(["en":"Strategic Objectives"]), code:"OBJ", descriptions:j(["en":"Strategic Objectives"]), objectiveEntries: [])
-		root.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("HRH"), weight: 1, order: 1)
-		root.save(failOnError: true)
+		staffing.entry.addObjectiveEntry(target1)
+		staffing.entry.addObjectiveEntry(target2)
+		target1.save()
+		target2.save()
+		staffing.save()
 		
 	}
 	

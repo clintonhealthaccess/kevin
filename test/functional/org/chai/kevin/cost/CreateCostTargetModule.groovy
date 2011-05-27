@@ -11,7 +11,8 @@ class CreateCostTargetModule extends EntityFormWithExpressionsModule {
 
 	static content = {
 		entityFormContainer { $("div", id:"add-cost-target") }
-		nameField { entityFormContainer.find("input", name: "name") }
+		codeField { entityFormContainer.find("input", code: "code") }
+		nameField { entityFormContainer.find("input", name: "names.en") }
 		orderField { entityFormContainer.find("input", name: "order") }
 	}
 

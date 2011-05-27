@@ -44,11 +44,11 @@ class CostTargetController extends AbstractEntityController {
 		]
 	}
 	
-	def validate(def entity) {
+	def validateEntity(def entity) {
 		return entity.validate()
 	}
 	
-	def save(def entity) {
+	def saveEntity(def entity) {
 		if (entity.id == null) {
 			def currentObjective = CostObjective.get(params['currentObjective']);
 			currentObjective.addTarget entity
@@ -57,6 +57,10 @@ class CostTargetController extends AbstractEntityController {
 		else {
 			entity.save();
 		}
+	}
+	
+	def deleteEntity(def entity) {
+		entity.delete()
 	}
 	
 	def bindParams(def entity) {

@@ -31,12 +31,16 @@ class MapsTargetController extends AbstractEntityController {
 		[ target: entity, expressions: Expression.list() ]
 	}
 	
-	def validate(def entity) {
+	def validateEntity(def entity) {
 		return entity.validate()
 	}
 	
-	def save(def entity) {
+	def saveEntity(def entity) {
 		entity.save();
+	}
+	
+	def deleteEntity(def entity) {
+		entity.delete()
 	}
 	
 	def bindParams(def entity) {

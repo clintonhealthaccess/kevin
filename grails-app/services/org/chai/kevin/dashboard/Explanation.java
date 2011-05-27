@@ -7,6 +7,7 @@ import org.hisp.dhis.period.Period;
 public abstract class Explanation {
 
 	// if this is null, it means no expression is defined for the specified objective and organisation
+	// or we are on a target and no percentage is defined
 	private DashboardPercentage percentage;
 	private OrganisationUnitLevel level;
 	

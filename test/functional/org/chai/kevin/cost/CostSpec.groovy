@@ -43,6 +43,7 @@ class CostSpec extends GebTests {
 			addTarget()
 			createTarget.addExpression()
 			createTarget.createExpression.cancel()
+			createTarget.codeField.value("TARGET")
 			createTarget.nameField.value("Test Target")
 			createTarget.orderField.value("10")
 			createTarget.expressionFields.first().value("1")
@@ -64,7 +65,7 @@ class CostSpec extends GebTests {
 		then:
 			browser.at(CostPage)
 			createTarget.saveButton.present
-			!createTarget.hasError(createTarget.nameField)
+			!createTarget.hasError(createTarget.codeField)
 			createTarget.hasExpression("Constant 10")
 	}
 	
@@ -78,7 +79,7 @@ class CostSpec extends GebTests {
 		then:
 			browser.at(CostPage)
 			createTarget.saveButton.present
-			!createTarget.hasError(createTarget.nameField)
+			!createTarget.hasError(createTarget.codeField)
 	}
 	
 	def "add empty target displays error"() {
@@ -92,7 +93,7 @@ class CostSpec extends GebTests {
 		then:
 			browser.at(CostPage)
 			!costTable.displayed
-			createTarget.hasError(createTarget.nameField)
+			createTarget.hasError(createTarget.codeField)
 	}
 	
 	def "add targets displays it on page"() {
@@ -102,6 +103,7 @@ class CostSpec extends GebTests {
 			pickObjective("Geographical Access")
 			addTarget()
 			createTarget.nameField.value("Test Target 2")
+			createTarget.codeField.value("TARGET2")
 			createTarget.orderField.value("11")
 			createTarget.expressionFields.first().value("1")
 			createTarget.save()
@@ -123,7 +125,7 @@ class CostSpec extends GebTests {
 			
 		then:
 			browser.at(CostPage)
-			createTarget.createExpression.hasError(createTarget.createExpression.nameField)
+			createTarget.createExpression.hasError(createTarget.createExpression.codeField)
 			createTarget.createExpression.hasError(createTarget.createExpression.expressionField)
 	}
 	
@@ -139,7 +141,7 @@ class CostSpec extends GebTests {
 			
 		then:
 			browser.at(CostPage)
-			createTarget.hasError(createTarget.nameField)
+			createTarget.hasError(createTarget.codeField)
 	}
 
 }

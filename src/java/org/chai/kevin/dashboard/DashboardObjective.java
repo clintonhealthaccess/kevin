@@ -44,7 +44,6 @@ public class DashboardObjective extends DashboardEntry {
 	private List<DashboardObjectiveEntry> objectiveEntries = new ArrayList<DashboardObjectiveEntry>();
 	
 	@OneToMany(mappedBy="parent", targetEntity=DashboardObjectiveEntry.class)
-	@Cascade(value={org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	@OrderBy(value="order")
 	public List<DashboardObjectiveEntry> getObjectiveEntries() {
 		return objectiveEntries;

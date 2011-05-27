@@ -30,7 +30,7 @@ class CostRampUpController extends AbstractEntityController {
 		return [rampUp: entity, years: costService.years]
 	}
 	
-	def validate(def entity) {
+	def validateEntity(def entity) {
 		boolean valid = true;
 		entity.years.each { key, value ->
 			if (!value.validate()) valid = false
@@ -38,13 +38,17 @@ class CostRampUpController extends AbstractEntityController {
 		return entity.validate() & valid
 	}
 	
-	def save(def entity) {
+	def saveEntity(def entity) {
 		entity.save()
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = entity.descriptions
+	}
+	
+	def deleteEntity(def entity) {
+		entity.delete()
 	}
 	
 	def bindParams(def entity) {

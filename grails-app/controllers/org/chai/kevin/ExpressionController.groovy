@@ -23,12 +23,16 @@ class ExpressionController extends AbstractEntityController {
 		return [expression: entity, /*dataSets: dataService.getDataSets()*/]
 	}
 
-	def validate(def entity) {
+	def validateEntity(def entity) {
 		return entity.validate()
 	}
 	
-	def save(def entity) {
+	def saveEntity(def entity) {
 		entity.save()
+	}
+	
+	def deleteEntity(def entity) {
+		entity.delete()
 	}
 	
 	def bindParams(def entity) {

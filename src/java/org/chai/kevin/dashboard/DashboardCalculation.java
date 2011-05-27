@@ -37,7 +37,7 @@ public class DashboardCalculation {
 		this.groupUuid = groupUuid;
 	}
 	
-	@ManyToOne(optional=true)
+	@ManyToOne(optional=true, targetEntity=Expression.class)
 	public Expression getExpression() {
 		return expression;
 	}

@@ -77,7 +77,7 @@ class DomainSpec extends IntegrationTests {
 	}
 	
 	// integration test
-	def "objective cascade delete dashboard objective entries"() {
+	def "objective delete cascade deletes parent"() {
 		when:
 		def dashboardTargetCount = DashboardTarget.count()
 		def objective = DashboardObjective.findByCode("STAFFING");

@@ -9,7 +9,8 @@ class CreateDashboardObjectiveModule extends EntityFormModule {
 	static content = {
 		entityFormContainer { $("div", id:"add-dashboard-objective") }
 		weightField { entityFormContainer.find("input", name: "weight") }
-		nameField { entityFormContainer.find("input", name: "entry.name") }
+		codeField { entityFormContainer.find("input", code: "code") }
+		nameField { entityFormContainer.find("input", name: "entry.names.en") }
 		orderField { entityFormContainer.find("input", name: "order") }
 	}
 }

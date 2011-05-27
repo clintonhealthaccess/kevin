@@ -58,7 +58,7 @@ class DashboardSpec extends GebTests {
 			
 		then:
 			browser.at(DashboardPage)
-			createTarget.hasError(createTarget.nameField)
+			createTarget.hasError(createTarget.codeField)
 			createTarget.hasError(createTarget.weightField)
 	}
 	
@@ -69,6 +69,7 @@ class DashboardSpec extends GebTests {
 			createTarget.addExpression()
 			createTarget.createExpression.save()
 			createTarget.createExpression.cancel()
+			createTarget.codeField.value("TARGET")
 			createTarget.nameField.value("Test Target")
 			createTarget.weightField.value("1")
 			createTarget.orderField.value("10")
@@ -100,7 +101,7 @@ class DashboardSpec extends GebTests {
 		then:
 			browser.at(DashboardPage)
 			createTarget.saveButton.present
-			!createTarget.hasError(createTarget.nameField)
+			!createTarget.hasError(createTarget.codeField)
 			createTarget.hasExpression("Constant 10")
 	}
 	
@@ -111,7 +112,7 @@ class DashboardSpec extends GebTests {
 		then:
 			browser.at(DashboardPage)
 			createObjective.saveButton.present
-			!createObjective.hasError(createObjective.nameField)
+			!createObjective.hasError(createObjective.codeField)
 	}
 	
 	def "save empty target displays error message"() {
@@ -122,7 +123,7 @@ class DashboardSpec extends GebTests {
 			
 		then:
 			browser.at(DashboardPage)
-			createTarget.hasError(createTarget.nameField)
+			createTarget.hasError(createTarget.codeField)
 			createTarget.hasError(createTarget.weightField)
 	}
 	
@@ -135,7 +136,7 @@ class DashboardSpec extends GebTests {
 			
 		then:
 			browser.at(DashboardPage)
-			createTarget.hasError(createTarget.nameField)
+			createTarget.hasError(createTarget.codeField)
 			createTarget.hasError(createTarget.weightField)
 			createTarget.expressionFields.each { it.value() == "1" }
 	}
@@ -148,7 +149,7 @@ class DashboardSpec extends GebTests {
 			
 		then:
 			browser.at(DashboardPage)
-			createObjective.hasError(createObjective.nameField)
+			createObjective.hasError(createObjective.codeField)
 			createObjective.hasError(createObjective.weightField)
 	}
 	
@@ -157,6 +158,7 @@ class DashboardSpec extends GebTests {
 			browser.to(DashboardPage)
 			addTarget()
 			createTarget.nameField.value("Test Target")
+			createTarget.codeField.value("TARGET")
 			createTarget.weightField.value("1")
 			createTarget.orderField.value("10")
 			createTarget.save()
@@ -173,6 +175,7 @@ class DashboardSpec extends GebTests {
 			browser.to(DashboardPage)
 			addObjective()
 			createObjective.nameField.value("Test Objective")
+			createObjective.codeField.value("OBJECTIVE")
 			createObjective.weightField.value("1")
 			createObjective.orderField.value("5")
 			createObjective.save()
@@ -193,7 +196,7 @@ class DashboardSpec extends GebTests {
 			
 		then:
 			browser.at(DashboardPage)
-			createTarget.createExpression.hasError(createTarget.createExpression.nameField)
+			createTarget.createExpression.hasError(createTarget.createExpression.codeField)
 			createTarget.createExpression.hasError(createTarget.createExpression.expressionField)
 	}
  
@@ -203,6 +206,7 @@ class DashboardSpec extends GebTests {
 			addTarget()
 			createTarget.addExpression()
 			createTarget.createExpression.nameField.value("Test Expression")
+			createTarget.createExpression.codeField.value("EXPRESSION")
 			createTarget.createExpression.expressionField.value("1")
 			createTarget.createExpression.save()
 			
@@ -224,7 +228,7 @@ class DashboardSpec extends GebTests {
 		then:
 			browser.at(DashboardPage)
 			createTarget.saveButton.present
-			!createTarget.hasError(createTarget.nameField)
+			!createTarget.hasError(createTarget.codeField)
 			createTarget.hasExpression("Constant 10")
 	}
 

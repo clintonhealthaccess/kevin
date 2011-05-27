@@ -49,8 +49,7 @@ class ConstantSpec extends GebTests {
 		then:
 			browser.at(ConstantPage)
 			createConstant.entityFormContainer.displayed
-			createConstant.hasError(createConstant.nameField)
-			createConstant.hasError(createConstant.shortNameField)
+			createConstant.hasError(createConstant.codeField)
 			createConstant.hasError(createConstant.valueField)
 	}
 	
@@ -59,7 +58,7 @@ class ConstantSpec extends GebTests {
 			browser.to(ConstantPage)
 			addConstant()
 			createConstant.nameField.value("Test Constant")
-			createConstant.shortNameField.value("TESTCONST")
+			createConstant.codeField.value("TESTCONST")
 			createConstant.valueField.value("100")
 			createConstant.save()
 		

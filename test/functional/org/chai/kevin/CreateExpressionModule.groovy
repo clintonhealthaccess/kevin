@@ -6,9 +6,9 @@ class CreateExpressionModule extends EntityFormModule {
 
 	static content = {
 		entityFormContainer { $("div", id:"add-expression") }
-		nameField { entityFormContainer.find("input", name: "name") }
+		nameField { entityFormContainer.find("input", name: "names.en") }
 		expressionField { entityFormContainer.find("textarea", name: "expression") }
-		shortNameField { entityFormContainer.find("input", name: "shortName") }
+		codeField { entityFormContainer.find("input", name: "code") }
 		searchButton { entityFormContainer.find("form", name:"search-data-form").find("button", type: "submit") }
 		dataElements { entityFormContainer.find("ul", id:"data") }
 	}

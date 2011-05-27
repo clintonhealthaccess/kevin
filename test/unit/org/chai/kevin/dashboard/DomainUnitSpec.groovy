@@ -20,24 +20,25 @@ class DomainUnitSpec extends UnitSpec {
 		mockDomain(DashboardObjective)
 		mockDomain(DashboardTarget)
 		mockDomain(DashboardObjectiveEntry)
-		def target1 = new DashboardTarget(name: "target1")
-		def target2 = new DashboardTarget(name: "target2")
-		def weightedObjective1 = new DashboardObjectiveEntry(entry: target1, weight: 1, order: 10)
-		def weightedObjective2 = new DashboardObjectiveEntry(entry: target2, weight: 1, order: 3)
-		def objective = new DashboardObjective(name: "objective", objectiveEntries: [weightedObjective2, weightedObjective1])
 		
 		when:
-		target1.save(failOnError: true)
-		target2.save(failOnError: true)
+		def weightedObjective1 = new DashboardObjectiveEntry(entry: new DashboardTarget(code: "target1"), weight: 1, order: 10)
+		def weightedObjective2 = new DashboardObjectiveEntry(entry: new DashboardTarget(code: "target2"), weight: 1, order: 3)
+		def objective = new DashboardObjective(code: "objective", objectiveEntries: [])
+		objective.save(failOnError: true)
+		objective.addObjectiveEntry weightedObjective2
+		objective.addObjectiveEntry weightedObjective1
+		weightedObjective1.save(failOnError: true)
+		weightedObjective2.save(failOnError: true)
 		objective.save(failOnError: true)
 		
 		then:
-		DashboardObjective.findByName("objective").objectiveEntries.size() == 2
-		new ArrayList(DashboardObjective.findByName("objective").objectiveEntries)[index].entry.name == expectedName
-		new ArrayList(DashboardObjective.findByName("objective").objectiveEntries)[index].order == expectedOrder
+		DashboardObjective.findByCode("objective").objectiveEntries.size() == 2
+		new ArrayList(DashboardObjective.findByCode("objective").objectiveEntries)[index].entry.code == expectedCode
+		new ArrayList(DashboardObjective.findByCode("objective").objectiveEntries)[index].order == expectedOrder
 		
 		where:
-		index	| expectedName	| expectedOrder
+		index	| expectedCode	| expectedOrder
 		0		| "target2"		| 3
 		1		| "target1"		| 10
 	}

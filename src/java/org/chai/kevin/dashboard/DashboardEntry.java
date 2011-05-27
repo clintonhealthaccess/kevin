@@ -37,8 +37,8 @@ public abstract class DashboardEntry extends Translatable {
 		this.id = id;
 	}
 	
-	@OneToOne(cascade=CascadeType.REMOVE, targetEntity=DashboardObjectiveEntry.class, mappedBy="entry")
-	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+	@OneToOne(targetEntity=DashboardObjectiveEntry.class, mappedBy="entry")
+	@Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public DashboardObjectiveEntry getParent() {
 		return parent;
 	}

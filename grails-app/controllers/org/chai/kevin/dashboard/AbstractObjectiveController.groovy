@@ -16,7 +16,7 @@ abstract class AbstractObjectiveController extends AbstractEntityController {
 
 	def organisationService
 	
-	def validate(def entity) {
+	def validateEntity(def entity) {
 		return entity.entry.validate()&entity.validate()
 	}
 
@@ -24,14 +24,22 @@ abstract class AbstractObjectiveController extends AbstractEntityController {
 		return DashboardObjectiveEntry.get(id);
 	}
 	
-	def save(def entity) {
+	def saveEntity(def entity) {
 		if (entity.id == null) {
 			def currentObjective = DashboardObjective.get(params['currentObjective']);
 			currentObjective.addObjectiveEntry entity
-			currentObjective.save();
+			entity.save()
+			currentObjective.save()
 		}
 		else {
-			entity.save();
+			entity.save()
+		}
+	}
+	
+	def deleteEntity(def entity) {
+		if (!entity.entry.hasChildren()) {
+			entity.parent.objectiveEntries.remove(entity)
+			entity.delete()
 		}
 	}
 	

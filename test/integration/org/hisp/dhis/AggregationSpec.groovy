@@ -27,10 +27,10 @@ class AggregationSpec extends IntegrationTests {
 		when:
 		def period = Period.list()[1]
 		def dataElement = DataElement.findByCode(dataElementCode)
-		def organisation = OrganisationUnit.findByName(organisationName)
+		def organisation = getOrganisation(organisationName)
 		
 		then:
-		expressionService.getDataValue(dataElement, period, organisation) == value+""
+		expressionService.getDataValue(dataElement, period, organisation, [:]) == value+""
 				
 		where:
 		dataElementCode	| organisationName	| value

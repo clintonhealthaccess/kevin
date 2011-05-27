@@ -32,32 +32,34 @@ class PercentageCalculatorSpec extends UnitTests {
 		addBasicData()
 		
 		// indicators
-//		def one = new IndicatorType(jsonNames:j(["en":"one"]), factor: 1)
+//		def one = new IndicatorType(names:j(["en":"one"]), factor: 1)
 //		mockDomain(IndicatorType, [one])
-//		def const10 = new Indicator(jsonNames:j(["en":"Constant 10"]), shortName: "Constant 10", code: "CONST10", numerator: "10", denominator: "1", indicatorType: IndicatorType.findByName("one"))
-//		def const20 = new Indicator(jsonNames:j(["en":"Constant 20"]), shortName: "Constant 20", code: "CONST20", numerator: "20", denominator: "1", indicatorType: IndicatorType.findByName("one"))
-		def const10 = new Expression(jsonNames:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: ValueType.VALUE)
-		def const20 = new Expression(jsonNames:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: ValueType.VALUE)
+//		def const10 = new Indicator(names:j(["en":"Constant 10"]), shortName: "Constant 10", code: "CONST10", numerator: "10", denominator: "1", indicatorType: IndicatorType.findByName("one"))
+//		def const20 = new Indicator(names:j(["en":"Constant 20"]), shortName: "Constant 20", code: "CONST20", numerator: "20", denominator: "1", indicatorType: IndicatorType.findByName("one"))
+		def const10 = new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: ValueType.VALUE)
+		def const20 = new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: ValueType.VALUE)
 		mockDomain(Expression, [const10, const20])
 		
 		// objectives and targets for dashboard
 		def nursea1 = new DashboardTarget(
-			jsonNames:j(["en":"Nurse A1"]), code:"A1", jsonDescriptions:j(["en":"Nurse A1"]),
+			names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
 			calculations: ["District Hospital":
 				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
 			]
 		)
 		def nursea2 = new DashboardTarget(
-			jsonNames:j(["en":"Nurse A2"]), code:"A2", jsonDescriptions:j(["en":"Nurse A2"]),
+			names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
 			calculations: ["District Hospital":
 				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
 			]
 		)
 		mockDomain(DashboardTarget, [nursea1, nursea2])
-		def staffing = new DashboardObjective(root: false, jsonNames:j(["en":"Staffing"]), code:"STAFFING", jsonDescriptions:j(["en":"Staffing"]), objectiveEntries: [])
+		def staffing = new DashboardObjective(root: false, names:j(["en":"Staffing"]), code:"STAFFING", descriptions:j(["en":"Staffing"]), objectiveEntries: [])
 		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A1"), weight: 1, order: 1)
 		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A2"), weight: 1, order: 2)
 		mockDomain(DashboardObjective, [staffing])
+		
+		
 		
 		def monthly = new MonthlyPeriodType();
 		mockDomain(MonthlyPeriodType, [monthly])
@@ -110,13 +112,13 @@ class PercentageCalculatorSpec extends UnitTests {
 	
 	def "test absent value on target"() {
 		setup:
-		def dataElement = new DataElement(jsonNames:j(["en":"Element 1"]), code: "CODE", type: ValueType.VALUE, aggregationOperator: DataElement.AGGREGATION_OPERATOR_SUM)
+		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", type: ValueType.VALUE)
 		mockDomain(DataElement, [dataElement])
-		def expression = new Expression(jsonNames:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: ValueType.VALUE)
+		def expression = new Expression(names:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: ValueType.VALUE)
 		mockDomain(Expression, [expression])
 		
 		def target = new DashboardTarget(
-			jsonNames:j(["en":"Target 1"]), code:"TARGET1", jsonDescriptions:j(["en":"Target 1"]),
+			names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 			calculations: ["District Hospital":
 				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CODE")),
 			]

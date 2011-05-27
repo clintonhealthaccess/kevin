@@ -302,64 +302,75 @@ class Initializer {
 	static def createDashboard() {
 		if (!DashboardObjective.count()) {
 			// objectives and targets for dashboard
-			new DashboardTarget(
-					names:j(["en":"Nurse A1"]), code:"NURSE A1", descriptions:j(["en":"Nurse A1"]),
+			def root = new DashboardObjective(root: true, names:j(["en":"Strategic Objectives"]), code:"OBJ", descriptions:j(["en":"Strategic Objectives"]), objectiveEntries: []).save(failOnError:true)
+			def hrh = new DashboardObjectiveEntry(entry: new DashboardObjective(root: false, names:j(["en":"Human Resources for Health"]), code:"HRH", descriptions:j(["en":"Human Resources for Health"]), objectiveEntries: []), weight: 1, order: 1)
+			root.addObjectiveEntry(hrh)
+			hrh.save(failOnError: true)
+			root.save(failOnError: true)
+			
+			def staffing = new DashboardObjectiveEntry(entry: new DashboardObjective(root: false, names:j(["en":"Staffing"]), code:"STAFFING", descriptions:j(["en":"Staffing"]), objectiveEntries: []), weight: 1, order: 1)
+			hrh.entry.addObjectiveEntry(staffing)
+			staffing.save(failOnError: true)
+			hrh.save(failOnError: true)
+			
+			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
+					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 10")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 10"))
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
+						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
 					]
-				).save(failOnError: true)
-			new DashboardTarget(
-					names:j(["en":"Nurse A2"]), code:"NURSE A2", descriptions:j(["en":"Nurse A2"]),
+				), weight: 1, order: 1)
+			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
+					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
 					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 20")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 10"))
+						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
+						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
 					]
-				).save(failOnError: true)
-			new DashboardTarget(
+				), weight: 1, order: 2)
+			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 1")),
 						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 1"))
 					]
-				).save(failOnError: true)
-			new DashboardTarget(
+				), weight: 1, order: 3)
+			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 1")),
 					]
-				).save(failOnError: true)
-			new DashboardTarget(
+				), weight: 1, order: 4)
+			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 2")),
 						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 2"))
 					]
-				).save(failOnError: true)
-			new DashboardTarget(
+				), weight: 1, order: 5)
+			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 3")),
 						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 3"))
 					]
-				).save(failOnError: true)
-				
-			def staffing = new DashboardObjective(root: false, code:"STAFFING", names:j(["en":"Staffing"]), descriptions:j(["en":"Staffing"]), weightedObjectives: [])
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("NURSE A1"), weight: 1, order: 1)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("NURSE A2"), weight: 1, order: 2)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("TARGET1"), weight: 1, order: 3)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("MISSING EXPRESSION"), weight: 1, order: 4)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("MISSING DATA"), weight: 1, order: 5)
-			staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("ENUM"), weight: 1, order: 6)
+				), weight: 1, order: 6)
+			
+			
+			staffing.entry.addObjectiveEntry(nursea1)
+			staffing.entry.addObjectiveEntry(nursea2)
+			staffing.entry.addObjectiveEntry(target1)
+			staffing.entry.addObjectiveEntry(missexpr)
+			staffing.entry.addObjectiveEntry(missdata)
+			staffing.entry.addObjectiveEntry(enume)
+			
+			nursea1.save(failOnError: true)
+			nursea2.save(failOnError: true)
+			target1.save(failOnError: true)
+			missexpr.save(failOnError: true)
+			missdata.save(failOnError: true)
+			enume.save(failOnError: true)
+			
 			staffing.save(failOnError: true)
-			
-			def hrh = new DashboardObjective(root: false, code:"HRH", names:j(["en":"Human Resources for Health"]), descriptions:j(["en":"Human Resources for Health"]), weightedObjectives: [])
-			hrh.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("STAFFING"), weight: 1, order: 1)
-			hrh.save(failOnError: true)
-			
-			def root = new DashboardObjective(root: true, code:"Strategic Objectives", names:j(["en":"Strategic Objectives"]), descriptions:j(["en":"Strategic Objectives"]), weightedObjectives: [])
-			root.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("HRH"), weight: 1, order: 1)
-			root.save(failOnError: true, flush: true)
 		}
 	}
 	

@@ -114,8 +114,8 @@ class DashboardServiceSpec extends IntegrationTests {
 		
 		
 		then:
-		explanation.expressionExplanations[0].percentage.organisation == OrganisationUnit.findByName(organisationName)
-		explanation.entry == objective
+		explanation.expressionExplanations[0].percentage.organisationUnit == OrganisationUnit.findByName(organisationName)
+		explanation.expressionExplanations[0].percentage.entry == objective
 		// TODO
 //		explanation.expression.name == expressionName
 //		explanation.htmlFormula == htmlFormula

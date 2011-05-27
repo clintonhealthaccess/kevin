@@ -12,7 +12,7 @@ class ExpressionSpec extends GebTests {
 		then:
 			browser.at(ExpressionPage)
 			createExpression.entityFormContainer.displayed
-			createExpression.hasError(createExpression.nameField)
+			createExpression.hasError(createExpression.codeField)
 	}
 	
 	def "add expression works"() {

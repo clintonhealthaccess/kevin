@@ -1,10 +1,10 @@
-package org.hisp.dhis
+package org.chai.kevin
 
 import org.chai.kevin.ExpressionService;
 
 import grails.plugin.spock.UnitSpec;
 
-class ExpressionServiceSpec extends UnitSpec {
+class ExpressionServiceUnitSpec extends UnitSpec {
 
 	ExpressionService expressionService;
 	
@@ -21,7 +21,10 @@ class ExpressionServiceSpec extends UnitSpec {
 		expression	| map			| newExpression
 		"1"			| new HashMap()	| "1"
 		"[1]"		| [1: "test"]	| "test"
-		"[1.1]"		| [1: "test"]	| "test"
+	}
+	
+	def "test bad value"() {
+		// "[1.1]"		| [1: "test"]	| "test"
 	}
 	
 }

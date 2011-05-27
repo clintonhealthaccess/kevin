@@ -37,7 +37,7 @@ public class DashboardObjectiveEntry implements Comparable<DashboardObjectiveEnt
 	}
 	
 	@OneToOne(targetEntity=DashboardEntry.class)
-	@Cascade(value=org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+	@Cascade(value={org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public DashboardEntry getEntry() {
 		return entry;
 	}
@@ -63,7 +63,7 @@ public class DashboardObjectiveEntry implements Comparable<DashboardObjectiveEnt
 	}
 	
 	@ManyToOne
-	@JoinColumn(nullable=false)
+	@JoinColumn
 	public DashboardObjective getParent() {
 		return parent;
 	}
