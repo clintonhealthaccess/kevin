@@ -43,7 +43,7 @@ class UtilTagLib {
 	
 	def i18n = { attrs, body ->
 		def text = attrs['field'].get(localeService.getCurrentLanguage())
-		if (text == null || text.equals("")) text == attrs['field'].get(localeService.getFallbackLanguage())
+		if (text == null || text.trim().equals("")) text = attrs['field'].get(localeService.getFallbackLanguage())
 		out << text 
 	}
 	
