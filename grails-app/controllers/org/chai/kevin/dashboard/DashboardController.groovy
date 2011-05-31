@@ -1,5 +1,6 @@
 package org.chai.kevin.dashboard
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.GroupCollection;
@@ -14,6 +15,7 @@ import org.chai.kevin.dashboard.DashboardTarget;
 import org.hibernate.cache.ReadWriteCache.Item;
 import org.hisp.dhis.aggregation.AggregationService;
 import org.chai.kevin.DataElement;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -60,7 +62,10 @@ class DashboardController extends AbstractReportController {
 		
 		def dashboard = dashboardService.getDashboard(organisation, objective, period);
 		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
-		[ dashboard: dashboard, periods: Period.list() ]
+		Set<String> defaultChecked = ConfigurationHolder.config.dashboard.facility.checked;
+		
+		if (log.isDebugEnabled()) log.debug("checked by default: "+defaultChecked)
+		[ dashboard: dashboard, periods: Period.list(), checkedFacilities: defaultChecked ]
 	}
 	
 	def refresh = {

@@ -58,6 +58,17 @@
 				    	</ul>
 			    	</div>
 			    	
+			    	<div class="box" id="facility-type-filter">
+			    		<h5>Facility types</h5>
+			    		<g:if test="${!dashboard.facilityTypes.isEmpty()}">
+				    		<g:each in="${dashboard.facilityTypes}" var="group">
+					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}
+				    		</g:each>
+			    		</g:if>
+			    		<g:else>
+			    			<span class="italic">no facility types</span>
+			    		</g:else>
+			    	</div>
 		    	</div>
 		    
 		    	<div id="center" class="box">
@@ -118,7 +129,7 @@
 							</thead>
 							<tbody class="body">
 								<g:each in="${dashboard.organisations}" var="organisation">
-								<tr class="row">
+								<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
 									<th class="cell label left row-${organisation.id}" data-row="${organisation.id}">
 										<div><span>
 										<g:if test="${organisation.getChildren().size() > 0}">
@@ -222,7 +233,29 @@
     				explanationClick(this, organisation+'-'+objective, addEvents);
     				return false;
     			});
+    			
+    			/**
+    			 * facility type switcher
+    			 **/
+    			$('#facility-type-filter input').bind('click', function() {
+    				toggleFacilityType();
+    			});
+				
+    			toggleFacilityType();
     		});
+    		
+    		function toggleFacilityType() {
+    			if ($('#facility-type-filter input').size() != 0) {
+	    			var checked = [];
+	    			$('#facility-type-filter input').each(function(){
+						if (this.checked) checked.push($(this).val())
+					});
+					$('.row.organisation').each(function(){
+						if ($.inArray($(this).data('group'), checked) >= 0) $(this).show();
+						else $(this).hide()
+					});
+    			}
+    		}
     		
     		function addEvents(prefix) {
     			$('#explanation-'+prefix+' .element').each(function(){

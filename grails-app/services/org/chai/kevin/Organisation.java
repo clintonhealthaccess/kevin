@@ -3,13 +3,14 @@ package org.chai.kevin;
 import java.util.List;
 
 import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 public class Organisation {
 
 	private List<Organisation> children;
 	private OrganisationUnit organisationUnit;
 	private Organisation parent;
+	private OrganisationUnitGroup organisationUnitGroup;
 	private int level;
 	
 	public Organisation(OrganisationUnit organisationUnit) {
@@ -38,6 +39,14 @@ public class Organisation {
 	
 	public Organisation getParent() {
 		return parent;
+	}
+	
+	public OrganisationUnitGroup getOrganisationUnitGroup() {
+		return organisationUnitGroup;
+	}
+	
+	public void setOrganisationUnitGroup(OrganisationUnitGroup organisationUnitGroup) {
+		this.organisationUnitGroup = organisationUnitGroup;
 	}
 	
 	public void setParent(Organisation parent) {
@@ -99,8 +108,6 @@ public class Organisation {
 	public String toString() {
 		return "Organisation [organisationUnit=" + organisationUnit + ", level=" + level + "]";
 	}
-	
-	
 	
 }
 

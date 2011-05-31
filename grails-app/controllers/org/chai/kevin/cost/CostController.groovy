@@ -3,6 +3,7 @@ package org.chai.kevin.cost
 import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.cost.CostTableService;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.period.Period;
 
 class CostController extends AbstractReportController {
@@ -35,13 +36,14 @@ class CostController extends AbstractReportController {
 //		redirectIfDifferent(period, organisation, objective)
 		
 		def costTable = costTableService.getCostTable(period, objective, organisation);
+		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		
 		if (log.isDebugEnabled()) log.debug('costTable: '+costTable)
 		[
 			costTable: costTable,
 			objectives: CostObjective.list(), 
 			periods: Period.list(),
-			organisationTree: organisationService.getOrganisationTreeUntilLevel(new Integer(costTableService.getOrganisationLevel()).intValue()-1),
+			organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
 			displayLinkUntil: 3
 		]
 	}

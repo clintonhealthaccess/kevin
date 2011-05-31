@@ -14,26 +14,19 @@ import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.maps.MapsService;
 import org.springframework.format.number.PercentFormatter;
 
-def defaultSkipLevels;
-def defaultOrganisationlevel;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+def config = CH.config
 
-switch(GrailsUtil.environment) {
-	case "production":
-		defaultSkipLevels = [4]
-		defaultOrganisationlevel = 5
-	break
-	case "development":
-	case "test":
-		defaultSkipLevels = []
-		defaultOrganisationlevel = 4
-	break
-}
+String facilityTypeGroup = config.facility.type.group
+Set<String> dashboardSkipLevels = config.dashboard.skip.levels
+Set<String> costSkipLevels = config.dashboard.skip.levels
+Integer facilityLevel = config.facility.level
 
 beans = {
 	dsrService(DsrService){
 		expressionService = ref("expressionService")
 		organisationService = ref("organisationService")
-		localeService = ref("localeService")
+		organisationLevel = facilityLevel
 	}
 	
 	percentageService(PercentageService) {
@@ -47,21 +40,21 @@ beans = {
 	mapsService(MapsService) {
 		expressionService = ref("expressionService")
 		organisationService = ref("organisationService")
-		organisationLevel = defaultOrganisationlevel
 	}
 	
 	costTableService(CostTableService) {
 		costService = ref("costService")
 		expressionService = ref("expressionService")
 		organisationService = ref("organisationService")
-		organisationLevel = defaultOrganisationlevel
+		organisationLevel = facilityLevel
+		skipLevels = costSkipLevels
 	}
 	
 	expressionService(ExpressionService) {
 		dataService = ref("dataService")
 		dataValueService = ref("dataValueService")
 		organisationService = ref("organisationService")
-		facilityLevel = defaultOrganisationlevel
+		organisationLevel = facilityLevel
 	}
 	
 	dashboardService(DashboardService) {
@@ -71,16 +64,16 @@ beans = {
 		expressionService = ref("expressionService")
 		organisationUnitService = ref("organisationUnitService")
 		periodService = ref("periodService")
+		skipLevels = dashboardSkipLevels
 	}
 	
 	organisationService(OrganisationService) {
+		group = facilityTypeGroup
 		organisationUnitService = ref("organisationUnitService")
 		organisationUnitGroupService = ref("organisationUnitGroupService")
-		skipLevels = defaultSkipLevels
-		groups = ['Type']
 	}
 	
-	beans = {
-		customPropertyEditorRegistrar(TranslationPropertyEditorRegistrar)
-	}
+//	beans = {
+//		customPropertyEditorRegistrar(TranslationPropertyEditorRegistrar)
+//	}
 }

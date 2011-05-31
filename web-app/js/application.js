@@ -3,7 +3,7 @@ $(document).ready(function(){
 		var self = this;
 		window.setTimeout(function() {
 			if ($.active) $(self).show();
-		}, 800);
+		}, 1500);
 	}).bind("ajaxStop", function() {
 		$(this).hide();
 	}).bind("ajaxError", function() {

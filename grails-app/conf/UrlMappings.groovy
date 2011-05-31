@@ -17,8 +17,9 @@ class UrlMappings {
 			}
 		}
 
-		// temporary redirect to dashboard
-		"/"(controller:"maps", action:"index")
+		// temporary redirect to dsr
+		"/"(controller:"dsr", action:"index")
+		//"/"(controller:"maps", action:"index")
 		"500"(view:'/error')
 	}
 }

@@ -2,6 +2,7 @@ package org.chai.kevin.maps
 
 import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.Organisation;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
 
@@ -20,10 +21,12 @@ class MapsController extends AbstractReportController {
 		MapsTarget target = getMapsTarget()
 		Organisation organisation = getOrganisation(true)
 		
+		Integer organisationLevel = ConfigurationHolder.config.facility.level;
+		
 		[
 			periods: Period.list(), 
 			targets: MapsTarget.list(),
-			organisationTree: organisationService.getOrganisationTreeUntilLevel(new Integer(mapsService.getOrganisationLevel()).intValue()-1),
+			organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
 			currentPeriod: period, 
 			currentTarget: target,
 			currentOrganisation: organisation

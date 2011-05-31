@@ -32,7 +32,7 @@ public class ExpressionService {
 	private DataValueService dataValueService;
 	private OrganisationService organisationService;
 	
-	private String facilityLevel;
+	private Integer organisationLevel;
 	
 	private static JEP getJEPParser() {
     	final JEP parser = new JEP();
@@ -118,7 +118,7 @@ public class ExpressionService {
 		organisationService.getLevel(organisation);
 		
 		Double value;
-		if (organisation.getLevel() == new Integer(facilityLevel).intValue()) {
+		if (organisation.getLevel() == organisationLevel.intValue()) {
 			Map<DataElement, Object> valuesForOrganisation = new HashMap<DataElement, Object>();
 			values.put(organisation, valuesForOrganisation);
 			value = (Double)getValue(expression, period, organisation, valuesForOrganisation);
@@ -210,7 +210,7 @@ public class ExpressionService {
 			if (dataValue != null) result = dataValue.getValue();
 		}
 		else {
-			List<Organisation> children = organisationService.getChildrenOfLevel(organisation, new Integer(facilityLevel));
+			List<Organisation> children = organisationService.getChildrenOfLevel(organisation, organisationLevel.intValue());
 			Double value = 0d;
 			for (Organisation child : children) {
 				Map<DataElement, Object> valuesForOrganisation = new HashMap<DataElement, Object>();
@@ -329,10 +329,10 @@ public class ExpressionService {
 		this.organisationService = organisationService;
 	}
 	
-	public void setFacilityLevel(String facilityLevel) {
-		this.facilityLevel = facilityLevel;
+	public void setOrganisationLevel(Integer organisationLevel) {
+		this.organisationLevel = organisationLevel;
 	}
-
+	
 	public void setDataValueService(DataValueService dataValueService) {
 		this.dataValueService = dataValueService;
 	}

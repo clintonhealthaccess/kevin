@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.DataElement;
@@ -14,7 +14,6 @@ import org.chai.kevin.ExpressionService;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
-import org.hisp.dhis.common.AbstractNameableObject;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,8 @@ public class CostTableService {
 	private CostService costService;
 	private OrganisationService organisationService;
 	private ExpressionService expressionService;
-	private String organisationLevel;
+	private Integer organisationLevel;
+	private Set<String> skipLevels;
 	
 	public CostTable getCostTable(Period period, CostObjective objective, Organisation organisation) {
 		if (objective == null || organisation == null) return new CostTable(period, objective, new ArrayList<CostTarget>(), costService.getYears(), organisation, new HashMap<CostTarget, Map<Integer,Cost>>());
@@ -40,10 +40,10 @@ public class CostTableService {
 		GroupCollection collection = new GroupCollection(organisationService.getGroupsForExpression());
 		
 		Map<Organisation, Map<Integer, Cost>> explanationMap = new HashMap<Organisation, Map<Integer,Cost>>();
-		organisationService.loadChildren(organisation);
+		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
 		for (Organisation child : organisation.getChildren()) {
-			if (	organisationService.getLevel(child) != new Integer(organisationLevel).intValue() 
+			if (	organisationService.getLevel(child) != organisationLevel.intValue() 
 					|| 
 					appliesToOrganisation(target, child, collection)
 			) {
@@ -67,9 +67,9 @@ public class CostTableService {
 	}
 	
 	private Map<Integer, Cost> getCost(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
-		organisationService.loadChildren(organisation);
+		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
-		if (organisationService.getLevel(organisation) == new Integer(organisationLevel).intValue()) {
+		if (organisationService.getLevel(organisation) == organisationLevel.intValue()) {
 			return getCostForLeafOrganisation(target, organisation, period, collection);
 		}
 		else {
@@ -145,10 +145,6 @@ public class CostTableService {
 		return result;
 	}
 	
-	public String getOrganisationLevel() {
-		return organisationLevel;
-	}
-	
 	public void setCostService(CostService costService) {
 		this.costService = costService;
 	}
@@ -161,8 +157,16 @@ public class CostTableService {
 		this.organisationService = organisationService;
 	}
 	
-	public void setOrganisationLevel(String organisationLevel) {
+	public void setOrganisationLevel(Integer organisationLevel) {
 		this.organisationLevel = organisationLevel;
+	}
+	
+	public void setSkipLevels(Set<String> skipLevels) {
+		this.skipLevels = skipLevels;
+	}
+	
+	public String[] getSkipLevelArray() {
+		return skipLevels.toArray(new String[skipLevels.size()]);
 	}
 	
 }

@@ -8,16 +8,18 @@ import org.hisp.dhis.period.Period;
 
 public class DsrTable {
 	private Period period;
+	private Organisation organisation;
 	private DsrObjective objective;
 	private List<Organisation> organisations;
 	private List<DsrTarget> targets;
 	private Map<Organisation, Map<DsrTarget, Dsr>> values;
 
 
-	public DsrTable(List<Organisation> organisations, Period period, DsrObjective objective,
+	public DsrTable(Organisation organisation,List<Organisation> organisations, Period period, DsrObjective objective,
 			List<DsrTarget> targets,
 			Map<Organisation, Map<DsrTarget, Dsr>> values) {
 		super();
+		this.organisation = organisation;
 		this.organisations = organisations;
 		this.period = period;
 		this.objective = objective;
@@ -71,5 +73,12 @@ public class DsrTable {
 		this.values = values;
 	}
 
+	public void setOrganisation(Organisation organisation) {
+		this.organisation = organisation;
+	}
+
+	public Organisation getOrganisation() {
+		return organisation;
+	}
 
 }

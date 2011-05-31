@@ -63,43 +63,24 @@ environments {
     test {
         grails.serverURL = "http://localhost:8080/${appName}"
     }
-
 }
 
-//environments {
-//	production {
-//		grails.config.locations = ["classpath:application.prod.properties"]
-//	}
-//	development {
-//		grails.config.locations = ["classpath:application.dev.properties"]
-//	}
-//}
-
-//environments {
-//	production {
-//		log4j = {
-//			appenders {
-//				file name: 'log-error', file:'log-error.log'
-//				file name: 'migration', file:'migration_error.log'
-//			}
-//			
-//			rootLogger: 'error,log-error'
-//		}
-//	}
-//}
+environments {
+	production {
+		log4j = {
+			appenders {
+				file name: 'log-error', file:'errors.log'
+			}
+			
+			root {
+				debug 'log-error'
+			}
+		}
+	}
+}
 
 // log4j configuration
 log4j = {
-    // Example of changing the log pattern for the default console
-    // appender:
-    //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
-//	appenders {
-//		file name:'migration', file:'migration_error.log'
-//	}
-	
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
@@ -121,13 +102,24 @@ log4j = {
 		   'org.hisp.dhis'
 		   
 		   
-
-//	error migration: 'org.chai.kevin.scripts.DATA'
-		   
 //	trace  'org.hibernate.type'
-
 }
 
 cloudbees.api.url='https://api.cloudbees.com/api'
 cloudbees.api.key=System.properties ['bees.key']
 cloudbees.api.secret=System.properties ['bees.secret']
+
+/**
+ * Application specific config
+ */
+dashboard.skip.levels=[]
+cost.skip.levels=[]
+facility.level=4
+facility.type.group="Type"
+dashboard.facility.checked=["District Hospital","Health Center"]
+environments {
+	production {
+		grails.config.locations = ["file:${userHome}/.grails/${appName}-config.groovy"]
+	}
+}
+

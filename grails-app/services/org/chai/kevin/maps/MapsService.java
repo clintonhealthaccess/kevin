@@ -21,7 +21,7 @@ public class MapsService {
 	
 	private ExpressionService expressionService;
 	private OrganisationService organisationService;
-	private String organisationLevel;
+//	private Integer organisationLevel;
 	
 	public Maps getMap(Period period, Organisation organisation, OrganisationUnitLevel level, MapsTarget target) {
 		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",organisation="+organisation+",target="+target+")");
@@ -63,12 +63,8 @@ public class MapsService {
 		this.organisationService = organisationService;
 	}
 	
-	public void setOrganisationLevel(String organisationLevel) {
-		this.organisationLevel = organisationLevel;
-	}
-	
-	public String getOrganisationLevel() {
-		return organisationLevel;
-	}
+//	public void setOrganisationLevel(Integer organisationLevel) {
+//		this.organisationLevel = organisationLevel;
+//	}
 	
 }

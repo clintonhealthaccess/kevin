@@ -1,10 +1,13 @@
 package org.chai.kevin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -20,11 +23,22 @@ public class OrganisationService {
 	
 	private static final Log log = LogFactory.getLog(OrganisationService.class);
 	
-	private Set<Integer> skipLevels;
-	private Set<String> groups;
-	 
+	private String group;
 	private OrganisationUnitService organisationUnitService;
 	private OrganisationUnitGroupService organisationUnitGroupService;
+	
+	// TODO get rid of this cache
+//	private OrganisationUnitGroupSet orgUnitGroupSet;
+//	private Set<OrganisationUnitGroup> orgUnitGroups;
+	
+//	private void loadGroups() {
+//		if (orgUnitGroupSet == null) {
+//			orgUnitGroupSet = organisationUnitGroupService.getOrganisationUnitGroupSetByName(group);
+//		}
+//		if (orgUnitGroups == null) {
+//			orgUnitGroups = orgUnitGroupSet.getOrganisationUnitGroups();
+//		}
+//	}
 	
     public Organisation getRootOrganisation() {
 		Collection<OrganisationUnit> organisations = organisationUnitService.getRootOrganisationUnits();
@@ -37,20 +51,29 @@ public class OrganisationService {
 	
 	public List<OrganisationUnitGroup> getGroupsForExpression() {
 		List<OrganisationUnitGroup> result = new ArrayList<OrganisationUnitGroup>();
-		Collection<OrganisationUnitGroupSet> groupSets = organisationUnitGroupService.getAllOrganisationUnitGroupSets();
-		for (OrganisationUnitGroupSet groupSet : groupSets) {
-			if (groups.contains(groupSet.getName())) {
-				result.addAll(groupSet.getOrganisationUnitGroups());
-			}
-		}
+		result.addAll(organisationUnitGroupService.getOrganisationUnitGroupSetByName(group).getOrganisationUnitGroups());
 		return result;
 	}
 	
-	public List<OrganisationUnitLevel> getChildren(int level) {
+//	public List<OrganisationUnitGroup> getGroupsForExpression(Organisation organisation) {
+//		List<OrganisationUnitGroup> result = new ArrayList<OrganisationUnitGroup>();
+//		List<OrganisationUnitGroupSet> groupSets = new ArrayList<OrganisationUnitGroupSet>();
+//		for (String name : groups) {
+//			groupSets.add(organisationUnitGroupService.getOrganisationUnitGroupSetByName(name));
+//		}
+//		for (OrganisationUnitGroupSet organisationUnitGroupSet : groupSets) {
+//			OrganisationUnitGroup group = organisation.getOrganisationUnit().getGroupInGroupSet(organisationUnitGroupSet);
+//			if (group != null) result.add(group);
+//		}
+//		return result;
+//	}
+	
+	public List<OrganisationUnitLevel> getChildren(int level, String... skipLevels) {
+		List<String> skipLevelList = Arrays.asList(skipLevels);
 		List<OrganisationUnitLevel> result = new ArrayList<OrganisationUnitLevel>();
 		
 		for (OrganisationUnitLevel organisationUnitLevel : organisationUnitService.getOrganisationUnitLevels()) {
-			if (organisationUnitLevel.getLevel() > level && !skipLevels.contains(organisationUnitLevel.getLevel())) {
+			if (organisationUnitLevel.getLevel() > level && !skipLevelList.contains(organisationUnitLevel.getLevel())) {
 				result.add(organisationUnitLevel);
 			}
 		}
@@ -87,9 +110,9 @@ public class OrganisationService {
 		return organisation;
 	}
 	
-	public boolean loadParent(Organisation organisation) {
+	public boolean loadParent(Organisation organisation, String...skipLevels) {
 		if (organisation.getParent() != null) return true;
-		OrganisationUnit parent = getParent(organisation.getOrganisationUnit());
+		OrganisationUnit parent = getParent(organisation.getOrganisationUnit(), skipLevels);
 		if (parent == null) return false;
 		else {
 			organisation.setParent(createOrganisation(parent));
@@ -97,27 +120,33 @@ public class OrganisationService {
 		}
 	}
 	
-	public Organisation getOrganisationTreeUntilLevel(int level) {
+	public void loadGroup(Organisation organisation) {
+//		loadGroups();
+		organisation.setOrganisationUnitGroup(organisation.getOrganisationUnit().getGroupInGroupSet(organisationUnitGroupService.getOrganisationUnitGroupSetByName(group)));
+	}
+	
+	public Organisation getOrganisationTreeUntilLevel(int level, String... skipLevels) {
+		List<String> skipLevelList = Arrays.asList(skipLevels);
 		Organisation rootOrganisation = getRootOrganisation();
-		loadUntilLevel(rootOrganisation, level-skipLevels.size());
+		loadUntilLevel(rootOrganisation, level-skipLevelList.size(), skipLevels);
 		return rootOrganisation;
 	} 
 	
-	private void loadUntilLevel(Organisation organisation, int level) {
+	private void loadUntilLevel(Organisation organisation, int level, String... skipLevels) {
 		getLevel(organisation);
 		if (organisation.getLevel() < level) {
-			loadChildren(organisation);
+			loadChildren(organisation, skipLevels);
 			for (Organisation child : organisation.getChildren()) {
-				loadUntilLevel(child, level);
+				loadUntilLevel(child, level, skipLevels);
 			}
 		}
 	}
 
 	
-	public void loadChildren(Organisation organisation) {
+	public void loadChildren(Organisation organisation, String... skipLevels) {
 		if (organisation.getChildren() != null) return;
 		List<Organisation> result = new ArrayList<Organisation>();
-		for (OrganisationUnit organisationUnit : getChildren(organisation.getOrganisationUnit())) {
+		for (OrganisationUnit organisationUnit : getChildren(organisation.getOrganisationUnit(), skipLevels)) {
 			Organisation child = createOrganisation(organisationUnit);
 			child.setParent(organisation);
 			result.add(child);
@@ -125,12 +154,13 @@ public class OrganisationService {
 		organisation.setChildren(result);
 	}
 
-	public OrganisationUnit getParent(OrganisationUnit organisationUnit) {
+	private OrganisationUnit getParent(OrganisationUnit organisationUnit, String... skipLevels) {
+		List<String> skipLevelList = Arrays.asList(skipLevels);
 		if (organisationUnit.getParent() == null) return null;
 		int level = organisationUnitService.getLevelOfOrganisationUnit(organisationUnit.getParent());
-		if (skipLevels.contains(level)) {
+		if (skipLevelList.contains(level)) {
 			if (log.isInfoEnabled()) log.info("skipping parent: "+organisationUnit.getParent()+" of level: "+level);
-			return getParent(organisationUnit.getParent());
+			return getParent(organisationUnit.getParent(), skipLevels);
 		}
 		return organisationUnit.getParent();
 	}
@@ -164,14 +194,15 @@ public class OrganisationService {
 		return result;
 	}
 	
-	private List<OrganisationUnit> getChildren(OrganisationUnit organisation) {
+	private List<OrganisationUnit> getChildren(OrganisationUnit organisation, String... skipLevels) {
+		List<String> skipLevelList = Arrays.asList(skipLevels);
 		List<OrganisationUnit> result = new ArrayList<OrganisationUnit>();
 		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation);
 		for (OrganisationUnit child : organisation.getChildren()) {
 			// we optimize by assuming that the level of the children is <level of parent> + 1
-			if (skipLevels.contains(level+1)) {
+			if (skipLevelList.contains(level+1)) {
 				if (log.isInfoEnabled()) log.info("skipping child: "+child+" of level: "+level);
-				result.addAll(getChildren(child));
+				result.addAll(getChildren(child, skipLevels));
 			}
 			else {
 				result.add(child);
@@ -180,12 +211,16 @@ public class OrganisationService {
 		return result;
 	}
 	
-	public void setSkipLevels(Set<Integer> skipLevels) {
-		this.skipLevels = skipLevels;
-	}
+//	public List<String> getSkipLevels() {
+//		return Arrays.asList(StringUtils.split(skipLevels, ','));
+//	}
+//	
+//	public void setSkipLevels(String skipLevels) {
+//		this.skipLevels = skipLevels;
+//	}
 	
-	public void setGroups(Set<String> groups) {
-		this.groups = groups;
+	public void setGroup(String group) {
+		this.group = group;
 	}
 	
 	public void setOrganisationUnitGroupService(

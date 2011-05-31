@@ -27,6 +27,7 @@ public class Dashboard {
 	public Dashboard(Organisation organisation, DashboardObjective objective, Period period, 
 			List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries,
 			List<Organisation> organisationPath, List<DashboardObjective> objectivePath,
+			List<OrganisationUnitGroup> facilityTypes,
 			Map<Organisation, Map<DashboardEntry, DashboardPercentage>> values
 	) {
 		this.organisation = organisation;
@@ -37,6 +38,7 @@ public class Dashboard {
 		this.organisationPath = organisationPath;
 		this.objectivePath = objectivePath;
 		this.values = values;
+		this.facilityTypes = facilityTypes;
 	}
 	
 
@@ -68,6 +70,9 @@ public class Dashboard {
 		return organisationPath;
 	}
 	
+	public List<OrganisationUnitGroup> getFacilityTypes() {
+		return facilityTypes;
+	}
 	
 	public DashboardPercentage getPercentage(Organisation organisation, DashboardEntry objective) {
 		return values.get(organisation).get(objective);

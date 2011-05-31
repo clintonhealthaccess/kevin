@@ -1,7 +1,5 @@
 dataSource {
 	pooled = true
-	driverClassName = "com.mysql.jdbc.Driver"
-	// driverClassName = "org.hsqldb.jdbcDriver"
 
 	properties {
 		maxActive = 50
@@ -23,7 +21,6 @@ hibernate {
 	cache.use_query_cache = true
 	cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
 	naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
-
 	//      flush.mode = 'commit'
 	//      show_sql = true
 }
@@ -34,7 +31,6 @@ environments {
 	development {
 		dataSource {
 			dbCreate = "update" // one of 'create', 'create-drop','update'
-			// url = "jdbc:mysql://localhost:8889/dhis2"
 			driverClassName = "org.hsqldb.jdbcDriver"
 			url = "jdbc:hsqldb:mem:devDB"
 			username = "sa";
@@ -45,7 +41,6 @@ environments {
 		dataSource {
 			dbCreate = "create-drop"
 			driverClassName = "org.hsqldb.jdbcDriver"
-			//                      driverClassName = "com.p6spy.engine.spy.P6SpyDriver"
 			url = "jdbc:hsqldb:mem:testDb"
 			username = "sa";
 			password = "";
@@ -59,10 +54,8 @@ environments {
 	production {
 		dataSource {
 			dbCreate = "update"
-			url = "jdbc:mysql://localhost:8889/kevin"
-			
-			username = "root"
-			password = "root"
+			driverClassName = "com.mysql.jdbc.Driver"
+			// configuration defined in ${home}/.grails/kevin-config.groovy
 		}
 	}
 }

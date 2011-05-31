@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 class DashboardObjectiveService {
 
-    static transactional = true
-	
+	static transactional = true
+
 	DashboardObjective getRootObjective() throws IllegalStateException {
 		List<DashboardObjective> objectives = DashboardObjective.findAllByRoot(true);
 		if (objectives.size() != 1) {
@@ -18,11 +18,9 @@ class DashboardObjectiveService {
 		}
 		return objectives.get(0);
 	}
-	
-	
+
+
 	List<DashboardTarget> getTargets() {
 		return DashboardTarget.list();
 	}
-	
-		
 }

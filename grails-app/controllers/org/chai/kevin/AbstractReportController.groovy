@@ -7,6 +7,7 @@ import org.chai.kevin.dashboard.DashboardObjectiveService;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dsr.DsrObjective;
+import org.chai.kevin.dsr.DsrObjectiveService
 import org.chai.kevin.maps.MapsTarget;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
@@ -15,7 +16,7 @@ abstract class AbstractReportController {
 
 	DashboardObjectiveService dashboardObjectiveService;
 	OrganisationService organisationService;
-	LocaleService localeService;
+	DsrObjectiveService dsrObjectiveService;
 	
 	protected def getObjective() {
 		Translatable objective = null
@@ -149,15 +150,15 @@ abstract class AbstractReportController {
 	}
 	
 	protected def getStrategicObjectiveDsr() {
-		DsrObjective objective = null
+		Translatable objective = null
 		try {
 			if (NumberUtils.isNumber(params['objective'])) {
 				objective = DsrObjective.get(params['objective']);
 			}
 			
 			if (objective == null) {
+				// TODO what if there are no objectives ?
 				objective = DsrObjective.list()[0]
-				//objective = dsrObjectiveService.getRootObjective()
 			}
 		}
 		catch (IllegalStateException e) {

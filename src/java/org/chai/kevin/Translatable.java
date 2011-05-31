@@ -1,21 +1,13 @@
 package org.chai.kevin;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.MapKey;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Target;
 
 @MappedSuperclass
 public abstract class Translatable implements Serializable {

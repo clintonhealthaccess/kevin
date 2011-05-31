@@ -22,7 +22,7 @@ public class PercentageCalculator {
 
 	// TODO this should be private
 	protected ExpressionService expressionService;
-	protected OrganisationService organisationService;
+//	protected OrganisationService organisationService;
 	protected PercentageService percentageService;
 	private GroupCollection groupCollection;
 
@@ -36,7 +36,7 @@ public class PercentageCalculator {
 
 	public DashboardPercentage getPercentage(DashboardTarget target, Organisation organisation, Period period) {
 		if (log.isDebugEnabled()) log.debug("getPercentageForTarget(target: "+target+", organisation: "+organisation+")");
-
+		
 		DashboardCalculation matchingCalculation = getMatchingCalculation(target, organisation);
 		
 		DashboardPercentage percentage;
@@ -140,14 +140,16 @@ public class PercentageCalculator {
 	}
 	
 	public DashboardCalculation getMatchingCalculation(DashboardTarget target, Organisation organisation) {
-		Set<OrganisationUnitGroup> groups = organisation.getOrganisationUnit().getGroups();
-		if (log.isDebugEnabled()) log.debug("groups on organisation: "+groups);
+		OrganisationUnitGroup group = organisation.getOrganisationUnitGroup();
+		if (log.isDebugEnabled()) log.debug("group on organisation: "+group);
 		if (log.isDebugEnabled()) log.debug("groups on calculations: "+target.getCalculations());
 
 		DashboardCalculation matchingCalculation = null;
-		for (DashboardCalculation calculation : target.getCalculations().values()) {
-			if (groups.contains(groupCollection.getGroupByUuid(calculation.getGroupUuid()))) {  
-				matchingCalculation = calculation;
+		if (group != null) {
+			for (DashboardCalculation calculation : target.getCalculations().values()) {
+				if (group.equals(groupCollection.getGroupByUuid(calculation.getGroupUuid()))) {  
+					matchingCalculation = calculation;
+				}
 			}
 		}
 		return matchingCalculation;
@@ -157,10 +159,6 @@ public class PercentageCalculator {
 		this.expressionService = expressionService;
 	}
 
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
-	}
-	
 	public void setPercentageService(PercentageService percentageService) {
 		this.percentageService = percentageService;
 	}

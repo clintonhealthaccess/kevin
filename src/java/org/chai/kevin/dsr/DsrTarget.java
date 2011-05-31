@@ -7,6 +7,8 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -23,53 +25,58 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @SuppressWarnings("serial")
 @Entity(name = "DsrTarget")
-@Table(name = "dhsst_drs_target")
+@Table(name = "dhsst_dsr_target")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTarget extends Translatable {
-	private DsrObjective parent;
-	private Expression expression;
-	
-	private Translation categories = new Translation();
-	
 	private Integer id;
-	
+	private Integer order;
+	private DsrObjective objective;
+	private Expression expression;
+	private DsrTargetCategory category;
+
 	@Id
 	@GeneratedValue
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
 	public void setExpression(Expression expression) {
 		this.expression = expression;
 	}
-	
-	@ManyToOne(targetEntity = Expression.class, optional=false)
+
+	@ManyToOne(targetEntity = Expression.class, optional = false)
 	public Expression getExpression() {
 		return expression;
 	}
 
-	public void setParent(DsrObjective parent) {
-		this.parent = parent;
+	public void setObjective(DsrObjective objective) {
+		this.objective = objective;
 	}
-	
 	@ManyToOne(targetEntity = DsrObjective.class)
-	public DsrObjective getParent() {
-		return parent;
+	public DsrObjective getObjective() {
+		return objective;
+	}
+	public void setCategory(DsrTargetCategory category) {
+		this.category = category;
 	}
 
-	@Embedded
-	@AttributeOverrides({
-        @AttributeOverride(name="jsonText", column=@Column(name="jsonCategories", nullable=false))
-	})
-	public Translation getCategories() {
-		return categories;
+	@ManyToOne(targetEntity = DsrTargetCategory.class, optional = true)
+	public DsrTargetCategory getCategory() {
+		return category;
 	}
-	
-	public void setCategories(Translation categories) {
-		this.categories = categories;
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
-	
+
+	@Basic
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
+	}
+
 }

@@ -1,13 +1,16 @@
 package org.chai.kevin.dashboard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.ExpressionService;
@@ -15,6 +18,7 @@ import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ProgressListener;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
@@ -32,28 +36,40 @@ public class DashboardService {
 	private ExpressionService expressionService;
 	private PeriodService periodService;
 	
+	private Set<String> skipLevels;
+	
 	public Dashboard getDashboard(Organisation organisation, DashboardObjective objective, Period period) {
-		organisationService.loadChildren(organisation);
+		organisationService.loadChildren(organisation, getSkipLevelArray());
 		for (Organisation child : organisation.getChildren()) {
-			organisationService.loadChildren(child);
+			organisationService.loadChildren(child, getSkipLevelArray());
+			organisationService.loadGroup(child);
 		}
 		Organisation parent = organisation;
-		while (organisationService.loadParent(parent)) {
+		while (organisationService.loadParent(parent, getSkipLevelArray())) {
 			parent = parent.getParent();
 		}
 		
+		Set<OrganisationUnitGroup> facilityTypeSet = new LinkedHashSet<OrganisationUnitGroup>();
+		for (Organisation child : organisation.getChildren()) {
+			if (child.getOrganisationUnitGroup() != null) facilityTypeSet.add(child.getOrganisationUnitGroup());
+		}
+		List<OrganisationUnitGroup> facilityTypes = new ArrayList<OrganisationUnitGroup>(facilityTypeSet);
+
 		List<Organisation> organisations = organisation.getChildren();
 		List<DashboardObjectiveEntry> weightedObjectives = objective.getObjectiveEntries();
 		List<Organisation> organisationPath = calculateOrganisationPath(organisation);
 		List<DashboardObjective> objectivePath = calculateObjectivePath(objective);
 		return new Dashboard(organisation, objective, period, 
 				organisations, weightedObjectives, 
-				organisationPath, objectivePath, getValues(organisations, weightedObjectives, period));
+				organisationPath, objectivePath, facilityTypes,
+				getValues(organisations, weightedObjectives, period));
 	}
 
 	public Explanation getExplanation(Organisation organisation, DashboardEntry entry, Period period) {
-		organisationService.loadChildren(organisation);
-		organisationService.loadParent(organisation);
+		organisationService.loadChildren(organisation, getSkipLevelArray());
+		organisationService.loadParent(organisation, getSkipLevelArray());
+		organisationService.loadGroup(organisation);
+		organisationService.getLevel(organisation);
 		
 		ExplanationCalculator calculator = createExplanationCalculator();
 		return entry.getExplanation(calculator, organisation, period);
@@ -61,7 +77,6 @@ public class DashboardService {
 	
 	private ExplanationCalculator createExplanationCalculator() {
 		ExplanationCalculator calculator = new ExplanationCalculator();
-		calculator.setOrganisationService(organisationService);
 		calculator.setPercentageService(percentageService);
 		calculator.setExpressionService(expressionService);
 		calculator.setOrganisationUnitService(organisationUnitService);
@@ -115,11 +130,11 @@ public class DashboardService {
 	}
 	
 	private void getOrganisations(Organisation organisation, List<Organisation> organisations) {
-		organisationService.loadChildren(organisation);
+		organisationService.loadChildren(organisation, getSkipLevelArray());
 		for (Organisation child : organisation.getChildren()) {
 			getOrganisations(child, organisations);
 		}
-		if (organisationService.loadParent(organisation)) organisations.add(organisation);
+		if (organisationService.loadParent(organisation, getSkipLevelArray())) organisations.add(organisation);
 	}
 	
 	private Set<DashboardEntry> getParents(Set<DashboardEntry> entries) {
@@ -137,6 +152,7 @@ public class DashboardService {
 		for (Organisation organisation : organisations) {
 			for (DashboardEntry entry : entries) {
 				if (listener.isInterrupted()) return;
+				organisationService.loadGroup(organisation);
 				DashboardPercentage percentage = entry.getValue(calculator, organisation, period);
 				percentageService.updatePercentage(percentage);
 				listener.increment();
@@ -147,7 +163,6 @@ public class DashboardService {
 	private PercentageCalculator createCalculator() {
 		PercentageCalculator calculator = new PercentageCalculator();
 		calculator.setExpressionService(expressionService);
-		calculator.setOrganisationService(organisationService);
 		calculator.setPercentageService(percentageService);
 		calculator.setGroupCollection(new GroupCollection(organisationService.getGroupsForExpression()));
 		return calculator;
@@ -211,5 +226,13 @@ public class DashboardService {
 	
 	public void setPeriodService(PeriodService periodService) {
 		this.periodService = periodService;
+	}
+	
+	public void setSkipLevels(Set<String> skipLevels) {
+		this.skipLevels = skipLevels;
+	}
+	
+	public String[] getSkipLevelArray() {
+		return skipLevels.toArray(new String[skipLevels.size()]);
 	}
 }

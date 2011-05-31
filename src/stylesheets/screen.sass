@@ -1,11 +1,11 @@
 // This import applies a global reset to any page that imports this stylesheet.
 @import blueprint/reset
-// To configure blueprint, edit the partials/base.sass file.
-@import partials/base
 // Import all the default blueprint modules so that we can access their mixins.
 @import blueprint
 // Import the non-default scaffolding module.
 @import blueprint/modules/scaffolding
+// To configure blueprint, edit the partials/base.sass file.
+@import partials/base
 
 @import "compass/utilities/tables/scaffolding"
 @import "compass/utilities/lists/horizontal-list"
@@ -311,7 +311,8 @@ form
       float: left
       
       div
-        +column(3)
+        float: left
+        width: 110px
         margin-bottom: 10px
         ul
           +inline-block-list
@@ -540,7 +541,14 @@ form
         
       .value
         +column(3, true)
-        
+       
+
+.ui-widget
+  .ui-widget-header
+    display: none
+  font-weight: normal
+  font-size: inherit
+  
 .red
   color: red
 
@@ -565,4 +573,47 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
 
 .spacer
   +colspacer
+  
+#dsr
+  #top
+    margin-bottom: 10px
+  table
+    margin-bottom: 0px
+    margin-top: 4px  
+  th
+    font-weight: bolder
+    text-align: center
+  td
+    width: 20px
+    background-color: #ffffff
+    
+  .borderedBox
+    background-color: #ffffff
+    border: #cccccc solid
+    border-width: 0px 1px 1px 0px
+    text-align: right
+    
+  .borderedBoxOrg
+    background-color: #cccccc
+    border: #cccccc solid
+    border-width: 0px 1px 1px 0px
+    text-align: left
+    
+  .objectNameBox
+    width: 70px
+    font-weight: bolder
+    
+  .titleTh
+    color: #ffffff
+    background-color: #333333
+    border: #ffffff solid
+    border-width: 1px 1px 1px 0px
+          
+.rotateText
+  -webkit-transform: rotate(-90deg)
+  -moz-transform: rotate(-90deg)
+  -ms-transform: rotate(-90deg)
+  -o-transform: rotate(-90deg) 
+  transform: rotate(-90deg)
+  writing-mode: bt-rl
  

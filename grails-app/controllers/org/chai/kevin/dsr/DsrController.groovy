@@ -1,10 +1,13 @@
 package org.chai.kevin.dsr
 
+import java.util.Collections;
+
 import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.Organisation;
 import org.hisp.dhis.period.Period;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrService;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DsrController extends AbstractReportController {
 	
@@ -19,17 +22,22 @@ class DsrController extends AbstractReportController {
 		def quartzScheduler;
 
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
-
 		Period period = getPeriod()
 		DsrObjective objective = getStrategicObjectiveDsr()
 		Organisation organisation = getOrganisation(true)
-
-		//if (log.isInfoEnabled()) log.info("view dsr for period: "+period.id+", objective: "+objective.id+", organisation:"+ organisation.id);
-		//redirectIfDifferent(period, objective, organisation)
-
+		
 		def dsrTable = dsrService.getDsr(organisation, objective, period);
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable)
-		[ dsrTable: dsrTable, periods: Period.list() ]
+		
+		Integer organisationLevel = ConfigurationHolder.config.facility.level;
+		
+		[ 
+			dsrTable: dsrTable, 
+			periods: Period.list(),
+			objectives: DsrObjective.list(),
+		    organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1)
+		]
+		
 	}
 	
 }
