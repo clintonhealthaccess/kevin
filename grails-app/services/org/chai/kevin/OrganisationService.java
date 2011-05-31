@@ -68,8 +68,8 @@ public class OrganisationService {
 //		return result;
 //	}
 	
-	public List<OrganisationUnitLevel> getChildren(int level, String... skipLevels) {
-		List<String> skipLevelList = Arrays.asList(skipLevels);
+	public List<OrganisationUnitLevel> getChildren(int level, Integer... skipLevels) {
+		List<Integer> skipLevelList = Arrays.asList(skipLevels);
 		List<OrganisationUnitLevel> result = new ArrayList<OrganisationUnitLevel>();
 		
 		for (OrganisationUnitLevel organisationUnitLevel : organisationUnitService.getOrganisationUnitLevels()) {
@@ -110,7 +110,7 @@ public class OrganisationService {
 		return organisation;
 	}
 	
-	public boolean loadParent(Organisation organisation, String...skipLevels) {
+	public boolean loadParent(Organisation organisation, Integer...skipLevels) {
 		if (organisation.getParent() != null) return true;
 		OrganisationUnit parent = getParent(organisation.getOrganisationUnit(), skipLevels);
 		if (parent == null) return false;
@@ -125,14 +125,14 @@ public class OrganisationService {
 		organisation.setOrganisationUnitGroup(organisation.getOrganisationUnit().getGroupInGroupSet(organisationUnitGroupService.getOrganisationUnitGroupSetByName(group)));
 	}
 	
-	public Organisation getOrganisationTreeUntilLevel(int level, String... skipLevels) {
-		List<String> skipLevelList = Arrays.asList(skipLevels);
+	public Organisation getOrganisationTreeUntilLevel(int level, Integer... skipLevels) {
+		List<Integer> skipLevelList = Arrays.asList(skipLevels);
 		Organisation rootOrganisation = getRootOrganisation();
 		loadUntilLevel(rootOrganisation, level-skipLevelList.size(), skipLevels);
 		return rootOrganisation;
 	} 
 	
-	private void loadUntilLevel(Organisation organisation, int level, String... skipLevels) {
+	private void loadUntilLevel(Organisation organisation, int level, Integer... skipLevels) {
 		getLevel(organisation);
 		if (organisation.getLevel() < level) {
 			loadChildren(organisation, skipLevels);
@@ -143,7 +143,7 @@ public class OrganisationService {
 	}
 
 	
-	public void loadChildren(Organisation organisation, String... skipLevels) {
+	public void loadChildren(Organisation organisation, Integer... skipLevels) {
 		if (organisation.getChildren() != null) return;
 		List<Organisation> result = new ArrayList<Organisation>();
 		for (OrganisationUnit organisationUnit : getChildren(organisation.getOrganisationUnit(), skipLevels)) {
@@ -154,8 +154,8 @@ public class OrganisationService {
 		organisation.setChildren(result);
 	}
 
-	private OrganisationUnit getParent(OrganisationUnit organisationUnit, String... skipLevels) {
-		List<String> skipLevelList = Arrays.asList(skipLevels);
+	private OrganisationUnit getParent(OrganisationUnit organisationUnit, Integer... skipLevels) {
+		List<Integer> skipLevelList = Arrays.asList(skipLevels);
 		if (organisationUnit.getParent() == null) return null;
 		int level = organisationUnitService.getLevelOfOrganisationUnit(organisationUnit.getParent());
 		if (skipLevelList.contains(level)) {
@@ -194,8 +194,8 @@ public class OrganisationService {
 		return result;
 	}
 	
-	private List<OrganisationUnit> getChildren(OrganisationUnit organisation, String... skipLevels) {
-		List<String> skipLevelList = Arrays.asList(skipLevels);
+	private List<OrganisationUnit> getChildren(OrganisationUnit organisation, Integer... skipLevels) {
+		List<Integer> skipLevelList = Arrays.asList(skipLevels);
 		List<OrganisationUnit> result = new ArrayList<OrganisationUnit>();
 		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation);
 		for (OrganisationUnit child : organisation.getChildren()) {

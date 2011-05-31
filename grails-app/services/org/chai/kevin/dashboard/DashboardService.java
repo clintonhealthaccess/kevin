@@ -36,7 +36,7 @@ public class DashboardService {
 	private ExpressionService expressionService;
 	private PeriodService periodService;
 	
-	private Set<String> skipLevels;
+	private Set<Integer> skipLevels;
 	
 	public Dashboard getDashboard(Organisation organisation, DashboardObjective objective, Period period) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
@@ -228,11 +228,11 @@ public class DashboardService {
 		this.periodService = periodService;
 	}
 	
-	public void setSkipLevels(Set<String> skipLevels) {
+	public void setSkipLevels(Set<Integer> skipLevels) {
 		this.skipLevels = skipLevels;
 	}
 	
-	public String[] getSkipLevelArray() {
-		return skipLevels.toArray(new String[skipLevels.size()]);
+	public Integer[] getSkipLevelArray() {
+		return skipLevels.toArray(new Integer[skipLevels.size()]);
 	}
 }

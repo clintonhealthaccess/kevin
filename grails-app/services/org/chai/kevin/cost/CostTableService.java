@@ -27,7 +27,7 @@ public class CostTableService {
 	private OrganisationService organisationService;
 	private ExpressionService expressionService;
 	private Integer organisationLevel;
-	private Set<String> skipLevels;
+	private Set<Integer> skipLevels;
 	
 	public CostTable getCostTable(Period period, CostObjective objective, Organisation organisation) {
 		if (objective == null || organisation == null) return new CostTable(period, objective, new ArrayList<CostTarget>(), costService.getYears(), organisation, new HashMap<CostTarget, Map<Integer,Cost>>());
@@ -161,12 +161,12 @@ public class CostTableService {
 		this.organisationLevel = organisationLevel;
 	}
 	
-	public void setSkipLevels(Set<String> skipLevels) {
+	public void setSkipLevels(Set<Integer> skipLevels) {
 		this.skipLevels = skipLevels;
 	}
 	
-	public String[] getSkipLevelArray() {
-		return skipLevels.toArray(new String[skipLevels.size()]);
+	public Integer[] getSkipLevelArray() {
+		return skipLevels.toArray(new Integer[skipLevels.size()]);
 	}
 	
 }

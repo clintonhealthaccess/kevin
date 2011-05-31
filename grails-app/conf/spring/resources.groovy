@@ -18,8 +18,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 def config = CH.config
 
 String facilityTypeGroup = config.facility.type.group
-Set<String> dashboardSkipLevels = config.dashboard.skip.levels
-Set<String> costSkipLevels = config.dashboard.skip.levels
+Set<Integer> dashboardSkipLevels = config.dashboard.skip.levels
+Set<Integer> costSkipLevels = config.dashboard.skip.levels
 Integer facilityLevel = config.facility.level
 
 beans = {

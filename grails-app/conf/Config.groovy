@@ -116,8 +116,8 @@ site.languages=["en","fr","rw"]
 site.fallback.language="en"
 facility.level=4
 facility.type.group="Type"
-dashboard.skip.levels=[]
 dashboard.facility.checked=["District Hospital","Health Center"]
+dashboard.skip.levels=[]
 cost.skip.levels=[]
 
 environments {
