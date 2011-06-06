@@ -112,11 +112,14 @@ cloudbees.api.secret=System.properties ['bees.secret']
 /**
  * Application specific config
  */
-dashboard.skip.levels=[]
-cost.skip.levels=[]
+site.languages=["en","fr","rw"]
+site.fallback.language="en"
 facility.level=4
 facility.type.group="Type"
 dashboard.facility.checked=["District Hospital","Health Center"]
+dashboard.skip.levels=[]
+cost.skip.levels=[]
+
 environments {
 	production {
 		grails.config.locations = ["file:${userHome}/.grails/${appName}-config.groovy"]

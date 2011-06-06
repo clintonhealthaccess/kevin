@@ -9,7 +9,7 @@
     <body>
 		<div id="dashboard-explanation">
 			<h3><g:i18n field="${explanation.entry.names}"/> in ${explanation.organisation.name}</h3>
-			<g:if test="${explanation.average.status == Status.MISSING_EXPRESSION || (explanation.leaf && explanation.average.isHasMissingExpression())}">
+			<g:if test="${explanation.average.status == Status.MISSING_EXPRESSION}">
 				<div class="red bold">This group doesn't have any associated expression.</div>
 			</g:if>
 			<g:else>

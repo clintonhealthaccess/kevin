@@ -8,7 +8,6 @@
 	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/sexy-combo/css',file:'sexy-combo.css')}" />
 	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/sexy-combo/css',file:'sexy/sexy.css')}"/ >
 	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/cluetip',file:'jquery.cluetip.css')}"/ >
-	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/multiselect',file:'jquery.multiselect.css')}"/ >
 	
 	<link href="${resource(dir:'css',file:'screen.css')}" media="screen, projection" rel="stylesheet" type="text/css" />
 	<link href="${resource(dir:'css',file:'print.css')}" media="print" rel="stylesheet" type="text/css" />
@@ -31,7 +30,6 @@
 	<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
 	<g:javascript src="jquery/periodicalupdater/jquery.periodicalupdater.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
-	<g:javascript src="jquery/multiselect/jquery.multiselect.js" />
 
 	<g:javascript library="application" />
 	
@@ -44,7 +42,14 @@
 
 	<div id="container" class="">
 		<div id="header">
-		
+			<% def localeService = application.getAttribute("org.codehaus.groovy.grails.APPLICATION_CONTEXT").getBean("localeService") %>
+			<div class="locales" id="switcher">
+				<g:each in="${localeService.availableLanguages}" var="language" status="i">
+					<% params['lang'] = language %>
+					<a class="${localeService.currentLanguage==language?'no-link':''}" href="${createLink(params:params)}">${language}</a>
+				</g:each>
+			</div>
+					
 			<h1>Welcome to Kevin</h1>
 
 			<div id="navigation">
