@@ -7,8 +7,13 @@ public class DsrTargetSorter implements Comparator<DsrTarget> {
 	public int compare(DsrTarget targetOne, DsrTarget targetTwo) {
 
 		if (targetOne.getCategory() != null && targetTwo.getCategory() != null)
-			return this.compareOrder(targetOne.getCategory().getOrder(),
-					targetTwo.getCategory().getOrder());
+			if (targetOne.getCategory() == targetTwo.getCategory()) {
+				return this.compareOrder(targetOne.getOrder(),
+						targetTwo.getOrder());
+			} else {
+				return this.compareOrder(targetOne.getCategory().getOrder(),
+						targetTwo.getCategory().getOrder());
+			}
 		if (targetOne.getCategory() != null && targetTwo.getCategory() == null)
 			return this.compareOrder(targetOne.getCategory().getOrder(),
 					targetTwo.getOrder());
@@ -24,9 +29,9 @@ public class DsrTargetSorter implements Comparator<DsrTarget> {
 		if (orderOne != null && orderTwo != null)
 			return orderOne - orderTwo;
 		if (orderOne != null && orderTwo == null)
-			return 1;
-		if (orderOne == null && orderTwo != null)
 			return -1;
+		if (orderOne == null && orderTwo != null)
+			return 1;
 		if (orderOne == null && orderTwo == null)
 			return 0;
 

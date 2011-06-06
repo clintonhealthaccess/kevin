@@ -1,12 +1,5 @@
 package org.chai.kevin.dsr;
 
-import java.util.Map;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,12 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.chai.kevin.Expression;
-import org.chai.kevin.JSONUtils;
 import org.chai.kevin.Translatable;
-import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -33,6 +23,7 @@ public class DsrTarget extends Translatable {
 	private DsrObjective objective;
 	private Expression expression;
 	private DsrTargetCategory category;
+	
 
 	@Id
 	@GeneratedValue
@@ -42,6 +33,16 @@ public class DsrTarget extends Translatable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
+	@Basic
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
 	}
 
 	public void setExpression(Expression expression) {
@@ -69,14 +70,5 @@ public class DsrTarget extends Translatable {
 		return category;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-
+	
 }

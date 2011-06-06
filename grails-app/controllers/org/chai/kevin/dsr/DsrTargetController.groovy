@@ -9,60 +9,55 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import com.sun.tools.javac.code.Type.ForAll;
 
 class DsrTargetController extends AbstractEntityController {
-	
+
 	def organisationService
-	
+
 	def getEntity(def id) {
 		return DsrTarget.get(id)
 	}
-	
+
 	def createEntity() {
 		return new DsrTarget()
 	}
-	
+
 	def getTemplate() {
-		return "createTarget"
+		return "/dsr/createTarget"
 	}
-	
+
 	def getModel(def entity) {
-		def objective = null;
-		if (params['objective']) {
-			objective = DsrObjective.get(params['objective']);
-			if (log.isInfoEnabled()) log.info('fetched current objective: '+objective);
-		}
 		def groups = new GroupCollection(organisationService.getGroupsForExpression())
 		[
-			target: entity,
-			groupUuids: DsrService.getGroupUuids(entity.groupUuidString),
-			objective: objective,
-			expressions: Expression.list(),
-		]
+					target: entity,
+					objectives: DsrObjective.list(),
+					expressions: Expression.list(),
+					categories: DsrTargetCategory.list()
+				]
 	}
-	
+
 	def validateEntity(def entity) {
 		return entity.validate()
 	}
-	
+
 	def saveEntity(def entity) {
-		if (entity.id == null) {
-			def objective = DsrObjective.get(params['objective']);
-			objective.addTarget entity
-			objective.save();
-		}
-		else {
-			entity.save();
-		}
+		entity.save();
 	}
-	
+
 	def deleteEntity(def entity) {
-		entity.delete();
+		if(entity.category != null){
+			entity.category.targets.remove(entity)
+			entity.category.save()
+		}
+		entity.objective.targets.remove(entity)
+		entity.objective.save()
+		entity.delete()
 	}
-	
+
 	def bindParams(def entity) {
 		entity.properties = params
-		entity.groupUuidString = DsrService.getGroupUuidString(params['groupUuids']);
-	}
-	
 
-	
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
+	}
 }

@@ -48,22 +48,22 @@
 			<h1>Welcome to Kevin</h1>
 
 			<div id="navigation">
-				<ul class="menu">
+			<ul class="menu">
 					<li><a href="${createLink(controller: 'dashboard', action:'view')}">Dashboard</a></li>
 					<li><a href="${createLink(controller: 'cost', action:'view')}">Costing</a></li>
 					<li><a href="${createLink(controller: 'dsr', action:'view')}">District Summary Reports</a></li>
 					<li><a href="${createLink(controller: 'maps', action:'view')}">Maps</a></li>
 				</ul>
-				<ul class="menu">
+			<ul class="menu">
 					<li><a href="${createLink(controller: 'expression', action:'list')}">Expressions</a></li>
 					<li><a href="${createLink(controller: 'constant', action:'list')}">Constants</a></li>
 				</ul>
+				<div class="clear"></div>
 			</div>
 		</div>
 
 		<div id="content">
 			<g:layoutBody />
-
 			<div class=clear></div>
 		</div>
 
@@ -357,6 +357,23 @@
 				}
 			});
 			
+			/** Nice Input form element  */
+				$(document).delegate('input[type="text"],textarea','focus',function() {
+					$(this).removeClass("idle-field completed-field").addClass("focus-field");
+			        if (this.value == this.defaultValue && this.defaultValue==''){
+			        	this.value = '';
+			    	}
+			        if(this.value != this.defaultValue){
+				    	this.select();
+			        }
+			    });
+			    $(document).delegate('input[type="text"],textarea','blur',function() {
+			    	$(this).removeClass("focus-field").addClass("idle-field");
+			    	if (this.value != this.defaultValue){
+			    		this.value =$.trim(this.value);
+			    		$(this).removeClass("focus-field").addClass("completed-field");
+			    	}
+			    });
 		});
 	</script>
 </body>

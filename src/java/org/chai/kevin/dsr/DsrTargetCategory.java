@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @SuppressWarnings("serial")
 @Entity(name = "DsrTargetCategory")
-@Table(name = "dhsst_dsr_category")
+@Table(name = "dhsst_dsr_target_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTargetCategory extends Translatable {
 
@@ -46,9 +45,17 @@ public class DsrTargetCategory extends Translatable {
 		return order;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = DsrTarget.class, mappedBy = "category")
+	@OneToMany(targetEntity = DsrTarget.class, mappedBy = "category")
 	public List<DsrTarget> getTargets() {
 		return targets;
+	}
+	
+	public List<DsrTarget> getTargetsForObjective(DsrObjective objective) {
+		List<DsrTarget> result = new ArrayList<DsrTarget>();
+		for (DsrTarget dsrTarget : getTargets()) {
+			if (dsrTarget.getObjective().equals(objective)) result.add(dsrTarget);
+		}
+		return result;
 	}
 
 	public void setTargets(List<DsrTarget> targets) {

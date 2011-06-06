@@ -86,7 +86,41 @@ body.two-columns
   img
     position: relative
     top: 50%
-
+    
+.focus-field
+  border: solid 1px #73A6ff
+  background: #dbe5fb
+  color: #000
+  +field-round-corner
+  
+.idle-field
+  background: #f7f9fe
+  color: #000
+  border: solid 1px #ababab
+  +field-round-corner
+  
+.completed-field
+  background: #ededed
+  color: #000
+  border: solid 1px #73A6ff
+  +field-round-corner
+  
+button
+  margin: 2px 3px 2px 2px
+  font-weight: bold
+  background: #73A6ff
+  color: #fff
+  border: solid 2px #739eee
+  +box-round-corner
+  
+button:hover
+  background: #739eee
+  
+select
+  background: #ededed
+  border: solid 1px #cccccc
+  
+    
 body.bp .entity-list
   +grey-box
   float: left
@@ -182,13 +216,20 @@ body.bp ul.filtered
 
 .entity-form-container
   +white-box
+  +bordered-form-box
   float: left
   margin: 8px
-      
+  padding: 10px 5px 10px 5px
+  +box-round-corner
+  +box-drop-shadow
+        
   .entity-form-header
+    +field-round-corner
+    background-color: #739eee 
     .title
       float: left
-      
+      color: #fff
+      margin: 3px 2px 2px 3px 
     .locales
       float: right
       padding: 4px
@@ -587,33 +628,67 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     width: 20px
     background-color: #ffffff
     
-  .borderedBox
+  .box-dsr-value
     background-color: #ffffff
     border: #cccccc solid
     border-width: 0px 1px 1px 0px
     text-align: right
     
-  .borderedBoxOrg
+  .box-dsr-organisation
     background-color: #cccccc
     border: #cccccc solid
     border-width: 0px 1px 1px 0px
     text-align: left
     
-  .objectNameBox
+  .object-name-box
     width: 70px
     font-weight: bolder
     
-  .titleTh
+  .title-th
     color: #ffffff
-    background-color: #333333
+    background-color: #7b7b7b
     border: #ffffff solid
     border-width: 1px 1px 1px 0px
           
-.rotateText
-  -webkit-transform: rotate(-90deg)
-  -moz-transform: rotate(-90deg)
-  -ms-transform: rotate(-90deg)
-  -o-transform: rotate(-90deg) 
-  transform: rotate(-90deg)
-  writing-mode: bt-rl
+//Report main menu
+#navigation
+  margin: 3px 2px 3px 2px
+  width: 100%
+  a
+    color: #ffffff
+    
+.menu
+  float: left
+  list-style: none
+  margin: 0
+  padding: 0
  
+  li
+    float: left
+    font-size: 13px
+    font-weight: bold   
+    margin: 0
+    display: inline
+    padding: 0
+    border-left: 1px solid #ffffff
+    a
+      background: #739eee
+      display: block
+      float: left
+      margin: 0
+      padding: 5px 12px
+      text-decoration: none
+      +box-round-corner
+        
+    a:hover 
+      background: #73A6ff
+      padding-bottom: 5px
+      +box-round-corner
+    
+  
+  
+  
+  
+  
+  
+  

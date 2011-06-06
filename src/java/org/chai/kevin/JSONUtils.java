@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.codehaus.groovy.grails.web.json.JSONException;
+import org.codehaus.groovy.grails.web.json.JSONObject;
 
 public class JSONUtils {
 

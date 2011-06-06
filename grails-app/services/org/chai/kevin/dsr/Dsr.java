@@ -9,7 +9,6 @@ public class Dsr {
 	private DsrTarget target;
 	private Object value;
 
-
 	public Dsr(Organisation organisation, Period period, DsrTarget target,Object value) {
 		this.organisation = organisation;
 		this.period = period;
@@ -31,11 +30,6 @@ public class Dsr {
 
 	public void setPeriod(Period period) {
 		this.period = period;
-	}
-
-	public String getDsrValue(){
-		return null;
-		
 	}
 
 	public void setValue(Object value) {

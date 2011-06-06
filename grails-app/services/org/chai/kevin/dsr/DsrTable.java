@@ -51,12 +51,6 @@ public class DsrTable {
 		return targets;
 	}
 
-	public String getDsrValue(Organisation organisation, DsrTarget target) {
-
-		return values.get(target).get(organisation).getDsrValue();
-
-	}
-
 	public void setObjective(DsrObjective objective) {
 		this.objective = objective;
 	}
@@ -79,6 +73,12 @@ public class DsrTable {
 
 	public Organisation getOrganisation() {
 		return organisation;
+	}
+	
+	public Object getDsrValue(Organisation organisation, DsrTarget target) {
+
+		return values.get(organisation).get(target).getValue();
+
 	}
 
 }

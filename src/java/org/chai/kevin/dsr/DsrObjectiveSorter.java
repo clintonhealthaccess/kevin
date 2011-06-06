@@ -26,9 +26,9 @@ public class DsrObjectiveSorter implements Comparator<DsrObjective> {
 		if (orderOne != null && orderTwo != null)
 			return orderOne - orderTwo;
 		if (orderOne != null && orderTwo == null)
-			return 1;
-		if (orderOne == null && orderTwo != null)
 			return -1;
+		if (orderOne == null && orderTwo != null)
+			return 1;
 		if (orderOne == null && orderTwo == null)
 			return 0;
 

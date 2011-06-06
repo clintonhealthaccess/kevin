@@ -413,130 +413,123 @@ class Initializer {
 					order: 2,
 					descriptions:j(["en":"Facility Water and Power Sources"]),
 					code: "Facility Water and Power Sources"
-					)			
-			new DsrTarget(
-					names:j(["en":"Days Of Nurse Training"]), descriptions:j(["en":"Days Of Nurse Training"]),
-					expression: Expression.findByCode("Constant 20"),
-					order: 1,
-					code: "Days Of Nurse Training"
-					).save(failOnError:true)
-			new DsrTarget(
-					names:j(["en":"A1"]), descriptions:j(["en":"A1"]),
-					expression: Expression.findByCode("Constant 10"),
-					order: 2,
-					code: "A1"
-					).save(failOnError:true)
-			new DsrTarget(
+					)
+						
+
+			hmr.addTarget(new DsrTarget(
 					names:j(["en":"Accountant"]), descriptions:j(["en":"Accountant"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 8,
 					code: "Accountant"
-					).save(failOnError:true)
-
-			new DsrTarget(
-					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
+					));
+				
+			hmr.addTarget(new DsrTarget(
+					names:j(["en":"Days Of Nurse Training"]), descriptions:j(["en":"Days Of Nurse Training"]),
+					expression: Expression.findByCode("Constant 20"),
+					order: 1,
+					code: "Days Of Nurse Training"
+					));
+				
+			hmr.addTarget(new DsrTarget(
+					names:j(["en":"A1"]), descriptions:j(["en":"A1"]),
 					expression: Expression.findByCode("Constant 10"),
-					order: 3,
-					code: "A3"
-					).save(failOnError:true)
-			new DsrTarget(
+					order: 2,
+					code: "A1"
+					));
+				
+			hmr.addTarget(new DsrTarget(
 					names:j(["en":"A2"]), descriptions:j(["en":"A2"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 5,
 					code:"A2"
-					).save(failOnError:true)
-			new DsrTarget(
+					));
+				
+			hmr.addTarget(new DsrTarget(
+					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
+					expression: Expression.findByCode("Constant 10"),
+					order: 3,
+					code: "A3"
+					));
+				
+			hmr.addTarget(new DsrTarget(
 					names:j(["en":"Testing Category Human Resource"]), descriptions:j(["en":"Testing Category Human Resource"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 4,
 					code: "Testing Category Human Resource"
-					).save(failOnError:true)
-			new DsrTarget(
+					));	
+			hmr.save(failOnError:true)
+
+			
+			finacss.addTarget(new DsrTarget(
 					names:j(["en":"In-Facility Birth Ratio"]), descriptions:j(["en":"In-Facility Birth Ratio"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 6,
 					code: "In-Facility Birth Ratio"
-					).save(failOnError:true)
-			new DsrTarget(
-					names:j(["en":"Malaria Rapid Test"]), descriptions:j(["en":"Malaria Rapid Test"]),
-					expression: Expression.findByCode("Constant 20"),
-					order: 7,
-					code: "Malaria Rapid Test"
-					).save(failOnError:true)
-			new DsrTarget(
-					names:j(["en":"HIV Rapid Test"]), descriptions:j(["en":"HIV Rapid Test"]),
-					expression: Expression.findByCode("Constant 10"),
-					order: 9,
-					code: "HIV Rapid Test"
-					).save(failOnError:true)
-			new DsrTarget(
+					));
+				
+			finacss.addTarget(new DsrTarget(
 					names:j(["en":"Mental Health Service"]), descriptions:j(["en":"Mental Health Service"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 11,
 					code: "Mental Health Service"
-					).save(failOnError:true)
-			new DsrTarget(
+					));
+				
+			finacss.addTarget(new DsrTarget(
+					names:j(["en":"Malaria Rapid Test"]), descriptions:j(["en":"Malaria Rapid Test"]),
+					expression: Expression.findByCode("Constant 20"),
+					order: 7,
+					code: "Malaria Rapid Test"
+					));
+				
+			finacss.addTarget(new DsrTarget(
+					names:j(["en":"HIV Rapid Test"]), descriptions:j(["en":"HIV Rapid Test"]),
+					expression: Expression.findByCode("Constant 10"),
+					order: 9,
+					code: "HIV Rapid Test"
+					));
+				
+			finacss.addTarget(new DsrTarget(
 					names:j(["en":"TB Stain Test"]), descriptions:j(["en":"TB Stain Test"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 10,
 					code: "TB Stain Test"
-					).save(failOnError:true)
-
-			new DsrTarget(
+					));
+				
+			finacss.addTarget(new DsrTarget(
 					names:j(["en":"Catchment Population per CHW"]), descriptions:j(["en":"Catchment Population per CHW"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 12,
 					code: "Catchment Population per CHW"
-					).save(failOnError:true)
+					));
+			finacss.save(failOnError:true)
+			
 
-			new DsrTarget(
+			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Consultation Room"]), descriptions:j(["en":"Consultation Room"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 1,
 					code: "Consultation Room"
-					).save(failOnError:true)
-
-			new DsrTarget(
+					));
+				
+			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Facility Water Status"]), descriptions:j(["en":"Facility Water Status"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 3,
 					code: "Facility Water Status"
-					).save(failOnError:true)
-
-			new DsrTarget(
+					));
+				
+			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Incinerator Availability"]), descriptions:j(["en":"Incinerator Availability"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 2,
 					code: "Incinerator Availability"
-					).save(failOnError:true)
-
-			new DsrTarget(
+					));
+				
+			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
 					expression: Expression.findByCode("Constant 10"),
 					code: "Facility Power Status"
-					).save(failOnError:true)
-
-
-			hmr.addTarget(DsrTarget.findByCode("Accountant"));
-			hmr.addTarget(DsrTarget.findByCode("Days Of Nurse Training"));
-			hmr.addTarget(DsrTarget.findByCode("A1"));
-			hmr.addTarget(DsrTarget.findByCode("A2"));
-			hmr.addTarget(DsrTarget.findByCode("A3"));
-			hmr.addTarget(DsrTarget.findByCode("Testing Category Human Resource"));
-			hmr.save(failOnError:true)
-
-			finacss.addTarget(DsrTarget.findByCode("In-Facility Birth Ratio"));
-			finacss.addTarget(DsrTarget.findByCode("Mental Health Service"));
-			finacss.addTarget(DsrTarget.findByCode("Malaria Rapid Test"));
-			finacss.addTarget(DsrTarget.findByCode("HIV Rapid Test"));
-			finacss.addTarget(DsrTarget.findByCode("TB Stain Test"));
-			finacss.addTarget(DsrTarget.findByCode("Catchment Population per CHW"));
-			finacss.save(failOnError:true)
-
-			instCap.addTarget(DsrTarget.findByCode("Consultation Room"));
-			instCap.addTarget(DsrTarget.findByCode("Facility Water Status"));
-			instCap.addTarget(DsrTarget.findByCode("Incinerator Availability"));
-			instCap.addTarget(DsrTarget.findByCode("Facility Power Status"));
+					));	
 			instCap.save(failOnError:true);
 
 			firstCat.addTarget(DsrTarget.findByCode("Malaria Rapid Test"));

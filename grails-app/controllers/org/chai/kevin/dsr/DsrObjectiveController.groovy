@@ -1,6 +1,10 @@
 package org.chai.kevin.dsr
-
-import org.chai.kevin.AbstractEntityController
+import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.Expression;
+import org.chai.kevin.GroupCollection;
+import org.chai.kevin.DataElement;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 
 class DsrObjectiveController extends AbstractEntityController{
@@ -16,11 +20,11 @@ class DsrObjectiveController extends AbstractEntityController{
 	}
 	
 	def getTemplate() {
-		return "createObjective"
+		return "/dsr/createObjective"
 	}
 	
 	def getModel(def entity) {
-		[ target: entity, expressions: Expression.list() ]
+		[ objective: entity ]
 	}
 	
 	def validateEntity(def entity) {
@@ -28,17 +32,22 @@ class DsrObjectiveController extends AbstractEntityController{
 	}
 	
 	def saveEntity(def entity) {
-		entity.save();
+		entity.save()
 	}
-	
+		
 	def deleteEntity(def entity) {
 		entity.delete();
 	}
 	
 	def bindParams(def entity) {
 		entity.properties = params
-	}
 	
+	
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
+	}
 
 
 }

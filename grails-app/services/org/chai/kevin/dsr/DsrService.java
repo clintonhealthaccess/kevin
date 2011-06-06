@@ -15,7 +15,7 @@ import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DsrService {
-   // private Log log = LogFactory.getLog(DsrService.class);
+	// private Log log = LogFactory.getLog(DsrService.class);
 	private OrganisationService organisationService;
 	private ExpressionService expressionService;
 	private Integer organisationLevel;
@@ -23,31 +23,32 @@ public class DsrService {
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective,
 			Period period) {
+		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation,organisationLevel.intValue());
+		Map<Organisation, Map<DsrTarget, Dsr>> dsrMap = null;
+		List<DsrTarget> targets = null;
 
-		List<DsrTarget> targets = objective.getTargets();
-		if (targets.size()!=0) 
-		Collections.sort(targets, new DsrTargetSorter());
-		List<Organisation> organisations = organisationService
-				.getChildrenOfLevel(organisation,
-						organisationLevel.intValue());
-		Map<Organisation, Map<DsrTarget, Dsr>> dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
-		for (Organisation orgChildren : organisations) {
-			Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
-			for (DsrTarget target : targets) {
-				orgDsr.put(
-						target,
-						new Dsr(orgChildren, period, target, expressionService
-								.getValue(target.getExpression(), period,
-										orgChildren,
-										new HashMap<DataElement, Object>())));
+		if (objective != null) {
+			targets = objective.getTargets();
+			Collections.sort(targets, new DsrTargetSorter());
+			dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
+			for (Organisation orgChildren : organisations) {
+				Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
+				for (DsrTarget target : targets) {
+					orgDsr.put(
+							target,
+							new Dsr(orgChildren, period, target,
+									expressionService.getValue(
+											target.getExpression(), period,
+											orgChildren,
+											new HashMap<DataElement, Object>())));
+				}
+				dsrMap.put(orgChildren, orgDsr);
 			}
-			dsrMap.put(orgChildren, orgDsr);
 		}
-		return new DsrTable(organisation, organisations, period, objective,
-				objective.getTargets(), dsrMap);
-		
+		return new DsrTable(organisation, organisations, period,
+				objective, targets, dsrMap);
 	}
-    
+
 	public OrganisationService getOrganisationService() {
 		return organisationService;
 	}
@@ -63,7 +64,7 @@ public class DsrService {
 	public void setExpressionService(ExpressionService expressionService) {
 		this.expressionService = expressionService;
 	}
-	
+
 	public void setOrganisationLevel(Integer organisationLevel) {
 		this.organisationLevel = organisationLevel;
 	}

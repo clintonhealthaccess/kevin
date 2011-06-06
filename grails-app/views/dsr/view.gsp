@@ -2,9 +2,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="layout" content="main" />
-<title><g:message code="dsrTable.view.label"
-		default="District Summary Reports" /></title>
-</head>
+<title><g:message code="dsrTable.view.label" default="District Summary Reports" /></title></head>
 <body>
 	<div id="dsr">
 		<div id="top" class="box">
@@ -17,7 +15,7 @@
 					<div class="hidden dropdown-list">
 						<ul>
 							<g:each in="${periods}" var="period">
-								<li><a href="${createLink(controller: "dsr", action:"view", params:[period:period.id, objective: dsrTable.objective.id, organisation: dsrTable.organisation.id])}">
+								<li><a href="${createLink(controller: "dsr", action:"view", params:[period:period.id, objective: dsrTable.objective?.id, organisation: dsrTable.organisation?.id])}">
 										<span><g:dateFormat format="yyyy"
 												date="${period.startDate}" />
 									</span> </a></li>
@@ -76,49 +74,141 @@
 								</ul>
 							</g:if>
 							<g:else>
-								<span>no objectives found</span>
+								<span>No Objectives Found</span>
 							</g:else>
 						</div>
 					</div>
 			</div>
+			<!-- ADMIN SECTION -->
 				<g:if test="${true || user.admin}">
 					<div>
-						<a class="flow-add" id="add-dsr-objective-link" href="${createLink(controller:'dsrObjective', action:'create')}">Add Objective</a>
+						<a id="add-dsr-objective-link" class="flow-add"  href="${createLink(controller:'dsrObjective', action:'create')}">Add Objective</a>
 					</div>
+					<div>
+						<a id="add-dsr-target-link" class="flow-add" href="${createLink(controller:'dsrTarget', action:'create')}">Add Target</a>
+					</div>
+					<div>
+						<a id="add-dsr-category-link" class="flow-add"  href="${createLink(controller:'dsrTargetCategory', action:'create')}">Add Target Category</a>
+					</div>						
 				</g:if>
+		 <!-- ADMIN SECTION END -->
 		</div>
-		<div class="box">
+		<div id="center" class="box">
 			<div id="values">
+			<g:if test="${dsrTable.objective != null && dsrTable.organisation != null}">
+			<g:if test="${!dsrTable.targets.empty}">
 				<table class="nice-table">
 				<tbody>
 					<tr>					
-						<th class="objectNameBox"><g:i18n field="${dsrTable.objective.names}"/></th>
+						<th class="object-name-box" rowspan="2">
+						<g:i18n field="${dsrTable.objective.names}"/>
+						<span>
+						<g:link controller="dsrObjective" action="delete" id="${dsrTable.objective.id}" class="flow-delete">(Delete)</g:link>
+					    </span><br/>
+						<span>
+						<g:link controller="dsrObjective" action="edit" id="${dsrTable.objective.id}" class="flow-edit">(Edit)</g:link>
+					    </span>
+						</th>
 						<g:set var="i" value="${0}" />
 						<g:each in="${dsrTable.targets}" var="target">
-							<th class="titleTh">
-							<g:if test="${target.category!=null}">
-							${i++}<br/>
-							<g:i18n field="${target.category.names}"/><br/>
-							</g:if>							
-							<g:i18n field="${target.names}"/>
-							</th>
+							<g:if test="${target.category != null}">
+								<g:set var="i" value="${i+1}" />
+								<g:if test="${i==target.category.getTargetsForObjective(dsrTable.objective).size()}">
+									<th class="title-th" colspan="${i}">
+										<g:i18n field="${target.category.names}"/><br/>
+										<g:if test="${true || user.admin}">
+										<span>
+										 <a id="delete-dsr-target-category-link" class="flow-delete" href="${createLink(controller:'dsrTargetCategory', action:'delete', params:[id: target.category?.id])}">
+										   (Delete)
+										   </a>
+										   </span><br/>
+										   <span>
+										   <a id="edit-dsr-target-category-link" class="flow-add" href="${createLink(controller:'dsrTargetCategory', action:'edit', params:[id: target.category?.id])}">
+										   (Edit)
+										   </a>
+										</span>
+										</g:if>
+										<br/>
+									</th>
+									<g:set var="i" value="${0}" />
+								</g:if>
+							</g:if>
+							<g:else>
+								<th class="title-th" rowspan="2">
+								<g:i18n field="${target.names}"/>
+								<g:if test="${true || user.admin}"><br/>
+								<span>
+								   <a id="delete-dsr-target-link" class="flow-delete" href="${createLink(controller:'dsrTarget', action:'delete', params:[id: target?.id])}">(Delete)</a>
+								</span><br/>
+								<span>
+								   <a id="edit-dsr-target-link" class="flow-add" href="${createLink(controller:'dsrTarget', action:'edit', params:[id: target?.id])}">(Edit)</a>
+								</span>
+								</g:if>
+								</th>
+							</g:else>
 						</g:each>
 					</tr>
-					<g:each in="${dsrTable.values}" var="value">
+					<tr>
+						<g:each in="${dsrTable.targets}" var="target">
+							<g:if test="${target.category != null}">
+								<th class="title-th">							
+									<g:i18n field="${target.names}"/>
+									<g:if test="${true || user.admin}"><br/>
+									<span>
+									   <a id="delete-dsr-target-link" class="flow-delete" href="${createLink(controller:'dsrTarget', action:'delete', params:[id: target?.id])}">(Delete)</a>
+									</span><br/>
+									<span>
+									   <a id="edit-dsr-target-link" class="flow-add" href="${createLink(controller:'dsrTarget', action:'edit', params:[id: target?.id])}">(Edit)</a>
+									</span>
+									</g:if>
+								</th>
+							</g:if>
+						</g:each>
+					</tr>
+					<g:each in="${dsrTable.organisations}" var="organisation">
 						<tr>
-						<th class="borderedBoxOrg">${value.key.name}</th>
-							<g:each in="${value.value}" var="val">
-								<td class="borderedBox">
-									${val.value.value}
+						<th class="box-dsr-organisation">${organisation.name}</th>
+							<g:each in="${dsrTable.targets}" var="target">
+								<td class="box-dsr-value">
+									${dsrTable.getDsrValue(organisation, target)}
 								</td>
 							</g:each>
 						</tr>
 					</g:each>
 					</tbody>
 				</table>
+					</g:if>
+				<g:else>
+						<div>
+						Please <a id="add-dsr-target-link" class="flow-add" href="${createLink(controller:'dsrTarget', action:'create')}">
+						Add Target
+						</a>
+						</div>
+					</g:else>
+				</g:if>
+					<g:else>
+						<div>Please select an Organisation / Objective</div>
+					</g:else>
 			</div>
-		</div>
+				<!-- ADMIN SECTION -->
+		    	<g:if test="${true || user.admin}">
+	    			<div class="hidden flow-container"></div>
+					<script type="text/javascript">
+						$(document).ready(function() {
+							$('#values').flow({
+								onSuccess: function(data) {
+									if (data.result == 'success') {
+										location.reload();
+									}
+								}
+							});
+						});
 
+					</script>
+		    	</g:if>
+		    	<!-- ADMIN SECTION END -->
+				<div class="clear"></div>
+		</div>
 	</div>
 </body>
 </html>
