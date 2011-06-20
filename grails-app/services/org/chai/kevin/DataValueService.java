@@ -2,12 +2,9 @@ package org.chai.kevin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.chai.kevin.DataElement;
-import org.chai.kevin.DataValue;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 

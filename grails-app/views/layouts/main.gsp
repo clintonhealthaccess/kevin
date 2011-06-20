@@ -42,6 +42,7 @@
 
 	<div id="container" class="">
 		<div id="header">
+		<div id="header-banner" style="background-image:url('${resource(dir:'images',file:'dhsst-banner.png')}');">
 			<% def localeService = application.getAttribute("org.codehaus.groovy.grails.APPLICATION_CONTEXT").getBean("localeService") %>
 			<div class="locales" id="switcher">
 				<g:each in="${localeService.availableLanguages}" var="language" status="i">
@@ -49,22 +50,30 @@
 					<a class="${localeService.currentLanguage==language?'no-link':''}" href="${createLink(params:params)}">${language}</a>
 				</g:each>
 			</div>
-					
-			<h1>Welcome to Kevin</h1>
-
+			<div class="clear"></div>
+		</div>			
+			<!--<h1>Welcome to Kevin</h1>-->
 			<div id="navigation">
-			<ul class="menu">
+			<ul id="main-menu" class="menu">
+			        <li><a href="${createLink(controller: 'survey', action:'view')}">Survey</a></li>
+			        <li><a href="#">Reports</a>
+			        <ul class="submenu">
 					<li><a href="${createLink(controller: 'dashboard', action:'view')}">Dashboard</a></li>
 					<li><a href="${createLink(controller: 'cost', action:'view')}">Costing</a></li>
 					<li><a href="${createLink(controller: 'dsr', action:'view')}">District Summary Reports</a></li>
 					<li><a href="${createLink(controller: 'maps', action:'view')}">Maps</a></li>
-				</ul>
-			<ul class="menu">
+					</ul>
+					</li>
+					<li><a href="#">Administration</a>
+					<ul class="submenu">
 					<li><a href="${createLink(controller: 'expression', action:'list')}">Expressions</a></li>
 					<li><a href="${createLink(controller: 'constant', action:'list')}">Constants</a></li>
+					</ul>
+					</li>
 				</ul>
 				<div class="clear"></div>
 			</div>
+			<div class="clear"></div>
 		</div>
 
 		<div id="content">
@@ -72,7 +81,7 @@
 			<div class=clear></div>
 		</div>
 
-		<div id="footer">Ministry of Health - About | Contact | Helpdesk</div>
+		<div id="footer">&copy; - Rwanda Ministry of Health - <a href="#">About</a> | <a href="#">Contact</a> | <a href="#">Helpdesk</a></div>
 	</div>
 
 	<!-- utilities -->
@@ -279,7 +288,6 @@
 		// END of explanation functionality
 		
 		$(document).ready(function() {
-		
 			$(document).delegate('.togglable a.toggle-link', 'click', function(){
 				var togglable = $(this).parents('.togglable');
 				var toggle = $(this).data('toggle')
@@ -379,6 +387,25 @@
 			    		$(this).removeClass("focus-field").addClass("completed-field");
 			    	}
 			    });
+			    
+			    
+
+		});
+		
+		$(document).ready(function () {	
+			//Styling the main menu
+			$('#main-menu li').hover(
+				function () {
+					//show its submenu
+					$('ul', this).slideDown("slow");
+		 
+				}, 
+				function () {
+					//hide its submenu
+					$('ul', this).slideUp(10);			
+				}
+			);
+			
 		});
 	</script>
 </body>

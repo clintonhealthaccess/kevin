@@ -1,4 +1,4 @@
-package org.chai.kevin.maps;
+package org.chai.kevin.survey;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -8,44 +8,43 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.chai.kevin.Expression;
-import org.chai.kevin.Translatable;
 
 @SuppressWarnings("serial")
-@Entity(name="MapsTarget")
-@Table(name="dhsst_maps_target")
-public class MapsTarget extends Translatable {
+@Entity(name = "SurveyTableColumn")
+@Table(name = "dhsst_survey_table_column")
+public class SurveyTableColumn extends SurveyTranslatable {
 
 	private Integer id;
-	private Expression expression;
 	private Integer order;
-	
+	private SurveyTableQuestion question;
+
 	@Id
 	@GeneratedValue
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-	@ManyToOne(targetEntity=Expression.class, optional=false)
-	public Expression getExpression() {
-		return expression;
-	}
-	
-	public void setExpression(Expression expression) {
-		this.expression = expression;
-	}
-	
-	@Basic(optional=true)
-	@Column(name="ordering")
+
+	@Basic
+	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
 	}
+
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
-	
-	
+
+	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
+	public SurveyTableQuestion getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(SurveyTableQuestion question) {
+		this.question = question;
+	}
+
 }

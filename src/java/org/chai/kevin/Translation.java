@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -11,8 +12,10 @@ import javax.persistence.Lob;
 import javax.persistence.Transient;
 
 @Embeddable
-public class Translation implements Map<String, String> {
+public class Translation implements Map<String, String>, Serializable {
 	
+	
+	private static final long serialVersionUID = 659167226523919292L;
 	private String jsonText = "";
 	
 	@Lob

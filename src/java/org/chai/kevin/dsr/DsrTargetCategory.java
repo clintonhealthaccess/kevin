@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Translatable;
 import org.hibernate.annotations.Cache;
@@ -61,7 +62,7 @@ public class DsrTargetCategory extends Translatable {
 	public void setTargets(List<DsrTarget> targets) {
 		this.targets = targets;
 	}
-
+	@Transient
 	public void addTarget(DsrTarget target) {
 		target.setCategory(this);
 		targets.add(target);

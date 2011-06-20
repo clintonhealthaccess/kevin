@@ -12,6 +12,7 @@ import org.chai.kevin.dashboard.DashboardCalculation;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
@@ -49,23 +50,23 @@ class Initializer {
 			def period2 = new Period(periodType: monthly, startDate: mar011, endDate: mar311)
 			period2.save(failOnError: true, flush: true)
 		}
-		
-//		if (!DataElementCategory.count()) {
-//			// Categories
-//			def categoryOption = new DataElementCategoryOption(names: DataElementCategoryOption.DEFAULT_NAME)
-//			categoryOption.save(failOnError: true)
-//			def category = new DataElementCategory( names: DataElementCategory.DEFAULT_NAME )
-//			category.categoryOptions = [categoryOption]
-//			category.save(failOnError: true)
-//			def categoryCombo = new DataElementCategoryCombo(names: DataElementCategoryCombo.DEFAULT_CATEGORY_COMBO_NAME)
-//			categoryCombo.categories = [category]
-//			categoryCombo.save(failOnError: true)
-//			def categoryOptionCombo = new DataElementCategoryOptionCombo(categoryCombo: categoryCombo)
-//			categoryOption.categoryOptionCombos = [categoryOptionCombo]
-//			categoryOptionCombo.save(failOnError: true)
-//		}
-		
-		if (!OrganisationUnit.count()) {	
+
+		//		if (!DataElementCategory.count()) {
+		//			// Categories
+		//			def categoryOption = new DataElementCategoryOption(names: DataElementCategoryOption.DEFAULT_NAME)
+		//			categoryOption.save(failOnError: true)
+		//			def category = new DataElementCategory( names: DataElementCategory.DEFAULT_NAME )
+		//			category.categoryOptions = [categoryOption]
+		//			category.save(failOnError: true)
+		//			def categoryCombo = new DataElementCategoryCombo(names: DataElementCategoryCombo.DEFAULT_CATEGORY_COMBO_NAME)
+		//			categoryCombo.categories = [category]
+		//			categoryCombo.save(failOnError: true)
+		//			def categoryOptionCombo = new DataElementCategoryOptionCombo(categoryCombo: categoryCombo)
+		//			categoryOption.categoryOptionCombos = [categoryOptionCombo]
+		//			categoryOptionCombo.save(failOnError: true)
+		//		}
+
+		if (!OrganisationUnit.count()) {
 			// organisation level
 			new OrganisationUnitLevel(level: 1, name:"Country").save(failOnError: true)
 			new OrganisationUnitLevel(level: 2, name:"Province").save(failOnError: true)
@@ -99,7 +100,7 @@ class Initializer {
 			burera.children = [butaro, kivuye]
 
 			rwanda.save(failOnError: true, flush: true)
-			
+
 			def groupSet = new OrganisationUnitGroupSet(name:"Type")
 			groupSet.save(failOnError: true)
 
@@ -138,13 +139,13 @@ class Initializer {
 			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: ValueType.VALUE)
 			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: ValueType.ENUM, enumType: Enum.findByCode('ENUM1'))
 			// Data Sets
-//			def dataSet1 = new DataSet(names:j(["en":"Dataset 1"]), shortnames:j(["en":"Dataset 1"]), code:"DATASET1", periodType: MonthlyPeriodType.list()[0])
-//			def dataSet2 = new DataSet(names:j(["en":"Dataset 2"]), shortnames:j(["en":"Dataset 2"]), code:"DATASET2", periodType: MonthlyPeriodType.list()[0])
-	
-//			dataElement1.dataSets = [dataSet1]
-//			dataElement2.dataSets = [dataSet2]
-//			dataSet1.dataElements.add dataElement1
-//			dataSet2.dataElements.add dataElement2
+			//			def dataSet1 = new DataSet(names:j(["en":"Dataset 1"]), shortnames:j(["en":"Dataset 1"]), code:"DATASET1", periodType: MonthlyPeriodType.list()[0])
+			//			def dataSet2 = new DataSet(names:j(["en":"Dataset 2"]), shortnames:j(["en":"Dataset 2"]), code:"DATASET2", periodType: MonthlyPeriodType.list()[0])
+
+			//			dataElement1.dataSets = [dataSet1]
+			//			dataElement2.dataSets = [dataSet2]
+			//			dataSet1.dataElements.add dataElement1
+			//			dataSet2.dataElements.add dataElement2
 			dataElement1.save(failOnError: true)
 			dataElement2.save(failOnError: true)
 			//			dataSet1.save(failOnError: true)
@@ -156,21 +157,21 @@ class Initializer {
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE1"),
 					period: Period.list()[1],
-	//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-				value: "30",
-//				comment: "Comment",
-//				storedBy: "StoredBy",
-				timestamp: new Date(),
-//				followup: false,
-			).save(failOnError: true)
-	
-			
+					value: "30",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true)
+
+
 			// data value
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE1"),
 					period: Period.list()[1],
-	//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: "40",
 					//				comment: "Comment",
@@ -183,20 +184,20 @@ class Initializer {
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE3"),
 					period: Period.list()[1],
-	//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-				value: "value1",
-//				comment: "Comment",
-//				storedBy: "StoredBy",
-				timestamp: new Date(),
-//				followup: false,
-			).save(failOnError: true, flush:true)
+					value: "value1",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
 		}
-		
-		
+
+
 		if (!Expression.count()) {
 			// indicators
-	//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
+			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
 			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: ValueType.VALUE).save(failOnError: true)
 			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: ValueType.VALUE).save(failOnError: true)
 			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "["+DataElement.findByCode("CODE1").id+"] + ["+DataElement.findByCode("CODE1").id+"]", type: ValueType.VALUE).save(failOnError: true)
@@ -211,35 +212,35 @@ class Initializer {
 
 	static def createMaps() {
 		if (!MapsTarget.count()) {
-			
-//			new IndicatorType(names:j(["en":"one"]), factor: 1).save(failOnError: true)
+
+			//			new IndicatorType(names:j(["en":"one"]), factor: 1).save(failOnError: true)
 			new Expression(
-				names:j(["en":"Map Expression 2"]),
-				descriptions:j([:]),
-				code:"Map Expression 2",
-				type: ValueType.VALUE,
-				expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
-//				shortnames:j(["en":"MAP2"]),
-//				code: "MAP2",
-//				indicatorType: IndicatorType.findByName("one"),
-//				numerator: "["+DataElement.findByName("Element 1").id+"]",
-//				denominator: "100"
-			).save(failOnError: true)
+					names:j(["en":"Map Expression 2"]),
+					descriptions:j([:]),
+					code:"Map Expression 2",
+					type: ValueType.VALUE,
+					expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
+					//				shortnames:j(["en":"MAP2"]),
+					//				code: "MAP2",
+					//				indicatorType: IndicatorType.findByName("one"),
+					//				numerator: "["+DataElement.findByName("Element 1").id+"]",
+					//				denominator: "100"
+					).save(failOnError: true)
 			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2")).save(failOnError: true)
-			
+
 
 			new Expression(
-				names:j(["en":"Map Expression"]),
-				descriptions:j([:]),
-				code:"Map Expression", 
-				type: ValueType.VALUE,
-				expression: "10 / 100",
-//				shortnames:j(["en":"MAP"]), 
-//				code: "MAP",
-//				indicatorType: IndicatorType.findByName("one"),
-//				numerator: "10",
-//				denominator: "100"
-			).save(failOnError: true)
+					names:j(["en":"Map Expression"]),
+					descriptions:j([:]),
+					code:"Map Expression",
+					type: ValueType.VALUE,
+					expression: "10 / 100",
+					//				shortnames:j(["en":"MAP"]),
+					//				code: "MAP",
+					//				indicatorType: IndicatorType.findByName("one"),
+					//				numerator: "10",
+					//				denominator: "100"
+					).save(failOnError: true)
 			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression")).save(failOnError: true, flush:true)
 		}
 	}
@@ -248,39 +249,39 @@ class Initializer {
 		if (!CostRampUp.count()) {
 			// Cost
 			new CostRampUp(names:j(["en":"Constant"]), descriptions:j([:]), code:"CONST", years: [
-				1: new CostRampUpYear(year: 1, value: 0.2),
-				2: new CostRampUpYear(year: 2, value: 0.2),
-				3: new CostRampUpYear(year: 3, value: 0.2),
-				4: new CostRampUpYear(year: 4, value: 0.2),
-				5: new CostRampUpYear(year: 5, value: 0.2)
-			]).save(failOnError: true);
+						1: new CostRampUpYear(year: 1, value: 0.2),
+						2: new CostRampUpYear(year: 2, value: 0.2),
+						3: new CostRampUpYear(year: 3, value: 0.2),
+						4: new CostRampUpYear(year: 4, value: 0.2),
+						5: new CostRampUpYear(year: 5, value: 0.2)
+					]).save(failOnError: true);
 		}
 
 		if (!CostObjective.count()) {
 			new CostTarget(
-				names:j(["en":"Annual Internet Access Cost"]), code:"Internet Cost", descriptions:j(["en":"Annual Internet Access Cost"]),
-				expression: Expression.findByCode("Constant 10"),
-				costType: CostType.OPERATION,
-				costRampUp: CostRampUp.findByCode("CONST"),
-				groupUuidString: "District Hospital,Health Center"
-			).save(failOnError: true)
-			
+					names:j(["en":"Annual Internet Access Cost"]), code:"Internet Cost", descriptions:j(["en":"Annual Internet Access Cost"]),
+					expression: Expression.findByCode("Constant 10"),
+					costType: CostType.OPERATION,
+					costRampUp: CostRampUp.findByCode("CONST"),
+					groupUuidString: "District Hospital,Health Center"
+					).save(failOnError: true)
+
 			new CostTarget(
-				names:j(["en":"Connecting Facilities to the Internet"]), code:"Connecting Facilities", descriptions:j(["en":"Connecting Facilities to the Internet"]),
-				expression: Expression.findByCode("Constant 10"),
-				costType: CostType.INVESTMENT,
-				costRampUp: CostRampUp.findByCode("CONST"),
-				groupUuidString: "District Hospital,Health Center"
-			).save(failOnError: true)
-			
+					names:j(["en":"Connecting Facilities to the Internet"]), code:"Connecting Facilities", descriptions:j(["en":"Connecting Facilities to the Internet"]),
+					expression: Expression.findByCode("Constant 10"),
+					costType: CostType.INVESTMENT,
+					costRampUp: CostRampUp.findByCode("CONST"),
+					groupUuidString: "District Hospital,Health Center"
+					).save(failOnError: true)
+
 			new CostTarget(
-				names:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]), code:"New Phones CHW", descriptions:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]),
-				expression: Expression.findByCode("Constant 10"),
-				costType: CostType.INVESTMENT,
-				costRampUp: CostRampUp.findByCode("CONST"),
-				groupUuidString: "District Hospital,Health Center"
-			).save(failOnError: true)
-			
+					names:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]), code:"New Phones CHW", descriptions:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]),
+					expression: Expression.findByCode("Constant 10"),
+					costType: CostType.INVESTMENT,
+					costRampUp: CostRampUp.findByCode("CONST"),
+					groupUuidString: "District Hospital,Health Center"
+					).save(failOnError: true)
+
 			def ga = new CostObjective(names:j(["en":"Geographical Access"]), code:"Geographical Access", descriptions:j(["en":"Geographical Access"]),)
 			ga.addTarget(CostTarget.findByCode("Internet Cost"));
 			ga.addTarget(CostTarget.findByCode("Connecting Facilities"));
@@ -289,16 +290,16 @@ class Initializer {
 
 
 			new CostTarget(
-				names:j(["en":"Facility Staff Training"]), code:"Facility Staff Training", descriptions:j(["en":"Facility Staff Training"]),
-				expression: Expression.findByCode("Constant 10"),
-				costType: CostType.INVESTMENT,
-				costRampUp: CostRampUp.findByCode("CONST")
-			).save(failOnError: true)
-			
+					names:j(["en":"Facility Staff Training"]), code:"Facility Staff Training", descriptions:j(["en":"Facility Staff Training"]),
+					expression: Expression.findByCode("Constant 10"),
+					costType: CostType.INVESTMENT,
+					costRampUp: CostRampUp.findByCode("CONST")
+					).save(failOnError: true)
+
 			def hrh = new CostObjective(names:j(["en":"Human Resources for Health"]), code:"HRH", descriptions:j(["en":"Human Resources for Health"]),)
 			hrh.addTarget(CostTarget.findByCode("Facility Staff Training"));
 			hrh.save(failOnError: true, flush:true)
-		}		
+		}
 	}
 
 	static def createDashboard() {
@@ -309,69 +310,69 @@ class Initializer {
 			root.addObjectiveEntry(hrh)
 			hrh.save(failOnError: true)
 			root.save(failOnError: true)
-			
+
 			def staffing = new DashboardObjectiveEntry(entry: new DashboardObjective(root: false, names:j(["en":"Staffing"]), code:"STAFFING", descriptions:j(["en":"Staffing"]), objectiveEntries: []), weight: 1, order: 1)
 			hrh.entry.addObjectiveEntry(staffing)
 			staffing.save(failOnError: true)
 			hrh.save(failOnError: true)
-			
+
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 10")),
 						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 20"))
 					]
-				), weight: 1, order: 1)
+					), weight: 1, order: 1)
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 20")),
 						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 20"))
 					]
-				), weight: 1, order: 2)
+					), weight: 1, order: 2)
 			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 1")),
 						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 1"))
 					]
-				), weight: 1, order: 3)
+					), weight: 1, order: 3)
 			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 1")),
 					]
-				), weight: 1, order: 4)
+					), weight: 1, order: 4)
 			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 2")),
 						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 2"))
 					]
-				), weight: 1, order: 5)
+					), weight: 1, order: 5)
 			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
 					calculations: [
 						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 3")),
 						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 3"))
 					]
-				), weight: 1, order: 6)
-			
-			
+					), weight: 1, order: 6)
+
+
 			staffing.entry.addObjectiveEntry(nursea1)
 			staffing.entry.addObjectiveEntry(nursea2)
 			staffing.entry.addObjectiveEntry(target1)
 			staffing.entry.addObjectiveEntry(missexpr)
 			staffing.entry.addObjectiveEntry(missdata)
 			staffing.entry.addObjectiveEntry(enume)
-			
+
 			nursea1.save(failOnError: true)
 			nursea2.save(failOnError: true)
 			target1.save(failOnError: true)
 			missexpr.save(failOnError: true)
 			missdata.save(failOnError: true)
 			enume.save(failOnError: true)
-			
+
 			staffing.save(failOnError: true, flush:true)
 		}
 	}
@@ -414,7 +415,7 @@ class Initializer {
 					descriptions:j(["en":"Facility Water and Power Sources"]),
 					code: "Facility Water and Power Sources"
 					)
-						
+
 
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"Accountant"]), descriptions:j(["en":"Accountant"]),
@@ -422,79 +423,79 @@ class Initializer {
 					order: 8,
 					code: "Accountant"
 					));
-				
+
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"Days Of Nurse Training"]), descriptions:j(["en":"Days Of Nurse Training"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 1,
 					code: "Days Of Nurse Training"
 					));
-				
+
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"A1"]), descriptions:j(["en":"A1"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 2,
 					code: "A1"
 					));
-				
+
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"A2"]), descriptions:j(["en":"A2"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 5,
 					code:"A2"
 					));
-				
+
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 3,
 					code: "A3"
 					));
-				
+
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"Testing Category Human Resource"]), descriptions:j(["en":"Testing Category Human Resource"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 4,
 					code: "Testing Category Human Resource"
-					));	
+					));
 			hmr.save(failOnError:true)
 
-			
+
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"In-Facility Birth Ratio"]), descriptions:j(["en":"In-Facility Birth Ratio"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 6,
 					code: "In-Facility Birth Ratio"
 					));
-				
+
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"Mental Health Service"]), descriptions:j(["en":"Mental Health Service"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 11,
 					code: "Mental Health Service"
 					));
-				
+
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"Malaria Rapid Test"]), descriptions:j(["en":"Malaria Rapid Test"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 7,
 					code: "Malaria Rapid Test"
 					));
-				
+
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"HIV Rapid Test"]), descriptions:j(["en":"HIV Rapid Test"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 9,
 					code: "HIV Rapid Test"
 					));
-				
+
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"TB Stain Test"]), descriptions:j(["en":"TB Stain Test"]),
 					expression: Expression.findByCode("Constant 20"),
 					order: 10,
 					code: "TB Stain Test"
 					));
-				
+
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"Catchment Population per CHW"]), descriptions:j(["en":"Catchment Population per CHW"]),
 					expression: Expression.findByCode("Constant 10"),
@@ -502,7 +503,7 @@ class Initializer {
 					code: "Catchment Population per CHW"
 					));
 			finacss.save(failOnError:true)
-			
+
 
 			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Consultation Room"]), descriptions:j(["en":"Consultation Room"]),
@@ -510,26 +511,26 @@ class Initializer {
 					order: 1,
 					code: "Consultation Room"
 					));
-				
+
 			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Facility Water Status"]), descriptions:j(["en":"Facility Water Status"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 3,
 					code: "Facility Water Status"
 					));
-				
+
 			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Incinerator Availability"]), descriptions:j(["en":"Incinerator Availability"]),
 					expression: Expression.findByCode("Constant 10"),
 					order: 2,
 					code: "Incinerator Availability"
 					));
-				
+
 			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
 					expression: Expression.findByCode("Constant 10"),
 					code: "Facility Power Status"
-					));	
+					));
 			instCap.save(failOnError:true);
 
 			firstCat.addTarget(DsrTarget.findByCode("Malaria Rapid Test"));
@@ -542,10 +543,183 @@ class Initializer {
 			secondCat.addTarget(DsrTarget.findByCode("A2"));
 			secondCat.addTarget(DsrTarget.findByCode("A3"));
 			secondCat.save(failOnError:true);
-			
+
 			thirdCat.addTarget(DsrTarget.findByCode("Facility Water Status"));
 			thirdCat.addTarget(DsrTarget.findByCode("Incinerator Availability"));
 			thirdCat.save(failOnError:true);
+
+		}
+	}
+
+	static def createQuestionaire(){
+		if(!SurveySection.count()){
+			//Creating section
+			def serviceDev = new SurveySection(
+					names:j(["en":"Service Delivery"]),
+					descriptions:j(["en":"Service Delivery"]),
+					order: 3
+					)
+			def hResourceHealth = new SurveySection(
+					names:j(["en":"Human Resources for Health"]),
+					descriptions:j(["en":"Human Resources for Health"]),
+					order: 1
+					)
+
+			def geoAccess = new SurveySection(
+					names:j(["en":"Geographic Access"]),
+					descriptions:j(["en":"Geographic Access"]),
+					order: 2
+					)
+
+			//Adding Sub-Section to sections
+
+			def services=new SurveySubSection(
+					names:j(["en":"Services"]),
+					descriptions:j(["en":"Services"]),
+					order:2,
+					section:serviceDev
+					)
+			def labTests= new SurveySubSection(
+					names:j(["en":"Lab Tests"]),
+					descriptions:j(["en":"Lab Tests"]),
+					order:1,
+					section:serviceDev
+					)
+			def patientReg=new SurveySubSection(
+					names:j(["en":"Patient Registration"]),
+					descriptions:j(["en":"Patient Registration"]),
+					order:3,
+					section:serviceDev
+					)
+
+			serviceDev.addSubSection(services)
+			serviceDev.addSubSection(labTests)
+			serviceDev.addSubSection(patientReg)
+			serviceDev.save(failOnError:true);
+
+			def staffing=new SurveySubSection(
+					names:j(["en":"Staffing"]),
+					descriptions:j(["en":"Staffing"]),
+					order:1,
+					section:hResourceHealth
+					)
+
+			def continuingEd = new SurveySubSection(
+					names:j(["en":"Continuing Education"]),
+					descriptions:j(["en":"Continuing Education"]),
+					order:3,
+					section:hResourceHealth
+					)
+
+			def openResponse = new SurveySubSection(
+					names:j(["en":"Open Response"]),
+					descriptions:j(["en":"Open Response"]),
+					order:2,
+					section:hResourceHealth
+					)
+
+			hResourceHealth.addSubSection(staffing)
+			hResourceHealth.addSubSection(continuingEd)
+			hResourceHealth.addSubSection(openResponse)
+			hResourceHealth.save(failOnError:true);
+
+			def infrastructure = new SurveySubSection(
+					names:j(["en":"Infrastructure"]),
+					descriptions:j(["en":"Infrastructure"]),
+					order:3,
+					section:geoAccess
+					)
+			def medicalEq=new SurveySubSection(
+					names:j(["en":"Medical Equipment"]),
+					descriptions:j(["en":"Medical Equipment"]),
+					order:2,
+					section:geoAccess
+					)
+			def wasteMgmnt=new SurveySubSection(
+					names:j(["en":"Waste Management"]),
+					descriptions:j(["en":"Waste Management"]),
+					order:1,
+					section:geoAccess
+					)
+
+			geoAccess.addSubSection(infrastructure)
+			geoAccess.addSubSection(medicalEq)
+			geoAccess.addSubSection(wasteMgmnt)
+			geoAccess.save(failOnError:true);
+
+			//Adding questions to subSections
+
+//			def dh = OrganisationUnitGroup.findByUuid("District Hospital")
+//			def hc = OrganisationUnitGroup.findByUuid("Health Center")
+//
+//			def dhN = OrganisationUnitGroup.findByName("District Hospital")
+//			def hcN = OrganisationUnitGroup.findByName("Health Center")
+
+
+			def serviceQ1 = new SurveySingleQuestion(
+					names: j(["en":"Service Sub Section Sinlge Question 1"]),
+					descriptions: j(["en":"Service Sub Section Sinlge Question 1"]),
+					order: 3,
+					//groups:[dh,hc],
+					dataElement: DataElement.findByCode("CODE1")
+					)
+
+			services.addQuestion(serviceQ1)
+			services.save(failOnError:true)
+
+//			def checkBoxQ = new SurveyCheckboxQuestion(
+//					names: j(["en":"Service Sub Section CheckBox  Question 2"]),
+//					descriptions:j(["en":"Service Sub Section CheckBox  Question 2"]),
+//					order: 1,
+//					options: [
+//						new SurveyCheckboxOption(
+//						names:j(["en":"None Or Not Applicable"]),
+//						descriptions:j(["en":"None Or Not Applicable"]),
+//						order:1,
+//						dataElement: DataElement.findByCode("CODE1")
+//						),
+//						new SurveyCheckboxOption(
+//						names:j(["en":"Second Option 1"]),
+//						descriptions:j(["en":"Second Option 2"]),
+//						order:2,
+//						dataElement: DataElement.findByCode("CODE2")
+//						)
+//					],
+//					//groups: [dh,hc],
+//					)
+//			services.addQuestion(checkBoxQ)
+//			services.save(failOnError:true)
+			//
+			//			def option1 = new SurveyCheckboxOption(
+			//					names:j(["en":"None Or Not Applicable"]),
+			//					descriptions:j(["en":"None Or Not Applicable"]),
+			//					order:1)
+			//			checkBoxQ.addCheckboxOption(option1)
+			//			option1.save(failOnError:true)
+			//
+			//			def option2 = new SurveyCheckboxOption(
+			//					names:j(["en":"Second Option 1"]),
+			//					descriptions:j(["en":"Second Option 2"]),
+			//					order:2)
+			//			checkBoxQ.addCheckboxOption(option2)
+			//			option2.save(failOnError:true)
+
+
+
+			//			checkBoxQ.addOrganisationGroup(dh)
+			//			checkBoxQ.addOrganisationGroup(hc)
+
+
+			//
+			//			services.addQuestion(
+			//					new SurveyTableQuestion(
+			//					names: j(["en":"Service Sub Section Table Question 3"]),
+			//					descriptions:j(["en":"Service Sub Section Table Question 3"]),
+			//					order: 2,
+			//                  groups:[dh,hc]
+			//					)
+			//					)
+
 
 		}
 	}
@@ -557,13 +731,13 @@ class Initializer {
 			root.save(failOnError: true, flush:true)
 		}
 	}
-	
-//	static def createIndicatorType() {
-//		if (!IndicatorType.count()) {
-//			new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
-//		}
-//	}
-	
+
+	//	static def createIndicatorType() {
+	//		if (!IndicatorType.count()) {
+	//			new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
+	//		}
+	//	}
+
 	public static Date getDate( int year, int month, int day )
 	{
 		final Calendar calendar = Calendar.getInstance();
@@ -579,5 +753,5 @@ class Initializer {
 	public static Translation j(def map) {
 		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
 	}
-		
+
 }

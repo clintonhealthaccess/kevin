@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Translatable;
 import org.hibernate.annotations.Cache;
@@ -52,7 +53,7 @@ public class DsrObjective extends Translatable {
 	public Integer getOrder() {
 		return order;
 	}
-	
+	@Transient
 	public void addTarget(DsrTarget target) {
 		target.setObjective(this);
 		targets.add(target);

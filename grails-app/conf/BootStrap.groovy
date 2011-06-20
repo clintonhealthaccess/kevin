@@ -51,6 +51,7 @@ class BootStrap {
 			Initializer.createCost();
 			Initializer.createDsr();
 			Initializer.createMaps();
+			Initializer.createQuestionaire();
 			
 			break;
 		}

@@ -37,42 +37,51 @@ body
   font-size: 77%
   +normal-text
   height: 100%
+  margin-top: 3px
   
 // reset table
 body.bp table
   th
     background-color: inherit
     font-weight: inherit
+a:hover
+  text-decoration: underline
     
 // Page layout can be done using mixins applied to your semantic classes and IDs:
 body.two-columns
   #container
     +container
     +white-box
-    padding-left: 20px
-    padding-right: 30px
-    border-bottom-width: 0px
-    border-top-width: 0px
-    padding-top: 0px
-    padding-bottom: 0px
-    height: 100%
-    min-height: 100%
+    padding: 0px 0px 0px 0px
     height: auto !important
-    
+    +box-round-corner
+    +box-drop-shadow
     #content
-      height: 100%
-    
+      margin: 0px 2px 0px 2px
+      padding: 0 0 10px 0
+          
   #footer
     text-align: center
-    margin: auto
-    width: 100%
-    margin-top: 10px
-    margin-bottom: 10px
+    font-size: 10px
+    margin: 0px auto
+    background: #739eee
+    color: #fff
+    height: 15px
+    padding: 3px 0px 0px 0px
+    a
+      color: #fff
+      text-decoration: none
     
   #header
-    padding-top: 20px
-    padding-bottom: 20px
+    margin: 0px auto
+    padding: 0px 0px 10px 0px
     
+  #header-banner
+    height: 120px
+    margin: 0 0 1px
+    width: 100%
+    background-repeat: no-repeat
+        
 .spinner
   position: fixed
   text-align: center
@@ -655,44 +664,171 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     
   .title-th
     color: #ffffff
-    background-color: #7b7b7b
+    background-color: #a3a3a3
     border: #ffffff solid
     border-width: 1px 1px 1px 0px
+    a
+      font-size: 10px
+      font-weight: normal
           
-//Report main menu
+//Main menu
 #navigation
-  margin: 3px 2px 3px 2px
+  margin: 0px
   width: 100%
+  background: #739eee
   a
     color: #ffffff
     
-.menu
-  float: left
-  list-style: none
-  margin: 0
-  padding: 0
- 
+#main-menu
+  margin: 0 
+  padding: 0 
+  list-style: none	
   li
-    float: left
-    font-size: 13px
-    font-weight: bold   
-    margin: 0
-    display: inline
-    padding: 0
-    border-left: 1px solid #ffffff
+    float: left 
+    display: block
+    width: 120px 
+    background: #739eee
+    position: relative
+    z-index: 500 
+    margin: 0 1px
+    border-left: 1px #fff solid
+    border-right: 1px #fff solid
     a
-      background: #739eee
-      display: block
+      display: block 
+      padding: 5px 0px 5px 5px 
+      font-weight: bold 
+      text-decoration: none 
+      color: #fff 
+      text-align: left
+    a:hover
+      color: #fff
+      background: #73A6ff	
+  ul
+    position: absolute 
+    left: 0 
+    display: none 
+    margin: 0 0 0 -1px 
+    padding: 0 
+    list-style: none
+    li
+      float: left 
+      border-top: 1px solid #fff
+      width: 200px 
+      border-left: 0px #fff solid
+      a
+        display: block  
+        padding: 5px 0px 5px 5px 
+        color: #fff	
+      a:hover
+        text-decoration: underline
+     
+#survey
+  #top-container
+    #survey-iteration-box
+      width: 20%
       float: left
-      margin: 0
-      padding: 5px 12px
+      padding: 3px
+    #survey-objective-box
+      width: 77%
+      float: right
+      padding: 3px
+
+
+  #bottom-container
+    #survey-left-objective-container
+      width: 20%
+      float: left
+      margin-top: 10px
+      padding: 3px
+    #survey-right-question-container
+      width: 77%
+      float: right
+      margin-top: 10px
+      padding: 3px
+      
+  #tabs
+    margin: 0px 
+    padding: 0px 
+    list-style: none 
+    overflow: hidden
+    li
+      float: left 
+      display: block
+      padding: 5px 
+      background-color: #bbb 
+      margin-right: 5px
+      
+      a
+        color: #fff 
+        text-decoration: none
+    li
+      .current
+        background-color: #e1e1e1
+        a
+          color: #000 
+          text-decoration: none
+          
+        a
+          .remove
+            color: #f00  
+            margin-left: 10px
+  #content
+    background-color: #e1e1e1
+    margin: 0 auto
+    padding: 0 0 10px 0
+    p
+      margin: 0 
+      padding: 20px 20px 100px 20px
+                
+  #subsection-questions
+    float: 0px auto 
+    margin: 0px 20px 0px 0px
+    width: 700px 
+    margin-top: 20px
+    
+  #survey-section-list 
+    list-style-type: none
+    margin: 0
+    padding: 0
+    width: 15em
+    a
+      display: block
       text-decoration: none
-      +box-round-corner
-        
-    a:hover 
-      background: #73A6ff
-      padding-bottom: 5px
-      +box-round-corner
+      font-weight: bold	
+    li
+      margin-top: 1px
+      a
+        background: #739eee
+        color: #fff
+        padding: 0.5em
+      a:hover
+        background: #73A6ff
+    ul 
+      list-style-type: none
+      margin: 0
+      padding: 0
+      width: 15em
+      li
+        margin-top: 1px 
+        a
+          background: #f0f4fd
+          color: #333
+          padding-left: 20px
+          border-left: 5px #73A6ff solid            
+        a:hover
+          background: #fff
+          border-left: 5px #739eee solid
+          padding-left: 15px
+          
+        @if true  
+        a
+          display: inline-block
+          display: block
+    
+
+     
+  
+
     
   
   

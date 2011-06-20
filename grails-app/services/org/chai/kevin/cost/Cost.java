@@ -1,9 +1,6 @@
 package org.chai.kevin.cost;
 
-import java.util.Collection;
-
 import org.chai.kevin.Organisation;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 public class Cost {
