@@ -52,7 +52,7 @@ public abstract class Gradient {
 //
 //		.target5:hover
 //		  background-color: #0af626
-		if (getValue() == null) return "#AAA";
+		if (!isValid()) return "#AAA";
 		
 		switch (new Double(getValue() / 0.2d).intValue()) {
 		case 0:

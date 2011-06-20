@@ -26,19 +26,7 @@ public class OrganisationService {
 	private String group;
 	private OrganisationUnitService organisationUnitService;
 	private OrganisationUnitGroupService organisationUnitGroupService;
-	
-	// TODO get rid of this cache
-//	private OrganisationUnitGroupSet orgUnitGroupSet;
-//	private Set<OrganisationUnitGroup> orgUnitGroups;
-	
-//	private void loadGroups() {
-//		if (orgUnitGroupSet == null) {
-//			orgUnitGroupSet = organisationUnitGroupService.getOrganisationUnitGroupSetByName(group);
-//		}
-//		if (orgUnitGroups == null) {
-//			orgUnitGroups = orgUnitGroupSet.getOrganisationUnitGroups();
-//		}
-//	}
+	private int facilityLevel;
 	
     public Organisation getRootOrganisation() {
 		Collection<OrganisationUnit> organisations = organisationUnitService.getRootOrganisationUnits();
@@ -68,6 +56,10 @@ public class OrganisationService {
 //		return result;
 //	}
 	
+//	public boolean isAtFacilityLevel(Organisation organisation) {
+//		return getLevel(organisation) == facilityLevel;
+//	}
+	
 	public List<OrganisationUnitLevel> getChildren(int level, Integer... skipLevels) {
 		List<Integer> skipLevelList = Arrays.asList(skipLevels);
 		List<OrganisationUnitLevel> result = new ArrayList<OrganisationUnitLevel>();
@@ -80,7 +72,20 @@ public class OrganisationService {
 		return result;
 	}
 	
+	public List<OrganisationUnitLevel> getAllLevels(Integer... skipLevels) {
+		List<Integer> skipLevelList = Arrays.asList(skipLevels);
+		List<OrganisationUnitLevel> result = new ArrayList<OrganisationUnitLevel>();
+		
+		for (OrganisationUnitLevel organisationUnitLevel : organisationUnitService.getOrganisationUnitLevels()) {
+			if (!skipLevelList.contains(organisationUnitLevel.getLevel())) {
+				result.add(organisationUnitLevel);
+			}
+		}
+		return result;
+	}
+	
 	public int getLevel(Organisation organisation) {
+		if (organisation.getLevel() != 0) return organisation.getLevel();
 		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation.getOrganisationUnit());
 		organisation.setLevel(level);
 		return level;
@@ -110,7 +115,7 @@ public class OrganisationService {
 		return organisation;
 	}
 	
-	public boolean loadParent(Organisation organisation, Integer...skipLevels) {
+	public boolean loadParent(Organisation organisation, Integer... skipLevels) {
 		if (organisation.getParent() != null) return true;
 		OrganisationUnit parent = getParent(organisation.getOrganisationUnit(), skipLevels);
 		if (parent == null) return false;
@@ -211,6 +216,10 @@ public class OrganisationService {
 		return result;
 	}
 	
+	public int getFacilityLevel() {
+		return facilityLevel;
+	}
+	
 //	public List<String> getSkipLevels() {
 //		return Arrays.asList(StringUtils.split(skipLevels, ','));
 //	}
@@ -218,6 +227,10 @@ public class OrganisationService {
 //	public void setSkipLevels(String skipLevels) {
 //		this.skipLevels = skipLevels;
 //	}
+	
+	public void setFacilityLevel(int facilityLevel) {
+		this.facilityLevel = facilityLevel;
+	}
 	
 	public void setGroup(String group) {
 		this.group = group;

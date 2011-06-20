@@ -11,18 +11,22 @@
 	    <mapping class="org.chai.kevin.Translation" />
 	    
 	    <mapping class="org.chai.kevin.Expression" />
+	    <mapping class="org.chai.kevin.Calculation" />
 	    <mapping class="org.chai.kevin.DataElement" />
 	    <mapping class="org.chai.kevin.Constant" />
-	    <mapping class="org.chai.kevin.DataValue" />
+
 	    <mapping class="org.chai.kevin.Enum" />
 	    <mapping class="org.chai.kevin.EnumOption" />
+
+		<mapping class="org.chai.kevin.value.Value" />
+	    <mapping class="org.chai.kevin.value.DataValue" />
+	    <mapping class="org.chai.kevin.value.ExpressionValue" />
+	    <mapping class="org.chai.kevin.value.CalculationValue" />
 	
 	    <mapping class="org.chai.kevin.dashboard.DashboardEntry" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardTarget" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardObjective" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardObjectiveEntry" />
-	    <mapping class="org.chai.kevin.dashboard.DashboardPercentage" />	
-	    <mapping class="org.chai.kevin.dashboard.DashboardCalculation" />	
 	    
 	    <mapping class="org.chai.kevin.cost.CostObjective" />	
 	    <mapping class="org.chai.kevin.cost.CostRampUp" />	

@@ -8,12 +8,11 @@ import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostRampUpYear;
 import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.cost.CostTarget.CostType;
-import org.chai.kevin.dashboard.DashboardCalculation;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.DataElement;
-import org.chai.kevin.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.MonthlyPeriodType;
 import org.hisp.dhis.period.Period;
@@ -27,8 +26,8 @@ class IntegrationTestInitializer extends Initializer {
 //		new IndicatorType(names:j(["en":"one"]), factor: 1).save(failOnError: true)
 //		new Indicator(names:j(["en":"Constant 10"]), shortName: "Constant 10", code: "CONST10", numerator: "10", denominator: "1", indicatorType: IndicatorType.findByName("one")).save(failOnError: true);
 //		new Indicator(names:j(["en":"Constant 20"]), shortName: "Constant 20", code: "CONST20", numerator: "20", denominator: "1", indicatorType: IndicatorType.findByName("one")).save(failOnError: true);
-		new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: ValueType.VALUE).save(failOnError: true)
-		new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: ValueType.VALUE).save(failOnError: true)
+		new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: ValueType.VALUE, timestamp: new Date()).save(failOnError: true)
+		new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: ValueType.VALUE, timestamp: new Date()).save(failOnError: true)
 		
 	}
 	
@@ -49,15 +48,15 @@ class IntegrationTestInitializer extends Initializer {
 		def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 				names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
 				calculations: [
-					"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
-					"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
+					"District Hospital": new Calculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
+					"Health Center": new Calculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
 				]
 			), weight: 1, order: 1)
 		def target2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 				names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
 				calculations: [
-					"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
-					"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
+					"District Hospital": new Calculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
+					"Health Center": new Calculation(groupUuid: "Health Center", expression: Expression.findByCode("CONST20"))
 				]
 			), weight: 1, order: 2)
 		
@@ -97,8 +96,8 @@ class IntegrationTestInitializer extends Initializer {
 		new DashboardTarget(
 				names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 				calculations: [
-					"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("EXPRELEM1")),
-					"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("EXPRELEM1"))
+					"District Hospital": new Calculation(groupUuid: "District Hospital", expression: Expression.findByCode("EXPRELEM1")),
+					"Health Center": new Calculation(groupUuid: "Health Center", expression: Expression.findByCode("EXPRELEM1"))
 				]
 			).save(failOnError: true)
 

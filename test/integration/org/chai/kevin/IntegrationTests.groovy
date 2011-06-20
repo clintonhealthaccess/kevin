@@ -6,12 +6,11 @@ import grails.plugin.spock.IntegrationSpec;
 import groovy.sql.Sql;
 
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.dashboard.DashboardCalculation;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.DataElement;
-import org.chai.kevin.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;

@@ -119,10 +119,10 @@ abstract class AbstractReportController {
 	}
 	
 	protected def getOrganisationUnitLevel() {
-		OrganisationUnitLevel level = null;
+		Integer level = null;
 		try {
 			if (NumberUtils.isNumber(params['level'])) {
-				level = OrganisationUnitLevel.findByLevel(new Integer(params['level']))
+				level = new Integer(params['level'])
 			}
 		}
 		catch (IllegalStateException e) {

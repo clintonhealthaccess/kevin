@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Initializer;
+import org.chai.kevin.util.JSONUtils;
 import org.json.JSONObject;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -17,6 +18,27 @@ class DomainSpec extends IntegrationTests {
 	def setup() {
 		Initializer.createDummyStructure();
 	}
+	
+//	def "expression date is updated on save"() {
+//		setup:
+//		new Expression(code:"CODE", expression: "1", type: ValueType.VALUE, timestamp: new Date()).save(failOnError: true)
+//		
+//		when:
+//		def expression = Expression.findByCode("CODE");
+//		def oldDate = expression.timestamp
+//		
+//		then:
+//		oldDate != null
+//		
+//		when:
+//		expression.save(failOnError: true)
+//		expression = Expression.findByCode("CODE");
+//		def newDate = expression.timestamp
+//		
+//		then:
+//		!oldDate.equals(newDate)
+//		
+//	}
 	
 	def "data element code is unique"() {
 		when:

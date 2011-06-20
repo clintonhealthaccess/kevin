@@ -20,7 +20,7 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 	}
 	
 	def getTemplate() {
-		return 'createObjective';
+		return '/dashboard/dashboardObjective/createObjective';
 	}
 	
 	def bindParams(def objectiveEntry) {

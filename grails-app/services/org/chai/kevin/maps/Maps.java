@@ -10,14 +10,14 @@ import org.hisp.dhis.period.Period;
 public class Maps {
 
 	private Organisation organisation;
-	private OrganisationUnitLevel level;
+	private Integer level;
 	private Period period;
 	private MapsTarget target;
 	
 	private List<Polygon> polygons;
 	private List<OrganisationUnitLevel> levels;
 	
-	public Maps(Period period, MapsTarget target, Organisation organisation, OrganisationUnitLevel level, List<Polygon> polygons, List<OrganisationUnitLevel> levels) {
+	public Maps(Period period, MapsTarget target, Organisation organisation, Integer level, List<Polygon> polygons, List<OrganisationUnitLevel> levels) {
 		this.period = period;
 		this.target = target;
 		this.polygons = polygons;
@@ -38,7 +38,7 @@ public class Maps {
 		return organisation;
 	}
 	
-	public OrganisationUnitLevel getLevel() {
+	public Integer getLevel() {
 		return level;
 	}
 	
@@ -76,7 +76,7 @@ public class Maps {
 			builder.append("\"selectedCoordinates\":"+organisation.getOrganisationUnit().getCoordinates());
 			builder.append(",");
 		}
-		builder.append("\"selectedLevel\":"+level.getLevel());
+		builder.append("\"selectedLevel\":"+level);
 		builder.append(",");
 		builder.append("\"selectedPeriod\":"+period.getId());
 		if (target != null) {

@@ -1,7 +1,6 @@
 package org.chai.kevin.dashboard
 
 import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.chai.kevin.DataValue;
 
 import java.util.Date;
 import java.util.Calendar;
@@ -13,6 +12,7 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.ProgressListener;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.dashboard.DashboardPercentage.Status;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;

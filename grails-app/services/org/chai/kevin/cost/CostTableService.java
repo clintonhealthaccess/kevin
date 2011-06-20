@@ -26,7 +26,6 @@ public class CostTableService {
 	private CostService costService;
 	private OrganisationService organisationService;
 	private ExpressionService expressionService;
-	private Integer organisationLevel;
 	private Set<Integer> skipLevels;
 	
 	public CostTable getCostTable(Period period, CostObjective objective, Organisation organisation) {
@@ -43,7 +42,7 @@ public class CostTableService {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
 		for (Organisation child : organisation.getChildren()) {
-			if (	organisationService.getLevel(child) != organisationLevel.intValue() 
+			if (	organisationService.getLevel(child) != organisationService.getFacilityLevel()
 					|| 
 					appliesToOrganisation(target, child, collection)
 			) {
@@ -69,7 +68,7 @@ public class CostTableService {
 	private Map<Integer, Cost> getCost(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
-		if (organisationService.getLevel(organisation) == organisationLevel.intValue()) {
+		if (organisationService.getLevel(organisation) == organisationService.getFacilityLevel()) {
 			return getCostForLeafOrganisation(target, organisation, period, collection);
 		}
 		else {
@@ -101,16 +100,16 @@ public class CostTableService {
 
 			log.debug("target "+target+" applies to organisation "+organisation);
 			List<Integer> years = costService.getYears();
-			Map<DataElement, Object> values = new HashMap<DataElement, Object>();
 
-			Double baseCost = (Double)expressionService.getValue(target.getExpression(), period, organisation, values);
-			if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
+			Double baseCost = Double.parseDouble(expressionService.calculateValue(target.getExpression(), period, organisation).getValue());
+			// FIXME
+//			if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
 			
 			Double steps = 0d;
 			if (target.isAverage()) {
-				values.clear();
-				Double endCost = (Double)expressionService.getValue(target.getExpressionEnd(), period, organisation, values);
-				if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
+				Double endCost = Double.parseDouble(expressionService.calculateValue(target.getExpressionEnd(), period, organisation).getValue());
+				// FIXME
+//				if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
 				steps = (endCost - baseCost)/(years.size()-1);
 			}
 
@@ -155,10 +154,6 @@ public class CostTableService {
 	
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
-	}
-	
-	public void setOrganisationLevel(Integer organisationLevel) {
-		this.organisationLevel = organisationLevel;
 	}
 	
 	public void setSkipLevels(Set<Integer> skipLevels) {

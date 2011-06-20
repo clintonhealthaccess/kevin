@@ -1,75 +1,94 @@
 package org.chai.kevin.dashboard;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.DataElement;
 import org.chai.kevin.Expression;
 import org.chai.kevin.ExpressionService;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
-import org.chai.kevin.dashboard.DashboardPercentage.Status;
-import org.hisp.dhis.common.AbstractNameableObject;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.ValueService;
+import org.chai.kevin.ValueType;
+import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.ExpressionValue.Status;
 import org.hisp.dhis.period.Period;
 
 public class PercentageCalculator {
 
 	// TODO this should be private
+	protected ValueService valueService;
+	protected OrganisationService organisationService;
 	protected ExpressionService expressionService;
-//	protected OrganisationService organisationService;
-	protected PercentageService percentageService;
-	private GroupCollection groupCollection;
-
+	
 	private static Log log = LogFactory.getLog(PercentageCalculator.class);
 	
-	public DashboardPercentage getPercentage(DashboardObjective objective, Organisation organisation, Period period) {
+	public DashboardPercentage getPercentageForObjective(DashboardObjective objective, Organisation organisation, Period period) {
 		if (log.isDebugEnabled()) log.debug("getPercentageForObjective(objective: "+objective+", organisation: "+organisation+")");
 		
-		return getValueForObjective(objective, organisation, period, new HashMap<DashboardObjectiveEntry, DashboardPercentage>());
+		DashboardPercentage percentage = getValueForObjective(objective, organisation, period);
+		if (log.isDebugEnabled()) log.debug("getPercentageForObjective()="+percentage);
+		return percentage;
 	}
 
-	public DashboardPercentage getPercentage(DashboardTarget target, Organisation organisation, Period period) {
-		if (log.isDebugEnabled()) log.debug("getPercentageForTarget(target: "+target+", organisation: "+organisation+")");
+	public DashboardPercentage getPercentageForNonLeafTarget(DashboardTarget target, Organisation organisation, Period period) {
+		if (log.isDebugEnabled()) log.debug("getPercentageForNonLeafTarget(target: "+target+", organisation: "+organisation+")");
 		
-		DashboardCalculation matchingCalculation = getMatchingCalculation(target, organisation);
-		
-		DashboardPercentage percentage;
-		if (!isValid(matchingCalculation) && organisation.getChildren().size() == 0) {
-			if (log.isInfoEnabled()) log.info("no matching groups and organisation has no children, organisation: "+organisation+", objective: "+target);
-			percentage = new DashboardPercentage(Status.MISSING_EXPRESSION, organisation.getOrganisationUnit(), target, period);
-		}
-		else {
-			if (isValid(matchingCalculation)) {
-				percentage = getValueForLeafTarget(matchingCalculation.getExpression(), target, organisation, period, new HashMap<DataElement, Object>());
-			}
-			else {
-				percentage = getValueForNonLeafTarget(target, organisation, period, new HashMap<Organisation, DashboardPercentage>());
-			}
-		}
+		// calculation has to be of VALUE type
+		if (target.getCalculation().getType() != ValueType.VALUE) log.error("dashboard target has calculation of invalid type: "+target.getCalculation());
+
+		// but we try anyway, can be a user mistake
+		CalculationValue calculationValue = valueService.getCalculationValue(organisation.getOrganisationUnit(), target.getCalculation(), period);
+		if (calculationValue == null) return null;
+		DashboardPercentage percentage = new DashboardPercentage(calculationValue.getAverage(), calculationValue.getHasMissingValues(), calculationValue.getHasMissingExpression());
+
+		if (log.isDebugEnabled()) log.debug("getPercentageForNonLeafTarget()="+percentage);
 		return percentage;
 	}
 	
-	protected static boolean isValid(DashboardCalculation calculation) {
-		return calculation==null?false:calculation.getExpression()!=null;
+	public DashboardPercentage getPercentageForLeafTarget(DashboardTarget target, Organisation organisation, Period period) {
+		if (log.isDebugEnabled()) log.debug("getPercentageForLeafTarget(target: "+target+", organisation: "+organisation+")");
+		
+		// calculation has to be of VALUE type
+		if (target.getCalculation().getType() != ValueType.VALUE) log.error("dashboard target has calculation of invalid type: "+target.getCalculation());
+
+		// but we try anyway, can be a user mistake
+		DashboardPercentage percentage;
+		Expression expression = expressionService.getMatchingExpression(target.getCalculation(), organisation);
+		if (expression != null) {
+			ExpressionValue expressionValue = valueService.getExpressionValue(organisation.getOrganisationUnit(), expression, period);
+			if (expressionValue == null) return null;
+			percentage = new DashboardPercentage(expressionValue.getNumberValue(), expressionValue.getStatus() == Status.MISSING_VALUE, false);
+		}
+		else {
+			percentage = new DashboardPercentage(null, false, true);
+		}
+		if (log.isDebugEnabled()) log.debug("getPercentageForLeafTarget()="+percentage);
+		return percentage;
 	}
 	
+	protected Map<DashboardObjectiveEntry, DashboardPercentage> getValues(DashboardObjective objective, Organisation organisation, Period period){
+		Map<DashboardObjectiveEntry, DashboardPercentage> result = new HashMap<DashboardObjectiveEntry, DashboardPercentage>();
+		for (DashboardObjectiveEntry child : objective.getObjectiveEntries()) {
+			DashboardPercentage childPercentage = child.getEntry().getValue(this, organisation, period, organisationService.getFacilityLevel() == organisationService.getLevel(organisation));
+			result.put(child, childPercentage);
+		}
+		return result;
+	}
 	
-	protected DashboardPercentage getValueForObjective(DashboardObjective objective, Organisation organisation, Period period, Map<DashboardObjectiveEntry, DashboardPercentage> values) {
+	protected DashboardPercentage getValueForObjective(DashboardObjective objective, Organisation organisation, Period period) {
 		Integer totalWeight = 0;
 		Double sum = 0.0d;
 		boolean hasMissingExpression = false;
 		boolean hasMissingValue = false;
 		for (DashboardObjectiveEntry child : objective.getObjectiveEntries()) {
-			DashboardPercentage childPercentage = percentageService.getPercentage(organisation.getOrganisationUnit(), child.getEntry(), period);
+			DashboardPercentage childPercentage = child.getEntry().getValue(this, organisation, period, organisationService.getFacilityLevel() == organisationService.getLevel(organisation));
 			if (childPercentage == null) {
 				if (log.isErrorEnabled()) log.error("found null percentage, objective: "+child.getEntry()+", organisation: "+organisation.getOrganisationUnit()+", period: "+period);
-				continue;
+				return null;
 			}
 			Integer weight = child.getWeight();
 			if (childPercentage.isValid()) {
@@ -87,84 +106,21 @@ public class PercentageCalculator {
 			if (childPercentage.isHasMissingValue()) {
 				hasMissingValue = true;
 			}
-			values.put(child, childPercentage);
 		}
-		return new DashboardPercentage(sum / totalWeight, organisation.getOrganisationUnit(), objective, period, hasMissingValue, hasMissingExpression);
+		// TODO what if sum = 0 and totalWeight = 0 ?
+		return new DashboardPercentage(sum / totalWeight, hasMissingValue, hasMissingExpression);
 	}
 
-	protected DashboardPercentage getValueForLeafTarget(Expression expression, DashboardTarget target, Organisation organisation, Period period, Map<DataElement, Object> values) {
-		Object objectValue = expressionService.getValue(expression, period, organisation, values);
-		try {
-			Double value = Double.parseDouble(String.valueOf(objectValue));
-			if (ExpressionService.hasNullValues(values.values())) {
-				return new DashboardPercentage(Status.MISSING_VALUE, organisation.getOrganisationUnit(), target, period);
-			}
-			else {
-				return new DashboardPercentage(value, organisation.getOrganisationUnit(), target, period);
-			}
-		}
-		catch (NumberFormatException e) {
-			log.error("could not transform value to double: "+objectValue);
-			// TODO use other status -> INVALID
-			return new DashboardPercentage(Status.MISSING_VALUE, organisation.getOrganisationUnit(), target, period);
-		}
-		
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
 	}
 	
-	protected DashboardPercentage getValueForNonLeafTarget(DashboardTarget target, Organisation organisation, Period period, Map<Organisation, DashboardPercentage> values) {
-		// TODO valuation function for organisation units (based on data element value, eg population)
-		Double sum = 0.0d;
-		Integer total = 0;
-		boolean hasMissingExpression = false;
-		boolean hasMissingValue = false;
-		for (Organisation child : organisation.getChildren()) {
-			DashboardPercentage childPercentage = percentageService.getPercentage(child.getOrganisationUnit(), target, period);
-			if (childPercentage.isValid()) {
-				sum += childPercentage.getValue();
-				total++;
-			}
-			else {
-				// MISSING_EXPRESSION - we skip it
-				// MISSING_VALUE - should we count it in as zero ?
-			}
-			
-			if (childPercentage.isHasMissingExpression()) {
-				hasMissingExpression = true;
-			}
-			if (childPercentage.isHasMissingValue()) {
-				hasMissingValue = true;
-			}
-			values.put(child, childPercentage);
-		}
-		return new DashboardPercentage(sum / total, organisation.getOrganisationUnit(), target, period, hasMissingValue, hasMissingExpression);
-	}
-	
-	public DashboardCalculation getMatchingCalculation(DashboardTarget target, Organisation organisation) {
-		OrganisationUnitGroup group = organisation.getOrganisationUnitGroup();
-		if (log.isDebugEnabled()) log.debug("group on organisation: "+group);
-		if (log.isDebugEnabled()) log.debug("groups on calculations: "+target.getCalculations());
-
-		DashboardCalculation matchingCalculation = null;
-		if (group != null) {
-			for (DashboardCalculation calculation : target.getCalculations().values()) {
-				if (group.equals(groupCollection.getGroupByUuid(calculation.getGroupUuid()))) {  
-					matchingCalculation = calculation;
-				}
-			}
-		}
-		return matchingCalculation;
+	public void setOrganisationService(OrganisationService organisationService) {
+		this.organisationService = organisationService;
 	}
 	
 	public void setExpressionService(ExpressionService expressionService) {
 		this.expressionService = expressionService;
-	}
-
-	public void setPercentageService(PercentageService percentageService) {
-		this.percentageService = percentageService;
-	}
-	
-	public void setGroupCollection(GroupCollection groupCollection) {
-		this.groupCollection = groupCollection;
 	}
 	
 }

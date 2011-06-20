@@ -71,25 +71,25 @@ class DashboardController extends AbstractReportController {
 	def refresh = {
 		if (log.isDebugEnabled()) log.debug("dashboard.refresh, params:"+params)
 		
-		Period period = getPeriod()
-		Translatable objective = getStrategicObjective()
-		Organisation organisation = getOrganisation(false)
+//		Period period = getPeriod()
+//		Translatable objective = getStrategicObjective()
+//		Organisation organisation = getOrganisation(false)
 		
-		if (log.isInfoEnabled()) log.info("refresh dashboard for period: "+period.id+", objective: "+objective.id+", organisation:"+ organisation.id);
-		def runningJob = getRunningJob(period, organisation, objective)
-		if (runningJob == null) {
-			DashboardJob.triggerNow([period: period.id, objective: objective.id, organisation: organisation.id, progress: new ProgressListener()])
-		}
-		else {
-			if (log.isInfoEnabled()) log.info('already running')
-		}
+//		if (log.isInfoEnabled()) log.info("refresh dashboard for period: "+period.id+", objective: "+objective.id+", organisation:"+ organisation.id);
+//		def runningJob = getRunningJob(period, organisation, objective)
+//		if (runningJob == null) {
+			ExpressionJob.triggerNow()
+//		}
+//		else {
+//			if (log.isInfoEnabled()) log.info('already running')
+//		}
 		
-		redirect (controller: 'dashboard', action: 'progress', params: params);
+		redirect (controller: 'dashboard', action: 'view', params: params);
 	}
 	
-	def progress = {
-		[ period: params['period'], objective: params['objective'], organisation: params['organisation'] ]
-	}
+//	def progress = {
+//		[ period: params['period'], objective: params['objective'], organisation: params['organisation'] ]
+//	}
 	
 	def cancel = {
 		if (log.isDebugEnabled()) log.debug("dashboard.progress, params:"+params)
@@ -106,52 +106,52 @@ class DashboardController extends AbstractReportController {
 		redirect (controller: 'dashboard', action: 'view', params: params);
 	}
 	
-	def progressInc = {
-		if (log.isDebugEnabled()) log.debug("dashboard.progress, params:"+params)
-		
-		Period period = getPeriod()
-		Translatable objective = getStrategicObjective()
-		Organisation organisation = getOrganisation(false)
-		
-		def runningJob = getRunningJob(period, organisation, objective)
-		if (runningJob != null) {
-			render(contentType:"text/json") {
-				job = 'found'
-				total = runningJob.mergedJobDataMap.progress.total
-				current = runningJob.mergedJobDataMap.progress.current
-			}
-		}
-		else {
-			render(contentType:"text/json") {
-				job = 'not_found'
-			}
-		}
-	}
+//	def progressInc = {
+//		if (log.isDebugEnabled()) log.debug("dashboard.progress, params:"+params)
+//		
+//		Period period = getPeriod()
+//		Translatable objective = getStrategicObjective()
+//		Organisation organisation = getOrganisation(false)
+//		
+//		def runningJob = getRunningJob(period, organisation, objective)
+//		if (runningJob != null) {
+//			render(contentType:"text/json") {
+//				job = 'found'
+//				total = runningJob.mergedJobDataMap.progress.total
+//				current = runningJob.mergedJobDataMap.progress.current
+//			}
+//		}
+//		else {
+//			render(contentType:"text/json") {
+//				job = 'not_found'
+//			}
+//		}
+//	}
 	
-	private def getRunningJob(def period, def organisation, def objective) {
-		return quartzScheduler.currentlyExecutingJobs.find {
-			def jobPeriod = it.mergedJobDataMap.get('period')
-			def jobOrganisation = it.mergedJobDataMap.get('organisation')
-			def jobObjective = it.mergedJobDataMap.get('objective')
-			
-			jobPeriod == period.id && jobOrganisation == organisation.id && jobObjective == objective.id
-		}
-	}
+//	private def getRunningJob(def period, def organisation, def objective) {
+//		return quartzScheduler.currentlyExecutingJobs.find {
+//			def jobPeriod = it.mergedJobDataMap.get('period')
+//			def jobOrganisation = it.mergedJobDataMap.get('organisation')
+//			def jobObjective = it.mergedJobDataMap.get('objective')
+//			
+//			jobPeriod == period.id && jobOrganisation == organisation.id && jobObjective == objective.id
+//		}
+//	}
 	
-	def refreshAll = {
-		if (log.isDebugEnabled()) log.debug("dashboard.refreshAll, params:"+params)
-		
-		Period period = getPeriod()
-		if (log.isInfoEnabled()) log.info("refresh dashboard for period: "+period.id);
-		
-		dashboardService.refreshEntireDashboard(period);
-		redirect (controller: 'dashboard', action: 'view', params: params);
-	}
+//	def refreshAll = {
+//		if (log.isDebugEnabled()) log.debug("dashboard.refreshAll, params:"+params)
+//		
+//		Period period = getPeriod()
+//		if (log.isInfoEnabled()) log.info("refresh dashboard for period: "+period.id);
+//		
+//		dashboardService.refreshEntireDashboard(period);
+//		redirect (controller: 'dashboard', action: 'view', params: params);
+//	}
 	
-	def flush = {
-		DashboardPercentage.list().each { it.delete() }
-		redirect (controller: 'dashboard', action: 'view', params: params);
-	}
+//	def flush = {
+//		DashboardPercentage.list().each { it.delete() }
+//		redirect (controller: 'dashboard', action: 'view', params: params);
+//	}
 	
 	def getDescription = {
 		def objective = null;

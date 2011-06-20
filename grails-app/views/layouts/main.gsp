@@ -5,8 +5,6 @@
 	<link rel="shortcut icon" href="${resource(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
 	<!-- link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}" / -->
 
-	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/sexy-combo/css',file:'sexy-combo.css')}" />
-	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/sexy-combo/css',file:'sexy/sexy.css')}"/ >
 	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/cluetip',file:'jquery.cluetip.css')}"/ >
 	
 	<link href="${resource(dir:'css',file:'screen.css')}" media="screen, projection" rel="stylesheet" type="text/css" />
@@ -18,17 +16,11 @@
 	
 	<g:layoutHead />
 	<g:javascript library="jquery" plugin="jquery" />
-	<jqui:resources />
 	
-	<!-- jq:resource components="searchabledropdown" bundle="jquery"/ -->
-	<!-- TODO replace with sexy combo -->
-	<!-- g:javascript src="jquery/searchabledropdown/jquery.searchabledropdown-1.0.7.src.js" / -->
-	<!-- g:javascript src="jquery/blockui/jquery.blockui.js" / -->
-	<g:javascript src="jquery/sexy-combo/jquery.sexy-combo.js" />
 	<g:javascript src="jquery/form/jquery.form.js" />
 	<g:javascript src="jquery/fieldselection/jquery.fieldselection.js" />
 	<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
-	<g:javascript src="jquery/periodicalupdater/jquery.periodicalupdater.js" />
+	<g:javascript src="jquery/progressbar/jquery.progressbar.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
 
 	<g:javascript library="application" />
@@ -362,6 +354,27 @@
 				}
 			});
 			
+			
+			/**
+			 * element explanations
+			 */
+			$(document).delegate('.element', 'mouseenter mouseleave', function() {
+				var data = $(this).data('id');
+				
+				$(this).parents('.info').find('.data-'+data).toggleClass('highlighted');
+				$(this).toggleClass('highlighted');
+			});
+			
+			$(document).delegate('.element', 'click', function(){
+				if (!$(this).hasClass('selected')) {
+					$(this).parents('.info').find('.element').removeClass('selected');
+					$(this).parents('.info').find('.data').removeClass('selected');
+				}
+				var data = $(this).data('id');
+				$(this).parents('.info').find('.data-'+data).toggleClass('selected');
+				$(this).toggleClass('selected');
+			});
+						
 		});
 	</script>
 </body>

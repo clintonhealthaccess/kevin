@@ -121,7 +121,7 @@
 				if (data.result == 'success') {
 					var expression = data.newEntity
 					$('.expression-list').append('<option value="'+expression.id+'">'+expression.name+'</option>');
-					$.sexyCombo.changeOptions('.expression-list');
+// 					$.sexyCombo.changeOptions('.expression-list');
 				}
 			}
 		});

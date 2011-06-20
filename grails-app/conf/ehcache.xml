@@ -72,6 +72,16 @@
            timeToIdleSeconds="300"
     />
     
+	<cache name="org.hibernate.cache.ExpressionValueQueryCache"
+           maxElementsInMemory="1000000"
+           timeToIdleSeconds="300"
+    />
+    
+	<cache name="org.hibernate.cache.CalculationValueQueryCache"
+           maxElementsInMemory="1000000"
+           timeToIdleSeconds="300"
+    />
+    
     <!-- not sure it is used -->
     <cache name="org.hibernate.cache.DashboardPercentageQueryCache"
            maxElementsInMemory="100000"

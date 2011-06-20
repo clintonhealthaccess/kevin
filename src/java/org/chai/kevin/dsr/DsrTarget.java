@@ -17,9 +17,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Expression;
-import org.chai.kevin.JSONUtils;
 import org.chai.kevin.Translatable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.util.JSONUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 

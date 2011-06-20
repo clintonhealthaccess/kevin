@@ -24,7 +24,7 @@ class MapsTargetController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "createTarget"
+		return "/maps/mapsTarget/createTarget"
 	}
 	
 	def getModel(def entity) {

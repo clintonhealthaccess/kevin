@@ -28,6 +28,7 @@ class ExpressionController extends AbstractEntityController {
 	}
 	
 	def saveEntity(def entity) {
+		entity.setTimestamp(new Date());
 		entity.save()
 	}
 	
@@ -47,6 +48,25 @@ class ExpressionController extends AbstractEntityController {
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		[expressions: Expression.list(params), expressionCount: Expression.count()]
+	}
+	
+	def getDescription = {
+		def expression = null;
+		if (NumberUtils.isNumber(params['expression'])) {
+			expression = Constant.get(params['expression'])
+		}
+		
+		if (expression == null) {
+			render(contentType:"text/json") {
+				result = 'error'
+			}
+		}
+		else {
+			render(contentType:"text/json") {
+				result = 'success'
+				html = g.render (template: 'description', model: [expression: expression])
+			}
+		}
 	}
 
 	def getConstantDescription = {

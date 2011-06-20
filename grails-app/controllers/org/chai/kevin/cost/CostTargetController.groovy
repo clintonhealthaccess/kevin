@@ -24,7 +24,7 @@ class CostTargetController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "createTarget"
+		return "/cost/costTarget/createTarget"
 	}
 	
 	def getModel(def entity) {

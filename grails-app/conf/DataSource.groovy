@@ -22,7 +22,7 @@ hibernate {
 	cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
 	naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
 	//      flush.mode = 'commit'
-	//      show_sql = true
+//	      show_sql = true
 }
 naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
 

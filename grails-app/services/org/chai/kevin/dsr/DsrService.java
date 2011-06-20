@@ -18,7 +18,6 @@ public class DsrService {
    // private Log log = LogFactory.getLog(DsrService.class);
 	private OrganisationService organisationService;
 	private ExpressionService expressionService;
-	private Integer organisationLevel;
 
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective,
@@ -29,7 +28,7 @@ public class DsrService {
 		Collections.sort(targets, new DsrTargetSorter());
 		List<Organisation> organisations = organisationService
 				.getChildrenOfLevel(organisation,
-						organisationLevel.intValue());
+						organisationService.getFacilityLevel());
 		Map<Organisation, Map<DsrTarget, Dsr>> dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
 		for (Organisation orgChildren : organisations) {
 			Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
@@ -37,9 +36,8 @@ public class DsrService {
 				orgDsr.put(
 						target,
 						new Dsr(orgChildren, period, target, expressionService
-								.getValue(target.getExpression(), period,
-										orgChildren,
-										new HashMap<DataElement, Object>())));
+								.calculateValue(target.getExpression(), period,
+										orgChildren)));
 			}
 			dsrMap.put(orgChildren, orgDsr);
 		}
@@ -64,8 +62,4 @@ public class DsrService {
 		this.expressionService = expressionService;
 	}
 	
-	public void setOrganisationLevel(Integer organisationLevel) {
-		this.organisationLevel = organisationLevel;
-	}
-
 }

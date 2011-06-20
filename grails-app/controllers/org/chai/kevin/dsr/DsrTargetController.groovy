@@ -3,7 +3,6 @@ package org.chai.kevin.dsr
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Expression;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import com.sun.tools.javac.code.Type.ForAll;

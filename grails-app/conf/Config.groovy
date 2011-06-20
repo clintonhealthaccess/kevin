@@ -65,22 +65,16 @@ environments {
     }
 }
 
-environments {
-	production {
-		log4j = {
-			appenders {
+// log4j configuration
+log4j = {
+	appenders {
+		environments {
+			production {
 				file name: 'log-error', file:'errors.log'
-			}
-			
-			root {
-				debug 'log-error'
 			}
 		}
 	}
-}
-
-// log4j configuration
-log4j = {
+	
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
@@ -97,12 +91,26 @@ log4j = {
 		   'org.hsqldb.jdbc',
 		   'org.springframework'
 		   
-	debug  'org.chai.kevin',
-		   'grails.app',
-		   'org.hisp.dhis'
+	debug  'org.hisp.dhis',
+		   'org.chai.kevin',
+		   'grails.app'
 		   
 		   
-//	trace  'org.hibernate.type'
+//	trace  'org.hibernate.SQL',
+//		   'org.hibernate.engine.query',
+//		   'org.hibernate.type',
+//		   'org.hibernate.jdbc'
+		   
+
+	environments {
+		production {
+			root {
+//				error 'log-error'
+			}
+		}
+    }
+
+	//	trace  'org.hibernate.type'
 }
 
 cloudbees.api.url='https://api.cloudbees.com/api'

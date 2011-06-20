@@ -7,6 +7,7 @@ import grails.plugin.spock.UnitSpec
 import groovy.mock.interceptor.MockFor
 import groovy.mock.interceptor.StubFor;
 
+import org.chai.kevin.Calculation;
 import org.chai.kevin.Expression;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.GroupCollection;
@@ -44,13 +45,13 @@ class PercentageCalculatorSpec extends UnitTests {
 		def nursea1 = new DashboardTarget(
 			names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
 			calculations: ["District Hospital":
-				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
+				new Calculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
 			]
 		)
 		def nursea2 = new DashboardTarget(
 			names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
 			calculations: ["District Hospital":
-				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
+				new Calculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
 			]
 		)
 		mockDomain(DashboardTarget, [nursea1, nursea2])
@@ -120,7 +121,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		def target = new DashboardTarget(
 			names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 			calculations: ["District Hospital":
-				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CODE")),
+				new Calculation(groupUuid: "District Hospital", expression: Expression.findByCode("CODE")),
 			]
 		)
 		mockDomain(DashboardTarget, [target])

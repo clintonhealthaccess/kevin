@@ -1,5 +1,6 @@
 package org.chai.kevin.dashboard
 
+import org.chai.kevin.Calculation;
 import org.chai.kevin.Expression;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
@@ -117,7 +118,7 @@ class DashboardControllerSpec extends IntegrationTests {
 		def entries = DashboardObjectiveEntry.count()
 		def targets = DashboardTarget.count()
 		def objectives = DashboardObjective.count()
-		def calculations = DashboardCalculation.count()
+		def calculations = Calculation.count()
 		dashboardTargetController = new DashboardTargetController()
 		
 		when:
@@ -135,7 +136,7 @@ class DashboardControllerSpec extends IntegrationTests {
 		entries + 1 == DashboardObjectiveEntry.count()
 		targets + 1 == DashboardTarget.count()
 		objectives == DashboardObjective.count()
-		calculations + 2 == DashboardCalculation.count()
+		calculations + 2 == Calculation.count()
 		newTarget.calculations['Health Center'].expression == Expression.findByCode("CONST10")
 		newTarget.calculations['District Hospital'].expression == null
 		newTarget.parent.weight == 1
@@ -146,7 +147,7 @@ class DashboardControllerSpec extends IntegrationTests {
 		def entries = DashboardObjectiveEntry.count()
 		def targets = DashboardTarget.count()
 		def objectives = DashboardObjective.count()
-		def calculations = DashboardCalculation.count()
+		def calculations = Calculation.count()
 		dashboardTargetController = new DashboardTargetController()
 		
 		when:
@@ -164,7 +165,7 @@ class DashboardControllerSpec extends IntegrationTests {
 		entries == DashboardObjectiveEntry.count()
 		targets == DashboardTarget.count()
 		objectives == DashboardObjective.count()
-		calculations == DashboardCalculation.count()
+		calculations == Calculation.count()
 		newTarget.calculations['Health Center'].expression == Expression.findByCode("CONST10")
 		newTarget.calculations['District Hospital'].expression == null
 		newTarget.parent.weight == 1
