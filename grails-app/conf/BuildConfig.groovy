@@ -8,6 +8,7 @@ grails.project.dependency.resolution = {
         // uncomment to disable ehcache
         // excludes 'ehcache'
 		excludes 'hibernate'
+//		excludes 'slf4j-api'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
@@ -68,9 +69,13 @@ grails.project.dependency.resolution = {
 		// runtime 'org.springframework.security:spring-security-core:3.0.5.RELEASE'
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
+		runtime ('net.sf.ehcache:ehcache-core:2.4.2') {
+			excludes "slf4j-api"	
+		}
+		
 //		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
-		test("org.seleniumhq.selenium:selenium-chrome-driver:latest.release")
-		test("org.seleniumhq.selenium:selenium-htmlunit-driver:latest.release") {
+		test("org.seleniumhq.selenium:selenium-chrome-driver:2.0rc2")
+		test("org.seleniumhq.selenium:selenium-htmlunit-driver:2.0rc2") {
 			excludes "xml-apis", "xmlParserAPIs"
 		}
 		test 'org.gmock:gmock:0.8.1'

@@ -1,5 +1,7 @@
 package org.chai.kevin.dashboard
 
+import org.chai.kevin.Calculation;
+import org.chai.kevin.Expression;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.dashboard.DashboardObjectiveService;
 import org.chai.kevin.dashboard.DashboardTarget;
@@ -17,8 +19,9 @@ import grails.test.GrailsUnitTestCase;
 class ObjectiveServiceSpec extends IntegrationTests {
     
 	def setup() {
-		
-		def target = new DashboardTarget(names:j(["en":"target"]), code:"TARGET")
+		def calculation1 = new Calculation(expressions: [], timestamp:new Date())
+		calculation1.save()
+		def target = new DashboardTarget(names:j(["en":"target"]), code:"TARGET", calculation: calculation1)
 		target.save()
 		def objective = new DashboardObjective(names:j(["en":"objective"]), code:"OBJ", objectiveEntries: [])
 		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: target, weight: 1, order: 10)

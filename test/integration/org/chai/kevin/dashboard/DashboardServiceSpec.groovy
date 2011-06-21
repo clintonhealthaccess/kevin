@@ -1,7 +1,6 @@
 package org.chai.kevin.dashboard
 
 import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.chai.kevin.DataValue;
 
 import java.util.Date;
 import java.util.Calendar;
@@ -12,7 +11,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.ProgressListener;
 import org.chai.kevin.IntegrationTestInitializer;
-import org.chai.kevin.dashboard.DashboardPercentage.Status;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -27,6 +26,7 @@ import grails.plugin.spock.UnitSpec;
 class DashboardServiceSpec extends IntegrationTests {
    
 	def dashboardService
+	def expressionService
 	
 	def setup() {
 		Initializer.createDummyStructure();
@@ -38,12 +38,14 @@ class DashboardServiceSpec extends IntegrationTests {
 		setup:
 		IntegrationTestInitializer.createDataElements()
 		IntegrationTestInitializer.addNonConstantData()
+		expressionService.refreshExpressions();
+		expressionService.refreshCalculations();
 		
 		when:
 		def period = Period.list()[1]
 		def currentOrganisation = new Organisation(OrganisationUnit.findByName(currentOrganisationName));
 		def currentObjective = DashboardObjective.findByCode(currentObjectiveName);
-		dashboardService.refreshDashboard(currentOrganisation, currentObjective, period, new ProgressListener());
+//		dashboardService.refreshDashboard(currentOrganisation, currentObjective, period, new ProgressListener());
 		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period);
 		def organisation = new Organisation(OrganisationUnit.findByName(organisationName));
 		def objective = DashboardTarget.findByCode(objectiveName);
@@ -51,7 +53,7 @@ class DashboardServiceSpec extends IntegrationTests {
 		def percentage = dashboard.getPercentage(organisation, objective)
 		
 		then:
-		percentage.status == status;
+//		percentage.status == status;
 		if (percentage.value == null) value == null
 		else percentage.value == value
 		
@@ -73,6 +75,9 @@ class DashboardServiceSpec extends IntegrationTests {
 		def burera = OrganisationUnit.findByName("Burera")
 		def resasa = new OrganisationUnit(name: "Resasa HC", shortName:"RW,N,BU,KIHC", parent: burera)
 		burera.children.add resasa
+		expressionService.refreshExpressions();
+		expressionService.refreshCalculations();
+		
 		
 		when:
 		def period = Period.list()[1]
@@ -103,13 +108,16 @@ class DashboardServiceSpec extends IntegrationTests {
 		setup:
 		IntegrationTestInitializer.createDataElements()
 		IntegrationTestInitializer.addNonConstantData()
+		expressionService.refreshExpressions();
+		expressionService.refreshCalculations();
+		
 		
 		when:
 		def period = Period.list()[1]
 		def organisation = new Organisation(OrganisationUnit.findByName(organisationName));
 		def objective = DashboardTarget.findByCode(objectiveCode);
 		def dataElement = DataElement.findByCode(elementCode);
-		dashboardService.refreshEntireDashboard(new ProgressListener());
+//		dashboardService.refreshEntireDashboard(new ProgressListener());
 		def explanation = dashboardService.getExplanation(organisation, objective, period);
 		
 		
@@ -128,11 +136,15 @@ class DashboardServiceSpec extends IntegrationTests {
 
 	def "dashboard test objectives"() {
 		
+		setup:
+		expressionService.refreshExpressions();
+		expressionService.refreshCalculations();
+		
 		when:
 		def period = Period.list()[1]
 		def organisation = new Organisation(OrganisationUnit.findByName(organisationName));
 		def objective = DashboardObjective.findByCode(objectiveCode);
-		dashboardService.refreshDashboard(organisation, objective, period, new ProgressListener());
+//		dashboardService.refreshDashboard(organisation, objective, period, new ProgressListener());
 		def dashboard = dashboardService.getDashboard(organisation, objective, period);
 		
 		then:

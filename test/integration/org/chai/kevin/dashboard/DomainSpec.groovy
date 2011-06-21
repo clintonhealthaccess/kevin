@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.Calculation;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
@@ -22,10 +23,10 @@ class DomainSpec extends IntegrationTests {
 	
 	def "test calculations"() {
 		expect:
-		DashboardCalculation.count() == 4
+		Calculation.count() == 4
 		def nurse = DashboardTarget.findByCode("A1");
 		nurse.save();
-		DashboardCalculation.count() == 4
+		Calculation.count() == 4
 	}
 	
 	def "call twice in a row"() {

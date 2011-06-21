@@ -5,10 +5,10 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.DataElement;
-import org.chai.kevin.DataValue;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 

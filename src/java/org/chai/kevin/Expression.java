@@ -1,5 +1,7 @@
 package org.chai.kevin;
 
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,21 +9,29 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 @Entity(name="Expression")
 @Table(name="dhsst_expression", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class Expression extends Translatable {
+public class Expression extends Translatable implements Timestamped {
 
 	private Long id;
 	
 	private ValueType type;
 	private String expression;
+	
+	private Date timestamp = new Date();
 	
 	@Id
 	@GeneratedValue
@@ -41,12 +51,23 @@ public class Expression extends Translatable {
 		this.type = type;
 	}
 	
-	@Basic
+	@Lob
+	@Column(nullable=false)
 	public String getExpression() {
 		return expression;
 	}
 	public void setExpression(String expression) {
 		this.expression = expression;
+	}
+	
+	@Column(nullable=false, columnDefinition="datetime")
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	public Date getTimestamp() {
+		return timestamp;
+	}
+	
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 	
 	@Override

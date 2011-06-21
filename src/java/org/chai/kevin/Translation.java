@@ -11,6 +11,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
 
+import org.chai.kevin.util.JSONUtils;
+
 @Embeddable
 public class Translation implements Map<String, String>, Serializable {
 	

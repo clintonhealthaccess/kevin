@@ -13,6 +13,8 @@ import org.chai.kevin.ExpressionService;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.ValueService;
+import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +26,7 @@ public class CostTableService {
 	
 	private CostService costService;
 	private OrganisationService organisationService;
-	private ExpressionService expressionService;
-	private Integer organisationLevel;
+	private ValueService valueService;
 	private Set<Integer> skipLevels;
 	
 	public CostTable getCostTable(Period period, CostObjective objective, Organisation organisation) {
@@ -42,7 +43,7 @@ public class CostTableService {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
 		for (Organisation child : organisation.getChildren()) {
-			if (	organisationService.getLevel(child) != organisationLevel.intValue() 
+			if (	organisationService.getLevel(child) != organisationService.getFacilityLevel()
 					|| 
 					appliesToOrganisation(target, child, collection)
 			) {
@@ -68,7 +69,7 @@ public class CostTableService {
 	private Map<Integer, Cost> getCost(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
-		if (organisationService.getLevel(organisation) == organisationLevel.intValue()) {
+		if (organisationService.getLevel(organisation) == organisationService.getFacilityLevel()) {
 			return getCostForLeafOrganisation(target, organisation, period, collection);
 		}
 		else {
@@ -100,30 +101,37 @@ public class CostTableService {
 
 			log.debug("target "+target+" applies to organisation "+organisation);
 			List<Integer> years = costService.getYears();
-			Map<DataElement, Object> values = new HashMap<DataElement, Object>();
 
-			Double baseCost = (Double)expressionService.getValue(target.getExpression(), period, organisation, values);
-			if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
 			
-			Double steps = 0d;
-			if (target.isAverage()) {
-				values.clear();
-				Double endCost = (Double)expressionService.getValue(target.getExpressionEnd(), period, organisation, values);
-				if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
-				steps = (endCost - baseCost)/(years.size()-1);
-			}
+			ExpressionValue expressionValue = valueService.getExpressionValue(organisation.getOrganisationUnit(), target.getExpression(), period);
+			ExpressionValue expressionEndValue = null;
+			if (target.isAverage()) expressionEndValue = valueService.getExpressionValue(organisation.getOrganisationUnit(), target.getExpressionEnd(), period);
+			if (expressionValue != null && (!target.isAverage() || expressionEndValue != null)) { 
+				Double baseCost = expressionValue.getNumberValue();
 
-			for (Integer year : years) {
-				Double yearCost;
+				// FIXME
+	//			if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
+				
+				Double steps = 0d;
 				if (target.isAverage()) {
-					yearCost = ( baseCost + steps * (year-1) ) * target.getCostRampUp().getYears().get(year).getValue();
+					Double endCost = expressionEndValue.getNumberValue();
+					// FIXME
+	//				if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
+					steps = (endCost - baseCost)/(years.size()-1);
 				}
-				else {
-					yearCost = baseCost * target.getCostRampUp().getYears().get(year).getValue();
+	
+				for (Integer year : years) {
+					Double yearCost;
+					if (target.isAverage()) {
+						yearCost = ( baseCost + steps * (year-1) ) * target.getCostRampUp().getYears().get(year).getValue();
+					}
+					else {
+						yearCost = baseCost * target.getCostRampUp().getYears().get(year).getValue();
+					}
+					// TODO add inflation
+					Cost cost = new Cost(yearCost, target, year, period, organisation, hasMissingValues);
+					result.put(year, cost);
 				}
-				// TODO add inflation
-				Cost cost = new Cost(yearCost, target, year, period, organisation, hasMissingValues);
-				result.put(year, cost);
 			}
 		}
 		else {
@@ -148,16 +156,12 @@ public class CostTableService {
 		this.costService = costService;
 	}
 	
-	public void setExpressionService(ExpressionService expressionService) {
-		this.expressionService = expressionService;
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
 	}
 	
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
-	}
-	
-	public void setOrganisationLevel(Integer organisationLevel) {
-		this.organisationLevel = organisationLevel;
 	}
 	
 	public void setSkipLevels(Set<Integer> skipLevels) {

@@ -3,8 +3,8 @@ package org.chai.kevin.survey;
 import java.util.Map;
 
 import org.chai.kevin.DataElement;
-import org.chai.kevin.DataValue;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.period.Period;
 
 public class SurveyPage {

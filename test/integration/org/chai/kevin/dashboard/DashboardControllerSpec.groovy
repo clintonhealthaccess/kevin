@@ -1,5 +1,6 @@
 package org.chai.kevin.dashboard
 
+import org.chai.kevin.Calculation;
 import org.chai.kevin.Expression;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
@@ -117,15 +118,15 @@ class DashboardControllerSpec extends IntegrationTests {
 		def entries = DashboardObjectiveEntry.count()
 		def targets = DashboardTarget.count()
 		def objectives = DashboardObjective.count()
-		def calculations = DashboardCalculation.count()
+		def calculations = Calculation.count()
 		dashboardTargetController = new DashboardTargetController()
 		
 		when:
 		dashboardTargetController.params['currentObjective'] = DashboardObjective.findByCode("STAFFING").id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculations['+OrganisationUnitGroup.findByName('Health Center').uuid+'].expression.id'] = Expression.findByCode("CONST10").id+""
-		dashboardTargetController.params['entry.calculations['+OrganisationUnitGroup.findByName('District Hospital').uuid+'].expression.id'] = "null"
+		dashboardTargetController.params['entry.calculation.expressions['+OrganisationUnitGroup.findByName('Health Center').uuid+'].id'] = Expression.findByCode("CONST10").id+""
+		dashboardTargetController.params['entry.calculation.epxressions['+OrganisationUnitGroup.findByName('District Hospital').uuid+'].id'] = "null"
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
@@ -135,7 +136,7 @@ class DashboardControllerSpec extends IntegrationTests {
 		entries + 1 == DashboardObjectiveEntry.count()
 		targets + 1 == DashboardTarget.count()
 		objectives == DashboardObjective.count()
-		calculations + 2 == DashboardCalculation.count()
+		calculations + 2 == Calculation.count()
 		newTarget.calculations['Health Center'].expression == Expression.findByCode("CONST10")
 		newTarget.calculations['District Hospital'].expression == null
 		newTarget.parent.weight == 1
@@ -146,15 +147,15 @@ class DashboardControllerSpec extends IntegrationTests {
 		def entries = DashboardObjectiveEntry.count()
 		def targets = DashboardTarget.count()
 		def objectives = DashboardObjective.count()
-		def calculations = DashboardCalculation.count()
+		def calculations = Calculation.count()
 		dashboardTargetController = new DashboardTargetController()
 		
 		when:
 		dashboardTargetController.params['id'] = DashboardTarget.findByCode('A2').parent.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculations['+OrganisationUnitGroup.findByName('Health Center').uuid+'].expression.id'] = Expression.findByCode("CONST10").id+""
-		dashboardTargetController.params['entry.calculations['+OrganisationUnitGroup.findByName('District Hospital').uuid+'].expression.id'] = "null"
+		dashboardTargetController.params['entry.calculation.expressions['+OrganisationUnitGroup.findByName('Health Center').uuid+'].id'] = Expression.findByCode("CONST10").id+""
+		dashboardTargetController.params['entry.calculation.expressions['+OrganisationUnitGroup.findByName('District Hospital').uuid+'].id'] = "null"
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
@@ -164,9 +165,9 @@ class DashboardControllerSpec extends IntegrationTests {
 		entries == DashboardObjectiveEntry.count()
 		targets == DashboardTarget.count()
 		objectives == DashboardObjective.count()
-		calculations == DashboardCalculation.count()
-		newTarget.calculations['Health Center'].expression == Expression.findByCode("CONST10")
-		newTarget.calculations['District Hospital'].expression == null
+		calculations == Calculation.count()
+		newTarget.calculation.expressions['Health Center'] == Expression.findByCode("CONST10")
+		newTarget.calculation.expressions['District Hospital'] == null
 		newTarget.parent.weight == 1
 	}
 	

@@ -21,25 +21,30 @@
 		</div>
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$('#progressbar').progressbar({value:0})
-				
-				$.PeriodicalUpdater('${createLink(controller:'dashboard', action:'progressInc', params:[period: period, organisation: organisation, objective: objective])}', {
-				    method: 'get',          
-				    minTimeout: 5000,
-				    maxTimeout: 100000,       
-				    multiplier: 2,     
-				    type: 'json',
-				    maxCalls: 0,
-				    autoStop: 0 
-				}, function(remoteData, success, xhr, handle) {
-				    // Process the new data (only called when there was a change)
-				    if (remoteData.job == 'found') {
-				    	$( "#progressbar" ).progressbar( "option", "value", (remoteData.current / remoteData.total) * 100 );
-				    }
-				    else {
-				    	$( "#progressbar" ).progressbar( "option", "value", 100 );
-				    	window.location = "${createLink(controller: 'dashboard', action: 'view', params:[period: period, organisation: organisation, objective: objective])}"
-				    }
+				$("#progressbar").progressBar({
+					stepDuration: 2000,
+					boxImage: "${resource(dir:'js/jquery/progressbar/images',file:'progressbar.gif')}",
+					barImage: {
+						0:  "${resource(dir:'js/jquery/progressbar/images',file:'progressbg_red.gif')}",
+						30: "${resource(dir:'js/jquery/progressbar/images',file:'progressbg_yellow.gif')}",
+						70: "${resource(dir:'js/jquery/progressbar/images',file:'progressbg_green.gif')}"
+					},
+					callback: function(data) {
+						$.ajax({
+							type:'GET',
+							url: "${createLink(controller:'dashboard', action:'progressInc', params:[period: period, organisation: organisation, objective: objective])}",
+							success: function(remoteData) {
+								// Process the new data (only called when there was a change)
+							    if (remoteData.job == 'found') {
+							    	$( "#progressbar" ).progressBar((remoteData.current / remoteData.total) * 100);
+							    }
+							    else {
+							    	$( "#progressbar" ).progressBar(100);
+							    	window.location = "${createLink(controller: 'dashboard', action: 'view', params:[period: period, organisation: organisation, objective: objective])}"
+							    }
+							}
+						})
+					}
 				});
 				
 			});

@@ -11,19 +11,20 @@ import org.chai.kevin.DataElement;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.ValueService;
+import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DsrService {
 	// private Log log = LogFactory.getLog(DsrService.class);
 	private OrganisationService organisationService;
-	private ExpressionService expressionService;
-	private Integer organisationLevel;
-
+	private ValueService valueService;
+	
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective,
 			Period period) {
-		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation,organisationLevel.intValue());
+		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation,organisationService.getFacilityLevel());
 		Map<Organisation, Map<DsrTarget, Dsr>> dsrMap = null;
 		List<DsrTarget> targets = null;
 
@@ -34,13 +35,10 @@ public class DsrService {
 			for (Organisation orgChildren : organisations) {
 				Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
 				for (DsrTarget target : targets) {
-					orgDsr.put(
-							target,
-							new Dsr(orgChildren, period, target,
-									expressionService.getValue(
-											target.getExpression(), period,
-											orgChildren,
-											new HashMap<DataElement, Object>())));
+					ExpressionValue expressionValue = valueService.getExpressionValue(orgChildren.getOrganisationUnit(), target.getExpression(), period);
+					String value = null;
+					if (expressionValue != null) value = expressionValue.getValue();
+					orgDsr.put(target,new Dsr(orgChildren, period, target, value));
 				}
 				dsrMap.put(orgChildren, orgDsr);
 			}
@@ -49,24 +47,11 @@ public class DsrService {
 				objective, targets, dsrMap);
 	}
 
-	public OrganisationService getOrganisationService() {
-		return organisationService;
-	}
-
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
 	}
 
-	public ExpressionService getExpressionService() {
-		return expressionService;
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
 	}
-
-	public void setExpressionService(ExpressionService expressionService) {
-		this.expressionService = expressionService;
-	}
-
-	public void setOrganisationLevel(Integer organisationLevel) {
-		this.organisationLevel = organisationLevel;
-	}
-
 }

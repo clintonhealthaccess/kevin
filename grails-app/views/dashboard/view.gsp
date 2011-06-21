@@ -62,7 +62,7 @@
 			    		<h5>Facility types</h5>
 			    		<g:if test="${!dashboard.facilityTypes.isEmpty()}">
 				    		<g:each in="${dashboard.facilityTypes}" var="group">
-					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}
+					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}<br/>
 				    		</g:each>
 			    		</g:if>
 			    		<g:else>
@@ -187,8 +187,6 @@
 								<div><a id="add-dashboard-target-link" class="flow-add" href="${createLink(controller:'dashboardTarget', action:'create', params:[currentObjective: dashboard.currentObjective.id])}">add target</a></div>
 								<div><a id="add-dashboard-objective-link" class="flow-add" href="${createLink(controller:'dashboardObjective', action:'create', params:[currentObjective: dashboard.currentObjective.id])}">add objective</a></div>
 							</div>
-							<div class="clear"></div>
-							<div><a href="${createLink(controller:'dashboard', action:'refresh', params:[period: dashboard.currentPeriod.id, objective: dashboard.currentObjective.id, organisation: dashboard.currentOrganisation.id])}">refresh view</a></div>
 				    	</g:if>
 				    	<!-- ADMIN SECTION END -->
 				    	
@@ -230,7 +228,7 @@
     			$('.cell.value').bind('click', function() {
     				var organisation = $(this).data('row');
     				var objective = $(this).data('col');
-    				explanationClick(this, organisation+'-'+objective, addEvents);
+    				explanationClick(this, organisation+'-'+objective, function(){});
     				return false;
     			});
     			
@@ -257,35 +255,6 @@
     			}
     		}
     		
-    		function addEvents(prefix) {
-    			$('#explanation-'+prefix+' .element').each(function(){
-	    			var id = $(this).data('id');
-    				var organisation = $(this).data('organisation');
-    				var objective = $(this).data('objective');
-    				var elementId = '#data-'+organisation+'-'+objective+'-'+id;
-    			
-    				$(this).bind('mouseenter mouseleave', function() {
-	    				$(elementId).toggleClass('highlighted');
-	    				$(this).toggleClass('highlighted');
-	    			});
-    				$(this).bind('mouseenter', function() {
-    					$(elementId).find('a.cluetip').mouseover();    					
-    				});
-    				$(this).bind('mouseleave', function() {
-    					$(elementId).find('a.cluetip').mouseleave();
-    				});
-	    			$(this).bind('click', function() {
-	    				if (!$(this).hasClass('selected')) {
-							$('.element').removeClass('selected');
-		   					$('.data').removeClass('selected');
-		    			}
-	   					$(elementId).toggleClass('selected');
-		   				$(this).toggleClass('selected');
-		   			});
-    			});
-    			
-    			$('a.cluetip').cluetip(cluetipOptions);
-    		}
     	</script>
     	<!-- explanation -->
     </body>

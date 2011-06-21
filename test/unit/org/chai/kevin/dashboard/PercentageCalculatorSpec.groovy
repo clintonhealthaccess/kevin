@@ -7,13 +7,12 @@ import grails.plugin.spock.UnitSpec
 import groovy.mock.interceptor.MockFor
 import groovy.mock.interceptor.StubFor;
 
+import org.chai.kevin.Calculation;
 import org.chai.kevin.Expression;
 import org.chai.kevin.ExpressionService;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.UnitTests;
 import org.chai.kevin.ValueType;
-import org.chai.kevin.dashboard.DashboardPercentage.Status;
 import org.gmock.WithGMock;
 import org.hisp.dhis.aggregation.AggregationService
 import org.chai.kevin.DataElement;
@@ -41,17 +40,22 @@ class PercentageCalculatorSpec extends UnitTests {
 		mockDomain(Expression, [const10, const20])
 		
 		// objectives and targets for dashboard
+		
+		def calculation1 = new Calculation(expressions: [
+			"District Hospital": Expression.findByCode("CONST10"),
+		], timestamp:new Date())
+		def calculation2 = new Calculation(expressions: [
+			"District Hospital": Expression.findByCode("CONST20"),
+		], timestamp:new Date())
+		
+		mockDomain(Calculation, [calculation1, calculation2])
 		def nursea1 = new DashboardTarget(
 			names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
-			calculations: ["District Hospital":
-				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST10")),
-			]
+			calculation: calculation1
 		)
 		def nursea2 = new DashboardTarget(
 			names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
-			calculations: ["District Hospital":
-				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CONST20")),
-			]
+			calculation: calculation2
 		)
 		mockDomain(DashboardTarget, [nursea1, nursea2])
 		def staffing = new DashboardObjective(root: false, names:j(["en":"Staffing"]), code:"STAFFING", descriptions:j(["en":"Staffing"]), objectiveEntries: [])
@@ -74,7 +78,6 @@ class PercentageCalculatorSpec extends UnitTests {
 		expressionService.getValue(match {true}, match {true}, match {true}, match {true}).returns(10.0d);
 		def percentageCalculator = new PercentageCalculator();
 		percentageCalculator.expressionService = expressionService;
-		percentageCalculator.groupCollection = new GroupCollection(OrganisationUnitGroup.list())
 		
 		when:
 		DashboardPercentage percentage
@@ -96,7 +99,6 @@ class PercentageCalculatorSpec extends UnitTests {
 		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(20.0d, null, null, null));
 		def percentageCalculator = new PercentageCalculator();
 		percentageCalculator.percentageService = percentageService;
-		percentageCalculator.groupCollection = new GroupCollection(OrganisationUnitGroup.list())
 		
 		when:
 		DashboardPercentage percentage = null;
@@ -120,7 +122,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		def target = new DashboardTarget(
 			names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 			calculations: ["District Hospital":
-				new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("CODE")),
+				new Calculation(groupUuid: "District Hospital", expression: Expression.findByCode("CODE")),
 			]
 		)
 		mockDomain(DashboardTarget, [target])
@@ -129,7 +131,6 @@ class PercentageCalculatorSpec extends UnitTests {
 		expressionService.getValue(match {true}, match {true}, match {true}, match {it[dataElement] = null; true}).returns(null);
 		def percentageCalculator = new PercentageCalculator();
 		percentageCalculator.expressionService = expressionService
-		percentageCalculator.groupCollection = new GroupCollection(OrganisationUnitGroup.list())
 		def organisation = new Organisation(OrganisationUnit.findByName('Butaro DH'))
 		organisation.children = []
 
@@ -147,7 +148,6 @@ class PercentageCalculatorSpec extends UnitTests {
 	def "test absent orgunit group on target"() {
 		setup:
 		def percentageCalculator = new PercentageCalculator();
-		percentageCalculator.groupCollection = new GroupCollection(OrganisationUnitGroup.list())
 		def organisation = new Organisation(OrganisationUnit.findByName('Kivuye HC'));
 		organisation.children = new ArrayList();
 		
@@ -161,7 +161,6 @@ class PercentageCalculatorSpec extends UnitTests {
 	def "test absent orgunit group on objective"() {
 		setup:
 		def percentageCalculator = new PercentageCalculator();
-		percentageCalculator.groupCollection = new GroupCollection(OrganisationUnitGroup.list())
 		def percentageService = mock(PercentageService);
 		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(Status.MISSING_EXPRESSION, null, null, null));
 		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(Status.MISSING_EXPRESSION, null, null, null));
@@ -185,7 +184,6 @@ class PercentageCalculatorSpec extends UnitTests {
 		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(20.0d, null, null, null));
 		def percentageCalculator = new PercentageCalculator();
 		percentageCalculator.percentageService = percentageService;
-		percentageCalculator.groupCollection = new GroupCollection(OrganisationUnitGroup.list())
 		
 		when:
 		DashboardPercentage percentage;

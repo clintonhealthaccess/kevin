@@ -103,6 +103,8 @@
     	<script type="text/javascript">
     		var opacity = 0.6;
     		var opacitySelected = 0.9;
+    		var opacityBackground = 0.8;
+    		var strokeWeight = 0.2;
     		var centerZoom = 9;
     		var centerLatLng = new google.maps.LatLng(-1.93,29.84);
     		
@@ -131,43 +133,70 @@
 				// this.controlUI.style.width = '100px';
 				this.controlUI.title = '';
 				controlDiv.appendChild(this.controlUI);
-				
-				this.setLevels = function(levels, selectedLevel) {
-					var self = this;
-					self.selectedLevel = selectedLevel
-				
-					this.controlUI.innerHTML = '';
-					$.each(levels, function(key, element){
-						var controlText = document.createElement('DIV');
-						controlText.style.fontFamily = 'Arial,sans-serif';
-						controlText.style.fontSize = '12px';
-						controlText.style.paddingLeft = '4px';
-						controlText.style.paddingRight = '4px';
-						controlText.style.paddingTop = '2px';
-						controlText.style.paddingBottom = '2px';
-						controlText.style.borderStyle = 'solid';
-						controlText.style.borderBottomWidth = '1px';
-						if (element.level == selectedLevel) {
-							controlText.selected = true;
-							controlText.style.backgroundColor = 'lightBlue';
-						}
-						controlText.level = element.level;
-						controlText.innerHTML = element.name;
-
-						google.maps.event.addDomListener(controlText, 'click', function() {
-							load({level: controlText.level});
-						});
-						google.maps.event.addDomListener(controlText, 'mouseover', function() {
-							controlText.style.backgroundColor = 'lightBlue';
-						});
-						google.maps.event.addDomListener(controlText, 'mouseout', function() {
-							if (!controlText.selected) controlText.style.backgroundColor = 'white';
-						});
-						self.controlUI.appendChild(controlText);
-					});
-				}
-				
     		}
+    		
+			LevelControl.prototype.setLevels = function(levels, selectedLevel) {
+				var self = this;
+				self.selectedLevel = selectedLevel
+				self.levels = []
+			
+				this.controlUI.innerHTML = '';
+				$.each(levels, function(key, element){
+					self.levels.push(element.level);
+					
+					var controlText = document.createElement('DIV');
+					controlText.style.fontFamily = 'Arial,sans-serif';
+					controlText.style.fontSize = '12px';
+					controlText.style.paddingLeft = '4px';
+					controlText.style.paddingRight = '4px';
+					controlText.style.paddingTop = '2px';
+					controlText.style.paddingBottom = '2px';
+					controlText.style.borderStyle = 'solid';
+					controlText.style.borderBottomWidth = '1px';
+					if (element.level == selectedLevel) {
+						controlText.selected = true;
+						controlText.style.backgroundColor = 'lightBlue';
+					}
+					controlText.level = element.level;
+					controlText.innerHTML = element.name;
+					
+					google.maps.event.addDomListener(controlText, 'click', function() {
+						load({level: controlText.level});
+					});
+					google.maps.event.addDomListener(controlText, 'mouseover', function() {
+						controlText.style.backgroundColor = 'lightBlue';
+					});
+					google.maps.event.addDomListener(controlText, 'mouseout', function() {
+						if (!controlText.selected) controlText.style.backgroundColor = 'white';
+					});
+					self.controlUI.appendChild(controlText);
+				});
+    		}
+			
+			LevelControl.prototype.getNext = function() {
+				var index = $.inArray(this.selectedLevel, this.levels);
+				return this.levels[index+1]
+			}
+			
+			LevelControl.prototype.getPrevious = function() {
+				var index = $.inArray(this.selectedLevel, this.levels);
+				return this.levels[index-1]
+			}
+    		
+    		function CoordMapType(tileSize) {
+				this.tileSize = tileSize;
+    		}
+
+   			CoordMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
+  			  var div = ownerDocument.createElement('DIV');
+  			  div.innerHTML = '&nbsp;';
+  			  div.style.width = this.tileSize.width + 'px';
+  			  div.style.height = this.tileSize.height + 'px';
+  			  div.style.backgroundColor = 'grey';
+  			  div.style.opacity = opacityBackground;
+  			  return div;
+   			};
+    			 
     	
 			function initialize() {
 				var latlng = new google.maps.LatLng(-1.93,29.84);
@@ -180,9 +209,7 @@
 				};
 				
 				map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
-				google.maps.event.addListener(map, 'dblclick', function(){
-					load({organisation: getParent('organisation', $('.dropdown-organisation .selected').data('organisation')), level: null});
-				});
+				map.overlayMapTypes.insertAt(0, new CoordMapType(new google.maps.Size(256, 256)));
 				
 				// Create the DIV to hold the control and call the HomeControl() constructor
 				// passing in this DIV.
@@ -190,7 +217,11 @@
 				levelControlDiv.index = 1;
 				map.controls[google.maps.ControlPosition.RIGHT_TOP].push(levelControlDiv);
 				
-				levelControl = new LevelControl(levelControlDiv, map);				
+				levelControl = new LevelControl(levelControlDiv, map);		
+				
+				google.maps.event.addListener(map, 'dblclick', function(){
+					load({organisation: getParent('organisation', $('.dropdown-organisation .selected').data('organisation')), level: levelControl.getPrevious()});
+				});
   			}
     
     		function recenter() {
@@ -233,27 +264,30 @@
 		    						
 		    						var polygon = new google.maps.Polygon({
 										paths: polygon,
-										strokeColor: element.color,
+										strokeColor: 'black',
 										strokeOpacity: opacitySelected,
-										strokeWeight: 2,
+										strokeWeight: strokeWeight,
 										fillColor: element.color,
 										fillOpacity: opacity
 									});
 									polygon.organisation = element.organisation;
+									polygon.target = data.map.selectedTarget;
+									polygon.period = data.map.selectedPeriod;
 									polygon.organisation.bounds = polygonBounds;
 									polygons[element.organisation.id] = polygon;
 										
 									polygon.setMap(map);
 									google.maps.event.addListener(polygon, 'dblclick', function() {
-										load({organisation: polygon.organisation.id, level: null});
+										load({organisation: polygon.organisation.id, level: levelControl.getNext()});
 									});
-									google.maps.event.addListener(polygon, 'click', function() {
+									google.maps.event.addListener(polygon, 'click', function(event) {
 										$.each(polygons, function(key, element) {
 											overrideOptions(element, {fillOpacity: opacity});
-											polygon.selected = false
+											polygon.selected = false;
 										});
-										polygon.selected = true
-										overrideOptions(polygon, {fillOpacity: opacitySelected})
+										polygon.selected = true;
+										overrideOptions(polygon, {fillOpacity: opacitySelected});
+// 										showInfos(polygon, event);
 									});
 									google.maps.event.addListener(polygon, 'mouseover', function() {
 										$.each(polygons, function(key, element) {
@@ -273,6 +307,32 @@
     				},
     				error: function(data, textStatus, error) {alert(error)}
     			});
+    		}
+    		
+    		function showInfos(polygon, event) {
+    			$.each(polygons, function(key, element){
+    				if (element.infowindow != null) element.infowindow.close()	
+    			});
+    			
+    			var infowindow;
+    			if (polygon.infowindow != null) {
+    				var infowindow = polygon.infowindow
+    			}
+    			else {
+    				var infowindow = new google.maps.InfoWindow();
+    				polygon.infowindow = infowindow;
+    				// TODO load content
+    				$.ajax({
+	    				type: 'GET',
+	    				url: "${createLink(controller: 'maps', action: 'explain')}",
+	    				data: {period: polygon.period, target: polygon.target, organisation: polygon.organisation.id},
+	    				success: function(data) {
+	    					infowindow.setContent(data);
+	    				}
+    				});
+    			}		
+				infowindow.setPosition(event.latLng);
+				infowindow.open(map);
     		}
     		
     		function overrideOptions(polygon, options) {

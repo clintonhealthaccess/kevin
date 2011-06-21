@@ -1,5 +1,6 @@
 package org.chai.kevin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,14 +12,17 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.DataElement;
-import org.chai.kevin.DataValue;
+import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.ExpressionValue.Status;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.system.util.MathUtils;
 import org.nfunk.jep.JEP;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(readOnly=true)
 public class ExpressionService {
 
 	private static final Log log = LogFactory.getLog(ExpressionService.class);
@@ -26,60 +30,45 @@ public class ExpressionService {
     private final Pattern FORMULA_PATTERN = Pattern.compile("\\[.+?\\]");
     private final Pattern CONSTANT_PATTERN = Pattern.compile("\\[c.+?\\]");
 	
-    final String NULL_REPLACEMENT = "0";
-
 	private DataService dataService;
-	private DataValueService dataValueService;
 	private OrganisationService organisationService;
-	
-	private Integer organisationLevel;
-	
-	private static JEP getJEPParser() {
-    	final JEP parser = new JEP();
-    	parser.addStandardConstants();
-    	parser.addStandardFunctions();
-    	return parser;
-    }
-	
-	private static Object evaluate(String expression) {
-		log.debug("evaluate(expression="+expression+")");
-		JEP parser = getJEPParser();
-        
-        parser.parseExpression( expression );
-        Object value = parser.getValueAsObject();
-        log.debug("evaluate(...)="+value);
-        return value;
+	private ValueService valueService;
+
+	/**
+	 * 
+	 * @param calculation
+	 * @param period
+	 * @param organisation
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public Map<Organisation, ExpressionValue> calculateExpressionValues(Calculation calculation, Period period, Organisation organisation) {
+		Map<Organisation, ExpressionValue> result = new HashMap<Organisation, ExpressionValue>();
+		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		
+		for (Organisation child : organisations) {
+			// TODO use group collection ?
+			organisationService.loadGroup(child);
+			
+			ExpressionValue expressionValue = null;
+			Expression expression = getMatchingExpression(calculation, child);
+			if (expression != null) { 
+				expressionValue = valueService.getExpressionValue(child.getOrganisationUnit(), expression, period);
+			}
+			result.put(child, expressionValue);
+		}
+		return result;
 	}
 	
 	/**
 	 * Returns the value or null if it is not aggregated and the organisation has missing values
 	 * 
-	 * @param expression
-	 * @param period
-	 * @param organisation
-	 * @param valuesForOrganisation
-	 * @return
-	 */
-	public Object getValue(Expression expression, Period period, Organisation organisation, Map<DataElement, Object> valuesForOrganisation) {
-		if (log.isDebugEnabled()) log.debug("getValue(expression="+expression+",period="+period+",organisation="+organisation+")");
-		
-		Map<Organisation, Map<DataElement, Object>> values = new HashMap<Organisation, Map<DataElement,Object>>();
-		String stringExpression = generateExpression(expression.getExpression(), period, organisation, values);
-
-		if (values.containsKey(organisation)) {
-			if (valuesForOrganisation.size() > 1) log.error("getting value of one organisation but it was aggregated somehow");
-			valuesForOrganisation.putAll(values.get(organisation));
-		}
-		else {
-			log.error("no organisation was added");
-		}
-
-		if (stringExpression == null) return null;
-		return evaluate(stringExpression);
-	}
-	
-	/**
-	 * Returns the value or null if it is not aggregated and the organisation has missing values
+	 * If all data elements in the expression are aggregatable, the aggregated value at this organisation
+	 * is returned.
+	 * 
+	 * If one of the data elements in the expression is not aggregatable, the average value of all the organisation's
+	 * children is returned.
+	 * 
 	 * 
 	 * @param expression
 	 * @param period
@@ -87,73 +76,137 @@ public class ExpressionService {
 	 * @param values
 	 * @return
 	 */
-	public Double getAggregatedValue(Expression expression, Period period, Organisation organisation, Map<Organisation, Map<DataElement, Object>> values) {
-		if (log.isDebugEnabled()) log.debug("getAggregatedValue(expression="+expression+",period="+period+",organisation="+organisation+")");
+	// TODO decide if this can be called with a facility, 
+	@Transactional(readOnly=true)
+	public CalculationValue calculateValues(Calculation calculation, Period period, Organisation organisation) {
+		if (log.isDebugEnabled()) log.debug("getValues(calculation="+calculation+",period="+period+",organisation="+organisation+")");
 		
-		Set<DataElement> elements = getDataElementsInExpression(expression.getExpression());
+		Map<Organisation, ExpressionValue> result = calculateExpressionValues(calculation, period, organisation);
+		CalculationValue calculationValue = new CalculationValue(calculation, organisation.getOrganisationUnit(), period, result);
 		
-		// TODO maybe we want to calculate this in another way,
-		// or let the user decide
-		boolean aggregatable = true;
-		for (DataElement dataElement : elements) {
-			if (!dataElement.isAggregatable()) aggregatable = false;
-		}
-		
-		Double value;
-		
-		if (aggregatable) {
-			Map<DataElement, Object> valuesForOrganisation = new HashMap<DataElement, Object>();
-			values.put(organisation, valuesForOrganisation);
-			value = (Double)getValue(expression, period, organisation, valuesForOrganisation);
-		}
-		else {
-			value = getAverageValue(expression, period, organisation, values);
-		}
-		return value;
-	}
-		
-		
-	private Double getAverageValue(Expression expression, Period period, Organisation organisation, Map<Organisation, Map<DataElement, Object>> values) {
-		if (log.isDebugEnabled()) log.debug("getAverageValue(expression="+expression+",period="+period+",organisation="+organisation+")");
-		organisationService.getLevel(organisation);
-		
-		Double value;
-		if (organisation.getLevel() == organisationLevel.intValue()) {
-			Map<DataElement, Object> valuesForOrganisation = new HashMap<DataElement, Object>();
-			values.put(organisation, valuesForOrganisation);
-			value = (Double)getValue(expression, period, organisation, valuesForOrganisation);
-		}
-		else {
-			value = getValueFromChildren(expression, period, organisation, values);
-		}
-		return value;
+		if (log.isDebugEnabled()) log.debug("getValues(...)="+calculationValue);
+		return calculationValue;
 	}
 	
-	private Double getValueFromChildren(Expression expression, Period period, Organisation organisation, Map<Organisation, Map<DataElement, Object>> values) {
-		if (log.isDebugEnabled()) log.debug("getAggregatedValueFromChildren(expression="+expression+",period="+period+",organisation="+organisation+")");
-		organisationService.loadChildren(organisation);
+	/**
+	 * 
+	 * @param expression
+	 * @param period
+	 * @param organisation
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public Map<Organisation, Map<DataElement, DataValue>> calculateDataValues(Expression expression, Period period, Organisation organisation) {
+		Map<Organisation, Map<DataElement, DataValue>> values = new HashMap<Organisation, Map<DataElement,DataValue>>();
+		generateExpression(expression.getExpression(), period, organisation, values);
+		return values;
+	}
+	
+	/**
+	 * The expression has to be aggregatable for this to work
+	 * 
+	 * @param expression
+	 * @param period
+	 * @param organisation
+	 * @param valuesForOrganisation
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public ExpressionValue calculateValue(Expression expression, Period period, Organisation organisation) {
+		if (log.isDebugEnabled()) log.debug("getValue(expression="+expression+",period="+period+",organisation="+organisation+")");
 		
-		Double sum = 0.0d;
-		Integer total = 0;
-		for (Organisation child : organisation.getChildren()) {
-			Double childValue = getAverageValue(expression, period, child, values);
-			if (childValue != null) {
-				sum += childValue;
-				total++;
+		String value = null;
+		Status status = null;
+		if (!isAggregatable(expression) && organisationService.getLevel(organisation) != organisationService.getFacilityLevel()) {
+			status = Status.NOT_AGGREGATABLE;
+			value = null;
+		}
+		else {
+			
+			Map<Organisation, Map<DataElement, DataValue>> values = new HashMap<Organisation, Map<DataElement, DataValue>>();
+			String stringExpression = generateExpression(expression.getExpression(), period, organisation, values);
+	
+			if (values.containsKey(organisation) && hasNullValues(values.get(organisation).values())) {
+				// this means we got non-aggregated values and some of them are null, we don't calculate anything
+				value = null;
+				status = Status.MISSING_VALUE;
 			}
 			else {
-				// we skip it
+				Object evaluatedValue = evaluate(stringExpression);
+				if (evaluatedValue == null) {
+					if (log.isErrorEnabled()) log.error("evaluated value is null but there are no null values: "+stringExpression);
+					value = null;
+					// TODO add ERROR status
+					status = Status.MISSING_VALUE;
+				}
+				else {
+					value = evaluate(stringExpression).toString();
+					status = Status.VALID;
+				}
 			}
 		}
-		return sum / total;
+		ExpressionValue expressionValue = new ExpressionValue(value, status, organisation.getOrganisationUnit(), expression, period);
+			
+		if (log.isDebugEnabled()) log.debug("getValue()="+expressionValue);
+		return expressionValue;
+		
+	}
+
+	private boolean isAggregatable(Expression expression) {
+		Set<DataElement> elements = getDataElementsInExpression(expression.getExpression());
+		for (DataElement dataElement : elements) {
+			if (!dataElement.isAggregatable()) return false;
+		}
+		return true;
+	}
+
+	public Expression getMatchingExpression(Calculation calculation, Organisation organisation) {
+		OrganisationUnitGroup group = organisation.getOrganisationUnitGroup();
+		if (log.isDebugEnabled()) log.debug("group on organisation: "+group);
+		if (log.isDebugEnabled()) log.debug("groups on calculations: "+calculation.getExpressions().keySet());
+
+		Expression expression = calculation.getExpressions().get(group.getUuid());
+		if (log.isDebugEnabled()) log.debug("found matching expression: "+expression);
+		return expression;
 	}
 	
-	private String generateExpression(String formula, Period period, Organisation organisation, Map<Organisation, Map<DataElement, Object>> values) {
-		try {
-			boolean isNull = false;
-			Map<DataElement, Object> valuesForOrganisation = new HashMap<DataElement, Object>();
+	
+	private Object calculateDataValue(DataElement dataElement, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
+		if (log.isDebugEnabled()) log.debug("getDataValue(dataElement="+dataElement+", period="+period+", organisation="+organisation+")");
+		
+		Object result = null;
+		// TODO this should be decided otherwise, 
+		// or defined by the user
+		if (!dataElement.isAggregatable() || organisationService.getLevel(organisation) == organisationService.getFacilityLevel()) {
+			Map<DataElement, DataValue> valuesForOrganisation = new HashMap<DataElement, DataValue>();
 			values.put(organisation, valuesForOrganisation);
-			
+
+			DataValue dataValue = valueService.getDataValue(dataElement, period, organisation);
+			valuesForOrganisation.put(dataElement, dataValue);
+			if (dataValue != null) result = dataValue.getValue();
+		}
+		else {
+			List<Organisation> children = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+			Double value = 0d;
+			for (Organisation child : children) {
+				Map<DataElement, DataValue> valuesForOrganisation = new HashMap<DataElement, DataValue>();
+				values.put(child, valuesForOrganisation);
+				DataValue dataValue = valueService.getDataValue(dataElement, period, child);
+				valuesForOrganisation.put(dataElement, dataValue);
+				if (dataValue != null) {
+					value += Double.parseDouble(dataValue.getValue());
+				}
+			}
+			result = value;
+		}
+		if (log.isDebugEnabled()) log.debug("getDataValue(...)="+result);
+		return result;
+	}
+	
+	private String generateExpression(String formula, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
+		if (log.isDebugEnabled()) log.debug("generateExpression(formula="+formula+", period="+period+", organisation="+organisation+")");
+		
+		try {
 			StringBuffer buffer = new StringBuffer();
 
 			Matcher matcher = CONSTANT_PATTERN.matcher(formula);
@@ -181,52 +234,68 @@ public class ExpressionService {
 				
 				DataElement dataElement = dataService.getDataElement(Long.parseLong(match));
 
-				// TODO constant does not exist
-				Object value = getDataValue(dataElement, period, organisation, values);
-				
-				valuesForOrganisation.put(dataElement, value==null?null:String.valueOf(value));
+				// TODO data element does not exist
+				// TODO if aggregated, then get data value only for the 
+				// organisations that have all the values ?
+				Object value = calculateDataValue(dataElement, period, organisation, values);
 				matcher.appendReplacement(buffer, String.valueOf(value));
-
-				if (value == null) isNull = true;
 			}
 
 			matcher.appendTail(buffer);
-			
-			if (isNull) return null;
 			return buffer.toString();
 		} catch (NumberFormatException ex) {
 			throw new RuntimeException("Illegal DataElement id", ex);
 		}
 	}
 	
-	public Object getDataValue(DataElement dataElement, Period period, Organisation organisation, Map<Organisation, Map<DataElement, Object>> values) {
-		if (log.isDebugEnabled()) log.debug("getDataValue(dataElement="+dataElement+", period="+period+", organisation="+organisation+")");
-		
-		Object result = null;
-		// TODO this should be decided otherwise, 
-		// or defined by the user
-		if (!dataElement.isAggregatable()) {
-			DataValue dataValue = dataValueService.getDataValue(dataElement, period, organisation);
-			if (dataValue != null) result = dataValue.getValue();
+	@Transactional(readOnly=false)
+	public void refreshExpressions() {
+		for (ExpressionValue expressionValue : valueService.getOutdatedExpressions()) {
+			ExpressionValue newValue = calculateValue(expressionValue.getExpression(), expressionValue.getPeriod(), organisationService.getOrganisation(expressionValue.getOrganisationUnit().getId()));
+			expressionValue.setStatus(newValue.getStatus());
+			expressionValue.setValue(newValue.getValue());
+			valueService.save(expressionValue);
 		}
-		else {
-			List<Organisation> children = organisationService.getChildrenOfLevel(organisation, organisationLevel.intValue());
-			Double value = 0d;
-			for (Organisation child : children) {
-				Map<DataElement, Object> valuesForOrganisation = new HashMap<DataElement, Object>();
-				values.put(child, valuesForOrganisation);
-				DataValue dataValue = dataValueService.getDataValue(dataElement, period, child);
-				valuesForOrganisation.put(dataElement, dataValue!=null?dataValue.getValue():null);
-				if (dataValue != null) {
-					value += Double.parseDouble(dataValue.getValue());
-				}
-			}
-			result = value;
+		for (ExpressionValue expressionValue : valueService.getNonCalculatedExpressions()) {
+			ExpressionValue newValue = calculateValue(expressionValue.getExpression(), expressionValue.getPeriod(), organisationService.getOrganisation(expressionValue.getOrganisationUnit().getId()));
+			valueService.save(newValue);
 		}
-		return result;
 	}
 	
-	public static boolean hasNullValues(Collection<Object> values) {
+	@Transactional(readOnly=false)
+	public void refreshCalculations() {
+		for (CalculationValue calculationValue : valueService.getOutdatedCalculations()) {
+			CalculationValue newValue = calculateValues(calculationValue.getCalculation(), calculationValue.getPeriod(), organisationService.getOrganisation(calculationValue.getOrganisationUnit().getId()));
+			calculationValue.setAverage(newValue.getAverage());
+			calculationValue.setHasMissingExpression(newValue.getHasMissingExpression());
+			calculationValue.setHasMissingValues(newValue.getHasMissingValues());
+			valueService.save(calculationValue);
+		}
+		for (CalculationValue calculationValue : valueService.getNonCalculatedCalculations()) {
+			CalculationValue newValue = calculateValues(calculationValue.getCalculation(), calculationValue.getPeriod(), organisationService.getOrganisation(calculationValue.getOrganisationUnit().getId()));
+			valueService.save(newValue);
+		}
+	}
+	
+	private static JEP getJEPParser() {
+    	final JEP parser = new JEP();
+    	parser.addStandardConstants();
+    	parser.addStandardFunctions();
+    	return parser;
+    }
+	
+	private static Object evaluate(String expression) {
+		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+")");
+		JEP parser = getJEPParser();
+        
+        parser.parseExpression( expression );
+        Object value = parser.getValueAsObject();
+        if (log.isDebugEnabled()) log.debug("evaluate(...)="+value);
+        return value;
+	}
+
+	
+	private static <T extends Object> boolean hasNullValues(Collection<T> values) {
 		for (Object object : values) {
 			if (object == null) return true;
 		}
@@ -259,7 +328,7 @@ public class ExpressionService {
         	String match = matcher.group();
         	match = match.replaceAll("[\\[\\]]", "");
             try {
-            	if ( dataService.getDataElement( Long.parseLong(match)) == null) {
+            	if ( dataService.getDataElement(Long.parseLong(match)) == null) {
             		return org.hisp.dhis.expression.ExpressionService.DATAELEMENT_DOES_NOT_EXIST;
             	}
             }
@@ -287,11 +356,14 @@ public class ExpressionService {
             while (matcher.find())  {
             	String match = matcher.group();
             	match = match.replaceAll("[\\[\\]]", "");
-                DataElement dataElement = dataService.getDataElement(Long.parseLong(match));
-
-                if ( dataElement != null )  {
-                    dataElementsInExpression.add( dataElement );
-                }
+            	
+            	if (!match.startsWith("c")) {
+	                DataElement dataElement = dataService.getDataElement(Long.parseLong(match));
+	
+	                if ( dataElement != null )  {
+	                    dataElementsInExpression.add( dataElement );
+	                }
+            	}
             }
         }
         return dataElementsInExpression;
@@ -309,7 +381,6 @@ public class ExpressionService {
             	
                 if (match == null) {
                 	if (log.isInfoEnabled()) log.info( "Data element identifier refers to non-existing object: " + match );
-                    match = NULL_REPLACEMENT;
                 }
                 else {
                 	match = mapping.get(Long.parseLong(match));
@@ -328,13 +399,8 @@ public class ExpressionService {
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
 	}
-	
-	public void setOrganisationLevel(Integer organisationLevel) {
-		this.organisationLevel = organisationLevel;
+
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
 	}
-	
-	public void setDataValueService(DataValueService dataValueService) {
-		this.dataValueService = dataValueService;
-	}
-	
 }

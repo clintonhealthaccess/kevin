@@ -132,6 +132,7 @@ select
 .locales
   float: right
   padding: 4px
+  margin-right: 130px
 
   a
     padding: 2px
@@ -341,8 +342,9 @@ form
   	    
 #dashboard
   #corner
-    +column(3)
+    width: 116px
     float: left
+    margin-right: 10px
     
     h5
       float: left
@@ -351,7 +353,7 @@ form
       float: right
 
   #top
-    +column(20, true)
+    width: 822px
     float: left
     margin-bottom: 10px
     .float
@@ -363,24 +365,25 @@ form
       margin-bottom: 0px
         
   #bottom
-    +column(24, true)
-
     #left
-      width: 138px
+      width: 144px
       float: left
       
       div
         float: left
-        width: 110px
+        width: 116px
         margin-bottom: 10px
+        margin-right: 10px
+        
         ul
           +inline-block-list
           li
             display: block
             
 #dashboard #center
-  +column(20, true)
-
+  width: 822px
+  float: left
+  
   table
     width: auto
     float: left
@@ -432,9 +435,6 @@ form
   float: left
   padding: 4px
   
-  #dashboard-explanation-content
-    float: left
-  
   .highlighted div, .selected div, .highlighted, .selected
     background: yellow
     font-weight: bold
@@ -452,10 +452,6 @@ form
       float: right
       color: red
       font-size: 140%
-    a
-      padding-top: 4px
-      margin-left: 4px
-      float: right
 
   .values
     float: left
@@ -566,9 +562,6 @@ form
       font-weight: bold
       margin-bottom: 2px
     
-    button
-      margin-top: -64px
-      
     #data
       width: 300px
      

@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Info;
 import org.chai.kevin.Translatable;
 import org.chai.kevin.Organisation;
 import org.hibernate.annotations.Cascade;
@@ -59,7 +60,7 @@ public abstract class DashboardEntry extends Translatable {
 	@Transient
 	public abstract boolean isTarget();
 	
-	public abstract DashboardPercentage getValue(PercentageCalculator calculator, Organisation organisation, Period period);
-	public abstract Explanation getExplanation(ExplanationCalculator calculator, Organisation organisation, Period period) throws NoSuchElementException;
+	public abstract DashboardPercentage getValue(PercentageCalculator calculator, Organisation organisation, Period period, boolean isFacility);
+	public abstract DashboardExplanation getExplanation(ExplanationCalculator calculator, Organisation organisation, Period period, boolean isFacility) throws NoSuchElementException;
 
 }

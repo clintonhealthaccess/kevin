@@ -3,17 +3,23 @@ package org.chai.kevin.dashboard;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Calculation;
+import org.chai.kevin.Info;
 import org.chai.kevin.Organisation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.ManyToAny;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="StrategicTarget")
@@ -21,31 +27,30 @@ import org.hisp.dhis.period.Period;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DashboardTarget extends DashboardEntry {
 
-	private Map<String, DashboardCalculation> calculations;
+	private Calculation calculation;
 	
-	public DashboardTarget() {
-		this.calculations = new HashMap<String, DashboardCalculation>();
+	
+//	@Cascade(value={CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@ManyToOne(targetEntity=Calculation.class, optional=false)
+	@JoinColumn(nullable=false)
+	public Calculation getCalculation() {
+		return calculation;
 	}
 	
-	@OneToMany(targetEntity=DashboardCalculation.class)
-	@Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-	@MapKey(name="groupUuid")
-	@JoinColumn
-	public Map<String, DashboardCalculation> getCalculations() {
-		return calculations;
-	}
-	public void setCalculations(Map<String, DashboardCalculation> calculations) {
-		this.calculations = calculations;
+	public void setCalculation(Calculation calculation) {
+		this.calculation = calculation;
 	}
 	
 	@Override
-	public Explanation getExplanation(ExplanationCalculator calculator, Organisation organisation, Period period) {
-		return calculator.explain(this, organisation, period);
+	public DashboardExplanation getExplanation(ExplanationCalculator calculator, Organisation organisation, Period period, boolean isFacility) {
+		if (isFacility) return calculator.explainLeafTarget(this, organisation, period);
+		else return calculator.explainNonLeafTarget(this, organisation, period);
 	}	
 
 	@Override
-	public DashboardPercentage getValue(PercentageCalculator calculator, Organisation organisation, Period period) {
-		return calculator.getPercentage(this, organisation, period);
+	public DashboardPercentage getValue(PercentageCalculator calculator, Organisation organisation, Period period, boolean isFacility) {
+		if (isFacility) return calculator.getPercentageForLeafTarget(this, organisation, period);
+		else return calculator.getPercentageForNonLeafTarget(this, organisation, period);
 	}
 	
 	@Override
@@ -55,7 +60,7 @@ public class DashboardTarget extends DashboardEntry {
 
 	@Override
 	public String toString() {
-		return "StrategicTarget [code=" + code + ", calculations=" + calculations + "]";
+		return "StrategicTarget [code=" + code + ", calculation=" + calculation + "]";
 	}
 
 	@Override

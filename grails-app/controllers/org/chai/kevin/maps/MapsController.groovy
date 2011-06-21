@@ -33,13 +33,24 @@ class MapsController extends AbstractReportController {
 		]
 	}
 	
-	def map = {
-		if (log.isDebugEnabled()) log.debug("maps.organisationCoordinates, params:"+params)
+	def explain = {
+		if (log.isDebugEnabled()) log.debug("maps.infos, params:"+params)
 		
 		Period period = getPeriod()
 		Organisation organisation = getOrganisation(true)
 		MapsTarget target = getMapsTarget()
-		OrganisationUnitLevel level = getOrganisationUnitLevel()
+		
+		MapsExplanation explanation = mapsService.getExplanation(period, organisation, target);
+		[explanation: explanation]
+	}
+	
+	def map = {
+		if (log.isDebugEnabled()) log.debug("maps.map, params:"+params)
+		
+		Period period = getPeriod()
+		Organisation organisation = getOrganisation(true)
+		MapsTarget target = getMapsTarget()
+		Integer level = getOrganisationUnitLevel()
 		
 		org.chai.kevin.maps.Maps map = mapsService.getMap(period, organisation, level, target);
 		

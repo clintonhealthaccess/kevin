@@ -12,7 +12,7 @@
             eternal="false"
             timeToLiveSeconds="3600"
             overflowToDisk="false"
-            diskPersistent="false"
+            diskPersistent="true"
     />
 
     <cache name="org.chai.kevin.dashboard.DashboardPercentage"
@@ -68,6 +68,16 @@
     
     <!-- not sure it is used -->
     <cache name="org.hibernate.cache.DataValueQueryCache"
+           maxElementsInMemory="10000000"
+           timeToIdleSeconds="300"
+    />
+    
+	<cache name="org.hibernate.cache.ExpressionValueQueryCache"
+           maxElementsInMemory="1000000"
+           timeToIdleSeconds="300"
+    />
+    
+	<cache name="org.hibernate.cache.CalculationValueQueryCache"
            maxElementsInMemory="1000000"
            timeToIdleSeconds="300"
     />

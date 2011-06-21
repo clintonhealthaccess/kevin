@@ -23,7 +23,7 @@ class CostRampUpController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "createRampUp"
+		return "/cost/costRampUp/createRampUp"
 	}
 	
 	def getModel(def entity) {

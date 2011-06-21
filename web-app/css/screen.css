@@ -149,7 +149,7 @@ body.bp .top { margin-top: 0; padding-top: 0; }
 /* line 35, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_utilities.scss */
 body.bp .bottom { margin-bottom: 0; padding-bottom: 0; }
 /* line 8, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_debug.scss */
-body.bp .showgrid { background: url('/./web-app/images/grid.png?1306146656'); }
+body.bp .showgrid { background: url('/./web-app/images/grid.png?1304951804'); }
 /* line 4, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_interaction.scss */
 body.bp .error { padding: 0.8em; margin-bottom: 1em; border: 2px solid #dddddd; background: #fbe3e4; color: #8a1f11; border-color: #fbc2c4; }
 /* line 29, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_interaction.scss */
@@ -221,33 +221,33 @@ body.two-columns #footer a { color: white; text-decoration: none; }
 /* line 75, ../../src/stylesheets/screen.sass */
 body.two-columns #header { margin: 0px auto; padding: 0px 0px 10px 0px; }
 /* line 79, ../../src/stylesheets/screen.sass */
-body.two-columns #header-banner { height: 120px; margin: 0 0 1px; width: 100%; background-image: url('/./web-app/images/dhsst-banner.png?1308148100'); background-repeat: no-repeat; }
+body.two-columns #header-banner { height: 120px; margin: 0 0 1px; width: 100%; background-repeat: no-repeat; }
 
-/* line 86, ../../src/stylesheets/screen.sass */
+/* line 85, ../../src/stylesheets/screen.sass */
 .spinner { position: fixed; text-align: center; overflow: auto; width: 100%; height: 100%; opacity: 0.4; background-color: grey; z-index: 20; }
-/* line 96, ../../src/stylesheets/screen.sass */
+/* line 95, ../../src/stylesheets/screen.sass */
 .spinner img { position: relative; top: 50%; }
 
-/* line 100, ../../src/stylesheets/screen.sass */
+/* line 99, ../../src/stylesheets/screen.sass */
 .focus-field { border: solid 1px #73a6ff; background: #dbe5fb; color: black; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; }
 
-/* line 106, ../../src/stylesheets/screen.sass */
+/* line 105, ../../src/stylesheets/screen.sass */
 .idle-field { background: #f7f9fe; color: black; border: solid 1px #ababab; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; }
 
-/* line 112, ../../src/stylesheets/screen.sass */
+/* line 111, ../../src/stylesheets/screen.sass */
 .completed-field { background: #ededed; color: black; border: solid 1px #73a6ff; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; }
 
-/* line 118, ../../src/stylesheets/screen.sass */
+/* line 117, ../../src/stylesheets/screen.sass */
 button { margin: 2px 3px 2px 2px; font-weight: bold; background: #73a6ff; color: white; border: solid 2px #739eee; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 
-/* line 126, ../../src/stylesheets/screen.sass */
+/* line 125, ../../src/stylesheets/screen.sass */
 button:hover { background: #739eee; }
 
-/* line 129, ../../src/stylesheets/screen.sass */
+/* line 128, ../../src/stylesheets/screen.sass */
 select { background: #ededed; border: solid 1px #cccccc; }
 
-/* line 133, ../../src/stylesheets/screen.sass */
-.locales { float: right; padding: 4px; }
+/* line 132, ../../src/stylesheets/screen.sass */
+.locales { float: right; padding: 4px; margin-right: 130px; }
 /* line 137, ../../src/stylesheets/screen.sass */
 .locales a { padding: 2px; }
 /* line 140, ../../src/stylesheets/screen.sass */
@@ -381,22 +381,18 @@ form .error-list ul li { display: block; white-space: normal; }
 #maps #center #map_canvas { height: 650px; width: 100%; }
 
 /* line 344, ../../src/stylesheets/screen.sass */
-#dashboard #corner { display: inline; float: left; margin-right: 10px; width: 115px; float: left; }
-/* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
-* html #dashboard #corner { overflow-x: hidden; }
-/* line 348, ../../src/stylesheets/screen.sass */
+#dashboard #corner { width: 116px; float: left; margin-right: 10px; }
+/* line 349, ../../src/stylesheets/screen.sass */
 #dashboard #corner h5 { float: left; }
-/* line 351, ../../src/stylesheets/screen.sass */
+/* line 352, ../../src/stylesheets/screen.sass */
 #dashboard #corner .dropdown { float: right; }
-/* line 354, ../../src/stylesheets/screen.sass */
-#dashboard #top { display: inline; float: left; margin-right: 0; width: 823.333px; float: left; margin-bottom: 10px; }
-/* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
-* html #dashboard #top { overflow-x: hidden; }
-/* line 358, ../../src/stylesheets/screen.sass */
+/* line 355, ../../src/stylesheets/screen.sass */
+#dashboard #top { width: 822px; float: left; margin-bottom: 10px; }
+/* line 359, ../../src/stylesheets/screen.sass */
 #dashboard #top .float { display: inline; float: left; display: inline; float: left; margin-right: 10px; width: 73.333px; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard #top .float { overflow-x: hidden; }
-/* line 361, ../../src/stylesheets/screen.sass */
+/* line 362, ../../src/stylesheets/screen.sass */
 #dashboard #top ul { margin: 0; padding: 0; border: 0; outline: 0; overflow: hidden; *zoom: 1; }
 /* line 56, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/utilities/lists/_horizontal-list.scss */
 #dashboard #top ul li { list-style-image: none; list-style-type: none; margin-left: 0px; white-space: nowrap; display: inline; float: left; padding-left: 4px; padding-right: 4px; }
@@ -404,73 +400,63 @@ form .error-list ul li { display: block; white-space: normal; }
 #dashboard #top ul li:first-child, #dashboard #top ul li.first { padding-left: 0; }
 /* line 46, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/utilities/lists/_horizontal-list.scss */
 #dashboard #top ul li:last-child, #dashboard #top ul li.last { padding-right: 0; }
-/* line 363, ../../src/stylesheets/screen.sass */
+/* line 364, ../../src/stylesheets/screen.sass */
 #dashboard #top h5 { margin-bottom: 0px; }
-/* line 366, ../../src/stylesheets/screen.sass */
-#dashboard #bottom { display: inline; float: left; margin-right: 0; width: 990px; }
-/* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
-* html #dashboard #bottom { overflow-x: hidden; }
-/* line 369, ../../src/stylesheets/screen.sass */
-#dashboard #bottom #left { width: 138px; float: left; }
-/* line 373, ../../src/stylesheets/screen.sass */
-#dashboard #bottom #left div { float: left; width: 110px; margin-bottom: 10px; }
-/* line 377, ../../src/stylesheets/screen.sass */
+/* line 368, ../../src/stylesheets/screen.sass */
+#dashboard #bottom #left { width: 144px; float: left; }
+/* line 372, ../../src/stylesheets/screen.sass */
+#dashboard #bottom #left div { float: left; width: 116px; margin-bottom: 10px; margin-right: 10px; }
+/* line 378, ../../src/stylesheets/screen.sass */
 #dashboard #bottom #left div ul { margin: 0; padding: 0; border: 0; outline: 0; overflow: hidden; *zoom: 1; }
 /* line 46, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/utilities/lists/_inline-block-list.scss */
 #dashboard #bottom #left div ul li { list-style-image: none; list-style-type: none; margin-left: 0px; display: -moz-inline-box; -moz-box-orient: vertical; display: inline-block; vertical-align: middle; *vertical-align: auto; white-space: nowrap; }
 /* line 7, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
 #dashboard #bottom #left div ul li { *display: inline; }
-/* line 379, ../../src/stylesheets/screen.sass */
+/* line 380, ../../src/stylesheets/screen.sass */
 #dashboard #bottom #left div ul li { display: block; }
 
-/* line 382, ../../src/stylesheets/screen.sass */
-#dashboard #center { display: inline; float: left; margin-right: 0; width: 823.333px; }
-/* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
-* html #dashboard #center { overflow-x: hidden; }
-/* line 385, ../../src/stylesheets/screen.sass */
+/* line 383, ../../src/stylesheets/screen.sass */
+#dashboard #center { width: 822px; float: left; }
+/* line 387, ../../src/stylesheets/screen.sass */
 #dashboard #center table { width: auto; float: left; }
-/* line 389, ../../src/stylesheets/screen.sass */
+/* line 391, ../../src/stylesheets/screen.sass */
 #dashboard #center table th, #dashboard #center table td { margin: 0; padding: 0; }
-/* line 393, ../../src/stylesheets/screen.sass */
+/* line 395, ../../src/stylesheets/screen.sass */
 #dashboard #center .header .row .cell { height: inherit; }
-/* line 397, ../../src/stylesheets/screen.sass */
+/* line 399, ../../src/stylesheets/screen.sass */
 #dashboard #center .explanation-row td { float: left; width: 750px; padding-left: 8px; }
-/* line 402, ../../src/stylesheets/screen.sass */
+/* line 404, ../../src/stylesheets/screen.sass */
 #dashboard #center .cell { display: inline; float: left; margin-right: 0; width: 73.333px; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard #center .cell { overflow-x: hidden; }
-/* line 404, ../../src/stylesheets/screen.sass */
+/* line 406, ../../src/stylesheets/screen.sass */
 #dashboard #center .cell div { display: block; -moz-border-radius: 2px; -webkit-border-radius: 2px; -o-border-radius: 2px; -ms-border-radius: 2px; -khtml-border-radius: 2px; border-radius: 2px; height: 2em; margin-top: 2px; margin-bottom: 2px; margin-right: 4px; }
-/* line 413, ../../src/stylesheets/screen.sass */
+/* line 415, ../../src/stylesheets/screen.sass */
 #dashboard #center .cell.value { cursor: pointer; text-align: center; }
-/* line 418, ../../src/stylesheets/screen.sass */
+/* line 420, ../../src/stylesheets/screen.sass */
 #dashboard #center .value span, #dashboard #center .label.left span { top: 25%; position: relative; }
-/* line 422, ../../src/stylesheets/screen.sass */
-#dashboard #center .label.top { text-align: center; }
 /* line 424, ../../src/stylesheets/screen.sass */
+#dashboard #center .label.top { text-align: center; }
+/* line 426, ../../src/stylesheets/screen.sass */
 #dashboard #center .label.top div { height: auto; }
-/* line 427, ../../src/stylesheets/screen.sass */
+/* line 429, ../../src/stylesheets/screen.sass */
 #dashboard #center .label.left { width: 140px; }
 
-/* line 431, ../../src/stylesheets/screen.sass */
+/* line 433, ../../src/stylesheets/screen.sass */
 #dashboard-explanation { border: 1px solid #cccccc; background-color: white; padding: 2px; float: left; padding: 4px; }
-/* line 436, ../../src/stylesheets/screen.sass */
-#dashboard-explanation #dashboard-explanation-content { float: left; }
-/* line 439, ../../src/stylesheets/screen.sass */
+/* line 438, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .highlighted div, #dashboard-explanation .selected div, #dashboard-explanation .highlighted, #dashboard-explanation .selected { background: yellow; font-weight: bold; }
-/* line 443, ../../src/stylesheets/screen.sass */
+/* line 442, ../../src/stylesheets/screen.sass */
 #dashboard-explanation h5 { margin-bottom: 4px; }
-/* line 446, ../../src/stylesheets/screen.sass */
+/* line 445, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .average { clear: both; width: 488px; }
-/* line 449, ../../src/stylesheets/screen.sass */
+/* line 448, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .average h5 { float: left; padding-top: 4px; }
-/* line 452, ../../src/stylesheets/screen.sass */
+/* line 451, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .average span { float: right; color: red; font-size: 140%; }
 /* line 456, ../../src/stylesheets/screen.sass */
-#dashboard-explanation .average a { padding-top: 4px; margin-left: 4px; float: right; }
-/* line 461, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .values { float: left; clear: both; }
-/* line 464, ../../src/stylesheets/screen.sass */
+/* line 459, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .values ul { display: inline; float: left; margin-right: 0; width: 490px; margin: 0; padding: 0; border: 0; outline: 0; overflow: hidden; *zoom: 1; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard-explanation .values ul { overflow-x: hidden; }
@@ -478,225 +464,223 @@ form .error-list ul li { display: block; white-space: normal; }
 #dashboard-explanation .values ul li { list-style-image: none; list-style-type: none; margin-left: 0px; display: -moz-inline-box; -moz-box-orient: vertical; display: inline-block; vertical-align: middle; *vertical-align: auto; white-space: nowrap; }
 /* line 7, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
 #dashboard-explanation .values ul li { *display: inline; }
-/* line 468, ../../src/stylesheets/screen.sass */
+/* line 463, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .values ul .header { font-weight: bold; }
-/* line 471, ../../src/stylesheets/screen.sass */
+/* line 466, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .values ul li { display: block; float: left; }
-/* line 475, ../../src/stylesheets/screen.sass */
+/* line 470, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .values ul li .organisation { display: inline; float: left; margin-right: 0; width: 156.667px; white-space: normal; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard-explanation .values ul li .organisation { overflow-x: hidden; }
-/* line 479, ../../src/stylesheets/screen.sass */
+/* line 474, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .values ul li .objective { display: inline; float: left; margin-right: 10px; width: 240px; white-space: normal; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard-explanation .values ul li .objective { overflow-x: hidden; }
-/* line 483, ../../src/stylesheets/screen.sass */
+/* line 478, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .values ul li .weight { display: inline; float: left; margin-right: 0; width: 73.333px; text-align: right; padding-right: 10px; float: left; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard-explanation .values ul li .weight { overflow-x: hidden; }
-/* line 489, ../../src/stylesheets/screen.sass */
+/* line 484, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .values ul li .value { display: inline; float: left; margin-right: 0; width: 52.5px; float: left; margin-right: 25px; text-align: right; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard-explanation .values ul li .value { overflow-x: hidden; }
-/* line 495, ../../src/stylesheets/screen.sass */
+/* line 490, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .expressions { float: left; clear: both; }
-/* line 499, ../../src/stylesheets/screen.sass */
+/* line 494, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .expression-explanation { float: left; clear: both; margin-top: 4px; }
-/* line 504, ../../src/stylesheets/screen.sass */
+/* line 499, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .left-pane { float: left; }
-/* line 507, ../../src/stylesheets/screen.sass */
+/* line 502, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .left-pane .expression { margin-bottom: 12px; }
-/* line 510, ../../src/stylesheets/screen.sass */
+/* line 505, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .left-pane .equation { position: relative; display: inline; float: left; margin-right: 0; width: 365px; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard-explanation .left-pane .equation { overflow-x: hidden; }
-/* line 514, ../../src/stylesheets/screen.sass */
+/* line 509, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .left-pane .formula { display: inline; float: left; margin-right: 10px; width: 323.333px; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard-explanation .left-pane .formula { overflow-x: hidden; }
-/* line 518, ../../src/stylesheets/screen.sass */
+/* line 513, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .left-pane .formula .element:hover { cursor: pointer; }
-/* line 521, ../../src/stylesheets/screen.sass */
+/* line 516, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .left-pane .value { position: absolute; bottom: 0px; right: 0px; color: red; font-weight: bold; font-size: 120%; }
-/* line 529, ../../src/stylesheets/screen.sass */
+/* line 524, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .right-pane { float: left; margin-left: 4px; }
-/* line 533, ../../src/stylesheets/screen.sass */
+/* line 528, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .right-pane ul { margin: 0; padding: 0; border: 0; outline: 0; overflow: hidden; *zoom: 1; }
 /* line 46, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/utilities/lists/_inline-block-list.scss */
 #dashboard-explanation .right-pane ul li { list-style-image: none; list-style-type: none; margin-left: 0px; display: -moz-inline-box; -moz-box-orient: vertical; display: inline-block; vertical-align: middle; *vertical-align: auto; white-space: nowrap; }
 /* line 7, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
 #dashboard-explanation .right-pane ul li { *display: inline; }
-/* line 535, ../../src/stylesheets/screen.sass */
+/* line 530, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .right-pane ul li { display: block; white-space: normal; }
-/* line 539, ../../src/stylesheets/screen.sass */
+/* line 534, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .right-pane .id { display: inline; float: left; margin-right: 0; width: 31.667px; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard-explanation .right-pane .id { overflow-x: hidden; }
-/* line 541, ../../src/stylesheets/screen.sass */
+/* line 536, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .right-pane .id:hover { cursor: pointer; }
-/* line 544, ../../src/stylesheets/screen.sass */
+/* line 539, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .right-pane .name { display: inline; float: left; margin-right: 0; width: 281.667px; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #dashboard-explanation .right-pane .name { overflow-x: hidden; }
-/* line 547, ../../src/stylesheets/screen.sass */
+/* line 542, ../../src/stylesheets/screen.sass */
 #dashboard-explanation .right-pane .value { float: left; }
 
-/* line 551, ../../src/stylesheets/screen.sass */
+/* line 546, ../../src/stylesheets/screen.sass */
 #add-expression #add-expression-col { float: left; }
-/* line 554, ../../src/stylesheets/screen.sass */
+/* line 549, ../../src/stylesheets/screen.sass */
 #add-expression .row { width: 290px; }
-/* line 557, ../../src/stylesheets/screen.sass */
+/* line 552, ../../src/stylesheets/screen.sass */
 #add-expression input, #add-expression textarea { width: 280px; }
-/* line 560, ../../src/stylesheets/screen.sass */
+/* line 555, ../../src/stylesheets/screen.sass */
 #add-expression input.radio { width: auto; }
-/* line 563, ../../src/stylesheets/screen.sass */
+/* line 558, ../../src/stylesheets/screen.sass */
 #add-expression #data-col { float: left; }
-/* line 566, ../../src/stylesheets/screen.sass */
+/* line 561, ../../src/stylesheets/screen.sass */
 #add-expression #data-col label { font-weight: bold; margin-bottom: 2px; }
-/* line 570, ../../src/stylesheets/screen.sass */
-#add-expression #data-col button { margin-top: -64px; }
-/* line 573, ../../src/stylesheets/screen.sass */
+/* line 565, ../../src/stylesheets/screen.sass */
 #add-expression #data-col #data { width: 300px; }
 
-/* line 577, ../../src/stylesheets/screen.sass */
+/* line 569, ../../src/stylesheets/screen.sass */
 #add-ramp-up .row { width: 250px; }
-/* line 580, ../../src/stylesheets/screen.sass */
+/* line 572, ../../src/stylesheets/screen.sass */
 #add-ramp-up input, #add-ramp-up textarea { width: 240px; }
 
-/* line 584, ../../src/stylesheets/screen.sass */
+/* line 576, ../../src/stylesheets/screen.sass */
 #cluetip-inner .type { font-weight: bold; }
-/* line 587, ../../src/stylesheets/screen.sass */
+/* line 579, ../../src/stylesheets/screen.sass */
 #cluetip-inner .row { margin-bottom: 4px; }
-/* line 591, ../../src/stylesheets/screen.sass */
+/* line 583, ../../src/stylesheets/screen.sass */
 #cluetip-inner .enum ul { margin: 0; padding: 0; border: 0; outline: 0; overflow: hidden; *zoom: 1; }
 /* line 46, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/utilities/lists/_inline-block-list.scss */
 #cluetip-inner .enum ul li { list-style-image: none; list-style-type: none; margin-left: 0px; display: -moz-inline-box; -moz-box-orient: vertical; display: inline-block; vertical-align: middle; *vertical-align: auto; white-space: nowrap; }
 /* line 7, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
 #cluetip-inner .enum ul li { *display: inline; }
-/* line 594, ../../src/stylesheets/screen.sass */
+/* line 586, ../../src/stylesheets/screen.sass */
 #cluetip-inner .enum li { display: block; clear: both; }
-/* line 598, ../../src/stylesheets/screen.sass */
+/* line 590, ../../src/stylesheets/screen.sass */
 #cluetip-inner .enum li .name { display: inline; float: left; margin-right: 0; width: 240px; white-space: normal; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #cluetip-inner .enum li .name { overflow-x: hidden; }
-/* line 602, ../../src/stylesheets/screen.sass */
+/* line 594, ../../src/stylesheets/screen.sass */
 #cluetip-inner .enum li .value { display: inline; float: left; margin-right: 0; width: 115px; }
 /* line 138, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_grid.scss */
 * html #cluetip-inner .enum li .value { overflow-x: hidden; }
 
-/* line 606, ../../src/stylesheets/screen.sass */
+/* line 598, ../../src/stylesheets/screen.sass */
 .ui-widget { font-weight: normal; font-size: inherit; }
-/* line 607, ../../src/stylesheets/screen.sass */
+/* line 599, ../../src/stylesheets/screen.sass */
 .ui-widget .ui-widget-header { display: none; }
 
-/* line 612, ../../src/stylesheets/screen.sass */
+/* line 604, ../../src/stylesheets/screen.sass */
 .red { color: red; }
 
-/* line 615, ../../src/stylesheets/screen.sass */
+/* line 607, ../../src/stylesheets/screen.sass */
 .hidden { display: none; }
 
-/* line 618, ../../src/stylesheets/screen.sass */
+/* line 610, ../../src/stylesheets/screen.sass */
 body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited { text-decoration: none; color: black; }
 
-/* line 622, ../../src/stylesheets/screen.sass */
+/* line 614, ../../src/stylesheets/screen.sass */
 .float-left { float: left; }
 
-/* line 625, ../../src/stylesheets/screen.sass */
+/* line 617, ../../src/stylesheets/screen.sass */
 .float-right { float: right; }
 
-/* line 628, ../../src/stylesheets/screen.sass */
+/* line 620, ../../src/stylesheets/screen.sass */
 .box { border: 1px solid #dddddd; background-color: #f4f4f4; padding: 8px; }
 
-/* line 631, ../../src/stylesheets/screen.sass */
+/* line 623, ../../src/stylesheets/screen.sass */
 .ruler { background: #dddddd; color: #dddddd; clear: both; float: none; width: 100%; height: 0.1em; margin: 0 0 1.45em; border: none; }
 
-/* line 634, ../../src/stylesheets/screen.sass */
+/* line 626, ../../src/stylesheets/screen.sass */
 .spacer { background: #dddddd; color: #dddddd; clear: both; float: none; width: 100%; height: 0.1em; margin: 0 0 1.45em; border: none; background: white; color: white; visibility: hidden; }
 
-/* line 638, ../../src/stylesheets/screen.sass */
+/* line 630, ../../src/stylesheets/screen.sass */
 #dsr #top { margin-bottom: 10px; }
-/* line 640, ../../src/stylesheets/screen.sass */
+/* line 632, ../../src/stylesheets/screen.sass */
 #dsr table { margin-bottom: 0px; margin-top: 4px; }
-/* line 643, ../../src/stylesheets/screen.sass */
+/* line 635, ../../src/stylesheets/screen.sass */
 #dsr th { font-weight: bolder; text-align: center; }
-/* line 646, ../../src/stylesheets/screen.sass */
+/* line 638, ../../src/stylesheets/screen.sass */
 #dsr td { width: 20px; background-color: white; }
-/* line 650, ../../src/stylesheets/screen.sass */
+/* line 642, ../../src/stylesheets/screen.sass */
 #dsr .box-dsr-value { background-color: white; border: #cccccc solid; border-width: 0px 1px 1px 0px; text-align: right; }
-/* line 656, ../../src/stylesheets/screen.sass */
+/* line 648, ../../src/stylesheets/screen.sass */
 #dsr .box-dsr-organisation { background-color: #cccccc; border: #cccccc solid; border-width: 0px 1px 1px 0px; text-align: left; }
-/* line 662, ../../src/stylesheets/screen.sass */
+/* line 654, ../../src/stylesheets/screen.sass */
 #dsr .object-name-box { width: 70px; font-weight: bolder; }
-/* line 666, ../../src/stylesheets/screen.sass */
+/* line 658, ../../src/stylesheets/screen.sass */
 #dsr .title-th { color: white; background-color: #a3a3a3; border: white solid; border-width: 1px 1px 1px 0px; }
-/* line 671, ../../src/stylesheets/screen.sass */
+/* line 663, ../../src/stylesheets/screen.sass */
 #dsr .title-th a { font-size: 10px; font-weight: normal; }
 
-/* line 676, ../../src/stylesheets/screen.sass */
+/* line 668, ../../src/stylesheets/screen.sass */
 #navigation { margin: 0px; width: 100%; background: #739eee; }
-/* line 680, ../../src/stylesheets/screen.sass */
+/* line 672, ../../src/stylesheets/screen.sass */
 #navigation a { color: white; }
 
-/* line 683, ../../src/stylesheets/screen.sass */
+/* line 675, ../../src/stylesheets/screen.sass */
 #main-menu { margin: 0; padding: 0; list-style: none; }
-/* line 687, ../../src/stylesheets/screen.sass */
+/* line 679, ../../src/stylesheets/screen.sass */
 #main-menu li { float: left; display: block; width: 120px; background: #739eee; position: relative; z-index: 500; margin: 0 1px; border-left: 1px white solid; border-right: 1px white solid; }
-/* line 697, ../../src/stylesheets/screen.sass */
+/* line 689, ../../src/stylesheets/screen.sass */
 #main-menu li a { display: block; padding: 5px 0px 5px 5px; font-weight: bold; text-decoration: none; color: white; text-align: left; }
-/* line 704, ../../src/stylesheets/screen.sass */
+/* line 696, ../../src/stylesheets/screen.sass */
 #main-menu li a:hover { color: white; background: #73a6ff; }
-/* line 707, ../../src/stylesheets/screen.sass */
+/* line 699, ../../src/stylesheets/screen.sass */
 #main-menu ul { position: absolute; left: 0; display: none; margin: 0 0 0 -1px; padding: 0; list-style: none; }
-/* line 714, ../../src/stylesheets/screen.sass */
+/* line 706, ../../src/stylesheets/screen.sass */
 #main-menu ul li { float: left; border-top: 1px solid white; width: 200px; border-left: 0px white solid; }
-/* line 719, ../../src/stylesheets/screen.sass */
+/* line 711, ../../src/stylesheets/screen.sass */
 #main-menu ul li a { display: block; padding: 5px 0px 5px 5px; color: white; }
-/* line 723, ../../src/stylesheets/screen.sass */
+/* line 715, ../../src/stylesheets/screen.sass */
 #main-menu ul li a:hover { text-decoration: underline; }
 
-/* line 728, ../../src/stylesheets/screen.sass */
+/* line 720, ../../src/stylesheets/screen.sass */
 #survey #top-container #survey-iteration-box { width: 20%; float: left; padding: 3px; }
-/* line 732, ../../src/stylesheets/screen.sass */
+/* line 724, ../../src/stylesheets/screen.sass */
 #survey #top-container #survey-objective-box { width: 77%; float: right; padding: 3px; }
-/* line 739, ../../src/stylesheets/screen.sass */
+/* line 731, ../../src/stylesheets/screen.sass */
 #survey #bottom-container #survey-left-objective-container { width: 20%; float: left; margin-top: 10px; padding: 3px; }
-/* line 744, ../../src/stylesheets/screen.sass */
+/* line 736, ../../src/stylesheets/screen.sass */
 #survey #bottom-container #survey-right-question-container { width: 77%; float: right; margin-top: 10px; padding: 3px; }
-/* line 750, ../../src/stylesheets/screen.sass */
+/* line 742, ../../src/stylesheets/screen.sass */
 #survey #tabs { margin: 0px; padding: 0px; list-style: none; overflow: hidden; }
-/* line 755, ../../src/stylesheets/screen.sass */
+/* line 747, ../../src/stylesheets/screen.sass */
 #survey #tabs li { float: left; display: block; padding: 5px; background-color: #bbbbbb; margin-right: 5px; }
-/* line 762, ../../src/stylesheets/screen.sass */
+/* line 754, ../../src/stylesheets/screen.sass */
 #survey #tabs li a { color: white; text-decoration: none; }
-/* line 766, ../../src/stylesheets/screen.sass */
+/* line 758, ../../src/stylesheets/screen.sass */
 #survey #tabs li .current { background-color: #e1e1e1; }
-/* line 768, ../../src/stylesheets/screen.sass */
+/* line 760, ../../src/stylesheets/screen.sass */
 #survey #tabs li .current a { color: black; text-decoration: none; }
-/* line 773, ../../src/stylesheets/screen.sass */
+/* line 765, ../../src/stylesheets/screen.sass */
 #survey #tabs li .current a .remove { color: red; margin-left: 10px; }
-/* line 776, ../../src/stylesheets/screen.sass */
+/* line 768, ../../src/stylesheets/screen.sass */
 #survey #content { background-color: #e1e1e1; margin: 0 auto; padding: 0 0 10px 0; }
-/* line 780, ../../src/stylesheets/screen.sass */
+/* line 772, ../../src/stylesheets/screen.sass */
 #survey #content p { margin: 0; padding: 20px 20px 100px 20px; }
-/* line 784, ../../src/stylesheets/screen.sass */
+/* line 776, ../../src/stylesheets/screen.sass */
 #survey #subsection-questions { float: 0px auto; margin: 0px 20px 0px 0px; width: 700px; margin-top: 20px; }
-/* line 790, ../../src/stylesheets/screen.sass */
+/* line 782, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list { list-style-type: none; margin: 0; padding: 0; width: 15em; }
-/* line 795, ../../src/stylesheets/screen.sass */
+/* line 787, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list a { display: block; text-decoration: none; font-weight: bold; }
-/* line 799, ../../src/stylesheets/screen.sass */
+/* line 791, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list li { margin-top: 1px; }
-/* line 801, ../../src/stylesheets/screen.sass */
+/* line 793, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list li a { background: #739eee; color: white; padding: 0.5em; }
-/* line 805, ../../src/stylesheets/screen.sass */
+/* line 797, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list li a:hover { background: #73a6ff; }
-/* line 807, ../../src/stylesheets/screen.sass */
+/* line 799, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list ul { list-style-type: none; margin: 0; padding: 0; width: 15em; }
-/* line 812, ../../src/stylesheets/screen.sass */
+/* line 804, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list ul li { margin-top: 1px; }
-/* line 814, ../../src/stylesheets/screen.sass */
+/* line 806, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list ul li a { background: #f0f4fd; color: #333333; padding-left: 20px; border-left: 5px #73a6ff solid; }
-/* line 819, ../../src/stylesheets/screen.sass */
+/* line 811, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list ul li a:hover { background: white; border-left: 5px #739eee solid; padding-left: 15px; }
-/* line 825, ../../src/stylesheets/screen.sass */
+/* line 817, ../../src/stylesheets/screen.sass */
 #survey #survey-section-list ul li a { display: inline-block; display: block; }

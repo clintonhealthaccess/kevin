@@ -8,7 +8,8 @@ import org.chai.kevin.cost.CostRampUpYear;
 import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.maps.MapsTarget;
-import org.chai.kevin.dashboard.DashboardCalculation;
+import org.chai.kevin.util.JSONUtils;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
@@ -19,7 +20,6 @@ import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.DataElement;
 import org.chai.kevin.Enum;
 import org.chai.kevin.EnumOption;
-import org.chai.kevin.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
@@ -151,7 +151,7 @@ class Initializer {
 			//			dataSet1.save(failOnError: true)
 			//			dataSet2.save(failOnError: true)
 
-			dataElement3.save(failOnError: true)
+			dataElement3.save(failOnError: true, flush:true)
 
 			// data value
 			new DataValue(
@@ -165,7 +165,6 @@ class Initializer {
 					timestamp: new Date(),
 					//				followup: false,
 					).save(failOnError: true)
-
 
 			// data value
 			new DataValue(
@@ -197,12 +196,12 @@ class Initializer {
 
 		if (!Expression.count()) {
 			// indicators
-			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
-			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: ValueType.VALUE).save(failOnError: true)
-			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: ValueType.VALUE).save(failOnError: true)
-			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "["+DataElement.findByCode("CODE1").id+"] + ["+DataElement.findByCode("CODE1").id+"]", type: ValueType.VALUE).save(failOnError: true)
-			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "["+DataElement.findByCode("CODE2").id+"]", type: ValueType.VALUE).save(failOnError: true)
-			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\"["+DataElement.findByCode("CODE3").id+"]\"", type: ValueType.VALUE).save(failOnError: true)
+	//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
+			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "["+DataElement.findByCode("CODE1").id+"] + ["+DataElement.findByCode("CODE1").id+"]", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "["+DataElement.findByCode("CODE2").id+"]", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\"["+DataElement.findByCode("CODE3").id+"]\"", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
 		}
 
 		if (!Constant.count()) {
@@ -212,35 +211,26 @@ class Initializer {
 
 	static def createMaps() {
 		if (!MapsTarget.count()) {
-
-			//			new IndicatorType(names:j(["en":"one"]), factor: 1).save(failOnError: true)
+			
 			new Expression(
-					names:j(["en":"Map Expression 2"]),
-					descriptions:j([:]),
-					code:"Map Expression 2",
-					type: ValueType.VALUE,
-					expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
-					//				shortnames:j(["en":"MAP2"]),
-					//				code: "MAP2",
-					//				indicatorType: IndicatorType.findByName("one"),
-					//				numerator: "["+DataElement.findByName("Element 1").id+"]",
-					//				denominator: "100"
-					).save(failOnError: true)
+				names:j(["en":"Map Expression 2"]),
+				descriptions:j([:]),
+				code:"Map Expression 2",
+				type: ValueType.VALUE,
+				expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
+				timestamp:new Date()
+			).save(failOnError: true)
 			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2")).save(failOnError: true)
 
 
 			new Expression(
-					names:j(["en":"Map Expression"]),
-					descriptions:j([:]),
-					code:"Map Expression",
-					type: ValueType.VALUE,
-					expression: "10 / 100",
-					//				shortnames:j(["en":"MAP"]),
-					//				code: "MAP",
-					//				indicatorType: IndicatorType.findByName("one"),
-					//				numerator: "10",
-					//				denominator: "100"
-					).save(failOnError: true)
+				names:j(["en":"Map Expression"]),
+				descriptions:j([:]),
+				code:"Map Expression", 
+				type: ValueType.VALUE,
+				expression: "10 / 100",
+				timestamp:new Date()
+			).save(failOnError: true)
 			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression")).save(failOnError: true, flush:true)
 		}
 	}
@@ -316,48 +306,70 @@ class Initializer {
 			staffing.save(failOnError: true)
 			hrh.save(failOnError: true)
 
+			def calculation1 = new Calculation(expressions: [
+				"District Hospital": Expression.findByCode("Constant 10"),
+				"Health Center": Expression.findByCode("Constant 20")
+			], timestamp:new Date())
+			calculation1.save()
+			
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
-					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 10")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 20"))
-					]
-					), weight: 1, order: 1)
+					calculation: calculation1
+				), weight: 1, order: 1)
+			
+			def calculation2 = new Calculation(expressions: [
+				"District Hospital": Expression.findByCode("Constant 20"),
+				"Health Center": Expression.findByCode("Constant 20")
+			], timestamp:new Date())
+			calculation2.save()
+			
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
-					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Constant 20")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Constant 20"))
-					]
-					), weight: 1, order: 2)
+					calculation: calculation2
+				), weight: 1, order: 2)
+			
+			def calculation3 = new Calculation(expressions: [
+						"District Hospital": Expression.findByCode("Element 1"),
+						"Health Center": Expression.findByCode("Element 1")
+					], timestamp:new Date())
+			calculation3.save()
+			
 			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
-					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 1")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 1"))
-					]
-					), weight: 1, order: 3)
+					calculation: calculation3
+				), weight: 1, order: 3)
+			
+			def calculation4 = new Calculation(expressions: [
+						"District Hospital": Expression.findByCode("Element 1"),
+					], timestamp:new Date())
+			calculation4.save()
+			
 			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
-					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 1")),
-					]
-					), weight: 1, order: 4)
+					calculation: calculation4
+				), weight: 1, order: 4)
+			
+			def calculation5 = new Calculation(expressions: [
+						"District Hospital": Expression.findByCode("Element 2"),
+						"Health Center": Expression.findByCode("Element 2")
+					], timestamp:new Date())
+			calculation5.save()
+			
 			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
-					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 2")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 2"))
-					]
-					), weight: 1, order: 5)
+					calculation: calculation5
+				), weight: 1, order: 5)
+			
+			def calculation6 = new Calculation(expressions: [
+						"District Hospital": Expression.findByCode("Element 3"),
+						"Health Center": Expression.findByCode("Element 3")
+					], timestamp:new Date())
+			calculation6.save()
+			
 			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
-					calculations: [
-						"District Hospital": new DashboardCalculation(groupUuid: "District Hospital", expression: Expression.findByCode("Element 3")),
-						"Health Center": new DashboardCalculation(groupUuid: "Health Center", expression: Expression.findByCode("Element 3"))
-					]
-					), weight: 1, order: 6)
-
+					calculation: calculation6
+				), weight: 1, order: 6)
 
 			staffing.entry.addObjectiveEntry(nursea1)
 			staffing.entry.addObjectiveEntry(nursea2)
