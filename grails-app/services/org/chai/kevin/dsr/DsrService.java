@@ -1,6 +1,5 @@
 package org.chai.kevin.dsr;
 
-<<<<<<< HEAD
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
@@ -29,7 +28,6 @@ package org.chai.kevin.dsr;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-=======
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
