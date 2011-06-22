@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.Organisation;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
 public class DsrTable {
@@ -40,15 +41,17 @@ public class DsrTable {
 	private DsrObjective objective;
 	private List<Organisation> organisations;
 	private List<DsrTarget> targets;
+	private List<OrganisationUnitGroup> facilityTypes;
 	private Map<Organisation, Map<DsrTarget, Dsr>> values;
 
 
 	public DsrTable(Organisation organisation,List<Organisation> organisations, Period period, DsrObjective objective,
-			List<DsrTarget> targets,
+			List<DsrTarget> targets,List<OrganisationUnitGroup> facilityTypes,
 			Map<Organisation, Map<DsrTarget, Dsr>> values) {
 		super();
 		this.organisation = organisation;
 		this.organisations = organisations;
+		this.facilityTypes = facilityTypes;
 		this.period = period;
 		this.objective = objective;
 		this.targets = targets;
@@ -79,12 +82,12 @@ public class DsrTable {
 		return targets;
 	}
 
-	public void setObjective(DsrObjective objective) {
-		this.objective = objective;
-	}
-
 	public DsrObjective getObjective() {
 		return objective;
+	}
+	
+	public Integer getObjectiveId(){
+		return objective!=null?objective.getId():null;
 	}
 	
 	public Map<Organisation, Map<DsrTarget, Dsr>> getValues() {
@@ -95,18 +98,25 @@ public class DsrTable {
 		this.values = values;
 	}
 
-	public void setOrganisation(Organisation organisation) {
-		this.organisation = organisation;
-	}
-
 	public Organisation getOrganisation() {
 		return organisation;
+	}
+	public Integer getOrganisationId(){
+		return organisation!=null?organisation.getId():null;
 	}
 	
 	public Object getDsrValue(Organisation organisation, DsrTarget target) {
 
 		return values.get(organisation).get(target).getValue();
 
+	}
+
+	public void setFacilityTypes(List<OrganisationUnitGroup> facilityTypes) {
+		this.facilityTypes = facilityTypes;
+	}
+
+	public List<OrganisationUnitGroup> getFacilityTypes() {
+		return facilityTypes;
 	}
 
 }

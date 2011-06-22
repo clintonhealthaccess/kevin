@@ -28,18 +28,15 @@
 				<h5>Organisation:</h5>
 				<div class="dropdown">
 					<g:if test="${dsrTable.organisation != null}">
-						<a class="selected" href="#"
-							data-organisation="${dsrTable.organisation.id}"
-							data-type="organisation">${dsrTable.organisation.name}</a>
+						<a class="selected" href="#" data-type="organisation">${dsrTable.organisation.name}</a>
 					</g:if>
 					<g:else>
-						<a class="selected" href="#" data-type="organisation">Select
-							Organisation Unit</a>
-					</g:else>
+						<a class="selected" href="#" data-type="organisation">Select Organisation Unit</a>
+					</g:else> 
 					<div class="hidden dropdown-list">
-						<ul>
+						<ul class="foldable">
 							<g:render template="/templates/organisationTree"
-								model="[controller: 'dsr', action: 'view', organisation: organisationTree, params:[period: periods.startDate, objective: objective?.id], displayLinkUntil: 3]" />
+								model="[controller: 'dsr', action: 'view', organisation: organisationTree, current: dsrTable.organisation, params:[period: periods.startDate, objective: dsrTable.objective?.id], displayLinkUntil: displayLinkUntil]" />
 						</ul>
 					</div>
 				</div>
@@ -62,12 +59,15 @@
 									<g:each in="${objectives}" var="objective">
 										<li>
 											<span>
-												<a href="${createLink(controller: "dsr", action:"view", params:[period: dsrTable.period.id, objective: objective.id, organisation: dsrTable.organisation.id])}">
+												<a href="${createLink(controller: "dsr", action:"view", params:[period: dsrTable.period.id, objective: objective?.id, organisation: dsrTable.organisation?.id])}">
 													<g:i18n field="${objective.names}"/>
 												</a>
 											</span>
 											<span>
 												<g:link controller="dsrObjective" action="edit" id="${objective.id}" class="flow-edit">(Edit)</g:link>
+											</span>
+											<span>
+												<g:link controller="dsrObjective" action="delete" id="${objective.id}" class="flow-delete">(Delete)</g:link>
 											</span>
 										</li>
 									</g:each>
@@ -79,19 +79,38 @@
 						</div>
 					</div>
 			</div>
+			<g:if test="${dsrTable.objective != null && dsrTable.organisation != null}">
+			<div class="filter">
+			    		<h5>Facility types</h5>
+			    		<div id="facility-type-filter">
+			    		<g:if test="${!dsrTable.facilityTypes.isEmpty()}">
+				    		<g:each in="${dsrTable.facilityTypes}" var="group">
+					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}
+				    		</g:each>
+			    		</g:if>
+			    		<g:else>
+			    			<span class="italic">No facility types</span>
+			    		</g:else>
+			    		</div>
+			    		<div class="clear"></div>
+			    	</div>
+			</g:if>
+			<div class="clear"></div>
+			<div>
 			<!-- ADMIN SECTION -->
 				<g:if test="${true || user.admin}">
-					<div>
+					<span>
 						<a id="add-dsr-objective-link" class="flow-add"  href="${createLink(controller:'dsrObjective', action:'create')}">Add Objective</a>
-					</div>
-					<div>
+					</span>|
+					<span>
 						<a id="add-dsr-target-link" class="flow-add" href="${createLink(controller:'dsrTarget', action:'create')}">Add Target</a>
-					</div>
-					<div>
+					</span>|
+					<span>
 						<a id="add-dsr-category-link" class="flow-add"  href="${createLink(controller:'dsrTargetCategory', action:'create')}">Add Target Category</a>
-					</div>						
+					</span>						
 				</g:if>
 		 <!-- ADMIN SECTION END -->
+		 </div>
 		</div>
 		<div id="center" class="box">
 			<div id="values">
@@ -101,7 +120,7 @@
 				<tbody>
 					<tr>					
 						<th class="object-name-box" rowspan="2">
-						<g:i18n field="${dsrTable.objective.names}"/>
+						<div><g:i18n field="${dsrTable.objective.names}"/></div>
 						<span>
 						<g:link controller="dsrObjective" action="delete" id="${dsrTable.objective.id}" class="flow-delete">(Delete)</g:link>
 					    </span><br/>
@@ -115,7 +134,7 @@
 								<g:set var="i" value="${i+1}" />
 								<g:if test="${i==target.category.getTargetsForObjective(dsrTable.objective).size()}">
 									<th class="title-th" colspan="${i}">
-										<g:i18n field="${target.category.names}"/><br/>
+										<div><g:i18n field="${target.category.names}"/></div>
 										<g:if test="${true || user.admin}">
 										<span>
 										 <a id="delete-dsr-target-category-link" class="flow-delete" href="${createLink(controller:'dsrTargetCategory', action:'delete', params:[id: target.category?.id])}">
@@ -135,7 +154,7 @@
 							</g:if>
 							<g:else>
 								<th class="title-th" rowspan="2">
-								<g:i18n field="${target.names}"/>
+								<div class="bt"><g:i18n field="${target.names}"/></div>
 								<g:if test="${true || user.admin}"><br/>
 								<span>
 								   <a id="delete-dsr-target-link" class="flow-delete" href="${createLink(controller:'dsrTarget', action:'delete', params:[id: target?.id])}">(Delete)</a>
@@ -152,7 +171,7 @@
 						<g:each in="${dsrTable.targets}" var="target">
 							<g:if test="${target.category != null}">
 								<th class="title-th">							
-									<g:i18n field="${target.names}"/>
+									<div class="bt"><g:i18n field="${target.names}"/></div>
 									<g:if test="${true || user.admin}"><br/>
 									<span>
 									   <a id="delete-dsr-target-link" class="flow-delete" href="${createLink(controller:'dsrTarget', action:'delete', params:[id: target?.id])}">(Delete)</a>
@@ -166,7 +185,7 @@
 						</g:each>
 					</tr>
 					<g:each in="${dsrTable.organisations}" var="organisation">
-						<tr>
+						<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
 						<th class="box-dsr-organisation">${organisation.name}</th>
 							<g:each in="${dsrTable.targets}" var="target">
 								<td class="box-dsr-value">
@@ -202,8 +221,18 @@
 									}
 								}
 							});
+							
+							/**
+			    			 * facility type switcher
+			    			 **/
+			    			$('#facility-type-filter input').bind('click', function() {
+			    				toggleFacilityType();
+			    			});
+							
+			    			toggleFacilityType();
+							 
 						});
-
+						
 					</script>
 		    	</g:if>
 		    	<!-- ADMIN SECTION END -->

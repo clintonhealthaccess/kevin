@@ -155,7 +155,7 @@ facility.type.group="Type"
 dashboard.facility.checked=["District Hospital","Health Center"]
 dashboard.skip.levels=[]
 cost.skip.levels=[]
-
+dsr.facility.checked=["District Hospital","Health Center"]
 environments {
 	production {
 		grails.config.locations = ["file:${userHome}/.grails/${appName}-config.groovy"]

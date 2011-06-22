@@ -113,6 +113,57 @@ body.two-columns
   color: #000
   border: solid 1px #73A6ff
   +field-round-corner
+
+
+.foldable
+  list-style-type: none
+  margin: 0
+  padding: 0
+  width: 15em
+  a
+    display: block
+    text-decoration: none
+    font-weight: 600    	
+  li
+    margin-top: 1px
+    a
+      background: #739eee
+      color: #fff
+      padding: 0.5em
+    a:hover
+      background: #73A6ff
+  ul 
+    list-style-type: none
+    margin: 0
+    padding: 0
+    li
+      margin-top: 1px 
+      a
+        background: #f0f4fd
+        color: #333
+        padding-left: 15px
+        border-left: 5px #73A6ff solid    
+      a:hover
+        background: #fff
+        border-left: 5px #739eee solid
+        padding-left: 15px
+    ul 
+      list-style-type: none
+      margin: 0
+      padding: 0
+      li
+        margin-top: 1px 
+      a
+        background: #eee
+        color: #333           
+      a:hover
+        background: #fff
+        text-decoration: underline
+.current > ul
+  li
+    backgroud-color: red 
+
+      
   
 button
   margin: 2px 3px 2px 2px
@@ -629,14 +680,17 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
 #dsr
   #top
     margin-bottom: 10px
+  #facility-type-filter
+    float: right
   table
     margin-bottom: 0px
-    margin-top: 4px  
+    margin-top: 4px
+    width: 95% 
+    margin: 0 auto
   th
     font-weight: bolder
     text-align: center
   td
-    width: 20px
     background-color: #ffffff
     
   .box-dsr-value
@@ -656,10 +710,12 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     font-weight: bolder
     
   .title-th
+    width: 10px
     color: #ffffff
     background-color: #a3a3a3
     border: #ffffff solid
     border-width: 1px 1px 1px 0px
+    vertical-align: bottom
     a
       font-size: 10px
       font-weight: normal

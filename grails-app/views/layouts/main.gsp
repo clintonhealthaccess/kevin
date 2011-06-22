@@ -20,6 +20,7 @@
 	<g:javascript src="jquery/form/jquery.form.js" />
 	<g:javascript src="jquery/fieldselection/jquery.fieldselection.js" />
 	<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
+	<g:javascript src="jquery/fliptext/jquery.mb.flipText.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
 <!-- 	<g:javascript src="jquery/progressbar/jquery.progressbar.js" /> -->
 
@@ -118,7 +119,7 @@
 					});
 				});
 				
-				this.find(this.config.deleteLinks).each(function(index, element) {
+				$(document).find(this.config.deleteLinks).each(function(index, element) {
 					$(element).bind('click', function() {
 						$.ajax({
 							type : 'POST',
@@ -293,6 +294,13 @@
 				});
 				return false;
 			});
+			
+			//Fliping text 
+			$(".tb").mbFlipText(true); //top to bottom
+			$(".bt").mbFlipText(false); //bottom to top
+			
+			//Organisationn Unit Folding Effect
+			initOrganisationLevel();
 		
 			/**
 			 * drop-down menus
@@ -425,6 +433,56 @@
 			});
 						
 		});
+		function toggleFacilityType() {
+			if ($('#facility-type-filter input').size() != 0) {
+    			var checked = [];
+    			$('#facility-type-filter input').each(function(){
+					if (this.checked) checked.push($(this).val())
+				});
+				$('.row.organisation').each(function(){
+					if ($.inArray($(this).data('group'), checked) >= 0) $(this).show();
+					else $(this).hide()
+				});
+			}
+		}
+		 function initOrganisationLevel() {
+			   $('.foldable ul').hide();
+			   $('.foldable > li > ul').show();	
+				var current = $('.foldable .current').parent();
+				while (!current.hasClass('foldable') && current.size() > 0) {
+					current.addClass('opened');
+					current.show();
+					current = current.parent().parent();
+				}
+				$('.foldable > li a').hover(
+					function() {
+						var current = $(this).parent().parent();
+						
+						$('.foldable > li ul').each(function() {
+							if (
+									($(this).attr('id') != current.attr('id')) 
+									&& !$(this).hasClass('opened')
+									&& $(this).parent().parent().attr('id') != current.attr('id')
+							) {
+								var close = true;
+								$(this).find('ul').each(function() {
+									if ($(this).attr('id') == current.attr('id')) {
+										close = false; 	
+									}
+								});
+								
+								if (close) {
+									$(this).hide(300);
+								}
+							}
+						});
+
+						var toOpen = $(this).parent().find('ul').first();
+						toOpen.show('slow');
+					},
+					function(){}
+				);
+			}  
 	</script>
 </body>
 </html>

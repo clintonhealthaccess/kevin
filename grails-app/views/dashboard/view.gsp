@@ -1,6 +1,5 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <% SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy"); %>
-
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -241,20 +240,36 @@
 				
     			toggleFacilityType();
     		});
-    		
-    		function toggleFacilityType() {
-    			if ($('#facility-type-filter input').size() != 0) {
-	    			var checked = [];
-	    			$('#facility-type-filter input').each(function(){
-						if (this.checked) checked.push($(this).val())
-					});
-					$('.row.organisation').each(function(){
-						if ($.inArray($(this).data('group'), checked) >= 0) $(this).show();
-						else $(this).hide()
-					});
-    			}
+
+    		function addEvents(prefix) {
+    			$('#explanation-'+prefix+' .element').each(function(){
+	    			var id = $(this).data('id');
+    				var organisation = $(this).data('organisation');
+    				var objective = $(this).data('objective');
+    				var elementId = '#data-'+organisation+'-'+objective+'-'+id;
+    			
+    				$(this).bind('mouseenter mouseleave', function() {
+	    				$(elementId).toggleClass('highlighted');
+	    				$(this).toggleClass('highlighted');
+	    			});
+    				$(this).bind('mouseenter', function() {
+    					$(elementId).find('a.cluetip').mouseover();    					
+    				});
+    				$(this).bind('mouseleave', function() {
+    					$(elementId).find('a.cluetip').mouseleave();
+    				});
+	    			$(this).bind('click', function() {
+	    				if (!$(this).hasClass('selected')) {
+							$('.element').removeClass('selected');
+		   					$('.data').removeClass('selected');
+		    			}
+	   					$(elementId).toggleClass('selected');
+		   				$(this).toggleClass('selected');
+		   			});
+    			});
+    			
+    			$('a.cluetip').cluetip(cluetipOptions);
     		}
-    		
     	</script>
     	<!-- explanation -->
     </body>

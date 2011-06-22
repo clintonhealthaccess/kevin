@@ -1,7 +1,9 @@
-<li>
+<li class="${current?.id == organisation.id?'current':''}">
 	<% params['organisation'] = organisation.id %>
 	<g:if test="${organisation.level < displayLinkUntil}">
-		${organisation.name}
+		<a class="parameter" data-type="organisation" data-organisation="${organisation.id}" href="#">
+			${organisation.name}
+		</a>
 	</g:if>
 	<g:else>
 		<a class="parameter" data-type="organisation" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:params)}">
@@ -9,9 +11,9 @@
 		</a>
 	</g:else>
 	<g:if test="${organisation.children != null}">
-		<ul>
+		<ul id="organisation-fold-${organisation.id}">
 			<g:each in="${organisation.children}" var="child">
-				<g:render template="/templates/organisationTree" model="[ controller: controller, action: action, organisation: child, params:params, displayLinkUntil: displayLinkUntil]"/>
+				<g:render template="/templates/organisationTree" model="[ controller: controller, action: action, organisation: child, current: current, params:params,linkLevel: linkLevel, displayLinkUntil: displayLinkUntil]"/>
 			</g:each>
 		</ul>
 	</g:if>

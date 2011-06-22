@@ -1,5 +1,6 @@
 package org.chai.kevin.dsr;
 
+<<<<<<< HEAD
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
@@ -28,19 +29,22 @@ package org.chai.kevin.dsr;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+=======
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.DataElement;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.value.ExpressionValue;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,27 +56,39 @@ public class DsrService {
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective,
 			Period period) {
-		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation,organisationService.getFacilityLevel());
+		List<Organisation> organisations = null;
 		Map<Organisation, Map<DsrTarget, Dsr>> dsrMap = null;
 		List<DsrTarget> targets = null;
-
-		if (objective != null) {
+		List<OrganisationUnitGroup> facilityTypes = null;
+		Set<OrganisationUnitGroup> facilityTypeSet = null;
+		if (objective == null || organisation == null) {
+			return new DsrTable(organisation, organisations, period, objective,
+					targets, facilityTypes, dsrMap);
+		} else {
+			organisations = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 			targets = objective.getTargets();
 			Collections.sort(targets, new DsrTargetSorter());
 			dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
-			for (Organisation orgChildren : organisations) {
+			facilityTypeSet = new LinkedHashSet<OrganisationUnitGroup>();
+			for (Organisation child : organisations) {
+				organisationService.loadGroup(child);
+				if (child.getOrganisationUnitGroup() != null) {
+					facilityTypeSet.add(child.getOrganisationUnitGroup());
+				}
 				Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
 				for (DsrTarget target : targets) {
-					ExpressionValue expressionValue = valueService.getExpressionValue(orgChildren.getOrganisationUnit(), target.getExpression(), period);
+					ExpressionValue expressionValue = valueService.getExpressionValue(child.getOrganisationUnit(), target.getExpression(), period);
 					String value = null;
 					if (expressionValue != null) value = expressionValue.getValue();
-					orgDsr.put(target,new Dsr(orgChildren, period, target, value));
+					orgDsr.put(target,new Dsr(child, period, target, value));
 				}
-				dsrMap.put(orgChildren, orgDsr);
+				dsrMap.put(child, orgDsr);
 			}
+			facilityTypes = new ArrayList<OrganisationUnitGroup>(
+					facilityTypeSet);
 		}
-		return new DsrTable(organisation, organisations, period,
-				objective, targets, dsrMap);
+		return new DsrTable(organisation, organisations, period, objective,
+				targets, facilityTypes, dsrMap);
 	}
 
 	public void setOrganisationService(OrganisationService organisationService) {
