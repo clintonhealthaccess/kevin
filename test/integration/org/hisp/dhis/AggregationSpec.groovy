@@ -7,12 +7,13 @@ import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.DataElement;
+import org.chai.kevin.ValueService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 class AggregationSpec extends IntegrationTests {
 
-	ExpressionService expressionService;
+	ValueService valueService;
 	
 	def setup() {
 		Initializer.createDummyStructure();
@@ -30,11 +31,11 @@ class AggregationSpec extends IntegrationTests {
 		def organisation = getOrganisation(organisationName)
 		
 		then:
-		expressionService.getDataValue(dataElement, period, organisation, [:]) == value
+		valueService.getDataValue(dataElement, period, organisation).value == value
 				
 		where:
 		dataElementCode	| organisationName	| value
-		"CODE"			| "Butaro DH"		| 40d
+		"CODE"			| "Butaro DH"		| "40"
 		
 	}
 	

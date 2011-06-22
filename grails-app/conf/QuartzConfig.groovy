@@ -2,7 +2,7 @@
 quartz {
     autoStartup = true
     jdbcStore = false
-    waitForJobsToCompleteOnShutdown = true
+    waitForJobsToCompleteOnShutdown = false
     exposeSchedulerInRepository = false
 
     props {
@@ -11,9 +11,9 @@ quartz {
 }
 
 environments {
-    test {
-        quartz {
-            autoStartup = true
-        }
-    }
+//    test {
+//        quartz {
+//            autoStartup = true
+//        }
+//    }
 }

@@ -58,43 +58,18 @@ class DashboardServiceSpec extends IntegrationTests {
 		else percentage.value == value
 		
 		where:
-		currentOrganisationName	| currentObjectiveName			| organisationName	| objectiveName 	| status				| value
-		"Burera"				| "STAFFING"					| "Butaro DH"		| "TARGET1"			| Status.VALID			| 40.0d
-		"Burera"				| "STAFFING"					| "Butaro DH"		| "A1"				| Status.VALID			| 10.0d
-		"Burera"				| "STAFFING"					| "Butaro DH"		| "A2"				| Status.VALID			| 20.0d
-		"Burera"				| "STAFFING"					| "Kivuye HC"		| "TARGET1"			| Status.MISSING_VALUE	| null  // TODO check this !
-		"Burera"				| "STAFFING"					| "Kivuye HC"		| "A1"				| Status.VALID			| 10.0d
-		"Burera"				| "STAFFING"					| "Kivuye HC"		| "A2"				| Status.VALID			| 20.0d
-		"Burera"				| "HRH"							| "Butaro DH"		| "STAFFING"		| Status.VALID			| 23.0d
-		"Burera"				| "HRH"							| "Kivuye HC"		| "STAFFING"		| Status.VALID			| 15.0d
-		"Rwanda"				| "OBJ"							| "North"			| "HRH"				| Status.VALID			| 23.0d
+		currentOrganisationName	| currentObjectiveName			| organisationName	| objectiveName 	| value
+		"Burera"				| "STAFFING"					| "Butaro DH"		| "TARGET1"			| 40.0d
+		"Burera"				| "STAFFING"					| "Butaro DH"		| "A1"				| 10.0d
+		"Burera"				| "STAFFING"					| "Butaro DH"		| "A2"				| 20.0d
+		"Burera"				| "STAFFING"					| "Kivuye HC"		| "TARGET1"			| null  // TODO check this !
+		"Burera"				| "STAFFING"					| "Kivuye HC"		| "A1"				| 10.0d
+		"Burera"				| "STAFFING"					| "Kivuye HC"		| "A2"				| 20.0d
+		"Burera"				| "HRH"							| "Butaro DH"		| "STAFFING"		| 23.0d
+		"Burera"				| "HRH"							| "Kivuye HC"		| "STAFFING"		| 15.0d
+		"Rwanda"				| "OBJ"							| "North"			| "HRH"				| 23.0d
 	}
 	
-	def "test missing organisation group"() {
-		setup:
-		def burera = OrganisationUnit.findByName("Burera")
-		def resasa = new OrganisationUnit(name: "Resasa HC", shortName:"RW,N,BU,KIHC", parent: burera)
-		burera.children.add resasa
-		expressionService.refreshExpressions();
-		expressionService.refreshCalculations();
-		
-		
-		when:
-		def period = Period.list()[1]
-		def currentOrganisation = new Organisation(OrganisationUnit.findByName("Burera"));
-		def currentObjective = DashboardObjective.findByCode("STAFFING");
-		dashboardService.refreshDashboard(currentOrganisation, currentObjective, period, new ProgressListener());
-		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period);
-		def organisation = new Organisation(OrganisationUnit.findByName("Resasa HC"));
-		def objective = DashboardTarget.findByCode("A1");
-		if (objective == null) objective = DashboardObjective.findByCode("A1");
-		def explanation = dashboardService.getExplanation(organisation, objective, period);
-		
-		then:
-		dashboard.getPercentage(organisation, objective).status == Status.MISSING_EXPRESSION;
-		explanation.average.valid == false
-		
-	}
 	
 	def "test missing data value"() {
 		
@@ -122,8 +97,8 @@ class DashboardServiceSpec extends IntegrationTests {
 		
 		
 		then:
-		explanation.expressionExplanations[0].percentage.organisationUnit == OrganisationUnit.findByName(organisationName)
-		explanation.expressionExplanations[0].percentage.entry == objective
+		explanation.organisation == organisation
+		explanation.entry == objective
 		// TODO
 //		explanation.expression.name == expressionName
 //		explanation.htmlFormula == htmlFormula

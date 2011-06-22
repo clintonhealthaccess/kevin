@@ -22,19 +22,19 @@ class DashboardSpec extends GebTests {
         	browser.at(DashboardPage)
     }
 	
-	def "refresh"() {
-		when:
-			browser.to(DashboardPage)
-			clickRefresh()
-			
-		then:
-			browser.at(ProgressPage)
-			while (!browser.at(DashboardPage)) {
-				Thread.sleep 1000
-			}
-			browser.at(DashboardPage)
-			hasValues()
-	}
+//	def "refresh"() {
+//		when:
+//			browser.to(DashboardPage)
+//			clickRefresh()
+//			
+//		then:
+//			browser.at(ProgressPage)
+//			while (!browser.at(DashboardPage)) {
+//				Thread.sleep 1000
+//			}
+//			browser.at(DashboardPage)
+//			hasValues()
+//	}
 	
 	def "explain non leaf target"() {
 		when:

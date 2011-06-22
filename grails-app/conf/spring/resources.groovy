@@ -29,8 +29,6 @@ beans = {
 
 	surveyService(SurveyService){
 		organisationService = ref("organisationService")
-		//sectionService = ref("sectionService")
-//		organisationLevel = facilityLevel
 	}
 
 	dsrService(DsrService){
@@ -66,12 +64,10 @@ beans = {
 	}
 
 	dashboardService(DashboardService) {
-//		dashboardObjectiveService = ref("dashboardObjectiveService")
 		organisationService = ref("organisationService")
 		infoService = ref("infoService")
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
-//		periodService = ref("periodService")
 		skipLevels = dashboardSkipLevels
 	}
 

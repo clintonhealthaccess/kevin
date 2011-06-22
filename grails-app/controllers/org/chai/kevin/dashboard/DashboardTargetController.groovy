@@ -31,9 +31,9 @@ class DashboardTargetController extends AbstractObjectiveController {
 	}
 	
 	def saveEntity(def entity) {
-		super.saveEntity(entity)
 		entity.entry.calculation.timestamp = new Date()
 		entity.entry.calculation.save()
+		super.saveEntity(entity)
 	}
 	
 	def bindParams(def objectiveEntry) {

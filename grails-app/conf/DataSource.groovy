@@ -21,8 +21,8 @@ hibernate {
 	cache.use_query_cache = true
 	cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
 	naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
-	//      flush.mode = 'commit'
-//	      show_sql = true
+//	flush.mode = 'commit'
+//	show_sql = true
 }
 naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
 

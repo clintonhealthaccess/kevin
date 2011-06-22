@@ -144,7 +144,7 @@ public class CalculationValue extends Value {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((calculation == null) ? 0 : calculation.hashCode());
+				+ ((getCalculation() == null) ? 0 : getCalculation().hashCode());
 		return result;
 	}
 
@@ -154,13 +154,13 @@ public class CalculationValue extends Value {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof CalculationValue))
 			return false;
 		CalculationValue other = (CalculationValue) obj;
-		if (calculation == null) {
-			if (other.calculation != null)
+		if (getCalculation() == null) {
+			if (other.getCalculation() != null)
 				return false;
-		} else if (!calculation.equals(other.calculation))
+		} else if (!getCalculation().equals(other.getCalculation()))
 			return false;
 		return true;
 	}

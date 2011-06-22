@@ -70,7 +70,7 @@ public class Value implements Timestamped {
 		result = prime
 				* result
 				+ ((organisationUnit == null) ? 0 : organisationUnit.hashCode());
-		result = prime * result + ((period == null) ? 0 : period.hashCode());
+		result = prime * result + ((period == null) ? 0 : period.getId());
 		return result;
 	}
 

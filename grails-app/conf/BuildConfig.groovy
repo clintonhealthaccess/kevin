@@ -54,7 +54,8 @@ grails.project.dependency.resolution = {
 			         "hibernate-core",
 					 "hibernate-annotations",
 					 "velocity",
-					 "slf4j-api"
+					 "slf4j-api",
+					 "ehcache-core"
 			         //"dhis-support-hibernate" 
 					 //"dhis-support-external" 
 					 //"dhis-support-jdbc"

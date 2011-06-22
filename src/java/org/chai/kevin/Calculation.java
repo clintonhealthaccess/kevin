@@ -81,7 +81,7 @@ public class Calculation implements Timestamped {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((expressions == null) ? 0 : expressions.hashCode());
+				+ ((getExpressions() == null) ? 0 : getExpressions().hashCode());
 		return result;
 	}
 	@Override
@@ -90,13 +90,13 @@ public class Calculation implements Timestamped {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Calculation))
 			return false;
 		Calculation other = (Calculation) obj;
-		if (expressions == null) {
-			if (other.expressions != null)
+		if (getExpressions() == null) {
+			if (other.getExpressions() != null)
 				return false;
-		} else if (!expressions.equals(other.expressions))
+		} else if (!getExpressions().equals(other.getExpressions()))
 			return false;
 		return true;
 	}

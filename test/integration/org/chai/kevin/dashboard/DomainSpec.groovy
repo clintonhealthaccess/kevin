@@ -23,10 +23,10 @@ class DomainSpec extends IntegrationTests {
 	
 	def "test calculations"() {
 		expect:
-		Calculation.count() == 4
+		Calculation.count() == 2
 		def nurse = DashboardTarget.findByCode("A1");
 		nurse.save();
-		Calculation.count() == 4
+		Calculation.count() == 2
 	}
 	
 	def "call twice in a row"() {

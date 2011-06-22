@@ -101,6 +101,7 @@ class DashboardControllerSpec extends IntegrationTests {
 		dashboardTargetController.params['currentObjective'] = DashboardObjective.findByCode("STAFFING").id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['entry.code'] = "NEW"
+		dashboardTargetController.params['entry.calculation.expressions['+OrganisationUnitGroup.findByName('Health Center').uuid+'].id'] = "null"
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
@@ -136,9 +137,9 @@ class DashboardControllerSpec extends IntegrationTests {
 		entries + 1 == DashboardObjectiveEntry.count()
 		targets + 1 == DashboardTarget.count()
 		objectives == DashboardObjective.count()
-		calculations + 2 == Calculation.count()
-		newTarget.calculations['Health Center'].expression == Expression.findByCode("CONST10")
-		newTarget.calculations['District Hospital'].expression == null
+		calculations + 1 == Calculation.count()
+		newTarget.calculation.expressions['Health Center'] == Expression.findByCode("CONST10")
+		newTarget.calculation.expressions['District Hospital'] == null
 		newTarget.parent.weight == 1
 	}
 	

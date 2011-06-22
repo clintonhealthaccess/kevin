@@ -389,12 +389,18 @@
 			$('#main-menu > li').hover(
 				function () {
 					//show its submenu
-					$('ul', this).slideDown("slow");
+					if (!$('ul', this).hasClass('open')) {
+						$('ul', this).addClass('open');
+						$('ul', this).show();
+					}
 		 
 				}, 
 				function () {
+					var self = this;
 					//hide its submenu
-					$('ul', this).slideUp(10);			
+					$('ul', this).slideUp(10, function(){
+						$('ul', self).removeClass('open');
+					});	
 				}
 			);
 			

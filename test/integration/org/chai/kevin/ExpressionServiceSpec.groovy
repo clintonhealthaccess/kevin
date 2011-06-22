@@ -79,12 +79,30 @@ class ExpressionServiceSpec extends IntegrationTests {
 		"CONST10"		| "North"			| Status.VALID			| 10d
 		"EXPRENUM"		| "Butaro DH"		| Status.VALID			| 20d
 		"EXPRENUM"		| "Kivuye HC"		| Status.VALID			| 10d
-		"EXPRENUM"		| "Burera"			| Status.MISSING_VALUE	| null
-		"EXPRENUM"		| "North"			| Status.MISSING_VALUE	| null
+		"EXPRENUM"		| "Burera"			| Status.NOT_AGGREGATABLE	| null
+		"EXPRENUM"		| "North"			| Status.NOT_AGGREGATABLE	| null
 		"EXPRINT"		| "Butaro DH"		| Status.VALID			| 20d
 		"EXPRINT"		| "Kivuye HC"		| Status.VALID			| 10d
 		"EXPRINT"		| "Burera"			| Status.VALID			| 30d
 	}
 
+	def "data element in expression when wrong format"() {
+		when:
+		def dataElements = expressionService.getDataElementsInExpression("[test]")
+		
+		then:
+		dataElements.size() == 0
+	}
 	
+	def "data elements in expression"() {
+		setup: 
+		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: ValueType.VALUE).save(faileOnError: true)
+
+		when:
+		def dataElements = expressionService.getDataElementsInExpression("["+DataElement.findByCode("CODEINT").id+"]")
+		
+		then:
+		dataElements.size() == 1
+		dataElements.iterator().next().equals(DataElement.findByCode("CODEINT"))		
+	}
 }

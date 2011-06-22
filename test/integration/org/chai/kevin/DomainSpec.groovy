@@ -8,6 +8,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.util.JSONUtils;
+import org.chai.kevin.value.ExpressionValue;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 import org.json.JSONObject;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -39,6 +42,51 @@ class DomainSpec extends IntegrationTests {
 //		!oldDate.equals(newDate)
 //		
 //	}
+	
+	def "organisation unit hashcode and equals"() {
+		when:
+		def org1 = new OrganisationUnit(name: "Test")
+		def org2 = new OrganisationUnit(name: "Test")
+		
+		then:
+		org1.hashCode() == org2.hashCode()
+		org1.equals(org2)
+		org2.equals(org1)
+		
+	}
+	
+//	def "period hashcode and equals"() {
+//		when:
+//		def period1 = 
+//		def period2 = 
+//		
+//		then:
+//		org1.hashCode() == org2.hashCode()
+//		org1.equals(org2)
+//		org2.equals(org1)
+//		
+//	}
+	
+	def "expression value hashcode and equals"() {
+		setup:
+		new Expression(code: "EXPR", expression:"10", type: ValueType.VALUE).save(failOnError: true)
+		
+		when:
+		def expr1 = new ExpressionValue(period: Period.list()[0], organisationUnit: OrganisationUnit.findByName("Butaro DH"), expression: Expression.findByCode("EXPR"));
+		def expr2 = new ExpressionValue(period: Period.list()[0], organisationUnit: OrganisationUnit.findByName("Butaro DH"), expression: Expression.findByCode("EXPR"));
+		
+		then:
+		expr1.hashCode() == expr2.hashCode();
+		expr1.equals(expr2)
+		expr2.equals(expr1)
+		
+		when:
+		def set = new HashSet()
+		set.add(expr1)
+		
+		then:
+		set.contains(expr2)
+	}
 	
 	def "data element code is unique"() {
 		when:

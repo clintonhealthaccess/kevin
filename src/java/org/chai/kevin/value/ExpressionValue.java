@@ -118,7 +118,7 @@ public class ExpressionValue extends Value {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((expression == null) ? 0 : expression.hashCode());
+				+ ((getExpression() == null) ? 0 : getExpression().hashCode());
 		return result;
 	}
 
@@ -128,13 +128,13 @@ public class ExpressionValue extends Value {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof ExpressionValue))
 			return false;
 		ExpressionValue other = (ExpressionValue) obj;
-		if (expression == null) {
-			if (other.expression != null)
+		if (getExpression() == null) {
+			if (other.getExpression() != null)
 				return false;
-		} else if (!expression.equals(other.expression))
+		} else if (!getExpression().equals(other.getExpression()))
 			return false;
 		return true;
 	}

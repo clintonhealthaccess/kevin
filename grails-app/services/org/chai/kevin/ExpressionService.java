@@ -206,46 +206,54 @@ public class ExpressionService {
 	private String generateExpression(String formula, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
 		if (log.isDebugEnabled()) log.debug("generateExpression(formula="+formula+", period="+period+", organisation="+organisation+")");
 		
-		try {
-			StringBuffer buffer = new StringBuffer();
+		StringBuffer buffer = new StringBuffer();
 
-			Matcher matcher = CONSTANT_PATTERN.matcher(formula);
-			while (matcher.find()) {
-				String match = matcher.group();
-				match = match.replaceAll("[\\[c\\]]", "");
-				Constant constant = dataService.getConstant(Long.parseLong(match));
-				
-				// TODO constant does not exist
-				Object value = constant.getValue();
-
-				matcher.appendReplacement(buffer, String.valueOf(value));
-				// TODO check this
-//				values.put(constant, value);
-			}
-
-			matcher.appendTail(buffer);
-			matcher = FORMULA_PATTERN.matcher(buffer.toString());
-
-			buffer = new StringBuffer();
+		Matcher matcher = CONSTANT_PATTERN.matcher(formula);
+		while (matcher.find()) {
+			String match = matcher.group();
+			match = match.replaceAll("[\\[c\\]]", "");
 			
-			while (matcher.find()) {
-				String match = matcher.group();
-				match = match.replaceAll("[\\[\\]]", "");
-				
-				DataElement dataElement = dataService.getDataElement(Long.parseLong(match));
+			Object value = null;
+			try {
+				Constant constant = dataService.getConstant(Long.parseLong(match));
+				// TODO constant does not exist
+				value = constant.getValue();
+			}
+			catch (NumberFormatException e) {
+				log.warn("parse exception: "+match, e);
+			}
+			
+			matcher.appendReplacement(buffer, String.valueOf(value));
+			// TODO check this
+//				values.put(constant, value);
+		}
 
+		matcher.appendTail(buffer);
+		matcher = FORMULA_PATTERN.matcher(buffer.toString());
+
+		buffer = new StringBuffer();
+		
+		while (matcher.find()) {
+			String match = matcher.group();
+			match = match.replaceAll("[\\[\\]]", "");
+
+			Object value = null;
+			try {
+				DataElement dataElement = dataService.getDataElement(Long.parseLong(match));
 				// TODO data element does not exist
 				// TODO if aggregated, then get data value only for the 
 				// organisations that have all the values ?
-				Object value = calculateDataValue(dataElement, period, organisation, values);
-				matcher.appendReplacement(buffer, String.valueOf(value));
+				value = calculateDataValue(dataElement, period, organisation, values);
+			}
+			catch (NumberFormatException e) {
+				log.warn("parse exception: "+match, e);
 			}
 
-			matcher.appendTail(buffer);
-			return buffer.toString();
-		} catch (NumberFormatException ex) {
-			throw new RuntimeException("Illegal DataElement id", ex);
+			matcher.appendReplacement(buffer, String.valueOf(value));
 		}
+
+		matcher.appendTail(buffer);
+		return buffer.toString();
 	}
 	
 	@Transactional(readOnly=false)
@@ -358,7 +366,14 @@ public class ExpressionService {
             	match = match.replaceAll("[\\[\\]]", "");
             	
             	if (!match.startsWith("c")) {
-	                DataElement dataElement = dataService.getDataElement(Long.parseLong(match));
+            		
+	                DataElement dataElement = null;
+	                try {
+	                	dataElement = dataService.getDataElement(Long.parseLong(match));
+	                }
+	                catch (NumberFormatException e) {
+	                	log.warn("wrong format for dataelement: "+match);
+	                }
 	
 	                if ( dataElement != null )  {
 	                    dataElementsInExpression.add( dataElement );

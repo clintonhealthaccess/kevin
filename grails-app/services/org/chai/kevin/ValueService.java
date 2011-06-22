@@ -3,8 +3,10 @@ package org.chai.kevin;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,12 +15,11 @@ import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.Value;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.ResultTransformer;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,19 +89,49 @@ public class ValueService {
 	@Transactional(readOnly=true)
 	public List<ExpressionValue> getNonCalculatedExpressions() {
 		List<ExpressionValue> result = new ArrayList<ExpressionValue>();
-		Query query = sessionFactory.getCurrentSession()
-		.createQuery(
-				"select expression, organisationUnit, period " +
-				"from Expression expression, OrganisationUnit organisationUnit, Period period " +
-				"where (expression, organisationUnit, period) not in (" +
-				"	select ev.expression, ev.organisationUnit, ev.period from ExpressionValue as ev" +
-				")"
-		);
-		for (Iterator iterator = query.iterate(); iterator.hasNext();) {
-			Object[] row = (Object[]) iterator.next();
-			result.add(new ExpressionValue(null, null, (OrganisationUnit)row[1], (Expression)row[0], (Period)row[2]));
+		
+		Integer numValues = (Integer)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class).setProjection(Projections.rowCount()).uniqueResult();
+		Integer numExpressions = (Integer)sessionFactory.getCurrentSession().createCriteria(Expression.class).setProjection(Projections.rowCount()).uniqueResult();
+		Integer numOrganisations = getNumberOfOrganisations();
+		Integer numPeriods = getNumberOfPeriods();
+		
+		if (numValues == numOrganisations * numPeriods * numExpressions) {
+			log.info("no non calculated expressions, skipping");
+		}
+		else {
+			if (log.isDebugEnabled()) log.debug("retrieving expression values");
+			Set<ExpressionValue> allValues = new HashSet<ExpressionValue>();
+			Query query1 = sessionFactory.getCurrentSession().createQuery(
+					"select ev.expression, ev.organisationUnit, ev.period from ExpressionValue as ev"
+			).setCacheable(false);
+			for (Iterator iterator = query1.iterate(); iterator.hasNext();) {
+				Object[] row = (Object[]) iterator.next();
+				ExpressionValue value = new ExpressionValue(null, null, (OrganisationUnit)row[1], (Expression)row[0], (Period)row[2]);
+				allValues.add(value);
+			}
+			if (log.isDebugEnabled()) log.debug("retrieved expression values, found: "+allValues.size());
+			if (log.isDebugEnabled()) log.debug("retrieving all possible expressions");
+			Query query2 = sessionFactory.getCurrentSession().createQuery(
+					"select expression, organisationUnit, period " +
+					"from Expression expression, OrganisationUnit organisationUnit, Period period"
+			).setCacheable(false);
+			if (log.isDebugEnabled()) log.debug("starting sorting non calculated expressions");
+			for (Iterator iterator = query2.iterate(); iterator.hasNext();) {
+				Object[] row = (Object[]) iterator.next();
+				ExpressionValue newValue = new ExpressionValue(null, null, (OrganisationUnit)row[1], (Expression)row[0], (Period)row[2]);
+				if (!allValues.contains(newValue)) result.add(newValue);
+			}
+			if (log.isDebugEnabled()) log.debug("done sorting non calculated expressions, found: "+result.size());
 		}
 		return result;
+	}
+	
+	private Integer getNumberOfOrganisations() {
+		return (Integer)sessionFactory.getCurrentSession().createCriteria(OrganisationUnit.class).setProjection(Projections.rowCount()).uniqueResult();
+	}
+	
+	private Integer getNumberOfPeriods() {
+		return (Integer)sessionFactory.getCurrentSession().createCriteria(Period.class).setProjection(Projections.rowCount()).uniqueResult();
 	}
 	
 	@Transactional(readOnly=true)
@@ -120,17 +151,39 @@ public class ValueService {
 	@Transactional(readOnly=true)
 	public List<CalculationValue> getNonCalculatedCalculations() {
 		List<CalculationValue> result = new ArrayList<CalculationValue>();
-		Query query = sessionFactory.getCurrentSession()
-		.createQuery(
-				"select calculation, organisationUnit, period " +
-				"from Calculation calculation, OrganisationUnit organisationUnit, Period period " +
-				"where (calculation, organisationUnit, period) not in (" +
-				"	select cv.calculation, cv.organisationUnit, cv.period from CalculationValue as cv" +
-				")"
-		);
-		for (Iterator iterator = query.iterate(); iterator.hasNext();) {
-			Object[] row = (Object[]) iterator.next();
-			result.add(new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2], new HashMap<Organisation, ExpressionValue>()));
+		
+		Integer numValues = (Integer)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class).setProjection(Projections.rowCount()).uniqueResult();
+		Integer numCalculations = (Integer)sessionFactory.getCurrentSession().createCriteria(Calculation.class).setProjection(Projections.rowCount()).uniqueResult();
+		Integer numOrganisations = getNumberOfOrganisations();
+		Integer numPeriods = getNumberOfPeriods();
+		
+		if (numValues == numOrganisations * numPeriods * numCalculations) {
+			log.info("no non calculated calculations, skipping");
+		}
+		else {
+			if (log.isDebugEnabled()) log.debug("retrieving calculation values");
+			Set<CalculationValue> allValues = new HashSet<CalculationValue>();
+			Query query1 = sessionFactory.getCurrentSession().createQuery(
+					"select cv.calculation, cv.organisationUnit, cv.period from CalculationValue as cv"
+			).setCacheable(false);
+			for (Iterator iterator = query1.iterate(); iterator.hasNext();) {
+				Object[] row = (Object[]) iterator.next();
+				CalculationValue value = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2], new HashMap<Organisation, ExpressionValue>());
+				allValues.add(value);
+			}
+			if (log.isDebugEnabled()) log.debug("retrieved calculation values, found: "+allValues.size());
+			if (log.isDebugEnabled()) log.debug("retrieving all possible calculations");
+			Query query2 = sessionFactory.getCurrentSession().createQuery(
+					"select calculation, organisationUnit, period " +
+					"from Calculation calculation, OrganisationUnit organisationUnit, Period period"
+			).setCacheable(false);
+			if (log.isDebugEnabled()) log.debug("starting sorting non calculated calculations");
+			for (Iterator iterator = query2.iterate(); iterator.hasNext();) {
+				Object[] row = (Object[]) iterator.next();
+				CalculationValue newValue = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2], new HashMap<Organisation, ExpressionValue>());
+				if (!allValues.contains(newValue)) result.add(newValue);
+			}
+			if (log.isDebugEnabled()) log.debug("done sorting non calculated calculations, found: "+result.size());
 		}
 		return result;
 	}

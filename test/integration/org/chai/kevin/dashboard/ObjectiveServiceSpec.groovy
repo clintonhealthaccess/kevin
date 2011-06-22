@@ -10,8 +10,6 @@ import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import sun.management.counter.Units;
-
 import grails.plugin.spock.IntegrationSpec;
 import grails.plugin.spock.UnitSpec;
 import grails.test.GrailsUnitTestCase;
@@ -19,8 +17,8 @@ import grails.test.GrailsUnitTestCase;
 class ObjectiveServiceSpec extends IntegrationTests {
     
 	def setup() {
-		def calculation1 = new Calculation(expressions: [], timestamp:new Date())
-		calculation1.save()
+		def calculation1 = new Calculation(expressions: [:], timestamp:new Date())
+		calculation1.save(flush: true)
 		def target = new DashboardTarget(names:j(["en":"target"]), code:"TARGET", calculation: calculation1)
 		target.save()
 		def objective = new DashboardObjective(names:j(["en":"objective"]), code:"OBJ", objectiveEntries: [])

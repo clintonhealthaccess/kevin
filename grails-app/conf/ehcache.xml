@@ -8,16 +8,11 @@
     <cacheManagerEventListenerFactory class="" properties=""/>
 
     <defaultCache
-            maxElementsInMemory="5000"
+            maxElementsInMemory="1000"
             eternal="false"
             timeToLiveSeconds="3600"
             overflowToDisk="false"
             diskPersistent="true"
-    />
-
-    <cache name="org.chai.kevin.dashboard.DashboardPercentage"
-           maxElementsInMemory="50000"
-           timeToIdleSeconds="300"
     />
 
     <cache name="org.hibernate.cache.UpdateTimestampsCache"
@@ -50,43 +45,30 @@
            timeToIdleSeconds="300"
     />
     
-    
-    <cache name="org.hibernate.cache.dashboard.DashboardPercentage"
-           maxElementsInMemory="500000"
-           timeToIdleSeconds="300"    	
-    />
-    
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit"
            maxElementsInMemory="5000"
            timeToIdleSeconds="300"
     />
     
     <cache name="org.chai.kevin.DataValue"
-           maxElementsInMemory="1000000"
+           maxElementsInMemory="10000"
            timeToIdleSeconds="300"
     />
     
     <!-- not sure it is used -->
     <cache name="org.hibernate.cache.DataValueQueryCache"
-           maxElementsInMemory="10000000"
+           maxElementsInMemory="50000"
            timeToIdleSeconds="300"
     />
     
 	<cache name="org.hibernate.cache.ExpressionValueQueryCache"
-           maxElementsInMemory="1000000"
+           maxElementsInMemory="1000"
            timeToIdleSeconds="300"
     />
     
 	<cache name="org.hibernate.cache.CalculationValueQueryCache"
-           maxElementsInMemory="1000000"
+           maxElementsInMemory="1000"
            timeToIdleSeconds="300"
     />
     
-    <!-- not sure it is used -->
-    <cache name="org.hibernate.cache.DashboardPercentageQueryCache"
-           maxElementsInMemory="100000"
-           timeToIdleSeconds="300"
-    />
-
-
 </ehcache>

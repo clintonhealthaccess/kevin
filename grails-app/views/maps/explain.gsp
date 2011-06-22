@@ -1,4 +1,3 @@
-<%@ page import="org.chai.kevin.dashboard.DashboardPercentage.Status" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />

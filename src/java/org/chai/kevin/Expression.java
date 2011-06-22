@@ -78,7 +78,7 @@ public class Expression extends Translatable implements Timestamped {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + ((getCode() == null) ? 0 : getCode().hashCode());
 		return result;
 	}
 	@Override
@@ -87,13 +87,13 @@ public class Expression extends Translatable implements Timestamped {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Expression))
 			return false;
 		Expression other = (Expression) obj;
-		if (code == null) {
-			if (other.code != null)
+		if (getCode() == null) {
+			if (other.getCode() != null)
 				return false;
-		} else if (!code.equals(other.code))
+		} else if (!getCode().equals(other.getCode()))
 			return false;
 		return true;
 	}

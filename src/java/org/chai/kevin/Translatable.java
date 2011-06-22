@@ -7,6 +7,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
+import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
@@ -35,7 +36,7 @@ public abstract class Translatable implements Serializable {
 		return descriptions;
 	}
 
-	@Basic
+	@Basic(fetch=FetchType.EAGER)
 	public String getCode() {
 		return code;
 	}
