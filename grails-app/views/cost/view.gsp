@@ -10,7 +10,7 @@
     	<div id="cost">
 			<div id="top" class="box">
 				<div class="filter">
-					<h5>Iteration</h5>
+					<h5><g:message code="costing.labels.iteration" default="Iteration"/></h5>
 					<div class="dropdown">
 						<a href="#" class="selected"><g:dateFormat format="yyyy" date="${costTable.currentPeriod.startDate}"/></a>
 						<div class="hidden dropdown-list">
@@ -27,13 +27,13 @@
 					</div>
 				</div>
 				<div class="filter">
-					<h5>Organisation:</h5>
+					<h5><g:message code="costing.labels.organisation" default="Organisation"/></h5>
 					<div class="dropdown">
 						<g:if test="${costTable.currentOrganisation != null}">
 							<a href="#" class="selected">${costTable.currentOrganisation.name}</a>
 						</g:if>
 						<g:else>
-							<a href="#" class="selected">no organisation selected</a>
+							<a href="#" class="selected"><g:message code="costing.labels.noorganisation" default="no organisation selected"/></a>
 						</g:else>
 						<div class="hidden dropdown-list">
 							<ul class="foldable">
@@ -43,13 +43,13 @@
 					</div>
 				</div>
 				<div class="filter">
-					<h5>Strategic Objective:</h5>
+					<h5><g:message code="costing.labels.objective" default="Strategic Objective"/></h5>
 					<div class="dropdown">
 						<g:if test="${costTable.currentObjective != null}">
 							<a href="#" class="selected"><g:i18n field="${costTable.currentObjective.names}"/></a>
 						</g:if>
 						<g:else>
-							<a href="#" class="selected">no objective selected</a>
+							<a href="#" class="selected"><g:message code="costing.labels.noobjective" default="no objective selected"/></a>
 						</g:else>
 						<div class="hidden dropdown-list">
 							<g:if test="${!objectives.empty}">
@@ -69,14 +69,14 @@
 								</ul>
 							</g:if>
 							<g:else>
-								<span>no objectives found</span>
+								<span><g:message code="costing.labels.noobjectivesfound" default="no objectives found"/></span>
 							</g:else>
 						</div>
 					</div>
 				</div>
 				<g:if test="${true || user.admin}">
 					<div>
-						<a class="flow-add" id="add-cost-objective-link" href="${createLink(controller:'costObjective', action:'create')}">add objective</a>
+						<a class="flow-add" id="add-cost-objective-link" href="${createLink(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
 					</div>
 				</g:if>
 				

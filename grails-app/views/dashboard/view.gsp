@@ -9,7 +9,7 @@
     <body>
 		<div id="dashboard">
 			<div id="corner" class="box">
-				<h5>Iteration</h5>
+				<h5><g:message code="dashboard.labels.iteration" default="Iteration"/></h5>
 				<div class="dropdown">
 					<a class="selected" href="#"><g:dateFormat format="yyyy" date="${dashboard.currentPeriod.startDate}"/></a>
 					<div class="hidden dropdown-list">
@@ -27,7 +27,7 @@
 			</div>
 		
 			<div id="top" class="box">
-	    		<h5 class="float">Objectives</h5>
+	    		<h5 class="float"><g:message code="dashboard.labels.objectives" default="Objectives"/></h5>
 		    	<ul>
 		    		<g:each in="${dashboard.objectivePath}">
 		    			<g:set var="objective" value="${it}"/>
@@ -44,7 +44,7 @@
 	    	<div id="bottom">
 	    		<div id="left">
 			    	<div class="box">
-			    		<h5>Organisations</h5>
+			    		<h5><g:message code="dashboard.labels.organisations" default="Organisations"/></h5>
 				    	<ul>
 				    		<g:each in="${dashboard.organisationPath}" var="organisation">
 					    		<li>
@@ -58,14 +58,14 @@
 			    	</div>
 			    	
 			    	<div class="box" id="facility-type-filter">
-			    		<h5>Facility types</h5>
+			    		<h5><g:message code="dashboard.labels.facility" default="Facility Types"/></h5>
 			    		<g:if test="${!dashboard.facilityTypes.isEmpty()}">
 				    		<g:each in="${dashboard.facilityTypes}" var="group">
 					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}<br/>
 				    		</g:each>
 			    		</g:if>
 			    		<g:else>
-			    			<span class="italic">no facility types</span>
+			    			<span class="italic"><g:message code="dashboard.labels.nofacility" default="filter not available at this level"/></span>
 			    		</g:else>
 			    	</div>
 		    	</div>
@@ -99,23 +99,23 @@
 								    		<g:if test="${true || user.admin}">
 							    				<g:if test="${!objective.isTarget()}">
 													<span>
-														<a class="flow-edit" href="${createLink(controller:'dashboardObjective',action:'edit',id:objectiveEntry.id)}">(edit)</a>
+														<a class="flow-edit" href="${createLink(controller:'dashboardObjective',action:'edit',id:objectiveEntry.id)}">(<g:message code="dashboard.admin.edit" default="edit"/>)</a>
 													</span>
 												</g:if>
 												<g:else>
 													<span>
-														<a class="flow-edit" href="${createLink(controller:'dashboardTarget',action:'edit',id:objectiveEntry.id)}">(edit)</a>
+														<a class="flow-edit" href="${createLink(controller:'dashboardTarget',action:'edit',id:objectiveEntry.id)}">(<g:message code="dashboard.admin.edit" default="edit"/>)</a>
 													</span>
 												</g:else>
 												<g:if test="${!objective.hasChildren()}">
 													<g:if test="${!objective.isTarget()}">
 														<span>
-															<a class="flow-delete" href="${createLink(controller:'dashboardObjective',action:'delete',id:objectiveEntry.id)}">(delete)</a>
+															<a class="flow-delete" href="${createLink(controller:'dashboardObjective',action:'delete',id:objectiveEntry.id)}">(<g:message code="dashboard.admin.delete" default="delete"/>)</a>
 														</span>
 													</g:if>
 													<g:else>
 														<span>
-															<a class="flow-delete" href="${createLink(controller:'dashboardTarget',action:'delete',id:objectiveEntry.id)}">(delete)</a>
+															<a class="flow-delete" href="${createLink(controller:'dashboardTarget',action:'delete',id:objectiveEntry.id)}">(<g:message code="dashboard.admin.delete" default="delete"/>)</a>
 														</span>
 													</g:else>
 												</g:if>
@@ -183,8 +183,8 @@
 				    	<!-- ADMIN SECTION -->
 			    		<g:if test="${true || user.admin}">
 			    			<div class="float-right">
-								<div><a id="add-dashboard-target-link" class="flow-add" href="${createLink(controller:'dashboardTarget', action:'create', params:[currentObjective: dashboard.currentObjective.id])}">add target</a></div>
-								<div><a id="add-dashboard-objective-link" class="flow-add" href="${createLink(controller:'dashboardObjective', action:'create', params:[currentObjective: dashboard.currentObjective.id])}">add objective</a></div>
+								<div><a id="add-dashboard-target-link" class="flow-add" href="${createLink(controller:'dashboardTarget', action:'create', params:[currentObjective: dashboard.currentObjective.id])}"><g:message code="dashboard.admin.add.target" default="Add indicator"/></a></div>
+								<div><a id="add-dashboard-objective-link" class="flow-add" href="${createLink(controller:'dashboardObjective', action:'create', params:[currentObjective: dashboard.currentObjective.id])}"><g:message code="dashboard.admin.add.objective" default="Add objective"/></a></div>
 							</div>
 				    	</g:if>
 				    	<!-- ADMIN SECTION END -->
