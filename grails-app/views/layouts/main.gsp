@@ -299,9 +299,32 @@
 			$(".tb").mbFlipText(true); //top to bottom
 			$(".bt").mbFlipText(false); //bottom to top
 			
-			//Organisationn Unit Folding Effect
-			initOrganisationLevel();
-		
+			/**
+			 * foldables
+			 */
+			$('.foldable a.foldable-toggle').click(function(event) {
+				$(this).parent('.foldable').children('ul').toggle();
+				$(this).toggleClass('toggled');
+				return false;
+			});
+			// we hide everything
+			$('.foldable ul').hide();
+			// we show the current
+			var current = $('.foldable .current');
+			while (current.parents('li').hasClass('foldable') && current.size() > 0) {
+				current.addClass('opened');
+				current.children('ul').show();
+				current.children('a').addClass('toggled');
+				current = current.parents('li');
+			}
+			// we open the first one
+			$('.foldable').each(function(index, element){
+				if (!$(element).parents('li').hasClass('foldable')) {
+					$(element).children('ul').show();
+					$(element).children('a').addClass('toggled');
+				}
+			});
+			
 			/**
 			 * drop-down menus
 			 * TODO transform in jQuery Plugin style
@@ -310,11 +333,9 @@
 				$(this).parent(".dropdown").find("div.dropdown-list").toggle();
 				return false;
 			});
-
-			$(".dropdown-list a").bind('click', function() {
+			$(".dropdown-list a.dropdown-link").bind('click', function() {
 				$(this).parents('.dropdown-list').hide();
 			});
-			
 			$(document).bind('click', function(e) {
 				var clicked = e.target;
 				$(".dropdown a").each(function(){
@@ -323,13 +344,6 @@
 					}
 				});
 			});
-			
-			/**
-			 * foldable lists
-			 */
-			$(".foldable").click(function() {
-				
-			})
 			
 			/**
 			 * nice tables
@@ -371,28 +385,23 @@
 			});
 			
 			/** Nice Input form element  */
-				$(document).delegate('input[type="text"],textarea','focus',function() {
-					$(this).removeClass("idle-field completed-field").addClass("focus-field");
-			        if (this.value == this.defaultValue && this.defaultValue==''){
-			        	this.value = '';
-			    	}
-			        if(this.value != this.defaultValue){
-				    	this.select();
-			        }
-			    });
-			    $(document).delegate('input[type="text"],textarea','blur',function() {
-			    	$(this).removeClass("focus-field").addClass("idle-field");
-			    	if (this.value != this.defaultValue){
-			    		this.value =$.trim(this.value);
-			    		$(this).removeClass("focus-field").addClass("completed-field");
-			    	}
-			    });
+			$(document).delegate('input[type="text"],textarea','focus',function() {
+				$(this).removeClass("idle-field completed-field").addClass("focus-field");
+		        if (this.value == this.defaultValue && this.defaultValue==''){
+		        	this.value = '';
+		    	}
+		        if(this.value != this.defaultValue){
+			    	this.select();
+		        }
+		    });
+		    $(document).delegate('input[type="text"],textarea','blur',function() {
+		    	$(this).removeClass("focus-field").addClass("idle-field");
+		    	if (this.value != this.defaultValue){
+		    		this.value =$.trim(this.value);
+		    		$(this).removeClass("focus-field").addClass("completed-field");
+		    	}
+		    });
 			    
-			    
-
-		});
-		
-		$(document).ready(function () {	
 			//Styling the main menu
 			$('#main-menu > li').hover(
 				function () {
@@ -445,44 +454,6 @@
 				});
 			}
 		}
-		 function initOrganisationLevel() {
-			   $('.foldable ul').hide();
-			   $('.foldable > li > ul').show();	
-				var current = $('.foldable .current').parent();
-				while (!current.hasClass('foldable') && current.size() > 0) {
-					current.addClass('opened');
-					current.show();
-					current = current.parent().parent();
-				}
-				$('.foldable > li a').hover(
-					function() {
-						var current = $(this).parent().parent();
-						
-						$('.foldable > li ul').each(function() {
-							if (
-									($(this).attr('id') != current.attr('id')) 
-									&& !$(this).hasClass('opened')
-									&& $(this).parent().parent().attr('id') != current.attr('id')
-							) {
-								var close = true;
-								$(this).find('ul').each(function() {
-									if ($(this).attr('id') == current.attr('id')) {
-										close = false; 	
-									}
-								});
-								
-								if (close) {
-									$(this).hide(300);
-								}
-							}
-						});
-
-						var toOpen = $(this).parent().find('ul').first();
-						toOpen.show('slow');
-					},
-					function(){}
-				);
-			}  
 	</script>
 </body>
 </html>

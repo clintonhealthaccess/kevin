@@ -34,7 +34,7 @@
 						<a class="selected" href="#" data-type="organisation">Select Organisation Unit</a>
 					</g:else> 
 					<div class="hidden dropdown-list">
-						<ul class="foldable">
+						<ul>
 							<g:render template="/templates/organisationTree"
 								model="[controller: 'dsr', action: 'view', organisation: organisationTree, current: dsrTable.organisation, params:[period: periods.startDate, objective: dsrTable.objective?.id], displayLinkUntil: displayLinkUntil]" />
 						</ul>
@@ -80,20 +80,21 @@
 					</div>
 			</div>
 			<g:if test="${dsrTable.objective != null && dsrTable.organisation != null}">
-			<div class="filter">
-			    		<h5>Facility types</h5>
-			    		<div id="facility-type-filter">
-			    		<g:if test="${!dsrTable.facilityTypes.isEmpty()}">
-				    		<g:each in="${dsrTable.facilityTypes}" var="group">
-					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}
-				    		</g:each>
-			    		</g:if>
-			    		<g:else>
-			    			<span class="italic">No facility types</span>
-			    		</g:else>
-			    		</div>
-			    		<div class="clear"></div>
-			    	</div>
+				<div class="clear"></div>
+				<div class="filter margin-top">
+		    		<h5>Facility types</h5>
+		    		<div id="facility-type-filter">
+		    		<g:if test="${!dsrTable.facilityTypes.isEmpty()}">
+			    		<g:each in="${dsrTable.facilityTypes}" var="group">
+				    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}
+			    		</g:each>
+		    		</g:if>
+		    		<g:else>
+		    			<span class="italic">No facility types</span>
+		    		</g:else>
+		    		</div>
+		    		<div class="clear"></div>
+		    	</div>
 			</g:if>
 			<div class="clear"></div>
 			<div>

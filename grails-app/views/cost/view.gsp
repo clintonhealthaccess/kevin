@@ -36,7 +36,7 @@
 							<a href="#" class="selected"><g:message code="costing.labels.noorganisation" default="no organisation selected"/></a>
 						</g:else>
 						<div class="hidden dropdown-list">
-							<ul class="foldable">
+							<ul>
 								<g:render template="/templates/organisationTree" model="[controller: 'cost', action: 'view',organisation: organisationTree,current: costTable.currentOrganisation, params:[period: costTable.currentPeriod.id, objective: costTable.currentObjectiveId], displayLinkUntil: displayLinkUntil]"/>
 							</ul>
 						</div>

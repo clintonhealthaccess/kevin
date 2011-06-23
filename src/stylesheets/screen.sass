@@ -114,8 +114,24 @@ body.two-columns
   border: solid 1px #73A6ff
   +field-round-corner
 
-
 .foldable
+  a.foldable-toggle
+    cursor: pointer
+    width: 20px
+    height: 20px
+    margin: -3px
+    display: block
+    float: left
+    text-indent: -9999px
+    background-image: url('../images/icons/toggle_plus.gif')
+    
+    &.toggled
+      background-image: url('../images/icons/toggle_minus.gif')
+     
+  &.opened > span, &.opened > a
+    font-weight: bold
+      
+.tmpfoldable
   list-style-type: none
   margin: 0
   padding: 0
@@ -159,9 +175,6 @@ body.two-columns
       a:hover
         background: #fff
         text-decoration: underline
-.current > ul
-  li
-    backgroud-color: red 
 
       
   
@@ -677,7 +690,12 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
 .spacer
   +colspacer
   
+.margin-top
+  margin-top: 20px
+  
 #dsr
+  #values
+    overflow: auto
   #top
     margin-bottom: 10px
   #facility-type-filter

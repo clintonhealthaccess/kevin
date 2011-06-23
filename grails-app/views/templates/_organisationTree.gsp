@@ -1,12 +1,13 @@
-<li class="${current?.id == organisation.id?'current':''}">
+<li class="${current?.id == organisation.id?'current':''} foldable">
 	<% params['organisation'] = organisation.id %>
+	<g:if test="${organisation.children != null}">
+		<a class="foldable-toggle" href="#">(toggle)</a>
+	</g:if>
 	<g:if test="${organisation.level < displayLinkUntil}">
-		<a class="parameter" data-type="organisation" data-organisation="${organisation.id}" href="#">
-			${organisation.name}
-		</a>
+		<span>${organisation.name}</span>
 	</g:if>
 	<g:else>
-		<a class="parameter" data-type="organisation" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:params)}">
+		<a class="dropdown-link" data-type="organisation" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:params)}">
 			${organisation.name}
 		</a>
 	</g:else>
