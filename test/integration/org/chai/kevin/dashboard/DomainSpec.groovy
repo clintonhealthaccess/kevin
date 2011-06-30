@@ -32,10 +32,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.Calculation;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
+import org.chai.kevin.data.Calculation;
 
 import grails.plugin.spock.UnitSpec;
 

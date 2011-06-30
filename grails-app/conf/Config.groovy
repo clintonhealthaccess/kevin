@@ -132,23 +132,37 @@ log4j = {
 }
 
 cloudbees.api.url='https://api.cloudbees.com/api'
-cloudbees.api.key=System.properties ['bees.key']
-cloudbees.api.secret=System.properties ['bees.secret']
+cloudbees.api.key=System.properties['bees.key']
+cloudbees.api.secret=System.properties['bees.secret']
 
 /**
  * Application specific config
  */
+google.analytics.webPropertyID = "UA-xxxxxx-x"
+
 site.languages=["en","fr","rw"]
 site.fallback.language="en"
+site.admin=true
+
 facility.level=4
 facility.type.group="Type"
+
+info.group.level=3
+
 dashboard.facility.checked=["District Hospital","Health Center"]
 dashboard.skip.levels=[]
+
 cost.skip.levels=[]
+
 dsr.facility.checked=["District Hospital","Health Center"]
+
+/**
+ * Configuration file override
+ */
+def locations = ["file:${userHome}/.grails/${appName}-config.groovy"]
+if (System.properties['config']) locations.add("file:"+System.properties['config'])
 environments {
 	production {
-		grails.config.locations = ["file:${userHome}/.grails/${appName}-config.groovy"]
+		grails.config.locations = locations
 	}
 }
-

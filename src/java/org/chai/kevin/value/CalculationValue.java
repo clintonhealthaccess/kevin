@@ -37,13 +37,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.Calculation;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.ValueType;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.value.ExpressionValue.Status;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -67,8 +68,6 @@ public class CalculationValue extends Value {
 	private Calculation calculation;
 	private Boolean hasMissingValues;
 	private Boolean hasMissingExpression;
-	
-	private Double average;
 	
 	public CalculationValue() {}
 	
@@ -95,12 +94,6 @@ public class CalculationValue extends Value {
 	}
 	
 	@Basic
-	@Column(nullable=true)
-	public Double getAverage() {
-		return average;
-	}
-	
-	@Basic
 	@Column(nullable=false)
 	public Boolean getHasMissingExpression() {
 		return hasMissingExpression;
@@ -112,16 +105,17 @@ public class CalculationValue extends Value {
 		return hasMissingValues;
 	}
 	
+	@Transient
+	public Double getAverage() {
+		return getValue()==null?null:Double.parseDouble(getValue());
+	}
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
 	
 	public void setCalculation(Calculation calculation) {
 		this.calculation = calculation;
-	}
-	
-	public void setAverage(Double average) {
-		this.average = average;
 	}
 	
 	public void setHasMissingExpression(Boolean hasMissingExpression) {
@@ -149,7 +143,7 @@ public class CalculationValue extends Value {
 	private void calculateAverage(Map<Organisation, ExpressionValue> values) {
 		if (calculation.getType() != ValueType.VALUE) log.error("averaging value of non VALUE type calculation: "+calculation);
 		// we do it anyway in case it's a user error
-
+		Double average;
 		try {
 			Double sum = 0d;
 			Integer num = 0;
@@ -165,8 +159,10 @@ public class CalculationValue extends Value {
 			log.error("average of non-number values: ", e);
 			average = null;
 		}
+		value = average==null?null:average.toString();
 	}
 
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -191,6 +187,14 @@ public class CalculationValue extends Value {
 		} else if (!getCalculation().equals(other.getCalculation()))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "CalculationValue [calculation=" + calculation
+				+ ", hasMissingValues=" + hasMissingValues
+				+ ", hasMissingExpression=" + hasMissingExpression
+				+ ", average=" + getAverage() + "]";
 	}
 
 

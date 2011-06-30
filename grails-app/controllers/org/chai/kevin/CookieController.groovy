@@ -1,5 +1,7 @@
 package org.chai.kevin
 
+import javax.servlet.http.Cookie;
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -28,9 +30,21 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-constraints = {
-	code(nullable: false, blank: false, unique: true)
-	expression(nullable: false, blank: false, expressionValid: true)
-	type(nullable: false)
-	// shortName(blank: false, unique: true)
+class CookieController {
+
+	def admin = {
+		def c = new Cookie("admin", "true")
+		c.path = '/'
+		response.addCookie(c)
+		render "cookie set"
+	}
+	
+	def user = {
+		def c = new Cookie("admin", "true")
+		c.path = '/'
+		c.maxAge = 0
+		response.addCookie(c)
+		render "cookie deleted"
+	}
+	
 }

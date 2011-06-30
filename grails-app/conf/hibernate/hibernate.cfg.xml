@@ -8,13 +8,14 @@
 	<session-factory>
 	    <mapping class="org.chai.kevin.Translation" />
 	    
-	    <mapping class="org.chai.kevin.Expression" />
-	    <mapping class="org.chai.kevin.Calculation" />
-	    <mapping class="org.chai.kevin.DataElement" />
 	    <mapping class="org.chai.kevin.Constant" />
 
-	    <mapping class="org.chai.kevin.Enum" />
-	    <mapping class="org.chai.kevin.EnumOption" />
+	    <mapping class="org.chai.kevin.data.Data" />
+	    <mapping class="org.chai.kevin.data.Expression" />
+	    <mapping class="org.chai.kevin.data.Calculation" />
+	    <mapping class="org.chai.kevin.data.DataElement" />
+	    <mapping class="org.chai.kevin.data.Enum" />
+	    <mapping class="org.chai.kevin.data.EnumOption" />
 
 		<mapping class="org.chai.kevin.value.Value" />
 	    <mapping class="org.chai.kevin.value.DataValue" />

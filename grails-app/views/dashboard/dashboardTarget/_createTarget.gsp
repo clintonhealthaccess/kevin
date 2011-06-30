@@ -25,7 +25,7 @@
 						<select class="expression-list" name="entry.calculation.expressions[${group.uuid}].id">
 							<option value="null">-- disabled --</option>
 							<g:each in="${expressions}" var="expression">
-								<option value="${expression.id}" ${objectiveEntry.entry.calculation==null?'':fieldValue(bean:objectiveEntry.entry.calculation?.expressions[group.uuid], field:'id')+''==expression.id+''?'selected="selected"':''}>
+								<option value="${expression.id}" ${objectiveEntry.entry.calculation?.expressions==null?'':objectiveEntry.entry.calculation?.expressions[group.uuid]?.id==expression.id?'selected="selected"':''}>
 									<g:i18n field="${expression.names}"/>
 								</option>
 							</g:each>

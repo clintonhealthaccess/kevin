@@ -1,5 +1,3 @@
-package org.chai.kevin;
-
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
@@ -27,75 +25,52 @@ package org.chai.kevin;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.maps
 
-import java.util.ArrayList;
-import java.util.List;
+import org.chai.kevin.Initializer;
+import org.chai.kevin.IntegrationTestInitializer;
+import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.maps.MapsTarget.MapsTargetType;
+import org.hisp.dhis.period.Period;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+class MapsServiceSpec extends IntegrationTests {
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-@SuppressWarnings("serial")
-@Entity(name="Enum")
-@Table(name="enum")
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Enum extends Translatable {
-
-	private Long id;
-
-	private List<EnumOption> enumOptions = new ArrayList<EnumOption>();
+	def mapsService;
+	def expressionService;
 	
-	@Id
-	@GeneratedValue
-	@Column
-	public Long getId() {
-		return id;
+	def setup() {
+		Initializer.createDummyStructure();
+		IntegrationTestInitializer.createExpressions();
 	}
 	
-	@OneToMany(mappedBy="enume", targetEntity=EnumOption.class)
-	public List<EnumOption> getEnumOptions() {
-		return enumOptions;
+	def "calculation gives correct values"() {
+		setup:
+		def calculation = new Calculation(expressions: [
+			"District Hospital": Expression.findByCode("CONST10"),
+			"Health Center": Expression.findByCode("CONST10")
+		], timestamp:new Date())
+		calculation.save(failOnError: true)
+		new MapsTarget(code:"CODE", type:MapsTargetType.AVERAGE, calculation: calculation).save(failOnError: true)
+		expressionService.refreshExpressions()
+		expressionService.refreshCalculations()
+		
+		when:
+		def period = Period.list()[1]
+		def organisation = getOrganisation("Rwanda")
+		def level = 2
+		def target = MapsTarget.findByCode("CODE")
+		def maps = mapsService.getMap(period, organisation, level, target)
+		
+		then:
+		maps.polygons.size() == 5
+		def hasValues = false
+		for (def polygon : maps.polygons) {
+			if (polygon.value != null) hasValues = true
+		}
+		hasValues
 	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public void setEnumOptions(List<EnumOption> enumOptions) {
-		this.enumOptions = enumOptions;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Enum other = (Enum) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		return true;
-	}
-	
 	
 	
 }

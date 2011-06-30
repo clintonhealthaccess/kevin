@@ -73,6 +73,15 @@ public class Organisation {
 		return organisationUnitGroup;
 	}
 	
+	public boolean hasChild(Organisation organisation) {
+		if (children == null) return false;
+		for (Organisation child : children) {
+			if (child.equals(organisation)) return true;
+			else if (child.hasChild(organisation)) return true;
+		}
+		return false;
+	}
+	
 	public void setOrganisationUnitGroup(OrganisationUnitGroup organisationUnitGroup) {
 		this.organisationUnitGroup = organisationUnitGroup;
 	}

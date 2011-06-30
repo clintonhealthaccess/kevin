@@ -34,13 +34,14 @@ import org.springframework.util.ReflectionUtils;
 import org.apache.catalina.util.RequestUtil;
 import org.apache.jasper.compiler.Node.ParamsAction;
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.Calculation;
-import org.chai.kevin.Expression;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 import com.sun.tools.javac.code.Type.ForAll;
@@ -60,6 +61,9 @@ class DashboardTargetController extends AbstractObjectiveController {
 	
 	def saveEntity(def entity) {
 		entity.entry.calculation.timestamp = new Date()
+		// FIXME change this to infer the correct type
+		entity.entry.calculation.type = ValueType.VALUE
+		if (entity.entry.calculation.id == null) entity.entry.calculation.code = UUID.randomUUID().toString();
 		entity.entry.calculation.save()
 		super.saveEntity(entity)
 	}

@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.data;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -31,30 +31,26 @@ package org.chai.kevin;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
+import org.chai.kevin.Translatable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name="DataElement")
-@Table(name="dataelement")
+@Entity(name="EnumOption")
+@Table(name="enumoption")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class DataElement extends Translatable {
-
-	private static final long serialVersionUID = -5866136027581146157L;
+public class EnumOption extends Translatable {
 
 	private Long id;
+	private String code;
+	private String value;
 	
-	private ValueType type;
 	private Enum enume;
-	private String info;
 
 	@Id
 	@GeneratedValue
@@ -63,49 +59,37 @@ public class DataElement extends Translatable {
 		return id;
 	}
 	
-	@Enumerated(EnumType.STRING)
+	
+	@Basic(optional=false)
 	@Column(nullable=false)
-	public ValueType getType() {
-		return type;
+	public String getValue() {
+		return value;
 	}
 	
-	@ManyToOne(targetEntity=Enum.class)
-	@JoinColumn
+	@ManyToOne(targetEntity=Enum.class, optional=false)
+	@JoinColumn(nullable=false)
 	public Enum getEnume() {
 		return enume;
-	}
-	
-	@Basic
-	public String getInfo() {
-		return info;
-	}
-	
-	@Transient
-	public boolean isAggregatable() {
-		return getType() == ValueType.VALUE;
 	}
 	
 	public void setId(Long id) {
 		this.id = id;
 	}
 	
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
 	public void setEnume(Enum enume) {
 		this.enume = enume;
 	}
-	
-	public void setType(ValueType type) {
-		this.type = type;
-	}
-	
-	public void setInfo(String info) {
-		this.info = info;
-	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + ((enume == null) ? 0 : enume.hashCode());
 		return result;
 	}
 
@@ -117,19 +101,18 @@ public class DataElement extends Translatable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DataElement other = (DataElement) obj;
+		EnumOption other = (EnumOption) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;
 		} else if (!code.equals(other.code))
 			return false;
+		if (enume == null) {
+			if (other.enume != null)
+				return false;
+		} else if (!enume.equals(other.enume))
+			return false;
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "DataElement [code=" + getCode() + ", type="
-				+ type + ", enume=" + enume + "]";
 	}
 	
 }

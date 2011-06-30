@@ -32,7 +32,9 @@ import org.chai.kevin.value.ExpressionValue.Status;
 import java.util.Date;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Initializer;
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.ExpressionValue.Status;
@@ -47,6 +49,33 @@ class ExpressionServiceSpec extends IntegrationTests {
 		
 		Initializer.createDummyStructure();
 		IntegrationTestInitializer.createExpressions()
+	}
+	
+	def "normal expression"() {
+		setup:
+		IntegrationTestInitializer.createDataElements();
+		
+		new DataValue(
+			dataElement: DataElement.findByCode("CODE"),
+			period: Period.list()[1],
+			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
+			value: "40",
+			timestamp: new Date(),
+		).save(failOnError: true)
+		
+		when:
+		def id = DataElement.findByCode("CODE").id
+		
+		def expression = new Expression(names:j(["en":"Enum"]), code:"EXPR", expression: formula, type: ValueType.VALUE, timestamp: new Date()).save(failOnError: true)
+		def organisation = IntegrationTests.getOrganisation(organisationName)
+		def period = Period.list()[1]
+		
+		then:
+		expressionService.calculateValue(expression, period, organisation).value == value
+		
+		where:
+		formula					| organisationName	| value
+		"if([1]==1,1,0)"	 	| "Kivuye HC"		| null
 	}
 	
 	def "aggregated value"() {
@@ -133,4 +162,5 @@ class ExpressionServiceSpec extends IntegrationTests {
 		dataElements.size() == 1
 		dataElements.iterator().next().equals(DataElement.findByCode("CODEINT"))		
 	}
+	
 }

@@ -30,11 +30,11 @@ package org.chai.kevin.cost
 
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.Expression;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 import com.sun.tools.javac.code.Type.ForAll;

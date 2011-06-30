@@ -276,10 +276,6 @@ table.nice-table
   .cell
     cursor: default
 
-body.bp .explanation-row 
-  .explanation-cell
-    display: none
-  
 .italic
   font-style: italic
   
@@ -367,9 +363,6 @@ form
   #top
     margin-bottom: 10px
     
-	
-
-    
 #cost #center table
   tbody th.header
     background-color: white
@@ -405,6 +398,10 @@ form
     #map_canvas
       height: 650px
       width: 100%
+  	    
+    #maps-explanation
+      width: 958px
+      margin-bottom: 8px
   	    
 #dashboard
   #corner
@@ -450,22 +447,24 @@ form
   width: 822px
   float: left
   
-  table
-    width: auto
+  #values
+    width: 100%
     float: left
 
-    th, td
-      margin: 0
-      padding: 0
+  #values > table 
+    &> thead, &> tbody
+      &> tr > th, &> tr > td
+        margin: 0
+        padding: 0
+  
+    .explanation-cell
+      display: none
+      width: 98%
+      float: left
+      margin-right: 10px
   
   .header .row .cell
     height: inherit
-  
-  .explanation-row
-    td
-      float: left
-      width: 750px
-      padding-left: 8px
   
   .cell
     +column(2, true)
@@ -496,118 +495,67 @@ form
     width: 140px
 
 
-#dashboard-explanation
+.explanation
   +white-box
-  float: left
+  width: 100%
   padding: 4px
   
   .highlighted div, .selected div, .highlighted, .selected
     background: yellow
     font-weight: bold
- 
-  h5
-    margin-bottom: 4px
+
+  .info
+    margin-right: 18px
  
   .average
-    clear: both
-    width: 488px
     h5
       float: left
       padding-top: 4px
+      padding-right: 4px
     span
-      float: right
+      float: left
       color: red
       font-size: 140%
 
-  .values
-    float: left
-    clear: both
-    ul
-      +column(12, true)
-      +inline-block-list
+  div > ul
+    +inline-block-list
+    padding: 0px
+    margin: 0px
+    
+    li
+      width: 160px
+      margin-right: 8px
+      white-space: normal
       
-      .header
-        font-weight: bold
-        
-      li
-        display: block
-        float: left
-        
-        .organisation
-          +column(4, true)
-          white-space: normal
-          
-        .objective
-          +column(6)
-          white-space: normal
-          
-        .weight
-          +column(2, true)
-          text-align: right
-          padding-right: 10px
-          float: left
-          
-        .value
-          +column(1.5, true)
-          float: left
-          margin-right: 25px
-          text-align: right
- 
-  .expressions
-    float: left
-    clear: both
+  .span table
+    margin-bottom: 0px
+    th, td
+      margin-right: 4px
+      padding: 0px 4px 0px 0px
 
-  .expression-explanation
-    float: left
-    clear: both
-    margin-top: 4px
-      
-  .left-pane
-    float: left
-    
-    .expression
-      margin-bottom: 12px
-      
-    .equation
-      position: relative
-      +column(9, true)
-    
-    .formula
-      +column(8)
-      
-      .element
-        &:hover
-          cursor: pointer
-      
-    .value
-      position: absolute
-      bottom: 0px
-      right: 0px
-      color: red
+    thead
       font-weight: bold
-      font-size: 120%
-    
-  .right-pane
-    float: left
-    margin-left: 4px
-    
-    ul
-      +inline-block-list
-      li
-        display: block
-        white-space: normal
         
-    .id
-      +column(1,true)
-      &:hover
-        cursor: pointer
-        
-    .name
-      +column(7, true)
+    tbody
+      white-space: normal
       
-    .value
-      float: left 
-            
+    tbody td, thead th
+      text-align: right
+ 
+  .element
+    &:hover
+      cursor: pointer
+    
+  h5 
+    margin-top: 4px
+          
+  .span
+    width: 100%
+    margin-top: 8px
+    
+    div
+      margin-bottom: 4px
+    
 #add-expression
   #add-expression-col
     float: left
@@ -629,8 +577,8 @@ form
       margin-bottom: 2px
     
     #data
-      width: 300px
-     
+      width: 600px
+      
 #add-ramp-up
   .row
     width: 250px
@@ -694,6 +642,9 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
   
 .margin-top
   margin-top: 20px
+  
+.bold
+  font-weight: bold
   
 #dsr
   #values

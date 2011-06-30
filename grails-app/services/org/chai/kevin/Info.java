@@ -31,6 +31,7 @@ package org.chai.kevin;
 import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public abstract class Info {
 
@@ -41,5 +42,7 @@ public abstract class Info {
 	}
 	
 	public abstract String getValue();
+	
+	public abstract OrganisationUnit getOrganisation();
 	
 }

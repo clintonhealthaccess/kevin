@@ -38,7 +38,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.DataElement;
 
 @SuppressWarnings("serial")
 @Entity(name="SurveyCheckboxOption")

@@ -45,8 +45,8 @@ dataSource {
 	}
 }
 hibernate {
-	cache.use_second_level_cache = true
-	cache.use_query_cache = true
+	cache.use_second_level_cache = false
+	cache.use_query_cache = false
 	cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
 	naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
 //	flush.mode = 'commit'
@@ -63,6 +63,10 @@ environments {
 			url = "jdbc:hsqldb:mem:devDB"
 			username = "sa";
 			password = "";
+		}
+		hibernate {
+			cache.use_second_level_cache = false
+			cache.use_query_cache = false
 		}
 	}
 	test {

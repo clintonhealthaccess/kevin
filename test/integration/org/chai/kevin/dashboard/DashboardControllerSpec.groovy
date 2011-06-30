@@ -28,11 +28,11 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.Calculation;
-import org.chai.kevin.Expression;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Expression;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;

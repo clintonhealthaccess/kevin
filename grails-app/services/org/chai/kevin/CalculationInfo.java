@@ -28,15 +28,20 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.chai.kevin.data.Calculation;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.Value;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public class CalculationInfo extends Info {
 
 	private CalculationValue calculationValue;
+	private List<Organisation> groups;
 	private Map<Organisation, ExpressionValue> expressionValues;
 	
 	public CalculationInfo(CalculationValue calculationValue,
@@ -45,8 +50,31 @@ public class CalculationInfo extends Info {
 		this.expressionValues = expressionValues;
 	}
 
+	public CalculationInfo(CalculationValue calculationValue, List<Organisation> groups,
+			Map<Organisation, ExpressionValue> expressionValues) {
+		this.calculationValue = calculationValue;
+		this.groups = groups;
+		this.expressionValues = expressionValues;
+	}
+	
+	public List<Organisation> getGroups() {
+		return groups;
+	}
+	
+	public Map<Organisation, ExpressionValue> getExpressionValuesForGroup(Organisation organisation) {
+		Map<Organisation, ExpressionValue> result = new HashMap<Organisation, ExpressionValue>();
+		for (Organisation child : expressionValues.keySet()) {
+			if (organisation.hasChild(child)) result.put(child, expressionValues.get(child));
+		}
+		return result;
+	}
+	
 	public Calculation getCalculation() {
 		return calculationValue.getCalculation();
+	}
+	
+	public OrganisationUnit getOrganisation() {
+		return calculationValue.getOrganisationUnit();
 	}
 	
 	public Value getCalculationValue() {

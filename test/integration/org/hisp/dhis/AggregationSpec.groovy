@@ -34,8 +34,8 @@ import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
-import org.chai.kevin.DataElement;
 import org.chai.kevin.ValueService;
+import org.chai.kevin.data.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -59,7 +59,7 @@ class AggregationSpec extends IntegrationTests {
 		def organisation = getOrganisation(organisationName)
 		
 		then:
-		valueService.getDataValue(dataElement, period, organisation).value == value
+		valueService.getValue(dataElement, period, organisation).value == value
 				
 		where:
 		dataElementCode	| organisationName	| value

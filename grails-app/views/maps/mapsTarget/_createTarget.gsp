@@ -1,9 +1,13 @@
-<div id="add-cost-target" class="entity-form-container">
+<%@ page import="org.chai.kevin.maps.MapsTarget.MapsTargetType" %>
+
+<div id="add-maps-target" class="entity-form-container">
 	<g:form url="[controller:'mapsTarget', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${target}" value="${target.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${target}" field="code"/>
 	
+		<g:selectFromEnum name="type" bean="${target}" values="${MapsTargetType.values()}" field="type" label="Type"/>
+		
 		<div class="row">
 			<h5>Expressions</h5>
 			<div class="float-right">
@@ -11,19 +15,38 @@
 			</div>
 			<div class="clear"></div>
 			
-			<div id="expressions-block">
+			<div class="selectable" data-type="AGGREGATION">
 				<div class="group-list ${hasErrors(bean:target, field:'expression', 'errors')}">
 					<label for="expression.id">Expression:</label>
 					<select class="expression-list" name="expression.id">
 						<option value="null">-- select an expression --</option>
 						<g:each in="${expressions}" var="expression">
-							<option value="${expression.id}" ${expression.id+''==fieldValue(bean: target, field: 'expression.id')+''?'selected="selected"':''}>
+							<option value="${expression.id}" ${expression.id==target.expression?.id?'selected="selected"':''}>
 								<g:i18n field="${expression.names}"/>
 							</option>
 						</g:each>
 					</select>
 					<div class="error-list"><g:renderErrors bean="${target}" field="expression" /></div>
 				</div>
+			</div>
+			
+			<div class="selectable" data-type="AVERAGE">
+				<g:each status="i" in="${groups}" var="group">
+					<div id="group-${group.id}" class="group-list">
+						<label for="calculation.expressions[${group.uuid}].id">Expression for ${group.name}:</label>
+						<select class="expression-list" name="calculation.expressions[${group.uuid}].id">
+							<option value="null">-- disabled --</option>
+							<g:each in="${expressions}" var="expression">
+								<option value="${expression.id}" ${target.calculation?.expressions==null?'':target.calculation?.expressions[group.uuid]?.id==expression.id?'selected="selected"':''}>
+									<g:i18n field="${expression.names}"/>
+								</option>
+							</g:each>
+						</select>
+					</div>
+				</g:each>
+				<g:if test="${target?.calculation?.id != null}">
+					<input type="hidden" name="calculation.id" value="${target.calculation.id}"></input>
+				</g:if>
 			</div>
 		</div>
 
@@ -50,26 +73,27 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#add-cost-target').flow({
-			addLinks: '#add-ramp-up-link',
-			onSuccess: function(data) {
-				if (data.result == 'success') {
-					var rampUp = data.newEntity;
-					$('.ramp-up-list').append('<option value="'+rampUp.id+'">'+rampUp.name+'</option>');
-// 					$.sexyCombo.changeOptions('.ramp-up-list');
-				}
-			}
-		});
-		
-		$('#add-cost-target').flow({
+		$('#add-maps-target').flow({
 			addLinks: '#add-expression-link',
 			onSuccess: function(data) {
 				if (data.result == 'success') {
 					var expression = data.newEntity
 					$('.expression-list').append('<option value="'+expression.id+'">'+expression.name+'</option>');
-					$.sexyCombo.changeOptions('.expression-list');
+// 					$.sexyCombo.changeOptions('.expression-list');
 				}
 			}
 		});
+		
+		selectMapsType();
+		$('#add-maps-target select[name="type"]').bind('change', function(){
+			selectMapsType();
+		});
 	});
+	function selectMapsType() {
+		var value = $('#add-maps-target select[name="type"]').val();
+		$('#add-maps-target .selectable').each(function(index, element){
+			if ($(element).data('type') != value) $(element).hide();
+			else $(element).show();
+		});
+	}
 </script>

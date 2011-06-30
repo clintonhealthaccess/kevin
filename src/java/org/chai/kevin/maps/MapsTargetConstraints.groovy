@@ -1,5 +1,7 @@
 package org.chai.kevin.maps
 
+import org.chai.kevin.maps.MapsTarget.MapsTargetType;
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -30,5 +32,7 @@ package org.chai.kevin.maps
 
 constraints = {
 	code (nullable: false, blank: false, unique: true)
-	expression (nullable: false)
+	type (nullabl: false)
+	expression (validator: { val, obj -> obj.type == MapsTargetType.AVERAGE || val != null})
+	calculation (validator: { val, obj -> obj.type == MapsTargetType.AGGREGATION || val != null})
 }

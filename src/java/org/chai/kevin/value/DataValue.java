@@ -28,8 +28,6 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -38,7 +36,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.DataElement;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
@@ -51,8 +49,6 @@ import org.hibernate.annotations.NaturalId;
 public class DataValue extends Value {
 	
 	private Long id;
-	
-	private String value;
 	
 	private DataElement dataElement;
 	
@@ -69,12 +65,6 @@ public class DataValue extends Value {
 		return dataElement;
 	}
 	
-	@Basic(optional=false)
-	@Column(nullable=false, length=511)
-	public String getValue() {
-		return value;
-	}
-	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -83,10 +73,6 @@ public class DataValue extends Value {
 		this.dataElement = dataElement;
 	}
 	
-	public void setValue(String value) {
-		this.value = value;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -36,9 +36,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.ExpressionService;
+import org.chai.kevin.Info;
+import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
+import org.chai.kevin.maps.MapsTarget.MapsTargetType;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
@@ -51,6 +55,7 @@ public class MapsService {
 	
 	private OrganisationService organisationService;
 	private ValueService valueService;
+	private InfoService infoService;
 	
 	public Maps getMap(Period period, Organisation organisation, Integer level, MapsTarget target) {
 		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",organisation="+organisation+",target="+target+")");
@@ -83,10 +88,17 @@ public class MapsService {
 		for (Organisation child : organisationService.getChildrenOfLevel(organisation, level)) {
 			organisationService.getLevel(child);
 			
-			ExpressionValue expressionValue = valueService.getExpressionValue(child.getOrganisationUnit(), target.getExpression(), period);
 			Double value = null;
-			
-			if (expressionValue != null) value = expressionValue.getNumberValue();
+			if (target.getType() == MapsTargetType.AGGREGATION) {
+				if (log.isDebugEnabled()) log.debug("getting values for AGGREGATION map with expression: "+target.getExpression());
+				ExpressionValue expressionValue = valueService.getValue(target.getExpression(), child.getOrganisationUnit(), period);
+				if (expressionValue != null) value = expressionValue.getNumberValue();
+			}
+			else if (target.getType() == MapsTargetType.AVERAGE) {
+				if (log.isDebugEnabled()) log.debug("getting values for AVERAGE map with calculation: "+target.getCalculation());
+				CalculationValue calculationValue = valueService.getValue(target.getCalculation(), child.getOrganisationUnit(), period);
+				if (calculationValue != null) value = calculationValue.getAverage();
+			}
 			polygons.add(new Polygon(child, value));
 		}
 
@@ -94,11 +106,15 @@ public class MapsService {
 	}
 
 	public MapsExplanation getExplanation(Period period, Organisation organisation, MapsTarget target) {
-		ExpressionValue expressionValue = valueService.getExpressionValue(organisation.getOrganisationUnit(), target.getExpression(), period);
-		Double value = null;
-		if (expressionValue != null) value = expressionValue.getNumberValue();
+		Info info = null;
+		if (target.getType() == MapsTargetType.AGGREGATION) {
+			info = infoService.getInfo(target.getExpression(), organisation, period); 
+		}
+		else if (target.getType() == MapsTargetType.AVERAGE) {
+			info = infoService.getInfo(target.getCalculation(), organisation, period);
+		}
 		
-		return new MapsExplanation(organisation, target, period, value);
+		return new MapsExplanation(organisation, target, period, info);
 	}
 	
 	public void setValueService(ValueService valueService) {
@@ -107,6 +123,10 @@ public class MapsService {
 	
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
+	}
+	
+	public void setInfoService(InfoService infoService) {
+		this.infoService = infoService;
 	}
 	
 }

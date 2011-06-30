@@ -33,7 +33,7 @@ public abstract class Gradient {
 	public abstract Double getValue();
 	
 	public boolean isValid() {
-		return getValue() != null && !getValue().isNaN() && getValue() != -1;
+		return getValue() != null && !getValue().isNaN() && !getValue().isInfinite() && getValue() != -1;
 	}
 	
 	public Integer getRoundedValue() {
@@ -95,7 +95,7 @@ public abstract class Gradient {
 		case 5:
 			return "#79fa88";
 		default:
-			return "#AAA";
+			return "#BBB";
 		}
 	}
 	

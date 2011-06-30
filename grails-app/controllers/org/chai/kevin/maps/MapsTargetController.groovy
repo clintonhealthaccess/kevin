@@ -30,11 +30,12 @@ package org.chai.kevin.maps
 
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.Expression;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 import com.sun.tools.javac.code.Type.ForAll;
@@ -56,7 +57,8 @@ class MapsTargetController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		[ target: entity, expressions: Expression.list() ]
+		def groups = new GroupCollection(organisationService.getGroupsForExpression())
+		[ target: entity, expressions: Expression.list(), groups: groups]
 	}
 	
 	def validateEntity(def entity) {
@@ -64,6 +66,12 @@ class MapsTargetController extends AbstractEntityController {
 	}
 	
 	def saveEntity(def entity) {
+		if (entity.calculation != null) {
+			// FIXME change this to infer the correct type
+			entity.calculation.type = ValueType.VALUE
+			if (entity.calculation.id == null) entity.calculation.code = UUID.randomUUID().toString();
+			entity.calculation.save();
+		}
 		entity.save();
 	}
 	

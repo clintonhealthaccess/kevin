@@ -58,24 +58,12 @@ public class DsrTable {
 		this.values = values;
 	}
 
-	public void setPeriod(Period period) {
-		this.period = period;
-	}
-
 	public Period getPeriod() {
 		return period;
 	}
 
-	public void setOrganisations(List<Organisation> organisations) {
-		this.organisations = organisations;
-	}
-
 	public List<Organisation> getOrganisations() {
 		return organisations;
-	}
-
-	public void setTargets(List<DsrTarget> targets) {
-		this.targets = targets;
 	}
 
 	public List<DsrTarget> getTargets() {
@@ -90,29 +78,16 @@ public class DsrTable {
 		return objective!=null?objective.getId():null;
 	}
 	
-	public Map<Organisation, Map<DsrTarget, Dsr>> getValues() {
-		return values;
-	}
-
-	public void setValues(Map<Organisation, Map<DsrTarget, Dsr>> values) {
-		this.values = values;
-	}
-
 	public Organisation getOrganisation() {
 		return organisation;
 	}
+	
 	public Integer getOrganisationId(){
 		return organisation!=null?organisation.getId():null;
 	}
 	
 	public Object getDsrValue(Organisation organisation, DsrTarget target) {
-
 		return values.get(organisation).get(target).getValue();
-
-	}
-
-	public void setFacilityTypes(List<OrganisationUnitGroup> facilityTypes) {
-		this.facilityTypes = facilityTypes;
 	}
 
 	public List<OrganisationUnitGroup> getFacilityTypes() {

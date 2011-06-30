@@ -152,7 +152,7 @@ public class OrganisationService {
 		return rootOrganisation;
 	} 
 	
-	private void loadUntilLevel(Organisation organisation, int level, Integer... skipLevels) {
+	public void loadUntilLevel(Organisation organisation, int level, Integer... skipLevels) {
 		getLevel(organisation);
 		if (organisation.getLevel() < level) {
 			loadChildren(organisation, skipLevels);

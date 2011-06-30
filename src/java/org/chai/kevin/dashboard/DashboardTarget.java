@@ -40,9 +40,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Calculation;
 import org.chai.kevin.Info;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.data.Calculation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;

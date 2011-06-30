@@ -47,7 +47,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.DataElement;
 
 
 @SuppressWarnings("serial")

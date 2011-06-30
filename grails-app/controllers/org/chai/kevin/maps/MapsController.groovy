@@ -29,8 +29,10 @@ package org.chai.kevin.maps
 */
 
 import org.chai.kevin.AbstractReportController;
+import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
 
@@ -69,7 +71,9 @@ class MapsController extends AbstractReportController {
 		MapsTarget target = getMapsTarget()
 		
 		MapsExplanation explanation = mapsService.getExplanation(period, organisation, target);
-		[explanation: explanation]
+		def groups = new GroupCollection(OrganisationUnitGroup.list())
+		
+		[explanation: explanation, groups: groups]
 	}
 	
 	def map = {
@@ -80,7 +84,7 @@ class MapsController extends AbstractReportController {
 		MapsTarget target = getMapsTarget()
 		Integer level = getOrganisationUnitLevel()
 		
-		org.chai.kevin.maps.Maps map = mapsService.getMap(period, organisation, level, target);
+		Maps map = mapsService.getMap(period, organisation, level, target);
 		
 		if (log.isDebugEnabled()) log.debug("displaying map: "+map)		
 		render(contentType:"text/json", text:'{"result":"success","map":'+map.toJson()+'}');

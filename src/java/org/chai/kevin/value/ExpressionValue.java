@@ -28,8 +28,6 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -42,10 +40,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.Expression;
+import org.chai.kevin.data.Expression;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -61,7 +58,6 @@ public class ExpressionValue extends Value {
 	private Integer id;
 
 	private Status status;
-	private String value;
 	
 	private Expression expression;
 	
@@ -101,18 +97,8 @@ public class ExpressionValue extends Value {
 		return status;
 	}
 	
-	@Basic(optional=true)
-	@Column(nullable=true)
-	public String getValue() {
-		return value;
-	}
-	
 	public void setId(Integer id) {
 		this.id = id;
-	}
-	
-	public void setValue(String value) {
-		this.value = value;
 	}
 	
 	public void setStatus(Status status) {
@@ -123,15 +109,6 @@ public class ExpressionValue extends Value {
 		this.expression = expression;
 	}
 	
-	@Transient
-	public Double getNumberValue() {
-		if (value == null) return null;
-		try {
-			return Double.parseDouble(value);
-		} catch (NumberFormatException e) {
-			return null;
-		}
-	}
 	
 	@Override
 	public String toString() {

@@ -13,19 +13,17 @@
 		<link href="${resource(dir:'css',file:'ie.css')}" media="screen, projection" rel="stylesheet" type="text/css" />
 	<![endif]-->
 	
-	
 	<g:layoutHead />
+
 	<g:javascript library="jquery" plugin="jquery" />
-	
 	<g:javascript src="jquery/form/jquery.form.js" />
 	<g:javascript src="jquery/fieldselection/jquery.fieldselection.js" />
 	<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
 	<g:javascript src="jquery/fliptext/jquery.mb.flipText.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
-<!-- 	<g:javascript src="jquery/progressbar/jquery.progressbar.js" /> -->
-
 	<g:javascript library="application" />
-	
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<ga:trackPageviewAsynch />
 </head>
 <body class="bp two-columns">
 
@@ -47,23 +45,27 @@
 		</div>			
 			<!--<h1>Welcome to Kevin</h1>-->
 			<div id="navigation">
-			<ul id="main-menu" class="menu">
-			        <li><a href="${createLink(controller: 'survey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
-			        <li><a href="#"><g:message code="header.navigation.reports" default="Reports"/></a>
-			        <ul class="submenu">
-					<li><a href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.dashboard" default="Dashboard"/></a></li>
-					<li><a href="${createLink(controller: 'cost', action:'view')}"><g:message code="header.navigation.costing" default="Costing"/></a></li>
-					<li><a href="${createLink(controller: 'dsr', action:'view')}"><g:message code="header.navigation.dsr" default="District Summary Reports"/></a></li>
-					<li><a href="${createLink(controller: 'maps', action:'view')}"><g:message code="header.navigation.maps" default="Maps"/></a></li>
-					</ul>
+				<ul id="main-menu" class="menu">
+					<g:ifAdmin>
+						<li><a href="${createLink(controller: 'survey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+					</g:ifAdmin>
+					<li><a href="#"><g:message code="header.navigation.reports" default="Reports"/></a>
+						<ul class="submenu">
+							<li><a href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.dashboard" default="Dashboard"/></a></li>
+							<li><a href="${createLink(controller: 'cost', action:'view')}"><g:message code="header.navigation.costing" default="Costing"/></a></li>
+							<li><a href="${createLink(controller: 'dsr', action:'view')}"><g:message code="header.navigation.dsr" default="District Summary Reports"/></a></li>
+							<li><a href="${createLink(controller: 'maps', action:'view')}"><g:message code="header.navigation.maps" default="Maps"/></a></li>
+						</ul>
 					</li>
+				<g:ifAdmin>
 					<li><a href="#"><g:message code="header.navigation.administration" default="Administration"/></a>
-					<ul class="submenu">
-					<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
-					<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li>
-					<li><a href="${createLink(controller: 'survey', action:'admin')}">Survey Administration</a></li>
-					</ul>
+						<ul class="submenu">
+							<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
+							<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li>
+							<li><a href="${createLink(controller: 'survey', action:'admin')}">Survey Administration</a></li>
+						</ul>
 					</li>
+				</g:ifAdmin>
 				</ul>
 				<div class="clear"></div>
 			</div>

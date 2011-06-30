@@ -34,13 +34,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.CalculationInfo;
-import org.chai.kevin.DataElement;
-import org.chai.kevin.Expression;
 import org.chai.kevin.ExpressionInfo;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Info;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
@@ -78,7 +78,7 @@ public class ExplanationCalculator extends PercentageCalculator {
 		DashboardPercentage percentage = getPercentageForObjective(objective, organisation, period);
 		if (percentage == null) return null;
 		Map<DashboardObjectiveEntry, DashboardPercentage> values = getValues(objective, organisation, period);
-		Info info = new DashboardObjectiveInfo(percentage, values);
+		Info info = new DashboardObjectiveInfo(percentage, organisation, values);
 		
 		return new DashboardExplanation(info, objective, organisation);
 	}

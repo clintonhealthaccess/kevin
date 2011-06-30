@@ -36,11 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.DataElement;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
@@ -75,7 +75,7 @@ public class DsrService {
 				}
 				Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
 				for (DsrTarget target : targets) {
-					ExpressionValue expressionValue = valueService.getExpressionValue(child.getOrganisationUnit(), target.getExpression(), period);
+					ExpressionValue expressionValue = valueService.getValue(target.getExpression(), child.getOrganisationUnit(), period);
 					String value = null;
 					if (expressionValue != null) value = expressionValue.getValue();
 					orgDsr.put(target,new Dsr(child, period, target, value));

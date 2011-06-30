@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.data;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,90 +28,44 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ValueCalculator;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
-@Entity(name="EnumOption")
-@Table(name="enumoption")
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class EnumOption extends Translatable {
+@Entity(name="Expression")
+@Table(name="dhsst_expression")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+public class Expression extends Data<ExpressionValue> {
 
-	private Long id;
-	private String code;
-	private String value;
+	private String expression;
 	
-	private Enum enume;
-
-	@Id
-	@GeneratedValue
-	@Column
-	public Long getId() {
-		return id;
-	}
-	
-	
-	@Basic(optional=false)
+	@Lob
 	@Column(nullable=false)
-	public String getValue() {
-		return value;
+	public String getExpression() {
+		return expression;
+	}
+	public void setExpression(String expression) {
+		this.expression = expression;
 	}
 	
-	@ManyToOne(targetEntity=Enum.class, optional=false)
-	@JoinColumn(nullable=false)
-	public Enum getEnume() {
-		return enume;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
-	public void setEnume(Enum enume) {
-		this.enume = enume;
-	}
-
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((enume == null) ? 0 : enume.hashCode());
-		return result;
+	public String toString() {
+		return "Expression [code=" + code + ", expression=" + expression + "]";
 	}
-
+	
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		EnumOption other = (EnumOption) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		if (enume == null) {
-			if (other.enume != null)
-				return false;
-		} else if (!enume.equals(other.enume))
-			return false;
-		return true;
+	public ExpressionValue getValue(ValueCalculator calculator, OrganisationUnit organisationUnit, Period period) {
+		return calculator.getValue(this, organisationUnit, period);
 	}
 	
 }

@@ -29,15 +29,22 @@ package org.chai.kevin
 */
 
 import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.Data;
+import org.chai.kevin.data.DataElement;
 
 class DataService {
 
     static transactional = true
 
 	def localeService
+	def sessionFactory
+	
+	Data getData(Long id) {
+		return sessionFactory.currentSession.get(Data.class, id)
+	}
 	
 	DataElement getDataElement(Long id) {
+		if (log.isDebugEnabled()) log.debug("getDataElement(id="+id+")")
 		return DataElement.get(id)
 	}
 	
@@ -60,12 +67,6 @@ class DataService {
 	
     def searchDataElements(String text) {
 		def dataElements = DataElement.list();
-//		if (dataSet == null) {
-//			dataElements = DataElement.list();
-//		}
-//		else {
-//			dataElements = dataSet.getDataElements();
-//		}
 		StringUtils.split(text).each { chunk ->
 			dataElements.retainAll { element ->
 				DataService.matches(chunk, element.id+"") ||
@@ -81,7 +82,4 @@ class DataService {
 		return value.matches("(?i).*"+text+".*");
 	}
 	
-//	def getDataSets() {
-//		return DataSet.list().sort {it.name}
-//	}
 }

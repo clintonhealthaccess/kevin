@@ -1589,7 +1589,7 @@
 <!-- 	<alias name="org.hisp.dhis.aggregation.impl.indicator.IndicatorAggregation" alias="indicatorAggregation" /> -->
 <!-- 	<alias name="org.hisp.dhis.aggregation.impl.cache.AggregationCache" alias="aggregationCache"/> -->
 <!-- 	<alias name="org.hisp.dhis.expression.ExpressionService" alias="dhisExpressionService" /> -->
-	<alias name="org.hisp.dhis.period.PeriodService" alias="periodService"/>
+<!-- 	<alias name="org.hisp.dhis.period.PeriodService" alias="periodService"/> -->
 	<alias name="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" alias="organisationUnitGroupService"/>
 	
 	

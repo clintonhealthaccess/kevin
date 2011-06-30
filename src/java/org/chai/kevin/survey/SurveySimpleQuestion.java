@@ -36,7 +36,8 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.chai.kevin.DataElement;
+
+import org.chai.kevin.data.DataElement;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveySimpleQuestion")

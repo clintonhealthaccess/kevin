@@ -32,29 +32,26 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Timestamped;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
-public class Value implements Timestamped {
+public abstract class Value implements Timestamped {
 
 	protected OrganisationUnit organisationUnit;
 	protected Period period;
-	private Date timestamp = new Date();
+	protected String value;
 
+	private Date timestamp = new Date();
+	
 	public Value() {
 		super();
 	}
@@ -79,6 +76,26 @@ public class Value implements Timestamped {
 		return timestamp;
 	}
 
+	@Basic(optional=true)
+	@Column(nullable=true)
+	public String getValue() {
+		return value;
+	}
+	
+	@Transient
+	public Double getNumberValue() {
+		if (value == null) return null;
+		try {
+			return Double.parseDouble(value);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+	
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
 	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
 		this.organisationUnit = organisationUnit;
 	}
@@ -91,6 +108,7 @@ public class Value implements Timestamped {
 		this.timestamp = timestamp;
 	}
 
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

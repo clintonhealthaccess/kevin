@@ -30,12 +30,14 @@ package org.chai.kevin.cost
 
 import java.util.List;
 
-import org.chai.kevin.Expression;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.cost.CostTarget.CostType;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -79,6 +81,34 @@ class CostTableServiceSpec extends IntegrationTests {
 		"AVERAGE"	| 3		| 6.0d
 		"AVERAGE"	| 4		| 7.0d
 		"AVERAGE"	| 5		| 8.0d
+	}
+	
+	def "missing values displayed correctly"() {
+		setup:
+		IntegrationTestInitializer.createDataElements()
+		new Expression(names:j(["en":"Expression Element 1"]), code:"EXPRELEM1", expression: "["+DataElement.findByCode("CODE").id+"]", type: ValueType.VALUE).save(failOnError: true)
+		def costObjective = new CostObjective(code:"Test Objective")
+		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("EXPRELEM1"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
+		costObjective.save(failOnError: true)
+		expressionService.refreshExpressions()
+		expressionService.refreshCalculations()
+		
+		when:
+		def period = Period.list()[0]
+		def objective = CostObjective.findByCode("Test Objective")
+		def costTable = costTableService.getCostTable(period, objective, organisationService.getRootOrganisation())
+		def expectedTarget = CostTarget.findByCode(targetCode)
+		
+		then:
+		costTable.getCost(expectedTarget, year).value == value
+		
+		where:
+		targetCode		| year	| value
+		"Test Target"	| 1		| 0.0d
+		"Test Target"	| 2		| 0.0d
+		"Test Target"	| 3		| 0.0d
+		"Test Target"	| 4		| 0.0d
+		"Test Target"	| 5		| 0.0d
 	}
 	
 	def "cost service takes into account only selected groups"() {

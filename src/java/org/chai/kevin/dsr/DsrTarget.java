@@ -36,8 +36,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.chai.kevin.Expression;
 import org.chai.kevin.Translatable;
+import org.chai.kevin.data.Expression;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 

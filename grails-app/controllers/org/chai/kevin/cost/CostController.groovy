@@ -72,7 +72,6 @@ class CostController extends AbstractReportController {
 			objectives: CostObjective.list(), 
 			periods: Period.list(),
 			organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
-			displayLinkUntil: 3
 		]
 	}
 	

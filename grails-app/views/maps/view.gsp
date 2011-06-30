@@ -3,8 +3,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
         <title><g:message code="maps.view.label" default="Maps" /></title>
-        
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     </head>
     <body>
     	<div id="maps">
@@ -59,7 +57,14 @@
 											<a class="parameter" href="#" data-target="${target.id}" data-type="target">
 												<g:i18n field="${target.names}"/>
 											</a>
-											<span><g:link class="flow-edit" controller="mapsTarget" action="edit" id="${target.id}" class="flow-edit">(edit)</g:link></span>
+											<g:ifAdmin>
+												<span>
+													<g:link class="flow-edit" controller="mapsTarget" action="edit" id="${target.id}">(edit)</g:link>
+												</span>
+												<span>
+													<g:link class="flow-delete" controller="mapsTarget" action="delete" id="${target.id}">(delete)</g:link>
+												</span>
+											</g:ifAdmin>
 										</li>
 									</g:each>
 								</ul>
@@ -70,23 +75,26 @@
 						</div>
 					</div>
 				</div>
-				<g:if test="${true || user.admin}">
+				<g:ifAdmin>
 					<div>
 						<a id="add-maps-target-link" class="flow-add" href="${createLink(controller:'mapsTarget', action:'create')}" class="flow-add">add target</a>
 					</div>
-				</g:if>
+				</g:ifAdmin>
 				<div class="clear"></div>
 			</div>
     		<div id="center" class="box">
-    			<div id="map_canvas"></div>
+    			<div id="maps-container">
+	    			<div id="maps-explanation" class="explanation-row"></div>
+	    			<div id="map_canvas"></div>
+    			</div>
     			
     			<!-- ADMIN SECTION -->
-		    	<g:if test="${true || user.admin}">
+		    	<g:ifAdmin>
 	    			<div class="hidden flow-container"></div>
 
 					<script type="text/javascript">
 						$(document).ready(function() {
-							$('#map_canvas').flow({
+							$('#maps-container').flow({
 								onSuccess: function(data) {
 									if (data.result == 'success') {
 										location.reload();
@@ -95,7 +103,7 @@
 							});
 						});
 					</script>
-		    	</g:if>
+		    	</g:ifAdmin>
 		    	<div class="clear"></div>
     		</div>
     	</div>
@@ -105,8 +113,10 @@
     		var opacitySelected = 0.9;
     		var opacityBackground = 0.8;
     		var strokeWeight = 0.2;
+    		var strokeWeightSelected = 0.8;
     		var centerZoom = 9;
-    		var centerLatLng = new google.maps.LatLng(-1.93,29.84);
+    		var centerLat = -1.93;
+    		var centerLng = 29.84;
     		
     		// holds state for the level, 
     		// HTML holds the state for the other parameters
@@ -202,7 +212,7 @@
 				var latlng = new google.maps.LatLng(-1.93,29.84);
 				var myOptions = {
 					zoom: centerZoom,
-					center: centerLatLng,
+					center: new google.maps.LatLng(centerLat, centerLng),
 					mapTypeId: google.maps.MapTypeId.ROADMAP,
 					disableDoubleClickZoom: true,
 					streetViewControl: false
@@ -222,11 +232,21 @@
 				google.maps.event.addListener(map, 'dblclick', function(){
 					load({organisation: getParent('organisation', $('.dropdown-organisation .selected').data('organisation')), level: levelControl.getPrevious()});
 				});
+				
+				load({period: $.url().fparam('period'), organisation: $.url().fparam('organisation'), level: $.url().fparam('level'), target: $.url().fparam('target')});
+				$('.parameter').bind('click', function() {
+					var options = {level: null};
+					var type = $(this).data('type');
+					options[type] = $(this).data(type);
+					load(options);
+					
+					return false;
+				});
   			}
     
     		function recenter() {
     			map.setZoom(9);
-    			map.setCenter(centerLatLng);
+    			map.setCenter(new google.maps.LatLng(centerLat, centerLng));
     		}
     	
     		function drawMap(parameters) {
@@ -282,24 +302,24 @@
 									});
 									google.maps.event.addListener(polygon, 'click', function(event) {
 										$.each(polygons, function(key, element) {
-											overrideOptions(element, {fillOpacity: opacity});
+											overrideOptions(element, {fillOpacity: opacity, strokeWeight: strokeWeight});
 											polygon.selected = false;
 										});
 										polygon.selected = true;
-										overrideOptions(polygon, {fillOpacity: opacitySelected});
-// 										showInfos(polygon, event);
+										overrideOptions(polygon, {fillOpacity: opacitySelected, strokeWeight: strokeWeightSelected});
+										showInfos(polygon, event);
 									});
 									google.maps.event.addListener(polygon, 'mouseover', function() {
 										$.each(polygons, function(key, element) {
-											if (!element.selected) overrideOptions(element, {fillOpacity: opacity});
+											if (!element.selected) overrideOptions(element, {fillOpacity: opacity, strokeWeight: strokeWeight});
 										});
-										overrideOptions(polygon, {fillOpacity: opacitySelected})
+										overrideOptions(polygon, {fillOpacity: opacitySelected, strokeWeight: strokeWeightSelected})
 									});
 									google.maps.event.addListener(polygon, 'mouseout', function() {
 										$.each(polygons, function(key, element) {
-											if (!element.selected) overrideOptions(element, {fillOpacity: opacity});
+											if (!element.selected) overrideOptions(element, {fillOpacity: opacity, strokeWeight: strokeWeight});
 										});
-										if (!polygon.selected) overrideOptions(polygon, {fillOpacity: opacity});
+										if (!polygon.selected) overrideOptions(polygon, {fillOpacity: opacity, strokeWeight: strokeWeight});
 									});
 	    						}
 							})
@@ -310,29 +330,14 @@
     		}
     		
     		function showInfos(polygon, event) {
-    			$.each(polygons, function(key, element){
-    				if (element.infowindow != null) element.infowindow.close()	
-    			});
-    			
-    			var infowindow;
-    			if (polygon.infowindow != null) {
-    				var infowindow = polygon.infowindow
-    			}
-    			else {
-    				var infowindow = new google.maps.InfoWindow();
-    				polygon.infowindow = infowindow;
-    				// TODO load content
-    				$.ajax({
-	    				type: 'GET',
-	    				url: "${createLink(controller: 'maps', action: 'explain')}",
-	    				data: {period: polygon.period, target: polygon.target, organisation: polygon.organisation.id},
-	    				success: function(data) {
-	    					infowindow.setContent(data);
-	    				}
-    				});
-    			}		
-				infowindow.setPosition(event.latLng);
-				infowindow.open(map);
+   				$.ajax({
+    				type: 'GET',
+    				url: "${createLink(controller: 'maps', action: 'explain')}",
+    				data: {period: polygon.period, target: polygon.target, organisation: polygon.organisation.id},
+    				success: function(data) {
+    					$('#maps-explanation').html(data);
+    				}
+   				});
     		}
     		
     		function overrideOptions(polygon, options) {
@@ -385,17 +390,7 @@
     		}
     	
 			jQuery(document).ready(function() {
-				initialize();
-				load({period: $.url().fparam('period'), organisation: $.url().fparam('organisation'), level: $.url().fparam('level'), target: $.url().fparam('target')});
-				
-				$('.parameter').bind('click', function() {
-					var options = {level: null};
-					var type = $(this).data('type');
-					options[type] = $(this).data(type);
-					load(options);
-					
-					return false;
-				});
+				google.load("maps", "3", {"callback" : initialize, "other_params": "sensor=false"});
 			});
     	</script>
     </body>

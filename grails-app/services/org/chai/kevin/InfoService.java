@@ -28,8 +28,12 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.List;
 import java.util.Map;
 
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
@@ -39,19 +43,29 @@ public class InfoService {
 
 	private ValueService valueService;
 	private ExpressionService expressionService;
+	private OrganisationService organisationService;
+	private int groupLevel;
 	
 	public ExpressionInfo getInfo(Expression expression, Organisation organisation, Period period) {
-		ExpressionValue expressionValue = valueService.getExpressionValue(organisation.getOrganisationUnit(), expression, period);
+		ExpressionValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
 		if (expressionValue == null) return null;
 		Map<Organisation, Map<DataElement, DataValue>> calculateDataValues = expressionService.calculateDataValues(expression, period, organisation);
 		return new ExpressionInfo(expressionValue, calculateDataValues);
 	}
 	
 	public CalculationInfo getInfo(Calculation calculation, Organisation organisation, Period period) {
-		CalculationValue calculationValue = valueService.getCalculationValue(organisation.getOrganisationUnit(), calculation, period);
+		CalculationValue calculationValue = valueService.getValue(calculation, organisation.getOrganisationUnit(), period);
 		if (calculationValue == null) return null;
+		
+		List<Organisation> groupOrganisations = null;
+		if (groupLevel != 0 && organisation.getLevel() < groupLevel) {
+			groupOrganisations = organisationService.getOrganisationsOfLevel(groupLevel);
+			for (Organisation groupOrganisation : groupOrganisations) {
+				organisationService.loadUntilLevel(groupOrganisation, organisationService.getFacilityLevel());
+			}
+		}
 		Map<Organisation, ExpressionValue> expressionValues = expressionService.calculateExpressionValues(calculation, period, organisation);
-		CalculationInfo info = new CalculationInfo(calculationValue, expressionValues);
+		CalculationInfo info = new CalculationInfo(calculationValue, groupOrganisations, expressionValues);
 		return info;
 	}
 	
@@ -63,4 +77,11 @@ public class InfoService {
 		this.expressionService = expressionService;
 	}
 	
+	public void setOrganisationService(OrganisationService organisationService) {
+		this.organisationService = organisationService;
+	}
+	
+	public void setGroupLevel(int groupLevel) {
+		this.groupLevel = groupLevel;
+	}
 }

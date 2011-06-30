@@ -51,8 +51,18 @@ class ExpressionServiceUnitSpec extends UnitSpec {
 		"[1]"		| [(new Long(1)): "test"]	| "test"
 	}
 	
-	def "test bad value"() {
-		// "[1.1]"		| [1: "test"]	| "test"
+	def "test expression validation"() {
+		
+		expect:
+		valid == expressionService.expressionIsValid(formula)
+		
+		where:
+		formula			| valid
+		"(1"			| org.hisp.dhis.expression.ExpressionService.EXPRESSION_NOT_WELL_FORMED
+		"if((10,1,0)"	| org.hisp.dhis.expression.ExpressionService.EXPRESSION_NOT_WELL_FORMED
+		"123"			| org.hisp.dhis.expression.ExpressionService.VALID
 	}
+	
+	
 	
 }

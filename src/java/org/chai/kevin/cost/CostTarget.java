@@ -39,8 +39,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Expression;
 import org.chai.kevin.Translatable;
+import org.chai.kevin.data.Expression;
 
 @Entity(name="CostTarget")
 @Table(name="dhsst_cost_target")

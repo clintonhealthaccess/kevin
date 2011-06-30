@@ -35,15 +35,15 @@ import grails.plugin.spock.UnitSpec
 import groovy.mock.interceptor.MockFor
 import groovy.mock.interceptor.StubFor;
 
-import org.chai.kevin.Calculation;
-import org.chai.kevin.Expression;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.UnitTests;
-import org.chai.kevin.ValueType;
 import org.gmock.WithGMock;
 import org.hisp.dhis.aggregation.AggregationService
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.period.MonthlyPeriodType;

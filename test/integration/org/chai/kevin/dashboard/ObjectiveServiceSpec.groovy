@@ -28,13 +28,13 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.Calculation;
-import org.chai.kevin.Expression;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.dashboard.DashboardObjectiveService;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Expression;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 

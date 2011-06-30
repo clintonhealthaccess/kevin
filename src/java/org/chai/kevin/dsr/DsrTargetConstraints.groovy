@@ -28,7 +28,7 @@ package org.chai.kevin.dsr
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.Expression;
+import org.chai.kevin.data.Expression;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTargetCategory;
 

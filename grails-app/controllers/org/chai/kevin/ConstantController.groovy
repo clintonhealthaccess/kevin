@@ -28,7 +28,7 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.DataElement;
 
 class ConstantController extends AbstractEntityController {
 	

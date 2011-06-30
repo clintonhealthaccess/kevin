@@ -28,7 +28,6 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,10 +39,16 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Data;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.ExpressionValue.Status;
+import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ValueCalculator;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
@@ -62,6 +67,30 @@ public class ExpressionService {
 	private OrganisationService organisationService;
 	private ValueService valueService;
 
+	private class CalculateValueCalculator implements ValueCalculator {
+
+		@Override
+		public DataValue getValue(DataElement dataElement, OrganisationUnit organisationUnit, Period period) {
+			// TODO cache data values
+			return null;
+		}
+
+		@Override
+		public ExpressionValue getValue(Expression expression, OrganisationUnit organisationUnit, Period period) {
+			return calculateValue(expression, period, organisationService.getOrganisation(organisationUnit.getId()));
+		}
+
+		@Override
+		public CalculationValue getValue(Calculation calculation, OrganisationUnit organisationUnit, Period period) {
+			return calculateValues(calculation, period, organisationService.getOrganisation(organisationUnit.getId()));
+		}
+		
+	}
+	
+	public <T extends Value> T calculate(Data<T> data, OrganisationUnit organisationUnit, Period period) {
+		return data.getValue(new CalculateValueCalculator(), organisationUnit, period);
+	}
+	
 	/**
 	 * 
 	 * @param calculation
@@ -81,7 +110,7 @@ public class ExpressionService {
 			ExpressionValue expressionValue = null;
 			Expression expression = getMatchingExpression(calculation, child);
 			if (expression != null) { 
-				expressionValue = valueService.getExpressionValue(child.getOrganisationUnit(), expression, period);
+				expressionValue = (ExpressionValue)valueService.getValue(expression, child.getOrganisationUnit(), period);
 			}
 			result.put(child, expressionValue);
 		}
@@ -106,7 +135,7 @@ public class ExpressionService {
 	 */
 	// TODO decide if this can be called with a facility, 
 	@Transactional(readOnly=true)
-	public CalculationValue calculateValues(Calculation calculation, Period period, Organisation organisation) {
+	private CalculationValue calculateValues(Calculation calculation, Period period, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("getValues(calculation="+calculation+",period="+period+",organisation="+organisation+")");
 		
 		Map<Organisation, ExpressionValue> result = calculateExpressionValues(calculation, period, organisation);
@@ -140,7 +169,7 @@ public class ExpressionService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public ExpressionValue calculateValue(Expression expression, Period period, Organisation organisation) {
+	private ExpressionValue calculateValue(Expression expression, Period period, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("getValue(expression="+expression+",period="+period+",organisation="+organisation+")");
 		
 		String value = null;
@@ -209,7 +238,7 @@ public class ExpressionService {
 			Map<DataElement, DataValue> valuesForOrganisation = new HashMap<DataElement, DataValue>();
 			values.put(organisation, valuesForOrganisation);
 
-			DataValue dataValue = valueService.getDataValue(dataElement, period, organisation);
+			DataValue dataValue = valueService.getValue(dataElement, organisation.getOrganisationUnit(), period);
 			valuesForOrganisation.put(dataElement, dataValue);
 			if (dataValue != null) result = dataValue.getValue();
 		}
@@ -219,7 +248,7 @@ public class ExpressionService {
 			for (Organisation child : children) {
 				Map<DataElement, DataValue> valuesForOrganisation = new HashMap<DataElement, DataValue>();
 				values.put(child, valuesForOrganisation);
-				DataValue dataValue = valueService.getDataValue(dataElement, period, child);
+				DataValue dataValue = valueService.getValue(dataElement, child.getOrganisationUnit(), period);
 				valuesForOrganisation.put(dataElement, dataValue);
 				if (dataValue != null) {
 					value += Double.parseDouble(dataValue.getValue());
@@ -302,7 +331,7 @@ public class ExpressionService {
 	public void refreshCalculations() {
 		for (CalculationValue calculationValue : valueService.getOutdatedCalculations()) {
 			CalculationValue newValue = calculateValues(calculationValue.getCalculation(), calculationValue.getPeriod(), organisationService.getOrganisation(calculationValue.getOrganisationUnit().getId()));
-			calculationValue.setAverage(newValue.getAverage());
+			calculationValue.setValue(newValue.getValue());
 			calculationValue.setHasMissingExpression(newValue.getHasMissingExpression());
 			calculationValue.setHasMissingValues(newValue.getHasMissingValues());
 			valueService.save(calculationValue);

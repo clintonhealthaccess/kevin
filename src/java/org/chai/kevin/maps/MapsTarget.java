@@ -31,23 +31,37 @@ package org.chai.kevin.maps;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.chai.kevin.Calculation;
-import org.chai.kevin.Expression;
 import org.chai.kevin.Translatable;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Expression;
 
 @SuppressWarnings("serial")
 @Entity(name="MapsTarget")
 @Table(name="dhsst_maps_target")
 public class MapsTarget extends Translatable {
 
+	public static enum MapsTargetType {AGGREGATION("AGGREGATION", "Aggregation"), AVERAGE("AVERAGE", "Average");
+		final String value;
+		final String name;
+		
+		MapsTargetType(String value, String name) { this.value = value; this.name = name;}
+	
+	    public String getName() { return name; }
+	    public String toString() { return value; } 
+	    String getKey() { return name(); }
+	}
+	
 	private Integer id;
+	private MapsTargetType type;
 	private Expression expression;
-//	private Calculation calculation;
+	private Calculation calculation;
 	private Integer order;
 	
 	@Id
@@ -59,16 +73,26 @@ public class MapsTarget extends Translatable {
 		this.id = id;
 	}
 	
-//	@ManyToOne(targetEntity=Calculation.class, optional=false)
-//	public Calculation getCalculation() {
-//		return calculation;
-//	}
-//	
-//	public void setCalculation(Calculation calculation) {
-//		this.calculation = calculation;
-//	}
+	@Enumerated(EnumType.STRING)
+	@Column(nullable=false)
+	public MapsTargetType getType() {
+		return type;
+	}
 	
-	@ManyToOne(targetEntity=Expression.class, optional=false)
+	public void setType(MapsTargetType type) {
+		this.type = type;
+	}
+	
+	@ManyToOne(targetEntity=Calculation.class)
+	public Calculation getCalculation() {
+		return calculation;
+	}
+	
+	public void setCalculation(Calculation calculation) {
+		this.calculation = calculation;
+	}
+	
+	@ManyToOne(targetEntity=Expression.class)
 	public Expression getExpression() {
 		return expression;
 	}

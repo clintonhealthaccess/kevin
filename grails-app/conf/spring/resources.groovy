@@ -5,6 +5,7 @@ import org.chai.kevin.ValueService;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.chart.ChartService;
 import org.chai.kevin.cost.CostTableService;
 import org.chai.kevin.dashboard.DashboardController;
 import org.chai.kevin.dashboard.DashboardService;
@@ -52,12 +53,18 @@ String facilityTypeGroup = config.facility.type.group
 Set<Integer> dashboardSkipLevels = config.dashboard.skip.levels
 Set<Integer> costSkipLevels = config.dashboard.skip.levels
 int organisationLevel = config.facility.level
+int infoGroupLevel = config.info.group.level
 
 beans = {
 
 	surveyService(SurveyService){
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
+	}
+	
+	chartService(ChartService){
+		valueService = ref("valueService")
+		periodService = ref("periodService")
 	}
 
 	dsrService(DsrService){
@@ -68,6 +75,7 @@ beans = {
 	mapsService(MapsService) {
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
+		infoService = ref("infoService")
 	}
 
 	costTableService(CostTableService) {
@@ -90,6 +98,8 @@ beans = {
 	infoService(InfoService) {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
+		organisationService = ref("organisationService")
+		groupLevel = infoGroupLevel
 	}
 
 	dashboardService(DashboardService) {

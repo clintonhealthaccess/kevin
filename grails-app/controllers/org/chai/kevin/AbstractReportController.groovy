@@ -34,6 +34,7 @@ import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveService;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrObjectiveService
 import org.chai.kevin.maps.MapsTarget;
@@ -51,6 +52,7 @@ abstract class AbstractReportController {
 	DashboardObjectiveService dashboardObjectiveService;
 	OrganisationService organisationService;
 	DsrObjectiveService dsrObjectiveService;
+	DataService dataService;
 
 	protected def getObjective() {
 		Translatable objective = null
@@ -164,6 +166,20 @@ abstract class AbstractReportController {
 			redirect (controller: '', action: '')
 		}
 		return level
+	}
+	
+	protected def getData() {
+		Data data = null;
+		try {
+			if (NumberUtils.isNumber(params['data'])) {
+				data = dataService.getData(Long.parseLong(params['data']))
+			}
+		}
+		catch (IllegalStateException e) {
+			// TODO
+			redirect (controller: '', action: '')
+		}
+		return data
 	}
 
 	protected def getPeriod() {

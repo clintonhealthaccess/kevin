@@ -61,9 +61,14 @@
 													<g:i18n field="${objective.names}"/>
 												</a>
 											</span>
-											<span>
-												<g:link controller="costObjective" action="edit" id="${objective.id}" class="flow-edit">(edit)</g:link>
-											</span>
+											<g:ifAdmin>
+												<span>
+													<g:link controller="costObjective" action="edit" id="${objective.id}" class="flow-edit">(edit)</g:link>
+												</span>
+												<span>
+													<g:link controller="costObjective" action="delete" id="${objective.id}" class="flow-delete">(Delete)</g:link>
+												</span>
+											</g:ifAdmin>
 										</li>
 									</g:each>
 								</ul>
@@ -74,11 +79,12 @@
 						</div>
 					</div>
 				</div>
-				<g:if test="${true || user.admin}">
+				<div class="clear"></div>
+				<g:ifAdmin>
 					<div>
 						<a class="flow-add" id="add-cost-objective-link" href="${createLink(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
 					</div>
-				</g:if>
+				</g:ifAdmin>
 				
 			</div>
     		<div id="center" class="box">
@@ -129,11 +135,11 @@
 						</table>
 					
 						<!-- ADMIN SECTION -->
-						<g:if test="${true || user.admin}">
+						<g:ifAdmin>
 							<div>
 								<a id="add-cost-target-link" class="flow-add" href="${createLink(controller:'costTarget', action:'create', params:[currentObjective: costTable.currentObjective?.id])}">add target</a>
 							</div>
-						</g:if>
+						</g:ifAdmin>
 						<!-- ADMIN SECTION END -->
 					</g:if>
 					<g:else>
@@ -141,7 +147,7 @@
 					</g:else>
 				</div>
 				<!-- ADMIN SECTION -->
-		    	<g:if test="${true || user.admin}">
+		    	<g:ifAdmin>
 	    			<div class="hidden flow-container"></div>
 
 					<script type="text/javascript">
@@ -155,7 +161,7 @@
 							});
 						});
 					</script>
-		    	</g:if>
+		    	</g:ifAdmin>
 		    	<!-- ADMIN SECTION END -->
 				<div class="clear"></div>
     		</div>

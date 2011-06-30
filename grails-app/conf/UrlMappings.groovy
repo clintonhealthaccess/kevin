@@ -41,6 +41,8 @@ class UrlMappings {
 		
 		"/maps/map/$period?/$organisation?/$level?/$target?"(controller:"maps", action: "map")
 		
+		"/chart/chart/$data/$organisation"(controller:"chart", action: "chart")
+		
 		"/$controller/$action?/$id?"{
 			constraints {
 				// apply constraints here

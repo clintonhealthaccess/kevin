@@ -35,6 +35,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Initializer;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -114,6 +117,17 @@ class DomainSpec extends IntegrationTests {
 		
 		then:
 		set.contains(expr2)
+	}
+	
+	def "invalid expression"() {
+		when:
+		new Expression(code:"CODE", expression: formula, type: ValueType.VALUE).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+		
+		where:
+		formula << ["if((123,1,0)", "if(3, 3)", "if([328]==1 || [286]==1 || [277]==1 || [215]==1 , \"&#10003;\" , \"NEGS\")"]
 	}
 	
 	def "data element code is unique"() {

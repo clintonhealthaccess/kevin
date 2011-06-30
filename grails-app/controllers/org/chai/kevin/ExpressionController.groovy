@@ -29,7 +29,8 @@ package org.chai.kevin
 */
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
 
 class ExpressionController extends AbstractEntityController {
 

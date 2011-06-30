@@ -31,15 +31,19 @@ package org.chai.kevin.dashboard;
 import java.util.Map;
 
 import org.chai.kevin.Info;
+import org.chai.kevin.Organisation;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public class DashboardObjectiveInfo extends Info {
 
 	private DashboardPercentage percentage;
 	private Map<DashboardObjectiveEntry, DashboardPercentage> values;
+	private Organisation organisation;
 	
-	public DashboardObjectiveInfo(DashboardPercentage percentage, Map<DashboardObjectiveEntry, DashboardPercentage> values) {
+	public DashboardObjectiveInfo(DashboardPercentage percentage, Organisation organisation, Map<DashboardObjectiveEntry, DashboardPercentage> values) {
 		this.percentage = percentage;
 		this.values = values;
+		this.organisation = organisation;
 	}
 	
 	@Override
@@ -56,6 +60,11 @@ public class DashboardObjectiveInfo extends Info {
 	public Double getNumberValue() {
 		if (percentage.getValue() == null) return null;
 		return percentage.getValue();
+	}
+
+	@Override
+	public OrganisationUnit getOrganisation() {
+		return organisation.getOrganisationUnit();
 	}
 
 }

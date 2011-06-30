@@ -30,11 +30,11 @@ package org.chai.kevin.cost
 
 import grails.validation.ValidationException;
 
-import org.chai.kevin.Expression;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.cost.CostTarget.CostType;
+import org.chai.kevin.data.Expression;
 import org.springframework.dao.DataIntegrityViolationException;
 
 class DomainSpec extends IntegrationTests {

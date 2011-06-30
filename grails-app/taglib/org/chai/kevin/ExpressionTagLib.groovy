@@ -31,6 +31,8 @@ package org.chai.kevin;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.chai.kevin.data.DataElement;
+
 public class ExpressionTagLib {
 
 	def expressionService

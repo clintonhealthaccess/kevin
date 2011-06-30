@@ -28,6 +28,9 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.ExpressionValue.Status;

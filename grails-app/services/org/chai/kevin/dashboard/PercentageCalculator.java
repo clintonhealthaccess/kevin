@@ -33,13 +33,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.DataElement;
-import org.chai.kevin.Expression;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
-import org.chai.kevin.ValueType;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.ExpressionValue.Status;
@@ -69,7 +69,7 @@ public class PercentageCalculator {
 		if (target.getCalculation().getType() != ValueType.VALUE) log.error("dashboard target has calculation of invalid type: "+target.getCalculation());
 
 		// but we try anyway, can be a user mistake
-		CalculationValue calculationValue = valueService.getCalculationValue(organisation.getOrganisationUnit(), target.getCalculation(), period);
+		CalculationValue calculationValue = valueService.getValue(target.getCalculation(), organisation.getOrganisationUnit(), period);
 		if (calculationValue == null) return null;
 		DashboardPercentage percentage = new DashboardPercentage(calculationValue.getAverage(), calculationValue.getHasMissingValues(), calculationValue.getHasMissingExpression());
 
@@ -87,7 +87,7 @@ public class PercentageCalculator {
 		DashboardPercentage percentage;
 		Expression expression = expressionService.getMatchingExpression(target.getCalculation(), organisation);
 		if (expression != null) {
-			ExpressionValue expressionValue = valueService.getExpressionValue(organisation.getOrganisationUnit(), expression, period);
+			ExpressionValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
 			if (expressionValue == null) return null;
 			percentage = new DashboardPercentage(expressionValue.getNumberValue(), expressionValue.getStatus() == Status.MISSING_VALUE, false);
 		}

@@ -38,10 +38,15 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Data;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ValueCalculator;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.Query;
@@ -58,51 +63,58 @@ public class ValueService {
 	
 	private SessionFactory sessionFactory;
 	
-	@Transactional(readOnly=true)
-	public ExpressionValue getExpressionValue(OrganisationUnit organisationUnit, Expression expression, Period period) {
-		return (ExpressionValue)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class)
-			.add(Restrictions.naturalId()
-				.set("period", period)
-				.set("organisationUnit", organisationUnit)
-				.set("expression", expression)
-			)
-			.setCacheable(true)
-			.setFlushMode(FlushMode.MANUAL)
-			.setCacheRegion("org.hibernate.cache.ExpressionValueQueryCache")
-			.uniqueResult();
+	public <T extends Value> T getValue(Data<T> data, OrganisationUnit organisationUnit, Period period) {
+		return data.getValue(new CacheValueCalculator(), organisationUnit, period);
 	}
 	
-	@Transactional(readOnly=true)
-	public CalculationValue getCalculationValue(OrganisationUnit organisationUnit, Calculation calculation, Period period) {
-		return (CalculationValue)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class)
-			.add(Restrictions.naturalId()
-				.set("period", period)
-				.set("organisationUnit", organisationUnit)
-				.set("calculation", calculation)
-			)
-			.setCacheable(true)
-			.setFlushMode(FlushMode.MANUAL)
-			.setCacheRegion("org.hibernate.cache.CalculationValueQueryCache")
-			.uniqueResult();
-	}
-	
-	@Transactional(readOnly=true)
-	public DataValue getDataValue(DataElement dataElement, Period period, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("getDataValue(dataElement="+dataElement+", period="+period+", organisation="+organisation+")");
+	private class CacheValueCalculator implements ValueCalculator {
 		
-		 Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataValue.class)
-         .add(Restrictions.naturalId()
-        		 .set("dataElement", dataElement)
-        		 .set("period", period)
-        		 .set("organisationUnit", organisation.getOrganisationUnit())
-         )
-         .setCacheRegion("org.hibernate.cache.DataValueQueryCache")
-         .setFlushMode(FlushMode.MANUAL)
-         .setCacheable(true);
-
-		 DataValue value = (DataValue)criteria.uniqueResult();
-		 if (log.isDebugEnabled()) log.debug("getDataValue = "+value);
-		 return value;
+		@Transactional(readOnly=true)
+		public ExpressionValue getValue(Expression expression, OrganisationUnit organisationUnit, Period period) {
+			return (ExpressionValue)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class)
+				.add(Restrictions.naturalId()
+					.set("period", period)
+					.set("organisationUnit", organisationUnit)
+					.set("expression", expression)
+				)
+				.setCacheable(true)
+				.setFlushMode(FlushMode.MANUAL)
+				.setCacheRegion("org.hibernate.cache.ExpressionValueQueryCache")
+				.uniqueResult();
+		}
+		
+		@Transactional(readOnly=true)
+		public CalculationValue getValue(Calculation calculation, OrganisationUnit organisationUnit, Period period) {
+			return (CalculationValue)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class)
+				.add(Restrictions.naturalId()
+					.set("period", period)
+					.set("organisationUnit", organisationUnit)
+					.set("calculation", calculation)
+				)
+				.setCacheable(true)
+				.setFlushMode(FlushMode.MANUAL)
+				.setCacheRegion("org.hibernate.cache.CalculationValueQueryCache")
+				.uniqueResult();
+		}
+		
+		@Transactional(readOnly=true)
+		public DataValue getValue(DataElement dataElement, OrganisationUnit organisation, Period period) {
+			if (log.isDebugEnabled()) log.debug("getDataValue(dataElement="+dataElement+", period="+period+", organisation="+organisation+")");
+			
+			 Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataValue.class)
+	         .add(Restrictions.naturalId()
+	        		 .set("dataElement", dataElement)
+	        		 .set("period", period)
+	        		 .set("organisationUnit", organisation)
+	         )
+	         .setCacheRegion("org.hibernate.cache.DataValueQueryCache")
+	         .setFlushMode(FlushMode.MANUAL)
+	         .setCacheable(true);
+	
+			 DataValue value = (DataValue)criteria.uniqueResult();
+			 if (log.isDebugEnabled()) log.debug("getDataValue = "+value);
+			 return value;
+		}
 	}
 	
 	@Transactional(readOnly=true)

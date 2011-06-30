@@ -110,9 +110,9 @@
 				<div class="clear"></div>
 			</div>
 			<!-- ADMIN SECTION -->
-			<g:if test="${true || user.admin}">
+			<g:ifAdmin>
 				<div class="hidden flow-container"></div>
-			</g:if>
+			</g:ifAdmin>
 			<!-- ADMIN SECTION END -->
 			<script type="text/javascript">
 				$(document).ready(function() {

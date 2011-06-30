@@ -79,5 +79,11 @@ public class MathUtilsTest extends GrailsUnitTestCase {
 		assertEquals("Test", parser.getValueAsObject());		
 	}
 	
+	public void testInvalidIfExpression() {
+		String expression = "if((1==1,\"Test\",\"0\")";
+		
+		assertTrue(MathUtils.expressionHasErrors(expression));				
+	}
+	
 	
 }

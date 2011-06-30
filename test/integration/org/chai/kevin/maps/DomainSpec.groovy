@@ -30,9 +30,11 @@ package org.chai.kevin.maps;
 
 import grails.validation.ValidationException;
 
-import org.chai.kevin.Expression;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 
 public class DomainSpec extends IntegrationTests {
 
@@ -40,15 +42,23 @@ public class DomainSpec extends IntegrationTests {
 		IntegrationTestInitializer.createExpressions()
 	}
 	
+	def "target constraint: type cannot be null"() {
+		when: 
+		new MapsTarget(code: "CODE").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
 	def "target constraint: code cannot be null"() {
 		when:
-		new MapsTarget(code:"CODE" ,expression: Expression.findByCode("CONST10")).save(failOnError:true)
+		new MapsTarget(code:"CODE", expression: Expression.findByCode("CONST10"), type: MapsTargetType.AGGREGATION).save(failOnError:true)
 		
 		then:
 		MapsTarget.count() == 1
 		
 		when:
-		new MapsTarget(expression: Expression.findByCode("CONST10")).save(failOnError:true)
+		new MapsTarget(expression: Expression.findByCode("CONST10"), type: MapsTargetType.AGGREGATION).save(failOnError:true)
 		
 		then:
 		thrown ValidationException
@@ -56,13 +66,28 @@ public class DomainSpec extends IntegrationTests {
 	
 	def "target constraint: expression cannot be null"() {
 		when:
-		new MapsTarget(code:"CODE1" ,expression: Expression.findByCode("CONST10")).save(failOnError:true)
+		new MapsTarget(code:"CODE1", expression: Expression.findByCode("CONST10"), type: MapsTargetType.AGGREGATION).save(failOnError:true)
 		
 		then:
 		MapsTarget.count() == 1
 		
 		when:
-		new MapsTarget(code:"CODE2").save(failOnError:true)
+		new MapsTarget(code:"CODE2", type: MapsTargetType.AGGREGATION).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "target constraint: calculation cannot be null"() {
+		when:
+		def calculation = new Calculation(expressions: [:]).save(failOnError: true)
+		new MapsTarget(code:"CODE1" , calculation: calculation, type: MapsTargetType.AVERAGE).save(failOnError:true)
+		
+		then:
+		MapsTarget.count() == 1
+		
+		when:
+		new MapsTarget(code:"CODE2", type: MapsTargetType.AVERAGE).save(failOnError:true)
 		
 		then:
 		thrown ValidationException

@@ -36,12 +36,12 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.DataElement;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
@@ -131,10 +131,10 @@ public class CostTableService {
 			List<Integer> years = costService.getYears();
 
 			
-			ExpressionValue expressionValue = valueService.getExpressionValue(organisation.getOrganisationUnit(), target.getExpression(), period);
+			ExpressionValue expressionValue = valueService.getValue(target.getExpression(), organisation.getOrganisationUnit(), period);
 			ExpressionValue expressionEndValue = null;
-			if (target.isAverage()) expressionEndValue = valueService.getExpressionValue(organisation.getOrganisationUnit(), target.getExpressionEnd(), period);
-			if (expressionValue != null && (!target.isAverage() || expressionEndValue != null)) { 
+			if (target.isAverage()) expressionEndValue = valueService.getValue(target.getExpressionEnd(), organisation.getOrganisationUnit(), period);
+			if (expressionValue != null && expressionValue.getNumberValue() != null && (!target.isAverage() || (expressionEndValue != null && expressionEndValue.getNumberValue() != null))) { 
 				Double baseCost = expressionValue.getNumberValue();
 
 				// FIXME

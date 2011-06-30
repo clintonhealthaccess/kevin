@@ -38,18 +38,22 @@ import org.chai.kevin.cost.CostRampUpYear;
 import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.maps.MapsTarget;
+import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
-import org.chai.kevin.DataElement;
-import org.chai.kevin.Enum;
-import org.chai.kevin.EnumOption;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
@@ -407,25 +411,32 @@ class Initializer {
 		if (!MapsTarget.count()) {
 
 			new Expression(
-					names:j(["en":"Map Expression 2"]),
-					descriptions:j([:]),
-					code:"Map Expression 2",
-					type: ValueType.VALUE,
-					expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
-					timestamp:new Date()
-					).save(failOnError: true)
-			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2")).save(failOnError: true)
+				names:j(["en":"Map Expression 2"]),
+				descriptions:j([:]),
+				code:"Map Expression 2",
+				type: ValueType.VALUE,
+				expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
+				timestamp:new Date()
+			).save(failOnError: true)
+			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2"), type: MapsTargetType.AGGREGATION).save(failOnError: true)
 
 
 			new Expression(
-					names:j(["en":"Map Expression"]),
-					descriptions:j([:]),
-					code:"Map Expression",
-					type: ValueType.VALUE,
-					expression: "10 / 100",
-					timestamp:new Date()
-					).save(failOnError: true)
-			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression")).save(failOnError: true, flush:true)
+				names:j(["en":"Map Expression"]),
+				descriptions:j([:]),
+				code:"Map Expression", 
+				type: ValueType.VALUE,
+				expression: "10 / 100",
+				timestamp:new Date()
+			).save(failOnError: true)
+			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression"), type: MapsTargetType.AGGREGATION).save(failOnError: true, flush:true)
+			
+			def calculation1 = new Calculation(expressions: [
+				"District Hospital": Expression.findByCode("Constant 10"),
+				"Health Center": Expression.findByCode("Constant 20")
+			], timestamp:new Date(), type: ValueType.VALUE)
+			calculation1.save()
+			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1, type: MapsTargetType.AVERAGE).save(failOnError: true, flush:true)
 		}
 	}
 
@@ -501,9 +512,9 @@ class Initializer {
 			hrh.save(failOnError: true)
 
 			def calculation1 = new Calculation(expressions: [
-						"District Hospital": Expression.findByCode("Constant 10"),
-						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date())
+				"District Hospital": Expression.findByCode("Constant 10"),
+				"Health Center": Expression.findByCode("Constant 20")
+			], timestamp:new Date(), type: ValueType.VALUE)
 			calculation1.save()
 
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -512,9 +523,9 @@ class Initializer {
 					), weight: 1, order: 1)
 
 			def calculation2 = new Calculation(expressions: [
-						"District Hospital": Expression.findByCode("Constant 20"),
-						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date())
+				"District Hospital": Expression.findByCode("Constant 20"),
+				"Health Center": Expression.findByCode("Constant 20")
+			], timestamp:new Date(), type: ValueType.VALUE)
 			calculation2.save()
 
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -525,7 +536,7 @@ class Initializer {
 			def calculation3 = new Calculation(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
 						"Health Center": Expression.findByCode("Element 1")
-					], timestamp:new Date())
+					], timestamp:new Date(), type: ValueType.VALUE)
 			calculation3.save()
 
 			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -535,7 +546,7 @@ class Initializer {
 
 			def calculation4 = new Calculation(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
-					], timestamp:new Date())
+					], timestamp:new Date(), type: ValueType.VALUE)
 			calculation4.save()
 
 			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -546,7 +557,7 @@ class Initializer {
 			def calculation5 = new Calculation(expressions: [
 						"District Hospital": Expression.findByCode("Element 2"),
 						"Health Center": Expression.findByCode("Element 2")
-					], timestamp:new Date())
+					], timestamp:new Date(), type: ValueType.VALUE)
 			calculation5.save()
 
 			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -557,7 +568,7 @@ class Initializer {
 			def calculation6 = new Calculation(expressions: [
 						"District Hospital": Expression.findByCode("Element 3"),
 						"Health Center": Expression.findByCode("Element 3")
-					], timestamp:new Date())
+					], timestamp:new Date(), type: ValueType.VALUE)
 			calculation6.save()
 
 			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -767,21 +778,21 @@ class Initializer {
 			def serviceDev = new SurveyStrategicObjective(
 					names: j(["en":"Service Delivery"]),
 					descriptions: j(["en":"Service Delivery"]),
-					order: 3
-					//groups:[dh,hc],
+					order: 3,
+					groups:[dh,hc]
 					)
 			def hResourceHealth = new SurveyStrategicObjective(
 					names: j(["en":"Human Resources for Health"]),
 					descriptions: j(["en":"Human Resources for Health"]),
-					order: 1
-					//groups:[dh,hc],
+					order: 1,
+					groups:[dh,hc]
 					)
 
 			def geoAccess = new SurveyStrategicObjective(
 					names: j(["en":"Geographic Access"]),
 					descriptions: j(["en":"Geographic Access"]),
-					order: 2
-					//groups:[dh,hc],
+					order: 2,
+					groups:[dh,hc]
 					)
 
 			//Adding Sub-Objective to sections
@@ -790,21 +801,22 @@ class Initializer {
 					names: j(["en":"Services"]),
 					descriptions: j(["en":"Services"]),
 					order: 2,
-					objective: serviceDev
-					//groups:[dh,hc],
+					objective: serviceDev,
+					groups:[dh,hc]
 					)
 			def labTests= new SurveySubStrategicObjective(
 					names: j(["en":"Lab Tests"]),
 					descriptions: j(["en":"Lab Tests"]),
 					order: 1,
-					objective: serviceDev
+					objective: serviceDev,
+					groups:[dh,hc]
 					)
 			def patientReg=new SurveySubStrategicObjective(
 					names: j(["en":"Patient Registration"]),
 					descriptions: j(["en":"Patient Registration"]),
 					order: 3,
-					objective: serviceDev
-					//groups:[dh,hc],
+					objective: serviceDev,
+					groups:[dh,hc]
 					)
 
 			serviceDev.addSubStrategicObjective(services)
@@ -816,24 +828,24 @@ class Initializer {
 					names: j(["en":"Staffing"]),
 					descriptions: j(["en":"Staffing"]),
 					order: 1,
-					objective: hResourceHealth
-					//groups:[dh,hc],
+					objective: hResourceHealth,
+					groups:[dh,hc]
 					)
 
 			def continuingEd = new SurveySubStrategicObjective(
 					names: j(["en":"Continuing Education"]),
 					descriptions: j(["en":"Continuing Education"]),
 					order: 2,
-					objective: hResourceHealth
-					//groups:[dh,hc],
+					objective: hResourceHealth,
+					groups:[dh,hc]
 					)
 
 			def openResponse = new SurveySubStrategicObjective(
 					names: j(["en":"Open Response"]),
 					descriptions: j(["en":"Open Response"]),
 					order: 3,
-					objective: hResourceHealth
-					//groups:[dh,hc],
+					objective: hResourceHealth,
+					groups:[dh,hc]
 					)
 
 			hResourceHealth.addSubStrategicObjective(staffing)
@@ -845,22 +857,22 @@ class Initializer {
 					names: j(["en":"Infrastructure"]),
 					descriptions: j(["en":"Infrastructure"]),
 					order: 3,
-					objective: geoAccess
-					//groups:[dh,hc],
+					objective: geoAccess,
+					groups:[dh,hc]
 					)
 			def medicalEq=new SurveySubStrategicObjective(
 					names: j(["en":"Medical Equipment"]),
 					descriptions: j(["en":"Medical Equipment"]),
 					order: 2,
-					objective: geoAccess
-					//groups:[dh,hc],
+					objective: geoAccess,
+					groups:[dh,hc]
 					)
 			def wasteMgmnt=new SurveySubStrategicObjective(
 					names: j(["en":"Waste Management"]),
 					descriptions: j(["en":"Waste Management"]),
 					order: 1,
-					objective: geoAccess
-					//groups:[dh,hc],
+					objective: geoAccess,
+					groups:[dh,hc]
 					)
 
 			geoAccess.addSubStrategicObjective(infrastructure)
@@ -874,21 +886,21 @@ class Initializer {
 					names: j(["en":"Service Sub Section Simple Question VALUE"]),
 					descriptions: j(["en":"Service Sub Section Simple Question"]),
 					order: 3,
-					//groups:[dh,hc],
+					groups:[dh,hc],
 					dataElement: DataElement.findByCode("CODE1")
 					)
 			def serviceQ2 = new SurveySimpleQuestion(
 					names: j(["en":"Service Sub Section Simple Question BOOL"]),
 					descriptions: j(["en":"Service Sub Section Simple Question BOOL"]),
 					order: 0,
-					//groups:[dh,hc],
+					groups:[dh,hc],
 					dataElement: DataElement.findByCode("CODE7")
 					)
 			def serviceQ3 = new SurveySimpleQuestion(
 					names: j(["en":"Service Sub Section Simple Question ENUM "]),
 					descriptions: j(["en":"Service Sub Section Simple Question ENUM"]),
 					order: 1,
-					//groups:[dh,hc],
+					groups:[dh,hc],
 					dataElement: DataElement.findByCode("CODE3")
 					)
 
@@ -901,7 +913,7 @@ class Initializer {
 					names: j(["en":"Sample Open Question "]),
 					descriptions: j(["en":"Sample Open Question"]),
 					order: 1,
-					//groups:[dh,hc],
+					groups:[dh,hc],
 					dataElement: DataElement.findByCode("CODE12")
 					)
 			openResponse.addQuestion(openQ)
@@ -910,8 +922,8 @@ class Initializer {
 			def checkBoxQ = new SurveyCheckboxQuestion(
 					names: j(["en":"Service Sub Section CheckBox  Question"]),
 					descriptions: j(["en":"Service Sub Section CheckBox  Question"]),
-					order: 2
-					//groups: [dh,hc],
+					order: 2,
+					groups: [dh,hc]
 					)
 
 			//Checkbox Option
@@ -944,8 +956,8 @@ class Initializer {
 			def tableQ = new SurveyTableQuestion(
 					names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
 					descriptions: j(["en":"Training Modules"]),
-					order: 1
-					//groups: [dh,hc],
+					order: 1,
+					groups: [dh,hc]
 					)
 			//Add columns
 			def tabColumnOne = new SurveyTableColumn(

@@ -39,11 +39,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.DataElement;
+import org.chai.kevin.data.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
@@ -100,7 +101,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	}
 
 	// optional has be set to false
-	@ManyToOne(targetEntity = OrganisationUnitGroup.class, optional = true)
+	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
 	public List<OrganisationUnitGroup> getGroups() {
 		return groups;
 	}
