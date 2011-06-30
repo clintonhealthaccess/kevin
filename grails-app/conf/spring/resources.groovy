@@ -57,6 +57,7 @@ beans = {
 
 	surveyService(SurveyService){
 		organisationService = ref("organisationService")
+		valueService = ref("valueService")
 	}
 
 	dsrService(DsrService){

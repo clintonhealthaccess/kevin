@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,27 +25,35 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.survey;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.chai.kevin.DataElement;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyTableQuestion")
 @Table(name = "dhsst_survey_table_question")
 public class SurveyTableQuestion extends SurveyQuestion {
 
-	private List<SurveyTableColumn> columns;
-	private List<SurveyTableRow> rows;
+	private List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>();
+	private List<SurveyTableRow> rows = new ArrayList<SurveyTableRow>();
 
 	public void setColumns(List<SurveyTableColumn> columns) {
 		this.columns = columns;
 	}
 
-	@OneToMany(targetEntity = SurveyTableColumn.class, mappedBy = "question")
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveyTableColumn.class, mappedBy = "question")
+	@OrderBy(value="order")
 	public List<SurveyTableColumn> getColumns() {
 		return columns;
 	}
@@ -56,7 +62,8 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		this.rows = rows;
 	}
 
-	@OneToMany(targetEntity = SurveyTableRow.class, mappedBy = "question")
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveyTableRow.class, mappedBy = "question")
+	@OrderBy(value="order")
 	public List<SurveyTableRow> getRows() {
 		return rows;
 	}
@@ -68,16 +75,28 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		return gspName;
 	}
 
-	@Transient
 	public void addColumn(SurveyTableColumn column) {
 		column.setQuestion(this);
 		columns.add(column);
+		Collections.sort(columns, new SurveyTableColumnSorter());
 	}
 
-	@Transient
 	public void addRow(SurveyTableRow row) {
 		row.setQuestion(this);
 		rows.add(row);
+		Collections.sort(rows, new SurveyTableRowSorter());
+	}
+
+	@Transient
+	@Override
+	public List<DataElement> getDataElements() {
+		List<DataElement> dataElements = new ArrayList<DataElement>();
+		for (SurveyTableRow row : rows) {
+			for (SurveyTableColumn column : columns) {
+				dataElements.add(row.getDataElements().get(column));
+			}
+		}
+		return dataElements;
 	}
 
 }

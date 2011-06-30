@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,6 +25,13 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.survey;
+/**
+ * @author JeanKahigiso
+ *
+ */
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -34,9 +39,9 @@ import javax.persistence.Transient;
 import org.chai.kevin.DataElement;
 
 @SuppressWarnings("serial")
-@Entity(name = "SurveySingleQuestion")
+@Entity(name = "SurveySimpleQuestion")
 @Table(name = "dhsst_survey_single_question")
-public class SurveySingleQuestion extends SurveyQuestion {
+public class SurveySimpleQuestion extends SurveyQuestion {
 
 	private DataElement dataElement;
 
@@ -50,8 +55,16 @@ public class SurveySingleQuestion extends SurveyQuestion {
     @Transient
 	@Override
 	public String getTemplate() {
-		String gspName = "singleQuestion";
+		String gspName = "simpleQuestion";
 		return gspName;
+	}
+    
+    @Transient
+	@Override
+	public List<DataElement> getDataElements() {
+		List<DataElement> elements = new ArrayList<DataElement>();
+		elements.add(dataElement);
+		return elements;
 	}
 
 }

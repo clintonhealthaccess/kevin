@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,7 +25,16 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.survey;
+/**
+ * @author JeanKahigiso
+ *
+ */
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Basic;
@@ -35,11 +42,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.DataElement;
+
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyTableRow")
@@ -49,7 +58,7 @@ public class SurveyTableRow extends SurveyTranslatable {
 	private Integer id;
 	private Integer order;
 	private SurveyTableQuestion question;
-	private Map<SurveyTableColumn,DataElement> dataElements;
+	private Map<SurveyTableColumn,DataElement> dataElements= new LinkedHashMap<SurveyTableColumn,DataElement>();
 
 
 	public void setId(Integer id) {
@@ -84,10 +93,15 @@ public class SurveyTableRow extends SurveyTranslatable {
 	public void setDataElements(Map<SurveyTableColumn,DataElement> dataElements) {
 		this.dataElements = dataElements;
 	}
-    @OneToMany(targetEntity=DataElement.class)
+    @ManyToMany(targetEntity=DataElement.class)
 	public Map<SurveyTableColumn,DataElement> getDataElements() {
 		return dataElements;
 	}
 
-
+    @Transient
+    public List<SurveyTableColumn> getColumns() {
+    	List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>(dataElements.keySet());
+    	Collections.sort(columns,new SurveyTableColumnSorter());
+    	return columns;
+    }
 }

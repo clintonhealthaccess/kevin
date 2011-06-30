@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,7 +25,11 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+package org.chai.kevin.survey;
+/**
+ * @author JeanKahigiso
+ *
+ */
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -41,6 +43,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
@@ -48,16 +51,12 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 @Table(name = "dhsst_survey_question")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class SurveyQuestion extends SurveyTranslatable {
-	public static enum Answered {
-		ANSWERED, NOTANSWERED, ANSWERNOTCORRECT
-	};
 
 	private Integer id;
 	private Integer order;
 	private boolean status = true;
-	private Answered answered = Answered.NOTANSWERED;
-	private SurveySubSection subSection;
-	//private List<OrganisationUnitGroup> groups;
+	private SurveySubStrategicObjective subObjective;
+	private List<OrganisationUnitGroup> groups;
 
 	public void setId(Integer id) {
 		this.id = id;
@@ -79,25 +78,6 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		return order;
 	}
 
-	public void setSubSection(SurveySubSection subSection) {
-		this.subSection = subSection;
-	}
-
-	@ManyToOne(targetEntity = SurveySubSection.class, optional = false)
-	public SurveySubSection getSubSection() {
-		return subSection;
-	}
-
-//	public void setGroups(List<OrganisationUnitGroup> groups) {
-//		this.groups = groups;
-//	}
-//
-//	// optional has be set to false
-//	@ManyToOne(targetEntity = OrganisationUnitGroup.class, optional = true)
-//	public List<OrganisationUnitGroup> getGroups() {
-//		return groups;
-//	}
-
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
@@ -106,30 +86,33 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		return status;
 	}
 
-	public void setAnswered(Answered answered) {
-		this.answered = answered;
+	public void setSubObjective(SurveySubStrategicObjective subObjective) {
+		this.subObjective = subObjective;
 	}
 
-	public Answered getAnswered() {
-		return answered;
+	@ManyToOne(targetEntity = SurveySubStrategicObjective.class, optional = false)
+	public SurveySubStrategicObjective getSubObjective() {
+		return subObjective;
 	}
 
-//	public void addOrganisationGroup(OrganisationUnitGroup group) {
-//		groups.add(group);
-//	}
+	public void setGroups(List<OrganisationUnitGroup> groups) {
+		this.groups = groups;
+	}
 
-	@Transient
-	public String toString() {
-		if (this.answered == Answered.ANSWERED)
-			return "answered";
-		if (this.answered == Answered.NOTANSWERED)
-			return "notanswered";
-		else
-			return "answernotcorrect";
+	// optional has be set to false
+	@ManyToOne(targetEntity = OrganisationUnitGroup.class, optional = true)
+	public List<OrganisationUnitGroup> getGroups() {
+		return groups;
+	}
 
+	public void addOrganisationGroup(OrganisationUnitGroup group) {
+		groups.add(group);
 	}
 
 	@Transient
 	public abstract String getTemplate();
+
+	@Transient
+	public abstract List<DataElement> getDataElements();
 
 }

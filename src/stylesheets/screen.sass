@@ -81,7 +81,9 @@ body.two-columns
     margin: 0 0 1px
     width: 100%
     background-repeat: no-repeat
-        
+.display-in-block
+  display: block
+     
 .spinner
   position: fixed
   text-align: center
@@ -91,7 +93,7 @@ body.two-columns
   opacity: 0.4
   background-color: grey
   z-index: 20
-  
+ 
   img
     position: relative
     top: 50%
@@ -795,50 +797,29 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       width: 20%
       float: left
       padding: 3px
+      +box-top-round-corner
     #survey-objective-box
       width: 77%
       float: right
       padding: 3px
+      +box-top-round-corner
 
 
   #bottom-container
     #survey-left-objective-container
       width: 20%
       float: left
-      margin-top: 10px
+      margin-top: 2px
       padding: 3px
+      +box-bottom-round-corner
     #survey-right-question-container
       width: 77%
       float: right
-      margin-top: 10px
+      margin-top: 2px
       padding: 3px
+      +box-bottom-round-corner
       
-  #tabs
-    margin: 0px 
-    padding: 0px 
-    list-style: none 
-    overflow: hidden
-    li
-      float: left 
-      display: block
-      padding: 5px 
-      background-color: #bbb 
-      margin-right: 5px
-      
-      a
-        color: #fff 
-        text-decoration: none
-    li
-      .current
-        background-color: #e1e1e1
-        a
-          color: #000 
-          text-decoration: none
-          
-        a
-          .remove
-            color: #f00  
-            margin-left: 10px
+
   #content
     background-color: #e1e1e1
     margin: 0 auto
@@ -846,18 +827,65 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     p
       margin: 0 
       padding: 20px 20px 100px 20px
-                
-  #subsection-questions
-    float: 0px auto 
-    margin: 0px 20px 0px 0px
-    width: 700px 
-    margin-top: 20px
+  .question-in-block 
+    margin: 5px 1px 20px 1px 
+          
+  .survey-highlight-title
+    color: #3b84c9
+    font-size: 600
+    a
+      color: #3b84c9
+    a:hover
+      text-decoration: underline
+         
+  #survey-subobjective-title-container
+    +white-box
+    margin: 5px 1px 2px 1px
+    padding : 5px
+    +box-top-round-corner  
+  #survey-questions-container
+    +white-box
+    margin: 1px 1px 5px 1px
+    padding : 10px 3px 3px 5px
+    min-height: 300px
+    +box-bottom-round-corner
+  .survey-container-left-side
+    float: left
+    width: 45%
+  .survey-container-right-side
+    float: right
+    width: 45%
+  .survey-strategic-object-title
+    +white-box
+    margin-bottom: 4px
+    padding: 2px
+    text-align: center
+    +box-top-round-corner
     
-  #survey-section-list 
+  .question-table
+    max-width: 700px
+    margin: 10px 1px 1px 1px
+    paddind: 1px
+    th
+      font-weight: normal
+      background: #3b84c9
+      color: #fff
+  .question-tab-title
+    border-left: 1px solid #fff
+  .oddrow
+    +odd
+    td 
+      border-bottom: 1px solid #d3d3d3
+  .evenrow
+    +even
+    td 
+      border-bottom: 1px solid #d3d3d3
+                  
+  #survey-objective-list 
     list-style-type: none
     margin: 0
     padding: 0
-    width: 15em
+    width: 197px
     a
       display: block
       text-decoration: none
@@ -874,24 +902,31 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       list-style-type: none
       margin: 0
       padding: 0
-      width: 15em
+      width: 197px
       li
         margin-top: 1px 
         a
           background: #f0f4fd
           color: #333
-          padding-left: 20px
-          border-left: 5px #73A6ff solid            
+          padding-left: 15px 
+          border: 1px #fff solid 
+          border-left: 5px #73A6ff solid
         a:hover
           background: #fff
+          border: 1px #739eee solid 
           border-left: 5px #739eee solid
           padding-left: 15px
+        .opened
+          background: #dbfbde
+          border-left: 5px #c32e06 solid
           
         @if true  
         a
           display: inline-block
           display: block
-    
+          
+#survey-admin
+   
 
      
   

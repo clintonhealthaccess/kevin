@@ -41,6 +41,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+@SuppressWarnings("serial")
 @Entity(name="Enum")
 @Table(name="enum")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

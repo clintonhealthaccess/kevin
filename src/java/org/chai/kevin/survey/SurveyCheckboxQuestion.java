@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,7 +25,13 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.survey;
 
+/**
+ * @author JeanKahigiso
+ *
+ */
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -35,12 +39,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.CascadeType;
 
+import org.chai.kevin.DataElement;
+
 @SuppressWarnings("serial")
 @Entity(name = "SurveyCheckboxQuestion")
 @Table(name = "dhsst_survey_checkbox_question")
 public class SurveyCheckboxQuestion extends SurveyQuestion {
 
-	List<SurveyCheckboxOption> options;
+	List<SurveyCheckboxOption> options = new ArrayList<SurveyCheckboxOption>();
 	
     @OneToMany(cascade = CascadeType.ALL,targetEntity=SurveyCheckboxOption.class, mappedBy="question")
 	public List<SurveyCheckboxOption> getOptions() {
@@ -61,6 +67,16 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	public String getTemplate() {
 		String gspName = "checkboxQuestion";
 		return gspName;
+	}
+    
+    @Transient
+	@Override
+	public List<DataElement> getDataElements() {
+		List<DataElement> dataElements = new ArrayList<DataElement>();
+		for (SurveyCheckboxOption option : options) {
+			dataElements.add(option.getDataElement());
+		}
+		return dataElements;
 	}
 
 }

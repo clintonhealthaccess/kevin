@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,7 +25,11 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+package org.chai.kevin.survey;
+/**
+ * @author JeanKahigiso
+ *
+ */
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -39,24 +41,23 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
-@Entity(name = "SurveySection")
-@Table(name = "dhsst_survey_section")
-public class SurveySection extends SurveyTranslatable  {
-	
-	public static enum Completed {
-		COMPLETED, INPROGRESS, NOTSTARTED
-	};
-	
+@Entity(name = "SurveyStrategicObjective")
+@Table(name = "dhsst_survey_strategic_objective")
+public class SurveyStrategicObjective extends SurveyTranslatable {
+
 	private Integer id;
 	private Integer order;
-	private Completed completed = Completed.NOTSTARTED;
-	private List<SurveySubSection> subSections = new ArrayList<SurveySubSection>();
+	private boolean status = true;
+	private List<OrganisationUnitGroup> groups;
+	private List<SurveySubStrategicObjective> subObjectives = new ArrayList<SurveySubStrategicObjective>();
 
 	public void setId(Integer id) {
 		this.id = id;
@@ -78,62 +79,52 @@ public class SurveySection extends SurveyTranslatable  {
 		return order;
 	}
 
-	public void setCompleted(Completed completed) {
-		this.completed = completed;
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
-	public Completed getCompleted() {
-		return completed;
+	public boolean isStatus() {
+		return status;
 	}
 
-	public void setSubSections(List<SurveySubSection> subSections) {
-		this.subSections = subSections;
-	}
-    @OneToMany(cascade=CascadeType.ALL, targetEntity=SurveySubSection.class, mappedBy="section")
-	public List<SurveySubSection> getSubSections() {
-		return subSections;
+	public void setSubObjectives(List<SurveySubStrategicObjective> subObjectives) {
+		this.subObjectives = subObjectives;
 	}
 
-	@Transient
-	public void setSectionCompleted() {
-		int i = 0;
-		for (SurveySubSection subsection : subSections)
-			if (subsection.isStatus() && subsection.toString()=="completed")
-				i++;
-		if (subSections.size() == i)
-			this.setCompleted(Completed.COMPLETED);
-		if (subSections.size() > 0 && subSections.size() < i)
-			this.setCompleted(Completed.INPROGRESS);
-		else
-			this.setCompleted(Completed.NOTSTARTED);
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveySubStrategicObjective.class, mappedBy = "objective")
+	public List<SurveySubStrategicObjective> getSubObjectives() {
+		return subObjectives;
 	}
-	
-	public void addSubSection(SurveySubSection subSection) {
-		subSection.setSection(this);
-		subSections.add(subSection);
-	}
-	
-	@Transient
-	public String toString() {
-		if (this.completed == Completed.COMPLETED)
-			return "completed";
-		if (this.completed == Completed.INPROGRESS)
-			return "inprogress";
-		else
-			return "notstarted";
 
+	public void setGroups(List<OrganisationUnitGroup> groups) {
+		this.groups = groups;
+	}
+	// optional has be set to false
+	@ManyToOne(targetEntity = OrganisationUnitGroup.class, optional = true)
+	public List<OrganisationUnitGroup> getGroups() {
+		return groups;
+	}
+
+	public void addOrganisationGroup(OrganisationUnitGroup group) {
+		groups.add(group);
+	}
+
+	public void addSubStrategicObjective(
+			SurveySubStrategicObjective subObjective) {
+		subObjective.setObjective(this);
+		subObjectives.add(subObjective);
 	}
 
 	@Transient
-	public Map<SurveySubSection, List<SurveyQuestion>> getAllQuestionsOfSurveySection() {
-		Map<SurveySubSection, List<SurveyQuestion>> qSubSection = null;
-		if (!subSections.isEmpty()) {
-			qSubSection = new HashMap<SurveySubSection, List<SurveyQuestion>>();
-			for (SurveySubSection subSection : subSections)
-				qSubSection.put(subSection, subSection.getQuestions());
+	public Map<SurveySubStrategicObjective, List<SurveyQuestion>> getAllQuestionsOfSurveySection() {
+		Map<SurveySubStrategicObjective, List<SurveyQuestion>> qSubObjective = null;
+		if (!subObjectives.isEmpty()) {
+			qSubObjective = new HashMap<SurveySubStrategicObjective, List<SurveyQuestion>>();
+			for (SurveySubStrategicObjective subSection : subObjectives)
+				qSubObjective.put(subSection, subSection.getQuestions());
 		}
 
-		return qSubSection;
+		return qSubObjective;
 
 	}
 }

@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,57 +25,53 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+package org.chai.kevin.survey;
+/**
+ * @author JeanKahigiso
+ *
+ */
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.DataElement;
-import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.ValueService;
 import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SurveyService {
-	private Log log = LogFactory.getLog(SurveyService.class);
+	//private Log log = LogFactory.getLog(SurveyService.class);
 	private OrganisationService organisationService;
-	private ExpressionService expressionService;
+	private ValueService valueService;
 	private Integer organisationLevel;
 
 	@Transactional(readOnly = true)
 	public SurveyPage getSurvey(Period currentPeriod,
-			Organisation currentOrganisation, SurveySubSection currentSection) {
-		Map<SurveyQuestion, Map<DataElement, DataValue>> values = null;
-		log.info("====>currentPeriod" + currentPeriod
-				+ "====>currentOrganisation" + currentOrganisation
-				+ "====>All Sections:" + currentSection);
+			Organisation currentOrganisation,
+			SurveySubStrategicObjective currentSubObjective) {
+		
+		Map<SurveyQuestion, Map<DataElement, DataValue>> values = new LinkedHashMap<SurveyQuestion, Map<DataElement, DataValue>>();
+		if (currentSubObjective != null) {
+			Collections.sort(currentSubObjective.getQuestions(), new SurveyQuestionSorter());
+			for (SurveyQuestion question : currentSubObjective.getQuestions()) {
+				Map<DataElement, DataValue> dataElementValue = new HashMap<DataElement, DataValue>();
+				values.put(question, dataElementValue);
+				List<DataElement> dataElements = question.getDataElements();
 
-//		if (currentSection != null) {
-//			for (SurveySubSection subSection : currentSection.getSubSections()) {
-//				Map<DataElement, DataValue> dataElementValue = null;
-//				for (SurveyQuestion question : subSection.getQuestions()) {
-//					if (question.getTemplate().equals("singleQuestion")) {
-//						// dataElementValue.put((SurveySingleQuestion)question.,
-//						// arg1);
-//					}
-//					if (question.getTemplate().equals("checkboxQuestion")) {
-//
-//					}
-//					if (question.getTemplate().equals("tableQuestion")) {
-//
-//					}
-//				}
-//
-//			}
-//		}
-
-		log.info("====>currentPeriod" + currentPeriod
-				+ "====>currentOrganisation" + currentOrganisation
-				+ "====>All Sections:" + currentSection);
+				for (DataElement dataElement : dataElements) {
+					DataValue value = valueService.getDataValue(dataElement,
+							currentPeriod, currentOrganisation);
+					dataElementValue.put(dataElement, value);
+				}
+			}
+		}
 		return new SurveyPage(currentPeriod, currentOrganisation,
-				currentSection, values);
+				currentSubObjective, values);
 	}
 
 	public void setOrganisationService(OrganisationService organisationService) {
@@ -88,12 +82,8 @@ public class SurveyService {
 		return organisationService;
 	}
 
-	public void setExpressionService(ExpressionService expressionService) {
-		this.expressionService = expressionService;
-	}
-
-	public ExpressionService getExpressionService() {
-		return expressionService;
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
 	}
 
 	public void setOrganisationLevel(Integer organisationLevel) {

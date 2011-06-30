@@ -38,10 +38,10 @@
 	    <mapping class="org.chai.kevin.maps.MapsTarget" />	
 	
         <mapping class="org.chai.kevin.survey.SurveyTranslatable" />
-		<mapping class="org.chai.kevin.survey.SurveySection" />
-		<mapping class="org.chai.kevin.survey.SurveySubSection" />
+		<mapping class="org.chai.kevin.survey.SurveyStrategicObjective" />
+		<mapping class="org.chai.kevin.survey.SurveySubStrategicObjective" />
 		<mapping class="org.chai.kevin.survey.SurveyQuestion" />
-		<mapping class="org.chai.kevin.survey.SurveySingleQuestion" />
+		<mapping class="org.chai.kevin.survey.SurveySimpleQuestion" />
 		<mapping class="org.chai.kevin.survey.SurveyCheckboxQuestion" />
 		<mapping class="org.chai.kevin.survey.SurveyCheckboxOption" />
 		<mapping class="org.chai.kevin.survey.SurveyTableQuestion" />

@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,7 +25,11 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+package org.chai.kevin.survey;
+/**
+ * @author JeanKahigiso
+ *
+ */
 import java.util.Map;
 
 import org.chai.kevin.DataElement;
@@ -38,16 +40,16 @@ import org.hisp.dhis.period.Period;
 public class SurveyPage {
 	private Period period;
 	private Organisation organisation;
-	private SurveySubSection section;
+	private SurveySubStrategicObjective subObjective;
 	private Map<SurveyQuestion, Map<DataElement, DataValue>> values;
 
 	public SurveyPage(Period period, Organisation organisation,
-			SurveySubSection section,
+			SurveySubStrategicObjective subObjective,
 			Map<SurveyQuestion, Map<DataElement, DataValue>> values) {
 		super();
 		this.period = period;
 		this.organisation = organisation;
-		this.setSection(section);
+		this.subObjective = subObjective;
 		this.values = values;
 	}
 
@@ -67,6 +69,14 @@ public class SurveyPage {
 		this.organisation = organisation;
 	}
 
+	public void setSubObjective(SurveySubStrategicObjective subObjective) {
+		this.subObjective = subObjective;
+	}
+
+	public SurveySubStrategicObjective getSubObjective() {
+		return subObjective;
+	}
+
 	public void setValues(
 			Map<SurveyQuestion, Map<DataElement, DataValue>> values) {
 		this.values = values;
@@ -74,14 +84,6 @@ public class SurveyPage {
 
 	public Map<SurveyQuestion, Map<DataElement, DataValue>> getValues() {
 		return values;
-	}
-
-	public void setSection(SurveySubSection section) {
-		this.section = section;
-	}
-
-	public SurveySubSection getSection() {
-		return section;
 	}
 
 	

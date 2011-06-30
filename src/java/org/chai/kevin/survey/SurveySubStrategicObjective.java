@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,7 +25,11 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+package org.chai.kevin.survey;
+/**
+ * @author JeanKahigiso
+ *
+ */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,23 +42,20 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 
 @SuppressWarnings("serial")
-@Entity(name = "SurveySubSection")
-@Table(name = "dhsst_survey_sub_section")
-public class SurveySubSection extends SurveyTranslatable {
-
-	public static enum Completed {
-		COMPLETED, INPROGRESS, NOTSTARTED
-	};
-
+@Entity(name = "SurveySubStrategicObjective")
+@Table(name = "dhsst_survey_sub_strategic_objective")
+public class SurveySubStrategicObjective extends SurveyTranslatable {
+	
 	private Integer id;
 	private Integer order;
 	private boolean status = true;
-	private Completed completed = Completed.NOTSTARTED;
-	private SurveySection section;
+	private SurveyStrategicObjective objective;
+	private List<OrganisationUnitGroup> groups;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
 
 	@Id
@@ -87,59 +86,39 @@ public class SurveySubSection extends SurveyTranslatable {
 		return status;
 	}
 
-	public void setCompleted(Completed completed) {
-		this.completed = completed;
+	public void setObjective(SurveyStrategicObjective objective) {
+		this.objective = objective;
+	}
+	
+	@ManyToOne(targetEntity = SurveyStrategicObjective.class, optional = false)
+	public SurveyStrategicObjective getObjective() {
+		return objective;
 	}
 
-	public Completed getCompleted() {
-		return completed;
+	public void setGroups(List<OrganisationUnitGroup> groups) {
+		this.groups = groups;
 	}
-
-	public void setSection(SurveySection section) {
-		this.section = section;
+	// optional has be set to false
+	@ManyToOne(targetEntity = OrganisationUnitGroup.class, optional = true)
+	public List<OrganisationUnitGroup> getGroups() {
+		return groups;
 	}
-
-	@ManyToOne(targetEntity = SurveySection.class, optional = false)
-	public SurveySection getSection() {
-		return section;
+	
+	public void addOrganisationGroup(OrganisationUnitGroup group){
+		groups.add(group);
 	}
 
 	public void setQuestions(List<SurveyQuestion> questions) {
 		this.questions = questions;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveyQuestion.class, mappedBy = "subSection")
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveyQuestion.class, mappedBy = "subObjective")
 	public List<SurveyQuestion> getQuestions() {
 		return questions;
 	}
-
-	@Transient
-	public void setSubSectionCompleted() {
-		int i = 0;
-		for (SurveyQuestion question : questions)
-			if (question.isStatus() && question.toString() == "answered")
-				i++;
-		if (questions.size() == i)
-			this.setCompleted(Completed.COMPLETED);
-		if (questions.size() > 0 && questions.size() < i)
-			this.setCompleted(Completed.INPROGRESS);
-		else
-			this.setCompleted(Completed.NOTSTARTED);
-	}
-
-	@Transient
-	public String toString() {
-		if (this.completed == Completed.COMPLETED)
-			return "completed";
-		if (this.completed == Completed.INPROGRESS)
-			return "inprogress";
-		else
-			return "notstarted";
-
-	}
-
+	
 	public void addQuestion(SurveyQuestion question) {
-		question.setSubSection(this);
+		question.setSubObjective(this);
 		questions.add(question);
 	}
 

@@ -39,10 +39,11 @@ import org.chai.kevin.dsr.DsrObjectiveService
 import org.chai.kevin.maps.MapsTarget;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
-import org.chai.kevin.survey.SurveySection;
-import org.chai.kevin.survey.SurveySectionSorter
-import org.chai.kevin.survey.SurveySubSection;
-import org.chai.kevin.survey.SurveySubSectionSorter
+import org.chai.kevin.survey.SurveyStrategicObjective
+import org.chai.kevin.survey.SurveyStrategicObjectiveController;
+import org.chai.kevin.survey.SurveyStrategicObjectiveSorter
+import org.chai.kevin.survey.SurveySubStrategicObjective;
+import org.chai.kevin.survey.SurveySubStrategicObjectiveSorter
 import org.chai.kevin.survey.SurveyTranslatable;
 
 abstract class AbstractReportController {
@@ -201,24 +202,24 @@ abstract class AbstractReportController {
 		return objective
 	}
 	
-	protected def getCurrentSubSection(){
-		SurveyTranslatable subsection = null
+	protected def getCurrentSubObjective(){
+		SurveyTranslatable subobjective = null
 		try{
-			if(NumberUtils.isNumber(params['subsection'])){
-				subsection = SurveySubSection.get(params['subsection']);
+			if(NumberUtils.isNumber(params['subobjective'])){
+				subobjective = SurveySubStrategicObjective.get(params['subobjective']);
 			}
-			if (subsection == null) {
-				// TODO what if there are no sections ?
-				List<SurveySection> sections = SurveySection.list();
-				Collections.sort(sections, new SurveySectionSorter());
-				List<SurveySubSection> subsections = sections[0].getSubSections();
-				Collections.sort(subsections, new SurveySubSectionSorter());
-				subsection = subsections[0];
+			if (subobjective == null) {
+				// TODO what if there are no objectives ?
+				List<SurveyStrategicObjective> objectives = SurveyStrategicObjective.list();
+				Collections.sort(objectives, new SurveyStrategicObjectiveSorter());
+				List<SurveySubStrategicObjective> subobjectives = objectives[0].getSubObjectives();
+				Collections.sort(subobjectives, new SurveySubStrategicObjectiveSorter());
+				subobjective = subobjectives[0];
 			}
 		}catch(IllegalStateException e){
 			redirect (controller: '', action: '')
 		}
-		return subsection
+		return subobjective
 	}
 
 }

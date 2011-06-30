@@ -61,6 +61,7 @@
 					<ul class="submenu">
 					<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
 					<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li>
+					<li><a href="${createLink(controller: 'survey', action:'admin')}">Survey Administration</a></li>
 					</ul>
 					</li>
 				</ul>
@@ -74,7 +75,7 @@
 			<div class=clear></div>
 		</div>
 
-		<div id="footer">&copy; - Rwanda Ministry of Health - <a href="#">About</a> | <a href="#">Contact</a> | <a href="#">Helpdesk</a></div>
+		<div id="footer">&copy; - Clinton Health Access Initiative - <a href="#">About</a> | <a href="#">Contact</a> | <a href="#">Helpdesk</a></div>
 	</div>
 
 	<!-- utilities -->

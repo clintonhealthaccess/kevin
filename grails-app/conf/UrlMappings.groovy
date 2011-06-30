@@ -35,7 +35,7 @@ class UrlMappings {
 
 		"/dsr/$action/$period?/$objective?/$organisation?"(controller:"dsr")
 		
-		"/survey/$action/$period?/$section?/$subsection?/$organisation?"(controller:"survey")
+		"/survey/$action/$period?/$subobjective?/$organisation?"(controller:"survey")
 	
 		"/maps/view"(controller:"maps", action:"view")
 		
@@ -48,8 +48,8 @@ class UrlMappings {
 		}
 
 		// temporary redirect to dsr
-		//"/"(controller:"dsr", action:"index")
-		"/"(controller:"dashboard", action:"index")
+		"/"(controller:"survey", action:"index")
+		//"/"(controller:"dashboard", action:"index")
 		"500"(view:'/error')
 	}
 }

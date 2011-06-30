@@ -1,34 +1,36 @@
 package org.chai.kevin
 
 /*
-* Copyright (c) 2011, Clinton Health Access Initiative.
-*
-* All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
-*     * Redistributions of source code must retain the above copyright
-*       notice, this list of conditions and the following disclaimer.
-*     * Redistributions in binary form must reproduce the above copyright
-*       notice, this list of conditions and the following disclaimer in the
-*       documentation and/or other materials provided with the distribution.
-*     * Neither the name of the <organization> nor the
-*       names of its contributors may be used to endorse or promote products
-*       derived from this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (c) 2011, Clinton Health Access Initiative.
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the <organization> nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.chai.kevin.cost.CostObjective;
 import org.chai.kevin.cost.CostRampUp;
@@ -155,17 +157,44 @@ class Initializer {
 			def enume = new Enum(names:j(["en":"Enum 1"]), descriptions:j([:]), code:"ENUM1");
 			def enumOption1 = new EnumOption(names:j(["en":"Value 1"]), descriptions:j([:]), value:"value1", code:"OPTION1", enume: enume);
 			def enumOption2 = new EnumOption(names:j(["en":"Value 2"]), descriptions:j([:]), value:"value2", code:"OPTION2", enume: enume);
+			def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
+			def enumOption01 = new EnumOption(names:j(["en":"N/A Did not receive training"]), descriptions:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", code:"OPTION01", enume: enume2);
+			def enumOption02 = new EnumOption(names:j(["en":"NGO or Partner"]), descriptions:j(["en":"NGO or Partner"]), value:"NGO or Partner", code:"OPTION02", enume: enume2);
+			def enumOption03 = new EnumOption(names:j(["en":"Ministry of Health"]), descriptions:j(["en":"Ministry of Health"]), value:"Ministry of Health", code:"OPTION03", enume: enume2);
 			enume.enumOptions = [enumOption1, enumOption2]
 			enume.save(failOnError: true)
 			enumOption1.save(failOnError: true)
 			enumOption2.save(failOnError: true, flush:true)
+
+			enume2.enumOptions = [
+				enumOption01,
+				enumOption02,
+				enumOption03
+			]
+			enume2.save(failOnError: true)
+			enumOption01.save(failOnError: true)
+			enumOption02.save(failOnError: true, flush:true)
+			enumOption03.save(failOnError: true)
 		}
 
 		if (!DataElement.count()) {
 			// Data Elements
 			def dataElement1 = new DataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: ValueType.VALUE)
 			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: ValueType.VALUE)
-			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: ValueType.ENUM, enumType: Enum.findByCode('ENUM1'))
+			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: ValueType.ENUM, enume: Enum.findByCode('ENUM1'))
+			def dataElement4 = new DataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: ValueType.BOOL)
+			def dataElement5 = new DataElement(names:j(["en":"Element 5"]), descriptions:j([:]), code:"CODE5", type: ValueType.BOOL)
+			def dataElement6 = new DataElement(names:j(["en":"Element 6"]), descriptions:j([:]), code:"CODE6", type: ValueType.BOOL)
+			def dataElement7 = new DataElement(names:j(["en":"Element 7"]), descriptions:j([:]), code:"CODE7", type: ValueType.BOOL)
+			def dataElement8 = new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: ValueType.VALUE)
+			def dataElement9 = new DataElement(names:j(["en":"Element 9"]), descriptions:j([:]), code:"CODE9", type: ValueType.VALUE)
+			def dataElement10 = new DataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: ValueType.ENUM, enume: Enum.findByCode('ENUM2'))
+			def dataElement11 = new DataElement(names:j(["en":"Element 11"]), descriptions:j([:]), code:"CODE11", type: ValueType.DATE)
+			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: ValueType.STRING)
+			def dataElement81 = new DataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: ValueType.VALUE)
+			def dataElement91 = new DataElement(names:j(["en":"Element 91"]), descriptions:j([:]), code:"CODE91", type: ValueType.VALUE)
+			def dataElement101 = new DataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: ValueType.ENUM, enume: Enum.findByCode('ENUM2'))
+			def dataElement111 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"CODE111", type: ValueType.DATE)
 			// Data Sets
 			//			def dataSet1 = new DataSet(names:j(["en":"Dataset 1"]), shortnames:j(["en":"Dataset 1"]), code:"DATASET1", periodType: MonthlyPeriodType.list()[0])
 			//			def dataSet2 = new DataSet(names:j(["en":"Dataset 2"]), shortnames:j(["en":"Dataset 2"]), code:"DATASET2", periodType: MonthlyPeriodType.list()[0])
@@ -180,6 +209,19 @@ class Initializer {
 			//			dataSet2.save(failOnError: true)
 
 			dataElement3.save(failOnError: true, flush:true)
+			dataElement4.save(failOnError: true, flush:true)
+			dataElement5.save(failOnError: true, flush:true)
+			dataElement6.save(failOnError: true, flush:true)
+			dataElement7.save(failOnError: true, flush:true)
+			dataElement8.save(failOnError: true, flush:true)
+			dataElement9.save(failOnError: true, flush:true)
+			dataElement10.save(failOnError: true, flush:true)
+			dataElement11.save(failOnError: true, flush:true)
+			dataElement81.save(failOnError: true, flush:true)
+			dataElement91.save(failOnError: true, flush:true)
+			dataElement101.save(failOnError: true, flush:true)
+			dataElement111.save(failOnError: true, flush:true)
+			dataElement12.save(failOnError: true, flush:true)
 
 			// data value
 			new DataValue(
@@ -219,12 +261,136 @@ class Initializer {
 					timestamp: new Date(),
 					//				followup: false,
 					).save(failOnError: true, flush:true)
+
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE4"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: "1",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE6"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: "0",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE8"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: "10",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE9"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: "31",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE10"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: EnumOption.findByCode("OPTION02").value,
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE11"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: "2011-06-29",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE81"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: "44",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE91"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: "33",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE101"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: EnumOption.findByCode("OPTION03").value,
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE111"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: "2011-06-30",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
+
+			new DataValue(
+					dataElement: DataElement.findByCode("CODE12"),
+					period: Period.list()[1],
+					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
+					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+					value: "I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.",
+					//				comment: "Comment",
+					//				storedBy: "StoredBy",
+					timestamp: new Date(),
+					//				followup: false,
+					).save(failOnError: true, flush:true)
 		}
 
 
 		if (!Expression.count()) {
 			// indicators
-	//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
+			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
 			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
 			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
 			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "["+DataElement.findByCode("CODE1").id+"] + ["+DataElement.findByCode("CODE1").id+"]", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
@@ -239,26 +405,26 @@ class Initializer {
 
 	static def createMaps() {
 		if (!MapsTarget.count()) {
-			
+
 			new Expression(
-				names:j(["en":"Map Expression 2"]),
-				descriptions:j([:]),
-				code:"Map Expression 2",
-				type: ValueType.VALUE,
-				expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
-				timestamp:new Date()
-			).save(failOnError: true)
+					names:j(["en":"Map Expression 2"]),
+					descriptions:j([:]),
+					code:"Map Expression 2",
+					type: ValueType.VALUE,
+					expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
+					timestamp:new Date()
+					).save(failOnError: true)
 			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2")).save(failOnError: true)
 
 
 			new Expression(
-				names:j(["en":"Map Expression"]),
-				descriptions:j([:]),
-				code:"Map Expression", 
-				type: ValueType.VALUE,
-				expression: "10 / 100",
-				timestamp:new Date()
-			).save(failOnError: true)
+					names:j(["en":"Map Expression"]),
+					descriptions:j([:]),
+					code:"Map Expression",
+					type: ValueType.VALUE,
+					expression: "10 / 100",
+					timestamp:new Date()
+					).save(failOnError: true)
 			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression")).save(failOnError: true, flush:true)
 		}
 	}
@@ -335,69 +501,69 @@ class Initializer {
 			hrh.save(failOnError: true)
 
 			def calculation1 = new Calculation(expressions: [
-				"District Hospital": Expression.findByCode("Constant 10"),
-				"Health Center": Expression.findByCode("Constant 20")
-			], timestamp:new Date())
+						"District Hospital": Expression.findByCode("Constant 10"),
+						"Health Center": Expression.findByCode("Constant 20")
+					], timestamp:new Date())
 			calculation1.save()
-			
+
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
 					calculation: calculation1
-				), weight: 1, order: 1)
-			
+					), weight: 1, order: 1)
+
 			def calculation2 = new Calculation(expressions: [
-				"District Hospital": Expression.findByCode("Constant 20"),
-				"Health Center": Expression.findByCode("Constant 20")
-			], timestamp:new Date())
+						"District Hospital": Expression.findByCode("Constant 20"),
+						"Health Center": Expression.findByCode("Constant 20")
+					], timestamp:new Date())
 			calculation2.save()
-			
+
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
 					calculation: calculation2
-				), weight: 1, order: 2)
-			
+					), weight: 1, order: 2)
+
 			def calculation3 = new Calculation(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
 						"Health Center": Expression.findByCode("Element 1")
 					], timestamp:new Date())
 			calculation3.save()
-			
+
 			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 					calculation: calculation3
-				), weight: 1, order: 3)
-			
+					), weight: 1, order: 3)
+
 			def calculation4 = new Calculation(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
 					], timestamp:new Date())
 			calculation4.save()
-			
+
 			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
 					calculation: calculation4
-				), weight: 1, order: 4)
-			
+					), weight: 1, order: 4)
+
 			def calculation5 = new Calculation(expressions: [
 						"District Hospital": Expression.findByCode("Element 2"),
 						"Health Center": Expression.findByCode("Element 2")
 					], timestamp:new Date())
 			calculation5.save()
-			
+
 			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
 					calculation: calculation5
-				), weight: 1, order: 5)
-			
+					), weight: 1, order: 5)
+
 			def calculation6 = new Calculation(expressions: [
 						"District Hospital": Expression.findByCode("Element 3"),
 						"Health Center": Expression.findByCode("Element 3")
 					], timestamp:new Date())
 			calculation6.save()
-			
+
 			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
 					calculation: calculation6
-				), weight: 1, order: 6)
+					), weight: 1, order: 6)
 
 			staffing.entry.addObjectiveEntry(nursea1)
 			staffing.entry.addObjectiveEntry(nursea2)
@@ -592,174 +758,279 @@ class Initializer {
 	}
 
 	static def createQuestionaire(){
-		if(!SurveySection.count()){
+		if(!SurveyStrategicObjective.count()){
+
+			def dh = OrganisationUnitGroup.findByUuid("District Hospital")
+			def hc = OrganisationUnitGroup.findByUuid("Health Center")
+
 			//Creating section
-			def serviceDev = new SurveySection(
-					names:j(["en":"Service Delivery"]),
-					descriptions:j(["en":"Service Delivery"]),
+			def serviceDev = new SurveyStrategicObjective(
+					names: j(["en":"Service Delivery"]),
+					descriptions: j(["en":"Service Delivery"]),
 					order: 3
+					//groups:[dh,hc],
 					)
-			def hResourceHealth = new SurveySection(
-					names:j(["en":"Human Resources for Health"]),
-					descriptions:j(["en":"Human Resources for Health"]),
+			def hResourceHealth = new SurveyStrategicObjective(
+					names: j(["en":"Human Resources for Health"]),
+					descriptions: j(["en":"Human Resources for Health"]),
 					order: 1
+					//groups:[dh,hc],
 					)
 
-			def geoAccess = new SurveySection(
-					names:j(["en":"Geographic Access"]),
-					descriptions:j(["en":"Geographic Access"]),
+			def geoAccess = new SurveyStrategicObjective(
+					names: j(["en":"Geographic Access"]),
+					descriptions: j(["en":"Geographic Access"]),
 					order: 2
+					//groups:[dh,hc],
 					)
 
-			//Adding Sub-Section to sections
+			//Adding Sub-Objective to sections
 
-			def services=new SurveySubSection(
-					names:j(["en":"Services"]),
-					descriptions:j(["en":"Services"]),
-					order:2,
-					section:serviceDev
+			def services=new SurveySubStrategicObjective(
+					names: j(["en":"Services"]),
+					descriptions: j(["en":"Services"]),
+					order: 2,
+					objective: serviceDev
+					//groups:[dh,hc],
 					)
-			def labTests= new SurveySubSection(
-					names:j(["en":"Lab Tests"]),
-					descriptions:j(["en":"Lab Tests"]),
-					order:1,
-					section:serviceDev
+			def labTests= new SurveySubStrategicObjective(
+					names: j(["en":"Lab Tests"]),
+					descriptions: j(["en":"Lab Tests"]),
+					order: 1,
+					objective: serviceDev
 					)
-			def patientReg=new SurveySubSection(
-					names:j(["en":"Patient Registration"]),
-					descriptions:j(["en":"Patient Registration"]),
-					order:3,
-					section:serviceDev
+			def patientReg=new SurveySubStrategicObjective(
+					names: j(["en":"Patient Registration"]),
+					descriptions: j(["en":"Patient Registration"]),
+					order: 3,
+					objective: serviceDev
+					//groups:[dh,hc],
 					)
 
-			serviceDev.addSubSection(services)
-			serviceDev.addSubSection(labTests)
-			serviceDev.addSubSection(patientReg)
+			serviceDev.addSubStrategicObjective(services)
+			serviceDev.addSubStrategicObjective(labTests)
+			serviceDev.addSubStrategicObjective(patientReg)
 			serviceDev.save(failOnError:true);
 
-			def staffing=new SurveySubSection(
-					names:j(["en":"Staffing"]),
-					descriptions:j(["en":"Staffing"]),
-					order:1,
-					section:hResourceHealth
+			def staffing=new SurveySubStrategicObjective(
+					names: j(["en":"Staffing"]),
+					descriptions: j(["en":"Staffing"]),
+					order: 1,
+					objective: hResourceHealth
+					//groups:[dh,hc],
 					)
 
-			def continuingEd = new SurveySubSection(
-					names:j(["en":"Continuing Education"]),
-					descriptions:j(["en":"Continuing Education"]),
-					order:3,
-					section:hResourceHealth
+			def continuingEd = new SurveySubStrategicObjective(
+					names: j(["en":"Continuing Education"]),
+					descriptions: j(["en":"Continuing Education"]),
+					order: 2,
+					objective: hResourceHealth
+					//groups:[dh,hc],
 					)
 
-			def openResponse = new SurveySubSection(
-					names:j(["en":"Open Response"]),
-					descriptions:j(["en":"Open Response"]),
-					order:2,
-					section:hResourceHealth
+			def openResponse = new SurveySubStrategicObjective(
+					names: j(["en":"Open Response"]),
+					descriptions: j(["en":"Open Response"]),
+					order: 3,
+					objective: hResourceHealth
+					//groups:[dh,hc],
 					)
 
-			hResourceHealth.addSubSection(staffing)
-			hResourceHealth.addSubSection(continuingEd)
-			hResourceHealth.addSubSection(openResponse)
+			hResourceHealth.addSubStrategicObjective(staffing)
+			hResourceHealth.addSubStrategicObjective(continuingEd)
+			hResourceHealth.addSubStrategicObjective(openResponse)
 			hResourceHealth.save(failOnError:true);
 
-			def infrastructure = new SurveySubSection(
-					names:j(["en":"Infrastructure"]),
-					descriptions:j(["en":"Infrastructure"]),
-					order:3,
-					section:geoAccess
+			def infrastructure = new SurveySubStrategicObjective(
+					names: j(["en":"Infrastructure"]),
+					descriptions: j(["en":"Infrastructure"]),
+					order: 3,
+					objective: geoAccess
+					//groups:[dh,hc],
 					)
-			def medicalEq=new SurveySubSection(
-					names:j(["en":"Medical Equipment"]),
-					descriptions:j(["en":"Medical Equipment"]),
-					order:2,
-					section:geoAccess
+			def medicalEq=new SurveySubStrategicObjective(
+					names: j(["en":"Medical Equipment"]),
+					descriptions: j(["en":"Medical Equipment"]),
+					order: 2,
+					objective: geoAccess
+					//groups:[dh,hc],
 					)
-			def wasteMgmnt=new SurveySubSection(
-					names:j(["en":"Waste Management"]),
-					descriptions:j(["en":"Waste Management"]),
-					order:1,
-					section:geoAccess
+			def wasteMgmnt=new SurveySubStrategicObjective(
+					names: j(["en":"Waste Management"]),
+					descriptions: j(["en":"Waste Management"]),
+					order: 1,
+					objective: geoAccess
+					//groups:[dh,hc],
 					)
 
-			geoAccess.addSubSection(infrastructure)
-			geoAccess.addSubSection(medicalEq)
-			geoAccess.addSubSection(wasteMgmnt)
+			geoAccess.addSubStrategicObjective(infrastructure)
+			geoAccess.addSubStrategicObjective(medicalEq)
+			geoAccess.addSubStrategicObjective(wasteMgmnt)
 			geoAccess.save(failOnError:true);
 
 			//Adding questions to subSections
 
-//			def dh = OrganisationUnitGroup.findByUuid("District Hospital")
-//			def hc = OrganisationUnitGroup.findByUuid("Health Center")
-//
-//			def dhN = OrganisationUnitGroup.findByName("District Hospital")
-//			def hcN = OrganisationUnitGroup.findByName("Health Center")
-
-
-			def serviceQ1 = new SurveySingleQuestion(
-					names: j(["en":"Service Sub Section Sinlge Question 1"]),
-					descriptions: j(["en":"Service Sub Section Sinlge Question 1"]),
+			def serviceQ1 = new SurveySimpleQuestion(
+					names: j(["en":"Service Sub Section Simple Question VALUE"]),
+					descriptions: j(["en":"Service Sub Section Simple Question"]),
 					order: 3,
 					//groups:[dh,hc],
 					dataElement: DataElement.findByCode("CODE1")
 					)
+			def serviceQ2 = new SurveySimpleQuestion(
+					names: j(["en":"Service Sub Section Simple Question BOOL"]),
+					descriptions: j(["en":"Service Sub Section Simple Question BOOL"]),
+					order: 0,
+					//groups:[dh,hc],
+					dataElement: DataElement.findByCode("CODE7")
+					)
+			def serviceQ3 = new SurveySimpleQuestion(
+					names: j(["en":"Service Sub Section Simple Question ENUM "]),
+					descriptions: j(["en":"Service Sub Section Simple Question ENUM"]),
+					order: 1,
+					//groups:[dh,hc],
+					dataElement: DataElement.findByCode("CODE3")
+					)
 
+			services.addQuestion(serviceQ2)
 			services.addQuestion(serviceQ1)
+			services.addQuestion(serviceQ3)
 			services.save(failOnError:true)
 
-//			def checkBoxQ = new SurveyCheckboxQuestion(
-//					names: j(["en":"Service Sub Section CheckBox  Question 2"]),
-//					descriptions:j(["en":"Service Sub Section CheckBox  Question 2"]),
-//					order: 1,
-//					options: [
-//						new SurveyCheckboxOption(
-//						names:j(["en":"None Or Not Applicable"]),
-//						descriptions:j(["en":"None Or Not Applicable"]),
-//						order:1,
-//						dataElement: DataElement.findByCode("CODE1")
-//						),
-//						new SurveyCheckboxOption(
-//						names:j(["en":"Second Option 1"]),
-//						descriptions:j(["en":"Second Option 2"]),
-//						order:2,
-//						dataElement: DataElement.findByCode("CODE2")
-//						)
-//					],
-//					//groups: [dh,hc],
-//					)
-//			services.addQuestion(checkBoxQ)
-//			services.save(failOnError:true)
-			//
-			//			def option1 = new SurveyCheckboxOption(
-			//					names:j(["en":"None Or Not Applicable"]),
-			//					descriptions:j(["en":"None Or Not Applicable"]),
-			//					order:1)
-			//			checkBoxQ.addCheckboxOption(option1)
-			//			option1.save(failOnError:true)
-			//
-			//			def option2 = new SurveyCheckboxOption(
-			//					names:j(["en":"Second Option 1"]),
-			//					descriptions:j(["en":"Second Option 2"]),
-			//					order:2)
-			//			checkBoxQ.addCheckboxOption(option2)
-			//			option2.save(failOnError:true)
+			def openQ = new SurveySimpleQuestion(
+					names: j(["en":"Sample Open Question "]),
+					descriptions: j(["en":"Sample Open Question"]),
+					order: 1,
+					//groups:[dh,hc],
+					dataElement: DataElement.findByCode("CODE12")
+					)
+			openResponse.addQuestion(openQ)
+			openResponse.save(failOnError:true)
 
+			def checkBoxQ = new SurveyCheckboxQuestion(
+					names: j(["en":"Service Sub Section CheckBox  Question"]),
+					descriptions: j(["en":"Service Sub Section CheckBox  Question"]),
+					order: 2
+					//groups: [dh,hc],
+					)
 
+			//Checkbox Option
+			def option1 = new SurveyCheckboxOption(
+					names: j(["en":"None Or Not Applicable"]),
+					descriptions: j(["en":"None Or Not Applicable"]),
+					order: 2,
+					dataElement: DataElement.findByCode("CODE4")
+					)
+			def option2 = new SurveyCheckboxOption(
+					names: j(["en":"Second Option"]),
+					descriptions: j(["en":"Second Option"]),
+					order: 1,
+					dataElement: DataElement.findByCode("CODE5")
+					)
+			def option3 = new SurveyCheckboxOption(
+					names: j(["en":"Third Option"]),
+					descriptions: j(["en":"Third Option"]),
+					order: 3,
+					dataElement: DataElement.findByCode("CODE6")
+					)
+			staffing.addQuestion(checkBoxQ)
+			staffing.save(failOnError:true)
+			checkBoxQ.addCheckboxOption(option1)
+			checkBoxQ.addCheckboxOption(option2)
+			checkBoxQ.addCheckboxOption(option3)
+			checkBoxQ.save(failOnError:true)
 
-			//			checkBoxQ.addOrganisationGroup(dh)
-			//			checkBoxQ.addOrganisationGroup(hc)
+			//Adding a table type question
+			def tableQ = new SurveyTableQuestion(
+					names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
+					descriptions: j(["en":"Training Modules"]),
+					order: 1
+					//groups: [dh,hc],
+					)
+			//Add columns
+			def tabColumnOne = new SurveyTableColumn(
+					names: j(["en":"Number Who Attended Training"]),
+					descriptions: j(["en":"Number Who Attended Training"]),
+					order: 1,
+					question: tableQ
+					)
+			def tabColumnThree = new SurveyTableColumn(
+					names: j(["en":"Who Provided the Training"]),
+					descriptions: j(["en":"Who Provided the Training"]),
+					order: 3,
+					question: tableQ
+					)
 
+			def tabColumnTwo = new SurveyTableColumn(
+					names: j(["en":"Sum Total Number of Days"]),
+					descriptions: j(["en":"Sum Total Number of Days"]),
+					order: 2,
+					question: tableQ
+					)
 
-			//
-			//			services.addQuestion(
-			//					new SurveyTableQuestion(
-			//					names: j(["en":"Service Sub Section Table Question 3"]),
-			//					descriptions:j(["en":"Service Sub Section Table Question 3"]),
-			//					order: 2,
-			//                  groups:[dh,hc]
+			def tabColumnFour = new SurveyTableColumn(
+					names: j(["en":"Due Date"]),
+					descriptions: j(["en":"Due Date"]),
+					order: 4,
+					question: tableQ
+					)
+
+			staffing.addQuestion(tableQ)
+			staffing.save(failOnError:true)
+			tableQ.addColumn(tabColumnOne)
+			tableQ.addColumn(tabColumnThree)
+			tableQ.addColumn(tabColumnTwo)
+			tableQ.addColumn(tabColumnFour)
+
+			Map<SurveyTableColumn,DataElement> dataElmntsLine1= new LinkedHashMap<SurveyTableColumn,DataElement>();
+
+			dataElmntsLine1.put(tabColumnOne,DataElement.findByCode("CODE8"))
+			dataElmntsLine1.put(tabColumnTwo,DataElement.findByCode("CODE9"))
+			dataElmntsLine1.put(tabColumnThree,DataElement.findByCode("CODE10"))
+			dataElmntsLine1.put(tabColumnFour,DataElement.findByCode("CODE11"))
+
+			Map<SurveyTableColumn,DataElement> dataElmntsLine2= new LinkedHashMap<SurveyTableColumn,DataElement>();
+
+			dataElmntsLine2.put(tabColumnOne,DataElement.findByCode("CODE81"))
+			dataElmntsLine2.put(tabColumnTwo,DataElement.findByCode("CODE91"))
+			dataElmntsLine2.put(tabColumnThree,DataElement.findByCode("CODE101"))
+			dataElmntsLine2.put(tabColumnFour,DataElement.findByCode("CODE111"))
+
+			//Add rows
+			def tabRowOne = new SurveyTableRow(
+					names: j(["en":"Clinical Pharmacy :"]),
+					descriptions: j(["en":"Clinical Pharmacy :"]),
+					order: 1,
+					question: tableQ,
+					dataElements: dataElmntsLine1
+					)
+			//			def tabRowThree = new SurveyTableRow(
+			//					names: j(["en":"Supervision - Administration [Non-clinical, Human Resources] :"]),
+			//					descriptions: j(["en":"Supervision - Administration [Non-clinical, Human Resources] :"]),
+			//					order: 3,
+			//					question: tableQ,
+			//					dataElements: dataElmnts
 			//					)
+			def tabRowTwo = new SurveyTableRow(
+					names: j(["en":"Clinical Nurse Training :"]),
+					descriptions: j(["en":"Clinical Nurse Training :"]),
+					order: 2,
+					question: tableQ,
+					dataElements: dataElmntsLine2
+					)
+			//			def tabRowFour = new SurveyTableRow(
+			//					names: j(["en":"Supervision - Laboratory:"]),
+			//					descriptions: j(["en":"Supervision - Laboratory:"]),
+			//					order: 1,
+			//					question: tableQ,
+			//					dataElements: dataElmnts
 			//					)
 
+			tableQ.addRow(tabRowOne)
+			//tableQ.addRow(tabRowThree)
+			tableQ.addRow(tabRowTwo)
+			//tableQ.addRow(tabRowFour)
+			tableQ.save(failOnError:true)
 
 		}
 	}

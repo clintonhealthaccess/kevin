@@ -1,6 +1,4 @@
-package org.chai.kevin.survey;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,18 +25,22 @@ package org.chai.kevin.survey;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+package org.chai.kevin.survey;
+/**
+ * @author JeanKahigiso
+ *
+ */
 import java.util.Comparator;
 
 import org.chai.kevin.Sorter;
 
-public class SurveySectionSorter implements Comparator<SurveySection> {
+public class SurveySubStrategicObjectiveSorter implements Comparator<SurveySubStrategicObjective> {
 	@Override
-	public int compare(SurveySection sectionOne, SurveySection sectionTwo) {
-
+	public int compare(SurveySubStrategicObjective sectionOne, SurveySubStrategicObjective sectionTwo) {
 		if (sectionOne.getOrder() != null && sectionTwo.getOrder() != null) {
 			if (sectionOne.getOrder() == sectionTwo.getOrder()) {
-				return Sorter.compareOrder(sectionOne.getId(), sectionTwo.getId());
+				return Sorter
+						.compareOrder(sectionOne.getId(), sectionTwo.getId());
 			} else {
 				return Sorter.compareOrder(sectionOne.getOrder(),
 						sectionTwo.getOrder());
@@ -51,5 +53,4 @@ public class SurveySectionSorter implements Comparator<SurveySection> {
 					sectionTwo.getOrder());
 		}
 	}
-
 }
