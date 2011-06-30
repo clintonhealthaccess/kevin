@@ -62,7 +62,7 @@
 						<ul class="submenu">
 							<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
 							<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li>
-							<li><a href="${createLink(controller: 'survey', action:'admin')}">Survey Administration</a></li>
+							<li><a href="${createLink(controller: 'survey', action:'admin')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 						</ul>
 					</li>
 				</g:ifAdmin>
@@ -77,7 +77,9 @@
 			<div class=clear></div>
 		</div>
 
-		<div id="footer">&copy; - Clinton Health Access Initiative - <a href="#">About</a> | <a href="#">Contact</a> | <a href="#">Helpdesk</a></div>
+		<div id="footer">&copy; - Clinton Health Access Initiative - <a href="#"><g:message code="footer.labels.about" default="About"/></a> | 
+		<a href="#"><g:message code="footer.labels.contact" default="Contact"/></a> 
+		| <a href="#"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a></div>
 	</div>
 
 	<!-- utilities -->

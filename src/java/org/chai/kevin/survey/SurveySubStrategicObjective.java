@@ -55,7 +55,6 @@ public class SurveySubStrategicObjective extends SurveyTranslatable {
 	
 	private Integer id;
 	private Integer order;
-	private boolean status = true;
 	private SurveyStrategicObjective objective;
 	private List<OrganisationUnitGroup> groups;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
@@ -78,14 +77,6 @@ public class SurveySubStrategicObjective extends SurveyTranslatable {
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	public boolean isStatus() {
-		return status;
 	}
 
 	public void setObjective(SurveyStrategicObjective objective) {

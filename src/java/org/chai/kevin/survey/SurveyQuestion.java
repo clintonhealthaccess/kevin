@@ -39,7 +39,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+<<<<<<< HEAD
 import javax.persistence.JoinTable;
+=======
+>>>>>>> survey
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -56,7 +59,6 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 
 	private Integer id;
 	private Integer order;
-	private boolean status = true;
 	private SurveySubStrategicObjective subObjective;
 	private List<OrganisationUnitGroup> groups;
 
@@ -78,14 +80,6 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	public boolean isStatus() {
-		return status;
 	}
 
 	public void setSubObjective(SurveySubStrategicObjective subObjective) {
