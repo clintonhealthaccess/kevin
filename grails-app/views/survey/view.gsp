@@ -92,11 +92,10 @@
 							<g:set var="i" value="${1}" />
 							<g:each in="${surveyPage.values}" var="questionMap">
 								<div class="question-in-block"><strong>${i++}) </strong>
-									<g:set var="question" value="${questionMap.key}" /> <g:set
-										var="dataValues" value="${questionMap.value}" /> <g:render
-										template="/survey/${question.getTemplate()}"
-										model="[question: question, dataValues: dataValues]" /> 
-										</div>
+									<g:set var="question" value="${questionMap.key}" />
+									<g:set var="dataValues" value="${questionMap.value}" /> 
+									<g:render template="/survey/${question.getTemplate()}" model="[question: question, dataValues: dataValues]" /> 
+								</div>
 							</g:each>
 						</g:if>
 						<g:else>Couldn't Load Questions</g:else>

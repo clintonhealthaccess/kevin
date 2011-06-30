@@ -1,4 +1,3 @@
-<%@ page import="org.chai.kevin.ValueType" %>
 <g:i18n field="${question.names}" />
 <span class="display-in-block">
 <table class="question-table" id="question-table-${question.id}">

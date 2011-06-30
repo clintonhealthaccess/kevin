@@ -18,17 +18,17 @@
 	
 	<div>
 		<h5><a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Scores</a></h5>
-		<div class="box span">
+		<div class="box span ${info.expressionValues.size()>10?'hidden':''}">
 			<g:if test="${info.groups != null}">
 				<g:each in="${info.groups}" var="groupOrganisation">
-<!-- 					<g:set var="" value=""/> -->
-<!-- 					<g:if test=""> -->
+					<g:set var="expressionValues" value="${info.getExpressionValuesForGroup(groupOrganisation)}"/>
+					<g:if test="${!expressionValues.isEmpty()}">
 						<a href="#" onclick="$(this).next().slideToggle(); return false;">
 							${groupOrganisation.name}
 						</a>
-						<g:render template="/info/organisations" model="[expressionValues: info.getExpressionValuesForGroup(groupOrganisation)]"/>
+						<g:render template="/info/organisations" model="[expressionValues: expressionValues]"/>
 						<div class="clear"></div>
-<!-- 					</g:if> -->
+					</g:if>
 				</g:each>
 			</g:if>
 			<g:else>

@@ -39,6 +39,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -102,6 +103,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 
 	// optional has be set to false
 	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
+	@JoinTable(name="dhsst_survey_question_orgunitgroup")
 	public List<OrganisationUnitGroup> getGroups() {
 		return groups;
 	}

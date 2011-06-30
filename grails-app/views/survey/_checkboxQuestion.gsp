@@ -1,4 +1,3 @@
-<%@ page import="org.chai.kevin.ValueType" %>
 <g:i18n field="${question.names}" />
 <span> 
 	<ul>

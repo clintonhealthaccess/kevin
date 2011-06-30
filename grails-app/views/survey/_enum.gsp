@@ -1,4 +1,3 @@
-<%@ page import="org.chai.kevin.ValueType" %>
 <!-- Enum type question -->
 <select name="select-enum-${dataElement?.id}" id="select-enum-${dataElement?.id}">
            <option value="">Select</option>

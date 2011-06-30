@@ -41,6 +41,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -102,6 +103,7 @@ public class SurveyStrategicObjective extends SurveyTranslatable {
 	}
 	// optional has be set to false
 	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
+	@JoinTable(name="dhsst_survey_objective_orgunitgroup")
 	public List<OrganisationUnitGroup> getGroups() {
 		return groups;
 	}
