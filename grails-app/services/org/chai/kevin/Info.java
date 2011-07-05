@@ -41,6 +41,8 @@ public abstract class Info {
 		return NumberUtils.isNumber(getValue());
 	}
 	
+	public abstract Double getNumberValue();
+	
 	public abstract String getValue();
 	
 	public abstract OrganisationUnit getOrganisation();

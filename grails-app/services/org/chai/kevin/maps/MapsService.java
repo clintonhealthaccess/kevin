@@ -93,12 +93,20 @@ public class MapsService {
 				if (log.isDebugEnabled()) log.debug("getting values for AGGREGATION map with expression: "+target.getExpression());
 				ExpressionValue expressionValue = valueService.getValue(target.getExpression(), child.getOrganisationUnit(), period);
 				if (expressionValue != null) value = expressionValue.getNumberValue();
+
+				if (value != null) {
+					if (target.getMaxValue() != null) {
+						value = value / target.getMaxValue(); 
+					}
+				}
 			}
 			else if (target.getType() == MapsTargetType.AVERAGE) {
 				if (log.isDebugEnabled()) log.debug("getting values for AVERAGE map with calculation: "+target.getCalculation());
 				CalculationValue calculationValue = valueService.getValue(target.getCalculation(), child.getOrganisationUnit(), period);
 				if (calculationValue != null) value = calculationValue.getAverage();
 			}
+			
+			
 			polygons.add(new Polygon(child, value));
 		}
 
@@ -108,7 +116,7 @@ public class MapsService {
 	public MapsExplanation getExplanation(Period period, Organisation organisation, MapsTarget target) {
 		Info info = null;
 		if (target.getType() == MapsTargetType.AGGREGATION) {
-			info = infoService.getInfo(target.getExpression(), organisation, period); 
+			info = infoService.getInfo(target.getExpression(), organisation, period, target.getMaxValue()); 
 		}
 		else if (target.getType() == MapsTargetType.AVERAGE) {
 			info = infoService.getInfo(target.getCalculation(), organisation, period);

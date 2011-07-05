@@ -94,5 +94,10 @@ public class CalculationInfo extends Info {
 		if (calculationValue.getAverage() == null) return null;
 		return String.valueOf(calculationValue.getAverage());
 	}
+
+	@Override
+	public Double getNumberValue() {
+		return getValue()!=null?Double.parseDouble(getValue()):null;
+	}
 	
 }

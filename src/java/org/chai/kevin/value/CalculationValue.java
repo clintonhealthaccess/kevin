@@ -143,22 +143,20 @@ public class CalculationValue extends Value {
 	private void calculateAverage(Map<Organisation, ExpressionValue> values) {
 		if (calculation.getType() != ValueType.VALUE) log.error("averaging value of non VALUE type calculation: "+calculation);
 		// we do it anyway in case it's a user error
-		Double average;
-		try {
-			Double sum = 0d;
-			Integer num = 0;
-			for (ExpressionValue expressionValue : values.values()) {
-				if (expressionValue != null && expressionValue.getStatus() == Status.VALID) {
+		Double sum = 0d;
+		Integer num = 0;
+		for (ExpressionValue expressionValue : values.values()) {
+			if (expressionValue != null && expressionValue.getStatus() == Status.VALID) {
+				try {
 					sum += Double.parseDouble(expressionValue.getValue());
 					num++;
+				} catch (NumberFormatException e) {
+					log.warn("non-number value found in average: ", e);
 				}
 			}
-			average = sum / num;
-			if (average.isNaN()) average = null;
-		} catch (NumberFormatException e) {
-			log.error("average of non-number values: ", e);
-			average = null;
 		}
+		Double average = sum / num;
+		if (average.isNaN()) average = null;
 		value = average==null?null:average.toString();
 	}
 

@@ -50,8 +50,8 @@ class UrlMappings {
 		}
 
 		// temporary redirect to dsr
-		"/"(controller:"survey", action:"index")
-		//"/"(controller:"dashboard", action:"index")
+//		"/"(controller:"survey", action:"index")
+		"/"(controller:"dsr", action:"index")
 		"500"(view:'/error')
 	}
 }

@@ -32,6 +32,7 @@ import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 import org.hisp.dhis.period.Period;
 
@@ -50,7 +51,7 @@ class MapsServiceSpec extends IntegrationTests {
 		def calculation = new Calculation(expressions: [
 			"District Hospital": Expression.findByCode("CONST10"),
 			"Health Center": Expression.findByCode("CONST10")
-		], timestamp:new Date())
+		], timestamp:new Date(), type: ValueType.VALUE)
 		calculation.save(failOnError: true)
 		new MapsTarget(code:"CODE", type:MapsTargetType.AVERAGE, calculation: calculation).save(failOnError: true)
 		expressionService.refreshExpressions()

@@ -132,7 +132,7 @@ class ValueServiceSpec extends IntegrationTests {
 		new Calculation(expressions: [
 			"District Hospital": Expression.findByCode("Constant 10"),
 			"Health Center": Expression.findByCode("Constant 10")
-		], timestamp:new Date()).save(failOnError: true)
+		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
 		
 		expect:
 		List<CalculationValue> values = valueService.getNonCalculatedCalculations();
@@ -151,7 +151,7 @@ class ValueServiceSpec extends IntegrationTests {
 		new Calculation(expressions: [
 			"District Hospital": Expression.findByCode("Constant 10"),
 			"Health Center": Expression.findByCode("Constant 10")
-		], timestamp:new Date()).save(failOnError: true)
+		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
 		new CalculationValue(
 			period: Period.list()[0],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
@@ -191,7 +191,7 @@ class ValueServiceSpec extends IntegrationTests {
 		new Calculation(expressions: [
 			"District Hospital": Expression.findByCode("Constant 10"),
 			"Health Center": Expression.findByCode("Constant 10")
-		], timestamp:new Date()).save(failOnError: true)
+		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
 		new CalculationValue(
 			period: Period.list()[0],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),

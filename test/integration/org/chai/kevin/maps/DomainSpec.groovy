@@ -34,6 +34,7 @@ import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 
 public class DomainSpec extends IntegrationTests {
@@ -80,7 +81,7 @@ public class DomainSpec extends IntegrationTests {
 	
 	def "target constraint: calculation cannot be null"() {
 		when:
-		def calculation = new Calculation(expressions: [:]).save(failOnError: true)
+		def calculation = new Calculation(expressions: [:], type: ValueType.VALUE).save(failOnError: true)
 		new MapsTarget(code:"CODE1" , calculation: calculation, type: MapsTargetType.AVERAGE).save(failOnError:true)
 		
 		then:

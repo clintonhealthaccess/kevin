@@ -30,7 +30,6 @@ package org.chai.kevin
 
 import org.chai.kevin.value.ExpressionValue.Status;
 import java.util.Date;
-import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
@@ -43,7 +42,7 @@ import org.hisp.dhis.period.Period;
 
 class ExpressionServiceSpec extends IntegrationTests {
 
-	ExpressionService expressionService;
+	def expressionService;
 	
 	def setup() {
 		

@@ -46,11 +46,11 @@ public class InfoService {
 	private OrganisationService organisationService;
 	private int groupLevel;
 	
-	public ExpressionInfo getInfo(Expression expression, Organisation organisation, Period period) {
+	public ExpressionInfo getInfo(Expression expression, Organisation organisation, Period period, Double maxValue) {
 		ExpressionValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
 		if (expressionValue == null) return null;
 		Map<Organisation, Map<DataElement, DataValue>> calculateDataValues = expressionService.calculateDataValues(expression, period, organisation);
-		return new ExpressionInfo(expressionValue, calculateDataValues);
+		return new ExpressionInfo(expressionValue, calculateDataValues, maxValue);
 	}
 	
 	public CalculationInfo getInfo(Calculation calculation, Organisation organisation, Period period) {

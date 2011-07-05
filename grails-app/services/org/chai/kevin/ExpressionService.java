@@ -228,34 +228,36 @@ public class ExpressionService {
 	}
 	
 	
-	private Object calculateDataValue(DataElement dataElement, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
+	private DataValue calculateDataValue(DataElement dataElement, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
 		if (log.isDebugEnabled()) log.debug("getDataValue(dataElement="+dataElement+", period="+period+", organisation="+organisation+")");
 		
-		Object result = null;
+		DataValue result = null;
 		// TODO this should be decided otherwise, 
 		// or defined by the user
-		if (!dataElement.isAggregatable() || organisationService.getLevel(organisation) == organisationService.getFacilityLevel()) {
-			Map<DataElement, DataValue> valuesForOrganisation = new HashMap<DataElement, DataValue>();
+		Map<DataElement, DataValue> valuesForOrganisation = values.get(organisation);
+		if (valuesForOrganisation == null) {
+			valuesForOrganisation = new HashMap<DataElement, DataValue>();
 			values.put(organisation, valuesForOrganisation);
-
-			DataValue dataValue = valueService.getValue(dataElement, organisation.getOrganisationUnit(), period);
-			valuesForOrganisation.put(dataElement, dataValue);
-			if (dataValue != null) result = dataValue.getValue();
+		}
+		
+		if (!dataElement.isAggregatable() || organisationService.getLevel(organisation) == organisationService.getFacilityLevel()) {
+			result = valueService.getValue(dataElement, organisation.getOrganisationUnit(), period);
 		}
 		else {
 			List<Organisation> children = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 			Double value = 0d;
 			for (Organisation child : children) {
-				Map<DataElement, DataValue> valuesForOrganisation = new HashMap<DataElement, DataValue>();
-				values.put(child, valuesForOrganisation);
+				Map<DataElement, DataValue> valuesForChildOrganisation = new HashMap<DataElement, DataValue>();
+				values.put(child, valuesForChildOrganisation);
 				DataValue dataValue = valueService.getValue(dataElement, child.getOrganisationUnit(), period);
-				valuesForOrganisation.put(dataElement, dataValue);
+				valuesForChildOrganisation.put(dataElement, dataValue);
 				if (dataValue != null) {
 					value += Double.parseDouble(dataValue.getValue());
 				}
 			}
-			result = value;
+			result = new DataValue(dataElement, organisation.getOrganisationUnit(), period, value.toString());
 		}
+		valuesForOrganisation.put(dataElement, result);
 		if (log.isDebugEnabled()) log.debug("getDataValue(...)="+result);
 		return result;
 	}
@@ -300,7 +302,8 @@ public class ExpressionService {
 				// TODO data element does not exist
 				// TODO if aggregated, then get data value only for the 
 				// organisations that have all the values ?
-				value = calculateDataValue(dataElement, period, organisation, values);
+				DataValue dataValue = calculateDataValue(dataElement, period, organisation, values); 
+				value = dataValue==null?null:dataValue.getValue();
 			}
 			catch (NumberFormatException e) {
 				log.warn("parse exception: "+match, e);

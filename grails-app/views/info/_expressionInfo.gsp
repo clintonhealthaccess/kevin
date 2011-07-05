@@ -10,10 +10,14 @@
 		<h5>Value:</h5>
 		<span class="value">
 			<g:if test="${info.number}">
-				<g:formatNumber number="${info.expressionValue.numberValue * 100}" format="#0.0"/>%
+				<g:formatNumber number="${info.numberValue * 100}" format="#0.0"/>%
 			</g:if>
 			<g:else>N/A</g:else>
 		</span>
+		<g:if test="${info.maxValue != null}">
+			<h5>Range:</h5>
+			<span>0 - ${info.maxValue}</span>
+		</g:if>
 		<div class="clear"></div>
 	</div>
 	
@@ -61,7 +65,7 @@
 			<a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Trend</a>
 		</h5>
 		<div class="span box hidden">
-			<g:render template="/chart/chart" model="[data: info.expression.id, organisation: info.organisation.id]"/>
+			<g:render template="/chart/chart" model="[data: info.expression.id, organisation: info.organisation.id, maxValue: info.maxValue]"/>
 		</div>
 	</div>
 </div>

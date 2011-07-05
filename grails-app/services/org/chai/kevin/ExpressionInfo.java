@@ -40,10 +40,12 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public class ExpressionInfo extends Info {
 
+	private Double maxValue;
 	private ExpressionValue expressionValue;
 	private Map<Organisation, Map<DataElement, DataValue>> values;
 	
-	public ExpressionInfo(ExpressionValue expressionValue, Map<Organisation, Map<DataElement, DataValue>> values) {
+	public ExpressionInfo(ExpressionValue expressionValue, Map<Organisation, Map<DataElement, DataValue>> values, Double maxValue) {
+		this.maxValue = maxValue;
 		this.expressionValue = expressionValue;
 		this.values = values;
 	}
@@ -70,6 +72,22 @@ public class ExpressionInfo extends Info {
 		}
 		return null;
 	}
+	
+	public Double getNumberValue() {
+		Double value = null;
+		if (getValue() != null) {
+			value = Double.parseDouble(getValue());
+			if (getMaxValue() != null) {
+				value = value / getMaxValue();
+			}
+		}
+		return value;
+	}
+	
+	public Double getMaxValue() {
+		return maxValue;
+	}
+	
 	
 	public String getValue() {
 		if (expressionValue.getValue() == null) return null;

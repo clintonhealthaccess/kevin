@@ -40,6 +40,8 @@ import org.chai.kevin.data.DataElement;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
 @Entity(name="DataValue")
 @Table(name="datavalue",
@@ -51,6 +53,16 @@ public class DataValue extends Value {
 	private Long id;
 	
 	private DataElement dataElement;
+	
+	public DataValue() {}
+
+	public DataValue(DataElement dataElement, OrganisationUnit organisationUnit, 
+			Period period, String value) {
+		this.dataElement = dataElement;
+		this.organisationUnit = organisationUnit;
+		this.period = period;
+		this.value = value;
+	}
 	
 	@Id
 	@GeneratedValue

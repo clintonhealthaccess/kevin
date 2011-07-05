@@ -510,12 +510,13 @@ form
   .average
     h5
       float: left
-      padding-top: 4px
       padding-right: 4px
-    span
+      
+    span.value
       float: left
       color: red
-      font-size: 140%
+      padding-bottom: 4px
+      margin-right: 4px
 
   div > ul
     +inline-block-list
@@ -546,12 +547,10 @@ form
     &:hover
       cursor: pointer
     
-  h5 
-    margin-top: 4px
-          
   .span
     width: 100%
     margin-top: 8px
+    margin-bottom: 4px
     
     div
       margin-bottom: 4px

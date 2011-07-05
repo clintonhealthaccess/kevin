@@ -28,6 +28,11 @@
 					</select>
 					<div class="error-list"><g:renderErrors bean="${target}" field="expression" /></div>
 				</div>
+				<div class="row ${hasErrors(bean:target,field:'maxValue','errors')}">
+					<label for="maxValue">Maximum value</label>
+					<input type="text" name="maxValue" value="${fieldValue(bean:target,field:'maxValue')}"></input>
+					<div class="error-list"><g:renderErrors bean="${target}" field="maxValue" /></div>
+				</div>
 			</div>
 			
 			<div class="selectable" data-type="AVERAGE">

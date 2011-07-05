@@ -68,7 +68,7 @@ public class ExplanationCalculator extends PercentageCalculator {
 		Expression expression = expressionService.getMatchingExpression(target.getCalculation(), organisation);
 		ExpressionInfo info = null;
 		if (expression != null) {
-			info = infoService.getInfo(expression, organisation, period);
+			info = infoService.getInfo(expression, organisation, period, null);
 			if (info == null) return null;
 		}
 		return new DashboardExplanation(info, target, organisation);

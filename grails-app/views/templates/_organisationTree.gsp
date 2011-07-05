@@ -7,7 +7,7 @@
 		<span>${organisation.name}</span>
 	</g:if>
 	<g:else>
-		<a class="dropdown-link" data-type="organisation" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:params)}">
+		<a class="dropdown-link parameter" data-type="organisation" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:params)}">
 			${organisation.name}
 		</a>
 	</g:else>

@@ -64,6 +64,8 @@ public class MapsTarget extends Translatable {
 	private Calculation calculation;
 	private Integer order;
 	
+	private Double maxValue;
+	
 	@Id
 	@GeneratedValue
 	public Integer getId() {
@@ -110,5 +112,13 @@ public class MapsTarget extends Translatable {
 		this.order = order;
 	}
 	
+	@Basic(optional=true)
+	public Double getMaxValue() {
+		return maxValue;
+	}
+	
+	public void setMaxValue(Double maxValue) {
+		this.maxValue = maxValue;
+	}
 	
 }

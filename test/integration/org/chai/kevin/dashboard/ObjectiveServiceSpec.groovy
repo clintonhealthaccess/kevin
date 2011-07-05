@@ -35,6 +35,7 @@ import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -45,7 +46,7 @@ import grails.test.GrailsUnitTestCase;
 class ObjectiveServiceSpec extends IntegrationTests {
     
 	def setup() {
-		def calculation1 = new Calculation(expressions: [:], timestamp:new Date())
+		def calculation1 = new Calculation(expressions: [:], timestamp:new Date(), type: ValueType.VALUE)
 		calculation1.save(flush: true)
 		def target = new DashboardTarget(names:j(["en":"target"]), code:"TARGET", calculation: calculation1)
 		target.save()

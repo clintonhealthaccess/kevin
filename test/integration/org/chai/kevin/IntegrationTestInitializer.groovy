@@ -79,7 +79,7 @@ class IntegrationTestInitializer extends Initializer {
 		def calculation1 = new Calculation(expressions: [
 			"District Hospital": Expression.findByCode("CONST10"),
 			"Health Center": Expression.findByCode("CONST20")
-		], timestamp:new Date())
+		], timestamp:new Date(), type: ValueType.VALUE)
 		calculation1.save()
 		
 		def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -90,7 +90,7 @@ class IntegrationTestInitializer extends Initializer {
 		def calculation2 = new Calculation(expressions: [
 				"District Hospital": Expression.findByCode("CONST20"),
 				"Health Center": Expression.findByCode("CONST20")
-			], timestamp:new Date())
+			], timestamp:new Date(), type: ValueType.VALUE)
 		calculation2.save()
 		
 		def target2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -133,7 +133,7 @@ class IntegrationTestInitializer extends Initializer {
 		def calculation3 = new Calculation(expressions: [
 			"District Hospital": Expression.findByCode("EXPRELEM1"),
 			"Health Center": Expression.findByCode("EXPRELEM1")
-		], timestamp:new Date())
+		], timestamp:new Date(), type: ValueType.VALUE)
 		calculation3.save()
 		
 		// objectives and targets for dashboard

@@ -429,7 +429,7 @@ class Initializer {
 				expression: "10 / 100",
 				timestamp:new Date()
 			).save(failOnError: true)
-			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression"), type: MapsTargetType.AGGREGATION).save(failOnError: true, flush:true)
+			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression"), type: MapsTargetType.AGGREGATION, maxValue: 20d).save(failOnError: true, flush:true)
 			
 			def calculation1 = new Calculation(expressions: [
 				"District Hospital": Expression.findByCode("Constant 10"),
