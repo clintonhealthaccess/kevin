@@ -20,7 +20,7 @@
 							<option value="null">-- Select an Objective --</option>
 							<g:each in="${periods}" var="period">
 								<option value="${period.id}" ${objective.id+''==fieldValue(bean: target, field: 'objective.id')+''?'selected="selected"':''}>
-									${period.startDate <--> period.endDate}
+									${period.startDate} <--> ${period.endDate}
 								</option>
 							</g:each>
 						</select>

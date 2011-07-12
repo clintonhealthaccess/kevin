@@ -53,7 +53,7 @@ public class DsrTarget extends Translatable {
 	private DsrObjective objective;
 	private Expression expression;
 	private DsrTargetCategory category;
-	private String format = "#";
+	private String format;
 	
 
 	@Id
@@ -105,6 +105,7 @@ public class DsrTarget extends Translatable {
 		this.format = format;
 	}
 
+	@Basic
 	public String getFormat() {
 		return format;
 	}

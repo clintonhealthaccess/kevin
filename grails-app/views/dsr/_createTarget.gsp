@@ -23,7 +23,7 @@
 						<select class="objective-list" name="objective.id">
 							<option value="null">-- Select an Objective --</option>
 							<g:each in="${objectives}" var="objective">
-								<option value="${objective.id}" ${objective.id+''==fieldValue(bean: target, field: 'objective.id')+''?'selected="selected"':''}>
+								<option value="${objective.id}" ${objective.id==target.objective?.id?'selected="selected"':''}>
 									<g:i18n field="${objective.names}"/>
 								</option>
 							</g:each>
@@ -43,7 +43,7 @@
 						<select class="category-list" name="category.id">
 							<option value="null">-- Select a Category --</option>
 							<g:each in="${categories}" var="category">
-								<option value="${category.id}" ${category.id+''==fieldValue(bean: target, field: 'category.id')+''?'selected="selected"':''}>
+								<option value="${category.id}" ${category.id==target.category?.id?'selected="selected"':''}>
 									<g:i18n field="${category.names}"/>
 								</option>
 							</g:each>
@@ -63,7 +63,7 @@
 						<select class="expression-list" name="expression.id">
 							<option value="null">-- Select an Expression --</option>
 							<g:each in="${expressions}" var="expression">
-								<option value="${expression.id}"  ${expression.id+''==fieldValue(bean: target, field: 'expression.id')+''?'selected="selected"':''}>
+								<option value="${expression.id}"  ${expression.id==target.expression?.id?'selected="selected"':''}>
 									<g:i18n field="${expression.names}"/>
 								</option>
 							</g:each>

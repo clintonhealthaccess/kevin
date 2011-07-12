@@ -100,12 +100,12 @@ public class DsrService {
 				targets, facilityTypes, dsrMap);
 	}
 
-	public String getFormat(DsrTarget target, String value) {
-		if (target.getFormat() != null) {
-			DecimalFormat frmt = new DecimalFormat(target.getFormat());
-			return frmt.format(Double.parseDouble(value)).toString();
-		}
-		return value;
+	private static String getFormat(DsrTarget target, String value) {
+		String format = target.getFormat();
+		if (format == null) format = "#";
+		
+		DecimalFormat frmt = new DecimalFormat(format);
+		return frmt.format(Double.parseDouble(value)).toString();
 	}
 
 	public void setOrganisationService(OrganisationService organisationService) {

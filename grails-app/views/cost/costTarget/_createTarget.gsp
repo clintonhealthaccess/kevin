@@ -27,7 +27,12 @@
 						<select class="expression-list" name="expression${suffix}.id">
 							<option value="null">-- select an expression --</option>
 							<g:each in="${expressions}" var="expression">
-								<option value="${expression.id}" ${expression.id+''==fieldValue(bean: target, field: 'expression'+suffix+'.id')+''?'selected="selected"':''}>
+								<g:if test="${suffix == 'End'}">
+									<option value="${expression.id}" ${expression.id==target.expressionEnd?.id?'selected="selected"':''}>
+								</g:if>
+								<g:else>
+									<option value="${expression.id}" ${expression.id==target.expression?.id?'selected="selected"':''}>
+								</g:else>
 									<g:i18n field="${expression.names}"/>
 								</option>
 							</g:each>
@@ -59,7 +64,7 @@
 	
 			<select name="costRampUp.id" class="ramp-up-list">
 				<g:each in="${costRampUps}" var="costRampUp">
-					<option value="${costRampUp.id}" ${costRampUp.id+''==fieldValue(bean:target, field: 'costRampUp.id')+''?'selected="selected"':''}>
+					<option value="${costRampUp.id}" ${costRampUp.id==target.costRampUp?.id?'selected="selected"':''}>
 						<g:i18n field="${costRampUp.names}"/>
 					</option>
 				</g:each>
