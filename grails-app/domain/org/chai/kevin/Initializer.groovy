@@ -779,7 +779,7 @@ class Initializer {
 			def surveyOne = new Survey(
 					names: j(["en":"Survey Number 1"]),
 					descriptions: j(["en":"Survey Number 1 Description"]),
-					period: Period.list()[0],
+					period: Period.list()[1],
 					order: 0
 					)
 			def surveyTwo = new Survey(

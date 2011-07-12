@@ -55,7 +55,7 @@
 										<g:each in="${objective.subObjectives}" var="subObjective">
 											<li><a id="subobjective-${subObjective.id}"
 												class="flow-show-questions ${surveyPage.subObjective?.id == subObjective.id?'opened':''}"
-												href="${createLink(controller:'survey', action:'view',params:[period:surveyPage.period.id,subObjective:subObjective.id,organisation: surveyPage.organisationUnit.id])}">
+												href="${createLink(controller:'survey', action:'view',params:[survey:surveyPage.survey.id,subObjective:subObjective.id,organisation: surveyPage.organisationUnit.id])}">
 													<g:i18n field="${subObjective.names}" /> </a>
 											</li>
 										</g:each>
@@ -82,8 +82,7 @@
 					<div id="survey-questions-container">
 						<g:if test="!surveyPage.values.isEmpty()">
 						
-							<g:form url="[controller:'survey', action:'save', params: [organisation: surveyPage.organisationUnit.id, subObjective: surveyPage.subObjective.id, period: surveyPage.period.id]]" useToken="true">
-							
+							<g:form url="[controller:'survey', action:'save', params: [organisation: surveyPage.organisationUnit.id, subObjective: surveyPage.subObjective.id, survey: surveyPage.survey.id]]" useToken="true">
 								<g:set var="i" value="${1}" />
 								<g:each in="${surveyPage.subObjective.questions}" var="question">
 									<div class="question-in-block"><strong>${i++}) </strong>

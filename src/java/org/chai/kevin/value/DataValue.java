@@ -112,6 +112,12 @@ public class DataValue extends AbstractValue {
 			return false;
 		return true;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "DataValue [dataElement=" + dataElement + ", organisationUnit="
+				+ organisationUnit + ", period=" + period + ", value=" + value
+				+ "]";
+	}
 	
 }

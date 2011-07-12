@@ -33,13 +33,11 @@ package org.chai.kevin.survey;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.chai.kevin.Organisation;
 import org.chai.kevin.ValueService;
-import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.DataValue;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +70,14 @@ public class SurveyService {
 		return surveyPage;
 	}
 
+	public boolean belongsToSurvey(Survey survey, SurveySubStrategicObjective subObjective){
+		if (subObjective == null) return true;
+		
+		for (SurveyStrategicObjective objective : survey.getObjectives()) 
+			if(objective.getSubObjectives().contains(subObjective)) return true;
+		return false;
+	}
+	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}

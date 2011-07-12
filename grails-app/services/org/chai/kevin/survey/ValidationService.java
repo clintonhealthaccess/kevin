@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.taglibs.standard.tag.common.core.SetSupport;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.survey.validation.SurveyValidationRule;

@@ -91,10 +91,15 @@ class SurveyController extends AbstractReportController {
 	}
 	
 	private def getSurveyPage() {
-		Period currentPeriod = getPeriod()
+		Survey  survey = getDefaultSurvey(false);
 		Organisation currentOrganisation = getOrganisation(false)
 		SurveySubStrategicObjective currentSubObjective = getCurrentSubObjective()
-		def surveyPage = surveyService.getSurvey(currentPeriod,currentOrganisation,currentSubObjective)
+		
+		//TODO They should be a best way to do this redirection
+		if(!surveyService.belongsToSurvey(survey, currentSubObjective))
+			redirect (controller: 'survey', action: 'view')
+			
+		def surveyPage = surveyService.getSurvey(survey,currentOrganisation,currentSubObjective)
 		if (log.isDebugEnabled()) log.debug("returning survey page: ${surveyPage}")
 		return surveyPage
 	}
