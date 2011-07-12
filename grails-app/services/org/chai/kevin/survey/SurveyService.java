@@ -27,7 +27,7 @@
  */
 package org.chai.kevin.survey;
 /**
- * @author JeanKahigiso
+ * @author Jean Kahigiso M.
  *
  */
 import java.util.Collections;
@@ -37,24 +37,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.DataValue;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SurveyService {
 	//private Log log = LogFactory.getLog(SurveyService.class);
-	private OrganisationService organisationService;
 	private ValueService valueService;
 	private Integer organisationLevel;
 
 	@Transactional(readOnly = true)
-	public SurveyPage getSurvey(Period currentPeriod,
+	public SurveyPage getSurvey(Survey currentSurvey,
 			Organisation currentOrganisation,
 			SurveySubStrategicObjective currentSubObjective) {
-		
 		Map<SurveyQuestion, Map<DataElement, DataValue>> values = new LinkedHashMap<SurveyQuestion, Map<DataElement, DataValue>>();
 		if (currentSubObjective != null) {
 			Collections.sort(currentSubObjective.getQuestions(), new SurveyQuestionSorter());
@@ -64,21 +60,21 @@ public class SurveyService {
 				List<DataElement> dataElements = question.getDataElements();
 
 				for (DataElement dataElement : dataElements) {
-					DataValue value = valueService.getValue(dataElement, currentOrganisation.getOrganisationUnit(), currentPeriod);
+					DataValue value = valueService.getValue(dataElement, currentOrganisation.getOrganisationUnit(), currentSurvey.getPeriod());
 					dataElementValue.put(dataElement, value);
 				}
 			}
 		}
-		return new SurveyPage(currentPeriod, currentOrganisation,
+		return new SurveyPage(currentSurvey, currentOrganisation,
 				currentSubObjective, values);
 	}
-
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
-	}
-
-	public OrganisationService getOrganisationService() {
-		return organisationService;
+	
+	public boolean getObjectiveBelongToSurvey(Survey survey, SurveySubStrategicObjective subObjective){
+		if(subObjective==null) return true;
+         for (SurveyStrategicObjective objective : survey.getObjectives()) 
+        	 if(objective.getSubObjectives().contains(subObjective)) return true;
+		return false;
+		
 	}
 
 	public void setValueService(ValueService valueService) {

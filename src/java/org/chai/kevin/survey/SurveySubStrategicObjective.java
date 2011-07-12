@@ -56,7 +56,7 @@ public class SurveySubStrategicObjective extends SurveyTranslatable {
 	private Integer id;
 	private Integer order;
 	private SurveyStrategicObjective objective;
-	private List<OrganisationUnitGroup> groups;
+	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
 
 	@Id
@@ -91,7 +91,7 @@ public class SurveySubStrategicObjective extends SurveyTranslatable {
 	public void setGroups(List<OrganisationUnitGroup> groups) {
 		this.groups = groups;
 	}
-	// optional has be set to false
+	
 	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
 	@JoinTable(name="dhsst_survey_sub_objective_orgunitgroup")
 	public List<OrganisationUnitGroup> getGroups() {

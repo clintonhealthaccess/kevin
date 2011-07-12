@@ -411,13 +411,13 @@ class Initializer {
 		if (!MapsTarget.count()) {
 
 			new Expression(
-				names:j(["en":"Map Expression 2"]),
-				descriptions:j([:]),
-				code:"Map Expression 2",
-				type: ValueType.VALUE,
-				expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
-				timestamp:new Date()
-			).save(failOnError: true)
+					names:j(["en":"Map Expression 2"]),
+					descriptions:j([:]),
+					code:"Map Expression 2",
+					type: ValueType.VALUE,
+					expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
+					timestamp:new Date()
+					).save(failOnError: true)
 			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2"), type: MapsTargetType.AGGREGATION).save(failOnError: true)
 
 
@@ -432,9 +432,9 @@ class Initializer {
 			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression"), type: MapsTargetType.AGGREGATION, maxValue: 20d).save(failOnError: true, flush:true)
 			
 			def calculation1 = new Calculation(expressions: [
-				"District Hospital": Expression.findByCode("Constant 10"),
-				"Health Center": Expression.findByCode("Constant 20")
-			], timestamp:new Date(), type: ValueType.VALUE)
+						"District Hospital": Expression.findByCode("Constant 10"),
+						"Health Center": Expression.findByCode("Constant 20")
+					], timestamp:new Date(), type: ValueType.VALUE)
 			calculation1.save()
 			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1, type: MapsTargetType.AVERAGE).save(failOnError: true, flush:true)
 		}
@@ -512,9 +512,9 @@ class Initializer {
 			hrh.save(failOnError: true)
 
 			def calculation1 = new Calculation(expressions: [
-				"District Hospital": Expression.findByCode("Constant 10"),
-				"Health Center": Expression.findByCode("Constant 20")
-			], timestamp:new Date(), type: ValueType.VALUE)
+						"District Hospital": Expression.findByCode("Constant 10"),
+						"Health Center": Expression.findByCode("Constant 20")
+					], timestamp:new Date(), type: ValueType.VALUE)
 			calculation1.save()
 
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -523,9 +523,9 @@ class Initializer {
 					), weight: 1, order: 1)
 
 			def calculation2 = new Calculation(expressions: [
-				"District Hospital": Expression.findByCode("Constant 20"),
-				"Health Center": Expression.findByCode("Constant 20")
-			], timestamp:new Date(), type: ValueType.VALUE)
+						"District Hospital": Expression.findByCode("Constant 20"),
+						"Health Center": Expression.findByCode("Constant 20")
+					], timestamp:new Date(), type: ValueType.VALUE)
 			calculation2.save()
 
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -769,55 +769,110 @@ class Initializer {
 	}
 
 	static def createQuestionaire(){
-		if(!SurveyStrategicObjective.count()){
+		if(!Survey.count()){
 
 			def dh = OrganisationUnitGroup.findByUuid("District Hospital")
 			def hc = OrganisationUnitGroup.findByUuid("Health Center")
 
-			//Creating section
+			//Creating Survey
+			def surveyOne = new Survey(
+					names: j(["en":"Survey Number 1"]),
+					descriptions: j(["en":"Survey Number 1 Description"]),
+					period: Period.list()[0],
+					order: 0
+					)
+			def surveyTwo = new Survey(
+					names: j(["en":"Survey Number 2"]),
+					descriptions: j(["en":"Survey Number 2 Description"]),
+					period: Period.list()[1],
+					order: 1
+					)
+
+			//Creating Objective
 			def serviceDev = new SurveyStrategicObjective(
 					names: j(["en":"Service Delivery"]),
 					descriptions: j(["en":"Service Delivery"]),
-					order: 3,
-					groups:[dh,hc]
-					)
+					order: 2,
+					groups:[dh, hc])
 			def hResourceHealth = new SurveyStrategicObjective(
 					names: j(["en":"Human Resources for Health"]),
 					descriptions: j(["en":"Human Resources for Health"]),
-					order: 1,
-					groups:[dh,hc]
-					)
+					order: 4,
+					groups:[dh, hc])
 
 			def geoAccess = new SurveyStrategicObjective(
 					names: j(["en":"Geographic Access"]),
 					descriptions: j(["en":"Geographic Access"]),
-					order: 2,
-					groups:[dh,hc]
-					)
+					order: 5,
+					groups:[dh, hc])
 
-			//Adding Sub-Objective to sections
+			def institutCap = new SurveyStrategicObjective(
+					names: j(["en":"Institutional Capacity"]),
+					descriptions: j(["en":"Institutional Capacity"]),
+					order: 3,
+					groups:[dh, hc])
+
+			def coreFacId = new SurveyStrategicObjective(
+					names: j(["en":"Core Facility Identify"]),
+					descriptions: j(["en":"Core Facility Identify"]),
+					order: 1,
+					groups:[dh, hc])
+
+			def finance = new SurveyStrategicObjective(
+					names: j(["en":"Finance"]),
+					descriptions: j(["en":"Finance"]),
+					order: 6,
+					groups:[dh, hc])
+			
+			def dvandC = new SurveyStrategicObjective(
+					names: j(["en":"Drugs, Vaccines, and Consumables"]),
+					descriptions: j(["en":"Drugs, Vaccines, and Consumables"]),
+					order: 7,
+					groups:[dh, hc])
+
+			surveyOne.addStrategicObjective(serviceDev)
+			surveyOne.addStrategicObjective(coreFacId)
+			surveyOne.addStrategicObjective(hResourceHealth)
+			surveyOne.addStrategicObjective(finance)
+			surveyOne.save(failOnError:true)
+
+			surveyTwo.addStrategicObjective(geoAccess)
+			surveyTwo.addStrategicObjective(dvandC)
+			surveyTwo.addStrategicObjective(institutCap)
+			surveyTwo.save(failOnError:true)
+
+
+
+			//Adding Sub-Objective to Objective
+			
+			def facilityId = new SurveySubStrategicObjective(
+				names: j(["en":"Facility Identifier"]),
+				descriptions: j(["en":"Facility Identifier"]),
+				order: 1,
+				objective: coreFacId,
+				groups:[dh, hc])
+			
+			coreFacId.addSubStrategicObjective(facilityId)
+			coreFacId.save(failOnError:true);
 
 			def services=new SurveySubStrategicObjective(
 					names: j(["en":"Services"]),
 					descriptions: j(["en":"Services"]),
 					order: 2,
 					objective: serviceDev,
-					groups:[dh,hc]
-					)
+					groups:[dh, hc])
 			def labTests= new SurveySubStrategicObjective(
 					names: j(["en":"Lab Tests"]),
 					descriptions: j(["en":"Lab Tests"]),
 					order: 1,
 					objective: serviceDev,
-					groups:[dh,hc]
-					)
+					groups:[dh])
 			def patientReg=new SurveySubStrategicObjective(
 					names: j(["en":"Patient Registration"]),
 					descriptions: j(["en":"Patient Registration"]),
 					order: 3,
 					objective: serviceDev,
-					groups:[dh,hc]
-					)
+					groups:[dh, hc])
 
 			serviceDev.addSubStrategicObjective(services)
 			serviceDev.addSubStrategicObjective(labTests)
@@ -829,24 +884,21 @@ class Initializer {
 					descriptions: j(["en":"Staffing"]),
 					order: 1,
 					objective: hResourceHealth,
-					groups:[dh,hc]
-					)
+					groups:[dh, hc])
 
 			def continuingEd = new SurveySubStrategicObjective(
 					names: j(["en":"Continuing Education"]),
 					descriptions: j(["en":"Continuing Education"]),
 					order: 2,
 					objective: hResourceHealth,
-					groups:[dh,hc]
-					)
+					groups:[hc])
 
 			def openResponse = new SurveySubStrategicObjective(
 					names: j(["en":"Open Response"]),
 					descriptions: j(["en":"Open Response"]),
 					order: 3,
 					objective: hResourceHealth,
-					groups:[dh,hc]
-					)
+					groups:[dh, hc])
 
 			hResourceHealth.addSubStrategicObjective(staffing)
 			hResourceHealth.addSubStrategicObjective(continuingEd)
@@ -858,22 +910,19 @@ class Initializer {
 					descriptions: j(["en":"Infrastructure"]),
 					order: 3,
 					objective: geoAccess,
-					groups:[dh,hc]
-					)
+					groups:[dh, hc])
 			def medicalEq=new SurveySubStrategicObjective(
 					names: j(["en":"Medical Equipment"]),
 					descriptions: j(["en":"Medical Equipment"]),
 					order: 2,
 					objective: geoAccess,
-					groups:[dh,hc]
-					)
+					groups:[dh, hc])
 			def wasteMgmnt=new SurveySubStrategicObjective(
 					names: j(["en":"Waste Management"]),
 					descriptions: j(["en":"Waste Management"]),
 					order: 1,
 					objective: geoAccess,
-					groups:[dh,hc]
-					)
+					groups:[dh, hc])
 
 			geoAccess.addSubStrategicObjective(infrastructure)
 			geoAccess.addSubStrategicObjective(medicalEq)
@@ -886,21 +935,21 @@ class Initializer {
 					names: j(["en":"Service Sub Section Simple Question VALUE"]),
 					descriptions: j(["en":"Service Sub Section Simple Question"]),
 					order: 3,
-					groups:[dh,hc],
+					groups:[dh, hc],
 					dataElement: DataElement.findByCode("CODE1")
 					)
 			def serviceQ2 = new SurveySimpleQuestion(
 					names: j(["en":"Service Sub Section Simple Question BOOL"]),
 					descriptions: j(["en":"Service Sub Section Simple Question BOOL"]),
 					order: 0,
-					groups:[dh,hc],
+					groups:[hc],
 					dataElement: DataElement.findByCode("CODE7")
 					)
 			def serviceQ3 = new SurveySimpleQuestion(
 					names: j(["en":"Service Sub Section Simple Question ENUM "]),
 					descriptions: j(["en":"Service Sub Section Simple Question ENUM"]),
 					order: 1,
-					groups:[dh,hc],
+					groups:[dh, hc],
 					dataElement: DataElement.findByCode("CODE3")
 					)
 
@@ -913,7 +962,7 @@ class Initializer {
 					names: j(["en":"Sample Open Question "]),
 					descriptions: j(["en":"Sample Open Question"]),
 					order: 1,
-					groups:[dh,hc],
+					groups:[dh, hc],
 					dataElement: DataElement.findByCode("CODE12")
 					)
 			openResponse.addQuestion(openQ)
@@ -923,26 +972,28 @@ class Initializer {
 					names: j(["en":"Service Sub Section CheckBox  Question"]),
 					descriptions: j(["en":"Service Sub Section CheckBox  Question"]),
 					order: 2,
-					groups: [dh,hc]
-					)
+					groups: [dh, hc])
 
 			//Checkbox Option
 			def option1 = new SurveyCheckboxOption(
 					names: j(["en":"None Or Not Applicable"]),
 					descriptions: j(["en":"None Or Not Applicable"]),
 					order: 2,
+					groups: [dh, hc],
 					dataElement: DataElement.findByCode("CODE4")
 					)
 			def option2 = new SurveyCheckboxOption(
 					names: j(["en":"Second Option"]),
 					descriptions: j(["en":"Second Option"]),
 					order: 1,
+					groups: [dh],
 					dataElement: DataElement.findByCode("CODE5")
 					)
 			def option3 = new SurveyCheckboxOption(
 					names: j(["en":"Third Option"]),
 					descriptions: j(["en":"Third Option"]),
 					order: 3,
+					groups: [dh, hc],
 					dataElement: DataElement.findByCode("CODE6")
 					)
 			staffing.addQuestion(checkBoxQ)
@@ -957,19 +1008,20 @@ class Initializer {
 					names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
 					descriptions: j(["en":"Training Modules"]),
 					order: 1,
-					groups: [dh,hc]
-					)
+					groups: [dh, hc])
 			//Add columns
 			def tabColumnOne = new SurveyTableColumn(
 					names: j(["en":"Number Who Attended Training"]),
 					descriptions: j(["en":"Number Who Attended Training"]),
 					order: 1,
+					groups: [dh, hc],
 					question: tableQ
 					)
 			def tabColumnThree = new SurveyTableColumn(
 					names: j(["en":"Who Provided the Training"]),
 					descriptions: j(["en":"Who Provided the Training"]),
 					order: 3,
+					groups: [hc],
 					question: tableQ
 					)
 
@@ -977,6 +1029,7 @@ class Initializer {
 					names: j(["en":"Sum Total Number of Days"]),
 					descriptions: j(["en":"Sum Total Number of Days"]),
 					order: 2,
+					groups: [dh, hc],
 					question: tableQ
 					)
 
@@ -984,14 +1037,15 @@ class Initializer {
 					names: j(["en":"Due Date"]),
 					descriptions: j(["en":"Due Date"]),
 					order: 4,
+					groups: [dh],
 					question: tableQ
 					)
 
 			staffing.addQuestion(tableQ)
 			staffing.save(failOnError:true)
-			tableQ.addColumn(tabColumnOne)
 			tableQ.addColumn(tabColumnThree)
 			tableQ.addColumn(tabColumnTwo)
+			tableQ.addColumn(tabColumnOne)
 			tableQ.addColumn(tabColumnFour)
 
 			Map<SurveyTableColumn,DataElement> dataElmntsLine1= new LinkedHashMap<SurveyTableColumn,DataElement>();
@@ -1014,6 +1068,7 @@ class Initializer {
 					descriptions: j(["en":"Clinical Pharmacy :"]),
 					order: 1,
 					question: tableQ,
+					groups: [dh, hc],
 					dataElements: dataElmntsLine1
 					)
 			//			def tabRowThree = new SurveyTableRow(
@@ -1028,6 +1083,7 @@ class Initializer {
 					descriptions: j(["en":"Clinical Nurse Training :"]),
 					order: 2,
 					question: tableQ,
+					groups: [hc],
 					dataElements: dataElmntsLine2
 					)
 			//			def tabRowFour = new SurveyTableRow(

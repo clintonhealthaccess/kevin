@@ -11,6 +11,7 @@
 		<g:i18nInput name="names" bean="${target}" value="${target.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${target}" field="code"/>
+		<g:input name="format" label="Format" bean="${target}" field="format"/>
 		<div class="row">
 			<div>
 				<a id="new-dsr-objective-link" class="float-right"  href="${createLink(controller:'dsrObjective', action:'create')}">New DSR Objective</a>

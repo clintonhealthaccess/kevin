@@ -1,6 +1,4 @@
-package org.chai.kevin.dsr;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,7 +25,11 @@ package org.chai.kevin.dsr;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+package org.chai.kevin.dsr;
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,6 +53,7 @@ public class DsrTarget extends Translatable {
 	private DsrObjective objective;
 	private Expression expression;
 	private DsrTargetCategory category;
+	private String format = "#";
 	
 
 	@Id
@@ -98,5 +101,12 @@ public class DsrTarget extends Translatable {
 		return category;
 	}
 
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public String getFormat() {
+		return format;
+	}
 	
 }

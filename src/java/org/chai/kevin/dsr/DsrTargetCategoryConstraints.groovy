@@ -1,6 +1,4 @@
-package org.chai.kevin.dsr
-
-/*
+/**
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
@@ -27,6 +25,12 @@ package org.chai.kevin.dsr
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+package org.chai.kevin.dsr;
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
 
 constraints = {
 	code(nullable: false, blank: false, unique: true)

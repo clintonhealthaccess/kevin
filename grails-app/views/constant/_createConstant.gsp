@@ -7,9 +7,7 @@
 		<g:locales/>
 		<div class="clear"></div>
 	</div>
-	
 	<g:form url="[controller:'constant', action:'save']" useToken="true">
-
 		<g:i18nInput name="names" bean="${constant}" value="${constant.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${constant}" value="${constant.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${constant}" field="code"/>

@@ -32,7 +32,7 @@ import java.util.List;
 
 class SurveySectionService {
 	static transactional = true	
-	List<SurveyStrategicObjectiveController> getSurveySections() {
-		return SurveyStrategicObjectiveController.list();
+	List<SurveyStrategicObjective> getSurveySections() {
+		return SurveyStrategicObjective.list();
 	}
 }

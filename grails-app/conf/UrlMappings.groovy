@@ -1,4 +1,4 @@
-/*
+/**
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
@@ -35,8 +35,10 @@ class UrlMappings {
 
 		"/dsr/$action/$period?/$objective?/$organisation?"(controller:"dsr")
 		
-		"/survey/$action/$period?/$subobjective?/$organisation?"(controller:"survey")
-	
+		"/survey/$action/$survey/$subobjective?/$organisation?"(controller:"survey")
+		
+		"/survey/admin/$action/$survey?/$objective?/$subobjective?/$question?"(controller:"admin")
+				
 		"/maps/view"(controller:"maps", action:"view")
 		
 		"/maps/map/$period?/$organisation?/$level?/$target?"(controller:"maps", action: "map")
@@ -50,8 +52,10 @@ class UrlMappings {
 		}
 
 		// temporary redirect to dsr
-//		"/"(controller:"survey", action:"index")
 		"/"(controller:"dsr", action:"index")
+//		"/"(controller:"survey", action:"index")
+//		"/"(controller:"iteration", action:"list")
+//		"/"(controller:"dashboard", action:"index")
 		"500"(view:'/error')
 	}
 }

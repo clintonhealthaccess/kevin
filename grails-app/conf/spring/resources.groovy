@@ -15,6 +15,7 @@ import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.maps.MapsService;
 import org.chai.kevin.survey.SurveySectionService;
 import org.chai.kevin.survey.SurveyService;
+import org.chai.kevin.survey.SurveyAdminService;
 import org.springframework.format.number.PercentFormatter;
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
@@ -56,9 +57,12 @@ int organisationLevel = config.facility.level
 int infoGroupLevel = config.info.group.level
 
 beans = {
+	
+	surveyAdminService(SurveyAdminService){
+		
+	}
 
 	surveyService(SurveyService){
-		organisationService = ref("organisationService")
 		valueService = ref("valueService")
 	}
 	

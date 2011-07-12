@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,37 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.dsr;
+package org.chai.kevin.survey;
+
+import java.util.List;
+
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.springframework.transaction.annotation.Transactional;
+
 /**
  * @author Jean Kahigiso M.
- *
+ * 
  */
-
-import java.util.Comparator;
-
-import org.chai.kevin.Sorter;
-
-public class DsrTargetSorter implements Comparator<DsrTarget> {
-	@Override
-	public int compare(DsrTarget targetOne, DsrTarget targetTwo) {
-
-		if (targetOne.getCategory() != null && targetTwo.getCategory() != null)
-			if (targetOne.getCategory() == targetTwo.getCategory()) {
-				return Sorter.compareOrder(targetOne.getOrder(),
-						targetTwo.getOrder());
-			} else {
-				return Sorter.compareOrder(targetOne.getCategory().getOrder(),
-						targetTwo.getCategory().getOrder());
-			}
-		if (targetOne.getCategory() != null && targetTwo.getCategory() == null)
-			return Sorter.compareOrder(targetOne.getCategory().getOrder(),
-					targetTwo.getOrder());
-		if (targetOne.getCategory() == null && targetTwo.getCategory() != null)
-			return Sorter.compareOrder(targetOne.getOrder(), targetTwo
-					.getCategory().getOrder());
-		if (targetOne.getCategory() == null && targetTwo.getCategory() == null)
-			return Sorter
-					.compareOrder(targetOne.getOrder(), targetTwo.getOrder());
-		return 0;
+public class SurveyAdminService {
+	// private Log log = LogFactory.getLog(SurveyService.class);
+	@Transactional(readOnly = true)
+	public SurveyAdminPage getSurveyAdmin(Survey currentSurvey,
+			SurveyStrategicObjective currentObjective,
+			SurveySubStrategicObjective currentSubObjective,
+			SurveyQuestion curretQuestion, List<Survey> surveys,
+			List<OrganisationUnitGroup> groups) {
+		return new SurveyAdminPage(currentSurvey, currentObjective,
+				currentSubObjective, curretQuestion, surveys, groups);
 	}
+
+
+
 }

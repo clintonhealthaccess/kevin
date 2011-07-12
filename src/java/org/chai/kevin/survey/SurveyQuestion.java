@@ -30,6 +30,7 @@ package org.chai.kevin.survey;
  * @author JeanKahigiso
  *
  */
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -39,10 +40,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-<<<<<<< HEAD
 import javax.persistence.JoinTable;
-=======
->>>>>>> survey
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -60,7 +58,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	private Integer id;
 	private Integer order;
 	private SurveySubStrategicObjective subObjective;
-	private List<OrganisationUnitGroup> groups;
+	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
 
 	public void setId(Integer id) {
 		this.id = id;
@@ -95,7 +93,6 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		this.groups = groups;
 	}
 
-	// optional has be set to false
 	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
 	@JoinTable(name="dhsst_survey_question_orgunitgroup")
 	public List<OrganisationUnitGroup> getGroups() {

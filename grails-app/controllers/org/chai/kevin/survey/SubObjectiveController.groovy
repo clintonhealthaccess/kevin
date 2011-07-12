@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,37 +25,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.dsr;
+package org.chai.kevin.survey
+import org.chai.kevin.AbstractEntityController;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+
 /**
  * @author Jean Kahigiso M.
  *
  */
+class SubObjectiveController extends AbstractEntityController {
 
-import java.util.Comparator;
+	def getEntity(def id) {
+		return SurveySubStrategicObjective.get(id)
+	}
+	def createEntity() {
+		return new SurveySubStrategicObjective()
+	}
 
-import org.chai.kevin.Sorter;
+	def getTemplate() {
+		return "/survey/admin/createSubObjective"
+	}
 
-public class DsrTargetSorter implements Comparator<DsrTarget> {
-	@Override
-	public int compare(DsrTarget targetOne, DsrTarget targetTwo) {
+	def getModel(def entity) {
+		[
+			subobjective: entity,
+			objectives: SurveyStrategicObjective.list()
+				]
+	}
 
-		if (targetOne.getCategory() != null && targetTwo.getCategory() != null)
-			if (targetOne.getCategory() == targetTwo.getCategory()) {
-				return Sorter.compareOrder(targetOne.getOrder(),
-						targetTwo.getOrder());
-			} else {
-				return Sorter.compareOrder(targetOne.getCategory().getOrder(),
-						targetTwo.getCategory().getOrder());
-			}
-		if (targetOne.getCategory() != null && targetTwo.getCategory() == null)
-			return Sorter.compareOrder(targetOne.getCategory().getOrder(),
-					targetTwo.getOrder());
-		if (targetOne.getCategory() == null && targetTwo.getCategory() != null)
-			return Sorter.compareOrder(targetOne.getOrder(), targetTwo
-					.getCategory().getOrder());
-		if (targetOne.getCategory() == null && targetTwo.getCategory() == null)
-			return Sorter
-					.compareOrder(targetOne.getOrder(), targetTwo.getOrder());
-		return 0;
+	def validateEntity(def entity) {
+		return entity.validate()
+	}
+
+	def saveEntity(def entity) {
+		entity.save()
+	}
+	def deleteEntity(def entity) {
+		entity.delete()
+	}
+
+	def bindParams(def entity) {
+		entity.properties = params
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 }
+

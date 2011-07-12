@@ -40,61 +40,40 @@ import org.chai.kevin.survey.SurveyService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class SurveyController extends AbstractReportController {
-	SurveyService surveyService;	
-		def index = {
-			redirect (action: 'view', params: params)
-		}
+	SurveyService surveyService;
+	def index = {
+		redirect (action: 'view', params: params)
+	}
+
+	def view = {
+
+		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
+
+		Organisation currentOrganisation = getOrganisation(true);
+		Survey  survey = getDefaultSurvey(true);
+		SurveySubStrategicObjective currentSubObjective = getCurrentSubObjective(true);
+		List<Survey> surveys = Survey.list();
 		
-		def view = {
+        //TODO They should be a best way to do this redirection
+		if(!surveyService.getObjectiveBelongToSurvey (survey, currentSubObjective))
+			redirect (controller: 'survey', action: 'view')
 
-			if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
-			
-			Period currentPeriod = getPeriod()
-			Organisation currentOrganisation = getOrganisation(true)
-		    SurveySubStrategicObjective currentSubObjective = getCurrentSubObjective()
-						
-			def surveyPage = surveyService.getSurvey(currentPeriod,currentOrganisation,currentSubObjective)
-			
-			if (log.isDebugEnabled()) log.debug('survey: '+surveyPage)
-			
-			Integer organisationLevel = ConfigurationHolder.config.facility.level;
-			def allObjectives = SurveyStrategicObjective.list();
-			//Sorting sections and corresponding sub-sections
-			Collections.sort(allObjectives,new SurveyStrategicObjectiveSorter());
-			for (SurveyStrategicObjective objective : allObjectives) {
-				Collections.sort(objective.getSubObjectives(),new SurveySubStrategicObjectiveSorter());
-			}
-			
-			[
-				periods: Period.list(),
-				surveyPage: surveyPage,
-				objectives: allObjectives,
-				organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1)
-			]
-			
-		}
-		def admin ={
-			
-			if (log.isDebugEnabled()) log.debug("admin.view, params:"+params)
-			
-
-//						
-//			def surveyAdminPage = surveyAdminService.getAdminSurvey()
-//			
-//			if (log.isDebugEnabled()) log.debug('admin: '+surveyAdminPage)
-//
-//			def allObjectives = SurveyStrategicObjective.list();
-//			//Sorting sections and corresponding sub-sections
-//			Collections.sort(allObjectives,new SurveyStrategicObjectiveSorter());
-//			for (SurveyStrategicObjective objective : allObjectives) {
-//				Collections.sort(objective.getSubObjectives(),new SurveySubStrategicObjectiveSorter());
-//			}
-//			
-//			[
-//				surveyAdminPage: surveyAdminPage,
-//			]
-//			
-			
+		//Ordering Survey Page Elements	
+		Collections.sort(survey.getObjectives(),new SurveyStrategicObjectiveSorter());
+		for (SurveyStrategicObjective objective : survey.getObjectives()) {
+			Collections.sort(objective.getSubObjectives(),new SurveySubStrategicObjectiveSorter());
 		}
 
+		def surveyPage = surveyService.getSurvey(survey,currentOrganisation,currentSubObjective)
+
+		if (log.isDebugEnabled()) log.debug('survey: '+surveyPage)
+
+		Integer organisationLevel = ConfigurationHolder.config.facility.level;
+		[		
+			surveyPage: surveyPage,
+			organisation: currentOrganisation,
+			subObjective: currentSubObjective,
+			organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1)
+		]
+	}
 }

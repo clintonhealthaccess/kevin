@@ -1,6 +1,4 @@
-package org.chai.kevin.dsr;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,7 +25,13 @@ package org.chai.kevin.dsr;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.dsr;
 
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,11 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
-import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
@@ -50,7 +52,7 @@ public class DsrService {
 	// private Log log = LogFactory.getLog(DsrService.class);
 	private OrganisationService organisationService;
 	private ValueService valueService;
-	
+
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective,
 			Period period) {
@@ -63,7 +65,8 @@ public class DsrService {
 			return new DsrTable(organisation, organisations, period, objective,
 					targets, facilityTypes, dsrMap);
 		} else {
-			organisations = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+			organisations = organisationService.getChildrenOfLevel(
+					organisation, organisationService.getFacilityLevel());
 			targets = objective.getTargets();
 			Collections.sort(targets, new DsrTargetSorter());
 			dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
@@ -75,10 +78,18 @@ public class DsrService {
 				}
 				Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
 				for (DsrTarget target : targets) {
-					ExpressionValue expressionValue = valueService.getValue(target.getExpression(), child.getOrganisationUnit(), period);
+					ExpressionValue expressionValue = valueService.getValue(
+							target.getExpression(),
+							child.getOrganisationUnit(), period);
 					String value = null;
-					if (expressionValue != null) value = expressionValue.getValue();
-					orgDsr.put(target,new Dsr(child, period, target, value));
+					if (expressionValue != null)
+						if (expressionValue.getNumberValue() != null) {
+							value = getFormat(target,
+									expressionValue.getValue());
+						} else {
+							value = expressionValue.getValue();
+						}
+					orgDsr.put(target, new Dsr(child, period, target, value));
 				}
 				dsrMap.put(child, orgDsr);
 			}
@@ -87,6 +98,14 @@ public class DsrService {
 		}
 		return new DsrTable(organisation, organisations, period, objective,
 				targets, facilityTypes, dsrMap);
+	}
+
+	public String getFormat(DsrTarget target, String value) {
+		if (target.getFormat() != null) {
+			DecimalFormat frmt = new DecimalFormat(target.getFormat());
+			return frmt.format(Double.parseDouble(value)).toString();
+		}
+		return value;
 	}
 
 	public void setOrganisationService(OrganisationService organisationService) {

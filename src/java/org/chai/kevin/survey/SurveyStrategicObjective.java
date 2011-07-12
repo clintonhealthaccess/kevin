@@ -26,18 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.chai.kevin.survey;
+
 /**
  * @author JeanKahigiso
  *
  */
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -46,7 +45,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
@@ -57,7 +55,8 @@ public class SurveyStrategicObjective extends SurveyTranslatable {
 
 	private Integer id;
 	private Integer order;
-	private List<OrganisationUnitGroup> groups;
+	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
+	private Survey survey;
 	private List<SurveySubStrategicObjective> subObjectives = new ArrayList<SurveySubStrategicObjective>();
 
 	public void setId(Integer id) {
@@ -92,9 +91,18 @@ public class SurveyStrategicObjective extends SurveyTranslatable {
 	public void setGroups(List<OrganisationUnitGroup> groups) {
 		this.groups = groups;
 	}
-	// optional has be set to false
+
+	public void setSurvey(Survey survey) {
+		this.survey = survey;
+	}
+
+	@ManyToOne(targetEntity = Survey.class, optional = false)
+	public Survey getSurvey() {
+		return survey;
+	}
+
 	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name="dhsst_survey_objective_orgunitgroup")
+	@JoinTable(name = "dhsst_survey_objective_orgunitgroup")
 	public List<OrganisationUnitGroup> getGroups() {
 		return groups;
 	}
@@ -107,18 +115,5 @@ public class SurveyStrategicObjective extends SurveyTranslatable {
 			SurveySubStrategicObjective subObjective) {
 		subObjective.setObjective(this);
 		subObjectives.add(subObjective);
-	}
-
-	@Transient
-	public Map<SurveySubStrategicObjective, List<SurveyQuestion>> getAllQuestionsOfSurveySection() {
-		Map<SurveySubStrategicObjective, List<SurveyQuestion>> qSubObjective = null;
-		if (!subObjectives.isEmpty()) {
-			qSubObjective = new HashMap<SurveySubStrategicObjective, List<SurveyQuestion>>();
-			for (SurveySubStrategicObjective subSection : subObjectives)
-				qSubObjective.put(subSection, subSection.getQuestions());
-		}
-
-		return qSubObjective;
-
 	}
 }

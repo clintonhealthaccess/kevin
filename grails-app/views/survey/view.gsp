@@ -11,31 +11,20 @@
 		<div id="top-container">
 			<div id="survey-iteration-box" class="box">
 				<h5>Year:
-					<span class="survey-highlight-title dropdown"> <a class="selected" href="#" data-period="${surveyPage.period.id}">
-							<g:dateFormat format="yyyy" date="${surveyPage.period.startDate}" />
-					</a> 
-					<div class="hidden dropdown-list">
-						<ul>
-							<g:each in="${periods}" var="period">
-								<li>
-								<a href="${createLink(controller: "survey", action:"view", params:[period:period.id, subobjective:surveyPage.subObjective.objective?.id, organisation: surveyPage.organisation?.id])}">
-										<span><g:dateFormat format="yyyy"
-												date="${period.startDate}" />
-									</span> </a></li>
-							</g:each>
-						</ul>
-					</div>
+					<span class="survey-highlight-title dropdown"> 
+							<g:dateFormat format="yyyy" date="${surveyPage.survey.period.startDate}" />
 					</span>
 					</h5>
 			</div>
 			<div id="survey-objective-box" class="box">
 				<div class="survey-container-left-side">
-					<g:if test="${surveyPage.subObjective != null}">
 						<h5>
-							Strategic Objective: <span class="survey-highlight-title"><g:i18n
-									field="${surveyPage.subObjective.objective.names}" /> </span>
+							Strategic Objective: <span class="survey-highlight-title">
+							<g:if test="${surveyPage.subObjective != null}">
+							<g:i18n field="${surveyPage.subObjective.objective.names}" />
+							</g:if> <g:else> Select Strategic Objective </g:else>
+							</span>
 						</h5>
-					</g:if>
 				</div>
 				<div class="survey-container-right-side">
 					<h5>
@@ -51,25 +40,28 @@
 				<div class="survey-strategic-object-title">
 					<h5>Strategic Objectives</h5>
 				</div>
-				<g:if test="${objectives != null}">
+				<g:if test="${surveyPage.survey.objectives != null}">
 					<div id="survey-objective" class="objective">
 						<ul id="survey-objective-list"
 							class="objectives expandfirst collapsible">
-							<g:each in="${objectives}" var="objective">
+							<g:each in="${surveyPage.survey.objectives}" var="objective">
 								<li
-									class="${surveyPage.subObjective.objective?.id == objective.id?'current':''}">
+									class="${surveyPage.subObjective?.objective?.id == objective.id?'current':''}">
 									<a class="objective-link-${objective.id}" href="#"> <g:i18n
 											field="${objective.names}" /> </a>
+								<g:if test="${!objective.subObjectives.isEmpty()}" >
 									<ul id="survey-subobjective-list-${objective.id}"
 										class="survey-subobjective">
 										<g:each in="${objective.subObjectives}" var="subObjective">
 											<li><a id="subobjective-${subObjective.id}"
 												class="flow-show-questions ${surveyPage.subObjective?.id == subObjective.id?'opened':''}"
-												href="${createLink(controller:'survey', action:'view',params:[period:surveyPage.period.id,subobjective:subObjective.id,organisation: surveyPage.organisation.id])}">
+												href="${createLink(controller:'survey', action:'view',params:[survey:surveyPage.survey.period.id,subobjective:subObjective.id,organisation: surveyPage.organisation.id])}">
 													<g:i18n field="${subObjective.names}" /> </a>
 											</li>
 										</g:each>
-									</ul></li>
+									</ul>
+									</g:if>
+									</li>
 							</g:each>
 						</ul>
 
@@ -80,7 +72,7 @@
 				</g:else>
 			</div>
 			<div id="survey-right-question-container" class="box">
-				<g:if test="surveyPage.subObjective!=null">
+				<g:if test="${surveyPage.subObjective!=null}">
 					<div id="survey-subobjective-title-container">
 						<h5>
 							<g:i18n field="${surveyPage.subObjective.names}" />
@@ -88,7 +80,8 @@
 						<div class="clear"></div>
 					</div>
 					<div id="survey-questions-container">
-						<g:if test="!surveyPage.values.isEmpty()">
+						<g:if test="${!surveyPage.values.isEmpty()}">
+							<!-- <form name="form-subjective-${surveyPage.subObjective?.id}" action="">-->
 							<g:set var="i" value="${1}" />
 							<g:each in="${surveyPage.values}" var="questionMap">
 								<div class="question-in-block"><strong>${i++}) </strong>
@@ -97,8 +90,9 @@
 									<g:render template="/survey/${question.getTemplate()}" model="[question: question, dataValues: dataValues]" /> 
 								</div>
 							</g:each>
+							<!-- </form> -->
 						</g:if>
-						<g:else>Couldn't Load Questions</g:else>
+						<g:else>No question available for this section</g:else>
 						<div class="clear"></div>
 					</div>
 
@@ -135,7 +129,7 @@
 								&& current.size() > 0) {
 							current.addClass('expandfirst');
 							current.show();
-						} else {
+						}else{
 							$('#' + this.id + '.expandfirst ul:first').show();
 						}
 					});

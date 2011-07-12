@@ -35,31 +35,23 @@ import java.util.Map;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.DataValue;
-import org.hisp.dhis.period.Period;
 
 public class SurveyPage {
-	private Period period;
 	private Organisation organisation;
+	private Survey survey;
 	private SurveySubStrategicObjective subObjective;
 	private Map<SurveyQuestion, Map<DataElement, DataValue>> values;
 
-	public SurveyPage(Period period, Organisation organisation,
+	public SurveyPage(Survey survey, Organisation organisation,
 			SurveySubStrategicObjective subObjective,
 			Map<SurveyQuestion, Map<DataElement, DataValue>> values) {
 		super();
-		this.period = period;
+		this.survey = survey;
 		this.organisation = organisation;
 		this.subObjective = subObjective;
 		this.values = values;
 	}
 
-	public Period getPeriod() {
-		return period;
-	}
-
-	public void setPeriod(Period period) {
-		this.period = period;
-	}
 
 	public Organisation getOrganisation() {
 		return organisation;
@@ -68,6 +60,16 @@ public class SurveyPage {
 	public void setOrganisation(Organisation organisation) {
 		this.organisation = organisation;
 	}
+
+	public void setSurvey(Survey survey) {
+		this.survey = survey;
+	}
+
+
+	public Survey getSurvey() {
+		return survey;
+	}
+
 
 	public void setSubObjective(SurveySubStrategicObjective subObjective) {
 		this.subObjective = subObjective;

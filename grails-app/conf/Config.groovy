@@ -1,3 +1,5 @@
+import org.hisp.dhis.period.MonthlyPeriodType
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -155,6 +157,8 @@ dashboard.skip.levels=[]
 cost.skip.levels=[]
 
 dsr.facility.checked=["District Hospital","Health Center"]
+
+period.type = "Monthly"
 
 /**
  * Configuration file override

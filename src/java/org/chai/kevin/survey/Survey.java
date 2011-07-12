@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,77 +27,77 @@
  */
 package org.chai.kevin.survey;
 /**
- * @author JeanKahigiso
+ * @author Jean Kahigiso M.
  *
  */
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-
+import org.hisp.dhis.period.Period;
 
 @SuppressWarnings("serial")
-@Entity(name = "SurveyTableColumn")
-@Table(name = "dhsst_survey_table_column")
-public class SurveyTableColumn extends SurveyTranslatable {
-
+@Entity(name="Survey")
+@Table(name="dhsst_survey")
+public class Survey extends SurveyTranslatable{
 	private Integer id;
 	private Integer order;
-	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
-	private SurveyTableQuestion question;
-
+	private boolean open = true;
+	private Period period;
+	private List<SurveyStrategicObjective> objectives = new ArrayList<SurveyStrategicObjective>();
+	
 	@Id
 	@GeneratedValue
 	public Integer getId() {
 		return id;
 	}
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Basic
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
 	}
-
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
-
-	public void setGroups(List<OrganisationUnitGroup> groups) {
-		this.groups = groups;
+	public void setOpen(boolean open) {
+		this.open = open;
+	}
+	public boolean isOpen() {
+		return open;
+	}
+	@Column(name="iteration")
+	public Period getPeriod() {
+		return period;
+	}
+	public void setPeriod(Period period) {
+		this.period = period;
 	}
 	
-	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name="dhsst_survey_table_column_orgunitgroup")
-	public List<OrganisationUnitGroup> getGroups() {
-		return groups;
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveyStrategicObjective.class, mappedBy="survey")
+	public List<SurveyStrategicObjective> getObjectives() {
+		return objectives;
+	}
+	public void setObjectives(List<SurveyStrategicObjective> objectives) {
+		this.objectives = objectives;
 	}
 	
-	public void addOrganisationGroup(OrganisationUnitGroup group) {
-		groups.add(group);
-	}
-
-	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
-	public SurveyTableQuestion getQuestion() {
-		return question;
-	}
-
-	public void setQuestion(SurveyTableQuestion question) {
-		this.question = question;
+	@Transient
+	public void addStrategicObjective(SurveyStrategicObjective objective){
+		objective.setSurvey(this);
+		objectives.add(objective);
 	}
 
 }

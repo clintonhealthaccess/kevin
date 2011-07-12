@@ -46,8 +46,8 @@
 			<!--<h1>Welcome to Kevin</h1>-->
 			<div id="navigation">
 				<ul id="main-menu" class="menu">
-					<g:ifAdmin>
-						<li><a href="${createLink(controller: 'survey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+				    <g:ifAdmin>
+					<li><a href="${createLink(controller: 'survey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 					</g:ifAdmin>
 					<li><a href="#"><g:message code="header.navigation.reports" default="Reports"/></a>
 						<ul class="submenu">
@@ -62,7 +62,8 @@
 						<ul class="submenu">
 							<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
 							<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li>
-							<li><a href="${createLink(controller: 'survey', action:'admin')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+							<li><a href="${createLink(controller: 'iteration', action:'list')}"><g:message code="header.navigation.iteration" default="Iterations"/></a></li>
+							<li><a href="${createLink(controller: 'admin', action:'survey')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 						</ul>
 					</li>
 				</g:ifAdmin>
@@ -303,7 +304,7 @@
 			//Fliping text 
 			$(".tb").mbFlipText(true); //top to bottom
 			$(".bt").mbFlipText(false); //bottom to top
-			
+				
 			/**
 			 * foldables
 			 */

@@ -1,6 +1,4 @@
-package org.chai.kevin;
-
-/* 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,7 +25,11 @@ package org.chai.kevin;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+package org.chai.kevin;
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
 public class Sorter {
 	public static int compareOrder(Integer orderOne, Integer orderTwo) {
 		if (orderOne != null && orderTwo != null)
