@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.value;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,87 +28,95 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.ValueType;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.chai.kevin.Timestamped;
+import org.hibernate.annotations.NaturalId;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
-@Entity(name="Constant")
-@Table(name="constant")
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Constant extends Translatable {
+@MappedSuperclass
+public abstract class AbstractValue implements Value {
 
-	private static final long serialVersionUID = -5866136027581146157L;
+	protected OrganisationUnit organisationUnit;
+	protected Period period;
+	protected String value;
 
-	private Long id;
+	private Date timestamp = new Date();
 	
-	private ValueType type;
-	private Enum enume;
-	private String value;
-	
-	@Id
-	@GeneratedValue
-	@Column
-	public Long getId() {
-		return id;
+	public AbstractValue() {
+		super();
 	}
-	
-	@Enumerated(EnumType.STRING)
-	@Column(nullable=false)
-	public ValueType getType() {
-		return type;
+
+	@NaturalId
+	@ManyToOne(targetEntity = OrganisationUnit.class, optional = false)
+	@JoinColumn(nullable=false)
+	public OrganisationUnit getOrganisationUnit() {
+		return organisationUnit;
 	}
-	
-	@ManyToOne(targetEntity=Enum.class)
-	@JoinColumn
-	public Enum getEnume() {
-		return enume;
+
+	@NaturalId
+	@ManyToOne(targetEntity = Period.class, optional = false)
+	@JoinColumn(nullable=false)
+	public Period getPeriod() {
+		return period;
 	}
-	
-	@Basic
+
+	@Column(nullable=false, columnDefinition="datetime")
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	@Basic(optional=true)
+	@Column(nullable=true)
 	public String getValue() {
 		return value;
 	}
 	
-	
-//	@Transient
-//	public boolean isAggregatable() {
-//		return getType() == DataElementType.INT;
-//	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public void setEnume(Enum enume) {
-		this.enume = enume;
-	}
-	
-	public void setType(ValueType type) {
-		this.type = type;
+	@Transient
+	public Double getNumberValue() {
+		if (value == null) return null;
+		try {
+			return Double.parseDouble(value);
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 	
 	public void setValue(String value) {
 		this.value = value;
 	}
 	
+	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
+		this.organisationUnit = organisationUnit;
+	}
+
+	public void setPeriod(Period period) {
+		this.period = period;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime
+				* result
+				+ ((organisationUnit == null) ? 0 : organisationUnit.hashCode());
+		result = prime * result + ((period == null) ? 0 : period.getId());
 		return result;
 	}
 
@@ -120,19 +128,18 @@ public class Constant extends Translatable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Constant other = (Constant) obj;
-		if (code == null) {
-			if (other.code != null)
+		AbstractValue other = (AbstractValue) obj;
+		if (organisationUnit == null) {
+			if (other.organisationUnit != null)
 				return false;
-		} else if (!code.equals(other.code))
+		} else if (!organisationUnit.equals(other.organisationUnit))
+			return false;
+		if (period == null) {
+			if (other.period != null)
+				return false;
+		} else if (!period.equals(other.period))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "DataElement [code=" + getCode() + ", type="
-				+ type + ", enume=" + enume + "]";
 	}
 	
 }

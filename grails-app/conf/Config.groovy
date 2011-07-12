@@ -79,6 +79,11 @@ grails.logging.jul.usebridge = true
 // packages to include in Spring bean scanning
 grails.spring.bean.packages = []
 
+// validateable classes
+//grails.validateable.packages = ['org.chai.kevin.survey']
+//grails.validateable.classes = [org.chai.kevin.survey.SurveyElementValue]
+
+
 // request parameters to mask when logging exceptions
 grails.exceptionresolver.params.exclude = ['password']
 

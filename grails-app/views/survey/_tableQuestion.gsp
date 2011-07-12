@@ -17,9 +17,10 @@
 	<tr class="${i%2==0?'oddrow':'evenrow'}">
 	<td><g:i18n field="${row.names}" /></td>
 	<g:each in="${row.columns}" var="column">
-		<g:set var="dataElement" value="${row.dataElements[column]}"/>
+		<g:set var="surveyElement" value="${row.surveyElements[column]}"/>
+		<g:set var="dataElement" value="${surveyElement.dataElement}"/>
 		<td>
-		<g:render template="/survey/${dataElement.type}" model="[value: dataValues[dataElement], dataElement: dataElement]" />
+			<g:render template="/survey/${dataElement.type}" model="[surveyElementValue: surveyElementValues[surveyElement.id]]" />
 		</td>
 	</g:each>
 	</tr>

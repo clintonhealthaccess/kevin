@@ -29,6 +29,7 @@ package org.chai.kevin
 */
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 

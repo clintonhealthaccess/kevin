@@ -32,6 +32,7 @@ package org.chai.kevin.survey;
  */
 
 import java.util.Comparator;
+
 import org.chai.kevin.Sorter;
 
 public class SurveyTableRowSorter implements Comparator<SurveyTableRow> {

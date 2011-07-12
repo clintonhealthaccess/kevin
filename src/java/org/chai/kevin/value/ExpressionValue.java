@@ -54,7 +54,7 @@ import org.hisp.dhis.period.Period;
 	}
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ExpressionValue extends Value {
+public class ExpressionValue extends AbstractValue {
 	private Integer id;
 
 	private Status status;

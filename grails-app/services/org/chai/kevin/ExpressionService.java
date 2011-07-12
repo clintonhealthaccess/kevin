@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
@@ -60,9 +61,8 @@ public class ExpressionService {
 
 	private static final Log log = LogFactory.getLog(ExpressionService.class);
 	
-    private final Pattern FORMULA_PATTERN = Pattern.compile("\\[.+?\\]");
-    private final Pattern CONSTANT_PATTERN = Pattern.compile("\\[c.+?\\]");
-	
+    private final static Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\[.+?\\]");
+    
 	private DataService dataService;
 	private OrganisationService organisationService;
 	private ValueService valueService;
@@ -210,9 +210,9 @@ public class ExpressionService {
 	}
 
 	private boolean isAggregatable(Expression expression) {
-		Set<DataElement> elements = getDataElementsInExpression(expression.getExpression());
-		for (DataElement dataElement : elements) {
-			if (!dataElement.isAggregatable()) return false;
+		Set<Data<?>> elements = getDataInExpression(expression.getExpression());
+		for (Data<?> data : elements) {
+			if (!data.isAggregatable()) return false;
 		}
 		return true;
 	}
@@ -228,36 +228,43 @@ public class ExpressionService {
 	}
 	
 	
-	private DataValue calculateDataValue(DataElement dataElement, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
-		if (log.isDebugEnabled()) log.debug("getDataValue(dataElement="+dataElement+", period="+period+", organisation="+organisation+")");
+	private Value calculateDataValue(Data<?> data, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
+		if (log.isDebugEnabled()) log.debug("getDataValue(data="+data+", period="+period+", organisation="+organisation+")");
 		
-		DataValue result = null;
-		// TODO this should be decided otherwise, 
-		// or defined by the user
-		Map<DataElement, DataValue> valuesForOrganisation = values.get(organisation);
-		if (valuesForOrganisation == null) {
-			valuesForOrganisation = new HashMap<DataElement, DataValue>();
-			values.put(organisation, valuesForOrganisation);
-		}
-		
-		if (!dataElement.isAggregatable() || organisationService.getLevel(organisation) == organisationService.getFacilityLevel()) {
-			result = valueService.getValue(dataElement, organisation.getOrganisationUnit(), period);
+		Value result = null;
+		// TODO fix this
+		if (data instanceof DataElement) {
+			DataElement dataElement = (DataElement)data;
+			// TODO this should be decided otherwise, 
+			// or defined by the user
+			Map<DataElement, DataValue> valuesForOrganisation = values.get(organisation);
+			if (valuesForOrganisation == null) {
+				valuesForOrganisation = new HashMap<DataElement, DataValue>();
+				values.put(organisation, valuesForOrganisation);
+			}
+			
+			if (!dataElement.isAggregatable() || organisationService.getLevel(organisation) == organisationService.getFacilityLevel()) {
+				result = valueService.getValue(dataElement, organisation.getOrganisationUnit(), period);
+			}
+			else {
+				List<Organisation> children = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+				Double value = 0d;
+				for (Organisation child : children) {
+					Map<DataElement, DataValue> valuesForChildOrganisation = new HashMap<DataElement, DataValue>();
+					values.put(child, valuesForChildOrganisation);
+					DataValue dataValue = valueService.getValue(dataElement, child.getOrganisationUnit(), period);
+					valuesForChildOrganisation.put(dataElement, dataValue);
+					if (dataValue != null) {
+						value += Double.parseDouble(dataValue.getValue());
+					}
+				}
+				result = new DataValue(dataElement, organisation.getOrganisationUnit(), period, value.toString());
+			}
+			valuesForOrganisation.put(dataElement, (DataValue)result);
 		}
 		else {
-			List<Organisation> children = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
-			Double value = 0d;
-			for (Organisation child : children) {
-				Map<DataElement, DataValue> valuesForChildOrganisation = new HashMap<DataElement, DataValue>();
-				values.put(child, valuesForChildOrganisation);
-				DataValue dataValue = valueService.getValue(dataElement, child.getOrganisationUnit(), period);
-				valuesForChildOrganisation.put(dataElement, dataValue);
-				if (dataValue != null) {
-					value += Double.parseDouble(dataValue.getValue());
-				}
-			}
-			result = new DataValue(dataElement, organisation.getOrganisationUnit(), period, value.toString());
+			result = valueService.getValue(data, organisation.getOrganisationUnit(), period);	
 		}
-		valuesForOrganisation.put(dataElement, result);
 		if (log.isDebugEnabled()) log.debug("getDataValue(...)="+result);
 		return result;
 	}
@@ -266,43 +273,20 @@ public class ExpressionService {
 		if (log.isDebugEnabled()) log.debug("generateExpression(formula="+formula+", period="+period+", organisation="+organisation+")");
 		
 		StringBuffer buffer = new StringBuffer();
-
-		Matcher matcher = CONSTANT_PATTERN.matcher(formula);
-		while (matcher.find()) {
-			String match = matcher.group();
-			match = match.replaceAll("[\\[c\\]]", "");
-			
-			Object value = null;
-			try {
-				Constant constant = dataService.getConstant(Long.parseLong(match));
-				// TODO constant does not exist
-				value = constant.getValue();
-			}
-			catch (NumberFormatException e) {
-				log.warn("parse exception: "+match, e);
-			}
-			
-			matcher.appendReplacement(buffer, String.valueOf(value));
-			// TODO check this
-//				values.put(constant, value);
-		}
-
-		matcher.appendTail(buffer);
-		matcher = FORMULA_PATTERN.matcher(buffer.toString());
-
-		buffer = new StringBuffer();
+		Matcher matcher = PLACEHOLDER_PATTERN.matcher(formula);
 		
+		// TODO replace by getPlaceholders + convertExpression
 		while (matcher.find()) {
 			String match = matcher.group();
 			match = match.replaceAll("[\\[\\]]", "");
 
 			Object value = null;
 			try {
-				DataElement dataElement = dataService.getDataElement(Long.parseLong(match));
+				Data data = dataService.getData(Long.parseLong(match));
 				// TODO data element does not exist
 				// TODO if aggregated, then get data value only for the 
 				// organisations that have all the values ?
-				DataValue dataValue = calculateDataValue(dataElement, period, organisation, values); 
+				Value dataValue = calculateDataValue(data, period, organisation, values);
 				value = dataValue==null?null:dataValue.getValue();
 			}
 			catch (NumberFormatException e) {
@@ -352,7 +336,7 @@ public class ExpressionService {
     	return parser;
     }
 	
-	private static Object evaluate(String expression) {
+	public static Object evaluate(String expression) {
 		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+")");
 		JEP parser = getJEPParser();
         
@@ -373,30 +357,13 @@ public class ExpressionService {
     public String expressionIsValid(String formula) {
         if (formula == null) return org.hisp.dhis.expression.ExpressionService.EXPRESSION_IS_EMPTY;
         StringBuffer buffer = new StringBuffer();
-        
-		Matcher matcher = CONSTANT_PATTERN.matcher(formula);
-		while (matcher.find()) {
-			String match = matcher.group();
-			match = match.replaceAll("[\\[c\\]]", "");
-			try {
-				if ( dataService.getConstant( Long.parseLong(match)) == null ) {
-	                return "constant_does_not_exist";
-				}
-			}
-			catch (NumberFormatException e) {
-				return org.hisp.dhis.expression.ExpressionService.ID_NOT_NUMERIC;
-			}
-			matcher.appendReplacement(buffer, "1.1");
-		}
-		matcher.appendTail(buffer);
-        matcher = FORMULA_PATTERN.matcher(buffer.toString());
-		buffer = new StringBuffer();
+        Matcher matcher = PLACEHOLDER_PATTERN.matcher(formula);
         while ( matcher.find() )
         {
         	String match = matcher.group();
         	match = match.replaceAll("[\\[\\]]", "");
             try {
-            	if ( dataService.getDataElement(Long.parseLong(match)) == null) {
+            	if ( dataService.getData(Long.parseLong(match)) == null) {
             		return org.hisp.dhis.expression.ExpressionService.DATAELEMENT_DOES_NOT_EXIST;
             	}
             }
@@ -414,41 +381,49 @@ public class ExpressionService {
         return org.hisp.dhis.expression.ExpressionService.VALID;
     }
 	
-    
-    public Set<DataElement> getDataElementsInExpression( String expression ) {
-        Set<DataElement> dataElementsInExpression = null;
+    public static Set<String> getPlaceholders(String expression) {
+    	Set<String> placeholders = null;
         if ( expression != null ) {
-            dataElementsInExpression = new HashSet<DataElement>();
-            final Matcher matcher = FORMULA_PATTERN.matcher( expression );
+        	placeholders = new HashSet<String>();
+            final Matcher matcher = PLACEHOLDER_PATTERN.matcher( expression );
             
             while (matcher.find())  {
             	String match = matcher.group();
             	match = match.replaceAll("[\\[\\]]", "");
-            	
-            	if (!match.startsWith("c")) {
-            		
-	                DataElement dataElement = null;
-	                try {
-	                	dataElement = dataService.getDataElement(Long.parseLong(match));
-	                }
-	                catch (NumberFormatException e) {
-	                	log.warn("wrong format for dataelement: "+match);
-	                }
-	
-	                if ( dataElement != null )  {
-	                    dataElementsInExpression.add( dataElement );
-	                }
-            	}
+	            placeholders.add(match);
             }
         }
-        return dataElementsInExpression;
+        return placeholders;
+    }
+    
+    public Set<Data<?>> getDataInExpression(String expression) {
+        Set<Data<?>> dataInExpression = null;
+        if ( expression != null ) {
+        	dataInExpression = new HashSet<Data<?>>();
+        	Set<String> placeholders = getPlaceholders(expression);
+
+        	for (String placeholder : placeholders) {
+                Data<?> data = null;
+                try {
+                	data = dataService.getData(Long.parseLong(placeholder));
+                }
+                catch (NumberFormatException e) {
+                	log.warn("wrong format for dataelement: "+placeholder);
+                }
+
+                if ( data != null )  {
+                	dataInExpression.add(data);
+                }
+            }
+        }
+        return dataInExpression;
     }
 
-    public String convertStringExpression(String expression, Map<Long, String> mapping) {
+    public static String convertStringExpression(String expression, Map<String, String> mapping) {
         StringBuffer convertedFormula = new StringBuffer();
         
         if ( expression != null ) {
-            final Matcher matcher = FORMULA_PATTERN.matcher( expression );
+            final Matcher matcher = PLACEHOLDER_PATTERN.matcher( expression );
 
             while (matcher.find()) {
             	String match = matcher.group();
@@ -458,7 +433,7 @@ public class ExpressionService {
                 	if (log.isInfoEnabled()) log.info( "Data element identifier refers to non-existing object: " + match );
                 }
                 else {
-                	match = mapping.get(Long.parseLong(match));
+                	match = mapping.get(match);
                 }
                 matcher.appendReplacement( convertedFormula, match );
             }

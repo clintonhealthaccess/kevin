@@ -84,7 +84,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		this.subObjective = subObjective;
 	}
 
-	@ManyToOne(targetEntity = SurveySubStrategicObjective.class, optional = false)
+	@ManyToOne(targetEntity = SurveySubStrategicObjective.class)
 	public SurveySubStrategicObjective getSubObjective() {
 		return subObjective;
 	}
@@ -107,6 +107,6 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	public abstract String getTemplate();
 
 	@Transient
-	public abstract List<DataElement> getDataElements();
+	public abstract List<SurveyElement> getSurveyElements();
 
 }

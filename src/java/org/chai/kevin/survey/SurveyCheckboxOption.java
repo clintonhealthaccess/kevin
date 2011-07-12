@@ -40,10 +40,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.chai.kevin.data.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @SuppressWarnings("serial")
 @Entity(name="SurveyCheckboxOption")
@@ -54,32 +56,36 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 	private Integer order;
 	private List<OrganisationUnitGroup> groups;
 	private SurveyCheckboxQuestion question;
-	private DataElement dataElement;
+	private SurveyElement surveyElement;
 	
 	@Id
 	@GeneratedValue
 	public Integer getId() {
 		return id;
 	}
+	
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
 	@Basic
 	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;
 	}
+	
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
-	public void setGroups(List<OrganisationUnitGroup> groups) {
-		this.groups = groups;
-	}
-	
+
 	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
 	@JoinTable(name="dhsst_survey_checkbox_option_orgunitgroup")
 	public List<OrganisationUnitGroup> getGroups() {
 		return groups;
+	}
+
+	public void setGroups(List<OrganisationUnitGroup> groups) {
+		this.groups = groups;
 	}
 	
 	public void addOrganisationGroup(OrganisationUnitGroup group) {
@@ -90,14 +96,19 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 	public SurveyCheckboxQuestion getQuestion() {
 		return question;
 	}
+	
 	public void setQuestion(SurveyCheckboxQuestion question) {
 		this.question = question;
 	}
-	public DataElement getDataElement() {
-		return dataElement;
+	
+	@OneToOne(optional=false, targetEntity=SurveyElement.class)
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	public SurveyElement getSurveyElement() {
+		return surveyElement;
 	}
-	public void setDataElement(DataElement dataElement) {
-		this.dataElement = dataElement;
+	
+	public void setSurveyElement(SurveyElement surveyElement) {
+		this.surveyElement = surveyElement;
 	}
 
 }

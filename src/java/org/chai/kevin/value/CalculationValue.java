@@ -59,7 +59,7 @@ import org.hisp.dhis.period.Period;
 	}
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CalculationValue extends Value {
+public class CalculationValue extends AbstractValue {
 
 	private static final Log log = LogFactory.getLog(CalculationValue.class);
 	

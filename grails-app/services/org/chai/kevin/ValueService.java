@@ -159,7 +159,9 @@ public class ValueService {
 			for (Iterator iterator = query2.iterate(); iterator.hasNext();) {
 				Object[] row = (Object[]) iterator.next();
 				ExpressionValue newValue = new ExpressionValue(null, null, (OrganisationUnit)row[1], (Expression)row[0], (Period)row[2]);
-				if (!allValues.contains(newValue)) result.add(newValue);
+				if (!allValues.contains(newValue)) {
+					result.add(newValue);
+				}
 			}
 			if (log.isDebugEnabled()) log.debug("done sorting non calculated expressions, found: "+result.size());
 		}

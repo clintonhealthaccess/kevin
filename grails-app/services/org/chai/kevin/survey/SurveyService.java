@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.chai.kevin.Organisation;
 import org.chai.kevin.ValueService;
@@ -45,48 +46,34 @@ import org.springframework.transaction.annotation.Transactional;
 public class SurveyService {
 	//private Log log = LogFactory.getLog(SurveyService.class);
 	private ValueService valueService;
-	private Integer organisationLevel;
 
 	@Transactional(readOnly = true)
 	public SurveyPage getSurvey(Survey currentSurvey,
-			Organisation currentOrganisation,
-			SurveySubStrategicObjective currentSubObjective) {
-		Map<SurveyQuestion, Map<DataElement, DataValue>> values = new LinkedHashMap<SurveyQuestion, Map<DataElement, DataValue>>();
+			Organisation currentOrganisation, SurveySubStrategicObjective currentSubObjective) {
+		
+		Map<SurveyElement, DataValue> values = new LinkedHashMap<SurveyElement, DataValue>();
 		if (currentSubObjective != null) {
 			Collections.sort(currentSubObjective.getQuestions(), new SurveyQuestionSorter());
 			for (SurveyQuestion question : currentSubObjective.getQuestions()) {
-				Map<DataElement, DataValue> dataElementValue = new HashMap<DataElement, DataValue>();
-				values.put(question, dataElementValue);
-				List<DataElement> dataElements = question.getDataElements();
-
-				for (DataElement dataElement : dataElements) {
-					DataValue value = valueService.getValue(dataElement, currentOrganisation.getOrganisationUnit(), currentSurvey.getPeriod());
-					dataElementValue.put(dataElement, value);
+				for (SurveyElement surveyElement : question.getSurveyElements()) {
+					DataValue value = valueService.getValue(surveyElement.getDataElement(), currentOrganisation.getOrganisationUnit(), currentSurvey.getPeriod());
+					if (value == null) value = new DataValue(surveyElement.getDataElement(), currentOrganisation.getOrganisationUnit(), currentSurvey.getPeriod(), null);
+					values.put(surveyElement, value);
 				}
 			}
 		}
-		return new SurveyPage(currentSurvey, currentOrganisation,
-				currentSubObjective, values);
-	}
-	
-	public boolean getObjectiveBelongToSurvey(Survey survey, SurveySubStrategicObjective subObjective){
-		if(subObjective==null) return true;
-         for (SurveyStrategicObjective objective : survey.getObjectives()) 
-        	 if(objective.getSubObjectives().contains(subObjective)) return true;
-		return false;
-		
+		SurveyPage surveyPage = new SurveyPage(currentOrganisation.getOrganisationUnit(), currentSubObjective);
+		Map<Long, SurveyElementValue> surveyElementValues = new HashMap<Long, SurveyElementValue>();
+		for (Entry<SurveyElement, DataValue> entry : values.entrySet()) {
+			SurveyElementValue surveyElementValue = new SurveyElementValue(surveyPage, entry.getKey(), entry.getValue());
+			surveyElementValues.put(entry.getKey().getId(), surveyElementValue);
+		}
+		surveyPage.setSurveyElements(surveyElementValues);
+		return surveyPage;
 	}
 
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
-	}
-
-	public void setOrganisationLevel(Integer organisationLevel) {
-		this.organisationLevel = organisationLevel;
-	}
-
-	public Integer getOrganisationLevel() {
-		return organisationLevel;
 	}
 
 }

@@ -144,7 +144,7 @@ abstract class AbstractReportController {
 		Organisation organisation = null;
 		try {
 			if (NumberUtils.isNumber(params['organisation'])) {
-				organisation = organisationService.getOrganisation(new Integer(params['organisation']))
+				organisation = organisationService.getOrganisation(Integer.parseInt(params['organisation']))
 			}
 			if (organisation == null && defaultIfNull) {
 				organisation = organisationService.getRootOrganisation();
@@ -260,8 +260,8 @@ abstract class AbstractReportController {
 	protected def getCurrentSubObjective(def defaultIsNull){
 		SurveyTranslatable subobjective = null
 		try{
-			if(NumberUtils.isNumber(params['subobjective'])){
-				subobjective = SurveySubStrategicObjective.get(params['subobjective']);
+			if(NumberUtils.isNumber(params['subObjective'])){
+				subobjective = SurveySubStrategicObjective.get(params['subObjective']);
 			}
 			if (subobjective == null && defaultIsNull) {
 				List<SurveySubStrategicObjective> subobjectives = getCurrentObjective(true).getSubObjectives();

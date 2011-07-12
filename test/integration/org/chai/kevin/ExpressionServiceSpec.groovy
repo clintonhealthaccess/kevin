@@ -144,7 +144,7 @@ class ExpressionServiceSpec extends IntegrationTests {
 
 	def "data element in expression when wrong format"() {
 		when:
-		def dataElements = expressionService.getDataElementsInExpression("[test]")
+		def dataElements = expressionService.getDataInExpression("[test]")
 		
 		then:
 		dataElements.size() == 0
@@ -155,7 +155,7 @@ class ExpressionServiceSpec extends IntegrationTests {
 		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: ValueType.VALUE).save(faileOnError: true)
 
 		when:
-		def dataElements = expressionService.getDataElementsInExpression("["+DataElement.findByCode("CODEINT").id+"]")
+		def dataElements = expressionService.getDataInExpression("["+DataElement.findByCode("CODEINT").id+"]")
 		
 		then:
 		dataElements.size() == 1

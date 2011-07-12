@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -39,6 +38,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyTableQuestion")
@@ -52,7 +53,8 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		this.columns = columns;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveyTableColumn.class, mappedBy = "question")
+	@OneToMany(targetEntity = SurveyTableColumn.class, mappedBy = "question")
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@OrderBy(value="order")
 	public List<SurveyTableColumn> getColumns() {
 		return columns;
@@ -62,7 +64,8 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		this.rows = rows;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveyTableRow.class, mappedBy = "question")
+	@OneToMany(targetEntity = SurveyTableRow.class, mappedBy = "question")
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@OrderBy(value="order")
 	public List<SurveyTableRow> getRows() {
 		return rows;
@@ -89,11 +92,11 @@ public class SurveyTableQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
-	public List<DataElement> getDataElements() {
-		List<DataElement> dataElements = new ArrayList<DataElement>();
+	public List<SurveyElement> getSurveyElements() {
+		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
 		for (SurveyTableRow row : rows) {
 			for (SurveyTableColumn column : columns) {
-				dataElements.add(row.getDataElements().get(column));
+				dataElements.add(row.getSurveyElements().get(column));
 			}
 		}
 		return dataElements;

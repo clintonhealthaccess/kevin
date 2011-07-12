@@ -39,10 +39,10 @@ public class ExpressionTagLib {
 	
 	def expression = {attrs, body ->
 		def expression = attrs['expression'];
-		def dataElements = expressionService.getDataElementsInExpression(expression.expression);
-		Map<Long, String> replacement = new HashMap<Long, String>();
+		def dataElements = expressionService.getDataInExpression(expression.expression);
+		Map<Long, String> replacement = new HashMap<String, String>();
 		for (DataElement dataElement : dataElements) {
-			replacement.put(dataElement.getId(), 
+			replacement.put(dataElement.getId().toString(), 
 				"<span data-id=\""+dataElement.getId()+"\" class=\"element\"><a href=\"#\" class=\"no-link cluetip\" onclick=\"return false;\" rel=\""+g.createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: dataElement.id])+"\">["+dataElement.getId()+"]</a></span>"
 			);
 		}

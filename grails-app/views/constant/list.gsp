@@ -1,5 +1,3 @@
-
-<%@ page import="org.chai.kevin.Constant" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />

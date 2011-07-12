@@ -45,6 +45,7 @@ import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
@@ -935,22 +936,22 @@ class Initializer {
 					names: j(["en":"Service Sub Section Simple Question VALUE"]),
 					descriptions: j(["en":"Service Sub Section Simple Question"]),
 					order: 3,
-					groups:[dh, hc],
-					dataElement: DataElement.findByCode("CODE1")
+					groups:[dh,hc],
+					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE1"))
 					)
 			def serviceQ2 = new SurveySimpleQuestion(
 					names: j(["en":"Service Sub Section Simple Question BOOL"]),
 					descriptions: j(["en":"Service Sub Section Simple Question BOOL"]),
 					order: 0,
-					groups:[hc],
-					dataElement: DataElement.findByCode("CODE7")
+					groups:[dh,hc],
+					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE7"))
 					)
 			def serviceQ3 = new SurveySimpleQuestion(
 					names: j(["en":"Service Sub Section Simple Question ENUM "]),
 					descriptions: j(["en":"Service Sub Section Simple Question ENUM"]),
 					order: 1,
-					groups:[dh, hc],
-					dataElement: DataElement.findByCode("CODE3")
+					groups:[dh,hc],
+					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE3"))
 					)
 
 			services.addQuestion(serviceQ2)
@@ -962,8 +963,8 @@ class Initializer {
 					names: j(["en":"Sample Open Question "]),
 					descriptions: j(["en":"Sample Open Question"]),
 					order: 1,
-					groups:[dh, hc],
-					dataElement: DataElement.findByCode("CODE12")
+					groups:[dh,hc],
+					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE12"))
 					)
 			openResponse.addQuestion(openQ)
 			openResponse.save(failOnError:true)
@@ -980,21 +981,21 @@ class Initializer {
 					descriptions: j(["en":"None Or Not Applicable"]),
 					order: 2,
 					groups: [dh, hc],
-					dataElement: DataElement.findByCode("CODE4")
+					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE4"))
 					)
 			def option2 = new SurveyCheckboxOption(
 					names: j(["en":"Second Option"]),
 					descriptions: j(["en":"Second Option"]),
 					order: 1,
 					groups: [dh],
-					dataElement: DataElement.findByCode("CODE5")
+					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE5"))
 					)
 			def option3 = new SurveyCheckboxOption(
 					names: j(["en":"Third Option"]),
 					descriptions: j(["en":"Third Option"]),
 					order: 3,
 					groups: [dh, hc],
-					dataElement: DataElement.findByCode("CODE6")
+					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE6"))
 					)
 			staffing.addQuestion(checkBoxQ)
 			staffing.save(failOnError:true)
@@ -1048,19 +1049,19 @@ class Initializer {
 			tableQ.addColumn(tabColumnOne)
 			tableQ.addColumn(tabColumnFour)
 
-			Map<SurveyTableColumn,DataElement> dataElmntsLine1= new LinkedHashMap<SurveyTableColumn,DataElement>();
+			Map<SurveyTableColumn,SurveyElement> dataElmntsLine1= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
-			dataElmntsLine1.put(tabColumnOne,DataElement.findByCode("CODE8"))
-			dataElmntsLine1.put(tabColumnTwo,DataElement.findByCode("CODE9"))
-			dataElmntsLine1.put(tabColumnThree,DataElement.findByCode("CODE10"))
-			dataElmntsLine1.put(tabColumnFour,DataElement.findByCode("CODE11"))
+			dataElmntsLine1.put(tabColumnOne,new SurveyElement(dataElement: DataElement.findByCode("CODE8")))
+			dataElmntsLine1.put(tabColumnTwo,new SurveyElement(dataElement: DataElement.findByCode("CODE9")))
+			dataElmntsLine1.put(tabColumnThree,new SurveyElement(dataElement: DataElement.findByCode("CODE10")))
+			dataElmntsLine1.put(tabColumnFour,new SurveyElement(dataElement: DataElement.findByCode("CODE11")))
 
-			Map<SurveyTableColumn,DataElement> dataElmntsLine2= new LinkedHashMap<SurveyTableColumn,DataElement>();
+			Map<SurveyTableColumn,SurveyElement> dataElmntsLine2= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
-			dataElmntsLine2.put(tabColumnOne,DataElement.findByCode("CODE81"))
-			dataElmntsLine2.put(tabColumnTwo,DataElement.findByCode("CODE91"))
-			dataElmntsLine2.put(tabColumnThree,DataElement.findByCode("CODE101"))
-			dataElmntsLine2.put(tabColumnFour,DataElement.findByCode("CODE111"))
+			dataElmntsLine2.put(tabColumnOne,new SurveyElement(dataElement: DataElement.findByCode("CODE81")))
+			dataElmntsLine2.put(tabColumnTwo,new SurveyElement(dataElement: DataElement.findByCode("CODE91")))
+			dataElmntsLine2.put(tabColumnThree,new SurveyElement(dataElement: DataElement.findByCode("CODE101")))
+			dataElmntsLine2.put(tabColumnFour,new SurveyElement(dataElement: DataElement.findByCode("CODE111")))
 
 			//Add rows
 			def tabRowOne = new SurveyTableRow(
@@ -1069,8 +1070,8 @@ class Initializer {
 					order: 1,
 					question: tableQ,
 					groups: [dh, hc],
-					dataElements: dataElmntsLine1
-					)
+					surveyElements: dataElmntsLine1
+			)
 			//			def tabRowThree = new SurveyTableRow(
 			//					names: j(["en":"Supervision - Administration [Non-clinical, Human Resources] :"]),
 			//					descriptions: j(["en":"Supervision - Administration [Non-clinical, Human Resources] :"]),
@@ -1084,8 +1085,8 @@ class Initializer {
 					order: 2,
 					question: tableQ,
 					groups: [hc],
-					dataElements: dataElmntsLine2
-					)
+					surveyElements: dataElmntsLine2
+				)
 			//			def tabRowFour = new SurveyTableRow(
 			//					names: j(["en":"Supervision - Laboratory:"]),
 			//					descriptions: j(["en":"Supervision - Laboratory:"]),

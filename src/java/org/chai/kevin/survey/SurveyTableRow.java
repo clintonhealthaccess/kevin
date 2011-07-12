@@ -45,10 +45,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.DataElement;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 
@@ -61,8 +64,7 @@ public class SurveyTableRow extends SurveyTranslatable {
 	private Integer order;
 	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
 	private SurveyTableQuestion question;
-	private Map<SurveyTableColumn,DataElement> dataElements= new LinkedHashMap<SurveyTableColumn,DataElement>();
-
+	private Map<SurveyTableColumn,SurveyElement> surveyElements= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
 	public void setId(Integer id) {
 		this.id = id;
@@ -106,17 +108,21 @@ public class SurveyTableRow extends SurveyTranslatable {
 		return question;
 	}
 
-	public void setDataElements(Map<SurveyTableColumn,DataElement> dataElements) {
-		this.dataElements = dataElements;
+	public void setSurveyElements(Map<SurveyTableColumn,SurveyElement> surveyElements) {
+		this.surveyElements = surveyElements;
 	}
-    @ManyToMany(targetEntity=DataElement.class)
-	public Map<SurveyTableColumn,DataElement> getDataElements() {
-		return dataElements;
+	
+    @OneToMany(targetEntity=SurveyElement.class)
+    @JoinTable(name="dhsst_survey_table_row_elements")
+    @MapKeyJoinColumn(nullable=false)
+    @Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	public Map<SurveyTableColumn, SurveyElement> getSurveyElements() {
+		return surveyElements;
 	}
 
     @Transient
     public List<SurveyTableColumn> getColumns() {
-    	List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>(dataElements.keySet());
+    	List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>(surveyElements.keySet());
     	Collections.sort(columns,new SurveyTableColumnSorter());
     	return columns;
     }

@@ -59,7 +59,7 @@ class AggregationSpec extends IntegrationTests {
 		def organisation = getOrganisation(organisationName)
 		
 		then:
-		valueService.getValue(dataElement, period, organisation).value == value
+		valueService.getValue(dataElement, organisation.organisationUnit, period).value == value
 				
 		where:
 		dataElementCode	| organisationName	| value

@@ -35,6 +35,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Initializer;
+import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ValueType;
@@ -259,7 +260,7 @@ class DomainSpec extends IntegrationTests {
 		IntegrationTestInitializer.createConstants()
 		
 		when:
-		new Expression(names:j(["en":"Expression"]), code:"EXPR", type:ValueType.VALUE, expression:"[c"+Constant.findByCode("CONST1").id+"]").save(failOnError:true)
+		new Expression(names:j(["en":"Expression"]), code:"EXPR", type:ValueType.VALUE, expression:"["+Constant.findByCode("CONST1").id+"]").save(failOnError:true)
 		
 		then:
 		Expression.count() == 1;

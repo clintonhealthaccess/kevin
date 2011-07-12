@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -59,7 +60,7 @@ public class Enum extends Translatable {
 		return id;
 	}
 	
-	@OneToMany(mappedBy="enume", targetEntity=EnumOption.class)
+	@OneToMany(mappedBy="enume", targetEntity=EnumOption.class, fetch=FetchType.EAGER)
 	public List<EnumOption> getEnumOptions() {
 		return enumOptions;
 	}

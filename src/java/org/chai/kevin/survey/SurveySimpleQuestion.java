@@ -34,26 +34,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveySimpleQuestion")
 @Table(name = "dhsst_survey_single_question")
 public class SurveySimpleQuestion extends SurveyQuestion {
 
-	private DataElement dataElement;
+	private SurveyElement surveyElement;
 
-	public void setDataElement(DataElement dataElement) {
-		this.dataElement = dataElement;
+	@OneToOne(optional=false, targetEntity=SurveyElement.class)
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	public SurveyElement getSurveyElement() {
+		return surveyElement;
 	}
-
-	public DataElement getDataElement() {
-		return dataElement;
+	
+	public void setSurveyElement(SurveyElement surveyElement) {
+		this.surveyElement = surveyElement;
 	}
-    @Transient
+	
+	@Transient
 	@Override
 	public String getTemplate() {
 		String gspName = "simpleQuestion";
@@ -62,9 +68,9 @@ public class SurveySimpleQuestion extends SurveyQuestion {
     
     @Transient
 	@Override
-	public List<DataElement> getDataElements() {
-		List<DataElement> elements = new ArrayList<DataElement>();
-		elements.add(dataElement);
+	public List<SurveyElement> getSurveyElements() {
+		List<SurveyElement> elements = new ArrayList<SurveyElement>();
+		elements.add(surveyElement);
 		return elements;
 	}
 

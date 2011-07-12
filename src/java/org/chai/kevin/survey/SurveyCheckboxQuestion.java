@@ -33,13 +33,15 @@ package org.chai.kevin.survey;
  */
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.CascadeType;
 
 import org.chai.kevin.data.DataElement;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyCheckboxQuestion")
@@ -48,7 +50,8 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 
 	List<SurveyCheckboxOption> options = new ArrayList<SurveyCheckboxOption>();
 	
-    @OneToMany(cascade = CascadeType.ALL,targetEntity=SurveyCheckboxOption.class, mappedBy="question")
+    @OneToMany(targetEntity=SurveyCheckboxOption.class, mappedBy="question")
+    @Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	public List<SurveyCheckboxOption> getOptions() {
 		return options;
 	}
@@ -71,10 +74,10 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
     
     @Transient
 	@Override
-	public List<DataElement> getDataElements() {
-		List<DataElement> dataElements = new ArrayList<DataElement>();
+	public List<SurveyElement> getSurveyElements() {
+		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
 		for (SurveyCheckboxOption option : options) {
-			dataElements.add(option.getDataElement());
+			dataElements.add(option.getSurveyElement());
 		}
 		return dataElements;
 	}

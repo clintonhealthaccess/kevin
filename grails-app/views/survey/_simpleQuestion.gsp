@@ -1,7 +1,7 @@
 <g:i18n field="${question.names}" />
-<span> 
-	<g:each in="${dataValues}" var="value">
-					<g:render template="/survey/${value.key.type}" model="[value: value.value, dataElement: value.key]" />
-		</g:each>		
+<span>
+	<g:set var="surveyElement" value="${question.surveyElement}"/> 
+	<g:set var="dataElement" value="${surveyElement.dataElement}"/> 
+	<g:render template="/survey/${dataElement.type}" model="[surveyElementValue: surveyElementValues[surveyElement.id]]" />
 </span>
 

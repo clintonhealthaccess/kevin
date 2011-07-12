@@ -16,10 +16,12 @@ import org.chai.kevin.maps.MapsService;
 import org.chai.kevin.survey.SurveySectionService;
 import org.chai.kevin.survey.SurveyService;
 import org.chai.kevin.survey.SurveyAdminService;
+import org.chai.kevin.survey.ValidationService;
 import org.springframework.format.number.PercentFormatter;
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.codehaus.groovy.grails.orm.hibernate.HibernateEventListeners;
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -62,6 +64,11 @@ beans = {
 		
 	}
 
+	validationService(ValidationService){
+		valueService = ref("valueService")
+		surveyElementService = ref("surveyElementService")
+	}
+	
 	surveyService(SurveyService){
 		valueService = ref("valueService")
 	}

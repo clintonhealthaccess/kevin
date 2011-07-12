@@ -29,6 +29,7 @@ package org.chai.kevin
 */
 
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 
@@ -43,14 +44,14 @@ class DataService {
 		return sessionFactory.currentSession.get(Data.class, id)
 	}
 	
-	DataElement getDataElement(Long id) {
-		if (log.isDebugEnabled()) log.debug("getDataElement(id="+id+")")
-		return DataElement.get(id)
-	}
+//	DataElement getDataElement(Long id) {
+//		if (log.isDebugEnabled()) log.debug("getDataElement(id="+id+")")
+//		return DataElement.get(id)
+//	}
 	
-	Constant getConstant(Long id) {
-		return Constant.get(id)
-	}
+//	Constant getConstant(Long id) {
+//		return Constant.get(id)
+//	}
 	
 	def searchConstants(String text) {
 		def constants = Constant.list()

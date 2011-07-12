@@ -32,61 +32,84 @@ package org.chai.kevin.survey;
  */
 import java.util.Map;
 
-import org.chai.kevin.Organisation;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.ValueService;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
 public class SurveyPage {
-	private Organisation organisation;
-	private Survey survey;
+	
+	private OrganisationUnit organisationUnit;
 	private SurveySubStrategicObjective subObjective;
-	private Map<SurveyQuestion, Map<DataElement, DataValue>> values;
+	private Map<Long, SurveyElementValue> surveyElements;
 
-	public SurveyPage(Survey survey, Organisation organisation,
-			SurveySubStrategicObjective subObjective,
-			Map<SurveyQuestion, Map<DataElement, DataValue>> values) {
-		super();
-		this.survey = survey;
-		this.organisation = organisation;
+	public SurveyPage(){}
+	
+	public SurveyPage(OrganisationUnit organisationUnit,
+			SurveySubStrategicObjective subObjective) {
+		this.organisationUnit = organisationUnit;
 		this.subObjective = subObjective;
-		this.values = values;
 	}
 
-
-	public Organisation getOrganisation() {
-		return organisation;
+	public SurveyElementValue getSurveyElementValue(Long id) {
+		return surveyElements.get(id);
 	}
-
-	public void setOrganisation(Organisation organisation) {
-		this.organisation = organisation;
+	
+	public Period getPeriod() {
+		return getSurvey().getPeriod();
 	}
-
-	public void setSurvey(Survey survey) {
-		this.survey = survey;
-	}
-
 
 	public Survey getSurvey() {
-		return survey;
+		return subObjective.getObjective().getSurvey();
 	}
-
-
+	
+	public OrganisationUnit getOrganisationUnit() {
+		return organisationUnit;
+	}
+	
+	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
+		this.organisationUnit = organisationUnit;
+	}
+	
+	public SurveySubStrategicObjective getSubObjective() {
+		return subObjective;
+	}
+	
 	public void setSubObjective(SurveySubStrategicObjective subObjective) {
 		this.subObjective = subObjective;
 	}
 
-	public SurveySubStrategicObjective getSubObjective() {
-		return subObjective;
+	public Map<Long, SurveyElementValue> getSurveyElements() {
+		return surveyElements;
 	}
-
-	public void setValues(
-			Map<SurveyQuestion, Map<DataElement, DataValue>> values) {
-		this.values = values;
+	
+	public void setSurveyElements(Map<Long, SurveyElementValue> surveyElements) {
+		this.surveyElements = surveyElements;
 	}
-
-	public Map<SurveyQuestion, Map<DataElement, DataValue>> getValues() {
-		return values;
+	
+	public void userValidation(ValidationService validationService) {
+		for (SurveyElementValue surveyElementValue : surveyElements.values()) {
+			surveyElementValue.userValidation(validationService, organisationUnit, getPeriod());
+		}
 	}
-
+	
+	public void saveValues(ValueService valueService) {
+		for (SurveyElementValue surveyElementValue : surveyElements.values()) {
+			valueService.save(surveyElementValue.getDataValue());
+		}
+	}
+	
+	public boolean isValid() {
+		for (SurveyElementValue surveyElementValue : surveyElements.values()) {
+			if (!surveyElementValue.isValid()) return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "SurveyPage [period=" + getPeriod() + ", organisation="
+				+ organisationUnit + ", subObjective=" + subObjective
+				+ ", surveyElements=" + getSurveyElements() + "]";
+	}
 	
 }

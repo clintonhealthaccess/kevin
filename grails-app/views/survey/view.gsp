@@ -28,7 +28,7 @@
 				</div>
 				<div class="survey-container-right-side">
 					<h5>
-						Facility Name: <span class="survey-highlight-title">${surveyPage.organisation.name}</span>
+						Facility Name: <span class="survey-highlight-title">${surveyPage.organisationUnit.name}</span>
 					</h5>
 				</div>
 				<div class="clear"></div>
@@ -55,7 +55,7 @@
 										<g:each in="${objective.subObjectives}" var="subObjective">
 											<li><a id="subobjective-${subObjective.id}"
 												class="flow-show-questions ${surveyPage.subObjective?.id == subObjective.id?'opened':''}"
-												href="${createLink(controller:'survey', action:'view',params:[survey:surveyPage.survey.period.id,subobjective:subObjective.id,organisation: surveyPage.organisation.id])}">
+												href="${createLink(controller:'survey', action:'view',params:[period:surveyPage.period.id,subObjective:subObjective.id,organisation: surveyPage.organisationUnit.id])}">
 													<g:i18n field="${subObjective.names}" /> </a>
 											</li>
 										</g:each>
@@ -80,17 +80,22 @@
 						<div class="clear"></div>
 					</div>
 					<div id="survey-questions-container">
-						<g:if test="${!surveyPage.values.isEmpty()}">
-							<!-- <form name="form-subjective-${surveyPage.subObjective?.id}" action="">-->
-							<g:set var="i" value="${1}" />
-							<g:each in="${surveyPage.values}" var="questionMap">
-								<div class="question-in-block"><strong>${i++}) </strong>
-									<g:set var="question" value="${questionMap.key}" />
-									<g:set var="dataValues" value="${questionMap.value}" /> 
-									<g:render template="/survey/${question.getTemplate()}" model="[question: question, dataValues: dataValues]" /> 
+						<g:if test="!surveyPage.values.isEmpty()">
+						
+							<g:form url="[controller:'survey', action:'save', params: [organisation: surveyPage.organisationUnit.id, subObjective: surveyPage.subObjective.id, period: surveyPage.period.id]]" useToken="true">
+							
+								<g:set var="i" value="${1}" />
+								<g:each in="${surveyPage.subObjective.questions}" var="question">
+									<div class="question-in-block"><strong>${i++}) </strong>
+										<g:render template="/survey/${question.getTemplate()}" model="[question: question, surveyElementValues: surveyPage.surveyElements]" /> 
+									</div>
+								</g:each>
+								
+								<div class="row">
+									<button type="submit">Submit</button>
 								</div>
-							</g:each>
-							<!-- </form> -->
+							</g:form>
+							
 						</g:if>
 						<g:else>No question available for this section</g:else>
 						<div class="clear"></div>
