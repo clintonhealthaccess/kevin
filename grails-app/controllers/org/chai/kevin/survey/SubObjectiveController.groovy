@@ -28,6 +28,7 @@
 package org.chai.kevin.survey
 import org.chai.kevin.AbstractEntityController;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+import org.chai.kevin.util.Utils
 
 /**
  * @author Jean Kahigiso M.
@@ -39,7 +40,10 @@ class SubObjectiveController extends AbstractEntityController {
 		return SurveySubStrategicObjective.get(id)
 	}
 	def createEntity() {
-		return new SurveySubStrategicObjective()
+		def entity = new SurveySubStrategicObjective()
+		//FIXME find a better to do this
+		if (!params['objectiveId.id']) entity.objective = SurveyStrategicObjective.get(params.objectiveId)
+		return entity
 	}
 
 	def getTemplate() {
@@ -49,8 +53,11 @@ class SubObjectiveController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			subobjective: entity,
-			objectives: SurveyStrategicObjective.list()
-				]
+			objectives: entity.objective.survey.objectives,
+			groups: OrganisationUnitGroup.list(),
+			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
+			
+		]
 	}
 
 	def validateEntity(def entity) {
@@ -66,8 +73,11 @@ class SubObjectiveController extends AbstractEntityController {
 
 	def bindParams(def entity) {
 		entity.properties = params
+		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
+		
+		entity.groupUuidString =  params['groupUuids']!=null?Utils.getGroupUuidString(params['groupUuids']):null
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}

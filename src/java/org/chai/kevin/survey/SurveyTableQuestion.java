@@ -31,13 +31,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -45,17 +49,31 @@ import org.hibernate.annotations.CascadeType;
 @Entity(name = "SurveyTableQuestion")
 @Table(name = "dhsst_survey_table_question")
 public class SurveyTableQuestion extends SurveyQuestion {
-
+	
+	private Translation tableNames = new Translation();
 	private List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>();
 	private List<SurveyTableRow> rows = new ArrayList<SurveyTableRow>();
+
+
+	@Embedded
+	@AttributeOverrides({
+    @AttributeOverride(name="jsonText", column=@Column(name="jsonTableNames", nullable=false))
+	})
+	public Translation getTableNames() {
+		return tableNames;
+	}
+
+	public void setTableNames(Translation tableNames) {
+		this.tableNames = tableNames;
+	}
 
 	public void setColumns(List<SurveyTableColumn> columns) {
 		this.columns = columns;
 	}
 
 	@OneToMany(targetEntity = SurveyTableColumn.class, mappedBy = "question")
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-	@OrderBy(value="order")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OrderBy(value = "order")
 	public List<SurveyTableColumn> getColumns() {
 		return columns;
 	}
@@ -65,15 +83,15 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	}
 
 	@OneToMany(targetEntity = SurveyTableRow.class, mappedBy = "question")
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-	@OrderBy(value="order")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OrderBy(value = "order")
 	public List<SurveyTableRow> getRows() {
 		return rows;
 	}
 
 	@Transient
 	@Override
-	public String getTemplate() {
+	public String getType() {
 		String gspName = "tableQuestion";
 		return gspName;
 	}

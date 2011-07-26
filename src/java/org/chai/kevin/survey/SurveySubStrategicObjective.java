@@ -39,13 +39,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 
 @SuppressWarnings("serial")
@@ -56,7 +53,7 @@ public class SurveySubStrategicObjective extends SurveyTranslatable {
 	private Integer id;
 	private Integer order;
 	private SurveyStrategicObjective objective;
-	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
+	private String groupUuidString;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
 
 	@Id
@@ -88,18 +85,12 @@ public class SurveySubStrategicObjective extends SurveyTranslatable {
 		return objective;
 	}
 
-	public void setGroups(List<OrganisationUnitGroup> groups) {
-		this.groups = groups;
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
 	}
-	
-	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name="dhsst_survey_sub_objective_orgunitgroup")
-	public List<OrganisationUnitGroup> getGroups() {
-		return groups;
-	}
-	
-	public void addOrganisationGroup(OrganisationUnitGroup group){
-		groups.add(group);
+    @Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
 	}
 
 	public void setQuestions(List<SurveyQuestion> questions) {

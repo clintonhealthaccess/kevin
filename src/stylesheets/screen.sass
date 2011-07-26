@@ -81,6 +81,20 @@ body.two-columns
     margin: 0 0 1px
     width: 100%
     background-repeat: no-repeat
+
+  #admin-table-list
+    table
+      margin 10px 1px 1px 1px
+    .table-header
+      background: #739eee
+      color: #fff
+      font-weight: 600
+      text-align: center
+    .odd
+      background: #fff
+    .even
+      background: #739eee
+
 .display-in-block
   display: block
      
@@ -908,16 +922,45 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     a:hover
       text-decoration: underline
       
-  #survey-admin-table-list
-    table
-      margin 10px 1px 1px 1px
-    .table-header
-      background: #739eee
-      color: #fff
-      font-weight: 600
-      text-align: center
-    .odd
-      background: #fff
-    .even
-      background: #739eee
+#add-question
+  #add-question-col
+    float: left
+    width: 450px
+  input.radio
+    width: auto
+  #data-col
+    float: right
+    label
+      font-weight: bold
+  #data
+    width: 400px
+  .question-explainer
+    text-decoration: none
+#question-option
+  table
+  border-collapse: separate 
+  border-spacing: 4px
+  td
+    border: 1px solid #c7c7c7
+    +box-round-corner
+    .option-element
+      font-weight: bold
+      span
+        font-weight: normal       
+#add-option
+  #add-option-col
+    float: left
+    width: 450px
+  input.radio
+    width: auto
+  #data-col
+    float: right
+    label
+      font-weight: bold
+  #data
+    width: 400px
+  .question-explainer
+    text-decoration: none
 
+    
+    

@@ -36,7 +36,6 @@ import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.ValueService;
 import org.hisp.dhis.period.Period;
-import org.chai.kevin.survey.SurveySectionService;
 import org.chai.kevin.survey.SurveyService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 

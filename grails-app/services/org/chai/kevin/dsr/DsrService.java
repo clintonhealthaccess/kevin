@@ -107,7 +107,8 @@ public class DsrService {
 		DecimalFormat frmt = new DecimalFormat(format);
 		return frmt.format(Double.parseDouble(value)).toString();
 	}
-
+	
+	
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
 	}

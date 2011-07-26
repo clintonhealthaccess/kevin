@@ -35,6 +35,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -48,12 +49,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "dhsst_dsr_target")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTarget extends Translatable {
+	
 	private Integer id;
 	private Integer order;
 	private DsrObjective objective;
 	private Expression expression;
 	private DsrTargetCategory category;
 	private String format;
+	private String groupUuidString;
 	
 
 	@Id
@@ -108,6 +111,14 @@ public class DsrTarget extends Translatable {
 	@Basic
 	public String getFormat() {
 		return format;
+	}
+
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
+	}
+    @Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
 	}
 	
 }

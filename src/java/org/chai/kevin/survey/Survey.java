@@ -33,12 +33,12 @@ package org.chai.kevin.survey;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -50,7 +50,6 @@ import org.hisp.dhis.period.Period;
 @Table(name="dhsst_survey")
 public class Survey extends SurveyTranslatable{
 	private Integer id;
-	private Integer order;
 	private boolean open = true;
 	private Period period;
 	private List<SurveyStrategicObjective> objectives = new ArrayList<SurveyStrategicObjective>();
@@ -64,21 +63,14 @@ public class Survey extends SurveyTranslatable{
 		this.id = id;
 	}
 	
-	@Basic
-	@Column(name = "ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
 	public void setOpen(boolean open) {
 		this.open = open;
 	}
 	public boolean isOpen() {
 		return open;
 	}
-	@Column(name="iteration")
+	@ManyToOne(targetEntity=Period.class)
+	@JoinColumn(name="iteration", nullable= false)
 	public Period getPeriod() {
 		return period;
 	}

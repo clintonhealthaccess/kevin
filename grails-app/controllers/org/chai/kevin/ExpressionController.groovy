@@ -98,6 +98,8 @@ class ExpressionController extends AbstractEntityController {
 			}
 		}
 	}
+	
+	//FIXME getData Method has to be relocated
 
 	def getConstantDescription = {
 		def constant = null;

@@ -39,7 +39,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.DataElement;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -67,7 +66,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	
     @Transient
 	@Override
-	public String getTemplate() {
+	public String getType() {
 		String gspName = "checkboxQuestion";
 		return gspName;
 	}

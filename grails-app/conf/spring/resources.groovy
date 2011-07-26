@@ -13,7 +13,6 @@ import org.chai.kevin.dashboard.ExplanationCalculator;
 import org.chai.kevin.dashboard.PercentageCalculator;
 import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.maps.MapsService;
-import org.chai.kevin.survey.SurveySectionService;
 import org.chai.kevin.survey.SurveyService;
 import org.chai.kevin.survey.SurveyAdminService;
 import org.chai.kevin.survey.ValidationService;

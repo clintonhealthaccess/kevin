@@ -2,7 +2,7 @@
 <span class="display-in-block">
 <table class="question-table" id="question-table-${question.id}">
 <tr>
-<th><g:i18n field="${question.descriptions}" /></th>
+<th><g:i18n field="${question.tableNames}" /></th>
     <g:set var="j" value="${0}"/>
 	<g:each in="${question.columns}" var="column">
 	<g:set var="j" value="${j++}"/>
@@ -20,7 +20,9 @@
 		<g:set var="surveyElement" value="${row.surveyElements[column]}"/>
 		<g:set var="dataElement" value="${surveyElement.dataElement}"/>
 		<td>
-			<g:render template="/survey/${dataElement.type}" model="[surveyElementValue: surveyElementValues[surveyElement.id]]" />
+		
+		<g:render template="/survey/${dataElement.type}" model="[surveyElementValue: surveyElementValues[surveyElement.id]]" />
+			
 		</td>
 	</g:each>
 	</tr>

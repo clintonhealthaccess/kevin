@@ -1,55 +1,66 @@
-<div id="add-survey" class="entity-form-container togglable">
+<div id="add-objective" class="entity-form-container togglable">
 	<div class="entity-form-header">
-		<h3 class="title">Create Survey</h3>
-		<g:locales/>
+		<h3 class="title">Create Objective</h3>
+		<g:locales />
 		<div class="clear"></div>
 	</div>
-	
-	<g:form url="[controller:'createSurvey', action:'save']" useToken="true">
-		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="Name" field="names"/>
-		<g:i18nTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="Description" field="descriptions"/>
-	   <div class="row">
-			<div>
-				<a id="add-iteration-link" class="float-right"  href="${createLink(controller:'iteration', action:'create')}">New Iteration</a>
+
+	<g:form url="[controller:'objective', action:'save']" useToken="true">
+		<g:i18nInput name="names" bean="${objective}"
+			value="${objective?.names}" label="Name" field="names" />
+		<g:i18nTextarea name="descriptions" bean="${objective}"
+			value="${objective?.descriptions}" label="Description"
+			field="descriptions" />
+		<div class="row">
+			<div id="survey-block">
+				<input type="hidden" name="survey.id" value="${objective.survey.id}" />
+			    <div class="row"><label for="survey">Survey:</label> <g:i18n field="${objective.survey.names}"/></div>
+		    <div class="clear"></div>
+
 			</div>
-			<div class="clear"></div>
-			<div id="iteration-block">
-					<div class="group-list ${hasErrors(bean:period, field:'objective', 'errors')}">
-						<label for="period.id">Period:</label>
-						<select class="iteration-list" name="period.id">
-							<option value="null">-- Select an Objective --</option>
-							<g:each in="${periods}" var="period">
-								<option value="${period.id}" ${objective.id+''==fieldValue(bean: target, field: 'objective.id')+''?'selected="selected"':''}>
-									${period.startDate} <--> ${period.endDate}
-								</option>
+		</div>
+		<div class="row">
+			<div id="orgunitgroup-block">
+				<div
+					class="group-list ${hasErrors(bean:objective, field:'groupUuidString', 'errors')}">
+					<label for="groups">Organisation Unit Group:</label>
+						<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
+							<g:each in="${groups}" var="group">
+								<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
+						           ${group.name}
+					            </option>
 							</g:each>
 						</select>
-						<div class="error-list"><g:renderErrors bean="${target}" field="objective" /></div>
+					<div class="error-list">
+						<g:renderErrors bean="${objective}" field="groupUuidString" />
 					</div>
+				</div>
 			</div>
 		</div>
-		<g:if test="${survey?.id != null}">
-			<input type="hidden" name="id" value="${survey?.id}"></input>
+		<g:input name="order" label="Order" bean="${objective}" field="order"/>
+		<g:if test="${objective.id != null}">
+			<input type="hidden" name="id" value="${objective.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit">Save Survey</button>&nbsp;&nbsp;
+			<button type="submit">Save Objective</button>
+			&nbsp;&nbsp;
 			<button id="cancel-button">Cancel</button>
 		</div>
-    </g:form>
+	</g:form>
 	<div class="clear"></div>
 </div>
+<div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
-		
-		$('#add-iteration-link').flow({
-			addLinks: '#new-dsr-objective-link',
-			onSuccess: function(data) {
-				if (data.result == 'success') {
-					var period = data.newEntity;
-					$('.iteration-list').append('<option value="'+period.id+'">'+period.startDate+'<->'+endDate+'</option>');
-					$.sexyCombo.changeOptions('.iteration-list');
+			$('#add-objective').flow({
+				addLinks : '#new-survey-link',
+				onSuccess : function(data) {
+				    if (data.result == 'success') {
+						var period = data.newEntity;
+						  $('.survey-list').append('<option value="'+survey.id+'">'+ survey.names[data.local] + '</option>');
+						  $.sexyCombo.changeOptions('.survey-list');
+					}
 				}
-			}
-		});
-	})
-		</script>
+			});
+		})					
+</script>

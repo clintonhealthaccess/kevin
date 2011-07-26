@@ -29,7 +29,7 @@
 		<g:form name="search-data-form" class="search-form" url="[controller:'expression', action:'getData']">
 			<div class="row">
 				<label for="searchText">Search: </label>
-		    	<input name="searchText"></input>
+		    	<input name="searchText" class="idle-field"></input>
 		    </div>
 			<div class="row">
 				<label for="type">Search for: </label>
@@ -42,42 +42,19 @@
 			</div>
 		</g:form>
 		
-	    <ul class="filtered" id="data"></ul>
+	    <ul class="filtered idle-field" id="data"></ul>
 	</div>
 	
 	<div class="clear"></div>
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
-
-	$('.search-form button').bind('click', function(){$(this).submit(); return false;});
-	$('.search-form').bind('submit', function() {
-		var element = this;
-		$.ajax({
-			type: 'GET', data: $(element).serialize(), url: $(element).attr('action'), 
-			success: function(data, textStatus){
-				if (data.result == 'success') {
-					var filtered = $(element).parent('div').find('.filtered');
-					
-					filtered.html(data.html);
-					filtered.find('a.cluetip').cluetip(cluetipOptions);
-					
-					filtered.find('li').bind('mousedown',
-						function(event){
-							if ($('.in-edition').size() == 1) {
-								var edition = $('.in-edition')[0]
-								$(edition).replaceSelection('['+$(this).data('code')+']');
-							}
-						}
-					);
-					
-					filtered.find('li')
-				}
-			}
-		});
-		return false;
+	getDataElement(function(event){
+		if ($('.in-edition').size() == 1) {
+			var edition = $('.in-edition')[0]
+			$(edition).replaceSelection('['+$(this).data('code')+']');
+		}
 	});
-
 	$('#add-expression textarea')
 	.bind('click keypress focus',
 		function(){

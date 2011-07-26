@@ -26,11 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.chai.kevin.survey;
+
 /**
  * @author JeanKahigiso
  *
  */
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -40,14 +40,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.chai.kevin.data.DataElement;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyQuestion")
@@ -58,7 +54,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	private Integer id;
 	private Integer order;
 	private SurveySubStrategicObjective subObjective;
-	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
+	private String groupUuidString;
 
 	public void setId(Integer id) {
 		this.id = id;
@@ -89,24 +85,36 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		return subObjective;
 	}
 
-	public void setGroups(List<OrganisationUnitGroup> groups) {
-		this.groups = groups;
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
 	}
 
-	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name="dhsst_survey_question_orgunitgroup")
-	public List<OrganisationUnitGroup> getGroups() {
-		return groups;
-	}
-
-	public void addOrganisationGroup(OrganisationUnitGroup group) {
-		groups.add(group);
+	@Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
 	}
 
 	@Transient
-	public abstract String getTemplate();
+	public abstract String getType();
 
 	@Transient
 	public abstract List<SurveyElement> getSurveyElements();
+
+	@Transient
+	static String getString(String htmlString, Integer num) {
+		String noHtmlString;
+		Integer length = num;
+
+		if (htmlString != null)
+			noHtmlString = htmlString.replaceAll("\\<.*?\\>", "");
+		else
+			noHtmlString = htmlString;
+
+		if (noHtmlString.length() < num)
+			length = noHtmlString.length();
+
+		return noHtmlString.substring(0, length);
+
+	}
 
 }

@@ -86,7 +86,7 @@
 								<g:set var="i" value="${1}" />
 								<g:each in="${surveyPage.subObjective.questions}" var="question">
 									<div class="question-in-block"><strong>${i++}) </strong>
-										<g:render template="/survey/${question.getTemplate()}" model="[question: question, surveyElementValues: surveyPage.surveyElements]" /> 
+										<g:render template="/survey/${question.getType()}" model="[question: question, surveyElementValues: surveyPage.surveyElements]" /> 
 									</div>
 								</g:each>
 								

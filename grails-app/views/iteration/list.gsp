@@ -1,4 +1,3 @@
-<%@ page import="org.hisp.dhis.period.Period" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -13,24 +12,20 @@
 				<div class="float-right">
 					<a id="add-iteration-link" class="flow-add" href="${createLink(controller:'iteration', action:'create')}">New Iteration</a>
 				</div>
-	            <div class="list">
+	            <div id="admin-table-list">
 	                <table>
-	                    <thead>
-	                        <tr>
-	                        <td><g:message code="general.text.startdate" default="Start Date" /></td>
-	                        <td><g:message code="general.text.enddate" default="End Date" /></td>
-	                        <td>Action </td>
+	                        <tr class="table-header">
+	                        <th><g:message code="general.text.startdate" default="Start Date" /></th>
+	                        <th><g:message code="general.text.enddate" default="End Date" /></th>
+	                        <th>Action </th>
 	                        </tr>
-	                    </thead>
-	                    <tbody>
 	                    <g:each in="${iterations}" status="i" var="iteration">
 	                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 	                            <td class="edit-iteration-link"><g:link action="edit" id="${iteration.id}">${iteration.startDate}</g:link></td>
 	                             <td class="edit-iteration-link"><g:link action="edit" id="${iteration.id}">${iteration.endDate}</g:link></td>
-	                        	<td class="delete-iteration-link"><a href="${createLink(controller:'iteration', action:'delete',id:iteration.id)}">Delete</as></td>
+	                        	<td class="delete-iteration-link"><g:link action="delete" id="${iteration.id}"><g:message code="general.text.delete" default="Delete" /></g:link></td>
 	                        </tr>
 	                    </g:each>
-	                    </tbody>
 	                </table>
 	            </div>	
 	            <div class="paginateButtons">

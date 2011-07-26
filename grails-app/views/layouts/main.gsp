@@ -20,10 +20,11 @@
 	<g:javascript src="jquery/fieldselection/jquery.fieldselection.js" />
 	<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
 	<g:javascript src="jquery/fliptext/jquery.mb.flipText.js" />
+	<g:javascript src="richeditor/nicEdit.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
 	<g:javascript library="application" />
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-	<ga:trackPageviewAsynch />
+	<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
+	<!--<ga:trackPageviewAsynch />-->
 </head>
 <body class="bp two-columns">
 
@@ -92,7 +93,7 @@
 		(function($) {
 			var defaults = {
 				container: '.flow-container',
-				addLinks: '.flow-edit,.flow-add',
+				addLinks: '.flow-edit,.flow-add,.flow-preview',
 				deleteLinks: '.flow-delete',
 				onSuccess: function(){}
 			}
@@ -102,7 +103,7 @@
 
 				var values = this;
 				var container = this.next(this.config.container).first();
-				 
+				
 				var self = this;
 				$(document).find(this.config.addLinks).each(function(index, element){
 					$(element).bind('click', function() {
@@ -186,7 +187,41 @@
 			
 		})(jQuery);
 		// end of edition pane functionality
-
+		/**
+		 *
+		 */
+		
+		/**
+		 * data Eleement Search
+		 */
+		 function getDataElement(callback){
+		$('.search-form button').bind('click', function(){$(this).submit(); return false;});
+		$('.search-form').bind('submit', function() {
+			var element = this;
+			$.ajax({
+				type: 'GET', data: $(element).serialize(), url: $(element).attr('action'), 
+				success: function(data, textStatus){
+					if (data.result == 'success') {
+						var filtered = $(element).parent('div').find('.filtered');
+						filtered.html(data.html);
+						filtered.find('a.cluetip').cluetip(cluetipOptions);
+						filtered.find('li').bind('mousedown', callback);
+						filtered.find('li')
+					}
+				}
+			});
+			return false;
+		});
+		 }
+		//Get Rich Text Area content
+		function getRichTextContent(){
+			$('.question-form').bind('click',function(){
+				$('textarea').each(function(){
+					$(this).val($(this).prev('div').children().html())
+				})
+			});
+		}
+				
 		/**
 		 * options for cluetip plugin
 		 */		
@@ -300,11 +335,11 @@
 				});
 				return false;
 			});
-			
+			 		
 			//Fliping text 
 			$(".tb").mbFlipText(true); //top to bottom
 			$(".bt").mbFlipText(false); //bottom to top
-				
+			
 			/**
 			 * foldables
 			 */

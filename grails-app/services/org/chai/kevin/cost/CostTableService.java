@@ -36,12 +36,11 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.ExpressionService;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
@@ -80,7 +79,7 @@ public class CostTableService {
 		}
 		
 		List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
-		for (String groupUuid : CostService.getGroupUuids(target.getGroupUuidString())) {
+		for (String groupUuid : Utils.getGroupUuids(target.getGroupUuidString())) {
 			groups.add(collection.getGroupByUuid(groupUuid));
 		}
 		return new Explanation(target, groups, target.getParent(), period, new ArrayList<Organisation>(explanationMap.keySet()), costService.getYears(), explanationMap);
@@ -88,7 +87,7 @@ public class CostTableService {
 	
 	private boolean appliesToOrganisation(CostTarget target, Organisation organisation, GroupCollection collection) {
 		Set<OrganisationUnitGroup> groups = organisation.getOrganisationUnit().getGroups();
-		for (String groupUuid : CostService.getGroupUuids(target.getGroupUuidString())) {
+		for (String groupUuid : Utils.getGroupUuids(target.getGroupUuidString())) {
 			if (groups.contains(collection.getGroupByUuid(groupUuid))) return true;
 		}
 		return false;

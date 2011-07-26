@@ -30,20 +30,16 @@ package org.chai.kevin.survey;
  * @author JeanKahigiso
  *
  */
-import java.util.List;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -54,7 +50,7 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 	
 	private Integer id;
 	private Integer order;
-	private List<OrganisationUnitGroup> groups;
+	private String groupUuidString;
 	private SurveyCheckboxQuestion question;
 	private SurveyElement surveyElement;
 	
@@ -78,20 +74,14 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 		this.order = order;
 	}
 
-	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name="dhsst_survey_checkbox_option_orgunitgroup")
-	public List<OrganisationUnitGroup> getGroups() {
-		return groups;
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
 	}
-
-	public void setGroups(List<OrganisationUnitGroup> groups) {
-		this.groups = groups;
+    @Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
 	}
-	
-	public void addOrganisationGroup(OrganisationUnitGroup group) {
-		groups.add(group);
-	}
-	
+    
 	@ManyToOne(targetEntity=SurveyCheckboxQuestion.class, optional=false)
 	public SurveyCheckboxQuestion getQuestion() {
 		return question;

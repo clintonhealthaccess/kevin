@@ -35,6 +35,7 @@ import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.util.Utils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 import com.sun.tools.javac.code.Type.ForAll;
@@ -64,7 +65,7 @@ class CostTargetController extends AbstractEntityController {
 		def groups = new GroupCollection(organisationService.getGroupsForExpression())
 		[
 			target: entity, 
-			groupUuids: CostService.getGroupUuids(entity.groupUuidString),
+			groupUuids: Utils.getGroupUuids(entity.groupUuidString),
 			currentObjective: currentObjective, 
 			expressions: Expression.list(), 
 			costRampUps: CostRampUp.list(), 
@@ -96,7 +97,7 @@ class CostTargetController extends AbstractEntityController {
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString = CostService.getGroupUuidString(params['groupUuids']);
+		entity.groupUuidString = Utils.getGroupUuidString(params['groupUuids']);
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = entity.descriptions
 

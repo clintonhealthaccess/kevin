@@ -1,49 +1,69 @@
 <div class="survey-admin-entity-list">
 	<div id="objectives">
-		<div class="float-right">
-			<a id="add-objective-link" class="flow-add" href="${createLink(controller:'objective', action:'create')}">New Strategic Objective</a>
+	<div class="float-left">
+			<h5>Objective List</h5>
 		</div>
-		<div id="survey-admin-table-list">
+		<div class="float-right">
+			<a id="add-objective-link" class="flow-add"
+				href="${createLink(controller:'objective', action:'create',params:[surveyId:survey.id])}">New
+				Strategic Objective</a>
+		</div>
+		<div id="admin-table-list">
 			<table>
-			<g:if test="${!objectives.isEmpty()}">
+				<g:if test="${!objectives.isEmpty()}">
 					<tr class="table-header">
-					    <th>Order</th>
-						<th>ID</th>
 						<th>Name</th>
 						<th>Description</th>
-						<th>Number of Sub-Objectives</th>
-						<th><g:message code="general.text.edit" default="Edit" /></th>
-						<th><g:message code="general.text.delete" default="Delete" /></th>
+						<th>Organisation Unit Groups</th>
+						<th>Number of Sub-Sections</th>
+						<th>Order</th>
+						<th>Manage</th>
 					</tr>
 					<g:each in="${objectives}" status="i" var="objective">
 						<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-							<td>${objective?.order}</td>
-							<td>${objective.id}</td>
-							<td><g:i18n field="${objective.names}" />
+							<td><g:i18n field="${objective.names}" /></td>
+							<td><g:i18n field="${objective.descriptions}" /></td>
+							<td>${objective.groupUuidString}
 							</td>
-							<td><g:i18n field="${objective.descriptions}" />
-							</td>
-							<td><a
-								href="${createLink(controller:'admin', action:'subobjective',params:[survey:survey?.id,objective: objective.id])}">${objective.subObjectives.size()}</a>
-							</td>
-							<td class="edit-survey-link"><a
-								href="${createLink(controller:'objective', action:'edit',params:[survey:survey?.id,objective: objective.id])}"><g:message
-										code="general.text.edit" default="Edit" />
-									</as>
-							</td>
-							<td class="delete-survey-link"><a
-								href="${createLink(controller:'objective', action:'delete',params:[survey:survey?.id,objective: objective.id])}"><g:message
-										code="general.text.delete" default="Delete" />
-									</as>
+							<td>${objective.subObjectives.size()}</td>
+							<td>${objective.order}</td>
+                           <td>
+							<div class="dropdown"> 
+							     <a class="selected" href="#" data-type="objective">Manage</a>
+							<div class="hidden dropdown-list">
+								<ul>
+								<li>
+								<a
+								href="${createLink(controller:'admin', action:'subobjective',params:[surveyId:survey?.id,objectiveId: objective.id])}">Sub-Sections</a>
+								
+								</li>
+									<li class="edit-objective-link">
+									<g:link
+									controller="objective" action="edit" id="${objective.id}"
+									class="flow-edit">
+									<g:message code="general.text.edit" default="Edit" />
+								</g:link>
+									</li>
+									<li class="delete-objective-link">
+									<g:link controller="objective" action="delete" id="${objective.id}" class="flow-delete">
+									<g:message code="general.text.delete" default="Delete" />
+								</g:link>
+									</li>
+								</ul>
+							</div>
+							</div> 		
 							</td>
 						</tr>
 					</g:each>
-					</g:if>
-					<g:else>
-						<tr>
-							<td colspan="7">No objective available <a href="#">Add Objective</a></td>
-						</tr>
-					</g:else>
+				</g:if>
+				<g:else>
+					<tr>
+						<td colspan="6">No objective available <a id="new-objective-link" class="flow-add"
+				href="${createLink(controller:'objective', action:'create',params:[surveyId:survey.id])}">Add
+								Objective</a>
+						</td>
+					</tr>
+				</g:else>
 			</table>
 		</div>
 		<div class="paginateButtons">

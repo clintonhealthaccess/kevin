@@ -44,70 +44,67 @@ class AdminController extends AbstractReportController {
 	List<OrganisationUnitGroup> groups = OrganisationUnitGroup.list();
 
 	def index = {
-		redirect (action: 'admin', params: params)
+		redirect (action: "survey", params: params)
 	}
 
 	def survey = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		List<Survey> surveys = Survey.list();
-		if(surveys.count()>0)
+		if(surveys.size()>0)
 			Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/survey/admin/list', model:[
 
-					surveys: surveys, surveyCount: Survey.count()
+					surveys: surveys, surveyCount: surveys.size()
 				])
 	}
 
 	def objective = {
 
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		Survey survey = Survey.get(params.survey);
+		Survey survey = Survey.get(params.surveyId);
 		List<SurveyStrategicObjective> objectives = survey.objectives;
-
-		Collections.sort(objectives,new SurveyStrategicObjectiveSorter())
+		if(objectives.size()>0)
+			Collections.sort(objectives,new SurveyStrategicObjectiveSorter())
 
 		render (view: '/survey/admin/list', model:[
 
 					survey:survey,
-					groups:groups,
 					objectives: objectives,
-					objectiveCount: survey.objectives.count()
+					objectiveCount: objectives.size()
 
 				])
 	}
 
 	def subobjective = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		SurveyStrategicObjective objective = SurveyStrategicObjective.get(params.objective)
+		SurveyStrategicObjective objective = SurveyStrategicObjective.get(params.objectiveId)
 		List<SurveySubStrategicObjective> subobjectives = objective.subObjectives;
-
-		Collections.sort(subobjectives,new SurveySubStrategicObjectiveSorter())
+		if(subobjectives.size()>0)
+			Collections.sort(subobjectives,new SurveySubStrategicObjectiveSorter())
 
 		render (view: '/survey/admin/list', model:[
+			
 					survey: objective.survey,
 					objective: objective,
-					groups:groups,
 					subobjectives: subobjectives,
-					subobjectiveCount: subobjectives.count()
+					subobjectiveCount: subobjectives.size()
 				])
 	}
 
 	def question = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		SurveySubStrategicObjective subobjective = SurveySubStrategicObjective.get(params.subobjective)
+		SurveySubStrategicObjective subobjective = SurveySubStrategicObjective.get(params.subObjectiveId)
 		List<SurveyQuestion> questions = subobjective.questions;
-
-		Collections.sort(questions,new SurveyQuestionSorter())
+		if(questions.size()>0)
+			Collections.sort(questions,new SurveyQuestionSorter())
 
 		render (view: '/survey/admin/list', model:[
-
 					survey: subobjective.objective.survey,
 					objective: subobjective.objective,
 					subobjective: subobjective,
-					groups:groups,
 					questions: questions,
-					questionCount: questions.count()
+					questionCount: questions.size()
 				])
 	}
 }

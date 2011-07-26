@@ -119,9 +119,12 @@ abstract class AbstractEntityController {
 					id = entity.id
 					if (entity.hasProperty("names")) names = entity.names
 				}
+				html = html(entity)
 			}
 		}
 	}
+	
+	protected def html(def entity) {return ""};
 	
 	protected abstract def bindParams(def entity);
 	
