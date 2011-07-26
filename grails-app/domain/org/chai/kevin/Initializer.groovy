@@ -52,6 +52,8 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ValueType;
 import org.chai.kevin.survey.*;
+import org.chai.kevin.survey.validation.SurveyValidationMessage;
+import org.chai.kevin.survey.validation.SurveyValidationRule;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
@@ -632,7 +634,7 @@ class Initializer {
 					order: 2,
 					descriptions:j(["en":"Facility Water and Power Sources"]),
 					code: "Facility Water and Power Sources"
-					)
+			)
 
 
 			hmr.addTarget(new DsrTarget(
@@ -777,228 +779,319 @@ class Initializer {
 
 			//Creating Survey
 			def surveyOne = new Survey(
-					names: j(["en":"Survey Number 1"]),
-					descriptions: j(["en":"Survey Number 1 Description"]),
-					period: Period.list()[1],
-					order: 0
-					)
+				names: j(["en":"Survey Number 1"]),
+				descriptions: j(["en":"Survey Number 1 Description"]),
+				period: Period.list()[1],
+				order: 0
+			)
 			def surveyTwo = new Survey(
-					names: j(["en":"Survey Number 2"]),
-					descriptions: j(["en":"Survey Number 2 Description"]),
-					period: Period.list()[1],
-					order: 1
-					)
+				names: j(["en":"Survey Number 2"]),
+				descriptions: j(["en":"Survey Number 2 Description"]),
+				period: Period.list()[1],
+				order: 1
+			)
 
 			//Creating Objective
-			def serviceDev = new SurveyStrategicObjective(
-					names: j(["en":"Service Delivery"]),
-					descriptions: j(["en":"Service Delivery"]),
-					order: 2,
-					groups:[dh, hc])
-			def hResourceHealth = new SurveyStrategicObjective(
-					names: j(["en":"Human Resources for Health"]),
-					descriptions: j(["en":"Human Resources for Health"]),
-					order: 4,
-					groups:[dh, hc])
+			def serviceDev = new SurveyObjective(
+				names: j(["en":"Service Delivery"]),
+				descriptions: j(["en":"Service Delivery"]),
+				order: 2,
+				groups:[dh, hc]
+			)
+			def hResourceHealth = new SurveyObjective(
+				names: j(["en":"Human Resources for Health"]),
+				descriptions: j(["en":"Human Resources for Health"]),
+				order: 4,
+				groups:[dh, hc]
+			)
 
-			def geoAccess = new SurveyStrategicObjective(
-					names: j(["en":"Geographic Access"]),
-					descriptions: j(["en":"Geographic Access"]),
-					order: 5,
-					groups:[dh, hc])
+			def geoAccess = new SurveyObjective(
+				names: j(["en":"Geographic Access"]),
+				descriptions: j(["en":"Geographic Access"]),
+				order: 5,
+				groups:[dh, hc]
+			)
 
-			def institutCap = new SurveyStrategicObjective(
-					names: j(["en":"Institutional Capacity"]),
-					descriptions: j(["en":"Institutional Capacity"]),
-					order: 3,
-					groups:[dh, hc])
+			def institutCap = new SurveyObjective(
+				names: j(["en":"Institutional Capacity"]),
+				descriptions: j(["en":"Institutional Capacity"]),
+				order: 3,
+				groups:[dh, hc]
+			)
 
-			def coreFacId = new SurveyStrategicObjective(
-					names: j(["en":"Core Facility Identify"]),
-					descriptions: j(["en":"Core Facility Identify"]),
-					order: 1,
-					groups:[dh, hc])
+			def coreFacId = new SurveyObjective(
+				names: j(["en":"Core Facility Identify"]),
+				descriptions: j(["en":"Core Facility Identify"]),
+				order: 1,
+				groups:[dh, hc],
+				dependency: serviceDev
+			)
 
-			def finance = new SurveyStrategicObjective(
-					names: j(["en":"Finance"]),
-					descriptions: j(["en":"Finance"]),
-					order: 6,
-					groups:[dh, hc])
+			def finance = new SurveyObjective(
+				names: j(["en":"Finance"]),
+				descriptions: j(["en":"Finance"]),
+				order: 6,
+				groups:[dh]
+			)
 			
-			def dvandC = new SurveyStrategicObjective(
-					names: j(["en":"Drugs, Vaccines, and Consumables"]),
-					descriptions: j(["en":"Drugs, Vaccines, and Consumables"]),
-					order: 7,
-					groups:[dh, hc])
+			def dvandC = new SurveyObjective(
+				names: j(["en":"Drugs, Vaccines, and Consumables"]),
+				descriptions: j(["en":"Drugs, Vaccines, and Consumables"]),
+				order: 7,
+				groups:[dh, hc]
+			)
 
-			surveyOne.addStrategicObjective(serviceDev)
-			surveyOne.addStrategicObjective(coreFacId)
-			surveyOne.addStrategicObjective(hResourceHealth)
-			surveyOne.addStrategicObjective(finance)
+			surveyOne.addObjective(serviceDev)
+			surveyOne.addObjective(coreFacId)
+			surveyOne.addObjective(hResourceHealth)
+			surveyOne.addObjective(finance)
 			surveyOne.save(failOnError:true)
 
-			surveyTwo.addStrategicObjective(geoAccess)
-			surveyTwo.addStrategicObjective(dvandC)
-			surveyTwo.addStrategicObjective(institutCap)
+			surveyTwo.addObjective(geoAccess)
+			surveyTwo.addObjective(dvandC)
+			surveyTwo.addObjective(institutCap)
 			surveyTwo.save(failOnError:true)
 
-
-
-			//Adding Sub-Objective to Objective
-			
-			def facilityId = new SurveySubStrategicObjective(
+			//Adding section to objective
+			def facilityId = new SurveySection(
 				names: j(["en":"Facility Identifier"]),
 				descriptions: j(["en":"Facility Identifier"]),
 				order: 1,
 				objective: coreFacId,
-				groups:[dh, hc])
+				groups:[dh, hc]
+			)
 			
-			coreFacId.addSubStrategicObjective(facilityId)
+			coreFacId.addSection(facilityId)
 			coreFacId.save(failOnError:true);
 
-			def services=new SurveySubStrategicObjective(
-					names: j(["en":"Services"]),
-					descriptions: j(["en":"Services"]),
-					order: 2,
-					objective: serviceDev,
-					groups:[dh, hc])
-			def labTests= new SurveySubStrategicObjective(
-					names: j(["en":"Lab Tests"]),
-					descriptions: j(["en":"Lab Tests"]),
-					order: 1,
-					objective: serviceDev,
-					groups:[dh])
-			def patientReg=new SurveySubStrategicObjective(
-					names: j(["en":"Patient Registration"]),
-					descriptions: j(["en":"Patient Registration"]),
-					order: 3,
-					objective: serviceDev,
-					groups:[dh, hc])
-
-			serviceDev.addSubStrategicObjective(services)
-			serviceDev.addSubStrategicObjective(labTests)
-			serviceDev.addSubStrategicObjective(patientReg)
+			def services=new SurveySection(
+				names: j(["en":"Services"]),
+				descriptions: j(["en":"Services"]),
+				order: 2,
+				objective: serviceDev,
+				groups:[dh, hc]
+			)
+			def labTests= new SurveySection(
+				names: j(["en":"Lab Tests"]),
+				descriptions: j(["en":"Lab Tests"]),
+				order: 1,
+				objective: serviceDev,
+				groups:[dh]
+			)
+			
+			def patientReg=new SurveySection(
+				names: j(["en":"Patient Registration"]),
+				descriptions: j(["en":"Patient Registration"]),
+				order: 3,
+				objective: serviceDev,
+				groups:[dh, hc]
+			)
+			
+			def patientQ1 = new SurveySimpleQuestion(
+				names: j(["en":"Patient Section Simple Question VALUE"]),
+				descriptions: j(["en":"Patient Section Simple Question"]),
+				order: 3,
+				groups:[dh,hc]
+			)
+			patientReg.addQuestion(patientQ1)
+			patientReg.save(failOnError: true)
+			
+			def surveyElementPatientQ1 = new SurveyElement(dataElement: DataElement.findByCode("CODE1"), surveyQuestion: patientQ1).save(failOnError: true)
+			patientQ1.surveyElement = surveyElementPatientQ1
+			patientQ1.save(failOnError: true)
+			
+			serviceDev.addSection(services)
+			serviceDev.addSection(labTests)
+			serviceDev.addSection(patientReg)
 			serviceDev.save(failOnError:true);
 
-			def staffing=new SurveySubStrategicObjective(
-					names: j(["en":"Staffing"]),
-					descriptions: j(["en":"Staffing"]),
-					order: 1,
-					objective: hResourceHealth,
-					groups:[dh, hc])
+			def surveyValidationPatient = new SurveyValidationMessage(messages: j(["en":"Validation error {0}"])).save(failOnError: true);
+			def rulePatient1 = new SurveyValidationRule(
+				surveyElement: surveyElementPatientQ1,
+				expression: "["+surveyElementPatientQ1.id+"] > 100",
+				validationMessage: surveyValidationPatient,
+				dependencies: [surveyElementPatientQ1],
+				allowOutlier: false
+			).save(failOnError: true)
+			def rulePatient2 = new SurveyValidationRule(
+				surveyElement: surveyElementPatientQ1,
+				expression: "["+surveyElementPatientQ1.id+"] > 140",
+				validationMessage: surveyValidationPatient,
+				dependencies: [surveyElementPatientQ1],
+				allowOutlier: true
+			).save(failOnError: true)
+			surveyElementPatientQ1.addValidationRule(rulePatient1)
+			surveyElementPatientQ1.addValidationRule(rulePatient2)
+			surveyElementPatientQ1.save(failOnError: true)
+			
+			def staffing=new SurveySection(
+				names: j(["en":"Staffing"]),
+				descriptions: j(["en":"Staffing"]),
+				order: 1,
+				objective: hResourceHealth,
+				groups:[dh, hc]
+			)
 
-			def continuingEd = new SurveySubStrategicObjective(
-					names: j(["en":"Continuing Education"]),
-					descriptions: j(["en":"Continuing Education"]),
-					order: 2,
-					objective: hResourceHealth,
-					groups:[hc])
+			def continuingEd = new SurveySection(
+				names: j(["en":"Continuing Education"]),
+				descriptions: j(["en":"Continuing Education"]),
+				order: 2,
+				objective: hResourceHealth,
+				groups:[hc]
+			)
 
-			def openResponse = new SurveySubStrategicObjective(
-					names: j(["en":"Open Response"]),
-					descriptions: j(["en":"Open Response"]),
-					order: 3,
-					objective: hResourceHealth,
-					groups:[dh, hc])
+			def openResponse = new SurveySection(
+				names: j(["en":"Open Response"]),
+				descriptions: j(["en":"Open Response"]),
+				order: 3,
+				objective: hResourceHealth,
+				groups:[dh, hc]
+			)
 
-			hResourceHealth.addSubStrategicObjective(staffing)
-			hResourceHealth.addSubStrategicObjective(continuingEd)
-			hResourceHealth.addSubStrategicObjective(openResponse)
+			hResourceHealth.addSection(staffing)
+			hResourceHealth.addSection(continuingEd)
+			hResourceHealth.addSection(openResponse)
 			hResourceHealth.save(failOnError:true);
 
-			def infrastructure = new SurveySubStrategicObjective(
-					names: j(["en":"Infrastructure"]),
-					descriptions: j(["en":"Infrastructure"]),
-					order: 3,
-					objective: geoAccess,
-					groups:[dh, hc])
-			def medicalEq=new SurveySubStrategicObjective(
-					names: j(["en":"Medical Equipment"]),
-					descriptions: j(["en":"Medical Equipment"]),
-					order: 2,
-					objective: geoAccess,
-					groups:[dh, hc])
-			def wasteMgmnt=new SurveySubStrategicObjective(
-					names: j(["en":"Waste Management"]),
-					descriptions: j(["en":"Waste Management"]),
-					order: 1,
-					objective: geoAccess,
-					groups:[dh, hc])
+			def infrastructure = new SurveySection(
+				names: j(["en":"Infrastructure"]),
+				descriptions: j(["en":"Infrastructure"]),
+				order: 3,
+				objective: geoAccess,
+				groups:[dh, hc]
+			)
+			def medicalEq=new SurveySection(
+				names: j(["en":"Medical Equipment"]),
+				descriptions: j(["en":"Medical Equipment"]),
+				order: 2,
+				objective: geoAccess,
+				groups:[dh, hc]
+			)
+			def wasteMgmnt=new SurveySection(
+				names: j(["en":"Waste Management"]),
+				descriptions: j(["en":"Waste Management"]),
+				order: 1,
+				objective: geoAccess,
+				groups:[dh, hc]
+			)
 
-			geoAccess.addSubStrategicObjective(infrastructure)
-			geoAccess.addSubStrategicObjective(medicalEq)
-			geoAccess.addSubStrategicObjective(wasteMgmnt)
+			geoAccess.addSection(infrastructure)
+			geoAccess.addSection(medicalEq)
+			geoAccess.addSection(wasteMgmnt)
 			geoAccess.save(failOnError:true);
 
-			//Adding questions to subSections
-
+			//Adding questions to sections
 			def serviceQ1 = new SurveySimpleQuestion(
-					names: j(["en":"Service Sub Section Simple Question VALUE"]),
-					descriptions: j(["en":"Service Sub Section Simple Question"]),
-					order: 3,
-					groups:[dh,hc],
-					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE1"))
-					)
+				names: j(["en":"Service Section Simple Question VALUE"]),
+				descriptions: j(["en":"Service Section Simple Question"]),
+				order: 3,
+				groups:[dh,hc]
+			)
+			services.addQuestion(serviceQ1)
+			services.save(failOnError:true, flush:true)
+			
+			def surveyElementServiceQ1 = new SurveyElement(dataElement: DataElement.findByCode("CODE1"), surveyQuestion: serviceQ1).save(failOnError: true)
+			serviceQ1.surveyElement = surveyElementServiceQ1
+			serviceQ1.save(failOnError: true)
+			
 			def serviceQ2 = new SurveySimpleQuestion(
-					names: j(["en":"Service Sub Section Simple Question BOOL"]),
-					descriptions: j(["en":"Service Sub Section Simple Question BOOL"]),
-					order: 0,
-					groups:[dh,hc],
-					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE7"))
-					)
+				names: j(["en":"Service Section Simple Question BOOL"]),
+				descriptions: j(["en":"Service Section Simple Question BOOL"]),
+				order: 0,
+				groups:[dh,hc]
+			)
+			services.addQuestion(serviceQ2)
+			services.save(failOnError:true, flush:true)
+			
+			def surveyElementServiceQ2 = new SurveyElement(dataElement: DataElement.findByCode("CODE7"), surveyQuestion: serviceQ2).save(failOnError: true)
+			serviceQ2.surveyElement = surveyElementServiceQ2
+			serviceQ2.save(failOnError: true)
+			
 			def serviceQ3 = new SurveySimpleQuestion(
-					names: j(["en":"Service Sub Section Simple Question ENUM "]),
-					descriptions: j(["en":"Service Sub Section Simple Question ENUM"]),
-					order: 1,
-					groups:[dh,hc],
-					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE3"))
-					)
-
+				names: j(["en":"Service Section Simple Question ENUM "]),
+				descriptions: j(["en":"Service Section Simple Question ENUM"]),
+				order: 1,
+				groups:[dh,hc]
+			)
+			services.addQuestion(serviceQ3)
+			services.save(failOnError:true, flush:true)
+			
+			def surveyElementServiceQ3 = new SurveyElement(dataElement: DataElement.findByCode("CODE3"), surveyQuestion: serviceQ3).save(failOnError: true)
+			serviceQ3.surveyElement = surveyElementServiceQ3
+			serviceQ3.save(failOnError: true)
+			
 			services.addQuestion(serviceQ2)
 			services.addQuestion(serviceQ1)
 			services.addQuestion(serviceQ3)
 			services.save(failOnError:true)
 
+			def surveyValidationMessage = new SurveyValidationMessage(messages: j(["en":"Validation error {0}"])).save(failOnError: true);
+			def rule1 = new SurveyValidationRule(
+				surveyElement: surveyElementServiceQ1,
+				expression: "["+surveyElementServiceQ1.id+"] > 100",
+				validationMessage: surveyValidationMessage,
+				dependencies: [surveyElementServiceQ1],
+				allowOutlier: false
+			).save(failOnError: true)
+			def rule2 = new SurveyValidationRule(
+				surveyElement: surveyElementServiceQ1,
+				expression: "["+surveyElementServiceQ1.id+"] > 140",
+				validationMessage: surveyValidationMessage,
+				dependencies: [surveyElementServiceQ1],
+				allowOutlier: true
+			).save(failOnError: true)
+			surveyElementServiceQ1.addValidationRule(rule1)
+			surveyElementServiceQ1.addValidationRule(rule2)
+			surveyElementServiceQ1.save(failOnError: true)
+			
 			def openQ = new SurveySimpleQuestion(
-					names: j(["en":"Sample Open Question "]),
-					descriptions: j(["en":"Sample Open Question"]),
-					order: 1,
-					groups:[dh,hc],
-					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE12"))
-					)
+				names: j(["en":"Sample Open Question "]),
+				descriptions: j(["en":"Sample Open Question"]),
+				order: 1,
+				groups:[dh,hc],
+			)
 			openResponse.addQuestion(openQ)
-			openResponse.save(failOnError:true)
+			openResponse.save(failOnError:true, flush: true)
+			
+			def surveyElementOpenQ = new SurveyElement(dataElement: DataElement.findByCode("CODE12"), surveyQuestion: openQ).save(failOnError: true)
+			openQ.surveyElement = surveyElementOpenQ
+			openQ.save(failOnError: true)
 
 			def checkBoxQ = new SurveyCheckboxQuestion(
-					names: j(["en":"Service Sub Section CheckBox  Question"]),
-					descriptions: j(["en":"Service Sub Section CheckBox  Question"]),
-					order: 2,
-					groups: [dh, hc])
-
+				names: j(["en":"Service Section CheckBox Question"]),
+				descriptions: j(["en":"Service Section CheckBox Question"]),
+				order: 2,
+				groups: [dh, hc]
+			)
+			staffing.addQuestion(checkBoxQ)
+			staffing.save(failOnError:true, flush: true)
+			
+			def surveyElementChecboxQ1 = new SurveyElement(dataElement: DataElement.findByCode("CODE4"), surveyQuestion: checkBoxQ).save(failOnError: true)
+			def surveyElementChecboxQ2 = new SurveyElement(dataElement: DataElement.findByCode("CODE5"), surveyQuestion: checkBoxQ).save(failOnError: true)
+			def surveyElementChecboxQ3 = new SurveyElement(dataElement: DataElement.findByCode("CODE6"), surveyQuestion: checkBoxQ).save(failOnError: true)
+			
 			//Checkbox Option
 			def option1 = new SurveyCheckboxOption(
-					names: j(["en":"None Or Not Applicable"]),
-					descriptions: j(["en":"None Or Not Applicable"]),
-					order: 2,
-					groups: [dh, hc],
-					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE4"))
-					)
+				names: j(["en":"None Or Not Applicable"]),
+				descriptions: j(["en":"None Or Not Applicable"]),
+				order: 2,
+				groups: [dh, hc],
+				surveyElement: surveyElementChecboxQ1
+			)
 			def option2 = new SurveyCheckboxOption(
-					names: j(["en":"Second Option"]),
-					descriptions: j(["en":"Second Option"]),
-					order: 1,
-					groups: [dh],
-					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE5"))
-					)
+				names: j(["en":"Second Option"]),
+				descriptions: j(["en":"Second Option"]),
+				order: 1,
+				groups: [dh],
+				surveyElement: surveyElementChecboxQ2
+			)
 			def option3 = new SurveyCheckboxOption(
-					names: j(["en":"Third Option"]),
-					descriptions: j(["en":"Third Option"]),
-					order: 3,
-					groups: [dh, hc],
-					surveyElement: new SurveyElement(dataElement: DataElement.findByCode("CODE6"))
-					)
-			staffing.addQuestion(checkBoxQ)
-			staffing.save(failOnError:true)
+				names: j(["en":"Third Option"]),
+				descriptions: j(["en":"Third Option"]),
+				order: 3,
+				groups: [dh, hc],
+				surveyElement: surveyElementChecboxQ3
+			)
 			checkBoxQ.addCheckboxOption(option1)
 			checkBoxQ.addCheckboxOption(option2)
 			checkBoxQ.addCheckboxOption(option3)
@@ -1006,44 +1099,44 @@ class Initializer {
 
 			//Adding a table type question
 			def tableQ = new SurveyTableQuestion(
-					names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
-					descriptions: j(["en":"Training Modules"]),
-					order: 1,
-					groups: [dh, hc])
+				names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
+				descriptions: j(["en":"Training Modules"]),
+				order: 1,
+				groups: [dh, hc]
+			)
+			staffing.addQuestion(tableQ)
+			staffing.save(failOnError:true, flush: true)
+			
 			//Add columns
 			def tabColumnOne = new SurveyTableColumn(
-					names: j(["en":"Number Who Attended Training"]),
-					descriptions: j(["en":"Number Who Attended Training"]),
-					order: 1,
-					groups: [dh, hc],
-					question: tableQ
-					)
-			def tabColumnThree = new SurveyTableColumn(
-					names: j(["en":"Who Provided the Training"]),
-					descriptions: j(["en":"Who Provided the Training"]),
-					order: 3,
-					groups: [hc],
-					question: tableQ
-					)
-
+				names: j(["en":"Number Who Attended Training"]),
+				descriptions: j(["en":"Number Who Attended Training"]),
+				order: 1,
+				groups: [dh, hc],
+				question: tableQ
+			)
 			def tabColumnTwo = new SurveyTableColumn(
-					names: j(["en":"Sum Total Number of Days"]),
-					descriptions: j(["en":"Sum Total Number of Days"]),
-					order: 2,
-					groups: [dh, hc],
-					question: tableQ
-					)
-
+				names: j(["en":"Sum Total Number of Days"]),
+				descriptions: j(["en":"Sum Total Number of Days"]),
+				order: 2,
+				groups: [dh, hc],
+				question: tableQ
+			)
+			def tabColumnThree = new SurveyTableColumn(
+				names: j(["en":"Who Provided the Training"]),
+				descriptions: j(["en":"Who Provided the Training"]),
+				order: 3,
+				groups: [hc],
+				question: tableQ
+			)
 			def tabColumnFour = new SurveyTableColumn(
-					names: j(["en":"Due Date"]),
-					descriptions: j(["en":"Due Date"]),
-					order: 4,
-					groups: [dh],
-					question: tableQ
-					)
+				names: j(["en":"Due Date"]),
+				descriptions: j(["en":"Due Date"]),
+				order: 4,
+				groups: [dh],
+				question: tableQ
+			)
 
-			staffing.addQuestion(tableQ)
-			staffing.save(failOnError:true)
 			tableQ.addColumn(tabColumnThree)
 			tableQ.addColumn(tabColumnTwo)
 			tableQ.addColumn(tabColumnOne)
@@ -1051,26 +1144,35 @@ class Initializer {
 
 			Map<SurveyTableColumn,SurveyElement> dataElmntsLine1= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
-			dataElmntsLine1.put(tabColumnOne,new SurveyElement(dataElement: DataElement.findByCode("CODE8")))
-			dataElmntsLine1.put(tabColumnTwo,new SurveyElement(dataElement: DataElement.findByCode("CODE9")))
-			dataElmntsLine1.put(tabColumnThree,new SurveyElement(dataElement: DataElement.findByCode("CODE10")))
-			dataElmntsLine1.put(tabColumnFour,new SurveyElement(dataElement: DataElement.findByCode("CODE11")))
+			def surveyElementTable1 = new SurveyElement(dataElement: DataElement.findByCode("CODE8"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable2 = new SurveyElement(dataElement: DataElement.findByCode("CODE9"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable3 = new SurveyElement(dataElement: DataElement.findByCode("CODE10"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable4 = new SurveyElement(dataElement: DataElement.findByCode("CODE11"), surveyQuestion: tableQ).save(failOnError: true)
+			dataElmntsLine1.put(tabColumnOne, surveyElementTable1)
+			dataElmntsLine1.put(tabColumnTwo, surveyElementTable2)
+			dataElmntsLine1.put(tabColumnThree, surveyElementTable3)
+			dataElmntsLine1.put(tabColumnFour, surveyElementTable4)
 
 			Map<SurveyTableColumn,SurveyElement> dataElmntsLine2= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
-			dataElmntsLine2.put(tabColumnOne,new SurveyElement(dataElement: DataElement.findByCode("CODE81")))
-			dataElmntsLine2.put(tabColumnTwo,new SurveyElement(dataElement: DataElement.findByCode("CODE91")))
-			dataElmntsLine2.put(tabColumnThree,new SurveyElement(dataElement: DataElement.findByCode("CODE101")))
-			dataElmntsLine2.put(tabColumnFour,new SurveyElement(dataElement: DataElement.findByCode("CODE111")))
+			def surveyElementTable21 = new SurveyElement(dataElement: DataElement.findByCode("CODE81"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable22 = new SurveyElement(dataElement: DataElement.findByCode("CODE91"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable23 = new SurveyElement(dataElement: DataElement.findByCode("CODE101"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable24 = new SurveyElement(dataElement: DataElement.findByCode("CODE111"), surveyQuestion: tableQ).save(failOnError: true)
+			
+			dataElmntsLine2.put(tabColumnOne, surveyElementTable21)
+			dataElmntsLine2.put(tabColumnTwo, surveyElementTable22)
+			dataElmntsLine2.put(tabColumnThree, surveyElementTable23)
+			dataElmntsLine2.put(tabColumnFour, surveyElementTable24)
 
 			//Add rows
 			def tabRowOne = new SurveyTableRow(
-					names: j(["en":"Clinical Pharmacy :"]),
-					descriptions: j(["en":"Clinical Pharmacy :"]),
-					order: 1,
-					question: tableQ,
-					groups: [dh, hc],
-					surveyElements: dataElmntsLine1
+				names: j(["en":"Clinical Pharmacy :"]),
+				descriptions: j(["en":"Clinical Pharmacy :"]),
+				order: 1,
+				question: tableQ,
+				groups: [dh, hc],
+				surveyElements: dataElmntsLine1
 			)
 			//			def tabRowThree = new SurveyTableRow(
 			//					names: j(["en":"Supervision - Administration [Non-clinical, Human Resources] :"]),
@@ -1080,13 +1182,13 @@ class Initializer {
 			//					dataElements: dataElmnts
 			//					)
 			def tabRowTwo = new SurveyTableRow(
-					names: j(["en":"Clinical Nurse Training :"]),
-					descriptions: j(["en":"Clinical Nurse Training :"]),
-					order: 2,
-					question: tableQ,
-					groups: [hc],
-					surveyElements: dataElmntsLine2
-				)
+				names: j(["en":"Clinical Nurse Training :"]),
+				descriptions: j(["en":"Clinical Nurse Training :"]),
+				order: 2,
+				question: tableQ,
+				groups: [hc],
+				surveyElements: dataElmntsLine2
+			)
 			//			def tabRowFour = new SurveyTableRow(
 			//					names: j(["en":"Supervision - Laboratory:"]),
 			//					descriptions: j(["en":"Supervision - Laboratory:"]),

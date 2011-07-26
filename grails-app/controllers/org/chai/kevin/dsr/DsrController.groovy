@@ -66,7 +66,7 @@ class DsrController extends AbstractReportController {
 			objectives: DsrObjective.list(),
 		    organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
 			checkedFacilities: defaultChecked,
-			displayLinkUntil: 3
+//			displayLinkUntil: 3
 		]
 		
 	}

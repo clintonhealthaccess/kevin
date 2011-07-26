@@ -63,9 +63,7 @@ class AdminController extends AbstractReportController {
 
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		Survey survey = Survey.get(params.survey);
-		List<SurveyStrategicObjective> objectives = survey.objectives;
-
-		Collections.sort(objectives,new SurveyStrategicObjectiveSorter())
+		List<SurveyObjective> objectives = survey.objectives;
 
 		render (view: '/survey/admin/list', model:[
 
@@ -77,34 +75,30 @@ class AdminController extends AbstractReportController {
 				])
 	}
 
-	def subobjective = {
+	def section = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		SurveyStrategicObjective objective = SurveyStrategicObjective.get(params.objective)
-		List<SurveySubStrategicObjective> subobjectives = objective.subObjectives;
-
-		Collections.sort(subobjectives,new SurveySubStrategicObjectiveSorter())
+		SurveyObjective objective = SurveyObjective.get(params.objective)
+		List<SurveySection> sections = objective.sections;
 
 		render (view: '/survey/admin/list', model:[
 					survey: objective.survey,
 					objective: objective,
 					groups:groups,
-					subobjectives: subobjectives,
-					subobjectiveCount: subobjectives.count()
+					sections: sections,
+					sectionCount: sections.count()
 				])
 	}
 
 	def question = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		SurveySubStrategicObjective subobjective = SurveySubStrategicObjective.get(params.subobjective)
-		List<SurveyQuestion> questions = subobjective.questions;
-
-		Collections.sort(questions,new SurveyQuestionSorter())
+		SurveySection section = SurveySection.get(params.section)
+		List<SurveyQuestion> questions = section.questions;
 
 		render (view: '/survey/admin/list', model:[
 
-					survey: subobjective.objective.survey,
-					objective: subobjective.objective,
-					subobjective: subobjective,
+					survey: section.objective.survey,
+					objective: section.objective,
+					section: section,
 					groups:groups,
 					questions: questions,
 					questionCount: questions.count()

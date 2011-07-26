@@ -53,17 +53,17 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTargetCategory extends Translatable {
 
-	private Integer id;
+	private Long id;
 	private Integer order;
 	private List<DsrTarget> targets = new ArrayList<DsrTarget>();
 
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

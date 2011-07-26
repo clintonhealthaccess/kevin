@@ -36,72 +36,173 @@ import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.ValueService;
 import org.hisp.dhis.period.Period;
-import org.chai.kevin.survey.SurveySectionService;
-import org.chai.kevin.survey.SurveyService;
+import org.chai.kevin.survey.SurveyPage.SectionStatus;
+import org.chai.kevin.survey.SurveyPageService;
+import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.codehaus.groovy.grails.web.servlet.FlashScope;
 
 class SurveyController extends AbstractReportController {
 	
-	SurveyService surveyService;
+	SurveyPageService surveyPageService;
 	ValidationService validationService;
 	ValueService valueService;
-		
+	SurveyElementService surveyElementService;
+	
 	def index = {
 		redirect (action: 'view', params: params)
 	}
 	
-	def view = {
-		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
-		def surveyPage = getSurveyPage()
-		if (log.isDebugEnabled()) log.debug('survey: '+surveyPage)
+	def sectionPage = {
+		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
 		
-		render (view: "view", model: getModel(surveyPage))
+		Organisation currentOrganisation = getOrganisation(false)
+		SurveySection currentSection = getSurveySection()
+		
+		def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentSection)
+		surveyPage.userValidation(validationService)
+		surveyPage.initializeObjectiveStatus(surveyElementService);
+			
+		return [surveyPage: surveyPage]
+	}
+	
+	def objectivePage = {
+		if (log.isDebugEnabled()) log.debug("survey.objective, params:"+params)
+		
+		Organisation currentOrganisation = getOrganisation(false)
+		SurveyObjective currentObjective = getSurveyObjective()
+		
+		def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentObjective)
+		surveyPage.userValidation(validationService)
+		surveyPage.initializeObjectiveStatus(surveyElementService);
+		
+		return [surveyPage: surveyPage]
+	}
+	
+	def survey = {
+		
+	}
+	
+	def submit = {
+		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
+		
+		Organisation currentOrganisation = getOrganisation(false)
+		SurveyObjective currentObjective = getSurveyObjective()
+		
+		def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective);
+		surveyPage.initializeObjectiveStatus(surveyElementService)
+		surveyPage.userValidation(validationService);
+		
+		if (surveyPage.canSubmit()) {
+			surveyPage.submit(surveyElementService, valueService)
+			flash.message = "survey.objective.submitted";
+			flash.default = "Thanks for submitting";
+		}
+		else {
+			flash.message = "survey.objective.review";
+			flash.default = "The survey is not yet complete, please review all the sections."
+		}
+		
+		redirect (action: "objectivePage", params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])
+	}
+	
+	def saveValue = {
+		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
+		
+		def surveyPage = getSurveyPage()
+		def surveyElement = getSurveyElement()
+		
+		def surveyElementsToSave = null;
+		if (surveyPage.section == null) surveyElementsToSave = [surveyElement]
+		else surveyElementsToSave = surveyPage.section.getSurveyElements(surveyPage.organisation.organisationUnitGroup)
+		saveSurvey(surveyPage, surveyElementsToSave)
+		
+		if (surveyPage.getStatus(surveyPage.objective) == ObjectiveStatus.CLOSED) {
+			render(contentType:"text/json") {
+				result = 'error'
+			}
+		}
+		else {
+			def statusString;
+			if (!surveyPage.surveyElements[surveyElement.id].isValid()) {
+				statusString = 'invalid'
+			}
+			else {
+				statusString = 'valid'
+			}
+			def invalidSectionMap = surveyPage.getInvalidQuestions()
+			render(contentType:"text/json") {
+				result = 'success'
+				status = statusString
+				html = g.render(template:'question', model: [surveyPage: surveyPage, question: surveyElement.surveyQuestion])
+				objective (
+					id: surveyPage.objective.id,
+					status: surveyPage.getStatus(surveyPage.objective).name()
+				)
+				sections = array {
+					surveyPage.objective.getSections(surveyPage.organisation.organisationUnitGroup).each { section ->
+						sec (
+							id: section.id,
+							name: g.i18n(field: section.names),
+							status: surveyPage.getStatus(section).name(),
+							invalidQuestions: array {
+								invalidSectionMap[section].each{ question ->
+									quest (
+										id: question.id,
+										html: g.render(template:'question', model: [surveyPage: surveyPage, question: question])
+									)
+								}
+							}
+						)
+					}
+				}
+				invalidSectionsHtml = g.render(template:'invalidSections', model: [invalidSectionMap: invalidSectionMap, surveyPage: surveyPage])
+			}
+		}
 	}
 	
 	def save = {
+		if (log.isDebugEnabled()) log.debug("survey.save, params:"+params)
+		
 		def surveyPage = getSurveyPage()
-		bindData(surveyPage, params)
+		if (surveyPage.getStatus(surveyPage.objective) != ObjectiveStatus.CLOSED) {
+			saveSurvey(surveyPage, surveyPage.section.getSurveyElements(surveyPage.organisation.organisationUnitGroup))
+		} 
+		def action = surveyPage.section == null?'objectivePage':'sectionPage'
+		def params = [organisation: surveyPage.organisation.id]
+		if (surveyPage.section == null) params << [objective: surveyPage.objective.id]
+		else params << [section: surveyPage.section.id]
 		
-		surveyPage.userValidation(validationService)
-		
-		if (!surveyPage.valid) {
-			render (view: "view", model: getModel(surveyPage))
-		}
-		
-		else {
-			surveyPage.saveValues()
-			render surveyPage
-		}
-	}
-
-	private def getModel(def surveyPage) {
-		Integer organisationLevel = ConfigurationHolder.config.facility.level;
-		def allObjectives = SurveyStrategicObjective.list();
-		//Sorting sections and corresponding sub-sections
-		Collections.sort(allObjectives,new SurveyStrategicObjectiveSorter());
-		for (SurveyStrategicObjective objective : allObjectives) {
-			Collections.sort(objective.getSubObjectives(),new SurveySubStrategicObjectiveSorter());
-		}
-		
-		return [
-			surveyPage: surveyPage,
-			periods: Period.list(),
-			objectives: allObjectives
-		]
+		redirect (action: action, params: params)
 	}
 	
 	private def getSurveyPage() {
-		Survey  survey = getDefaultSurvey(false);
+		def surveyPage;
+
 		Organisation currentOrganisation = getOrganisation(false)
-		SurveySubStrategicObjective currentSubObjective = getCurrentSubObjective()
+		SurveySection currentSection = getSurveySection()
+
+		SurveyObjective currentObjective = null
+		if (currentSection == null) {
+			currentObjective = getSurveyObjective()
+			surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective);
+		}
+		else {
+			currentObjective = currentSection.objective
+			surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection)
+		}
+		surveyPage.initializeObjectiveStatus(surveyElementService);
+		if (log.isDebugEnabled()) log.debug("survey page: "+surveyPage)
 		
-		//TODO They should be a best way to do this redirection
-		if(!surveyService.belongsToSurvey(survey, currentSubObjective))
-			redirect (controller: 'survey', action: 'view')
-			
-		def surveyPage = surveyService.getSurvey(survey,currentOrganisation,currentSubObjective)
-		if (log.isDebugEnabled()) log.debug("returning survey page: ${surveyPage}")
 		return surveyPage
 	}
 	
+	private def saveSurvey(def surveyPage, def surveyElements) {
+		bindData(surveyPage, params)
+		surveyPage.sanitizeValues()
+		surveyPage.transferValuesAndValidate(validationService)
+		surveyPage.initializeObjectiveStatus(surveyElementService)
+		surveyPage.persistState(surveyElementService, surveyElements)
+	}
+
 }

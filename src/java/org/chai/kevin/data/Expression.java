@@ -60,7 +60,7 @@ public class Expression extends Data<ExpressionValue> {
 	
 	@Override
 	public String toString() {
-		return "Expression [code=" + code + ", expression=" + expression + "]";
+		return "Expression [code=" + getCode() + ", expression=" + expression + "]";
 	}
 	
 	@Override

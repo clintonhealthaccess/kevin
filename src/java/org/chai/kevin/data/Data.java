@@ -2,10 +2,15 @@ package org.chai.kevin.data;
 
 import java.util.Date;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -19,6 +24,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Timestamped;
 import org.chai.kevin.Translatable;
+import org.chai.kevin.Translation;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueCalculator;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -27,7 +33,7 @@ import org.hisp.dhis.period.Period;
 @Entity(name="Data")
 @Table(name="dhsst_data", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy=InheritanceType.JOINED)
-abstract public class Data<T extends Value> extends Translatable implements Timestamped {
+abstract public class Data<T extends Value> implements Timestamped {
 	
 	private static final long serialVersionUID = 7470871788061305391L;
 
@@ -35,6 +41,10 @@ abstract public class Data<T extends Value> extends Translatable implements Time
 	private ValueType type;
 	private Enum enume;
 	private Date timestamp = new Date();
+	
+	private String code;
+	private Translation names = new Translation();
+	private Translation descriptions = new Translation();
 	
 	@Id
 	@GeneratedValue
@@ -61,10 +71,45 @@ abstract public class Data<T extends Value> extends Translatable implements Time
 		return timestamp;
 	}
 	
+
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
+	})
+	public Translation getNames() {
+		return names;
+	}
+	
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+	})
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	@Basic(fetch=FetchType.EAGER)
+	public String getCode() {
+		return code;
+	}
+	
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+	
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
+
+	
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
-	
 	
 	public void setId(Long id) {
 		this.id = id;

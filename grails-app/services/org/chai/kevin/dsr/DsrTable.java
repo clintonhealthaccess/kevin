@@ -74,7 +74,7 @@ public class DsrTable {
 		return objective;
 	}
 	
-	public Integer getObjectiveId(){
+	public Long getObjectiveId(){
 		return objective!=null?objective.getId():null;
 	}
 	

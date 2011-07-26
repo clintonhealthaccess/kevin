@@ -40,6 +40,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Orderable;
 import org.chai.kevin.Translatable;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
@@ -47,7 +48,7 @@ import org.hibernate.annotations.OnDelete;
 @Entity(name="WeightedObjective")
 @Table(name="dhsst_dashboard_objective_entry", 
 		uniqueConstraints=@UniqueConstraint(columnNames={"entry"}))
-public class DashboardObjectiveEntry implements Comparable<DashboardObjectiveEntry> {
+public class DashboardObjectiveEntry extends Orderable {
 
 	private Long id;
 	private DashboardObjective parent;
@@ -135,14 +136,5 @@ public class DashboardObjectiveEntry implements Comparable<DashboardObjectiveEnt
 		return true;
 	}
 	
-	@Override
-	public int compareTo(DashboardObjectiveEntry o) {
-		if (this.getOrder() == null) {
-			if (o.getOrder() == null) return 0;
-			else return 1;
-		}
-		if (o.getOrder() == null) return -1;
-		return this.getOrder().compareTo(o.getOrder());
-	}
 
 }

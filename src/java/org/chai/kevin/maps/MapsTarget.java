@@ -58,7 +58,7 @@ public class MapsTarget extends Translatable {
 	    String getKey() { return name(); }
 	}
 	
-	private Integer id;
+	private Long id;
 	private MapsTargetType type;
 	private Expression expression;
 	private Calculation calculation;
@@ -68,10 +68,10 @@ public class MapsTarget extends Translatable {
 	
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	

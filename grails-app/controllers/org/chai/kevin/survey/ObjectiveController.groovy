@@ -37,10 +37,10 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 class ObjectiveController extends AbstractEntityController {
 	
 	def getEntity(def id) {
-		return SurveyStrategicObjective.get(id)
+		return SurveyObjective.get(id)
 	}
 	def createEntity() {
-		return new SurveyStrategicObjective()
+		return new SurveyObjective()
 	}
 	
 	def getTemplate() {

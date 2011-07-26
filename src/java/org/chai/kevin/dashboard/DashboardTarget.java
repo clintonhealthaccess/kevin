@@ -88,7 +88,7 @@ public class DashboardTarget extends DashboardEntry {
 
 	@Override
 	public String toString() {
-		return "StrategicTarget [code=" + code + ", calculation=" + calculation + "]";
+		return "StrategicTarget [code=" + getCode() + ", calculation=" + calculation + "]";
 	}
 
 	@Override

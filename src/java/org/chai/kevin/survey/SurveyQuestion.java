@@ -40,13 +40,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.DataElement;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
@@ -55,23 +55,19 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class SurveyQuestion extends SurveyTranslatable {
 
-	private Integer id;
+	private Long id;
 	private Integer order;
-	private SurveySubStrategicObjective subObjective;
+	private SurveySection section;
 	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Basic
@@ -80,13 +76,18 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		return order;
 	}
 
-	public void setSubObjective(SurveySubStrategicObjective subObjective) {
-		this.subObjective = subObjective;
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 
-	@ManyToOne(targetEntity = SurveySubStrategicObjective.class)
-	public SurveySubStrategicObjective getSubObjective() {
-		return subObjective;
+	public void setSection(SurveySection section) {
+		this.section = section;
+	}
+
+	@ManyToOne(targetEntity = SurveySection.class, optional=false)
+	@JoinColumn(nullable=false)
+	public SurveySection getSection() {
+		return section;
 	}
 
 	public void setGroups(List<OrganisationUnitGroup> groups) {
@@ -106,7 +107,15 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	@Transient
 	public abstract String getTemplate();
 
-	@Transient
-	public abstract List<SurveyElement> getSurveyElements();
+//	@Transient
+//	public abstract List<SurveyElement> getSurveyElements();
 
+	@Transient
+	public abstract List<SurveyElement> getSurveyElements(OrganisationUnitGroup group);
+
+	@Transient
+	public Survey getSurvey() {
+		return section.getSurvey();
+	}
+	
 }

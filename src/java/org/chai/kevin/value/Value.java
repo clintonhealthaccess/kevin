@@ -29,9 +29,12 @@ package org.chai.kevin.value;
  */
 
 import org.chai.kevin.Timestamped;
+import org.chai.kevin.data.Data;
 
 public interface Value extends Timestamped {
 
+	public Data<?> getData();
+	
 	public String getValue();
 	
 	public Double getNumberValue();

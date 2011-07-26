@@ -40,6 +40,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.Expression;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -109,6 +110,11 @@ public class ExpressionValue extends AbstractValue {
 		this.expression = expression;
 	}
 	
+	@Override
+	@Transient
+	public Data<?> getData() {
+		return expression;
+	}
 	
 	@Override
 	public String toString() {

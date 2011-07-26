@@ -6,4 +6,3 @@
 		<g:i18n field="${dataElement.names}"/></a> <span>[${dataElement.id}]</span>
 	</li>
 </g:each>
-

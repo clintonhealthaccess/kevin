@@ -40,14 +40,12 @@ import org.chai.kevin.dsr.DsrObjectiveService
 import org.chai.kevin.maps.MapsTarget;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
+import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveySorter
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyQuestion
-import org.chai.kevin.survey.SurveyQuestionSorter
-import org.chai.kevin.survey.SurveyStrategicObjective
-import org.chai.kevin.survey.SurveyStrategicObjectiveSorter
-import org.chai.kevin.survey.SurveySubStrategicObjective;
-import org.chai.kevin.survey.SurveySubStrategicObjectiveSorter
+import org.chai.kevin.survey.SurveyObjective
+import org.chai.kevin.survey.SurveySection;
 import org.chai.kevin.survey.SurveyTranslatable;
 
 abstract class AbstractReportController {
@@ -57,8 +55,8 @@ abstract class AbstractReportController {
 	DsrObjectiveService dsrObjectiveService;
 	DataService dataService;
 
-	protected def getObjective() {
-		Translatable objective = null
+	protected def getDashboardObjective() {
+		DashboardObjective objective = null
 		try {
 			if (NumberUtils.isNumber(params['objective'])) {
 				objective = DashboardObjective.get(params['objective']);
@@ -123,22 +121,6 @@ abstract class AbstractReportController {
 		return target
 	}
 
-	protected def getStrategicObjective() {
-		Translatable objective = null
-		try {
-			if (NumberUtils.isNumber(params['objective'])) {
-				objective = DashboardObjective.get(params['objective']);
-			}
-			if (objective == null) {
-				objective = dashboardObjectiveService.getRootObjective()
-			}
-		}
-		catch (IllegalStateException e) {
-			// TODO
-			redirect (controller: '', action: '')
-		}
-		return objective
-	}
 
 	protected def getOrganisation(def defaultIfNull) {
 		Organisation organisation = null;
@@ -240,15 +222,14 @@ abstract class AbstractReportController {
 		return survey
 	}
 	
-	protected def getCurrentObjective(def defaultIsNull){
+	protected def getSurveyObjective(def defaultIsNull){
 		SurveyTranslatable objective = null;
 		try{
 			if(NumberUtils.isNumber(params['objective'])){
-				objective = SurveyStrategicObjective.get(params['objective']);
+				objective = SurveyObjective.get(params['objective']);
 			}
 			if (objective == null && defaultIsNull) {
-				List<SurveyStrategicObjective> objectives = getDefaultSurvey(true).getObjectives();
-				Collections.sort(objectives, new SurveyStrategicObjectiveSorter());
+				List<SurveyObjective> objectives = getDefaultSurvey(true).getObjectives();
 				objective=objectives[0];
 			}
 		}catch(IllegalStateException e){
@@ -257,37 +238,32 @@ abstract class AbstractReportController {
 		return objective;
 	}
 
-	protected def getCurrentSubObjective(def defaultIsNull){
-		SurveyTranslatable subobjective = null
+	protected def getSurveySection(def defaultIsNull){
+		SurveyTranslatable section = null
 		try{
-			if(NumberUtils.isNumber(params['subObjective'])){
-				subobjective = SurveySubStrategicObjective.get(params['subObjective']);
+			if(NumberUtils.isNumber(params['section'])){
+				section = SurveySection.get(params['section']);
 			}
-			if (subobjective == null && defaultIsNull) {
-				List<SurveySubStrategicObjective> subobjectives = getCurrentObjective(true).getSubObjectives();
-				Collections.sort(subobjectives, new SurveySubStrategicObjectiveSorter());
-				subobjective = subobjectives[0];
+			if (section == null && defaultIsNull) {
+				List<SurveySection> sections = getSurveyObjective(true).getSections();
+				section = sections[0];
 			}
 		}catch(IllegalStateException e){
 			redirect (controller: '', action: '')
 		}
-		return subobjective
+		return section
 	}
 	
-	protected def getCurrentQuestion(def defaultIsNull){
-		SurveyTranslatable question = null;
-		try{
-			if(NumberUtils.isNumber(params['question'])){
-				survey = SurveyQuestion.get(params['question']);
+	protected def getSurveyElement() {
+		SurveyElement element = null;
+		try {
+			if(NumberUtils.isNumber(params['element'])){
+				element = SurveyElement.get(params['element']);
 			}
-			if (question == null && defaultIsNull) {
-				List<SurveyQuestion> questions = getCurrentSubObjective(true).getQuestions();
-				Collections.sort(questions, new SurveyQuestionSorter());
-				question = questions[0];
-			}
-		}catch(IllegalStateException e){
+		} catch(IllegalStateException e) {
 			redirect (controller: '', action: '')
 		}
-		return question
+		return element;
 	}
+	
 }

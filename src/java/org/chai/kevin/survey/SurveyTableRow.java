@@ -32,7 +32,6 @@ package org.chai.kevin.survey;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,13 +41,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -60,30 +59,30 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 @Table(name = "dhsst_survey_table_row")
 public class SurveyTableRow extends SurveyTranslatable {
 
-	private Integer id;
+	private Long id;
 	private Integer order;
 	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
 	private SurveyTableQuestion question;
 	private Map<SurveyTableColumn,SurveyElement> surveyElements= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Basic
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 
 	public void setGroups(List<OrganisationUnitGroup> groups) {
@@ -99,19 +98,16 @@ public class SurveyTableRow extends SurveyTranslatable {
 		groups.add(group);
 	}
 
-	public void setQuestion(SurveyTableQuestion question) {
-		this.question = question;
-	}
-
 	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
+	@JoinColumn(nullable=false)
 	public SurveyTableQuestion getQuestion() {
 		return question;
 	}
 
-	public void setSurveyElements(Map<SurveyTableColumn,SurveyElement> surveyElements) {
-		this.surveyElements = surveyElements;
+	public void setQuestion(SurveyTableQuestion question) {
+		this.question = question;
 	}
-	
+
     @OneToMany(targetEntity=SurveyElement.class)
     @JoinTable(name="dhsst_survey_table_row_elements")
     @MapKeyJoinColumn(nullable=false)
@@ -120,10 +116,14 @@ public class SurveyTableRow extends SurveyTranslatable {
 		return surveyElements;
 	}
 
-    @Transient
-    public List<SurveyTableColumn> getColumns() {
-    	List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>(surveyElements.keySet());
-    	Collections.sort(columns,new SurveyTableColumnSorter());
-    	return columns;
-    }
+    public void setSurveyElements(Map<SurveyTableColumn,SurveyElement> surveyElements) {
+		this.surveyElements = surveyElements;
+	}
+
+//    @Transient
+//    public List<SurveyTableColumn> getColumns(OrganisationUnitGroup organisationUnitGroup) {
+//    	List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>(surveyElements.keySet());
+//    	Collections.sort(columns,new SurveyTableColumnSorter());
+//    	return columns;
+//    }
 }

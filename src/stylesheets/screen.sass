@@ -755,7 +755,6 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       padding: 3px
       +box-top-round-corner
 
-
   #bottom-container
     #survey-left-objective-container
       width: 20%
@@ -778,8 +777,12 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     p
       margin: 0 
       padding: 20px 20px 100px 20px
-  .question-in-block 
-    margin: 5px 1px 20px 1px 
+      
+  .question
+    margin-bottom: 20px 
+          
+  .element
+    display: inline
           
   .survey-highlight-title
     color: #3b84c9
@@ -789,23 +792,26 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     a:hover
       text-decoration: underline
          
-  #survey-subobjective-title-container
+  .rounded-box-top
     +white-box
     margin: 5px 1px 2px 1px
     padding : 5px
-    +box-top-round-corner  
-  #survey-questions-container
+    +box-top-round-corner
+      
+  .rounded-box-bottom
     +white-box
     margin: 1px 1px 5px 1px
     padding : 10px 3px 3px 5px
-    min-height: 300px
     +box-bottom-round-corner
+    
   .survey-container-left-side
     float: left
     width: 45%
+    
   .survey-container-right-side
     float: right
     width: 45%
+    
   .survey-strategic-object-title
     +white-box
     margin-bottom: 4px
@@ -821,12 +827,15 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       font-weight: normal
       background: #3b84c9
       color: #fff
+      
   .question-tab-title
     border-left: 1px solid #fff
+    
   .oddrow
     +odd
     td 
       border-bottom: 1px solid #d3d3d3
+      
   .evenrow
     +even
     td 
@@ -841,40 +850,42 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       display: block
       text-decoration: none
       font-weight: bold	
+    
     li
       margin-top: 1px
-      a
+      
+      .item
         background: #739eee
-        color: #fff
         padding: 0.5em
-      a:hover
+        color: #fff
+      
+      .item:hover
         background: #73A6ff
+
     ul 
       list-style-type: none
       margin: 0
       padding: 0
       width: 197px
       li
-        margin-top: 1px 
-        a
+        margin-top: 1px
+        
+        .item
+          display: block 
           background: #f0f4fd
-          color: #333
-          padding-left: 15px 
           border: 1px #fff solid 
           border-left: 5px #73A6ff solid
-        a:hover
+          padding-left: 15px
+          color: #333
+
+        .item:hover
           background: #fff
           border: 1px #739eee solid 
           border-left: 5px #739eee solid
-          padding-left: 15px
+          
         .opened
           background: #dbfbde
           border-left: 5px #c32e06 solid
-          
-        @if true  
-        a
-          display: inline-block
-          display: block
           
 #survey-admin
   background: #fff

@@ -1,6 +1,13 @@
 <%@ page import="org.chai.kevin.maps.MapsTarget.MapsTargetType" %>
 
 <div id="add-maps-target" class="entity-form-container">
+
+	<div class="entity-form-header">
+		<h3 class="title">Maps target</h3>
+		<g:locales/>
+		<div class="clear"></div>
+	</div>
+
 	<g:form url="[controller:'mapsTarget', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${target}" value="${target.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>

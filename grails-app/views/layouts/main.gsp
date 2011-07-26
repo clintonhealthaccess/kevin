@@ -16,14 +16,13 @@
 	<g:layoutHead />
 
 	<g:javascript library="jquery" plugin="jquery" />
-	<g:javascript src="jquery/form/jquery.form.js" />
 	<g:javascript src="jquery/fieldselection/jquery.fieldselection.js" />
 	<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
 	<g:javascript src="jquery/fliptext/jquery.mb.flipText.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
 	<g:javascript library="application" />
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-	<ga:trackPageviewAsynch />
+<!-- 	<script type="text/javascript" src="https://www.google.com/jsapi"></script> -->
+<!-- 	<ga:trackPageviewAsynch /> -->
 </head>
 <body class="bp two-columns">
 
@@ -67,7 +66,11 @@
 						</ul>
 					</li>
 				</g:ifAdmin>
+				
 				</ul>
+				<g:ifAdmin>
+					<div class="float-right" style="background-color: red;"><a target="_blank" href="http://www.dhsst.org/redmine">Found a bug? Go to REDMINE</a></div>
+				</g:ifAdmin>
 				<div class="clear"></div>
 			</div>
 			<div class="clear"></div>

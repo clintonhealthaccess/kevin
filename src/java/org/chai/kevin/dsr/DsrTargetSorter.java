@@ -33,29 +33,29 @@ package org.chai.kevin.dsr;
 
 import java.util.Comparator;
 
-import org.chai.kevin.Sorter;
+import org.chai.kevin.Orderable;
 
 public class DsrTargetSorter implements Comparator<DsrTarget> {
+	
 	@Override
 	public int compare(DsrTarget targetOne, DsrTarget targetTwo) {
-
-		if (targetOne.getCategory() != null && targetTwo.getCategory() != null)
-			if (targetOne.getCategory() == targetTwo.getCategory()) {
-				return Sorter.compareOrder(targetOne.getOrder(),
-						targetTwo.getOrder());
-			} else {
-				return Sorter.compareOrder(targetOne.getCategory().getOrder(),
-						targetTwo.getCategory().getOrder());
+		if (targetOne.getCategory() == null) {
+			if (targetTwo.getCategory() == null) {
+				return targetOne.compareTo(targetTwo);
 			}
-		if (targetOne.getCategory() != null && targetTwo.getCategory() == null)
-			return Sorter.compareOrder(targetOne.getCategory().getOrder(),
-					targetTwo.getOrder());
-		if (targetOne.getCategory() == null && targetTwo.getCategory() != null)
-			return Sorter.compareOrder(targetOne.getOrder(), targetTwo
-					.getCategory().getOrder());
-		if (targetOne.getCategory() == null && targetTwo.getCategory() == null)
-			return Sorter
-					.compareOrder(targetOne.getOrder(), targetTwo.getOrder());
-		return 0;
+			else return -1;
+		}
+		else if (targetTwo.getCategory() == null) {
+			return 1;
+		}
+		else {
+			if (targetOne.getCategory().equals(targetTwo.getCategory())) {
+				return targetOne.compareTo(targetTwo);
+			}
+			else {
+				return targetOne.getCategory().compareTo(targetTwo.getCategory());
+			}
+		}
 	}
+	
 }

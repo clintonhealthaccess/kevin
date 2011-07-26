@@ -84,5 +84,11 @@ public class Constant extends Data<Constant> implements Value {
 	public Constant getValue(ValueCalculator calculator, OrganisationUnit organisationUnit, Period period) {
 		return this;
 	}
+
+	@Override
+	@Transient
+	public Data<?> getData() {
+		return this;
+	}
 	
 }

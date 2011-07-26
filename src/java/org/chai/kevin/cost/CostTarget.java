@@ -44,7 +44,9 @@ import org.chai.kevin.data.Expression;
 
 @Entity(name="CostTarget")
 @Table(name="dhsst_cost_target")
-public class CostTarget extends Translatable implements Comparable<CostTarget> {
+public class CostTarget extends Translatable {
+
+	private static final long serialVersionUID = 2450846525775669571L;
 
 	public static enum CostType {
 		INVESTMENT("INVESTMENT", "Investment"), OPERATION("OPERATION", "Operation");
@@ -59,7 +61,7 @@ public class CostTarget extends Translatable implements Comparable<CostTarget> {
 	    String getKey() { return name(); }
 	};
 	
-	private Integer id;
+	private Long id;
 	private Expression expression;
 	private Expression expressionEnd;
 	
@@ -72,10 +74,10 @@ public class CostTarget extends Translatable implements Comparable<CostTarget> {
 	
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
@@ -149,16 +151,6 @@ public class CostTarget extends Translatable implements Comparable<CostTarget> {
 	@Transient
 	public boolean isAverage() {
 		return expressionEnd != null;
-	}
-	
-	@Override
-	public int compareTo(CostTarget o) {
-		if (this.getOrder() == null) {
-			if (o.getOrder() == null) return 0;
-			else return 1;
-		}
-		if (o.getOrder() == null) return -1;
-		return this.getOrder().compareTo(o.getOrder());
 	}
 	
 }

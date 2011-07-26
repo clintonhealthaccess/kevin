@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,32 +25,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey;
+package org.chai.kevin.survey
+import org.chai.kevin.AbstractEntityController;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+
 /**
- * @author JeanKahigiso
+ * @author Jean Kahigiso M.
  *
  */
-import java.util.Comparator;
+class SectionController extends AbstractEntityController {
 
-import org.chai.kevin.Sorter;
+	def getEntity(def id) {
+		return SurveySection.get(id)
+	}
+	def createEntity() {
+		return new SurveySection()
+	}
 
-public class SurveySubStrategicObjectiveSorter implements Comparator<SurveySubStrategicObjective> {
-	@Override
-	public int compare(SurveySubStrategicObjective sectionOne, SurveySubStrategicObjective sectionTwo) {
-		if (sectionOne.getOrder() != null && sectionTwo.getOrder() != null) {
-			if (sectionOne.getOrder() == sectionTwo.getOrder()) {
-				return Sorter
-						.compareOrder(sectionOne.getId(), sectionTwo.getId());
-			} else {
-				return Sorter.compareOrder(sectionOne.getOrder(),
-						sectionTwo.getOrder());
-			}
-		} else if (sectionOne.getOrder() == null
-				&& sectionTwo.getOrder() == null) {
-			return Sorter.compareOrder(sectionOne.getId(), sectionTwo.getId());
-		} else {
-			return Sorter.compareOrder(sectionOne.getOrder(),
-					sectionTwo.getOrder());
-		}
+	def getTemplate() {
+		return "/survey/admin/createSection"
+	}
+
+	def getModel(def entity) {
+		[
+			section: entity,
+			objectives: SurveyObjective.list()
+		]
+	}
+
+	def validateEntity(def entity) {
+		return entity.validate()
+	}
+
+	def saveEntity(def entity) {
+		entity.save()
+	}
+	def deleteEntity(def entity) {
+		entity.delete()
+	}
+
+	def bindParams(def entity) {
+		entity.properties = params
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 }
+

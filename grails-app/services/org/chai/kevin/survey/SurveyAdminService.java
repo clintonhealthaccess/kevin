@@ -40,12 +40,12 @@ public class SurveyAdminService {
 	// private Log log = LogFactory.getLog(SurveyService.class);
 	@Transactional(readOnly = true)
 	public SurveyAdminPage getSurveyAdmin(Survey currentSurvey,
-			SurveyStrategicObjective currentObjective,
-			SurveySubStrategicObjective currentSubObjective,
+			SurveyObjective currentObjective,
+			SurveySection currentSection,
 			SurveyQuestion curretQuestion, List<Survey> surveys,
 			List<OrganisationUnitGroup> groups) {
 		return new SurveyAdminPage(currentSurvey, currentObjective,
-				currentSubObjective, curretQuestion, surveys, groups);
+				currentSection, curretQuestion, surveys, groups);
 	}
 
 

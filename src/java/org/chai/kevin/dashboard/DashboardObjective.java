@@ -45,7 +45,7 @@ import org.hisp.dhis.period.Period;
 
 @Entity(name="StrategicObjective")
 @Table(name="dhsst_dashboard_objective")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DashboardObjective extends DashboardEntry {
 
 	private List<DashboardObjectiveEntry> objectiveEntries = new ArrayList<DashboardObjectiveEntry>();
@@ -55,6 +55,7 @@ public class DashboardObjective extends DashboardEntry {
 	public List<DashboardObjectiveEntry> getObjectiveEntries() {
 		return objectiveEntries;
 	}
+	
 	public void setObjectiveEntries(List<DashboardObjectiveEntry> objectiveEntries) {
 		this.objectiveEntries = objectiveEntries;
 	}
@@ -80,6 +81,7 @@ public class DashboardObjective extends DashboardEntry {
 	public boolean hasChildren() {
 		return objectiveEntries.size() > 0;
 	}
+	
 	@Override
 	@Transient
 	public boolean isTarget() {

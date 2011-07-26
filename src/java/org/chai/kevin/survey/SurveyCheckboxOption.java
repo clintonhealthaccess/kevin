@@ -37,22 +37,23 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
 @Entity(name="SurveyCheckboxOption")
 @Table(name="dhsst_survey_checkbox_option")
 public class SurveyCheckboxOption extends SurveyTranslatable {
 	
-	private Integer id;
+	private Long id;
 	private Integer order;
 	private List<OrganisationUnitGroup> groups;
 	private SurveyCheckboxQuestion question;
@@ -60,11 +61,11 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 	
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 	
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
@@ -93,6 +94,7 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 	}
 	
 	@ManyToOne(targetEntity=SurveyCheckboxQuestion.class, optional=false)
+	@JoinColumn(nullable=false)
 	public SurveyCheckboxQuestion getQuestion() {
 		return question;
 	}

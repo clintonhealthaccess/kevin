@@ -46,9 +46,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class EnumOption extends Translatable {
 
+	private static final long serialVersionUID = -7093395116301416126L;
+	
 	private Long id;
 	private String code;
 	private String value;
+	private Integer order;
 	
 	private Enum enume;
 
@@ -58,12 +61,19 @@ public class EnumOption extends Translatable {
 	public Long getId() {
 		return id;
 	}
-	
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	@Basic(optional=false)
 	@Column(nullable=false)
 	public String getValue() {
 		return value;
+	}
+	
+	public void setValue(String value) {
+		this.value = value;
 	}
 	
 	@ManyToOne(targetEntity=Enum.class, optional=false)
@@ -72,18 +82,20 @@ public class EnumOption extends Translatable {
 		return enume;
 	}
 	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
 	public void setEnume(Enum enume) {
 		this.enume = enume;
 	}
-
+	
+	@Basic(optional=true)
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
+	}
+	
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

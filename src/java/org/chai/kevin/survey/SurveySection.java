@@ -31,46 +31,49 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 
 @SuppressWarnings("serial")
-@Entity(name = "SurveySubStrategicObjective")
-@Table(name = "dhsst_survey_sub_strategic_objective")
-public class SurveySubStrategicObjective extends SurveyTranslatable {
+@Entity(name = "SurveySection")
+@Table(name = "dhsst_survey_section")
+public class SurveySection extends SurveyTranslatable {
 	
-	private Integer id;
+	private Long id;
 	private Integer order;
-	private SurveyStrategicObjective objective;
+	private SurveyObjective objective;
 	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
 
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public void setOrder(Integer order) {
-		this.order = order;
 	}
 
 	@Basic
@@ -79,12 +82,17 @@ public class SurveySubStrategicObjective extends SurveyTranslatable {
 		return order;
 	}
 
-	public void setObjective(SurveyStrategicObjective objective) {
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
+	public void setObjective(SurveyObjective objective) {
 		this.objective = objective;
 	}
 	
-	@ManyToOne(targetEntity = SurveyStrategicObjective.class, optional = false)
-	public SurveyStrategicObjective getObjective() {
+	@ManyToOne(targetEntity = SurveyObjective.class, optional = false)
+	@JoinColumn(nullable=false)
+	public SurveyObjective getObjective() {
 		return objective;
 	}
 
@@ -93,7 +101,7 @@ public class SurveySubStrategicObjective extends SurveyTranslatable {
 	}
 	
 	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name="dhsst_survey_sub_objective_orgunitgroup")
+	@JoinTable(name="dhsst_survey_section_orgunitgroup")
 	public List<OrganisationUnitGroup> getGroups() {
 		return groups;
 	}
@@ -106,14 +114,74 @@ public class SurveySubStrategicObjective extends SurveyTranslatable {
 		this.questions = questions;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveyQuestion.class, mappedBy = "subObjective")
+	@OneToMany(targetEntity = SurveyQuestion.class, mappedBy = "section")
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OrderBy(value="order")
 	public List<SurveyQuestion> getQuestions() {
 		return questions;
 	}
 	
 	public void addQuestion(SurveyQuestion question) {
-		question.setSubObjective(this);
+		question.setSection(this);
 		questions.add(question);
+		Collections.sort(questions);
 	}
 
+	@Transient
+	public Survey getSurvey() {
+		return objective.getSurvey();
+	}
+	
+//	@Transient
+//	public List<SurveyElement> getSurveyElements(){
+//		List<SurveyElement> result = new ArrayList<SurveyElement>();
+//		for (SurveyQuestion question : questions) {
+//			result.addAll(question.getSurveyElements());
+//		}
+//		return result;
+//	}
+	
+	@Transient
+	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group){
+		List<SurveyElement> result = new ArrayList<SurveyElement>();
+		for (SurveyQuestion question : getQuestions(group)) {
+			result.addAll(question.getSurveyElements(group));
+		}
+		return result;
+	}
+	
+	@Transient
+	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
+		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
+		for (SurveyQuestion surveyQuestion : getQuestions()) {
+			if (surveyQuestion.getGroups().contains(group)) result.add(surveyQuestion);
+		}
+		return result;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SurveySection other = (SurveySection) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+	
 }

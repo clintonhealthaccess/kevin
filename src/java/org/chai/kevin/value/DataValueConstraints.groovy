@@ -1,4 +1,8 @@
-package org.chai.kevin.survey
+package org.chai.kevin.value
+
+import org.apache.commons.lang.math.NumberUtils;
+import org.chai.kevin.ValueService;
+import org.chai.kevin.data.ValueType;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,11 +32,33 @@ package org.chai.kevin.survey
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.util.List;
-
-class SurveySectionService {
-	static transactional = true	
-	List<SurveyStrategicObjective> getSurveySections() {
-		return SurveyStrategicObjective.list();
-	}
+constraints = {
+	dataElement(nullable: false)
+	
+	organisationUnit(nullable: false)
+	
+	period(nullable: false)
+	
+	value(nullable: true, blank: false, validator: {val, obj ->
+		if (val == null) return true;
+		
+		switch (obj.getData().getType()) {
+		case ValueType.VALUE:
+			if (!NumberUtils.isNumber(val)) return "type.value";
+			return true;
+		case ValueType.ENUM:
+			if (!obj.getData().getEnume().hasValue(val)) return "type.enum";
+			return true;
+		case ValueType.BOOL:
+			if (!val.equals("1") && !val.equals("0")) return "type.bool";
+			return true;
+		case ValueType.STRING:
+			return true;
+		case ValueType.DATE:
+			// TODO
+			return true;
+		default:
+			return false;
+		}
+	})
 }

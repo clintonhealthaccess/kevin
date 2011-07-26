@@ -13,8 +13,7 @@ import org.chai.kevin.dashboard.ExplanationCalculator;
 import org.chai.kevin.dashboard.PercentageCalculator;
 import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.maps.MapsService;
-import org.chai.kevin.survey.SurveySectionService;
-import org.chai.kevin.survey.SurveyService;
+import org.chai.kevin.survey.SurveyPageService;
 import org.chai.kevin.survey.SurveyAdminService;
 import org.chai.kevin.survey.ValidationService;
 import org.springframework.format.number.PercentFormatter;
@@ -65,12 +64,12 @@ beans = {
 	}
 
 	validationService(ValidationService){
-		valueService = ref("valueService")
 		surveyElementService = ref("surveyElementService")
 	}
 	
-	surveyService(SurveyService){
-		valueService = ref("valueService")
+	surveyPageService(SurveyPageService){
+		surveyElementService = ref("surveyElementService")
+		organisationService = ref("organisationService")
 	}
 	
 	chartService(ChartService){

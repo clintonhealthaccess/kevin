@@ -38,7 +38,7 @@ class DsrObjectiveService {
 
 	DsrObjective getRootObjective() throws IllegalStateException {
 		List<DsrObjective> objectives = DsrObjective.findAllByName(true);
-		Collections.sort(objectives, new DsrObjectiveSorter());
+		Collections.sort(objectives);
 		if (objectives.size() != 1) {
 			throw new IllegalStateException(
 			"there is no root objective in the system, please create one");

@@ -39,8 +39,8 @@
 	
         <mapping class="org.chai.kevin.survey.SurveyTranslatable" />
         <mapping class="org.chai.kevin.survey.Survey" />
-		<mapping class="org.chai.kevin.survey.SurveyStrategicObjective" />
-		<mapping class="org.chai.kevin.survey.SurveySubStrategicObjective" />
+		<mapping class="org.chai.kevin.survey.SurveyObjective" />
+		<mapping class="org.chai.kevin.survey.SurveySection" />
 		<mapping class="org.chai.kevin.survey.SurveyElement" />
 		<mapping class="org.chai.kevin.survey.SurveyQuestion" />
 		<mapping class="org.chai.kevin.survey.SurveySimpleQuestion" />
@@ -50,8 +50,11 @@
 		<mapping class="org.chai.kevin.survey.SurveyTableColumn" />
 		<mapping class="org.chai.kevin.survey.SurveyTableRow" />
 	
+		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredValue" />
+		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredObjective" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyValidationRule" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyValidationMessage" />
+		<mapping class="org.chai.kevin.survey.validation.SurveySkipRule" />
 		
 
 		<!-- <mapping package='com.books' /> <mapping class='com.books.Book' /> 
@@ -74,14 +77,10 @@
 		<!-- <mapping resource="org/hisp/dhis/user/hibernate/UserAuthorityGroup.hbm.xml"/> -->
 		<!-- <mapping resource="org/hisp/dhis/user/hibernate/UserCredentials.hbm.xml"/> -->
 
-		<mapping
-			resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnit.hbm.xml" />
-		<mapping
-			resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitGroup.hbm.xml" />
-		<mapping
-			resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitGroupSet.hbm.xml" />
-		<mapping
-			resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitLevel.hbm.xml" />
+		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnit.hbm.xml" />
+		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitGroup.hbm.xml" />
+		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitGroupSet.hbm.xml" />
+		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitLevel.hbm.xml" />
 
 		<!-- <mapping resource="org/hisp/dhis/indicator/hibernate/Indicator.hbm.xml"/> -->
 		<!-- <mapping resource="org/hisp/dhis/indicator/hibernate/IndicatorType.hbm.xml"/> -->

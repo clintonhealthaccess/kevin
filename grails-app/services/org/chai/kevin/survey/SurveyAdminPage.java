@@ -38,20 +38,20 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 public class SurveyAdminPage {
 
 	private Survey survey;
-	private SurveyStrategicObjective objective;
-	private SurveySubStrategicObjective subobjective;
+	private SurveyObjective objective;
+	private SurveySection section;
 	private SurveyQuestion question;
 	private List<Survey> surveys;
 	private List<OrganisationUnitGroup> organisationUnitGroups;
 
-	public SurveyAdminPage(Survey survey, SurveyStrategicObjective objective,
-			SurveySubStrategicObjective subobjective, SurveyQuestion question,
+	public SurveyAdminPage(Survey survey, SurveyObjective objective,
+			SurveySection section, SurveyQuestion question,
 			List<Survey> surveys,
 			List<OrganisationUnitGroup> organisationUnitGroups) {
 		super();
 		this.survey = survey;
 		this.objective = objective;
-		this.subobjective = subobjective;
+		this.section = section;
 		this.question = question;
 		this.surveys = surveys;
 		this.organisationUnitGroups = organisationUnitGroups;
@@ -65,20 +65,20 @@ public class SurveyAdminPage {
 		this.survey = survey;
 	}
 
-	public void setObjective(SurveyStrategicObjective objective) {
+	public void setObjective(SurveyObjective objective) {
 		this.objective = objective;
 	}
 
-	public SurveyStrategicObjective getObjective() {
+	public SurveyObjective getObjective() {
 		return objective;
 	}
 
-	public void setSubobjective(SurveySubStrategicObjective subobjective) {
-		this.subobjective = subobjective;
+	public void setSection(SurveySection section) {
+		this.section = section;
 	}
 
-	public SurveySubStrategicObjective getSubobjective() {
-		return subobjective;
+	public SurveySection getSection() {
+		return section;
 	}
 
 	public void setQuestion(SurveyQuestion question) {

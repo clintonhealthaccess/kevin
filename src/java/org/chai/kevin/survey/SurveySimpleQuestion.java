@@ -34,13 +34,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.DataElement;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveySimpleQuestion")
@@ -49,8 +52,9 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 
 	private SurveyElement surveyElement;
 
-	@OneToOne(optional=false, targetEntity=SurveyElement.class)
+	@OneToOne(targetEntity=SurveyElement.class, mappedBy="surveyQuestion")
 	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@Fetch(FetchMode.SELECT)
 	public SurveyElement getSurveyElement() {
 		return surveyElement;
 	}
@@ -68,7 +72,7 @@ public class SurveySimpleQuestion extends SurveyQuestion {
     
     @Transient
 	@Override
-	public List<SurveyElement> getSurveyElements() {
+	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> elements = new ArrayList<SurveyElement>();
 		elements.add(surveyElement);
 		return elements;

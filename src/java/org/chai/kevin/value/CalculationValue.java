@@ -44,6 +44,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.ValueType;
 import org.chai.kevin.value.ExpressionValue.Status;
 import org.hibernate.annotations.Cache;
@@ -108,6 +109,12 @@ public class CalculationValue extends AbstractValue {
 	@Transient
 	public Double getAverage() {
 		return getValue()==null?null:Double.parseDouble(getValue());
+	}
+	
+	@Override
+	@Transient
+	public Data<?> getData() {
+		return calculation;
 	}
 	
 	public void setId(Long id) {

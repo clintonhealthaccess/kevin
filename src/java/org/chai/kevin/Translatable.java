@@ -39,7 +39,7 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class Translatable implements Serializable {
+public abstract class Translatable extends Orderable implements Serializable {
 
 	private static final long serialVersionUID = 5282731214725130450L;
 	
@@ -55,6 +55,10 @@ public abstract class Translatable implements Serializable {
 	public Translation getNames() {
 		return names;
 	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
 	
 	@Embedded
 	@AttributeOverrides({
@@ -64,22 +68,18 @@ public abstract class Translatable implements Serializable {
 		return descriptions;
 	}
 
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
+
 	@Basic(fetch=FetchType.EAGER)
 	public String getCode() {
 		return code;
 	}
 	
-
 	public void setCode(String code) {
 		this.code = code;
 	}
 
-	public void setNames(Translation names) {
-		this.names = names;
-	}
-	
-	public void setDescriptions(Translation descriptions) {
-		this.descriptions = descriptions;
-	}
 
 }

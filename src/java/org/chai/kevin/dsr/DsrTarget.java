@@ -48,7 +48,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "dhsst_dsr_target")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTarget extends Translatable {
-	private Integer id;
+	
+	private Long id;
 	private Integer order;
 	private DsrObjective objective;
 	private Expression expression;
@@ -58,11 +59,11 @@ public class DsrTarget extends Translatable {
 
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	

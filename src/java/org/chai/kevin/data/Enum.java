@@ -31,7 +31,11 @@ package org.chai.kevin.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,20 +43,22 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.chai.kevin.Translatable;
+import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@SuppressWarnings("serial")
 @Entity(name="Enum")
 @Table(name="enum")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Enum extends Translatable {
+public class Enum {
 
 	private Long id;
 
 	private List<EnumOption> enumOptions = new ArrayList<EnumOption>();
-	
+	private String code;
+	private Translation names = new Translation();
+	private Translation descriptions = new Translation();
+
 	@Id
 	@GeneratedValue
 	@Column
@@ -71,6 +77,39 @@ public class Enum extends Translatable {
 	
 	public void setEnumOptions(List<EnumOption> enumOptions) {
 		this.enumOptions = enumOptions;
+	}
+
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
+	})
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+	
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+	})
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
+
+	@Basic(fetch=FetchType.EAGER)
+	public String getCode() {
+		return code;
+	}
+	
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	@Override
@@ -98,6 +137,11 @@ public class Enum extends Translatable {
 		return true;
 	}
 	
-	
+	public boolean hasValue(String value) {
+		for (EnumOption enumOption : enumOptions) {
+			if (enumOption.getValue().equals(value)) return true;
+		}
+		return false;
+	}
 	
 }

@@ -32,47 +32,47 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyStrategicObjective")
 @Table(name = "dhsst_survey_strategic_objective")
-public class SurveyStrategicObjective extends SurveyTranslatable {
+public class SurveyObjective extends SurveyTranslatable {
 
-	private Integer id;
+	private Long id;
 	private Integer order;
-	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
 	private Survey survey;
-	private List<SurveySubStrategicObjective> subObjectives = new ArrayList<SurveySubStrategicObjective>();
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
+	private List<SurveySection> sections = new ArrayList<SurveySection>();
+	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
+	private SurveyObjective dependency;
+	
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Basic
@@ -81,13 +81,25 @@ public class SurveyStrategicObjective extends SurveyTranslatable {
 		return order;
 	}
 
-	public void setSubObjectives(List<SurveySubStrategicObjective> subObjectives) {
-		this.subObjectives = subObjectives;
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = SurveySubStrategicObjective.class, mappedBy = "objective")
-	public List<SurveySubStrategicObjective> getSubObjectives() {
-		return subObjectives;
+	@OneToMany(targetEntity = SurveySection.class, mappedBy = "objective")
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OrderBy(value="order")
+	public List<SurveySection> getSections() {
+		return sections;
+	}
+
+	public void setSections(List<SurveySection> sections) {
+		this.sections = sections;
+	}
+
+	public void addSection(SurveySection section) {
+		section.setObjective(this);
+		sections.add(section);
+		Collections.sort(sections);
 	}
 
 	public void setGroups(List<OrganisationUnitGroup> groups) {
@@ -99,6 +111,7 @@ public class SurveyStrategicObjective extends SurveyTranslatable {
 	}
 
 	@ManyToOne(targetEntity = Survey.class, optional = false)
+	@JoinColumn(nullable=false)
 	public Survey getSurvey() {
 		return survey;
 	}
@@ -113,9 +126,48 @@ public class SurveyStrategicObjective extends SurveyTranslatable {
 		groups.add(group);
 	}
 
-	public void addSubStrategicObjective(
-			SurveySubStrategicObjective subObjective) {
-		subObjective.setObjective(this);
-		subObjectives.add(subObjective);
+	@ManyToOne(targetEntity=SurveyObjective.class, optional=true)
+	public SurveyObjective getDependency() {
+		return dependency;
 	}
+	
+	public void setDependency(SurveyObjective dependency) {
+		this.dependency = dependency;
+	}
+	
+	@Transient
+	public List<SurveySection> getSections(OrganisationUnitGroup group) {
+		List<SurveySection> result = new ArrayList<SurveySection>();
+		for (SurveySection surveySection : getSections()) {
+			if (surveySection.getGroups().contains(group)) result.add(surveySection);
+		}
+		return result;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SurveyObjective other = (SurveyObjective) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+	
+	
 }

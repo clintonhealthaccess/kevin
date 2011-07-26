@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -14,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.chai.kevin.survey.SurveyElement;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity(name="SurveyValidationRule")
 @Table(name="dhsst_survey_validation_rule")
@@ -22,6 +25,7 @@ public class SurveyValidationRule {
 	private Long id;
 	private SurveyElement surveyElement;
 	private String expression;
+	private Boolean allowOutlier;
 
 	private SurveyValidationMessage validationMessage;
 	private List<SurveyElement> dependencies;
@@ -69,6 +73,22 @@ public class SurveyValidationRule {
 	
 	public void setDependencies(List<SurveyElement> dependencies) {
 		this.dependencies = dependencies;
+	}
+	
+	@Basic(optional=false)
+	@Column(nullable=false)
+	public Boolean getAllowOutlier() {
+		return allowOutlier;
+	}
+	
+	public void setAllowOutlier(Boolean allowOutlier) {
+		this.allowOutlier = allowOutlier;
+	}
+
+	@Override
+	public String toString() {
+		return "SurveyValidationRule [surveyElement=" + surveyElement
+				+ ", expression=" + expression + "]";
 	}
 	
 }

@@ -1,9 +1,10 @@
 package org.chai.kevin.survey;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,8 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.survey.validation.SurveySkipRule;
 import org.chai.kevin.survey.validation.SurveyValidationRule;
 
 @Entity(name = "SurveyElement")
@@ -21,7 +24,8 @@ public class SurveyElement {
 
 	private Long id;
 	private DataElement dataElement;
-	private List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
+	private SurveyQuestion surveyQuestion;
+	private Set<SurveyValidationRule> validationRules = new HashSet<SurveyValidationRule>();
 	
 	@Id
 	@GeneratedValue
@@ -44,17 +48,27 @@ public class SurveyElement {
 	}
 
 	@OneToMany(mappedBy="surveyElement", targetEntity=SurveyValidationRule.class)
-	public List<SurveyValidationRule> getValidationRules() {
+	public Set<SurveyValidationRule> getValidationRules() {
 		return validationRules;
 	}
 	
-	public void setValidationRules(List<SurveyValidationRule> validationRules) {
+	public void setValidationRules(Set<SurveyValidationRule> validationRules) {
 		this.validationRules = validationRules;
 	}
 	
 	public void addValidationRule(SurveyValidationRule validationRule) {
 		validationRule.setSurveyElement(this);
 		validationRules.add(validationRule);
+	}
+	
+	@ManyToOne(targetEntity=SurveyQuestion.class, optional=false)
+	@JoinColumn(nullable=false)
+	public SurveyQuestion getSurveyQuestion() {
+		return surveyQuestion;
+	}
+	
+	public void setSurveyQuestion(SurveyQuestion surveyQuestion) {
+		this.surveyQuestion = surveyQuestion;
 	}
 	
 	@Override
@@ -80,6 +94,11 @@ public class SurveyElement {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Transient
+	public Survey getSurvey() {
+		return surveyQuestion.getSurvey();
 	}
 	
 }

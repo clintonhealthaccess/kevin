@@ -40,25 +40,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 import org.chai.kevin.Translatable;
-import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.hibernate.annotations.Cascade;
 
 @Entity(name="CostObjective")
 @Table(name="dhsst_cost_objective")
 public class CostObjective extends Translatable {
 
-	private Integer id;
+	private static final long serialVersionUID = 6797783931128622696L;
+
+	private Long id;
 	private Integer order;
 	private List<CostTarget> targets = new ArrayList<CostTarget>();
 
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="parent", targetEntity=CostTarget.class)
@@ -74,10 +77,6 @@ public class CostObjective extends Translatable {
 	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;
-	}
-	
-	public void setId(Integer id) {
-		this.id = id;
 	}
 	
 	public void setOrder(Integer order) {

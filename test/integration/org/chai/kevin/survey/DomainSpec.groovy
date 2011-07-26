@@ -2,16 +2,19 @@ package org.chai.kevin.survey
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.ValueType;
+import org.chai.kevin.survey.validation.SurveySkipRule;
+import org.hisp.dhis.period.Period;
 
 class DomainSpec extends IntegrationTests {
 
 	private static final Log log = LogFactory.getLog(DomainSpec.class)
 
 	def setup() {
-
+		IntegrationTestInitializer.createDummyStructure()
 	}
 
 	def "table question has data elements"() {
@@ -54,5 +57,32 @@ class DomainSpec extends IntegrationTests {
 		question.surveyElements.size() == 1
 		question.surveyElements[0].equals(SurveyElement.findByDataElement(DataElement.findByCode("CODE8")))
 	}
-	
+
+	def "save survey cascades skiprule"() {
+		when:
+		def survey = new Survey(period: Period.list()[0]).save(failOnError: true, flush: true);
+		def skipRule = new SurveySkipRule(survey: survey, expression: "1==1")
+		survey.addSkipRule(skipRule)
+		
+		then:
+		skipRule.id == null
+		
+		when:
+		survey.save(failOnError: true, flush: true)
+		
+		then:
+		skipRule.id != null
+	}
+
+//	def "skiprule element list"() {
+//		when:
+//		def survey = new Survey(period: Period.list()[0]).save(failOnError: true, flush: true);
+//		def skipRule = new SurveySkipRule(survey: survey, expression: "1==1")
+//		survey.addSkipRule(skipRule)
+//		survey.save(failOnError: true, flush: true)
+//		
+//		then:
+//		def skipRule = SurveySkipRule.list()[0].
+//	}	
+		
 }

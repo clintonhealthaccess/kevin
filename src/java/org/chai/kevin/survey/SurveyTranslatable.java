@@ -39,10 +39,11 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 
+import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 
 @MappedSuperclass
-public class SurveyTranslatable implements Serializable {
+public abstract class SurveyTranslatable extends Orderable implements Serializable {
 
 	private static final long serialVersionUID = -6838401416857236741L;
 

@@ -76,7 +76,7 @@ public class CostTable {
 		return currentObjective;
 	}
 	
-	public Integer getCurrentObjectiveId() {
+	public Long getCurrentObjectiveId() {
 		return currentObjective!=null?currentObjective.getId():null;
 	}
 	

@@ -19,9 +19,9 @@
 						<g:i18n field="${objective.names}" /></a>
 						</li>
 					</g:if>
-					<g:if test="${subobjective!=null}">
-						<li>Sub-Strategic Objective: <a href="${createLink(controller:'admin', action:'subobjective',params:[objective: objective.id])}"><g:i18n
-								field="${subobjective.names}" />
+					<g:if test="${section!=null}">
+						<li>Section: <a href="${createLink(controller:'admin', action:'section',params:[objective: objective.id])}"><g:i18n
+								field="${section.names}" />
 								</a></li>
 					</g:if>
 				</ul>
@@ -38,11 +38,11 @@
 				<g:if test="${survey!=null && objective==null}">
 				<g:render template="/survey/admin/objectivelist" model="[survey: survey]" /> 
 				</g:if>
-				<g:if test="${survey!=null && objective!=null && subobjective == null}">
-				<g:render template="/survey/admin/subobjectivelist" model="[survey: survey, objective: objective]" /> 
+				<g:if test="${survey!=null && objective!=null && section == null}">
+				<g:render template="/survey/admin/sectionlist" model="[survey: survey, objective: objective]" /> 
 				</g:if>
-				<g:if test="${survey!=null && objective!=null && subobjective != null}">
-				<g:render template="/survey/admin/questionlist" model="[survey: survey, objective: objective,subobjective: subobjective]" /> 
+				<g:if test="${survey!=null && objective!=null && section != null}">
+				<g:render template="/survey/admin/questionlist" model="[survey: survey, objective: objective,section: section]" /> 
 				</g:if>
 				
 				<!-- End of template -->

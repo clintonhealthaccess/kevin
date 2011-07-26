@@ -39,6 +39,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -52,18 +53,18 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 @Table(name = "dhsst_survey_table_column")
 public class SurveyTableColumn extends SurveyTranslatable {
 
-	private Integer id;
+	private Long id;
 	private Integer order;
 	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
 	private SurveyTableQuestion question;
 
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -92,6 +93,7 @@ public class SurveyTableColumn extends SurveyTranslatable {
 	}
 
 	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
+	@JoinColumn(nullable=false)
 	public SurveyTableQuestion getQuestion() {
 		return question;
 	}

@@ -11,7 +11,7 @@
 						<th>ID</th>
 						<th>Name</th>
 						<th>Description</th>
-						<th>Number of Sub-Objectives</th>
+						<th>Number of sections</th>
 						<th><g:message code="general.text.edit" default="Edit" /></th>
 						<th><g:message code="general.text.delete" default="Delete" /></th>
 					</tr>
@@ -24,7 +24,7 @@
 							<td><g:i18n field="${objective.descriptions}" />
 							</td>
 							<td><a
-								href="${createLink(controller:'admin', action:'subobjective',params:[survey:survey?.id,objective: objective.id])}">${objective.subObjectives.size()}</a>
+								href="${createLink(controller:'admin', action:'section',params:[survey:survey?.id,objective: objective.id])}">${objective.sections.size()}</a>
 							</td>
 							<td class="edit-survey-link"><a
 								href="${createLink(controller:'objective', action:'edit',params:[survey:survey?.id,objective: objective.id])}"><g:message

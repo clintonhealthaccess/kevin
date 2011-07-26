@@ -32,16 +32,21 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.DataElement;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyCheckboxQuestion")
@@ -52,6 +57,8 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	
     @OneToMany(targetEntity=SurveyCheckboxOption.class, mappedBy="question")
     @Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+    @OrderBy(value="order")
+    @Fetch(FetchMode.SELECT)
 	public List<SurveyCheckboxOption> getOptions() {
 		return options;
 	}
@@ -63,6 +70,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	public void addCheckboxOption(SurveyCheckboxOption option) {
 		option.setQuestion(this);
 		options.add(option);
+		Collections.sort(options);
 	}
 	
     @Transient
@@ -74,12 +82,21 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
     
     @Transient
 	@Override
-	public List<SurveyElement> getSurveyElements() {
+	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
-		for (SurveyCheckboxOption option : options) {
+		for (SurveyCheckboxOption option : getOptions(group)) {
 			dataElements.add(option.getSurveyElement());
 		}
 		return dataElements;
+	}
+    
+    @Transient
+	public List<SurveyCheckboxOption> getOptions(OrganisationUnitGroup group) {
+		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
+		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {
+			if (surveyCheckboxOption.getGroups().contains(group)) result.add(surveyCheckboxOption);
+		}
+		return result;
 	}
 
 }

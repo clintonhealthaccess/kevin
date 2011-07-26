@@ -37,9 +37,11 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.DataElement;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyTableQuestion")
@@ -56,6 +58,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	@OneToMany(targetEntity = SurveyTableColumn.class, mappedBy = "question")
 	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@OrderBy(value="order")
+	@Fetch(FetchMode.SELECT)
 	public List<SurveyTableColumn> getColumns() {
 		return columns;
 	}
@@ -67,6 +70,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	@OneToMany(targetEntity = SurveyTableRow.class, mappedBy = "question")
 	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@OrderBy(value="order")
+	@Fetch(FetchMode.SELECT)
 	public List<SurveyTableRow> getRows() {
 		return rows;
 	}
@@ -81,25 +85,43 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	public void addColumn(SurveyTableColumn column) {
 		column.setQuestion(this);
 		columns.add(column);
-		Collections.sort(columns, new SurveyTableColumnSorter());
+		Collections.sort(columns);
 	}
 
 	public void addRow(SurveyTableRow row) {
 		row.setQuestion(this);
 		rows.add(row);
-		Collections.sort(rows, new SurveyTableRowSorter());
+		Collections.sort(rows);
 	}
 
 	@Transient
 	@Override
-	public List<SurveyElement> getSurveyElements() {
+	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
-		for (SurveyTableRow row : rows) {
-			for (SurveyTableColumn column : columns) {
+		for (SurveyTableRow row : getRows(group)) {
+			for (SurveyTableColumn column : getColumns(group)) {
 				dataElements.add(row.getSurveyElements().get(column));
 			}
 		}
 		return dataElements;
+	}
+	
+    @Transient
+	public List<SurveyTableRow> getRows(OrganisationUnitGroup group) {
+		List<SurveyTableRow> result = new ArrayList<SurveyTableRow>();
+		for (SurveyTableRow surveyTableRow : getRows()) {
+			if (surveyTableRow.getGroups().contains(group)) result.add(surveyTableRow);
+		}
+		return result;
+	}
+
+    @Transient
+	public List<SurveyTableColumn> getColumns(OrganisationUnitGroup group) {
+		List<SurveyTableColumn> result = new ArrayList<SurveyTableColumn>();
+		for (SurveyTableColumn surveyTableColumn : getColumns()) {
+			if (surveyTableColumn.getGroups().contains(group)) result.add(surveyTableColumn);
+		}
+		return result;
 	}
 
 }

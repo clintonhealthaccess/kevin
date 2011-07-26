@@ -28,14 +28,14 @@ package org.chai.kevin.cost;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.List;
 import java.util.Map;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -43,20 +43,21 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
-import org.chai.kevin.Translatable;
+import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Columns;
 
 @Entity(name="CostRampUp")
 @Table(name="dhsst_cost_ramp_up")
-public class CostRampUp extends Translatable {
+public class CostRampUp {
 
 	private Long id;
-	private String name;
 	private Map<Integer, CostRampUpYear> years;
+	
+	protected Translation names = new Translation();
+	protected Translation descriptions = new Translation();
+	protected String code;
 	
 	@Id
 	@GeneratedValue
@@ -77,5 +78,40 @@ public class CostRampUp extends Translatable {
 	public void setYears(Map<Integer, CostRampUpYear> years) {
 		this.years = years;
 	}
+	
+	
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
+	})
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+	
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+	})
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
+
+	@Basic(fetch=FetchType.EAGER)
+	public String getCode() {
+		return code;
+	}
+	
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	
 }

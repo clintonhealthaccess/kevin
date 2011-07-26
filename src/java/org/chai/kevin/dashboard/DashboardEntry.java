@@ -30,9 +30,14 @@ package org.chai.kevin.dashboard;
 
 import java.util.NoSuchElementException;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -45,24 +50,30 @@ import javax.persistence.Transient;
 import org.chai.kevin.Info;
 import org.chai.kevin.Translatable;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cascade;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="DashboardEntry")
 @Table(name="dhsst_dashboard_entry")
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class DashboardEntry extends Translatable {
+public abstract class DashboardEntry {
 
-	private Integer id;
+	private Long id;
 	private DashboardObjectiveEntry parent;
 	private Boolean root = false;
 	
+	private Translation names = new Translation();
+	private Translation descriptions = new Translation();
+	private String code;
+
+	
 	@Id
 	@GeneratedValue
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
@@ -83,6 +94,41 @@ public abstract class DashboardEntry extends Translatable {
 		this.root = root;
 	}
 	
+	
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
+	})
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+	
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+	})
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
+
+	@Basic(fetch=FetchType.EAGER)
+	public String getCode() {
+		return code;
+	}
+	
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+
 	@Transient
 	public abstract boolean hasChildren();
 	@Transient

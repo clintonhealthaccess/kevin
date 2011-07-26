@@ -1,7 +1,7 @@
 <div class="survey-admin-entity-list">
 	<div id="questions">
 		<div class="float-right">
-			<a id="add-subobjective-link" class="flow-add" href="${createLink(controller:'question', action:'create')}">New Question</a>
+			<a id="add-section-link" class="flow-add" href="${createLink(controller:'question', action:'create')}">New Question</a>
 		</div>
 		<div id="survey-admin-table-list">
 			<table>
@@ -23,11 +23,11 @@
 							<td><g:i18n field="${question.descriptions}" /></td>
 							<td>${question.getTemplate()}</td>
 							<td class="edit-question-link"><a
-								href="${createLink(controller:'question', action:'edit',params:[survey:survey?.id,objective: objective?.id,subobjective: subobjective?.id,question: question?.id])}"><g:message
+								href="${createLink(controller:'question', action:'edit',params:[survey:survey?.id,objective: objective?.id, section: section?.id,question: question?.id])}"><g:message
 										code="general.text.edit" default="Edit" /> </as>
 							</td>
 							<td class="delete-question-link"><a
-								href="${createLink(controller:'question', action:'delete',params:[survey:survey?.id,objective: objective?.id,subobjective: subobjective?.id,question: question?.id])}"><g:message
+								href="${createLink(controller:'question', action:'delete',params:[survey:survey?.id,objective: objective?.id, section: section?.id,question: question?.id])}"><g:message
 										code="general.text.delete" default="Delete" /> </as>
 							</td>
 						</tr>
@@ -35,7 +35,7 @@
 					</g:if>
 					<g:else>
 							<tr>
-							<td colspan="7">No question available <a href="#">Add Sub Objective</a></td>
+							<td colspan="7">No question available <a href="#">Add Section</a></td>
 						</tr>
 					</g:else>
 			</table>

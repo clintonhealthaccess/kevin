@@ -83,7 +83,6 @@ grails.spring.bean.packages = []
 //grails.validateable.packages = ['org.chai.kevin.survey']
 //grails.validateable.classes = [org.chai.kevin.survey.SurveyElementValue]
 
-
 // request parameters to mask when logging exceptions
 grails.exceptionresolver.params.exclude = ['password']
 

@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,30 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey;
+package org.chai.kevin;
 /**
- * @author JeanKahigiso
+ * @author Jean Kahigiso M.
  *
  */
-
-import java.util.Comparator;
-
-import org.chai.kevin.Sorter;
-
-public class SurveyTableRowSorter implements Comparator<SurveyTableRow> {
+public abstract class Orderable implements Comparable<Orderable> {
+	
+	public abstract Integer getOrder();
+	
+	public abstract Long getId();
+	
 	@Override
-	public int compare(SurveyTableRow rowOne, SurveyTableRow rowTwo) {
-		if (rowOne.getOrder() != null && rowTwo.getOrder() != null) {
-			if (rowOne.getOrder() == rowTwo.getOrder()) {
-				return Sorter.compareOrder(rowOne.getId(), rowTwo.getId());
-			} else {
-				return Sorter
-						.compareOrder(rowOne.getOrder(), rowTwo.getOrder());
+	public int compareTo(Orderable sectionTwo) {
+		if (getOrder() == null) {
+			if (sectionTwo.getOrder() == null) {
+				return getId().compareTo(sectionTwo.getId());
 			}
-		} else if (rowOne.getOrder() == null && rowTwo.getOrder() == null) {
-			return Sorter.compareOrder(rowOne.getId(), rowTwo.getId());
-		} else {
-			return Sorter.compareOrder(rowOne.getOrder(), rowTwo.getOrder());
+			else return 1;
+		}
+		else if (sectionTwo.getOrder() == null) {
+			return -1;
+		}
+		else {
+			if (getOrder().equals(sectionTwo.getOrder())) {
+				return getId().compareTo(sectionTwo.getId());
+			} 
+			else {
+				return getOrder() - sectionTwo.getOrder();
+			}
 		}
 	}
 
