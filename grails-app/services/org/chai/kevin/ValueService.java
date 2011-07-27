@@ -69,7 +69,6 @@ public class ValueService {
 		return data.getValue(new CacheValueCalculator(), organisationUnit, period);
 	}
 	
-	
 	private class CacheValueCalculator implements ValueCalculator {
 		
 		@Transactional(readOnly=true)

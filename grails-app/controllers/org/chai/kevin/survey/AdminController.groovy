@@ -44,18 +44,18 @@ class AdminController extends AbstractReportController {
 	List<OrganisationUnitGroup> groups = OrganisationUnitGroup.list();
 
 	def index = {
-		redirect (action: 'admin', params: params)
+		redirect (action: "survey", params: params)
 	}
 
 	def survey = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		List<Survey> surveys = Survey.list();
-		if(surveys.count()>0)
+		if(surveys.size()>0)
 			Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/survey/admin/list', model:[
 
-					surveys: surveys, surveyCount: Survey.count()
+					surveys: surveys, surveyCount: surveys.size()
 				])
 	}
 
@@ -68,9 +68,8 @@ class AdminController extends AbstractReportController {
 		render (view: '/survey/admin/list', model:[
 
 					survey:survey,
-					groups:groups,
 					objectives: objectives,
-					objectiveCount: survey.objectives.count()
+					objectiveCount: objectives.size()
 
 				])
 	}
@@ -81,9 +80,9 @@ class AdminController extends AbstractReportController {
 		List<SurveySection> sections = objective.sections;
 
 		render (view: '/survey/admin/list', model:[
+			
 					survey: objective.survey,
 					objective: objective,
-					groups:groups,
 					sections: sections,
 					sectionCount: sections.count()
 				])
@@ -99,9 +98,8 @@ class AdminController extends AbstractReportController {
 					survey: section.objective.survey,
 					objective: section.objective,
 					section: section,
-					groups:groups,
 					questions: questions,
-					questionCount: questions.count()
+					questionCount: questions.size()
 				])
 	}
 }

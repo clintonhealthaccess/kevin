@@ -31,9 +31,6 @@ package org.chai.kevin.survey;
  *
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,10 +39,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 
 @SuppressWarnings("serial")
@@ -55,7 +51,7 @@ public class SurveyTableColumn extends SurveyTranslatable {
 
 	private Long id;
 	private Integer order;
-	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
+	private String groupUuidString;
 	private SurveyTableQuestion question;
 
 	@Id
@@ -78,18 +74,12 @@ public class SurveyTableColumn extends SurveyTranslatable {
 		this.order = order;
 	}
 
-	public void setGroups(List<OrganisationUnitGroup> groups) {
-		this.groups = groups;
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
 	}
-	
-	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name="dhsst_survey_table_column_orgunitgroup")
-	public List<OrganisationUnitGroup> getGroups() {
-		return groups;
-	}
-	
-	public void addOrganisationGroup(OrganisationUnitGroup group) {
-		groups.add(group);
+    @Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
 	}
 
 	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)

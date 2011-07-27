@@ -42,18 +42,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveySection")
@@ -63,7 +64,7 @@ public class SurveySection extends SurveyTranslatable {
 	private Long id;
 	private Integer order;
 	private SurveyObjective objective;
-	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();;
+	private String groupUuidString;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
 
 	@Id
@@ -96,18 +97,13 @@ public class SurveySection extends SurveyTranslatable {
 		return objective;
 	}
 
-	public void setGroups(List<OrganisationUnitGroup> groups) {
-		this.groups = groups;
+    @Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
 	}
-	
-	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name="dhsst_survey_section_orgunitgroup")
-	public List<OrganisationUnitGroup> getGroups() {
-		return groups;
-	}
-	
-	public void addOrganisationGroup(OrganisationUnitGroup group){
-		groups.add(group);
+
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
 	}
 
 	public void setQuestions(List<SurveyQuestion> questions) {
@@ -154,7 +150,7 @@ public class SurveySection extends SurveyTranslatable {
 	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveyQuestion surveyQuestion : getQuestions()) {
-			if (surveyQuestion.getGroups().contains(group)) result.add(surveyQuestion);
+			if (Utils.getGroupUuids(surveyQuestion.getGroupUuidString()).contains(group.getUuid())) result.add(surveyQuestion);
 		}
 		return result;
 	}

@@ -28,48 +28,78 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.DataService;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+import org.chai.kevin.util.Utils
+import org.chai.kevin.data.DataElement
+import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class QuestionController extends AbstractEntityController {
-	
+class SimpleQuestionController extends AbstractEntityController {
+	DataService dataService
+
 	def getEntity(def id) {
-		return SurveyQuestion.get(id)
+		return SurveySimpleQuestion.get(id)
 	}
 	def createEntity() {
-		def type = params['type']
-		return null;
+		def entity = new SurveySimpleQuestion();
+		//FIXME find a better to do this
+		if (!params['sectionId.id']) entity.section = SurveySubStrategicObjective.get(params.sectionId)
+		return entity
 	}
-	
+
 	def getTemplate() {
-		return "/survey/admin/createQuestion"
+		return "/survey/admin/createSimpleQuestion"
 	}
-	
+
 	def getModel(def entity) {
-		[ question: entity ]
+		[
+					question: entity,
+					groups: OrganisationUnitGroup.list(),
+					sections: (entity.section)!=null?entity.section.objective.sections:null,
+					groupUuids: Utils.getGroupUuids(entity.groupUuidString)
+				]
 	}
-	
+
 	def validateEntity(def entity) {
 		return entity.validate()
 	}
-	
+
 	def saveEntity(def entity) {
 		entity.save()
 	}
 	def deleteEntity(def entity) {
 		entity.delete()
 	}
-	
+
 	def bindParams(def entity) {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
+		entity.groupUuidString =  params['groupUuids']!=null?Utils.getGroupUuidString(params['groupUuids']):null
 		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
-}
+	def getQuestionExplainer = {
+		def question = null;
+		if (NumberUtils.isNumber(params['question'])) {
+			question = SurveySimpleQuestion.get(params['question'])
+		}
+		
+		if (question == null) {
+			render(contentType:"text/json") {
+				result = 'error'
+			}
+		}
+		else {
+			render(contentType:"text/json") {
+				result = 'success'
+				html = g.render (template: '/templates/questionExplainer', model: [question: question])
+			}
+		}
+	}
 
+}

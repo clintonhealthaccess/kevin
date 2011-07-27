@@ -42,12 +42,15 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.survey.validation.SurveySkipRule;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -94,7 +97,9 @@ public class Survey extends SurveyTranslatable {
 		this.open = open;
 	}
 	
-	@Column(name="iteration")
+
+	@ManyToOne(targetEntity=Period.class)
+	@JoinColumn(name="iteration", nullable= false)
 	public Period getPeriod() {
 		return period;
 	}
@@ -140,7 +145,7 @@ public class Survey extends SurveyTranslatable {
 	public List<SurveyObjective> getObjectives(OrganisationUnitGroup group) {
 		List<SurveyObjective> result = new ArrayList<SurveyObjective>();
 		for (SurveyObjective surveyObjective : getObjectives()) {
-			if (surveyObjective.getGroups().contains(group)) result.add(surveyObjective);
+			if (Utils.getGroupUuids(surveyObjective.getGroupUuidString()).contains(group.getUuid())) result.add(surveyObjective);
 		}
 		return result;
 	}

@@ -42,7 +42,7 @@
 							<g:set var="i" value="${1}" />
 							<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question">
 								<div class="question ${surveyPage.isValid(question)?'':'errors'}">
-									<g:render template="/survey/question/${question.getTemplate()}" model="[question: question, surveyElementValues: surveyPage.surveyElements, organisationUnitGroup: surveyPage.organisation.organisationUnitGroup, readonly: readonly]" />
+									<g:render template="/survey/question/${question.getType()}" model="[question: question, surveyElementValues: surveyPage.surveyElements, organisationUnitGroup: surveyPage.organisation.organisationUnitGroup, readonly: readonly]" />
 								</div> 
 							</g:each>
 							

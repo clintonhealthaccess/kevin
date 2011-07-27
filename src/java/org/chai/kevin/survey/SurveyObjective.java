@@ -43,12 +43,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -62,9 +64,9 @@ public class SurveyObjective extends SurveyTranslatable {
 	private Integer order;
 	private Survey survey;
 	private List<SurveySection> sections = new ArrayList<SurveySection>();
-	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
 	private SurveyObjective dependency;
-	
+	private String groupUuidString;
+
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -102,10 +104,6 @@ public class SurveyObjective extends SurveyTranslatable {
 		Collections.sort(sections);
 	}
 
-	public void setGroups(List<OrganisationUnitGroup> groups) {
-		this.groups = groups;
-	}
-
 	public void setSurvey(Survey survey) {
 		this.survey = survey;
 	}
@@ -116,14 +114,12 @@ public class SurveyObjective extends SurveyTranslatable {
 		return survey;
 	}
 
-	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name = "dhsst_survey_objective_orgunitgroup")
-	public List<OrganisationUnitGroup> getGroups() {
-		return groups;
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
 	}
-
-	public void addOrganisationGroup(OrganisationUnitGroup group) {
-		groups.add(group);
+	@Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
 	}
 
 	@ManyToOne(targetEntity=SurveyObjective.class, optional=true)
@@ -139,7 +135,7 @@ public class SurveyObjective extends SurveyTranslatable {
 	public List<SurveySection> getSections(OrganisationUnitGroup group) {
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection surveySection : getSections()) {
-			if (surveySection.getGroups().contains(group)) result.add(surveySection);
+			if (Utils.getGroupUuids(surveySection.getGroupUuidString()).contains(group.getUuid())) result.add(surveySection);
 		}
 		return result;
 	}

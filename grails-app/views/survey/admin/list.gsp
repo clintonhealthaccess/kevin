@@ -3,52 +3,59 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="layout" content="main" />
 <title><g:message code="surveyAdminPage.view.label"
-		default="District Health System Portal" />
-</title>
+		default="District Health System Portal" /></title>
 </head>
 <body>
 	<div id="survey-admin">
-		<g:if test="${survey!=null}">
 			<div id="top-container" class="box">
 				<ul class="survey-admin-menu-list">
-					<li>Survey: <a href="${createLink(controller:'admin', action:'survey')}">
-					<g:i18n field="${survey.names}" /></a>
+				<li><a href="${createLink(controller:'admin', action:'survey')}">Surveys</a>
 					</li>
-					<g:if test="${objective!=null}">
-						<li>Strategic Objective: <a href="${createLink(controller:'admin', action:'objective',params:[survey: survey.id])}">
-						<g:i18n field="${objective.names}" /></a>
+					<g:if test="${survey}">
+					<li>&rarr; <a
+						href="${createLink(controller:'admin',action:'objective',params:[surveyId: survey.id])}"><g:i18n
+								field="${survey.names}" />
+					</a>
+					</li>
+					<g:if test="${objective}">
+						<li>&rarr; <a
+							href="${createLink(controller:'admin', action:'section',params:[surveyId: survey.id, objectiveId: objective.id])}">
+								<g:i18n field="${objective.names}" />
+						</a></li>
+					</g:if>
+					<g:if test="${section}">
+						<li>&rarr; <a
+							href="${createLink(controller:'admin', action:'question',params:[surveyId: survey.id, objectiveId: section.objective.id, sectionId: section.id])}">
+								<g:i18n field="${section.names}" /> </a>
 						</li>
 					</g:if>
-					<g:if test="${section!=null}">
-						<li>Section: <a href="${createLink(controller:'admin', action:'section',params:[objective: objective.id])}"><g:i18n
-								field="${section.names}" />
-								</a></li>
 					</g:if>
 				</ul>
 				<div class="clear"></div>
 			</div>
-		</g:if>
 		<div id="bottom-container" class="box">
 			<div id="survey-admin-list-container">
 				<!-- Template goes here -->
-				
-				<g:if test="${survey==null}">
-				<g:render template="/survey/admin/surveylist"  model="[]" /> 
+
+				<g:if test="${surveys || surveys?.size()==0}">
+					<g:set var="template" value="surveyList" />
 				</g:if>
-				<g:if test="${survey!=null && objective==null}">
-				<g:render template="/survey/admin/objectivelist" model="[survey: survey]" /> 
+				<g:if test="${objectives || survey}">
+					<g:set var="template" value="objectiveList" />
 				</g:if>
-				<g:if test="${survey!=null && objective!=null && section == null}">
-				<g:render template="/survey/admin/sectionlist" model="[survey: survey, objective: objective]" /> 
+				<g:if test="${sections || objective}">
+					<g:set var="template" value="sectionList" />
 				</g:if>
-				<g:if test="${survey!=null && objective!=null && section != null}">
-				<g:render template="/survey/admin/questionlist" model="[survey: survey, objective: objective,section: section]" /> 
+				<g:if test="${questions || section}">
+					<g:set var="template" value="questionList" />
 				</g:if>
-				
+
+				<g:render template="/survey/admin/${template}"
+					model="[surveyId: survey, objectiveId: objective,sectionId: section]" />
 				<!-- End of template -->
 				<div class="clear"></div>
 			</div>
-            <div class="hidden flow-container"></div>
+			<div class="hidden flow-container"></div>
 			<div class="clear"></div>
 		</div>
 		<div class="clear"></div>

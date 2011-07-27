@@ -7,24 +7,23 @@
 	<g:form url="[controller:'createSurvey', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="Description" field="descriptions"/>
-		<g:input name="order" label="Order" bean="${survey}" field="order"/>
 	   <div class="row">
 			<div>
 				<a id="add-iteration-link" class="float-right"  href="${createLink(controller:'iteration', action:'create')}">New Iteration</a>
 			</div>
 			<div class="clear"></div>
 			<div id="iteration-block">
-					<div class="group-list ${hasErrors(bean:period, field:'period', 'errors')}">
-						<label for="period.id">Period:</label>
+					<div class="group-list ${hasErrors(bean:survey, field:'period', 'errors')}">
+						<label for="period">Period:</label>
 						<select class="iteration-list" name="period.id">
 							<option value="null">-- Select an Iteration --</option>
 							<g:each in="${periods}" var="period">
 								<option value="${period.id}" ${period.id+''==fieldValue(bean: survey, field: 'period.id')+''?'selected="selected"':''}>
-									${period.startDate} <--> ${period.endDate}
+									${period.startDate} &harr; ${period.endDate}
 								</option>
 							</g:each>
 						</select>
-						<div class="error-list"><g:renderErrors bean="${period}" field="period" /></div>
+						<div class="error-list"><g:renderErrors bean="${survey}" field="period" /></div>
 					</div>
 			</div>
 		</div>
@@ -39,6 +38,7 @@
     </g:form>
 	<div class="clear"></div>
 </div>
+<div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {	
 		$('#add-survey').flow({

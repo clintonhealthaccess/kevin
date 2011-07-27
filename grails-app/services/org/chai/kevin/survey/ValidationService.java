@@ -20,21 +20,21 @@ public class ValidationService {
 	
 	private SurveyElementService surveyElementService;
 	
-	@Transactional(readOnly=true)
-	public boolean isSkipped(SurveyPage surveyPage, SurveyElement surveyElement) {
-		Set<SurveySkipRule> skipRules = surveyElementService.getSkipRules(surveyElement);
-		for (SurveySkipRule skipRule : skipRules) {
-			boolean result = evaluate(surveyPage, surveyElementValueToCheck, skipRule.getExpression());
-		}
-		
-		if (log.isDebugEnabled()) log.debug("skipPattern(...)="+result);
-		return result;		
-	}
+//	@Transactional(readOnly=true)
+//	public boolean isSkipped(SurveyPage surveyPage, SurveyElement surveyElement) {
+//		Set<SurveySkipRule> skipRules = surveyElementService.getSkipRules(surveyElement);
+//		for (SurveySkipRule skipRule : skipRules) {
+//			boolean result = evaluate(surveyPage, surveyElementValueToCheck, skipRule.getExpression());
+//		}
+//		
+//		if (log.isDebugEnabled()) log.debug("skipPattern(...)="+result);
+//		return result;		
+//	}
 	
 	@Transactional(readOnly=true)
-	public boolean validate(SurveyPage surveyPage, SurveyElementValue surveyElementValueToCheck, SurveyValidationRule validationRule) {
-		if (log.isDebugEnabled()) log.debug("validate(value="+surveyElementValueToCheck+", validationRule="+validationRule+")");
-		boolean result = evaluate(surveyPage, surveyElementValueToCheck, validationRule.getExpression());
+	public boolean validate(SurveyPage surveyPage, SurveyElement surveyElement, SurveyValidationRule validationRule) {
+		if (log.isDebugEnabled()) log.debug("validate(value="+surveyElement+", validationRule="+validationRule+")");
+		boolean result = evaluate(surveyPage, surveyElement, validationRule.getExpression());
 		if (log.isDebugEnabled()) log.debug("validate(...)="+result);
 		return result;
 	}
@@ -54,7 +54,7 @@ public class ValidationService {
 			else {
 				SurveyElement surveyElement = surveyElementService.getSurveyElement(id);
 				if (surveyElement != null) {
-					SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(surveyElement, surveyElementValueToCheck.getSurveyEnteredValue().getOrganisationUnit());
+					SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(surveyElement, surveyPage.getOrganisation().getOrganisationUnit());
 					if (enteredValue != null) value = enteredValue.getValue();
 				}
 				else if (log.isErrorEnabled()) log.error("expression "+expression+" refers to unknown survey element: "+id);

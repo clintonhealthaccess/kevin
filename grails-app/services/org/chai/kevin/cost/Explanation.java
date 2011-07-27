@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.Organisation;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 

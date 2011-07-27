@@ -280,6 +280,7 @@ public class ExpressionService {
 			String match = matcher.group();
 			match = match.replaceAll("[\\[\\]]", "");
 
+			if (log.isDebugEnabled()) log.debug("found matching pattern: "+Long.parseLong(match));
 			Object value = null;
 			try {
 				Data data = dataService.getData(Long.parseLong(match));

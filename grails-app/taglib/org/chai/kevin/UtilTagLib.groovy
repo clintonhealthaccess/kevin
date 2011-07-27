@@ -48,6 +48,13 @@ class UtilTagLib {
 		attrs["locales"] = localeService.getAvailableLanguages();
 		out << render(template:"/tags/i18nTextarea", model: attrs)
 	}
+	def i18nRichTextarea = { attrs, body ->
+		if (attrs["type"] == null) attrs["type"] = 'text'
+		if (attrs["rows"] == null) attrs["rows"] = '4'
+		if (attrs["width"] == null) attrs["width"] = '300'
+		attrs["locales"] = localeService.getAvailableLanguages();
+		out << render(template:"/tags/i18nRichTextarea", model: attrs)
+	}
 	
 	def input = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
@@ -70,9 +77,8 @@ class UtilTagLib {
 	}
 	
 	def i18n = { attrs, body ->
-		def text = attrs['field'].get(localeService.getCurrentLanguage())
-		if (text == null || text.trim().equals("")) text = attrs['field'].get(localeService.getFallbackLanguage())
+		def text = attrs['field']?.get(localeService.getCurrentLanguage())
+		if (text == null || text.trim().equals("")) text = attrs['field']?.get(localeService.getFallbackLanguage())
 		out << text 
 	}
-	
 }

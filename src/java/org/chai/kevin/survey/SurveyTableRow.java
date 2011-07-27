@@ -43,7 +43,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
@@ -51,7 +51,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 
 @SuppressWarnings("serial")
@@ -61,7 +60,7 @@ public class SurveyTableRow extends SurveyTranslatable {
 
 	private Long id;
 	private Integer order;
-	private List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
+	private String groupUuidString;
 	private SurveyTableQuestion question;
 	private Map<SurveyTableColumn,SurveyElement> surveyElements= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
@@ -85,19 +84,15 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.order = order;
 	}
 
-	public void setGroups(List<OrganisationUnitGroup> groups) {
-		this.groups = groups;
-	}
-	@ManyToMany(targetEntity = OrganisationUnitGroup.class)
-	@JoinTable(name="dhsst_survey_table_row_orgunitgroup")
-	public List<OrganisationUnitGroup> getGroups() {
-		return groups;
-	}
-	
-	public void addOrganisationGroup(OrganisationUnitGroup group) {
-		groups.add(group);
+    @Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
 	}
 
+    public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
+	}
+	
 	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
 	@JoinColumn(nullable=false)
 	public SurveyTableQuestion getQuestion() {

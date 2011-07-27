@@ -42,6 +42,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
@@ -75,7 +76,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	
     @Transient
 	@Override
-	public String getTemplate() {
+	public String getType() {
 		String gspName = "checkboxQuestion";
 		return gspName;
 	}
@@ -94,7 +95,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	public List<SurveyCheckboxOption> getOptions(OrganisationUnitGroup group) {
 		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
 		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {
-			if (surveyCheckboxOption.getGroups().contains(group)) result.add(surveyCheckboxOption);
+			if (Utils.getGroupUuids(surveyCheckboxOption.getGroupUuidString()).contains(group.getUuid())) result.add(surveyCheckboxOption);
 		}
 		return result;
 	}

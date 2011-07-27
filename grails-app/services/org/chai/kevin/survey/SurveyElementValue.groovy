@@ -98,7 +98,7 @@ public class SurveyElementValue {
 	//		if (!dataValue.validate()) return false;
 			
 			surveyElement.validationRules.each { rule ->
-				if (!validationService.validate(surveyPage, this, rule)) {
+				if (!validationService.validate(surveyPage, surveyElement, rule)) {
 					if (!rule.allowOutlier) invalidErrors.add(rule);
 					else {
 						if (!surveyEnteredValue.acceptedWarnings.contains(rule.id)) {

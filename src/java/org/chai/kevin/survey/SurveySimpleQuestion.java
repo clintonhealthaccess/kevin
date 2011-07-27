@@ -26,6 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.chai.kevin.survey;
+
 /**
  * @author JeanKahigiso
  *
@@ -58,19 +59,19 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 	public SurveyElement getSurveyElement() {
 		return surveyElement;
 	}
-	
+
 	public void setSurveyElement(SurveyElement surveyElement) {
 		this.surveyElement = surveyElement;
 	}
-	
+
 	@Transient
 	@Override
-	public String getTemplate() {
+	public String getType() {
 		String gspName = "simpleQuestion";
 		return gspName;
 	}
-    
-    @Transient
+
+	@Transient
 	@Override
 	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> elements = new ArrayList<SurveyElement>();

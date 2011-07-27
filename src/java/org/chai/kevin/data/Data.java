@@ -48,7 +48,6 @@ abstract public class Data<T extends Value> implements Timestamped {
 	
 	@Id
 	@GeneratedValue
-	@Column
 	public Long getId() {
 		return id;
 	}
