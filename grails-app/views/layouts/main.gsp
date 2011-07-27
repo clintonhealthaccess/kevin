@@ -22,8 +22,8 @@
 	<g:javascript src="richeditor/nicEdit.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
 	<g:javascript library="application" />
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-	<ga:trackPageviewAsynch />
+	<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
+	<!--<ga:trackPageviewAsynch />-->
 </head>
 <body class="bp two-columns">
 

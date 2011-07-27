@@ -97,7 +97,6 @@ public class Survey extends SurveyTranslatable {
 		this.open = open;
 	}
 	
-
 	@ManyToOne(targetEntity=Period.class)
 	@JoinColumn(name="iteration", nullable= false)
 	public Period getPeriod() {

@@ -127,4 +127,5 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		return noHtmlString.substring(0, length);
 	}
 
+
 }
