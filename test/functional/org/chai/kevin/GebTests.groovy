@@ -28,13 +28,13 @@ package org.chai.kevin;
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import geb.spock.GebReportingSpec;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import grails.plugin.geb.GebSpec;
-
-abstract class GebTests extends GebSpec {
+abstract class GebTests extends GebReportingSpec {
 
 	WebDriver createDriver() {
 		HtmlUnitDriver driver = new HtmlUnitDriver();

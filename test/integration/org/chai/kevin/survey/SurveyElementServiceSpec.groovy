@@ -19,13 +19,13 @@ class SurveyElementServiceSpec extends IntegrationTests {
 		def dataElement = new DataElement(code:"ELEM1", type: ValueType.VALUE).save(failOnError: true)
 		
 		def survey = new Survey(period: Period.list()[0]).save(failOnError: true);
-		def objective = new SurveyObjective(survey: survey)
+		def objective = new SurveyObjective(survey: survey, groupUuidString: "Health Center")
 		survey.addObjective(objective)
 		survey.save(failOnError: true)
-		def section = new SurveySection(objective: objective)
+		def section = new SurveySection(objective: objective, groupUuidString: "Health Center")
 		objective.addSection(section)
 		objective.save(failOnError: true)
-		def question = new SurveySimpleQuestion(section: section)
+		def question = new SurveySimpleQuestion(section: section, groupUuidString: "Health Center")
 		section.addQuestion(question)
 		section.save(failOnError: true)
 		def element = new SurveyElement(surveyQuestion: question, dataElement: dataElement)
@@ -75,5 +75,21 @@ class SurveyElementServiceSpec extends IntegrationTests {
 		list2.size() == 1
 		list2.iterator().next().equals(skipRule1)
 	}	
+	
+	def "test get survey elements for data element"() {
+		setup:
+		createSurvey()
+		def element = SurveyElement.list()[0]
+		def dataElement = DataElement.findByCode("ELEM1")
+		
+		when:
+		def surveyElements = surveyElementService.getSurveyElements(dataElement)
+		
+		then:
+		surveyElements.size() == 1
+		surveyElements.iterator().next().equals(element)
+		
+		
+	}
 	
 }

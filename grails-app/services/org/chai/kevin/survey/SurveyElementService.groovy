@@ -1,6 +1,7 @@
 package org.chai.kevin.survey
 
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveySkipRule;
@@ -69,8 +70,10 @@ class SurveyElementService {
 	}
 
 	
-//	Set<SurveySkipRule> getSkipRules(SurveyQuestion surveyQuestion) {
-//		
-//	}
-
+	Set<SurveyElement> getSurveyElements(DataElement dataElement) {
+		SurveyElement.createCriteria()
+		.add(Restrictions.eq("dataElement", dataElement))
+		.list();
+	}
+	
 }

@@ -44,10 +44,10 @@ class DataService {
 		return sessionFactory.currentSession.get(Data.class, id)
 	}
 	
-	DataElement getDataElement(Long id) {
-		if (log.isDebugEnabled()) log.debug("getDataElement(id="+id+")")
-		return DataElement.get(id)
-	}
+//	DataElement getDataElement(Long id) {
+//		if (log.isDebugEnabled()) log.debug("getDataElement(id="+id+")")
+//		return DataElement.get(id)
+//	}
 	
 //	Constant getConstant(Long id) {
 //		return Constant.get(id)
