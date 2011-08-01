@@ -1,1 +1,1 @@
-<g:render template="/survey/question/${question.getTemplate()}" model="[question: question, surveyElementValues: surveyPage.surveyElements, organisationUnitGroup: surveyPage.organisation.organisationUnitGroup]" />
+<g:render template="/survey/question/${question.getType()}" model="[question: question, surveyPage: surveyPage]"/>

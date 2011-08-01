@@ -59,8 +59,7 @@ class DataService {
 			constants.retainAll { element ->
 				DataService.matches(chunk, element.id+"") ||
 				DataService.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
-				DataService.matches(chunk, element.code) ||
-				DataService.matches(chunk, element.info)
+				DataService.matches(chunk, element.code) 
 			}
 		}
 		return constants.sort {it.names[localeService.getCurrentLanguage()]}
@@ -72,7 +71,8 @@ class DataService {
 			dataElements.retainAll { element ->
 				DataService.matches(chunk, element.id+"") ||
 				DataService.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
-				DataService.matches(chunk, element.code)
+				DataService.matches(chunk, element.code) ||
+				DataService.matches(chunk, element.info)
 			}
 		}
 		return dataElements.sort {it.names[localeService.getCurrentLanguage()]}

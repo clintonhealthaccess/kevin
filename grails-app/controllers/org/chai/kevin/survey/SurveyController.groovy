@@ -60,8 +60,8 @@ class SurveyController extends AbstractReportController {
 		SurveySection currentSection = getSurveySection()
 		
 		def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentSection)
-		surveyPage.userValidation(validationService)
-		surveyPage.initializeObjectiveStatus(surveyElementService);
+		surveyPage.createEnteredValues(surveyElementService)
+		surveyPage.userValidation(validationService, surveyElementService)
 			
 		return [surveyPage: surveyPage]
 	}
@@ -73,14 +73,21 @@ class SurveyController extends AbstractReportController {
 		SurveyObjective currentObjective = getSurveyObjective()
 		
 		def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentObjective)
-		surveyPage.userValidation(validationService)
-		surveyPage.initializeObjectiveStatus(surveyElementService);
+		surveyPage.createEnteredValues(surveyElementService)
+		surveyPage.userValidation(validationService, surveyElementService)
 		
 		return [surveyPage: surveyPage]
 	}
 	
-	def survey = {
+	def surveyPage = {
+		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
 		
+		Organisation currentOrganisation = getOrganisation(false)
+		Survey survey = getSurvey()
+		
+		def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, survey)
+		
+		return [surveyPage: surveyPage]
 	}
 	
 	def submit = {
@@ -90,8 +97,8 @@ class SurveyController extends AbstractReportController {
 		SurveyObjective currentObjective = getSurveyObjective()
 		
 		def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective);
-		surveyPage.initializeObjectiveStatus(surveyElementService)
-		surveyPage.userValidation(validationService);
+		surveyPage.createEnteredValues(surveyElementService)
+		surveyPage.userValidation(validationService, surveyElementService);
 		
 		if (surveyPage.canSubmit()) {
 			surveyPage.submit(surveyElementService, valueService)
@@ -109,65 +116,63 @@ class SurveyController extends AbstractReportController {
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 		
-		def surveyPage = getSurveyPage()
-		def surveyElement = getSurveyElement()
+		def surveyPage = getSurveyPageFromParams()
+		saveSurvey(surveyPage)
 		
-		def surveyElementsToSave = null;
-		if (surveyPage.section == null) surveyElementsToSave = [surveyElement]
-		else surveyElementsToSave = surveyPage.section.getSurveyElements(surveyPage.organisation.organisationUnitGroup)
-		saveSurvey(surveyPage, surveyElementsToSave)
+		def statusString;
+		def surveyQuestion = getSurveyQuestion()
+		if (!surveyPage.isValid(surveyQuestion)) statusString = 'invalid'
+		else statusString = 'valid'
 		
-		if (surveyPage.getStatus(surveyPage.objective) == ObjectiveStatus.CLOSED) {
-			render(contentType:"text/json") {
-				result = 'error'
-			}
-		}
-		else {
-			def statusString;
-			if (!surveyPage.surveyElements[surveyElement.id].isValid()) {
-				statusString = 'invalid'
-			}
-			else {
-				statusString = 'valid'
-			}
-			def invalidSectionMap = surveyPage.getInvalidQuestions()
-			render(contentType:"text/json") {
-				result = 'success'
-				status = statusString
-				html = g.render(template:'question', model: [surveyPage: surveyPage, question: surveyElement.surveyQuestion])
-				objective (
-					id: surveyPage.objective.id,
-					status: surveyPage.getStatus(surveyPage.objective).name()
-				)
-				sections = array {
-					surveyPage.objective.getSections(surveyPage.organisation.organisationUnitGroup).each { section ->
-						sec (
-							id: section.id,
-							name: g.i18n(field: section.names),
-							status: surveyPage.getStatus(section).name(),
-							invalidQuestions: array {
-								invalidSectionMap[section].each{ question ->
-									quest (
-										id: question.id,
-										html: g.render(template:'question', model: [surveyPage: surveyPage, question: question])
-									)
-								}
-							}
-						)
-					}
+		def invalidSectionsHtmlString = ''
+		def invalidSectionMap = surveyPage.getInvalidQuestions()
+		if (surveyPage.section == null) invalidSectionsHtmlString = g.render(template:'invalidSections', model: [invalidSectionMap: invalidSectionMap, surveyPage: surveyPage]) 
+		
+		render(contentType:"text/json") {
+			result = 'success'
+			status = statusString
+			html = g.render(template:'question', model: [surveyPage: surveyPage, question: surveyElement.surveyQuestion])
+			objective (
+				id: surveyPage.objective.id,
+				status: surveyPage.getStatus(surveyPage.objective).name()
+			)
+			sections = array {
+				surveyPage.objective.getSections(surveyPage.organisation.organisationUnitGroup).each { section ->
+					sec (
+						id: section.id,
+						name: g.i18n(field: section.names),
+						status: surveyPage.getStatus(section).name()
+					)
 				}
-				invalidSectionsHtml = g.render(template:'invalidSections', model: [invalidSectionMap: invalidSectionMap, surveyPage: surveyPage])
 			}
+			invalidQuestions = array {
+				invalidSectionMap[surveyPage.section].each{ question ->
+					quest (
+						id: question.id,
+						html: g.render(template:'question', model: [surveyPage: surveyPage, question: question])
+					)
+				}
+			}
+			skippedElements = array {
+				surveyPage.skippedElements.each{ elem ->
+					element elem.id
+				}
+			}
+			skippedQuestions = array {
+				surveyPage.skippedQuestions.each{ question ->
+					element question.id
+				}
+			}
+			invalidSectionsHtml = invalidSectionsHtmlString
 		}
 	}
 	
 	def save = {
 		if (log.isDebugEnabled()) log.debug("survey.save, params:"+params)
 		
-		def surveyPage = getSurveyPage()
-		if (surveyPage.getStatus(surveyPage.objective) != ObjectiveStatus.CLOSED) {
-			saveSurvey(surveyPage, surveyPage.section.getSurveyElements(surveyPage.organisation.organisationUnitGroup))
-		} 
+		def surveyPage = getSurveyPageFromParams()
+		saveSurvey(surveyPage)
+
 		def action = surveyPage.section == null?'objectivePage':'sectionPage'
 		def params = [organisation: surveyPage.organisation.id]
 		if (surveyPage.section == null) params << [objective: surveyPage.objective.id]
@@ -176,33 +181,42 @@ class SurveyController extends AbstractReportController {
 		redirect (action: action, params: params)
 	}
 	
-	private def getSurveyPage() {
+	private def getSurveyPageFromParams() {
 		def surveyPage;
 
 		Organisation currentOrganisation = getOrganisation(false)
+		def surveyElements = getSurveyElements()
+		
+		def currentObjective;
 		SurveySection currentSection = getSurveySection()
-
-		SurveyObjective currentObjective = null
 		if (currentSection == null) {
 			currentObjective = getSurveyObjective()
-			surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective);
+			surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective, surveyElements);
 		}
 		else {
-			currentObjective = currentSection.objective
-			surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection)
+			surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection, surveyElements);
 		}
-		surveyPage.initializeObjectiveStatus(surveyElementService);
+					
 		if (log.isDebugEnabled()) log.debug("survey page: "+surveyPage)
 		
 		return surveyPage
 	}
 	
-	private def saveSurvey(def surveyPage, def surveyElements) {
+	private def getSurveyElements() {
+		def result = []
+		log.debug(params.surveyElements)
+		params.surveyElements.each { id ->
+			result.add(SurveyElement.get(id))
+		}
+		return result
+	}
+	
+	private def saveSurvey(def surveyPage) {
 		bindData(surveyPage, params)
-		surveyPage.sanitizeValues()
-		surveyPage.transferValuesAndValidate(validationService)
-		surveyPage.initializeObjectiveStatus(surveyElementService)
-		surveyPage.persistState(surveyElementService, surveyElements)
+		surveyPage.createEnteredValues(surveyElementService)
+		surveyPage.transferValues(validationService, surveyElementService)
+		surveyPage.userValidation(validationService, surveyElementService)
+		surveyPage.persistState(surveyElementService)
 	}
 
 }

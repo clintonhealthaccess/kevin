@@ -269,6 +269,27 @@ body.bp .dropdown
     float: left
     margin-right: 4px
 
+.errors 
+  color: red
+  input, select, textarea
+    border-color: red
+    
+.info
+  color: green
+  border-color: green
+    
+div.error-list
+  font-size: 85%
+  color: red
+  ul
+    +inline-block-list
+    padding: 0
+    margin: 0
+      
+    li
+      display: block
+      white-space: normal
+
 body.bp h5
   margin-bottom: 0px
   
@@ -362,18 +383,6 @@ body.bp ul.filtered
   button
     float: right
     
-  .errors 
-    color: red
-    
-  .error-list
-    font-size: 75%
-    ul
-      +inline-block-list
-      
-      li
-        display: block
-        white-space: normal
-  
 #cost
   #top
     margin-bottom: 10px
@@ -763,11 +772,30 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       float: left
       padding: 3px
       +box-top-round-corner
+      margin-left: 4px
+      
     #survey-objective-box
       width: 77%
       float: right
       padding: 3px
       +box-top-round-corner
+      margin-right: 4px
+      
+    #survey-container-left-side
+      float: left
+      width: 45%
+    
+    #survey-container-right-side
+      float: right
+      width: 45%
+      
+    .survey-highlight-title
+      color: #3b84c9
+      font-size: 600
+      a
+        color: #3b84c9
+      a:hover
+        text-decoration: underline
 
   #bottom-container
     #survey-left-objective-container
@@ -776,13 +804,15 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       margin-top: 2px
       padding: 3px
       +box-bottom-round-corner
+      margin-left: 4px
+
     #survey-right-question-container
       width: 77%
       float: right
       margin-top: 2px
       padding: 3px
       +box-bottom-round-corner
-      
+      margin-right: 4px
 
   #content
     background-color: #e1e1e1
@@ -792,68 +822,102 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       margin: 0 
       padding: 20px 20px 100px 20px
       
-  .question
-    margin-bottom: 20px 
-          
-  .element
+  #incomplete-sections ul
+    margin: 0
+      
+  ol#questions
+    padding-left: 20px
+    list-style-type: katakana-iroha
+    font-weight: bold
+      
+  .skipped
+    background-color: lightGrey
+      
+  div.element
+    display: inline
+
+  .question-number
+    font-weight: bold
     display: inline
           
-  .survey-highlight-title
-    color: #3b84c9
-    font-size: 600
-    a
-      color: #3b84c9
-    a:hover
-      text-decoration: underline
-         
+  .question
+    margin-bottom: 30px 
+    font-weight: normal
+          
+  .question-container.skipped
+    display: none
+    
+  #invalid-questions .question.errors, .question-table.errors, .question-checkbox.errors
+    color: inherit
+    input, select, textarea
+      border-color: inherit
+      
+  .question-table 
+    table
+      max-width: 700px
+      margin: 10px 1px 1px 1px
+      paddind: 1px
+      th
+        font-weight: normal
+        background: #3b84c9
+        color: #fff
+      div.element
+        display: block
+    
+    td
+      padding: 0px
+    
+    td div.element
+      padding: 4px 10px 4px 5px
+        
+    .oddrow
+      +odd
+      td 
+        border-bottom: 1px solid #d3d3d3
+      
+    .evenrow
+      +even
+      td 
+        border-bottom: 1px solid #d3d3d3
+      
+    .skipped
+      input, select
+        display: none
+        
+  .question-checkbox
+    .skipped
+      display: none
+  
+    ul
+      margin-left: 0px
+      padding-left: 0px
+      margin-top: 4px
+      list-style-type: none
+      
+    li div.element input
+      float: left
+      
+    div.error-list
+      float: left
+      position: absolute
+      margin-top: 12px
+
   .rounded-box-top
     +white-box
-    margin: 5px 1px 2px 1px
     padding : 5px
+    margin-top: 8px
+    margin-bottom: 2px
     +box-top-round-corner
       
   .rounded-box-bottom
     +white-box
-    margin: 1px 1px 5px 1px
-    padding : 10px 3px 3px 5px
+    padding : 5px
+    margin-bottom: 8px
+    margin-top: 2px
     +box-bottom-round-corner
     
-  .survey-container-left-side
-    float: left
-    width: 45%
-    
-  .survey-container-right-side
-    float: right
-    width: 45%
-    
-  .survey-strategic-object-title
-    +white-box
-    margin-bottom: 4px
-    padding: 2px
-    text-align: center
-    +box-top-round-corner
-    
-  .question-table
-    max-width: 700px
-    margin: 10px 1px 1px 1px
-    paddind: 1px
-    th
-      font-weight: normal
-      background: #3b84c9
-      color: #fff
-      
   .question-tab-title
     border-left: 1px solid #fff
-    
-  .oddrow
-    +odd
-    td 
-      border-bottom: 1px solid #d3d3d3
-      
-  .evenrow
-    +even
-    td 
-      border-bottom: 1px solid #d3d3d3
                   
   #survey-objective-list 
     list-style-type: none
@@ -864,7 +928,8 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       display: block
       text-decoration: none
       font-weight: bold	
-    
+      position: relative
+      
     li
       margin-top: 1px
       
@@ -872,6 +937,30 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
         background: #739eee
         padding: 0.5em
         color: #fff
+
+      .item-status
+        position: absolute
+        right: 0px
+
+        span
+          display: block
+          width: 16px
+          height: 16px
+          
+          &.hidden
+            display: none
+      
+        .section-status-incomplete, .objective-status-incomplete
+
+        .section-status-complete, .objective-status-complete
+          background-image: url('../images/icons/positive_16.png')
+        .section-status-invalid, .objective-status-invalid
+          background-image: url('../images/icons/negative_16.png')
+        .section-status-closed, .objective-status-closed
+          background-image: url('../images/icons/check_16.png')
+        .section-status-unavailable, .objective-status-unavailable
+          background-image: url('../images/icons/cancel_16.png')
+        
       
       .item:hover
         background: #73A6ff

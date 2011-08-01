@@ -30,8 +30,10 @@ package org.chai.kevin.survey;
  * @author Jean Kahigiso M.
  *
  */
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -51,41 +53,70 @@ public class SurveyPageService {
 	private OrganisationService organisationService;
 	
 	@Transactional(readOnly = true)
+	public SurveyPage getSurveyPage(Organisation currentOrganisation, Survey survey) {
+		organisationService.loadGroup(currentOrganisation);
+		
+		return new SurveyPage(currentOrganisation, survey, null, null, 
+				new HashMap<SurveyElement, SurveyEnteredValue>(), new HashMap<Long, SurveyElementValue>());
+	}
+	
+	@Transactional(readOnly = true)
 	public SurveyPage getSurveyPage(Organisation currentOrganisation, SurveySection currentSection) {
-		return getSurveyPage(currentOrganisation, currentSection.getObjective(), currentSection);
+		organisationService.loadGroup(currentOrganisation);
+		
+		return getSurveyPage(currentOrganisation, currentSection.getObjective().getSurvey(), currentSection.getObjective(), currentSection, currentSection.getSurveyElements(currentOrganisation.getOrganisationUnitGroup()));
 	}
 	
 	@Transactional(readOnly = true)
 	public SurveyPage getSurveyPage(Organisation currentOrganisation, SurveyObjective currentObjective) {
-		return getSurveyPage(currentOrganisation, currentObjective, null);
+		organisationService.loadGroup(currentOrganisation);
+		List<SurveyElement> surveyElements = new ArrayList<SurveyElement>();
+		for (SurveySection surveySection : currentObjective.getSections(currentOrganisation.getOrganisationUnitGroup())) {
+			surveyElements.addAll(surveySection.getSurveyElements(currentOrganisation.getOrganisationUnitGroup()));
+		}
+		return getSurveyPage(currentOrganisation, currentObjective.getSurvey(), currentObjective, null, surveyElements);
 	}
 	
-	private SurveyPage getSurveyPage(Organisation currentOrganisation, SurveyObjective currentObjective, SurveySection currentSection) {
+	@Transactional(readOnly = true)
+	public SurveyPage getSurveyPage(Organisation currentOrganisation, SurveyObjective currentObjective, List<SurveyElement> surveyElements) {
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+currentOrganisation+", objective="+currentObjective+", elements="+surveyElements+")");
 		organisationService.loadGroup(currentOrganisation);
 		
-		Map<SurveyObjective, SurveyEnteredObjective> objectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
-		for (SurveyObjective objective : currentObjective.getSurvey().getObjectives(currentOrganisation.getOrganisationUnitGroup())) {
-			SurveyEnteredObjective enteredObjective = surveyElementService.getSurveyEnteredObjective(objective, currentOrganisation.getOrganisationUnit());
-			objectives.put(objective, enteredObjective);
-		}
-		
-		Map<Long, SurveyElementValue> surveyElementValues = new HashMap<Long, SurveyElementValue>();
-		for (SurveySection section : currentObjective.getSections(currentOrganisation.getOrganisationUnitGroup())) {
-			fillSurveyElementValueMap(currentOrganisation, section, surveyElementValues);
-		}
-		return new SurveyPage(currentOrganisation, currentObjective, currentSection, surveyElementValues);
+		return getSurveyPage(currentOrganisation, currentObjective.getSurvey(), currentObjective, null, surveyElements);
 	}
 	
-	private Map<Long, SurveyElementValue> fillSurveyElementValueMap(Organisation currentOrganisation, SurveySection currentSection, Map<Long, SurveyElementValue> map) {
-		if (currentSection != null) {
-			for (SurveyQuestion question : currentSection.getQuestions(currentOrganisation.getOrganisationUnitGroup())) {
-				for (SurveyElement surveyElement : question.getSurveyElements(currentOrganisation.getOrganisationUnitGroup())) {
-					// TODO update surveyEnteredValue from dataValue if necessary, but probably not here
-					SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(surveyElement, currentOrganisation.getOrganisationUnit());
-					SurveyElementValue surveyElementValue = new SurveyElementValue(surveyElement, enteredValue, currentOrganisation, enteredValue!=null?enteredValue.getValue():null);
-					map.put(surveyElement.getId(), surveyElementValue);
-				}
+	@Transactional(readOnly = true)
+	public SurveyPage getSurveyPage(Organisation currentOrganisation, SurveySection currentSection, List<SurveyElement> surveyElements) {
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+currentOrganisation+", section="+currentSection+", elements="+surveyElements+")");
+		organisationService.loadGroup(currentOrganisation);
+		
+		return getSurveyPage(currentOrganisation, currentSection.getObjective().getSurvey(), currentSection.getObjective(), currentSection, surveyElements);
+	}
+	
+	private SurveyPage getSurveyPage(Organisation currentOrganisation, Survey survey, SurveyObjective currentObjective, SurveySection currentSection, List<SurveyElement> elements) {
+		return new SurveyPage(currentOrganisation, survey, currentObjective, currentSection, 
+				getSurveyEnteredValueMap(currentObjective, currentOrganisation),
+				getSurveyElementValueMap(currentOrganisation, elements));
+	}
+	
+	private Map<SurveyElement, SurveyEnteredValue> getSurveyEnteredValueMap(SurveyObjective objective, Organisation organisation) {
+		Map<SurveyElement, SurveyEnteredValue> map = new HashMap<SurveyElement, SurveyEnteredValue>();
+		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
+			for (SurveyElement element : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
+				SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
+				map.put(element, enteredValue);
 			}
+		}
+		return map;
+	}
+	
+	private Map<Long, SurveyElementValue> getSurveyElementValueMap(Organisation currentOrganisation, List<SurveyElement> surveyElements) {
+		Map<Long, SurveyElementValue> map = new HashMap<Long, SurveyElementValue>();
+		for (SurveyElement surveyElement : surveyElements) {
+			// TODO update surveyEnteredValue from dataValue if necessary, but probably not here
+//					SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(surveyElement, currentOrganisation.getOrganisationUnit());
+			SurveyElementValue surveyElementValue = new SurveyElementValue(surveyElement, currentOrganisation);
+			map.put(surveyElement.getId(), surveyElementValue);
 		}
 		return map;
 	}

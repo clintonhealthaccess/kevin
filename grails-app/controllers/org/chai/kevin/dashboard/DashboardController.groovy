@@ -63,10 +63,10 @@ class DashboardController extends AbstractReportController {
 	
 	def explain = {
 		Period period = getPeriod()
-		DashboardObjective objective = getDashboardObjective()
+		DashboardEntry entry = getDashboardEntry()
 		Organisation organisation = getOrganisation(false)
 
-		def explanation = dashboardService.getExplanation(organisation, objective, period)
+		def explanation = dashboardService.getExplanation(organisation, entry, period)
 		def groups = new GroupCollection(OrganisationUnitGroup.list())
 		[explanation: explanation, groups: groups]
 	}
@@ -82,13 +82,13 @@ class DashboardController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)
 		
 		Period period = getPeriod()
-		DashboardObjective objective = getDashboardObjective()
+		DashboardEntry entry = getDashboardEntry()
 		Organisation organisation = getOrganisation(true)
 		
-		if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", objective: "+objective.id+", organisation:"+ organisation.id);
-		redirectIfDifferent(period, objective, organisation)
+		if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", objective: "+entry.id+", organisation:"+ organisation.id);
+		redirectIfDifferent(period, entry, organisation)
 		
-		def dashboard = dashboardService.getDashboard(organisation, objective, period);
+		def dashboard = dashboardService.getDashboard(organisation, entry, period);
 		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
 		Set<String> defaultChecked = ConfigurationHolder.config.dashboard.facility.checked;
 		
@@ -97,20 +97,20 @@ class DashboardController extends AbstractReportController {
 	}
 	
 	
-	def cancel = {
-		if (log.isDebugEnabled()) log.debug("dashboard.progress, params:"+params)
-		
-		Period period = getPeriod()
-		DashboardObjective objective = getDashboardObjective()
-		Organisation organisation = getOrganisation(false)
-		
-		def runningJob = getRunningJob(period, organisation, objective)
-		if (runningJob != null) {
-			runningJob.jobInstance.interrupt();
-		}
-		
-		redirect (controller: 'dashboard', action: 'view', params: params);
-	}
+//	def cancel = {
+//		if (log.isDebugEnabled()) log.debug("dashboard.progress, params:"+params)
+//		
+//		Period period = getPeriod()
+//		DashboardEntry entry = getDashboardEntry()
+//		Organisation organisation = getOrganisation(false)
+//		
+//		def runningJob = getRunningJob(period, organisation, entry)
+//		if (runningJob != null) {
+//			runningJob.jobInstance.interrupt();
+//		}
+//		
+//		redirect (controller: 'dashboard', action: 'view', params: params);
+//	}
 	
 	
 	def getDescription = {

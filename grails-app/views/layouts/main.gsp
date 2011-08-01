@@ -18,6 +18,7 @@
 	<g:javascript library="jquery" plugin="jquery" />
 	<g:javascript src="jquery/fieldselection/jquery.fieldselection.js" />
 	<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
+	<g:javascript src="jquery/form/jquery.form.js" />
 	<g:javascript src="jquery/fliptext/jquery.mb.flipText.js" />
 	<g:javascript src="richeditor/nicEdit.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />

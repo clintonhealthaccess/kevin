@@ -66,7 +66,7 @@ public class Survey extends SurveyTranslatable {
 	private boolean open = true;
 	private Period period;
 	private List<SurveyObjective> objectives = new ArrayList<SurveyObjective>();
-	private Set<SurveySkipRule> skipRules = new HashSet<SurveySkipRule>();
+	private List<SurveySkipRule> skipRules = new ArrayList<SurveySkipRule>();
 	
 	@Id
 	@GeneratedValue
@@ -127,11 +127,11 @@ public class Survey extends SurveyTranslatable {
 	
 	@OneToMany(mappedBy="survey", targetEntity=SurveySkipRule.class)
 	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-	public Set<SurveySkipRule> getSkipRules() {
+	public List<SurveySkipRule> getSkipRules() {
 		return skipRules;
 	}
 	
-	public void setSkipRules(Set<SurveySkipRule> skipRules) {
+	public void setSkipRules(List<SurveySkipRule> skipRules) {
 		this.skipRules = skipRules;
 	}
 	

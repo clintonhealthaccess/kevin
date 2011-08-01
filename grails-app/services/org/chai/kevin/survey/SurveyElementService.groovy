@@ -26,6 +26,10 @@ class SurveyElementService {
 		surveyEnteredValue.save();
 	}
 	
+	void delete(SurveyEnteredValue surveyEnteredValue) {
+		surveyEnteredValue.delete();
+	}
+	
 	SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective surveyObjective, OrganisationUnit organisationUnit) {
 		def c = SurveyEnteredObjective.createCriteria()
 		c.add(Restrictions.naturalId()
@@ -55,11 +59,15 @@ class SurveyElementService {
 		.createAlias("skippedSurveyElements", "se")
 		.add(Restrictions.eq("se.id", surveyElement.id))
 		.list();
-//		.createAlias("skippedSurveyElements", "se")
-//		.add(Restrictions.idEq("se"))
-//		c.add(Restrictions.)
-//		.
 	}
+
+	Set<SurveySkipRule> getSkipRules(SurveyQuestion surveyQuestion) {
+		def c = SurveySkipRule.createCriteria()
+		.createAlias("skippedSurveyQuestions", "sq")
+		.add(Restrictions.eq("sq.id", surveyQuestion.id))
+		.list();
+	}
+
 	
 //	Set<SurveySkipRule> getSkipRules(SurveyQuestion surveyQuestion) {
 //		

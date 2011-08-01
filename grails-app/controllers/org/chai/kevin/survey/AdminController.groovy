@@ -62,7 +62,7 @@ class AdminController extends AbstractReportController {
 	def objective = {
 
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		Survey survey = Survey.get(params.survey);
+		Survey survey = Survey.get(params.surveyId);
 		List<SurveyObjective> objectives = survey.objectives;
 
 		render (view: '/survey/admin/list', model:[
@@ -76,7 +76,7 @@ class AdminController extends AbstractReportController {
 
 	def section = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		SurveyObjective objective = SurveyObjective.get(params.objective)
+		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
 		List<SurveySection> sections = objective.sections;
 
 		render (view: '/survey/admin/list', model:[
@@ -90,7 +90,7 @@ class AdminController extends AbstractReportController {
 
 	def question = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		SurveySection section = SurveySection.get(params.section)
+		SurveySection section = SurveySection.get(params.sectionId)
 		List<SurveyQuestion> questions = section.questions;
 
 		render (view: '/survey/admin/list', model:[

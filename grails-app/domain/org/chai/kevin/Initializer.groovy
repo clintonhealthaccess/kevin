@@ -52,6 +52,7 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ValueType;
 import org.chai.kevin.survey.*;
+import org.chai.kevin.survey.validation.SurveySkipRule;
 import org.chai.kevin.survey.validation.SurveyValidationMessage;
 import org.chai.kevin.survey.validation.SurveyValidationRule;
 import org.chai.kevin.dsr.DsrObjective;
@@ -843,7 +844,7 @@ class Initializer {
 				descriptions: j(["en":"Core Facility Identify"]),
 				order: 1,
 				dependency: serviceDev,
-				groupUuidString: "District Hospital",
+				groupUuidString: "District Hospital,Health Center",
 			)
 
 			def finance = new SurveyObjective(
@@ -1116,6 +1117,7 @@ class Initializer {
 			checkBoxQ.addCheckboxOption(option3)
 			checkBoxQ.save(failOnError:true)
 
+
 			//Adding a table type question
 			def tableQ = new SurveyTableQuestion(
 				names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
@@ -1172,6 +1174,16 @@ class Initializer {
 			dataElmntsLine1.put(tabColumnThree, surveyElementTable3)
 			dataElmntsLine1.put(tabColumnFour, surveyElementTable4)
 
+			def ruleTable1 = new SurveyValidationRule(
+				surveyElement: surveyElementTable1,
+				expression: "["+surveyElementTable1.id+"] < 100",
+				validationMessage: surveyValidationMessage,
+				dependencies: [surveyElementTable1],
+				allowOutlier: false
+			).save(failOnError: true)
+			surveyElementTable1.addValidationRule(ruleTable1)
+			surveyElementTable1.save(failOnError: true)
+			
 			Map<SurveyTableColumn,SurveyElement> dataElmntsLine2= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
 			def surveyElementTable21 = new SurveyElement(dataElement: DataElement.findByCode("CODE81"), surveyQuestion: tableQ).save(failOnError: true)
@@ -1183,7 +1195,7 @@ class Initializer {
 			dataElmntsLine2.put(tabColumnTwo, surveyElementTable22)
 			dataElmntsLine2.put(tabColumnThree, surveyElementTable23)
 			dataElmntsLine2.put(tabColumnFour, surveyElementTable24)
-
+			
 			//Add rows
 			def tabRowOne = new SurveyTableRow(
 				names: j(["en":"Clinical Pharmacy :"]),
@@ -1206,6 +1218,29 @@ class Initializer {
 			tableQ.addRow(tabRowTwo)
 			tableQ.save(failOnError:true)
 
+			
+			def ruleCheckbox = new SurveyValidationRule(
+				surveyElement: surveyElementChecboxQ3,
+				expression: "if(["+surveyElementTable21.id+"] < 100, ["+surveyElementChecboxQ3.id+"]==1, 1==1)",
+				validationMessage: surveyValidationMessage,
+				dependencies: [surveyElementTable21],
+				allowOutlier: false
+			).save(failOnError: true)
+			surveyElementChecboxQ3.addValidationRule(ruleCheckbox)
+			surveyElementChecboxQ3.save(failOnError: true)
+			
+			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedSurveyElements: [surveyElementTable2]);
+			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "["+surveyElementTable1.id+"]==1", skippedSurveyElements: [surveyElementTable22, surveyElementTable3]);
+			def skipRule3 = new SurveySkipRule(survey: surveyOne, expression: "["+surveyElementTable1.id+"]==2", skippedSurveyQuestions: [checkBoxQ]);
+			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "["+surveyElementPatientQ1.id+"]==1000", skippedSurveyQuestions: [tableQ], skippedSurveyElements: [surveyElementChecboxQ1]);
+			
+			surveyOne.addSkipRule(skipRule1)
+			surveyOne.addSkipRule(skipRule2)
+			surveyOne.addSkipRule(skipRule3)
+			surveyOne.addSkipRule(skipRule4)
+			
+			surveyOne.save()
+			
 		}
 	}
 

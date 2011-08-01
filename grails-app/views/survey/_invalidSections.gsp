@@ -4,15 +4,11 @@
 	
 	<g:each in="${questions}" var="question" status="j">
 		<div class="invalid-question ${i!=0||j!=0?'hidden':''}">
-			<div class="rounded-box-top">
-				<h5>
-					<g:i18n field="${section.names}" />
-				</h5>
-			</div>
 			<div class="rounded-box-bottom">
-				<div class="question errors">
+				<h5>In section: <g:i18n field="${section.names}" /> </h5>
+				<div class="question-container">
 					<!-- separation -->
-					<g:render template="/survey/question/${question.getTemplate()}" model="[question: question, surveyElementValues: surveyPage.surveyElements]" />
+					<g:render template="/survey/question/${question.getType()}" model="[question: question, surveyPage: surveyPage]" />
 				</div> 
 				<g:if test="${i!=0||j!=0}">
 					<a href="#" onclick="$(this).parents('.invalid-question').hide();$(this).parents('.invalid-question').prev().show();">previous</a>

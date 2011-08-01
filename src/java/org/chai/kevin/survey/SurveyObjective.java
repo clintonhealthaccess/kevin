@@ -131,6 +131,15 @@ public class SurveyObjective extends SurveyTranslatable {
 		this.dependency = dependency;
 	}
 	
+//	@Transient
+//	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
+//		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
+//		for (SurveySection surveySection : getSections(group)) {
+//			result.addAll(surveySection.getQuestions(group));
+//		}
+//		return result;
+//	}
+	
 	@Transient
 	public List<SurveySection> getSections(OrganisationUnitGroup group) {
 		List<SurveySection> result = new ArrayList<SurveySection>();

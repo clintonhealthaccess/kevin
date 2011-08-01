@@ -39,6 +39,7 @@ public class SurveyEnteredValue {
 	private String value;
 	private OrganisationUnit organisationUnit;
 	
+	private Boolean skipped;
 	private Boolean valid;
 	private List<Long> acceptedWarnings = new ArrayList<Long>();
 	
@@ -100,6 +101,15 @@ public class SurveyEnteredValue {
 	
 	public void setAcceptedWarnings(List<Long> acceptedWarnings) {
 		this.acceptedWarnings = acceptedWarnings;
+	}
+	
+	@Basic
+	public Boolean getSkipped() {
+		return skipped;
+	}
+	
+	public void setSkipped(Boolean skipped) {
+		this.skipped = skipped;
 	}
 	
 	@Basic

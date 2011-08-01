@@ -32,9 +32,11 @@ package org.chai.kevin.survey;
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,8 +45,9 @@ import org.chai.kevin.ValueService;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
+import org.chai.kevin.survey.validation.SurveyEnteredValue;
+import org.chai.kevin.survey.validation.SurveyValidationRule;
 import org.chai.kevin.value.DataValue;
-import org.hisp.dhis.datavalue.DataValueService;
 import org.hisp.dhis.period.Period;
 
 /**
@@ -59,23 +62,32 @@ public class SurveyPage {
 	public static enum SectionStatus{CLOSED, UNAVAILABLE, COMPLETE, INVALID, INCOMPLETE} 
 	
 	// we need a map for data binding to work
+	// all entered survey elements displayed on the page
 	private Map<Long, SurveyElementValue> surveyElements;
-
+	
 	private Organisation organisation;
+	private Survey survey;
 	private SurveyObjective objective;
 	private SurveySection currentSection;
 	
+	// entered values for the whole objective
+	private Map<SurveyElement, SurveyEnteredValue> enteredValues;
+	
 	private Map<SurveyObjective, SurveyEnteredObjective> enteredObjectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
+	private Set<SurveyQuestion> skippedQuestions = new HashSet<SurveyQuestion>();
 	
 	public SurveyPage(){}
 
 	public SurveyPage(Organisation organisation, 
-			SurveyObjective objective, SurveySection currentSection, 
+			Survey survey, SurveyObjective objective, SurveySection currentSection, 
+			Map<SurveyElement, SurveyEnteredValue> enteredValues,
 //			Map<SurveyObjective, SurveyEnteredObjective> enteredObjectives, 
 			Map<Long, SurveyElementValue> surveyElements) {
 		this.organisation = organisation;
+		this.survey = survey;
 		this.objective = objective;
 		this.currentSection = currentSection;
+		this.enteredValues = enteredValues;
 //		this.enteredObjectives = enteredObjectives;
 		this.surveyElements = surveyElements;
 	}
@@ -90,8 +102,8 @@ public class SurveyPage {
 	}
 	// DATA-BINDING END
 	
-	public SurveyElementValue getSurveyElementValue(Long id) {
-		return surveyElements.get(id);
+	public Map<SurveyElement, SurveyEnteredValue> getEnteredValues() {
+		return enteredValues;
 	}
 	
 	public Period getPeriod() {
@@ -103,7 +115,7 @@ public class SurveyPage {
 	}
 
 	public Survey getSurvey() {
-		return objective.getSurvey();
+		return survey;
 	}
 	
 	public Organisation getOrganisation() {
@@ -114,39 +126,8 @@ public class SurveyPage {
 		return currentSection;
 	}
 	
-//	public SurveyEnteredObjective getEnteredObjective(SurveyObjective objective) {
-//		return enteredObjectives.get(objective);
-//	}
-	
-	public List<SurveySection> getIncompleteSections() {
-		List<SurveySection> result = new ArrayList<SurveySection>();
-		section: for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
-			for (SurveyElement element : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-				if (surveyElements.get(element.getId()).getSurveyEnteredValue() == null) { 
-					result.add(section);
-					continue section;
-				}
-			}
-		}
-		
-		return result;
-	}
-	
-	public Map<SurveySection, List<SurveyQuestion>> getInvalidQuestions() {
-		Map<SurveySection, List<SurveyQuestion>> result = new LinkedHashMap<SurveySection, List<SurveyQuestion>>();
-		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
-			List<SurveyQuestion> invalidQuestions = new ArrayList<SurveyQuestion>();
-			question: for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
-				for (SurveyElement element : question.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-					if (!surveyElements.get(element.getId()).isValid()) { 
-						invalidQuestions.add(question);
-						continue question;
-					}
-				}
-			}
-			if (!invalidQuestions.isEmpty()) result.put(section, invalidQuestions);
-		}
-		return result;
+	public boolean isSkipped(SurveyQuestion surveyQuestion) {
+		return skippedQuestions.contains(surveyQuestion);
 	}
 	
 	public boolean canSubmit() {
@@ -154,9 +135,11 @@ public class SurveyPage {
 	}
 	
 	public boolean isValid(SurveyQuestion question) {
-		for (SurveyElement element : question.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-			SurveyElementValue value = surveyElements.get(element.getId());
-			if (!value.isValid()) return false;
+		if (!skippedQuestions.contains(question)) {
+			for (SurveyElement element : question.getSurveyElements(organisation.getOrganisationUnitGroup())) {
+				SurveyEnteredValue value = enteredValues.get(element);
+				if (!value.getSkipped() && !value.getValid()) return false;
+			}
 		}
 		return true;
 	}
@@ -170,13 +153,20 @@ public class SurveyPage {
 		
 		SectionStatus status = SectionStatus.COMPLETE;
 		for (SurveyElement element : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-			SurveyElementValue value = surveyElements.get(element.getId());
-			if (!value.isValid()) {
-				status = SectionStatus.INVALID;
-				break;
-			}
-			if (value.getSurveyEnteredValue() == null) {
-				status = SectionStatus.INCOMPLETE;
+			if (skippedQuestions.contains(element.getSurveyQuestion())) continue;
+			
+			SurveyEnteredValue enteredValue = enteredValues.get(element);
+			
+			if (!enteredValue.getSkipped()) {
+				if (enteredValue.getValue() == null) {
+					status = SectionStatus.INCOMPLETE;
+				}
+				else {
+					if (!enteredValue.getValid()) {
+						status = SectionStatus.INVALID;
+						break;
+					}
+				}
 			}
 		}
 		return status;
@@ -228,71 +218,179 @@ public class SurveyPage {
 		return status;
 	}
 	
-	public void sanitizeValues() {
+
+	// for JSON answer
+	public List<SurveyElement> getSkippedElements() {
+		List<SurveyElement> result = new ArrayList<SurveyElement>();
+		for (SurveyEnteredValue surveyEnteredValue : enteredValues.values()) {
+			if (surveyEnteredValue.getSkipped()) result.add(surveyEnteredValue.getSurveyElement());
+		}
+		return result;
+	}
+	
+	// for JSON answer
+	public List<SurveyQuestion> getSkippedQuestions() {
+		return new ArrayList<SurveyQuestion>(skippedQuestions);
+	}
+	
+	// for JSON answer
+	public List<SurveySection> getIncompleteSections() {
+		List<SurveySection> result = new ArrayList<SurveySection>();
+		section: for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
+			for (SurveyElement element : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
+				SurveyEnteredValue enteredValue = enteredValues.get(element);
+				if (!enteredValue.getSkipped() && enteredValue.getValue() == null) { 
+					result.add(section);
+					continue section;
+				}
+			}
+		}
+		
+		return result;
+	}
+	// for JSON answer
+	public Map<SurveySection, List<SurveyQuestion>> getInvalidQuestions() {
+		Map<SurveySection, List<SurveyQuestion>> result = new LinkedHashMap<SurveySection, List<SurveyQuestion>>();
+		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
+			List<SurveyQuestion> invalidQuestions = new ArrayList<SurveyQuestion>();
+			for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
+				if (!isValid(question)) invalidQuestions.add(question);
+			}
+			if (!invalidQuestions.isEmpty()) result.put(section, invalidQuestions);
+		}
+		return result;
+	}
+	
+	
+	// side-effect method
+	public void transferValues(ValidationService validationService, SurveyElementService surveyElementService) {
+		// we sanitize the element values
 		for (SurveyElementValue surveyElementValue : surveyElements.values()) {
 			surveyElementValue.sanitizeValues(this);	
 		}
-	}
-	
-	public void transferValuesAndValidate(ValidationService validationService) {
+		
+		// we transfer the values to the entered element value
 		for (SurveyElementValue surveyElementValue : surveyElements.values()) {
-			surveyElementValue.transferValuesAndValidate(this, validationService);
+			SurveyEnteredValue enteredValue = enteredValues.get(surveyElementValue.getSurveyElement());
+			if ((surveyElementValue.getValue() == null && enteredValue.getValue() != null) ||
+				(surveyElementValue.getValue() != null && !surveyElementValue.getValue().equals(enteredValue.getValue()))
+			) {
+				// the value changed
+				enteredValue.setAcceptedWarnings(new ArrayList<Long>());
+				enteredValue.setValue(surveyElementValue.getValue());
+			}
+			else {
+				// the value didn't change
+				if (!surveyElementValue.getAcceptedWarnings().isEmpty()) {
+					enteredValue.getAcceptedWarnings().addAll(surveyElementValue.getAcceptedWarnings());
+				}
+			}
 		}
 	}
 	
-	public void userValidation(ValidationService validationService) {
-		for (SurveyElementValue surveyElementValue : surveyElements.values()) {
-			surveyElementValue.userValidation(this, validationService);
+	// side-effect method
+	// TODO create entered objectives and entered values at survey initialization
+	public void createEnteredValues(SurveyElementService surveyElementService) {
+		// we create all entered values
+		for (SurveySection surveySection : objective.getSections(organisation.getOrganisationUnitGroup())) {
+			for (SurveyElement surveyElement : surveySection.getSurveyElements(organisation.getOrganisationUnitGroup())) {
+				SurveyEnteredValue enteredValue = enteredValues.get(surveyElement);
+				if (enteredValue == null) {
+					enteredValue = new SurveyEnteredValue(surveyElement, organisation.getOrganisationUnit(), null);
+					surveyElementService.save(enteredValue);
+					enteredValues.put(enteredValue.getSurveyElement(), enteredValue);
+				}
+			}
 		}
 	}
 	
-	public void initializeObjectiveStatus(SurveyElementService surveyElementService) {
+	// side-effect method
+	public void userValidation(ValidationService validationService, SurveyElementService surveyElementService) {
+		
+		// we validate
+		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
+			// skipped questions
+			for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
+				if (validationService.isSkipped(this, question)) skippedQuestions.add(question);
+			}
+			
+			// skipped survey elements
+			for (SurveyElement surveyElement : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
+				SurveyElementValue elementValue = surveyElements.get(surveyElement.getId());
+				SurveyEnteredValue enteredValue = enteredValues.get(surveyElement);
+				if (skippedQuestions.contains(surveyElement.getSurveyQuestion()) || validationService.isSkipped(this, surveyElement)) {
+					enteredValue.setSkipped(true);
+				}
+				else enteredValue.setSkipped(false);
+				
+				Set<SurveyValidationRule> errors = new HashSet<SurveyValidationRule>();
+				Set<SurveyValidationRule> warnings = new HashSet<SurveyValidationRule>();
+				if (enteredValue.getValue() != null) {
+					for (SurveyValidationRule validationRule : enteredValue.getSurveyElement().getValidationRules()) {
+						if (!validationService.validate(this, enteredValue.getSurveyElement(), validationRule)) {
+							if (!validationRule.getAllowOutlier()) errors.add(validationRule);
+							else {
+								if (!enteredValue.getAcceptedWarnings().contains(validationRule.getId())) warnings.add(validationRule);
+							}
+						}
+					}
+				}
+				if (elementValue != null) {
+					elementValue.setInvalidErrors(errors);
+					elementValue.setInvalidWarnings(warnings);
+				}
+				enteredValue.setValid(errors.isEmpty() && warnings.isEmpty());
+			}
+		}
+		
+		// survey objective status
+		// TODO create entered objectives and entered values at survey initialization
 		for (SurveyObjective surveyObjective : objective.getSurvey().getObjectives(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredObjective enteredObjective = surveyElementService.getSurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit());
 			if (enteredObjective == null) {
 				enteredObjective = new SurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit());
 			}
 			enteredObjective.setStatus(getStatus(surveyObjective, surveyElementService));
-			surveyElementService.save(enteredObjective);
 			enteredObjectives.put(surveyObjective, enteredObjective);
 		}
 	}
 	
-	public void persistState(SurveyElementService surveyElementService, List<SurveyElement> elements) {
-		SurveyEnteredObjective enteredObjective = enteredObjectives.get(objective);
-		if (enteredObjective.getStatus() == ObjectiveStatus.CLOSED || enteredObjective.getStatus() == ObjectiveStatus.UNAVAILABLE) 
+	// side-effect method
+	public void persistState(SurveyElementService surveyElementService) {
+		SurveyEnteredObjective currentEnteredObjective = enteredObjectives.get(objective);
+		if (currentEnteredObjective.getStatus() == ObjectiveStatus.CLOSED || currentEnteredObjective.getStatus() == ObjectiveStatus.UNAVAILABLE) 
 			throw new IllegalStateException("trying to persist the state of a closed or unavailable objective");
 		
-		for (SurveyElement surveyElement : elements) {
-			SurveyElementValue surveyElementValue = surveyElements.get(surveyElement.getId());
-			if (surveyElementValue.getSurveyEnteredValue() != null) surveyElementService.save(surveyElementValue.getSurveyEnteredValue());
+		for (SurveyEnteredValue surveyEnteredValue : enteredValues.values()) {
+			surveyElementService.save(surveyEnteredValue);
 		}
 		
-		ObjectiveStatus status = getStatus(objective, surveyElementService);
-		enteredObjective.setStatus(status);
-		surveyElementService.save(enteredObjective);
-
-		initializeObjectiveStatus(surveyElementService);
+		for (SurveyEnteredObjective enteredObjective : enteredObjectives.values()) {
+			surveyElementService.save(enteredObjective);
+		}
 	}
 	
+	// side-effect method
 	public void submit(SurveyElementService surveyElementService, ValueService valueService) {
 		if (log.isDebugEnabled()) log.debug("submit()");
+		// TODO throw that away if objective is not closed
 		
-		for (SurveyElementValue surveyElementValue : surveyElements.values()) {
-			DataElement dataElement = surveyElementValue.getSurveyElement().getDataElement();
+		for (SurveyEnteredValue enteredValue : enteredValues.values()) {
+			// we don't save skipped data values
+			if (enteredValue.getSkipped() || isSkipped(enteredValue.getSurveyElement().getSurveyQuestion())) continue;
+			
+			DataElement dataElement = enteredValue.getSurveyElement().getDataElement();
 			DataValue value = valueService.getValue(dataElement, organisation.getOrganisationUnit(), getPeriod());
 			if (value == null) {
 				value = new DataValue(dataElement, organisation.getOrganisationUnit(), getPeriod(), null);
 			}
-			value.setValue(surveyElementValue.getSurveyEnteredValue().getValue());
+			value.setValue(enteredValue.getValue());
 			valueService.save(value);
 		}
 		
-		SurveyEnteredObjective enteredObjective = enteredObjectives.get(objective);
-		enteredObjective.setStatus(ObjectiveStatus.CLOSED);
-		surveyElementService.save(enteredObjective);
-		
-		initializeObjectiveStatus(surveyElementService);
+		SurveyEnteredObjective currentEnteredObjective = enteredObjectives.get(objective);
+		currentEnteredObjective.setStatus(ObjectiveStatus.CLOSED);
+		surveyElementService.save(currentEnteredObjective);
 	}
 	
 	@Override

@@ -10,9 +10,6 @@ import org.chai.kevin.ExpressionService;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveySkipRule;
 import org.chai.kevin.survey.validation.SurveyValidationRule;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ValidationService {
@@ -20,45 +17,63 @@ public class ValidationService {
 	
 	private SurveyElementService surveyElementService;
 	
-//	@Transactional(readOnly=true)
-//	public boolean isSkipped(SurveyPage surveyPage, SurveyElement surveyElement) {
-//		Set<SurveySkipRule> skipRules = surveyElementService.getSkipRules(surveyElement);
-//		for (SurveySkipRule skipRule : skipRules) {
-//			boolean result = evaluate(surveyPage, surveyElementValueToCheck, skipRule.getExpression());
-//		}
-//		
-//		if (log.isDebugEnabled()) log.debug("skipPattern(...)="+result);
-//		return result;		
-//	}
+	@Transactional(readOnly=true)
+	public boolean isSkipped(SurveyPage surveyPage, SurveyElement surveyElement) {
+		if (log.isDebugEnabled()) log.debug("isSkipped(surveyPage="+surveyPage+", surveyElement="+surveyElement+")");
+		
+		boolean result = false;
+		Set<SurveySkipRule> skipRules = surveyElementService.getSkipRules(surveyElement);
+		for (SurveySkipRule skipRule : skipRules) {
+			result = result | evaluate(surveyPage, skipRule.getExpression());
+		}
+		
+		if (log.isDebugEnabled()) log.debug("isSkipped(...)="+result);
+		return result;		
+	}
+	
+	@Transactional(readOnly=true)
+	public boolean isSkipped(SurveyPage surveyPage, SurveyQuestion surveyQuestion) {
+		if (log.isDebugEnabled()) log.debug("isSkipped(surveyPage="+surveyPage+", surveyQuestion="+surveyQuestion+")");
+		
+		boolean result = false;
+		Set<SurveySkipRule> skipRules = surveyElementService.getSkipRules(surveyQuestion);
+		for (SurveySkipRule skipRule : skipRules) {
+			result = result | evaluate(surveyPage, skipRule.getExpression());
+		}
+		
+		if (log.isDebugEnabled()) log.debug("isSkipped(...)="+result);
+		return result;		
+	}
 	
 	@Transactional(readOnly=true)
 	public boolean validate(SurveyPage surveyPage, SurveyElement surveyElement, SurveyValidationRule validationRule) {
 		if (log.isDebugEnabled()) log.debug("validate(value="+surveyElement+", validationRule="+validationRule+")");
-		boolean result = evaluate(surveyPage, surveyElement, validationRule.getExpression());
+		boolean result = evaluate(surveyPage, validationRule.getExpression());
 		if (log.isDebugEnabled()) log.debug("validate(...)="+result);
 		return result;
 	}
 	
-	private boolean evaluate(SurveyPage surveyPage, SurveyElement surveyElementToCheck, String expression) {
+	private boolean evaluate(SurveyPage surveyPage, String expression) {
+		if (log.isDebugEnabled()) log.debug("evaluate(surveyPage="+surveyPage+", expression="+expression+")");
 		Set<String> placeholders = ExpressionService.getPlaceholders(expression);
 		
 		Map<String, String> replace = new HashMap<String, String>();
 		for (String placeholder : placeholders) {
 			Long id = Long.parseLong(placeholder);
-			SurveyElementValue surveyElementValue = surveyPage.getSurveyElementValue(Long.parseLong(placeholder));
-			
+			SurveyElement surveyElement = surveyElementService.getSurveyElement(id);
 			String value = null;
-			if (surveyElementValue != null) {
-				value = surveyElementValue.getSurveyEnteredValue().getValue();
-			}
-			else {
-				SurveyElement surveyElement = surveyElementService.getSurveyElement(id);
-				if (surveyElement != null) {
+			if (surveyElement != null) {
+				SurveyEnteredValue surveyEnteredValue = surveyPage.getEnteredValues().get(surveyElement);
+				if (surveyEnteredValue != null) {
+					// we check something on the same section
+					value = surveyEnteredValue.getValue();
+				}
+				else {
 					SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(surveyElement, surveyPage.getOrganisation().getOrganisationUnit());
 					if (enteredValue != null) value = enteredValue.getValue();
 				}
-				else if (log.isErrorEnabled()) log.error("expression "+expression+" refers to unknown survey element: "+id);
 			}
+			else if (log.isErrorEnabled()) log.error("expression "+expression+" refers to unknown survey element: "+id);
 			String replacement = String.valueOf(value);
 			replace.put(placeholder, replacement);
 		}
@@ -72,6 +87,7 @@ public class ValidationService {
 		}
 		else result = true;
 		
+		if (log.isDebugEnabled()) log.debug("evaluate(...)="+result);
 		return result;
 	}
 

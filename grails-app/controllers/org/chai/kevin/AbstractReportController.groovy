@@ -1,4 +1,4 @@
-package org.chai.kevin
+package org.chai.kevin;
 
 /*
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -31,6 +31,7 @@ package org.chai.kevin
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.cost.CostObjective;
 import org.chai.kevin.cost.CostTarget;
+import org.chai.kevin.dashboard.DashboardEntry;
 import org.chai.kevin.dashboard.DashboardObjectiveService;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
@@ -47,32 +48,36 @@ import org.chai.kevin.survey.SurveyQuestion
 import org.chai.kevin.survey.SurveyObjective
 import org.chai.kevin.survey.SurveySection;
 import org.chai.kevin.survey.SurveyTranslatable;
+import org.chai.kevin.survey.SurveyQuestion;
+import org.hibernate.SessionFactory;
+
 
 abstract class AbstractReportController {
 
+	SessionFactory sessionFactory;
 	DashboardObjectiveService dashboardObjectiveService;
 	OrganisationService organisationService;
 	DsrObjectiveService dsrObjectiveService;
 	DataService dataService;
 
-	protected def getDashboardObjective() {
-		DashboardObjective objective = null
+	protected def getDashboardEntry() {
+		DashboardEntry entry = null
 		try {
 			if (NumberUtils.isNumber(params['objective'])) {
-				objective = DashboardObjective.get(params['objective']);
-				if (objective == null) {
-					objective = DashboardTarget.get(params['objective']);
+				entry = DashboardObjective.get(params['objective']);
+				if (entry == null) {
+					entry = DashboardTarget.get(params['objective']);
 				}
 			}
-			if (objective == null) {
-				objective = dashboardObjectiveService.getRootObjective()
+			if (entry == null) {
+				entry = dashboardObjectiveService.getRootObjective()
 			}
 		}
 		catch (IllegalStateException e) {
 			// TODO
 			redirect (controller: '', action: '')
 		}
-		return objective
+		return entry
 	}
 
 	protected def getCostObjective() {
@@ -238,20 +243,40 @@ abstract class AbstractReportController {
 		return objective;
 	}
 
-	protected def getSurveySection(def defaultIsNull){
-		SurveyTranslatable section = null
+	protected def getSurveySection(){
+		SurveySection section = null
 		try{
 			if(NumberUtils.isNumber(params['section'])){
 				section = SurveySection.get(params['section']);
-			}
-			if (section == null && defaultIsNull) {
-				List<SurveySection> sections = getSurveyObjective(true).getSections();
-				section = sections[0];
 			}
 		}catch(IllegalStateException e){
 			redirect (controller: '', action: '')
 		}
 		return section
+	}
+	
+	protected def getSurveyQuestion() {
+		SurveyQuestion question = null;
+		try {
+			if(NumberUtils.isNumber(params['question'])){
+				question = sessionFactory.currentSession.get(SurveyQuestion.class, Long.parseLong(params['question']))
+			}
+		} catch(IllegalStateException e) {
+			redirect (controller: '', action: '')
+		}
+		return question;
+	}
+	
+	protected def getSurvey() {
+		Survey survey = null;
+		try {
+			if(NumberUtils.isNumber(params['survey'])){
+				survey = sessionFactory.currentSession.get(Survey.class, Long.parseLong(params['survey']))
+			}
+		} catch(IllegalStateException e) {
+			redirect (controller: '', action: '')
+		}
+		return survey;
 	}
 	
 	protected def getSurveyElement() {

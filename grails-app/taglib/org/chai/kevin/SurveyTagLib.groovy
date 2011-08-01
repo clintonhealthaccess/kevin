@@ -16,7 +16,7 @@ class SurveyTagLib {
 			out << "<ul>"
 			surveyElementValue.displayedErrors.each { rule ->
 				out << "<li>"
-				def message = replacePlaceHolders(g.i18n(field: rule.validationMessage.messages).toString(), rule.dependencies, surveyElementValue.surveyEnteredValue.organisationUnit)
+				def message = replacePlaceHolders(g.i18n(field: rule.validationMessage.messages).toString(), rule.dependencies, surveyElementValue.organisation.organisationUnit)
 				if (!rule.allowOutlier) out << message 
 				else out << g.render(template:"/survey/outlier", model: [message: message, surveyElement: surveyElementValue.surveyElement, rule: rule])
 				out << "</li>"	
@@ -34,7 +34,7 @@ class SurveyTagLib {
 			SurveySection section = surveyElement.surveyQuestion.section
 			Survey survey = section.objective.survey 
 			String replacement = 
-				'<a href="'+g.createLink(controller: "survey", action: "surveyPage", params: [survey: survey.id, section: section.id, organisation: organisationUnit.id], fragment: 'element-'+surveyElement.id)+'">'+
+				'<a href="'+g.createLink(controller: "survey", action: "sectionPage", params: [section: section.id, organisation: organisationUnit.id], fragment: 'element-'+surveyElement.id)+'">'+
 				surveyElement.id +
 				'</a>'
 			result = StringUtils.replace(result, "{"+integer+"}", replacement);

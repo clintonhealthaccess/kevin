@@ -13,21 +13,22 @@ public class SurveyElementValue {
 	
 	private static Log log = LogFactory.getLog(SurveyElementValue.class)
 	
+//	SurveyEnteredValue surveyEnteredValue;
 	SurveyElement surveyElement;
-	SurveyEnteredValue surveyEnteredValue;
 	Organisation organisation;
 	String value;
+	List<Long> acceptedWarnings = [];
 	
-	List<SurveyValidationRule> invalidErrors = [];
-	List<SurveyValidationRule> invalidWarnings = [];
+//	Boolean skipped = false;
+	Set<SurveyValidationRule> invalidErrors = [];
+	Set<SurveyValidationRule> invalidWarnings = [];
+	
 	
 	public SurveyElementValue() {}
 	
-	public SurveyElementValue(SurveyElement surveyElement, SurveyEnteredValue surveyEnteredValue, Organisation organisation, String value) {
+	public SurveyElementValue(SurveyElement surveyElement, Organisation organisation) {
 		this.surveyElement = surveyElement;
-		this.surveyEnteredValue = surveyEnteredValue;
 		this.organisation = organisation;
-		this.value = value;
 	}
 				
 	void sanitizeValues(SurveyPage page) {
@@ -51,12 +52,12 @@ public class SurveyElementValue {
 		if (surveyElement.surveyQuestion instanceof SurveyCheckboxQuestion) {
 			boolean reset = true;
 			for (SurveyElement element : surveyElement.surveyQuestion.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-				SurveyElementValue elementValue = page.getSurveyElementValue(element.id);
+				SurveyElementValue elementValue = page.getSurveyElements()[element.id];
 				if (elementValue.value != null && elementValue.value != "0") reset = false; 
 			}
 			if (reset) {
 				for (SurveyElement element : surveyElement.surveyQuestion.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-					SurveyElementValue elementValue = page.getSurveyElementValue(element.id);
+					SurveyElementValue elementValue = page.getSurveyElements()[element.id];
 					elementValue.value = null;
 				}
 			}
@@ -64,56 +65,49 @@ public class SurveyElementValue {
 	}
 
 	
-	void transferValuesAndValidate(SurveyPage page, ValidationService validationService) {
-		log.debug("new value="+value+", present value="+surveyEnteredValue?.value)
-		
-		if (value == null && surveyEnteredValue != null) {
-			surveyEnteredValue.delete();
-			surveyEnteredValue = null;	
-		} 
-		if (value != null) {
-			if (surveyEnteredValue == null) surveyEnteredValue = new SurveyEnteredValue(surveyElement, organisation.getOrganisationUnit(), value)
-			if (value != surveyEnteredValue.value) surveyEnteredValue.acceptedWarnings = []
-			surveyEnteredValue.value = value;
-			userValidation(page, validationService);
-			surveyEnteredValue.valid = isValid();
-		}
-	}
+//	void transferValue(SurveyPage page, SurveyEnteredValue enteredValue, ValidationService validationService) {
+//		log.debug("new value="+value+", present value="+surveyEnteredValue?.value)
+//		
+//		if (value == null && enteredValue != null) {
+//			enteredValue.delete();
+//		} 
+//		if (value != null) {
+//			if (enteredValue == null) surveyEnteredValue = new SurveyEnteredValue(enteredValue.surveyElement, organisation.getOrganisationUnit(), value)
+//			if (value != surveyEnteredValue.value) surveyEnteredValue.acceptedWarnings = []
+//			surveyEnteredValue.value = value;
+//		}
+//	}
 	
-	void skipPatterns(SurveyPage surveyPage, ValidationService validationService) {
-		if (log.isDebugEnabled()) log.debug("userValidation(...)");
-		if (surveyEnteredValue != null) {
-			surveyElement.skipRules.each { rule ->
-				if (!validationService.skipPattern(surveyPage, this, rule)) {
-					
-				}
-			}
-		}
-	}
+//	void userValidation(SurveyPage surveyPage, SurveyEnteredValue enteredValue, ValidationService validationService) {
+//		if (log.isDebugEnabled()) log.debug("userValidation(...)");
+//		
+//		if (surveyPage.isSkipped(enteredValue.surveyElement.surveyQuestion) 
+//			|| validationService.isSkipped(surveyPage, enteredValue.surveyElement)) {
+//			skipped = true;
+//		}
+//		else if (enteredValue != null) { 
+//			enteredValue.surveyElement.validationRules.each { rule ->
+//				if (!validationService.validate(surveyPage, enteredValue.surveyElement, rule)) {
+//					if (!rule.allowOutlier) invalidErrors.add(rule);
+//					else {
+//						if (!enteredValue.acceptedWarnings.contains(rule.id)) {
+//							invalidWarnings.add(rule);
+//						}
+//					}
+//				}
+//			}
+//		}
+//		
+//		if (log.isDebugEnabled()) log.debug("validation done, invalidErrors: "+invalidErrors+", invalidWarnings: "+invalidWarnings)
+//	}
 	
-	void userValidation(SurveyPage surveyPage, ValidationService validationService) {
-		if (log.isDebugEnabled()) log.debug("userValidation(...)");
-		if (surveyEnteredValue != null) { 
-			// TODO do type validation
-	//		if (!dataValue.validate()) return false;
-			
-			surveyElement.validationRules.each { rule ->
-				if (!validationService.validate(surveyPage, surveyElement, rule)) {
-					if (!rule.allowOutlier) invalidErrors.add(rule);
-					else {
-						if (!surveyEnteredValue.acceptedWarnings.contains(rule.id)) {
-							invalidWarnings.add(rule);
-						}
-					}
-				}
-			}
-		}
-		if (log.isDebugEnabled()) log.debug("validation done, invalidErrors: "+invalidErrors+", invalidWarnings: "+invalidWarnings)
-	}
+//	boolean isSkipped() {
+//		return skipped;
+//	}
 	
-	boolean isValid() {
-		return invalidErrors.isEmpty() && invalidWarnings.isEmpty() 
-	}
+//	boolean isValid() {
+//		return invalidErrors.isEmpty() && invalidWarnings.isEmpty() 
+//	}
 	
 	def getDisplayedErrors() {
 		if (!invalidErrors.isEmpty()) return invalidErrors;
@@ -147,7 +141,7 @@ public class SurveyElementValue {
 
 	@Override
 	public String toString() {
-		return "SurveyElementValue [surveyElement=" + surveyElement + ", enteredValue=" + surveyEnteredValue + "]";
+		return "SurveyElementValue [surveyElement=" + surveyElement + ", value=" + value + ", acceptedWarnings=" + acceptedWarnings + "]";
 	}
 	
 }

@@ -1,11 +1,13 @@
 <!-- Enum type question -->
-<g:set var="surveyElement" value="${surveyElementValue.surveyElement}"/>
-<g:set var="surveyEnteredValue" value="${surveyElementValue.surveyEnteredValue}"/>
+<g:set var="surveyEnteredValue" value="${surveyPage.enteredValues[surveyElement]}"/>
+<g:set var="surveyElementValue" value="${surveyPage.surveyElements[surveyElement.id]}"/>
 
-<div class="element element-enum" data-element="${surveyElement.id}">
+<div class="element element-enum element-${surveyElement.id} ${surveyEnteredValue.skipped?'skipped':''} ${!surveyEnteredValue.valid?'errors':''}" data-element="${surveyElement.id}">
 	<a name="element-${surveyElement.id}"></a>
+	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
+	
 	<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id"/>
-	<select name="surveyElements[${surveyElement.id}].value" onchange="surveyValueChanged($(this).parents('.element').data('element'), this);" ${readonly?'disabled="disabled"':''}>
+	<select name="surveyElements[${surveyElement.id}].value" ${readonly?'disabled="disabled"':''}>
 		<option value="null">Select</option>
 		<g:each in="${surveyElement.dataElement.enume?.enumOptions}" var="option">
 			<option value="${option.value}"  ${option?.value==surveyEnteredValue?.value ? 'selected':''}>
