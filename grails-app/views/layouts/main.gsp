@@ -23,8 +23,8 @@
 	<g:javascript src="richeditor/nicEdit.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
 	<g:javascript library="application" />
-	<!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
-	<!--<ga:trackPageviewAsynch />-->
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<ga:trackPageviewAsynch />
 </head>
 <body class="bp two-columns">
 
@@ -50,14 +50,16 @@
 				    <g:ifAdmin>
 					<li><a href="${createLink(controller: 'survey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 					</g:ifAdmin>
-					<li><a href="#"><g:message code="header.navigation.reports" default="Reports"/></a>
-						<ul class="submenu">
-							<li><a href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.dashboard" default="Dashboard"/></a></li>
-							<li><a href="${createLink(controller: 'cost', action:'view')}"><g:message code="header.navigation.costing" default="Costing"/></a></li>
-							<li><a href="${createLink(controller: 'dsr', action:'view')}"><g:message code="header.navigation.dsr" default="District Summary Reports"/></a></li>
-							<li><a href="${createLink(controller: 'maps', action:'view')}"><g:message code="header.navigation.maps" default="Maps"/></a></li>
-						</ul>
-					</li>
+					<shiro:hasPermission permission="dashboard|cost|dsr|maps|survey:view">
+						<li><a href="#"><g:message code="header.navigation.reports" default="Reports"/></a>
+							<ul class="submenu">
+								<li><a href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.dashboard" default="Dashboard"/></a></li>
+								<li><a href="${createLink(controller: 'cost', action:'view')}"><g:message code="header.navigation.costing" default="Costing"/></a></li>
+								<li><a href="${createLink(controller: 'dsr', action:'view')}"><g:message code="header.navigation.dsr" default="District Summary Reports"/></a></li>
+								<li><a href="${createLink(controller: 'maps', action:'view')}"><g:message code="header.navigation.maps" default="Maps"/></a></li>
+							</ul>
+						</li>
+					</shiro:hasPermission>
 				<g:ifAdmin>
 					<li><a href="#"><g:message code="header.navigation.administration" default="Administration"/></a>
 						<ul class="submenu">

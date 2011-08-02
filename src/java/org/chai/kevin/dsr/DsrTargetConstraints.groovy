@@ -32,10 +32,6 @@ package org.chai.kevin.dsr;
  *
  */
 
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.dsr.DsrObjective;
-import org.chai.kevin.dsr.DsrTargetCategory;
-import org.spockframework.util.Nullable;
 
 constraints = {
 	code(nullable: false, blank: false, unique: true)

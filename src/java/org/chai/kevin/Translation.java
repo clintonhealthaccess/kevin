@@ -29,11 +29,11 @@ package org.chai.kevin;
  */
 
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

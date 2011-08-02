@@ -134,7 +134,8 @@ public class OrganisationService {
 	private OrganisationUnitGroupSet getOrganisationUnitGroupSet() {
 		if (unitGroupSetCache == null) {
 			unitGroupSetCache = organisationUnitGroupService.getOrganisationUnitGroupSetByName(group);
-			for (OrganisationUnitGroup group : unitGroupSetCache.getOrganisationUnitGroups()) {
+			
+			for (@SuppressWarnings("unused") OrganisationUnitGroup group : unitGroupSetCache.getOrganisationUnitGroups()) {
 				// load
 			}
 		}

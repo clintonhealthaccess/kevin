@@ -37,7 +37,6 @@ import java.util.List;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.ProgressListener;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.DataValue;

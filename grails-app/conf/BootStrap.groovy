@@ -72,8 +72,8 @@ class BootStrap {
 			
 			break;
 		case "development":
-//			Initializer.createUsers();
 			Initializer.createDummyStructure();
+			Initializer.createUsers();
 			Initializer.createDataElementsAndExpressions();
 			Initializer.createDashboard();
 			Initializer.createCost();

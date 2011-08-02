@@ -31,8 +31,6 @@ package org.chai.kevin.cost
 import org.chai.kevin.GebTests;
 import org.chai.kevin.Initializer;
 
-import grails.plugin.geb.GebSpec;
-
 class CostSpec extends GebTests {
 
 	def transactional = true

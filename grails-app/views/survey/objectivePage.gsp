@@ -14,7 +14,7 @@
 			<div id="bottom-container">
 				<g:render template="/survey/menu" model="[surveyPage: surveyPage]"/>
 				
-				<div id="survey-right-question-container" class="box">
+				<div id="survey-right-question-container" class="grey-rounded-box-bottom">
 					<g:set value="${surveyPage.incompleteSections}" var="incompleteSections"/>
 					<g:set value="${surveyPage.invalidQuestions}" var="invalidSectionMap"/>
 

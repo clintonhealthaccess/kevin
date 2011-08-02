@@ -12,9 +12,9 @@
 			<div id="bottom-container">
 				<g:render template="/survey/menu" model="[surveyPage: surveyPage]"/>
 				
-				<div id="survey-right-question-container" class="box">
+				<div id="survey-right-question-container" class="grey-rounded-box-bottom">
 					<div class="rounded-box-top rounded-box-bottom">
-						
+						Welcome to the survey, please fill in all the objectives on the left.
 					</div>
 					<div class="clear"></div>
 				</div>

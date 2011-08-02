@@ -130,8 +130,8 @@ abstract class AbstractReportController {
 	protected def getOrganisation(def defaultIfNull) {
 		Organisation organisation = null;
 		try {
-			if (NumberUtils.isNumber(params['organisation'])) {
-				organisation = organisationService.getOrganisation(Integer.parseInt(params['organisation']))
+			if (NumberUtils.isNumber(params.organisation)) {
+				organisation = organisationService.getOrganisation(Integer.parseInt(params.organisation))
 			}
 			if (organisation == null && defaultIfNull) {
 				organisation = organisationService.getRootOrganisation();
@@ -267,11 +267,15 @@ abstract class AbstractReportController {
 		return question;
 	}
 	
-	protected def getSurvey() {
+	protected def getSurvey(def defaultIfNull) {
 		Survey survey = null;
 		try {
 			if(NumberUtils.isNumber(params['survey'])){
 				survey = sessionFactory.currentSession.get(Survey.class, Long.parseLong(params['survey']))
+			}
+			if (survey == null && defaultIfNull) {
+				// TODO get default survey
+				survey = Survey.list()[0]
 			}
 		} catch(IllegalStateException e) {
 			redirect (controller: '', action: '')

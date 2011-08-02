@@ -37,8 +37,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 public class DashboardObjectiveInfo extends Info {
 
 	private DashboardPercentage percentage;
-	private Map<DashboardObjectiveEntry, DashboardPercentage> values;
 	private Organisation organisation;
+	@SuppressWarnings("unused")
+	private Map<DashboardObjectiveEntry, DashboardPercentage> values;
 	
 	public DashboardObjectiveInfo(DashboardPercentage percentage, Organisation organisation, Map<DashboardObjectiveEntry, DashboardPercentage> values) {
 		this.percentage = percentage;

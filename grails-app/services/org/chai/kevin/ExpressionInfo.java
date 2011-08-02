@@ -31,7 +31,6 @@ package org.chai.kevin;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.DataValue;

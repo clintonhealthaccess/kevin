@@ -37,7 +37,6 @@ import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
-import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ValueType;
 import org.chai.kevin.value.CalculationValue;

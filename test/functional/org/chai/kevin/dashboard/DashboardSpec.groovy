@@ -31,7 +31,6 @@ package org.chai.kevin.dashboard
 import org.chai.kevin.GebTests;
 import org.chai.kevin.Initializer;
 
-import grails.plugin.geb.GebSpec;
 import geb.Browser;
 
 class DashboardSpec extends GebTests {

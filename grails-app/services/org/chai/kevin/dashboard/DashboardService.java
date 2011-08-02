@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
@@ -49,12 +47,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class DashboardService {
 
-	private Log log = LogFactory.getLog(DashboardService.class);
+//	private Log log = LogFactory.getLog(DashboardService.class);
 	
-//	private DashboardObjectiveService dashboardObjectiveService;
 	private OrganisationService organisationService;
 	private InfoService infoService;
-//	private PeriodService periodService;
 	private ValueService valueService;
 	private ExpressionService expressionService;
 	
@@ -108,62 +104,6 @@ public class DashboardService {
 		return calculator;
 	}
 
-//	@Transactional
-//	public void refreshDashboard(Organisation organisation, DashboardObjective objective, Period period, ProgressListener listener) {
-//		if (log.isInfoEnabled()) log.info("refreshDashboard(organisation="+organisation+", objective="+objective+", period="+period+")");
-//		
-//		Set<DashboardEntry> targets = new HashSet<DashboardEntry>(dashboardObjectiveService.getTargets());
-//		List<Organisation> organisations = new ArrayList<Organisation>();
-//		getOrganisations(organisation, organisations);
-//		
-//		PercentageCalculator calculator = createCalculator();
-//
-//		int updates = targets.size() * organisations.size();
-//		if (log.isInfoEnabled()) log.info("setting total to: "+updates);
-//		listener.setTotal(updates);
-//		
-//		deepRefreshDashboard(organisations, targets, period, calculator, listener);
-//		if (listener.isInterrupted()) return;
-//	}
-	
-//	@Transactional
-//	public void refreshEntireDashboard(ProgressListener listener) {
-//		Organisation rootOrganisation = organisationService.getRootOrganisation();
-//		Set<DashboardEntry> targets = new HashSet<DashboardEntry>(dashboardObjectiveService.getTargets());
-//		List<Organisation> organisations = new ArrayList<Organisation>();
-//		getOrganisations(rootOrganisation, organisations);
-//		Collection<Period> periods = periodService.getAllPeriods();
-//		
-//		PercentageCalculator calculator = createCalculator();
-//		
-//		int updates = targets.size() * organisations.size() * periods.size();
-//		if (log.isInfoEnabled()) log.info("setting total to: "+updates);
-//		listener.setTotal(updates);
-//		
-//		for (Period period : periodService.getAllPeriods()) {
-//			deepRefreshDashboard(organisations, targets, period, calculator, listener);
-//			if (listener.isInterrupted()) return;
-//		}
-//	}
-	
-//	private void getOrganisations(Organisation organisation, List<Organisation> organisations) {
-//		organisationService.loadChildren(organisation, getSkipLevelArray());
-//		for (Organisation child : organisation.getChildren()) {
-//			getOrganisations(child, organisations);
-//		}
-//		if (organisationService.loadParent(organisation, getSkipLevelArray())) organisations.add(organisation);
-//	}
-	
-//	private void deepRefreshDashboard(List<Organisation> organisations, Set<DashboardEntry> entries, Period period, PercentageCalculator calculator, ProgressListener listener) {
-//		for (Organisation organisation : organisations) {
-//			for (DashboardEntry entry : entries) {
-//				if (listener.isInterrupted()) return;
-//				organisationService.loadGroup(organisation);
-//				entry.getValue(calculator, organisation, period, organisationService.getFacilityLevel() == organisationService.getLevel(organisation));
-//				listener.increment();
-//			}
-//		}
-//	}
 	
 	private PercentageCalculator createCalculator() {
 		PercentageCalculator calculator = new PercentageCalculator();
@@ -210,10 +150,6 @@ public class DashboardService {
 		return objectivePath;
 	}
 	
-//	public void setDashboardObjectiveService(DashboardObjectiveService dashboardObjectiveService) {
-//		this.dashboardObjectiveService = dashboardObjectiveService;
-//	}	
-
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
 	}
@@ -222,10 +158,6 @@ public class DashboardService {
 	public void setInfoService(InfoService infoService) {
 		this.infoService = infoService;
 	}
-	
-//	public void setPeriodService(PeriodService periodService) {
-//		this.periodService = periodService;
-//	}
 	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;

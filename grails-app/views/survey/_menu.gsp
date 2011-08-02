@@ -1,13 +1,13 @@
 <%@ page import="org.chai.kevin.survey.SurveyPage.SectionStatus" %>
 <%@ page import="org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus" %>
 
-<div id="survey-left-objective-container" class="box">
+<div id="survey-left-objective-container" class="grey-rounded-box-bottom">
 	<ul id="survey-objective-list">
 		<g:each in="${surveyPage.survey.getObjectives(surveyPage.organisation.organisationUnitGroup)}" var="objective">
 			<g:set var="objectiveStatus" value="${surveyPage.getStatus(objective)}"/>
 			
 			<li id="objective-${objective.id}" class="${surveyPage.section?.objective?.id == objective.id?'current':''}">
-				<a class="item" href="${createLink(controller:'survey', action:'objectivePage', params:[objective:objective.id, organisation: surveyPage.organisation.id])}">
+				<a class="item" href="${createLink(controller:'survey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
 					<span><g:i18n field="${objective.names}" /></span>
 					<span class="item-status">
 						<span class="objective-status-complete objective-status ${objectiveStatus != ObjectiveStatus.COMPLETE?'hidden':''}"></span>
@@ -23,7 +23,7 @@
 							<g:set var="sectionStatus" value="${surveyPage.getStatus(section)}"/>
 
 							<li id="section-${section.id}">
-								<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'survey', action:'sectionPage', params:[section:section.id, organisation: surveyPage.organisation.id])}">
+								<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'survey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
 									<span><g:i18n field="${section.names}" /></span>
 									<span class="item-status">
 										<span class="section-status-complete section-status ${sectionStatus != SectionStatus.COMPLETE?'hidden':''}"></span>

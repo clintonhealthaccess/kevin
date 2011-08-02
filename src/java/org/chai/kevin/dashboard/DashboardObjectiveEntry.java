@@ -29,7 +29,6 @@ package org.chai.kevin.dashboard;
  */
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,9 +40,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Orderable;
-import org.chai.kevin.Translatable;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.OnDelete;
 
 @Entity(name="WeightedObjective")
 @Table(name="dhsst_dashboard_objective_entry", 

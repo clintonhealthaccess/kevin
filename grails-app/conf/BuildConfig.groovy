@@ -26,6 +26,8 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.apache.ivy.plugins.resolver.URLResolver;
+
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -60,7 +62,7 @@ grails.project.dependency.resolution = {
 	/**
 	 * Configure our resolver.
 	 */
-	def libResolver = new org.apache.ivy.plugins.resolver.URLResolver();
+	def libResolver = new URLResolver();
 	libResolver.addArtifactPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]")
 	libResolver.addIvyPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/ivys/ivy-[revision].xml")
 	libResolver.name = "github"
@@ -112,7 +114,7 @@ grails.project.dependency.resolution = {
 		
 		// those are for the migration script to work
 //		compile 'org.hisp.dhis:dhis-service-importexport:2.2-SNAPSHOT'
-		compile 'org.supercsv:SuperCSV:1.52'
+//		compile 'org.supercsv:SuperCSV:1.52'
     }
 	
 }

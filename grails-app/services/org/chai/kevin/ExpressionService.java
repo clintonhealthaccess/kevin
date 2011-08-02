@@ -40,7 +40,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
@@ -283,7 +282,7 @@ public class ExpressionService {
 			if (log.isDebugEnabled()) log.debug("found matching pattern: "+Long.parseLong(match));
 			Object value = null;
 			try {
-				Data data = dataService.getData(Long.parseLong(match));
+				Data<?> data = dataService.getData(Long.parseLong(match));
 				// TODO data element does not exist
 				// TODO if aggregated, then get data value only for the 
 				// organisations that have all the values ?

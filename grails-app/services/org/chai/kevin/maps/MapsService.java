@@ -29,13 +29,10 @@ package org.chai.kevin.maps;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Info;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;

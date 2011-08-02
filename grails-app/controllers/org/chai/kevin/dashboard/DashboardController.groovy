@@ -34,7 +34,6 @@ import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Translatable;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.ProgressListener;
 import org.chai.kevin.dashboard.Dashboard;
 import org.chai.kevin.dashboard.DashboardService;
 import org.chai.kevin.dashboard.DashboardPercentage;
@@ -95,22 +94,6 @@ class DashboardController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("checked by default: "+defaultChecked)
 		[ dashboard: dashboard, periods: Period.list(), checkedFacilities: defaultChecked ]
 	}
-	
-	
-//	def cancel = {
-//		if (log.isDebugEnabled()) log.debug("dashboard.progress, params:"+params)
-//		
-//		Period period = getPeriod()
-//		DashboardEntry entry = getDashboardEntry()
-//		Organisation organisation = getOrganisation(false)
-//		
-//		def runningJob = getRunningJob(period, organisation, entry)
-//		if (runningJob != null) {
-//			runningJob.jobInstance.interrupt();
-//		}
-//		
-//		redirect (controller: 'dashboard', action: 'view', params: params);
-//	}
 	
 	
 	def getDescription = {

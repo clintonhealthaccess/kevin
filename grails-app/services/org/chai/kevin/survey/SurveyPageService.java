@@ -31,7 +31,6 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,9 +39,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SurveyPageService {

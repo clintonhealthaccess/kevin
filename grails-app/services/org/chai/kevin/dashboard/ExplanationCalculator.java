@@ -28,22 +28,14 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.CalculationInfo;
 import org.chai.kevin.ExpressionInfo;
-import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Info;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.period.Period;
 
 public class ExplanationCalculator extends PercentageCalculator {
@@ -55,7 +47,7 @@ public class ExplanationCalculator extends PercentageCalculator {
 		// TODO Auto-generated constructor stub
 	}
 
-	private static Log log = LogFactory.getLog(ExplanationCalculator.class);
+//	private static Log log = LogFactory.getLog(ExplanationCalculator.class);
 	
 	public DashboardExplanation explainNonLeafTarget(DashboardTarget target, Organisation organisation, Period period) {
 		CalculationInfo info = infoService.getInfo(target.getCalculation(), organisation, period);

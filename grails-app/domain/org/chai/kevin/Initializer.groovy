@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.chai.kevin.cost.CostObjective;
 import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostRampUpYear;
@@ -51,6 +52,8 @@ import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ValueType;
+import org.chai.kevin.security.SurveyUser;
+import org.chai.kevin.security.User;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.survey.validation.SurveySkipRule;
 import org.chai.kevin.survey.validation.SurveyValidationMessage;
@@ -76,6 +79,17 @@ class Initializer {
 	static Date mar011 = getDate( 2006, 3, 1 );
 	static Date mar311 = getDate( 2006, 3, 31 );
 
+	static def createUsers() {
+		def user = new User(username: "admin", passwordHash: new Sha256Hash("admin").toHex())
+		user.addToPermissions("*")
+		user.save()
+		
+		def kivuye = new SurveyUser(username: "kivuye", organisationUnit: OrganisationUnit.findByName("Kivuye HC"), passwordHash: new Sha256Hash("123").toHex())
+		kivuye.addToPermissions("survey:view")
+		kivuye.addToPermissions("survey:*:"+kivuye.organisationUnit.id)
+		kivuye.save()
+	}
+	
 	static def createDummyStructure() {
 
 		if (!Period.count()) {

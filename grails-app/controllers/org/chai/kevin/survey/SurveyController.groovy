@@ -32,10 +32,14 @@ package org.chai.kevin.survey;
  */
 
 import java.util.List;
+
+import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.hisp.dhis.period.Period;
+import org.chai.kevin.security.User;
 import org.chai.kevin.survey.SurveyPage.SectionStatus;
 import org.chai.kevin.survey.SurveyPageService;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
@@ -52,6 +56,28 @@ class SurveyController extends AbstractReportController {
 	def index = {
 		redirect (action: 'view', params: params)
 	}
+	
+	def view = {
+		// this action redirects to the current survey if a SurveyUser logs in
+		// or to a survey summary page if an admin logs in
+		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
+		User user = User.findByUsername(SecurityUtils.subject.principal)
+		
+		if (user.hasProperty('organisationUnit') != null) {
+			Survey survey = getSurvey(true)
+			Organisation organisation = organisationService.getOrganisation(user.organisationUnit.id)
+			
+			redirect (action: 'surveyPage', params: [survey: survey.id, organisation: organisation.id])
+		}
+		else {
+			redirect (action: 'summaryPage')
+		}
+	}
+	
+	def summaryPage = {
+		
+	}
+
 	
 	def sectionPage = {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
@@ -79,6 +105,7 @@ class SurveyController extends AbstractReportController {
 		return [surveyPage: surveyPage]
 	}
 	
+	
 	def surveyPage = {
 		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
 		
@@ -86,6 +113,8 @@ class SurveyController extends AbstractReportController {
 		Survey survey = getSurvey()
 		
 		def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, survey)
+		surveyPage.createEnteredValues(surveyElementService)
+		surveyPage.userValidation(validationService, surveyElementService)
 		
 		return [surveyPage: surveyPage]
 	}

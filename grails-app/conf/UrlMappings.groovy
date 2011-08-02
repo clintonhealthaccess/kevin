@@ -35,7 +35,7 @@ class UrlMappings {
 
 		"/dsr/$action/$period?/$objective?/$organisation?"(controller:"dsr")
 		
-		"/survey/$action/$survey?/$objective?/$section?/$organisation?"(controller:"survey")
+		"/survey/$action/$organisation?/$survey?/$objective?/$section?"(controller:"survey")
 		
 		"/survey/admin/$action/$surveyId?/$objectiveId?/$sectionId?/$questionId?"(controller:"admin")
 				
@@ -45,11 +45,13 @@ class UrlMappings {
 		
 		"/chart/chart/$data/$organisation"(controller:"chart", action: "chart")
 		
-		"/$controller/$action?/$id?"{
-			constraints {
-				// apply constraints here
-			}
-		}
+		"/auth/$action"(controller:"auth")
+		
+//		"/$controller/$action?/$id?"{
+//			constraints {
+//				// apply constraints here
+//			}
+//		}
 
 		// temporary redirect to dsr
 		"/"(controller:"dsr", action:"index")

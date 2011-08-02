@@ -30,8 +30,6 @@ package org.chai.kevin
 
 import org.chai.kevin.dashboard.DashboardPage;
 
-import grails.plugin.geb.GebSpec;
-
 class HomepageSpec extends GebTests {
 	
 	def transactional = true

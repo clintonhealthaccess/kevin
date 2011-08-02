@@ -34,9 +34,13 @@ import org.hisp.dhis.period.Period;
 public class Cost {
 
 	private Double value;
+	@SuppressWarnings("unused")
 	private CostTarget target;
+	@SuppressWarnings("unused")
 	private Integer year;
+	@SuppressWarnings("unused")
 	private Period period;
+	@SuppressWarnings("unused")
 	private Organisation organisation;
 	
 	private boolean hasMissingValue;

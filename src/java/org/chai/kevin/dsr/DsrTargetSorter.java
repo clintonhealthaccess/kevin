@@ -33,8 +33,6 @@ package org.chai.kevin.dsr;
 
 import java.util.Comparator;
 
-import org.chai.kevin.Orderable;
-
 public class DsrTargetSorter implements Comparator<DsrTarget> {
 	
 	@Override

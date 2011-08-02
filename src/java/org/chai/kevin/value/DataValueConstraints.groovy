@@ -1,8 +1,8 @@
 package org.chai.kevin.value
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.ValueService;
 import org.chai.kevin.data.ValueType;
+
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.

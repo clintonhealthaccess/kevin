@@ -54,6 +54,7 @@ public class JSONUtils {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Map<String, String> getMapFromJSON(String jsonString) {
 		Map<String, String> descriptions = new HashMap<String, String>();
 		if (jsonString != null) {

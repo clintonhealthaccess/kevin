@@ -292,13 +292,15 @@ public class SurveyPage {
 	// TODO create entered objectives and entered values at survey initialization
 	public void createEnteredValues(SurveyElementService surveyElementService) {
 		// we create all entered values
-		for (SurveySection surveySection : objective.getSections(organisation.getOrganisationUnitGroup())) {
-			for (SurveyElement surveyElement : surveySection.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-				SurveyEnteredValue enteredValue = enteredValues.get(surveyElement);
-				if (enteredValue == null) {
-					enteredValue = new SurveyEnteredValue(surveyElement, organisation.getOrganisationUnit(), null);
-					surveyElementService.save(enteredValue);
-					enteredValues.put(enteredValue.getSurveyElement(), enteredValue);
+		if (objective != null) {
+			for (SurveySection surveySection : objective.getSections(organisation.getOrganisationUnitGroup())) {
+				for (SurveyElement surveyElement : surveySection.getSurveyElements(organisation.getOrganisationUnitGroup())) {
+					SurveyEnteredValue enteredValue = enteredValues.get(surveyElement);
+					if (enteredValue == null) {
+						enteredValue = new SurveyEnteredValue(surveyElement, organisation.getOrganisationUnit(), null);
+						surveyElementService.save(enteredValue);
+						enteredValues.put(enteredValue.getSurveyElement(), enteredValue);
+					}
 				}
 			}
 		}
@@ -308,44 +310,45 @@ public class SurveyPage {
 	public void userValidation(ValidationService validationService, SurveyElementService surveyElementService) {
 		
 		// we validate
-		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
-			// skipped questions
-			for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
-				if (validationService.isSkipped(this, question)) skippedQuestions.add(question);
-			}
-			
-			// skipped survey elements
-			for (SurveyElement surveyElement : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-				SurveyElementValue elementValue = surveyElements.get(surveyElement.getId());
-				SurveyEnteredValue enteredValue = enteredValues.get(surveyElement);
-				if (skippedQuestions.contains(surveyElement.getSurveyQuestion()) || validationService.isSkipped(this, surveyElement)) {
-					enteredValue.setSkipped(true);
+		if (objective !=null) {
+			for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
+				// skipped questions
+				for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
+					if (validationService.isSkipped(this, question)) skippedQuestions.add(question);
 				}
-				else enteredValue.setSkipped(false);
 				
-				Set<SurveyValidationRule> errors = new HashSet<SurveyValidationRule>();
-				Set<SurveyValidationRule> warnings = new HashSet<SurveyValidationRule>();
-				if (enteredValue.getValue() != null) {
-					for (SurveyValidationRule validationRule : enteredValue.getSurveyElement().getValidationRules()) {
-						if (!validationService.validate(this, enteredValue.getSurveyElement(), validationRule)) {
-							if (!validationRule.getAllowOutlier()) errors.add(validationRule);
-							else {
-								if (!enteredValue.getAcceptedWarnings().contains(validationRule.getId())) warnings.add(validationRule);
+				// skipped survey elements
+				for (SurveyElement surveyElement : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
+					SurveyElementValue elementValue = surveyElements.get(surveyElement.getId());
+					SurveyEnteredValue enteredValue = enteredValues.get(surveyElement);
+					if (skippedQuestions.contains(surveyElement.getSurveyQuestion()) || validationService.isSkipped(this, surveyElement)) {
+						enteredValue.setSkipped(true);
+					}
+					else enteredValue.setSkipped(false);
+					
+					Set<SurveyValidationRule> errors = new HashSet<SurveyValidationRule>();
+					Set<SurveyValidationRule> warnings = new HashSet<SurveyValidationRule>();
+					if (enteredValue.getValue() != null) {
+						for (SurveyValidationRule validationRule : enteredValue.getSurveyElement().getValidationRules()) {
+							if (!validationService.validate(this, enteredValue.getSurveyElement(), validationRule)) {
+								if (!validationRule.getAllowOutlier()) errors.add(validationRule);
+								else {
+									if (!enteredValue.getAcceptedWarnings().contains(validationRule.getId())) warnings.add(validationRule);
+								}
 							}
 						}
 					}
+					if (elementValue != null) {
+						elementValue.setInvalidErrors(errors);
+						elementValue.setInvalidWarnings(warnings);
+					}
+					enteredValue.setValid(errors.isEmpty() && warnings.isEmpty());
 				}
-				if (elementValue != null) {
-					elementValue.setInvalidErrors(errors);
-					elementValue.setInvalidWarnings(warnings);
-				}
-				enteredValue.setValid(errors.isEmpty() && warnings.isEmpty());
 			}
 		}
 		
 		// survey objective status
-		// TODO create entered objectives and entered values at survey initialization
-		for (SurveyObjective surveyObjective : objective.getSurvey().getObjectives(organisation.getOrganisationUnitGroup())) {
+		for (SurveyObjective surveyObjective : survey.getObjectives(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredObjective enteredObjective = surveyElementService.getSurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit());
 			if (enteredObjective == null) {
 				enteredObjective = new SurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit());

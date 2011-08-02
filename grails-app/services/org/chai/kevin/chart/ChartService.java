@@ -6,15 +6,8 @@ import java.util.Map;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.PeriodService;
 import org.chai.kevin.ValueService;
-import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 public class ChartService {

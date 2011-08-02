@@ -1,8 +1,6 @@
 package org.chai.kevin.survey;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -15,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.survey.validation.SurveySkipRule;
 import org.chai.kevin.survey.validation.SurveyValidationRule;
 
 @Entity(name = "SurveyElement")

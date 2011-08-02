@@ -23,7 +23,6 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Timestamped;
-import org.chai.kevin.Translatable;
 import org.chai.kevin.Translation;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueCalculator;
@@ -136,6 +135,7 @@ abstract public class Data<T extends Value> implements Timestamped {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -143,7 +143,7 @@ abstract public class Data<T extends Value> implements Timestamped {
 			return false;
 		if (!(obj instanceof Data))
 			return false;
-		Data other = (Data) obj;
+		Data<T> other = (Data<T>) obj;
 		if (getCode() == null) {
 			if (other.getCode() != null)
 				return false;
@@ -154,8 +154,7 @@ abstract public class Data<T extends Value> implements Timestamped {
 	
 	@Override
 	public String toString() {
-		return "Data [type=" + type + ", enume=" + enume + ", code=" + code
-				+ "]";
+		return "Data [type=" + type + ", enume=" + enume + ", code=" + code + "]";
 	}
 
 	@Transient

@@ -31,7 +31,6 @@ package org.chai.kevin.maps;
 import java.util.List;
 
 import org.chai.kevin.Organisation;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
 

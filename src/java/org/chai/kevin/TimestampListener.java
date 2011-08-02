@@ -31,10 +31,7 @@ package org.chai.kevin;
 import java.util.Date;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.EntityMode;
-import org.hibernate.event.AbstractEvent;
 import org.hibernate.event.AbstractPreDatabaseOperationEvent;
 import org.hibernate.event.PreInsertEvent;
 import org.hibernate.event.PreInsertEventListener;
@@ -43,7 +40,7 @@ import org.hibernate.event.PreUpdateEventListener;
 
 public class TimestampListener implements PreUpdateEventListener, PreInsertEventListener {
 
-	private static final Log log = LogFactory.getLog(TimestampListener.class);
+//	private static final Log log = LogFactory.getLog(TimestampListener.class);
 	
 	private static final long serialVersionUID = -1401730506021256875L;
 

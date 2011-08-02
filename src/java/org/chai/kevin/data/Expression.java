@@ -32,10 +32,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.value.ExpressionValue;
-import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueCalculator;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

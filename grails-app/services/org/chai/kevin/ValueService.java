@@ -36,8 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Calculation;
@@ -67,6 +65,24 @@ public class ValueService {
 	
 	public <T extends Value> T getValue(Data<T> data, OrganisationUnit organisationUnit, Period period) {
 		return data.getValue(new CacheValueCalculator(), organisationUnit, period);
+	}
+	
+	@Transactional(readOnly=true)
+	public Integer getNumberOfValues(DataElement dataElement, Period period) {
+		return (Integer)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
+		.add(Restrictions.eq("dataElement", dataElement))
+		.add(Restrictions.eq("period", period))
+		.setProjection(Projections.count("id"))
+		.uniqueResult();
+	}
+	
+	@Transactional(readOnly=true)
+	@SuppressWarnings("unchecked")
+	public List<DataValue> getValues(DataElement dataElement, Period period) {
+		return (List<DataValue>)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
+		.add(Restrictions.eq("dataElement", dataElement))
+		.add(Restrictions.eq("period", period))
+		.list();
 	}
 	
 	private class CacheValueCalculator implements ValueCalculator {
@@ -120,6 +136,7 @@ public class ValueService {
 	}
 	
 	@Transactional(readOnly=true)
+	@SuppressWarnings("unchecked")
 	public List<ExpressionValue> getOutdatedExpressions() {
 		Criteria criteria = sessionFactory.getCurrentSession()
 		.createCriteria(ExpressionValue.class, "ev")
@@ -129,6 +146,7 @@ public class ValueService {
 	}
 	
 	@Transactional(readOnly=true)
+	@SuppressWarnings("unchecked")
 	public List<ExpressionValue> getNonCalculatedExpressions() {
 		List<ExpressionValue> result = new ArrayList<ExpressionValue>();
 		
@@ -146,7 +164,8 @@ public class ValueService {
 			Query query1 = sessionFactory.getCurrentSession().createQuery(
 					"select ev.expression, ev.organisationUnit, ev.period from ExpressionValue as ev"
 			).setCacheable(false);
-			for (Iterator iterator = query1.iterate(); iterator.hasNext();) {
+			for (
+			Iterator<Object[]> iterator = query1.iterate(); iterator.hasNext();) {
 				Object[] row = (Object[]) iterator.next();
 				ExpressionValue value = new ExpressionValue(null, null, (OrganisationUnit)row[1], (Expression)row[0], (Period)row[2]);
 				allValues.add(value);
@@ -158,7 +177,7 @@ public class ValueService {
 					"from Expression expression, OrganisationUnit organisationUnit, Period period"
 			).setCacheable(false);
 			if (log.isDebugEnabled()) log.debug("starting sorting non calculated expressions");
-			for (Iterator iterator = query2.iterate(); iterator.hasNext();) {
+			for (Iterator<Object[]> iterator = query2.iterate(); iterator.hasNext();) {
 				Object[] row = (Object[]) iterator.next();
 				ExpressionValue newValue = new ExpressionValue(null, null, (OrganisationUnit)row[1], (Expression)row[0], (Period)row[2]);
 				if (!allValues.contains(newValue)) {
@@ -179,6 +198,7 @@ public class ValueService {
 	}
 	
 	@Transactional(readOnly=true)
+	@SuppressWarnings("unchecked")
 	public List<CalculationValue> getOutdatedCalculations() {
 		Criteria criteria = sessionFactory.getCurrentSession()
 		.createCriteria(CalculationValue.class, "cv")
@@ -193,6 +213,7 @@ public class ValueService {
 	}
 	
 	@Transactional(readOnly=true)
+	@SuppressWarnings("unchecked")
 	public List<CalculationValue> getNonCalculatedCalculations() {
 		List<CalculationValue> result = new ArrayList<CalculationValue>();
 		
@@ -210,7 +231,7 @@ public class ValueService {
 			Query query1 = sessionFactory.getCurrentSession().createQuery(
 					"select cv.calculation, cv.organisationUnit, cv.period from CalculationValue as cv"
 			).setCacheable(false);
-			for (Iterator iterator = query1.iterate(); iterator.hasNext();) {
+			for (Iterator<Object[]> iterator = query1.iterate(); iterator.hasNext();) {
 				Object[] row = (Object[]) iterator.next();
 				CalculationValue value = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2], new HashMap<Organisation, ExpressionValue>());
 				allValues.add(value);
@@ -222,7 +243,7 @@ public class ValueService {
 					"from Calculation calculation, OrganisationUnit organisationUnit, Period period"
 			).setCacheable(false);
 			if (log.isDebugEnabled()) log.debug("starting sorting non calculated calculations");
-			for (Iterator iterator = query2.iterate(); iterator.hasNext();) {
+			for (Iterator<Object[]> iterator = query2.iterate(); iterator.hasNext();) {
 				Object[] row = (Object[]) iterator.next();
 				CalculationValue newValue = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2], new HashMap<Organisation, ExpressionValue>());
 				if (!allValues.contains(newValue)) result.add(newValue);

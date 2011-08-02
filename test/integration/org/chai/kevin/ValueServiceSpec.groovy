@@ -29,9 +29,11 @@ package org.chai.kevin
 */
 
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ValueType;
 import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.ExpressionValue.Status;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -217,6 +219,51 @@ class ValueServiceSpec extends IntegrationTests {
 		then:
 		values.size() == 1
 		values.get(0).calculation.equals(Calculation.list()[0]);
+	}
+	
+	def "test number of values"() {
+		setup:
+		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: ValueType.VALUE)
+		dataElement.save(failOnError: true)
+		def dataValue = new DataValue(
+			dataElement: DataElement.findByCode("CODE"),
+			period: Period.list()[1],
+			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
+			value: "40",
+			timestamp: new Date(),
+		).save(failOnError: true)
+		
+		when: 
+		def nofValues1 = valueService.getNumberOfValues(dataElement, Period.list()[1])
+		
+		then:
+		nofValues1 == 1
+		
+		when:
+		def nofValues2 = valueService.getNumberOfValues(dataElement, Period.list()[0])
+		
+		then:
+		nofValues2 == 0
+	}
+	
+	def "test value list"() {
+		setup:
+		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: ValueType.VALUE)
+		dataElement.save(failOnError: true)
+		def dataValue = new DataValue(
+			dataElement: DataElement.findByCode("CODE"),
+			period: Period.list()[1],
+			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
+			value: "40",
+			timestamp: new Date(),
+		).save(failOnError: true)
+		
+		when:
+		def values = valueService.getValues(dataElement, Period.list()[1])
+		
+		then:
+		values.size() == 1
+		
 	}
 	
 }

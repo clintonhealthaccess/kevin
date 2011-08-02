@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.period
 
-import org.hisp.dhis.period.Period
-import org.hisp.dhis.period.YearlyPeriodType
 
 /**
  * @author Jean Kahigiso M.
