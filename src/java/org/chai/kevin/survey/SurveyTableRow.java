@@ -33,7 +33,6 @@ package org.chai.kevin.survey;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -72,7 +71,7 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic
+	@Basic(optional=false)
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -113,10 +112,4 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.surveyElements = surveyElements;
 	}
 
-//    @Transient
-//    public List<SurveyTableColumn> getColumns(OrganisationUnitGroup organisationUnitGroup) {
-//    	List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>(surveyElements.keySet());
-//    	Collections.sort(columns,new SurveyTableColumnSorter());
-//    	return columns;
-//    }
 }

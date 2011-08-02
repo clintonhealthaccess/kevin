@@ -73,7 +73,7 @@ public class SurveySection extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic
+	@Basic(optional=false)
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -123,16 +123,7 @@ public class SurveySection extends SurveyTranslatable {
 	public Survey getSurvey() {
 		return objective.getSurvey();
 	}
-	
-//	@Transient
-//	public List<SurveyElement> getSurveyElements(){
-//		List<SurveyElement> result = new ArrayList<SurveyElement>();
-//		for (SurveyQuestion question : questions) {
-//			result.addAll(question.getSurveyElements());
-//		}
-//		return result;
-//	}
-	
+		
 	@Transient
 	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group){
 		List<SurveyElement> result = new ArrayList<SurveyElement>();

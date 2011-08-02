@@ -69,7 +69,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic
+	@Basic(optional=false)
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -101,11 +101,11 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	@Transient
 	public abstract String getType();
 
-//	@Transient
-//	public abstract List<SurveyElement> getSurveyElements();
-
 	@Transient
 	public abstract List<SurveyElement> getSurveyElements(OrganisationUnitGroup group);
+	
+	@Transient
+	public abstract List<SurveyElement> getSurveyElements();
 
 	@Transient
 	public Survey getSurvey() {

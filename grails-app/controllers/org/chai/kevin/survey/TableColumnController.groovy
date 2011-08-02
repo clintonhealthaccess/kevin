@@ -30,49 +30,51 @@ package org.chai.kevin.survey
 import org.chai.kevin.AbstractEntityController;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.apache.commons.lang.math.NumberUtils;
-
+import org.chai.kevin.util.Utils
 /**
  * @author Jean Kahigiso M.
  *
  */
 class TableColumnController extends AbstractEntityController {
-	
+
 	def getEntity(def id) {
 		return SurveyTableColumn.get(id)
 	}
 	def createEntity() {
-	    def entity = new SurveyTableColumn();
-		//FIXME find a better to do this
+		def entity = new SurveyTableColumn();
+		//FIXME find a better solution to do this
 		if (!params['question']) entity.question = SurveyTableQuestion.get(params.questionId)
 		return entity
 	}
-	
+
 	def getTemplate() {
 		return "/survey/admin/createTableColumn"
 	}
-	
+
 	def getModel(def entity) {
-		[ 
+		[
 			column: entity,
 			groups: OrganisationUnitGroup.list(),
 			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
-			]
+		]
 	}
-	def html(def entity){
-		return g.render (template:'/templates/tableColumn', model:[column: entity])
-	}
-	
+
 	def validateEntity(def entity) {
 		return entity.validate()
 	}
-	
+
 	def saveEntity(def entity) {
 		entity.save()
 	}
 	def deleteEntity(def entity) {
+		for(SurveyTableRow row : entity.question.rows){
+			if(row.surveyElements[entity])
+				row.surveyElements[entity].delete();
+			row.surveyElements.remove(entity)
+		}
 		entity.delete()
 	}
-	
+
 	def bindParams(def entity) {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary
@@ -80,5 +82,4 @@ class TableColumnController extends AbstractEntityController {
 		entity.groupUuidString =  params['groupUuids']!=null?Utils.getGroupUuidString(params['groupUuids']):null
 		if (params.names!=null) entity.names = params.names
 	}
-		
 }

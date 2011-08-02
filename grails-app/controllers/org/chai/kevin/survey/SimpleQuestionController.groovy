@@ -39,7 +39,6 @@ import org.apache.commons.lang.math.NumberUtils;
  *
  */
 class SimpleQuestionController extends AbstractEntityController {
-	DataService dataService
 
 	def getEntity(def id) {
 		return SurveySimpleQuestion.get(id)
@@ -47,7 +46,7 @@ class SimpleQuestionController extends AbstractEntityController {
 	def createEntity() {
 		def entity = new SurveySimpleQuestion();
 		//FIXME find a better to do this
-		if (!params['sectionId.id']) entity.section = SurveySubStrategicObjective.get(params.sectionId)
+		if (!params['sectionId.id']) entity.section = SurveySection.get(params.sectionId)
 		return entity
 	}
 
@@ -57,11 +56,11 @@ class SimpleQuestionController extends AbstractEntityController {
 
 	def getModel(def entity) {
 		[
-					question: entity,
-					groups: OrganisationUnitGroup.list(),
-					sections: (entity.section)!=null?entity.section.objective.sections:null,
-					groupUuids: Utils.getGroupUuids(entity.groupUuidString)
-				]
+			question: entity,
+			groups: OrganisationUnitGroup.list(),
+			sections: (entity.section)!=null?entity.section.objective.sections:null,
+			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
+		]
 	}
 
 	def validateEntity(def entity) {
@@ -69,6 +68,7 @@ class SimpleQuestionController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
+		entity.surveyElement.surveyQuestion = entity
 		entity.save()
 	}
 	def deleteEntity(def entity) {

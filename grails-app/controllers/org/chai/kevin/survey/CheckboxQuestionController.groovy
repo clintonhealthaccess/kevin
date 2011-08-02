@@ -46,7 +46,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 	def createEntity() {
 		def entity = new SurveyCheckboxQuestion();
 		//FIXME find a better to do this
-		if (!params['sectionId.id']) entity.section = SurveySubStrategicObjective.get(params.sectionId)
+		if (!params['sectionId.id']) entity.section = SurveySection.get(params.sectionId)
 		return entity
 	}
 

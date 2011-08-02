@@ -71,6 +71,7 @@ class CheckboxOptionController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
+		entity.surveyElement.surveyQuestion = entity.question
 		entity.save()
 		
 	}

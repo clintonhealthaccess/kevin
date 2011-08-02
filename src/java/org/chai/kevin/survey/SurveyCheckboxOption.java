@@ -26,6 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.chai.kevin.survey;
+
 /**
  * @author JeanKahigiso
  *
@@ -45,32 +46,32 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @SuppressWarnings("serial")
-@Entity(name="SurveyCheckboxOption")
-@Table(name="dhsst_survey_checkbox_option")
+@Entity(name = "SurveyCheckboxOption")
+@Table(name = "dhsst_survey_checkbox_option")
 public class SurveyCheckboxOption extends SurveyTranslatable {
-	
+
 	private Long id;
 	private Integer order;
 	private String groupUuidString;
 	private SurveyCheckboxQuestion question;
 	private SurveyElement surveyElement;
-	
+
 	@Id
 	@GeneratedValue
 	public Long getId() {
 		return id;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	@Basic
-	@Column(name="ordering")
+
+	@Basic(optional=false)
+	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
 	}
-	
+
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
@@ -78,27 +79,28 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 	public void setGroupUuidString(String groupUuidString) {
 		this.groupUuidString = groupUuidString;
 	}
-    @Lob
+
+	@Lob
 	public String getGroupUuidString() {
 		return groupUuidString;
 	}
-    
-	@ManyToOne(targetEntity=SurveyCheckboxQuestion.class, optional=false)
-	@JoinColumn(nullable=false)
+
+	@ManyToOne(targetEntity = SurveyCheckboxQuestion.class, optional = false)
+	@JoinColumn(nullable = false)
 	public SurveyCheckboxQuestion getQuestion() {
 		return question;
 	}
-	
+
 	public void setQuestion(SurveyCheckboxQuestion question) {
 		this.question = question;
 	}
-	
-	@OneToOne(optional=false, targetEntity=SurveyElement.class)
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+
+	@OneToOne(optional = false, targetEntity = SurveyElement.class)
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	public SurveyElement getSurveyElement() {
 		return surveyElement;
 	}
-	
+
 	public void setSurveyElement(SurveyElement surveyElement) {
 		this.surveyElement = surveyElement;
 	}

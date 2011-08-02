@@ -53,16 +53,13 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 @Entity(name = "SurveyTableQuestion")
 @Table(name = "dhsst_survey_table_question")
 public class SurveyTableQuestion extends SurveyQuestion {
-	
+
 	private Translation tableNames = new Translation();
 	private List<SurveyTableColumn> columns = new ArrayList<SurveyTableColumn>();
 	private List<SurveyTableRow> rows = new ArrayList<SurveyTableRow>();
 
-
 	@Embedded
-	@AttributeOverrides({
-    @AttributeOverride(name="jsonText", column=@Column(name="jsonTableNames", nullable=false))
-	})
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonTableNames", nullable = false)) })
 	public Translation getTableNames() {
 		return tableNames;
 	}
@@ -76,8 +73,8 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	}
 
 	@OneToMany(targetEntity = SurveyTableColumn.class, mappedBy = "question")
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-	@OrderBy(value="order")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OrderBy(value = "order")
 	@Fetch(FetchMode.SELECT)
 	public List<SurveyTableColumn> getColumns() {
 		return columns;
@@ -88,8 +85,8 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	}
 
 	@OneToMany(targetEntity = SurveyTableRow.class, mappedBy = "question")
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-	@OrderBy(value="order")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OrderBy(value = "order")
 	@Fetch(FetchMode.SELECT)
 	public List<SurveyTableRow> getRows() {
 		return rows;
@@ -116,6 +113,18 @@ public class SurveyTableQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
+	public List<SurveyElement> getSurveyElements() {
+		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
+		for (SurveyTableRow row : getRows()) {
+			for (SurveyTableColumn column : getColumns()) {
+				dataElements.add(row.getSurveyElements().get(column));
+			}
+		}
+		return dataElements;
+	}
+
+	@Transient
+	@Override
 	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
 		for (SurveyTableRow row : getRows(group)) {
@@ -125,23 +134,32 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		}
 		return dataElements;
 	}
-	
-    @Transient
+
+	@Transient
 	public List<SurveyTableRow> getRows(OrganisationUnitGroup group) {
 		List<SurveyTableRow> result = new ArrayList<SurveyTableRow>();
 		for (SurveyTableRow surveyTableRow : getRows()) {
-			if (Utils.getGroupUuids(surveyTableRow.getGroupUuidString()).contains(group.getUuid())) result.add(surveyTableRow);
+			if (Utils.getGroupUuids(surveyTableRow.getGroupUuidString())
+					.contains(group.getUuid()))
+				result.add(surveyTableRow);
 		}
 		return result;
 	}
 
-    @Transient
+	@Transient
 	public List<SurveyTableColumn> getColumns(OrganisationUnitGroup group) {
 		List<SurveyTableColumn> result = new ArrayList<SurveyTableColumn>();
 		for (SurveyTableColumn surveyTableColumn : getColumns()) {
-			if (Utils.getGroupUuids(surveyTableColumn.getGroupUuidString()).contains(group.getUuid())) result.add(surveyTableColumn);
+			if (Utils.getGroupUuids(surveyTableColumn.getGroupUuidString())
+					.contains(group.getUuid()))
+				result.add(surveyTableColumn);
 		}
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "SurveyTableQuestion [tableNames=" + tableNames + "]";
 	}
 
 }

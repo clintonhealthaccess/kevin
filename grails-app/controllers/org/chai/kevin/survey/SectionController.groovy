@@ -42,7 +42,7 @@ class SectionController extends AbstractEntityController {
 	def createEntity() {
 		def entity = new SurveySection()
 		//FIXME find a better to do this
-		if (!params['objectiveId.id']) entity.objective = SurveyStrategicObjective.get(params.objectiveId)
+		if (!params['objectiveId.id']) entity.objective = SurveyObjective.get(params.objectiveId)
 		return entity
 	}
 

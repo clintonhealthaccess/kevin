@@ -53,6 +53,7 @@
 			</div>
 		<g:if test="${question.id != null}">
 			<input type="hidden" name="id" value="${question.id}"></input>
+			<input type="hidden" name="surveyElement.id" value="${question.surveyElement.id}"></input>
 		</g:if>
 		<div class="row">
 			<button type="submit" class="question-form">Save Question</button>

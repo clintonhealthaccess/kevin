@@ -4,7 +4,7 @@
 	<g:i18n field="${question.names}" />
 	<table>
 		<tr>
-			<th><g:i18n field="${question.descriptions}" /></th>
+			<th><g:i18n field="${question.tableNames}" /></th>
 		    <g:set var="j" value="${0}"/>
 			<g:each in="${question.getColumns(organisationUnitGroup)}" var="column">
 				<g:set var="j" value="${j++}"/>

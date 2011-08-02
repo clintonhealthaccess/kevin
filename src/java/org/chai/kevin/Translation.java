@@ -149,6 +149,11 @@ public class Translation implements Map<String, String>, Serializable {
 	public Collection<String> values() {
 		return embeddedMap.values();
 	}
+
+	@Override
+	public String toString() {
+		return "Translation [jsonText=" + jsonText + "]";
+	}
 	
 	
 }

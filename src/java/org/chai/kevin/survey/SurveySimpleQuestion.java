@@ -77,5 +77,13 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 		elements.add(surveyElement);
 		return elements;
 	}
+	
+	@Transient
+	@Override
+	public List<SurveyElement> getSurveyElements() {
+		List<SurveyElement> elements = new ArrayList<SurveyElement>();
+		elements.add(surveyElement);
+		return elements;
+	}
 
 }

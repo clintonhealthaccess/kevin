@@ -46,7 +46,7 @@ class TableQuestionController extends AbstractEntityController {
 	def createEntity() {
 		def entity = new SurveyTableQuestion();
 		//FIXME find a better to do this
-		if (!params['sectionId.id']) entity.section = SurveySubStrategicObjective.get(params.sectionId)
+		if (!params['sectionId.id']) entity.section = SurveySection.get(params.sectionId)
 		return entity
 	}
 
@@ -69,6 +69,7 @@ class TableQuestionController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
+		log.debug("saving: "+entity)
 		entity.save()
 	}
 	def deleteEntity(def entity) {
@@ -82,21 +83,22 @@ class TableQuestionController extends AbstractEntityController {
 
 		entity.groupUuidString =  params['groupUuids']!=null?Utils.getGroupUuidString(params['groupUuids']):null
 		if (params.names!=null) entity.names = params.names
+		if (params.tableNames!=null) entity.tableNames = params.tableNames
 	}
 
 	def preview = {
 		def question = null;
-		if (NumberUtils.isNumber(params['question'])) {
-			question = SurveyTableQuestion.get(params['question'])
+		if (NumberUtils.isNumber(params['questionId'])) {
+			question = SurveyTableQuestion.get(params['questionId'])
 		}
 		if (question == null){
 			render(contentType:"text/json") { result = 'error' }
 		}else{
-		def List<SurveyElement> surveyElntValues = question.getSurveyElements();
+		def List<SurveyElement> surveyElnt = question.getSurveyElements();
 		
 			render (contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/survey/admin/tablePreview', model:[question: question,surveyElementValues: surveyElntValues])
+				html = g.render (template: '/survey/admin/tablePreview', model:[question: question,surveyElements: surveyElnt])
 			}
 		}
 	}

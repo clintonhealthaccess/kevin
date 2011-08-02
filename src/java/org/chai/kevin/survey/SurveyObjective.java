@@ -54,8 +54,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
-@Entity(name = "SurveyStrategicObjective")
-@Table(name = "dhsst_survey_strategic_objective")
+@Entity(name = "SurveyObjective")
+@Table(name = "dhsst_survey_objective")
 public class SurveyObjective extends SurveyTranslatable {
 
 	private Long id;
@@ -75,7 +75,7 @@ public class SurveyObjective extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic
+	@Basic(optional=false)
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -86,8 +86,8 @@ public class SurveyObjective extends SurveyTranslatable {
 	}
 
 	@OneToMany(targetEntity = SurveySection.class, mappedBy = "objective")
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-	@OrderBy(value="order")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OrderBy(value = "order")
 	public List<SurveySection> getSections() {
 		return sections;
 	}
@@ -107,7 +107,7 @@ public class SurveyObjective extends SurveyTranslatable {
 	}
 
 	@ManyToOne(targetEntity = Survey.class, optional = false)
-	@JoinColumn(nullable=false)
+	@JoinColumn(nullable = false)
 	public Survey getSurvey() {
 		return survey;
 	}
@@ -115,38 +115,32 @@ public class SurveyObjective extends SurveyTranslatable {
 	public void setGroupUuidString(String groupUuidString) {
 		this.groupUuidString = groupUuidString;
 	}
+
 	@Lob
 	public String getGroupUuidString() {
 		return groupUuidString;
 	}
 
-	@ManyToOne(targetEntity=SurveyObjective.class, optional=true)
+	@ManyToOne(targetEntity = SurveyObjective.class, optional = true)
 	public SurveyObjective getDependency() {
 		return dependency;
 	}
-	
+
 	public void setDependency(SurveyObjective dependency) {
 		this.dependency = dependency;
 	}
-	
-//	@Transient
-//	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
-//		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
-//		for (SurveySection surveySection : getSections(group)) {
-//			result.addAll(surveySection.getQuestions(group));
-//		}
-//		return result;
-//	}
-	
+
 	@Transient
 	public List<SurveySection> getSections(OrganisationUnitGroup group) {
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection surveySection : getSections()) {
-			if (Utils.getGroupUuids(surveySection.getGroupUuidString()).contains(group.getUuid())) result.add(surveySection);
+			if (Utils.getGroupUuids(surveySection.getGroupUuidString())
+					.contains(group.getUuid()))
+				result.add(surveySection);
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -171,6 +165,5 @@ public class SurveyObjective extends SurveyTranslatable {
 			return false;
 		return true;
 	}
-	
-	
+
 }

@@ -60,7 +60,6 @@ class AdminController extends AbstractReportController {
 	}
 
 	def objective = {
-
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		Survey survey = Survey.get(params.surveyId);
 		List<SurveyObjective> objectives = survey.objectives;

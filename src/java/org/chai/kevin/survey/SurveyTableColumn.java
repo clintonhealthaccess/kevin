@@ -26,6 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.chai.kevin.survey;
+
 /**
  * @author JeanKahigiso
  *
@@ -40,7 +41,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyTableColumn")
@@ -62,7 +62,7 @@ public class SurveyTableColumn extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic
+	@Basic(optional = false)
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -75,13 +75,14 @@ public class SurveyTableColumn extends SurveyTranslatable {
 	public void setGroupUuidString(String groupUuidString) {
 		this.groupUuidString = groupUuidString;
 	}
-    @Lob
+
+	@Lob
 	public String getGroupUuidString() {
 		return groupUuidString;
 	}
 
 	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
-	@JoinColumn(nullable=false)
+	@JoinColumn(nullable = false)
 	public SurveyTableQuestion getQuestion() {
 		return question;
 	}

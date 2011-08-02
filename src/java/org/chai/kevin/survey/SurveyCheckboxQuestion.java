@@ -91,6 +91,16 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	}
     
     @Transient
+	@Override
+	public List<SurveyElement> getSurveyElements() {
+		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
+		for (SurveyCheckboxOption option : getOptions()) {
+			dataElements.add(option.getSurveyElement());
+		}
+		return dataElements;
+	}
+    
+    @Transient
 	public List<SurveyCheckboxOption> getOptions(OrganisationUnitGroup group) {
 		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
 		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {
