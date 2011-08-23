@@ -26,14 +26,14 @@
 				</div>
 			</div>
 		</div>
-		<div id="admin-table-list">
+		<div class="admin-table-list">
 			<table>
 				<g:if test="${!questions.isEmpty()}">
-					<tr class="table-header">
+					<tr class="admin-table-header">
 						<th>Question</th>
-						<th>Type</th>
+						<g:sortableColumn property="getType" title="${message(code: 'question.type.label', default: 'Type')}" params="${[sectionId: section.id]}" />
 						<th>Organisation Unit Groups</th>
-						<th>Order</th>
+						<g:sortableColumn property="order" title="${message(code: 'question.type.label', default: 'Order')}" params="${[sectionId: section.id]}" />
 						<th>Manage</th>
 					</tr>
 					<g:each in="${questions}" status="i" var="question">

@@ -26,13 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.chai.kevin.survey;
+
 /**
  * @author JeanKahigiso
  *
  */
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -51,12 +54,13 @@ import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.apache.commons.collections.*;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveySection")
 @Table(name = "dhsst_survey_section")
 public class SurveySection extends SurveyTranslatable {
-	
+
 	private Long id;
 	private Integer order;
 	private SurveyObjective objective;
@@ -73,7 +77,7 @@ public class SurveySection extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic(optional=false)
+	@Basic(optional = false)
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -86,14 +90,14 @@ public class SurveySection extends SurveyTranslatable {
 	public void setObjective(SurveyObjective objective) {
 		this.objective = objective;
 	}
-	
+
 	@ManyToOne(targetEntity = SurveyObjective.class, optional = false)
-	@JoinColumn(nullable=false)
+	@JoinColumn(nullable = false)
 	public SurveyObjective getObjective() {
 		return objective;
 	}
 
-    @Lob
+	@Lob
 	public String getGroupUuidString() {
 		return groupUuidString;
 	}
@@ -107,12 +111,12 @@ public class SurveySection extends SurveyTranslatable {
 	}
 
 	@OneToMany(targetEntity = SurveyQuestion.class, mappedBy = "section")
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-	@OrderBy(value="order")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OrderBy(value = "order")
 	public List<SurveyQuestion> getQuestions() {
 		return questions;
 	}
-	
+
 	public void addQuestion(SurveyQuestion question) {
 		question.setSection(this);
 		questions.add(question);
@@ -123,21 +127,31 @@ public class SurveySection extends SurveyTranslatable {
 	public Survey getSurvey() {
 		return objective.getSurvey();
 	}
-		
+
+	@SuppressWarnings("unchecked")
 	@Transient
-	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group){
+	public Set<String> getOrganisationUnitGroupApplicable() {
+		return new HashSet<String>(CollectionUtils.intersection(
+				Utils.getGroupUuids(this.groupUuidString),
+				this.objective.getOrganisationUnitGroupApplicable()));
+	}
+
+	@Transient
+	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> result = new ArrayList<SurveyElement>();
 		for (SurveyQuestion question : getQuestions(group)) {
 			result.addAll(question.getSurveyElements(group));
 		}
 		return result;
 	}
-	
+
 	@Transient
 	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveyQuestion surveyQuestion : getQuestions()) {
-			if (Utils.getGroupUuids(surveyQuestion.getGroupUuidString()).contains(group.getUuid())) result.add(surveyQuestion);
+			if (Utils.getGroupUuids(surveyQuestion.getGroupUuidString())
+					.contains(group.getUuid()))
+				result.add(surveyQuestion);
 		}
 		return result;
 	}
@@ -166,5 +180,5 @@ public class SurveySection extends SurveyTranslatable {
 			return false;
 		return true;
 	}
-	
+
 }

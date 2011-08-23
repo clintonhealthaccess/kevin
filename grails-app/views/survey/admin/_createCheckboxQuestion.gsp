@@ -19,7 +19,9 @@
 			   </table>
 			    <g:if test="${question.id != null}">
 					<div>
-						<a id="add-option-link" class="flow-add float-right" href="${createLink(controller:'checkboxOption', action:'create',params:[questionId: question.id])}">Add Option</a>
+						<a id="add-option-link" class="flow-add float-right" href="${createLink(controller:'checkboxOption', action:'create',params:[questionId: question.id])}">
+						<g:message code="general.text.addOption" default="Add Option" />
+						</a>
 					</div>
 				</g:if>
 			    <div class="clear"></div>
@@ -59,7 +61,7 @@
 				<input type="hidden" name="id" value="${question.id}"></input>
 			</g:if>
 			<div class="row">
-				<button type="submit" class="question-form">Save Question</button>
+				<button type="submit" class="rich-textarea-form">Save Question</button>
 				&nbsp;&nbsp;
 				<button id="cancel-button">Cancel</button>
 			</div>

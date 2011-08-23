@@ -52,8 +52,6 @@ import org.hisp.dhis.period.Period;
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DataValue extends AbstractValue {
 	
-//	private enum Status {COLLECTED, AGGREGATED, AGGREGATED_MISSING, NOT_AGGREGATABLE}
-	
 	private Long id;
 	
 	private DataElement dataElement;

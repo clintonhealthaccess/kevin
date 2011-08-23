@@ -32,7 +32,9 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -44,6 +46,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.apache.commons.collections.CollectionUtils;
+import org.chai.kevin.util.Utils;
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveySimpleQuestion")
@@ -52,8 +56,8 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 
 	private SurveyElement surveyElement;
 
-	@OneToOne(targetEntity=SurveyElement.class, mappedBy="surveyQuestion")
-	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OneToOne(targetEntity = SurveyElement.class, mappedBy = "surveyQuestion")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	@Fetch(FetchMode.SELECT)
 	public SurveyElement getSurveyElement() {
 		return surveyElement;
@@ -77,13 +81,25 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 		elements.add(surveyElement);
 		return elements;
 	}
-	
+
 	@Transient
 	@Override
 	public List<SurveyElement> getSurveyElements() {
 		List<SurveyElement> elements = new ArrayList<SurveyElement>();
 		elements.add(surveyElement);
 		return elements;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transient
+	public Set<String> getOrganisationUnitGroupApplicable(
+			SurveyElement surveyElement) {
+		if (!surveyElement.equals(this.surveyElement))
+			throw new IllegalArgumentException(
+					"survey element does not belong to question (simple)");
+		return new HashSet<String>(CollectionUtils.intersection(Utils
+				.getGroupUuids(this.getGroupUuidString()), this.getSection()
+				.getOrganisationUnitGroupApplicable()));
 	}
 
 }

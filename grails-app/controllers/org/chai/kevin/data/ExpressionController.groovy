@@ -1,4 +1,4 @@
-package org.chai.kevin
+package org.chai.kevin.data
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -29,6 +29,8 @@ package org.chai.kevin
 */
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.DataService
 import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;

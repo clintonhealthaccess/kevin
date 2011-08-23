@@ -6,10 +6,10 @@
 		<div class="float-right">
 			<a id="add-survey-link" class="flow-add" href="${createLink(controller:'createSurvey', action:'create')}">New Survey</a>
 		</div>
-		<div id="admin-table-list">
+		<div class="admin-table-list">
 			<table>
 			<g:if test="${!surveys.isEmpty()}">
-					<tr class="table-header">
+					<tr class="admin-table-header">
 						<th>Name</th>
 						<th>Description</th>
 						<th>Period</th>
@@ -28,7 +28,7 @@
 							<div class="hidden dropdown-list">
 								<ul>
 								<li>
-								<a href="${createLink(controller:'admin', action:'objective',params:[surveyId:survey?.id])}">Sections</a>
+								<a href="${createLink(controller:'admin', action:'objective',params:[surveyId:survey?.id])}">Objectives</a>
 								</li>
 									<li class="edit-survey-link">
 									<g:link controller="createSurvey" action="edit" id="${survey.id}" class="flow-edit">

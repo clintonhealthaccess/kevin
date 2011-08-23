@@ -82,22 +82,47 @@ body.two-columns
     width: 100%
     background-repeat: no-repeat
 
-  #admin-table-list
-    table
-      margin 10px 1px 1px 1px
-    .table-header
-      background: #739eee
+.admin-table-list
+  table
+    background: #fff
+    margin 10px 1px 1px 1px
+  .admin-table-header
+    background: #739eee
+    color: #fff
+    font-weight: 600
+    text-align: center
+    a
       color: #fff
-      font-weight: 600
-      text-align: center
-    .odd
-      background: #fff
-    .even
-      background: #739eee
+    a:hover
+      color: #fff
+    a:visited
+      color: #fff
+  .odd
+    background: #fff
+  .even
+    background: #739eee
 
 .display-in-block
   display: block
-     
+
+.paginateButtons
+  background: #ffffff
+  padding: 3px 2px 3px 2px
+  border: 1px #c3c3c3 solid
+  .currentStep
+    margin: 1px 3px 1px 3px
+    font-size: 14px
+  .step
+    margin: 1px 3px 1px 3px
+  .previousLink
+    margin: 1px 3px 1px 3px
+  .nextLink
+    margin: 1px 3px 1px 3px
+  a
+    text-decoration: none
+  a:hover
+    text-decoration: underline
+    
 .spinner
   position: fixed
   text-align: center
@@ -1002,29 +1027,40 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
         .opened
           background: #dbfbde
           border-left: 5px #c32e06 solid
+.white-box
+  +white-box
+  border: 0px
+  
+.bottom-container
+  padding: 1px
+  margin: 2px 1px 3px 1px
+.top-container
+  height: 15px
+  padding: 1px
+  margin: 2px 1px 3px 1px
+.top-menu-list
+  ul
+    list-style-type: none
+    margin: 0
+    padding: 0
+  a
+    text-decoration: none
+    font-weight: normal	
+  li
+    margin-top: 1px
+    display: inline
+    font-weight: 600 
+    a
+      padding: 0.5em
+      text-decoration: none
+      font-weight: normal	
+    a:hover
+      text-decoration: underline
+
           
 #survey-admin
   background: #fff
-  #top-container
-    padding: 3px
-    margin: 1px 1px 5px 1px
-    .survey-admin-menu-list
-      list-style-type: none
-      margin: 0
-      padding: 0
-      a
-        text-decoration: none
-        font-weight: normal	
-      li
-        margin-top: 1px
-        display: inline
-        font-weight: 600 
-        a
-          padding: 0.5em
-        a:hover
-          text-decoration: underline
-            
-  #survey-admin-list-container
+  #survey-list-container
     margin: 5px 1px 2px 1px
     padding: 1px 
   .survey-admin-highlight-link

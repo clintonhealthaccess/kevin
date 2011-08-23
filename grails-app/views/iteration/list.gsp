@@ -12,9 +12,9 @@
 				<div class="float-right">
 					<a id="add-iteration-link" class="flow-add" href="${createLink(controller:'iteration', action:'create')}">New Iteration</a>
 				</div>
-	            <div id="admin-table-list">
+	            <div class="admin-table-list">
 	                <table>
-	                        <tr class="table-header">
+	                        <tr class="admin-table-header">
 	                        <th><g:message code="general.text.startdate" default="Start Date" /></th>
 	                        <th><g:message code="general.text.enddate" default="End Date" /></th>
 	                        <th>Action </th>

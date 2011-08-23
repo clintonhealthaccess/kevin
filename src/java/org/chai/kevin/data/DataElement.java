@@ -1,6 +1,6 @@
 package org.chai.kevin.data;
 
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.

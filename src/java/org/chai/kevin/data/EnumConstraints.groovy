@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,81 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey;
+package org.chai.kevin.data
 
 /**
- * @author JeanKahigiso
+ * @author Jean Kahigiso M.
  *
  */
-
-import java.util.Set;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.chai.kevin.util.Utils;
-
-@SuppressWarnings("serial")
-@Entity(name = "SurveyTableColumn")
-@Table(name = "dhsst_survey_table_column")
-public class SurveyTableColumn extends SurveyTranslatable {
-
-	private Long id;
-	private Integer order;
-	private String groupUuidString;
-	private SurveyTableQuestion question;
-
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	@Basic(optional = false)
-	@Column(name = "ordering")
-	public Integer getOrder() {
-		return order;
-	}
-
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
-	}
-
-	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
-	}
-
-	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
-	@JoinColumn(nullable = false)
-	public SurveyTableQuestion getQuestion() {
-		return question;
-	}
-
-	public void setQuestion(SurveyTableQuestion question) {
-		this.question = question;
-	}
-	
-	
-	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable() {
-		return Utils.getGroupUuids(this.groupUuidString);
-	}
-
+constraints = {
+	code(nullable:false, blank: false,unique: true)
 }

@@ -77,7 +77,6 @@ abstract class AbstractEntityController {
 	def create = {
 		def entity = createEntity()
 		bindParams(entity);
-		
 		render(contentType:"text/json") {
 			result = 'success'
 			html = g.render(template:getTemplate(), model:getModel(entity))

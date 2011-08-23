@@ -97,5 +97,8 @@ public class SurveyElement {
 	public Survey getSurvey() {
 		return surveyQuestion.getSurvey();
 	}
-	
+	@Transient
+	public Set<String> getOrganisationUnitGroupApplicable(){
+		return this.surveyQuestion.getOrganisationUnitGroupApplicable(this);
+	}
 }

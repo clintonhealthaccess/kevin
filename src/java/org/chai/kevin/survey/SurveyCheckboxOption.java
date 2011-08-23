@@ -31,6 +31,8 @@ package org.chai.kevin.survey;
  * @author JeanKahigiso
  *
  */
+import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,7 +43,9 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -66,7 +70,7 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic(optional=false)
+	@Basic(optional = false)
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -103,6 +107,11 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 
 	public void setSurveyElement(SurveyElement surveyElement) {
 		this.surveyElement = surveyElement;
+	}
+
+	@Transient
+	public Set<String> getOrganisationUnitGroupApplicable() {
+		return Utils.getGroupUuids(this.groupUuidString);
 	}
 
 }

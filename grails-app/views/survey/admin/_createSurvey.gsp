@@ -6,7 +6,7 @@
 	</div>
 	<g:form url="[controller:'createSurvey', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="Name" field="names"/>
-		<g:i18nTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="Description" field="descriptions"/>
+		<g:i18nRichTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
 	   <div class="row">
 			<div>
 				<a id="add-iteration-link" class="float-right"  href="${createLink(controller:'iteration', action:'create')}">New Iteration</a>
@@ -32,7 +32,7 @@
 			<input type="hidden" name="id" value="${survey?.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit">Save Survey</button>&nbsp;&nbsp;
+			<button type="submit" class="rich-textarea-form">Save Survey</button>&nbsp;&nbsp;
 			<button id="cancel-button">Cancel</button>
 		</div>
     </g:form>
@@ -40,7 +40,8 @@
 </div>
 <div class="hidden flow-container"></div>
 <script type="text/javascript">
-	$(document).ready(function() {	
+	$(document).ready(function() {
+		getRichTextContent();
 		$('#add-survey').flow({
 			addLinks: '#add-iteration-link',
 			onSuccess: function(data) {

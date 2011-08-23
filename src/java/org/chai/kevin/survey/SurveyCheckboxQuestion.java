@@ -33,7 +33,9 @@ package org.chai.kevin.survey;
  */
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -41,6 +43,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -54,11 +57,11 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 public class SurveyCheckboxQuestion extends SurveyQuestion {
 
 	List<SurveyCheckboxOption> options = new ArrayList<SurveyCheckboxOption>();
-	
-    @OneToMany(targetEntity=SurveyCheckboxOption.class, mappedBy="question")
-    @Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-    @OrderBy(value="order")
-    @Fetch(FetchMode.SELECT)
+
+	@OneToMany(targetEntity = SurveyCheckboxOption.class, mappedBy = "question")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OrderBy(value = "order")
+	@Fetch(FetchMode.SELECT)
 	public List<SurveyCheckboxOption> getOptions() {
 		return options;
 	}
@@ -72,15 +75,15 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 		options.add(option);
 		Collections.sort(options);
 	}
-	
-    @Transient
+
+	@Transient
 	@Override
 	public String getType() {
 		String gspName = "checkboxQuestion";
 		return gspName;
 	}
-    
-    @Transient
+
+	@Transient
 	@Override
 	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
@@ -89,8 +92,8 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 		}
 		return dataElements;
 	}
-    
-    @Transient
+
+	@Transient
 	@Override
 	public List<SurveyElement> getSurveyElements() {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
@@ -99,14 +102,36 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 		}
 		return dataElements;
 	}
-    
-    @Transient
+
+	@Transient
 	public List<SurveyCheckboxOption> getOptions(OrganisationUnitGroup group) {
 		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
 		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {
-			if (Utils.getGroupUuids(surveyCheckboxOption.getGroupUuidString()).contains(group.getUuid())) result.add(surveyCheckboxOption);
+			if (Utils.getGroupUuids(surveyCheckboxOption.getGroupUuidString())
+					.contains(group.getUuid()))
+				result.add(surveyCheckboxOption);
 		}
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transient
+	public Set<String> getOrganisationUnitGroupApplicable(
+			SurveyElement surveyElement) {
+		Set<String> optionOrgUnitUuIds = new HashSet<String>();
+
+		for (SurveyCheckboxOption option : this.getOptions())
+			if (surveyElement.equals(option.getSurveyElement()))
+				optionOrgUnitUuIds.addAll(CollectionUtils
+						.intersection(
+								option.getOrganisationUnitGroupApplicable(),
+								Utils.getGroupUuids(this.getGroupUuidString())));
+
+		if (optionOrgUnitUuIds.isEmpty())
+			throw new IllegalArgumentException(
+					"survey element does not belong to question (options)");
+		return new HashSet<String>(CollectionUtils.intersection(optionOrgUnitUuIds,
+				this.getSection().getOrganisationUnitGroupApplicable()));
 	}
 
 }

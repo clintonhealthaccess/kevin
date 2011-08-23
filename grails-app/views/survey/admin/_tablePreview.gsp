@@ -1,7 +1,7 @@
-<div id="table-preview">
+<div id="table-preview" class="admin-table-list white-box">
 	<g:i18n field="${question.names}" />
 	<table class="question-table" id="question-table-${question.id}">
-	<tr>
+	<tr class="admin-table-header">
 	<th><g:i18n field="${question.tableNames}" /></th>
 	    <g:set var="j" value="${0}"/>
 		<g:each in="${question.getColumns()}" var="column">
@@ -24,7 +24,7 @@
 	<g:set var="i" value="${0}"/>
 	<g:each in="${question.getRows()}" var="row">
 	<g:set var="i" value="${i+1}"/>
-		<tr class="${i%2==0?'oddrow':'evenrow'}">
+		<tr class="${i%2==0?'odd':'even'}">
 		<td>
 		<g:i18n field="${row.names}" />
 			

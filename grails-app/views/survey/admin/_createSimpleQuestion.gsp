@@ -56,7 +56,7 @@
 			<input type="hidden" name="surveyElement.id" value="${question.surveyElement.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit" class="question-form">Save Question</button>
+			<button type="submit" class="rich-textarea-form">Save Question</button>
 			&nbsp;&nbsp;
 			<button id="cancel-button">Cancel</button>
 		</div>

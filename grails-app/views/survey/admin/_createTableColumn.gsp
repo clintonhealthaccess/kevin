@@ -33,7 +33,7 @@
 			<input type="hidden" name="id" value="${column.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit" class="question-form">Save Option</button>
+			<button type="submit" class="rich-textarea-form">Save Option</button>
 			&nbsp;&nbsp;
 			<button id="cancel-button">Cancel</button>
 		</div>

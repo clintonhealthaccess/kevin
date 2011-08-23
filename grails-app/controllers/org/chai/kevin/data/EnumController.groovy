@@ -1,6 +1,4 @@
-package org.chai.kevin
-
-/*
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -15,7 +13,7 @@ package org.chai.kevin
  *     * Neither the name of the <organization> nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,28 +25,31 @@ package org.chai.kevin
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.data
 
-import org.chai.kevin.data.Constant;
-import org.chai.kevin.data.DataElement;
 
-class ConstantController extends AbstractEntityController {
-	
-	DataService dataService
+import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.data.Enum as Enum;
 
-	def getEntity(def id) {
-		return Constant.get(id)
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
+class EnumController extends AbstractEntityController {
+
+	def getEntity(def id){
+		return Enum.get(id)
 	}
-
-	def createEntity() {
-		return new Constant()
+	def createEntity(){  
+		return new Enum();
 	}
-
 	def getTemplate() {
-		return "createConstant";
+		return "/data/createEnum"
 	}
-
 	def getModel(def entity) {
-		return [constant: entity]
+		[
+		 enumeration: entity,
+		]
 	}
 
 	def validateEntity(def entity) {
@@ -58,47 +59,26 @@ class ConstantController extends AbstractEntityController {
 	def saveEntity(def entity) {
 		entity.save()
 	}
-
 	def deleteEntity(def entity) {
 		entity.delete()
 	}
-
 	def bindParams(def entity) {
 		entity.properties = params
-
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = entity.descriptions
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
-
+	
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		[constants: Constant.list(params), constantCount: Constant.count()]
+		List<Enum> enums = Enum.list(params);
+		render (view: '/data/list', model:[
+					enums: enums,
+					template: "enumList",
+					enumCount: Enum.count()
+				])
+		
 	}
-
-	def getData = {
-		def constants = dataService.searchConstants(params['searchText']);
-		render(contentType:"text/json") {
-			result = 'success'
-			html = g.render(template:'/templates/constants', model:[constants: constants])
-		}
-	}
-
-	def getConstantDescription = {
-		def constant = null;
-		if (NumberUtils.isNumber(params['constant'])) {
-			constant = Constant.get(params['constant'])
-		}
-
-		if (constant == null) {
-			render(contentType:"text/json") { result = 'error' }
-		}
-		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/templates/constantDescription', model: [constant: constant])
-			}
-		}
-	}
+	
 }

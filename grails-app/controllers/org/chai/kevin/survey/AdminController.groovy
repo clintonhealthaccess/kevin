@@ -54,8 +54,9 @@ class AdminController extends AbstractReportController {
 			Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/survey/admin/list', model:[
-
-					surveys: surveys, surveyCount: surveys.size()
+					template:"surveyList",
+					surveys: surveys,
+					surveyCount: Survey.count()
 				])
 	}
 
@@ -65,10 +66,10 @@ class AdminController extends AbstractReportController {
 		List<SurveyObjective> objectives = survey.objectives;
 
 		render (view: '/survey/admin/list', model:[
-
+					template:"objectiveList",
 					survey:survey,
 					objectives: objectives,
-					objectiveCount: objectives.size()
+					objectiveCount: SurveyObjective.count()
 
 				])
 	}
@@ -79,11 +80,11 @@ class AdminController extends AbstractReportController {
 		List<SurveySection> sections = objective.sections;
 
 		render (view: '/survey/admin/list', model:[
-			
+					template:"sectionList",
 					survey: objective.survey,
 					objective: objective,
 					sections: sections,
-					sectionCount: sections.count()
+					sectionCount: SurveySection.count()
 				])
 	}
 
@@ -91,9 +92,12 @@ class AdminController extends AbstractReportController {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		SurveySection section = SurveySection.get(params.sectionId)
 		List<SurveyQuestion> questions = section.questions;
+//		if(params.sort)
+//			questions.sort(it."$params?.sort")
+		//questions.sort(it."$params?.sort")
 
 		render (view: '/survey/admin/list', model:[
-
+					template:"questionList",
 					survey: section.objective.survey,
 					objective: section.objective,
 					section: section,

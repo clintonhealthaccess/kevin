@@ -32,6 +32,7 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -106,6 +107,9 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	
 	@Transient
 	public abstract List<SurveyElement> getSurveyElements();
+	
+	@Transient
+	public abstract Set<String> getOrganisationUnitGroupApplicable(SurveyElement surveyElement);
 
 	@Transient
 	public Survey getSurvey() {

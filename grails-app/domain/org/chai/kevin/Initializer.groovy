@@ -149,7 +149,8 @@ class Initializer {
 
 			def butaro = new OrganisationUnit(name:"Butaro DH", shortName:"RW,N,BU,BUDH", parent: burera)
 			def kivuye = new OrganisationUnit(name:"Kivuye HC", shortName:"RW,N,BU,KIHC", parent: burera)
-			burera.children = [butaro, kivuye]
+			def chk = new OrganisationUnit(name:"CHK HC", shortName:"RW,N,BU,CHUK", parent: burera)
+			burera.children = [butaro, kivuye,chk]
 
 			rwanda.save(failOnError: true, flush: true)
 
@@ -157,7 +158,7 @@ class Initializer {
 			groupSet.save(failOnError: true)
 
 			// organisation groups
-			def dh = new OrganisationUnitGroup(name:"District Hospital", uuid: "District Hospital", members: [butaro], groupSet: OrganisationUnitGroupSet.findByName('Type'))
+			def dh = new OrganisationUnitGroup(name:"District Hospital", uuid: "District Hospital", members: [butaro,chk], groupSet: OrganisationUnitGroupSet.findByName('Type'))
 			def hc = new OrganisationUnitGroup(name:"Health Center", uuid: "Health Center", members: [kivuye], groupSet: OrganisationUnitGroupSet.findByName('Type'))
 			butaro.groups = [dh]
 			kivuye.groups = [hc]
@@ -201,6 +202,7 @@ class Initializer {
 
 		if (!DataElement.count()) {
 			// Data Elements
+			def dataElement10 = new DataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: ValueType.ENUM, enume: Enum.findByCode('ENUM2'))
 			def dataElement1 = new DataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: ValueType.VALUE)
 			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: ValueType.VALUE)
 			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: ValueType.ENUM, enume: Enum.findByCode('ENUM1'))
@@ -210,7 +212,6 @@ class Initializer {
 			def dataElement7 = new DataElement(names:j(["en":"Element 7"]), descriptions:j([:]), code:"CODE7", type: ValueType.BOOL)
 			def dataElement8 = new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: ValueType.VALUE)
 			def dataElement9 = new DataElement(names:j(["en":"Element 9"]), descriptions:j([:]), code:"CODE9", type: ValueType.VALUE)
-			def dataElement10 = new DataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: ValueType.ENUM, enume: Enum.findByCode('ENUM2'))
 			def dataElement11 = new DataElement(names:j(["en":"Element 11"]), descriptions:j([:]), code:"CODE11", type: ValueType.DATE)
 			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: ValueType.STRING)
 			def dataElement81 = new DataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: ValueType.VALUE)
@@ -221,6 +222,7 @@ class Initializer {
 			//			def dataSet1 = new DataSet(names:j(["en":"Dataset 1"]), shortnames:j(["en":"Dataset 1"]), code:"DATASET1", periodType: MonthlyPeriodType.list()[0])
 			//			def dataSet2 = new DataSet(names:j(["en":"Dataset 2"]), shortnames:j(["en":"Dataset 2"]), code:"DATASET2", periodType: MonthlyPeriodType.list()[0])
 
+			dataElement10.save(failOnError: true, flush:true)
 			//			dataElement1.dataSets = [dataSet1]
 			//			dataElement2.dataSets = [dataSet2]
 			//			dataSet1.dataElements.add dataElement1
@@ -237,7 +239,6 @@ class Initializer {
 			dataElement7.save(failOnError: true, flush:true)
 			dataElement8.save(failOnError: true, flush:true)
 			dataElement9.save(failOnError: true, flush:true)
-			dataElement10.save(failOnError: true, flush:true)
 			dataElement11.save(failOnError: true, flush:true)
 			dataElement81.save(failOnError: true, flush:true)
 			dataElement91.save(failOnError: true, flush:true)
@@ -1137,7 +1138,7 @@ class Initializer {
 				names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
 				tableNames: j(["en":"Training Modules"]),
 				order: 1,
-				groupUuidString: "District Hospital,Health Center"
+				groupUuidString: "District Hospital"
 			)
 			staffing.addQuestion(tableQ)
 			staffing.save(failOnError:true, flush: true)

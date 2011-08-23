@@ -46,6 +46,8 @@ import javax.persistence.Table;
 import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity(name="Enum")
 @Table(name="enum")
@@ -67,6 +69,7 @@ public class Enum {
 	}
 	
 	@OneToMany(mappedBy="enume", targetEntity=EnumOption.class, fetch=FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
 	public List<EnumOption> getEnumOptions() {
 		return enumOptions;
 	}

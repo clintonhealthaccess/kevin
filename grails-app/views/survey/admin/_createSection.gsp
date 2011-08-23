@@ -8,9 +8,7 @@
 	<g:form url="[controller:'section', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${section}"
 			value="${section?.names}" label="Name" field="names" />
-		<g:i18nTextarea name="descriptions" bean="${section}"
-			value="${section?.descriptions}" label="Description"
-			field="descriptions" />
+			<g:i18nRichTextarea name="descriptions" bean="${section}" value="${section?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
 			<div class="row">
 			<div id="objective-block">
 					<div class="group-list ${hasErrors(bean:section, field:'objective', 'errors')}">
@@ -50,7 +48,7 @@
 			<input type="hidden" name="id" value="${section.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit">Save Section</button>
+			<button type="submit" class="rich-textarea-form">Save Section</button>
 			&nbsp;&nbsp;
 			<button id="cancel-button">Cancel</button>
 		</div>
@@ -60,6 +58,7 @@
 <div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
+		getRichTextContent();
 			$('#add-section').flow({
 				addLinks : '#new-section-link',
 				onSuccess : function(data) {

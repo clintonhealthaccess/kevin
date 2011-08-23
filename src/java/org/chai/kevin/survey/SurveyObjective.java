@@ -34,6 +34,7 @@ package org.chai.kevin.survey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -75,7 +76,7 @@ public class SurveyObjective extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic(optional=false)
+	@Basic(optional = false)
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -128,6 +129,11 @@ public class SurveyObjective extends SurveyTranslatable {
 
 	public void setDependency(SurveyObjective dependency) {
 		this.dependency = dependency;
+	}
+
+	@Transient
+	public Set<String> getOrganisationUnitGroupApplicable() {
+		return Utils.getGroupUuids(this.groupUuidString);
 	}
 
 	@Transient

@@ -35,20 +35,24 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Jean Kahigiso M.
- *
+ * 
  */
 public class Utils {
-	
+
 	public static Set<String> getGroupUuids(String groupUuidString) {
 		Set<String> result = new HashSet<String>();
 		if (groupUuidString != null)
 			result.addAll(Arrays.asList(StringUtils.split(groupUuidString, ',')));
 		return result;
 	}
-		
+
 	public static String getGroupUuidString(Object groupUuids) {
-		if (groupUuids == null) return "";
-		if (groupUuids instanceof String) return (String) groupUuids;
-		else return StringUtils.join((Object[]) groupUuids, ',');
+		if (groupUuids == null)
+			return "";
+		if (groupUuids instanceof String)
+			return (String) groupUuids;
+		else
+			return StringUtils.join((Object[]) groupUuids, ',');
 	}
+
 }

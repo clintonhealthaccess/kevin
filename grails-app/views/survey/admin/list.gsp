@@ -7,8 +7,8 @@
 </head>
 <body>
 	<div id="survey-admin">
-			<div id="top-container" class="box">
-				<ul class="survey-admin-menu-list">
+			<div class="top-container box">
+				<ul class="top-menu-list">
 				<li><a href="${createLink(controller:'admin', action:'survey')}">Surveys</a>
 					</li>
 					<g:if test="${survey}">
@@ -33,23 +33,9 @@
 				</ul>
 				<div class="clear"></div>
 			</div>
-		<div id="bottom-container" class="box">
-			<div id="survey-admin-list-container">
+		<div class="bottom-container box">
+			<div id="survey-list-container">
 				<!-- Template goes here -->
-
-				<g:if test="${surveys || surveys?.size()==0}">
-					<g:set var="template" value="surveyList" />
-				</g:if>
-				<g:if test="${objectives || survey}">
-					<g:set var="template" value="objectiveList" />
-				</g:if>
-				<g:if test="${sections || objective}">
-					<g:set var="template" value="sectionList" />
-				</g:if>
-				<g:if test="${questions || section}">
-					<g:set var="template" value="questionList" />
-				</g:if>
-
 				<g:render template="/survey/admin/${template}"
 					model="[surveyId: survey, objectiveId: objective,sectionId: section]" />
 				<!-- End of template -->
@@ -63,7 +49,7 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$('#survey-admin-list-container').flow({
+			$('#survey-list-container').flow({
 				onSuccess : function(data) {
 					if (data.result == 'success') {
 						location.reload();

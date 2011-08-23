@@ -16,32 +16,22 @@
 					<a id="add-constant-link" href="${createLink(controller:'constant', action:'create')}">new constant</a>
 				</div>
 	            
-	            <div class="list">
+	            <div class="admin-table-list">
 	                <table>
-	                    <thead>
-	                        <tr>
-	                            <g:sortableColumn property="name" title="${message(code: 'constant.name.label', default: 'Name')}" />
-	
-	                            <g:sortableColumn property="value" title="${message(code: 'constant.value.label', default: 'Value')}" />
-	                        
-	                            <g:sortableColumn property="description" title="${message(code: 'constant.description.label', default: 'Description')}" />
-	                        
-	                        	<td></td>
+	                        <tr class="admin-table-header">
+	                        <th>Name</th>
+	                        <th>Description</th>
+	                        <th>Value</th>
+	                        <th>Manage</th>
 	                        </tr>
-	                    </thead>
-	                    <tbody>
 	                    <g:each in="${constants}" status="i" var="constant">
 	                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 	                            <td class="edit-constant-link"><g:link action="edit" id="${constant.id}"><g:i18n field="${constant.names}"/></g:link></td>
-	                        
-	                            <td>${constant.value}</td>
-	                        
 	                            <td><g:i18n field="${constant.descriptions}"/></td>
-	                        
+	                            <td>${constant.value}</td>
 	                        	<td class="delete-constant-link"><a href="${createLink(controller:'constant', action:'delete', id:constant.id)}">delete</a></td>
 	                        </tr>
 	                    </g:each>
-	                    </tbody>
 	                </table>
 	            </div>
 	            <div class="paginateButtons">

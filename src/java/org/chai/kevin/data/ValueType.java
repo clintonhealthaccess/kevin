@@ -1,6 +1,4 @@
-package org.chai.kevin.data;
-
-/* 
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,14 +25,18 @@ package org.chai.kevin.data;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.data;
+
 
 public enum ValueType {
-	BOOL("BOOL"), ENUM("ENUM"), VALUE("VALUE"), DATE("DATE"), STRING("STRING");
+	BOOL("BOOL", "Boolean"), ENUM("ENUM","Emun"), VALUE("VALUE","Value"), DATE("DATE","Date"), STRING("STRING","Text");
 	
 	final String value;
+	final String name;
 
-	ValueType(String value) { this.value = value; }
-
+	ValueType(String value, String name) { this.value = value; this.name = name;}
+ 
+    public String getName() { return name; }
     public String toString() { return value; } 
     String getKey() { return name(); }
 }

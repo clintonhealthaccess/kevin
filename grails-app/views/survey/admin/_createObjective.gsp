@@ -8,9 +8,7 @@
 	<g:form url="[controller:'objective', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${objective}"
 			value="${objective?.names}" label="Name" field="names" />
-		<g:i18nTextarea name="descriptions" bean="${objective}"
-			value="${objective?.descriptions}" label="Description"
-			field="descriptions" />
+	   <g:i18nRichTextarea name="descriptions" bean="${objective}" value="${objective?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
 		<div class="row">
 			<div id="survey-block">
 				<input type="hidden" name="survey.id" value="${objective.survey.id}" />
@@ -42,7 +40,7 @@
 			<input type="hidden" name="id" value="${objective.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit">Save Objective</button>
+			<button type="submit" class="rich-textarea-form">Save Objective</button>
 			&nbsp;&nbsp;
 			<button id="cancel-button">Cancel</button>
 		</div>
@@ -52,6 +50,7 @@
 <div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
+		getRichTextContent();
 			$('#add-objective').flow({
 				addLinks : '#new-survey-link',
 				onSuccess : function(data) {

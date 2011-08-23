@@ -26,13 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.chai.kevin.survey;
+
 /**
  * @author JeanKahigiso
  *
  */
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,10 +50,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
 
 @SuppressWarnings("serial")
 @Entity(name = "SurveyTableRow")
@@ -59,7 +66,7 @@ public class SurveyTableRow extends SurveyTranslatable {
 	private Integer order;
 	private String groupUuidString;
 	private SurveyTableQuestion question;
-	private Map<SurveyTableColumn,SurveyElement> surveyElements= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
+	private Map<SurveyTableColumn, SurveyElement> surveyElements = new LinkedHashMap<SurveyTableColumn, SurveyElement>();
 
 	@Id
 	@GeneratedValue
@@ -71,7 +78,7 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic(optional=false)
+	@Basic(optional = false)
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -81,17 +88,17 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.order = order;
 	}
 
-    @Lob
+	@Lob
 	public String getGroupUuidString() {
 		return groupUuidString;
 	}
 
-    public void setGroupUuidString(String groupUuidString) {
+	public void setGroupUuidString(String groupUuidString) {
 		this.groupUuidString = groupUuidString;
 	}
-	
+
 	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
-	@JoinColumn(nullable=false)
+	@JoinColumn(nullable = false)
 	public SurveyTableQuestion getQuestion() {
 		return question;
 	}
@@ -100,16 +107,22 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.question = question;
 	}
 
-    @OneToMany(targetEntity=SurveyElement.class)
-    @JoinTable(name="dhsst_survey_table_row_elements")
-    @MapKeyJoinColumn(nullable=false)
-    @Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@OneToMany(targetEntity = SurveyElement.class)
+	@JoinTable(name = "dhsst_survey_table_row_elements")
+	@MapKeyJoinColumn(nullable = false)
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	public Map<SurveyTableColumn, SurveyElement> getSurveyElements() {
 		return surveyElements;
 	}
 
-    public void setSurveyElements(Map<SurveyTableColumn,SurveyElement> surveyElements) {
+	public void setSurveyElements(
+			Map<SurveyTableColumn, SurveyElement> surveyElements) {
 		this.surveyElements = surveyElements;
+	}
+
+	@Transient
+	public Set<String> getOrganisationUnitGroupApplicable() {
+		return Utils.getGroupUuids(this.groupUuidString);
 	}
 
 }

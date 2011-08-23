@@ -15,19 +15,13 @@
 	            <div class="float-right">
 					<a id="add-expression-link" href="${createLink(controller:'expression', action:'create')}">new expression</a>
 				</div>
-				
-	            <div class="list">
+	            <div class="admin-table-list">
 	                <table>
-	                    <thead>
-	                        <tr>
-	                            <g:sortableColumn property="name" title="${message(code: 'expression.name.label', default: 'Name')}" />
-	
-	                            <g:sortableColumn property="description" title="${message(code: 'expression.description.label', default: 'Description')}" />
-	                        
-	                        	<th></th>
+	                        <tr class="admin-table-header">
+	                        <th>Names</th>
+	                        <th>Descriptions</th>
+	                        <th>Manage</th>
 	                        </tr>
-	                    </thead>
-	                    <tbody>
 	                    <g:each in="${expressions}" status="i" var="expression">
 	                        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 	                            <td class="edit-expression-link"><g:link action="edit" id="${expression.id}"><g:i18n field="${expression.names}"/></g:link></td>
@@ -37,7 +31,6 @@
 	                        	<td class="delete-expression-link"><a href="${createLink(controller:'expression', action:'delete', id:expression.id)}">delete</a></td>
 	                        </tr>
 	                    </g:each>
-	                    </tbody>
 	                </table>
 	            </div>
 	            <div class="paginateButtons">

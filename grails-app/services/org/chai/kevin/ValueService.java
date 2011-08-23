@@ -134,7 +134,7 @@ public class ValueService {
 			 return value;
 		}
 	}
-	
+
 	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
 	public List<ExpressionValue> getOutdatedExpressions() {

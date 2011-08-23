@@ -29,7 +29,11 @@ package org.chai.kevin.survey;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Iterator;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -41,6 +45,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
@@ -162,4 +167,40 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		return "SurveyTableQuestion [tableNames=" + tableNames + "]";
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Transient
+	public Set<String> getOrganisationUnitGroupApplicable(
+			SurveyElement surveyElement) {
+		Set<String> columnRowOrgUnitUuIDs = new HashSet<String>();
+		
+		boolean found = false;
+		for (SurveyTableRow row : this.rows) {
+			if (row.getSurveyElements().values().contains(surveyElement)) {
+				Iterator it = row.getSurveyElements().entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry pairs = (Map.Entry) it.next();
+					if (surveyElement.equals(pairs.getValue())) {
+						found = true;
+						columnRowOrgUnitUuIDs.addAll(
+							CollectionUtils.intersection(
+								row.getOrganisationUnitGroupApplicable(),
+								((SurveyTableColumn) pairs.getKey()).getOrganisationUnitGroupApplicable()
+							)
+						);
+					}
+				}
+			}
+		}
+
+		if (!found) throw new IllegalArgumentException("survey element does not belong to question (row-column)");
+		return new HashSet<String>(
+			CollectionUtils.intersection(
+				CollectionUtils.intersection(
+					columnRowOrgUnitUuIDs, 
+					Utils.getGroupUuids(this.getGroupUuidString())
+				),
+				getSection().getOrganisationUnitGroupApplicable()	
+			)
+		);
+	}
 }

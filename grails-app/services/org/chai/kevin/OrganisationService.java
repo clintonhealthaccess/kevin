@@ -32,9 +32,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.survey.SurveyElement;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
@@ -99,6 +101,10 @@ public class OrganisationService {
 		return level;
 	}
 	
+	public int getNumberOfOrganisationForGroup(OrganisationUnitGroup organisationUnitGroup){
+		return organisationUnitGroup.getMembers().size();
+	}
+		
 	public List<Organisation> getOrganisationsOfLevel(int level) {
 		Collection<OrganisationUnit> organisationUnits = organisationUnitService.getOrganisationUnitsAtLevel(level);
 		List<Organisation> result = new ArrayList<Organisation>();
@@ -141,6 +147,7 @@ public class OrganisationService {
 		}
 		return unitGroupSetCache;
 	}
+	
 	
 	public void loadGroup(Organisation organisation) {
 		organisation.setOrganisationUnitGroup(organisation.getOrganisationUnit().getGroupInGroupSet(getOrganisationUnitGroupSet()));
