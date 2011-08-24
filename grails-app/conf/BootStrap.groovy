@@ -36,6 +36,7 @@ import java.util.Date;
 import grails.util.GrailsUtil;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.chai.kevin.cost.CostObjective;
 import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostTarget;
@@ -47,18 +48,8 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.security.User;
 import org.chai.kevin.value.DataValue;
-import org.hisp.dhis.dataset.DataSet;
-import org.hisp.dhis.organisationunit.OrganisationUnit
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
-import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
-import org.hisp.dhis.period.MonthlyPeriodType;
-import org.hisp.dhis.period.Period;
-import org.hisp.dhis.period.PeriodType;
-import org.hisp.dhis.user.User
-import org.hisp.dhis.user.UserAuthorityGroup;
-import org.hisp.dhis.user.UserCredentials;
 
 class BootStrap {
 
@@ -66,9 +57,14 @@ class BootStrap {
 
 		switch (GrailsUtil.environment) {
 		case "production":
-//			Initializer.createUsers()
 			Initializer.createRootObjective()
-//			Initializer.createIndicatorType()
+			
+			if (User.findByUsername('admin') == null) {
+				def user = new User(username: "admin", passwordHash: new Sha256Hash("admin").toHex())
+				user.addToPermissions("*")
+				user.save()
+			}
+			
 			
 			break;
 		case "development":

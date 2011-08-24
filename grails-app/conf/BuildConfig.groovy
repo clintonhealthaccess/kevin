@@ -114,7 +114,7 @@ grails.project.dependency.resolution = {
 		
 		// those are for the migration script to work
 //		compile 'org.hisp.dhis:dhis-service-importexport:2.2-SNAPSHOT'
-//		compile 'org.supercsv:SuperCSV:1.52'
+		compile 'org.supercsv:SuperCSV:1.52'
     }
 	
 }

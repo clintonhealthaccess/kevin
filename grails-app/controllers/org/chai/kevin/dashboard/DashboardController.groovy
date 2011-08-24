@@ -53,7 +53,8 @@ class DashboardController extends AbstractReportController {
 
 	AggregationService aggregationService;
 	DashboardService dashboardService;
-
+	DashboardObjectiveService dashboardObjectiveService;
+	
 	def quartzScheduler;
 	
 	def index = {
@@ -61,9 +62,9 @@ class DashboardController extends AbstractReportController {
 	}
 	
 	def explain = {
-		Period period = getPeriod()
+		Period period = Period.get(params.int('period'))
 		DashboardEntry entry = getDashboardEntry()
-		Organisation organisation = getOrganisation(false)
+		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
 
 		def explanation = dashboardService.getExplanation(organisation, entry, period)
 		def groups = new GroupCollection(OrganisationUnitGroup.list())
@@ -75,6 +76,17 @@ class DashboardController extends AbstractReportController {
 			if (log.isInfoEnabled()) log.info ("redirecting to action: "+params['action']+",	 period: "+period.id+", objective: "+objective.id+", organisation: "+organisation.id)
 			redirect (controller: 'dashboard', action: params['action'], params: [period: period.id, objective: objective.id, organisation: organisation.id]);
 		}
+	}
+	
+	private def getDashboardEntry() {
+		DashboardEntry entry = DashboardObjective.get(params.int('objective'));
+		if (entry == null) {
+			entry = DashboardTarget.get(params.int('objective'));
+		}
+		if (entry == null) {
+			entry = dashboardObjectiveService.getRootObjective()
+		}
+		return entry
 	}
 	
     def view = {

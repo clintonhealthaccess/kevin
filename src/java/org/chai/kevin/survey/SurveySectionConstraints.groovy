@@ -32,8 +32,8 @@ package org.chai.kevin.survey
  *
  */
 constraints ={
-	objective(nullable:false, blank:false)
+	objective(nullable:false)
 	order(nullable:false, blank:false)
-	groupUuidString(nullable:false, blank:false)
+	groupUuidString(nullable:false /*, blank:false*/)
 
 }

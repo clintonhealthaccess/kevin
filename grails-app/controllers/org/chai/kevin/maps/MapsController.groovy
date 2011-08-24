@@ -48,7 +48,7 @@ class MapsController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("maps.view, params:"+params)
 		
 		Period period = getPeriod()
-		MapsTarget target = getMapsTarget()
+		MapsTarget target = MapsTarget.get(params.int('target'));
 		Organisation organisation = getOrganisation(true)
 		
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
@@ -66,9 +66,9 @@ class MapsController extends AbstractReportController {
 	def explain = {
 		if (log.isDebugEnabled()) log.debug("maps.infos, params:"+params)
 		
-		Period period = getPeriod()
-		Organisation organisation = getOrganisation(true)
-		MapsTarget target = getMapsTarget()
+		Period period = Period.get(params.int('period'))
+		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
 		MapsExplanation explanation = mapsService.getExplanation(period, organisation, target);
 		def groups = new GroupCollection(OrganisationUnitGroup.list())
@@ -79,10 +79,11 @@ class MapsController extends AbstractReportController {
 	def map = {
 		if (log.isDebugEnabled()) log.debug("maps.map, params:"+params)
 		
-		Period period = getPeriod()
-		Organisation organisation = getOrganisation(true)
-		MapsTarget target = getMapsTarget()
-		Integer level = getOrganisationUnitLevel()
+		Period period = Period.get(params.int('period'))
+		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		MapsTarget target =  MapsTarget.get(params.int('target'));
+		
+		Integer level = params.int('level')
 		
 		Maps map = mapsService.getMap(period, organisation, level, target);
 		

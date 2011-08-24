@@ -29,6 +29,7 @@ package org.chai.kevin.survey;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -73,10 +74,6 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		this.tableNames = tableNames;
 	}
 
-	public void setColumns(List<SurveyTableColumn> columns) {
-		this.columns = columns;
-	}
-
 	@OneToMany(targetEntity = SurveyTableColumn.class, mappedBy = "question")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	@OrderBy(value = "order")
@@ -85,8 +82,8 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		return columns;
 	}
 
-	public void setRows(List<SurveyTableRow> rows) {
-		this.rows = rows;
+	public void setColumns(List<SurveyTableColumn> columns) {
+		this.columns = columns;
 	}
 
 	@OneToMany(targetEntity = SurveyTableRow.class, mappedBy = "question")
@@ -95,6 +92,10 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	@Fetch(FetchMode.SELECT)
 	public List<SurveyTableRow> getRows() {
 		return rows;
+	}
+
+	public void setRows(List<SurveyTableRow> rows) {
+		this.rows = rows;
 	}
 
 	@Transient
@@ -155,8 +156,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	public List<SurveyTableColumn> getColumns(OrganisationUnitGroup group) {
 		List<SurveyTableColumn> result = new ArrayList<SurveyTableColumn>();
 		for (SurveyTableColumn surveyTableColumn : getColumns()) {
-			if (Utils.getGroupUuids(surveyTableColumn.getGroupUuidString())
-					.contains(group.getUuid()))
+			if (Utils.getGroupUuids(surveyTableColumn.getGroupUuidString()).contains(group.getUuid()))
 				result.add(surveyTableColumn);
 		}
 		return result;
@@ -203,4 +203,27 @@ public class SurveyTableQuestion extends SurveyQuestion {
 			)
 		);
 	}
+
+	@Override
+	@Transient
+	protected SurveyTableQuestion newInstance() {
+		return new SurveyTableQuestion();
+	}
+
+	@Transient
+	protected void deepCopy(SurveyQuestion question, SurveyCloner cloner) {
+		SurveyTableQuestion copy = (SurveyTableQuestion)question;
+		super.deepCopy(copy, cloner);
+		copy.setTableNames(getTableNames());
+		Map<Long, SurveyTableColumn> columns = new HashMap<Long, SurveyTableColumn>();
+		for (SurveyTableColumn tableColumn : getColumns()) {
+			SurveyTableColumn columnCopy = tableColumn.deepCopy(cloner);
+			columns.put(tableColumn.getId(), columnCopy);
+			copy.getColumns().add(columnCopy);
+		}
+		for (SurveyTableRow tableRow : getRows()) {
+			copy.getRows().add(tableRow.deepCopy(cloner, columns));
+		}
+	}
+	
 }

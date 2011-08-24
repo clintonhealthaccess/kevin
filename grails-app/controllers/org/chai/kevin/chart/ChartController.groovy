@@ -12,8 +12,8 @@ class ChartController extends AbstractReportController {
 	def chart = {
 		if (log.isDebugEnabled()) log.debug("chart.chart, params:"+params)
 	
-		Organisation organisation = getOrganisation(false)
-		Data data = getData()
+		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		Data data = dataService.getData(Long.parseLong(params['data']))
 		
 		Chart chart = chartService.getChart(data, organisation)
 		

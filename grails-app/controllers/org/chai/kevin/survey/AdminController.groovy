@@ -34,13 +34,11 @@ package org.chai.kevin.survey
 import org.chai.kevin.AbstractReportController;
 import org.chai.kevin.GroupCollection
 import org.chai.kevin.PeriodSorter
-import org.chai.kevin.survey.SurveyAdminService;
 import org.chai.kevin.survey.SurveySorter;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 class AdminController extends AbstractReportController {
 
-	SurveyAdminService surveyAdminService;
 	List<OrganisationUnitGroup> groups = OrganisationUnitGroup.list();
 
 	def index = {
@@ -49,60 +47,72 @@ class AdminController extends AbstractReportController {
 
 	def survey = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		List<Survey> surveys = Survey.list();
+		params.offset = params.offset ? params.int('offset'): 0
+		List<Survey> surveys = Survey.list(params);
+		
 		if(surveys.size()>0)
 			Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/survey/admin/list', model:[
-					template:"surveyList",
-					surveys: surveys,
-					surveyCount: Survey.count()
-				])
+			template:"surveyList",
+			surveys: surveys,
+			surveyCount: Survey.count()
+		])
 	}
 
 	def objective = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.offset = params.offset ? params.int('offset'): 0
+		
 		Survey survey = Survey.get(params.surveyId);
 		List<SurveyObjective> objectives = survey.objectives;
 
+		def max = Math.min(params['offset']+params['max'], objectives.size())
+		
 		render (view: '/survey/admin/list', model:[
-					template:"objectiveList",
-					survey:survey,
-					objectives: objectives,
-					objectiveCount: SurveyObjective.count()
+			template:"objectiveList",
+			survey:survey,
+			objectives: objectives.subList(params['offset'], max),
+			objectiveCount: SurveyObjective.count()
 
-				])
+		])
 	}
 
 	def section = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.offset = params.offset ? params.int('offset'): 0
 		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
 		List<SurveySection> sections = objective.sections;
 
+		def max = Math.min(params['offset']+params['max'], sections.size())
+		
 		render (view: '/survey/admin/list', model:[
-					template:"sectionList",
-					survey: objective.survey,
-					objective: objective,
-					sections: sections,
-					sectionCount: SurveySection.count()
-				])
+			template:"sectionList",
+			survey: objective.survey,
+			objective: objective,
+			sections: sections.subList(params['offset'], max),
+			sectionCount: SurveySection.count()
+		])
 	}
 
 	def question = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.offset = params.offset ? params.int('offset'): 0
 		SurveySection section = SurveySection.get(params.sectionId)
 		List<SurveyQuestion> questions = section.questions;
 //		if(params.sort)
 //			questions.sort(it."$params?.sort")
 		//questions.sort(it."$params?.sort")
 
+		def max = Math.min(params['offset']+params['max'], questions.size())
+		
 		render (view: '/survey/admin/list', model:[
-					template:"questionList",
-					survey: section.objective.survey,
-					objective: section.objective,
-					section: section,
-					questions: questions,
-					questionCount: questions.size()
-				])
+			template:"questionList",
+			survey: section.objective.survey,
+			objective: section.objective,
+			section: section,
+			questions: questions.subList(params['offset'], max),
+			questionCount: questions.size()
+		])
 	}
 }

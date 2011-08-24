@@ -8,7 +8,7 @@
 				<h5>In section: <g:i18n field="${section.names}" /> </h5>
 				<div class="question-container">
 					<!-- separation -->
-					<g:render template="/survey/question/${question.getType()}" model="[question: question, surveyPage: surveyPage]" />
+					<g:render template="/survey/question/${question.getType()}" model="[question: question, surveyPage: surveyPage, readonly: readonly]" />
 				</div> 
 				<g:if test="${i!=0||j!=0}">
 					<a href="#" onclick="$(this).parents('.invalid-question').hide();$(this).parents('.invalid-question').prev().show();">previous</a>

@@ -102,4 +102,15 @@ public class SurveyTableColumn extends SurveyTranslatable {
 		return Utils.getGroupUuids(this.groupUuidString);
 	}
 
+	@Transient
+	protected SurveyTableColumn deepCopy(SurveyCloner cloner) {
+		SurveyTableColumn copy = new SurveyTableColumn();
+		copy.setNames(getNames());
+		copy.setDescriptions(getDescriptions());
+		copy.setGroupUuidString(getGroupUuidString());
+		copy.setOrder(getOrder());
+		copy.setQuestion((SurveyTableQuestion)cloner.getQuestion(getQuestion()));
+		return copy;
+	}
+
 }

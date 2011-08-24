@@ -89,6 +89,8 @@ grails.exceptionresolver.params.exclude = ['password']
 // set per-environment serverURL stem for creating absolute links
 grails.serverURL = "http://localhost:8080/${appName}"
 
+security.shiro.authc.required = false
+
 // log4j configuration
 log4j = {
 	appenders {
@@ -106,18 +108,21 @@ log4j = {
            'org.codehaus.groovy.grails.web.mapping', // URL mapping
            'org.codehaus.groovy.grails.commons' // core / classloading
 		   
-    warn   'org.mortbay.log',
-		   'org.hibernate',
-		   'net.sf.ehcache.hibernate'
+	debug 'grails.app.controller.org.chai.kevin.survey.SurveyController'
+//	debug 'org.chai.kevin.survey.ValidationService'
 	
-	info   'org.codehaus.groovy.grails.plugins', // plugins
-		   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-		   'org.hsqldb.jdbc',
-		   'org.springframework'
-		   
-	debug  'org.hisp.dhis',
-		   'org.chai.kevin',
-		   'grails.app'
+//    warn   'org.mortbay.log',
+//		   'org.hibernate',
+//		   'net.sf.ehcache.hibernate'
+//	
+//	info   'org.codehaus.groovy.grails.plugins', // plugins
+//		   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+//		   'org.hsqldb.jdbc',
+//		   'org.springframework'
+//		   
+//	debug  'org.hisp.dhis',
+//		   'org.chai.kevin',
+//		   'grails.app'
 		   
 		   
 //	trace  'org.hibernate.SQL',
@@ -131,6 +136,7 @@ log4j = {
 			root {
 //				error 'log-error'
 			}
+			
 		}
     }
 

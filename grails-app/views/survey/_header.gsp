@@ -1,33 +1,31 @@
-<div id="top-container">
-	<div id="survey-iteration-box" class="grey-rounded-box-top">
-		<h5>Year:
-			<span class="survey-highlight-title"> 
-				<g:dateFormat format="yyyy" date="${period.startDate}" />
-			</span>
-			</h5>
-	</div>
-	<div id="survey-objective-box" class="grey-rounded-box-top">
-		<div id="survey-container-left-side">
-			<h5>
-				Facility Name: <span class="survey-highlight-title">${organisation.name}</span>
-			</h5>
-		</div>
-		<div id="survey-container-right-side">
-			<h5>
-				<g:if test="${objective}">
-					Strategic Objective: 
+<div id="survey-header" class="grey-rounded-box-top">
+	<div>
+		<div class="filter">
+			<h5>Strategic Objective:</h5>
+			<div class="dropdown">
+				<a class="selected" href="#">
 					<g:if test="${objective != null}">
-						<span class="survey-highlight-title">
-							<g:i18n field="${objective.names}" />
-						</span>
+						<g:i18n field="${objective.names}" />
 					</g:if>
 					<g:else>
-						-
+						select an objective
 					</g:else>
-				</g:if>
-			</h5>
+				</a>
+				<div id="survey-menu" class="grey-rounded-box-bottom hidden dropdown-list">
+					<g:render template="/survey/menu" model="[surveyPage: surveyPage]"/>
+				</div>
+			</div>
 		</div>
-		<div class="clear"></div>
+		<div class="filter">
+			<h5>Facility Name:</h5>
+			<span>${organisation.name}</span>
+		</div>
+		<div class="filter">
+			<h5>Year:</h5>
+			<span> 
+				<g:dateFormat format="yyyy" date="${period.startDate}" />
+			</span>
+		</div>
 	</div>
 	<div class="clear"></div>
 </div>

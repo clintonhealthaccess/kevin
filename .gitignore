@@ -9,3 +9,4 @@ classes
 .DS_Store
 .settings
 eclipse_workspace_settings.epf
+userScripts/**

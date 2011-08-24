@@ -7,6 +7,7 @@ import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,8 +21,8 @@ import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyEnteredValue")
-@Table(name="dhsst_survey_entered_value", uniqueConstraints=@UniqueConstraint(
-		columnNames={"surveyElement", "organisationUnit"}
+@Table(name="dhsst_survey_entered_value", 
+		uniqueConstraints=@UniqueConstraint(columnNames={"surveyElement", "organisationUnit"}
 ))
 public class SurveyEnteredValue {
 
@@ -30,8 +31,8 @@ public class SurveyEnteredValue {
 	private String value;
 	private OrganisationUnit organisationUnit;
 	
-	private Boolean skipped;
-	private Boolean valid;
+//	private Boolean skipped;
+//	private Boolean valid;
 	private List<Long> acceptedWarnings = new ArrayList<Long>();
 	
 	public SurveyEnteredValue() {}
@@ -54,7 +55,7 @@ public class SurveyEnteredValue {
 	}
 	
 	@NaturalId
-	@OneToOne(optional=false, targetEntity=SurveyElement.class)
+	@OneToOne(targetEntity=SurveyElement.class)
 	public SurveyElement getSurveyElement() {
 		return surveyElement;
 	}
@@ -84,6 +85,7 @@ public class SurveyEnteredValue {
 	
 
 	@CollectionOfElements(targetElement=Long.class)
+	@JoinTable(name="dhsst_survey_accepted_warnings")
 //	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 //	@Fetch(FetchMode.SELECT)
 	public List<Long> getAcceptedWarnings() {
@@ -94,23 +96,23 @@ public class SurveyEnteredValue {
 		this.acceptedWarnings = acceptedWarnings;
 	}
 	
-	@Basic
-	public Boolean getSkipped() {
-		return skipped;
-	}
+//	@Basic
+//	public Boolean getSkipped() {
+//		return skipped;
+//	}
 	
-	public void setSkipped(Boolean skipped) {
-		this.skipped = skipped;
-	}
+//	public void setSkipped(Boolean skipped) {
+//		this.skipped = skipped;
+//	}
 	
-	@Basic
-	public Boolean getValid() {
-		return valid;
-	}
+//	@Basic
+//	public Boolean getValid() {
+//		return valid;
+//	}
 	
-	public void setValid(Boolean valid) {
-		this.valid = valid;
-	}
+//	public void setValid(Boolean valid) {
+//		this.valid = valid;
+//	}
 
 	@Override
 	public String toString() {

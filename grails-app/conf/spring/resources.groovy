@@ -14,7 +14,6 @@ import org.chai.kevin.dashboard.PercentageCalculator;
 import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.maps.MapsService;
 import org.chai.kevin.survey.SurveyPageService;
-import org.chai.kevin.survey.SurveyAdminService;
 import org.chai.kevin.survey.ValidationService;
 import org.springframework.format.number.PercentFormatter;
 
@@ -59,10 +58,6 @@ int infoGroupLevel = config.info.group.level
 
 beans = {
 	
-	surveyAdminService(SurveyAdminService){
-		
-	}
-
 	validationService(ValidationService){
 		surveyElementService = ref("surveyElementService")
 	}

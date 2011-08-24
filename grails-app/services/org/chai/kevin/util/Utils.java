@@ -28,7 +28,9 @@
 package org.chai.kevin.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -47,12 +49,10 @@ public class Utils {
 	}
 
 	public static String getGroupUuidString(Object groupUuids) {
-		if (groupUuids == null)
-			return "";
-		if (groupUuids instanceof String)
-			return (String) groupUuids;
-		else
-			return StringUtils.join((Object[]) groupUuids, ',');
+		if (groupUuids == null) return "";
+		if (groupUuids instanceof String) return (String) groupUuids;
+		if (groupUuids instanceof Collection) return StringUtils.join(((Collection<String>)groupUuids).toArray(), ',');
+		else return StringUtils.join((Object[]) groupUuids, ',');
 	}
 
 }

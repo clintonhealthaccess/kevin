@@ -32,10 +32,9 @@ package org.chai.kevin.survey;
  *
  */
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -52,7 +51,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -123,6 +121,20 @@ public class SurveyTableRow extends SurveyTranslatable {
 	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable() {
 		return Utils.getGroupUuids(this.groupUuidString);
+	}
+	
+    @Transient
+	protected SurveyTableRow deepCopy(SurveyCloner cloner, Map<Long, SurveyTableColumn> columns) {
+    	SurveyTableRow copy = new SurveyTableRow();
+    	copy.setNames(getNames());
+    	copy.setDescriptions(getDescriptions());
+    	copy.setGroupUuidString(getGroupUuidString());
+    	copy.setOrder(getOrder());
+    	copy.setQuestion((SurveyTableQuestion)cloner.getQuestion(getQuestion()));
+    	for (Entry<SurveyTableColumn, SurveyElement> entry : getSurveyElements().entrySet()) {
+			copy.getSurveyElements().put(columns.get(entry.getKey().getId()), cloner.getElement(entry.getValue()));
+		}
+    	return copy;
 	}
 
 }

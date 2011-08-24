@@ -35,6 +35,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.util.Utils;
 import org.springframework.dao.DataIntegrityViolationException;
 
 class DomainSpec extends IntegrationTests {
@@ -178,7 +179,7 @@ class DomainSpec extends IntegrationTests {
 		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: "group1", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
 		
 		then:
-		CostService.getGroupUuids(CostTarget.findByCode("TEST").groupUuidString).size() == 1
+		Utils.getGroupUuids(CostTarget.findByCode("TEST").groupUuidString).size() == 1
 	}
 	
 	def "save target erases old groups"() {
@@ -188,8 +189,8 @@ class DomainSpec extends IntegrationTests {
 		
 		then:
 		def target = CostTarget.findByCode("TEST")
-		CostService.getGroupUuids(target.groupUuidString).size() == 1
-		(new HashSet(["group2"])).equals(CostService.getGroupUuids(target.groupUuidString))
+		Utils.getGroupUuids(target.groupUuidString).size() == 1
+		(new HashSet(["group2"])).equals(Utils.getGroupUuids(target.groupUuidString))
 	}
 	
 	

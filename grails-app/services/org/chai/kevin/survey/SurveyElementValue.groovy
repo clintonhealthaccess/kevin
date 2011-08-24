@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.data.ValueType;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
-import org.chai.kevin.survey.validation.SurveyValidationRule;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -49,66 +48,32 @@ public class SurveyElementValue {
 		// this is a bit of a HACK, sanitize value when question is checkbox
 		// if none of the values are checked, we set all of them to null
 		// in order to reset the whole question
+		// on the other if one of them is checked we set all the non-checked to 0
 		if (surveyElement.surveyQuestion instanceof SurveyCheckboxQuestion) {
 			boolean reset = true;
 			for (SurveyElement element : surveyElement.surveyQuestion.getSurveyElements(organisation.getOrganisationUnitGroup())) {
 				SurveyElementValue elementValue = page.getSurveyElements()[element.id];
-				if (elementValue.value != null && elementValue.value != "0") reset = false; 
-			}
-			if (reset) {
-				for (SurveyElement element : surveyElement.surveyQuestion.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-					SurveyElementValue elementValue = page.getSurveyElements()[element.id];
-					elementValue.value = null;
+				if (elementValue != null) {
+					if (elementValue.value != null && elementValue.value != "0") reset = false;
 				}
+				else {
+					SurveyEnteredValue enteredvalue = page.getEnteredValues()[element];
+					if (enteredvalue.value != null && enteredvalue.value != "0") reset = false;
+					
+					elementValue = new SurveyElementValue(element, page.organisation)
+					elementValue.value = enteredvalue.value
+					page.getSurveyElements().put(element.id, elementValue)
+				} 
+			}
+			for (SurveyElement element : surveyElement.surveyQuestion.getSurveyElements(organisation.getOrganisationUnitGroup())) {
+				SurveyElementValue elementValue = page.getSurveyElements()[element.id];
+				
+				if (reset) elementValue.value = null;
+				else if (elementValue.value == null) elementValue.value = "0"
 			}
 		}
 	}
 
-	
-//	void transferValue(SurveyPage page, SurveyEnteredValue enteredValue, ValidationService validationService) {
-//		log.debug("new value="+value+", present value="+surveyEnteredValue?.value)
-//		
-//		if (value == null && enteredValue != null) {
-//			enteredValue.delete();
-//		} 
-//		if (value != null) {
-//			if (enteredValue == null) surveyEnteredValue = new SurveyEnteredValue(enteredValue.surveyElement, organisation.getOrganisationUnit(), value)
-//			if (value != surveyEnteredValue.value) surveyEnteredValue.acceptedWarnings = []
-//			surveyEnteredValue.value = value;
-//		}
-//	}
-	
-//	void userValidation(SurveyPage surveyPage, SurveyEnteredValue enteredValue, ValidationService validationService) {
-//		if (log.isDebugEnabled()) log.debug("userValidation(...)");
-//		
-//		if (surveyPage.isSkipped(enteredValue.surveyElement.surveyQuestion) 
-//			|| validationService.isSkipped(surveyPage, enteredValue.surveyElement)) {
-//			skipped = true;
-//		}
-//		else if (enteredValue != null) { 
-//			enteredValue.surveyElement.validationRules.each { rule ->
-//				if (!validationService.validate(surveyPage, enteredValue.surveyElement, rule)) {
-//					if (!rule.allowOutlier) invalidErrors.add(rule);
-//					else {
-//						if (!enteredValue.acceptedWarnings.contains(rule.id)) {
-//							invalidWarnings.add(rule);
-//						}
-//					}
-//				}
-//			}
-//		}
-//		
-//		if (log.isDebugEnabled()) log.debug("validation done, invalidErrors: "+invalidErrors+", invalidWarnings: "+invalidWarnings)
-//	}
-	
-//	boolean isSkipped() {
-//		return skipped;
-//	}
-	
-//	boolean isValid() {
-//		return invalidErrors.isEmpty() && invalidWarnings.isEmpty() 
-//	}
-	
 	def getDisplayedErrors() {
 		if (!invalidErrors.isEmpty()) return invalidErrors;
 		return invalidWarnings;

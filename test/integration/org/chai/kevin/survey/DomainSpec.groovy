@@ -8,7 +8,6 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.ValueType;
-import org.chai.kevin.survey.validation.SurveySkipRule;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
@@ -19,39 +18,61 @@ class DomainSpec extends IntegrationTests {
 	def setup() {
 		IntegrationTestInitializer.createDummyStructure()
 	}
-
-	def "table question has data elements"() {
-		setup:
-		new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: ValueType.VALUE).save(failOnError: true, flush: true)
+	
+	def static createDummySection() {
+		def survey = new Survey(period: Period.list()[0]).save(failOnError: true, flush: true).save(failOnError: true);
+		def objective = new SurveyObjective(survey: survey, groupUuidString: "District Hospital", order: 1).save(failOnError: true);
+		survey.addObjective objective
+		survey.save(failOnError: true)
+		def section = new SurveySection(objective: objective, groupUuidString: "District Hospital", order: 1).save(failOnError: true)
+		objective.addSection section
+		objective.save(failOnError: true)
 		
+		return section;
+	}
+	
+	def static createDummyTableQuestion(def section) {
 		//Adding a table type question
 		def tableQ = new SurveyTableQuestion(
 			names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
 			descriptions: j(["en":"Training Modules"]),
 			order: 1,
-			groups: []
+			section: section,
+			groupUuidString: "District Hospital"
 		)
 		//Add columns
 		def tabColumnOne = new SurveyTableColumn(
 			names: j(["en":"Number Who Attended Training"]),
 			descriptions: j(["en":"Number Who Attended Training"]),
 			order: 1,
+			groupUuidString: "District Hospital",
 			question: tableQ
 		)
 		tableQ.addColumn(tabColumnOne)
 
 		Map<SurveyTableColumn,SurveyElement> dataElmntsLine1= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
-		dataElmntsLine1.put(tabColumnOne,new SurveyElement(dataElement: DataElement.findByCode("CODE8")))
+		dataElmntsLine1.put(tabColumnOne,new SurveyElement(surveyQuestion: tableQ, dataElement: DataElement.findByCode("CODE8")))
 					
 		def tabRowOne = new SurveyTableRow(
 			names: j(["en":"Clinical Pharmacy :"]),
 			descriptions: j(["en":"Clinical Pharmacy :"]),
 			order: 1,
 			question: tableQ,
+			groupUuidString: "District Hospital",
 			surveyElements: dataElmntsLine1
 		)
 		tableQ.addRow(tabRowOne)
 		tableQ.save(failOnError:true)
+		
+		section.addQuestion(tableQ)
+		section.save(failOnError: true)
+	}
+
+	def "table question has data elements"() {
+		setup:
+		new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: ValueType.VALUE).save(failOnError: true, flush: true)
+		def section = createDummySurvey()
+		createDummyTableQuestion(section)
 		
 		when:
 		def question = SurveyTableQuestion.list()[0]

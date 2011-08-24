@@ -92,14 +92,26 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 
 	@SuppressWarnings("unchecked")
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable(
-			SurveyElement surveyElement) {
-		if (!surveyElement.equals(this.surveyElement))
-			throw new IllegalArgumentException(
-					"survey element does not belong to question (simple)");
-		return new HashSet<String>(CollectionUtils.intersection(Utils
-				.getGroupUuids(this.getGroupUuidString()), this.getSection()
-				.getOrganisationUnitGroupApplicable()));
+	public Set<String> getOrganisationUnitGroupApplicable(SurveyElement surveyElement) {
+		if (!surveyElement.equals(this.surveyElement)) {
+			throw new IllegalArgumentException("survey element does not belong to question (simple)");
+		}
+		return new HashSet<String>(CollectionUtils.intersection(
+			Utils.getGroupUuids(this.getGroupUuidString()),
+			this.getSection().getOrganisationUnitGroupApplicable())
+		);
+	}
+	
+	@Override
+	protected SurveySimpleQuestion newInstance() {
+		return new SurveySimpleQuestion();
+	}
+
+	@Override
+	protected void deepCopy(SurveyQuestion question, SurveyCloner surveyCloner) {
+		SurveySimpleQuestion copy = (SurveySimpleQuestion)question;
+		super.deepCopy(copy, surveyCloner);
+		copy.setSurveyElement(surveyCloner.getElement(getSurveyElement()));
 	}
 
 }

@@ -47,7 +47,6 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.survey.validation.SurveySkipRule;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -146,5 +145,23 @@ public class Survey extends SurveyTranslatable {
 		}
 		return result;
 	}
+	
+	@Transient
+	protected void deepCopy(Survey copy, SurveyCloner cloner) {
+		copy.setNames(getNames());
+		copy.setDescriptions(getDescriptions());
+		copy.setOpen(isOpen());
+		copy.setOrder(getOrder());
+		copy.setPeriod(getPeriod());
+		for (SurveyObjective objective : getObjectives()) {
+			copy.getObjectives().add(cloner.getObjective(objective));
+		}
+	}
 
+	@Transient
+	protected void copyRules(Survey copy, SurveyCloner cloner) {
+		for (SurveySkipRule skipRule : getSkipRules()) {
+			copy.getSkipRules().add(cloner.getSkipRule(skipRule));
+		}
+	}
 }

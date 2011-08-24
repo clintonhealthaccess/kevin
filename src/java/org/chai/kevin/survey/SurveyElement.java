@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.survey.validation.SurveyValidationRule;
 
 @Entity(name = "SurveyElement")
 @Table(name = "dhsst_survey_element")
@@ -97,8 +96,23 @@ public class SurveyElement {
 	public Survey getSurvey() {
 		return surveyQuestion.getSurvey();
 	}
+
 	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable(){
 		return this.surveyQuestion.getOrganisationUnitGroupApplicable(this);
 	}
+
+	@Transient
+	protected void deepCopy(SurveyElement copy, SurveyCloner cloner) {
+		copy.setDataElement(getDataElement());
+		copy.setSurveyQuestion(cloner.getQuestion(getSurveyQuestion()));
+	}
+	
+	@Transient
+	protected void copyRules(SurveyElement copy, SurveyCloner cloner) {
+		for (SurveyValidationRule validationRule : getValidationRules()) {
+			copy.getValidationRules().add(cloner.getValidationRule(validationRule));
+		}
+	}
+	
 }

@@ -181,4 +181,15 @@ public class SurveySection extends SurveyTranslatable {
 		return true;
 	}
 
+	protected void deepCopy(SurveySection copy, SurveyCloner surveyCloner) {
+		copy.setNames(getNames());
+		copy.setDescriptions(getDescriptions());
+		copy.setGroupUuidString(getGroupUuidString());
+		copy.setObjective(surveyCloner.getObjective(getObjective()));
+		copy.setOrder(getOrder());
+		for (SurveyQuestion question : getQuestions()) {
+			copy.getQuestions().add(surveyCloner.getQuestion(question));
+		}
+	}
+	
 }

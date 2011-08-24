@@ -52,9 +52,6 @@ import org.hisp.dhis.user.UserCredentials;
 
 abstract class IntegrationTests extends IntegrationSpec {
 	
-	def cleanup() {
-
-	}
 	
 	static def getOrganisationUnitLevels(def levels) {
 		def result = []

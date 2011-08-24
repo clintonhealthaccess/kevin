@@ -10,17 +10,17 @@ class SecurityFilters {
 			before = {
 				log.debug("filtering params: "+params)
 				
+				// Ignore direct views (e.g. the default main index page).
+				if (!controllerName) return true
+
 				// deny access to survey not corresponding to user
 				// leave access to /survey/view open
 				if (controllerName == 'survey') {
 					if (SecurityUtils.subject.isPermitted("survey:"+actionName+":"+params.organisation)) return true;
 				}
 				
-				// Ignore direct views (e.g. the default main index page).
-				if (!controllerName) return true
 				
-				// TODO deactivated for now
-//				accessControl()
+				accessControl()
 			}
 		}
     }

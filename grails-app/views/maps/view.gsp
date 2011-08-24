@@ -9,7 +9,7 @@
 			<div id="top" class="box">
 				<div class="filter">
 					<h5>Iteration</h5>
-					<div class="dropdown dropdown-period">
+					<div class="dropdown dropdown-period white-dropdown">
 						<a class="selected" href="#" data-period="${currentPeriod.id}" data-type="period"><g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
@@ -26,7 +26,7 @@
 				</div>
 				<div class="filter">
 					<h5>Organisation:</h5>
-					<div class="dropdown dropdown-organisation">
+					<div class="dropdown dropdown-organisation white-dropdown">
 						<g:if test="${currentOrganisation != null}">
 							<a class="selected" href="#" data-organisation="${currentOrganisation.id}" data-type="organisation">${currentOrganisation.name}</a>
 						</g:if>
@@ -42,7 +42,7 @@
 				</div>
 				<div class="filter">
 					<h5>Target:</h5>
-					<div class="dropdown dropdown-target">
+					<div class="dropdown dropdown-target white-dropdown">
 						<g:if test="${currentTarget != null}">
 							<a class="selected" href="#" data-target="${currentTarget.id}" data-type="target"><g:i18n field="${currentTarget.names}"/></a>
 						</g:if>
@@ -57,14 +57,14 @@
 											<a class="parameter" href="#" data-target="${target.id}" data-type="target">
 												<g:i18n field="${target.names}"/>
 											</a>
-											<g:ifAdmin>
+								  			<shiro:hasPermission permission="maps:admin">
 												<span>
 													<g:link class="flow-edit" controller="mapsTarget" action="edit" id="${target.id}">(edit)</g:link>
 												</span>
 												<span>
 													<g:link class="flow-delete" controller="mapsTarget" action="delete" id="${target.id}">(delete)</g:link>
 												</span>
-											</g:ifAdmin>
+											</shiro:hasPermission>
 										</li>
 									</g:each>
 								</ul>
@@ -75,11 +75,11 @@
 						</div>
 					</div>
 				</div>
-				<g:ifAdmin>
+		   		<shiro:hasPermission permission="maps:admin">
 					<div>
 						<a id="add-maps-target-link" class="flow-add" href="${createLink(controller:'mapsTarget', action:'create')}" class="flow-add">add target</a>
 					</div>
-				</g:ifAdmin>
+				</shiro:hasPermission>				
 				<div class="clear"></div>
 			</div>
     		<div id="center" class="box">
@@ -89,7 +89,7 @@
     			</div>
     			
     			<!-- ADMIN SECTION -->
-		    	<g:ifAdmin>
+	  			<shiro:hasPermission permission="maps:admin">
 	    			<div class="hidden flow-container"></div>
 
 					<script type="text/javascript">
@@ -103,8 +103,8 @@
 							});
 						});
 					</script>
-		    	</g:ifAdmin>
-		    	<div class="clear"></div>
+					</shiro:hasPermission>		    	
+					<div class="clear"></div>
     		</div>
     	</div>
     	

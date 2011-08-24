@@ -8,7 +8,7 @@
 			<g:set var="dataElement" value="${surveyElement.dataElement}"/>
 			<g:set var="surveyEnteredValue" value="${surveyPage.enteredValues[surveyElement]}"/>
 			
-		    <li class="element element-${surveyElement.id} ${surveyEnteredValue.skipped?'skipped':''} ${!surveyEnteredValue.valid?'errors':''}">
+		    <li class="element element-${surveyElement.id} ${surveyPage.isSkipped(surveyEnteredValue)?'skipped':''} ${!surveyPage.isValid(surveyEnteredValue)?'errors':''}">
 				<g:render template="/survey/element/${dataElement.type}" model="[surveyElement: surveyElement, surveyPage: surveyPage, readonly: readonly]"/>
 				<span><g:i18n field="${option.names}"/></span>
 				<div class="clear"></div>

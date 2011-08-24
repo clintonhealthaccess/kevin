@@ -1,4 +1,8 @@
-package org.chai.kevin.dsr
+package org.chai.kevin
+
+import org.apache.shiro.SecurityUtils;
+import org.chai.kevin.security.SurveyUser;
+import org.chai.kevin.security.User;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,47 +32,19 @@ package org.chai.kevin.dsr
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.util.Collections;
-
-import org.chai.kevin.AbstractReportController;
-import org.chai.kevin.Organisation;
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.dsr.DsrObjective;
-import org.chai.kevin.dsr.DsrService;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-
-class DsrController extends AbstractReportController {
+class HomeController {
 	
-	DsrService dsrService;
-
 	def index = {
-		redirect (action: 'view', params: params)
+		if (log.isDebugEnabled()) log.debug("home.index, params:"+params)
+		User user = User.findByUsername(SecurityUtils.subject.principal)
+		
+		if (user instanceof SurveyUser) {
+			redirect (controller: "survey", action: "view")
+		}
+		else {
+			redirect (controller: "dsr", action: "view")
+		}
 	}
 	
-	def view = {
 
-		def quartzScheduler;
-
-		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
-		Period period = getPeriod()
-		DsrObjective objective = DsrObjective.get(params.int('objective'));
-		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
-		
-		def dsrTable = dsrService.getDsr(organisation, objective, period);
-		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
-		
-		Integer organisationLevel = ConfigurationHolder.config.facility.level;
-		Set<String> defaultChecked = ConfigurationHolder.config.dsr.facility.checked;
-		
-		[ 
-			dsrTable: dsrTable, 
-			periods: Period.list(),
-			objectives: DsrObjective.list(),
-		    organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
-			checkedFacilities: defaultChecked,
-//			displayLinkUntil: 3
-		]
-		
-	}
-	
 }

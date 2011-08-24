@@ -49,12 +49,13 @@
 		<mapping class="org.chai.kevin.survey.SurveyTableQuestion" />
 		<mapping class="org.chai.kevin.survey.SurveyTableColumn" />
 		<mapping class="org.chai.kevin.survey.SurveyTableRow" />
+		<mapping class="org.chai.kevin.survey.SurveyValidationRule" />
+		<mapping class="org.chai.kevin.survey.SurveyValidationMessage" />
+		<mapping class="org.chai.kevin.survey.SurveySkipRule" />
 	
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredValue" />
+		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredSection" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredObjective" />
-		<mapping class="org.chai.kevin.survey.validation.SurveyValidationRule" />
-		<mapping class="org.chai.kevin.survey.validation.SurveyValidationMessage" />
-		<mapping class="org.chai.kevin.survey.validation.SurveySkipRule" />
 		
 
 		<!-- <mapping package='com.books' /> <mapping class='com.books.Book' /> 

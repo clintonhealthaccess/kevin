@@ -43,7 +43,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
@@ -109,9 +108,19 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 		this.surveyElement = surveyElement;
 	}
 
-	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable() {
 		return Utils.getGroupUuids(this.groupUuidString);
 	}
 
+	public SurveyCheckboxOption deepCopy(SurveyCloner cloner) {
+		SurveyCheckboxOption copy = new SurveyCheckboxOption();
+		copy.setDescriptions(getDescriptions());
+		copy.setNames(getNames());
+		copy.setGroupUuidString(getGroupUuidString());
+		copy.setOrder(getOrder());
+		copy.setSurveyElement(cloner.getElement(getSurveyElement()));
+		copy.setQuestion((SurveyCheckboxQuestion)cloner.getQuestion(getQuestion()));
+		return copy;
+	}
+	
 }

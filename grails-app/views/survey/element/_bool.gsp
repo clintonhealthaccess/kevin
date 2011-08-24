@@ -2,7 +2,7 @@
 <g:set var="surveyEnteredValue" value="${surveyPage.enteredValues[surveyElement]}"/>
 <g:set var="surveyElementValue" value="${surveyPage.surveyElements[surveyElement.id]}"/>
 
-<div class="element element-bool element-${surveyElement.id} ${surveyEnteredValue.skipped?'skipped':''} ${!surveyEnteredValue.valid?'errors':''}" data-element="${surveyElement.id}" >
+<div class="element element-bool element-${surveyElement.id} ${surveyPage.isSkipped(surveyEnteredValue)?'skipped':''} ${!surveyPage.isValid(surveyEnteredValue)?'errors':''}" data-element="${surveyElement.id}" >
 	<a name="element-${surveyElement.id}"></a>
 	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
 	

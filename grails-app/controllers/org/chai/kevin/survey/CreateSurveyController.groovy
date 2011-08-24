@@ -37,9 +37,12 @@ import org.hisp.dhis.period.Period;
  */
 class CreateSurveyController extends AbstractEntityController {
 
+	def surveyAdminService
+	
 	def getEntity(def id) {
 		return Survey.get(id)
 	}
+	
 	def createEntity() {
 		return new Survey()
 	}
@@ -50,12 +53,11 @@ class CreateSurveyController extends AbstractEntityController {
 
 	def getModel(def entity) {
 		List<Period> periods = Period.list()
-		if(periods.size()>0)
-			Collections.sort(periods,new PeriodSorter());
+		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		[
-					survey: entity,
-					periods: periods
-				]
+			survey: entity,
+			periods: periods
+		]
 	}
 
 	def validateEntity(def entity) {
@@ -72,12 +74,22 @@ class CreateSurveyController extends AbstractEntityController {
 	def bindParams(def entity) {
 		entity.properties = params
 
-
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 
-	
+	def clone = {
+		def survey = getEntity(params['id'])
+		
+		SurveyCloner cloner = new SurveyCloner(survey)
+		cloner.cloneTree();
+		def copy = cloner.getSurvey()
+		copy.save(failOnError: true)
+		
+		cloner.cloneRules();
+		
+		redirect (controller: 'admin', action: 'survey')
+	}
 }

@@ -156,5 +156,13 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		return noHtmlString.substring(0, length);
 	}
 
+	protected abstract SurveyQuestion newInstance();
+	protected void deepCopy(SurveyQuestion copy, SurveyCloner surveyCloner) {
+		copy.setNames(getNames());
+		copy.setDescriptions(getDescriptions());
+		copy.setGroupUuidString(getGroupUuidString());
+		copy.setOrder(getOrder());
+		copy.setSection(surveyCloner.getSection(getSection()));
+	}
 
 }

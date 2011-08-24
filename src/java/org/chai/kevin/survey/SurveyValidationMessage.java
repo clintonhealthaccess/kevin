@@ -1,4 +1,4 @@
-package org.chai.kevin.survey.validation;
+package org.chai.kevin.survey;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;

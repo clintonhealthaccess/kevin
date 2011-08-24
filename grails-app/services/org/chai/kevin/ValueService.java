@@ -156,7 +156,7 @@ public class ValueService {
 		Integer numPeriods = getNumberOfPeriods();
 		
 		if (numValues == numOrganisations * numPeriods * numExpressions) {
-			log.info("no non calculated expressions, skipping");
+			if (log.isInfoEnabled()) log.info("no non calculated expressions, skipping");
 		}
 		else {
 			if (log.isDebugEnabled()) log.debug("retrieving expression values");
@@ -223,7 +223,7 @@ public class ValueService {
 		Integer numPeriods = getNumberOfPeriods();
 		
 		if (numValues == numOrganisations * numPeriods * numCalculations) {
-			log.info("no non calculated calculations, skipping");
+			if (log.isInfoEnabled()) log.info("no non calculated calculations, skipping");
 		}
 		else {
 			if (log.isDebugEnabled()) log.debug("retrieving calculation values");

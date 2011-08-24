@@ -126,7 +126,7 @@ public class CostTableService {
 		if (appliesToOrganisation(target, organisation, collection)) {
 			boolean hasMissingValues = false;
 
-			log.debug("target "+target+" applies to organisation "+organisation);
+			if (log.isDebugEnabled()) log.debug("target "+target+" applies to organisation "+organisation);
 			List<Integer> years = costService.getYears();
 
 			
@@ -162,10 +162,10 @@ public class CostTableService {
 			}
 		}
 		else {
-			log.debug("skipping organisation: "+organisation);
+			if (log.isDebugEnabled()) log.debug("skipping organisation: "+organisation);
 		}
 		
-		log.debug("getCostForLeafTarget(): "+result);
+		if (log.isDebugEnabled()) log.debug("getCostForLeafTarget(): "+result);
 		return result;
 	}
 	

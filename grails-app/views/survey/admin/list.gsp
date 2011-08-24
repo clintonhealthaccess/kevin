@@ -7,39 +7,44 @@
 </head>
 <body>
 	<div id="survey-admin">
-			<div class="top-container box">
-				<ul class="top-menu-list">
-				<li><a href="${createLink(controller:'admin', action:'survey')}">Surveys</a>
-					</li>
-					<g:if test="${survey}">
+		<div class="top-container box">
+			<ul class="top-menu-list">
+			<li><a href="${createLink(controller:'admin', action:'survey')}">Surveys</a>
+				</li>
+				<g:if test="${survey}">
+				<li>&rarr; <a
+					href="${createLink(controller:'admin',action:'objective',params:[surveyId: survey.id])}"><g:i18n
+							field="${survey.names}" />
+				</a>
+				</li>
+				<g:if test="${objective}">
 					<li>&rarr; <a
-						href="${createLink(controller:'admin',action:'objective',params:[surveyId: survey.id])}"><g:i18n
-								field="${survey.names}" />
-					</a>
+						href="${createLink(controller:'admin', action:'section',params:[surveyId: survey.id, objectiveId: objective.id])}">
+							<g:i18n field="${objective.names}" />
+					</a></li>
+				</g:if>
+				<g:if test="${section}">
+					<li>&rarr; <a
+						href="${createLink(controller:'admin', action:'question',params:[surveyId: survey.id, objectiveId: section.objective.id, sectionId: section.id])}">
+							<g:i18n field="${section.names}" /> </a>
 					</li>
-					<g:if test="${objective}">
-						<li>&rarr; <a
-							href="${createLink(controller:'admin', action:'section',params:[surveyId: survey.id, objectiveId: objective.id])}">
-								<g:i18n field="${objective.names}" />
-						</a></li>
-					</g:if>
-					<g:if test="${section}">
-						<li>&rarr; <a
-							href="${createLink(controller:'admin', action:'question',params:[surveyId: survey.id, objectiveId: section.objective.id, sectionId: section.id])}">
-								<g:i18n field="${section.names}" /> </a>
-						</li>
-					</g:if>
-					</g:if>
-				</ul>
-				<div class="clear"></div>
-			</div>
+				</g:if>
+				</g:if>
+			</ul>
+			<div class="clear"></div>
+		</div>
 		<div class="bottom-container box">
 			<div id="survey-list-container">
-				<!-- Template goes here -->
-				<g:render template="/survey/admin/${template}"
-					model="[surveyId: survey, objectiveId: objective,sectionId: section]" />
-				<!-- End of template -->
-				<div class="clear"></div>
+				<div>
+					<div>
+						<g:render template="/survey/admin/${template}List" model="[surveyId: survey, objectiveId: objective,sectionId: section]" />
+						<div class="clear"></div>
+						<div class="paginateButtons">
+							<g:paginate total="${entityCount}" params="${params}"/>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
 			</div>
 			<div class="hidden flow-container"></div>
 			<div class="clear"></div>

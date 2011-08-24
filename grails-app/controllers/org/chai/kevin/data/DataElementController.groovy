@@ -30,7 +30,6 @@ package org.chai.kevin.data
  * @author JeanKahigiso
  *
  */
-import org.apache.catalina.valves.ExtendedAccessLogValve.DateElement
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.DataService

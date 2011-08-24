@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
@@ -116,7 +117,7 @@ public class DashboardService {
 	private Map<Organisation, Map<DashboardEntry, DashboardPercentage>> getValues(List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries, Period period) {
 		Map<Organisation, Map<DashboardEntry, DashboardPercentage>> values = new HashMap<Organisation, Map<DashboardEntry, DashboardPercentage>>();
 		PercentageCalculator calculator = createCalculator();
-		
+
 		for (Organisation organisation : organisations) {
 			Map<DashboardEntry, DashboardPercentage> organisationMap = new HashMap<DashboardEntry, DashboardPercentage>();
 			for (DashboardObjectiveEntry objectiveEntry : objectiveEntries) {

@@ -434,8 +434,8 @@ public class ExpressionService {
                 }
                 else {
                 	match = mapping.get(match);
+                	if (match != null) matcher.appendReplacement( convertedFormula, match );
                 }
-                matcher.appendReplacement( convertedFormula, match );
             }
             matcher.appendTail( convertedFormula );
         }

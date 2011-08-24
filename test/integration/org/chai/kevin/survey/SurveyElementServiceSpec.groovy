@@ -4,7 +4,6 @@ import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.ValueType;
-import org.chai.kevin.survey.validation.SurveySkipRule;
 import org.hisp.dhis.period.Period;
 
 class SurveyElementServiceSpec extends IntegrationTests {
@@ -19,13 +18,13 @@ class SurveyElementServiceSpec extends IntegrationTests {
 		def dataElement = new DataElement(code:"ELEM1", type: ValueType.VALUE).save(failOnError: true)
 		
 		def survey = new Survey(period: Period.list()[0]).save(failOnError: true);
-		def objective = new SurveyObjective(survey: survey, groupUuidString: "Health Center")
+		def objective = new SurveyObjective(survey: survey, order: 1, groupUuidString: "Health Center")
 		survey.addObjective(objective)
 		survey.save(failOnError: true)
-		def section = new SurveySection(objective: objective, groupUuidString: "Health Center")
+		def section = new SurveySection(objective: objective, order: 1, groupUuidString: "Health Center")
 		objective.addSection(section)
 		objective.save(failOnError: true)
-		def question = new SurveySimpleQuestion(section: section, groupUuidString: "Health Center")
+		def question = new SurveySimpleQuestion(section: section, order: 1, groupUuidString: "Health Center")
 		section.addQuestion(question)
 		section.save(failOnError: true)
 		def element = new SurveyElement(surveyQuestion: question, dataElement: dataElement)

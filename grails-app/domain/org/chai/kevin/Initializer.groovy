@@ -55,9 +55,6 @@ import org.chai.kevin.data.ValueType;
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.survey.*;
-import org.chai.kevin.survey.validation.SurveySkipRule;
-import org.chai.kevin.survey.validation.SurveyValidationMessage;
-import org.chai.kevin.survey.validation.SurveyValidationRule;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
@@ -87,6 +84,12 @@ class Initializer {
 		def kivuye = new SurveyUser(username: "kivuye", organisationUnit: OrganisationUnit.findByName("Kivuye HC"), passwordHash: new Sha256Hash("123").toHex())
 		kivuye.addToPermissions("survey:view")
 		kivuye.addToPermissions("survey:*:"+kivuye.organisationUnit.id)
+		kivuye.addToPermissions("menu:survey")
+		
+//		kivuye.addToPermissions("survey:surveyPage:12")
+//		kivuye.addToPermissions("survey:objectivePage:12")
+//		kivuye.addToPermissions("survey:sectionPage:12")
+		
 		kivuye.save()
 	}
 	
@@ -1127,9 +1130,9 @@ class Initializer {
 				groupUuidString: "District Hospital,Health Center",
 				surveyElement: surveyElementChecboxQ3
 			)
-			checkBoxQ.addCheckboxOption(option1)
-			checkBoxQ.addCheckboxOption(option2)
-			checkBoxQ.addCheckboxOption(option3)
+			checkBoxQ.addOption(option1)
+			checkBoxQ.addOption(option2)
+			checkBoxQ.addOption(option3)
 			checkBoxQ.save(failOnError:true)
 
 

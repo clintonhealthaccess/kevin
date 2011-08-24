@@ -42,6 +42,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -123,6 +124,7 @@ public class SurveyObjective extends SurveyTranslatable {
 	}
 
 	@ManyToOne(targetEntity = SurveyObjective.class, optional = true)
+	@JoinTable(name="dhsst_survey_objective_dependencies")
 	public SurveyObjective getDependency() {
 		return dependency;
 	}
@@ -170,6 +172,19 @@ public class SurveyObjective extends SurveyTranslatable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Transient
+	protected void deepCopy(SurveyObjective copy, SurveyCloner cloner) {
+		copy.setNames(getNames());
+		copy.setDescriptions(getDescriptions());
+		if (getDependency() != null) copy.setDependency(cloner.getObjective(getDependency()));
+		copy.setGroupUuidString(getGroupUuidString());
+		copy.setOrder(getOrder());
+		copy.setSurvey(cloner.getSurvey(getSurvey()));
+		for (SurveySection section : getSections()) {
+			copy.getSections().add(cloner.getSection(section));
+		}
 	}
 
 }

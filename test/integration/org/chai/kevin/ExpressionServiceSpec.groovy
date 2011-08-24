@@ -1,4 +1,15 @@
-package org.chai.kevin
+package org.chai.kevin;
+
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
+import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.ExpressionValue.Status;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,24 +39,12 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.value.ExpressionValue.Status;
-import java.util.Date;
-import org.chai.kevin.Initializer;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
-import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
-import org.chai.kevin.value.ExpressionValue.Status;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.period.Period;
 
-class ExpressionServiceSpec extends IntegrationTests {
+public class ExpressionServiceSpec extends IntegrationTests {
 
 	def expressionService;
 	
 	def setup() {
-		
 		Initializer.createDummyStructure();
 		IntegrationTestInitializer.createExpressions()
 	}
@@ -70,16 +69,21 @@ class ExpressionServiceSpec extends IntegrationTests {
 		def period = Period.list()[1]
 		
 		then:
-		expressionService.calculateValue(expression, period, organisation).value == value
+		expressionService.calculate(expression, organisation.organisationUnit, period, ).value == value
 		
 		where:
-		formula					| organisationName	| value
-		"if([1]==1,1,0)"	 	| "Kivuye HC"		| null
+		formula				| organisationName	| value
+		"1==0"			 	| "Kivuye HC"		| "0.0"
+		"if(["+id+"]==1,1,0)" 	| "Kivuye HC"		| null
 	}
 	
 	def "aggregated value"() {
 		setup:
-		new DataElement(names:j(["en":"Element Enum"]), code: "CODEENUM", descriptions:j(["en":"Description"]), type: ValueType.ENUM).save(faileOnError: true)
+		def enume = new Enum(code:"ENUM").save(failOnError: true)
+		enume.addEnumOption(new EnumOption(code: "ENUMtest", value: "test"))
+		enume.addEnumOption(new EnumOption(code: "ENUMtest", value: "absent"))
+		enume.save(failOnError: true)
+		new DataElement(names:j(["en":"Element Enum"]), code: "CODEENUM", descriptions:j(["en":"Description"]), type: ValueType.ENUM, enume: enume).save(faileOnError: true, flush: true)
 		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: ValueType.VALUE).save(faileOnError: true)
 		
 		new DataValue(
@@ -121,7 +125,7 @@ class ExpressionServiceSpec extends IntegrationTests {
 		def period = Period.list()[1]
 		def expression = Expression.findByCode(expressionName)
 		def organisation = IntegrationTests.getOrganisation(organisationName)
-		ExpressionValue value = expressionService.calculateValue(expression, period, organisation)
+		ExpressionValue value = expressionService.calculate(expression, organisation.organisationUnit, period)
 		
 		then:
 		value.status == status

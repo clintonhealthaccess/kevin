@@ -70,7 +70,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 		this.options = options;
 	}
 
-	public void addCheckboxOption(SurveyCheckboxOption option) {
+	public void addOption(SurveyCheckboxOption option) {
 		option.setQuestion(this);
 		options.add(option);
 		Collections.sort(options);
@@ -116,22 +116,37 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 
 	@SuppressWarnings("unchecked")
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable(
-			SurveyElement surveyElement) {
+	public Set<String> getOrganisationUnitGroupApplicable(SurveyElement surveyElement) {
 		Set<String> optionOrgUnitUuIds = new HashSet<String>();
 
-		for (SurveyCheckboxOption option : this.getOptions())
-			if (surveyElement.equals(option.getSurveyElement()))
-				optionOrgUnitUuIds.addAll(CollectionUtils
-						.intersection(
-								option.getOrganisationUnitGroupApplicable(),
-								Utils.getGroupUuids(this.getGroupUuidString())));
+		for (SurveyCheckboxOption option : this.getOptions()) {
+			if (surveyElement.equals(option.getSurveyElement())) {
+				optionOrgUnitUuIds.addAll(CollectionUtils.intersection(
+					option.getOrganisationUnitGroupApplicable(),
+					Utils.getGroupUuids(this.getGroupUuidString()))
+				);
+			}
+		}
 
-		if (optionOrgUnitUuIds.isEmpty())
-			throw new IllegalArgumentException(
-					"survey element does not belong to question (options)");
+		if (optionOrgUnitUuIds.isEmpty()) {
+			throw new IllegalArgumentException("survey element does not belong to question (options)");
+		}
 		return new HashSet<String>(CollectionUtils.intersection(optionOrgUnitUuIds,
 				this.getSection().getOrganisationUnitGroupApplicable()));
+	}
+
+	@Override
+	protected SurveyCheckboxQuestion newInstance() {
+		return new SurveyCheckboxQuestion();
+	}
+
+	@Override
+	protected void deepCopy(SurveyQuestion question, SurveyCloner cloner) {
+		SurveyCheckboxQuestion copy = (SurveyCheckboxQuestion)question;
+		super.deepCopy(copy, cloner);
+		for (SurveyCheckboxOption option : getOptions()) {
+			copy.getOptions().add(option.deepCopy(cloner));
+		}
 	}
 
 }

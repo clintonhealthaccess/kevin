@@ -11,7 +11,7 @@
 			<div id="top" class="box">
 				<div class="filter">
 					<h5><g:message code="costing.labels.iteration" default="Iteration"/></h5>
-					<div class="dropdown">
+					<div class="dropdown white-dropdown">
 						<a href="#" class="selected"><g:dateFormat format="yyyy" date="${costTable.currentPeriod.startDate}"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
@@ -28,7 +28,7 @@
 				</div>
 				<div class="filter">
 					<h5><g:message code="costing.labels.organisation" default="Organisation"/></h5>
-					<div class="dropdown">
+					<div class="dropdown white-dropdown">
 						<g:if test="${costTable.currentOrganisation != null}">
 							<a href="#" class="selected">${costTable.currentOrganisation.name}</a>
 						</g:if>
@@ -44,7 +44,7 @@
 				</div>
 				<div class="filter">
 					<h5><g:message code="costing.labels.objective" default="Strategic Objective"/></h5>
-					<div class="dropdown">
+					<div class="dropdown white-dropdown">
 						<g:if test="${costTable.currentObjective != null}">
 							<a href="#" class="selected"><g:i18n field="${costTable.currentObjective.names}"/></a>
 						</g:if>
@@ -61,14 +61,14 @@
 													<g:i18n field="${objective.names}"/>
 												</a>
 											</span>
-											<g:ifAdmin>
+											<shiro:hasPermission permission="cost:admin">
 												<span>
 													<g:link controller="costObjective" action="edit" id="${objective.id}" class="flow-edit">(edit)</g:link>
 												</span>
 												<span>
 													<g:link controller="costObjective" action="delete" id="${objective.id}" class="flow-delete">(Delete)</g:link>
 												</span>
-											</g:ifAdmin>
+											</shiro:hasPermission>
 										</li>
 									</g:each>
 								</ul>
@@ -80,11 +80,11 @@
 					</div>
 				</div>
 				<div class="clear"></div>
-				<g:ifAdmin>
-					<div>
+				<shiro:hasPermission permission="cost:admin">					
+				<div>
 						<a class="flow-add" id="add-cost-objective-link" href="${createLink(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
 					</div>
-				</g:ifAdmin>
+				</shiro:hasPermission>
 				
 			</div>
     		<div id="center" class="box">
@@ -135,11 +135,11 @@
 						</table>
 					
 						<!-- ADMIN SECTION -->
-						<g:ifAdmin>
+						<shiro:hasPermission permission="cost:admin">							
 							<div>
 								<a id="add-cost-target-link" class="flow-add" href="${createLink(controller:'costTarget', action:'create', params:[currentObjective: costTable.currentObjective?.id])}">add target</a>
 							</div>
-						</g:ifAdmin>
+						</shiro:hasPermission>
 						<!-- ADMIN SECTION END -->
 					</g:if>
 					<g:else>
@@ -147,7 +147,7 @@
 					</g:else>
 				</div>
 				<!-- ADMIN SECTION -->
-		    	<g:ifAdmin>
+				<shiro:hasPermission permission="cost:admin">							
 	    			<div class="hidden flow-container"></div>
 
 					<script type="text/javascript">
@@ -161,7 +161,7 @@
 							});
 						});
 					</script>
-		    	</g:ifAdmin>
+				</shiro:hasPermission>
 		    	<!-- ADMIN SECTION END -->
 				<div class="clear"></div>
     		</div>

@@ -45,9 +45,9 @@ class CostController extends AbstractReportController {
 	def explain = {
 		if (log.isDebugEnabled()) log.debug("cost.explain, params:"+params)
 		
-		Period period = getPeriod()
-		CostTarget target = getCostTarget()
-		Organisation organisation = getOrganisation(false)
+		Period period = Period.get(params.int('period'))
+		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		CostTarget target = CostTarget.get(params.int('objective'));
 		
 		def explanation = costTableService.getExplanation(period, target, organisation);
 		[ explanation: explanation ]
@@ -57,11 +57,10 @@ class CostController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("cost.view, params:"+params)
 		
 		Period period = getPeriod()
-		Organisation organisation = getOrganisation(false)
-		CostObjective objective = getCostObjective()
+		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		CostObjective objective = CostObjective.get(params.int('objective'));
 		
 		if (log.isInfoEnabled()) log.info("view cost for period: "+period.id);
-//		redirectIfDifferent(period, organisation, objective)
 		
 		def costTable = costTableService.getCostTable(period, objective, organisation);
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
@@ -76,11 +75,4 @@ class CostController extends AbstractReportController {
 	}
 	
 	
-	protected def redirectIfDifferent(def period, def organisation, def objective) {
-		if (period.id+'' != params['period'] || organisation.id+'' != params['organisation'] || objective.id+'' != params['objective']) {
-			if (log.isInfoEnabled()) log.info ("redirecting to action: "+params['action']+", period: "+period.id)
-			redirect (controller: 'cost', action: params['action'], params: [period: period.id, objective: objective.id, organisation: organisation.id]);
-		}
-	}
-   
 }

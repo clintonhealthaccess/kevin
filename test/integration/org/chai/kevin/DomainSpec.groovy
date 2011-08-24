@@ -39,6 +39,7 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ValueType;
 import org.chai.kevin.survey.Survey
@@ -154,7 +155,22 @@ class DomainSpec extends IntegrationTests {
 		thrown ValidationException
 
 	}
-
+	
+	def "data element enum is present when type is enum"() {
+		when:
+		new DataElement(code: "CODE", type: ValueType.ENUM).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		def enume = new Enum(code: "ENUM").save(failOnError:true)
+		new DataElement(code: "CODE", type: ValueType.ENUM, enume: enume).save(failOnError:true)
+		
+		then:
+		DataElement.count() == 1
+	}
+	
 	def "constant saved properly" () {
 		when:
 		new Constant(names:j(["en":"Constant"]), code:"CONST", value:"10", type:ValueType.VALUE).save(failOnError: true)

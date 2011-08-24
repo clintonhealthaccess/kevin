@@ -1,5 +1,6 @@
-package org.chai.kevin.survey.validation;
+package org.chai.kevin.survey;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -11,8 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.chai.kevin.survey.SurveyElement;
 
 @Entity(name="SurveyValidationRule")
 @Table(name="dhsst_survey_validation_rule")
@@ -24,7 +25,7 @@ public class SurveyValidationRule {
 	private Boolean allowOutlier;
 
 	private SurveyValidationMessage validationMessage;
-	private List<SurveyElement> dependencies;
+	private List<SurveyElement> dependencies = new ArrayList<SurveyElement>();
 	
 	@Id
 	@GeneratedValue
@@ -85,6 +86,17 @@ public class SurveyValidationRule {
 	public String toString() {
 		return "SurveyValidationRule [surveyElement=" + surveyElement
 				+ ", expression=" + expression + "]";
+	}
+	
+	@Transient
+	protected void deepCopy(SurveyValidationRule copy, SurveyCloner cloner) {
+		copy.setAllowOutlier(getAllowOutlier());
+		copy.setExpression(cloner.getExpression(getExpression(), copy));
+		copy.setSurveyElement(cloner.getElement(getSurveyElement()));
+		copy.setValidationMessage(getValidationMessage());
+		for (SurveyElement element : getDependencies()) {
+			copy.getDependencies().add(cloner.getElement(element));
+		}
 	}
 	
 }

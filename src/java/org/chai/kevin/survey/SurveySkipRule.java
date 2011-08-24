@@ -1,5 +1,6 @@
-package org.chai.kevin.survey.validation;
+package org.chai.kevin.survey;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -8,13 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.chai.kevin.survey.Survey;
-import org.chai.kevin.survey.SurveyElement;
-import org.chai.kevin.survey.SurveyQuestion;
 
 @Entity(name="SurveySkipRule")
 @Table(name="dhsst_survey_skip_rule")
@@ -24,8 +23,8 @@ public class SurveySkipRule {
 	private Survey survey;
 	private String expression;
 	
-	private Set<SurveyElement> skippedSurveyElements;
-	private Set<SurveyQuestion> skippedSurveyQuestions;
+	private Set<SurveyElement> skippedSurveyElements = new HashSet<SurveyElement>();
+	private Set<SurveyQuestion> skippedSurveyQuestions = new HashSet<SurveyQuestion>();
 	
 	@Id
 	@GeneratedValue
@@ -58,6 +57,7 @@ public class SurveySkipRule {
 	}
 	
 	@ManyToMany(targetEntity=SurveyElement.class)
+	@JoinTable(name="dhsst_survey_skipped_survey_elements")
 	public Set<SurveyElement> getSkippedSurveyElements() {
 		return skippedSurveyElements;
 	}
@@ -67,6 +67,7 @@ public class SurveySkipRule {
 	}
 	
 	@ManyToMany(targetEntity=SurveyQuestion.class)
+	@JoinTable(name="dhsst_survey_skipped_survey_questions")
 	public Set<SurveyQuestion> getSkippedSurveyQuestions() {
 		return skippedSurveyQuestions;
 	}
@@ -99,7 +100,16 @@ public class SurveySkipRule {
 			return false;
 		return true;
 	}
-	
-	
+
+	protected void deepCopy(SurveySkipRule copy, SurveyCloner surveyCloner) {
+		copy.setExpression(surveyCloner.getExpression(getExpression(), copy));
+		copy.setSurvey(surveyCloner.getSurvey(getSurvey()));
+		for (SurveyQuestion question : getSkippedSurveyQuestions()) {
+			copy.getSkippedSurveyQuestions().add(surveyCloner.getQuestion(question));
+		}
+		for (SurveyElement element : getSkippedSurveyElements()) {
+			copy.getSkippedSurveyElements().add(surveyCloner.getElement(element));
+		}
+	}
 	
 }

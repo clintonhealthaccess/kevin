@@ -40,7 +40,7 @@ public abstract class Orderable implements Comparable<Orderable> {
 	public int compareTo(Orderable sectionTwo) {
 		if (getOrder() == null) {
 			if (sectionTwo.getOrder() == null) {
-				return getId().compareTo(sectionTwo.getId());
+				return compare(getId(), sectionTwo.getId());
 			}
 			else return 1;
 		}
@@ -49,12 +49,19 @@ public abstract class Orderable implements Comparable<Orderable> {
 		}
 		else {
 			if (getOrder().equals(sectionTwo.getOrder())) {
-				return getId().compareTo(sectionTwo.getId());
+				return compare(getId(), sectionTwo.getId());
 			} 
 			else {
 				return getOrder() - sectionTwo.getOrder();
 			}
 		}
+	}
+	
+	private <T> int compare(Comparable<T> o1, T o2) {
+		if (o1 == null && o2 == null) return 0;
+		else if (o1 == null) return 1;
+		else if (o2 == null) return -1;
+		else return o1.compareTo(o2);
 	}
 
 }

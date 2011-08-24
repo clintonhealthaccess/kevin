@@ -10,7 +10,7 @@
 		<div id="dashboard">
 			<div id="corner" class="box">
 				<h5><g:message code="dashboard.labels.iteration" default="Iteration"/></h5>
-				<div class="dropdown">
+				<div class="dropdown white-dropdown">
 					<a class="selected" href="#"><g:dateFormat format="yyyy" date="${dashboard.currentPeriod.startDate}"/></a>
 					<div class="hidden dropdown-list">
 						<ul>
@@ -96,7 +96,7 @@
 												</a>
 											</g:else>
 			
-								    		<g:ifAdmin>
+								    		<shiro:hasPermission permission="dashboard:admin">
 							    				<g:if test="${!objective.isTarget()}">
 													<span>
 														<a class="flow-edit" href="${createLink(controller:'dashboardObjective',action:'edit',id:objectiveEntry.id)}">(<g:message code="dashboard.admin.edit" default="edit"/>)</a>
@@ -119,7 +119,7 @@
 														</span>
 													</g:else>
 												</g:if>
-											</g:ifAdmin>
+											</shiro:hasPermission>
 												
 											</span></div>
 										</th>
@@ -181,17 +181,17 @@
 				    	</table>
 				    	
 				    	<!-- ADMIN SECTION -->
-			    		<g:ifAdmin>
+			    		<shiro:hasPermission permission="dashboard:admin">
 			    			<div class="float-right">
 								<div><a id="add-dashboard-target-link" class="flow-add" href="${createLink(controller:'dashboardTarget', action:'create', params:[currentObjective: dashboard.currentObjective.id])}"><g:message code="dashboard.admin.add.target" default="Add indicator"/></a></div>
 								<div><a id="add-dashboard-objective-link" class="flow-add" href="${createLink(controller:'dashboardObjective', action:'create', params:[currentObjective: dashboard.currentObjective.id])}"><g:message code="dashboard.admin.add.objective" default="Add objective"/></a></div>
 							</div>
-				    	</g:ifAdmin>
+						</shiro:hasPermission>
 				    	<!-- ADMIN SECTION END -->
 				    	
 			    	</div>
 			    	<!-- ADMIN SECTION -->
-			    	<g:ifAdmin>
+		    		<shiro:hasPermission permission="dashboard:admin">
 		    			<div class="hidden flow-container"></div>
 						
 						<script type="text/javascript">
@@ -205,7 +205,7 @@
 								});
 							});
 						</script>
-			    	</g:ifAdmin>
+			    	</shiro:hasPermission>
 			    	<!-- ADMIN SECTION END -->
 			    </div>
 			    <!-- center -->

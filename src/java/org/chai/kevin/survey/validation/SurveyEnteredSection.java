@@ -10,28 +10,28 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.survey.SurveyObjective;
+import org.chai.kevin.survey.SurveySection;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
-@Entity(name="SurveyValidObjective")
-@Table(name="dhsst_survey_valid_objective", uniqueConstraints=@UniqueConstraint(
-		columnNames={"objective", "organisationUnit"})
+@Entity(name="SurveyValidSection")
+@Table(name="dhsst_survey_valid_section", uniqueConstraints=@UniqueConstraint(
+		columnNames={"section", "organisationUnit"})
 )
-public class SurveyEnteredObjective {
-
-	public static enum ObjectiveStatus {UNAVAILABLE, CLOSED, INVALID, COMPLETE, INCOMPLETE}
+public class SurveyEnteredSection {
+	
+	public static enum SectionStatus {CLOSED, UNAVAILABLE, COMPLETE, INVALID, INCOMPLETE} 
 	
 	private Long id;
-	private SurveyObjective objective;
+	private SurveySection section;
 	private OrganisationUnit organisationUnit;
-	private ObjectiveStatus status;
+	private SectionStatus status;
 	
-	public SurveyEnteredObjective() {}
+	public SurveyEnteredSection() {}
 	
-	public SurveyEnteredObjective(SurveyObjective objective, OrganisationUnit organisationUnit, ObjectiveStatus status) {
+	public SurveyEnteredSection(SurveySection section, OrganisationUnit organisationUnit, SectionStatus status) {
 		super();
-		this.objective = objective;
+		this.section = section;
 		this.organisationUnit = organisationUnit;
 		this.status = status;
 	}
@@ -47,13 +47,13 @@ public class SurveyEnteredObjective {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=SurveyObjective.class, optional=false)
-	public SurveyObjective getObjective() {
-		return objective;
+	@ManyToOne(targetEntity=SurveySection.class, optional=false)
+	public SurveySection getSection() {
+		return section;
 	}
 	
-	public void setObjective(SurveyObjective objective) {
-		this.objective = objective;
+	public void setSection(SurveySection section) {
+		this.section = section;
 	}
 
 	@NaturalId
@@ -68,11 +68,11 @@ public class SurveyEnteredObjective {
 	
 	@Basic
 	@Enumerated(EnumType.STRING)
-	public ObjectiveStatus getStatus() {
+	public SectionStatus getStatus() {
 		return status;
 	}
 	
-	public void setStatus(ObjectiveStatus status) {
+	public void setStatus(SectionStatus status) {
 		this.status = status;
 	}
 
@@ -81,7 +81,7 @@ public class SurveyEnteredObjective {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((objective == null) ? 0 : objective.hashCode());
+				+ ((section == null) ? 0 : section.hashCode());
 		result = prime
 				* result
 				+ ((organisationUnit == null) ? 0 : organisationUnit.hashCode());
@@ -96,11 +96,11 @@ public class SurveyEnteredObjective {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SurveyEnteredObjective other = (SurveyEnteredObjective) obj;
-		if (objective == null) {
-			if (other.objective != null)
+		SurveyEnteredSection other = (SurveyEnteredSection) obj;
+		if (section == null) {
+			if (other.section != null)
 				return false;
-		} else if (!objective.equals(other.objective))
+		} else if (!section.equals(other.section))
 			return false;
 		if (organisationUnit == null) {
 			if (other.organisationUnit != null)
@@ -112,7 +112,7 @@ public class SurveyEnteredObjective {
 
 	@Override
 	public String toString() {
-		return "SurveyEnteredObjective [objective=" + objective
+		return "SurveyEnteredSection [section=" + section
 				+ ", organisationUnit=" + organisationUnit + ", status="
 				+ status + "]";
 	}

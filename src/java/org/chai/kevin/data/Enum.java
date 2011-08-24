@@ -68,18 +68,23 @@ public class Enum {
 		return id;
 	}
 	
+	public void setId(Long id) {
+		this.id = id;
+	}
+		
 	@OneToMany(mappedBy="enume", targetEntity=EnumOption.class, fetch=FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	public List<EnumOption> getEnumOptions() {
 		return enumOptions;
 	}
 	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
 	public void setEnumOptions(List<EnumOption> enumOptions) {
 		this.enumOptions = enumOptions;
+	}
+	
+	public void addEnumOption(EnumOption enumOption) {
+		enumOptions.add(enumOption);
+		enumOption.setEnume(this);
 	}
 
 	@Embedded

@@ -39,7 +39,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.survey.validation.SurveyEnteredObjective;
+import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
+import org.chai.kevin.survey.validation.SurveyEnteredSection.SectionStatus;
+import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SurveyPageService {
@@ -54,7 +59,8 @@ public class SurveyPageService {
 		organisationService.loadGroup(currentOrganisation);
 		
 		return new SurveyPage(currentOrganisation, survey, null, null, 
-				new HashMap<SurveyElement, SurveyEnteredValue>(), new HashMap<Long, SurveyElementValue>());
+				new HashMap<SurveyElement, SurveyEnteredValue>(), new HashMap<SurveySection, SurveyEnteredSection>(), 
+				getSurveyEnteredObjectiveMap(survey.getObjectives(currentOrganisation.getOrganisationUnitGroup()), currentOrganisation), new HashMap<Long, SurveyElementValue>());
 	}
 	
 	@Transactional(readOnly = true)
@@ -91,27 +97,62 @@ public class SurveyPageService {
 	}
 	
 	private SurveyPage getSurveyPage(Organisation currentOrganisation, Survey survey, SurveyObjective currentObjective, SurveySection currentSection, List<SurveyElement> elements) {
+		List<SurveyElement> surveyElements = new ArrayList<SurveyElement>();
+		if (currentSection != null) surveyElements.addAll(currentSection.getSurveyElements(currentOrganisation.getOrganisationUnitGroup()));
+		else if (currentObjective != null) {
+			for (SurveySection surveySection : currentObjective.getSections(currentOrganisation.getOrganisationUnitGroup())) {
+				surveyElements.addAll(surveySection.getSurveyElements(currentOrganisation.getOrganisationUnitGroup()));
+			}
+		}
+		List<SurveySection> sections = new ArrayList<SurveySection>();
+		if (currentObjective != null) sections.addAll(currentObjective.getSections(currentOrganisation.getOrganisationUnitGroup()));
+		
 		return new SurveyPage(currentOrganisation, survey, currentObjective, currentSection, 
-				getSurveyEnteredValueMap(currentObjective, currentOrganisation),
+				getSurveyEnteredValueMap(surveyElements, currentOrganisation),
+				getSurveyEnteredSectionMap(sections, currentOrganisation),
+				getSurveyEnteredObjectiveMap(survey.getObjectives(currentOrganisation.getOrganisationUnitGroup()), currentOrganisation),
 				getSurveyElementValueMap(currentOrganisation, elements));
 	}
 	
-	private Map<SurveyElement, SurveyEnteredValue> getSurveyEnteredValueMap(SurveyObjective objective, Organisation organisation) {
+	private Map<SurveyElement, SurveyEnteredValue> getSurveyEnteredValueMap(List<SurveyElement> elements, Organisation organisation) {
 		Map<SurveyElement, SurveyEnteredValue> map = new HashMap<SurveyElement, SurveyEnteredValue>();
-		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
-			for (SurveyElement element : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-				SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
-				map.put(element, enteredValue);
+		for (SurveyElement element : elements) {
+			SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
+			if (enteredValue == null) {
+				enteredValue = new SurveyEnteredValue(element, organisation.getOrganisationUnit(), null);
 			}
+			map.put(element, enteredValue);
 		}
 		return map;
+	}
+	
+	private Map<SurveyObjective, SurveyEnteredObjective> getSurveyEnteredObjectiveMap(List<SurveyObjective> objectives, Organisation organisation) {
+		Map<SurveyObjective, SurveyEnteredObjective> result = new HashMap<SurveyObjective, SurveyEnteredObjective>();
+		for (SurveyObjective surveyObjective : objectives) {
+			SurveyEnteredObjective enteredObjective = surveyElementService.getSurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit());
+			if (enteredObjective == null) {
+				enteredObjective = new SurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit(), ObjectiveStatus.INCOMPLETE);
+			}
+			result.put(surveyObjective, enteredObjective);
+		}
+		return result;
+	}
+	
+	private Map<SurveySection, SurveyEnteredSection> getSurveyEnteredSectionMap(List<SurveySection> sections, Organisation organisation) {
+		Map<SurveySection, SurveyEnteredSection> result = new HashMap<SurveySection, SurveyEnteredSection>();
+		for (SurveySection surveySection : sections) {
+			SurveyEnteredSection enteredSection = surveyElementService.getSurveyEnteredSection(surveySection, organisation.getOrganisationUnit());
+			if (enteredSection == null) {
+				enteredSection = new SurveyEnteredSection(surveySection, organisation.getOrganisationUnit(), SectionStatus.INCOMPLETE);
+			}
+			result.put(surveySection, enteredSection);
+		}
+		return result;
 	}
 	
 	private Map<Long, SurveyElementValue> getSurveyElementValueMap(Organisation currentOrganisation, List<SurveyElement> surveyElements) {
 		Map<Long, SurveyElementValue> map = new HashMap<Long, SurveyElementValue>();
 		for (SurveyElement surveyElement : surveyElements) {
-			// TODO update surveyEnteredValue from dataValue if necessary, but probably not here
-//					SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(surveyElement, currentOrganisation.getOrganisationUnit());
 			SurveyElementValue surveyElementValue = new SurveyElementValue(surveyElement, currentOrganisation);
 			map.put(surveyElement.getId(), surveyElementValue);
 		}

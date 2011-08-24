@@ -266,8 +266,9 @@ body.bp .entity-list
       background-color: #DDDDDD
 
 
-body.bp .dropdown
-  .dropdown-list
+body.bp .white-dropdown
+  & > div
+    margin-top: -14px
     +white-box
     border-width: 2px
     position: absolute
@@ -280,9 +281,6 @@ body.bp .dropdown
       display: block
       margin: 4px
       
-  div.dropdown-list
-    margin-top: -14px
-
 .filter
   float: left
   margin-right: 20px
@@ -815,51 +813,15 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     +box-bottom-round-corner
     padding: 3px
 
-  #top-container
-    #survey-iteration-box
-      width: 20%
-      float: left
-      margin-left: 4px
-      
-    #survey-objective-box
-      width: 77%
-      float: right
-      margin-right: 4px
-      
-      #survey-container-left-side
-        float: left
-        width: 45%
-    
-      #survey-container-right-side
-        float: right
-        width: 45%
-      
-    .survey-highlight-title
-      color: #3b84c9
-      font-size: 600
-      a
-        color: #3b84c9
-      a:hover
-        text-decoration: underline
+  #survey-header
+    margin-bottom: 2px
+  
+    div.filter
+      margin-right: 100px
 
-  #bottom-container
-    #survey-left-objective-container
-      width: 20%
-      float: left
-      margin-top: 2px
-      margin-left: 4px
+  #survey-menu
+    position: absolute
 
-    #survey-right-question-container
-      width: 77%
-      float: right
-      margin-top: 2px
-      margin-right: 4px
-
-  #content
-    background-color: #e1e1e1
-    margin: 0 auto
-    padding: 0 0 10px 0
-      
   #incomplete-sections ul
     margin: 0
       
@@ -874,12 +836,15 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
   div.element
     display: inline
 
+  .question-simple div.element-enum
+    display: block
+
   .question-number
     font-weight: bold
     display: inline
           
   .question
-    margin-bottom: 30px 
+    margin-bottom: 20px 
     font-weight: normal
           
   .question-container.skipped
@@ -890,10 +855,16 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     input, select, textarea
       border-color: inherit
       
-  .question-table 
+  .question-table
+    .question-table-container
+      overflow: auto
+  
+    input
+      width: 80px
+  
     table
       max-width: 700px
-      margin: 10px 1px 1px 1px
+      margin: 10px 0px 1px 0px
       paddind: 1px
       th
         font-weight: normal
@@ -901,13 +872,16 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
         color: #fff
       div.element
         display: block
+        
+      thead th
+        text-align: center
     
     td
       padding: 0px
     
     td div.element
       padding: 4px 10px 4px 5px
-        
+      
     .oddrow
       +odd
       td 
@@ -921,6 +895,9 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     .skipped
       input, select
         display: none
+        
+  div.element-string
+    display: block
         
   .question-checkbox
     .skipped
@@ -939,20 +916,6 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       float: left
       position: absolute
       margin-top: 12px
-
-  .rounded-box-top
-    +white-box
-    padding : 5px
-    margin-top: 8px
-    margin-bottom: 2px
-    +box-top-round-corner
-      
-  .rounded-box-bottom
-    +white-box
-    padding : 5px
-    margin-bottom: 8px
-    margin-top: 2px
-    +box-bottom-round-corner
     
   .question-tab-title
     border-left: 1px solid #fff
@@ -1085,6 +1048,7 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     width: 400px
   .question-explainer
     text-decoration: none
+    
 #question-option
   table
   border-collapse: separate 
@@ -1095,7 +1059,8 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     .option-element
       font-weight: bold
       span
-        font-weight: normal       
+        font-weight: normal   
+            
 #add-option
   #add-option-col
     float: left

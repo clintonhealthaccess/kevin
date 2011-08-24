@@ -39,17 +39,23 @@
 			<div class="locales" id="switcher">
 				<g:each in="${localeService.availableLanguages}" var="language" status="i">
 					<% params['lang'] = language %>
-					<a class="${localeService.currentLanguage==language?'no-link':''}" href="${createLink(params:params)}">${language}</a>
+					<a class="${localeService.currentLanguage==language?'no-link':''}" href="${createLink(controller: controller, action: action, params:params)}">${language}</a>
 				</g:each>
 			</div>
+			<shiro:user>
+				<div id="logout">
+					<a href="${createLink(controller: 'auth', action: 'signOut')}">logout</a>					
+				</div>
+			</shiro:user>
 			<div class="clear"></div>
 		</div>			
 			<!--<h1>Welcome to Kevin</h1>-->
 			<div id="navigation">
 				<ul id="main-menu" class="menu">
-				    <g:ifAdmin>
-					<li><a href="${createLink(controller: 'survey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
-					</g:ifAdmin>
+				    <shiro:hasPermission permission="menu:survey">
+						<li><a href="${createLink(controller: 'survey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+					</shiro:hasPermission>
+					<shiro:hasPermission permission="menu:reports">
 						<li><a href="#"><g:message code="header.navigation.reports" default="Reports"/></a>
 							<ul class="submenu">
 								<li><a href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.dashboard" default="Dashboard"/></a></li>
@@ -58,22 +64,22 @@
 								<li><a href="${createLink(controller: 'maps', action:'view')}"><g:message code="header.navigation.maps" default="Maps"/></a></li>
 							</ul>
 						</li>
-				<g:ifAdmin>
-					<li><a href="#"><g:message code="header.navigation.administration" default="Administration"/></a>
-						<ul class="submenu">
-							<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
-							<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li>
-							<li><a href="${createLink(controller: 'dataElement', action:'list')}"><g:message code="header.navigation.dataelement" default="Data Element"/></a></li>
-							<li><a href="${createLink(controller: 'iteration', action:'list')}"><g:message code="header.navigation.iteration" default="Iterations"/></a></li>
-							<li><a href="${createLink(controller: 'admin', action:'survey')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
-						</ul>
-					</li>
-				</g:ifAdmin>
-				
+					</shiro:hasPermission>
+					<shiro:hasPermission permission="menu:admin">
+						<li><a href="#"><g:message code="header.navigation.administration" default="Administration"/></a>
+							<ul class="submenu">
+								<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
+								<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li>
+								<li><a href="${createLink(controller: 'dataElement', action:'list')}"><g:message code="header.navigation.dataelement" default="Data Element"/></a></li>
+								<li><a href="${createLink(controller: 'iteration', action:'list')}"><g:message code="header.navigation.iteration" default="Iterations"/></a></li>
+								<li><a href="${createLink(controller: 'admin', action:'survey')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+							</ul>
+						</li>
+					</shiro:hasPermission>
 				</ul>
-				<g:ifAdmin>
+				<shiro:user>
 					<div class="float-right" style="background-color: red;"><a target="_blank" href="http://www.dhsst.org/redmine">Found a bug? Go to REDMINE</a></div>
-				</g:ifAdmin>
+				</shiro:user>
 				<div class="clear"></div>
 			</div>
 			<div class="clear"></div>
@@ -385,7 +391,7 @@
 			});
 			$(document).bind('click', function(e) {
 				var clicked = e.target;
-				$(".dropdown a").each(function(){
+				$(".dropdown a.selected").each(function(){
 					if (clicked != this) {
 						$(this).parent(".dropdown").find("div.dropdown-list").hide();	
 					}
