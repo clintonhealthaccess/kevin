@@ -20,7 +20,7 @@ class IterationController extends AbstractEntityController  {
 	}
 
 	def getTemplate() {
-		return "createIteration";
+		return "/entity/iteration/createIteration";
 	}
 
 	def getModel(def entity) {
@@ -49,6 +49,12 @@ class IterationController extends AbstractEntityController  {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		def iterations=Period.list(params)
 		Collections.sort(iterations,new PeriodSorter())
-		[iterations: iterations, iterationCount: Period.count()]
+		
+		render(view:'/entity/list', model: [
+			entities: iterations, 
+			entityCount: Period.count(),
+			code: 'iteration.label',
+			template: 'iteration/iterationList'
+		])
 	}
 }

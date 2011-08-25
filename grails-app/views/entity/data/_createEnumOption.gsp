@@ -5,7 +5,6 @@
 		<div class="clear"></div>
 	</div>
 	<g:form url="[controller:'enumOption', action:'save']" useToken="true">
-	<g:i18nInput name="enume.names" bean="${option.enume}" value="${option.enume.names}" label="Enum" field="names" active="disabled"/>
 	<input type="hidden" name="enume.id" value="${option.enume.id}"/>
 	<g:i18nRichTextarea name="names" bean="${option}" value="${option.names}" label="Option" field="names" height="100"  width="300" maxHeight="100" />
 	<g:i18nRichTextarea name="descriptions" bean="${option}" value="${option.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
@@ -24,7 +23,7 @@
 </div>
 <div class="hidden flow-container"></div>
 <script type="text/javascript">
-		$(document).ready(function() {
-			getRichTextContent();
-			});
-	</script> 
+	$(document).ready(function() {
+		getRichTextContent();
+		});
+</script> 

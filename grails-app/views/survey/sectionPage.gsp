@@ -21,7 +21,7 @@
 			<div class="grey-rounded-box-bottom">
 
 				<g:if test="${flash.message}">
-					<div class="rounded-box-top rounded-box-bottom info">
+					<div class="rounded-box-top rounded-box-bottom flash-info">
 						<g:message code="${flash.message}" default="${flash.default}"/>
 					</div>
 				</g:if>
@@ -35,7 +35,7 @@
 				<g:if test="${unavailable}">
 					<div class="rounded-box-top rounded-box-bottom">
 						This section can not yet be answered, please complete 
-						<a href="${createLink(controller: 'survey', action: 'objectivePage', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.dependency.id])}"><g:i18n field="${surveyPage.objective.dependency.names}"/></a>
+						<a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.dependency.id])}"><g:i18n field="${surveyPage.objective.dependency.names}"/></a>
 						first.
 					</div>
 				</g:if> 
@@ -48,7 +48,7 @@
 					</div>
 					<div class="rounded-box-bottom">
 					
-						<g:form id="survey-form" url="[controller:'survey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
+						<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 							<ol id="questions">
 								<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question">
 									<li class="question-container ${surveyPage.isSkipped(question)?'skipped':''}">
@@ -90,7 +90,7 @@
 						var valid = true;
 						$(data.invalidQuestions).each(function(key, invalidQuestion) {
 							if (invalidQuestion.id == $(question).data('question')) {
-								$(question).parents('.question-container').html(invalidQuestion.html);
+// 								$(question).parents('.question-container').html(invalidQuestion.html);
 								valid = false;
 							}
 						});
@@ -99,6 +99,11 @@
 							$(question).parents('.question-container').find('.errors').removeClass('errors');
 						}
 					});
+
+					if (data.status == "invalid") {
+						$(element).parents('.question').addClass('errors');
+						$(element).parents('.question-container').html(data.html);
+					}
 						
 					$('.question').each(function(key, element) {
 						if ($.inArray($(element).data('question'), data.skippedQuestions) >= 0) {

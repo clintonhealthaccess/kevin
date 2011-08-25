@@ -80,7 +80,7 @@
 					</div>
 				</div>
 				<div class="clear"></div>
-				<shiro:hasPermission permission="cost:admin">					
+				<shiro:hasPermission permission="admin:cost">					
 				<div>
 						<a class="flow-add" id="add-cost-objective-link" href="${createLink(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
 					</div>
@@ -135,7 +135,7 @@
 						</table>
 					
 						<!-- ADMIN SECTION -->
-						<shiro:hasPermission permission="cost:admin">							
+						<shiro:hasPermission permission="admin:cost">							
 							<div>
 								<a id="add-cost-target-link" class="flow-add" href="${createLink(controller:'costTarget', action:'create', params:[currentObjective: costTable.currentObjective?.id])}">add target</a>
 							</div>
@@ -147,7 +147,7 @@
 					</g:else>
 				</div>
 				<!-- ADMIN SECTION -->
-				<shiro:hasPermission permission="cost:admin">							
+				<shiro:hasPermission permission="admin:cost">							
 	    			<div class="hidden flow-container"></div>
 
 					<script type="text/javascript">

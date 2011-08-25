@@ -52,7 +52,7 @@ class DsrController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
 		Period period = getPeriod()
 		DsrObjective objective = DsrObjective.get(params.int('objective'));
-		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation organisation = getOrganisation(false)
 		
 		def dsrTable = dsrService.getDsr(organisation, objective, period);
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
@@ -65,8 +65,7 @@ class DsrController extends AbstractReportController {
 			periods: Period.list(),
 			objectives: DsrObjective.list(),
 		    organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
-			checkedFacilities: defaultChecked,
-//			displayLinkUntil: 3
+			checkedFacilities: defaultChecked
 		]
 		
 	}

@@ -18,6 +18,8 @@ public class SurveyElementValue {
 	String value;
 	List<Long> acceptedWarnings = [];
 	
+	String lastValue;
+	
 //	Boolean skipped = false;
 	Set<SurveyValidationRule> invalidErrors = [];
 	Set<SurveyValidationRule> invalidWarnings = [];
@@ -25,9 +27,10 @@ public class SurveyElementValue {
 	
 	public SurveyElementValue() {}
 	
-	public SurveyElementValue(SurveyElement surveyElement, Organisation organisation) {
+	public SurveyElementValue(SurveyElement surveyElement, Organisation organisation, String lastValue) {
 		this.surveyElement = surveyElement;
 		this.organisation = organisation;
+		this.lastValue = lastValue;
 	}
 				
 	void sanitizeValues(SurveyPage page) {

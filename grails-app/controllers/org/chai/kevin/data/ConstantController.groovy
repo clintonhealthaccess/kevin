@@ -46,7 +46,7 @@ class ConstantController extends AbstractEntityController {
 	}
 
 	def getTemplate() {
-		return "createConstant";
+		return "/entity/constant/createConstant";
 	}
 
 	def getModel(def entity) {
@@ -76,7 +76,12 @@ class ConstantController extends AbstractEntityController {
 
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		[constants: Constant.list(params), constantCount: Constant.count()]
+		render (view: '/entity/list', model:[
+			entities: Constant.list(params), 
+			entityCount: Constant.count(), 
+			code: 'constant.label',
+			template: 'constant/constantList'
+		])
 	}
 
 	def getData = {

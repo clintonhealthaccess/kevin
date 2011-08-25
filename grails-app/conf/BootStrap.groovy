@@ -60,11 +60,21 @@ class BootStrap {
 			Initializer.createRootObjective()
 			
 			if (User.findByUsername('admin') == null) {
-				def user = new User(username: "admin", passwordHash: new Sha256Hash("admin").toHex())
+				def user = new User(username: "admin", passwordHash: new Sha256Hash("123admin!").toHex())
 				user.addToPermissions("*")
 				user.save()
 			}
 			
+			if (User.findByUsername('dhsst') == null) {
+				def user = new User(username: "dhsst", passwordHash: new Sha256Hash("123chai!").toHex())
+				user.addToPermissions("menu:reports")
+				user.addToPermissions("dashboard:*")
+				user.addToPermissions("dsr:*")
+				user.addToPermissions("maps:*")
+				user.addToPermissions("cost:*")
+				user.addToPermissions("home:*")
+				user.save()
+			}
 			
 			break;
 		case "development":

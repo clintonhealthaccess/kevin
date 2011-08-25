@@ -15,6 +15,10 @@
 			</option>
 		</g:each>
 	</select>
+	<g:if test="${surveyElementValue.lastValue!=null}">
+		<g:set var="option" value="${surveyElement.dataElement.enume.getOptionForValue(surveyElementValue.lastValue)}"/>
+		<span class="survey-old-value">(${option!=null?i18n(field: option.names):surveyElementValue.lastValue})</span>
+	</g:if>
 	<div class="error-list">
 		<g:renderUserErrors element="${surveyElementValue}"/>
 	</div>

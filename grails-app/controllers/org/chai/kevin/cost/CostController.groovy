@@ -57,7 +57,7 @@ class CostController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("cost.view, params:"+params)
 		
 		Period period = getPeriod()
-		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation organisation = getOrganisation(false)
 		CostObjective objective = CostObjective.get(params.int('objective'));
 		
 		if (log.isInfoEnabled()) log.info("view cost for period: "+period.id);

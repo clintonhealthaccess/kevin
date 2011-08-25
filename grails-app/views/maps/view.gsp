@@ -57,7 +57,7 @@
 											<a class="parameter" href="#" data-target="${target.id}" data-type="target">
 												<g:i18n field="${target.names}"/>
 											</a>
-								  			<shiro:hasPermission permission="maps:admin">
+								  			<shiro:hasPermission permission="admin:maps">
 												<span>
 													<g:link class="flow-edit" controller="mapsTarget" action="edit" id="${target.id}">(edit)</g:link>
 												</span>
@@ -75,7 +75,7 @@
 						</div>
 					</div>
 				</div>
-		   		<shiro:hasPermission permission="maps:admin">
+		   		<shiro:hasPermission permission="admin:maps">
 					<div>
 						<a id="add-maps-target-link" class="flow-add" href="${createLink(controller:'mapsTarget', action:'create')}" class="flow-add">add target</a>
 					</div>
@@ -89,7 +89,7 @@
     			</div>
     			
     			<!-- ADMIN SECTION -->
-	  			<shiro:hasPermission permission="maps:admin">
+	  			<shiro:hasPermission permission="admin:maps">
 	    			<div class="hidden flow-container"></div>
 
 					<script type="text/javascript">

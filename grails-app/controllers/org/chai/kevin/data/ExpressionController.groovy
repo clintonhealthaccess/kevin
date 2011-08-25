@@ -48,7 +48,7 @@ class ExpressionController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "createExpression";
+		return "/entity/expression/createExpression";
 	}
 	
 	def getModel(def entity) {
@@ -79,7 +79,12 @@ class ExpressionController extends AbstractEntityController {
 	
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		[expressions: Expression.list(params), expressionCount: Expression.count()]
+		render (view: '/entity/list' , model:[
+			entities: Expression.list(params), 
+			entityCount: Expression.count(),
+			code: 'expression.label',
+			template: 'expression/expressionList'
+		])
 	}
 	
 	def getDescription = {
@@ -96,7 +101,7 @@ class ExpressionController extends AbstractEntityController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: 'description', model: [expression: expression])
+				html = g.render (template: '/templates/expressionDescription', model: [expression: expression])
 			}
 		}
 	}
@@ -117,7 +122,7 @@ class ExpressionController extends AbstractEntityController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: 'constantDescription', model: [constant: constant])
+				html = g.render (template: '/templates/constantDescription', model: [constant: constant])
 			}
 		}
 	}
@@ -131,14 +136,14 @@ class ExpressionController extends AbstractEntityController {
 			def constants = dataService.searchConstants(params['searchText']);
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render(template:'constants', model:[constants: constants])
+				html = g.render(template:'/templates/constants', model:[constants: constants])
 			}
 		}
 		else {
 			def dataElements = dataService.searchDataElements(params['searchText']);
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render(template:'dataElements', model:[dataElements: dataElements])
+				html = g.render(template:'/templates/dataElements', model:[dataElements: dataElements])
 			}
 		}
 	}
@@ -159,7 +164,7 @@ class ExpressionController extends AbstractEntityController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: 'dataElementDescription', model: [dataElement: dataElement, enume: enume])
+				html = g.render (template: '/templates/dataElementDescription', model: [dataElement: dataElement, enume: enume])
 			}
 		}
 	}

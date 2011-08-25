@@ -108,7 +108,7 @@ log4j = {
            'org.codehaus.groovy.grails.web.mapping', // URL mapping
            'org.codehaus.groovy.grails.commons' // core / classloading
 		   
-	debug 'grails.app.controller.org.chai.kevin.survey.SurveyController'
+//	debug 'grails.app.controller.org.chai.kevin.survey.SurveyController'
 //	debug 'org.chai.kevin.survey.ValidationService'
 	
 //    warn   'org.mortbay.log',
@@ -120,9 +120,8 @@ log4j = {
 //		   'org.hsqldb.jdbc',
 //		   'org.springframework'
 //		   
-//	debug  'org.hisp.dhis',
-//		   'org.chai.kevin',
-//		   'grails.app'
+	debug  'org.chai.kevin',
+		   'grails.app'
 		   
 		   
 //	trace  'org.hibernate.SQL',

@@ -63,7 +63,7 @@ class DataElementController extends AbstractEntityController {
 	}
 
 	def getTemplate() {
-		return "/data/createDataElement";
+		return "/entity/data/createDataElement";
 	}
 
 	def getModel(def entity) {
@@ -100,11 +100,12 @@ class DataElementController extends AbstractEntityController {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		List<DataElement> dataElements = DataElement.list(params);
 		
-		render (view: '/data/list', model:[
-					dataElements: dataElements,
-					template: "dataElementList",
-					dataElementCount: DataElement.count()
-				])
+		render (view: '/entity/list', model:[
+			entities: dataElements,
+			template: "data/dataElementList",
+			code: "dataelement.label",
+			entityCount: DataElement.count()
+		])
 	}
 
 	def getExplainer={

@@ -71,7 +71,7 @@ class DomainSpec extends IntegrationTests {
 	def "table question has data elements"() {
 		setup:
 		new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: ValueType.VALUE).save(failOnError: true, flush: true)
-		def section = createDummySurvey()
+		def section = createDummySection()
 		createDummyTableQuestion(section)
 		
 		when:

@@ -4,27 +4,43 @@
 		<g:locales/>
 		<div class="clear"></div>
 	</div>
-	<g:form url="[controller:'createSurvey', action:'save']" useToken="true">
+	<g:form url="[controller:'survey', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="Name" field="names"/>
 		<g:i18nRichTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
-	   <div class="row">
+		<div class="row">
 			<div>
 				<a id="add-iteration-link" class="float-right"  href="${createLink(controller:'iteration', action:'create')}">New Iteration</a>
 			</div>
 			<div class="clear"></div>
 			<div id="iteration-block">
-					<div class="group-list ${hasErrors(bean:survey, field:'period', 'errors')}">
-						<label for="period">Period:</label>
-						<select class="iteration-list" name="period.id">
-							<option value="null">-- Select an Iteration --</option>
-							<g:each in="${periods}" var="period">
-								<option value="${period.id}" ${period.id+''==fieldValue(bean: survey, field: 'period.id')+''?'selected="selected"':''}>
-									${period.startDate} &harr; ${period.endDate}
-								</option>
-							</g:each>
-						</select>
-						<div class="error-list"><g:renderErrors bean="${survey}" field="period" /></div>
-					</div>
+				<div class="group-list ${hasErrors(bean:survey, field:'period', 'errors')}">
+					<label for="period.id">Period:</label>
+					<select class="iteration-list" name="period.id">
+						<option value="null">-- Select an Iteration --</option>
+						<g:each in="${periods}" var="period">
+							<option value="${period.id}" ${period.id==survey.period?.id?'selected="selected"':''}>
+								${period.startDate} &harr; ${period.endDate}
+							</option>
+						</g:each>
+					</select>
+					<div class="error-list"><g:renderErrors bean="${survey}" field="period" /></div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div id="iteration-block">
+				<div class="group-list ${hasErrors(bean:survey, field:'period', 'errors')}">
+					<label for="lastPeriod.id">Last period (for reference to old values):</label>
+					<select class="iteration-list" name="lastPeriod.id">
+						<option value="null">-- Select an Iteration --</option>
+						<g:each in="${periods}" var="period">
+							<option value="${period.id}" ${period.id==survey.lastPeriod?.id?'selected="selected"':''}>
+								${period.startDate} &harr; ${period.endDate}
+							</option>
+						</g:each>
+					</select>
+					<div class="error-list"><g:renderErrors bean="${survey}" field="lastPeriod" /></div>
+				</div>
 			</div>
 		</div>
 		<div class="clear"></div>
@@ -47,10 +63,10 @@
 			onSuccess: function(data) {
 				if (data.result == 'success') {
 					var period = data.newEntity;
-					$('.iteration-list').append('<option value="'+period.id+'">'+period.startDate+'<->'+periodendDate+'</option>');
+					$('.iteration-list').append('<option value="'+period.id+'">'+period.startDate+'<->'+period.endDate+'</option>');
 					$.sexyCombo.changeOptions('.iteration-list');
 				}
 			}
 		});
 	})
-		</script>
+</script>

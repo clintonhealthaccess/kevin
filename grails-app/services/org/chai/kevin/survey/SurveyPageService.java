@@ -39,12 +39,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.ValueService;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
 import org.chai.kevin.survey.validation.SurveyEnteredSection.SectionStatus;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
+import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SurveyPageService {
@@ -53,6 +56,7 @@ public class SurveyPageService {
 	
 	private SurveyElementService surveyElementService;
 	private OrganisationService organisationService;
+	private ValueService valueService;
 	
 	@Transactional(readOnly = true)
 	public SurveyPage getSurveyPage(Organisation currentOrganisation, Survey survey) {
@@ -111,7 +115,7 @@ public class SurveyPageService {
 				getSurveyEnteredValueMap(surveyElements, currentOrganisation),
 				getSurveyEnteredSectionMap(sections, currentOrganisation),
 				getSurveyEnteredObjectiveMap(survey.getObjectives(currentOrganisation.getOrganisationUnitGroup()), currentOrganisation),
-				getSurveyElementValueMap(currentOrganisation, elements));
+				getSurveyElementValueMap(currentOrganisation, elements, survey.getLastPeriod()));
 	}
 	
 	private Map<SurveyElement, SurveyEnteredValue> getSurveyEnteredValueMap(List<SurveyElement> elements, Organisation organisation) {
@@ -150,10 +154,14 @@ public class SurveyPageService {
 		return result;
 	}
 	
-	private Map<Long, SurveyElementValue> getSurveyElementValueMap(Organisation currentOrganisation, List<SurveyElement> surveyElements) {
+	private Map<Long, SurveyElementValue> getSurveyElementValueMap(Organisation currentOrganisation, List<SurveyElement> surveyElements, Period lastPeriod) {
 		Map<Long, SurveyElementValue> map = new HashMap<Long, SurveyElementValue>();
 		for (SurveyElement surveyElement : surveyElements) {
-			SurveyElementValue surveyElementValue = new SurveyElementValue(surveyElement, currentOrganisation);
+			DataValue lastDataValue = null;
+			if (lastPeriod != null) lastDataValue = valueService.getValue(surveyElement.getDataElement(), currentOrganisation.getOrganisationUnit(), lastPeriod);
+			String lastValue = null;
+			if (lastDataValue != null) lastValue = lastDataValue.getValue();
+			SurveyElementValue surveyElementValue = new SurveyElementValue(surveyElement, currentOrganisation, lastValue);
 			map.put(surveyElement.getId(), surveyElementValue);
 		}
 		return map;
@@ -165,6 +173,10 @@ public class SurveyPageService {
 	
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
+	}
+	
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
 	}
 	
 }

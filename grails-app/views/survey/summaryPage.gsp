@@ -7,8 +7,10 @@
 	</head>
 	<body>
 		<div id="survey">
+			<g:render template="/survey/header"/>
+			
 			<div class="grey-rounded-box-bottom grey-rounded-box-top">
-				TODO summary page
+				Please select a survey and a facility to get to the respective survey.
 			</div>
 		</div>
 	</body>

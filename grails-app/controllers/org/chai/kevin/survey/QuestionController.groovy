@@ -27,69 +27,34 @@
  */
 package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.PeriodSorter
-import org.hisp.dhis.period.Period;
-
 /**
  * @author Jean Kahigiso M.
  *
  */
-class CreateSurveyController extends AbstractEntityController {
 
-	def surveyAdminService
-	
-	def getEntity(def id) {
-		return Survey.get(id)
-	}
-	
-	def createEntity() {
-		return new Survey()
+class QuestionController {
+
+	def index = {
+		redirect (action: "list", params: params)
 	}
 
-	def getTemplate() {
-		return "/survey/admin/createSurvey"
-	}
+	def list = {
+		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.offset = params.offset ? params.int('offset'): 0
+		SurveySection section = SurveySection.get(params.sectionId)
+		List<SurveyQuestion> questions = section.questions;
 
-	def getModel(def entity) {
-		List<Period> periods = Period.list()
-		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
-		[
-			survey: entity,
-			periods: periods
-		]
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
-	}
-
-	def bindParams(def entity) {
-		entity.properties = params
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
-	}
-
-	def clone = {
-		def survey = getEntity(params['id'])
+		def max = Math.min(params['offset']+params['max'], questions.size())
 		
-		SurveyCloner cloner = new SurveyCloner(survey)
-		cloner.cloneTree();
-		def copy = cloner.getSurvey()
-		copy.save(failOnError: true)
-		
-		cloner.cloneRules();
-		
-		redirect (controller: 'admin', action: 'survey')
+		render (view: '/survey/admin/list', model:[
+			template:"questionList",
+			survey: section.objective.survey,
+			objective: section.objective,
+			section: section,
+			entities: questions.subList(params['offset'], max),
+			entityCount: questions.size(),
+			code: 'survey.question.label',
+			addTemplate: 'addQuestion'
+		])
 	}
 }

@@ -56,12 +56,11 @@ class TableQuestionController extends AbstractEntityController {
 
 	def getModel(def entity) {
 		[
-					question: entity,
-					groups: OrganisationUnitGroup.list(),
-					sections: (entity.section)!=null?entity.section.objective.sections:null,
-					groupUuids: Utils.getGroupUuids(entity.groupUuidString)
-
-				]
+			question: entity,
+			groups: OrganisationUnitGroup.list(),
+			sections: (entity.section)!=null?entity.section.objective.sections:null,
+			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
+		]
 	}
 
 	def validateEntity(def entity) {
@@ -93,9 +92,9 @@ class TableQuestionController extends AbstractEntityController {
 		}
 		if (question == null){
 			render(contentType:"text/json") { result = 'error' }
-		}else{
-		def List<SurveyElement> surveyElnt = question.getSurveyElements();
-		
+		}
+		else {
+			def List<SurveyElement> surveyElnt = question.getSurveyElements();
 			render (contentType:"text/json") {
 				result = 'success'
 				html = g.render (template: '/survey/admin/tablePreview', model:[question: question,surveyElements: surveyElnt])

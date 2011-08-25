@@ -48,6 +48,7 @@ class ExpressionControllerSpec extends IntegrationTests {
 		when:
 		expressionController.params.constant = 'con'
 		expressionController.params.type = 'constant'
+		expressionController.params.controller = 'expression'
 		def model = expressionController.getData()
 		
 		then:
@@ -83,6 +84,7 @@ class ExpressionControllerSpec extends IntegrationTests {
 		when:
 		expressionController.params.constant = 'ele'
 		expressionController.params.type = 'data-element'
+		expressionController.params.controller = 'dataElement'
 		def model = expressionController.getData()
 		
 		then:

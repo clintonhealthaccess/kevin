@@ -44,7 +44,7 @@ class EnumController extends AbstractEntityController {
 		return new Enum();
 	}
 	def getTemplate() {
-		return "/data/createEnum"
+		return "/entity/data/createEnum"
 	}
 	def getModel(def entity) {
 		[
@@ -73,11 +73,12 @@ class EnumController extends AbstractEntityController {
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		List<Enum> enums = Enum.list(params);
-		render (view: '/data/list', model:[
-					enums: enums,
-					template: "enumList",
-					enumCount: Enum.count()
-				])
+		render (view: '/entity/list', model:[
+			entities: enums,
+			template: "data/enumList",
+			entityCount: Enum.count(),
+			code: 'enum.label'
+		])
 		
 	}
 	

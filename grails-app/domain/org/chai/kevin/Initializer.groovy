@@ -82,8 +82,8 @@ class Initializer {
 		user.save()
 		
 		def kivuye = new SurveyUser(username: "kivuye", organisationUnit: OrganisationUnit.findByName("Kivuye HC"), passwordHash: new Sha256Hash("123").toHex())
-		kivuye.addToPermissions("survey:view")
-		kivuye.addToPermissions("survey:*:"+kivuye.organisationUnit.id)
+		kivuye.addToPermissions("editSurvey:view")
+		kivuye.addToPermissions("editSurvey:*:"+kivuye.organisationUnit.id)
 		kivuye.addToPermissions("menu:survey")
 		
 //		kivuye.addToPermissions("survey:surveyPage:12")
@@ -152,8 +152,8 @@ class Initializer {
 
 			def butaro = new OrganisationUnit(name:"Butaro DH", shortName:"RW,N,BU,BUDH", parent: burera)
 			def kivuye = new OrganisationUnit(name:"Kivuye HC", shortName:"RW,N,BU,KIHC", parent: burera)
-			def chk = new OrganisationUnit(name:"CHK HC", shortName:"RW,N,BU,CHUK", parent: burera)
-			burera.children = [butaro, kivuye,chk]
+//			def chk = new OrganisationUnit(name:"CHK HC", shortName:"RW,N,BU,CHUK", parent: burera)
+			burera.children = [butaro, kivuye /* ,chk */ ]
 
 			rwanda.save(failOnError: true, flush: true)
 
@@ -161,7 +161,7 @@ class Initializer {
 			groupSet.save(failOnError: true)
 
 			// organisation groups
-			def dh = new OrganisationUnitGroup(name:"District Hospital", uuid: "District Hospital", members: [butaro,chk], groupSet: OrganisationUnitGroupSet.findByName('Type'))
+			def dh = new OrganisationUnitGroup(name:"District Hospital", uuid: "District Hospital", members: [butaro /*,chk */ ], groupSet: OrganisationUnitGroupSet.findByName('Type'))
 			def hc = new OrganisationUnitGroup(name:"Health Center", uuid: "Health Center", members: [kivuye], groupSet: OrganisationUnitGroupSet.findByName('Type'))
 			butaro.groups = [dh]
 			kivuye.groups = [hc]
@@ -1141,7 +1141,7 @@ class Initializer {
 				names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
 				tableNames: j(["en":"Training Modules"]),
 				order: 1,
-				groupUuidString: "District Hospital"
+				groupUuidString: "Health Center,District Hospital"
 			)
 			staffing.addQuestion(tableQ)
 			staffing.save(failOnError:true, flush: true)

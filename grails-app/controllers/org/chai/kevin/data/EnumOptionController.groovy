@@ -40,20 +40,24 @@ class EnumOptionController extends AbstractEntityController {
 	def getEntity(def id){
 		return EnumOption.get(id)
 	}
+	
 	def createEntity(){  
 		def entity = new EnumOption();
 		//FIXME find a better to do this
-		if (params['enumId']) entity.enume = Enum.get(params.enumId)
+		if (params['enumId']) entity.enume = Enum.get(params.int('enumId'))
 		return entity;
 	}
+	
 	def getTemplate() {
-		return "/data/createEnumOption"
+		return "/entity/data/createEnumOption"
 	}
+	
 	def getModel(def entity) {
 		[
 		 option: entity,
 		]
 	}
+	
 	def html(def entity){
 		return g.render (template:'/templates/enumOption', model:[option: entity])
 	}
@@ -65,9 +69,11 @@ class EnumOptionController extends AbstractEntityController {
 	def saveEntity(def entity) {
 		entity.save()
 	}
+	
 	def deleteEntity(def entity) {
 		entity.delete()
 	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 		
@@ -75,19 +81,20 @@ class EnumOptionController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
-	
 	}
 	
-	def list={
+	def list = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		Enum enume = Enum.get(params.enumId);
 		List<EnumOption> options = enume.enumOptions;
-		render (view: '/data/list', model:[
-					options: options,
-					enume: enume,
-					template: "enumOptionList",
-					optionCount: options.size()
-				])
+		
+		render (view: '/entity/list', model:[
+			entities: options,
+			template: "data/enumOptionList",
+			entityCount: options.size(),
+			code: 'enumoption.label',
+			enumeId: enume.id
+		])
 	}
 		
 }

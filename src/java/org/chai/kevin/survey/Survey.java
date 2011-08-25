@@ -61,6 +61,7 @@ public class Survey extends SurveyTranslatable {
 	private Long id;
 	private Integer order;
 	private boolean open = true;
+	private Period lastPeriod;
 	private Period period;
 	private List<SurveyObjective> objectives = new ArrayList<SurveyObjective>();
 	private List<SurveySkipRule> skipRules = new ArrayList<SurveySkipRule>();
@@ -102,6 +103,16 @@ public class Survey extends SurveyTranslatable {
 	
 	public void setPeriod(Period period) {
 		this.period = period;
+	}
+	
+	@ManyToOne(targetEntity=Period.class, optional=true)
+	@JoinColumn(name="last_iteration")
+	public Period getLastPeriod() {
+		return lastPeriod;
+	}
+	
+	public void setLastPeriod(Period lastPeriod) {
+		this.lastPeriod = lastPeriod;
 	}
 	
 	@OneToMany(targetEntity = SurveyObjective.class, mappedBy="survey", fetch=FetchType.EAGER)

@@ -55,7 +55,9 @@ public class Calculation extends Data<CalculationValue> {
 	private Map<String, Expression> expressions = new HashMap<String, Expression>();
 	
 	@ManyToMany(targetEntity=Expression.class)
-	@JoinTable(name="dhsst_calculation_expression", inverseJoinColumns=@JoinColumn(name="expression", nullable=true))
+	@JoinTable(name="dhsst_calculation_expression", 
+		inverseJoinColumns=@JoinColumn(name="expression", nullable=true)
+	)
 	@MapKeyColumn(name="groupUuid")
 	public Map<String, Expression> getExpressions() {
 		return expressions;

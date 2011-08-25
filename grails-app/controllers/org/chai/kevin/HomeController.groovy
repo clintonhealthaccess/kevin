@@ -39,7 +39,7 @@ class HomeController {
 		User user = User.findByUsername(SecurityUtils.subject.principal)
 		
 		if (user instanceof SurveyUser) {
-			redirect (controller: "survey", action: "view")
+			redirect (controller: "editSurvey", action: "view")
 		}
 		else {
 			redirect (controller: "dsr", action: "view")

@@ -48,7 +48,7 @@ class ExpressionServiceUnitSpec extends UnitSpec {
 		where:
 		expression	| map					| newExpression
 		"1"			| new HashMap()			| "1"
-		"[1]"		| [(new Long(1)): "test"]	| "test"
+		"[1]"		| ["1": "test"]	| "test"
 	}
 	
 	def "test expression validation"() {

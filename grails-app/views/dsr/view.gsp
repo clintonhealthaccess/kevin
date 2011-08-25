@@ -63,7 +63,7 @@
 													<g:i18n field="${objective.names}"/>
 												</a>
 											</span>
-								    		<shiro:hasPermission permission="dsr:admin">
+								    		<shiro:hasPermission permission="admin:dsr">
 												<span>
 													<g:link controller="dsrObjective" action="edit" id="${objective.id}" class="flow-edit">(Edit)</g:link>
 												</span>
@@ -101,7 +101,7 @@
 			<div class="clear"></div>
 			<div>
 			<!-- ADMIN SECTION -->
-	    		<shiro:hasPermission permission="dsr:admin">
+	    		<shiro:hasPermission permission="admin:dsr">
 					<span>
 						<a id="add-dsr-objective-link" class="flow-add"  href="${createLink(controller:'dsrObjective', action:'create')}">Add Objective</a>
 					</span>|
@@ -124,7 +124,7 @@
 					<tr>					
 						<th class="object-name-box" rowspan="2">
 						<div><g:i18n field="${dsrTable.objective.names}"/></div>
-						<shiro:hasPermission permission="dsr:admin">						
+						<shiro:hasPermission permission="admin:dsr">						
 							<span>
 							<g:link controller="dsrObjective" action="delete" id="${dsrTable.objective.id}" class="flow-delete">(Delete)</g:link>
 						    </span><br/>
@@ -140,7 +140,7 @@
 								<g:if test="${i==target.category.getTargetsForObjective(dsrTable.objective).size()}">
 									<th class="title-th" colspan="${i}">
 										<div><g:i18n field="${target.category.names}"/></div>
-								    		<shiro:hasPermission permission="dsr:admin">
+								    		<shiro:hasPermission permission="admin:dsr">
 											<span>
 											 <a id="delete-dsr-target-category-link" class="flow-delete" href="${createLink(controller:'dsrTargetCategory', action:'delete', params:[id: target.category?.id])}">
 											   (Delete)
@@ -160,7 +160,7 @@
 							<g:else>
 								<th class="title-th" rowspan="2">
 								<div class="bt"><g:i18n field="${target.names}"/></div>
-					    		<shiro:hasPermission permission="dsr:admin">
+					    		<shiro:hasPermission permission="admin:dsr">
 									<span>
 									   <a id="delete-dsr-target-link" class="flow-delete" href="${createLink(controller:'dsrTarget', action:'delete', params:[id: target?.id])}">(Delete)</a>
 									</span><br/>
@@ -177,7 +177,7 @@
 							<g:if test="${target.category != null}">
 								<th class="title-th">							
 									<div class="bt"><g:i18n field="${target.names}"/></div>
-						    		<shiro:hasPermission permission="dsr:admin">
+						    		<shiro:hasPermission permission="admin:dsr">
 										<span>
 										   <a id="delete-dsr-target-link" class="flow-delete" href="${createLink(controller:'dsrTarget', action:'delete', params:[id: target?.id])}">(Delete)</a>
 										</span><br/>
@@ -215,7 +215,7 @@
 					</g:else>
 			</div>
 				<!-- ADMIN SECTION -->
-	    		<shiro:hasPermission permission="dsr:admin">
+	    		<shiro:hasPermission permission="admin:dsr">
 	    			<div class="hidden flow-container"></div>
 					<script type="text/javascript">
 						$(document).ready(function() {

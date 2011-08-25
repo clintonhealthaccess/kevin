@@ -23,7 +23,7 @@
 	<g:javascript src="richeditor/nicEdit.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
 	<g:javascript library="application" />
-	<!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script> -->
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<ga:trackPageviewAsynch />
 </head>
 <body class="bp two-columns">
@@ -53,7 +53,7 @@
 			<div id="navigation">
 				<ul id="main-menu" class="menu">
 				    <shiro:hasPermission permission="menu:survey">
-						<li><a href="${createLink(controller: 'survey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+						<li><a href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 					</shiro:hasPermission>
 					<shiro:hasPermission permission="menu:reports">
 						<li><a href="#"><g:message code="header.navigation.reports" default="Reports"/></a>
@@ -71,8 +71,9 @@
 								<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
 								<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li>
 								<li><a href="${createLink(controller: 'dataElement', action:'list')}"><g:message code="header.navigation.dataelement" default="Data Element"/></a></li>
+								<li><a href="${createLink(controller: 'enum', action:'list')}"><g:message code="header.navigation.enum" default="Enum"/></a></li>
 								<li><a href="${createLink(controller: 'iteration', action:'list')}"><g:message code="header.navigation.iteration" default="Iterations"/></a></li>
-								<li><a href="${createLink(controller: 'admin', action:'survey')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+								<li><a href="${createLink(controller: 'survey', action:'list')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 							</ul>
 						</li>
 					</shiro:hasPermission>
@@ -227,7 +228,6 @@
 		//Get Rich Text Area content
 		function getRichTextContent(){
 			$('.rich-textarea-form').bind('click',function(){
-				alert('ok');
 				$('textarea').each(function(){
 					$(this).val($(this).prev('div').children().html())
 				})

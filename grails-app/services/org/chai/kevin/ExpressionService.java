@@ -433,8 +433,8 @@ public class ExpressionService {
                 	if (log.isInfoEnabled()) log.info( "Data element identifier refers to non-existing object: " + match );
                 }
                 else {
-                	match = mapping.get(match);
-                	if (match != null) matcher.appendReplacement( convertedFormula, match );
+                	String replacement = mapping.get(match);
+                	if (replacement != null) matcher.appendReplacement( convertedFormula, replacement );
                 }
             }
             matcher.appendTail( convertedFormula );

@@ -35,12 +35,8 @@ class UrlMappings {
 
 		"/dsr/$action/$period?/$objective?/$organisation?"(controller:"dsr")
 		
-		"/survey/$action/$organisation?/$survey?/$objective?/$section?"(controller:"survey")
+		"/editSurvey/$action/$organisation?/$survey?/$objective?/$section?"(controller:"editSurvey")
 
-		"/survey/$action/$organisation?/$survey?/$objective?/$section?" (controller: "survey")
-		
-		"/survey/admin/$action/$surveyId?/$objectiveId?/$sectionId?/$questionId?"(controller:"admin")
-				
 		"/maps/view"(controller:"maps", action:"view")
 		
 		"/maps/map/$period?/$organisation?/$level?/$target?"(controller:"maps", action: "map")
@@ -55,12 +51,6 @@ class UrlMappings {
 			}
 		}
 
-		// temporary redirect to dsr
-//		"/"(controller:"dataElement", action:"list")
-//		"/"(controller:"dsr", action:"index")
-//		"/"(controller:"survey", action:"index")
-//		"/"(controller:"iteration", action:"list")
-//		"/"(controller:"dashboard", action:"index")
 		// homepage in home controller
 		"/"(controller:"home", action:"index")
 		"500"(view:'/error')

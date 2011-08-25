@@ -80,5 +80,25 @@ class SectionController extends AbstractEntityController {
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
+	
+	
+	def list = {
+		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.offset = params.offset ? params.int('offset'): 0
+		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
+		List<SurveySection> sections = objective.sections;
+
+		def max = Math.min(params['offset']+params['max'], sections.size())
+		
+		render (view: '/survey/admin/list', model:[
+			template:"sectionList",
+			survey: objective.survey,
+			objective: objective,
+			entities: sections.subList(params['offset'], max),
+			entityCount: SurveySection.count(),
+			code: 'survey.section.label'
+		])
+	}
+
 }
 

@@ -51,7 +51,7 @@ class CostRampUpController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "/cost/costRampUp/createRampUp"
+		return "/entity/costRampUp/createRampUp"
 	}
 	
 	def getModel(def entity) {
@@ -85,7 +85,13 @@ class CostRampUpController extends AbstractEntityController {
 	
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		[rampUps: CostRampUp.list(params), rampUpCount: CostRampUp.count(), years: costService.getYears()]
+		render (view: '/entity/list', model: [
+			entities: CostRampUp.list(params), 
+			entityCount: CostRampUp.count(), 
+			years: costService.getYears(),
+			code: 'costrampup.label',
+			template: 'costRampUp/costRampUpList'
+		])
 	}
 	
 }

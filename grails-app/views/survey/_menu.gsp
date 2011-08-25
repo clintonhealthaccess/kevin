@@ -6,7 +6,7 @@
 		<g:set var="objectiveStatus" value="${surveyPage.getStatus(objective)}"/>
 		
 		<li id="objective-${objective.id}" class="${surveyPage.section?.objective?.id == objective.id?'current':''}">
-			<a class="item" href="${createLink(controller:'survey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
+			<a class="item" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
 				<span><g:i18n field="${objective.names}" /></span>
 				<span class="item-status">
 					<span class="objective-status-complete objective-status ${objectiveStatus != ObjectiveStatus.COMPLETE?'hidden':''}"></span>
@@ -22,7 +22,7 @@
 						<g:set var="sectionStatus" value="${surveyPage.getStatus(section)}"/>
 
 						<li id="section-${section.id}">
-							<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'survey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
+							<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
 								<span><g:i18n field="${section.names}" /></span>
 								<span class="item-status">
 									<span class="section-status-complete section-status ${sectionStatus != SectionStatus.COMPLETE?'hidden':''}"></span>
@@ -52,7 +52,7 @@
 			type : 'POST',
 			dataType: 'json',
 			data : data,
-			url : "${createLink(controller:'survey', action:'saveValue', params: [organisation: surveyPage.organisation.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
+			url : "${createLink(controller:'editSurvey', action:'saveValue', params: [organisation: surveyPage.organisation.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
 			success : function(data, textStatus) {
 				if (data.result == "success") {
 					$('#objective-'+data.objective.id+' .objective-status').addClass('hidden');

@@ -42,6 +42,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
@@ -120,6 +121,14 @@ public class Enum {
 		this.code = code;
 	}
 
+	@Transient
+	public EnumOption getOptionForValue(String value) {
+		for (EnumOption enumOption : getEnumOptions()) {
+			if (enumOption.getValue().equals(value)) return enumOption;
+		}
+		return null;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -35,7 +35,8 @@ abstract class AbstractReportController {
 	OrganisationService organisationService;
 
 	protected def getOrganisation(def defaultIfNull) {
-		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation organisation = null;
+		if (params.int('organisation')) organisation = organisationService.getOrganisation(params.int('organisation'))
 		if (organisation == null && defaultIfNull) {
 			organisation = organisationService.getRootOrganisation();
 		}

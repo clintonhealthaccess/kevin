@@ -23,7 +23,7 @@
 				<g:set var="readonly" value="${closed||unavailable||!canSave}"/>
 				
 				<g:if test="${flash.message}">
-					<div class="rounded-box-top rounded-box-bottom info">
+					<div class="rounded-box-top rounded-box-bottom flash-info">
 						<g:message code="${flash.message}" default="${flash.default}"/>
 					</div>
 				</g:if>
@@ -36,7 +36,7 @@
 				<g:if test="${unavailable}">
 					<div class="rounded-box-top rounded-box-bottom">
 						This objective can not yet be answered, please complete 
-						<a href="${createLink(controller: 'survey', action: 'objectivePage', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.dependency.id])}">
+						<a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.dependency.id])}">
 							<g:i18n field="${surveyPage.objective.dependency.names}"/>
 						</a>
 						first.
@@ -47,7 +47,7 @@
 					<div class="rounded-box-top rounded-box-bottom">
 						<div id="submit-objective" class="${!surveyPage.canSubmit()?'hidden':''}">
 							This part has been completed successfully. If you are sure that you entered the right data, please click submit.
-							<g:form url="[controller:'survey', action:'submit', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id]]">
+							<g:form url="[controller:'editSurvey', action:'submit', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id]]">
 								<button type="submit">Submit</button>
 							</g:form>
 						</div>
@@ -58,7 +58,7 @@
 								<ul>
 									<g:each in="${incompleteSections}" var="section">
 										<li>
-											<a href="${createLink(controller:'survey', action:'sectionPage', params:[section:section.id, organisation: surveyPage.organisation.id])}">
+											<a href="${createLink(controller:'editSurvey', action:'sectionPage', params:[section:section.id, organisation: surveyPage.organisation.id])}">
 												<g:i18n field="${section.names}"/>
 											</a>
 										</li>

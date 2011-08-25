@@ -82,47 +82,9 @@ body.two-columns
     width: 100%
     background-repeat: no-repeat
 
-.admin-table-list
-  table
-    background: #fff
-    margin 10px 1px 1px 1px
-  .admin-table-header
-    background: #739eee
-    color: #fff
-    font-weight: 600
-    text-align: center
-    a
-      color: #fff
-    a:hover
-      color: #fff
-    a:visited
-      color: #fff
-  .odd
-    background: #fff
-  .even
-    background: #739eee
-
 .display-in-block
   display: block
 
-.paginateButtons
-  background: #ffffff
-  padding: 3px 2px 3px 2px
-  border: 1px #c3c3c3 solid
-  .currentStep
-    margin: 1px 3px 1px 3px
-    font-size: 14px
-  .step
-    margin: 1px 3px 1px 3px
-  .previousLink
-    margin: 1px 3px 1px 3px
-  .nextLink
-    margin: 1px 3px 1px 3px
-  a
-    text-decoration: none
-  a:hover
-    text-decoration: underline
-    
 .spinner
   position: fixed
   text-align: center
@@ -172,52 +134,6 @@ body.two-columns
   &.opened > span, &.opened > a
     font-weight: bold
       
-.tmpfoldable
-  list-style-type: none
-  margin: 0
-  padding: 0
-  width: 15em
-  a
-    display: block
-    text-decoration: none
-    font-weight: 600    	
-  li
-    margin-top: 1px
-    a
-      background: #739eee
-      color: #fff
-      padding: 0.5em
-    a:hover
-      background: #73A6ff
-  ul 
-    list-style-type: none
-    margin: 0
-    padding: 0
-    li
-      margin-top: 1px 
-      a
-        background: #f0f4fd
-        color: #333
-        padding-left: 15px
-        border-left: 5px #73A6ff solid    
-      a:hover
-        background: #fff
-        border-left: 5px #739eee solid
-        padding-left: 15px
-    ul 
-      list-style-type: none
-      margin: 0
-      padding: 0
-      li
-        margin-top: 1px 
-      a
-        background: #eee
-        color: #333           
-      a:hover
-        background: #fff
-        text-decoration: underline
-
-      
   
 button
   margin: 2px 3px 2px 2px
@@ -245,26 +161,77 @@ select
   a.no-link
     font-weight: bold
 
+body.bp .breadcrumbs
+  +grey-box
+  margin-bottom: 2px
+  height: 15px
+  padding: 8px
+  
+  ul
+    list-style-type: none
+    margin: 0
+    padding: 0
+  a
+    text-decoration: none
+    font-weight: normal	
+  li
+    margin-top: 1px
+    display: inline
+    font-weight: 600 
+    a
+      padding: 0.5em
+      text-decoration: none
+      font-weight: normal	
+    a:hover
+      text-decoration: underline
+
 body.bp .entity-list
   +grey-box
-  float: left
-  width: 98% 
-  
-  	    
+    	    
   h5
     float: left
     margin-bottom: 10px
   	    
-  .list table
-    thead td, thead th
-      background-color: #AAAAAA
-
+  table
+    margin 10px 1px 1px 1px
+  
+    thead tr
+      background: #739eee
+      color: #fff
+      font-weight: 600
+      text-align: center
+    
+      a
+        color: #fff
+      
+      a:hover
+        color: #fff
+      
+      a:visited
+        color: #fff
+  
     tr.odd td
-      background-color: inherit
+      background-color: #fff
     
     tr.even td
-      background-color: #DDDDDD
+      background-color: #E5ECF9
+      
+  .paginateButtons
+    background: #ffffff
+    padding: 3px 2px 3px 2px
+    border: 1px #c3c3c3 solid
+    
+    a, span
+      margin: 1px 3px 1px 3px
 
+    span
+      font-weight: bold
+
+    a
+      text-decoration: none
+
+    a:hover
+      text-decoration: underline
 
 body.bp .white-dropdown
   & > div
@@ -297,7 +264,7 @@ body.bp .white-dropdown
   input, select, textarea
     border-color: red
     
-.info
+.flash-info
   color: green
   border-color: green
     
@@ -833,6 +800,14 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
   .skipped
     background-color: lightGrey
       
+  span.survey-old-value
+    font-size: 90%
+    color: grey
+    
+  .question-table span.survey-old-value
+    display: block
+    text-align: center
+      
   div.element
     display: inline
 
@@ -990,49 +965,10 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
         .opened
           background: #dbfbde
           border-left: 5px #c32e06 solid
+          
 .white-box
   +white-box
   border: 0px
-  
-.bottom-container
-  padding: 1px
-  margin: 2px 1px 3px 1px
-.top-container
-  height: 15px
-  padding: 1px
-  margin: 2px 1px 3px 1px
-.top-menu-list
-  ul
-    list-style-type: none
-    margin: 0
-    padding: 0
-  a
-    text-decoration: none
-    font-weight: normal	
-  li
-    margin-top: 1px
-    display: inline
-    font-weight: 600 
-    a
-      padding: 0.5em
-      text-decoration: none
-      font-weight: normal	
-    a:hover
-      text-decoration: underline
-
-          
-#survey-admin
-  background: #fff
-  #survey-list-container
-    margin: 5px 1px 2px 1px
-    padding: 1px 
-  .survey-admin-highlight-link
-    color: #3b84c9
-    font-size: normal
-    a
-      color: #3b84c9
-    a:hover
-      text-decoration: underline
       
 #add-question
   #add-question-col
