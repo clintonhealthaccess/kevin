@@ -94,7 +94,7 @@ class ObjectiveController extends AbstractEntityController {
 			template:"objectiveList",
 			survey:survey,
 			entities: objectives.subList(params['offset'], max),
-			entityCount: SurveyObjective.count(),
+			entityCount: objectives.size(),
 			code: 'survey.objective.label'
 		])
 	}

@@ -100,22 +100,43 @@ class EditSurveyController extends AbstractReportController {
 		Organisation currentOrganisation = getOrganisation(false)
 		Survey currentSurvey = Survey.get(params.int('survey'))
 		
+		SummaryPage summaryPage = surveyPageService.getSummaryPage(currentOrganisation, currentSurvey);
+		
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		def organisationTree = organisationService.getOrganisationTreeUntilLevel(organisationLevel)
-		
-		if (currentSurvey !=null && currentOrganisation != null) {
-			redirect (action: 'surveyPage', params: [organisation: currentOrganisation.id, survey: currentSurvey.id])
-		}
-		
+
+//		if (currentSurvey !=null && currentOrganisation != null) {
+//			redirect (action: 'surveyPage', params: [organisation: currentOrganisation.id, survey: currentSurvey.id])
+//		}
+			
 		render (view: '/survey/summaryPage', model: [
-			survey: currentSurvey,
+			summaryPage: summaryPage,
 			surveys: Survey.list(),
-			organisation: currentOrganisation,
-			organisationTree: organisationTree,
-			displayLinkUntil: organisationLevel
+			organisationTree: organisationTree
 		])
 	}
 
+	def objectiveTable = {
+		Organisation currentOrganisation = getOrganisation(false)
+		Survey currentSurvey = Survey.get(params.int('survey'))
+		
+		SummaryPage summaryPage = surveyPageService.getObjectiveTable(currentOrganisation, currentSurvey)
+		
+		render (view: '/survey/objectiveTable', model: [
+			summaryPage: summaryPage
+		])
+	}
+	
+	def sectionTable = {
+		Organisation currentOrganisation = getOrganisation(false)
+		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'))
+		
+		SummaryPage summaryPage = surveyPageService.getSectionTable(currentOrganisation, currentObjective)
+		
+		render (view: '/survey/sectionTable', model: [
+			summaryPage: summaryPage
+		])
+	}
 	
 	def sectionPage = {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
@@ -128,6 +149,8 @@ class EditSurveyController extends AbstractReportController {
 			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentSection)
 			surveyPage.userValidation(validationService, surveyElementService)
 				
+			if (surveyPage.firstTimeOpened(currentSection)) surveyPage.persistState(surveyElementService)
+			
 			render (view: '/survey/sectionPage', model: [surveyPage: surveyPage])
 		}
 	}
@@ -142,6 +165,10 @@ class EditSurveyController extends AbstractReportController {
 		if (validateParameters(currentOrganisation, Utils.getGroupUuids(currentObjective.groupUuidString))) {
 			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentObjective)
 			surveyPage.userValidation(validationService, surveyElementService)
+			
+			currentObjective.getSections(currentOrganisation.organisationUnitGroup).each { section ->
+				if (surveyPage.firstTimeOpened(section)) surveyPage.persistState(surveyElementService)
+			}
 			
 			render (view: '/survey/objectivePage', model: [surveyPage: surveyPage])
 		}
@@ -194,11 +221,11 @@ class EditSurveyController extends AbstractReportController {
 		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
 		SurveySection currentSection = SurveySection.get(params.int('section'));
 		
-		if (validateParameters(currentOrganisation, Utils.getGroupUuids(currentSection.groupUuidString))) {
+		if (currentSection == null || validateParameters(currentOrganisation, Utils.getGroupUuids(currentSection.groupUuidString))) {
 			SurveyQuestion surveyQuestion = surveyElementService.getSurveyQuestion(Long.parseLong(params['question']))
 			
-//			def surveyElements = surveyQuestion.getSurveyElements(currentOrganisation.organisationUnitGroup)
-			def surveyElements = [SurveyElement.get(params.int('element'))]
+			def surveyElements = surveyQuestion.getSurveyElements(currentOrganisation.organisationUnitGroup)
+//			def surveyElements = [SurveyElement.get(params.int('element'))]
 			
 			def surveyPage;
 			def currentObjective;
@@ -210,63 +237,67 @@ class EditSurveyController extends AbstractReportController {
 			else {
 				surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection, surveyElements);
 			}
-			log.debug("bindData: "+System.currentTimeMillis());
-			def includes = []
-			surveyElements.each { surveyElement ->
-				includes << 'surveyElements['+surveyElement.id+']'
-				includes << 'surveyElements['+surveyElement.id+'].surveyElement.id' 
-				includes << 'surveyElements['+surveyElement.id+'].value'
-				includes << 'surveyElements['+surveyElement.id+'].acceptedWarnings'
-			}
 			
-			log.debug("includes: "+includes)
-			bindData(surveyPage, params, [include:includes])
-			saveSurvey(surveyPage)
-			
-			def statusString;
-			if (!surveyPage.isValid(surveyQuestion)) statusString = 'invalid'
-			else statusString = 'valid'
-			
-			def invalidSectionsHtmlString = ''
-			def invalidSectionMap = surveyPage.getInvalidQuestions()
-			if (surveyPage.section == null) invalidSectionsHtmlString = g.render(template:'invalidSections', model: [invalidSectionMap: invalidSectionMap, surveyPage: surveyPage]) 
-			
-			render(contentType:"text/json") {
-				result = 'success'
-				status = statusString
-				html = g.render(template:'/survey/question', model: [surveyPage: surveyPage, question: surveyQuestion])
-				objective (
-					id: surveyPage.objective.id,
-					status: surveyPage.getStatus(surveyPage.objective).name()
-				)
-				sections = array {
-					surveyPage.objective.getSections(surveyPage.organisation.organisationUnitGroup).each { section ->
-						sec (
-							id: section.id,
-							name: g.i18n(field: section.names),
-							status: surveyPage.getStatus(section)?.name()
-						)
-					}
+			if (currentObjective == null || validateParameters(currentOrganisation, Utils.getGroupUuids(currentObjective.groupUuidString))) {
+				log.debug("bindData: "+System.currentTimeMillis());
+				
+				def includes = []
+				surveyElements.each { surveyElement ->
+					includes << 'surveyElements['+surveyElement.id+']'
+					includes << 'surveyElements['+surveyElement.id+'].surveyElement.id' 
+					includes << 'surveyElements['+surveyElement.id+'].value'
+					includes << 'surveyElements['+surveyElement.id+'].acceptedWarnings'
 				}
-//				invalidQuestions = array {
-//					invalidSectionMap[surveyPage.section].each{ question ->
-//						quest (
-//							id: question.id,
-//							html: g.render(template:'/survey/question', model: [surveyPage: surveyPage, question: question])
-//						)
-//					}
-//				}
-				skippedElements = array {
-					surveyPage.skippedElements.each{ elem ->
-						element elem.id
+				
+				log.debug("includes: "+includes)
+				bindData(surveyPage, params, [include:includes])
+				saveSurvey(surveyPage)
+				
+				def statusString;
+				if (!surveyPage.isValid(surveyQuestion)) statusString = 'invalid'
+				else statusString = 'valid'
+				
+				def invalidSectionsHtmlString = ''
+				def invalidSectionMap = surveyPage.getInvalidQuestions()
+				if (surveyPage.section == null) invalidSectionsHtmlString = g.render(template:'/survey/invalidSections', model: [invalidSectionMap: invalidSectionMap, surveyPage: surveyPage]) 
+				
+				render(contentType:"text/json") {
+					result = 'success'
+					status = statusString
+					html = g.render(template:'/survey/question', model: [surveyPage: surveyPage, question: surveyQuestion])
+					objective (
+						id: surveyPage.objective.id,
+						status: surveyPage.getStatus(surveyPage.objective).name()
+					)
+					sections = array {
+						surveyPage.objective.getSections(surveyPage.organisation.organisationUnitGroup).each { section ->
+							sec (
+								id: section.id,
+								name: g.i18n(field: section.names),
+								status: surveyPage.getStatus(section)?.name()
+							)
+						}
 					}
-				}
-				skippedQuestions = array {
-					surveyPage.skippedQuestions.each{ question ->
-						element question.id
+					invalidQuestions = array {
+						invalidSectionMap[surveyPage.section].each{ question ->
+							quest (
+								id: question.id
+//								html: g.render(template:'/survey/question', model: [surveyPage: surveyPage, question: question])
+							)
+						}
 					}
+					skippedElements = array {
+						surveyPage.skippedElements.each{ elem ->
+							element elem.id
+						}
+					}
+					skippedQuestions = array {
+						surveyPage.skippedQuestions.each{ question ->
+							element question.id
+						}
+					}
+					invalidSectionsHtml = invalidSectionsHtmlString
 				}
-				invalidSectionsHtml = invalidSectionsHtmlString
 			}
 		}
 	}

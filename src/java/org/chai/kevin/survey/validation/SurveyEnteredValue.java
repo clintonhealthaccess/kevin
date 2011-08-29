@@ -31,8 +31,8 @@ public class SurveyEnteredValue {
 	private String value;
 	private OrganisationUnit organisationUnit;
 	
-//	private Boolean skipped;
-//	private Boolean valid;
+	private Boolean skipped;
+	private Boolean valid;
 	private List<Long> acceptedWarnings = new ArrayList<Long>();
 	
 	public SurveyEnteredValue() {}
@@ -96,23 +96,23 @@ public class SurveyEnteredValue {
 		this.acceptedWarnings = acceptedWarnings;
 	}
 	
-//	@Basic
-//	public Boolean getSkipped() {
-//		return skipped;
-//	}
+	@Basic
+	public Boolean getSkipped() {
+		return skipped;
+	}
 	
-//	public void setSkipped(Boolean skipped) {
-//		this.skipped = skipped;
-//	}
+	public void setSkipped(Boolean skipped) {
+		this.skipped = skipped;
+	}
 	
-//	@Basic
-//	public Boolean getValid() {
-//		return valid;
-//	}
+	@Basic
+	public Boolean getValid() {
+		return valid;
+	}
 	
-//	public void setValid(Boolean valid) {
-//		this.valid = valid;
-//	}
+	public void setValid(Boolean valid) {
+		this.valid = valid;
+	}
 
 	@Override
 	public String toString() {

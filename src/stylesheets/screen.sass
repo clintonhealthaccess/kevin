@@ -780,11 +780,24 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     +box-bottom-round-corner
     padding: 3px
 
+  // TODO check this
   #survey-header
     margin-bottom: 2px
   
     div.filter
       margin-right: 100px
+
+  #survey-summary
+    +white-box
+    table thead th
+      padding-bottom: 8px 
+      
+    table th
+      font-weight: bold
+    
+    table td
+      padding-top: 1px
+      padding-bottom: 1px
 
   #survey-menu
     position: absolute
@@ -794,7 +807,7 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       
   ol#questions
     padding-left: 20px
-    list-style-type: katakana-iroha
+    // list-style-type: katakana-iroha
     font-weight: bold
       
   .skipped
@@ -872,6 +885,9 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
         display: none
         
   div.element-string
+    display: block
+     
+  .element-string .survey-old-value
     display: block
         
   .question-checkbox
@@ -965,6 +981,8 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
         .opened
           background: #dbfbde
           border-left: 5px #c32e06 solid
+          
+
           
 .white-box
   +white-box

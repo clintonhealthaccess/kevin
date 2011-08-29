@@ -148,6 +148,15 @@ public class SurveyObjective extends SurveyTranslatable {
 		}
 		return result;
 	}
+	
+	@Transient
+	public List<SurveyElement> getElements(OrganisationUnitGroup group) {
+		List<SurveyElement> result = new ArrayList<SurveyElement>();
+		for (SurveySection surveySection : getSections(group)) {
+			result.addAll(surveySection.getSurveyElements(group));
+		}
+		return result;
+	}
 
 	@Override
 	public int hashCode() {

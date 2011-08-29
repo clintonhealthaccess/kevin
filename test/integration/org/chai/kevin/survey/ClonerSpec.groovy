@@ -41,6 +41,11 @@ class ClonerSpec extends IntegrationTests {
 		SurveyTableColumn.count() == 2
 		SurveyTableRow.count() == 2
 		SurveyElement.count() == 2
+		
+		!Survey.list()[1].objectives[0].equals(Survey.list()[0].objectives[0])
+		Survey.list()[1].objectives[0].survey.equals(Survey.list()[1])
+		Survey.list()[0].objectives[0].survey.equals(Survey.list()[0])
+		
 	}
 	
 	def "test clone survey with skip rule"() {

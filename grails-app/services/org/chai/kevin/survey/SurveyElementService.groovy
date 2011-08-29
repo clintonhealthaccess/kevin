@@ -2,11 +2,13 @@ package org.chai.kevin.survey
 
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.ExpressionValue;
+import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -16,6 +18,8 @@ import org.chai.kevin.data.DataElement
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
 import org.chai.kevin.survey.validation.SurveyEnteredSection
 import org.chai.kevin.survey.validation.SurveyEnteredValue
+import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions
 import org.hisp.dhis.organisationunit.OrganisationUnit
 
@@ -48,6 +52,37 @@ class SurveyElementService {
 	
 	void delete(SurveyEnteredValue surveyEnteredValue) {
 		surveyEnteredValue.delete();
+	}
+	
+	Integer getNumberOfSurveyEnteredObjectives(Survey survey, OrganisationUnit organisationUnit, ObjectiveStatus status) {
+		def c = SurveyEnteredObjective.createCriteria()
+		c.add(Restrictions.eq("organisationUnit", organisationUnit))
+		if (status != null) c.add(Restrictions.eq("status", status))
+		c.createAlias("objective", "o").add(Restrictions.eq('o.survey', survey))
+		c.setProjection(Projections.rowCount())
+		c.setFlushMode(FlushMode.MANUAL).uniqueResult();
+	}
+	
+	Integer getNumberOfSurveyEnteredValues(Survey survey, OrganisationUnit organisationUnit, SurveyObjective objective, SurveySection section) {
+		def c = SurveyEnteredValue.createCriteria()
+		c.add(Restrictions.eq("organisationUnit", organisationUnit))
+		c.add(Restrictions.or(
+			Restrictions.eq("skipped", true),
+			Restrictions.isNotNull("value"))
+		)
+		
+		c.createAlias("surveyElement", "se")
+		.createAlias("se.surveyQuestion", "sq")
+		.createAlias("sq.section", "ss")
+		.createAlias("ss.objective", "so")
+		.add(Restrictions.eq("so.survey", survey))
+		
+		if (section != null) c.add(Restrictions.eq("sq.section", section))
+		if (objective != null) c.add(Restrictions.eq("ss.objective", objective))
+		
+		c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+		c.setProjection(Projections.rowCount())
+		c.setFlushMode(FlushMode.MANUAL).uniqueResult();
 	}
 	
 	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, OrganisationUnit organisationUnit) {

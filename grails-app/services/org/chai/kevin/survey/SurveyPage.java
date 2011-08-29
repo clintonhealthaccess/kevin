@@ -161,6 +161,10 @@ public class SurveyPage {
 		return true;
 	}
 	
+	public boolean firstTimeOpened(SurveySection section) {
+		return enteredSections.get(section).getId() == null;
+	}
+	
 	public SectionStatus getStatus(SurveySection section) {
 		return enteredSections.get(section).getStatus();
 	}
@@ -308,24 +312,6 @@ public class SurveyPage {
 		}
 	}
 	
-//	// side-effect method
-//	// TODO create entered objectives and entered values at survey initialization
-//	public void createEnteredValues(SurveyElementService surveyElementService) {
-//		// we create all entered values
-//		if (objective != null) {
-//			for (SurveySection surveySection : objective.getSections(organisation.getOrganisationUnitGroup())) {
-//				for (SurveyElement surveyElement : surveySection.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-//					SurveyEnteredValue enteredValue = enteredValues.get(surveyElement);
-//					if (enteredValue == null) {
-//						enteredValue = new SurveyEnteredValue(surveyElement, organisation.getOrganisationUnit(), null);
-//						surveyElementService.save(enteredValue);
-//						enteredValues.put(enteredValue.getSurveyElement(), enteredValue);
-//					}
-//				}
-//			}
-//		}
-//	}
-	
 	// side-effect method
 	public void userValidation(ValidationService validationService, SurveyElementService surveyElementService) {
 		List<SurveySection> sections = new ArrayList<SurveySection>();
@@ -346,6 +332,10 @@ public class SurveyPage {
 				SurveyEnteredValue enteredValue = enteredValues.get(surveyElement);
 				if (skippedQuestions.contains(surveyElement.getSurveyQuestion()) || validationService.isSkipped(surveyElement, organisation, enteredValues.values())) {
 					skippedValues.add(enteredValue);
+					enteredValue.setSkipped(true);
+				}
+				else {
+					enteredValue.setSkipped(false);
 				}
 				
 				Set<SurveyValidationRule> errors = new HashSet<SurveyValidationRule>();
@@ -368,6 +358,10 @@ public class SurveyPage {
 				}
 				if (!errors.isEmpty() || !warnings.isEmpty()) {
 					invalidValues.add(enteredValue);
+					enteredValue.setValid(false);
+				}
+				else {
+					enteredValue.setValid(true);
 				}
 			}
 		}
@@ -377,26 +371,28 @@ public class SurveyPage {
 			enteredSections.get(surveySection).setStatus(calculateStatus(surveySection));
 		}
 
-		if (currentSection != null) {
-			// survey objective status
-			List<SurveyObjective> objectives = new ArrayList<SurveyObjective>();
-			if (currentSection != null) objectives.add(objective);
-			else if (objective != null) objectives.addAll(survey.getObjectives(organisation.getOrganisationUnitGroup()));
-	
-			for (SurveyObjective surveyObjective : objectives) {
-				enteredObjectives.get(surveyObjective).setStatus(calculateStatus(surveyObjective));
-			}
+		// survey objective status
+		List<SurveyObjective> objectives = new ArrayList<SurveyObjective>();
+		if (currentSection != null) objectives.add(objective);
+		else if (objective != null) objectives.addAll(survey.getObjectives(organisation.getOrganisationUnitGroup()));
+
+		for (SurveyObjective surveyObjective : objectives) {
+			enteredObjectives.get(surveyObjective).setStatus(calculateStatus(surveyObjective));
 		}
 	}
 	
 	// side-effect method
 	public void persistState(SurveyElementService surveyElementService) {
-		SurveyEnteredObjective currentEnteredObjective = enteredObjectives.get(objective);
-		if (currentEnteredObjective.getStatus() == ObjectiveStatus.CLOSED || currentEnteredObjective.getStatus() == ObjectiveStatus.UNAVAILABLE) 
-			throw new IllegalStateException("trying to persist the state of a closed or unavailable objective");
+//		SurveyEnteredObjective currentEnteredObjective = enteredObjectives.get(objective);
+//		if (currentEnteredObjective.getStatus() == ObjectiveStatus.CLOSED || currentEnteredObjective.getStatus() == ObjectiveStatus.UNAVAILABLE) 
+//			throw new IllegalStateException("trying to persist the state of a closed or unavailable objective");
 		
-		for (SurveyElementValue elementValue : surveyElements.values()) {
-			surveyElementService.save(enteredValues.get(elementValue.getSurveyElement()));
+//		for (SurveyElementValue elementValue : surveyElements.values()) {
+//			surveyElementService.save(enteredValues.get(elementValue.getSurveyElement()));
+//		}
+		
+		for (SurveyEnteredValue enteredValue : enteredValues.values()) {
+			surveyElementService.save(enteredValue);
 		}
 
 		for (SurveyEnteredSection enteredSection : enteredSections.values()) {

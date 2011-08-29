@@ -106,6 +106,6 @@ class SurveyController extends AbstractEntityController {
 		
 		cloner.cloneRules();
 		
-		redirect (controller: 'admin', action: 'survey')
+		redirect (controller: 'survey', action: 'list')
 	}
 }

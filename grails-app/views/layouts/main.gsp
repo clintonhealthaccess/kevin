@@ -22,6 +22,7 @@
 	<g:javascript src="jquery/fliptext/jquery.mb.flipText.js" />
 	<g:javascript src="richeditor/nicEdit.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
+	<g:javascript src="jquery/progressbar/jquery.progressbar.js" />
 	<g:javascript library="application" />
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<ga:trackPageviewAsynch />
@@ -284,18 +285,18 @@
 			$('.me-open').removeClass('me-open');
 			
 			if (toClose) {
-				slideUp(function(){});
+				slideUp(element, function(){});
 			}
 			else {
 				if ($('#explanation-'+prefix).hasClass('loaded')) {
-					slideUpExplanation(function(){slideDown(prefix);});
+					slideUpExplanation(element, function(){slideDown(prefix);});
 				}
 				else {
 					$.ajax(
 					{
 						type:'GET', url: $(element).find('a').attr('href'),
 						success: function(data) {
-							slideUpExplanation(function() {
+							slideUpExplanation(element, function() {
 								addData(prefix, data);
 								onSuccess(prefix);
 							});
@@ -306,19 +307,19 @@
 			}
    		}
    		
-   		function slideUpExplanation(callback) {
-   			if ($('.explanation-cell.visible').length == 0) {
+   		function slideUpExplanation(element, callback) {
+   			if ($(element).parents('table').first().find('.explanation-cell.visible').length == 0) {
 				callback();
 			}
 			else {
-				slideUp(callback);
+				slideUp(element, callback);
 			}
    		}
    		
-   		function slideUp(callback) {
-   			$('.explanation-cell.visible').slideUp("slow", function() {callback();});
-   			$('.explanation-cell.visible').removeClass('visible');
-      		}
+   		function slideUp(element, callback) {
+   			$(element).parents('table').first().find('.explanation-cell.visible').slideUp("slow", function() {callback();});
+   			$(element).parents('table').first().find('.explanation-cell.visible').removeClass('visible');
+      	}
    		
    		function slideDown(prefix) {
 			$('#explanation-'+prefix).addClass('visible');

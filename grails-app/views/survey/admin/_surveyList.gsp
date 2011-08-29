@@ -33,6 +33,11 @@
 								        <g:message code="general.text.delete" default="Delete" /> 
 								    </g:link>
 								</li>
+								<li>
+							    	<g:link controller="survey" action="clone" id="${survey.id}">
+								        <g:message code="general.text.clone" default="Clone" /> 
+								    </g:link>
+								</li>
 							</ul>
 						</div>
 					</div> 		

@@ -120,8 +120,8 @@ log4j = {
 //		   'org.hsqldb.jdbc',
 //		   'org.springframework'
 //		   
-	debug  'org.chai.kevin',
-		   'grails.app'
+//	debug  'org.chai.kevin',
+//		   'grails.app'
 		   
 		   
 //	trace  'org.hibernate.SQL',

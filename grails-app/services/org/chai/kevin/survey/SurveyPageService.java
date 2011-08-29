@@ -46,7 +46,13 @@ import org.chai.kevin.survey.validation.SurveyEnteredSection.SectionStatus;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.DataValue;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.ResultTransformer;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +63,75 @@ public class SurveyPageService {
 	private SurveyElementService surveyElementService;
 	private OrganisationService organisationService;
 	private ValueService valueService;
+	
+	@Transactional(readOnly = true)
+	public SummaryPage getSectionTable(Organisation organisation, SurveyObjective objective) {
+		organisationService.loadGroup(organisation);
+		
+		List<SurveySection> sections = objective.getSections(organisation.getOrganisationUnitGroup());
+		Map<SurveySection, SectionSummary> sectionSummaryMap = new HashMap<SurveySection, SectionSummary>();
+		
+		for (SurveySection section : sections) {
+			List<SurveyElement> elements = section.getSurveyElements(organisation.getOrganisationUnitGroup());
+			Integer submittedElements = surveyElementService.getNumberOfSurveyEnteredValues(objective.getSurvey(), organisation.getOrganisationUnit(), null, section);
+			
+			sectionSummaryMap.put(section, new SectionSummary(section, elements.size(), submittedElements));
+		}
+		return new SummaryPage(objective, organisation, sections, sectionSummaryMap);
+	}
+	
+	@Transactional(readOnly = true)
+	public SummaryPage getObjectiveTable(Organisation organisation, Survey survey) {
+		organisationService.loadGroup(organisation);
+		
+		List<SurveyObjective> objectives = survey.getObjectives(organisation.getOrganisationUnitGroup());
+		Map<SurveyObjective, ObjectiveSummary> objectiveSummaryMap = new HashMap<SurveyObjective, ObjectiveSummary>();
+		
+		for (SurveyObjective objective : objectives) {
+			SurveyEnteredObjective enteredObjective = surveyElementService.getSurveyEnteredObjective(objective, organisation.getOrganisationUnit());
+			List<SurveyElement> elements = objective.getElements(organisation.getOrganisationUnitGroup());
+			Integer submittedElements = surveyElementService.getNumberOfSurveyEnteredValues(survey, organisation.getOrganisationUnit(), objective, null);
+			
+			objectiveSummaryMap.put(objective, new ObjectiveSummary(objective, enteredObjective, elements.size(), submittedElements));
+		}
+		
+		return new SummaryPage(survey, organisation, objectives, objectiveSummaryMap, false);
+	}
+	
+	@Transactional(readOnly = true)
+	public SummaryPage getSummaryPage(Organisation organisation, Survey survey) {
+		if (organisation == null || survey == null) return new SummaryPage(survey, organisation, null, null);
+		
+		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		Map<OrganisationUnitGroup, List<SurveyObjective>> objectiveMap = new HashMap<OrganisationUnitGroup, List<SurveyObjective>>();
+		Map<OrganisationUnitGroup, List<SurveyElement>> elementMap = new HashMap<OrganisationUnitGroup, List<SurveyElement>>();
+
+		Map<Organisation, OrganisationSummary> summaryMap = new HashMap<Organisation, OrganisationSummary>();
+		for (Organisation facility : facilities) {
+			organisationService.loadGroup(facility);
+
+			if (!objectiveMap.containsKey(facility.getOrganisationUnitGroup())) {
+				objectiveMap.put(facility.getOrganisationUnitGroup(), survey.getObjectives(facility.getOrganisationUnitGroup()));
+			}
+			Integer submittedObjectives = surveyElementService.getNumberOfSurveyEnteredObjectives(survey, facility.getOrganisationUnit(), ObjectiveStatus.CLOSED);
+			
+			if (!elementMap.containsKey(facility.getOrganisationUnitGroup())) {
+				List<SurveyElement> elements = new ArrayList<SurveyElement>();
+				for (SurveyObjective objective : objectiveMap.get(facility.getOrganisationUnitGroup())) {
+					elements.addAll(objective.getElements(facility.getOrganisationUnitGroup()));				
+				}
+				elementMap.put(facility.getOrganisationUnitGroup(), elements);
+			}
+			Integer enteredValues = surveyElementService.getNumberOfSurveyEnteredValues(survey, facility.getOrganisationUnit(), null, null);
+			
+			OrganisationSummary summary = new OrganisationSummary(facility,  
+					submittedObjectives, objectiveMap.get(facility.getOrganisationUnitGroup()).size(), 
+					enteredValues, elementMap.get(facility.getOrganisationUnitGroup()).size());
+			
+			summaryMap.put(facility, summary);
+		}
+		return new SummaryPage(survey, organisation, facilities, summaryMap);
+	}
 	
 	@Transactional(readOnly = true)
 	public SurveyPage getSurveyPage(Organisation currentOrganisation, Survey survey) {

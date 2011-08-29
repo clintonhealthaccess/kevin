@@ -115,7 +115,7 @@ public class Survey extends SurveyTranslatable {
 		this.lastPeriod = lastPeriod;
 	}
 	
-	@OneToMany(targetEntity = SurveyObjective.class, mappedBy="survey", fetch=FetchType.EAGER)
+	@OneToMany(targetEntity = SurveyObjective.class, mappedBy="survey")
 	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@OrderBy(value="order")
 	public List<SurveyObjective> getObjectives() {
