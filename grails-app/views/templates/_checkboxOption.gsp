@@ -5,7 +5,11 @@
 		</g:link>&nbsp; <g:link controller="checkboxOption" action="delete"
 			id="${option.id}" class="flow-delete">
 			<g:message code="general.text.delete" default="Delete" />
-		</g:link> </span>
+		</g:link>&nbsp;
+        <a href="${createLink(controller:'admin', action:'validations',params:[surveyId: option.surveyElement.id])}">
+          View Validation Rules
+        </a> 
+		</span>
 </div>
 <div class="option-element">
 	Option Name: <span> ${i18n(field: option.names)}</span>

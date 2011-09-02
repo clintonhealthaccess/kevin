@@ -25,40 +25,67 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.util;
+package org.chai.kevin.survey.validation
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.survey.ValidationMessageService
+import org.chai.kevin.survey.validation.SurveyValidationMessage;
 
 /**
  * @author Jean Kahigiso M.
- * 
+ *
  */
-public class Utils {
-
-	public static Set<String> getGroupUuids(String groupUuidString) {
-		Set<String> result = new HashSet<String>();
-		if (groupUuidString != null)
-			result.addAll(Arrays.asList(StringUtils.split(groupUuidString, ',')));
-		return result;
+class ValidationMessageController extends AbstractEntityController {
+	ValidationMessageService validationMessageService;
+	
+	def getEntity(def id) {
+		return SurveyValidationMessage.get(id)
+	}
+	def createEntity() {
+		return new SurveyValidationMessage();
 	}
 
-	public static String getGroupUuidString(Object groupUuids) {
-		if (groupUuids == null)
-			return "";
-		if (groupUuids instanceof String)
-			return (String) groupUuids;
-		else
-			return StringUtils.join((Object[]) groupUuids, ',');
+	def getTemplate() {
+		return "/survey/admin/createValidationMessage"
+	}
+
+	def getModel(def entity) {
+		[message:entity]
+	}
+
+	def validateEntity(def entity) {
+		return entity.validate()
+	}
+
+	def saveEntity(def entity) {
+		entity.save()
+	}
+	def deleteEntity(def entity) {
+		if(entity.validationRules.isEmpty())
+			entity.delete()
+	}
+
+	def bindParams(def entity) {
+		entity.properties = params
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.messages!=null) entity.messages = params.messages
+	}
+	def getAjaxData={
+		def validationMessages = validationMessageService.getSearchValidationMessage(params['term']);
+		
+		render(contentType:"text/json") {
+						
+			messages = array {
+				validationMessages.each { message ->
+					mess (
+						id: message.id,
+						message: g.i18n(field: message.messages)
+					)
+				}
+			}
+			
+		}
 	}
 	
-	@SuppressWarnings("unused")
-	private static boolean matches(String text, String value) {
-		if (value == null) return false;
-		return value.matches("(?i).*"+text+".*");
-	}
-
 }

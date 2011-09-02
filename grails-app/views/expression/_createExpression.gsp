@@ -5,8 +5,8 @@
 		<g:locales/>
 		<div class="clear"></div>
 	</div>
-	
-	<div id="add-expression-col">
+	<div class="forms-container">
+	<div class="data-field-column">
 		<g:form url="[controller:'expression', action:'save']" useToken="true">
 			<g:i18nInput name="names" bean="${expression}" value="${expression.names}" label="Name" field="names"/>
 			<g:i18nTextarea name="descriptions" bean="${expression}" value="${expression.descriptions}" label="Description" field="descriptions"/>
@@ -25,7 +25,7 @@
 			</div>
 		</g:form>
 	</div>
-	<div id="data-col">
+	<div class="data-search-column">
 		<g:form name="search-data-form" class="search-form" url="[controller:'expression', action:'getData']">
 			<div class="row">
 				<label for="searchText">Search: </label>
@@ -44,7 +44,8 @@
 		
 	    <ul class="filtered idle-field" id="data"></ul>
 	</div>
-	
+	<div class="clear"></div>
+	</div>
 	<div class="clear"></div>
 </div>
 <script type="text/javascript">

@@ -40,7 +40,7 @@ class UrlMappings {
 		"/survey/$action/$organisation?/$survey?/$objective?/$section?"(controller:"survey")
 		
 		"/survey/admin/$action/$surveyId?/$objectiveId?/$sectionId?/$questionId?"(controller:"admin")
-				
+						
 		"/maps/view"(controller:"maps", action:"view")
 		
 		"/maps/map/$period?/$organisation?/$level?/$target?"(controller:"maps", action: "map")

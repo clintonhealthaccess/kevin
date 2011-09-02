@@ -9,7 +9,9 @@
 	<div id="survey-admin">
 			<div class="top-container box">
 				<ul class="top-menu-list">
-				<li><a href="${createLink(controller:'admin', action:'survey')}">Surveys</a>
+				<li><a href="${createLink(controller:'admin', action:'messages')}">Validation Messages</a>
+					</li>
+				<li>| <a href="${createLink(controller:'admin', action:'survey')}">Surveys</a>
 					</li>
 					<g:if test="${survey}">
 					<li>&rarr; <a

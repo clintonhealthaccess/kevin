@@ -958,6 +958,9 @@ class Initializer {
 			surveyElementPatientQ1.addValidationRule(rulePatient1)
 			surveyElementPatientQ1.addValidationRule(rulePatient2)
 			surveyElementPatientQ1.save(failOnError: true)
+			surveyValidationPatient.addValidationRule(rulePatient1)
+			surveyValidationPatient.addValidationRule(rulePatient2)
+			surveyValidationPatient.save(failOnError: true)
 			
 			def staffing=new SurveySection(
 				names: j(["en":"Staffing"]),
@@ -1079,6 +1082,10 @@ class Initializer {
 			surveyElementServiceQ1.addValidationRule(rule2)
 			surveyElementServiceQ1.save(failOnError: true)
 			
+			surveyValidationMessage.addValidationRule(rule1)
+			surveyValidationMessage.addValidationRule(rule2)
+			surveyValidationMessage.save(failOnError: true)
+			
 			def openQ = new SurveySimpleQuestion(
 				names: j(["en":"Sample Open Question "]),
 				descriptions: j(["en":"Sample Open Question"]),
@@ -1198,6 +1205,8 @@ class Initializer {
 			).save(failOnError: true)
 			surveyElementTable1.addValidationRule(ruleTable1)
 			surveyElementTable1.save(failOnError: true)
+			surveyValidationMessage.addValidationRule(ruleTable1)
+			surveyValidationMessage.save(failOnError: true)
 			
 			Map<SurveyTableColumn,SurveyElement> dataElmntsLine2= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
@@ -1243,6 +1252,8 @@ class Initializer {
 			).save(failOnError: true)
 			surveyElementChecboxQ3.addValidationRule(ruleCheckbox)
 			surveyElementChecboxQ3.save(failOnError: true)
+			surveyValidationMessage.addValidationRule(ruleCheckbox)
+			surveyValidationMessage.save(failOnError: true)
 			
 			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedSurveyElements: [surveyElementTable2]);
 			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "["+surveyElementTable1.id+"]==1", skippedSurveyElements: [surveyElementTable22, surveyElementTable3]);

@@ -36,6 +36,9 @@ import org.chai.kevin.GroupCollection
 import org.chai.kevin.PeriodSorter
 import org.chai.kevin.survey.SurveyAdminService;
 import org.chai.kevin.survey.SurveySorter;
+import org.chai.kevin.survey.validation.SurveySkipRule
+import org.chai.kevin.survey.validation.SurveyValidationMessage
+import org.chai.kevin.survey.validation.SurveyValidationRule
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 class AdminController extends AbstractReportController {
@@ -49,7 +52,7 @@ class AdminController extends AbstractReportController {
 
 	def survey = {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		List<Survey> surveys = Survey.list();
+		List<Survey> surveys = Survey.list(params);
 		if(surveys.size()>0)
 			Collections.sort(surveys,new SurveySorter())
 
@@ -69,7 +72,7 @@ class AdminController extends AbstractReportController {
 					template:"objectiveList",
 					survey:survey,
 					objectives: objectives,
-					objectiveCount: SurveyObjective.count()
+					objectiveCount: objectives.size()
 
 				])
 	}
@@ -84,7 +87,7 @@ class AdminController extends AbstractReportController {
 					survey: objective.survey,
 					objective: objective,
 					sections: sections,
-					sectionCount: SurveySection.count()
+					sectionCount: sections.size()
 				])
 	}
 
@@ -92,9 +95,6 @@ class AdminController extends AbstractReportController {
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		SurveySection section = SurveySection.get(params.sectionId)
 		List<SurveyQuestion> questions = section.questions;
-//		if(params.sort)
-//			questions.sort(it."$params?.sort")
-		//questions.sort(it."$params?.sort")
 
 		render (view: '/survey/admin/list', model:[
 					template:"questionList",
@@ -104,5 +104,52 @@ class AdminController extends AbstractReportController {
 					questions: questions,
 					questionCount: questions.size()
 				])
+	}
+	
+	def surveyElements={
+		params.max = Math.min(params.max ? params.int('max') : 10, 100);
+		List<SurveyElement> surveyElements = SurveyElement.list(params);
+		render (view: '/survey/admin/list', model:[
+					template:"surveyElementList",
+					surveyElements: surveyElements,
+					surveyElementCount: SurveyElement.count()
+				])
+	}
+	def validations = {
+		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		SurveyElement surveyElement = SurveyElement.get(params.surveyId)
+		Set<SurveyValidationRule> validationRules = surveyElement.validationRules;
+
+		render (view: '/survey/admin/list', model:[
+					template:"validationRuleList",
+					surveyElement: surveyElement,
+					validationRules: validationRules,
+					validationRuleCount: validationRules.size()
+				])
+	}
+	def messages = {
+		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		List<SurveyValidationMessage> validationMessages = SurveyValidationMessage.list(params);
+
+		render (view: '/survey/admin/list', model:[
+					template:"validationMessageList",
+					validationMessages: validationMessages,
+					validationMessageCount: SurveyValidationMessage.count()
+				])
+	}
+	def skiprules ={
+		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		Survey survey = Survey.get(params.surveyId)
+		Set<SurveySkipRule> skipRules = survey.skipRules;
+
+		render(view: '/survey/admin/list', model:[
+					template: "skipRuleList",
+					survey: survey,
+					skipRules: skipRules,
+					skipRuleCount: skipRules.size()
+				])
+		
+		
+		
 	}
 }

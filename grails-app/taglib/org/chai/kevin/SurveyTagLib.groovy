@@ -12,7 +12,7 @@ class SurveyTagLib {
 	
 	def renderUserErrors = {attrs, body ->
 		def surveyElementValue = attrs['element']
-		if (!surveyElementValue.displayedErrors.empty) {
+		if (surveyElementValue !=null && !surveyElementValue.displayedErrors.empty) {
 			out << "<ul>"
 			surveyElementValue.displayedErrors.each { rule ->
 				out << "<li>"

@@ -25,40 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.util;
+package org.chai.kevin.survey
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
+import org.hibernate.criterion.Restrictions;
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.util.Utils;
 
 /**
  * @author Jean Kahigiso M.
- * 
+ *
  */
-public class Utils {
+class SurveyQuestionService {
 
-	public static Set<String> getGroupUuids(String groupUuidString) {
-		Set<String> result = new HashSet<String>();
-		if (groupUuidString != null)
-			result.addAll(Arrays.asList(StringUtils.split(groupUuidString, ',')));
-		return result;
+	static transactional = true
+	def localeService
+	def sessionFactory
+
+
+	List<SurveyQuestion> searchSurveyQuestion(String text, Survey survey){
+		List<SurveyQuestion> questions = null;
+		if(survey) {
+			questions = sessionFactory.currentSession.createCriteria(SurveyQuestion.class).createAlias("section", "sect").createAlias("sect.objective", "obj").add(Restrictions.eq("obj.survey", survey)).list();
+		}else{
+			questions = SurveyQuestion.list();
+		}
+		return searchQuestion(text,questions);
 	}
 
-	public static String getGroupUuidString(Object groupUuids) {
-		if (groupUuids == null)
-			return "";
-		if (groupUuids instanceof String)
-			return (String) groupUuids;
-		else
-			return StringUtils.join((Object[]) groupUuids, ',');
-	}
-	
-	@SuppressWarnings("unused")
-	private static boolean matches(String text, String value) {
-		if (value == null) return false;
-		return value.matches("(?i).*"+text+".*");
-	}
 
+	List<SurveyQuestion> searchQuestion(String text,List<SurveyQuestion> questions){
+		StringUtils.split(text).each { chunk ->
+			questions.retainAll { question ->
+				Utils.matches(chunk, question.names[localeService.getCurrentLanguage()])
+			}
+		}
+		return questions.sort{it.names[localeService.getCurrentLanguage()]}
+	}
 }

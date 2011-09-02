@@ -1,75 +1,60 @@
-<div class="survey-admin-entity-list">
-	<div id="sections">
+<div class="admin-entity-list">
+	<div id="ValidationMessages">	
 	<div class="float-left">
-			<h5>Section List</h5>
+			<h5>Validation Message List</h5>
 		</div>
 		<div class="float-right">
-			<a id="add-section-link" class="flow-add" href="${createLink(controller:'section', action:'create', params:[objectiveId: objective.id])}">
-			New Section</a>
+			<a id="add-validation-message-link" class="flow-add" href="${createLink(controller:'validationMessage', action:'create')}">New Validation Message</a>
 		</div>
 		<div class="admin-table-list">
 			<table>
-			 <g:if test="${!sections.isEmpty()}">
+			<g:if test="${!validationMessages.isEmpty()}">
 					<tr class="admin-table-header">
-						<th>Name</th>
-						<th>Description</th>
-						<th>Organisation Unit Groups</th>
-						<th>Number of Questions</th>
-						<th>Order</th>
+					   <g:sortableColumn property="id" title="${message(code: 'validationMessage.id.label', default: 'Id')}" />
+						<th>Message</th>
+						<th>Number of Validation Rules Attached</th>
 						<th>Manage</th>
 					</tr>
-					<g:each in="${sections}" status="i" var="section"> 
-						<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-							<td><g:i18n field="${section.names}" />
-							</td>
-							<td><g:i18n field="${section.descriptions}" />
-							</td>
-							<td>${section.groupUuidString}
-							</td>
-							<td>${section.questions.size()}
-							</td>
-							<td>${section.order}</td>
-						  <td>
+						<g:each in="${validationMessages}" status="i" var="validationMessage">
+							<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+								<td>${validationMessage.id}</td>
+								<td><g:i18n field="${validationMessage.messages}" /></td>
+								<td>${validationMessage.validationRules.size()}</td>
+								<td>
 							<div class="dropdown"> 
-							     <a class="selected" href="#" data-type="section">Manage</a>
+							     <a class="selected" href="#" data-type="validation-message">Manage</a>
 							<div class="hidden dropdown-list">
 								<ul>
-								<li>
-								<a
-								href="${createLink(controller:'admin', action:'question',params:[surveyId:objective.survey?.id,objectiveId: objective?.id,sectionId: section.id])}">Questions</a>
-								
-								</li>
-									<li class="edit-section-link">
-							        <g:link controller="section" action="edit" id="${section.id}" class="flow-edit">
-									<g:message code="general.text.edit" default="Edit" />
-								</g:link>
+									<li class="edit-validation-message-link">
+									<g:link controller="validationMessage" action="edit" id="${validationMessage.id}" class="flow-edit">
+									    <g:message code="general.text.edit" default="Edit" /> 
+									</g:link>
 									</li>
-									<li class="delete-section-link">
-							      <g:link controller="section" action="delete" id="${section.id}" class="flow-delete">
-									<g:message code="general.text.delete" default="Delete" />
-								</g:link>
+									<li class="delete-validation-message-link">
+								    <g:link controller="validationMessage" action="delete" id="${validationMessage.id}" class="flow-delete">
+								        <g:message code="general.text.delete" default="Delete" /> 
+								    </g:link>
 									</li>
 								</ul>
 							</div>
 							</div> 		
 							</td>
-						</tr>
-					</g:each>
+							</tr>
+						</g:each>
 					</g:if>
 					<g:else>
 						<tr>
-							<td colspan="6">No section available 
-							<a id="new-section-link" class="flow-add" href="${createLink(controller:'section', action:'create',params:[objectiveId: objective.id])}">
-							New Section</a>
-							</td>
-						</tr>
+							<td colspan="5">No Validation Message available <a id="new-validation-message-link" class="flow-add"
+				href="${createLink(controller:'createValidationMessage', action:'create')}">Add
+								Validation Message</a></td>
+						</tr> 
 					</g:else>
 			</table>
 		</div>
 		<div class="paginateButtons">
-			<g:paginate total="${sectionCount}" />
+			<g:paginate total="${validationMessageCount}" />
 		</div>
-		<div class="hidden flow-container"></div>
 	</div>
 	<div class="clear"></div>
 </div>
+<div class="hidden flow-container"></div>

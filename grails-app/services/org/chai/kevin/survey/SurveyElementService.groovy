@@ -1,21 +1,23 @@
 package org.chai.kevin.survey
 
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.chai.kevin.OrganisationService;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective;
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
-import org.chai.kevin.survey.validation.SurveySkipRule;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.DataService;
+import org.chai.kevin.OrganisationService
+import org.chai.kevin.data.DataElement
+import org.chai.kevin.survey.validation.SurveyEnteredObjective
+import org.chai.kevin.survey.validation.SurveyEnteredValue
+import org.chai.kevin.survey.validation.SurveySkipRule
 import org.hibernate.FlushMode;
 import org.hibernate.criterion.Restrictions;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.util.Utils;
+import org.hisp.dhis.organisationunit.OrganisationUnit
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+import org.apache.commons.lang.math.NumberUtils;
+
+
 
 class SurveyElementService {
+	def localeService;
 	OrganisationService organisationService;
+	DataService dataService;
 
 	SurveyElement getSurveyElement(Long id) {
 		return SurveyElement.get(id)
@@ -86,5 +88,23 @@ class SurveyElementService {
 		for(String uuId: uuIds)
 			number = number+organisationService.getNumberOfOrganisationForGroup(OrganisationUnitGroup.findByUuid(uuId));
 		return number;
+	}
+
+	Set<SurveyElement> searchSurveyElements(String text, Survey survey) {
+		Set<SurveyElement> surveyElements = new HashSet<SurveyElement>();
+		List<DataElement> dataElements = dataService.searchDataElements(text);
+
+		for(DataElement dataElement : dataElements)
+			if(!survey){
+				surveyElements.addAll(this.getSurveyElements(dataElement));
+			}else{
+				for(SurveyElement surveyElement: this.getSurveyElements(dataElement))
+					if(surveyElement.surveyQuestion.section.objective.survey==survey)
+						surveyElements.add(surveyElement);
+			}
+
+		return surveyElements.sort {
+			it.dataElement.names[localeService.getCurrentLanguage()]
+		}
 	}
 }

@@ -25,40 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.util;
+package org.chai.kevin.survey
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
+import org.chai.kevin.data.Data;
+import org.chai.kevin.survey.validation.SurveyValidationMessage;
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.util.Utils;
 
 /**
  * @author Jean Kahigiso M.
- * 
+ *
  */
-public class Utils {
+class ValidationMessageService {
+	static transactional = true
+	def localeService
 
-	public static Set<String> getGroupUuids(String groupUuidString) {
-		Set<String> result = new HashSet<String>();
-		if (groupUuidString != null)
-			result.addAll(Arrays.asList(StringUtils.split(groupUuidString, ',')));
-		return result;
-	}
-
-	public static String getGroupUuidString(Object groupUuids) {
-		if (groupUuids == null)
-			return "";
-		if (groupUuids instanceof String)
-			return (String) groupUuids;
-		else
-			return StringUtils.join((Object[]) groupUuids, ',');
-	}
-	
-	@SuppressWarnings("unused")
-	private static boolean matches(String text, String value) {
-		if (value == null) return false;
-		return value.matches("(?i).*"+text+".*");
+	def getSearchValidationMessage(String text) {
+		def validationMessages = SurveyValidationMessage.list();
+		StringUtils.split(text).each { chunk ->
+			validationMessages.retainAll { element ->
+				Utils.matches(chunk, element.id+"") ||
+				Utils.matches(chunk, element.messages[localeService.getCurrentLanguage()])
+			}
+		}
+		return  validationMessages.sort {it.messages[localeService.getCurrentLanguage()]}
 	}
 
 }

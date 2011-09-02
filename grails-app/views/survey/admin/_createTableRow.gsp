@@ -4,8 +4,8 @@
 		<g:locales />
 		<div class="clear"></div>
 	</div>
-	<div>
-	<div id="add-row-col">
+    <div class="forms-container">
+	<div class="data-field-column">
 	<g:form url="[controller:'tableRow', action:'save']" useToken="true">
 	<label class="display-in-block">Table Name :</label>
 	<input type="text" value="${i18n(field: row.question.tableNames)}" class="idle-field" disabled />
@@ -56,7 +56,7 @@
 		</div>
 	</g:form>
 	</div>
-	<div id="data-col">
+<div class="data-search-column">
 		<g:form name="search-data-form" class="search-form" url="[controller:'dataElement', action:'getData']">
 			<div class="row">
 				<label for="searchText">Search: </label>
@@ -67,6 +67,7 @@
 		</g:form>
 	    <ul class="filtered idle-field" id="data" ></ul>
 	</div>
+	<div class="clear"></div>
 	</div>
 	<div class="clear"></div>
 </div>

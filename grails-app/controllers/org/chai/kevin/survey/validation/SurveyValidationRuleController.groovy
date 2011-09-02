@@ -25,40 +25,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.util;
+package org.chai.kevin.survey.validation
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.survey.SurveyElementService;
+import org.chai.kevin.survey.SurveyElement;
 
 /**
  * @author Jean Kahigiso M.
- * 
+ *
  */
-public class Utils {
+class SurveyValidationRuleController extends AbstractEntityController {
 
-	public static Set<String> getGroupUuids(String groupUuidString) {
-		Set<String> result = new HashSet<String>();
-		if (groupUuidString != null)
-			result.addAll(Arrays.asList(StringUtils.split(groupUuidString, ',')));
-		return result;
+	def getEntity(def id) {
+		return SurveyValidationRule.get(id)
+	}
+	def createEntity() {
+		def entity = new SurveyValidationRule()
+		//FIXME find a better to do this
+		if (!params['surveyElement.id']) entity.surveyElement = SurveyElement.get(params.surveyId);
+		return entity;
 	}
 
-	public static String getGroupUuidString(Object groupUuids) {
-		if (groupUuids == null)
-			return "";
-		if (groupUuids instanceof String)
-			return (String) groupUuids;
-		else
-			return StringUtils.join((Object[]) groupUuids, ',');
-	}
-	
-	@SuppressWarnings("unused")
-	private static boolean matches(String text, String value) {
-		if (value == null) return false;
-		return value.matches("(?i).*"+text+".*");
+	def getTemplate() {
+		return "/survey/admin/createValidationRule";
 	}
 
+	def getModel(def entity) {
+		[
+					validation: entity
+				]
+	}
+
+	def validateEntity(def entity) {
+		return entity.validate()
+	}
+
+	def saveEntity(def entity) {
+		entity.save()
+	}
+	def deleteEntity(def entity) {
+		entity.surveyElement.validationRules.remove(entity);
+		entity.surveyElement.save();
+		entity.delete()
+	}
+
+	def bindParams(def entity) {
+		entity.properties = params
+	}
 }

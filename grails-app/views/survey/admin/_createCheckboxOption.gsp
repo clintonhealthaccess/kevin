@@ -4,8 +4,8 @@
 		<g:locales />
 		<div class="clear"></div>
 	</div>
-	<div>
-	<div id="add-option-col">
+	<div class="forms-container">
+	<div class="data-field-column">
 	<g:form url="[controller:'checkboxOption', action:'save']" useToken="true">
 	<input type="hidden" name="question.id"  value="${option.question?.id}" />
 	<div class="error-list"><g:renderErrors bean="${option}" field="question" /></div>
@@ -47,7 +47,7 @@
 		</div>
 	</g:form>
 	</div>
-	<div id="data-col">
+	<div class="data-search-column">
 		<g:form name="search-data-form" class="search-form" url="[controller:'dataElement', action:'getData']">
 			<div class="row">
 				<label for="searchText">Search: </label>
@@ -58,6 +58,7 @@
 		</g:form>
 	    <ul class="filtered idle-field" id="data" ></ul>
 	</div>
+	<div class="clear"></div>
 	</div>
 	<div class="clear"></div>
 </div>

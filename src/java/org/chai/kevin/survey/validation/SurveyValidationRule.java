@@ -1,5 +1,6 @@
 package org.chai.kevin.survey.validation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -24,7 +25,7 @@ public class SurveyValidationRule {
 	private Boolean allowOutlier;
 
 	private SurveyValidationMessage validationMessage;
-	private List<SurveyElement> dependencies;
+	private List<SurveyElement> dependencies = new ArrayList<SurveyElement>();
 	
 	@Id
 	@GeneratedValue

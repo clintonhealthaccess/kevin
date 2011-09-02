@@ -42,9 +42,12 @@
 		<g:each in="${question.getColumns()}" var="column">
 			<g:set var="surveyElement" value="${row?.surveyElements[column]}"/>
 			<g:set var="dataElement" value="${surveyElement?.dataElement}"/>
-			<td>
-				dataElement
-			</td>
+			<td class="element-${surveyElement.id} element" data-element="${surveyElement.id}">
+					<g:render template="/survey/element/${dataElement.type}" model="[surveyElement: surveyElement, surveyPage: surveyPage, readonly: readonly]" />
+					<a href="${createLink(controller:'admin', action:'validations',params:[surveyId: surveyElement.id])}">
+			         View Validation Rules
+			       </a>
+				</td>
 		</g:each>
 		</tr>
 	</g:each>

@@ -28,7 +28,10 @@
 							<div class="hidden dropdown-list">
 								<ul>
 								<li>
-								<a href="${createLink(controller:'admin', action:'objective',params:[surveyId:survey?.id])}">Objectives</a>
+								<a href="${createLink(controller:'admin', action:'objective',params:[surveyId: survey?.id])}">Objectives</a>
+								</li>
+								<li>
+								   <a href="${createLink(controller:'admin', action:'skiprules',params:[surveyId: survey?.id])}">Skip Rules</a>
 								</li>
 									<li class="edit-survey-link">
 									<g:link controller="createSurvey" action="edit" id="${survey.id}" class="flow-edit">

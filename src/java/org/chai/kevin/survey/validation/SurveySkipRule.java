@@ -1,9 +1,13 @@
 package org.chai.kevin.survey.validation;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.chai.kevin.Translation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyQuestion;
@@ -23,9 +28,10 @@ public class SurveySkipRule {
 	private Long id;
 	private Survey survey;
 	private String expression;
+	private Translation descriptions = new Translation();
 	
-	private Set<SurveyElement> skippedSurveyElements;
-	private Set<SurveyQuestion> skippedSurveyQuestions;
+	private Set<SurveyElement> skippedSurveyElements = new HashSet<SurveyElement>();
+	private Set<SurveyQuestion> skippedSurveyQuestions = new HashSet<SurveyQuestion>();
 	
 	@Id
 	@GeneratedValue
@@ -57,6 +63,15 @@ public class SurveySkipRule {
 		this.expression = expression;
 	}
 	
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
 	@ManyToMany(targetEntity=SurveyElement.class)
 	public Set<SurveyElement> getSkippedSurveyElements() {
 		return skippedSurveyElements;

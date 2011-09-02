@@ -1,8 +1,5 @@
 <!-- Value type question -->
-<g:set var="surveyEnteredValue" value="${surveyPage.enteredValues[surveyElement]}"/>
-<g:set var="surveyElementValue" value="${surveyPage.surveyElements[surveyElement.id]}"/>
-
-<div class="element element-value element-${surveyElement.id} ${surveyEnteredValue.skipped?'skipped':''} ${!surveyEnteredValue.valid?'errors':''}" data-element="${surveyElement.id}">
+<div class="element element-value element-${surveyElement.id} ${surveyEnteredValue?.skipped?'skipped':''} ${(surveyEnteredValue==null || surveyEnteredValue?.valid)?'':'errors'}" data-element="${surveyElement.id}">
 	<a name="element-${surveyElement.id}"></a>
 	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
 	

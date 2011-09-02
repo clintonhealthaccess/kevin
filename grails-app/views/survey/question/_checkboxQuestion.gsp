@@ -7,9 +7,10 @@
 			<g:set var="surveyElement" value="${option.surveyElement}"/>
 			<g:set var="dataElement" value="${surveyElement.dataElement}"/>
 			<g:set var="surveyEnteredValue" value="${surveyPage.enteredValues[surveyElement]}"/>
+	        <g:set var="surveyElementValue" value="${surveyPage.surveyElements[surveyElement.id]}" />
 			
-		    <li class="element element-${surveyElement.id} ${surveyEnteredValue.skipped?'skipped':''} ${!surveyEnteredValue.valid?'errors':''}">
-				<g:render template="/survey/element/${dataElement.type}" model="[surveyElement: surveyElement, surveyPage: surveyPage, readonly: readonly]"/>
+		    <li class="element element-${surveyElement.id} ${surveyEnteredValue?.skipped?'skipped':''} ${!surveyEnteredValue?.valid?'errors':''}">
+				<g:render template="/survey/element/${dataElement.type}" model="[surveyElement: surveyElement, surveyElementValue: surveyElementValue, surveyEnteredValue: surveyEnteredValue, readonly: readonly]"/>
 				<span><g:i18n field="${option.names}"/></span>
 				<div class="clear"></div>
 			</li>
