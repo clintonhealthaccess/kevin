@@ -37,6 +37,7 @@ import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
@@ -51,7 +52,7 @@ class DashboardTargetController extends AbstractObjectiveController {
 	def createEntity() {
 		def entity = new DashboardObjectiveEntry()
 		entity.entry = new DashboardTarget()
-		entity.entry.calculation = new Calculation()
+		entity.entry.calculation = new Average()
 		return entity
 	}
 	

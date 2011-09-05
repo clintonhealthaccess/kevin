@@ -41,7 +41,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="Constant")
-@Table(name="constant")
+@Table(name="dhsst_constant")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Constant extends Data<Constant> implements Value {
 
@@ -74,7 +74,7 @@ public class Constant extends Data<Constant> implements Value {
 	}
 
 	@Override
-	public Constant getValue(ValueCalculator calculator, OrganisationUnit organisationUnit, Period period) {
+	public Constant getValue(ValueCalculator<Constant> calculator, OrganisationUnit organisationUnit, Period period) {
 		return this;
 	}
 

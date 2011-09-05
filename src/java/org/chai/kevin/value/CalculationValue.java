@@ -28,8 +28,6 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.Map;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,13 +38,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.data.ValueType;
-import org.chai.kevin.value.ExpressionValue.Status;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
@@ -62,48 +55,70 @@ import org.hisp.dhis.period.Period;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CalculationValue extends AbstractValue {
 
-	private static final Log log = LogFactory.getLog(CalculationValue.class);
-	
 	private Long id;
-	
 	private Calculation calculation;
+	
 	private Boolean hasMissingValues;
 	private Boolean hasMissingExpression;
 	
 	public CalculationValue() {}
 	
-	public CalculationValue(Calculation calculation, OrganisationUnit organisationUnit, Period period, Map<Organisation, ExpressionValue> values) {
+	public CalculationValue(Calculation calculation, OrganisationUnit organisationUnit, Period period, String value, boolean hasMissingValues, boolean hasMissingExpression) {
+		super(organisationUnit, period, value);
+		
+		this.calculation = calculation;
+
+		this.hasMissingExpression = hasMissingExpression;
+		this.hasMissingValues = hasMissingValues;
+	}
+	
+	public CalculationValue(Calculation calculation, OrganisationUnit organisationUnit, Period period) {
+		super();
+		
 		this.calculation = calculation;
 		this.organisationUnit = organisationUnit;
 		this.period = period;
-
-		calculateAverage(values);
-		calculateHasMissingExpression(values);
-		calculateHasMissingValues(values);
 	}
+	
 	
 	@Id
 	@GeneratedValue
 	public Long getId() {
 		return id;
 	}
-	
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	@NaturalId
 	@ManyToOne(targetEntity=Calculation.class, optional=false)
 	public Calculation getCalculation() {
 		return calculation;
 	}
 	
+	public void setCalculation(Calculation calculation) {
+		this.calculation = calculation;
+	}
+
 	@Basic
 	@Column(nullable=false)
 	public Boolean getHasMissingExpression() {
 		return hasMissingExpression;
 	}
 	
+	public void setHasMissingExpression(Boolean hasMissingExpression) {
+		this.hasMissingExpression = hasMissingExpression;
+	}
+	
 	@Basic
 	@Column(nullable=false)
 	public Boolean getHasMissingValues() {
 		return hasMissingValues;
+	}
+	
+	public void setHasMissingValues(Boolean hasMissingValues) {
+		this.hasMissingValues = hasMissingValues;
 	}
 	
 	@Transient
@@ -115,58 +130,8 @@ public class CalculationValue extends AbstractValue {
 	@Transient
 	public Data<?> getData() {
 		return calculation;
-	}
+	}	
 	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public void setCalculation(Calculation calculation) {
-		this.calculation = calculation;
-	}
-	
-	public void setHasMissingExpression(Boolean hasMissingExpression) {
-		this.hasMissingExpression = hasMissingExpression;
-	}
-	
-	public void setHasMissingValues(Boolean hasMissingValues) {
-		this.hasMissingValues = hasMissingValues;
-	}
-	
-	private void calculateHasMissingValues(Map<Organisation, ExpressionValue> values) {
-		for (ExpressionValue expressionValue : values.values()) {
-			if (expressionValue != null && expressionValue.getStatus() == Status.MISSING_VALUE) hasMissingValues = true;
-		}
-		hasMissingValues = false;
-	}
-	
-	private void calculateHasMissingExpression(Map<Organisation, ExpressionValue> values) {
-		for (ExpressionValue expressionValue : values.values()) {
-			if (expressionValue == null) hasMissingExpression = true;
-		}
-		hasMissingExpression = false;
-	}
-
-	private void calculateAverage(Map<Organisation, ExpressionValue> values) {
-		if (calculation.getType() != ValueType.VALUE) log.error("averaging value of non VALUE type calculation: "+calculation);
-		// we do it anyway in case it's a user error
-		Double sum = 0d;
-		Integer num = 0;
-		for (ExpressionValue expressionValue : values.values()) {
-			if (expressionValue != null && expressionValue.getStatus() == Status.VALID) {
-				try {
-					sum += Double.parseDouble(expressionValue.getValue());
-					num++;
-				} catch (NumberFormatException e) {
-					log.warn("non-number value found in average: ", e);
-				}
-			}
-		}
-		Double average = sum / num;
-		if (average.isNaN()) average = null;
-		value = average==null?null:average.toString();
-	}
-
 	
 	@Override
 	public int hashCode() {

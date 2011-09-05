@@ -34,6 +34,7 @@ import org.chai.kevin.DataService
 import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class ExpressionController extends AbstractEntityController {
 
@@ -74,11 +75,11 @@ class ExpressionController extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = entity.descriptions
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		render (view: '/entity/list' , model:[
 			entities: Expression.list(params), 
 			entityCount: Expression.count(),

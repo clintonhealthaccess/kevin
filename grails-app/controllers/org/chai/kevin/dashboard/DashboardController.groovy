@@ -67,7 +67,7 @@ class DashboardController extends AbstractReportController {
 		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
 
 		def explanation = dashboardService.getExplanation(organisation, entry, period)
-		def groups = new GroupCollection(OrganisationUnitGroup.list())
+		def groups = new GroupCollection(organisationService.getGroupsForExpression())
 		[explanation: explanation, groups: groups]
 	}
 	

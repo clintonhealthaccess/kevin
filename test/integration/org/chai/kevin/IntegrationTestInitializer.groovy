@@ -39,6 +39,7 @@ import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
@@ -77,7 +78,7 @@ class IntegrationTestInitializer extends Initializer {
 		staffing.save(failOnError: true)
 		hrh.save(failOnError: true)
 		
-		def calculation1 = new Calculation(expressions: [
+		def calculation1 = new Average(expressions: [
 			"District Hospital": Expression.findByCode("CONST10"),
 			"Health Center": Expression.findByCode("CONST20")
 		], timestamp:new Date(), type: ValueType.VALUE)
@@ -88,7 +89,7 @@ class IntegrationTestInitializer extends Initializer {
 				calculation: calculation1
 			), weight: 1, order: 1)
 		
-		def calculation2 = new Calculation(expressions: [
+		def calculation2 = new Average(expressions: [
 				"District Hospital": Expression.findByCode("CONST20"),
 				"Health Center": Expression.findByCode("CONST20")
 			], timestamp:new Date(), type: ValueType.VALUE)
@@ -131,7 +132,7 @@ class IntegrationTestInitializer extends Initializer {
 //		new Indicator(names:j(["en":"Indicator Element 1"]), shortName: "Indicator Element 1", code: "ELEM1", numerator: "["+dataElement.id+"]", denominator: "1", indicatorType: IndicatorType.findByName("one")).save(failOnError: true)
 		new Expression(names:j(["en":"Expression Element 1"]), code:"EXPRELEM1", expression: "["+DataElement.findByCode("CODE").id+"]", type: ValueType.VALUE).save(failOnError: true)
 		
-		def calculation3 = new Calculation(expressions: [
+		def calculation3 = new Average(expressions: [
 			"District Hospital": Expression.findByCode("EXPRELEM1"),
 			"Health Center": Expression.findByCode("EXPRELEM1")
 		], timestamp:new Date(), type: ValueType.VALUE)

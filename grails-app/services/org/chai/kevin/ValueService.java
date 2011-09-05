@@ -34,14 +34,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
@@ -63,8 +66,23 @@ public class ValueService {
 	
 	private SessionFactory sessionFactory;
 	
+	private Map<Class<?>, ValueCalculator<?>> calculatorMap = new HashMap<Class<?>, ValueCalculator<?>>();
+	
+	public ValueService() {
+		calculatorMap.put(Expression.class, new ExpressionValueCalculator());
+		calculatorMap.put(DataElement.class, new DataValueCalculator());
+		calculatorMap.put(Sum.class, new CalculationValueCalculator());
+		calculatorMap.put(Average.class, new CalculationValueCalculator());
+	}
+	
 	public <T extends Value> T getValue(Data<T> data, OrganisationUnit organisationUnit, Period period) {
-		return data.getValue(new CacheValueCalculator(), organisationUnit, period);
+		// TODO make a registry class with this code
+		Class<?> clazz = data.getClass();
+		while (!calculatorMap.containsKey(clazz)) {
+			clazz = clazz.getSuperclass();
+		}
+		ValueCalculator<T> calculator = (ValueCalculator<T>)calculatorMap.get(clazz);
+		return data.getValue(calculator, organisationUnit, period);
 	}
 	
 	@Transactional(readOnly=true)
@@ -85,10 +103,10 @@ public class ValueService {
 		.list();
 	}
 	
-	private class CacheValueCalculator implements ValueCalculator {
+	private class ExpressionValueCalculator implements ValueCalculator<ExpressionValue> {
 		
 		@Transactional(readOnly=true)
-		public ExpressionValue getValue(Expression expression, OrganisationUnit organisationUnit, Period period) {
+		public ExpressionValue getValue(Data<ExpressionValue> expression, OrganisationUnit organisationUnit, Period period) {
 			return (ExpressionValue)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class)
 				.add(Restrictions.naturalId()
 					.set("period", period)
@@ -100,9 +118,13 @@ public class ValueService {
 				.setCacheRegion("org.hibernate.cache.ExpressionValueQueryCache")
 				.uniqueResult();
 		}
+
+	}
 		
+	private class CalculationValueCalculator implements ValueCalculator<CalculationValue> {
+	
 		@Transactional(readOnly=true)
-		public CalculationValue getValue(Calculation calculation, OrganisationUnit organisationUnit, Period period) {
+		public CalculationValue getValue(Data<CalculationValue> calculation, OrganisationUnit organisationUnit, Period period) {
 			return (CalculationValue)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class)
 				.add(Restrictions.naturalId()
 					.set("period", period)
@@ -115,8 +137,12 @@ public class ValueService {
 				.uniqueResult();
 		}
 		
+	}
+	
+	private class DataValueCalculator implements ValueCalculator<DataValue> {
+		
 		@Transactional(readOnly=true)
-		public DataValue getValue(DataElement dataElement, OrganisationUnit organisation, Period period) {
+		public DataValue getValue(Data<DataValue> dataElement, OrganisationUnit organisation, Period period) {
 			if (log.isDebugEnabled()) log.debug("getDataValue(dataElement="+dataElement+", period="+period+", organisation="+organisation+")");
 			
 			 Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataValue.class)
@@ -233,7 +259,7 @@ public class ValueService {
 			).setCacheable(false);
 			for (Iterator<Object[]> iterator = query1.iterate(); iterator.hasNext();) {
 				Object[] row = (Object[]) iterator.next();
-				CalculationValue value = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2], new HashMap<Organisation, ExpressionValue>());
+				CalculationValue value = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2]);
 				allValues.add(value);
 			}
 			if (log.isDebugEnabled()) log.debug("retrieved calculation values, found: "+allValues.size());
@@ -245,7 +271,7 @@ public class ValueService {
 			if (log.isDebugEnabled()) log.debug("starting sorting non calculated calculations");
 			for (Iterator<Object[]> iterator = query2.iterate(); iterator.hasNext();) {
 				Object[] row = (Object[]) iterator.next();
-				CalculationValue newValue = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2], new HashMap<Organisation, ExpressionValue>());
+				CalculationValue newValue = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2]);
 				if (!allValues.contains(newValue)) result.add(newValue);
 			}
 			if (log.isDebugEnabled()) log.debug("done sorting non calculated calculations, found: "+result.size());

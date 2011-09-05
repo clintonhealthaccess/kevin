@@ -31,6 +31,9 @@
 				<g:if test="${closed}">
 					<div class="rounded-box-top rounded-box-bottom">
 						This objective has been already been submitted. Please go on with the other sections.
+						<shiro:hasPermission permission="admin:survey">
+							<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])}">Reopen this objective.</a>
+						</shiro:hasPermission>
 					</div>
 				</g:if>
 				<g:if test="${unavailable}">

@@ -1,74 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="ehcache.xsd" >
+         xsi:noNamespaceSchemaLocation="ehcache.xsd" 
+         maxBytesLocalOnHeap="60m" maxBytesLocalOffHeap="60m" maxBytesLocalDisk="5g">
 
     <diskStore path="java.io.tmpdir"/>
 
     <cacheManagerEventListenerFactory class="" properties=""/>
 
     <defaultCache
-            maxElementsInMemory="1000"
-            eternal="false"
+    		eternal="false"
+            maxElementsInMemory="500"
             timeToLiveSeconds="3600"
             overflowToDisk="false"
-            diskPersistent="true"
+            diskPersistent="false"
     />
 
     <cache name="org.hibernate.cache.UpdateTimestampsCache"
            maxElementsInMemory="10000"
-           timeToIdleSeconds="300"
+            timeToLiveSeconds="3600"
     />
 
     <cache name="org.hibernate.cache.StandardQueryCache"
-           maxElementsInMemory="10000"
-           timeToIdleSeconds="300"
+           maxElementsInMemory="500"
+            timeToLiveSeconds="3600"
     />
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit.children"
            maxElementsInMemory="5000"
-           timeToIdleSeconds="300"
+            timeToLiveSeconds="3600"
+    />
+    
+    <cache name="org.hisp.dhis.organisationunit.OrganisationUnit.groups"
+           maxElementsInMemory="2000"
+            timeToLiveSeconds="3600"
     />
     
     <cache name="org.hisp.dhis.period.Period"
            maxElementsInMemory="10"
-           timeToIdleSeconds="300"
-    />
-    
-    <cache name="org.chai.kevin.DataElement"
-           maxElementsInMemory="5000"
-           timeToIdleSeconds="300"
-    />
-    
-    <cache name="org.chai.kevin.Expression"
-           maxElementsInMemory="5000"
-           timeToIdleSeconds="300"
+            timeToLiveSeconds="3600"
     />
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit"
            maxElementsInMemory="5000"
-           timeToIdleSeconds="300"
+            timeToLiveSeconds="3600"
     />
     
-    <cache name="org.chai.kevin.DataValue"
-           maxElementsInMemory="10000"
-           timeToIdleSeconds="300"
+    <cache name="org.chai.kevin.data.DataElement"
+           maxElementsInMemory="2000"
+            timeToLiveSeconds="3600"
+    />
+    
+    <cache name="org.chai.kevin.data.Expression"
+           maxElementsInMemory="2000"
+            timeToLiveSeconds="3600"
+    />
+    
+    <cache name="org.chai.kevin.data.Calculation"
+           maxElementsInMemory="2000"
+            timeToLiveSeconds="3600"
+    />
+    
+    <cache name="org.chai.kevin.value.DataValue"
+           maxElementsInMemory="2000"
+            timeToLiveSeconds="3600"
+    />
+    
+    <cache name="org.chai.kevin.value.ExpressionValue"
+           maxElementsInMemory="4000"
+            timeToLiveSeconds="3600"
+    />
+    
+    <cache name="org.chai.kevin.value.CalculationValue"
+           maxElementsInMemory="2000"
+            timeToLiveSeconds="3600"
     />
     
     <!-- not sure it is used -->
     <cache name="org.hibernate.cache.DataValueQueryCache"
-           maxElementsInMemory="50000"
-           timeToIdleSeconds="300"
+           maxElementsInMemory="4000"
+            timeToLiveSeconds="3600"
     />
     
 	<cache name="org.hibernate.cache.ExpressionValueQueryCache"
-           maxElementsInMemory="1000"
-           timeToIdleSeconds="300"
+           maxElementsInMemory="8000"
+            timeToLiveSeconds="3600"
     />
     
 	<cache name="org.hibernate.cache.CalculationValueQueryCache"
-           maxElementsInMemory="1000"
-           timeToIdleSeconds="300"
+           maxElementsInMemory="4000"
+            timeToLiveSeconds="3600"
     />
     
 </ehcache>

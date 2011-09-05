@@ -71,12 +71,10 @@ public class ExpressionValue extends AbstractValue {
 	public ExpressionValue() {}
 	
 	public ExpressionValue(String value, Status status, OrganisationUnit organisationUnit, Expression expression, Period period) {
-		this.value = value;
-		this.status = status;
+		super(organisationUnit, period, value);
 
-		this.organisationUnit = organisationUnit;
+		this.status = status;
 		this.expression = expression;
-		this.period = period;
 	}
 	
 

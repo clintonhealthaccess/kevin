@@ -191,6 +191,22 @@ class EditSurveyController extends AbstractReportController {
 		}
 	}
 	
+	def reopen = {
+		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
+		
+		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
+		
+		if (validateParameters(currentOrganisation, Utils.getGroupUuids(currentObjective.groupUuidString))) {
+			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective);
+			
+			if (surveyPage.canReopen()) {
+				surveyPage.reopen(surveyElementService)
+				redirect (action: "objectivePage", params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])
+			}
+		}
+	}
+	
 	def submit = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 		

@@ -53,17 +53,15 @@ import org.hisp.dhis.period.Period;
 public class DataValue extends AbstractValue {
 	
 	private Long id;
-	
 	private DataElement dataElement;
 	
 	public DataValue() {}
 
 	public DataValue(DataElement dataElement, OrganisationUnit organisationUnit, 
 			Period period, String value) {
+		super(organisationUnit, period, value);
+		
 		this.dataElement = dataElement;
-		this.organisationUnit = organisationUnit;
-		this.period = period;
-		this.value = value;
 	}
 	
 	@Id
@@ -71,16 +69,16 @@ public class DataValue extends AbstractValue {
 	public Long getId() {
 		return id;
 	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	@NaturalId
 	@ManyToOne(targetEntity=DataElement.class, optional=false)
 	@JoinColumn(nullable=false)
 	public DataElement getDataElement() {
 		return dataElement;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
 	}
 	
 	public void setDataElement(DataElement dataElement) {
@@ -93,6 +91,13 @@ public class DataValue extends AbstractValue {
 		return dataElement;
 	}
 	
+	@Override
+	public String toString() {
+		return "DataValue [dataElement=" + dataElement + ", organisationUnit="
+				+ organisationUnit + ", period=" + period + ", value=" + value
+				+ "]";
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -108,7 +113,7 @@ public class DataValue extends AbstractValue {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof DataValue))
 			return false;
 		DataValue other = (DataValue) obj;
 		if (dataElement == null) {
@@ -118,12 +123,6 @@ public class DataValue extends AbstractValue {
 			return false;
 		return true;
 	}
-
-	@Override
-	public String toString() {
-		return "DataValue [dataElement=" + dataElement + ", organisationUnit="
-				+ organisationUnit + ", period=" + period + ", value=" + value
-				+ "]";
-	}
+	
 	
 }

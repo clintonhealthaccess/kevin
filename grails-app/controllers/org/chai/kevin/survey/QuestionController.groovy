@@ -27,6 +27,8 @@
  */
 package org.chai.kevin.survey
 
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+
 /**
  * @author Jean Kahigiso M.
  *
@@ -39,7 +41,7 @@ class QuestionController {
 	}
 
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		SurveySection section = SurveySection.get(params.sectionId)
 		List<SurveyQuestion> questions = section.questions;

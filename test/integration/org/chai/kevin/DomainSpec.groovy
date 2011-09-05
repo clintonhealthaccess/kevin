@@ -37,6 +37,7 @@ import org.chai.kevin.data.EnumOption;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Initializer;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
@@ -150,7 +151,7 @@ class DomainSpec extends IntegrationTests {
 	def "cannot delete expression with associated calculation"() {
 		setup:
 		def expression = new Expression(code: "EXPR", expression:"10", type: ValueType.VALUE).save(failOnError: true)
-		def calculation = new Calculation(expressions: [
+		def calculation = new Average(expressions: [
 			"Health Center": Expression.findByCode("EXPR")
 		], timestamp:new Date(), type: ValueType.VALUE)
 		calculation.save(failOnError: true)

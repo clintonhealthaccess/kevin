@@ -40,6 +40,8 @@ import org.apache.commons.lang.math.NumberUtils;
  */
 class SimpleQuestionController extends AbstractEntityController {
 
+	def organisationService
+	
 	def getEntity(def id) {
 		return SurveySimpleQuestion.get(id)
 	}
@@ -57,7 +59,7 @@ class SimpleQuestionController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			question: entity,
-			groups: OrganisationUnitGroup.list(),
+			groups: organisationService.getGroupsForExpression(),
 			sections: (entity.section)!=null?entity.section.objective.sections:null,
 			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
 		]

@@ -30,6 +30,7 @@ package org.chai.kevin.maps
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ValueType;
@@ -48,7 +49,7 @@ class MapsServiceSpec extends IntegrationTests {
 	
 	def "calculation gives correct values"() {
 		setup:
-		def calculation = new Calculation(expressions: [
+		def calculation = new Average(expressions: [
 			"District Hospital": Expression.findByCode("CONST10"),
 			"Health Center": Expression.findByCode("CONST10")
 		], timestamp:new Date(), type: ValueType.VALUE)

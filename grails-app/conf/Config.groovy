@@ -154,6 +154,8 @@ google.analytics.webPropertyID = "UA-xxxxxx-x"
 site.languages=["en","fr","rw"]
 site.fallback.language="en"
 site.admin=true
+site.entity.list.max=40
+site.period=1
 
 facility.level=4
 facility.type.group="Type"

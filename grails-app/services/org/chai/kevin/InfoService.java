@@ -64,7 +64,7 @@ public class InfoService {
 				organisationService.loadUntilLevel(groupOrganisation, organisationService.getFacilityLevel());
 			}
 		}
-		Map<Organisation, ExpressionValue> expressionValues = expressionService.calculateExpressionValues(calculation, period, organisation);
+		Map<Organisation, ExpressionValue> expressionValues = expressionService.calculateExpressionValues(calculation.getExpressions(), period, organisation);
 		CalculationInfo info = new CalculationInfo(calculationValue, groupOrganisations, expressionValues);
 		return info;
 	}

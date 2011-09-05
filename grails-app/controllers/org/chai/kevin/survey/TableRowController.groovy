@@ -38,6 +38,8 @@ import org.chai.kevin.util.Utils
  */
 class TableRowController extends AbstractEntityController {
 
+	def organisationService
+	
 	def getEntity(def id) {
 		return SurveyTableRow.get(id)
 	}
@@ -54,7 +56,7 @@ class TableRowController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			row: entity,
-			groups: OrganisationUnitGroup.list(),
+			groups: organisationService.getGroupsForExpression(),
 			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
 		]
 	}

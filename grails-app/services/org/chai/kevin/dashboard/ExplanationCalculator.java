@@ -57,7 +57,7 @@ public class ExplanationCalculator extends PercentageCalculator {
 	
 	
 	public DashboardExplanation explainLeafTarget(DashboardTarget target, Organisation organisation, Period period) {
-		Expression expression = expressionService.getMatchingExpression(target.getCalculation(), organisation);
+		Expression expression = expressionService.getMatchingExpression(target.getCalculation().getExpressions(), organisation);
 		ExpressionInfo info = null;
 		if (expression != null) {
 			info = infoService.getInfo(expression, organisation, period, null);

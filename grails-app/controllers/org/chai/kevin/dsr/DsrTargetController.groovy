@@ -59,7 +59,7 @@ class DsrTargetController extends AbstractEntityController {
 		[
 					target: entity,
 					objectives: DsrObjective.list(),
-					groups: OrganisationUnitGroup.list(),
+					groups: organisationService.getGroupsForExpression(),
 					expressions: Expression.list(),
 					categories: DsrTargetCategory.list(),
 					groupUuids: Utils.getGroupUuids(entity.groupUuidString)

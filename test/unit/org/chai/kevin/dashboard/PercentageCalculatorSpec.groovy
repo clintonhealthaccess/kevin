@@ -40,6 +40,7 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.UnitTests;
 import org.gmock.WithGMock;
 import org.hisp.dhis.aggregation.AggregationService
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
@@ -69,10 +70,10 @@ class PercentageCalculatorSpec extends UnitTests {
 		
 		// objectives and targets for dashboard
 		
-		def calculation1 = new Calculation(expressions: [
+		def calculation1 = new Average(expressions: [
 			"District Hospital": Expression.findByCode("CONST10"),
 		], timestamp:new Date())
-		def calculation2 = new Calculation(expressions: [
+		def calculation2 = new Average(expressions: [
 			"District Hospital": Expression.findByCode("CONST20"),
 		], timestamp:new Date())
 		
@@ -120,7 +121,6 @@ class PercentageCalculatorSpec extends UnitTests {
 	}
 	
 	def "test strategic objective"() {
-		
 		setup:		
 		def percentageService = mock(PercentageService);
 		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(10.0d, null, null, null));
@@ -150,7 +150,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		def target = new DashboardTarget(
 			names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 			calculations: ["District Hospital":
-				new Calculation(groupUuid: "District Hospital", expression: Expression.findByCode("CODE")),
+				new Average(groupUuid: "District Hospital", expression: Expression.findByCode("CODE")),
 			]
 		)
 		mockDomain(DashboardTarget, [target])

@@ -7,7 +7,7 @@ import org.chai.kevin.data.Data;
 class ChartController extends AbstractReportController {
 
 	def chartService
-	
+	def dataService
 	
 	def chart = {
 		if (log.isDebugEnabled()) log.debug("chart.chart, params:"+params)

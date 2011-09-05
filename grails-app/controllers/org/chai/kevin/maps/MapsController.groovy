@@ -71,7 +71,7 @@ class MapsController extends AbstractReportController {
 		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
 		MapsExplanation explanation = mapsService.getExplanation(period, organisation, target);
-		def groups = new GroupCollection(OrganisationUnitGroup.list())
+		def groups = new GroupCollection(organisationService.getGroupsForExpression())
 		
 		[explanation: explanation, groups: groups]
 	}

@@ -30,6 +30,7 @@ package org.chai.kevin.survey
 import org.chai.kevin.AbstractEntityController;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.chai.kevin.util.Utils
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 /**
  * @author Jean Kahigiso M.
@@ -37,6 +38,8 @@ import org.chai.kevin.util.Utils
  */
 class ObjectiveController extends AbstractEntityController {
 
+	def organisationService
+	
 	def getEntity(def id) {
 		return SurveyObjective.get(id)
 	}
@@ -53,7 +56,7 @@ class ObjectiveController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 					objective: entity,
-					groups: OrganisationUnitGroup.list(),
+					groups: organisationService.getGroupsForExpression(),
 					groupUuids: Utils.getGroupUuids(entity.groupUuidString)
 					
 				]
@@ -82,7 +85,7 @@ class ObjectiveController extends AbstractEntityController {
 	}
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		
 		Survey survey = Survey.get(params.surveyId);

@@ -45,6 +45,7 @@ import org.chai.kevin.value.DataValue;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
@@ -453,7 +454,7 @@ class Initializer {
 			).save(failOnError: true)
 			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression"), type: MapsTargetType.AGGREGATION, maxValue: 20d).save(failOnError: true, flush:true)
 			
-			def calculation1 = new Calculation(expressions: [
+			def calculation1 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 10"),
 						"Health Center": Expression.findByCode("Constant 20")
 					], timestamp:new Date(), type: ValueType.VALUE)
@@ -533,7 +534,7 @@ class Initializer {
 			staffing.save(failOnError: true)
 			hrh.save(failOnError: true)
 
-			def calculation1 = new Calculation(expressions: [
+			def calculation1 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 10"),
 						"Health Center": Expression.findByCode("Constant 20")
 					], timestamp:new Date(), type: ValueType.VALUE)
@@ -544,7 +545,7 @@ class Initializer {
 					calculation: calculation1
 					), weight: 1, order: 1)
 
-			def calculation2 = new Calculation(expressions: [
+			def calculation2 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 20"),
 						"Health Center": Expression.findByCode("Constant 20")
 					], timestamp:new Date(), type: ValueType.VALUE)
@@ -555,7 +556,7 @@ class Initializer {
 					calculation: calculation2
 					), weight: 1, order: 2)
 
-			def calculation3 = new Calculation(expressions: [
+			def calculation3 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
 						"Health Center": Expression.findByCode("Element 1")
 					], timestamp:new Date(), type: ValueType.VALUE)
@@ -566,7 +567,7 @@ class Initializer {
 					calculation: calculation3
 					), weight: 1, order: 3)
 
-			def calculation4 = new Calculation(expressions: [
+			def calculation4 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
 					], timestamp:new Date(), type: ValueType.VALUE)
 			calculation4.save()
@@ -576,7 +577,7 @@ class Initializer {
 					calculation: calculation4
 					), weight: 1, order: 4)
 
-			def calculation5 = new Calculation(expressions: [
+			def calculation5 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 2"),
 						"Health Center": Expression.findByCode("Element 2")
 					], timestamp:new Date(), type: ValueType.VALUE)
@@ -587,7 +588,7 @@ class Initializer {
 					calculation: calculation5
 					), weight: 1, order: 5)
 
-			def calculation6 = new Calculation(expressions: [
+			def calculation6 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 3"),
 						"Health Center": Expression.findByCode("Element 3")
 					], timestamp:new Date(), type: ValueType.VALUE)

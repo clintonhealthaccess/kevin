@@ -64,6 +64,7 @@ public class SurveyValidationRule {
 	}
 	
 	@ManyToMany(targetEntity=SurveyElement.class)
+	@JoinColumn(name="dhsst_survey_validation_dependencies")
 	public List<SurveyElement> getDependencies() {
 		return dependencies;
 	}

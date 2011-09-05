@@ -39,10 +39,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.ValueType;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
@@ -66,28 +69,53 @@ public class ExpressionService {
 	private OrganisationService organisationService;
 	private ValueService valueService;
 
-	private class CalculateValueCalculator implements ValueCalculator {
-
+	private Map<Class<?>, ValueCalculator<?>> calculatorMap = new HashMap<Class<?>, ValueCalculator<?>>();
+	
+	public ExpressionService() {
+		calculatorMap.put(Expression.class, new ExpressionValueCalculator());
+		calculatorMap.put(DataElement.class, new DataValueCalculator());
+		calculatorMap.put(Average.class, new AverageValueCalculator());
+		calculatorMap.put(Sum.class, new SumValueCalculator());
+	}
+	
+	private class DataValueCalculator implements ValueCalculator<DataValue> {
 		@Override
-		public DataValue getValue(DataElement dataElement, OrganisationUnit organisationUnit, Period period) {
+		public DataValue getValue(Data<DataValue> dataElement, OrganisationUnit organisationUnit, Period period) {
 			// TODO cache data values
 			return null;
 		}
-
+	}
+	
+	private class ExpressionValueCalculator implements ValueCalculator<ExpressionValue> {
 		@Override
-		public ExpressionValue getValue(Expression expression, OrganisationUnit organisationUnit, Period period) {
-			return calculateValue(expression, period, organisationService.getOrganisation(organisationUnit.getId()));
+		public ExpressionValue getValue(Data<ExpressionValue> expression, OrganisationUnit organisationUnit, Period period) {
+			return calculateValue((Expression)expression, period, organisationService.getOrganisation(organisationUnit.getId()));
 		}
+	}
 
+	
+	private class AverageValueCalculator implements ValueCalculator<CalculationValue> {
 		@Override
-		public CalculationValue getValue(Calculation calculation, OrganisationUnit organisationUnit, Period period) {
-			return calculateValues(calculation, period, organisationService.getOrganisation(organisationUnit.getId()));
+		public CalculationValue getValue(Data<CalculationValue> calculation, OrganisationUnit organisationUnit, Period period) {
+			return calculateAverageValue((Average)calculation, period, organisationService.getOrganisation(organisationUnit.getId()));
 		}
-		
+	}
+	
+	private class SumValueCalculator implements ValueCalculator<CalculationValue> {
+		@Override
+		public CalculationValue getValue(Data<CalculationValue> count, OrganisationUnit organisationUnit, Period period) {
+			return calculateSumValue((Sum)count, period, organisationService.getOrganisation(organisationUnit.getId()));
+		}
 	}
 	
 	public <T extends Value> T calculate(Data<T> data, OrganisationUnit organisationUnit, Period period) {
-		return data.getValue(new CalculateValueCalculator(), organisationUnit, period);
+		// TODO make a registry class with this code
+		Class<?> clazz = data.getClass();
+		while (!calculatorMap.containsKey(clazz)) {
+			clazz = clazz.getSuperclass();
+		}
+		ValueCalculator<T> calculator = (ValueCalculator<T>)calculatorMap.get(clazz);
+		return data.getValue(calculator, organisationUnit, period);
 	}
 	
 	/**
@@ -98,7 +126,7 @@ public class ExpressionService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Map<Organisation, ExpressionValue> calculateExpressionValues(Calculation calculation, Period period, Organisation organisation) {
+	public Map<Organisation, ExpressionValue> calculateExpressionValues(Map<String, Expression> expressions, Period period, Organisation organisation) {
 		Map<Organisation, ExpressionValue> result = new HashMap<Organisation, ExpressionValue>();
 		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 		
@@ -107,7 +135,7 @@ public class ExpressionService {
 			organisationService.loadGroup(child);
 			
 			ExpressionValue expressionValue = null;
-			Expression expression = getMatchingExpression(calculation, child);
+			Expression expression = getMatchingExpression(expressions, child);
 			if (expression != null) { 
 				expressionValue = (ExpressionValue)valueService.getValue(expression, child.getOrganisationUnit(), period);
 			}
@@ -134,14 +162,82 @@ public class ExpressionService {
 	 */
 	// TODO decide if this can be called with a facility, 
 	@Transactional(readOnly=true)
-	private CalculationValue calculateValues(Calculation calculation, Period period, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("getValues(calculation="+calculation+",period="+period+",organisation="+organisation+")");
+	private CalculationValue calculateAverageValue(Calculation calculation, Period period, Organisation organisation) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",organisation="+organisation+")");
 		
-		Map<Organisation, ExpressionValue> result = calculateExpressionValues(calculation, period, organisation);
-		CalculationValue calculationValue = new CalculationValue(calculation, organisation.getOrganisationUnit(), period, result);
+		if (calculation.getType() != ValueType.VALUE) log.error("averaging value of non VALUE type calculation: "+calculation);
+		// we do it anyway in case it's a user error
 		
-		if (log.isDebugEnabled()) log.debug("getValues(...)="+calculationValue);
+		Map<Organisation, ExpressionValue> result = calculateExpressionValues(calculation.getExpressions(), period, organisation);
+
+		CalculationValue calculationValue = new CalculationValue(calculation, organisation.getOrganisationUnit(), period, 
+				calculateAverage(result), calculateHasMissingValues(result), calculateHasMissingExpression(result));
+		
+		if (log.isDebugEnabled()) log.debug("calculateValue(...)="+calculationValue);
 		return calculationValue;
+	}
+	
+	@Transactional(readOnly=true)
+	private CalculationValue calculateSumValue(Sum count, Period period, Organisation organisation) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(count="+count+",period="+period+",organisation="+organisation+")");
+		
+		Map<Organisation, ExpressionValue> result = calculateExpressionValues(count.getExpressions(), period, organisation);
+		
+		CalculationValue countValue = new CalculationValue(count, organisation.getOrganisationUnit(), period, 
+				calculateSum(result), calculateHasMissingValues(result), calculateHasMissingExpression(result));
+		
+		if (log.isDebugEnabled()) log.debug("calculateValue(...)="+countValue);
+		return countValue;
+	}
+	
+	private boolean calculateHasMissingValues(Map<Organisation, ExpressionValue> values) {
+		for (ExpressionValue expressionValue : values.values()) {
+			if (expressionValue != null && expressionValue.getStatus() == Status.MISSING_VALUE) return true;
+		}
+		return false;
+	}
+	
+	private boolean calculateHasMissingExpression(Map<Organisation, ExpressionValue> values) {
+		for (ExpressionValue expressionValue : values.values()) {
+			if (expressionValue == null) return true;
+		}
+		return false;
+	}
+
+	private String calculateSum(Map<Organisation, ExpressionValue> values) {
+		Double sum = 0d;
+		for (ExpressionValue expressionValue : values.values()) {
+			if (expressionValue != null && expressionValue.getStatus() == Status.VALID) {
+				try {
+					sum += Double.parseDouble(expressionValue.getValue());
+				} catch (NumberFormatException e) {
+					log.warn("non-number value found in sum: ", e);
+				}
+			}
+		}
+		return sum.toString();
+	}
+	
+	private String calculateAverage(Map<Organisation, ExpressionValue> values) {
+		String value;
+		
+		Double sum = 0d;
+		Integer num = 0;
+		for (ExpressionValue expressionValue : values.values()) {
+			if (expressionValue != null && expressionValue.getStatus() == Status.VALID) {
+				try {
+					sum += Double.parseDouble(expressionValue.getValue());
+					num++;
+				} catch (NumberFormatException e) {
+					log.warn("non-number value found in average: ", e);
+				}
+			}
+		}
+		Double average = sum / num;
+		if (average.isNaN()) average = null;
+		value = average==null?null:average.toString();
+		
+		return value; 
 	}
 	
 	/**
@@ -169,7 +265,7 @@ public class ExpressionService {
 	 */
 	@Transactional(readOnly=true)
 	private ExpressionValue calculateValue(Expression expression, Period period, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("getValue(expression="+expression+",period="+period+",organisation="+organisation+")");
+		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",organisation="+organisation+")");
 		
 		String value = null;
 		Status status = null;
@@ -216,12 +312,12 @@ public class ExpressionService {
 		return true;
 	}
 
-	public Expression getMatchingExpression(Calculation calculation, Organisation organisation) {
+	public Expression getMatchingExpression(Map<String, Expression> expressions, Organisation organisation) {
 		OrganisationUnitGroup group = organisation.getOrganisationUnitGroup();
 		if (log.isDebugEnabled()) log.debug("group on organisation: "+group);
-		if (log.isDebugEnabled()) log.debug("groups on calculations: "+calculation.getExpressions().keySet());
+		if (log.isDebugEnabled()) log.debug("groups on calculations: "+expressions.keySet());
 
-		Expression expression = calculation.getExpressions().get(group.getUuid());
+		Expression expression = expressions.get(group.getUuid());
 		if (log.isDebugEnabled()) log.debug("found matching expression: "+expression);
 		return expression;
 	}
@@ -303,13 +399,13 @@ public class ExpressionService {
 	@Transactional(readOnly=false)
 	public void refreshExpressions() {
 		for (ExpressionValue expressionValue : valueService.getOutdatedExpressions()) {
-			ExpressionValue newValue = calculateValue(expressionValue.getExpression(), expressionValue.getPeriod(), organisationService.getOrganisation(expressionValue.getOrganisationUnit().getId()));
+			ExpressionValue newValue = calculate(expressionValue.getExpression(), expressionValue.getOrganisationUnit(), expressionValue.getPeriod());
 			expressionValue.setStatus(newValue.getStatus());
 			expressionValue.setValue(newValue.getValue());
 			valueService.save(expressionValue);
 		}
 		for (ExpressionValue expressionValue : valueService.getNonCalculatedExpressions()) {
-			ExpressionValue newValue = calculateValue(expressionValue.getExpression(), expressionValue.getPeriod(), organisationService.getOrganisation(expressionValue.getOrganisationUnit().getId()));
+			ExpressionValue newValue = calculate(expressionValue.getExpression(), expressionValue.getOrganisationUnit(), expressionValue.getPeriod());
 			valueService.save(newValue);
 		}
 	}
@@ -317,14 +413,14 @@ public class ExpressionService {
 	@Transactional(readOnly=false)
 	public void refreshCalculations() {
 		for (CalculationValue calculationValue : valueService.getOutdatedCalculations()) {
-			CalculationValue newValue = calculateValues(calculationValue.getCalculation(), calculationValue.getPeriod(), organisationService.getOrganisation(calculationValue.getOrganisationUnit().getId()));
+			CalculationValue newValue = calculate(calculationValue.getCalculation(), calculationValue.getOrganisationUnit(), calculationValue.getPeriod());
 			calculationValue.setValue(newValue.getValue());
 			calculationValue.setHasMissingExpression(newValue.getHasMissingExpression());
 			calculationValue.setHasMissingValues(newValue.getHasMissingValues());
 			valueService.save(calculationValue);
 		}
 		for (CalculationValue calculationValue : valueService.getNonCalculatedCalculations()) {
-			CalculationValue newValue = calculateValues(calculationValue.getCalculation(), calculationValue.getPeriod(), organisationService.getOrganisation(calculationValue.getOrganisationUnit().getId()));
+			CalculationValue newValue = calculate(calculationValue.getCalculation(), calculationValue.getOrganisationUnit(), calculationValue.getPeriod());
 			valueService.save(newValue);
 		}
 	}

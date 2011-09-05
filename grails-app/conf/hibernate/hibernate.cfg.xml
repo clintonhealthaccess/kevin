@@ -11,6 +11,8 @@
 	    <mapping class="org.chai.kevin.data.Data" />
 	    <mapping class="org.chai.kevin.data.Expression" />
 	    <mapping class="org.chai.kevin.data.Calculation" />
+	    <mapping class="org.chai.kevin.data.Average" />
+	    <mapping class="org.chai.kevin.data.Sum" />
 	    <mapping class="org.chai.kevin.data.DataElement" />
 	    <mapping class="org.chai.kevin.data.Enum" />
 	    <mapping class="org.chai.kevin.data.EnumOption" />
@@ -20,7 +22,7 @@
 	    <mapping class="org.chai.kevin.value.DataValue" />
 	    <mapping class="org.chai.kevin.value.ExpressionValue" />
 	    <mapping class="org.chai.kevin.value.CalculationValue" />
-	
+
 	    <mapping class="org.chai.kevin.dashboard.DashboardEntry" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardTarget" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardObjective" />

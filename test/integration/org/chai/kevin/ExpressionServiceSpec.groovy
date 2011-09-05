@@ -1,10 +1,13 @@
 package org.chai.kevin;
 
+import org.chai.kevin.data.Average;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ValueType;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.ExpressionValue.Status;
@@ -43,6 +46,7 @@ import org.hisp.dhis.period.Period;
 public class ExpressionServiceSpec extends IntegrationTests {
 
 	def expressionService;
+	def valueService;
 	
 	def setup() {
 		Initializer.createDummyStructure();
@@ -145,7 +149,127 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		"EXPRINT"		| "Kivuye HC"		| Status.VALID			| 10d
 		"EXPRINT"		| "Burera"			| Status.VALID			| 30d
 	}
+	
+	def setupData() {
+		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: ValueType.VALUE).save(faileOnError: true)
+		
+		new DataValue(
+			dataElement: DataElement.findByCode("CODEINT"),
+			period: Period.list()[1],
+			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
+			value: "1",
+			timestamp: new Date()
+		).save(failOnError: true)
+		
+		new DataValue(
+			dataElement: DataElement.findByCode("CODEINT"),
+			period: Period.list()[1],
+			organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+			value: "2",
+			timestamp: new Date()
+		).save(failOnError: true)
+		
+		new Expression(names:j(["en":"Enum"]), code:"EXPRBOOL", expression: "if(["+DataElement.findByCode("CODEINT").id+"]==2,1,0)", type: ValueType.BOOL, timestamp: new Date()).save(failOnError: true)
+		new Expression(names:j(["en":"Enum"]), code:"EXPRCONST", expression: "1", type: ValueType.BOOL, timestamp: new Date()).save(failOnError: true)
+	}
+	
+	def setupSum() {
+		new Sum(expressions: [
+			"District Hospital": Expression.findByCode("EXPRBOOL"),
+			"Health Center": Expression.findByCode("EXPRBOOL")
+		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
+		new Sum(expressions: [
+			"District Hospital": Expression.findByCode("EXPRCONST"),
+			"Health Center": Expression.findByCode("EXPRCONST")
+		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
+	}
 
+	def "test sum"() {
+		setup:
+		setupData();
+		setupSum();
+		expressionService.refreshExpressions()	
+
+		when:
+		def period = Period.list()[1]
+		def organisation = IntegrationTests.getOrganisation(organisationName)
+		def countT = Sum.list()[countNum]
+		CalculationValue value = expressionService.calculate(countT, organisation.organisationUnit, period)
+		
+		then:
+		value.value == expectedValue+""
+				
+		where:
+		countNum	| organisationName	| expectedValue
+		0			| "Butaro DH"		| 0d
+		0			| "Kivuye HC"		| 1d
+		0			| "Burera"			| 1d
+		1			| "Butaro DH"		| 1d
+		1			| "Kivuye HC"		| 1d
+		1			| "Burera"			| 2d
+	}
+	
+	def "test average"() {
+		setup:
+		setupData();
+		
+		new Average(expressions: [
+			"District Hospital": Expression.findByCode("EXPRBOOL"),
+			"Health Center": Expression.findByCode("EXPRBOOL")
+		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
+		new Average(expressions: [
+			"District Hospital": Expression.findByCode("EXPRCONST"),
+			"Health Center": Expression.findByCode("EXPRCONST")
+		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
+		
+		expressionService.refreshExpressions();
+		
+		when:
+		def period = Period.list()[1]
+		def organisation = IntegrationTests.getOrganisation(organisationName)
+		def average = Average.list()[averageNum]
+		CalculationValue value = expressionService.calculate(average, organisation.organisationUnit, period)
+		
+		then:
+		value.value == expectedValue+""
+				
+		where:
+		averageNum	| organisationName	| expectedValue
+		0			| "Butaro DH"		| 0d
+		0			| "Kivuye HC"		| 1d
+		0			| "Burera"			| 0.5d
+		1			| "Butaro DH"		| 1d
+		1			| "Kivuye HC"		| 1d
+		1			| "Burera"			| 1d
+	}
+	
+	def "test sum refresh"() {
+		setup:
+		setupData();
+		setupSum();
+		expressionService.refreshExpressions();
+		expressionService.refreshCalculations();
+		
+		when:
+		def period = Period.list()[1]
+		def organisation = IntegrationTests.getOrganisation(organisationName)
+		def countT = Sum.list()[countNum]
+		CalculationValue value = valueService.getValue(countT, organisation.organisationUnit, period)
+		
+		then:
+		value.value == expectedValue+""
+				
+		where:
+		countNum	| organisationName	| expectedValue
+		0			| "Butaro DH"		| 0d
+		0			| "Kivuye HC"		| 1d
+		0			| "Burera"			| 1d
+		1			| "Butaro DH"		| 1d
+		1			| "Kivuye HC"		| 1d
+		1			| "Burera"			| 2d
+		
+	}
+	
 	def "data element in expression when wrong format"() {
 		when:
 		def dataElements = expressionService.getDataInExpression("[test]")

@@ -58,7 +58,7 @@ public class DataElement extends Data<DataValue> {
 	}
 	
 	@Override
-	public DataValue getValue(ValueCalculator calculator, OrganisationUnit organisationUnit, Period period) {
+	public DataValue getValue(ValueCalculator<DataValue> calculator, OrganisationUnit organisationUnit, Period period) {
 		return calculator.getValue(this, organisationUnit, period);
 	}
 	

@@ -18,6 +18,7 @@
 	<g:javascript library="jquery" plugin="jquery" />
 	<g:javascript src="jquery/fieldselection/jquery.fieldselection.js" />
 	<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
+	<g:javascript src="jquery/cluetip/lib/jquery.hoverIntent.js" />
 	<g:javascript src="jquery/form/jquery.form.js" />
 	<g:javascript src="jquery/fliptext/jquery.mb.flipText.js" />
 	<g:javascript src="richeditor/nicEdit.js" />
@@ -79,9 +80,9 @@
 						</li>
 					</shiro:hasPermission>
 				</ul>
-				<shiro:user>
-					<div class="float-right" style="background-color: red;"><a target="_blank" href="http://www.dhsst.org/redmine">Found a bug? Go to REDMINE</a></div>
-				</shiro:user>
+				<shiro:hasPermission permission="admin">
+					<div class="float-right" style="background-color: red;"><a target="_blank" href="http://districthealth.moh.gov.rw/redmine">Found a bug? Go to REDMINE</a></div>
+				</shiro:hasPermission>
 				<div class="clear"></div>
 			</div>
 			<div class="clear"></div>
@@ -141,14 +142,17 @@
 				
 				$(document).find(this.config.deleteLinks).each(function(index, element) {
 					$(element).bind('click', function() {
-						$.ajax({
-							type : 'POST',
-							dataType: 'json',
-							url : $(this).attr('href'),
-							success : function() {
-								location.reload();
-							}
-						});
+						var del = confirm('Are you sure you want to delete this?')
+						if (del) {
+							$.ajax({
+								type : 'POST',
+								dataType: 'json',
+								url : $(this).attr('href'),
+								success : function() {
+									location.reload();
+								}
+							});
+						}
 						return false;
 					});
 				});
@@ -249,7 +253,12 @@
 			hoverIntent : false,
 			dropShadow : false,
 			width : '400px',
-			clickThrough : true
+			clickThrough : true,
+			hoverIntent: {
+				sensitivity:  1,
+				interval:     500,
+				timeout:      0
+			}
 		};
 
 		/**

@@ -45,6 +45,8 @@ import org.hisp.dhis.period.Period;
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Expression extends Data<ExpressionValue> {
 
+	private static final long serialVersionUID = 4195611279267888574L;
+	
 	private String expression;
 	
 	@Lob
@@ -62,7 +64,7 @@ public class Expression extends Data<ExpressionValue> {
 	}
 	
 	@Override
-	public ExpressionValue getValue(ValueCalculator calculator, OrganisationUnit organisationUnit, Period period) {
+	public ExpressionValue getValue(ValueCalculator<ExpressionValue> calculator, OrganisationUnit organisationUnit, Period period) {
 		return calculator.getValue(this, organisationUnit, period);
 	}
 	

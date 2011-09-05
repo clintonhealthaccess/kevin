@@ -1,5 +1,6 @@
 package org.chai.kevin.data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
@@ -32,7 +33,7 @@ import org.hisp.dhis.period.Period;
 @Entity(name="Data")
 @Table(name="dhsst_data", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy=InheritanceType.JOINED)
-abstract public class Data<T extends Value> implements Timestamped {
+abstract public class Data<T extends Value> implements Timestamped, Serializable {
 	
 	private static final long serialVersionUID = 7470871788061305391L;
 
@@ -135,7 +136,6 @@ abstract public class Data<T extends Value> implements Timestamped {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -143,7 +143,7 @@ abstract public class Data<T extends Value> implements Timestamped {
 			return false;
 		if (!(obj instanceof Data))
 			return false;
-		Data<T> other = (Data<T>) obj;
+		Data<?> other = (Data<?>) obj;
 		if (getCode() == null) {
 			if (other.getCode() != null)
 				return false;
@@ -151,13 +151,13 @@ abstract public class Data<T extends Value> implements Timestamped {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Data [type=" + type + ", enume=" + enume + ", code=" + code + "]";
 	}
 
 	@Transient
-	public abstract T getValue(ValueCalculator calculator, OrganisationUnit organisationUnit, Period period);
+	public abstract T getValue(ValueCalculator<T> calculator, OrganisationUnit organisationUnit, Period period);
 	
 }

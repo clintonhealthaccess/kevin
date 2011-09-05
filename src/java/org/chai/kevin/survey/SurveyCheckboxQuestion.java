@@ -119,8 +119,10 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	public Set<String> getOrganisationUnitGroupApplicable(SurveyElement surveyElement) {
 		Set<String> optionOrgUnitUuIds = new HashSet<String>();
 
+		boolean found = false;
 		for (SurveyCheckboxOption option : this.getOptions()) {
 			if (surveyElement.equals(option.getSurveyElement())) {
+				found = true;
 				optionOrgUnitUuIds.addAll(CollectionUtils.intersection(
 					option.getOrganisationUnitGroupApplicable(),
 					Utils.getGroupUuids(this.getGroupUuidString()))
@@ -128,7 +130,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 			}
 		}
 
-		if (optionOrgUnitUuIds.isEmpty()) {
+		if (!found) {
 			throw new IllegalArgumentException("survey element does not belong to question (options)");
 		}
 		return new HashSet<String>(CollectionUtils.intersection(optionOrgUnitUuIds,

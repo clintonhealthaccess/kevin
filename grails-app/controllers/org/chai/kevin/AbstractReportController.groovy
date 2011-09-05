@@ -28,6 +28,7 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.period.Period
 
 abstract class AbstractReportController {
@@ -46,7 +47,7 @@ abstract class AbstractReportController {
 	protected def getPeriod() {
 		Period period = Period.get(params.int('period'))
 		if (period == null) {
-			period = Period.findAll()[Period.count()-1]
+			period = Period.findAll()[ConfigurationHolder.config.site.period]
 		}
 		return period
 	}

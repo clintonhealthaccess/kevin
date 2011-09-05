@@ -146,6 +146,11 @@ public class SurveyPage {
 		return getIncompleteSections().isEmpty() && getInvalidQuestions().isEmpty();
 	}
 	
+	public boolean canReopen() {
+		SurveyEnteredObjective enteredObjective = enteredObjectives.get(objective);
+		return enteredObjective.getStatus() == ObjectiveStatus.CLOSED;
+	}
+	
 	public boolean isLastSection() {
 		List<SurveySection> sections = objective.getSections(organisation.getOrganisationUnitGroup());
 		return sections.indexOf(currentSection) == sections.size() - 1; 
@@ -401,6 +406,19 @@ public class SurveyPage {
 		
 		for (SurveyEnteredObjective enteredObjective : enteredObjectives.values()) {
 			surveyElementService.save(enteredObjective);
+		}
+	}
+	
+	public void reopen(SurveyElementService surveyElementService) {
+		if (log.isDebugEnabled()) log.debug("reopen()");
+
+		SurveyEnteredObjective enteredObjective = enteredObjectives.get(objective);
+		enteredObjective.setStatus(ObjectiveStatus.COMPLETE);
+		surveyElementService.save(enteredObjective);
+		
+		for (SurveyEnteredSection enteredSection : enteredSections.values()) {
+			enteredSection.setStatus(SectionStatus.COMPLETE);
+			surveyElementService.save(enteredSection);
 		}
 	}
 	

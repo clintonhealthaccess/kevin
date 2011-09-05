@@ -30,6 +30,7 @@ package org.chai.kevin.data
 
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.data.Enum as Enum;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 /**
  * @author Jean Kahigiso M.
@@ -71,7 +72,7 @@ class EnumController extends AbstractEntityController {
 	}
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		List<Enum> enums = Enum.list(params);
 		render (view: '/entity/list', model:[
 			entities: enums,

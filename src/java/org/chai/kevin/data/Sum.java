@@ -28,53 +28,17 @@ package org.chai.kevin.data;
   * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
   
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.ValueCalculator;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.period.Period;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name="Calculation")
-@Table(name="dhsst_calculation")
-@Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Calculation extends Data<CalculationValue> {
+@Entity(name="Summ")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Table(name="dhsst_calculation_sum")
+public class Sum extends Calculation {
 
 	private static final long serialVersionUID = -633638638981261851L;
-	
-	private Map<String, Expression> expressions = new HashMap<String, Expression>();
-	
-	@ManyToMany(targetEntity=Expression.class)
-	@JoinTable(name="dhsst_calculation_expression", 
-		inverseJoinColumns=@JoinColumn(name="expression", nullable=true)
-	)
-	@MapKeyColumn(name="groupUuid")
-	public Map<String, Expression> getExpressions() {
-		return expressions;
-	}
-	
-	public void setExpressions(Map<String, Expression> expressions) {
-		this.expressions = expressions;
-	}
-
-	@Override
-	public String toString() {
-		return "Calculation [expressions=" + expressions + "]";
-	}
-
-	@Override
-	public CalculationValue getValue(ValueCalculator<CalculationValue> calculator, OrganisationUnit organisationUnit, Period period) {
-		return calculator.getValue(this, organisationUnit, period);
-	}
 	
 }

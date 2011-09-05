@@ -84,7 +84,7 @@ public class PercentageCalculator {
 
 		// but we try anyway, can be a user mistake
 		DashboardPercentage percentage;
-		Expression expression = expressionService.getMatchingExpression(target.getCalculation(), organisation);
+		Expression expression = expressionService.getMatchingExpression(target.getCalculation().getExpressions(), organisation);
 		if (expression != null) {
 			ExpressionValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
 			if (expressionValue == null) return null;

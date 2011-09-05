@@ -51,8 +51,14 @@ public abstract class AbstractValue implements Value {
 
 	private Date timestamp = new Date();
 	
-	public AbstractValue() {
-		super();
+	public AbstractValue(){
+		// default constructor for hibernate
+	}
+	
+	public AbstractValue(OrganisationUnit organisationUnit, Period period, String value) {
+		this.organisationUnit = organisationUnit;
+		this.period = period;
+		this.value = value;
 	}
 
 	@NaturalId
@@ -114,8 +120,8 @@ public abstract class AbstractValue implements Value {
 		int result = 1;
 		result = prime
 				* result
-				+ ((organisationUnit == null) ? 0 : organisationUnit.hashCode());
-		result = prime * result + ((period == null) ? 0 : period.getId());
+				+ ((getOrganisationUnit() == null) ? 0 : getOrganisationUnit().hashCode());
+		result = prime * result + ((getPeriod() == null) ? 0 : getPeriod().getId());
 		return result;
 	}
 
@@ -125,18 +131,18 @@ public abstract class AbstractValue implements Value {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof AbstractValue))
 			return false;
 		AbstractValue other = (AbstractValue) obj;
-		if (organisationUnit == null) {
-			if (other.organisationUnit != null)
+		if (getOrganisationUnit() == null) {
+			if (other.getOrganisationUnit() != null)
 				return false;
-		} else if (!organisationUnit.equals(other.organisationUnit))
+		} else if (!getOrganisationUnit().equals(other.getOrganisationUnit()))
 			return false;
-		if (period == null) {
-			if (other.period != null)
+		if (getPeriod() == null) {
+			if (other.getPeriod() != null)
 				return false;
-		} else if (!period.equals(other.period))
+		} else if (!getPeriod().equals(other.getPeriod()))
 			return false;
 		return true;
 	}

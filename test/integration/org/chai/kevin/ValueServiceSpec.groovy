@@ -28,6 +28,7 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
@@ -131,7 +132,7 @@ class ValueServiceSpec extends IntegrationTests {
 			type: ValueType.VALUE,
 			timestamp:new Date()
 		).save(failOnError: true)
-		new Calculation(expressions: [
+		new Average(expressions: [
 			"District Hospital": Expression.findByCode("Constant 10"),
 			"Health Center": Expression.findByCode("Constant 10")
 		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
@@ -150,7 +151,7 @@ class ValueServiceSpec extends IntegrationTests {
 			type: ValueType.VALUE,
 			timestamp:new Date()
 		).save(failOnError: true)
-		new Calculation(expressions: [
+		new Average(expressions: [
 			"District Hospital": Expression.findByCode("Constant 10"),
 			"Health Center": Expression.findByCode("Constant 10")
 		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
@@ -190,7 +191,7 @@ class ValueServiceSpec extends IntegrationTests {
 			type: ValueType.VALUE,
 			timestamp:new Date()
 		).save(failOnError: true)
-		new Calculation(expressions: [
+		new Average(expressions: [
 			"District Hospital": Expression.findByCode("Constant 10"),
 			"Health Center": Expression.findByCode("Constant 10")
 		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)

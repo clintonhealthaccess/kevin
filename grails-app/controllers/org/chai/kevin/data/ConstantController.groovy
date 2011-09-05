@@ -32,6 +32,7 @@ import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.DataService
 import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class ConstantController extends AbstractEntityController {
 	
@@ -75,7 +76,7 @@ class ConstantController extends AbstractEntityController {
 	}
 
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		render (view: '/entity/list', model:[
 			entities: Constant.list(params), 
 			entityCount: Constant.count(), 
