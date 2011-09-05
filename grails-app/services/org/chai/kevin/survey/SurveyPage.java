@@ -75,8 +75,8 @@ public class SurveyPage {
 	private Map<SurveyObjective, SurveyEnteredObjective> enteredObjectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
 	private Map<SurveySection, SurveyEnteredSection> enteredSections = new HashMap<SurveySection, SurveyEnteredSection>();
 	private Set<SurveyQuestion> skippedQuestions = new HashSet<SurveyQuestion>();
-	private Set<SurveyEnteredValue> skippedValues = new HashSet<SurveyEnteredValue>();
-	private Set<SurveyEnteredValue> invalidValues = new HashSet<SurveyEnteredValue>();
+//	private Set<SurveyEnteredValue> skippedValues = new HashSet<SurveyEnteredValue>();
+//	private Set<SurveyEnteredValue> invalidValues = new HashSet<SurveyEnteredValue>();
 	
 	public SurveyPage(){}
 
@@ -134,13 +134,13 @@ public class SurveyPage {
 		return skippedQuestions.contains(surveyQuestion);
 	}
 	
-	public boolean isSkipped(SurveyEnteredValue enteredValue) {
-		return skippedValues.contains(enteredValue);
-	}
+//	public boolean isSkipped(SurveyEnteredValue enteredValue) {
+//		return skippedValues.contains(enteredValue);
+//	}
 	
-	public boolean isValid(SurveyEnteredValue enteredValue) {
-		return !invalidValues.contains(enteredValue);
-	}
+//	public boolean isValid(SurveyEnteredValue enteredValue) {
+//		return !invalidValues.contains(enteredValue);
+//	}
 	
 	public boolean canSubmit() {
 		return getIncompleteSections().isEmpty() && getInvalidQuestions().isEmpty();
@@ -160,7 +160,8 @@ public class SurveyPage {
 		if (!skippedQuestions.contains(question)) {
 			for (SurveyElement element : question.getSurveyElements(organisation.getOrganisationUnitGroup())) {
 				SurveyEnteredValue value = enteredValues.get(element);
-				if (!skippedValues.contains(value) && invalidValues.contains(value)) return false;
+//				if (!skippedValues.contains(value) && invalidValues.contains(value)) return false;
+				if (!value.getSkipped() && !value.getValid()) return false;
 			}
 		}
 		return true;
@@ -232,13 +233,15 @@ public class SurveyPage {
 			if (skippedQuestions.contains(element.getSurveyQuestion())) continue;
 			
 			SurveyEnteredValue enteredValue = enteredValues.get(element);
-			
-			if (!skippedValues.contains(enteredValue)) {
+//			
+//			if (!skippedValues.contains(enteredValue)) {
+			if (!enteredValue.getSkipped()) {
 				if (enteredValue.getValue() == null) {
 					status = SectionStatus.INCOMPLETE;
 				}
 				else {
-					if (invalidValues.contains(enteredValue)) {
+//					if (invalidValues.contains(enteredValue)) {
+					if (!enteredValue.getValid()) {
 						status = SectionStatus.INVALID;
 						break;
 					}
@@ -252,7 +255,8 @@ public class SurveyPage {
 	public List<SurveyElement> getSkippedElements() {
 		List<SurveyElement> result = new ArrayList<SurveyElement>();
 		for (SurveyEnteredValue surveyEnteredValue : enteredValues.values()) {
-			if (skippedValues.contains(surveyEnteredValue)) result.add(surveyEnteredValue.getSurveyElement());
+//			if (skippedValues.contains(surveyEnteredValue)) result.add(surveyEnteredValue.getSurveyElement());
+			if (surveyEnteredValue.getSkipped()) result.add(surveyEnteredValue.getSurveyElement());
 		}
 		return result;
 	}
@@ -264,11 +268,16 @@ public class SurveyPage {
 	
 	// for JSON answer
 	public List<SurveySection> getIncompleteSections() {
+		List<SurveySection> sections = new ArrayList<SurveySection>();
+		if (currentSection != null) sections.add(currentSection);
+		else if (objective != null) sections.addAll(objective.getSections(organisation.getOrganisationUnitGroup()));
+		
 		List<SurveySection> result = new ArrayList<SurveySection>();
-		section: for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
+		section: for (SurveySection section : sections) {
 			for (SurveyElement element : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
 				SurveyEnteredValue enteredValue = enteredValues.get(element);
-				if (!skippedValues.contains(enteredValue) && enteredValue.getValue() == null) { 
+//				if (!skippedValues.contains(enteredValue) && enteredValue.getValue() == null) {
+				if (!enteredValue.getSkipped() && enteredValue.getValue() == null) {
 					result.add(section);
 					continue section;
 				}
@@ -279,8 +288,12 @@ public class SurveyPage {
 	}
 	// for JSON answer
 	public Map<SurveySection, List<SurveyQuestion>> getInvalidQuestions() {
+		List<SurveySection> sections = new ArrayList<SurveySection>();
+		if (currentSection != null) sections.add(currentSection);
+		else if (objective != null) sections.addAll(objective.getSections(organisation.getOrganisationUnitGroup()));
+		
 		Map<SurveySection, List<SurveyQuestion>> result = new LinkedHashMap<SurveySection, List<SurveyQuestion>>();
-		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
+		for (SurveySection section : sections) {
 			List<SurveyQuestion> invalidQuestions = new ArrayList<SurveyQuestion>();
 			for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
 				if (!isValid(question)) invalidQuestions.add(question);
@@ -289,7 +302,6 @@ public class SurveyPage {
 		}
 		return result;
 	}
-	
 	
 	// side-effect method
 	public void transferValues(ValidationService validationService, SurveyElementService surveyElementService) {
@@ -336,7 +348,7 @@ public class SurveyPage {
 			for (SurveyElement surveyElement : section.getSurveyElements(organisation.getOrganisationUnitGroup())) {
 				SurveyEnteredValue enteredValue = enteredValues.get(surveyElement);
 				if (skippedQuestions.contains(surveyElement.getSurveyQuestion()) || validationService.isSkipped(surveyElement, organisation, enteredValues.values())) {
-					skippedValues.add(enteredValue);
+//					skippedValues.add(enteredValue);
 					enteredValue.setSkipped(true);
 				}
 				else {
@@ -362,7 +374,7 @@ public class SurveyPage {
 					elementValue.setInvalidWarnings(warnings);
 				}
 				if (!errors.isEmpty() || !warnings.isEmpty()) {
-					invalidValues.add(enteredValue);
+//					invalidValues.add(enteredValue);
 					enteredValue.setValid(false);
 				}
 				else {
@@ -429,7 +441,8 @@ public class SurveyPage {
 		
 		for (SurveyEnteredValue enteredValue : enteredValues.values()) {
 			// we don't save skipped data values
-			if (skippedValues.contains(enteredValue) || isSkipped(enteredValue.getSurveyElement().getSurveyQuestion())) continue;
+//			if (skippedValues.contains(enteredValue) || isSkipped(enteredValue.getSurveyElement().getSurveyQuestion())) continue;
+			if (enteredValue.getSkipped() || isSkipped(enteredValue.getSurveyElement().getSurveyQuestion())) continue;
 			
 			DataElement dataElement = enteredValue.getSurveyElement().getDataElement();
 			DataValue value = valueService.getValue(dataElement, organisation.getOrganisationUnit(), getPeriod());

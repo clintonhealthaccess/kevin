@@ -25,10 +25,11 @@
 						<g:each in="${question.getColumns(organisationUnitGroup)}" var="column">
 							<g:set var="surveyElement" value="${row.surveyElements[column]}"/>
 							<g:set var="dataElement" value="${surveyElement.dataElement}"/>
-							<g:set var="surveyEnteredValue" value="${surveyPage.enteredValues[surveyElement]}"/>
+							<g:set var="surveyEnteredValue" value="${surveyPage.enteredValues[surveyElement]}" />
+						    <g:set var="surveyElementValue" value="${surveyPage.surveyElements[surveyElement.id]}" />
 			
-							<td class="element-${surveyElement.id} element ${surveyPage.isSkipped(surveyEnteredValue)?'skipped':''}  ${!surveyPage.isValid(surveyEnteredValue)?'errors':''}" data-element="${surveyElement.id}">
-								<g:render template="/survey/element/${dataElement.type}" model="[surveyElement: surveyElement, surveyPage: surveyPage, readonly: readonly]" />
+							<td class="element-${surveyElement.id} element ${surveyEnteredValue.skipped?'skipped':''}  ${!surveyEnteredValue.valid?'errors':''}" data-element="${surveyElement.id}">
+								<g:render template="/survey/element/${dataElement.type}" model="[surveyElement: surveyElement, surveyElementValue: surveyElementValue, surveyEnteredValue: surveyEnteredValue, readonly: readonly]" />
 							</td>
 						</g:each>
 					</tr>

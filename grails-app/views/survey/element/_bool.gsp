@@ -1,14 +1,11 @@
 <!-- Bool type question -->
-<g:set var="surveyEnteredValue" value="${surveyPage.enteredValues[surveyElement]}"/>
-<g:set var="surveyElementValue" value="${surveyPage.surveyElements[surveyElement.id]}"/>
-
-<div class="element element-bool element-${surveyElement.id} ${surveyPage.isSkipped(surveyEnteredValue)?'skipped':''} ${!surveyPage.isValid(surveyEnteredValue)?'errors':''}" data-element="${surveyElement.id}" >
+<div class="element element-bool element-${surveyElement.id} ${surveyEnteredValue?.skipped?'skipped':''} ${(surveyEnteredValue==null || surveyEnteredValue?.valid)?'':'errors'}" data-element="${surveyElement.id}" >
 	<a name="element-${surveyElement.id}"></a>
 	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
 	
 	<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id" />
 	<input type="hidden" value="0" name="surveyElements[${surveyElement.id}].value"/>
-	<g:if test="${surveyElementValue.lastValue!=null}">
+	<g:if test="${surveyElementValue?.lastValue!=null}">
 		<span class="survey-old-value">
 			(
 			<g:if test="${surveyElementValue.lastValue=='1'}">

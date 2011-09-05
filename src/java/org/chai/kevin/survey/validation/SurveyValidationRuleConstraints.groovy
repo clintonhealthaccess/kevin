@@ -25,40 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.util;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
+package org.chai.kevin.survey.validation
 
 /**
  * @author Jean Kahigiso M.
- * 
+ *
  */
-public class Utils {
-
-	public static Set<String> getGroupUuids(String groupUuidString) {
-		Set<String> result = new HashSet<String>();
-		if (groupUuidString != null)
-			result.addAll(Arrays.asList(StringUtils.split(groupUuidString, ',')));
-		return result;
-	}
-
-	public static String getGroupUuidString(Object groupUuids) {
-		if (groupUuids == null) return "";
-		if (groupUuids instanceof String) return (String) groupUuids;
-		if (groupUuids instanceof Collection) return StringUtils.join(((Collection<String>)groupUuids).toArray(), ',');
-		else return StringUtils.join((Object[]) groupUuids, ',');
-	}
-	
-	@SuppressWarnings("unused")
-	private static boolean matches(String text, String value) {
-		if (value == null) return false;
-		return value.matches("(?i).*"+text+".*");
-	}
-
+constraints={
+    surveyElement(nullable: false, blank:false)
+    expression(nullable: false, blank:false)
+	validationMessage(nullable:false,blank:false)
 }

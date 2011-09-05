@@ -32,34 +32,25 @@ import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.util.Utils;
 
 class DataService {
 
     static transactional = true
-
 	def localeService
 	def sessionFactory
 	
 	Data getData(Long id) {
 		return sessionFactory.currentSession.get(Data.class, id)
 	}
-	
-//	DataElement getDataElement(Long id) {
-//		if (log.isDebugEnabled()) log.debug("getDataElement(id="+id+")")
-//		return DataElement.get(id)
-//	}
-	
-//	Constant getConstant(Long id) {
-//		return Constant.get(id)
-//	}
-	
+		
 	def searchConstants(String text) {
 		def constants = Constant.list()
 		StringUtils.split(text).each { chunk ->
 			constants.retainAll { element ->
-				DataService.matches(chunk, element.id+"") ||
-				DataService.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
-				DataService.matches(chunk, element.code) 
+				Utils.matches(chunk, element.id+"") ||
+				Utils.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
+				Utils.matches(chunk, element.code) 
 			}
 		}
 		return constants.sort {it.names[localeService.getCurrentLanguage()]}
@@ -69,18 +60,13 @@ class DataService {
 		def dataElements = DataElement.list();
 		StringUtils.split(text).each { chunk ->
 			dataElements.retainAll { element ->
-				DataService.matches(chunk, element.id+"") ||
-				DataService.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
-				DataService.matches(chunk, element.code) ||
-				DataService.matches(chunk, element.info)
+				Utils.matches(chunk, element.id+"") ||
+				Utils.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
+				Utils.matches(chunk, element.code) ||
+				Utils.matches(chunk, element.info)
 			}
 		}
 		return dataElements.sort {it.names[localeService.getCurrentLanguage()]}
     }
-	
-	private static boolean matches(String text, String value) {
-		if (value == null) return false;
-		return value.matches("(?i).*"+text+".*");
-	}
 	
 }

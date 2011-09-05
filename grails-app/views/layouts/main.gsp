@@ -6,6 +6,8 @@
 	<!-- link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}" / -->
 
 	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/cluetip',file:'jquery.cluetip.css')}"/ >
+	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/chosen',file:'chosen.css')}"/ >
+	<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/datepicker',file:'datepicker.css')}"/ >
 	
 	<link href="${resource(dir:'css',file:'screen.css')}" media="screen, projection" rel="stylesheet" type="text/css" />
 	<link href="${resource(dir:'css',file:'print.css')}" media="print" rel="stylesheet" type="text/css" />
@@ -24,6 +26,9 @@
 	<g:javascript src="richeditor/nicEdit.js" />
 	<g:javascript src="jquery/url/jquery.url.js" />
 	<g:javascript src="jquery/progressbar/jquery.progressbar.js" />
+	<g:javascript src="jquery/chosen/chosen.jquery.js" />
+	<g:javascript src="jquery/chosen/ajax-chosen.js" />
+	<g:javascript src="jquery/datepicker/glDatePicker.js" />
 	<g:javascript library="application" />
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<ga:trackPageviewAsynch />
@@ -76,6 +81,7 @@
 								<li><a href="${createLink(controller: 'enum', action:'list')}"><g:message code="header.navigation.enum" default="Enum"/></a></li>
 								<li><a href="${createLink(controller: 'iteration', action:'list')}"><g:message code="header.navigation.iteration" default="Iterations"/></a></li>
 								<li><a href="${createLink(controller: 'survey', action:'list')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+								<li><a href="${createLink(controller: 'validationMessage', action:'list')}">Validation Messages</a></li>
 							</ul>
 						</li>
 					</shiro:hasPermission>

@@ -34,7 +34,7 @@ import org.quartz.InterruptableJob;
 class ExpressionJob implements InterruptableJob {
 
 	static triggers = {
-		simple name:'simpleTrigger', startDelay:10000, repeatCount: 0
+//		simple name:'simpleTrigger', startDelay:10000, repeatCount: 0
 		cron name: 'trigger', startDelay: 10000, cronExpression: "0 0 * * * ?"
 	}
 	

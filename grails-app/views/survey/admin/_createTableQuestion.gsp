@@ -7,7 +7,7 @@
 	<div id="add-question-col">
 		<g:form url="[controller:'tableQuestion', action:'save']" useToken="true">
 		    <g:i18nInput name="tableNames" bean="${question}" value="${question.tableNames}" label="Table Names" field="tableNames"/>
-			<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250" width="400" maxHeight="250" />
+			<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250" width="380" maxHeight="250" />
 		   <g:if test="${question.id != null}">
 		   <div class="float-right">
 				<input type="hidden" name="id" value="${question.id}"></input>

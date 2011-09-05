@@ -25,41 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey
+package org.chai.kevin.survey.validation
+
 import org.chai.kevin.AbstractEntityController;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup
-import org.chai.kevin.util.Utils
+import org.chai.kevin.survey.SurveyElementService;
+import org.chai.kevin.survey.SurveyElement;
+import org.chai.kevin.survey.SurveyValidationRule;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class SectionController extends AbstractEntityController {
+class SurveyValidationRuleController extends AbstractEntityController {
 
-	def organisationService
-	
 	def getEntity(def id) {
-		return SurveySection.get(id)
+		return SurveyValidationRule.get(id)
 	}
 	def createEntity() {
-		def entity = new SurveySection()
+		def entity = new SurveyValidationRule()
 		//FIXME find a better to do this
-		if (!params['objectiveId.id']) entity.objective = SurveyObjective.get(params.objectiveId)
-		return entity
+		if (!params['surveyElement.id']) entity.surveyElement = SurveyElement.get(params.int('elementId'));
+		return entity;
 	}
 
 	def getTemplate() {
-		return "/survey/admin/createSection"
+		return "/survey/admin/createValidationRule";
 	}
 
 	def getModel(def entity) {
-		[
-			section: entity,
-			objectives: entity.objective.survey.objectives,
-			groups: organisationService.getGroupsForExpression(),
-			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
-		]
+		[validation: entity]
 	}
 
 	def validateEntity(def entity) {
@@ -70,38 +65,30 @@ class SectionController extends AbstractEntityController {
 		entity.save()
 	}
 	def deleteEntity(def entity) {
+		entity.surveyElement.validationRules.remove(entity);
+		entity.surveyElement.save();
 		entity.delete()
 	}
 
 	def bindParams(def entity) {
 		entity.properties = params
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		
-		entity.groupUuidString =  params['groupUuids']!=null?Utils.getGroupUuidString(params['groupUuids']):null
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
-	
 	
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
-		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
-		List<SurveySection> sections = objective.sections;
+		SurveyElement surveyElement = SurveyElement.get(params.int('elementId'))
+		List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>(surveyElement.validationRules);
 
-		def max = Math.min(params['offset']+params['max'], sections.size())
+		def max = Math.min(params['offset']+params['max'], validationRules.size())
 		
 		render (view: '/survey/admin/list', model:[
-			template:"sectionList",
-			survey: objective.survey,
-			objective: objective,
-			entities: sections.subList(params['offset'], max),
-			entityCount: sections.size(),
-			code: 'survey.section.label'
+			template:"validationRuleList",
+			surveyElement: surveyElement,
+			entities: validationRules.subList(params['offset'], max),
+			entityCount: validationRules.size(),
+			code: 'survey.validationrule.label'
 		])
 	}
 
 }
-

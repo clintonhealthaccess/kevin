@@ -25,40 +25,64 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.util;
+package org.chai.kevin.survey
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-
+import org.chai.kevin.AbstractEntityController;
+import org.apache.commons.lang.math.NumberUtils;
 /**
  * @author Jean Kahigiso M.
- * 
+ *
  */
-public class Utils {
+class SurveyElementController {
 
-	public static Set<String> getGroupUuids(String groupUuidString) {
-		Set<String> result = new HashSet<String>();
-		if (groupUuidString != null)
-			result.addAll(Arrays.asList(StringUtils.split(groupUuidString, ',')));
-		return result;
-	}
-
-	public static String getGroupUuidString(Object groupUuids) {
-		if (groupUuids == null) return "";
-		if (groupUuids instanceof String) return (String) groupUuids;
-		if (groupUuids instanceof Collection) return StringUtils.join(((Collection<String>)groupUuids).toArray(), ',');
-		else return StringUtils.join((Object[]) groupUuids, ',');
-	}
+	def surveyElementService;
+	def localeService;
 	
-	@SuppressWarnings("unused")
-	private static boolean matches(String text, String value) {
-		if (value == null) return false;
-		return value.matches("(?i).*"+text+".*");
+	def getData = {
+		Survey survey = null;
+		if(NumberUtils.isNumber(params['surveyId'])) survey = Survey.get(Integer.parseInt(params['surveyId']));
+		
+		Set<SurveyElement> surveyElements =surveyElementService.searchSurveyElements(params['searchText'],survey);
+		
+		render(contentType:"text/json") {
+			result = 'success'
+			html = g.render(template:'/templates/surveyElements', model:[surveyElements: surveyElements])
+		}
 	}
 
+	def getAjaxData = {
+		Survey survey = null;
+		if(NumberUtils.isNumber(params['surveyId'])) survey = Survey.get(Integer.parseInt(params['surveyId']));
+		
+		Set<SurveyElement> surveyElements =surveyElementService.searchSurveyElements(params['term'],survey);
+
+		render(contentType:"text/json") {
+			elements = array {
+				surveyElements.each { surveyElement ->
+					elem (
+							id: surveyElement.id,
+							surveyElement: g.i18n(field: surveyElement.dataElement.names)+'['+surveyElement.id+']'
+							)
+				}
+			}
+		}
+	}
+
+
+	def getSurveyElementExplainer = {
+		def surveyElement = null;
+		if (NumberUtils.isNumber(params['surveyElement'])) {
+			surveyElement = SurveyElement.get(params['surveyElement'])
+		}
+
+		if (surveyElement == null) {
+			render(contentType:"text/json") { result = 'error' }
+		}
+		else {
+			render(contentType:"text/json") {
+				result = 'success'
+				html = g.render (template: '/templates/surveyElementExplainer', model: [surveyElement: surveyElement])
+			}
+		}
+	}
 }

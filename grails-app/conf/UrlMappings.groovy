@@ -35,8 +35,6 @@ class UrlMappings {
 
 		"/dsr/$action/$period?/$objective?/$organisation?"(controller:"dsr")
 		
-		"/editSurvey/$action/$organisation?/$survey?/$objective?/$section?"(controller:"editSurvey")
-
 		"/maps/view"(controller:"maps", action:"view")
 		
 		"/maps/map/$period?/$organisation?/$level?/$target?"(controller:"maps", action: "map")

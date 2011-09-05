@@ -25,41 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey
-import org.chai.kevin.AbstractEntityController;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup
-import org.chai.kevin.util.Utils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+package org.chai.kevin.survey.validation
 
+import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.survey.Survey;
+import org.chai.kevin.survey.SurveyQuestion
+import org.chai.kevin.survey.SurveyQuestionService
+import org.chai.kevin.survey.SurveySkipRule;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.apache.commons.lang.math.NumberUtils;
 /**
  * @author Jean Kahigiso M.
  *
  */
-class SectionController extends AbstractEntityController {
+class SurveySkipRuleController  extends AbstractEntityController {
 
-	def organisationService
-	
+	SurveyQuestionService surveyQuestionService;
+
+	def sessionFactory
+
 	def getEntity(def id) {
-		return SurveySection.get(id)
+		return SurveySkipRule.get(id)
 	}
 	def createEntity() {
-		def entity = new SurveySection()
+		def entity = new SurveySkipRule()
 		//FIXME find a better to do this
-		if (!params['objectiveId.id']) entity.objective = SurveyObjective.get(params.objectiveId)
-		return entity
+		if (!params['survey.id']) entity.survey = Survey.get(params.surveyId);
+		return entity;
 	}
 
 	def getTemplate() {
-		return "/survey/admin/createSection"
+		return "/survey/admin/createSkipRule";
 	}
 
 	def getModel(def entity) {
-		[
-			section: entity,
-			objectives: entity.objective.survey.objectives,
-			groups: organisationService.getGroupsForExpression(),
-			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
-		]
+		[ skip: entity ]
 	}
 
 	def validateEntity(def entity) {
@@ -67,6 +67,7 @@ class SectionController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
+		log.debug('===>'+entity.skippedSurveyQuestions+'<===')
 		entity.save()
 	}
 	def deleteEntity(def entity) {
@@ -75,33 +76,46 @@ class SectionController extends AbstractEntityController {
 
 	def bindParams(def entity) {
 		entity.properties = params
-		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		
-		entity.groupUuidString =  params['groupUuids']!=null?Utils.getGroupUuidString(params['groupUuids']):null
-		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
+		
+		// FIXME GRAILS-6967 makes this necessary
+		//SurveyQuestion is an abstract class
+		List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
+		for(def qId: params.skippedSurveyQuestions)
+			questions.add(sessionFactory.currentSession.get(SurveyQuestion.class, Long.parseLong(qId)));
+		entity.skippedSurveyQuestions = questions
 	}
-	
 	
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
-		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
-		List<SurveySection> sections = objective.sections;
+		Survey survey = Survey.get(params.surveyId)
+		Set<SurveySkipRule> skipRules = survey.skipRules;
 
-		def max = Math.min(params['offset']+params['max'], sections.size())
-		
-		render (view: '/survey/admin/list', model:[
-			template:"sectionList",
-			survey: objective.survey,
-			objective: objective,
-			entities: sections.subList(params['offset'], max),
-			entityCount: sections.size(),
-			code: 'survey.section.label'
+		render(view: '/survey/admin/list', model:[
+			template: "skipRuleList",
+			entities: skipRules,
+			entityCount: skipRules.size(),
+			code: 'survey.skiprule.label'
 		])
 	}
 
-}
+	def getAjaxDataQuestion = {
+		Survey survey = null;
+		if(NumberUtils.isNumber(params['surveyId'])) survey = Survey.get(Integer.parseInt(params['surveyId']));
 
+		Set<SurveyQuestion> surveyQuestions = surveyQuestionService.searchSurveyQuestion(params['term'], survey);
+
+		render(contentType:"text/json") {
+			questions = array {
+				surveyQuestions.each { question ->
+					quest (
+							id: question.id,
+							question: question.getString(g.i18n(field: question.names).toString(),35)+'Q: ['+question.id+']'
+							)
+				}
+			}
+		}
+	}
+}

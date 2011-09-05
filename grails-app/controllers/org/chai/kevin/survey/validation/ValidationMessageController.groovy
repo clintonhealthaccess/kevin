@@ -25,41 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey
+package org.chai.kevin.survey.validation
+
 import org.chai.kevin.AbstractEntityController;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup
-import org.chai.kevin.util.Utils
+import org.chai.kevin.survey.SurveyValidationMessage;
+import org.chai.kevin.survey.ValidationMessageService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class SectionController extends AbstractEntityController {
-
-	def organisationService
+class ValidationMessageController extends AbstractEntityController {
+	
+	ValidationMessageService validationMessageService;
 	
 	def getEntity(def id) {
-		return SurveySection.get(id)
+		return SurveyValidationMessage.get(id)
 	}
 	def createEntity() {
-		def entity = new SurveySection()
-		//FIXME find a better to do this
-		if (!params['objectiveId.id']) entity.objective = SurveyObjective.get(params.objectiveId)
-		return entity
+		return new SurveyValidationMessage();
 	}
 
 	def getTemplate() {
-		return "/survey/admin/createSection"
+		return "/survey/admin/createValidationMessage"
 	}
 
 	def getModel(def entity) {
-		[
-			section: entity,
-			objectives: entity.objective.survey.objectives,
-			groups: organisationService.getGroupsForExpression(),
-			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
-		]
+		[message:entity]
 	}
 
 	def validateEntity(def entity) {
@@ -70,38 +63,44 @@ class SectionController extends AbstractEntityController {
 		entity.save()
 	}
 	def deleteEntity(def entity) {
-		entity.delete()
+		if(entity.validationRules.isEmpty())
+			entity.delete()
 	}
 
 	def bindParams(def entity) {
 		entity.properties = params
-		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		
-		entity.groupUuidString =  params['groupUuids']!=null?Utils.getGroupUuidString(params['groupUuids']):null
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
+		if (params.messages!=null) entity.messages = params.messages
 	}
-	
 	
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
-		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
-		List<SurveySection> sections = objective.sections;
+		List<SurveyValidationMessage> validationMessages = SurveyValidationMessage.list(params);
 
-		def max = Math.min(params['offset']+params['max'], sections.size())
-		
 		render (view: '/survey/admin/list', model:[
-			template:"sectionList",
-			survey: objective.survey,
-			objective: objective,
-			entities: sections.subList(params['offset'], max),
-			entityCount: sections.size(),
-			code: 'survey.section.label'
+			template:"validationMessageList",
+			entities: validationMessages,
+			entityCount: SurveyValidationMessage.count(),
+			code: 'survey.validationmessage.label'
 		])
 	}
 
+	def getAjaxData={
+		def validationMessages = validationMessageService.getSearchValidationMessage(params['term']);
+		
+		render(contentType:"text/json") {
+						
+			messages = array {
+				validationMessages.each { message ->
+					mess (
+						id: message.id,
+						message: g.i18n(field: message.messages)
+					)
+				}
+			}
+			
+		}
+	}
+	
 }
-

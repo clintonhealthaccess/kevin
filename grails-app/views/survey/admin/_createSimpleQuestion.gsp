@@ -4,15 +4,22 @@
 		<g:locales />
 		<div class="clear"></div>
 	</div>
-	<div>
-	<div id="add-question-col">
+	<div class="forms-container">
+	<div class="data-field-column">
 	<g:form url="[controller:'simpleQuestion', action:'save']" useToken="true">
-		<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250"  width="430" maxHeight="150" />
+		<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250"  width="400" maxHeight="150" />
 		<div id="date-element-block">
 		<div class="group-list ${hasErrors(bean:question, field:'surveyElement', 'errors')}">
 			<input type="hidden" name="surveyElement.dataElement.id"  value="${question.surveyElement?.dataElement?.id}" id="data-element-id" />
 		    <div class="row"><label for="survey">Data Element:</label> 
 		    <input type="text" name="surveyElement.dataElement.name" value="${i18n(field: question.surveyElement?.dataElement?.names)}" id="data-element-name" class="idle-field" disabled />
+		    <g:if test="${question.id != null}">
+			   <span>
+			       <a href="${createLink(controller:'surveyValidationRule', action:'list', params:[elementId: question.surveyElement.id])}">
+			        View Validation Rules
+			       </a> 
+			   </span>
+		    </g:if>
 		    <div class="error-list"><g:renderErrors bean="${question}" field="surveyElement" /></div>
 		    </div>
 		 </div>
@@ -62,7 +69,7 @@
 		</div>
 	</g:form>
 	</div>
-	<div id="data-col">
+	<div class="data-search-column">
 		<g:form name="search-data-form" class="search-form" url="[controller:'dataElement', action:'getData']">
 			<div class="row">
 				<label for="searchText">Search: </label>
@@ -73,9 +80,11 @@
 		</g:form>
 	    <ul class="filtered idle-field" id="data" ></ul>
 	</div>
+	<div class="clear"></div>
 	</div>
 	<div class="clear"></div>
 </div>
+<div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		getDataElement(

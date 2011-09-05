@@ -47,6 +47,7 @@ body.bp table
 a:hover
   text-decoration: underline
     
+   
 // Page layout can be done using mixins applied to your semantic classes and IDs:
 body.two-columns
   #container
@@ -81,6 +82,29 @@ body.two-columns
     margin: 0 0 1px
     width: 100%
     background-repeat: no-repeat
+    
+.ajax-search-field
+  width: 300px
+  
+.admin-table-list
+  table
+    background: #fff
+    margin 10px 1px 1px 1px
+  .admin-table-header
+    background: #739eee
+    color: #fff
+    font-weight: 600
+    text-align: center
+    a
+      color: #fff
+    a:hover
+      color: #fff
+    a:visited
+      color: #fff
+  .odd
+    background: #fff
+  .even
+    background: #739eee
 
 .display-in-block
   display: block
@@ -346,7 +370,17 @@ body.bp ul.filtered
     
       a.no-link
         font-weight: bold
-      
+  .forms-container 
+    width: 100%    
+  .data-search-column
+    float: right
+    width: 470px
+  .data-field-column
+    float: left
+    width: 460px
+    
+    
+
 .entity-form-container form
   position: relative
   border: none
@@ -568,11 +602,9 @@ body.bp ul.filtered
     
     div
       margin-bottom: 4px
+      
     
 #add-expression
-  #add-expression-col
-    float: left
-
   .row
     width: 290px
     
@@ -581,10 +613,7 @@ body.bp ul.filtered
     
   input.radio
     width: auto
-    
-  #data-col
-    float: left
-    
+  
     label
       font-weight: bold
       margin-bottom: 2px
@@ -989,15 +1018,9 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
   border: 0px
       
 #add-question
-  #add-question-col
-    float: left
-    width: 450px
   input.radio
     width: auto
-  #data-col
-    float: right
-    label
-      font-weight: bold
+    
   #data
     width: 400px
   .question-explainer
@@ -1016,30 +1039,16 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
         font-weight: normal   
             
 #add-option
-  #add-option-col
-    float: left
-    width: 450px
   input.radio
     width: auto
-  #data-col
-    float: right
-    label
-      font-weight: bold
   #data
     width: 400px
   .question-explainer
     text-decoration: none
      
 #add-row
-  #add-row-col
-    float: left
-    width: 450px
   input.radio
     width: auto
-  #data-col
-    float: right
-    label
-      font-weight: bold
   #data
     width: 400px
   .question-explainer

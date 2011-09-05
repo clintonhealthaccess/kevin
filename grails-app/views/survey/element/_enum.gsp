@@ -1,8 +1,5 @@
 <!-- Enum type question -->
-<g:set var="surveyEnteredValue" value="${surveyPage.enteredValues[surveyElement]}"/>
-<g:set var="surveyElementValue" value="${surveyPage.surveyElements[surveyElement.id]}"/>
-
-<div class="element element-enum element-${surveyElement.id} ${surveyPage.isSkipped(surveyEnteredValue)?'skipped':''} ${!surveyPage.isValid(surveyEnteredValue)?'errors':''}" data-element="${surveyElement.id}">
+<div class="element element-enum element-${surveyElement.id} ${surveyEnteredValue?.skipped?'skipped':''} ${(surveyEnteredValue==null || surveyEnteredValue?.valid)?'':'errors'}" data-element="${surveyElement.id}">
 	<a name="element-${surveyElement.id}"></a>
 	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
 	
@@ -11,11 +8,11 @@
 		<option value="null">Select</option>
 		<g:each in="${surveyElement.dataElement.enume?.enumOptions}" var="option">
 			<option value="${option.value}"  ${option?.value==surveyEnteredValue?.value ? 'selected':''}>
-				<g:i18n field="${option?.names}" />
+				<g:i18n field="${option.names}" />
 			</option>
 		</g:each>
 	</select>
-	<g:if test="${surveyElementValue.lastValue!=null}">
+	<g:if test="${surveyElementValue?.lastValue!=null}">
 		<g:set var="option" value="${surveyElement.dataElement.enume.getOptionForValue(surveyElementValue.lastValue)}"/>
 		<span class="survey-old-value">(${option!=null?i18n(field: option.names):surveyElementValue.lastValue})</span>
 	</g:if>
