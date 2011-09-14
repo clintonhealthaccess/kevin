@@ -38,3 +38,11 @@ blockquote { margin: 1.5em; padding: 1em; font-style: italic; font-size: 0.9em; 
 /* line 92, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/blueprint/stylesheets/blueprint/_print.scss */
 .hide { display: none; }
 
+/* line 6, ../../src/stylesheets/print.sass */
+body { backgroud-color: red; }
+
+/* line 9, ../../src/stylesheets/print.sass */
+objective-title { backgroud-color: white; font-size: 14px; border-bottom: 2px solid #cccccc; }
+
+/* line 14, ../../src/stylesheets/print.sass */
+section-title { backgroud-color: #cfcfcf; font-size: 13px; border-bottom: 2px solid #cccccc; }

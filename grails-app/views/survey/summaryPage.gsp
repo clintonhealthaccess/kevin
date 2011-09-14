@@ -82,9 +82,10 @@
 										<td><span class="progress-bar">${organisationSummary.completedQuestions}/${organisationSummary.questions}</span></td>
 										<td><a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: summaryPage.survey.id, organisation: facility.id])}">view survey</a></td>
 										<td><a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: summaryPage.survey.id, organisation: facility.id])}">refresh survey</a></td>
+										<td><a href="${createLink(controller: 'survey', action: 'print', params: [survey: summaryPage.survey.id, organisation: facility.id])}" target="_blank">Print Survey</a></td>
 									</tr>
 									<tr>
-										<td colspan="4">
+										<td colspan="5">
 											<div class="explanation-cell" id="explanation-${facility.id}"></div>
 										</td>
 									</tr>

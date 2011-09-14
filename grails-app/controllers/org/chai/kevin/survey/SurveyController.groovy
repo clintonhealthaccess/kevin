@@ -28,10 +28,13 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.Organisation
+import org.chai.kevin.OrganisationService
 import org.chai.kevin.PeriodSorter
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
-
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 /**
  * @author Jean Kahigiso M.
  *
@@ -39,11 +42,12 @@ import org.hisp.dhis.period.Period;
 class SurveyController extends AbstractEntityController {
 
 	def surveyAdminService
-	
+	OrganisationService organisationService;
+
 	def getEntity(def id) {
 		return Survey.get(id)
 	}
-	
+
 	def createEntity() {
 		return new Survey()
 	}
@@ -56,9 +60,9 @@ class SurveyController extends AbstractEntityController {
 		List<Period> periods = Period.list()
 		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		[
-			survey: entity,
-			periods: periods
-		]
+					survey: entity,
+					periods: periods
+				]
 	}
 
 	def validateEntity(def entity) {
@@ -85,28 +89,46 @@ class SurveyController extends AbstractEntityController {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		List<Survey> surveys = Survey.list(params);
-		
+
 		if(surveys.size()>0)
 			Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/survey/admin/list', model:[
-			template:"surveyList",
-			entities: surveys,
-			entityCount: Survey.count(),
-			code: 'survey.label'
-		])
+					template:"surveyList",
+					entities: surveys,
+					entityCount: Survey.count(),
+					code: 'survey.label'
+				])
 	}
-	
+
 	def clone = {
 		def survey = getEntity(params['id'])
-		
+
 		SurveyCloner cloner = new SurveyCloner(survey)
 		cloner.cloneTree();
 		def copy = cloner.getSurvey()
 		copy.save(failOnError: true)
-		
+
 		cloner.cloneRules();
-		
+
 		redirect (controller: 'survey', action: 'list')
+	}
+
+	def print = {
+		Survey survey = Survey.get(params['survey']);
+		
+		Organisation organisation = organisationService.getOrganisation(Integer.parseInt(params['organisation']));
+		organisationService.loadGroup(organisation);
+		
+		OrganisationUnitGroup  group = organisation.getOrganisationUnitGroup();
+		 
+		List<SurveyObjective> objectives = survey.getObjectives(group);
+
+		render (view: '/survey/print/surveyPrint', model:[
+			        survey: survey,
+					organisation: organisation,
+					group: group,
+					objectives: objectives
+				])
 	}
 }
