@@ -43,7 +43,7 @@
 			<g:set var="surveyElement" value="${row?.surveyElements[column]}"/>
 			<g:set var="dataElement" value="${surveyElement?.dataElement}"/>
 			<td class="element-${surveyElement.id} element" data-element="${surveyElement.id}">
-					<g:render template="/survey/element/${dataElement.type}" model="[surveyElement: surveyElement, surveyPage: surveyPage, readonly: readonly]" />
+					<g:render template="/survey/element/${dataElement.type.type}" model="[surveyElement: surveyElement, surveyPage: surveyPage, readonly: readonly]" />
 					<a href="${createLink(controller:'surveyValidationRule', action:'list', params:[elementId: surveyElement.id])}">
 			         View Validation Rules
 			       </a>

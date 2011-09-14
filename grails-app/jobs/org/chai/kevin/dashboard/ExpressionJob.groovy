@@ -28,6 +28,7 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.quartz.JobExecutionContext;
 import org.quartz.InterruptableJob;
 
@@ -44,6 +45,8 @@ class ExpressionJob implements InterruptableJob {
 	def expressionService
 	
 	void execute(JobExecutionContext context) {
+//		if (expressionService == null) expressionService = ApplicationHolder.application.mainContext.getBean('expressionService')
+		
 		if (log.isInfoEnabled()) log.info('executing ExpressionJob');
 	
 		expressionService.refreshExpressions()

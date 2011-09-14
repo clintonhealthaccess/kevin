@@ -11,18 +11,31 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 class SurveyTagLib {
 	
 	def renderUserErrors = {attrs, body ->
-		def surveyElementValue = attrs['element']
-		if (surveyElementValue != null && !surveyElementValue.displayedErrors.empty) {
+		def enteredValue = attrs['element']
+		def prefix = attrs['suffix']
+		
+		def errors = enteredValue?.getErrors(prefix)
+		if (enteredValue != null && !errors.empty) {
+			boolean hasErrors = hasErrors(errors)
+			
 			out << "<ul>"
-			surveyElementValue.displayedErrors.each { rule ->
-				out << "<li>"
-				def message = replacePlaceHolders(g.i18n(field: rule.validationMessage.messages).toString(), rule.dependencies, surveyElementValue.organisation.organisationUnit)
-				if (!rule.allowOutlier) out << message 
-				else out << g.render(template:"/survey/outlier", model: [message: message, surveyElement: surveyElementValue.surveyElement, rule: rule])
-				out << "</li>"	
+			errors.each { rule ->
+				if ((hasErrors && !rule.allowOutlier) || (!hasErrors && rule.allowOutlier)) {
+					out << "<li>"
+					def message = replacePlaceHolders(g.i18n(field: rule.validationMessage.messages).toString(), rule.dependencies, enteredValue.organisationUnit)
+					out << g.render(template:"/survey/error", model: [message: message, surveyElement: enteredValue.surveyElement, rule: rule])
+					out << "</li>"
+				}
 			}
 			out << "</ul>"
 		}
+	}
+	
+	boolean hasErrors(def errors) {
+		for (def error : errors) {
+			if (!error.allowOutlier) return true;
+		}
+		return false
 	}
 	
 	def replacePlaceHolders(String message, List<SurveyElement> elements, OrganisationUnit organisationUnit) {

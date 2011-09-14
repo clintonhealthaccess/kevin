@@ -138,7 +138,6 @@ class DataElementController extends AbstractEntityController {
 
 
 	def getData = {
-
 		def dataElements = dataService.searchDataElements(params['searchText']);
 		render(contentType:"text/json") {
 			result = 'success'

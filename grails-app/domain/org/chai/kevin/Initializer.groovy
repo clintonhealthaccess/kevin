@@ -42,17 +42,17 @@ import org.chai.kevin.maps.MapsTarget;
 import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.Value;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.survey.*;
@@ -82,9 +82,9 @@ class Initializer {
 		user.addToPermissions("*")
 		user.save()
 		
-		def kivuye = new SurveyUser(username: "kivuye", organisationUnit: OrganisationUnit.findByName("Kivuye HC"), passwordHash: new Sha256Hash("123").toHex())
+		def kivuye = new SurveyUser(username: "kivuye", organisationUnitId: OrganisationUnit.findByName("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex())
 		kivuye.addToPermissions("editSurvey:view")
-		kivuye.addToPermissions("editSurvey:*:"+kivuye.organisationUnit.id)
+		kivuye.addToPermissions("editSurvey:*:"+kivuye.organisationUnitId)
 		kivuye.addToPermissions("menu:survey")
 		
 //		kivuye.addToPermissions("survey:surveyPage:12")
@@ -206,36 +206,35 @@ class Initializer {
 
 		if (!DataElement.count()) {
 			// Data Elements
-			def dataElement10 = new DataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: ValueType.ENUM, enume: Enum.findByCode('ENUM2'))
-			def dataElement1 = new DataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: ValueType.VALUE)
-			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: ValueType.VALUE)
-			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: ValueType.ENUM, enume: Enum.findByCode('ENUM1'))
-			def dataElement4 = new DataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: ValueType.BOOL)
-			def dataElement5 = new DataElement(names:j(["en":"Element 5"]), descriptions:j([:]), code:"CODE5", type: ValueType.BOOL)
-			def dataElement6 = new DataElement(names:j(["en":"Element 6"]), descriptions:j([:]), code:"CODE6", type: ValueType.BOOL)
-			def dataElement7 = new DataElement(names:j(["en":"Element 7"]), descriptions:j([:]), code:"CODE7", type: ValueType.BOOL)
-			def dataElement8 = new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: ValueType.VALUE)
-			def dataElement9 = new DataElement(names:j(["en":"Element 9"]), descriptions:j([:]), code:"CODE9", type: ValueType.VALUE)
-			def dataElement11 = new DataElement(names:j(["en":"Element 11"]), descriptions:j([:]), code:"CODE11", type: ValueType.DATE)
-			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: ValueType.STRING)
-			def dataElement81 = new DataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: ValueType.VALUE)
-			def dataElement91 = new DataElement(names:j(["en":"Element 91"]), descriptions:j([:]), code:"CODE91", type: ValueType.VALUE)
-			def dataElement101 = new DataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: ValueType.ENUM, enume: Enum.findByCode('ENUM2'))
-			def dataElement111 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"CODE111", type: ValueType.DATE)
-			// Data Sets
-			//			def dataSet1 = new DataSet(names:j(["en":"Dataset 1"]), shortnames:j(["en":"Dataset 1"]), code:"DATASET1", periodType: MonthlyPeriodType.list()[0])
-			//			def dataSet2 = new DataSet(names:j(["en":"Dataset 2"]), shortnames:j(["en":"Dataset 2"]), code:"DATASET2", periodType: MonthlyPeriodType.list()[0])
-
+			def dataElement10 = new DataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').id))
+			def dataElement1 = new DataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: JSONUtils.TYPE_NUMBER)
+			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: JSONUtils.TYPE_NUMBER)
+			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM1').id))
+			def dataElement4 = new DataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: JSONUtils.TYPE_BOOL)
+			def dataElement5 = new DataElement(names:j(["en":"Element 5"]), descriptions:j([:]), code:"CODE5", type: JSONUtils.TYPE_BOOL)
+			def dataElement6 = new DataElement(names:j(["en":"Element 6"]), descriptions:j([:]), code:"CODE6", type: JSONUtils.TYPE_BOOL)
+			def dataElement7 = new DataElement(names:j(["en":"Element 7"]), descriptions:j([:]), code:"CODE7", type: JSONUtils.TYPE_BOOL)
+			def dataElement8 = new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: JSONUtils.TYPE_NUMBER)
+			def dataElement9 = new DataElement(names:j(["en":"Element 9"]), descriptions:j([:]), code:"CODE9", type: JSONUtils.TYPE_NUMBER)
+			def dataElement11 = new DataElement(names:j(["en":"Element 11"]), descriptions:j([:]), code:"CODE11", type: JSONUtils.TYPE_DATE)
+			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: JSONUtils.TYPE_STRING)
+			def dataElement81 = new DataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: JSONUtils.TYPE_NUMBER)
+			def dataElement91 = new DataElement(names:j(["en":"Element 91"]), descriptions:j([:]), code:"CODE91", type: JSONUtils.TYPE_NUMBER)
+			def dataElement101 = new DataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').id))
+			def dataElement111 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"CODE111", type: JSONUtils.TYPE_DATE)
+			
+			def dataElementList = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LIST1", type: JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER))
+			def dataElementMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"MAP1", 
+				type: JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER, "key2":JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').id), "key3": JSONUtils.TYPE_BOOL])
+			)
+			
+			def dataElementListMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
+				type: JSONUtils.TYPE_LIST(JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER, "key2":JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').id), "key3": JSONUtils.TYPE_BOOL]))
+			)
+			
 			dataElement10.save(failOnError: true, flush:true)
-			//			dataElement1.dataSets = [dataSet1]
-			//			dataElement2.dataSets = [dataSet2]
-			//			dataSet1.dataElements.add dataElement1
-			//			dataSet2.dataElements.add dataElement2
 			dataElement1.save(failOnError: true, flush: true)
 			dataElement2.save(failOnError: true, flush: true)
-			//			dataSet1.save(failOnError: true)
-			//			dataSet2.save(failOnError: true)
-
 			dataElement3.save(failOnError: true, flush:true)
 			dataElement4.save(failOnError: true, flush:true)
 			dataElement5.save(failOnError: true, flush:true)
@@ -249,168 +248,112 @@ class Initializer {
 			dataElement101.save(failOnError: true, flush:true)
 			dataElement111.save(failOnError: true, flush:true)
 			dataElement12.save(failOnError: true, flush:true)
-
+			
+			dataElementList.save(failOnError: true, flush:true)
+			dataElementMap.save(failOnError: true, flush:true)
+			dataElementListMap.save(failOnError: true, flush:true)
+			
 			// data value
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE1"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-					value: "30",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("30"),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true)
-
 			// data value
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE1"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "40",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("40"),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true)
-
 			// data value
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE3"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "value1",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("\"value1\""),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
-
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE4"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "1",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("1"),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE6"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "0",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("0"),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE8"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "10",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("10"),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE9"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "31",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("31"),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE10"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: EnumOption.findByCode("OPTION02").value,
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("\""+EnumOption.findByCode("OPTION02").value+"\""),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE11"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "2011-06-29",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("\"2011-06-29\""),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
-
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE81"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "44",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("44"),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE91"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "33",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("33"),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE101"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: EnumOption.findByCode("OPTION03").value,
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("\""+EnumOption.findByCode("OPTION03").value+"\""),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE111"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "2011-06-30",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("\"2011-06-30\""),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE12"),
 					period: Period.list()[1],
-					//				optionCombo: DataElementCategoryOptionCombo.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: "I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.",
-					//				comment: "Comment",
-					//				storedBy: "StoredBy",
+					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
 					timestamp: new Date(),
-					//				followup: false,
 					).save(failOnError: true, flush:true)
 		}
 
@@ -418,16 +361,16 @@ class Initializer {
 		if (!Expression.count()) {
 			// indicators
 			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
-			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
-			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
-			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "["+DataElement.findByCode("CODE1").id+"]+["+DataElement.findByCode("CODE1").id+"]", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
-			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "["+DataElement.findByCode("CODE2").id+"]", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
-			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\"["+DataElement.findByCode("CODE3").id+"]\"", type: ValueType.VALUE, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "\$"+DataElement.findByCode("CODE1").id+"+\$"+DataElement.findByCode("CODE1").id, type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "\$"+DataElement.findByCode("CODE2").id, type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\$"+DataElement.findByCode("CODE3").id, type: JSONUtils.TYPE_STRING, timestamp:new Date()).save(failOnError: true)
 		}
 
-		if (!Constant.count()) {
-			new Constant(names:j(["en":"Constant 1000"]), code:"CONST1", type: ValueType.VALUE, value: "1000", descriptions:j(["en":"Description"])).save(failOnError: true, flush:true)
-		}
+//		if (!Constant.count()) {
+//			new Constant(names:j(["en":"Constant 1000"]), code:"CONST1", type: JSONUtils.TYPE_NUMBER, value: "1000", descriptions:j(["en":"Description"])).save(failOnError: true, flush:true)
+//		}
 	}
 
 	static def createMaps() {
@@ -437,8 +380,8 @@ class Initializer {
 					names:j(["en":"Map Expression 2"]),
 					descriptions:j([:]),
 					code:"Map Expression 2",
-					type: ValueType.VALUE,
-					expression: "["+DataElement.findByCode("CODE1").id+"] / 100",
+					type: JSONUtils.TYPE_NUMBER,
+					expression: "\$"+DataElement.findByCode("CODE1").id+" / 100",
 					timestamp:new Date()
 					).save(failOnError: true)
 			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2"), type: MapsTargetType.AGGREGATION).save(failOnError: true)
@@ -448,7 +391,7 @@ class Initializer {
 				names:j(["en":"Map Expression"]),
 				descriptions:j([:]),
 				code:"Map Expression", 
-				type: ValueType.VALUE,
+				type: JSONUtils.TYPE_NUMBER,
 				expression: "10 / 100",
 				timestamp:new Date()
 			).save(failOnError: true)
@@ -457,7 +400,7 @@ class Initializer {
 			def calculation1 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 10"),
 						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: ValueType.VALUE)
+					], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
 			calculation1.save()
 			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1, type: MapsTargetType.AVERAGE).save(failOnError: true, flush:true)
 		}
@@ -467,12 +410,12 @@ class Initializer {
 		if (!CostRampUp.count()) {
 			// Cost
 			new CostRampUp(names:j(["en":"Constant"]), descriptions:j([:]), code:"CONST", years: [
-						1: new CostRampUpYear(year: 1, value: 0.2),
-						2: new CostRampUpYear(year: 2, value: 0.2),
-						3: new CostRampUpYear(year: 3, value: 0.2),
-						4: new CostRampUpYear(year: 4, value: 0.2),
-						5: new CostRampUpYear(year: 5, value: 0.2)
-					]).save(failOnError: true);
+				1: new CostRampUpYear(year: 1, value: 0.2),
+				2: new CostRampUpYear(year: 2, value: 0.2),
+				3: new CostRampUpYear(year: 3, value: 0.2),
+				4: new CostRampUpYear(year: 4, value: 0.2),
+				5: new CostRampUpYear(year: 5, value: 0.2)
+			]).save(failOnError: true);
 		}
 
 		if (!CostObjective.count()) {
@@ -537,7 +480,7 @@ class Initializer {
 			def calculation1 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 10"),
 						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: ValueType.VALUE)
+					], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
 			calculation1.save()
 
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -548,7 +491,7 @@ class Initializer {
 			def calculation2 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 20"),
 						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: ValueType.VALUE)
+					], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
 			calculation2.save()
 
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -559,7 +502,7 @@ class Initializer {
 			def calculation3 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
 						"Health Center": Expression.findByCode("Element 1")
-					], timestamp:new Date(), type: ValueType.VALUE)
+					], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
 			calculation3.save()
 
 			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -569,7 +512,7 @@ class Initializer {
 
 			def calculation4 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
-					], timestamp:new Date(), type: ValueType.VALUE)
+					], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
 			calculation4.save()
 
 			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -580,7 +523,7 @@ class Initializer {
 			def calculation5 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 2"),
 						"Health Center": Expression.findByCode("Element 2")
-					], timestamp:new Date(), type: ValueType.VALUE)
+					], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
 			calculation5.save()
 
 			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -591,7 +534,7 @@ class Initializer {
 			def calculation6 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 3"),
 						"Health Center": Expression.findByCode("Element 3")
-					], timestamp:new Date(), type: ValueType.VALUE)
+					], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
 			calculation6.save()
 
 			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -927,7 +870,7 @@ class Initializer {
 			)
 			
 			def patientQ1 = new SurveySimpleQuestion(
-				names: j(["en":"Patient Section Simple Question VALUE"]),
+				names: j(["en":"Patient Section Simple Question NUMBER"]),
 				descriptions: j(["en":"Patient Section Simple Question"]),
 				order: 3,
 				groupUuidString: "District Hospital,Health Center"
@@ -947,14 +890,14 @@ class Initializer {
 			def surveyValidationPatient = new SurveyValidationMessage(messages: j(["en":"Validation error {0}"])).save(failOnError: true);
 			def rulePatient1 = new SurveyValidationRule(
 				surveyElement: surveyElementPatientQ1,
-				expression: "["+surveyElementPatientQ1.id+"] > 100",
+				expression: "\$"+surveyElementPatientQ1.id+" > 100",
 				validationMessage: surveyValidationPatient,
 				dependencies: [surveyElementPatientQ1],
 				allowOutlier: false
 			).save(failOnError: true)
 			def rulePatient2 = new SurveyValidationRule(
 				surveyElement: surveyElementPatientQ1,
-				expression: "["+surveyElementPatientQ1.id+"] > 140",
+				expression: "\$"+surveyElementPatientQ1.id+" > 140",
 				validationMessage: surveyValidationPatient,
 				dependencies: [surveyElementPatientQ1],
 				allowOutlier: true
@@ -1024,7 +967,7 @@ class Initializer {
 
 			//Adding questions to sections
 			def serviceQ1 = new SurveySimpleQuestion(
-				names: j(["en":"Service Section Simple Question VALUE"]),
+				names: j(["en":"Service Section Simple Question NUMBER"]),
 				descriptions: j(["en":"Service Section Simple Question"]),
 				order: 3,
 				groupUuidString: "District Hospital,Health Center"
@@ -1062,22 +1005,83 @@ class Initializer {
 			serviceQ3.surveyElement = surveyElementServiceQ3
 			serviceQ3.save(failOnError: true)
 			
+			def serviceQ4 = new SurveySimpleQuestion(
+				names: j(["en":"Service Section Simple Question LIST"]),
+				descriptions: j(["en":"Service Section Simple Question"]),
+				order: 4,
+				groupUuidString: "District Hospital,Health Center"
+			)
+			services.addQuestion(serviceQ4)
+			services.save(failOnError:true, flush:true)
+			
+			def surveyElementServiceQ4 = new SurveyElement(dataElement: DataElement.findByCode("LIST1"), surveyQuestion: serviceQ4).save(failOnError: true)
+			serviceQ4.surveyElement = surveyElementServiceQ4
+			serviceQ4.save(failOnError: true)
+			
+			def serviceQ5 = new SurveySimpleQuestion(
+				names: j(["en":"Service Section Simple Question MAP"]),
+				descriptions: j(["en":"Service Section Simple Question"]),
+				order: 5,
+				groupUuidString: "District Hospital,Health Center"
+			)
+			services.addQuestion(serviceQ5)
+			services.save(failOnError:true, flush:true)
+			
+			def surveyElementServiceQ5 = new SurveyElement(dataElement: DataElement.findByCode("MAP1"), surveyQuestion: serviceQ5).save(failOnError: true)
+			serviceQ5.surveyElement = surveyElementServiceQ5
+			serviceQ5.save(failOnError: true)
+			
+			def serviceQ6 = new SurveySimpleQuestion(
+				names: j(["en":"Service Section Simple Question LIST of MAP"]),
+				descriptions: j(["en":"Service Section Simple Question"]),
+				order: 6,
+				groupUuidString: "District Hospital,Health Center"
+			)
+			services.addQuestion(serviceQ6)
+			services.save(failOnError:true, flush:true)
+			
+			def surveyElementServiceQ6 = new SurveyElement(
+				dataElement: DataElement.findByCode("LISTMAP1"), 
+				surveyQuestion: serviceQ6,
+				headers: ["[_].key1":j(["en": "Header 1"]),"[_].key2":j(["en": "Header 2"]),"[_].key3":j(["en": "Header 3"])]
+			).save(failOnError: true)
+			serviceQ6.surveyElement = surveyElementServiceQ6
+			serviceQ6.save(failOnError: true)
+			
 			services.addQuestion(serviceQ2)
 			services.addQuestion(serviceQ1)
 			services.addQuestion(serviceQ3)
+			services.addQuestion(serviceQ4)
+			services.addQuestion(serviceQ5)
+			services.addQuestion(serviceQ6)
 			services.save(failOnError:true)
 
 			def surveyValidationMessage = new SurveyValidationMessage(messages: j(["en":"Validation error {0}"])).save(failOnError: true);
+			
+			def ruleQ6 = new SurveyValidationRule(
+				surveyElement: surveyElementServiceQ6,
+				prefix: "[_].key2",
+				expression: "\$"+surveyElementServiceQ6.id+"[_].key1 > 100",
+				validationMessage: surveyValidationMessage,
+				dependencies: [surveyElementServiceQ6],
+				allowOutlier: false
+			).save(failOnError: true)
+			surveyElementServiceQ6.addValidationRule(ruleQ6)
+			surveyElementServiceQ6.save(failOnError: true)
+			
+			surveyValidationMessage.addValidationRule(ruleQ6)
+			surveyValidationMessage.save(failOnError: true)
+			
 			def rule1 = new SurveyValidationRule(
 				surveyElement: surveyElementServiceQ1,
-				expression: "["+surveyElementServiceQ1.id+"] > 100",
+				expression: "\$"+surveyElementServiceQ1.id+" > 100",
 				validationMessage: surveyValidationMessage,
 				dependencies: [surveyElementServiceQ1],
 				allowOutlier: false
 			).save(failOnError: true)
 			def rule2 = new SurveyValidationRule(
 				surveyElement: surveyElementServiceQ1,
-				expression: "["+surveyElementServiceQ1.id+"] > 140",
+				expression: "\$"+surveyElementServiceQ1.id+" > 140",
 				validationMessage: surveyValidationMessage,
 				dependencies: [surveyElementServiceQ1],
 				allowOutlier: true
@@ -1202,7 +1206,7 @@ class Initializer {
 
 			def ruleTable1 = new SurveyValidationRule(
 				surveyElement: surveyElementTable1,
-				expression: "["+surveyElementTable1.id+"] < 100",
+				expression: "\$"+surveyElementTable1.id+" < 100",
 				validationMessage: surveyValidationMessage,
 				dependencies: [surveyElementTable1],
 				allowOutlier: false
@@ -1249,7 +1253,7 @@ class Initializer {
 			
 			def ruleCheckbox = new SurveyValidationRule(
 				surveyElement: surveyElementChecboxQ3,
-				expression: "if(["+surveyElementTable21.id+"] < 100, ["+surveyElementChecboxQ3.id+"]==1, 1==1)",
+				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+"==1 else 1==1",
 				validationMessage: surveyValidationMessage,
 				dependencies: [surveyElementTable21],
 				allowOutlier: false
@@ -1259,10 +1263,10 @@ class Initializer {
 			surveyValidationMessage.addValidationRule(ruleCheckbox)
 			surveyValidationMessage.save(failOnError: true)
 			
-			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedSurveyElements: [surveyElementTable2]);
-			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "["+surveyElementTable1.id+"]==1", skippedSurveyElements: [surveyElementTable22, surveyElementTable3]);
-			def skipRule3 = new SurveySkipRule(survey: surveyOne, expression: "["+surveyElementTable1.id+"]==2", skippedSurveyQuestions: [checkBoxQ]);
-			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "["+surveyElementPatientQ1.id+"]==1000", skippedSurveyQuestions: [tableQ], skippedSurveyElements: [surveyElementChecboxQ1]);
+			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedSurveyElements: [(surveyElementTable2): ""]);
+			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedSurveyElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
+			def skipRule3 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==2", skippedSurveyQuestions: [checkBoxQ]);
+			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementPatientQ1.id+"==1000", skippedSurveyQuestions: [tableQ], skippedSurveyElements: [(surveyElementChecboxQ1): ""]);
 			
 			surveyOne.addSkipRule(skipRule1)
 			surveyOne.addSkipRule(skipRule2)
@@ -1300,8 +1304,12 @@ class Initializer {
 		return calendar.getTime();
 	}
 
+	public static Value v(def value) {
+		return new Value("{\"value\":"+value+"}");
+	}
+	
 	public static Translation j(def map) {
 		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
 	}
-
+	
 }

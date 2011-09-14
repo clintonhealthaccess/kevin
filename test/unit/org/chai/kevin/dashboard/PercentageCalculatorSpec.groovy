@@ -44,7 +44,7 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.period.MonthlyPeriodType;
@@ -64,8 +64,8 @@ class PercentageCalculatorSpec extends UnitTests {
 //		mockDomain(IndicatorType, [one])
 //		def const10 = new Indicator(names:j(["en":"Constant 10"]), shortName: "Constant 10", code: "CONST10", numerator: "10", denominator: "1", indicatorType: IndicatorType.findByName("one"))
 //		def const20 = new Indicator(names:j(["en":"Constant 20"]), shortName: "Constant 20", code: "CONST20", numerator: "20", denominator: "1", indicatorType: IndicatorType.findByName("one"))
-		def const10 = new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: ValueType.VALUE)
-		def const20 = new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: ValueType.VALUE)
+		def const10 = new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: JSONUtils.TYPE_NUMBER)
+		def const20 = new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: JSONUtils.TYPE_NUMBER)
 		mockDomain(Expression, [const10, const20])
 		
 		// objectives and targets for dashboard
@@ -142,9 +142,9 @@ class PercentageCalculatorSpec extends UnitTests {
 	
 	def "test absent value on target"() {
 		setup:
-		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", type: ValueType.VALUE)
+		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", type: JSONUtils.TYPE_NUMBER)
 		mockDomain(DataElement, [dataElement])
-		def expression = new Expression(names:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: ValueType.VALUE)
+		def expression = new Expression(names:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: JSONUtils.TYPE_NUMBER)
 		mockDomain(Expression, [expression])
 		
 		def target = new DashboardTarget(
@@ -169,7 +169,7 @@ class PercentageCalculatorSpec extends UnitTests {
 		}
 		
 		then:
-		percentage.status == Status.MISSING_VALUE
+		percentage.status == Status.MISSING_NUMBER
 		percentage.hasMissingValue == true
 	}
 	

@@ -3,7 +3,7 @@ package org.chai.kevin.dsr
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.period.Period;
 
 class DsrServiceSpec extends IntegrationTests {
@@ -17,7 +17,7 @@ class DsrServiceSpec extends IntegrationTests {
 	
 	def "test dsr formatting"() {
 		setup:
-		def expression = new Expression(code:"EXPR1", type: ValueType.VALUE, expression: "10").save(failOnError: true)
+		def expression = new Expression(code:"EXPR1", type: JSONUtils.TYPE_NUMBER, expression: "10").save(failOnError: true)
 		def objective = new DsrObjective(code: "OBJ1")
 		def target = new DsrTarget(expression: expression)
 		objective.addTarget(target)

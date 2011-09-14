@@ -30,7 +30,9 @@ package org.chai.kevin;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 
 public class ExpressionTagLib {
@@ -41,8 +43,9 @@ public class ExpressionTagLib {
 		def expression = attrs['expression'];
 		def dataElements = expressionService.getDataInExpression(expression.expression);
 		Map<Long, String> replacement = new HashMap<String, String>();
-		for (DataElement dataElement : dataElements) {
-			replacement.put(dataElement.getId().toString(), 
+		for (Entry<String, Data<?>> entry : dataElements.entrySet()) {
+			def dataElement = entry.getValue();
+			replacement.put(entry.getKey().toString(), 
 				"<span data-id=\""+dataElement.getId()+"\" class=\"element\"><a href=\"#\" class=\"no-link cluetip\" onclick=\"return false;\" rel=\""+g.createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: dataElement.id])+"\">["+dataElement.getId()+"]</a></span>"
 			);
 		}

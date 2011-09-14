@@ -41,7 +41,6 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
 import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
@@ -63,7 +62,7 @@ class DashboardTargetController extends AbstractObjectiveController {
 	def saveEntity(def entity) {
 		entity.entry.calculation.timestamp = new Date()
 		// FIXME change this to infer the correct type
-		entity.entry.calculation.type = ValueType.VALUE
+		entity.entry.calculation.type = JSONUtils.TYPE_NUMBER
 		if (entity.entry.calculation.id == null) entity.entry.calculation.code = UUID.randomUUID().toString();
 		entity.entry.calculation.save()
 		super.saveEntity(entity)

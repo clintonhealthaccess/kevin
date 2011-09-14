@@ -3,7 +3,7 @@ package org.chai.kevin.survey
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.period.Period;
 
 class SurveyElementServiceSpec extends IntegrationTests {
@@ -15,7 +15,7 @@ class SurveyElementServiceSpec extends IntegrationTests {
 	}
 	
 	def createSurvey() {
-		def dataElement = new DataElement(code:"ELEM1", type: ValueType.VALUE).save(failOnError: true)
+		def dataElement = new DataElement(code:"ELEM1", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		
 		def survey = new Survey(period: Period.list()[0]).save(failOnError: true);
 		def objective = new SurveyObjective(survey: survey, order: 1, groupUuidString: "Health Center")

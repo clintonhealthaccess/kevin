@@ -37,7 +37,7 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -86,7 +86,7 @@ class CostTableServiceSpec extends IntegrationTests {
 	def "missing values displayed correctly"() {
 		setup:
 		IntegrationTestInitializer.createDataElements()
-		new Expression(names:j(["en":"Expression Element 1"]), code:"EXPRELEM1", expression: "["+DataElement.findByCode("CODE").id+"]", type: ValueType.VALUE).save(failOnError: true)
+		new Expression(names:j(["en":"Expression Element 1"]), code:"EXPRELEM1", expression: "["+DataElement.findByCode("CODE").id+"]", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		def costObjective = new CostObjective(code:"Test Objective")
 		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("EXPRELEM1"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
 		costObjective.save(failOnError: true)

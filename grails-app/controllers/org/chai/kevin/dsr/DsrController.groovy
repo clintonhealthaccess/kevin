@@ -46,9 +46,6 @@ class DsrController extends AbstractReportController {
 	}
 	
 	def view = {
-
-		def quartzScheduler;
-
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
 		Period period = getPeriod()
 		DsrObjective objective = DsrObjective.get(params.int('objective'));
@@ -67,7 +64,6 @@ class DsrController extends AbstractReportController {
 		    organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
 			checkedFacilities: defaultChecked
 		]
-		
 	}
 	
 }

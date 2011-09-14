@@ -145,7 +145,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	public List<SurveyTableRow> getRows(OrganisationUnitGroup group) {
 		List<SurveyTableRow> result = new ArrayList<SurveyTableRow>();
 		for (SurveyTableRow surveyTableRow : getRows()) {
-			if (Utils.getGroupUuids(surveyTableRow.getGroupUuidString())
+			if (Utils.split(surveyTableRow.getGroupUuidString())
 					.contains(group.getUuid()))
 				result.add(surveyTableRow);
 		}
@@ -156,7 +156,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	public List<SurveyTableColumn> getColumns(OrganisationUnitGroup group) {
 		List<SurveyTableColumn> result = new ArrayList<SurveyTableColumn>();
 		for (SurveyTableColumn surveyTableColumn : getColumns()) {
-			if (Utils.getGroupUuids(surveyTableColumn.getGroupUuidString()).contains(group.getUuid()))
+			if (Utils.split(surveyTableColumn.getGroupUuidString()).contains(group.getUuid()))
 				result.add(surveyTableColumn);
 		}
 		return result;
@@ -197,7 +197,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 			CollectionUtils.intersection(
 				CollectionUtils.intersection(
 					columnRowOrgUnitUuIDs, 
-					Utils.getGroupUuids(this.getGroupUuidString())
+					Utils.split(this.getGroupUuidString())
 				),
 				getSection().getOrganisationUnitGroupApplicable()	
 			)

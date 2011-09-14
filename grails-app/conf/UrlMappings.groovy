@@ -29,6 +29,7 @@
 class UrlMappings {
 
 	static mappings = {
+		
 		"/dashboard/$action/$period?/$objective?/$organisation?"(controller:"dashboard")
 		
 		"/cost/$action/$period?/$objective?/$organisation?"(controller:"cost")

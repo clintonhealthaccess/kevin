@@ -1,20 +1,18 @@
 <!-- Date type question -->
-<div class="element element-date element-${surveyElement.id} ${surveyEnteredValue?.skipped?'skipped':''} ${(surveyEnteredValue==null || surveyEnteredValue?.valid)?'':'errors'}" data-element="${surveyElement.id}">
-	<a name="element-${surveyElement.id}"></a>
-	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
-	
-	<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id"/>
-	<input id="date-${surveyElement.id}" type="text" value="${surveyEnteredValue?.value}" name="surveyElements[${surveyElement.id}].value" class="idle-field"  ${readonly?'disabled="disabled"':''}/>
-	<g:if test="${surveyElementValue?.lastValue!=null}"><span class="survey-old-value">(${surveyElementValue.lastValue})</span></g:if>
+<div id="element-${surveyElement.id}-${suffix}" class="element element-date ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
+	<a name="element-${surveyElement.id}-${suffix}"></a>
+
+	<input id="date-${surveyElement.id}-${suffix}" type="text" value="${value?.dateValue}" name="surveyElements[${surveyElement.id}].value" class="idle-field"  ${readonly?'disabled="disabled"':''}/>
+	<g:if test="${lastValue!=null}"><span class="survey-old-value">(${surveyElementValue.lastValue})</span></g:if>
 
 	<div class="error-list">
-		<g:renderUserErrors element="${surveyElementValue}"/>
+		<g:renderUserErrors element="${enteredValue}"/>
 	</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(
 		function() {
-			$('#date-${surveyElement.id}').glDatePicker({
+			$('#date-${surveyElement.id}-${suffix}').glDatePicker({
 				onChange : function(target, newDate) {
 					target.val(newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear());
 				}

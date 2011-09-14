@@ -1,17 +1,24 @@
 package org.chai.kevin.survey;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Translation;
 import org.chai.kevin.data.DataElement;
 
 @Entity(name = "SurveyElement")
@@ -21,7 +28,9 @@ public class SurveyElement {
 	private Long id;
 	private DataElement dataElement;
 	private SurveyQuestion surveyQuestion;
-	private Set<SurveyValidationRule> validationRules = new HashSet<SurveyValidationRule>();
+	
+	private Map<String, SurveyValidationRule> validationRules = new HashMap<String, SurveyValidationRule>();
+	private Map<String, Translation> headers = new HashMap<String, Translation>();
 	
 	@Id
 	@GeneratedValue
@@ -44,17 +53,19 @@ public class SurveyElement {
 	}
 
 	@OneToMany(mappedBy="surveyElement", targetEntity=SurveyValidationRule.class)
-	public Set<SurveyValidationRule> getValidationRules() {
+//	@JoinTable(name="dhsst_survey_element_validation_rules")
+	@MapKeyColumn(name="prefix")
+	public Map<String, SurveyValidationRule> getValidationRules() {
 		return validationRules;
 	}
 	
-	public void setValidationRules(Set<SurveyValidationRule> validationRules) {
+	public void setValidationRules(Map<String, SurveyValidationRule> validationRules) {
 		this.validationRules = validationRules;
 	}
 	
 	public void addValidationRule(SurveyValidationRule validationRule) {
 		validationRule.setSurveyElement(this);
-		validationRules.add(validationRule);
+		validationRules.put(validationRule.getPrefix(), validationRule);
 	}
 	
 	@ManyToOne(targetEntity=SurveyQuestion.class, optional=false)
@@ -65,6 +76,18 @@ public class SurveyElement {
 	
 	public void setSurveyQuestion(SurveyQuestion surveyQuestion) {
 		this.surveyQuestion = surveyQuestion;
+	}
+	
+	@ElementCollection(targetClass=Translation.class)
+//	@AttributeOverrides({
+//		@AttributeOverride(name="value.jsonText", column=@Column(name="headers"))
+//	})
+	public Map<String, Translation> getHeaders() {
+		return headers;
+	}
+	
+	public void setHeaders(Map<String, Translation> headers) {
+		this.headers = headers;
 	}
 	
 	@Override
@@ -110,8 +133,8 @@ public class SurveyElement {
 	
 	@Transient
 	protected void copyRules(SurveyElement copy, SurveyCloner cloner) {
-		for (SurveyValidationRule validationRule : getValidationRules()) {
-			copy.getValidationRules().add(cloner.getValidationRule(validationRule));
+		for (Entry<String, SurveyValidationRule> entry : getValidationRules().entrySet()) {
+			copy.getValidationRules().put(entry.getKey(), cloner.getValidationRule(entry.getValue()));
 		}
 	}
 	

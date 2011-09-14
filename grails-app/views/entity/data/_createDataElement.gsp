@@ -1,4 +1,5 @@
-<%@ page import="org.chai.kevin.data.ValueType" %>
+<%@ page import="org.chai.kevin.data.Type.ValueType" %>
+
 <div id="add-data-element" class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">Create Data Element</h3>
@@ -13,18 +14,18 @@
 	  <g:selectFromEnum name="type" bean="${dataElement}" values="${ValueType.values()}" field="type" label="Type"/>
 	</div>
 	<div id="enume-list-container">
-	<div class="group-list ${hasErrors(bean:dataElement, field:'enume', 'errors')}">
-		<label for="enume.id">Enume: </label>
-		<select class="enume-list" name="enume.id">
-			<option value="null">-- Select Enume --</option>
-			<g:each in="${enumes}" var="enume">
-				<option value="${enume.id}" ${(dataElement?.enume?.id!=null && dataElement?.enume?.id==enume?.id)?'selected="selected"':''}}>
-					<g:i18n field="${enume.names}"/>
-				</option>
-			</g:each>
-		</select>
-		<div class="error-list"><g:renderErrors bean="${dataElement}" field="enume" /></div>
-	</div>
+		<div class="group-list ${hasErrors(bean:dataElement, field:'enume', 'errors')}">
+			<label for="enume.id">Enume: </label>
+			<select class="enume-list" name="enume.id">
+				<option value="null">-- Select Enume --</option>
+				<g:each in="${enumes}" var="enume">
+					<option value="${enume.id}" ${(dataElement?.enume?.id!=null && dataElement?.enume?.id==enume?.id)?'selected="selected"':''}}>
+						<g:i18n field="${enume.names}"/>
+					</option>
+				</g:each>
+			</select>
+			<div class="error-list"><g:renderErrors bean="${dataElement}" field="enume" /></div>
+		</div>
 	</div>
 	
 	<g:input name="info" label="Info" bean="${dataElement}" field="info"/>

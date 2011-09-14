@@ -120,7 +120,7 @@ public class SurveyTableRow extends SurveyTranslatable {
 
 	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable() {
-		return Utils.getGroupUuids(this.groupUuidString);
+		return Utils.split(this.groupUuidString);
 	}
 	
     @Transient

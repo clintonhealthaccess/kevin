@@ -1,4 +1,4 @@
-<%@ page import="org.chai.kevin.data.ValueType" %>
+<%@ page import="org.chai.kevin.data.Type.ValueType" %>
 
 <div id="add-constant" class="entity-form-container togglable">
 

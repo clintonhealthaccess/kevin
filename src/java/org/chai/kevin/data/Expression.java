@@ -54,6 +54,7 @@ public class Expression extends Data<ExpressionValue> {
 	public String getExpression() {
 		return expression;
 	}
+	
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}

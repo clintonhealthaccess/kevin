@@ -1,7 +1,6 @@
 package org.chai.kevin.value
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.data.ValueType;
 
 
 /*
@@ -39,26 +38,27 @@ constraints = {
 	
 	period(nullable: false)
 	
-	value(nullable: true, blank: false, validator: {val, obj ->
-		if (val == null) return true;
+	value(nullable: false, validator: {val, obj ->
+		return true;
+//		if (val == null) return true;
 		
-		switch (obj.getData().getType()) {
-		case ValueType.VALUE:
-			if (!NumberUtils.isNumber(val)) return "type.value";
-			return true;
-		case ValueType.ENUM:
-			if (!obj.getData().getEnume().hasValue(val)) return "type.enum";
-			return true;
-		case ValueType.BOOL:
-			if (!val.equals("1") && !val.equals("0")) return "type.bool";
-			return true;
-		case ValueType.STRING:
-			return true;
-		case ValueType.DATE:
-			// TODO
-			return true;
-		default:
-			return false;
-		}
+//		switch (obj.getData().getType()) {
+//		case ValueType.NUMBER:
+//			if (!NumberUtils.isNumber(val)) return "type.value";
+//			return true;
+//		case ValueType.ENUM:
+//			if (!obj.getData().getEnume().hasValue(val)) return "type.enum";
+//			return true;
+//		case ValueType.BOOL:
+//			if (!val.equals("1") && !val.equals("0")) return "type.bool";
+//			return true;
+//		case ValueType.STRING:
+//			return true;
+//		case ValueType.DATE:
+//			// TODO
+//			return true;
+//		default:
+//			return false;
+//		}
 	})
 }

@@ -834,7 +834,7 @@
 			</map>
 		</property>
 	</bean>
-
+	
 	<bean id="I18nIndicatorGroup" class="org.hisp.dhis.i18n.I18nObject">
 		<property name="className" value="IndicatorGroup" />
 		<property name="propertyNames">

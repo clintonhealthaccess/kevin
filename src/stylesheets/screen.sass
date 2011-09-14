@@ -883,10 +883,7 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
       max-width: 700px
       margin: 10px 0px 1px 0px
       paddind: 1px
-      th
-        font-weight: normal
-        background: #3b84c9
-        color: #fff
+      
       div.element
         display: block
         
@@ -895,29 +892,70 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     
     td
       padding: 0px
+      border-bottom: 1px solid #d3d3d3
     
     td div.element
       padding: 4px 10px 4px 5px
       
+    td div.skipped
+      padding: 15px
+      
+      input, select
+        display: none
+        
     .oddrow
       +odd
-      td 
-        border-bottom: 1px solid #d3d3d3
       
     .evenrow
       +even
-      td 
-        border-bottom: 1px solid #d3d3d3
-      
-    .skipped
-      input, select
-        display: none
         
   div.element-string
     display: block
      
   .element-string .survey-old-value
     display: block
+
+  .question-table table th, .element-map .element-map-header
+    border-left: 1px solid white
+    font-weight: normal
+    background: #3b84c9
+    color: #fff
+
+  .element-list .element-map 
+    .element-map-body, .element-map-header
+      width: 100px
+      
+  div.element-list
+    margin: 10px 0px 1px 0px
+    display: table
+        
+    .element-map
+      display: table-row
+      float: left
+    
+      .element-map-header, .element-map-body
+        display: table-cell
+        padding: 4px 10px 4px 5px
+        border-bottom: 1px solid #d3d3d3
+
+        select, input
+          width: 98px
+          
+  .element-list .element-list-header
+    .element-number, .elemement-string, .element-date, .element-bool, .element-enum
+      display: none
+          
+  .element-list .element-list-header .element-map .element-map-body
+    display: none
+    
+  .element-list .element-list-body .element-map .element-map-header
+    display: none
+    
+  div.element-map
+    display: block
+    
+    div, .element
+      display: inline 
         
   .question-checkbox
     .skipped

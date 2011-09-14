@@ -29,8 +29,7 @@
 			<div id="top" class="box">
 	    		<h5 class="float"><g:message code="dashboard.labels.objectives" default="Objectives"/></h5>
 		    	<ul>
-		    		<g:each in="${dashboard.objectivePath}">
-		    			<g:set var="objective" value="${it}"/>
+		    		<g:each in="${dashboard.objectivePath}" var="objective">
 			    		<li>
 			    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
 			    		</li>

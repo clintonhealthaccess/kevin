@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.chai.kevin.Info;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public class DashboardObjectiveInfo extends Info {
@@ -52,10 +53,9 @@ public class DashboardObjectiveInfo extends Info {
 		return "/dashboard/objectiveInfo";
 	}
 
-	@Override
-	public String getValue() {
+	public Double getValue() {
 		if (percentage.getValue() == null) return null;
-		return String.valueOf(percentage.getValue());
+		return percentage.getValue();
 	}
 	
 	public Double getNumberValue() {
@@ -63,7 +63,6 @@ public class DashboardObjectiveInfo extends Info {
 		return percentage.getValue();
 	}
 
-	@Override
 	public OrganisationUnit getOrganisation() {
 		return organisation.getOrganisationUnit();
 	}

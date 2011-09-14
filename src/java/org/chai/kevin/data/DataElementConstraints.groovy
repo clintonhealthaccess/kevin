@@ -30,8 +30,10 @@ package org.chai.kevin.data
 
 constraints = {
 	code(nullable: false, blank: false, unique: true)
-	type(nullable: false)
-	enume(validator: {val, obj ->
-		if (obj.type == ValueType.ENUM) return val != null
-	})
+	type(nullable: false
+		// TODO json crap	
+	)
+//	enume(validator: {val, obj ->
+//		if (obj.type == ValueType.ENUM) return val != null
+//	})
 }

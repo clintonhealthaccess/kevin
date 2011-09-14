@@ -1,12 +1,17 @@
 package org.chai.kevin.survey;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,12 +20,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyQuestion;
+import org.chai.kevin.util.Utils;
 
 @Entity(name="SurveySkipRule")
 @Table(name="dhsst_survey_skip_rule")
@@ -31,7 +39,7 @@ public class SurveySkipRule {
 	private String expression;
 	private Translation descriptions = new Translation();
 	
-	private Set<SurveyElement> skippedSurveyElements = new HashSet<SurveyElement>();
+	private Map<SurveyElement, String> skippedSurveyElements = new HashMap<SurveyElement, String>();
 	private Set<SurveyQuestion> skippedSurveyQuestions = new HashSet<SurveyQuestion>();
 	
 	@Id
@@ -64,23 +72,36 @@ public class SurveySkipRule {
 		this.expression = expression;
 	}
 	
-	public void setDescriptions(Translation descriptions) {
-		this.descriptions = descriptions;
-	}
 	@Embedded
 	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
 	public Translation getDescriptions() {
 		return descriptions;
 	}
 
-	@ManyToMany(targetEntity=SurveyElement.class)
-	@JoinTable(name="dhsst_survey_skipped_survey_elements")
-	public Set<SurveyElement> getSkippedSurveyElements() {
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
+
+	@ElementCollection
+	@CollectionTable(name="dhsst_survey_skipped_survey_elements")
+	@MapKeyJoinColumn
+	public Map<SurveyElement, String> getSkippedSurveyElements() {
 		return skippedSurveyElements;
 	}
 	
-	public void setSkippedSurveyElements(Set<SurveyElement> skippedSurveyElements) {
+	public void setSkippedSurveyElements(Map<SurveyElement, String> skippedSurveyElements) {
 		this.skippedSurveyElements = skippedSurveyElements;
+	}
+	
+	@Transient
+	public Set<String> getSkippedPrefixes(SurveyElement element) {
+		Set<String> result = new HashSet<String>();
+		if (skippedSurveyElements.containsKey(element)) {
+			String text = skippedSurveyElements.get(element);
+			if (text.isEmpty()) result.add(text);
+			result.addAll(Utils.split(text));
+		}
+		return result;
 	}
 	
 	@ManyToMany(targetEntity=SurveyQuestion.class)
@@ -124,9 +145,10 @@ public class SurveySkipRule {
 		for (SurveyQuestion question : getSkippedSurveyQuestions()) {
 			copy.getSkippedSurveyQuestions().add(surveyCloner.getQuestion(question));
 		}
-		for (SurveyElement element : getSkippedSurveyElements()) {
-			copy.getSkippedSurveyElements().add(surveyCloner.getElement(element));
+		for (Entry<SurveyElement, String> entry : getSkippedSurveyElements().entrySet()) {
+			copy.getSkippedSurveyElements().put(surveyCloner.getElement(entry.getKey()), entry.getValue());
 		}
 	}
+
 	
 }

@@ -9,15 +9,11 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
@@ -25,21 +21,23 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Timestamped;
 import org.chai.kevin.Translation;
+import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueCalculator;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @Entity(name="Data")
 @Table(name="dhsst_data", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy=InheritanceType.JOINED)
-abstract public class Data<T extends Value> implements Timestamped, Serializable {
+abstract public class Data<T extends StoredValue> implements Timestamped, Serializable {
 	
 	private static final long serialVersionUID = 7470871788061305391L;
 
 	private Long id;
-	private ValueType type;
-	private Enum enume;
+	private Type type;
 	private Date timestamp = new Date();
 	
 	private String code;
@@ -51,17 +49,21 @@ abstract public class Data<T extends Value> implements Timestamped, Serializable
 	public Long getId() {
 		return id;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
-	@Enumerated(EnumType.STRING)
-	@Column(nullable=false)
-	public ValueType getType() {
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonType", column=@Column(name="type", nullable=false))
+	})
+	public Type getType() {
 		return type;
 	}
 	
-	@ManyToOne(targetEntity=Enum.class)
-	@JoinColumn
-	public Enum getEnume() {
-		return enume;
+	public void setType(Type type) {
+		this.type = type;
 	}
 	
 	@Column(nullable=false, columnDefinition="datetime")
@@ -69,7 +71,10 @@ abstract public class Data<T extends Value> implements Timestamped, Serializable
 	public Date getTimestamp() {
 		return timestamp;
 	}
-	
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
 
 	@Embedded
 	@AttributeOverrides({
@@ -79,6 +84,10 @@ abstract public class Data<T extends Value> implements Timestamped, Serializable
 		return names;
 	}
 	
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+
 	@Embedded
 	@AttributeOverrides({
         @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
@@ -87,44 +96,22 @@ abstract public class Data<T extends Value> implements Timestamped, Serializable
 		return descriptions;
 	}
 
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
+	}
+
 	@Basic(fetch=FetchType.EAGER)
 	public String getCode() {
 		return code;
 	}
 	
-
 	public void setCode(String code) {
 		this.code = code;
 	}
 
-	public void setNames(Translation names) {
-		this.names = names;
-	}
-	
-	public void setDescriptions(Translation descriptions) {
-		this.descriptions = descriptions;
-	}
-
-	
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public void setEnume(Enum enume) {
-		this.enume = enume;
-	}
-	
-	public void setType(ValueType type) {
-		this.type = type;
-	}
-	
 	@Transient
 	public boolean isAggregatable() {
-		return getType() == ValueType.VALUE;
+		return type.getType().equals("value");
 	}
 	
 	@Override
@@ -154,10 +141,10 @@ abstract public class Data<T extends Value> implements Timestamped, Serializable
 
 	@Override
 	public String toString() {
-		return "Data [type=" + type + ", enume=" + enume + ", code=" + code + "]";
+		return "Data [type=" + type + ", code=" + code + "]";
 	}
 
 	@Transient
 	public abstract T getValue(ValueCalculator<T> calculator, OrganisationUnit organisationUnit, Period period);
-	
+
 }

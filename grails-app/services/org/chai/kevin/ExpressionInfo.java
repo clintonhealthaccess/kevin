@@ -35,6 +35,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public class ExpressionInfo extends Info {
@@ -72,15 +73,8 @@ public class ExpressionInfo extends Info {
 		return null;
 	}
 	
-	public Double getNumberValue() {
-		Double value = null;
-		if (getValue() != null) {
-			value = Double.parseDouble(getValue());
-			if (getMaxValue() != null) {
-				value = value / getMaxValue();
-			}
-		}
-		return value;
+	public Value getValue() {
+		return expressionValue.getValue();
 	}
 	
 	public Double getMaxValue() {
@@ -88,11 +82,6 @@ public class ExpressionInfo extends Info {
 	}
 	
 	
-	public String getValue() {
-		if (expressionValue.getValue() == null) return null;
-		return String.valueOf(expressionValue.getValue());
-	}
-
 	@Override
 	public String getTemplate() {
 		return "/info/expressionInfo";

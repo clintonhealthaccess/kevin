@@ -5,7 +5,7 @@ class ExpressionValidConstraint {
 	def expressionService
 	
 	def validate = { val -> 
-		expressionService.expressionIsValid(val) == ExpressionService.VALID
+		expressionService.expressionIsValid(val)
 	}
 	
 }

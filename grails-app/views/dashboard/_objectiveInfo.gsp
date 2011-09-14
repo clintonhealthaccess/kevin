@@ -3,7 +3,7 @@
 		<div class="average">
 			<h5>Average value:</h5>
 			<span class="value">
-				<g:if test="${info.number}">
+				<g:if test="${info.numberValue != null}">
 					<g:formatNumber number="${info.numberValue * 100}" format="#0.0"/>%
 				</g:if>
 				<g:else>N/A</g:else>

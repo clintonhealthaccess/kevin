@@ -107,7 +107,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	public List<SurveyCheckboxOption> getOptions(OrganisationUnitGroup group) {
 		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
 		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {
-			if (Utils.getGroupUuids(surveyCheckboxOption.getGroupUuidString())
+			if (Utils.split(surveyCheckboxOption.getGroupUuidString())
 					.contains(group.getUuid()))
 				result.add(surveyCheckboxOption);
 		}
@@ -125,7 +125,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 				found = true;
 				optionOrgUnitUuIds.addAll(CollectionUtils.intersection(
 					option.getOrganisationUnitGroupApplicable(),
-					Utils.getGroupUuids(this.getGroupUuidString()))
+					Utils.split(this.getGroupUuidString()))
 				);
 			}
 		}

@@ -54,7 +54,7 @@ public class SurveyCloner {
 	}
 
 	protected String getExpression(String expression, SurveyValidationRule rule) {
-		Set<String> placeholders = ExpressionService.getPlaceholders(expression);
+		Set<String> placeholders = ExpressionService.getVariables(expression);
 		Map<String, String> mapping = new HashMap<String, String>();
 		for (String string : placeholders) {
 			Long id = Long.parseLong(string);
@@ -69,7 +69,7 @@ public class SurveyCloner {
 	}
 	
 	protected String getExpression(String expression, SurveySkipRule rule) {
-		Set<String> placeholders = ExpressionService.getPlaceholders(expression);
+		Set<String> placeholders = ExpressionService.getVariables(expression);
 		Map<String, String> mapping = new HashMap<String, String>();
 		for (String string : placeholders) {
 			Long id = Long.parseLong(string);

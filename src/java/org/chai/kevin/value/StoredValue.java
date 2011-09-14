@@ -30,32 +30,35 @@ package org.chai.kevin.value;
 
 import java.util.Date;
 
-import javax.persistence.Basic;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
+import org.chai.kevin.data.Data;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
-public abstract class AbstractValue implements Value {
+public abstract class StoredValue {
 
 	protected OrganisationUnit organisationUnit;
 	protected Period period;
-	protected String value;
+	protected Value value;
 
 	private Date timestamp = new Date();
 	
-	public AbstractValue(){
+	public StoredValue(){
 		// default constructor for hibernate
 	}
 	
-	public AbstractValue(OrganisationUnit organisationUnit, Period period, String value) {
+	public StoredValue(OrganisationUnit organisationUnit, Period period, Value value) {
 		this.organisationUnit = organisationUnit;
 		this.period = period;
 		this.value = value;
@@ -81,23 +84,15 @@ public abstract class AbstractValue implements Value {
 		return timestamp;
 	}
 
-	@Basic(optional=true)
-	@Column(nullable=true)
-	public String getValue() {
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonValue", column=@Column(name="value", nullable=false))
+	})
+	public Value getValue() {
 		return value;
 	}
 	
-	@Transient
-	public Double getNumberValue() {
-		if (value == null) return null;
-		try {
-			return Double.parseDouble(value);
-		} catch (NumberFormatException e) {
-			return null;
-		}
-	}
-	
-	public void setValue(String value) {
+	public void setValue(Value value) {
 		this.value = value;
 	}
 	
@@ -113,6 +108,8 @@ public abstract class AbstractValue implements Value {
 		this.timestamp = timestamp;
 	}
 
+	@Transient
+	public abstract Data<?> getData();
 	
 	@Override
 	public int hashCode() {
@@ -131,9 +128,9 @@ public abstract class AbstractValue implements Value {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof AbstractValue))
+		if (!(obj instanceof StoredValue))
 			return false;
-		AbstractValue other = (AbstractValue) obj;
+		StoredValue other = (StoredValue) obj;
 		if (getOrganisationUnit() == null) {
 			if (other.getOrganisationUnit() != null)
 				return false;

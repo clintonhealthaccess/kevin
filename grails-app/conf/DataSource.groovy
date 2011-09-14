@@ -34,14 +34,14 @@ dataSource {
 		maxIdle = 25
 		minIdle = 5
 		initialSize = 5
-		minEvictableIdleTimeMillis = 1800000
-		timeBetweenEvictionRunsMillis = 1800000
-		numTestsPerEvictionRun = 3
+		timeBetweenEvictionRunsMillis=1000 * 60 * 30
+		numTestsPerEvictionRun=3
+		minEvictableIdleTimeMillis=1000 * 60 * 30
 		maxWait = 10000
 		testOnBorrow = true
 		testWhileIdle = true
 		testOnReturn = true
-		// validationQuery = "SELECT 1"
+		validationQuery = "SELECT 1"
 	}
 }
 hibernate {
@@ -57,21 +57,22 @@ environments {
 	development {
 		dataSource {
 			dbCreate = "update" // one of 'create', 'create-drop','update'
-			driverClassName = "org.hsqldb.jdbcDriver"
-			url = "jdbc:hsqldb:mem:devDB"
+			driverClassName = "org.h2.Driver"
+			url = "jdbc:h2:mem:devDB"
 			username = "sa";
 			password = "";
 		}
 		hibernate {
 			cache.use_second_level_cache = false
 			cache.use_query_cache = false
+//			dialect = "org.hibernate.dialect.HSQLDialect"
 		}
 	}
 	test {
 		dataSource {
 			dbCreate = "create-drop"
-			driverClassName = "org.hsqldb.jdbcDriver"
-			url = "jdbc:hsqldb:mem:testDb"
+			driverClassName = "org.h2.Driver"
+			url = "jdbc:h2:mem:testDb"
 			username = "sa";
 			password = "";
 
@@ -79,6 +80,7 @@ environments {
 		hibernate {
 			cache.use_second_level_cache = false
 			cache.use_query_cache = false
+//			dialect = "org.hibernate.dialect.HSQLDialect"
 		}
 	}
 	production {
@@ -90,6 +92,7 @@ environments {
 		hibernate {
 			cache.use_second_level_cache = true
 			cache.use_query_cache = true
+//			dialect = "org.hibernate.dialect.MySQLDialect"
 		}
 	}
 }

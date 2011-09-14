@@ -50,7 +50,7 @@ import org.hisp.dhis.period.Period;
 		uniqueConstraints=@UniqueConstraint(columnNames={"dataElement", "period", "organisationUnit"})
 )
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DataValue extends AbstractValue {
+public class DataValue extends StoredValue {
 	
 	private Long id;
 	private DataElement dataElement;
@@ -58,7 +58,7 @@ public class DataValue extends AbstractValue {
 	public DataValue() {}
 
 	public DataValue(DataElement dataElement, OrganisationUnit organisationUnit, 
-			Period period, String value) {
+			Period period, Value value) {
 		super(organisationUnit, period, value);
 		
 		this.dataElement = dataElement;

@@ -55,7 +55,7 @@ import org.hisp.dhis.period.Period;
 	}
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ExpressionValue extends AbstractValue {
+public class ExpressionValue extends StoredValue {
 	private Integer id;
 
 	private Status status;
@@ -64,13 +64,16 @@ public class ExpressionValue extends AbstractValue {
 	
 	public enum Status {
 		VALID,
-		MISSING_VALUE,
-		NOT_AGGREGATABLE
+		MISSING_NUMBER,
+		NOT_AGGREGATABLE,
+		MISSING_DATA_ELEMENT,
+		ERROR, 
+		INVALID,
 	}
 	
 	public ExpressionValue() {}
 	
-	public ExpressionValue(String value, Status status, OrganisationUnit organisationUnit, Expression expression, Period period) {
+	public ExpressionValue(Value value, Status status, OrganisationUnit organisationUnit, Expression expression, Period period) {
 		super(organisationUnit, period, value);
 
 		this.status = status;

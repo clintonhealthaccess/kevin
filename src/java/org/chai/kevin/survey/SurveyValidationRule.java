@@ -20,7 +20,10 @@ import javax.persistence.Transient;
 public class SurveyValidationRule {
 
 	private Long id;
+	
 	private SurveyElement surveyElement;
+	private String prefix = "";
+	
 	private String expression;
 	private Boolean allowOutlier;
 
@@ -82,6 +85,16 @@ public class SurveyValidationRule {
 	public void setAllowOutlier(Boolean allowOutlier) {
 		this.allowOutlier = allowOutlier;
 	}
+	
+	@Basic(optional=false)
+	@Column(nullable=false)
+	public String getPrefix() {
+		return prefix;
+	}
+	
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
 
 	@Override
 	public String toString() {
@@ -92,12 +105,38 @@ public class SurveyValidationRule {
 	@Transient
 	protected void deepCopy(SurveyValidationRule copy, SurveyCloner cloner) {
 		copy.setAllowOutlier(getAllowOutlier());
+		copy.setPrefix(getPrefix());
 		copy.setExpression(cloner.getExpression(getExpression(), copy));
 		copy.setSurveyElement(cloner.getElement(getSurveyElement()));
 		copy.setValidationMessage(getValidationMessage());
 		for (SurveyElement element : getDependencies()) {
 			copy.getDependencies().add(cloner.getElement(element));
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof SurveyValidationRule))
+			return false;
+		SurveyValidationRule other = (SurveyValidationRule) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 	
 }

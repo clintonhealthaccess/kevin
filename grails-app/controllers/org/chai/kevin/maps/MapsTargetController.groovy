@@ -35,7 +35,7 @@ import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 import com.sun.tools.javac.code.Type.ForAll;
@@ -68,7 +68,7 @@ class MapsTargetController extends AbstractEntityController {
 	def saveEntity(def entity) {
 		if (entity.calculation != null) {
 			// FIXME change this to infer the correct type
-			entity.calculation.type = ValueType.VALUE
+			entity.calculation.type = JSONUtils.TYPE_NUMBER
 			if (entity.calculation.id == null) entity.calculation.code = UUID.randomUUID().toString();
 			entity.calculation.save();
 		}

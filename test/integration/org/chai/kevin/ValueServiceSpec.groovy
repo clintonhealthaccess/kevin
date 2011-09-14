@@ -32,7 +32,7 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
@@ -56,7 +56,7 @@ class ValueServiceSpec extends IntegrationTests {
 			names:j(["en":"Constant 10"]), 
 			descriptions:j([:]), 
 			code:"Constant 10", expression: "10", 
-			type: ValueType.VALUE, 
+			type: JSONUtils.TYPE_NUMBER, 
 			timestamp:new Date()
 		).save(failOnError: true)
 		
@@ -71,7 +71,7 @@ class ValueServiceSpec extends IntegrationTests {
 			names:j(["en":"Constant 10"]),
 			descriptions:j([:]),
 			code:"Constant 10", expression: "10",
-			type: ValueType.VALUE,
+			type: JSONUtils.TYPE_NUMBER,
 			timestamp:new Date()
 		).save(failOnError: true)
 		
@@ -80,7 +80,7 @@ class ValueServiceSpec extends IntegrationTests {
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
 			timestamp: new Date(),
 			status: Status.VALID,
-			value: "10",
+			value: v("10"),
 			expression: Expression.findByCode("Constant 10")
 		).save(failOnError: true)
 		
@@ -96,13 +96,13 @@ class ValueServiceSpec extends IntegrationTests {
 			names:j(["en":"Constant 10"]),
 			descriptions:j([:]),
 			code:"Constant 10", expression: "10",
-			type: ValueType.VALUE,
+			type: JSONUtils.TYPE_NUMBER,
 		).save(failOnError: true)
 		new ExpressionValue(
 			period: Period.list()[0],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
 			status: Status.VALID,
-			value: "10",
+			value: v("10"),
 			expression: Expression.findByCode("Constant 10")
 		).save(failOnError: true)
 		
@@ -129,13 +129,13 @@ class ValueServiceSpec extends IntegrationTests {
 			names:j(["en":"Constant 10"]),
 			descriptions:j([:]),
 			code:"Constant 10", expression: "10",
-			type: ValueType.VALUE,
+			type: JSONUtils.TYPE_NUMBER,
 			timestamp:new Date()
 		).save(failOnError: true)
 		new Average(expressions: [
 			"District Hospital": Expression.findByCode("Constant 10"),
 			"Health Center": Expression.findByCode("Constant 10")
-		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
+		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		
 		expect:
 		List<CalculationValue> values = valueService.getNonCalculatedCalculations();
@@ -148,13 +148,13 @@ class ValueServiceSpec extends IntegrationTests {
 			names:j(["en":"Constant 10"]),
 			descriptions:j([:]),
 			code:"Constant 10", expression: "10",
-			type: ValueType.VALUE,
+			type: JSONUtils.TYPE_NUMBER,
 			timestamp:new Date()
 		).save(failOnError: true)
 		new Average(expressions: [
 			"District Hospital": Expression.findByCode("Constant 10"),
 			"Health Center": Expression.findByCode("Constant 10")
-		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
+		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		new CalculationValue(
 			period: Period.list()[0],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
@@ -188,13 +188,13 @@ class ValueServiceSpec extends IntegrationTests {
 			names:j(["en":"Constant 10"]),
 			descriptions:j([:]),
 			code:"Constant 10", expression: "10",
-			type: ValueType.VALUE,
+			type: JSONUtils.TYPE_NUMBER,
 			timestamp:new Date()
 		).save(failOnError: true)
 		new Average(expressions: [
 			"District Hospital": Expression.findByCode("Constant 10"),
 			"Health Center": Expression.findByCode("Constant 10")
-		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
+		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		new CalculationValue(
 			period: Period.list()[0],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
@@ -224,13 +224,13 @@ class ValueServiceSpec extends IntegrationTests {
 	
 	def "test number of values"() {
 		setup:
-		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: ValueType.VALUE)
+		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER)
 		dataElement.save(failOnError: true)
 		def dataValue = new DataValue(
 			dataElement: DataElement.findByCode("CODE"),
 			period: Period.list()[1],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			value: "40",
+			value: v("40"),
 			timestamp: new Date(),
 		).save(failOnError: true)
 		
@@ -249,13 +249,13 @@ class ValueServiceSpec extends IntegrationTests {
 	
 	def "test value list"() {
 		setup:
-		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: ValueType.VALUE)
+		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER)
 		dataElement.save(failOnError: true)
 		def dataValue = new DataValue(
 			dataElement: DataElement.findByCode("CODE"),
 			period: Period.list()[1],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			value: "40",
+			value: v("40"),
 			timestamp: new Date(),
 		).save(failOnError: true)
 		

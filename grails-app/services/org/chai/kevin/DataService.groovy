@@ -29,7 +29,9 @@ package org.chai.kevin
 */
 
 import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.data.Constant;
+import org.apache.shiro.session.mgt.SessionFactory;
+
+import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.util.Utils;
@@ -37,6 +39,7 @@ import org.chai.kevin.util.Utils;
 class DataService {
 
     static transactional = true
+	
 	def localeService
 	def sessionFactory
 	
@@ -44,17 +47,21 @@ class DataService {
 		return sessionFactory.currentSession.get(Data.class, id)
 	}
 		
-	def searchConstants(String text) {
-		def constants = Constant.list()
-		StringUtils.split(text).each { chunk ->
-			constants.retainAll { element ->
-				Utils.matches(chunk, element.id+"") ||
-				Utils.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, element.code) 
-			}
-		}
-		return constants.sort {it.names[localeService.getCurrentLanguage()]}
+	Enum getEnum(Long id) {
+		return sessionFactory.currentSession.get(Enum.class, id)
 	}
+	
+//	def searchConstants(String text) {
+//		def constants = Constant.list()
+//		StringUtils.split(text).each { chunk ->
+//			constants.retainAll { element ->
+//				Utils.matches(chunk, element.id+"") ||
+//				Utils.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
+//				Utils.matches(chunk, element.code) 
+//			}
+//		}
+//		return constants.sort {it.names[localeService.getCurrentLanguage()]}
+//	}
 	
     def searchDataElements(String text) {
 		def dataElements = DataElement.list();

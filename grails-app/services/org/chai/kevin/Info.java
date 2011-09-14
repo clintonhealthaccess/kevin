@@ -28,21 +28,9 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.apache.commons.lang.math.NumberUtils;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public abstract class Info {
-
+	
 	public abstract String getTemplate();
-	
-	public boolean isNumber() {
-		return NumberUtils.isNumber(getValue());
-	}
-	
-	public abstract Double getNumberValue();
-	
-	public abstract String getValue();
-	
-	public abstract OrganisationUnit getOrganisation();
 	
 }

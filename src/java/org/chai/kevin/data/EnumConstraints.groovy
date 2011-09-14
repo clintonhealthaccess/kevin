@@ -32,5 +32,5 @@ package org.chai.kevin.data
  *
  */
 constraints = {
-	code(nullable:false, blank: false,unique: true)
+	code(nullable:false, blank: false, unique: true)
 }

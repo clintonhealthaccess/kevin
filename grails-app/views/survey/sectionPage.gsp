@@ -1,4 +1,7 @@
 <%@ page import="org.chai.kevin.survey.validation.SurveyEnteredSection.SectionStatus" %>
+<%@ page import="org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus" %>
+<%@ page import="org.chai.kevin.survey.validation.SurveyEnteredQuestion.QuestionStatus" %>
+
 <%@ page import="org.apache.shiro.SecurityUtils" %>
 
 <html>
@@ -9,8 +12,8 @@
 		</title>
 	</head>
 	<body>
-		<g:set var="closed" value="${surveyPage.getStatus(surveyPage.section) == SectionStatus.CLOSED}"/>
-		<g:set var="unavailable" value="${surveyPage.getStatus(surveyPage.section) == SectionStatus.UNAVAILABLE}"/>
+		<g:set var="closed" value="${surveyPage.objectives[surveyPage.objective].status == ObjectiveStatus.CLOSED}"/>
+		<g:set var="unavailable" value="${surveyPage.objectives[surveyPage.objective].status == ObjectiveStatus.UNAVAILABLE}"/>
 		<g:set var="canSave" value="${SecurityUtils.subject.isPermitted('survey:save')}"/>
 		
 		<g:set var="readonly" value="${closed||unavailable||!canSave}"/>
@@ -40,7 +43,7 @@
 					</div>
 				</g:if> 
 				
-				<g:if test="${!closed&&!unavailable}">
+				<g:if test="${!closed && !unavailable}">
 					<div class="rounded-box-top">
 						<h5>
 							<g:i18n field="${surveyPage.section.names}" />
@@ -51,15 +54,15 @@
 						<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 							<ol id="questions">
 								<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question">
-									<li class="question-container ${surveyPage.isSkipped(question)?'skipped':''}">
-										<g:render template="/survey/question/${question.getType()}" model="[question: question, surveyPage: surveyPage, readonly: readonly]" />
+									<li class="question-container ${surveyPage.questions[question].skipped?'skipped':''}">
+										<g:render template="/survey/question/${question.getType()}" model="[surveyPage: surveyPage, question: question, readonly: readonly]" />
 									</li> 
 								</g:each>
 							</ol>
 							
 							<g:if test="${!readonly}">
 								<button type="submit">
-									<g:if test="${surveyPage.isLastSection()}">
+									<g:if test="${surveyPage.isLastSection(surveyPage.section)}">
 										Finish
 									</g:if>
 									<g:else>
@@ -77,10 +80,26 @@
 			<script type="text/javascript">
 				$(document).ready(function() {
 					$('#survey-form').delegate('input, select, textarea', 'change', function(){
-						surveyValueChanged(this, valueChangedInSection);
+						var element = $(this).parents('.element');
+						surveyValueChanged(element, valueChangedInSection);
 					});
 					$('#survey-form').delegate('a.outlier-validation', 'click', function(){
-						$(this).next().val($(this).data('rule')); surveyValueChanged(this, valueChangedInSection);
+						var element = $(this).parents('.element');
+						surveyValueChanged(element, valueChangedInSection);						
+						return false;
+					});
+					
+					$('#survey-form').delegate('.element-list-add', 'click', function(){
+						listAddClick(this, valueChangedInSection);
+						return false;
+					});
+					$('#survey-form').delegate('.element-list-remove', 'click', function(){
+						listRemoveClick(this, function(data, element) {
+							$(element).parents('.question').addClass('errors');
+							$(element).parents('.question-container').html(data.html);
+
+							valueChangedInSection(data, element);
+						});
 						return false;
 					});
 				});

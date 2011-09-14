@@ -53,7 +53,7 @@ import org.hisp.dhis.period.Period;
 	}
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CalculationValue extends AbstractValue {
+public class CalculationValue extends StoredValue {
 
 	private Long id;
 	private Calculation calculation;
@@ -63,7 +63,7 @@ public class CalculationValue extends AbstractValue {
 	
 	public CalculationValue() {}
 	
-	public CalculationValue(Calculation calculation, OrganisationUnit organisationUnit, Period period, String value, boolean hasMissingValues, boolean hasMissingExpression) {
+	public CalculationValue(Calculation calculation, OrganisationUnit organisationUnit, Period period, Value value, boolean hasMissingValues, boolean hasMissingExpression) {
 		super(organisationUnit, period, value);
 		
 		this.calculation = calculation;
@@ -121,11 +121,6 @@ public class CalculationValue extends AbstractValue {
 		this.hasMissingValues = hasMissingValues;
 	}
 	
-	@Transient
-	public Double getAverage() {
-		return getValue()==null?null:Double.parseDouble(getValue());
-	}
-	
 	@Override
 	@Transient
 	public Data<?> getData() {
@@ -164,7 +159,7 @@ public class CalculationValue extends AbstractValue {
 		return "CalculationValue [calculation=" + calculation
 				+ ", hasMissingValues=" + hasMissingValues
 				+ ", hasMissingExpression=" + hasMissingExpression
-				+ ", average=" + getAverage() + "]";
+				+ ", value=" + getValue() + "]";
 	}
 
 

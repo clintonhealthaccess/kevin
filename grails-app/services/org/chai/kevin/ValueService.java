@@ -48,7 +48,7 @@ import org.chai.kevin.data.Sum;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
-import org.chai.kevin.value.Value;
+import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.ValueCalculator;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
@@ -75,7 +75,7 @@ public class ValueService {
 		calculatorMap.put(Average.class, new CalculationValueCalculator());
 	}
 	
-	public <T extends Value> T getValue(Data<T> data, OrganisationUnit organisationUnit, Period period) {
+	public <T extends StoredValue> T getValue(Data<T> data, OrganisationUnit organisationUnit, Period period) {
 		// TODO make a registry class with this code
 		Class<?> clazz = data.getClass();
 		while (!calculatorMap.containsKey(clazz)) {
@@ -176,10 +176,10 @@ public class ValueService {
 	public List<ExpressionValue> getNonCalculatedExpressions() {
 		List<ExpressionValue> result = new ArrayList<ExpressionValue>();
 		
-		Integer numValues = (Integer)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class).setProjection(Projections.rowCount()).uniqueResult();
-		Integer numExpressions = (Integer)sessionFactory.getCurrentSession().createCriteria(Expression.class).setProjection(Projections.rowCount()).uniqueResult();
-		Integer numOrganisations = getNumberOfOrganisations();
-		Integer numPeriods = getNumberOfPeriods();
+		Long numValues = (Long)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class).setProjection(Projections.rowCount()).uniqueResult();
+		Long numExpressions = (Long)sessionFactory.getCurrentSession().createCriteria(Expression.class).setProjection(Projections.rowCount()).uniqueResult();
+		Long numOrganisations = getNumberOfOrganisations();
+		Long numPeriods = getNumberOfPeriods();
 		
 		if (numValues == numOrganisations * numPeriods * numExpressions) {
 			if (log.isInfoEnabled()) log.info("no non calculated expressions, skipping");
@@ -215,12 +215,12 @@ public class ValueService {
 		return result;
 	}
 	
-	private Integer getNumberOfOrganisations() {
-		return (Integer)sessionFactory.getCurrentSession().createCriteria(OrganisationUnit.class).setProjection(Projections.rowCount()).uniqueResult();
+	private Long getNumberOfOrganisations() {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(OrganisationUnit.class).setProjection(Projections.rowCount()).uniqueResult();
 	}
 	
-	private Integer getNumberOfPeriods() {
-		return (Integer)sessionFactory.getCurrentSession().createCriteria(Period.class).setProjection(Projections.rowCount()).uniqueResult();
+	private Long getNumberOfPeriods() {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(Period.class).setProjection(Projections.rowCount()).uniqueResult();
 	}
 	
 	@Transactional(readOnly=true)
@@ -243,10 +243,10 @@ public class ValueService {
 	public List<CalculationValue> getNonCalculatedCalculations() {
 		List<CalculationValue> result = new ArrayList<CalculationValue>();
 		
-		Integer numValues = (Integer)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class).setProjection(Projections.rowCount()).uniqueResult();
-		Integer numCalculations = (Integer)sessionFactory.getCurrentSession().createCriteria(Calculation.class).setProjection(Projections.rowCount()).uniqueResult();
-		Integer numOrganisations = getNumberOfOrganisations();
-		Integer numPeriods = getNumberOfPeriods();
+		Long numValues = (Long)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class).setProjection(Projections.rowCount()).uniqueResult();
+		Long numCalculations = (Long)sessionFactory.getCurrentSession().createCriteria(Calculation.class).setProjection(Projections.rowCount()).uniqueResult();
+		Long numOrganisations = getNumberOfOrganisations();
+		Long numPeriods = getNumberOfPeriods();
 		
 		if (numValues == numOrganisations * numPeriods * numCalculations) {
 			if (log.isInfoEnabled()) log.info("no non calculated calculations, skipping");
@@ -280,7 +280,7 @@ public class ValueService {
 	}
 	
 	@Transactional(readOnly=false)
-	public <T extends Value> T save(T value) {
+	public <T extends StoredValue> T save(T value) {
 		value.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().saveOrUpdate(value);
 		return value;

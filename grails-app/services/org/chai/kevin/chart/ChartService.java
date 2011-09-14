@@ -7,7 +7,7 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.PeriodService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.value.Value;
+import org.chai.kevin.value.StoredValue;
 import org.hisp.dhis.period.Period;
 
 public class ChartService {
@@ -15,10 +15,10 @@ public class ChartService {
 	public PeriodService periodService;
 	public ValueService	valueService;
 
-	public <T extends Value> Chart getChart(Data<T> element, Organisation organisation) {
-		Map<Period, Value> values = new HashMap<Period, Value>();
+	public <T extends StoredValue> Chart getChart(Data<T> element, Organisation organisation) {
+		Map<Period, StoredValue> values = new HashMap<Period, StoredValue>();
 		for (Period period : periodService.getPeriods()) {
-			Value value = valueService.getValue(element, organisation.getOrganisationUnit(), period);
+			StoredValue value = valueService.getValue(element, organisation.getOrganisationUnit(), period);
 			values.put(period, value);
 		}
 		return new Chart(organisation, element, periodService.getPeriods(), values);

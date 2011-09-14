@@ -3,7 +3,7 @@ package org.chai.kevin.survey
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -17,7 +17,7 @@ class ValidationSpec extends IntegrationTests {
 	}
 	
 	def createSurvey() {
-		def dataElement = new DataElement(code:"ELEM1", type: ValueType.VALUE).save(failOnError: true)
+		def dataElement = new DataElement(code:"ELEM1", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		
 		def survey = new Survey(period: Period.list()[0]).save(failOnError: true);
 		def objective = new SurveyObjective(survey: survey, order: 1, groupUuidString: "Health Center")
@@ -40,11 +40,11 @@ class ValidationSpec extends IntegrationTests {
 		setup:
 		createSurvey();
 		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM2", type: ValueType.VALUE).save(failOnError: true)
+		def dataElement1 = new DataElement(code:"ELEM2", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		
 		when:
-		def surveyElementValue = new SurveyElementValue(surveyElement: surveyElement1, value: "1")
+		def surveyElementValue = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
 		surveyElementValue.userValidation(validationService, null, null)
 		
 		then:
@@ -57,7 +57,7 @@ class ValidationSpec extends IntegrationTests {
 		setup:
 		createSurvey();
 		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM3", type: ValueType.VALUE).save(failOnError: true)
+		def dataElement1 = new DataElement(code:"ELEM3", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		
 		def validationRule = new SurveyValidationRule(expression: "["+surveyElement1.id+"] > 1")
@@ -65,7 +65,7 @@ class ValidationSpec extends IntegrationTests {
 		surveyElement1.save(failOnError: true)
 		
 		when:
-		def surveyElementValue = new SurveyElementValue(surveyElement: surveyElement1, value: "1")
+		def surveyElementValue = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
 		surveyElementValue.userValidation(validationService, null, null)
 		
 		then:
@@ -77,8 +77,8 @@ class ValidationSpec extends IntegrationTests {
 		setup:
 		createSurvey();
 		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM4", type: ValueType.VALUE).save(failOnError: true)
-		def dataElement2 = new DataElement(code:"ELEM5", type: ValueType.VALUE).save(failOnError: true)
+		def dataElement1 = new DataElement(code:"ELEM4", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		def dataElement2 = new DataElement(code:"ELEM5", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		def surveyElement2 = new SurveyElement(surveyQuestion: question, dataElement: dataElement2).save(failOnError: true)
 		
@@ -87,8 +87,8 @@ class ValidationSpec extends IntegrationTests {
 		surveyElement1.save(failOnError: true)
 		
 		when:
-		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: "1")
-		def surveyElementValue2 = new SurveyElementValue(surveyElement: surveyElement2, value: "2")
+		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
+		def surveyElementValue2 = new SurveyElementValue(surveyElement: surveyElement2, value: v("2"))
 		def surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1, (surveyElement2.id): surveyElementValue2])
 		surveyElementValue1.userValidation(validationService, null, null)
 		
@@ -96,8 +96,8 @@ class ValidationSpec extends IntegrationTests {
 		!surveyElementValue1.isValid()
 		
 		when:
-		surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: "2")
-		surveyElementValue2 = new SurveyElementValue(surveyElement: surveyElement2, value: "1")
+		surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("2"))
+		surveyElementValue2 = new SurveyElementValue(surveyElement: surveyElement2, value: v("1"))
 		surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1, (surveyElement2.id): surveyElementValue2])
 		surveyElementValue1.userValidation(validationService, null, null)
 		
@@ -109,8 +109,8 @@ class ValidationSpec extends IntegrationTests {
 		setup:
 		createSurvey();
 		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM6", type: ValueType.VALUE).save(failOnError: true)
-		def dataElement2 = new DataElement(code:"ELEM7", type: ValueType.VALUE).save(failOnError: true)
+		def dataElement1 = new DataElement(code:"ELEM6", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		def dataElement2 = new DataElement(code:"ELEM7", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		def surveyElement2 = new SurveyElement(surveyQuestion: question, dataElement: dataElement2).save(failOnError: true)
 		
@@ -122,12 +122,12 @@ class ValidationSpec extends IntegrationTests {
 			dataElement: dataElement2,
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
 			period: Period.list()[0],
-			value: "2",
+			value: v("2"),
 			timestamp: new Date()
 		).save(failOnError: true, flush: true)
 		
 		when:
-		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: "1")
+		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
 		def surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1], organisationUnit: OrganisationUnit.findByName("Butaro DH"), period: Period.list()[0])
 		surveyPage.userValidation(validationService)
 		
@@ -139,14 +139,14 @@ class ValidationSpec extends IntegrationTests {
 		setup:
 		createSurvey();
 		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM8", type: ValueType.VALUE).save(failOnError: true)
+		def dataElement1 = new DataElement(code:"ELEM8", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		def validationRule = new SurveyValidationRule(expression: "["+(surveyElement1.id+1)+"] > 0")
 		surveyElement1.addValidationRule(validationRule)
 		surveyElement1.save(failOnError: true)
 		
 		when:
-		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: "1")
+		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
 		def surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1])
 		surveyPage.userValidation(validationService)
 		
@@ -158,8 +158,8 @@ class ValidationSpec extends IntegrationTests {
 		setup:
 		createSurvey();
 		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM9", type: ValueType.VALUE).save(failOnError: true)
-		def dataElement2 = new DataElement(code:"ELEM10", type: ValueType.VALUE).save(failOnError: true)
+		def dataElement1 = new DataElement(code:"ELEM9", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		def dataElement2 = new DataElement(code:"ELEM10", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		def surveyElement2 = new SurveyElement(surveyQuestion: question, dataElement: dataElement2).save(failOnError: true)
 		
@@ -168,8 +168,8 @@ class ValidationSpec extends IntegrationTests {
 		surveyElement1.save(failOnError: true)
 		
 		when:
-		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: "0")
-		def surveyElementValue2 = new SurveyElementValue(surveyElement: surveyElement2, value: null)
+		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("0"))
+		def surveyElementValue2 = new SurveyElementValue(surveyElement: surveyElement2, value: v(null))
 		def surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1, (surveyElement2.id): surveyElementValue2])
 		surveyElementValue1.userValidation(validationService, null, null)
 		

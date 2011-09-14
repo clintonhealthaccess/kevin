@@ -1,10 +1,12 @@
 package org.chai.kevin.survey;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.data.ValueType;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
+import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -12,42 +14,30 @@ public class SurveyElementValue {
 	
 	private static Log log = LogFactory.getLog(SurveyElementValue.class)
 	
-//	SurveyEnteredValue surveyEnteredValue;
 	SurveyElement surveyElement;
 	Organisation organisation;
-	String value;
+	Value value;
 	List<Long> acceptedWarnings = [];
 	
-	String lastValue;
+	Value lastValue;
 	
-//	Boolean skipped = false;
-	Set<SurveyValidationRule> invalidErrors = [];
-	Set<SurveyValidationRule> invalidWarnings = [];
+	Map<SurveyValidationRule, Set<String>> invalidErrors = [];
+	Map<SurveyValidationRule, Set<String>> invalidWarnings = [];
 	
 	
 	public SurveyElementValue() {}
 	
-	public SurveyElementValue(SurveyElement surveyElement, Organisation organisation, String lastValue) {
+	public SurveyElementValue(SurveyElement surveyElement, Organisation organisation, Value lastValue) {
 		this.surveyElement = surveyElement;
 		this.organisation = organisation;
 		this.lastValue = lastValue;
 	}
+		
+	void bindParams(Map<String, Object> params) {
+		value = surveyElement.getDataElement().getType().getValueFromMap(params, "surveyElements["+surveyElement.id+"].value");
+	}
 				
 	void sanitizeValues(SurveyPage page) {
-		switch (surveyElement.dataElement.type) {
-		case ValueType.BOOL:
-			if (value != null && value != "0") value = "1"
-			break;
-		case ValueType.ENUM:
-			if (value == "null") value = null
-			break;
-		case ValueType.STRING:
-		case ValueType.VALUE:
-			if (value != null && value.trim() == "") value = null
-		default:
-			break;
-		}
-		
 		// this is a bit of a HACK, sanitize value when question is checkbox
 		// if none of the values are checked, we set all of them to null
 		// in order to reset the whole question
@@ -57,11 +47,11 @@ public class SurveyElementValue {
 			for (SurveyElement element : surveyElement.surveyQuestion.getSurveyElements(organisation.getOrganisationUnitGroup())) {
 				SurveyElementValue elementValue = page.getSurveyElements()[element.id];
 				if (elementValue != null) {
-					if (elementValue.value != null && elementValue.value != "0") reset = false;
+					if (!elementValue.value.isNull() && elementValue.value.getBooleanValue() != false) reset = false;
 				}
 				else {
 					SurveyEnteredValue enteredvalue = page.getEnteredValues()[element];
-					if (enteredvalue.value != null && enteredvalue.value != "0") reset = false;
+					if (!enteredvalue.value.isNull() && enteredvalue.value.getBooleanValue() != false) reset = false;
 					
 					elementValue = new SurveyElementValue(element, page.organisation)
 					elementValue.value = enteredvalue.value
@@ -71,8 +61,8 @@ public class SurveyElementValue {
 			for (SurveyElement element : surveyElement.surveyQuestion.getSurveyElements(organisation.getOrganisationUnitGroup())) {
 				SurveyElementValue elementValue = page.getSurveyElements()[element.id];
 				
-				if (reset) elementValue.value = null;
-				else if (elementValue.value == null) elementValue.value = "0"
+				if (reset) elementValue.value = Value.NULL
+				else if (elementValue.value.isNull()) elementValue.value = element.getDataElement().getType().getValue(false)
 			}
 		}
 	}
@@ -111,5 +101,6 @@ public class SurveyElementValue {
 	public String toString() {
 		return "SurveyElementValue [surveyElement=" + surveyElement + ", value=" + value + ", acceptedWarnings=" + acceptedWarnings + "]";
 	}
+
 	
 }

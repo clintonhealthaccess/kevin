@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.value.Value;
+import org.chai.kevin.value.StoredValue;
 import org.hisp.dhis.period.Period;
 
 public class Chart {
@@ -16,9 +16,9 @@ public class Chart {
 	private Organisation organisation;
 	private Data<?> data;
 	private List<Period> periods;
-	private Map<Period, Value> values;
+	private Map<Period, StoredValue> values;
 	
-	public Chart(Organisation organisation, Data<?> data, List<Period> periods, Map<Period, Value> values) {
+	public Chart(Organisation organisation, Data<?> data, List<Period> periods, Map<Period, StoredValue> values) {
 		this.organisation = organisation;
 		this.data = data;
 		this.periods = periods;
@@ -29,7 +29,7 @@ public class Chart {
 		return periods;
 	}
 	
-	public Value getValue(Period period) {
+	public StoredValue getValue(Period period) {
 		return values.get(period);
 	}
 	
@@ -49,10 +49,10 @@ public class Chart {
 		result.append("\"organisation\":");
 		result.append("\""+organisation.getName()+"\"");
 		result.append(",\"values\":{");
-		for (Entry<Period, Value> entry : values.entrySet()) {
+		for (Entry<Period, StoredValue> entry : values.entrySet()) {
 			result.append("\""+format.format(entry.getKey().getStartDate())+"\"");
 			result.append(":");
-			Double value = entry.getValue().getNumberValue();
+			Double value = entry.getValue().getValue().getNumberValue()!=null?entry.getValue().getValue().getNumberValue().doubleValue():null;
 			if (value != null && !value.isNaN() && !value.isInfinite()) result.append(value);
 			else result.append("\"null\"");
 			result.append(",");

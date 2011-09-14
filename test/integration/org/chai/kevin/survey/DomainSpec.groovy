@@ -7,7 +7,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
@@ -70,7 +70,7 @@ class DomainSpec extends IntegrationTests {
 
 	def "table question has data elements"() {
 		setup:
-		new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: ValueType.VALUE).save(failOnError: true, flush: true)
+		new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: JSONUtils.TYPE_NUMBER).save(failOnError: true, flush: true)
 		def section = createDummySection()
 		createDummyTableQuestion(section)
 		
@@ -118,9 +118,9 @@ class DomainSpec extends IntegrationTests {
 		
 		
 		def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
-		def enumOption01 = new EnumOption(names:j(["en":"N/A Did not receive training"]), descriptions:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", code:"OPTION01", enume: enume2);
-		def enumOption02 = new EnumOption(names:j(["en":"NGO or Partner"]), descriptions:j(["en":"NGO or Partner"]), value:"NGO or Partner", code:"OPTION02", enume: enume2);
-		def enumOption03 = new EnumOption(names:j(["en":"Ministry of Health"]), descriptions:j(["en":"Ministry of Health"]), value:"Ministry of Health", code:"OPTION03", enume: enume2);
+		def enumOption01 = new EnumOption(names:j(["en":"N/A Did not receive training"]), descriptions:j(["en":"N/A Did not receive training"]), value:"\"N/A Did not receive training\"", code:"OPTION01", enume: enume2);
+		def enumOption02 = new EnumOption(names:j(["en":"NGO or Partner"]), descriptions:j(["en":"NGO or Partner"]), value:"\"NGO or Partner\"", code:"OPTION02", enume: enume2);
+		def enumOption03 = new EnumOption(names:j(["en":"Ministry of Health"]), descriptions:j(["en":"Ministry of Health"]), value:"\"Ministry of Health\"", code:"OPTION03", enume: enume2);
 		enume2.enumOptions = [
 			enumOption01,
 			enumOption02,
@@ -133,7 +133,7 @@ class DomainSpec extends IntegrationTests {
 	
 		
 		//Create DataElement
-		new DataElement(names:j("en":"testTab"), code:"TESTTAB", type: ValueType.ENUM,  enume: Enum.findByCode('ENUM2')).save(failOnError:true)
+		new DataElement(names:j("en":"testTab"), code:"TESTTAB", type: JSONUtils.TYPE_ENUM(Enum.findByCode('ENUM2').id)).save(failOnError:true)
 		def dataElement = DataElement.findByCode("TESTTAB")
 		
 		//Creating Survey

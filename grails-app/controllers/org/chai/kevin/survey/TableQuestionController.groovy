@@ -61,7 +61,7 @@ class TableQuestionController extends AbstractEntityController {
 			question: entity,
 			groups: organisationService.getGroupsForExpression(),
 			sections: (entity.section)!=null?entity.section.objective.sections:null,
-			groupUuids: Utils.getGroupUuids(entity.groupUuidString)
+			groupUuids: Utils.split(entity.groupUuidString)
 		]
 	}
 
@@ -82,7 +82,7 @@ class TableQuestionController extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 
-		entity.groupUuidString =  params['groupUuids']!=null?Utils.getGroupUuidString(params['groupUuids']):null
+		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):null
 		if (params.names!=null) entity.names = params.names
 		if (params.tableNames!=null) entity.tableNames = params.tableNames
 	}

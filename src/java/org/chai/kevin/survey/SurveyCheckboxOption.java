@@ -111,7 +111,7 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 
 	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable() {
-		return Utils.getGroupUuids(this.groupUuidString);
+		return Utils.split(this.groupUuidString);
 	}
 
 	public SurveyCheckboxOption deepCopy(SurveyCloner cloner) {

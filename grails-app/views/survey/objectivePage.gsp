@@ -13,11 +13,11 @@
 			<g:render template="/survey/header" model="[period: surveyPage.period, organisation: surveyPage.organisation, objective: surveyPage.objective]"/>
 			
 			<div class="grey-rounded-box-bottom">
-				<g:set value="${surveyPage.incompleteSections}" var="incompleteSections"/>
-				<g:set value="${surveyPage.invalidQuestions}" var="invalidSectionMap"/>
+				<g:set value="${surveyPage.getIncompleteSections(surveyPage.objective)}" var="incompleteSections"/>
+				<g:set value="${surveyPage.getInvalidQuestions(surveyPage.objective)}" var="invalidQuestions"/>
 
-				<g:set value="${surveyPage.getStatus(surveyPage.objective) == ObjectiveStatus.CLOSED}" var="closed"/>
-				<g:set value="${surveyPage.getStatus(surveyPage.objective) == ObjectiveStatus.UNAVAILABLE}" var="unavailable"/>
+				<g:set value="${surveyPage.objectives[surveyPage.objective].status == ObjectiveStatus.CLOSED}" var="closed"/>
+				<g:set value="${surveyPage.objectives[surveyPage.objective].status == ObjectiveStatus.UNAVAILABLE}" var="unavailable"/>
 				<g:set var="canSave" value="${SecurityUtils.subject.isPermitted('survey:save')}"/>
 				
 				<g:set var="readonly" value="${closed||unavailable||!canSave}"/>
@@ -46,9 +46,9 @@
 					</div>
 				</g:if>
 				
-				<g:if test="${!closed&&!unavailable}">
+				<g:if test="${!closed && !unavailable}">
 					<div class="rounded-box-top rounded-box-bottom">
-						<div id="submit-objective" class="${!surveyPage.canSubmit()?'hidden':''}">
+						<div id="submit-objective" class="${!surveyPage.canSubmit(surveyPage.objective)?'hidden':''}">
 							This part has been completed successfully. If you are sure that you entered the right data, please click submit.
 							<g:form url="[controller:'editSurvey', action:'submit', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id]]">
 								<button type="submit">Submit</button>
@@ -71,12 +71,12 @@
 						</g:if>
 					</div>
 				
-					<g:if test="${!invalidSectionMap.isEmpty()}">
+					<g:if test="${!invalidQuestions.isEmpty()}">
 						<div id="invalid-questions-container">
 							<div class="rounded-box-top">The following questions do not pass validation, please check:</div>
 							<form id="survey-form">
 								<div id="invalid-questions">
-									<g:render template="/survey/invalidSections" model="[invalidSectionMap: invalidSectionMap, surveyPage: surveyPage, readonly: readonly]"/>
+									<g:render template="/survey/invalidQuestions" model="[invalidQuestions: invalidQuestions, surveyPage: surveyPage, readonly: readonly]"/>
 								</div>
 							</form>
 						</div>
@@ -88,10 +88,21 @@
 			<script type="text/javascript">
 				$(document).ready(function() {
 					$('#survey-form').delegate('input, select, textarea', 'change', function(){
-						surveyValueChanged(this, valueChangedInObjective);
+						var element = $(this).parents('.element');
+						surveyValueChanged(element, valueChangedInSection);
 					});
 					$('#survey-form').delegate('a.outlier-validation', 'click', function(){
-						$(this).next().val($(this).data('rule')); surveyValueChanged(this, valueChangedInObjective);
+						var element = $(this).parents('.element');
+						surveyValueChanged(element, valueChangedInSection);
+						return false;
+					});
+					
+					$('#survey-form').delegate('.element-list-add', 'click', function(){
+						listAddClick(this, valueChangedInSection);
+						return false;
+					});
+					$('#survey-form').delegate('.element-list-remove', 'click', function(){
+						listRemoveClick(this, valueChangedInSection);
 						return false;
 					});
 				});

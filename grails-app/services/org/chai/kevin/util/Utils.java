@@ -41,18 +41,17 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Utils {
 
-	public static Set<String> getGroupUuids(String groupUuidString) {
+	public static Set<String> split(String string) {
 		Set<String> result = new HashSet<String>();
-		if (groupUuidString != null)
-			result.addAll(Arrays.asList(StringUtils.split(groupUuidString, ',')));
+		if (string != null) result.addAll(Arrays.asList(StringUtils.split(string, ',')));
 		return result;
 	}
 
-	public static String getGroupUuidString(Object groupUuids) {
-		if (groupUuids == null) return "";
-		if (groupUuids instanceof String) return (String) groupUuids;
-		if (groupUuids instanceof Collection) return StringUtils.join(((Collection<String>)groupUuids).toArray(), ',');
-		else return StringUtils.join((Object[]) groupUuids, ',');
+	public static String unsplit(Object list) {
+		if (list == null) return "";
+		if (list instanceof String) return (String) list;
+		if (list instanceof Collection) return StringUtils.join(((Collection<String>)list).toArray(), ',');
+		else return StringUtils.join((Object[]) list, ',');
 	}
 	
 	@SuppressWarnings("unused")

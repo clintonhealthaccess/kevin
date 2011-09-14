@@ -66,6 +66,7 @@ beans = {
 		surveyElementService = ref("surveyElementService")
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
+		validationService = ref("validationService")
 	}
 	
 	chartService(ChartService){

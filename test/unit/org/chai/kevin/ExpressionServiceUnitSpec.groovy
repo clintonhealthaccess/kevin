@@ -48,7 +48,7 @@ class ExpressionServiceUnitSpec extends UnitSpec {
 		where:
 		expression	| map					| newExpression
 		"1"			| new HashMap()			| "1"
-		"[1]"		| ["1": "test"]	| "test"
+		"\$1"		| ["1": "test"]	| "test"
 	}
 	
 	def "test expression validation"() {
@@ -58,9 +58,13 @@ class ExpressionServiceUnitSpec extends UnitSpec {
 		
 		where:
 		formula			| valid
-		"(1"			| org.hisp.dhis.expression.ExpressionService.EXPRESSION_NOT_WELL_FORMED
-		"if((10,1,0)"	| org.hisp.dhis.expression.ExpressionService.EXPRESSION_NOT_WELL_FORMED
-		"123"			| org.hisp.dhis.expression.ExpressionService.VALID
+		"(1"			| false
+		"if((10,1,0)"	| false
+		"123"			| true
+		"\$1 == 1"		| true
+		"\$1 == \"a\""	| true
+		"if (\$1 == null) true else false"	| true
+		
 	}
 	
 	

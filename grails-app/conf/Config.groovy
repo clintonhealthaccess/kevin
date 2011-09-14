@@ -101,28 +101,29 @@ log4j = {
 		}
 	}
 	
-    error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
-           'org.codehaus.groovy.grails.web.pages', //  GSP
-           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-           'org.codehaus.groovy.grails.web.mapping', // URL mapping
-           'org.codehaus.groovy.grails.commons' // core / classloading
+//    debug  'org.codehaus.groovy.grails.web.servlet',  //  controllers
+//           'org.codehaus.groovy.grails.web.pages', //  GSP
+//           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+//           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+//           'org.codehaus.groovy.grails.web.mapping', // URL mapping
+//           'org.codehaus.groovy.grails.commons' // core / classloading
 		   
 //	debug 'grails.app.controller.org.chai.kevin.survey.SurveyController'
 //	debug 'org.chai.kevin.survey.ValidationService'
 	
 //    warn   'org.mortbay.log',
-//		   'org.hibernate',
 //		   'net.sf.ehcache.hibernate'
 //	
 //	info   'org.codehaus.groovy.grails.plugins', // plugins
 //		   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 //		   'org.hsqldb.jdbc',
 //		   'org.springframework'
-//		   
-//	debug  'org.chai.kevin',
-//		   'grails.app'
 		   
+	debug  'org.chai.kevin',
+		   'grails.app',
+//		   'org.springframework'
+//		   'org.hibernate',
+//		   'org.codehaus.groovy.grails'
 		   
 //	trace  'org.hibernate.SQL',
 //		   'org.hibernate.engine.query',

@@ -31,7 +31,6 @@ package org.chai.kevin.data
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.DataService
-import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
@@ -133,20 +132,20 @@ class ExpressionController extends AbstractEntityController {
 //		if (NumberUtils.isNumber(params['dataSetFilter'])) {
 //			dataSet = DataSet.get(params['dataSetFilter'])
 //		}
-		if (params['type'] == 'constant') {
-			def constants = dataService.searchConstants(params['searchText']);
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render(template:'/templates/constants', model:[constants: constants])
-			}
-		}
-		else {
+//		if (params['type'] == 'constant') {
+//			def constants = dataService.searchConstants(params['searchText']);
+//			render(contentType:"text/json") {
+//				result = 'success'
+//				html = g.render(template:'/templates/constants', model:[constants: constants])
+//			}
+//		}
+//		else {
 			def dataElements = dataService.searchDataElements(params['searchText']);
 			render(contentType:"text/json") {
 				result = 'success'
 				html = g.render(template:'/templates/dataElements', model:[dataElements: dataElements])
 			}
-		}
+//		}
 	}
 
 	def getDataElementDescription = {

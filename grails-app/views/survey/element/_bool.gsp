@@ -1,14 +1,12 @@
 <!-- Bool type question -->
-<div class="element element-bool element-${surveyElement.id} ${surveyEnteredValue?.skipped?'skipped':''} ${(surveyEnteredValue==null || surveyEnteredValue?.valid)?'':'errors'}" data-element="${surveyElement.id}" >
-	<a name="element-${surveyElement.id}"></a>
-	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
-	
-	<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id" />
-	<input type="hidden" value="0" name="surveyElements[${surveyElement.id}].value"/>
-	<g:if test="${surveyElementValue?.lastValue!=null}">
+<div id="element-${surveyElement.id}-${suffix}" class="element element-bool ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
+	<a name="element-${surveyElement.id}-${suffix}"></a>
+
+	<input type="hidden" value="0" name="surveyElements[${surveyElement.id}].value${suffix}"/>
+	<g:if test="${lastValue!=null}">
 		<span class="survey-old-value">
 			(
-			<g:if test="${surveyElementValue.lastValue=='1'}">
+			<g:if test="${lastValue=='1'}">
 				${"\u2611"}
 			</g:if>
 			<g:else>
@@ -17,8 +15,8 @@
 			)
 		</span>
 	</g:if>
-	<input type="checkbox" value="1" name="surveyElements[${surveyElement.id}].value" ${surveyEnteredValue?.value=='1'?'checked="checked"':''} ${readonly?'disabled="disabled"':''}/>
+	<input type="checkbox" value="1" name="surveyElements[${surveyElement.id}].value${suffix}" ${value?.booleanValue==true?'checked="checked"':''} ${readonly?'disabled="disabled"':''}/>
 	<div class="error-list">
-		<g:renderUserErrors element="${surveyElementValue}"/>
+		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
 	</div>
 </div>

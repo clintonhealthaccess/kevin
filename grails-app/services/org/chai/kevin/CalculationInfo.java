@@ -35,6 +35,7 @@ import java.util.Map;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
@@ -77,7 +78,7 @@ public class CalculationInfo extends Info {
 		return calculationValue.getOrganisationUnit();
 	}
 	
-	public Value getCalculationValue() {
+	public StoredValue getCalculationValue() {
 		return calculationValue;
 	}
 	
@@ -89,15 +90,9 @@ public class CalculationInfo extends Info {
 		return expressionValues;
 	}
 	
-	@Override
-	public String getValue() {
-		if (calculationValue.getAverage() == null) return null;
-		return String.valueOf(calculationValue.getAverage());
+	public Value getValue() {
+		return calculationValue.getValue();
 	}
 
-	@Override
-	public Double getNumberValue() {
-		return getValue()!=null?Double.parseDouble(getValue()):null;
-	}
 	
 }

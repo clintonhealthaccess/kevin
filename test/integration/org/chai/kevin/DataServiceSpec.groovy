@@ -28,7 +28,6 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
 
 import grails.plugin.spock.UnitSpec;
@@ -43,11 +42,11 @@ class DataServiceSpec extends IntegrationTests {
 		IntegrationTestInitializer.createConstants()
 	}
 	
-	def "search for constant works"() {
-		expect:
-		def constants = dataService.searchConstants("con")
-		constants == [Constant.findByCode("CONST1")]
-	}
+//	def "search for constant works"() {
+//		expect:
+//		def constants = dataService.searchConstants("con")
+//		constants == [Constant.findByCode("CONST1")]
+//	}
 	
 	def "search for data element works"() {
 		expect:

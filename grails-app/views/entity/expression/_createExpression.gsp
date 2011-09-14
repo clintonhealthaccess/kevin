@@ -17,7 +17,7 @@
 				<input type="hidden" name="id" value="${expression.id}"></input>
 			</g:if>
 			
-			<input type="hidden" name="type" value="VALUE"></input>
+			<input type="hidden" name="type" value="NUMBER"></input>
 			
 			<div class="row">
 				<button type="submit">Save Expression</button>

@@ -6,7 +6,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
@@ -53,6 +53,41 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		IntegrationTestInitializer.createExpressions()
 	}
 	
+	def setupData() {
+		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER).save(faileOnError: true)
+		
+		new DataValue(
+			dataElement: DataElement.findByCode("CODEINT"),
+			period: Period.list()[1],
+			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
+			value: v("1"),
+			timestamp: new Date()
+		).save(failOnError: true)
+		
+		new DataValue(
+			dataElement: DataElement.findByCode("CODEINT"),
+			period: Period.list()[1],
+			organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
+			value: v("2"),
+			timestamp: new Date()
+		).save(failOnError: true)
+		
+		new Expression(names:j(["en":"Enum"]), code:"EXPRBOOL", expression: "if(\$"+DataElement.findByCode("CODEINT").id+"==2) 1 else 0", type: JSONUtils.TYPE_BOOL, timestamp: new Date()).save(failOnError: true)
+		new Expression(names:j(["en":"Enum"]), code:"EXPRCONST", expression: "1", type: JSONUtils.TYPE_BOOL, timestamp: new Date()).save(failOnError: true)
+	}
+	
+	def setupSum() {
+		new Sum(expressions: [
+			"District Hospital": Expression.findByCode("EXPRBOOL"),
+			"Health Center": Expression.findByCode("EXPRBOOL")
+		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		new Sum(expressions: [
+			"District Hospital": Expression.findByCode("EXPRCONST"),
+			"Health Center": Expression.findByCode("EXPRCONST")
+		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+	}
+
+	
 	def "normal expression"() {
 		setup:
 		IntegrationTestInitializer.createDataElements();
@@ -61,24 +96,26 @@ public class ExpressionServiceSpec extends IntegrationTests {
 			dataElement: DataElement.findByCode("CODE"),
 			period: Period.list()[1],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			value: "40",
+			value: v("40"),
 			timestamp: new Date(),
 		).save(failOnError: true)
 		
 		when:
-		def id = DataElement.findByCode("CODE").id
-		
-		def expression = new Expression(names:j(["en":"Enum"]), code:"EXPR", expression: formula, type: ValueType.VALUE, timestamp: new Date()).save(failOnError: true)
+		def expression = new Expression(names:j(["en":"Enum"]), code:"EXPR", expression: formula, type: JSONUtils.TYPE_NUMBER, timestamp: new Date()).save(failOnError: true)
 		def organisation = IntegrationTests.getOrganisation(organisationName)
 		def period = Period.list()[1]
 		
 		then:
-		expressionService.calculate(expression, organisation.organisationUnit, period, ).value == value
+		def result = expressionService.calculate(expression, organisation.organisationUnit, period)
+		result.value == value
+		result.status == status
 		
 		where:
-		formula				| organisationName	| value
-		"1==0"			 	| "Kivuye HC"		| "0.0"
-		"if(["+id+"]==1,1,0)" 	| "Kivuye HC"		| null
+		formula					| organisationName	| value		| status
+		"1 == 0"			 	| "Kivuye HC"		| "false"	| Status.VALID
+		"\$7 + 40" 				| "Butaro DH"		| "80"		| Status.VALID
+		"if (\$8==1) 1 else 0"	| "Kivuye HC"		| null		| Status.MISSING_DATA_ELEMENT
+		"\$15==\"a\""			| "Butaro DH"		| null		| Status.INVALID
 	}
 	
 	def "aggregated value"() {
@@ -87,14 +124,14 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		enume.addEnumOption(new EnumOption(code: "ENUMtest", value: "test"))
 		enume.addEnumOption(new EnumOption(code: "ENUMtest", value: "absent"))
 		enume.save(failOnError: true)
-		new DataElement(names:j(["en":"Element Enum"]), code: "CODEENUM", descriptions:j(["en":"Description"]), type: ValueType.ENUM, enume: enume).save(faileOnError: true, flush: true)
-		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: ValueType.VALUE).save(faileOnError: true)
+		new DataElement(names:j(["en":"Element Enum"]), code: "CODEENUM", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_ENUM (enume.id)).save(faileOnError: true, flush: true)
+		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER).save(faileOnError: true)
 		
 		new DataValue(
 			dataElement: DataElement.findByCode("CODEENUM"),
 			period: Period.list()[1],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			value: "test",
+			value: v("\"test\""),
 			timestamp: new Date()
 		).save(failOnError: true)
 		
@@ -102,7 +139,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 			dataElement: DataElement.findByCode("CODEENUM"),
 			period: Period.list()[1],
 			organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-			value: "absent",
+			value: v("\"absent\""),
 			timestamp: new Date()
 		).save(failOnError: true)
 		
@@ -110,7 +147,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 			dataElement: DataElement.findByCode("CODEINT"),
 			period: Period.list()[1],
 			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			value: "20",
+			value: v("20"),
 			timestamp: new Date()
 		).save(failOnError: true)
 		
@@ -118,12 +155,12 @@ public class ExpressionServiceSpec extends IntegrationTests {
 			dataElement: DataElement.findByCode("CODEINT"),
 			period: Period.list()[1],
 			organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-			value: "10",
+			value: v("10"),
 			timestamp: new Date()
 		).save(failOnError: true)
 		
-		new Expression(names:j(["en":"Enum"]), code:"EXPRENUM", expression: "if(\"["+DataElement.findByCode("CODEENUM").id+"]\"==\"test\",20,10)", type: ValueType.VALUE, timestamp: new Date()).save(failOnError: true)
-		new Expression(names:j(["en":"Int"]), code:"EXPRINT", expression: "["+DataElement.findByCode("CODEINT").id+"]", type: ValueType.VALUE, timestamp: new Date()).save(failOnError: true)
+		new Expression(names:j(["en":"Enum"]), code:"EXPRENUM", expression: "if(\$"+DataElement.findByCode("CODEENUM").id+"==\"test\") 20 else 10", type: JSONUtils.TYPE_NUMBER, timestamp: new Date()).save(failOnError: true)
+		new Expression(names:j(["en":"Int"]), code:"EXPRINT", expression: "\$"+DataElement.findByCode("CODEINT").id, type: JSONUtils.TYPE_NUMBER, timestamp: new Date()).save(failOnError: true)
 		
 		when:
 		def period = Period.list()[1]
@@ -150,40 +187,6 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		"EXPRINT"		| "Burera"			| Status.VALID			| 30d
 	}
 	
-	def setupData() {
-		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: ValueType.VALUE).save(faileOnError: true)
-		
-		new DataValue(
-			dataElement: DataElement.findByCode("CODEINT"),
-			period: Period.list()[1],
-			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			value: "1",
-			timestamp: new Date()
-		).save(failOnError: true)
-		
-		new DataValue(
-			dataElement: DataElement.findByCode("CODEINT"),
-			period: Period.list()[1],
-			organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-			value: "2",
-			timestamp: new Date()
-		).save(failOnError: true)
-		
-		new Expression(names:j(["en":"Enum"]), code:"EXPRBOOL", expression: "if(["+DataElement.findByCode("CODEINT").id+"]==2,1,0)", type: ValueType.BOOL, timestamp: new Date()).save(failOnError: true)
-		new Expression(names:j(["en":"Enum"]), code:"EXPRCONST", expression: "1", type: ValueType.BOOL, timestamp: new Date()).save(failOnError: true)
-	}
-	
-	def setupSum() {
-		new Sum(expressions: [
-			"District Hospital": Expression.findByCode("EXPRBOOL"),
-			"Health Center": Expression.findByCode("EXPRBOOL")
-		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
-		new Sum(expressions: [
-			"District Hospital": Expression.findByCode("EXPRCONST"),
-			"Health Center": Expression.findByCode("EXPRCONST")
-		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
-	}
-
 	def "test sum"() {
 		setup:
 		setupData();
@@ -216,11 +219,11 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		new Average(expressions: [
 			"District Hospital": Expression.findByCode("EXPRBOOL"),
 			"Health Center": Expression.findByCode("EXPRBOOL")
-		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
+		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		new Average(expressions: [
 			"District Hospital": Expression.findByCode("EXPRCONST"),
 			"Health Center": Expression.findByCode("EXPRCONST")
-		], timestamp:new Date(), type: ValueType.VALUE).save(failOnError: true)
+		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		
 		expressionService.refreshExpressions();
 		
@@ -272,7 +275,13 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "data element in expression when wrong format"() {
 		when:
-		def dataElements = expressionService.getDataInExpression("[test]")
+		def dataElements = expressionService.getDataInExpression("\$1")
+		
+		then:
+		dataElements.size() == 1
+		
+		when:
+		dataElements = expressionService.getDataInExpression("\$test")
 		
 		then:
 		dataElements.size() == 0
@@ -280,14 +289,14 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "data elements in expression"() {
 		setup: 
-		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: ValueType.VALUE).save(faileOnError: true)
+		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER).save(faileOnError: true)
 
 		when:
-		def dataElements = expressionService.getDataInExpression("["+DataElement.findByCode("CODEINT").id+"]")
+		def dataElements = expressionService.getDataInExpression("\$"+DataElement.findByCode("CODEINT").id)
 		
 		then:
 		dataElements.size() == 1
-		dataElements.iterator().next().equals(DataElement.findByCode("CODEINT"))		
+		dataElements.values().iterator().next().equals(DataElement.findByCode("CODEINT"))		
 	}
 	
 }

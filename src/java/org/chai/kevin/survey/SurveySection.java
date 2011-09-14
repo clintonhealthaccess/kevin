@@ -132,7 +132,7 @@ public class SurveySection extends SurveyTranslatable {
 	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable() {
 		return new HashSet<String>(CollectionUtils.intersection(
-				Utils.getGroupUuids(this.groupUuidString),
+				Utils.split(this.groupUuidString),
 				this.objective.getOrganisationUnitGroupApplicable()));
 	}
 
@@ -149,7 +149,7 @@ public class SurveySection extends SurveyTranslatable {
 	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveyQuestion surveyQuestion : getQuestions()) {
-			if (Utils.getGroupUuids(surveyQuestion.getGroupUuidString())
+			if (Utils.split(surveyQuestion.getGroupUuidString())
 					.contains(group.getUuid()))
 				result.add(surveyQuestion);
 		}

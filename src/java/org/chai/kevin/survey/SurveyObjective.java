@@ -135,14 +135,14 @@ public class SurveyObjective extends SurveyTranslatable {
 
 	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable() {
-		return Utils.getGroupUuids(this.groupUuidString);
+		return Utils.split(this.groupUuidString);
 	}
 
 	@Transient
 	public List<SurveySection> getSections(OrganisationUnitGroup group) {
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection surveySection : getSections()) {
-			if (Utils.getGroupUuids(surveySection.getGroupUuidString())
+			if (Utils.split(surveySection.getGroupUuidString())
 					.contains(group.getUuid()))
 				result.add(surveySection);
 		}

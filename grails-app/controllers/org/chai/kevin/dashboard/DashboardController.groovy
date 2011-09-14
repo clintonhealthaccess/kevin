@@ -55,8 +55,6 @@ class DashboardController extends AbstractReportController {
 	DashboardService dashboardService;
 	DashboardObjectiveService dashboardObjectiveService;
 	
-	def quartzScheduler;
-	
 	def index = {
 		redirect (action: 'view', params: params)
 	}

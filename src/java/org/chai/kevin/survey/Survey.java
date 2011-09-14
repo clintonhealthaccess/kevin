@@ -151,7 +151,7 @@ public class Survey extends SurveyTranslatable {
 	public List<SurveyObjective> getObjectives(OrganisationUnitGroup group) {
 		List<SurveyObjective> result = new ArrayList<SurveyObjective>();
 		for (SurveyObjective surveyObjective : getObjectives()) {
-			if (Utils.getGroupUuids(surveyObjective.getGroupUuidString()).contains(group.getUuid())) result.add(surveyObjective);
+			if (Utils.split(surveyObjective.getGroupUuidString()).contains(group.getUuid())) result.add(surveyObjective);
 		}
 		return result;
 	}

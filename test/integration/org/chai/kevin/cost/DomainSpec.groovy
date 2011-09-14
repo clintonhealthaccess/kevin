@@ -179,7 +179,7 @@ class DomainSpec extends IntegrationTests {
 		new CostTarget(names:j(["en":"Test Target"]), code:"TEST", groupUuidString: "group1", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, order: 4).save(failOnError: true)
 		
 		then:
-		Utils.getGroupUuids(CostTarget.findByCode("TEST").groupUuidString).size() == 1
+		Utils.split(CostTarget.findByCode("TEST").groupUuidString).size() == 1
 	}
 	
 	def "save target erases old groups"() {
@@ -189,8 +189,8 @@ class DomainSpec extends IntegrationTests {
 		
 		then:
 		def target = CostTarget.findByCode("TEST")
-		Utils.getGroupUuids(target.groupUuidString).size() == 1
-		(new HashSet(["group2"])).equals(Utils.getGroupUuids(target.groupUuidString))
+		Utils.split(target.groupUuidString).size() == 1
+		(new HashSet(["group2"])).equals(Utils.split(target.groupUuidString))
 	}
 	
 	

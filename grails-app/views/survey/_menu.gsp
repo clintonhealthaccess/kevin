@@ -3,7 +3,7 @@
 
 <ul id="survey-objective-list">
 	<g:each in="${surveyPage.survey.getObjectives(surveyPage.organisation.organisationUnitGroup)}" var="objective">
-		<g:set var="objectiveStatus" value="${surveyPage.getStatus(objective)}"/>
+		<g:set var="objectiveStatus" value="${surveyPage.objectives[objective].status}"/>
 		
 		<li id="objective-${objective.id}" class="${surveyPage.section?.objective?.id == objective.id?'current':''}">
 			<a class="item" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
@@ -19,7 +19,7 @@
 			<g:if test="${surveyPage.objective.equals(objective)}">
 				<ul class="survey-section">
 					<g:each in="${objective.getSections(surveyPage.organisation.organisationUnitGroup)}" var="section">
-						<g:set var="sectionStatus" value="${surveyPage.getStatus(section)}"/>
+						<g:set var="sectionStatus" value="${surveyPage.sections[section].status}"/>
 
 						<li id="section-${section.id}">
 							<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
@@ -28,8 +28,6 @@
 									<span class="section-status-complete section-status ${sectionStatus != SectionStatus.COMPLETE?'hidden':''}"></span>
 									<span class="section-status-invalid section-status ${sectionStatus != SectionStatus.INVALID?'hidden':''}"></span>
 									<span class="section-status-incomplete section-status ${sectionStatus != SectionStatus.INCOMPLETE?'hidden':''}"></span>
-									<span class="section-status-closed section-status ${sectionStatus != SectionStatus.CLOSED?'hidden':''}"></span>
-									<span class="section-status-unavailable section-status ${sectionStatus != SectionStatus.UNAVAILABLE?'hidden':''}"></span>
 								</span>
 							</a>
 						</li>
@@ -40,9 +38,9 @@
 	</g:each>
 </ul>
 
-<script>
+<script type="text/javascript">
 	function surveyValueChanged(element, callback) {
-		var elementId = $(element).parents('.element').data('element');
+		var elementId = $(element).data('element');
 		var questionId = $(element).parents('.question').data('question'); 
 		
 		var data = $('#survey-form').serialize();
@@ -68,5 +66,27 @@
 				}
 			}
 		});
+	}
+	
+	function listRemoveClick(toRemove, callback) {
+		var element = $(toRemove).parents('.element');
+		
+		$(toRemove).parents('div').first().remove();
+		surveyValueChanged(element, callback);
+	}
+	
+	function listAddClick(element, callback) {
+		var suffix = $(element).parents('.element').data('suffix');
+
+		var clone = $(element).prev().clone(true);
+		var index = $(element).prev().prev().data('index');
+		if (index == null) index = "0";
+		else index = parseInt(index)+1;
+		var copyHtml = clone.html().replace(RegExp(suffix+'\\[_\\]', 'g'), suffix+'['+index+']')
+	
+		$(element).prev().before(copyHtml);
+		$(element).prev().prev().data('index', index);
+		
+		surveyValueChanged($(element).parents('.element'), callback);
 	}
 </script>

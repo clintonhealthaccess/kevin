@@ -1,5 +1,6 @@
 package org.chai.kevin.survey;
 
+import org.hibernate.criterion.MatchMode;
 import org.chai.kevin.DataService;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.LocaleService;
@@ -19,6 +20,7 @@ import org.hisp.dhis.period.Period;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.data.DataElement
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
+import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection
 import org.chai.kevin.survey.validation.SurveyEnteredValue
 import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
@@ -39,6 +41,7 @@ class SurveyElementService {
 	}
 
 	SurveyQuestion getSurveyQuestion(Long id) {
+		// TODO test this with Grails 2.0
 		return sessionFactory.currentSession.get(SurveyQuestion.class, id)
 	}
 	
@@ -52,12 +55,13 @@ class SurveyElementService {
 		surveyEnteredValue.save();
 	}
 	
-	void save(SurveyEnteredSection enteredSection) {
-		enteredSection.save();
+	void save(SurveyEnteredQuestion surveyEnteredQuestion) {
+		if (log.isDebugEnabled()) log.debug("save(surveyEnteredQuestion=${surveyEnteredQuestion}})")
+		surveyEnteredQuestion.save();
 	}
 	
-	void delete(SurveyEnteredValue surveyEnteredValue) {
-		surveyEnteredValue.delete();
+	void save(SurveyEnteredSection surveyEnteredSection) {
+		surveyEnteredSection.save();
 	}
 	
 	Integer getNumberOfSurveyEnteredObjectives(Survey survey, OrganisationUnit organisationUnit, ObjectiveStatus status) {
@@ -106,57 +110,83 @@ class SurveyElementService {
 	SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective surveyObjective, OrganisationUnit organisationUnit) {
 		def c = SurveyEnteredObjective.createCriteria()
 		c.add(Restrictions.naturalId()
-				.set("organisationUnit", organisationUnit)
-				.set("objective", surveyObjective)
-				)
-				.setCacheable(true)
-				.setFlushMode(FlushMode.MANUAL)
-				.setCacheRegion("org.hibernate.cache.SurveyEnteredObjectiveQueryCache")
-				.uniqueResult();
+			.set("organisationUnit", organisationUnit)
+			.set("objective", surveyObjective)
+		)
+		.setCacheable(true)
+		.setFlushMode(FlushMode.MANUAL)
+		.setCacheRegion("org.hibernate.cache.SurveyEnteredObjectiveQueryCache")
+		.uniqueResult();
 	}
 
+	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, OrganisationUnit organisationUnit) {
+		def c = SurveyEnteredQuestion.createCriteria()
+		c.add(Restrictions.naturalId()
+			.set("organisationUnit", organisationUnit)
+			.set("question", surveyQuestion)
+		)
+		.setCacheable(true)
+		.setFlushMode(FlushMode.MANUAL)
+		.setCacheRegion("org.hibernate.cache.SurveyEnteredQuestionQueryCache")
+		.uniqueResult();
+	}
+	
 	SurveyEnteredValue getSurveyEnteredValue(SurveyElement surveyElement, OrganisationUnit organisationUnit) {
 		def c = SurveyEnteredValue.createCriteria()
 		c.add(Restrictions.naturalId()
-				.set("organisationUnit", organisationUnit)
-				.set("surveyElement", surveyElement)
-				)
-				.setCacheable(true)
-				.setFlushMode(FlushMode.MANUAL)
-				.setCacheRegion("org.hibernate.cache.SurveyEnteredValueQueryCache")
-				.uniqueResult();
+			.set("organisationUnit", organisationUnit)
+			.set("surveyElement", surveyElement)
+		)
+		.setCacheable(true)
+		.setFlushMode(FlushMode.MANUAL)
+		.setCacheRegion("org.hibernate.cache.SurveyEnteredValueQueryCache")
+		.uniqueResult();
 	}
 
-	Set<SurveySkipRule> getSkipRules(SurveyElement surveyElement) {
-		Survey survey = surveyElement.getSurvey();
-		Set<SurveySkipRule> result = new HashSet<SurveySkipRule>();
-		survey.skipRules.each { rule ->
-			if (rule.skippedSurveyElements.contains(surveyElement)) result.add(rule)	
-		}
-		return result;
-//		def c = SurveySkipRule.createCriteria()
-//		.createAlias("skippedSurveyElements", "se")
-//		.add(Restrictions.eq("se.id", surveyElement.id))
-//		.list();
+	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement) {
+		def c = SurveyValidationRule.createCriteria()
+		c.add(
+			Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE)
+		)
+		.setCacheable(true)
+		.setFlushMode(FlushMode.MANUAL)
+		.setCacheRegion("org.hibernate.cache.SurveyValidationRuleSearch")
+		.list()
 	}
+	
+	Set<SurveySkipRule> searchSkipRules(SurveyElement surveyElement) {
+		def c = SurveySkipRule.createCriteria()
+		c.add(
+			Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE)
+		)
+		.setCacheable(true)
+		.setFlushMode(FlushMode.MANUAL)
+		.setCacheRegion("org.hibernate.cache.SurveySkipRuleSearch")
+		.list()
+	}
+	
+//	Set<SurveySkipRule> getSkipRules(SurveyElement surveyElement) {
+//		Survey survey = surveyElement.getSurvey();
+//		Set<SurveySkipRule> result = new HashSet<SurveySkipRule>();
+//		survey.skipRules.each { rule ->
+//			if (rule.skippedSurveyElements.contains(surveyElement)) result.add(rule)	
+//		}
+//		return result;
+//	}
 
-	Set<SurveySkipRule> getSkipRules(SurveyQuestion surveyQuestion) {
-		Survey survey = surveyQuestion.getSurvey();
-		Set<SurveySkipRule> result = new HashSet<SurveySkipRule>();
-		survey.skipRules.each { rule ->
-			if (rule.skippedSurveyQuestions.contains(surveyQuestion)) result.add(rule)
-		}
-		return result;
-//		def c = SurveySkipRule.createCriteria()
-//		.createAlias("skippedSurveyQuestions", "sq")
-//		.add(Restrictions.eq("sq.id", surveyQuestion.id))
-//		.list();
-	}
+//	Set<SurveySkipRule> getSkipRules(SurveyQuestion surveyQuestion) {
+//		Survey survey = surveyQuestion.getSurvey();
+//		Set<SurveySkipRule> result = new HashSet<SurveySkipRule>();
+//		survey.skipRules.each { rule ->
+//			if (rule.skippedSurveyQuestions.contains(surveyQuestion)) result.add(rule)
+//		}
+//		return result;
+//	}
 
 	Set<SurveyElement> getSurveyElements(DataElement dataElement) {
 		SurveyElement.createCriteria()
-				.add(Restrictions.eq("dataElement", dataElement))
-				.list();
+		.add(Restrictions.eq("dataElement", dataElement))
+		.list();
 	}
 
 	Integer getTotalOrgUnitApplicable(SurveyElement surveyElement){

@@ -29,6 +29,7 @@ package org.chai.kevin.dashboard;
  */
 
 import org.chai.kevin.Gradient;
+import org.chai.kevin.value.Value;
 
 public class DashboardPercentage extends Gradient {
 
@@ -39,12 +40,20 @@ public class DashboardPercentage extends Gradient {
 	
 	public DashboardPercentage() {}
 	
+	public DashboardPercentage(Value value, Boolean hasMissingValueStatus, Boolean hasMissingExpressionStatus) {
+		this.value = value.getNumberValue()!=null?value.getNumberValue().doubleValue():null;
+
+		this.hasMissingValue = hasMissingValueStatus;
+		this.hasMissingExpression = hasMissingExpressionStatus;
+	}
+	
 	public DashboardPercentage(Double value, Boolean hasMissingValueStatus, Boolean hasMissingExpressionStatus) {
 		this.value = value;
 
 		this.hasMissingValue = hasMissingValueStatus;
 		this.hasMissingExpression = hasMissingExpressionStatus;
 	}
+	
 	
 	public Double getValue() {
 		return value;
@@ -56,18 +65,6 @@ public class DashboardPercentage extends Gradient {
 	
 	public Boolean isHasMissingValue() {
 		return hasMissingValue;
-	}
-
-	public void setValue(Double value) {
-		this.value = value;
-	}
-	
-	public void setHasMissingExpression(boolean hasMissingExpressionStatus) {
-		this.hasMissingExpression = hasMissingExpressionStatus;
-	}
-	
-	public void setHasMissingValue(boolean hasMissingValueStatus) {
-		this.hasMissingValue = hasMissingValueStatus;
 	}
 
 }

@@ -21,7 +21,7 @@
 			<div class="row ${rampUp?.years!=null?hasErrors(bean:rampUp?.years[year],field:'value','errors'):''}">
 				<label for="years[${year}].value">Year ${year}</label>
 				<input name="years[${year}].value" value="${rampUp?.years!=null?fieldValue(bean:rampUp?.years[year],field:'value'):''}"></input>
-				<div class="error-list"><g:if test="${rampUp?.years != null}"><g:renderErrors bean="${rampUp?.years[year]}" field=value /></g:if></div>
+				<div class="error-list"><g:if test="${rampUp?.years != null}"><g:renderErrors bean="${rampUp?.years[year]}" field="value" /></g:if></div>
 			</div>
 			<input type="hidden" name="years[${year}].year" value="${year}"/>
 			<g:if test="${rampUp?.years != null && rampUp?.years[year] != null}">

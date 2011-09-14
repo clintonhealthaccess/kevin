@@ -97,7 +97,7 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 			throw new IllegalArgumentException("survey element does not belong to question (simple)");
 		}
 		return new HashSet<String>(CollectionUtils.intersection(
-			Utils.getGroupUuids(this.getGroupUuidString()),
+			Utils.split(this.getGroupUuidString()),
 			this.getSection().getOrganisationUnitGroupApplicable())
 		);
 	}

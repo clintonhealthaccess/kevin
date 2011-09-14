@@ -3,13 +3,13 @@ package org.chai.kevin.survey
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.util.JSONUtils;
 
 class ClonerSpec extends IntegrationTests {
 
 	def setup() {
 		IntegrationTestInitializer.createDummyStructure()
-		if (DataElement.count() == 0) new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: ValueType.VALUE).save(failOnError: true, flush: true)
+		if (DataElement.count() == 0) new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: JSONUtils.TYPE_NUMBER).save(failOnError: true, flush: true)
 	}
 	
 	def "test clone double number of elements"() {

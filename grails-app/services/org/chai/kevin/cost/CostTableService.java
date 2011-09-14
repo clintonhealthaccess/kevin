@@ -79,7 +79,7 @@ public class CostTableService {
 		}
 		
 		List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
-		for (String groupUuid : Utils.getGroupUuids(target.getGroupUuidString())) {
+		for (String groupUuid : Utils.split(target.getGroupUuidString())) {
 			groups.add(collection.getGroupByUuid(groupUuid));
 		}
 		return new Explanation(target, groups, target.getParent(), period, new ArrayList<Organisation>(explanationMap.keySet()), costService.getYears(), explanationMap);
@@ -87,7 +87,7 @@ public class CostTableService {
 	
 	private boolean appliesToOrganisation(CostTarget target, Organisation organisation, GroupCollection collection) {
 		Set<OrganisationUnitGroup> groups = organisation.getOrganisationUnit().getGroups();
-		for (String groupUuid : Utils.getGroupUuids(target.getGroupUuidString())) {
+		for (String groupUuid : Utils.split(target.getGroupUuidString())) {
 			if (groups.contains(collection.getGroupByUuid(groupUuid))) return true;
 		}
 		return false;
@@ -133,15 +133,15 @@ public class CostTableService {
 			ExpressionValue expressionValue = valueService.getValue(target.getExpression(), organisation.getOrganisationUnit(), period);
 			ExpressionValue expressionEndValue = null;
 			if (target.isAverage()) expressionEndValue = valueService.getValue(target.getExpressionEnd(), organisation.getOrganisationUnit(), period);
-			if (expressionValue != null && expressionValue.getNumberValue() != null && (!target.isAverage() || (expressionEndValue != null && expressionEndValue.getNumberValue() != null))) { 
-				Double baseCost = expressionValue.getNumberValue();
+			if (expressionValue != null && expressionValue.getValue().getNumberValue() != null && (!target.isAverage() || (expressionEndValue != null && expressionEndValue.getValue().getNumberValue() != null))) { 
+				Double baseCost = expressionValue.getValue().getNumberValue().doubleValue();
 
 				// FIXME
 	//			if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
 				
 				Double steps = 0d;
 				if (target.isAverage()) {
-					Double endCost = expressionEndValue.getNumberValue();
+					Double endCost = expressionEndValue.getValue().getNumberValue().doubleValue();
 					// FIXME
 	//				if (ExpressionService.hasNullValues(values.values())) hasMissingValues = true;
 					steps = (endCost - baseCost)/(years.size()-1);

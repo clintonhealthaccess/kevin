@@ -1,4 +1,4 @@
-package org.chai.kevin.dsr
+package org.chai.kevin.value
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,25 +28,11 @@ package org.chai.kevin.dsr
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.util.List;
-import org.chai.kevin.dsr.DsrObjective;
-import org.chai.kevin.dsr.DsrTarget;
-
-class DsrObjectiveService {
-
-	static transactional = true
-
-	DsrObjective getRootObjective() throws IllegalStateException {
-		List<DsrObjective> objectives = DsrObjective.findAllByName(true);
-		Collections.sort(objectives);
-		if (objectives.size() != 1) {
-			throw new IllegalStateException(
-			"there is no root objective in the system, please create one");
-		}
-		return objectives.get(0);
-	}
-
-	List<DsrTarget> getTargets() {
-		return DsrTarget.list();
-	}
+constraints = {
+//	expression(nullable: false)
+	organisationUnit(nullable: false)
+	period(nullable: false)
+	value(nullable: false, validator: {val, obj ->
+		return true;
+	})
 }

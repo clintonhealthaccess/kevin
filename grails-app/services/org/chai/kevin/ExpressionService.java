@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,31 +41,31 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Average;
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
+import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.ExpressionValue.Status;
+import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueCalculator;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
-import org.hisp.dhis.system.util.MathUtils;
-import org.nfunk.jep.JEP;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.ibm.jaql.json.type.JsonValue;
+import com.ibm.jaql.json.util.JsonUtil;
+import com.ibm.jaql.lang.JaqlQuery;
 
 public class ExpressionService {
 
 	private static final Log log = LogFactory.getLog(ExpressionService.class);
 	
-    private final static Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\[.+?\\]");
-    
 	private DataService dataService;
 	private OrganisationService organisationService;
 	private ValueService valueService;
@@ -108,12 +109,13 @@ public class ExpressionService {
 		}
 	}
 	
-	public <T extends Value> T calculate(Data<T> data, OrganisationUnit organisationUnit, Period period) {
+	public <T extends StoredValue> T calculate(Data<T> data, OrganisationUnit organisationUnit, Period period) {
 		// TODO make a registry class with this code
 		Class<?> clazz = data.getClass();
 		while (!calculatorMap.containsKey(clazz)) {
 			clazz = clazz.getSuperclass();
 		}
+		@SuppressWarnings("unchecked")
 		ValueCalculator<T> calculator = (ValueCalculator<T>)calculatorMap.get(clazz);
 		return data.getValue(calculator, organisationUnit, period);
 	}
@@ -162,29 +164,29 @@ public class ExpressionService {
 	 */
 	// TODO decide if this can be called with a facility, 
 	@Transactional(readOnly=true)
-	private CalculationValue calculateAverageValue(Calculation calculation, Period period, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",organisation="+organisation+")");
+	private CalculationValue calculateAverageValue(Average average, Period period, Organisation organisation) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+average+",period="+period+",organisation="+organisation+")");
 		
-		if (calculation.getType() != ValueType.VALUE) log.error("averaging value of non VALUE type calculation: "+calculation);
+//		if (calculation.getType() != ValueType.NUMBER) log.error("averaging value of non NUMBER type calculation: "+calculation);
 		// we do it anyway in case it's a user error
 		
-		Map<Organisation, ExpressionValue> result = calculateExpressionValues(calculation.getExpressions(), period, organisation);
+		Map<Organisation, ExpressionValue> result = calculateExpressionValues(average.getExpressions(), period, organisation);
 
-		CalculationValue calculationValue = new CalculationValue(calculation, organisation.getOrganisationUnit(), period, 
-				calculateAverage(result), calculateHasMissingValues(result), calculateHasMissingExpression(result));
+		CalculationValue calculationValue = new CalculationValue(average, organisation.getOrganisationUnit(), period, 
+				average.getType().getValue(calculateAverage(result)), calculateHasMissingValues(result), calculateHasMissingExpression(result));
 		
 		if (log.isDebugEnabled()) log.debug("calculateValue(...)="+calculationValue);
 		return calculationValue;
 	}
 	
 	@Transactional(readOnly=true)
-	private CalculationValue calculateSumValue(Sum count, Period period, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(count="+count+",period="+period+",organisation="+organisation+")");
+	private CalculationValue calculateSumValue(Sum sum, Period period, Organisation organisation) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(sum="+sum+",period="+period+",organisation="+organisation+")");
 		
-		Map<Organisation, ExpressionValue> result = calculateExpressionValues(count.getExpressions(), period, organisation);
+		Map<Organisation, ExpressionValue> result = calculateExpressionValues(sum.getExpressions(), period, organisation);
 		
-		CalculationValue countValue = new CalculationValue(count, organisation.getOrganisationUnit(), period, 
-				calculateSum(result), calculateHasMissingValues(result), calculateHasMissingExpression(result));
+		CalculationValue countValue = new CalculationValue(sum, organisation.getOrganisationUnit(), period, 
+				sum.getType().getValue(calculateSum(result)), calculateHasMissingValues(result), calculateHasMissingExpression(result));
 		
 		if (log.isDebugEnabled()) log.debug("calculateValue(...)="+countValue);
 		return countValue;
@@ -192,7 +194,7 @@ public class ExpressionService {
 	
 	private boolean calculateHasMissingValues(Map<Organisation, ExpressionValue> values) {
 		for (ExpressionValue expressionValue : values.values()) {
-			if (expressionValue != null && expressionValue.getStatus() == Status.MISSING_VALUE) return true;
+			if (expressionValue != null && expressionValue.getStatus() == Status.MISSING_NUMBER) return true;
 		}
 		return false;
 	}
@@ -204,40 +206,38 @@ public class ExpressionService {
 		return false;
 	}
 
-	private String calculateSum(Map<Organisation, ExpressionValue> values) {
+	private Double calculateSum(Map<Organisation, ExpressionValue> values) {
 		Double sum = 0d;
 		for (ExpressionValue expressionValue : values.values()) {
 			if (expressionValue != null && expressionValue.getStatus() == Status.VALID) {
 				try {
-					sum += Double.parseDouble(expressionValue.getValue());
+					sum += expressionValue.getValue().getNumberValue().doubleValue();
 				} catch (NumberFormatException e) {
 					log.warn("non-number value found in sum: ", e);
 				}
 			}
 		}
-		return sum.toString();
+		return sum;
 	}
 	
-	private String calculateAverage(Map<Organisation, ExpressionValue> values) {
-		String value;
-		
+	private Double calculateAverage(Map<Organisation, ExpressionValue> values) {
 		Double sum = 0d;
 		Integer num = 0;
 		for (ExpressionValue expressionValue : values.values()) {
 			if (expressionValue != null && expressionValue.getStatus() == Status.VALID) {
-				try {
-					sum += Double.parseDouble(expressionValue.getValue());
+				if (expressionValue.getValue().getNumberValue() != null) {
+					sum += expressionValue.getValue().getNumberValue().doubleValue();
 					num++;
-				} catch (NumberFormatException e) {
-					log.warn("non-number value found in average: ", e);
+				} 
+				else { 
+					log.error("non-number value found in average: "+ expressionValue);
 				}
 			}
 		}
 		Double average = sum / num;
 		if (average.isNaN()) average = null;
-		value = average==null?null:average.toString();
 		
-		return value; 
+		return average; 
 	}
 	
 	/**
@@ -250,7 +250,8 @@ public class ExpressionService {
 	@Transactional(readOnly=true)
 	public Map<Organisation, Map<DataElement, DataValue>> calculateDataValues(Expression expression, Period period, Organisation organisation) {
 		Map<Organisation, Map<DataElement, DataValue>> values = new HashMap<Organisation, Map<DataElement,DataValue>>();
-		generateExpression(expression.getExpression(), period, organisation, values);
+		Map<String, Data<?>> datas = getDataInExpression(expression.getExpression());
+		for (Entry<String, Data<?>> entry : datas.entrySet()) calculateDataValue(entry.getValue(), period, organisation, values);
 		return values;
 	}
 	
@@ -267,45 +268,57 @@ public class ExpressionService {
 	private ExpressionValue calculateValue(Expression expression, Period period, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",organisation="+organisation+")");
 		
-		String value = null;
+		Value value = null;
 		Status status = null;
-		if (!isAggregatable(expression) && organisationService.getLevel(organisation) != organisationService.getFacilityLevel()) {
-			status = Status.NOT_AGGREGATABLE;
-			value = null;
+		Map<String, Data<?>> datas = getDataInExpression(expression.getExpression());
+		if (hasNullValues(datas.values())) {
+			value = Value.NULL;
+			status = Status.MISSING_DATA_ELEMENT;
 		}
 		else {
-			
-			Map<Organisation, Map<DataElement, DataValue>> values = new HashMap<Organisation, Map<DataElement, DataValue>>();
-			String stringExpression = generateExpression(expression.getExpression(), period, organisation, values);
-	
-			if (values.containsKey(organisation) && hasNullValues(values.get(organisation).values())) {
-				// this means we got non-aggregated values and some of them are null, we don't calculate anything
-				value = null;
-				status = Status.MISSING_VALUE;
+			if (!isAggregatable(datas.values()) && organisationService.getLevel(organisation) != organisationService.getFacilityLevel()) {
+				status = Status.NOT_AGGREGATABLE;
+				value = Value.NULL;
 			}
 			else {
-				Object evaluatedValue = evaluate(stringExpression);
-				if (evaluatedValue == null) {
-					if (log.isErrorEnabled()) log.error("evaluated value is null but there are no null values: "+stringExpression);
-					value = null;
-					// TODO add ERROR status
-					status = Status.MISSING_VALUE;
+				Map<Organisation, Map<DataElement, DataValue>> values = new HashMap<Organisation, Map<DataElement, DataValue>>();
+				Map<String, Value> valueMap = new HashMap<String, Value>();
+				Map<String, Type> typeMap = new HashMap<String, Type>();
+				
+				for (Entry<String, Data<?>> entry : datas.entrySet()) {
+					StoredValue dataValue = calculateDataValue(entry.getValue(), period, organisation, values);
+					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
+					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
+				}
+				
+				if (hasNullValues(valueMap.values())) {
+					value = Value.NULL;
+					status = Status.MISSING_NUMBER;
 				}
 				else {
-					value = evaluate(stringExpression).toString();
-					status = Status.VALID;
+					try {
+						value = evaluate(expression.getExpression(), expression.getType(), valueMap, typeMap);
+						if (value == null) {
+							status = Status.INVALID;
+							value = Value.NULL;
+						}
+						else status = Status.VALID;
+					} catch (IllegalArgumentException e) {
+						value = Value.NULL;
+						status = Status.ERROR;
+					}
 				}
 			}
 		}
+		value.getJsonValue();	
 		ExpressionValue expressionValue = new ExpressionValue(value, status, organisation.getOrganisationUnit(), expression, period);
-			
+		
 		if (log.isDebugEnabled()) log.debug("getValue()="+expressionValue);
 		return expressionValue;
 		
 	}
 
-	private boolean isAggregatable(Expression expression) {
-		Set<Data<?>> elements = getDataInExpression(expression.getExpression());
+	private boolean isAggregatable(Collection<Data<?>> elements) {
 		for (Data<?> data : elements) {
 			if (!data.isAggregatable()) return false;
 		}
@@ -323,10 +336,10 @@ public class ExpressionService {
 	}
 	
 	
-	private Value calculateDataValue(Data<?> data, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
+	private StoredValue calculateDataValue(Data<?> data, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
 		if (log.isDebugEnabled()) log.debug("getDataValue(data="+data+", period="+period+", organisation="+organisation+")");
 		
-		Value result = null;
+		StoredValue result = null;
 		// TODO fix this
 		if (data instanceof DataElement) {
 			DataElement dataElement = (DataElement)data;
@@ -350,10 +363,10 @@ public class ExpressionService {
 					DataValue dataValue = valueService.getValue(dataElement, child.getOrganisationUnit(), period);
 					valuesForChildOrganisation.put(dataElement, dataValue);
 					if (dataValue != null) {
-						value += Double.parseDouble(dataValue.getValue());
+						value += dataValue.getValue().getNumberValue().doubleValue();
 					}
 				}
-				result = new DataValue(dataElement, organisation.getOrganisationUnit(), period, value.toString());
+				result = new DataValue(dataElement, organisation.getOrganisationUnit(), period, dataElement.getType().getValue(value));
 			}
 			valuesForOrganisation.put(dataElement, (DataValue)result);
 		}
@@ -362,38 +375,6 @@ public class ExpressionService {
 		}
 		if (log.isDebugEnabled()) log.debug("getDataValue(...)="+result);
 		return result;
-	}
-	
-	private String generateExpression(String formula, Period period, Organisation organisation, Map<Organisation, Map<DataElement, DataValue>> values) {
-		if (log.isDebugEnabled()) log.debug("generateExpression(formula="+formula+", period="+period+", organisation="+organisation+")");
-		
-		StringBuffer buffer = new StringBuffer();
-		Matcher matcher = PLACEHOLDER_PATTERN.matcher(formula);
-		
-		// TODO replace by getPlaceholders + convertExpression
-		while (matcher.find()) {
-			String match = matcher.group();
-			match = match.replaceAll("[\\[\\]]", "");
-
-			if (log.isDebugEnabled()) log.debug("found matching pattern: "+Long.parseLong(match));
-			Object value = null;
-			try {
-				Data<?> data = dataService.getData(Long.parseLong(match));
-				// TODO data element does not exist
-				// TODO if aggregated, then get data value only for the 
-				// organisations that have all the values ?
-				Value dataValue = calculateDataValue(data, period, organisation, values);
-				value = dataValue==null?null:dataValue.getValue();
-			}
-			catch (NumberFormatException e) {
-				log.warn("parse exception: "+match, e);
-			}
-
-			matcher.appendReplacement(buffer, String.valueOf(value));
-		}
-
-		matcher.appendTail(buffer);
-		return buffer.toString();
 	}
 	
 	@Transactional(readOnly=false)
@@ -425,21 +406,35 @@ public class ExpressionService {
 		}
 	}
 	
-	private static JEP getJEPParser() {
-    	final JEP parser = new JEP();
-    	parser.addStandardConstants();
-    	parser.addStandardFunctions();
-    	return parser;
-    }
-	
-	public static Object evaluate(String expression) {
-		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+")");
-		JEP parser = getJEPParser();
-        
-        parser.parseExpression( expression );
-        Object value = parser.getValueAsObject();
-        if (log.isDebugEnabled()) log.debug("evaluate(...)="+value);
-        return value;
+	/**
+	 * return null if the expression is not typed correctly
+	 * 
+	 * @throws {@link IllegalArgumentException} if one of the arguments is null
+	 */
+	public static Value evaluate(String expression, Type type, Map<String, Value> variables, Map<String, Type> types) 
+			throws IllegalArgumentException {
+		
+		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+", variables="+variables+")");
+		JaqlQuery query = new JaqlQuery();
+		query.setQueryString(expression);
+		
+		try {
+			for (Entry<String, Value> variable : variables.entrySet()) {
+				JaqlQuery varq = new JaqlQuery(types.get(variable.getKey()).getJaqlValue(variable.getValue()));
+				query.setVar("$"+variable.getKey(), varq.evaluate());
+			}
+			if (log.isDebugEnabled()) log.debug("evaluating jaql query: "+query.toString());
+			JsonValue jsonValue = query.evaluate();
+			Value value = null;
+			if (jsonValue != null) {
+				value = type.getValueFromJaql(jsonValue.toString());
+			}
+			if (log.isDebugEnabled()) log.debug("evaluate(...)="+value);
+			return value;
+		} catch (Exception e) {
+			log.error("error evaluating: "+expression+", with variables: "+variables, e);
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	
@@ -450,92 +445,62 @@ public class ExpressionService {
 		return false;
 	}
 
-    public String expressionIsValid(String formula) {
-        if (formula == null) return org.hisp.dhis.expression.ExpressionService.EXPRESSION_IS_EMPTY;
-        StringBuffer buffer = new StringBuffer();
-        Matcher matcher = PLACEHOLDER_PATTERN.matcher(formula);
-        while ( matcher.find() )
-        {
-        	String match = matcher.group();
-        	match = match.replaceAll("[\\[\\]]", "");
-            try {
-            	if ( dataService.getData(Long.parseLong(match)) == null) {
-            		return org.hisp.dhis.expression.ExpressionService.DATAELEMENT_DOES_NOT_EXIST;
-            	}
-            }
-			catch (NumberFormatException e) {
-				return org.hisp.dhis.expression.ExpressionService.ID_NOT_NUMERIC;
-			}
-            matcher.appendReplacement( buffer, "1.1" );
-        }
-        
-        matcher.appendTail( buffer );
-        if ( MathUtils.expressionHasErrors( buffer.toString() ) ) {
-            return org.hisp.dhis.expression.ExpressionService.EXPRESSION_NOT_WELL_FORMED;
-        }        
-
-        return org.hisp.dhis.expression.ExpressionService.VALID;
+	public static boolean expressionIsValid(String formula) {
+		Set<String> variables = getVariables(formula);
+		JsonValue nul = null;
+		try {
+			nul = new JaqlQuery("0").evaluate();
+		} catch (Exception e1) {}
+		JaqlQuery query = new JaqlQuery(formula);
+		for (String string : variables) {
+			query.setVar(string, nul);
+		}
+		try {
+			query.evaluate();
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
     }
 	
-    public static Set<String> getPlaceholders(String expression) {
+    public static Set<String> getVariables(String expression) {
     	Set<String> placeholders = null;
         if ( expression != null ) {
         	placeholders = new HashSet<String>();
-            final Matcher matcher = PLACEHOLDER_PATTERN.matcher( expression );
+            final Matcher matcher = Pattern.compile("\\$\\d+").matcher( expression );
             
             while (matcher.find())  {
             	String match = matcher.group();
-            	match = match.replaceAll("[\\[\\]]", "");
 	            placeholders.add(match);
             }
         }
         return placeholders;
     }
     
-    public Set<Data<?>> getDataInExpression(String expression) {
-        Set<Data<?>> dataInExpression = null;
-        if ( expression != null ) {
-        	dataInExpression = new HashSet<Data<?>>();
-        	Set<String> placeholders = getPlaceholders(expression);
+    public Map<String, Data<?>> getDataInExpression(String expression) {
+        Map<String, Data<?>> dataInExpression = new HashMap<String, Data<?>>();
+    	Set<String> placeholders = getVariables(expression);
 
-        	for (String placeholder : placeholders) {
-                Data<?> data = null;
-                try {
-                	data = dataService.getData(Long.parseLong(placeholder));
-                }
-                catch (NumberFormatException e) {
-                	log.warn("wrong format for dataelement: "+placeholder);
-                }
-
-                if ( data != null )  {
-                	dataInExpression.add(data);
-                }
+    	for (String placeholder : placeholders) {
+            Data<?> data = null;
+            try {
+            	data = dataService.getData(Long.parseLong(placeholder.replace("$", "")));
             }
+            catch (NumberFormatException e) {
+            	log.error("wrong format for dataelement: "+placeholder);
+            }
+
+            dataInExpression.put(placeholder, data);
         }
         return dataInExpression;
     }
 
     public static String convertStringExpression(String expression, Map<String, String> mapping) {
-        StringBuffer convertedFormula = new StringBuffer();
-        
-        if ( expression != null ) {
-            final Matcher matcher = PLACEHOLDER_PATTERN.matcher( expression );
-
-            while (matcher.find()) {
-            	String match = matcher.group();
-            	match = match.replaceAll("[\\[\\]]", "");
-            	
-                if (match == null) {
-                	if (log.isInfoEnabled()) log.info( "Data element identifier refers to non-existing object: " + match );
-                }
-                else {
-                	String replacement = mapping.get(match);
-                	if (replacement != null) matcher.appendReplacement( convertedFormula, replacement );
-                }
-            }
-            matcher.appendTail( convertedFormula );
-        }
-        return convertedFormula.toString();
+        String result = expression;
+        for (Entry<String, String> entry : mapping.entrySet()) {
+        	result = result.replace(entry.getKey(), entry.getValue());
+		}
+        return result;
     }
 	
 	public void setDataService(DataService dataService) {

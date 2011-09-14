@@ -89,7 +89,7 @@ public class MapsService {
 			if (target.getType() == MapsTargetType.AGGREGATION) {
 				if (log.isDebugEnabled()) log.debug("getting values for AGGREGATION map with expression: "+target.getExpression());
 				ExpressionValue expressionValue = valueService.getValue(target.getExpression(), child.getOrganisationUnit(), period);
-				if (expressionValue != null) value = expressionValue.getNumberValue();
+				if (expressionValue != null) value = expressionValue.getValue().getNumberValue().doubleValue();
 
 				if (value != null) {
 					if (target.getMaxValue() != null) {
@@ -100,7 +100,7 @@ public class MapsService {
 			else if (target.getType() == MapsTargetType.AVERAGE) {
 				if (log.isDebugEnabled()) log.debug("getting values for AVERAGE map with calculation: "+target.getCalculation());
 				CalculationValue calculationValue = valueService.getValue(target.getCalculation(), child.getOrganisationUnit(), period);
-				if (calculationValue != null) value = calculationValue.getAverage();
+				if (calculationValue != null) value = calculationValue.getValue().getNumberValue().doubleValue();
 			}
 			
 			

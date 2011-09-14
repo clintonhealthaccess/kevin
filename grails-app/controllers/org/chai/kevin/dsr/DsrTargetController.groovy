@@ -57,13 +57,13 @@ class DsrTargetController extends AbstractEntityController {
 
 	def getModel(def entity) {
 		[
-					target: entity,
-					objectives: DsrObjective.list(),
-					groups: organisationService.getGroupsForExpression(),
-					expressions: Expression.list(),
-					categories: DsrTargetCategory.list(),
-					groupUuids: Utils.getGroupUuids(entity.groupUuidString)
-				]
+			target: entity,
+			objectives: DsrObjective.list(),
+			groups: organisationService.getGroupsForExpression(),
+			expressions: Expression.list(),
+			categories: DsrTargetCategory.list(),
+			groupUuids: Utils.split(entity.groupUuidString)
+		]
 	}
 
 	def validateEntity(def entity) {
@@ -89,7 +89,7 @@ class DsrTargetController extends AbstractEntityController {
 
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString = Utils.getGroupUuidString(params['groupUuids'])
+		entity.groupUuidString = Utils.unsplit(params['groupUuids'])
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}

@@ -76,4 +76,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static j(def map) {
 		return Initializer.j(map)
 	}
+	
+	static v(def value) {
+		return Initializer.v(value)
+	}
 }

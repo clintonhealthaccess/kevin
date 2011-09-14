@@ -1,16 +1,13 @@
 <%@ page import="org.chai.kevin.value.ExpressionValue.Status" %>
 <div class="info">
-	<g:if test="${info.expressionValue.status == Status.MISSING_VALUE}">
+	<g:if test="${info.expressionValue.status == Status.MISSING_NUMBER}">
 		<div class="red bold">Some values are missing.</div>
-	</g:if>
-	<g:if test="${info.value != null && !info.number}">
-		<div class="red bold">The expression is invalid.</div>
 	</g:if>
 	<div class="average">
 		<h5>Value:</h5>
 		<span class="value">
-			<g:if test="${info.number}">
-				<g:formatNumber number="${info.numberValue * 100}" format="#0.0"/>%
+			<g:if test="${info.value.numberValue != null}">
+				<g:formatNumber number="${info.value.numberValue * 100}" format="#0.0"/>%
 			</g:if>
 			<g:else>N/A</g:else>
 		</span>
@@ -36,23 +33,26 @@
 		<div class="span box">
 			<h5>Data</h5>
 			<table><g:each in="${info.valuesForOrganisation}" var="data">
-				<tr class="data-${data.key.id} data">
+				<g:set var="dataElement" value="${data.key}"/>
+				<g:set var="dataValue" value="${data.value}"/>
+				
+				<tr class="data-${dataElement.id} data">
 					<th>[${data.key.id}]</th>
 					<th>
-					<a	onclick="return false;" title="${i18n(field:data.key.names)}" class="cluetip"
-						href="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: data.key.id])}"
-						rel="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: data.key.id])}">
-						<g:i18n field="${data.key.names}"/>
+					<a	onclick="return false;" title="${i18n(field:dataElement.names)}" class="cluetip"
+						href="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: dataElement.id])}"
+						rel="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: dataElement.id])}">
+						<g:i18n field="${dataElement.names}"/>
 					</a>
 					</th>
-					<g:if test="${data.value == null}">
+					<g:if test="${dataValue == null}">
 						<td class="red">
 							N/A
 						</td>
 					</g:if>
 					<g:else>
 						<td>
-							${data.value.value}
+							${dataElement.type.getDisplayValue(dataValue.value)}
 						</td>
 					</g:else>
 				</tr>

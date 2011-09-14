@@ -20,7 +20,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 )
 public class SurveyEnteredSection {
 	
-	public static enum SectionStatus {CLOSED, UNAVAILABLE, COMPLETE, INVALID, INCOMPLETE} 
+	public static enum SectionStatus {COMPLETE, INVALID, INCOMPLETE} 
 	
 	private Long id;
 	private SurveySection section;

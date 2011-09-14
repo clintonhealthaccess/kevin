@@ -83,11 +83,11 @@ public class DsrService {
 							child.getOrganisationUnit(), period);
 					String value = null;
 					if (expressionValue != null)
-						if (expressionValue.getNumberValue() != null) {
-							value = getFormat(target,
-									expressionValue.getValue());
+						// TODO fix this
+						if (expressionValue.getValue().getNumberValue() != null) {
+							value = getFormat(target, expressionValue.getValue().getNumberValue().doubleValue());
 						} else {
-							value = expressionValue.getValue();
+							value = expressionValue.getValue().getStringValue();
 						}
 					orgDsr.put(target, new Dsr(child, period, target, value));
 				}
@@ -100,12 +100,12 @@ public class DsrService {
 				targets, facilityTypes, dsrMap);
 	}
 
-	private static String getFormat(DsrTarget target, String value) {
+	private static String getFormat(DsrTarget target, Double value) {
 		String format = target.getFormat();
 		if (format == null) format = "#";
 		
 		DecimalFormat frmt = new DecimalFormat(format);
-		return frmt.format(Double.parseDouble(value)).toString();
+		return frmt.format(value).toString();
 	}
 	
 	

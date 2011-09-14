@@ -1,12 +1,10 @@
 <!-- Text type question -->
-<div class="element element-string element-${surveyElement.id} ${surveyEnteredValue?.skipped?'skipped':''} ${(surveyEnteredValue==null || surveyEnteredValue?.valid)?'':'errors'}" data-element="${surveyElement.id}">
-	<a name="element-${surveyElement.id}"></a>
-	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
-	
-	<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id"/>
-	<textarea name="surveyElements[${surveyElement.id}].value" cols="100" rows="8" class="idle-field" ${readonly?'disabled="disabled"':''}>${surveyEnteredValue?.value}</textarea>
-	<g:if test="${surveyElementValue?.lastValue!=null}"><span class="survey-old-value">(${surveyElementValue.lastValue})</span></g:if>
+<div id="element-${surveyElement.id}-${suffix}" class="element element-string ${enteredValue?.skipped?'skipped':''} ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
+	<a name="element-${surveyElement.id}-${suffix}"></a>
+
+	<textarea name="surveyElements[${surveyElement.id}].value${suffix}" cols="100" rows="8" class="idle-field" ${readonly?'disabled="disabled"':''}>${value?.stringValue}</textarea>
+	<g:if test="${lastValue!=null}"><span class="survey-old-value">(${lastValue})</span></g:if>
 	<div class="error-list">
-		<g:renderUserErrors element="${surveyElementValue}"/>
+		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
 	</div>
 </div>

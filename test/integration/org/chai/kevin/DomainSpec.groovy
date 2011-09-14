@@ -39,11 +39,9 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Constant;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyObjective
@@ -69,7 +67,7 @@ class DomainSpec extends IntegrationTests {
 
 	//	def "expression date is updated on save"() {
 	//		setup:
-	//		new Expression(code:"CODE", expression: "1", type: ValueType.VALUE, timestamp: new Date()).save(failOnError: true)
+	//		new Expression(code:"CODE", expression: "1", type: JSONUtils.TYPE_NUMBER, timestamp: new Date()).save(failOnError: true)
 	//
 	//		when:
 	//		def expression = Expression.findByCode("CODE");
@@ -114,7 +112,7 @@ class DomainSpec extends IntegrationTests {
 
 	def "expression value hashcode and equals"() {
 		setup:
-		new Expression(code: "EXPR", expression:"10", type: ValueType.VALUE).save(failOnError: true)
+		new Expression(code: "EXPR", expression:"10", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 
 		when:
 		def expr1 = new ExpressionValue(period: Period.list()[0], organisationUnit: OrganisationUnit.findByName("Butaro DH"), expression: Expression.findByCode("EXPR"));
@@ -135,7 +133,7 @@ class DomainSpec extends IntegrationTests {
 
 	def "invalid expression"() {
 		when:
-		new Expression(code:"CODE", expression: formula, type: ValueType.VALUE).save(failOnError:true)
+		new Expression(code:"CODE", expression: formula, type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
 
 		then:
 		thrown ValidationException
@@ -150,10 +148,10 @@ class DomainSpec extends IntegrationTests {
 
 	def "cannot delete expression with associated calculation"() {
 		setup:
-		def expression = new Expression(code: "EXPR", expression:"10", type: ValueType.VALUE).save(failOnError: true)
+		def expression = new Expression(code: "EXPR", expression:"10", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		def calculation = new Average(expressions: [
 			"Health Center": Expression.findByCode("EXPR")
-		], timestamp:new Date(), type: ValueType.VALUE)
+		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
 		calculation.save(failOnError: true)
 		
 		when:
@@ -165,8 +163,8 @@ class DomainSpec extends IntegrationTests {
 	
 	def "data element code is unique"() {
 		when:
-		new DataElement(code: "CODE", type: ValueType.VALUE).save(failOnError:true)
-		new DataElement(code: "CODE", type: ValueType.VALUE).save(failOnError:true)
+		new DataElement(code: "CODE", type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
+		new DataElement(code: "CODE", type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
 
 		then:
 		thrown ValidationException
@@ -175,107 +173,107 @@ class DomainSpec extends IntegrationTests {
 	
 	def "data element enum is present when type is enum"() {
 		when:
-		new DataElement(code: "CODE", type: ValueType.ENUM).save(failOnError:true)
+		new DataElement(code: "CODE", type: JSONUtils.TYPE_ENUM).save(failOnError:true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
 		def enume = new Enum(code: "ENUM").save(failOnError:true)
-		new DataElement(code: "CODE", type: ValueType.ENUM, enume: enume).save(failOnError:true)
+		new DataElement(code: "CODE", type: JSONUtils.TYPE_ENUM, enume: enume).save(failOnError:true)
 		
 		then:
 		DataElement.count() == 1
 	}
 	
-	def "constant saved properly" () {
-		when:
-		new Constant(names:j(["en":"Constant"]), code:"CONST", value:"10", type:ValueType.VALUE).save(failOnError: true)
-
-		then:
-		Constant.count() == 1
-	}
-
-	def "constant code cannot be null"() {
-		when:
-		new Constant(names:j(["en":""]), code:"CODE", value:"10", type:ValueType.VALUE).save(failOnError: true)
-
-		then:
-		Constant.count() == 1
-
-		when:
-		new Constant(names:j(["en":""]), value:"10", type:ValueType.VALUE).save(failOnError: true)
-
-		then:
-		thrown ValidationException
-	}
-
-	def "constant code is unique"() {
-		when:
-		new Constant(names:j(["en":""]), code:"CODE", value:"10", type:ValueType.VALUE).save(failOnError: true)
-
-		then:
-		Constant.count() == 1
-
-		when:
-		new Constant(names:j(["en":""]), code:"CODE", value:"10", type:ValueType.VALUE).save(failOnError: true)
-
-		then:
-		thrown ValidationException
-	}
-
-	def "constant type cannot be null"() {
-		when:
-		new Constant(names:j(["en":""]), code:"CODE1", value:"10", type:ValueType.VALUE).save(failOnError: true)
-
-		then:
-		Constant.count() == 1
-
-		when:
-		new Constant(names:j(["en":""]), code:"CODE2", value:"10").save(failOnError: true)
-
-		then:
-		thrown ValidationException
-	}
-
-	def "constant value cannot be empty"() {
-		when:
-		new Constant(names:j(["en":"Constant"]), code:"CONST", value:"", type:ValueType.VALUE).save(failOnError: true)
-
-		then:
-		thrown ValidationException
-	}
-
-	def "constant value cannot be null"() {
-		when:
-		new Constant(names:j(["en":"Constant"]), code:"CONST", type:ValueType.VALUE).save(failOnError: true)
-
-		then:
-		thrown ValidationException
-	}
-
-
-	def "constant constraint: code cannot be blank"() {
-		when:
-		new Constant(names:j(["en":"Constant"]), code:"", value:"1", type: ValueType.VALUE).save(failOnError:true)
-
-		then:
-		thrown ValidationException
-	}
-
-	def "constant constraint: code is unique"() {
-		when:
-		new Constant(names:j(["en":"Constant"]), code:"Unique", value:"1", type: ValueType.VALUE).save(failOnError:true)
-
-		then:
-		Constant.count() == 1
-
-		when:
-		new Constant(names:j(["en":"Constant"]), code:"Unique", value:"1", type: ValueType.VALUE).save(failOnError:true)
-
-		then:
-		thrown ValidationException
-	}
+//	def "constant saved properly" () {
+//		when:
+//		new Constant(names:j(["en":"Constant"]), code:"CONST", value:"10", type:JSONUtils.TYPE_NUMBER).save(failOnError: true)
+//
+//		then:
+//		Constant.count() == 1
+//	}
+//
+//	def "constant code cannot be null"() {
+//		when:
+//		new Constant(names:j(["en":""]), code:"CODE", value:"10", type:JSONUtils.TYPE_NUMBER).save(failOnError: true)
+//
+//		then:
+//		Constant.count() == 1
+//
+//		when:
+//		new Constant(names:j(["en":""]), value:"10", type:JSONUtils.TYPE_NUMBER).save(failOnError: true)
+//
+//		then:
+//		thrown ValidationException
+//	}
+//
+//	def "constant code is unique"() {
+//		when:
+//		new Constant(names:j(["en":""]), code:"CODE", value:"10", type:JSONUtils.TYPE_NUMBER).save(failOnError: true)
+//
+//		then:
+//		Constant.count() == 1
+//
+//		when:
+//		new Constant(names:j(["en":""]), code:"CODE", value:"10", type:JSONUtils.TYPE_NUMBER).save(failOnError: true)
+//
+//		then:
+//		thrown ValidationException
+//	}
+//
+//	def "constant type cannot be null"() {
+//		when:
+//		new Constant(names:j(["en":""]), code:"CODE1", value:"10", type:JSONUtils.TYPE_NUMBER).save(failOnError: true)
+//
+//		then:
+//		Constant.count() == 1
+//
+//		when:
+//		new Constant(names:j(["en":""]), code:"CODE2", value:"10").save(failOnError: true)
+//
+//		then:
+//		thrown ValidationException
+//	}
+//
+//	def "constant value cannot be empty"() {
+//		when:
+//		new Constant(names:j(["en":"Constant"]), code:"CONST", value:"", type:JSONUtils.TYPE_NUMBER).save(failOnError: true)
+//
+//		then:
+//		thrown ValidationException
+//	}
+//
+//	def "constant value cannot be null"() {
+//		when:
+//		new Constant(names:j(["en":"Constant"]), code:"CONST", type:JSONUtils.TYPE_NUMBER).save(failOnError: true)
+//
+//		then:
+//		thrown ValidationException
+//	}
+//
+//
+//	def "constant constraint: code cannot be blank"() {
+//		when:
+//		new Constant(names:j(["en":"Constant"]), code:"", value:"1", type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
+//
+//		then:
+//		thrown ValidationException
+//	}
+//
+//	def "constant constraint: code is unique"() {
+//		when:
+//		new Constant(names:j(["en":"Constant"]), code:"Unique", value:"1", type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
+//
+//		then:
+//		Constant.count() == 1
+//
+//		when:
+//		new Constant(names:j(["en":"Constant"]), code:"Unique", value:"1", type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
+//
+//		then:
+//		thrown ValidationException
+//	}
 
 	def "expression type cannot be null"() {
 		when:
@@ -289,13 +287,13 @@ class DomainSpec extends IntegrationTests {
 
 	def "expression code is unique"() {
 		when:
-		new Expression(names:j(["en":"Expression"]), code:"EXPR", type:ValueType.VALUE, expression:"1").save(failOnError:true)
+		new Expression(names:j(["en":"Expression"]), code:"EXPR", type:JSONUtils.TYPE_NUMBER, expression:"1").save(failOnError:true)
 
 		then:
 		Expression.count();
 
 		when:
-		new Expression(names:j(["en":"Expression"]), code:"EXPR", type:ValueType.VALUE, expression:"1").save(failOnError:true)
+		new Expression(names:j(["en":"Expression"]), code:"EXPR", type:JSONUtils.TYPE_NUMBER, expression:"1").save(failOnError:true)
 
 		then:
 		thrown ValidationException
@@ -307,7 +305,7 @@ class DomainSpec extends IntegrationTests {
 		IntegrationTestInitializer.createConstants()
 
 		when:
-		new Expression(names:j(["en":"Expression"]), code:"EXPR", type:ValueType.VALUE, expression:"["+Constant.findByCode("CONST1").id+"]").save(failOnError:true)
+		new Expression(names:j(["en":"Expression"]), code:"EXPR", type:JSONUtils.TYPE_NUMBER, expression:"["+Constant.findByCode("CONST1").id+"]").save(failOnError:true)
 
 		then:
 		Expression.count() == 1;
@@ -317,7 +315,7 @@ class DomainSpec extends IntegrationTests {
 
 	def "empty name transfers properly to json"() {
 		when:
-		new DataElement(names:new Translation(), code:"TEST", type: ValueType.VALUE).save(failOnError:true)
+		new DataElement(names:new Translation(), code:"TEST", type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
 
 		then:
 		def dataElement = DataElement.findByCode("TEST");
@@ -328,7 +326,7 @@ class DomainSpec extends IntegrationTests {
 
 	def "translatable set map sets json"() {
 		when:
-		new DataElement(names:j(["en":"English", "fr":"Francais"]), code:"TEST", type: ValueType.VALUE).save(failOnError:true)
+		new DataElement(names:j(["en":"English", "fr":"Francais"]), code:"TEST", type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
 
 		then:
 		def dataElement = DataElement.findByCode("TEST");
@@ -340,7 +338,7 @@ class DomainSpec extends IntegrationTests {
 
 	def "translatable set json sets map"() {
 		when:
-		new DataElement(names:j("en":"test"), code:"TEST", type: ValueType.VALUE).save(failOnError:true)
+		new DataElement(names:j("en":"test"), code:"TEST", type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
 		def dataElement = DataElement.findByCode("TEST")
 		dataElement.names.putAll([en: "English", fr: "Anglais"]);
 		dataElement.save(failOnError:true);
@@ -354,7 +352,7 @@ class DomainSpec extends IntegrationTests {
 
 	def "translatable set map modifies json"() {
 		when:
-		new DataElement(names:new Translation(), code:"TEST", type: ValueType.VALUE).save(failOnError:true)
+		new DataElement(names:new Translation(), code:"TEST", type: JSONUtils.TYPE_NUMBER).save(failOnError:true)
 		def dataElement = DataElement.findByCode("TEST")
 		dataElement.names = new Translation(jsonText: JSONUtils.getJSONFromMap([en: "English", fr: "Anglais"]));
 		dataElement.save(failOnError:true)

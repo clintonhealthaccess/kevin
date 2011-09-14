@@ -17,7 +17,7 @@
 						<g:i18n field="${dataElement.names}" />
 					</a>
 				</td>
-				<td>${dataElement.type.getName()}</td>
+				<td>${dataElement.type}</td>
 				<td>${dataElement.code}</td>
 				<td class="hidden">
 					<div class="dropdown white-dropdown"> 

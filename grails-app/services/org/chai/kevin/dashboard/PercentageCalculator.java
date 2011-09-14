@@ -38,7 +38,6 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.ValueType;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.ExpressionValue.Status;
@@ -64,13 +63,9 @@ public class PercentageCalculator {
 	public DashboardPercentage getPercentageForNonLeafTarget(DashboardTarget target, Organisation organisation, Period period) {
 		if (log.isDebugEnabled()) log.debug("getPercentageForNonLeafTarget(target: "+target+", organisation: "+organisation+")");
 		
-		// calculation has to be of VALUE type
-		if (target.getCalculation().getType() != ValueType.VALUE) log.error("dashboard target has calculation of invalid type: "+target.getCalculation());
-
-		// but we try anyway, can be a user mistake
 		CalculationValue calculationValue = valueService.getValue(target.getCalculation(), organisation.getOrganisationUnit(), period);
 		if (calculationValue == null) return null;
-		DashboardPercentage percentage = new DashboardPercentage(calculationValue.getAverage(), calculationValue.getHasMissingValues(), calculationValue.getHasMissingExpression());
+		DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), calculationValue.getHasMissingValues(), calculationValue.getHasMissingExpression());
 
 		if (log.isDebugEnabled()) log.debug("getPercentageForNonLeafTarget()="+percentage);
 		return percentage;
@@ -79,19 +74,15 @@ public class PercentageCalculator {
 	public DashboardPercentage getPercentageForLeafTarget(DashboardTarget target, Organisation organisation, Period period) {
 		if (log.isDebugEnabled()) log.debug("getPercentageForLeafTarget(target: "+target+", organisation: "+organisation+")");
 		
-		// calculation has to be of VALUE type
-		if (target.getCalculation().getType() != ValueType.VALUE) log.error("dashboard target has calculation of invalid type: "+target.getCalculation());
-
-		// but we try anyway, can be a user mistake
 		DashboardPercentage percentage;
 		Expression expression = expressionService.getMatchingExpression(target.getCalculation().getExpressions(), organisation);
 		if (expression != null) {
 			ExpressionValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
 			if (expressionValue == null) return null;
-			percentage = new DashboardPercentage(expressionValue.getNumberValue(), expressionValue.getStatus() == Status.MISSING_VALUE, false);
+			percentage = new DashboardPercentage(expressionValue.getValue(), expressionValue.getStatus() == Status.MISSING_NUMBER, false);
 		}
 		else {
-			percentage = new DashboardPercentage(null, false, true);
+			percentage = new DashboardPercentage((Double)null, false, true);
 		}
 		if (log.isDebugEnabled()) log.debug("getPercentageForLeafTarget()="+percentage);
 		return percentage;
@@ -124,7 +115,7 @@ public class PercentageCalculator {
 			}
 			else {
 				// MISSING_EXPRESSION - we skip it
-				// MISSING_VALUE - should we count it in as zero ?
+				// MISSING_NUMBER - should we count it in as zero ?
 			}
 
 			if (childPercentage.isHasMissingExpression()) {

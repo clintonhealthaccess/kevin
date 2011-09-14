@@ -1,7 +1,8 @@
 package org.chai.kevin.survey;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +11,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
+import org.chai.kevin.util.JSONUtils;
+import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.Value;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ValidationService {
@@ -19,13 +25,17 @@ public class ValidationService {
 	private SurveyElementService surveyElementService;
 	
 	@Transactional(readOnly=true)
-	public boolean isSkipped(SurveyElement surveyElement, Organisation organisation, Collection<SurveyEnteredValue> values) {
-		if (log.isDebugEnabled()) log.debug("isSkipped(surveyElement="+surveyElement+")");
+	public Set<String> getSkippedPrefix(SurveyElement element, SurveySkipRule rule, Organisation organisation) {
+		if (log.isDebugEnabled()) log.debug("isSkipped(surveyElement="+element+")");
 		
-		boolean result = false;
-		Set<SurveySkipRule> skipRules = surveyElementService.getSkipRules(surveyElement);
-		for (SurveySkipRule skipRule : skipRules) {
-			result = result | evaluate(skipRule.getExpression(), organisation, values);
+		SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
+
+		Set<String> prefixes = rule.getSkippedPrefixes(element);
+		String expression = rule.getExpression();
+		
+		Set<String> result = new HashSet<String>();
+		for (String prefix : prefixes) {
+			result.addAll(getPrefixes(expression, prefix, enteredValue, true));
 		}
 		
 		if (log.isDebugEnabled()) log.debug("isSkipped(...)="+result);
@@ -33,13 +43,12 @@ public class ValidationService {
 	}
 	
 	@Transactional(readOnly=true)
-	public boolean isSkipped(SurveyQuestion surveyQuestion, Organisation organisation, Collection<SurveyEnteredValue> values) {
-		if (log.isDebugEnabled()) log.debug("isSkipped(surveyQuestion="+surveyQuestion+")");
+	public boolean isSkipped(SurveySkipRule skipRule, Organisation organisation) {
+		if (log.isDebugEnabled()) log.debug("isSkipped(surveyQuestion="+skipRule+")");
 		
 		boolean result = false;
-		Set<SurveySkipRule> skipRules = surveyElementService.getSkipRules(surveyQuestion);
-		for (SurveySkipRule skipRule : skipRules) {
-			result = result | evaluate(skipRule.getExpression(), organisation, values);
+		if (!isWildcard(skipRule.getExpression())) {
+			result = evaluate(skipRule.getExpression(), organisation.getOrganisationUnit());
 		}
 		
 		if (log.isDebugEnabled()) log.debug("isSkipped(...)="+result);
@@ -47,59 +56,106 @@ public class ValidationService {
 	}
 	
 	@Transactional(readOnly=true)
-	public boolean validate(SurveyElement surveyElement, SurveyValidationRule validationRule, Organisation organisation, Collection<SurveyEnteredValue> values) {
-		if (log.isDebugEnabled()) log.debug("validate(value="+surveyElement+", validationRule="+validationRule+")");
-		boolean result = evaluate(validationRule.getExpression(), organisation, values);
+	public Set<String> getInvalidPrefix(SurveyValidationRule validationRule, Organisation organisation) {
+		if (log.isDebugEnabled()) log.debug("validate(validationRule="+validationRule+")");
+		SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(validationRule.getSurveyElement(), organisation.getOrganisationUnit());
+
+		String prefix = validationRule.getPrefix();
+		String expression = validationRule.getExpression();
+		
+		Set<String> result = getPrefixes(expression, prefix, enteredValue, false);
+		
 		if (log.isDebugEnabled()) log.debug("validate(...)="+result);
 		return result;
 	}
-	
-	private boolean evaluate(String expression, Organisation organisation, Collection<SurveyEnteredValue> values) {
-		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+")");
-		Set<String> placeholders = ExpressionService.getPlaceholders(expression);
+
+	private Set<String> getPrefixes(String expression, String prefix, SurveyEnteredValue enteredValue, Boolean evaluateTo) {
+		Set<String> result = new HashSet<String>();
+		Set<List<String>> combinations = new HashSet<List<String>>();
 		
-		Map<String, String> replace = new HashMap<String, String>();
-		for (String placeholder : placeholders) {
-			Long id = Long.parseLong(placeholder);
-			SurveyElement surveyElement = surveyElementService.getSurveyElement(id);
-			String value = null;
-			if (surveyElement != null) {
-				SurveyEnteredValue surveyEnteredValue = getValue(values, surveyElement);
-				if (surveyEnteredValue != null) {
-					// we check something on the same section
-					value = surveyEnteredValue.getValue();
-				}
-				else {
-					SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(surveyElement, organisation.getOrganisationUnit());
-					if (enteredValue != null) value = enteredValue.getValue();
-				}
+		List<String> toCombine = new ArrayList<String>();
+		toCombine.add(prefix);
+		toCombine.add(expression);
+		
+		enteredValue.getSurveyElement().getDataElement().getType().getCombinations(
+			enteredValue.getValue(), 
+			toCombine, 
+			combinations, 
+			""
+		);
+		
+		for (List<String> list : combinations) {
+			if (!isWildcard(list.get(0)) && !isWildcard(list.get(1))) {
+				if (evaluateTo.equals(evaluate(list.get(1), enteredValue.getOrganisationUnit()))) result.add(list.get(0));
 			}
-			else if (log.isErrorEnabled()) log.error("expression "+expression+" refers to unknown survey element: "+id);
-			String replacement = String.valueOf(value);
-			replace.put(placeholder, replacement);
+		}
+		return result;
+	}
+	
+	private boolean isWildcard(String string) {
+		return string.contains("[_]");
+	}
+	
+	private Boolean evaluate(String expression, OrganisationUnit organisationUnit) {
+		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+")");
+		
+		Map<String, Value> valueMap = new HashMap<String, Value>();
+		Map<String, Type> typeMap = new HashMap<String, Type>();
+		
+		Map<String, SurveyElement> elements = getSurveyElementInExpression(expression);
+		for (SurveyElement element : elements.values()) {
+			Value value = null;
+			if (element != null) {
+				SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisationUnit);
+				if (enteredValue != null) value = enteredValue.getValue();
+			}
+			else if (log.isErrorEnabled()) log.error("expression "+expression+" refers to unknown survey element");
+			
+			valueMap.put(element.getId().toString(), value);
+			typeMap.put(element.getId().toString(), element.getDataElement().getType());
 		}
 		
-		String toEvaluate = ExpressionService.convertStringExpression(expression, replace);
-		Object evaluation = ExpressionService.evaluate(toEvaluate);
+		// TODO catch exception
+		Value value = null;
+		try {
+			value = ExpressionService.evaluate(expression, JSONUtils.TYPE_BOOL, valueMap, typeMap);
+		} catch (IllegalArgumentException e) {}
 		
-		boolean result;
-		if (evaluation == null || evaluation.equals(0d)) {
-			result =  false;
-		}
-		else result = true;
+		Boolean result;
+		if (value == null) result = null;
+		else result = value.getBooleanValue();
 		
 		if (log.isDebugEnabled()) log.debug("evaluate(...)="+result);
 		return result;
 	}
 	
-	private SurveyEnteredValue getValue(Collection<SurveyEnteredValue> values, SurveyElement element) {
-		for (SurveyEnteredValue surveyEnteredValue : values) {
-			if (surveyEnteredValue.getSurveyElement().equals(element)) return surveyEnteredValue;
-		}
-		return null;
-	}
+	public Map<String, SurveyElement> getSurveyElementInExpression(String expression) {
+        Map<String, SurveyElement> dataInExpression = new HashMap<String, SurveyElement>();
+    	Set<String> placeholders = ExpressionService.getVariables(expression);
+
+    	for (String placeholder : placeholders) {
+            SurveyElement surveyElement = null;
+            try {
+            	surveyElement = surveyElementService.getSurveyElement(Long.parseLong(placeholder.replace("$", "")));
+            }
+            catch (NumberFormatException e) {
+            	log.error("wrong format for dataelement: "+placeholder);
+            }
+            dataInExpression.put(placeholder, surveyElement);
+        }
+
+    	return dataInExpression;
+    }
+	
+//	private SurveyEnteredValue getValue(Collection<SurveyEnteredValue> values, SurveyElement element) {
+//		for (SurveyEnteredValue surveyEnteredValue : values) {
+//			if (surveyEnteredValue.getSurveyElement().equals(element)) return surveyEnteredValue;
+//		}
+//		return null;
+//	}
 
 	public void setSurveyElementService(SurveyElementService surveyElementService) {
 		this.surveyElementService = surveyElementService;
 	}
+	
 }
