@@ -805,7 +805,7 @@ class Initializer {
 				names: j(["en":"Core Facility Identify"]),
 				descriptions: j(["en":"Core Facility Identify"]),
 				order: 1,
-				dependency: serviceDev,
+//				dependency: serviceDev,
 				groupUuidString: "District Hospital,Health Center",
 			)
 
@@ -1253,7 +1253,7 @@ class Initializer {
 			
 			def ruleCheckbox = new SurveyValidationRule(
 				surveyElement: surveyElementChecboxQ3,
-				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+"==1 else 1==1",
+				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+" else true",
 				validationMessage: surveyValidationMessage,
 				dependencies: [surveyElementTable21],
 				allowOutlier: false

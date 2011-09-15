@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion.QuestionStatus;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
-import org.chai.kevin.survey.validation.SurveyEnteredSection.SectionStatus;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.hisp.dhis.period.Period;
 
@@ -80,7 +79,7 @@ public class SurveyPage {
 	public List<SurveySection> getIncompleteSections(SurveyObjective objective) {
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
-			if (sections.get(section).getStatus() == SectionStatus.INCOMPLETE) result.add(section);
+			if (!sections.get(section).isComplete()) result.add(section);
 		}
 		return result;
 	}
@@ -89,7 +88,7 @@ public class SurveyPage {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
 			for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
-				if (questions.get(question).getStatus() == QuestionStatus.INVALID 
+				if (questions.get(question).isInvalid()
 					&& 
 					!questions.get(question).isSkipped()) result.add(question);
 			}
@@ -98,12 +97,22 @@ public class SurveyPage {
 	}
 	
 	public boolean isLastSection(SurveySection surveySection) {
-		// TODO
+		List<SurveySection> sections = surveySection.getObjective().getSections(organisation.getOrganisationUnitGroup());
+		if (sections.indexOf(surveySection) == sections.size() - 1) return true;
 		return false;
 	}
 	
+	public SurveySection getNextSection(SurveySection surveySection) {
+		List<SurveySection> sections = surveySection.getObjective().getSections(organisation.getOrganisationUnitGroup());
+		int index = sections.indexOf(surveySection);
+		return sections.get(index+1);
+	}
+	
 	public boolean canSubmit(SurveyObjective surveyObjective) {
-		// TODO
-		return false;
+		return !objectives.get(surveyObjective).isClosed() && objectives.get(surveyObjective).isComplete() && !objectives.get(surveyObjective).isInvalid();
+	}
+	
+	public boolean isReadonly(SurveyObjective surveyObjective) {
+		return !SecurityUtils.getSubject().isPermitted("survey:save") || objectives.get(objective).isClosed(); 
 	}
 }

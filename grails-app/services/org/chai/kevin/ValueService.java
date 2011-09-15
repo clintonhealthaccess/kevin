@@ -281,6 +281,7 @@ public class ValueService {
 	
 	@Transactional(readOnly=false)
 	public <T extends StoredValue> T save(T value) {
+		log.debug("save(value="+value+")");
 		value.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().saveOrUpdate(value);
 		return value;

@@ -1,5 +1,3 @@
-<%@ page import="org.chai.kevin.survey.validation.SurveyEnteredQuestion.QuestionStatus" %>
-
 <g:set var="enteredQuestion" value="${surveyPage.questions[question]}"/>
 <g:set var="organisationUnitGroup" value="${surveyPage.organisation.organisationUnitGroup}"/>
 
@@ -34,7 +32,7 @@
 							<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
 							<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id"/>
 			
-							<td id="element-${surveyElement.id}" data-element="${surveyElement.id}">
+							<td id="element-${surveyElement.id}">
 								<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
 									value: enteredValue.value, 
 									lastValue: enteredValue.lastValue,

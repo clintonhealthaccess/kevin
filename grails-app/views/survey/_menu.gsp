@@ -1,33 +1,29 @@
-<%@ page import="org.chai.kevin.survey.validation.SurveyEnteredSection.SectionStatus" %>
-<%@ page import="org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus" %>
-
 <ul id="survey-objective-list">
 	<g:each in="${surveyPage.survey.getObjectives(surveyPage.organisation.organisationUnitGroup)}" var="objective">
-		<g:set var="objectiveStatus" value="${surveyPage.objectives[objective].status}"/>
+		<g:set var="enteredObjective" value="${surveyPage.objectives[objective]}"/>
 		
 		<li id="objective-${objective.id}" class="${surveyPage.section?.objective?.id == objective.id?'current':''}">
 			<a class="item" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
 				<span><g:i18n field="${objective.names}" /></span>
 				<span class="item-status">
-					<span class="objective-status-complete objective-status ${objectiveStatus != ObjectiveStatus.COMPLETE?'hidden':''}"></span>
-					<span class="objective-status-invalid  objective-status ${objectiveStatus != ObjectiveStatus.INVALID?'hidden':''}"></span>
-					<span class="objective-status-incomplete objective-status ${objectiveStatus != ObjectiveStatus.INCOMPLETE?'hidden':''}"></span>
-					<span class="objective-status-closed objective-status ${objectiveStatus != ObjectiveStatus.CLOSED?'hidden':''}"></span>
-					<span class="objective-status-unavailable objective-status ${objectiveStatus != ObjectiveStatus.UNAVAILABLE?'hidden':''}"></span>
+					<span class="objective-status-complete objective-status ${enteredObjective.displayedStatus!='complete'?'hidden':''}"></span>
+					<span class="objective-status-invalid  objective-status ${enteredObjective.displayedStatus!='invalid'?'hidden':''}"></span>
+					<span class="objective-status-incomplete objective-status ${enteredObjective.displayedStatus!='incomplete'?'hidden':''}"></span>
+					<span class="objective-status-closed objective-status ${enteredObjective.displayedStatus!='closed'?'hidden':''}"></span>
 				</span>
 			</a>
 			<g:if test="${surveyPage.objective.equals(objective)}">
 				<ul class="survey-section">
 					<g:each in="${objective.getSections(surveyPage.organisation.organisationUnitGroup)}" var="section">
-						<g:set var="sectionStatus" value="${surveyPage.sections[section].status}"/>
+						<g:set var="enteredSection" value="${surveyPage.sections[section]}"/>
 
 						<li id="section-${section.id}">
 							<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
 								<span><g:i18n field="${section.names}" /></span>
 								<span class="item-status">
-									<span class="section-status-complete section-status ${sectionStatus != SectionStatus.COMPLETE?'hidden':''}"></span>
-									<span class="section-status-invalid section-status ${sectionStatus != SectionStatus.INVALID?'hidden':''}"></span>
-									<span class="section-status-incomplete section-status ${sectionStatus != SectionStatus.INCOMPLETE?'hidden':''}"></span>
+									<span class="section-status-complete section-status ${enteredSection.displayedStatus!='complete'?'hidden':''}"></span>
+									<span class="section-status-invalid section-status ${enteredSection.displayedStatus!='invalid'?'hidden':''}"></span>
+									<span class="section-status-incomplete section-status ${enteredSection.displayedStatus!='incomplete'?'hidden':''}"></span>
 								</span>
 							</a>
 						</li>
@@ -39,7 +35,28 @@
 </ul>
 
 <script type="text/javascript">
-	function surveyValueChanged(element, callback) {
+	function initializeSurvey(callback) {
+		$('#survey').delegate('#survey-form input, #survey-form select, #survey-form textarea', 'change', function(){
+			var element = $(this).parents('.element');
+			surveyValueChanged(element, callback, false);
+		});
+		$('#survey').delegate('#survey-form a.outlier-validation', 'click', function(){
+			$(this).next().val($(this).data('rule'));						
+			var element = $(this).parents('.element');
+			surveyValueChanged(element, callback, false);						
+			return false;
+		});
+		$('#survey').delegate('#survey-form .element-list-add', 'click', function(){
+			listAddClick(this, callback);
+			return false;
+		});
+		$('#survey').delegate('#survey-form .element-list-remove', 'click', function(){
+			listRemoveClick(this, callback);
+			return false;
+		});
+	}
+
+	function surveyValueChanged(element, callback, replace) {
 		var elementId = $(element).data('element');
 		var questionId = $(element).parents('.question').data('question'); 
 		
@@ -52,27 +69,41 @@
 			data : data,
 			url : "${createLink(controller:'editSurvey', action:'saveValue', params: [organisation: surveyPage.organisation.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
 			success : function(data, textStatus) {
-				if (data.result == "success") {
-					$('#objective-'+data.objective.id+' .objective-status').addClass('hidden');
-					$('#objective-'+data.objective.id+' .objective-status-'+data.objective.status.toLowerCase()).removeClass('hidden');
-					$(data.sections).each(function(key, section) {
-						if (section.status != null) {
-							$('#section-'+section.id+' .section-status').addClass('hidden');
-							$('#section-'+section.id+' .section-status-'+section.status.toLowerCase()).removeClass('hidden');
-						}
-					});
-					
-					callback(data, element);
-				}
+
+				// we go through all the sections
+				$.each(data.sections, function(index, section) {
+					$('#section-'+section.id).find('.section-status').addClass('hidden');
+					$('#section-'+section.id).find('.section-status-'+section.status).removeClass('hidden');
+				});
+				
+				// we go through the objectives
+				$.each(data.objectives, function(index, objective) {
+					$('#objective-'+objective.id).find('.objective-status').addClass('hidden');
+					$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
+				});
+				
+				callback(data, element, replace);
 			}
 		});
+	}
+	
+	function getId(array, id) {
+		var result = null;
+		$.each(array, function(index, value){
+			if (value.id == id) result = value;
+		});
+		return result;
+	}
+	
+	function escape(myid) { 
+		return myid.replace(/(:|\.|\[|\])/g,'\\$1');
 	}
 	
 	function listRemoveClick(toRemove, callback) {
 		var element = $(toRemove).parents('.element');
 		
 		$(toRemove).parents('div').first().remove();
-		surveyValueChanged(element, callback);
+		surveyValueChanged(element, callback, true);
 	}
 	
 	function listAddClick(element, callback) {
@@ -87,6 +118,6 @@
 		$(element).prev().before(copyHtml);
 		$(element).prev().prev().data('index', index);
 		
-		surveyValueChanged($(element).parents('.element'), callback);
+		surveyValueChanged($(element).parents('.element'), callback, false);
 	}
 </script>

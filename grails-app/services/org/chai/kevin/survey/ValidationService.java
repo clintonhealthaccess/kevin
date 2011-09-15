@@ -14,7 +14,6 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +33,10 @@ public class ValidationService {
 		String expression = rule.getExpression();
 		
 		Set<String> result = new HashSet<String>();
-		for (String prefix : prefixes) {
-			result.addAll(getPrefixes(expression, prefix, enteredValue, true));
+		if (enteredValue!= null) {
+			for (String prefix : prefixes) {
+				result.addAll(getPrefixes(expression, prefix, enteredValue, true));
+			}
 		}
 		
 		if (log.isDebugEnabled()) log.debug("isSkipped(...)="+result);
@@ -48,7 +49,8 @@ public class ValidationService {
 		
 		boolean result = false;
 		if (!isWildcard(skipRule.getExpression())) {
-			result = evaluate(skipRule.getExpression(), organisation.getOrganisationUnit());
+			Boolean eval = evaluate(skipRule.getExpression(), organisation.getOrganisationUnit());
+			if (eval != null) result = eval;
 		}
 		
 		if (log.isDebugEnabled()) log.debug("isSkipped(...)="+result);
@@ -63,7 +65,8 @@ public class ValidationService {
 		String prefix = validationRule.getPrefix();
 		String expression = validationRule.getExpression();
 		
-		Set<String> result = getPrefixes(expression, prefix, enteredValue, false);
+		Set<String> result = new HashSet<String>();
+		if (enteredValue != null) result.addAll(getPrefixes(expression, prefix, enteredValue, false));
 		
 		if (log.isDebugEnabled()) log.debug("validate(...)="+result);
 		return result;

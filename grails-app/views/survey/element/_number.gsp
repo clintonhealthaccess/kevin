@@ -2,9 +2,9 @@
 <div id="element-${surveyElement.id}-${suffix}" class="element element-number ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 	
-	<input size="0" type="text" value="${value?.numberValue}" name="surveyElements[${surveyElement.id}].value${suffix}" class="idle-field" ${readonly?'disabled="disabled"':''}/>
+	<input size="0" type="text" value="${formatNumber(number: value?.numberValue, format:'#')}" name="surveyElements[${surveyElement.id}].value${suffix}" class="idle-field" ${readonly?'disabled="disabled"':''}/>
 	
-	<g:if test="${lastValue!=null}"><span class="survey-old-value">(${lastValue})</span></g:if>
+	<g:if test="${lastValue!=null}"><span class="survey-old-value">(${formatNumber(number: lastValue?.numberValue, format:'#')})</span></g:if>
 	
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>

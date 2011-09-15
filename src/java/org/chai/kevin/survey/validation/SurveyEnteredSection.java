@@ -2,12 +2,11 @@ package org.chai.kevin.survey.validation;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.survey.SurveySection;
@@ -20,20 +19,20 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 )
 public class SurveyEnteredSection {
 	
-	public static enum SectionStatus {COMPLETE, INVALID, INCOMPLETE} 
-	
 	private Long id;
 	private SurveySection section;
 	private OrganisationUnit organisationUnit;
-	private SectionStatus status;
+	private Boolean invalid;
+	private Boolean complete;
 	
 	public SurveyEnteredSection() {}
 	
-	public SurveyEnteredSection(SurveySection section, OrganisationUnit organisationUnit, SectionStatus status) {
+	public SurveyEnteredSection(SurveySection section, OrganisationUnit organisationUnit, Boolean invalid, Boolean complete) {
 		super();
 		this.section = section;
 		this.organisationUnit = organisationUnit;
-		this.status = status;
+		this.invalid = invalid;
+		this.complete = complete;
 	}
 
 	@Id
@@ -67,15 +66,32 @@ public class SurveyEnteredSection {
 	}
 	
 	@Basic
-	@Enumerated(EnumType.STRING)
-	public SectionStatus getStatus() {
+	public Boolean isInvalid() {
+		return invalid;
+	}
+	
+	public void setInvalid(Boolean invalid) {
+		this.invalid = invalid;
+	}
+	
+	@Basic
+	public Boolean isComplete() {
+		return complete;
+	}
+	
+	public void setComplete(Boolean complete) {
+		this.complete = complete;
+	}
+	
+	@Transient
+	public String getDisplayedStatus() {
+		String status = null;
+		if (isInvalid()) status = "invalid";
+		else if (!isComplete()) status = "incomplete";
+		else status = "complete";
 		return status;
 	}
 	
-	public void setStatus(SectionStatus status) {
-		this.status = status;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -113,8 +129,7 @@ public class SurveyEnteredSection {
 	@Override
 	public String toString() {
 		return "SurveyEnteredSection [section=" + section
-				+ ", organisationUnit=" + organisationUnit + ", status="
-				+ status + "]";
+				+ ", organisationUnit=" + organisationUnit + "]";
 	}
 	
 }

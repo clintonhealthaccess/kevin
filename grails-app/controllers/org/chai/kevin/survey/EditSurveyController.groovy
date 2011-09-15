@@ -27,22 +27,14 @@ package org.chai.kevin.survey;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import grails.validation.ValidationException;
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion.QuestionStatus;
-import java.util.List;
-import org.apache.shiro.SecurityUtils;
-import org.chai.kevin.AbstractReportController;
-import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
-import org.chai.kevin.ValueService;
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.security.User;
-import org.chai.kevin.survey.SurveyPageService;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
-import org.chai.kevin.survey.validation.SurveyEnteredSection.SectionStatus;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.codehaus.groovy.grails.web.servlet.FlashScope;
+import org.apache.shiro.SecurityUtils
+import org.chai.kevin.AbstractReportController
+import org.chai.kevin.Organisation
+import org.chai.kevin.OrganisationService
+import org.chai.kevin.ValueService
+import org.chai.kevin.security.User
 import org.chai.kevin.util.Utils
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class EditSurveyController extends AbstractReportController {
 	
@@ -188,12 +180,9 @@ class EditSurveyController extends AbstractReportController {
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 		
 		if (validateParameters(currentOrganisation, Utils.split(currentObjective.groupUuidString))) {
-			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective);
+			surveyPageService.reopen(currentOrganisation, currentObjective);
 			
-			if (surveyPage.canReopen()) {
-				surveyPage.reopen(surveyElementService)
-				redirect (action: "objectivePage", params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])
-			}
+			redirect (action: "objectivePage", params: [organisation: currentOrganisation.id, objective: currentObjective.id])
 		}
 	}
 	
@@ -204,20 +193,18 @@ class EditSurveyController extends AbstractReportController {
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 		
 		if (validateParameters(currentOrganisation, Utils.split(currentObjective.groupUuidString))) {
-			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective);
-			surveyPage.userValidation(validationService, surveyElementService);
-			
-			if (surveyPage.canSubmit()) {
-				surveyPage.submit(surveyElementService, valueService)
+			boolean success = surveyPageService.submit(currentOrganisation, currentObjective);
+						
+			if (success) {
 				flash.message = "survey.objective.submitted";
 				flash.default = "Thanks for submitting";
 			}
 			else {
 				flash.message = "survey.objective.review";
-				flash.default = "The survey is not yet complete, please review all the sections."
+				flash.default = "The survey could not be submitted, please review the sections."
 			}
 			
-			redirect (action: "objectivePage", params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])
+			redirect (action: "objectivePage", params: [organisation: currentOrganisation.id, objective: currentObjective.id])
 		}
 	}
 	
@@ -225,27 +212,47 @@ class EditSurveyController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 		
 		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+
+		def currentSection = SurveySection.get(params.int('section'))
+		def currentObjective = SurveyObjective.get(params.int('objective'))		
 		
 		def surveyQuestion = surveyElementService.getSurveyQuestion(Long.parseLong(params['question']))
 		def surveyElements = [SurveyElement.get(params.int('element'))]
-		def surveyPage = surveyPageService.modify(currentOrganisation, surveyElements, params);
 		
-		def questionPage = surveyPageService.getSurveyPage(currentOrganisation, surveyQuestion)	
+		def surveyPage = surveyPageService.modify(currentOrganisation, surveyElements, params);
+			
+		def completeSurveyPage
+		def invalidQuestionsHtml = ''
+		def incompleteSectionsHtml = ''
+		
+		if (currentSection != null) {
+			completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection)
+		}
+		else {
+			completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective)
+			invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
+			incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
+		}
 		
 		render(contentType:"text/json") {
-			result = "success"
 			
 			question (
 				id: surveyQuestion.id,
-				status: questionPage.questions[surveyQuestion].status.name(),
-				html: g.render(template:'/survey/question', model: [surveyPage: questionPage, question: surveyQuestion])
+				complete: completeSurveyPage.questions[surveyQuestion].complete,
+				invalid: completeSurveyPage.questions[surveyQuestion].invalid,
+				skipped: completeSurveyPage.questions[surveyQuestion].skipped,
+				html: g.render(template:'/survey/question', model: [surveyPage: completeSurveyPage, question: surveyQuestion])
 			)
+
+			invalidQuestions = invalidQuestionsHtml
 			
+			incompleteSections = incompleteSectionsHtml
+
 			objectives = array {  
 				surveyPage.objectives.each { objective, enteredObjective -> 
 					obj (
 						id: objective.id,
-						status: enteredObjective.status.name()
+						status: enteredObjective.displayedStatus
 					)
 				}
 			}
@@ -253,7 +260,10 @@ class EditSurveyController extends AbstractReportController {
 				surveyPage.sections.each { section, enteredSection ->
 					sec (
 						id: section.id,
-						status: enteredSection.status.name(),
+						objectiveId: section.objective.id,
+						invalid: enteredSection.invalid,
+						complete: enteredSection.complete,
+						status: enteredSection.displayedStatus
 					)
 				}	
 			}
@@ -261,13 +271,10 @@ class EditSurveyController extends AbstractReportController {
 				surveyPage.questions.each { question, enteredQuestion ->
 					ques (
 						id: question.id,
-						status: enteredQuestion.status.name(),
+						sectionId: question.section.id,
+						complete: enteredQuestion.complete,
+						invalid: enteredQuestion.invalid,
 						skipped: enteredQuestion.skipped,
-						html: enteredQuestion.status==QuestionStatus.INVALID
-							?g.render(template:'/survey/question', model: [
-								surveyPage: surveyPageService.getSurveyPage(currentOrganisation, question), 
-								question: question
-							]):''
 					)
 				}	
 			}
@@ -275,89 +282,56 @@ class EditSurveyController extends AbstractReportController {
 				surveyPage.elements.each { surveyElement, enteredValue ->
 					elem (
 						id: surveyElement.id,
+						questionId: surveyElement.surveyQuestion.id,
 						skipped: array {
 							enteredValue.skippedPrefixes.each { prefix ->
 								element prefix
 							}
+						},
+						invalid: array {
+							enteredValue.invalidPrefixes.each { invalidPrefix ->
+								pre (
+									prefix: invalidPrefix,
+									valid: enteredValue.isValid(invalidPrefix),
+									errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
+								)
+							}
 						}
-//						invalid: array {
-//							enteredValue.invalidPrefixes.each { prefix
-//								element prefix
-//							}
-//						}
 					)
 				}
 			}
 			
-//			status = statusString
-//			html = g.render(template:'/survey/question', model: [surveyPage: surveyPage, question: surveyQuestion])
-//			objective (
-//				id: surveyPage.objective.id,
-//				status: surveyPage.getStatus(surveyPage.objective).name()
-//			)
-//			sections = array {
-//				surveyPage.objective.getSections(surveyPage.organisation.organisationUnitGroup).each { section ->
-//					sec (
-//						id: section.id,
-//						name: g.i18n(field: section.names),
-//						status: surveyPage.getStatus(section)?.name()
-//					)
-//				}
-//			}
-//			invalidQuestions = array {
-//				invalidSectionMap[surveyPage.section].each{ question ->
-//					quest (
-//						id: question.id
-////								html: g.render(template:'/survey/question', model: [surveyPage: surveyPage, question: question])
-//					)
-//				}
-//			}
-//			skippedElements = array {
-//				surveyPage.skippedElements.each{ elem ->
-//					element elem.id
-//				}
-//			}
-//			skippedQuestions = array {
-//				surveyPage.skippedQuestions.each{ question ->
-//					element question.id
-//				}
-//			}
-//			invalidSectionsHtml = invalidSectionsHtmlString
 		}
-		
 	}
 	
 	def save = {
 		if (log.isDebugEnabled()) log.debug("survey.save, params:"+params)
 		
 		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
-		SurveySection currentSection = SurveySection.get(params.int('section'));
+		def currentSection = SurveySection.get(params.int('section'));
 		
 		if (validateParameters(currentOrganisation, Utils.split(currentSection.groupUuidString))) {
 			def surveyElements = getSurveyElements()
-			
-			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection, surveyElements);
-			saveSurvey(surveyPage, surveyElements)
+			surveyPageService.modify(currentOrganisation, surveyElements, params);
+			def sectionPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection)
 			
 			def action
-			def params = [organisation: surveyPage.organisation.id]
-			if (surveyPage.getStatus(surveyPage.section) != SectionStatus.INVALID) {
-				if (surveyPage.isLastSection()) {
+			def params = [organisation: sectionPage.organisation.id]
+			if (!sectionPage.sections[currentSection].invalid) {
+				if (sectionPage.isLastSection(currentSection)) {
 					// we go to the next objective
 					action = 'objectivePage'
-					params << [objective: surveyPage.objective.id]
+					params << [objective: sectionPage.objective.id]
 				}
 				else {
 					// we get the next section
-					def sections = surveyPage.objective.getSections(surveyPage.organisation.organisationUnitGroup)
-					def index = sections.indexOf(surveyPage.section)
 					action = 'sectionPage'
-					params << [section: sections[index+1].id]
+					params << [section: sectionPage.getNextSection(currentSection).id]
 				}
 			}
 			else {
 				action = 'sectionPage'
-				params << [section: surveyPage.section.id]
+				params << [section: sectionPage.section.id]
 			}
 			
 			redirect (action: action, params: params)

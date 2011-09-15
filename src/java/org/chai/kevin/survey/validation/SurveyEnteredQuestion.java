@@ -25,24 +25,24 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 @Table(name="dhsst_survey_valid_question", uniqueConstraints=@UniqueConstraint(
 		columnNames={"question", "organisationUnit"})
 )
-public class SurveyEnteredQuestion {
-	
-	public static enum QuestionStatus {INCOMPLETE, COMPLETE, INVALID};
+public class SurveyEnteredQuestion  {
 	
 	private Long id;
 	private SurveyQuestion question;
 	private OrganisationUnit organisationUnit;
 	
-	private QuestionStatus status;
+	private Boolean complete;
+	private Boolean invalid;
 	private Set<SurveySkipRule> skipped = new HashSet<SurveySkipRule>();
 	
 	public SurveyEnteredQuestion() {}
 	
-	public SurveyEnteredQuestion(SurveyQuestion question, OrganisationUnit organisationUnit, QuestionStatus status) {
+	public SurveyEnteredQuestion(SurveyQuestion question, OrganisationUnit organisationUnit, Boolean invalid, Boolean complete) {
 		super();
 		this.question = question;
 		this.organisationUnit = organisationUnit;
-		this.status = status;
+		this.complete = complete;
+		this.invalid = invalid;
 	}
 
 	@Id
@@ -91,15 +91,23 @@ public class SurveyEnteredQuestion {
 	}
 	
 	@Basic
-	@Enumerated(EnumType.STRING)
-	public QuestionStatus getStatus() {
-		return status;
+	public Boolean isInvalid() {
+		return invalid;
 	}
 	
-	public void setStatus(QuestionStatus status) {
-		this.status = status;
+	public void setInvalid(Boolean invalid) {
+		this.invalid = invalid;
 	}
-
+	
+	@Basic
+	public Boolean isComplete() {
+		return complete;
+	}
+	
+	public void setComplete(Boolean complete) {
+		this.complete = complete;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

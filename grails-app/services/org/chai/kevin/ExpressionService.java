@@ -60,7 +60,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.jaql.json.type.JsonValue;
 import com.ibm.jaql.json.util.JsonUtil;
+import com.ibm.jaql.lang.Jaql;
 import com.ibm.jaql.lang.JaqlQuery;
+import com.ibm.jaql.lang.util.JaqlUtil;
 
 public class ExpressionService {
 
@@ -420,8 +422,12 @@ public class ExpressionService {
 		
 		try {
 			for (Entry<String, Value> variable : variables.entrySet()) {
-				JaqlQuery varq = new JaqlQuery(types.get(variable.getKey()).getJaqlValue(variable.getValue()));
-				query.setVar("$"+variable.getKey(), varq.evaluate());
+				JsonValue value = null;
+				if (!variable.getValue().isNull()) {
+					JaqlQuery varq = new JaqlQuery(types.get(variable.getKey()).getJaqlValue(variable.getValue()));
+					value = varq.evaluate();
+				}
+				query.setVar("$"+variable.getKey(), value);
 			}
 			if (log.isDebugEnabled()) log.debug("evaluating jaql query: "+query.toString());
 			JsonValue jsonValue = query.evaluate();

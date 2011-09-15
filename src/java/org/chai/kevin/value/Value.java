@@ -1,5 +1,7 @@
 package org.chai.kevin.value;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
 
+import org.chai.kevin.util.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +39,7 @@ public class Value {
 	
 	public void setJsonValue(String jsonValue) {
 		this.jsonValue = jsonValue;
+		this.value = null;
 	}
 	
 	private JSONObject value = null;
@@ -74,7 +78,8 @@ public class Value {
 
 		JSONObject object = getJsonObject();
 		try {
-			object.put(attribute, value);
+			if (value == null) object.remove(attribute);
+			else object.put(attribute, value);
 			this.jsonValue = object.toString();
 			this.value = null;
 		} catch (JSONException e) {
@@ -123,7 +128,7 @@ public class Value {
 	@Transient
 	public Date getDateValue() {
 		try {
-			return new Date(getJsonObject().getLong("value"));
+			return Utils.parseDate(getJsonObject().getString("value"));
 		} catch (JSONException e) {
 			return null;
 		}
@@ -163,7 +168,7 @@ public class Value {
 	
 	@Override
 	public String toString() {
-		return jsonValue;
+		return getJsonObject().toString();
 	}
 
 	@Override

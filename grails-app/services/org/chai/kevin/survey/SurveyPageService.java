@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -43,12 +44,12 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
+import org.chai.kevin.data.Type;
+import org.chai.kevin.data.Type.PrefixPredicate;
+import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion.QuestionStatus;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
-import org.chai.kevin.survey.validation.SurveyEnteredSection.SectionStatus;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
@@ -72,10 +73,10 @@ public class SurveyPageService {
 		Map<SurveySection, SectionSummary> sectionSummaryMap = new HashMap<SurveySection, SectionSummary>();
 		
 		for (SurveySection section : sections) {
-			List<SurveyElement> elements = section.getSurveyElements(organisation.getOrganisationUnitGroup());
-			Integer submittedElements = surveyElementService.getNumberOfSurveyEnteredValues(objective.getSurvey(), organisation.getOrganisationUnit(), null, section);
+			List<SurveyQuestion> questions = section.getQuestions(organisation.getOrganisationUnitGroup());
+			Integer completedQuestions = surveyElementService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), organisation.getOrganisationUnit(), null, section, true, false);
 			
-			sectionSummaryMap.put(section, new SectionSummary(section, elements.size(), submittedElements));
+			sectionSummaryMap.put(section, new SectionSummary(section, questions.size(), completedQuestions));
 		}
 		return new SummaryPage(objective, organisation, sections, sectionSummaryMap);
 	}
@@ -89,10 +90,10 @@ public class SurveyPageService {
 		
 		for (SurveyObjective objective : objectives) {
 			SurveyEnteredObjective enteredObjective = surveyElementService.getSurveyEnteredObjective(objective, organisation.getOrganisationUnit());
-			List<SurveyElement> elements = objective.getElements(organisation.getOrganisationUnitGroup());
-			Integer submittedElements = surveyElementService.getNumberOfSurveyEnteredValues(survey, organisation.getOrganisationUnit(), objective, null);
+			List<SurveyQuestion> questions = objective.getQuestions(organisation.getOrganisationUnitGroup());
+			Integer completedQuestions = surveyElementService.getNumberOfSurveyEnteredQuestions(survey, organisation.getOrganisationUnit(), objective, null, true, false);
 			
-			objectiveSummaryMap.put(objective, new ObjectiveSummary(objective, enteredObjective, elements.size(), submittedElements));
+			objectiveSummaryMap.put(objective, new ObjectiveSummary(objective, enteredObjective, questions.size(), completedQuestions));
 		}
 		
 		return new SummaryPage(survey, organisation, objectives, objectiveSummaryMap, false);
@@ -104,7 +105,7 @@ public class SurveyPageService {
 		
 		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 		Map<OrganisationUnitGroup, List<SurveyObjective>> objectiveMap = new HashMap<OrganisationUnitGroup, List<SurveyObjective>>();
-		Map<OrganisationUnitGroup, List<SurveyElement>> elementMap = new HashMap<OrganisationUnitGroup, List<SurveyElement>>();
+		Map<OrganisationUnitGroup, List<SurveyQuestion>> questionMap = new HashMap<OrganisationUnitGroup, List<SurveyQuestion>>();
 
 		Map<Organisation, OrganisationSummary> summaryMap = new HashMap<Organisation, OrganisationSummary>();
 		for (Organisation facility : facilities) {
@@ -113,20 +114,20 @@ public class SurveyPageService {
 			if (!objectiveMap.containsKey(facility.getOrganisationUnitGroup())) {
 				objectiveMap.put(facility.getOrganisationUnitGroup(), survey.getObjectives(facility.getOrganisationUnitGroup()));
 			}
-			Integer submittedObjectives = surveyElementService.getNumberOfSurveyEnteredObjectives(survey, facility.getOrganisationUnit(), ObjectiveStatus.CLOSED);
+			Integer submittedObjectives = surveyElementService.getNumberOfSurveyEnteredObjectives(survey, facility.getOrganisationUnit(), true, null, null);
 			
-			if (!elementMap.containsKey(facility.getOrganisationUnitGroup())) {
-				List<SurveyElement> elements = new ArrayList<SurveyElement>();
+			if (!questionMap.containsKey(facility.getOrganisationUnitGroup())) {
+				List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
 				for (SurveyObjective objective : objectiveMap.get(facility.getOrganisationUnitGroup())) {
-					elements.addAll(objective.getElements(facility.getOrganisationUnitGroup()));				
+					questions.addAll(objective.getQuestions(facility.getOrganisationUnitGroup()));				
 				}
-				elementMap.put(facility.getOrganisationUnitGroup(), elements);
+				questionMap.put(facility.getOrganisationUnitGroup(), questions);
 			}
-			Integer enteredValues = surveyElementService.getNumberOfSurveyEnteredValues(survey, facility.getOrganisationUnit(), null, null);
+			Integer completedQuestions = surveyElementService.getNumberOfSurveyEnteredQuestions(survey, facility.getOrganisationUnit(), null, null, true, false);
 			
 			OrganisationSummary summary = new OrganisationSummary(facility,  
 					submittedObjectives, objectiveMap.get(facility.getOrganisationUnitGroup()).size(), 
-					enteredValues, elementMap.get(facility.getOrganisationUnitGroup()).size());
+					completedQuestions, questionMap.get(facility.getOrganisationUnitGroup()).size());
 			
 			summaryMap.put(facility, summary);
 		}
@@ -241,20 +242,49 @@ public class SurveyPageService {
 	@Transactional(readOnly = false)
 	public SurveyPage modify(Organisation organisation, List<SurveyElement> elements, Map<String, Object> params) {
 		organisationService.loadGroup(organisation);
-
+		Set<String> attributes = new HashSet<String>();
+		attributes.add("warning");
+		
 		// first we save the values
 		Map<SurveyElement, SurveyEnteredValue> affectedElements = new HashMap<SurveyElement, SurveyEnteredValue>();
 		for (SurveyElement element : elements) {
-			// values, we shouldn't have to create them as they have to exist already
-			SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
-			Value value = element.getDataElement().getType().getValueFromMap(params, "surveyElements["+element.getId()+"].value");
-			enteredValue.setValue(value);
-			// accepted warnings
-			// TODO
+			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
 			
+			final Type valueType = element.getDataElement().getType();
+			final Value oldValue = enteredValue.getValue();
+			Value value = valueType.getValueFromMap(params, "surveyElements["+element.getId()+"].value", attributes);
+			// reset accepted warnings for changed values
+			Map<String, Value> modifiedPrefixes = valueType.getPrefixes(value, new PrefixPredicate() {
+				@Override
+				public boolean holds(Type type, Value value, String prefix) {
+					Value oldPrefix = valueType.getValue(oldValue, prefix);
+					if (oldPrefix != null) {
+						// TODO find another method for that comparison
+						return !type.getJaqlValue(oldPrefix).equals(type.getJaqlValue(value));
+					}
+					return false;
+				}
+			});
+			for (Entry<String, Value> modifiedPrefix : modifiedPrefixes.entrySet()) {
+				valueType.setAttribute(value, modifiedPrefix.getKey(), "warning", null);
+			}
+			
+			// set the value and save
+			enteredValue.setValue(value);
 			affectedElements.put(element, enteredValue);
+			
+			// if it is a checkbox question, we need to reset the values to null
+			// FIXME THIS IS A HACK
+			resetCheckboxQuestion(organisation, element, affectedElements);
 		}
 		
+		// we evaluate the rules
+		return evaluateRulesAndSave(organisation, elements, affectedElements);
+	}
+		
+		
+	private SurveyPage evaluateRulesAndSave(Organisation organisation, List<SurveyElement> elements, Map<SurveyElement, SurveyEnteredValue> affectedElements) {  
+	
 		// second we get the rules that could be affected by the changes
 		Set<SurveyValidationRule> validationRules = new HashSet<SurveyValidationRule>();
 		Set<SurveySkipRule> skipRules = new HashSet<SurveySkipRule>();
@@ -267,9 +297,9 @@ public class SurveyPageService {
 		Map<SurveyQuestion, SurveyEnteredQuestion> affectedQuestions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		for (SurveyValidationRule validationRule : validationRules) {
 			Set<String> prefixes = validationService.getInvalidPrefix(validationRule, organisation);
-			// TODO get this from map
+
 			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, validationRule.getSurveyElement());
-			enteredValue.addInvalid(validationRule, prefixes);
+			enteredValue.setInvalid(validationRule, prefixes);
 			
 			affectedElements.put(validationRule.getSurveyElement(), enteredValue);
 		}
@@ -277,16 +307,16 @@ public class SurveyPageService {
 		for (SurveySkipRule surveySkipRule : skipRules) {
 			for (SurveyElement element : surveySkipRule.getSkippedSurveyElements().keySet()) {
 				Set<String> prefixes = validationService.getSkippedPrefix(element, surveySkipRule, organisation);
-				// TODO get this from map
+
 				SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
-				enteredValue.addSkipped(surveySkipRule, prefixes);
+				enteredValue.setSkipped(surveySkipRule, prefixes);
 				
 				affectedElements.put(element, enteredValue);
 			}
 			
 			boolean skipped = validationService.isSkipped(surveySkipRule, organisation);
 			for (SurveyQuestion question : surveySkipRule.getSkippedSurveyQuestions()) {
-				// TODO get this from map
+
 				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
 				if (skipped) enteredQuestion.getSkipped().add(surveySkipRule);
 				else enteredQuestion.getSkipped().remove(surveySkipRule);
@@ -310,7 +340,7 @@ public class SurveyPageService {
 		Map<SurveySection, SurveyEnteredSection> affectedSections = new HashMap<SurveySection, SurveyEnteredSection>();
 		for (SurveyEnteredQuestion question : affectedQuestions.values()) {
 			// we set the question status correctly and save
-			question.setStatus(calculateStatus(question.getQuestion(), organisation));
+			setQuestionStatus(question, organisation);
 			surveyElementService.save(question);
 			
 			SurveySection section = question.getQuestion().getSection();
@@ -324,7 +354,7 @@ public class SurveyPageService {
 		Map<SurveyObjective, SurveyEnteredObjective> affectedObjectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
 		for (SurveyEnteredSection section : affectedSections.values()) {
 			// we set the section status correctly and save
-			section.setStatus(calculateStatus(section.getSection(), organisation));
+			setSectionStatus(section, organisation);
 			surveyElementService.save(section);
 			
 			SurveyObjective objective = section.getSection().getObjective();
@@ -337,102 +367,143 @@ public class SurveyPageService {
 		for (SurveyEnteredObjective objective : affectedObjectives.values()) {
 			// if the objective is not closed and available
 			// we set the objective status correctly and save
-			if (objective.getStatus() != ObjectiveStatus.CLOSED && objective.getStatus() != ObjectiveStatus.UNAVAILABLE) {
-				objective.setStatus(calculateStatus(objective.getObjective(), organisation));
-			}
+			setObjectiveStatus(objective, organisation);
 			surveyElementService.save(objective);
 		}
 		
 		return new SurveyPage(organisation, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements);
 	}
+
+	// FIXME HACK 
+	// TODO get rid of this
+	private void resetCheckboxQuestion(Organisation organisation, SurveyElement element, Map<SurveyElement, SurveyEnteredValue> affectedElements) {
+		if (element.getSurveyQuestion() instanceof SurveyCheckboxQuestion) {
+			boolean reset = true;
+			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(organisation.getOrganisationUnitGroup())) {
+				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(organisation, elementInQuestion);
+
+				if (enteredValueForElementInQuestion.getValue().getBooleanValue() == Boolean.TRUE) reset = false;
+			}
+			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(organisation.getOrganisationUnitGroup())) {
+				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(organisation, elementInQuestion);
+
+				if (reset) enteredValueForElementInQuestion.setValue(Value.NULL);
+				else if (enteredValueForElementInQuestion.getValue().isNull()) {
+					enteredValueForElementInQuestion.setValue(enteredValueForElementInQuestion.getType().getValue(false));
+				}
+				
+				affectedElements.put(elementInQuestion, enteredValueForElementInQuestion);
+			}
+		}
+	}
 	
 	
 	// TODO refactor this to use only one Status type, as it is the same for all levels
-	private ObjectiveStatus calculateStatus(SurveyObjective objective, Organisation organisation) {
-		ObjectiveStatus status = null;
-		
-		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
+	private void setObjectiveStatus(SurveyEnteredObjective objective, Organisation organisation) {
+		Boolean complete = true;
+		Boolean invalid = false;
+		for (SurveySection section : objective.getObjective().getSections(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredSection enteredSection = getSurveyEnteredSection(organisation, section);
-			if (enteredSection.getStatus() == SectionStatus.INCOMPLETE) {
-				// if the value is not complete, we set the status as 
-				// incomplete but continue the loop, as it could be invalid
-				status = ObjectiveStatus.INCOMPLETE;
-			}
-			if (enteredSection.getStatus() == SectionStatus.INVALID) {
-				// if the value is invalid, we set the status to
-				// invalid and quit the loop
-				status = ObjectiveStatus.INVALID;
-				break;
-			}
+			if (!enteredSection.isComplete()) complete = false;
+			if (enteredSection.isInvalid()) invalid = true;
 		}
-		// if the status was never set, it means it
-		// was neither incomplete nor invalid, therefore it is complete
-		if (status == null) status = ObjectiveStatus.COMPLETE;
-		return status;
+		objective.setComplete(complete);
+		objective.setInvalid(invalid);
 	}
 	
 	// TODO refactor this to use only one Status type, as it is the same for all levels
-	private SectionStatus calculateStatus(SurveySection section, Organisation organisation) {
-		SectionStatus status = null;
-		for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
+	private void setSectionStatus(SurveyEnteredSection section, Organisation organisation) {
+		Boolean complete = true;
+		Boolean invalid = false;
+		for (SurveyQuestion question : section.getSection().getQuestions(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
-			if (enteredQuestion.getStatus() == QuestionStatus.INCOMPLETE) {
-				// if the value is not complete, we set the status as 
-				// incomplete but continue the loop, as it could be invalid
-				status = SectionStatus.INCOMPLETE;
-			}
-			if (enteredQuestion.getStatus() == QuestionStatus.INVALID) {
-				// if the value is invalid, we set the status to
-				// invalid and quit the loop
-				status = SectionStatus.INVALID;
-				break;
-			}
+			if (!enteredQuestion.isComplete() && !enteredQuestion.isSkipped()) complete = false;
+			if (enteredQuestion.isInvalid() && !enteredQuestion.isSkipped()) invalid = true;
 		}
-		// if the status was never set, it means it
-		// was neither incomplete nor invalid, therefore it is complete
-		if (status == null) status = SectionStatus.COMPLETE;
-		return status;
+		section.setInvalid(invalid);
+		section.setComplete(complete);
 	}
 	
 	// TODO refactor this to use only one Status type, as it is the same for all levels
-	private QuestionStatus calculateStatus(SurveyQuestion question, Organisation organisation) {
-		QuestionStatus status = null;
-		for (SurveyElement element : question.getSurveyElements(organisation.getOrganisationUnitGroup())) {
+	private void setQuestionStatus(SurveyEnteredQuestion question, Organisation organisation) {
+		Boolean complete = true;
+		Boolean invalid = false;
+		for (SurveyElement element : question.getQuestion().getSurveyElements(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
-			if (!enteredValue.isComplete()) {
-				// if the value is not complete, we set the status as 
-				// incomplete but continue the loop, as it could be invalid
-				status = QuestionStatus.INCOMPLETE;
-			}
-			if (enteredValue.isInvalid()) {
-				// if the value is invalid, we set the status to
-				// invalid and quit the loop
-				status = QuestionStatus.INVALID;
-				break;
-			}
+			if (!enteredValue.isComplete()) complete = false;
+			if (enteredValue.isInvalid()) invalid = true;
 		}
-		// if the status was never set, it means it
-		// was neither incomplete nor invalid, therefore it is complete
-		if (status == null) status = QuestionStatus.COMPLETE;
-		return status;
+		question.setInvalid(invalid);
+		question.setComplete(complete);
 	}
 	
 	
-	public void submit(Organisation organisation, SurveyObjective objective) {
-		// TODO
+	public boolean submit(Organisation organisation, SurveyObjective objective) {
+		organisationService.loadGroup(organisation);
+		
+		// first we make sure that the objective is valid and complete, so we revalidate it
+		List<SurveyElement> elements = objective.getElements(organisation.getOrganisationUnitGroup());
+		evaluateRulesAndSave(organisation, elements, new HashMap<SurveyElement, SurveyEnteredValue>());
+		
+		// we get the updated survey and work from that
+		SurveyPage surveyPage = getSurveyPage(organisation, objective);
+		if (surveyPage.canSubmit(objective)) {
+			// save all the values to data values
+			for (SurveyElement element : elements) {
+				SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+				Value valueToSave = null;
+				// if the question is skipped we save NULL
+				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, element.getSurveyQuestion());
+				if (enteredQuestion.isSkipped()) {
+					valueToSave = Value.NULL;
+				}
+				else {
+					final Type type = enteredValue.getType();
+					valueToSave = type.transformValue(enteredValue.getValue(), new ValuePredicate() {
+						@Override
+						public Value getValue(Value currentValue, Type currentType, String currentPrefix) {
+							Value result = new Value(currentValue.toString());
+							// if it is skipped we return NULL
+							if (currentValue.getAttribute("skipped") != null) result = Value.NULL;
+							// we remove the attributes
+							result.setAttribute("skipped", null);
+							result.setAttribute("invalid", null);
+							result.setAttribute("warning", null);
+							
+							return result;
+						}
+					});
+				}
+				
+				DataValue dataValue = valueService.getValue(element.getDataElement(), organisation.getOrganisationUnit(), objective.getSurvey().getPeriod());
+				if (dataValue == null) {
+					dataValue = new DataValue(element.getDataElement(), organisation.getOrganisationUnit(), objective.getSurvey().getPeriod(), null);
+				}
+				dataValue.setValue(valueToSave);
+				valueService.save(dataValue);
+			}
+			
+			// close the objective
+			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
+			enteredObjective.setClosed(true);
+			surveyElementService.save(enteredObjective);
+			
+			return true;
+		}
+		else return false;
 	}
 	
 	public void reopen(Organisation organisation, SurveyObjective objective) {
-		// TODO
+		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective); 
+		enteredObjective.setClosed(false);
+		surveyElementService.save(enteredObjective);
 	}
 	
 	private SurveyEnteredObjective getSurveyEnteredObjective(Organisation organisation, SurveyObjective surveyObjective) {
 		SurveyEnteredObjective enteredObjective = surveyElementService.getSurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit());
 		if (enteredObjective == null) {
-			if (surveyObjective.getDependency() != null) {
-				// TODO take into account dependency
-			}
-			enteredObjective = new SurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit(), ObjectiveStatus.INCOMPLETE);
+			enteredObjective = new SurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit(), false, false, false);
+			setObjectiveStatus(enteredObjective, organisation);
 			surveyElementService.save(enteredObjective);
 		}
 		return enteredObjective;
@@ -441,7 +512,8 @@ public class SurveyPageService {
 	private SurveyEnteredSection getSurveyEnteredSection(Organisation organisation, SurveySection surveySection) {
 		SurveyEnteredSection enteredSection = surveyElementService.getSurveyEnteredSection(surveySection, organisation.getOrganisationUnit());
 		if (enteredSection == null) {
-			enteredSection = new SurveyEnteredSection(surveySection, organisation.getOrganisationUnit(), SectionStatus.INCOMPLETE);
+			enteredSection = new SurveyEnteredSection(surveySection, organisation.getOrganisationUnit(), false, false);
+			setSectionStatus(enteredSection, organisation);
 			surveyElementService.save(enteredSection);
 		}
 		return enteredSection;
@@ -450,7 +522,8 @@ public class SurveyPageService {
 	private SurveyEnteredQuestion getSurveyEnteredQuestion(Organisation organisation, SurveyQuestion surveyQuestion) {
 		SurveyEnteredQuestion enteredQuestion = surveyElementService.getSurveyEnteredQuestion(surveyQuestion, organisation.getOrganisationUnit());
 		if (enteredQuestion == null) {
-			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, organisation.getOrganisationUnit(), QuestionStatus.INCOMPLETE);
+			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, organisation.getOrganisationUnit(), false, false);
+			setQuestionStatus(enteredQuestion, organisation);
 			surveyElementService.save(enteredQuestion);
 		}
 		return enteredQuestion;

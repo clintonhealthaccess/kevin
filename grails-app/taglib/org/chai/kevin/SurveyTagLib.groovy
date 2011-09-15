@@ -3,6 +3,7 @@ package org.chai.kevin
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
+import org.chai.kevin.survey.SurveyValidationRule;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.survey.SurveyElement;
@@ -14,21 +15,30 @@ class SurveyTagLib {
 		def enteredValue = attrs['element']
 		def prefix = attrs['suffix']
 		
-		def errors = enteredValue?.getErrors(prefix)
-		if (enteredValue != null && !errors.empty) {
-			boolean hasErrors = hasErrors(errors)
-			
-			out << "<ul>"
-			errors.each { rule ->
-				if ((hasErrors && !rule.allowOutlier) || (!hasErrors && rule.allowOutlier)) {
-					out << "<li>"
-					def message = replacePlaceHolders(g.i18n(field: rule.validationMessage.messages).toString(), rule.dependencies, enteredValue.organisationUnit)
-					out << g.render(template:"/survey/error", model: [message: message, surveyElement: enteredValue.surveyElement, rule: rule])
-					out << "</li>"
-				}
+		def rules = getRules(enteredValue?.getErrors(prefix));
+		if (enteredValue != null && !rules.empty) {
+			boolean hasErrors = hasErrors(rules)
+
+			def errors = []			
+			rules.each { rule ->
+				def error = [:]
+				error.displayed = (hasErrors && !rule.allowOutlier) || (!hasErrors && rule.allowOutlier)
+				if (error.displayed) error.message = replacePlaceHolders(g.i18n(field: rule.validationMessage.messages).toString(), rule.dependencies, enteredValue.organisationUnit)
+				error.rule = rule
+				error.suffix = prefix
+				error.accepted = enteredValue.isAcceptedWarning(rule, prefix)
+				errors.add(error)
 			}
-			out << "</ul>"
+			out << g.render(template: '/survey/errors', model: [errors: errors, surveyElement: enteredValue.surveyElement])
 		}
+	}
+	
+	def getRules(def errors) {
+		def rules = []
+		if (errors != null) errors.each { id ->
+			rules.add(SurveyValidationRule.get(id))
+		}
+		return rules;
 	}
 	
 	boolean hasErrors(def errors) {

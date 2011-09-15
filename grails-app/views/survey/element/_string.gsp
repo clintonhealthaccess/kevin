@@ -1,5 +1,5 @@
 <!-- Text type question -->
-<div id="element-${surveyElement.id}-${suffix}" class="element element-string ${enteredValue?.skipped?'skipped':''} ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
+<div id="element-${surveyElement.id}-${suffix}" class="element element-string ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 
 	<textarea name="surveyElements[${surveyElement.id}].value${suffix}" cols="100" rows="8" class="idle-field" ${readonly?'disabled="disabled"':''}>${value?.stringValue}</textarea>

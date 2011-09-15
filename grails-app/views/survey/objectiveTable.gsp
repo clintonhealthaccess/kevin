@@ -1,4 +1,3 @@
-<%@ page import="org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -23,8 +22,8 @@
 								<g:i18n field="${objectiveSummary.objective.names}"/>
 							</a>
 						</td>
-						<td>${objectiveSummary.enteredObjective?.status == ObjectiveStatus.CLOSED?'\u2713':''}</td>
-						<td><span class="progress-bar">${objectiveSummary.submittedElements}/${objectiveSummary.elements}</span></td>
+						<td>${objectiveSummary.enteredObjective?.closed?'\u2713':''}</td>
+						<td><span class="progress-bar">${objectiveSummary.completedQuestions}/${objectiveSummary.questions}</span></td>
 						<td><a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: summaryPage.organisation.id])}">view survey</a></td>
 					</tr>
 					<tr>

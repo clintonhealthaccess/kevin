@@ -78,7 +78,7 @@
 											<a href="${createLink(controller: 'editSurvey', action: 'objectiveTable', params: [survey: summaryPage.survey.id, organisation: facility.id])}">${facility.name}</a>
 										</td>
 										<td>${organisationSummary.submittedObjectives}/${organisationSummary.objectives}</td>
-										<td><span class="progress-bar">${organisationSummary.completedElements}/${organisationSummary.elements}</span></td>
+										<td><span class="progress-bar">${organisationSummary.completedQuestions}/${organisationSummary.questions}</span></td>
 										<td><a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: summaryPage.survey.id, organisation: facility.id])}">view survey</a></td>
 									</tr>
 									<tr>

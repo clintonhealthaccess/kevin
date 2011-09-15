@@ -1,32 +1,20 @@
 package org.chai.kevin.survey;
 
-import org.hibernate.criterion.MatchMode;
-import org.chai.kevin.DataService;
-import org.chai.kevin.OrganisationService;
-import org.chai.kevin.LocaleService;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective;
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
-import org.chai.kevin.value.ExpressionValue;
-import org.hibernate.Criteria;
-import org.hibernate.FlushMode;
-import org.hibernate.criterion.Restrictions;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.DataService
+import org.chai.kevin.LocaleService
+import org.chai.kevin.OrganisationService
 import org.chai.kevin.data.DataElement
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
-import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
+import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
 import org.chai.kevin.survey.validation.SurveyEnteredValue
-import org.chai.kevin.survey.validation.SurveyEnteredObjective.ObjectiveStatus;
-import org.hibernate.criterion.Projections;
+import org.hibernate.Criteria
+import org.hibernate.FlushMode
+import org.hibernate.criterion.MatchMode
+import org.hibernate.criterion.Projections
 import org.hibernate.criterion.Restrictions
-import org.apache.commons.lang.math.NumberUtils;
+import org.hisp.dhis.organisationunit.OrganisationUnit
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 
 
 class SurveyElementService {
@@ -64,25 +52,28 @@ class SurveyElementService {
 		surveyEnteredSection.save();
 	}
 	
-	Integer getNumberOfSurveyEnteredObjectives(Survey survey, OrganisationUnit organisationUnit, ObjectiveStatus status) {
+	Integer getNumberOfSurveyEnteredObjectives(Survey survey, OrganisationUnit organisationUnit, Boolean closed, Boolean complete, Boolean invalid) {
 		def c = SurveyEnteredObjective.createCriteria()
 		c.add(Restrictions.eq("organisationUnit", organisationUnit))
-		if (status != null) c.add(Restrictions.eq("status", status))
+		
+		if (complete!=null) c.add(Restrictions.eq("complete", complete))
+		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
+		if (closed!=null) c.add(Restrictions.eq("closed", closed))
+		
 		c.createAlias("objective", "o").add(Restrictions.eq('o.survey', survey))
 		c.setProjection(Projections.rowCount())
 		c.setFlushMode(FlushMode.MANUAL).uniqueResult();
 	}
 	
-	Integer getNumberOfSurveyEnteredValues(Survey survey, OrganisationUnit organisationUnit, SurveyObjective objective, SurveySection section) {
-		def c = SurveyEnteredValue.createCriteria()
+	Integer getNumberOfSurveyEnteredQuestions(Survey survey, OrganisationUnit organisationUnit, 
+		SurveyObjective objective, SurveySection section, Boolean complete, Boolean invalid) {
+		def c = SurveyEnteredQuestion.createCriteria()
 		c.add(Restrictions.eq("organisationUnit", organisationUnit))
-		c.add(Restrictions.or(
-			Restrictions.eq("skipped", true),
-			Restrictions.isNotNull("value"))
-		)
 		
-		c.createAlias("surveyElement", "se")
-		.createAlias("se.surveyQuestion", "sq")
+		if (complete!=null) c.add(Restrictions.eq("complete", complete))
+		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
+		
+		c.createAlias("question", "sq")
 		.createAlias("sq.section", "ss")
 		.createAlias("ss.objective", "so")
 		.add(Restrictions.eq("so.survey", survey))
@@ -104,7 +95,10 @@ class SurveyElementService {
 		.setCacheable(true)
 		.setFlushMode(FlushMode.MANUAL)
 		.setCacheRegion("org.hibernate.cache.SurveyEnteredSectioneQueryCache")
-		.uniqueResult();
+		
+		def result = c.uniqueResult();
+		if (log.isDebugEnabled()) log.debug("getSurveyEnteredSection(...)="+result);
+		return result
 	}
 	
 	SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective surveyObjective, OrganisationUnit organisationUnit) {
@@ -116,7 +110,10 @@ class SurveyElementService {
 		.setCacheable(true)
 		.setFlushMode(FlushMode.MANUAL)
 		.setCacheRegion("org.hibernate.cache.SurveyEnteredObjectiveQueryCache")
-		.uniqueResult();
+		
+		def result = c.uniqueResult();
+		if (log.isDebugEnabled()) log.debug("getSurveyEnteredObjective(...)="+result);
+		return result
 	}
 
 	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, OrganisationUnit organisationUnit) {
@@ -128,7 +125,10 @@ class SurveyElementService {
 		.setCacheable(true)
 		.setFlushMode(FlushMode.MANUAL)
 		.setCacheRegion("org.hibernate.cache.SurveyEnteredQuestionQueryCache")
-		.uniqueResult();
+		
+		def result = c.uniqueResult();
+		if (log.isDebugEnabled()) log.debug("getSurveyEnteredQuestion(...)="+result);
+		return result
 	}
 	
 	SurveyEnteredValue getSurveyEnteredValue(SurveyElement surveyElement, OrganisationUnit organisationUnit) {
@@ -140,7 +140,10 @@ class SurveyElementService {
 		.setCacheable(true)
 		.setFlushMode(FlushMode.MANUAL)
 		.setCacheRegion("org.hibernate.cache.SurveyEnteredValueQueryCache")
-		.uniqueResult();
+		
+		def result = c.uniqueResult();
+		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
+		return result
 	}
 
 	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement) {

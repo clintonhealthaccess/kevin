@@ -27,8 +27,12 @@
  */
 package org.chai.kevin.util;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,4 +64,19 @@ public class Utils {
 		return value.matches("(?i).*"+text+".*");
 	}
 
+	public static String formatDate(Date date) {
+		if (date == null) return null;
+		return DATE_FORMAT.format(date);
+	}
+	
+	public static Date parseDate(String string) {
+		try {
+			return DATE_FORMAT.parse(string);
+		} catch (ParseException e) {
+			return null;
+		}
+	}
+	
+	private static DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+	
 }

@@ -831,7 +831,7 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
   #survey-menu
     position: absolute
 
-  #incomplete-sections ul
+  #incomplete-sections-container ul
     margin: 0
       
   ol#questions
@@ -867,7 +867,7 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
   .question-container.skipped
     display: none
     
-  #invalid-questions .question.errors, .question-table.errors, .question-checkbox.errors
+  #invalid-questions-container .question.errors, .question-table.errors, .question-checkbox.errors
     color: inherit
     input, select, textarea
       border-color: inherit
@@ -1017,8 +1017,8 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
           background-image: url('../images/icons/negative_16.png')
         .section-status-closed, .objective-status-closed
           background-image: url('../images/icons/check_16.png')
-        .section-status-unavailable, .objective-status-unavailable
-          background-image: url('../images/icons/cancel_16.png')
+        // .section-status-unavailable, .objective-status-unavailable
+        //  background-image: url('../images/icons/cancel_16.png')
         
       
       .item:hover

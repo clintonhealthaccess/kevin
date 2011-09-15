@@ -1,5 +1,3 @@
-<%@ page import="org.chai.kevin.survey.validation.SurveyEnteredQuestion.QuestionStatus" %>
-
 <g:set var="enteredQuestion" value="${surveyPage.questions[question]}"/>
 <g:set var="organisationUnitGroup" value="${surveyPage.organisation.organisationUnitGroup}"/>
 

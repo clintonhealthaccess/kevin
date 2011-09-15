@@ -88,7 +88,8 @@ grails.project.dependency.resolution = {
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
-//		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
+
+		//		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
 		test "org.codehaus.geb:geb-spock:0.6.0"
 		test("org.seleniumhq.selenium:selenium-chrome-driver:2.0rc2")
 		test("org.seleniumhq.selenium:selenium-htmlunit-driver:2.0rc2") {

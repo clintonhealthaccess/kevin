@@ -64,7 +64,7 @@ public class SurveyObjective extends SurveyTranslatable {
 	private Integer order;
 	private Survey survey;
 	private List<SurveySection> sections = new ArrayList<SurveySection>();
-	private SurveyObjective dependency;
+//	private SurveyObjective dependency;
 	private String groupUuidString;
 
 	@Id
@@ -123,15 +123,15 @@ public class SurveyObjective extends SurveyTranslatable {
 		return groupUuidString;
 	}
 
-	@ManyToOne(targetEntity = SurveyObjective.class, optional = true)
-	@JoinTable(name="dhsst_survey_objective_dependencies")
-	public SurveyObjective getDependency() {
-		return dependency;
-	}
-
-	public void setDependency(SurveyObjective dependency) {
-		this.dependency = dependency;
-	}
+//	@ManyToOne(targetEntity = SurveyObjective.class, optional = true)
+//	@JoinTable(name="dhsst_survey_objective_dependencies")
+//	public SurveyObjective getDependency() {
+//		return dependency;
+//	}
+//
+//	public void setDependency(SurveyObjective dependency) {
+//		this.dependency = dependency;
+//	}
 
 	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable() {
@@ -154,6 +154,15 @@ public class SurveyObjective extends SurveyTranslatable {
 		List<SurveyElement> result = new ArrayList<SurveyElement>();
 		for (SurveySection surveySection : getSections(group)) {
 			result.addAll(surveySection.getSurveyElements(group));
+		}
+		return result;
+	}
+	
+	@Transient
+	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
+		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
+		for (SurveySection surveySection : getSections(group)) {
+			result.addAll(surveySection.getQuestions(group));
 		}
 		return result;
 	}
@@ -187,7 +196,7 @@ public class SurveyObjective extends SurveyTranslatable {
 	protected void deepCopy(SurveyObjective copy, SurveyCloner cloner) {
 		copy.setNames(getNames());
 		copy.setDescriptions(getDescriptions());
-		if (getDependency() != null) copy.setDependency(cloner.getObjective(getDependency()));
+//		if (getDependency() != null) copy.setDependency(cloner.getObjective(getDependency()));
 		copy.setGroupUuidString(getGroupUuidString());
 		copy.setOrder(getOrder());
 		copy.setSurvey(cloner.getSurvey(getSurvey()));

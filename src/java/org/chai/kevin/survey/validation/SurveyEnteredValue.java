@@ -1,25 +1,18 @@
 package org.chai.kevin.survey.validation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -48,10 +41,6 @@ public class SurveyEnteredValue {
 	private Value value;
 	private Value lastValue;
 	private OrganisationUnit organisationUnit;
-	
-	private Map<SurveySkipRule, String> skipped = new HashMap<SurveySkipRule, String>();
-	private Map<SurveyValidationRule, String> invalid = new HashMap<SurveyValidationRule, String>();
-	private Map<SurveyValidationRule, String> acceptedWarnings = new HashMap<SurveyValidationRule, String>();
 	
 	public SurveyEnteredValue() {}
 	
@@ -116,136 +105,125 @@ public class SurveyEnteredValue {
 		this.organisationUnit = organisationUnit;
 	}
 	
-	@ElementCollection
-	@CollectionTable(name="dhsst_survey_value_invalid")
-	@MapKeyJoinColumn
-	public Map<SurveyValidationRule, String> getInvalid() {
-		return invalid;
+	@Transient
+	public Type getType() {
+		return surveyElement.getDataElement().getType();
 	}
 	
-	public void setInvalid(Map<SurveyValidationRule, String> invalid) {
-		this.invalid = invalid;
-	}
-	
-	public void addInvalid(SurveyValidationRule validationRule, Set<String> prefixes) {
-		if (prefixes.isEmpty()) invalid.remove(validationRule);
-		else invalid.put(validationRule, Utils.unsplit(prefixes));
+	public void setInvalid(SurveyValidationRule validationRule, Set<String> prefixes) {
+		setAttribute("invalid", validationRule.getId().toString(), prefixes);
 	}
 
-	public List<SurveyValidationRule> getErrors(String prefix) {
-		List<SurveyValidationRule> result = new ArrayList<SurveyValidationRule>();
-		for (Entry<SurveyValidationRule, String> entry : invalid.entrySet()) {
-			if (split(entry.getValue()).contains(prefix) && !isAcceptedWarning(entry.getKey(), prefix)) result.add(entry.getKey());
+	public Set<String> getErrors(String prefix) {
+		try {
+			return Utils.split(getType().getAttribute(value, prefix, "invalid"));
 		}
-		return result;
+		catch (IndexOutOfBoundsException e) {
+			return new HashSet<String>();
+		}
+	}
+	
+	public Set<String> getUnacceptedErrors(String prefix) {
+		try {
+			Set<String> invalidRules = Utils.split(getType().getAttribute(value, prefix, "invalid"));
+			Set<String> acceptedRules = Utils.split(getType().getAttribute(value, prefix, "warning"));
+			
+			return new HashSet<String>(CollectionUtils.subtract(invalidRules, acceptedRules));
+		} 
+		catch (IndexOutOfBoundsException e) {
+			return new HashSet<String>();
+		}
 	}
 	
 	public boolean isValid(String prefix) {
-		for (Entry<SurveyValidationRule, String> entry : invalid.entrySet()) {
-			if (split(entry.getValue()).contains(prefix) && !isAcceptedWarning(entry.getKey(), prefix)) return false;
+		return getUnacceptedErrors(prefix).isEmpty();
+	}
+	
+	public void setSkipped(SurveySkipRule skipRule, Set<String> prefixes) {
+		setAttribute("skipped", skipRule.getId().toString(), prefixes);
+	}
+	
+	public Set<String> getSkipped(String prefix) {
+		try {
+			return Utils.split(getType().getAttribute(value, prefix, "skipped"));
 		}
-		return true;
-	}
-	
-	@ElementCollection
-	@CollectionTable(name="dhsst_survey_value_skipped")
-	@MapKeyJoinColumn
-	public Map<SurveySkipRule, String> getSkipped() {
-		return skipped;
-	}
-	
-	public void setSkipped(Map<SurveySkipRule, String> skipped) {
-		this.skipped = skipped;
-	}
-	
-	public void addSkipped(SurveySkipRule skipRule, Set<String> prefixes) {
-		if (prefixes.isEmpty()) skipped.remove(skipRule);
-		else skipped.put(skipRule, Utils.unsplit(prefixes));
+		catch (IndexOutOfBoundsException e) {
+			return new HashSet<String>();
+		}
 	}
 	
 	public boolean isSkipped(String prefix) {
-		for (Entry<SurveySkipRule, String> entry : skipped.entrySet()) {
-			if (split(entry.getValue()).contains(prefix)) return true;
-		}
-		return false;
+		return !getSkipped(prefix).isEmpty();
 	}
 	
-	@ElementCollection
-	@CollectionTable(name="dhsst_survey_value_accepted_warning")
-	@MapKeyJoinColumn
-	public Map<SurveyValidationRule, String> getAcceptedWarnings() {
-		return acceptedWarnings;
-	}
 	
-	public void setAcceptedWarnings(Map<SurveyValidationRule, String> acceptedWarnings) {
-		this.acceptedWarnings = acceptedWarnings;
-	}
-	
-	public void addAcceptedWarning(SurveyValidationRule rule, String prefix) {
-		// TODO
-	}
-	
-	public void removeAcceptedWarning(SurveyValidationRule rule, String prefix) {
-		// TODO
-	}
-	
-//	public List<SurveyValidationRule> getAcceptedWarnings(String prefix) {
-//		
+//	public Set<String> getAcceptedWarnings(String prefix) {
+//		try {
+//			return Utils.split(getType().getAttribute(value, prefix, "warning"));
+//		}
+//		catch (IndexOutOfBoundsException e) {
+//			return new HashSet<String>();
+//		}
 //	}
 	
 	public boolean isAcceptedWarning(SurveyValidationRule rule, String prefix) {
-		if (acceptedWarnings.containsKey(rule)) {
-			return split(acceptedWarnings.get(rule)).contains(prefix);
+		try {
+			return Utils.split(getType().getAttribute(value, prefix, "warning")).contains(rule.getId().toString());
 		}
-		return false;
+		catch (IndexOutOfBoundsException e) {
+			return false;
+		}
 	}
 	
 	@Transient
 	public Set<String> getSkippedPrefixes() {
-		return split(skipped.values());
+		return getPrefixesWithAttribute("skipped").keySet();
 	}
 	
 	@Transient
 	public Set<String> getInvalidPrefixes() {
-		return split(invalid.values());
-	}
-
-	private static Set<String> split(Collection<String> strings) {
-		Set<String> result = new HashSet<String>();
-		for (String string : strings) {
-			result.addAll(split(string));
-		}
-		return result;
+		return getPrefixesWithAttribute("invalid").keySet();
 	}
 	
-	private static Set<String> split(String string) {
-		Set<String> result = new HashSet<String>();
-		if (string.isEmpty()) result.add(string);
-		result.addAll(Utils.split(string));
-		return result;
-	}
+//	@Transient
+//	public Set<String> getAcceptedPrefixes() {
+//		return getPrefixesWithAttribute("accepted");
+//	}
+
 	
 	@Transient
-	public boolean isInvalid() {
-		// element is invalid if some non-skipped values are invalid
-		// and not in the accepted warning list
-		Set<String> invalidPrefixes = split(invalid.values());
-		Set<String> skippedPrefixes = split(skipped.values());
-		Set<String> acceptedPrefixes = split(acceptedWarnings.values());
+	public Boolean isInvalid() {
+		// we get the list of all the invalid prefixes that
+		// have not been accepted
+		Map<String, Value> invalidPrefixes = getPrefixesWithAttribute("invalid");
+		Map<String, Value> acceptedPrefixes = getPrefixesWithAttribute("warning");
+		
+		Set<String> invalidAndUnacceptedPrefixes = new HashSet<String>();
+		for (String invalidPrefix : invalidPrefixes.keySet()) {
+			Set<String> invalidRules = Utils.split(invalidPrefixes.get(invalidPrefix).getAttribute("invalid"));
+			Set<String> acceptedRules = new HashSet<String>();
+			if (acceptedPrefixes.containsKey(invalidPrefix)) {
+				acceptedRules.addAll(Utils.split(acceptedPrefixes.get(invalidPrefix).getAttribute("warning")));
+			}
+			
+			if (!CollectionUtils.subtract(invalidRules, acceptedRules).isEmpty()) invalidAndUnacceptedPrefixes.add(invalidPrefix);
+		}
+		
+		// element is invalid if those prefixes are not all skipped
+		Set<String> skippedPrefixes = getSkippedPrefixes();
 		
 		return !CollectionUtils.subtract(
-			invalidPrefixes, 
-			CollectionUtils.union(skippedPrefixes, acceptedPrefixes)
+			invalidAndUnacceptedPrefixes, 
+			skippedPrefixes
 		).isEmpty();
 	}
 	
 	@Transient
-	public boolean isComplete() {
+	public Boolean isComplete() {
 		// element is complete if all the non-skipped values are not-null
 		// regardless of whether they are valid or not
-		Set<String> skippedPrefixes = split(skipped.values());
-		Map<String, Value> nullPrefixes = new HashMap<String, Value>();
-		surveyElement.getDataElement().getType().getPrefixes(value, "", nullPrefixes, new PrefixPredicate() {
+		Set<String> skippedPrefixes = getSkippedPrefixes();
+		Map<String, Value> nullPrefixes = surveyElement.getDataElement().getType().getPrefixes(value, new PrefixPredicate() {
 			@Override
 			public boolean holds(Type type, Value value, String prefix) {
 				return value.isNull();
@@ -255,11 +233,49 @@ public class SurveyEnteredValue {
 		return CollectionUtils.subtract(nullPrefixes.entrySet(), skippedPrefixes).isEmpty();
 	}
 	
+	private void setAttribute(final String attribute, final String id, Set<String> prefixes) {
+		Map<String, Value> prefixesWithId = getType().getPrefixes(value, new PrefixPredicate() {
+			@Override
+			public boolean holds(Type type, Value value, String prefix) {
+				return Utils.split(value.getAttribute(attribute)).contains(id);
+			}
+		});
+		
+		// remove the attribute from prefixes which are not in the set
+		for (String prefixWithId : prefixesWithId.keySet()) {
+			if (!prefixes.contains(prefixWithId)) {
+				Set<String> attributeValue = Utils.split(getType().getAttribute(value, prefixWithId, attribute));
+				attributeValue.remove(id);
+				
+				String newAttributeValue = Utils.unsplit(attributeValue);
+				if (newAttributeValue.isEmpty()) newAttributeValue = null;
+				getType().setAttribute(value, prefixWithId, attribute, newAttributeValue);
+			}
+		}
+		
+		// add it on prefixes which are in the set
+		for (String prefix : prefixes) {
+			Set<String> attributeValue = Utils.split(getType().getAttribute(value, prefix, attribute));
+			attributeValue.add(id);
+			getType().setAttribute(value, prefix, attribute, Utils.unsplit(attributeValue));
+		}
+	}
+	
+	private Map<String, Value> getPrefixesWithAttribute(final String attribute) {
+		return getType().getPrefixes(value, new PrefixPredicate() {
+			@Override
+			public boolean holds(Type type, Value value, String prefix) {
+				String attributeValue = value.getAttribute(attribute);
+				if (attributeValue != null) return true;
+				return false;
+			}
+		});
+	}
+	
 	@Override
 	public String toString() {
 		return "SurveyEnteredValue [surveyElement=" + surveyElement
-				+ ", value=" + value + ", organisationUnit=" + organisationUnit
-				+ ", acceptedWarnings=" + acceptedWarnings.size() + "]";
+				+ ", value=" + value + ", organisationUnit=" + organisationUnit + "]";
 	}
 	
 	@Transient

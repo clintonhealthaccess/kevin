@@ -29,27 +29,29 @@
 					enteredValue: enteredValue,
 					readonly: readonly
 				]"/>
-				<span><a class="element-list-remove" href="#">remove line</a></span>
+				<g:if test="${!readonly}"><span><a class="element-list-remove" href="#">remove line</a></span></g:if>
 				<div class="clear"></div>
 			</div>
 		</g:each>
-		<div class="hidden">
-			<div class="element-list-row">
-				<input type="hidden" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
-				<g:render template="/survey/element/${listType.type.name().toLowerCase()}"  model="[
-					value: null,
-					lastValue: null,
-					type: listType, 
-					suffix: suffix+'[_]',
-					surveyElement: surveyElement,
-					enteredValue: enteredValue,
-					readonly: readonly 
-				]"/>
-				<span><a class="element-list-remove" href="#">remove line</a></span>
-				<div class="clear"></div>
+		<g:if test="${!readonly}">
+			<div class="hidden">
+				<div class="element-list-row">
+					<input type="hidden" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
+					<g:render template="/survey/element/${listType.type.name().toLowerCase()}"  model="[
+						value: null,
+						lastValue: null,
+						type: listType, 
+						suffix: suffix+'[_]',
+						surveyElement: surveyElement,
+						enteredValue: enteredValue,
+						readonly: readonly 
+					]"/>
+					<span><a class="element-list-remove" href="#">remove line</a></span>
+					<div class="clear"></div>
+				</div>
 			</div>
-		</div>
-		<a class="element-list-add" href="#">add line</a>
+			<a class="element-list-add" href="#">add line</a>
+		</g:if>
 	</div>
 
 	<div class="error-list">

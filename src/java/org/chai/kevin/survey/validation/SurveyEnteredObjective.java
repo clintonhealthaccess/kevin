@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.survey.SurveyObjective;
@@ -18,22 +19,25 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 @Table(name="dhsst_survey_valid_objective", uniqueConstraints=@UniqueConstraint(
 		columnNames={"objective", "organisationUnit"})
 )
-public class SurveyEnteredObjective {
+public class SurveyEnteredObjective  {
 
-	public static enum ObjectiveStatus {UNAVAILABLE, CLOSED, INVALID, COMPLETE, INCOMPLETE}
-	
 	private Long id;
 	private SurveyObjective objective;
 	private OrganisationUnit organisationUnit;
-	private ObjectiveStatus status;
+	
+	private Boolean complete;
+	private Boolean invalid;
+	private Boolean closed;
 	
 	public SurveyEnteredObjective() {}
 	
-	public SurveyEnteredObjective(SurveyObjective objective, OrganisationUnit organisationUnit, ObjectiveStatus status) {
+	public SurveyEnteredObjective(SurveyObjective objective, OrganisationUnit organisationUnit, Boolean invalid, Boolean complete, Boolean closed) {
 		super();
 		this.objective = objective;
 		this.organisationUnit = organisationUnit;
-		this.status = status;
+		this.complete = complete;
+		this.invalid = invalid;
+		this.closed = closed;
 	}
 
 	@Id
@@ -67,13 +71,40 @@ public class SurveyEnteredObjective {
 	}
 	
 	@Basic
-	@Enumerated(EnumType.STRING)
-	public ObjectiveStatus getStatus() {
-		return status;
+	public Boolean isInvalid() {
+		return invalid;
 	}
 	
-	public void setStatus(ObjectiveStatus status) {
-		this.status = status;
+	public void setInvalid(Boolean invalid) {
+		this.invalid = invalid;
+	}
+	
+	@Basic
+	public Boolean isComplete() {
+		return complete;
+	}
+	
+	public void setComplete(Boolean complete) {
+		this.complete = complete;
+	}
+	
+	@Basic
+	public Boolean isClosed() {
+		return closed;
+	}
+	
+	public void setClosed(Boolean closed) {
+		this.closed = closed;
+	}
+	
+	@Transient
+	public String getDisplayedStatus() {
+		String status = null;
+		if (closed) status = "closed";
+		else if (invalid) status = "invalid";
+		else if (!complete) status = "incomplete";
+		else status = "complete";
+		return status;
 	}
 
 	@Override
@@ -113,8 +144,7 @@ public class SurveyEnteredObjective {
 	@Override
 	public String toString() {
 		return "SurveyEnteredObjective [objective=" + objective
-				+ ", organisationUnit=" + organisationUnit + ", status="
-				+ status + "]";
+				+ ", organisationUnit=" + organisationUnit + "]";
 	}
 	
 }
