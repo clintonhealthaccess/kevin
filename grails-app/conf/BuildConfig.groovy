@@ -80,7 +80,7 @@ grails.project.dependency.resolution = {
 		compile ('org.hisp.dhis:dhis-support-hibernate:2.3-SNAPSHOT') {
 			transitive = false
 		}
-		test ('org.hisp.dhis:dhis-support-system:2.3-SNAPSHOT') {
+		compile ('org.hisp.dhis:dhis-support-system:2.3-SNAPSHOT') {
 			transitive = false
 		}
 		compile ('org.amplecode:quick:1.5') {
