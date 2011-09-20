@@ -44,7 +44,6 @@ import org.chai.kevin.DataService;
 import org.chai.kevin.LocaleService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
-import org.chai.kevin.UtilTagLib;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;

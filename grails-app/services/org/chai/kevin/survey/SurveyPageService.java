@@ -53,6 +53,7 @@ import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
+import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
@@ -73,7 +74,7 @@ public class SurveyPageService {
 	private ValidationService validationService;
 	private SessionFactory sessionFactory;
 	
-	@Transactional(readOnly = true, isolation=Isolation.READ_UNCOMMITTED)
+	@Transactional(readOnly = true)
 	public SummaryPage getSectionTable(Organisation organisation, SurveyObjective objective) {
 		organisationService.loadGroup(organisation);
 		
@@ -89,7 +90,7 @@ public class SurveyPageService {
 		return new SummaryPage(objective, organisation, sections, sectionSummaryMap);
 	}
 	
-	@Transactional(readOnly = true, isolation=Isolation.READ_UNCOMMITTED)
+	@Transactional(readOnly = true)
 	public SummaryPage getObjectiveTable(Organisation organisation, Survey survey) {
 		organisationService.loadGroup(organisation);
 		
@@ -107,7 +108,7 @@ public class SurveyPageService {
 		return new SummaryPage(survey, organisation, objectives, objectiveSummaryMap, false);
 	}
 	
-	@Transactional(readOnly = true, isolation=Isolation.READ_UNCOMMITTED)
+	@Transactional(readOnly = true)
 	public SummaryPage getSummaryPage(Organisation organisation, Survey survey) {
 		if (organisation == null || survey == null) return new SummaryPage(survey, organisation, null, null);
 		
@@ -256,27 +257,28 @@ public class SurveyPageService {
 		for (Organisation facility : facilities) {
 			survey = (Survey)SessionFactoryUtils.getSession(sessionFactory, false).load(Survey.class, survey.getId());
 			facility.setOrganisationUnit((OrganisationUnit)SessionFactoryUtils.getSession(sessionFactory, false).get(OrganisationUnit.class, facility.getOrganisationUnit().getId()));
-			
-			refreshFacility(facility, survey, closeIfComplete);
+
+			getMe().refreshSurveyForFacility(facility, survey, closeIfComplete);
 			sessionFactory.getCurrentSession().clear();
 		}
 	}
 	
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshFacility(Organisation facility, Survey survey, boolean closeIfComplete) {
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshSurveyForFacility(Organisation facility, Survey survey, boolean closeIfComplete) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
+
 		organisationService.loadGroup(facility);
 
 		for (SurveyObjective objective : survey.getObjectives(facility.getOrganisationUnitGroup())) {
-			refreshFacility(facility, objective, closeIfComplete);
+			refreshObjectiveForFacility(facility, objective, closeIfComplete);
 		}
 	}
 
 	
-	public void refreshFacility(Organisation facility, SurveyObjective objective, boolean closeIfComplete) {
-		organisationService.loadGroup(facility);
-		
+	private void refreshObjectiveForFacility(Organisation facility, SurveyObjective objective, boolean closeIfComplete) {
 		for (SurveySection section : objective.getSections(facility.getOrganisationUnitGroup())) {
-			refreshFacility(facility, section);
+			getMe().refreshSectionForFacility(facility, section);
 		}
 		
 		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(facility, objective);
@@ -285,12 +287,15 @@ public class SurveyPageService {
 		surveyElementService.save(enteredObjective);
 	}
 	
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshFacility(Organisation facility, SurveySection section) {
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshSectionForFacility(Organisation facility, SurveySection section) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
+		
 		organisationService.loadGroup(facility);
 		
 		for (SurveyQuestion question : section.getQuestions(facility.getOrganisationUnitGroup())) {
-			refreshFacility(facility, question); 
+			refreshQuestionForFacility(facility, question); 
 		}
 		
 		SurveyEnteredSection enteredSection = getSurveyEnteredSection(facility, section);
@@ -298,9 +303,9 @@ public class SurveyPageService {
 		surveyElementService.save(enteredSection);
 	}
 	
-	private void refreshFacility(Organisation facility, SurveyQuestion question) {
+	private void refreshQuestionForFacility(Organisation facility, SurveyQuestion question) {
 		for (SurveyElement element : question.getSurveyElements(facility.getOrganisationUnitGroup())) {
-			refreshFacility(facility, element);
+			refreshElementForFacility(facility, element);
 		}
 		
 		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(facility, question);
@@ -308,7 +313,7 @@ public class SurveyPageService {
 		surveyElementService.save(enteredQuestion);
 	}
 	
-	private void refreshFacility(Organisation facility, SurveyElement element) {
+	private void refreshElementForFacility(Organisation facility, SurveyElement element) {
 		Survey survey = element.getSurvey();
 		
 		SurveyEnteredValue enteredValue = getSurveyEnteredValue(facility, element);
@@ -646,6 +651,10 @@ public class SurveyPageService {
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-	}		
+	}
 	
+	// for internal call through transactional proxy
+	private SurveyPageService getMe() {
+		return ApplicationHolder.getApplication().getMainContext().getBean(SurveyPageService.class);
+	}
 }

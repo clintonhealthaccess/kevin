@@ -1,9 +1,7 @@
 package org.chai.kevin;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +9,7 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionValue;
+import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
@@ -20,7 +19,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +33,9 @@ public class RefreshValueService {
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
 	public void refreshOutdatedExpressions(Expression expression) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
+		
 		Criteria criteria = sessionFactory.getCurrentSession()
 		.createCriteria(ExpressionValue.class, "ev")
 		.createAlias("expression", "e")
@@ -53,6 +54,9 @@ public class RefreshValueService {
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
 	public void refreshNonCalculatedExpressions(Expression expression) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
+		
 		Long numValues = (Long)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class).add(Restrictions.eq("expression", expression)).setProjection(Projections.rowCount()).uniqueResult();
 		Long numOrganisations = getNumberOfOrganisations();
 		Long numPeriods = getNumberOfPeriods();
@@ -96,6 +100,9 @@ public class RefreshValueService {
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
 	public void refreshOutdatedCalculations(Calculation calculation) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
+		
 		Criteria criteria = sessionFactory.getCurrentSession()
 		.createCriteria(CalculationValue.class, "cv")
 		.createAlias("calculation", "c")
@@ -120,10 +127,13 @@ public class RefreshValueService {
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
 	private void refreshNonCalculatedCalculations(Calculation calculation) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
+		
 		Long numValues = (Long)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class).add(Restrictions.eq("calculation", calculation)).setProjection(Projections.rowCount()).uniqueResult();
 		Long numOrganisations = getNumberOfOrganisations();
 		Long numPeriods = getNumberOfPeriods();
-		
+			
 		if (numValues == numOrganisations * numPeriods) {
 			if (log.isInfoEnabled()) log.info("no non calculated calculations, skipping");
 		}
@@ -160,8 +170,8 @@ public class RefreshValueService {
 		List<Expression> expressions = sessionFactory.getCurrentSession().createCriteria(Expression.class).list();
 		
 		for (Expression expression : expressions) {
-			refreshOutdatedExpressions(expression);
-			refreshNonCalculatedExpressions(expression);
+			getMe().refreshOutdatedExpressions(expression);
+			getMe().refreshNonCalculatedExpressions(expression);
 			sessionFactory.getCurrentSession().clear();
 		}
 	}
@@ -170,12 +180,12 @@ public class RefreshValueService {
 	public void refreshCalculations() {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
-
+		
 		List<Calculation> calculations = sessionFactory.getCurrentSession().createCriteria(Calculation.class).list();
 		
 		for (Calculation calculation : calculations) {
-			refreshOutdatedCalculations(calculation);
-			refreshNonCalculatedCalculations(calculation);
+			getMe().refreshOutdatedCalculations(calculation);
+			getMe().refreshNonCalculatedCalculations(calculation);
 			sessionFactory.getCurrentSession().clear();
 		}
 	}
@@ -191,4 +201,10 @@ public class RefreshValueService {
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}
+	
+	// for internal call through transactional proxy
+	public RefreshValueService getMe() {
+		return ApplicationHolder.getApplication().getMainContext().getBean(RefreshValueService.class);
+	}
+	
 }

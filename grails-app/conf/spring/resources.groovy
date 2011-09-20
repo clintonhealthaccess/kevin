@@ -68,6 +68,7 @@ beans = {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
+//		me = ref("refreshValueService")
 	}
 	
 	validationService(ValidationService){
@@ -81,6 +82,7 @@ beans = {
 		valueService = ref("valueService")
 		validationService = ref("validationService")
 		sessionFactory = ref("sessionFactory")
+//		me = ref("surveyPageService")
 	}
 	
 	chartService(ChartService){

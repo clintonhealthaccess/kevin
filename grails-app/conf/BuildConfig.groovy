@@ -89,6 +89,7 @@ grails.project.dependency.resolution = {
 		compile ("org.apache.hadoop:hadoop-core:0.20.203.0") {
 			transitive = false
 		}
+		compile ("org.json:json:20080701")
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
