@@ -90,10 +90,6 @@ class EditSurveyController extends AbstractReportController {
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		def organisationTree = organisationService.getOrganisationTreeUntilLevel(organisationLevel)
 
-//		if (currentSurvey !=null && currentOrganisation != null) {
-//			redirect (action: 'surveyPage', params: [organisation: currentOrganisation.id, survey: currentSurvey.id])
-//		}
-			
 		render (view: '/survey/summaryPage', model: [
 			summaryPage: summaryPage,
 			surveys: Survey.list(),
@@ -133,8 +129,6 @@ class EditSurveyController extends AbstractReportController {
 		if (validateParameters(currentOrganisation, Utils.split(currentSection.groupUuidString))) {
 			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentSection)
 				
-//			if (surveyPage.firstTimeOpened(currentSection)) surveyPage.persistState(surveyElementService)
-			
 			render (view: '/survey/sectionPage', model: [surveyPage: surveyPage])
 		}
 	}
@@ -148,10 +142,6 @@ class EditSurveyController extends AbstractReportController {
 		
 		if (validateParameters(currentOrganisation, Utils.split(currentObjective.groupUuidString))) {
 			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentObjective)
-			
-//			currentObjective.getSections(currentOrganisation.organisationUnitGroup).each { section ->
-//				if (surveyPage.firstTimeOpened(section)) surveyPage.persistState(surveyElementService)
-//			}
 			
 			render (view: '/survey/objectivePage', model: [surveyPage: surveyPage])
 		}
@@ -171,6 +161,18 @@ class EditSurveyController extends AbstractReportController {
 			
 			render (view: '/survey/surveyPage', model: [surveyPage: surveyPage])
 		}
+	}
+	
+	def refresh = {
+		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
+		
+		// TODO make sure this is a facility
+		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+		
+		Survey survey = Survey.get(params.int('survey'))
+		surveyPageService.refresh(currentOrganisation, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
+
+		redirect (action: "surveyPage", params: [organisation: currentOrganisation.id, survey: survey.id])
 	}
 	
 	def reopen = {
@@ -221,14 +223,10 @@ class EditSurveyController extends AbstractReportController {
 		
 		def surveyPage = surveyPageService.modify(currentOrganisation, surveyElements, params);
 			
-		def completeSurveyPage
 		def invalidQuestionsHtml = ''
 		def incompleteSectionsHtml = ''
 		
-		if (currentSection != null) {
-			completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection)
-		}
-		else {
+		if (currentSection == null) {
 			completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective)
 			invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
 			incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
@@ -236,14 +234,6 @@ class EditSurveyController extends AbstractReportController {
 		
 		render(contentType:"text/json") {
 			
-			question (
-				id: surveyQuestion.id,
-				complete: completeSurveyPage.questions[surveyQuestion].complete,
-				invalid: completeSurveyPage.questions[surveyQuestion].invalid,
-				skipped: completeSurveyPage.questions[surveyQuestion].skipped,
-				html: g.render(template:'/survey/question', model: [surveyPage: completeSurveyPage, question: surveyQuestion])
-			)
-
 			invalidQuestions = invalidQuestionsHtml
 			
 			incompleteSections = incompleteSectionsHtml

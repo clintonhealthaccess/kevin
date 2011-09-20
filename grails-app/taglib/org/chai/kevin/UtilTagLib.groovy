@@ -32,6 +32,10 @@ class UtilTagLib {
 
 	def localeService;
 	
+	def toHtml = {attrs, body ->
+		out << attrs.value.replaceAll("(\\r\\n|\\n)", "<br/>").replaceAll("( )", "&nbsp;")	
+	}
+	
 	def dateFormat = { attrs, body ->
 		out << new java.text.SimpleDateFormat(attrs.format).format(attrs.date)
 	}
@@ -77,8 +81,7 @@ class UtilTagLib {
 	}
 	
 	def i18n = { attrs, body ->
-		def text = attrs['field']?.get(localeService.getCurrentLanguage())
-		if (text == null || text.trim().equals("")) text = attrs['field']?.get(localeService.getFallbackLanguage())
+		def text = localeService.getText(attrs['field'])
 		out << text 
 	}
 }

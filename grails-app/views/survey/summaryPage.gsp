@@ -69,6 +69,7 @@
 								<th>Objectives submitted</th>
 								<th>Overall progress</th>
 								<th></th>
+								<th></th>
 							</thead>
 							<tbody>
 								<g:each in="${summaryPage.facilities}" var="facility">
@@ -80,6 +81,7 @@
 										<td>${organisationSummary.submittedObjectives}/${organisationSummary.objectives}</td>
 										<td><span class="progress-bar">${organisationSummary.completedQuestions}/${organisationSummary.questions}</span></td>
 										<td><a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: summaryPage.survey.id, organisation: facility.id])}">view survey</a></td>
+										<td><a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: summaryPage.survey.id, organisation: facility.id])}">refresh survey</a></td>
 									</tr>
 									<tr>
 										<td colspan="4">

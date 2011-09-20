@@ -79,8 +79,8 @@ public class JSONUtils {
 	public static Type TYPE_NUMBER = new Type("{\"type\":\"number\"}");
 	public static Type TYPE_STRING = new Type("{\"type\":\"string\"}");
 	public static Type TYPE_DATE = new Type("{\"type\":\"date\"}");
-	public static Type TYPE_ENUM (Long enumId) {
-		return new Type("{\"type\":\"enum\", \"enum_id\":"+enumId+"}");
+	public static Type TYPE_ENUM (String enumCode) {
+		return new Type("{\"type\":\"enum\", \"enum_code\":"+enumCode+"}");
 	}
 	public static Type TYPE_LIST (Type listType) {
 		return new Type("{\"type\":\"list\", \"list_type\":"+listType.toString()+"}");

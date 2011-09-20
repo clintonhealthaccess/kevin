@@ -75,6 +75,7 @@ public class ValueService {
 		calculatorMap.put(Average.class, new CalculationValueCalculator());
 	}
 	
+	@Transactional(readOnly=true)
 	public <T extends StoredValue> T getValue(Data<T> data, OrganisationUnit organisationUnit, Period period) {
 		// TODO make a registry class with this code
 		Class<?> clazz = data.getClass();
@@ -86,8 +87,8 @@ public class ValueService {
 	}
 	
 	@Transactional(readOnly=true)
-	public Integer getNumberOfValues(DataElement dataElement, Period period) {
-		return (Integer)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
+	public Long getNumberOfValues(DataElement dataElement, Period period) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
 		.add(Restrictions.eq("dataElement", dataElement))
 		.add(Restrictions.eq("period", period))
 		.setProjection(Projections.count("id"))
@@ -114,7 +115,6 @@ public class ValueService {
 					.set("expression", expression)
 				)
 				.setCacheable(true)
-				.setFlushMode(FlushMode.MANUAL)
 				.setCacheRegion("org.hibernate.cache.ExpressionValueQueryCache")
 				.uniqueResult();
 		}
@@ -132,7 +132,6 @@ public class ValueService {
 					.set("calculation", calculation)
 				)
 				.setCacheable(true)
-				.setFlushMode(FlushMode.MANUAL)
 				.setCacheRegion("org.hibernate.cache.CalculationValueQueryCache")
 				.uniqueResult();
 		}
@@ -150,10 +149,8 @@ public class ValueService {
 	        		 .set("dataElement", dataElement)
 	        		 .set("period", period)
 	        		 .set("organisationUnit", organisation)
-	         )
-	         .setCacheRegion("org.hibernate.cache.DataValueQueryCache")
-	         .setFlushMode(FlushMode.MANUAL)
-	         .setCacheable(true);
+	         );
+//	         .setCacheRegion("org.hibernate.cache.DataValueQueryCache");
 	
 			 DataValue value = (DataValue)criteria.uniqueResult();
 			 if (log.isDebugEnabled()) log.debug("getDataValue = "+value);
@@ -161,124 +158,6 @@ public class ValueService {
 		}
 	}
 
-	@Transactional(readOnly=true)
-	@SuppressWarnings("unchecked")
-	public List<ExpressionValue> getOutdatedExpressions() {
-		Criteria criteria = sessionFactory.getCurrentSession()
-		.createCriteria(ExpressionValue.class, "ev")
-		.createAlias("expression", "e").add(Restrictions.ltProperty("ev.timestamp", "e.timestamp"))
-		.setCacheable(false);
-		return criteria.list();
-	}
-	
-	@Transactional(readOnly=true)
-	@SuppressWarnings("unchecked")
-	public List<ExpressionValue> getNonCalculatedExpressions() {
-		List<ExpressionValue> result = new ArrayList<ExpressionValue>();
-		
-		Long numValues = (Long)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class).setProjection(Projections.rowCount()).uniqueResult();
-		Long numExpressions = (Long)sessionFactory.getCurrentSession().createCriteria(Expression.class).setProjection(Projections.rowCount()).uniqueResult();
-		Long numOrganisations = getNumberOfOrganisations();
-		Long numPeriods = getNumberOfPeriods();
-		
-		if (numValues == numOrganisations * numPeriods * numExpressions) {
-			if (log.isInfoEnabled()) log.info("no non calculated expressions, skipping");
-		}
-		else {
-			if (log.isDebugEnabled()) log.debug("retrieving expression values");
-			Set<ExpressionValue> allValues = new HashSet<ExpressionValue>();
-			Query query1 = sessionFactory.getCurrentSession().createQuery(
-					"select ev.expression, ev.organisationUnit, ev.period from ExpressionValue as ev"
-			).setCacheable(false);
-			for (
-			Iterator<Object[]> iterator = query1.iterate(); iterator.hasNext();) {
-				Object[] row = (Object[]) iterator.next();
-				ExpressionValue value = new ExpressionValue(null, null, (OrganisationUnit)row[1], (Expression)row[0], (Period)row[2]);
-				allValues.add(value);
-			}
-			if (log.isDebugEnabled()) log.debug("retrieved expression values, found: "+allValues.size());
-			if (log.isDebugEnabled()) log.debug("retrieving all possible expressions");
-			Query query2 = sessionFactory.getCurrentSession().createQuery(
-					"select expression, organisationUnit, period " +
-					"from Expression expression, OrganisationUnit organisationUnit, Period period"
-			).setCacheable(false);
-			if (log.isDebugEnabled()) log.debug("starting sorting non calculated expressions");
-			for (Iterator<Object[]> iterator = query2.iterate(); iterator.hasNext();) {
-				Object[] row = (Object[]) iterator.next();
-				ExpressionValue newValue = new ExpressionValue(null, null, (OrganisationUnit)row[1], (Expression)row[0], (Period)row[2]);
-				if (!allValues.contains(newValue)) {
-					result.add(newValue);
-				}
-			}
-			if (log.isDebugEnabled()) log.debug("done sorting non calculated expressions, found: "+result.size());
-		}
-		return result;
-	}
-	
-	private Long getNumberOfOrganisations() {
-		return (Long)sessionFactory.getCurrentSession().createCriteria(OrganisationUnit.class).setProjection(Projections.rowCount()).uniqueResult();
-	}
-	
-	private Long getNumberOfPeriods() {
-		return (Long)sessionFactory.getCurrentSession().createCriteria(Period.class).setProjection(Projections.rowCount()).uniqueResult();
-	}
-	
-	@Transactional(readOnly=true)
-	@SuppressWarnings("unchecked")
-	public List<CalculationValue> getOutdatedCalculations() {
-		Criteria criteria = sessionFactory.getCurrentSession()
-		.createCriteria(CalculationValue.class, "cv")
-		.createAlias("calculation", "c")
-		.createAlias("calculation.expressions", "e").add(
-			Restrictions.or(
-				Restrictions.ltProperty("cv.timestamp", "c.timestamp"), 
-				Restrictions.ltProperty("cv.timestamp", "e.timestamp")
-			))
-		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		return criteria.list();
-	}
-	
-	@Transactional(readOnly=true)
-	@SuppressWarnings("unchecked")
-	public List<CalculationValue> getNonCalculatedCalculations() {
-		List<CalculationValue> result = new ArrayList<CalculationValue>();
-		
-		Long numValues = (Long)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class).setProjection(Projections.rowCount()).uniqueResult();
-		Long numCalculations = (Long)sessionFactory.getCurrentSession().createCriteria(Calculation.class).setProjection(Projections.rowCount()).uniqueResult();
-		Long numOrganisations = getNumberOfOrganisations();
-		Long numPeriods = getNumberOfPeriods();
-		
-		if (numValues == numOrganisations * numPeriods * numCalculations) {
-			if (log.isInfoEnabled()) log.info("no non calculated calculations, skipping");
-		}
-		else {
-			if (log.isDebugEnabled()) log.debug("retrieving calculation values");
-			Set<CalculationValue> allValues = new HashSet<CalculationValue>();
-			Query query1 = sessionFactory.getCurrentSession().createQuery(
-					"select cv.calculation, cv.organisationUnit, cv.period from CalculationValue as cv"
-			).setCacheable(false);
-			for (Iterator<Object[]> iterator = query1.iterate(); iterator.hasNext();) {
-				Object[] row = (Object[]) iterator.next();
-				CalculationValue value = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2]);
-				allValues.add(value);
-			}
-			if (log.isDebugEnabled()) log.debug("retrieved calculation values, found: "+allValues.size());
-			if (log.isDebugEnabled()) log.debug("retrieving all possible calculations");
-			Query query2 = sessionFactory.getCurrentSession().createQuery(
-					"select calculation, organisationUnit, period " +
-					"from Calculation calculation, OrganisationUnit organisationUnit, Period period"
-			).setCacheable(false);
-			if (log.isDebugEnabled()) log.debug("starting sorting non calculated calculations");
-			for (Iterator<Object[]> iterator = query2.iterate(); iterator.hasNext();) {
-				Object[] row = (Object[]) iterator.next();
-				CalculationValue newValue = new CalculationValue((Calculation)row[0], (OrganisationUnit)row[1], (Period)row[2]);
-				if (!allValues.contains(newValue)) result.add(newValue);
-			}
-			if (log.isDebugEnabled()) log.debug("done sorting non calculated calculations, found: "+result.size());
-		}
-		return result;
-	}
-	
 	@Transactional(readOnly=false)
 	public <T extends StoredValue> T save(T value) {
 		log.debug("save(value="+value+")");

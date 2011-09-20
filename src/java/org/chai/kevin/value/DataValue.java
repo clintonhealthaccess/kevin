@@ -46,7 +46,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="DataValue")
-@Table(name="datavalue",
+@Table(name="dhsst_data_value",
 		uniqueConstraints=@UniqueConstraint(columnNames={"dataElement", "period", "organisationUnit"})
 )
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)

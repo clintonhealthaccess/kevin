@@ -51,7 +51,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity(name="Enum")
-@Table(name="enum")
+@Table(name="dhsst_enum")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Enum {
 

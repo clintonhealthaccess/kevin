@@ -15,6 +15,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
 
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.util.Utils;
@@ -61,18 +62,21 @@ public class Type {
 	@Transient
 	public ValueType getType() {
 		try {
+			if (getJsonObject() == null) return null;
 			return ValueType.valueOf(getJsonObject().getString("type").toUpperCase());
 		} catch (JSONException e) {
+			return null;
+		} catch (IllegalArgumentException e) {
 			return null;
 		}
 	}
 	
 	@Transient
-	public Long getEnumId() {
+	public String getEnumCode() {
 		// TODO think that through
 		if (!getType().equals(ValueType.ENUM)) throw new IllegalStateException();
 		try {
-			return getJsonObject().getLong("enum_id");
+			return getJsonObject().getString("enum_code");
 		} catch (JSONException e) {
 			return null;
 		}
@@ -103,7 +107,66 @@ public class Type {
 			return null;
 		}
 	}
-
+	
+	@Transient
+	public boolean isValid() {
+		if (getType() == null) return false;
+		switch (getType()) {
+		case LIST:
+			return getListType().isValid();
+		case MAP:
+			for (Type type : getElementMap().values()) {
+				if (!type.isValid()) return false;
+			}
+		}
+		return true;
+	}
+	
+	@Transient
+	public Value getPlaceHolderValue() {
+		try {
+			JSONObject object = new JSONObject();
+			switch (getType()) {
+				case NUMBER:
+					object.put("value", 0);
+					break;
+				case BOOL:
+					object.put("value", true);
+					break;
+				case STRING:
+					object.put("value", "0");
+					break;
+				case DATE:
+					object.put("value", "01-01-1970");
+					break;
+				case ENUM:
+					object.put("value", "0");
+					break;
+				case LIST:
+					JSONArray array1 = new JSONArray();
+					array1.put(getListType().getPlaceHolderValue().getJsonObject());
+					object.put("value", array1);
+					break;
+				case MAP:
+					Map<String, Type> elementMap = getElementMap();
+					JSONArray array = new JSONArray();
+					for (Entry<String, Type> entry : elementMap.entrySet()) {
+						JSONObject element = new JSONObject();
+						element.put("key", entry.getKey());
+						element.put("value", elementMap.get(entry.getKey()).getPlaceHolderValue().getJsonObject());
+						array.put(element);
+					}
+					object.put("value", array);
+					break;
+				default:
+					throw new NotImplementedException();
+			}
+			return new Value(object.toString());
+		} catch (JSONException e) {
+			return null;
+		}
+	}
+	
 	@Transient
 	public Value getValueFromMap(Map<String, Object> map, String suffix, Set<String> attributes) {
 		try {
@@ -364,7 +427,7 @@ public class Type {
 				if (currentPrefix.equals(prefix)) return toSet;
 				else return currentValue;
 			}
-		}).toString());
+		}).getJsonValue());
 	}
 	
 	public static interface ValuePredicate {
@@ -544,7 +607,52 @@ public class Type {
 		}
 		return result;
 	}
+	
+	public String getDisplayedValue(int indent) {
+		return getDisplayedValue(indent, 0);
+	}
 		
+	private String getDisplayedValue(int indent, int currentIndent) {
+		StringBuilder builder = new StringBuilder();
+		
+		String typeName = null;
+		switch (getType()) {
+			case NUMBER:
+			case BOOL:
+			case STRING:
+			case DATE:
+			case LIST:
+			case MAP:
+				typeName = getType().name().toLowerCase();
+				break;
+			case ENUM:
+				typeName = getType().name().toLowerCase()+"("+getEnumCode()+")";
+				break;
+			default:
+				throw new NotImplementedException();
+		}
+		
+		builder.append(typeName);
+		
+		switch (getType()) {
+			case LIST:
+				builder.append(" : ");
+				builder.append(getListType().getDisplayedValue(indent, currentIndent+indent));
+				break;
+			case MAP:
+				for (Entry<String, Type> entry : getElementMap().entrySet()) {
+					builder.append("\n");
+					builder.append(StringUtils.leftPad(entry.getKey()+" : ", entry.getKey().length()+3+currentIndent+indent));
+					builder.append(entry.getValue().getDisplayedValue(indent, currentIndent+indent));
+				}
+				break;
+			default:
+				break;
+		}
+		
+		return builder.toString();
+	}
+	
 	@Override
 	public String toString() {
 		return jsonType;

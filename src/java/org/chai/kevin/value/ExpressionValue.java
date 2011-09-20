@@ -67,8 +67,7 @@ public class ExpressionValue extends StoredValue {
 		MISSING_NUMBER,
 		NOT_AGGREGATABLE,
 		MISSING_DATA_ELEMENT,
-		ERROR, 
-		INVALID,
+		ERROR 
 	}
 	
 	public ExpressionValue() {}

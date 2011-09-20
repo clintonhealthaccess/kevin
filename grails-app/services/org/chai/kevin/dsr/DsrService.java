@@ -40,9 +40,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.chai.kevin.DataService;
+import org.chai.kevin.LocaleService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.UtilTagLib;
 import org.chai.kevin.ValueService;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
@@ -52,7 +57,9 @@ public class DsrService {
 	// private Log log = LogFactory.getLog(DsrService.class);
 	private OrganisationService organisationService;
 	private ValueService valueService;
-
+	private DataService dataService;
+	private LocaleService localeService;
+	
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective,
 			Period period) {
@@ -78,23 +85,39 @@ public class DsrService {
 				}
 				Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
 				for (DsrTarget target : targets) {
-					ExpressionValue expressionValue = valueService.getValue(
-							target.getExpression(),
-							child.getOrganisationUnit(), period);
+					ExpressionValue expressionValue = valueService.getValue( target.getExpression(), child.getOrganisationUnit(), period);
 					String value = null;
-					if (expressionValue != null)
-						// TODO fix this
-						if (expressionValue.getValue().getNumberValue() != null) {
-							value = getFormat(target, expressionValue.getValue().getNumberValue().doubleValue());
-						} else {
+					if (expressionValue != null && !expressionValue.getValue().isNull())
+						// TODO put this in templates ?
+						switch (expressionValue.getData().getType().getType()) {
+						case BOOL:
+							if (expressionValue.getValue().getBooleanValue()) value = "&#10003;";
+							else value = "";
+							break;
+						case STRING:
 							value = expressionValue.getValue().getStringValue();
+							break;
+						case NUMBER:
+							value = getFormat(target, expressionValue.getValue().getNumberValue().doubleValue());
+							break;
+						case ENUM:
+							String code = expressionValue.getData().getType().getEnumCode();
+							Enum enume = dataService.findEnumByCode(code);
+							if (enume != null) {
+								EnumOption option = enume.getOptionForValue(expressionValue.getValue().getEnumValue());
+								value = localeService.getText(option.getNames());
+							}
+							else value = "";
+							break;
+						default:
+							value = "";
+							break;
 						}
 					orgDsr.put(target, new Dsr(child, period, target, value));
 				}
 				dsrMap.put(child, orgDsr);
 			}
-			facilityTypes = new ArrayList<OrganisationUnitGroup>(
-					facilityTypeSet);
+			facilityTypes = new ArrayList<OrganisationUnitGroup>(facilityTypeSet);
 		}
 		return new DsrTable(organisation, organisations, period, objective,
 				targets, facilityTypes, dsrMap);
@@ -115,5 +138,13 @@ public class DsrService {
 
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
+	}
+	
+	public void setDataService(DataService dataService) {
+		this.dataService = dataService;
+	}
+	
+	public void setLocaleService(LocaleService localeService) {
+		this.localeService = localeService;
 	}
 }

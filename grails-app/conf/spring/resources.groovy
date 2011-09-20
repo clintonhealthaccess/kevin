@@ -1,5 +1,7 @@
 import grails.util.GrailsUtil;
 
+import org.chai.kevin.JaqlService;
+import org.chai.kevin.RefreshValueService;
 import org.chai.kevin.TimestampListener;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.ExpressionService;
@@ -58,8 +60,19 @@ int infoGroupLevel = config.info.group.level
 
 beans = {
 	
+	jaqlService(JaqlService) { bean ->
+		bean.singleton = true
+	}
+	
+	refreshValueService(RefreshValueService) {
+		expressionService = ref("expressionService")
+		valueService = ref("valueService")
+		sessionFactory = ref("sessionFactory")
+	}
+	
 	validationService(ValidationService){
 		surveyElementService = ref("surveyElementService")
+		jaqlService = ref("jaqlService")
 	}
 	
 	surveyPageService(SurveyPageService){
@@ -67,6 +80,7 @@ beans = {
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
 		validationService = ref("validationService")
+		sessionFactory = ref("sessionFactory")
 	}
 	
 	chartService(ChartService){
@@ -77,6 +91,8 @@ beans = {
 	dsrService(DsrService){
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
+		dataService = ref("dataService")
+		localeService = ref("localeService")
 	}
 
 	mapsService(MapsService) {
@@ -100,6 +116,7 @@ beans = {
 		dataService = ref("dataService")
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
+		jaqlService = ref("jaqlService")
 	}
 	
 	infoService(InfoService) {

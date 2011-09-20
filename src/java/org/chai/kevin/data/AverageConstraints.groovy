@@ -1,4 +1,4 @@
-package org.chai.kevin
+package org.chai.kevin.data
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,36 +28,8 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.LocaleUtils;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
-class LocaleService {
-	
-	static transactional = false
-
-	def getAvailableLanguages() {
-		List<String> languages = ConfigurationHolder.config.site.languages;
-		return languages;
-	}
-	
-	def getCurrentLanguage() {
-		Locale locale = RequestContextUtils.getLocale(RequestContextHolder.currentRequestAttributes().getRequest());
-		return locale.getLanguage();
-	}
-	
-	def getFallbackLanguage() {
-		return ConfigurationHolder.config.site.fallback.language;
-	}
-	
-	String getText(Translation translation) {
-		def text = translation?.get(getCurrentLanguage())
-		if (text == null || text.trim().equals("")) text = translation?.get(getFallbackLanguage())
-		return text;
-	}
-	
+constraints = {
+	type(nullable: false, validator: {val, obj -> 
+		return val.isValid();	
+	})
 }

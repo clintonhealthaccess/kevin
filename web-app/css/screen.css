@@ -694,7 +694,7 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited { text-de
 /* line 849, ../../src/stylesheets/screen.sass */
 #survey .question-table span.survey-old-value { display: block; text-align: center; }
 /* line 853, ../../src/stylesheets/screen.sass */
-#survey div.element { display: inline; }
+#survey div.element, #survey div.survey-element { display: inline; }
 /* line 856, ../../src/stylesheets/screen.sass */
 #survey .question-simple div.element-enum { display: block; }
 /* line 859, ../../src/stylesheets/screen.sass */

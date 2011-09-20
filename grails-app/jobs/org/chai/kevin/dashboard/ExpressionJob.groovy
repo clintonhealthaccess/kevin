@@ -42,15 +42,15 @@ class ExpressionJob implements InterruptableJob {
 	def sessionRequired = true
 	def concurrent = false
 	
-	def expressionService
+	def refreshValueService
 	
 	void execute(JobExecutionContext context) {
 //		if (expressionService == null) expressionService = ApplicationHolder.application.mainContext.getBean('expressionService')
 		
 		if (log.isInfoEnabled()) log.info('executing ExpressionJob');
 	
-		expressionService.refreshExpressions()
-		expressionService.refreshCalculations()
+		refreshValueService.refreshExpressions()
+		refreshValueService.refreshCalculations()
 	}
 	
 	void interrupt() {}

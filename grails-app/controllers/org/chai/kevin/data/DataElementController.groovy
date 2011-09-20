@@ -58,7 +58,7 @@ class DataElementController extends AbstractEntityController {
 
 	def createEntity() {
 		def entity = new DataElement();
-		if (params['enume.id']) entity.enume = Enum.get(params.enumId)
+		entity.type = new Type();
 		return entity;
 	}
 
@@ -69,7 +69,6 @@ class DataElementController extends AbstractEntityController {
 	def getModel(def entity) {
 		return [
 			dataElement: entity,
-			enume: entity.enume,
 			enumes: Enum.list()
 		]
 	}
@@ -119,8 +118,8 @@ class DataElementController extends AbstractEntityController {
 		}
 		else {
 			List<Period> iterations = Period.list();
-			Map<SurveyElement,Integer> surveyElmnts = new HashMap<SurveyElement,Integer>();
-			Map<Period,Integer> periodValues = new HashMap<Period,Integer>();
+			Map<SurveyElement, Integer> surveyElmnts = new HashMap<SurveyElement,Integer>();
+			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
 			Set<SurveyElement> surveyElements = surveyElementService.getSurveyElements(dataElement);
 
 
@@ -145,13 +144,11 @@ class DataElementController extends AbstractEntityController {
 		}
 	}
 
-	def getDataElementDescription = {
+	def getDescription = {
 		def dataElement = null;
 		if (NumberUtils.isNumber(params['dataElement'])) {
 			dataElement = DataElement.get(params['dataElement'])
 		}
-		def enume = null;
-		if (dataElement != null) enume = dataElement.getEnume()
 
 		if (dataElement == null) {
 			render(contentType:"text/json") { result = 'error' }
@@ -159,7 +156,7 @@ class DataElementController extends AbstractEntityController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/templates/dataElementDescription', model: [dataElement: dataElement, enume: enume])
+				html = g.render (template: '/templates/dataElementDescription', model: [dataElement: dataElement])
 			}
 		}
 	}

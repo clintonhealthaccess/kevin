@@ -40,8 +40,8 @@
 					<th>[${data.key.id}]</th>
 					<th>
 					<a	onclick="return false;" title="${i18n(field:dataElement.names)}" class="cluetip"
-						href="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: dataElement.id])}"
-						rel="${createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: dataElement.id])}">
+						href="${createLink(controller:'dataElement', action:'getDescription', params:[dataElement: dataElement.id])}"
+						rel="${createLink(controller:'dataElement', action:'getDescription', params:[dataElement: dataElement.id])}">
 						<g:i18n field="${dataElement.names}"/>
 					</a>
 					</th>

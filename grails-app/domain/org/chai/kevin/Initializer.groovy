@@ -206,10 +206,10 @@ class Initializer {
 
 		if (!DataElement.count()) {
 			// Data Elements
-			def dataElement10 = new DataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').id))
+			def dataElement10 = new DataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').code))
 			def dataElement1 = new DataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: JSONUtils.TYPE_NUMBER)
 			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: JSONUtils.TYPE_NUMBER)
-			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM1').id))
+			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM1').code))
 			def dataElement4 = new DataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: JSONUtils.TYPE_BOOL)
 			def dataElement5 = new DataElement(names:j(["en":"Element 5"]), descriptions:j([:]), code:"CODE5", type: JSONUtils.TYPE_BOOL)
 			def dataElement6 = new DataElement(names:j(["en":"Element 6"]), descriptions:j([:]), code:"CODE6", type: JSONUtils.TYPE_BOOL)
@@ -220,16 +220,16 @@ class Initializer {
 			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: JSONUtils.TYPE_STRING)
 			def dataElement81 = new DataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: JSONUtils.TYPE_NUMBER)
 			def dataElement91 = new DataElement(names:j(["en":"Element 91"]), descriptions:j([:]), code:"CODE91", type: JSONUtils.TYPE_NUMBER)
-			def dataElement101 = new DataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').id))
+			def dataElement101 = new DataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').code))
 			def dataElement111 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"CODE111", type: JSONUtils.TYPE_DATE)
 			
 			def dataElementList = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LIST1", type: JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER))
 			def dataElementMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"MAP1", 
-				type: JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER, "key2":JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').id), "key3": JSONUtils.TYPE_BOOL])
+				type: JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER, "key2":JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": JSONUtils.TYPE_BOOL])
 			)
 			
 			def dataElementListMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
-				type: JSONUtils.TYPE_LIST(JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER, "key2":JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').id), "key3": JSONUtils.TYPE_BOOL]))
+				type: JSONUtils.TYPE_LIST(JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER, "key2":JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": JSONUtils.TYPE_BOOL]))
 			)
 			
 			dataElement10.save(failOnError: true, flush:true)

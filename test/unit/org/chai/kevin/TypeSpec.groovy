@@ -253,7 +253,7 @@ public class TypeSpec extends UnitSpec {
 		type.getValueFromJaql(type.getJaqlValue(value)).isNull()
 		
 		where:
-		typeObject << [JSONUtils.TYPE_DATE, JSONUtils.TYPE_BOOL, JSONUtils.TYPE_NUMBER, JSONUtils.TYPE_STRING, JSONUtils.TYPE_ENUM(1), JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER), JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER])]
+		typeObject << [JSONUtils.TYPE_DATE, JSONUtils.TYPE_BOOL, JSONUtils.TYPE_NUMBER, JSONUtils.TYPE_STRING, JSONUtils.TYPE_ENUM("test"), JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER), JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER])]
 	}
 	
 	def "test from jaql"() {
@@ -525,6 +525,29 @@ public class TypeSpec extends UnitSpec {
 		
 		then:
 		thrown IndexOutOfBoundsException
+	}
+	
+	def "get displayed value"() {
+		setup:
+		def type = null
+		
+		when:
+		type = JSONUtils.TYPE_MAP (["key1": JSONUtils.TYPE_NUMBER]);
+		
+		then:
+		type.getDisplayedValue(2) == "map\n  key1 : number"
+		
+	}
+	
+	def "is valid"() {
+		setup:
+		def type = null
+		
+		expect:
+		!new Type("").isValid()
+		!new Type("{\"type\":\"prout\"}").isValid()
+		new Type("{\"type\":\"number\"}").isValid()
+		!new Type("{\"type\":\"list\", \"list_type\":{\"type\":\"prout\"}}").isValid()
 	}
 	
 }

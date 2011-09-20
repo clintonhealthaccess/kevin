@@ -98,7 +98,7 @@
 		getDataElement(function(event){
 			if ($('.in-edition').size() == 1) {
 				var edition = $('.in-edition')[0]
-				$(edition).replaceSelection('['+$(this).data('code')+']');
+				$(edition).replaceSelection('$'+$(this).data('code'));
 			}
 		});
 		$('#add-skip-rule textarea')

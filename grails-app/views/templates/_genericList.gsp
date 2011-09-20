@@ -31,6 +31,7 @@
 		</g:else>				
 	</div>
 	<div class="hidden flow-container"></div>
+	<div class="clear"></div>
 </div>
 
 <script type="text/javascript">

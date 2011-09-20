@@ -19,6 +19,8 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 
 class SurveyElementService {
 	
+	static transactional = true
+	
 	LocaleService localeService;
 	OrganisationService organisationService;
 	DataService dataService;
@@ -62,7 +64,8 @@ class SurveyElementService {
 		
 		c.createAlias("objective", "o").add(Restrictions.eq('o.survey', survey))
 		c.setProjection(Projections.rowCount())
-		c.setFlushMode(FlushMode.MANUAL).uniqueResult();
+		c.setCacheable(false);
+		c.uniqueResult();
 	}
 	
 	Integer getNumberOfSurveyEnteredQuestions(Survey survey, OrganisationUnit organisationUnit, 
@@ -83,7 +86,8 @@ class SurveyElementService {
 		
 		c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
 		c.setProjection(Projections.rowCount())
-		c.setFlushMode(FlushMode.MANUAL).uniqueResult();
+		c.setCacheable(false);
+		c.uniqueResult();
 	}
 	
 	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, OrganisationUnit organisationUnit) {
@@ -92,9 +96,6 @@ class SurveyElementService {
 			.set("organisationUnit", organisationUnit)
 			.set("section", surveySection)
 		)
-		.setCacheable(true)
-		.setFlushMode(FlushMode.MANUAL)
-		.setCacheRegion("org.hibernate.cache.SurveyEnteredSectioneQueryCache")
 		
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredSection(...)="+result);
@@ -107,9 +108,6 @@ class SurveyElementService {
 			.set("organisationUnit", organisationUnit)
 			.set("objective", surveyObjective)
 		)
-		.setCacheable(true)
-		.setFlushMode(FlushMode.MANUAL)
-		.setCacheRegion("org.hibernate.cache.SurveyEnteredObjectiveQueryCache")
 		
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredObjective(...)="+result);
@@ -122,9 +120,6 @@ class SurveyElementService {
 			.set("organisationUnit", organisationUnit)
 			.set("question", surveyQuestion)
 		)
-		.setCacheable(true)
-		.setFlushMode(FlushMode.MANUAL)
-		.setCacheRegion("org.hibernate.cache.SurveyEnteredQuestionQueryCache")
 		
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredQuestion(...)="+result);
@@ -137,9 +132,6 @@ class SurveyElementService {
 			.set("organisationUnit", organisationUnit)
 			.set("surveyElement", surveyElement)
 		)
-		.setCacheable(true)
-		.setFlushMode(FlushMode.MANUAL)
-		.setCacheRegion("org.hibernate.cache.SurveyEnteredValueQueryCache")
 		
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
@@ -151,9 +143,6 @@ class SurveyElementService {
 		c.add(
 			Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE)
 		)
-		.setCacheable(true)
-		.setFlushMode(FlushMode.MANUAL)
-		.setCacheRegion("org.hibernate.cache.SurveyValidationRuleSearch")
 		.list()
 	}
 	
@@ -162,30 +151,9 @@ class SurveyElementService {
 		c.add(
 			Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE)
 		)
-		.setCacheable(true)
-		.setFlushMode(FlushMode.MANUAL)
-		.setCacheRegion("org.hibernate.cache.SurveySkipRuleSearch")
 		.list()
 	}
 	
-//	Set<SurveySkipRule> getSkipRules(SurveyElement surveyElement) {
-//		Survey survey = surveyElement.getSurvey();
-//		Set<SurveySkipRule> result = new HashSet<SurveySkipRule>();
-//		survey.skipRules.each { rule ->
-//			if (rule.skippedSurveyElements.contains(surveyElement)) result.add(rule)	
-//		}
-//		return result;
-//	}
-
-//	Set<SurveySkipRule> getSkipRules(SurveyQuestion surveyQuestion) {
-//		Survey survey = surveyQuestion.getSurvey();
-//		Set<SurveySkipRule> result = new HashSet<SurveySkipRule>();
-//		survey.skipRules.each { rule ->
-//			if (rule.skippedSurveyQuestions.contains(surveyQuestion)) result.add(rule)
-//		}
-//		return result;
-//	}
-
 	Set<SurveyElement> getSurveyElements(DataElement dataElement) {
 		SurveyElement.createCriteria()
 		.add(Restrictions.eq("dataElement", dataElement))

@@ -14,7 +14,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyValidSection")
-@Table(name="dhsst_survey_valid_section", uniqueConstraints=@UniqueConstraint(
+@Table(name="dhsst_survey_entered_section", uniqueConstraints=@UniqueConstraint(
 		columnNames={"section", "organisationUnit"})
 )
 public class SurveyEnteredSection {

@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -82,6 +83,8 @@ public class SurveyElement {
 //	@AttributeOverrides({
 //		@AttributeOverride(name="value.jsonText", column=@Column(name="headers"))
 //	})
+//	@MapKey(name="prefix")
+	@JoinTable(name="dhsst_survey_element_headers")
 	public Map<String, Translation> getHeaders() {
 		return headers;
 	}

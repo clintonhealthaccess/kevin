@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.ExpressionService;
+import org.chai.kevin.JaqlService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
@@ -22,6 +23,7 @@ public class ValidationService {
 	private static final Log log = LogFactory.getLog(ValidationService.class);
 	
 	private SurveyElementService surveyElementService;
+	private JaqlService jaqlService;
 	
 	@Transactional(readOnly=true)
 	public Set<String> getSkippedPrefix(SurveyElement element, SurveySkipRule rule, Organisation organisation) {
@@ -118,10 +120,9 @@ public class ValidationService {
 			typeMap.put(element.getId().toString(), element.getDataElement().getType());
 		}
 		
-		// TODO catch exception
 		Value value = null;
 		try {
-			value = ExpressionService.evaluate(expression, JSONUtils.TYPE_BOOL, valueMap, typeMap);
+			value = jaqlService.evaluate(expression, JSONUtils.TYPE_BOOL, valueMap, typeMap);
 		} catch (IllegalArgumentException e) {}
 		
 		Boolean result;
@@ -157,6 +158,10 @@ public class ValidationService {
 //		return null;
 //	}
 
+	public void setJaqlService(JaqlService jaqlService) {
+		this.jaqlService = jaqlService;
+	}
+	
 	public void setSurveyElementService(SurveyElementService surveyElementService) {
 		this.surveyElementService = surveyElementService;
 	}

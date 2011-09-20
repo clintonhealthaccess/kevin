@@ -73,10 +73,7 @@
 					initializeSurvey(valueChangedInSection);
 				});
 			
-				function valueChangedInSection(data, element, replace) {
-					if (replace) {
-						$('#question-'+data.question.id).parents('.question-container').html(data.question.html);
-					}
+				function valueChangedInSection(data, element) {
 					
 					// we go through all changed elements
 					$.each(data.elements, function(index, element) {

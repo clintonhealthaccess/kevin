@@ -6,7 +6,7 @@
 	<g:if test="${lastValue!=null}">
 		<span class="survey-old-value">
 			(
-			<g:if test="${lastValue=='1'}">
+			<g:if test="${lastValue.booleanValue == true}">
 				${"\u2611"}
 			</g:if>
 			<g:else>

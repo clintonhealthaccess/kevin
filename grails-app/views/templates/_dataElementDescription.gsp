@@ -1,6 +1,10 @@
-<div class="row">Type: <span class="type">${dataElement.type}</span></div>
+<%@ page import="org.chai.kevin.data.Enum" %>
+<%@ page import="org.chai.kevin.data.Type.ValueType" %>
 
-<g:if test="${enume!=null}">
+<div class="row">Type: <span class="type"><g:toHtml value="${dataElement.type.getDisplayedValue(2)}"/></span></div>
+
+<g:if test="${dataElement.type.type == ValueType.ENUM}">
+	<g:set var="enume" value="${Enum.findByCode(dataElement.type.enumCode)}"/>
 	<div class="row enum box">
 		<h5><g:i18n field="${enume.names}"/></h5>
 		<ul>

@@ -107,7 +107,7 @@ public class SurveyTableRow extends SurveyTranslatable {
 
 	@OneToMany(targetEntity = SurveyElement.class)
 	@JoinTable(name = "dhsst_survey_table_row_elements")
-	@MapKeyJoinColumn(nullable = false)
+	@MapKeyJoinColumn(nullable = false, name="survey_table_column")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	public Map<SurveyTableColumn, SurveyElement> getSurveyElements() {
 		return surveyElements;

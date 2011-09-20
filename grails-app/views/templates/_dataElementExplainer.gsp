@@ -1,6 +1,6 @@
 <div class="box">
 	<div><g:i18n field="${dataElement.names}"/></div>
-	<div class="row">Type: <span class="type">${dataElement.type.getName()}</span></div>
+	<div class="row">Type: <span class="type"><g:toHtml value="${dataElement.type.getDisplayedValue(2)}"/></span></div>
 	<div><g:i18n field="${dataElement.descriptions}"/></div>
 	<div class="clear"></div>
 </div>

@@ -216,11 +216,6 @@
     		$(document).ready(function() {
     		
     			/**
-    			 * cluetip
-    			 **/
-    			$('a.cluetip').cluetip(cluetipOptions);
-    			 
-    			/**
     			 * dashboard
     			 **/
     			$('.cell.value').bind('click', function() {

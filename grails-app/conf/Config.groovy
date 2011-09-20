@@ -120,7 +120,7 @@ log4j = {
 //		   'org.springframework'
 		   
 	debug  'org.chai.kevin',
-		   'grails.app',
+		   'grails.app'
 //		   'org.springframework'
 //		   'org.hibernate',
 //		   'org.codehaus.groovy.grails'

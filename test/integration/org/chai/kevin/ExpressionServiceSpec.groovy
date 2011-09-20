@@ -299,4 +299,56 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		dataElements.values().iterator().next().equals(DataElement.findByCode("CODEINT"))		
 	}
 	
+	def "test expression validation"() {
+
+		setup:
+		def dataElement = new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER).save(faileOnError: true)
+		def formula = null
+				
+		when:
+		formula = "(1"
+		
+		then:
+		!expressionService.expressionIsValid(formula)
+		
+		when:
+		formula = "if((10,1,0)"
+		
+		then:
+		!expressionService.expressionIsValid(formula)
+		
+		when:
+		formula = "123"
+		
+		then:
+		expressionService.expressionIsValid(formula)
+		
+		when:
+		formula = "\$"+dataElement.id+" == 1"
+		
+		then:
+		expressionService.expressionIsValid(formula)
+		
+		when:
+		formula = "\$"+dataElement.id+" == \"a\""
+		
+		then:
+		!expressionService.expressionIsValid(formula)
+		
+		when:
+		formula = "if (\$"+dataElement.id+" == null) true else false"
+		
+		then:
+		expressionService.expressionIsValid(formula)
+		
+		when:
+		dataElement = new DataElement(names:j(["en":"Element Int"]), code: "CODESTRING", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_STRING).save(faileOnError: true)
+		formula = "convert(\$"+dataElement.id+", schema double)"
+		
+		then:
+		expressionService.expressionIsValid(formula)
+		
+		
+	}
+	
 }

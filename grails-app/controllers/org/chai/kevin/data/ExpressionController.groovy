@@ -44,7 +44,9 @@ class ExpressionController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		return new Expression()
+		def expression = new Expression()
+		expression.type = new Type()
+		return expression
 	}
 	
 	def getTemplate() {
@@ -88,10 +90,7 @@ class ExpressionController extends AbstractEntityController {
 	}
 	
 	def getDescription = {
-		def expression = null;
-		if (NumberUtils.isNumber(params['expression'])) {
-			expression = Constant.get(params['expression'])
-		}
+		def expression = Expression.get(params.int('expression'))
 		
 		if (expression == null) {
 			render(contentType:"text/json") {
@@ -106,26 +105,25 @@ class ExpressionController extends AbstractEntityController {
 		}
 	}
 	
-	//FIXME getData Method has to be relocated
-
-	def getConstantDescription = {
-		def constant = null;
-		if (NumberUtils.isNumber(params['constant'])) {
-			constant = Constant.get(params['constant'])
-		}
-		
-		if (constant == null) {
-			render(contentType:"text/json") {
-				result = 'error'
-			}
-		}
-		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/templates/constantDescription', model: [constant: constant])
-			}
-		}
-	}
+//	//FIXME getData Method has to be relocated
+//	def getConstantDescription = {
+//		def constant = null;
+//		if (NumberUtils.isNumber(params['constant'])) {
+//			constant = Constant.get(params['constant'])
+//		}
+//		
+//		if (constant == null) {
+//			render(contentType:"text/json") {
+//				result = 'error'
+//			}
+//		}
+//		else {
+//			render(contentType:"text/json") {
+//				result = 'success'
+//				html = g.render (template: '/templates/constantDescription', model: [constant: constant])
+//			}
+//		}
+//	}
 	
 	def getData = {
 //		def dataSet = null
@@ -146,27 +144,6 @@ class ExpressionController extends AbstractEntityController {
 				html = g.render(template:'/templates/dataElements', model:[dataElements: dataElements])
 			}
 //		}
-	}
-
-	def getDataElementDescription = {
-		def dataElement = null;
-		if (NumberUtils.isNumber(params['dataElement'])) {
-			dataElement = DataElement.get(params['dataElement'])
-		}
-		def enume = null;
-		if (dataElement != null) enume = dataElement.getEnume()
-		
-		if (dataElement == null) {
-			render(contentType:"text/json") {
-				result = 'error'
-			}
-		}
-		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/templates/dataElementDescription', model: [dataElement: dataElement, enume: enume])
-			}
-		}
 	}
 	
 }

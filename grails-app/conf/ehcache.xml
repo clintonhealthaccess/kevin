@@ -75,13 +75,7 @@
            maxElementsInMemory="2000"
             timeToLiveSeconds="3600"
     />
-    
-    <!-- not sure it is used -->
-    <cache name="org.hibernate.cache.DataValueQueryCache"
-           maxElementsInMemory="4000"
-            timeToLiveSeconds="3600"
-    />
-    
+        
 	<cache name="org.hibernate.cache.ExpressionValueQueryCache"
            maxElementsInMemory="8000"
             timeToLiveSeconds="3600"
@@ -91,5 +85,10 @@
            maxElementsInMemory="4000"
             timeToLiveSeconds="3600"
     />
+    
+<!-- 	<cache name="org.hibernate.cache.DataValueQueryCache" -->
+<!--            maxElementsInMemory="4000" -->
+<!--             timeToLiveSeconds="3600" -->
+<!--     /> -->
     
 </ehcache>

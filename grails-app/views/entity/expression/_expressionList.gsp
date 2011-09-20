@@ -2,7 +2,8 @@
 	<thead>
 		<tr>
 			<th>Names</th>
-			<th>Descriptions</th>
+			<th>Type</th>
+			<th>Code</th>
 			<th>Manage</th>
 		</tr>
 	</thead>
@@ -10,11 +11,14 @@
 		<g:each in="${entities}" status="i" var="expression">
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 				<td>
-					<g:link action="edit" id="${expression.id}"  class="flow-edit">
+					<a href="${createLink(action:'edit', id: expression.id)}" title="${i18n(field: expression.names)}"  
+					rel="${createLink(controller:'expression', action:'getDescription', id:expression.id)}" 
+					class="flow-edit cluetip">
 						<g:i18n field="${expression.names}"/>
-					</g:link>
+					</a>
 				</td>
-				<td><g:i18n field="${expression.descriptions}"/></td>
+				<td><g:toHtml value="${expression.type.getDisplayedValue(2)}"/></td>
+				<td>${expression.code}</td>
 				<td><a class="flow-delete" href="${createLink(controller:'expression', action:'delete', id:expression.id)}">delete</a></td>
 			</tr>
 		</g:each>

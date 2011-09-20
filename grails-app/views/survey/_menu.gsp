@@ -38,12 +38,12 @@
 	function initializeSurvey(callback) {
 		$('#survey').delegate('#survey-form input, #survey-form select, #survey-form textarea', 'change', function(){
 			var element = $(this).parents('.element');
-			surveyValueChanged(element, callback, false);
+			surveyValueChanged(element, callback);
 		});
 		$('#survey').delegate('#survey-form a.outlier-validation', 'click', function(){
 			$(this).next().val($(this).data('rule'));						
 			var element = $(this).parents('.element');
-			surveyValueChanged(element, callback, false);						
+			surveyValueChanged(element, callback);						
 			return false;
 		});
 		$('#survey').delegate('#survey-form .element-list-add', 'click', function(){
@@ -51,12 +51,12 @@
 			return false;
 		});
 		$('#survey').delegate('#survey-form .element-list-remove', 'click', function(){
-			listRemoveClick(this, callback);
+			listRemoveClick(this);
 			return false;
 		});
 	}
 
-	function surveyValueChanged(element, callback, replace) {
+	function surveyValueChanged(element, callback) {
 		var elementId = $(element).data('element');
 		var questionId = $(element).parents('.question').data('question'); 
 		
@@ -82,7 +82,7 @@
 					$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
 				});
 				
-				callback(data, element, replace);
+				callback(data, element);
 			}
 		});
 	}
@@ -99,11 +99,11 @@
 		return myid.replace(/(:|\.|\[|\])/g,'\\$1');
 	}
 	
-	function listRemoveClick(toRemove, callback) {
+	function listRemoveClick(toRemove) {
 		var element = $(toRemove).parents('.element');
 		
 		$(toRemove).parents('div').first().remove();
-		surveyValueChanged(element, callback, true);
+		surveyValueChanged(element, function(data, element) {location.reload()});
 	}
 	
 	function listAddClick(element, callback) {
@@ -118,6 +118,6 @@
 		$(element).prev().before(copyHtml);
 		$(element).prev().prev().data('index', index);
 		
-		surveyValueChanged($(element).parents('.element'), callback, false);
+		surveyValueChanged($(element).parents('.element'), callback);
 	}
 </script>

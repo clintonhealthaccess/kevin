@@ -22,7 +22,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyValidQuestion")
-@Table(name="dhsst_survey_valid_question", uniqueConstraints=@UniqueConstraint(
+@Table(name="dhsst_survey_entered_question", uniqueConstraints=@UniqueConstraint(
 		columnNames={"question", "organisationUnit"})
 )
 public class SurveyEnteredQuestion  {

@@ -42,6 +42,8 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyObjective
@@ -274,6 +276,38 @@ class DomainSpec extends IntegrationTests {
 //		then:
 //		thrown ValidationException
 //	}
+	
+	def "average type cannot be invalid"() {
+		when:
+		new Average(expressions: [:], code:"C", type:new Type("123")).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "sum type cannot be invalid"() {
+		when:
+		new Sum(expressions: [:], code:"SUM", type:new Type("123")).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "data element type cannot be invalid"() {
+		when:
+		new DataElement(names:j(["en":"Expression"]), code:"DATA", type:new Type("123")).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "expression type cannot be invalid"() {
+		when:
+		new Expression(names:j(["en":"Expression"]), code:"EXPR", type:new Type("123"), expression:"1").save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
 
 	def "expression type cannot be null"() {
 		when:

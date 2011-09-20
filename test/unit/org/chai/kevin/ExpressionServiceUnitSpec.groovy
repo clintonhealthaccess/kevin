@@ -48,25 +48,8 @@ class ExpressionServiceUnitSpec extends UnitSpec {
 		where:
 		expression	| map					| newExpression
 		"1"			| new HashMap()			| "1"
-		"\$1"		| ["1": "test"]	| "test"
+		"\$1"		| ["\$1": "test"]	| "test"
 	}
-	
-	def "test expression validation"() {
-		
-		expect:
-		valid == expressionService.expressionIsValid(formula)
-		
-		where:
-		formula			| valid
-		"(1"			| false
-		"if((10,1,0)"	| false
-		"123"			| true
-		"\$1 == 1"		| true
-		"\$1 == \"a\""	| true
-		"if (\$1 == null) true else false"	| true
-		
-	}
-	
 	
 	
 }

@@ -41,14 +41,15 @@ grails.project.dependency.resolution = {
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
 		inherit false 
-        grailsPlugins()
+//        grailsPlugins()
         grailsHome()
         grailsCentral()
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         mavenLocal()
-        mavenCentral()
+		mavenRepo "http://m2repo.spockframework.org/snapshots"
+//        mavenCentral()
 //		mavenRepo "http://snapshots.repository.codehaus.org"
 //		mavenRepo "http://repository.codehaus.org"
 //		mavenRepo "http://download.java.net/maven/2/"
@@ -56,17 +57,17 @@ grails.project.dependency.resolution = {
 //		mavenRepo "http://repository.jboss.org/nexus/"
 //		mavenRepo "https://maven.nuxeo.org/nexus/"
 //		mavenRepo "http://www.intalio.org/public/maven2/"
-		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
+//		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 		
-		/**
-		 * Configure our resolver.
-		 */
-		def libResolver = new GrailsRepoResolver(null, null);
-		libResolver.addArtifactPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]")
-		libResolver.addIvyPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/ivys/ivy-[revision].xml")
-		libResolver.name = "github"
-//		libResolver.settings = ivySettings
-		resolver libResolver
+//		/**
+//		 * Configure our resolver.
+//		 */
+//		def libResolver = new GrailsRepoResolver(null, null);
+//		libResolver.addArtifactPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]")
+//		libResolver.addIvyPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/ivys/ivy-[revision].xml")
+//		libResolver.name = "github"
+////		libResolver.settings = ivySettings
+//		resolver libResolver
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
@@ -79,6 +80,9 @@ grails.project.dependency.resolution = {
 		compile ('org.hisp.dhis:dhis-support-hibernate:2.3-SNAPSHOT') {
 			transitive = false
 		}
+		test ('org.hisp.dhis:dhis-support-system:2.3-SNAPSHOT') {
+			transitive = false
+		}
 		compile ('org.amplecode:quick:1.5') {
 			transitive = false
 		} 
@@ -88,7 +92,6 @@ grails.project.dependency.resolution = {
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
-
 		//		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
 		test "org.codehaus.geb:geb-spock:0.6.0"
 		test("org.seleniumhq.selenium:selenium-chrome-driver:2.0rc2")

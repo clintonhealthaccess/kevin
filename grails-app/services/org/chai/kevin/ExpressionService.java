@@ -59,10 +59,6 @@ import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.jaql.json.type.JsonValue;
-import com.ibm.jaql.json.util.JsonUtil;
-import com.ibm.jaql.lang.Jaql;
-import com.ibm.jaql.lang.JaqlQuery;
-import com.ibm.jaql.lang.util.JaqlUtil;
 
 public class ExpressionService {
 
@@ -71,6 +67,7 @@ public class ExpressionService {
 	private DataService dataService;
 	private OrganisationService organisationService;
 	private ValueService valueService;
+	private JaqlService jaqlService;
 
 	private Map<Class<?>, ValueCalculator<?>> calculatorMap = new HashMap<Class<?>, ValueCalculator<?>>();
 	
@@ -299,12 +296,8 @@ public class ExpressionService {
 				}
 				else {
 					try {
-						value = evaluate(expression.getExpression(), expression.getType(), valueMap, typeMap);
-						if (value == null) {
-							status = Status.INVALID;
-							value = Value.NULL;
-						}
-						else status = Status.VALID;
+						value = jaqlService.evaluate(expression.getExpression(), expression.getType(), valueMap, typeMap);
+						status = Status.VALID;
 					} catch (IllegalArgumentException e) {
 						value = Value.NULL;
 						status = Status.ERROR;
@@ -312,7 +305,6 @@ public class ExpressionService {
 				}
 			}
 		}
-		value.getJsonValue();	
 		ExpressionValue expressionValue = new ExpressionValue(value, status, organisation.getOrganisationUnit(), expression, period);
 		
 		if (log.isDebugEnabled()) log.debug("getValue()="+expressionValue);
@@ -379,69 +371,6 @@ public class ExpressionService {
 		return result;
 	}
 	
-	@Transactional(readOnly=false)
-	public void refreshExpressions() {
-		for (ExpressionValue expressionValue : valueService.getOutdatedExpressions()) {
-			ExpressionValue newValue = calculate(expressionValue.getExpression(), expressionValue.getOrganisationUnit(), expressionValue.getPeriod());
-			expressionValue.setStatus(newValue.getStatus());
-			expressionValue.setValue(newValue.getValue());
-			valueService.save(expressionValue);
-		}
-		for (ExpressionValue expressionValue : valueService.getNonCalculatedExpressions()) {
-			ExpressionValue newValue = calculate(expressionValue.getExpression(), expressionValue.getOrganisationUnit(), expressionValue.getPeriod());
-			valueService.save(newValue);
-		}
-	}
-	
-	@Transactional(readOnly=false)
-	public void refreshCalculations() {
-		for (CalculationValue calculationValue : valueService.getOutdatedCalculations()) {
-			CalculationValue newValue = calculate(calculationValue.getCalculation(), calculationValue.getOrganisationUnit(), calculationValue.getPeriod());
-			calculationValue.setValue(newValue.getValue());
-			calculationValue.setHasMissingExpression(newValue.getHasMissingExpression());
-			calculationValue.setHasMissingValues(newValue.getHasMissingValues());
-			valueService.save(calculationValue);
-		}
-		for (CalculationValue calculationValue : valueService.getNonCalculatedCalculations()) {
-			CalculationValue newValue = calculate(calculationValue.getCalculation(), calculationValue.getOrganisationUnit(), calculationValue.getPeriod());
-			valueService.save(newValue);
-		}
-	}
-	
-	/**
-	 * return null if the expression is not typed correctly
-	 * 
-	 * @throws {@link IllegalArgumentException} if one of the arguments is null
-	 */
-	public static Value evaluate(String expression, Type type, Map<String, Value> variables, Map<String, Type> types) 
-			throws IllegalArgumentException {
-		
-		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+", variables="+variables+")");
-		JaqlQuery query = new JaqlQuery();
-		query.setQueryString(expression);
-		
-		try {
-			for (Entry<String, Value> variable : variables.entrySet()) {
-				JsonValue value = null;
-				if (!variable.getValue().isNull()) {
-					JaqlQuery varq = new JaqlQuery(types.get(variable.getKey()).getJaqlValue(variable.getValue()));
-					value = varq.evaluate();
-				}
-				query.setVar("$"+variable.getKey(), value);
-			}
-			if (log.isDebugEnabled()) log.debug("evaluating jaql query: "+query.toString());
-			JsonValue jsonValue = query.evaluate();
-			Value value = null;
-			if (jsonValue != null) {
-				value = type.getValueFromJaql(jsonValue.toString());
-			}
-			if (log.isDebugEnabled()) log.debug("evaluate(...)="+value);
-			return value;
-		} catch (Exception e) {
-			log.error("error evaluating: "+expression+", with variables: "+variables, e);
-			throw new IllegalArgumentException(e);
-		}
-	}
 
 	
 	private static <T extends Object> boolean hasNullValues(Collection<T> values) {
@@ -451,22 +380,23 @@ public class ExpressionService {
 		return false;
 	}
 
-	public static boolean expressionIsValid(String formula) {
-		Set<String> variables = getVariables(formula);
-		JsonValue nul = null;
-		try {
-			nul = new JaqlQuery("0").evaluate();
-		} catch (Exception e1) {}
-		JaqlQuery query = new JaqlQuery(formula);
-		for (String string : variables) {
-			query.setVar(string, nul);
+	// TODO do this for validation rules
+	public synchronized boolean expressionIsValid(String formula) {
+		Map<String, Data<?>> variables = getDataInExpression(formula);
+		
+		Map<String, String> jaqlVariables = new HashMap<String, String>();
+		for (Entry<String, Data<?>> variable : variables.entrySet()) {
+			Type type = variable.getValue().getType();
+			jaqlVariables.put(variable.getKey(), type.getJaqlValue(type.getPlaceHolderValue()));
 		}
+		
+		JsonValue value = null;
 		try {
-			query.evaluate();
-		} catch (Exception e) {
+			value = jaqlService.getJsonValue(formula, jaqlVariables);	
+		} catch (IllegalArgumentException e) {
 			return false;
 		}
-		return true;
+		return value != null;
     }
 	
     public static Set<String> getVariables(String expression) {
@@ -519,5 +449,9 @@ public class ExpressionService {
 
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
+	}
+	
+	public void setJaqlService(JaqlService jaqlService) {
+		this.jaqlService = jaqlService;
 	}
 }

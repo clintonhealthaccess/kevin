@@ -86,7 +86,7 @@ class EnumOptionController extends AbstractEntityController {
 	
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		Enum enume = Enum.get(params.enumId);
+		Enum enume = Enum.get(params.int('enumId'));
 		List<EnumOption> options = enume.enumOptions;
 		
 		render (view: '/entity/list', model:[

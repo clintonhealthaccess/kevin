@@ -13,7 +13,7 @@
 			<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
 			<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id"/>
 
-		    <li id="element-${surveyElement.id}">
+		    <li id="element-${surveyElement.id}" class="survey-element">
 				<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
 					value: enteredValue.value, 
 					lastValue: enteredValue.lastValue,

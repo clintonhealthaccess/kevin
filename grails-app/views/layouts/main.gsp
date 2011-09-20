@@ -76,7 +76,7 @@
 						<li><a href="#"><g:message code="header.navigation.administration" default="Administration"/></a>
 							<ul class="submenu">
 								<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
-								<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li>
+<!-- 								<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li> -->
 								<li><a href="${createLink(controller: 'dataElement', action:'list')}"><g:message code="header.navigation.dataelement" default="Data Element"/></a></li>
 								<li><a href="${createLink(controller: 'enum', action:'list')}"><g:message code="header.navigation.enum" default="Enum"/></a></li>
 								<li><a href="${createLink(controller: 'iteration', action:'list')}"><g:message code="header.navigation.iteration" default="Iterations"/></a></li>
@@ -509,8 +509,13 @@
 				$(this).parents('.info').find('.data-'+data).toggleClass('selected');
 				$(this).toggleClass('selected');
 			});
-						
+					
+			/**
+			 * cluetip
+			 **/
+			$('a.cluetip').cluetip(cluetipOptions);
 		});
+		
 		function toggleFacilityType() {
 			if ($('#facility-type-filter input').size() != 0) {
     			var checked = [];

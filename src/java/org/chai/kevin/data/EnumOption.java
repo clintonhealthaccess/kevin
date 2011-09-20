@@ -42,7 +42,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="EnumOption")
-@Table(name="enumoption")
+@Table(name="dhsst_enum_option")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class EnumOption extends Translatable {
 

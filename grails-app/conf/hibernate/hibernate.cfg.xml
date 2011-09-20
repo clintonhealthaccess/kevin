@@ -6,6 +6,8 @@
 <hibernate-configuration>
 
 	<session-factory>
+<!-- 	    <mapping class="org.chai.kevin.Translation" /> -->
+	    
 	    <mapping class="org.chai.kevin.data.Expression" />
 	    <mapping class="org.chai.kevin.data.Average" />
 	    <mapping class="org.chai.kevin.data.Sum" />

@@ -34,6 +34,7 @@ import org.apache.shiro.session.mgt.SessionFactory;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.util.Utils;
 
 class DataService {
@@ -49,6 +50,10 @@ class DataService {
 		
 	Enum getEnum(Long id) {
 		return sessionFactory.currentSession.get(Enum.class, id)
+	}
+	
+	Enum findEnumByCode(String code) {
+		return Enum.findByCode(code);
 	}
 	
 //	def searchConstants(String text) {

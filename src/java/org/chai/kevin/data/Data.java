@@ -21,6 +21,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Timestamped;
 import org.chai.kevin.Translation;
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueCalculator;
@@ -111,7 +112,7 @@ abstract public class Data<T extends StoredValue> implements Timestamped, Serial
 
 	@Transient
 	public boolean isAggregatable() {
-		return type.getType().equals("value");
+		return type.getType() == ValueType.NUMBER;
 	}
 	
 	@Override

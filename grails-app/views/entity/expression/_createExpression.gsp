@@ -11,13 +11,13 @@
 			<g:i18nInput name="names" bean="${expression}" value="${expression.names}" label="Name" field="names"/>
 			<g:i18nTextarea name="descriptions" bean="${expression}" value="${expression.descriptions}" label="Description" field="descriptions"/>
 			<g:input name="code" label="Code" bean="${expression}" field="code"/>
+			<g:input name="type.jsonType" label="Type" bean="${expression}" field="type"/>
+			
 			<g:textarea name="expression" label="Expression" bean="${expression}" field="expression" rows="5"/>
 			
 			<g:if test="${expression.id != null}">
 				<input type="hidden" name="id" value="${expression.id}"></input>
 			</g:if>
-			
-			<input type="hidden" name="type" value="NUMBER"></input>
 			
 			<div class="row">
 				<button type="submit">Save Expression</button>
@@ -53,7 +53,7 @@ $(document).ready(function() {
 	getDataElement(function(event){
 		if ($('.in-edition').size() == 1) {
 			var edition = $('.in-edition')[0]
-			$(edition).replaceSelection('['+$(this).data('code')+']');
+			$(edition).replaceSelection('$'+$(this).data('code'));
 		}
 	});
 	$('#add-expression textarea')

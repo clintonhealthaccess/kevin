@@ -46,7 +46,7 @@ public class ExpressionTagLib {
 		for (Entry<String, Data<?>> entry : dataElements.entrySet()) {
 			def dataElement = entry.getValue();
 			replacement.put(entry.getKey().toString(), 
-				"<span data-id=\""+dataElement.getId()+"\" class=\"element\"><a href=\"#\" class=\"no-link cluetip\" onclick=\"return false;\" rel=\""+g.createLink(controller:'expression', action:'getDataElementDescription', params:[dataElement: dataElement.id])+"\">["+dataElement.getId()+"]</a></span>"
+				"<span data-id=\""+dataElement.getId()+"\" class=\"element\"><a href=\"#\" class=\"no-link cluetip\" onclick=\"return false;\" rel=\""+g.createLink(controller:'dataElement', action:'getDescription', params:[dataElement: dataElement.id])+"\">["+dataElement.getId()+"]</a></span>"
 			);
 		}
 		out << expressionService.convertStringExpression(expression.expression, replacement);
