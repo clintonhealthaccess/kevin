@@ -1,4 +1,4 @@
-@import partials/base
+@import partials/mixins
 
 .entity-form-container
   +white-box
@@ -37,6 +37,16 @@
     float: right
     width: 470px
     
+    input.radio
+      width: auto
+  
+      label
+        font-weight: bold
+        margin-bottom: 2px
+    
+      #data
+        width: 600px
+    
   .data-field-column
     float: left
     width: 460px
@@ -47,20 +57,20 @@
   background-color: inherit
   
   .row
-    width: 300px
+    width: 400px
     margin: 4px
-    margin-bottom: 12px
     
     .error-list
       height: 14px
 
-    h5
-      float: left
-      
   input, textarea
     width: 290px
+    
+  input.radio
+    width: auto
   
   label
+    display: block
     font-weight: bold
     margin-bottom: 2px
     
@@ -88,4 +98,19 @@
 .ajax-search-field
   width: 300px
   
+ul.filtered
+  border: 1px solid lightGrey
+  padding: 4px
+  height: 270px
+  overflow: auto
+  
+  li
+    display: block
+    white-space: nowrap
+
+    span
+      color: grey
+
+  li:hover
+    background-color: yellow
     

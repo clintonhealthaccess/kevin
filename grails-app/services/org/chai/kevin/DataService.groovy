@@ -69,7 +69,9 @@ class DataService {
 //	}
 	
     def searchDataElements(String text) {
+		// TODO replace this by SQL query
 		def dataElements = DataElement.list();
+		
 		StringUtils.split(text).each { chunk ->
 			dataElements.retainAll { element ->
 				Utils.matches(chunk, element.id+"") ||

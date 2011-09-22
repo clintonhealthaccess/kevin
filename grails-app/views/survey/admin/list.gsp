@@ -6,13 +6,13 @@
 	<title><g:message code="default.list.label" args="[entityName]" /></title>
 	
 	<!-- for admin forms -->
-	<r:require modules="chosen,richeditor,fieldselection,cluetip,form,dropdown,datepicker"/>
+	<r:require modules="chosen,richeditor,fieldselection,cluetip,form,dropdown,datepicker,list"/>
 	
 </head>
 <body>
 	
-	<div class="breadcrumbs">
-		<ul>
+	<div class="box margin-bottom-10">
+		<ul class="inline-list">
 			<li>
 				<a href="${createLink(controller: 'survey', action:'list')}">Surveys</a>
 			</li>

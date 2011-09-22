@@ -1,4 +1,4 @@
-<div id="add-expression" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 	
 	<div class="entity-form-header">
 		<h3 class="title">Expression</h3>
@@ -11,8 +11,8 @@
 			<g:i18nInput name="names" bean="${expression}" value="${expression.names}" label="Name" field="names"/>
 			<g:i18nTextarea name="descriptions" bean="${expression}" value="${expression.descriptions}" label="Description" field="descriptions"/>
 			<g:input name="code" label="Code" bean="${expression}" field="code"/>
-			<g:input name="type.jsonType" label="Type" bean="${expression}" field="type"/>
 			
+			<g:textarea name="type.jsonType" label="Type" bean="${expression}" field="type"/>
 			<g:textarea name="expression" label="Expression" bean="${expression}" field="expression" rows="5"/>
 			
 			<g:if test="${expression.id != null}">

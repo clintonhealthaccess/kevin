@@ -1,4 +1,4 @@
-<div id="add-column" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">Create a Table Column </h3>
 		<g:locales />
@@ -8,7 +8,7 @@
 	<div id="add-column-col">
 	<g:form url="[controller:'tableColumn', action:'save']" useToken="true">
 		<div class="row">
-			<label class="display-in-block">Table Name :</label>
+			<label>Table Name :</label>
 			<input type="text" value="${i18n(field: column.question.tableNames)}" class="idle-field" disabled />
 		</div>
 		<input type="hidden" name="question.id"  value="${column.question?.id}" />
@@ -19,7 +19,7 @@
 		<g:input name="order" label="Order" bean="${column}" field="order"/>
 		
 		<div class="row ${hasErrors(bean:column, field:'groupUuidString', 'errors')}">
-			<label for="groups" class="display-in-block">Organisation Unit Group:</label>
+			<label for="groups">Organisation Unit Group:</label>
 				<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
 					<g:each in="${groups}" var="group">
 						<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>

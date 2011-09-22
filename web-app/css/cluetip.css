@@ -1,40 +1,10 @@
-/* line 58, ../../src/stylesheets/partials/_base.sass */
-.red { color: red; }
-
-/* line 61, ../../src/stylesheets/partials/_base.sass */
-.hidden { display: none; }
-
-/* line 64, ../../src/stylesheets/partials/_base.sass */
-.float-left { float: left; }
-
-/* line 67, ../../src/stylesheets/partials/_base.sass */
-.float-right { float: right; }
-
-/* line 70, ../../src/stylesheets/partials/_base.sass */
-.box { border: 1px solid #dddddd; background-color: #f4f4f4; padding: 8px; }
-
-/* line 73, ../../src/stylesheets/partials/_base.sass */
-.margin-top { margin-top: 20px; }
-
-/* line 76, ../../src/stylesheets/partials/_base.sass */
-.bold { font-weight: bold; }
-
-/* line 79, ../../src/stylesheets/partials/_base.sass */
-.italic { font-style: italic; }
-
-/* line 82, ../../src/stylesheets/partials/_base.sass */
-.white-box { border: 1px solid #cccccc; background-color: white; padding: 2px; border: 0px; }
-
-/* line 86, ../../src/stylesheets/partials/_base.sass */
-.clear { clear: both; }
-
-/* line 4, ../../src/stylesheets/cluetip.sass */
+/* line 2, ../../src/stylesheets/cluetip.sass */
 #cluetip-inner .type { font-weight: bold; }
-/* line 7, ../../src/stylesheets/cluetip.sass */
+/* line 5, ../../src/stylesheets/cluetip.sass */
 #cluetip-inner .row { margin-bottom: 4px; }
-/* line 11, ../../src/stylesheets/cluetip.sass */
+/* line 9, ../../src/stylesheets/cluetip.sass */
 #cluetip-inner .enum li { display: block; clear: both; }
-/* line 15, ../../src/stylesheets/cluetip.sass */
+/* line 13, ../../src/stylesheets/cluetip.sass */
 #cluetip-inner .enum li .name { float: left; width: 160px; white-space: normal; }
-/* line 20, ../../src/stylesheets/cluetip.sass */
+/* line 18, ../../src/stylesheets/cluetip.sass */
 #cluetip-inner .enum li .value { float: left; width: 80px; }

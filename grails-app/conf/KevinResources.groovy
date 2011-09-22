@@ -1,16 +1,30 @@
 modules = {
+
+	// special module for print, let's see if we move 
+	// that somewhere else later
+	print2 {
+		resource url: '/css/print.css'
+	}
 	
+	// overrides, let's put jquery in the core bundle
+	overrides {
+		jquery {
+			defaultBundle 'core'
+		}
+	}
+	
+	// modules
 	core {
 		dependsOn 'jquery, spinner'
 		
-		resource url: '/css/screen.css'
-		resource url: '/css/print.css', attrs: [media: 'print']
+		resource url: '/css/main.css', bundle: 'core'
 	}
 	
 	spinner {
 		dependsOn 'jquery'
 		
-		resource url: '/js/spinner.js'
+		resource url: '/js/spinner.js', bundle: 'core'
+		resource url: '/css/spinner.css', bundle: 'core'
 	}
 	
 	fliptext {
@@ -77,64 +91,74 @@ modules = {
 	}
 	
 	foldable {
-		resource url: '/js/foldable_init.js'
-		resource url: '/css/foldable.css'
+		dependsOn 'jquery'
+		
+		resource url: '/js/foldable_init.js', bundle: 'core'
+		resource url: '/css/foldable.css', bundle: 'core'
 	}
 	
 	dropdown {
-		resource url: '/js/dropdown_init.js'
-		resource url: '/css/dropdown.css'
+		dependsOn 'jquery'
+		
+		resource url: '/js/dropdown_init.js', bundle: 'core'
+		resource url: '/css/dropdown.css', bundle: 'core'
 	}
 	
 	nicetable {
-		resource url: '/js/nicetable_init.js'
-		resource url: '/css/nicetable.css'
+		dependsOn 'jquery'
+		
+		resource url: '/js/nicetable_init.js', bundle: 'core'
+		resource url: '/css/nicetable.css', bundle: 'core'
 	}
 	
 	explanation {
-		resource url: '/js/explanation_init.js'
-		resource url: '/css/explanation.css'
+		dependsOn 'jquery'
+		
+		resource url: '/js/explanation_init.js', bundle: 'core'
 	}
 
 	report {
-		resource url: '/js/report_init.js'
+		dependsOn 'jquery'
+		
+		resource url: '/js/report_init.js', bundle: 'core'
+	}
+	
+
+	// Start resources for pages	
+	list {
+		dependsOn 'core'
+		
+		resource url: '/css/list.css'
+	}
+	
+	survey {
+		dependsOn 'core'
+		
+		resource url: '/css/survey.css'
+	}
+	
+	dsr {
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,report'
+		
+		resource url: '/css/dsr.css'
+	}
+	
+	dashboard {
+		dependsOn 'core,cluetip,dropdown,nicetable,explanation,report'
+		
+		resource url: '/css/dashboard.css'
+	}
+	
+	maps {
+		dependsOn 'core,url,dropdown,explanation'
+		
+		resource url: '/css/maps.css'
+	}
+	
+	cost {
+		dependsOn 'core,dropdown,nicetable,explanation'
+		
+		resource url: '/css/cost.css'
 	}
 	
 }
-
-// reports (DSR)
-//<g:javascript src="jquery/fliptext/jquery.mb.flipText.js" />
-// reports (MAPS)
-//<g:javascript src="jquery/url/jquery.url.js" />
-// reports (MAPS)
-//<g:javascript src="jquery/url/jquery.url.js" />
-// survey (summary page)
-//<g:javascript src="jquery/progressbar/jquery.progressbar.js" />
-// reports (maps + charts, in maps and dashboard)
-//<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-// all application
-//<g:javascript src="spinner.js"/>
-// survey
-//<g:javascript src="jquery/datepicker/glDatePicker.js" />
-//<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/datepicker',file:'datepicker.css')}"/ >
-
-// admin forms (only survey)
-//<g:javascript src="jquery/chosen/chosen.jquery.js" />
-//<g:javascript src="jquery/chosen/ajax-chosen.js" />
-//<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/chosen',file:'chosen.css')}"/ >
-
-// admin forms (survey only)
-//<g:javascript src="richeditor/nicEdit.js" />
-// admin forms (expression + skip rule + validation rule)
-//<g:javascript src="jquery/fieldselection/jquery.fieldselection.js" />
-
-// ajax forms (dsr, dashboard, maps, cost + admin lists)
-//<g:javascript src="jquery/form/jquery.form.js" />
-
-// reports + admin list screens + admin forms
-//<g:javascript src="jquery/cluetip/jquery.cluetip.js" />
-//<g:javascript src="jquery/cluetip/lib/jquery.hoverIntent.js" />
-//<link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery/cluetip',file:'jquery.cluetip.css')}"/ >
-
-
-

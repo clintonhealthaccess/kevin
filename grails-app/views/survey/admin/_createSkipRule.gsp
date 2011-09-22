@@ -9,7 +9,7 @@
 		<g:form url="[controller:'surveySkipRule', action:'save']" useToken="true">
 			<input type="hidden" name="survey.id" value="${skip.survey.id}" />
 			<div class="row">
-				<label class="display-in-block">Survey</label>
+				<label>Survey</label>
 			 	<input type="text" name="survey.id" value="${i18n(field: skip.survey.names)}" class="idle-field" disabled />
 		 	</div>
 		 	<g:i18nTextarea name="descriptions" bean="${skip}" value="${skip?.descriptions}" label="Descriptions" field="descriptions" />
@@ -30,7 +30,7 @@
 			</div>
 
 			<div class="row s${hasErrors(bean:skip, field:'skippedSurveyQuestions', 'errors')}">
-				<label class="display-in-block">Skipped Questions: </label>
+				<label>Skipped Questions: </label>
 				<select id="questions-list" name="skippedSurveyQuestions" multiple="true" class="ajax-search-field">
 					<g:if test="${!skip.skippedSurveyQuestions.isEmpty()}">
 						<g:each in="${skip.skippedSurveyQuestions}" var="question">

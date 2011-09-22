@@ -11,13 +11,13 @@
         	<r:require modules="form"/>
         </shiro:hasPermission>
         
-        <r:require modules="cluetip,dropdown,nicetable,explanation,report"/>
+        <r:require module="dashboard"/>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     </head>
     <body>
 		<div id="dashboard">
 			<div id="corner" class="box">
-				<h5><g:message code="dashboard.labels.iteration" default="Iteration"/></h5>
+				<span class="bold"><g:message code="dashboard.labels.iteration" default="Iteration"/></span>
 				<div class="dropdown white-dropdown">
 					<a class="selected" href="#"><g:dateFormat format="yyyy" date="${dashboard.currentPeriod.startDate}"/></a>
 					<div class="hidden dropdown-list">
@@ -34,9 +34,9 @@
 				</div>
 			</div>
 		
-			<div id="top" class="box">
-	    		<h5 class="float"><g:message code="dashboard.labels.objectives" default="Objectives"/></h5>
-		    	<ul>
+			<div id="top" class="box margin-bottom-10">
+	    		<span class="bold"><g:message code="dashboard.labels.objectives" default="Objectives"/></span>
+		    	<ul class="inline-list">
 		    		<g:each in="${dashboard.objectivePath}" var="objective">
 			    		<li>
 			    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
@@ -50,8 +50,8 @@
 	    	
 	    	<div id="bottom">
 	    		<div id="left">
-			    	<div class="box">
-			    		<h5><g:message code="dashboard.labels.organisations" default="Organisations"/></h5>
+			    	<div class="box margin-bottom-10">
+			    		<div class="bold"><g:message code="dashboard.labels.organisations" default="Organisations"/></div>
 				    	<ul>
 				    		<g:each in="${dashboard.organisationPath}" var="organisation">
 					    		<li>
@@ -65,7 +65,7 @@
 			    	</div>
 			    	
 			    	<div class="box" id="facility-type-filter">
-			    		<h5><g:message code="dashboard.labels.facility" default="Facility Types"/></h5>
+			    		<div class="bold"><g:message code="dashboard.labels.facility" default="Facility Types"/></div>
 			    		<g:if test="${!dashboard.facilityTypes.isEmpty()}">
 				    		<g:each in="${dashboard.facilityTypes}" var="group">
 					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}<br/>

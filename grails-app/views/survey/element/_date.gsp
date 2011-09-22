@@ -11,15 +11,17 @@
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
 	</div>
 </div>
-<script type="text/javascript">
-	$(document).ready(
-		function() {
-			$('#date-${surveyElement.id}-${suffix}').glDatePicker({
-				onChange : function(target, newDate) {
-					target.val(newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear());
-					target.trigger('change')
-				}
-			});
-		}
-	);
-</script>
+<g:if test="${!print}">
+	<script type="text/javascript">
+		$(document).ready(
+			function() {
+				$('#date-${surveyElement.id}-${suffix}').glDatePicker({
+					onChange : function(target, newDate) {
+						target.val(newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear());
+						target.trigger('change')
+					}
+				});
+			}
+		);
+	</script>
+</g:if>

@@ -1,6 +1,6 @@
 <div class="entity-list">
 	<div id="entities">
-		<h5>
+		<h5 class="float-left">
            	<g:message code="default.list.label" args="[entityName]" />
 		</h5>
 		<g:if test="${flash.message}">

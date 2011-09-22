@@ -15,7 +15,7 @@
 		</div>
 		<div class="row">
 			<div class="${hasErrors(bean:objective, field:'groupUuidString', 'errors')}">
-				<label for="groups" class="display-in-block">Organisation Unit Group:</label>
+				<label for="groups">Organisation Unit Group:</label>
 					<select name="groupUuids" multiple="multiple" size="5" >
 						<g:each in="${groups}" var="group">
 							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>

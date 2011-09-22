@@ -3,7 +3,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
 		<title><g:message code="survey.objectivePage.label" default="District Health System Portal" /></title>
-		<r:require module="datepicker"/>
+		
+		<r:require modules="survey,datepicker"/>
 	</head>
 	<body>
 		<div id="survey">

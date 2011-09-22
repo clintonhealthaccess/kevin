@@ -11,14 +11,14 @@
         	<r:require modules="form,cluetip"/>
         </shiro:hasPermission>
         
-        <r:require modules="dropdown,nicetable,explanation"/>
+        <r:require modules="cost"/>
     </head>
     <body>
     	<div id="cost">
-			<div id="top" class="box">
+			<div class="box margin-bottom-10">
 				<div class="filter">
-					<h5><g:message code="costing.labels.iteration" default="Iteration"/></h5>
-					<div class="dropdown white-dropdown">
+					<span class="bold"><g:message code="costing.labels.iteration" default="Iteration"/></span>
+					<span class="dropdown white-dropdown">
 						<a href="#" class="selected"><g:dateFormat format="yyyy" date="${costTable.currentPeriod.startDate}"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
@@ -31,11 +31,11 @@
 								</g:each>
 							</ul>
 						</div> 
-					</div>
+					</span>
 				</div>
 				<div class="filter">
-					<h5><g:message code="costing.labels.organisation" default="Organisation"/></h5>
-					<div class="dropdown white-dropdown">
+					<span class="bold"><g:message code="costing.labels.organisation" default="Organisation"/></span>
+					<span class="dropdown white-dropdown">
 						<g:if test="${costTable.currentOrganisation != null}">
 							<a href="#" class="selected">${costTable.currentOrganisation.name}</a>
 						</g:if>
@@ -47,11 +47,11 @@
 								<g:render template="/templates/organisationTree" model="[controller: 'cost', action: 'view',organisation: organisationTree,current: costTable.currentOrganisation, params:[period: costTable.currentPeriod.id, objective: costTable.currentObjectiveId], displayLinkUntil: displayLinkUntil]"/>
 							</ul>
 						</div>
-					</div>
+					</span>
 				</div>
 				<div class="filter">
-					<h5><g:message code="costing.labels.objective" default="Strategic Objective"/></h5>
-					<div class="dropdown white-dropdown">
+					<span class="bold"><g:message code="costing.labels.objective" default="Strategic Objective"/></span>
+					<span class="dropdown white-dropdown">
 						<g:if test="${costTable.currentObjective != null}">
 							<a href="#" class="selected"><g:i18n field="${costTable.currentObjective.names}"/></a>
 						</g:if>
@@ -84,7 +84,7 @@
 								<span><g:message code="costing.labels.noobjectivesfound" default="no objectives found"/></span>
 							</g:else>
 						</div>
-					</div>
+					</span>
 				</div>
 				<div class="clear"></div>
 				<shiro:hasPermission permission="admin:cost">					

@@ -9,15 +9,15 @@
 			<r:require modules="form,cluetip"/>
         </shiro:hasPermission>
         
-        <r:require modules="url,dropdown,explanation"/>
+        <r:require modules="maps"/>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     </head>
     <body>
     	<div id="maps">
-			<div id="top" class="box">
+			<div class="box margin-bottom-10">
 				<div class="filter">
-					<h5>Iteration</h5>
-					<div class="dropdown dropdown-period white-dropdown">
+					<span class="bold">Iteration</span>
+					<span class="dropdown dropdown-period white-dropdown">
 						<a class="selected" href="#" data-period="${currentPeriod.id}" data-type="period"><g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
@@ -30,11 +30,11 @@
 								</g:each>
 							</ul>
 						</div> 
-					</div>
+					</span>
 				</div>
 				<div class="filter">
-					<h5>Organisation:</h5>
-					<div class="dropdown dropdown-organisation white-dropdown">
+					<span class="bold">Organisation:</span>
+					<span class="dropdown dropdown-organisation white-dropdown">
 						<g:if test="${currentOrganisation != null}">
 							<a class="selected" href="#" data-organisation="${currentOrganisation.id}" data-type="organisation">${currentOrganisation.name}</a>
 						</g:if>
@@ -46,11 +46,11 @@
 								<g:render template="/templates/organisationTree" model="[controller: 'maps', action: 'view', organisation: organisationTree, params:[period: currentPeriod.id, objective: currentTarget?.id], displayLinkUntil: displayLinkUntil]"/>
 							</ul>
 						</div>
-					</div>
+					</span>
 				</div>
 				<div class="filter">
-					<h5>Target:</h5>
-					<div class="dropdown dropdown-target white-dropdown">
+					<span class="bold">Target:</span>
+					<span class="dropdown dropdown-target white-dropdown">
 						<g:if test="${currentTarget != null}">
 							<a class="selected" href="#" data-target="${currentTarget.id}" data-type="target"><g:i18n field="${currentTarget.names}"/></a>
 						</g:if>
@@ -80,7 +80,7 @@
 							<g:else>
 								<span>no targets found</span>
 							</g:else>
-						</div>
+						</span>
 					</div>
 				</div>
 		   		<shiro:hasPermission permission="admin:maps">
@@ -92,7 +92,7 @@
 			</div>
     		<div id="center" class="box">
     			<div id="maps-container">
-	    			<div id="maps-explanation" class="explanation-row"></div>
+	    			<div id="maps-explanation" class="explanation-row margin-bottom-10"></div>
 	    			<div id="map_canvas"></div>
     			</div>
     			

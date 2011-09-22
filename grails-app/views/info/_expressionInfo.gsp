@@ -4,7 +4,7 @@
 		<div class="red bold">Some values are missing.</div>
 	</g:if>
 	<div class="average">
-		<h5>Value:</h5>
+		<span class="bold">Value:</span>
 		<span class="value">
 			<g:if test="${info.value.numberValue != null}">
 				<g:formatNumber number="${info.value.numberValue * 100}" format="#0.0"/>%
@@ -12,7 +12,7 @@
 			<g:else>N/A</g:else>
 		</span>
 		<g:if test="${info.maxValue != null}">
-			<h5>Range:</h5>
+			<span class="bold">Range:</span>
 			<span>0 - ${info.maxValue}</span>
 		</g:if>
 		<div class="clear"></div>
@@ -23,7 +23,7 @@
 			<a href="#" class="cluetip" title="${i18n(field: info.expression.names)}" onclick="return false;" rel="${createLink(controller:'expression', action:'getDescription', id:info.expression.id)}"><g:i18n field="${info.expression.names}"/></a>
 		</div>
 		<div>
-			<h5>Equation</h5>
+			<span class="bold">Equation</span>
 			<div>
 				<div><g:expression expression="${info.expression}"/></div>
 			</div>
@@ -31,7 +31,7 @@
 	</div>
 	<g:if test="${info.valuesForOrganisation != null}">
 		<div class="span box">
-			<h5>Data</h5>
+			<span class="bold">Data</span>
 			<table><g:each in="${info.valuesForOrganisation}" var="data">
 				<g:set var="dataElement" value="${data.key}"/>
 				<g:set var="dataValue" value="${data.value}"/>
@@ -61,9 +61,9 @@
 	</g:if>
 	
 	<div>
-		<h5>
+		<span class="bold">
 			<a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Trend</a>
-		</h5>
+		</span>
 		<div class="span box hidden">
 			<g:render template="/chart/chart" model="[data: info.expression.id, organisation: info.organisation.id, maxValue: info.maxValue]"/>
 		</div>
