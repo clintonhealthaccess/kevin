@@ -52,7 +52,7 @@ import org.hisp.dhis.period.Period;
 		@UniqueConstraint(columnNames={"calculation", "organisationUnit", "period"})
 	}
 )
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class CalculationValue extends StoredValue {
 
 	private Long id;

@@ -23,7 +23,7 @@
 			<div class="clear"></div>
 			
 			<div class="selectable" data-type="AGGREGATION">
-				<div class="group-list ${hasErrors(bean:target, field:'expression', 'errors')}">
+				<div class="${hasErrors(bean:target, field:'expression', 'errors')}">
 					<label for="expression.id">Expression:</label>
 					<select class="expression-list" name="expression.id">
 						<option value="null">-- select an expression --</option>
@@ -82,8 +82,7 @@
 
 <div class="hidden flow-container"></div>
 
-
-<script type="text/javascript">
+<script type="text/javascript)">
 	$(document).ready(function() {
 		$('#add-maps-target').flow({
 			addLinks: '#add-expression-link',

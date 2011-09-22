@@ -1,3 +1,5 @@
+<r:require module="foldable"/>
+
 <li class="${current?.id == organisation.id?'current':''} foldable">
 	<% params['organisation'] = organisation.id %>
 	<g:if test="${organisation.children != null}">

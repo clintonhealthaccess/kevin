@@ -331,8 +331,12 @@ class EditSurveyController extends AbstractReportController {
 	
 	private def getSurveyElements() {
 		def result = []
-		params.surveyElements.each { id ->
-			result.add(SurveyElement.get(id))
+		// TODO test this
+		if (params.surveyElements instanceof String) result.add(SurveyElement.get(params.int('surveyElements')))
+		else {
+			params.surveyElements.each { id ->
+				result.add(SurveyElement.get(id))
+			}
 		}
 		return result
 	}

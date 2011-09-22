@@ -3,6 +3,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
         <title><g:message code="maps.view.label" default="Maps" /></title>
+        
+        <!-- for admin forms -->
+		<shiro:hasPermission permission="admin:maps">
+			<r:require modules="form,cluetip"/>
+        </shiro:hasPermission>
+        
+        <r:require modules="url,dropdown,explanation"/>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     </head>
     <body>
     	<div id="maps">
@@ -92,7 +100,7 @@
 	  			<shiro:hasPermission permission="admin:maps">
 	    			<div class="hidden flow-container"></div>
 
-					<script type="text/javascript">
+					<r:script>
 						$(document).ready(function() {
 							$('#maps-container').flow({
 								onSuccess: function(data) {
@@ -102,13 +110,13 @@
 								}
 							});
 						});
-					</script>
+					</r:script>
 					</shiro:hasPermission>		    	
 					<div class="clear"></div>
     		</div>
     	</div>
     	
-    	<script type="text/javascript">
+    	<r:script>
     		var opacity = 0.6;
     		var opacitySelected = 0.9;
     		var opacityBackground = 0.8;
@@ -392,6 +400,6 @@
 			jQuery(document).ready(function() {
 				google.load("maps", "3", {"callback" : initialize, "other_params": "sensor=false"});
 			});
-    	</script>
+    	</r:script>
     </body>
 </html>

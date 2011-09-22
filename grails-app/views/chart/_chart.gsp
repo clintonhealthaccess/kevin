@@ -23,6 +23,5 @@
 				chart.draw(dataTable, {width: 480, height: 270, vAxis:{minValue: 0}, chartArea:{left: 32, top: 16, height: 224}, backgroundColor: "#F4F4F4"});
 			}
 		});
-		
 	}
 </script>

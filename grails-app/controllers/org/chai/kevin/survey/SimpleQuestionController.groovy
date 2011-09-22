@@ -70,7 +70,6 @@ class SimpleQuestionController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
-		entity.surveyElement.surveyQuestion = entity
 		entity.save()
 	}
 	def deleteEntity(def entity) {
@@ -81,8 +80,10 @@ class SimpleQuestionController extends AbstractEntityController {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):null
+		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
 		if (params.names!=null) entity.names = params.names
+		
+		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity
 	}
 	
 	def getQuestionExplainer = {

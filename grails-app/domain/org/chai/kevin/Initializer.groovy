@@ -361,11 +361,11 @@ class Initializer {
 		if (!Expression.count()) {
 			// indicators
 			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
-			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true)
-			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true)
-			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "\$"+DataElement.findByCode("CODE1").id+"+\$"+DataElement.findByCode("CODE1").id, type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true)
-			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "\$"+DataElement.findByCode("CODE2").id, type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true)
-			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\$"+DataElement.findByCode("CODE3").id, type: JSONUtils.TYPE_STRING, timestamp:new Date()).save(failOnError: true)
+			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "\$"+DataElement.findByCode("CODE1").id+"+\$"+DataElement.findByCode("CODE1").id, type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "\$"+DataElement.findByCode("CODE2").id, type: JSONUtils.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\$"+DataElement.findByCode("CODE3").id, type: JSONUtils.TYPE_STRING, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
 		}
 
 //		if (!Constant.count()) {
@@ -383,7 +383,7 @@ class Initializer {
 					type: JSONUtils.TYPE_NUMBER,
 					expression: "\$"+DataElement.findByCode("CODE1").id+" / 100",
 					timestamp:new Date()
-					).save(failOnError: true)
+					).save(failOnError: true, validate: false)
 			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2"), type: MapsTargetType.AGGREGATION).save(failOnError: true)
 
 
@@ -394,7 +394,7 @@ class Initializer {
 				type: JSONUtils.TYPE_NUMBER,
 				expression: "10 / 100",
 				timestamp:new Date()
-			).save(failOnError: true)
+			).save(failOnError: true, validate: false)
 			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression"), type: MapsTargetType.AGGREGATION, maxValue: 20d).save(failOnError: true, flush:true)
 			
 			def calculation1 = new Average(expressions: [

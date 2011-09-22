@@ -5,6 +5,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
         <title><g:message code="dashboard.view.label" default="Dashboard" /></title>
+        
+        <!-- for admin forms -->
+        <shiro:hasPermission permission="admin:dashboard">
+        	<r:require modules="form"/>
+        </shiro:hasPermission>
+        
+        <r:require modules="cluetip,dropdown,nicetable,explanation,report"/>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     </head>
     <body>
 		<div id="dashboard">
@@ -193,7 +201,7 @@
 		    		<shiro:hasPermission permission="admin:dashboard">
 		    			<div class="hidden flow-container"></div>
 						
-						<script type="text/javascript">
+						<r:script>
 							$(document).ready(function() {
 								$('#values').flow({
 									onSuccess: function(data){
@@ -203,7 +211,7 @@
 									}
 								});
 							});
-						</script>
+						</r:script>
 			    	</shiro:hasPermission>
 			    	<!-- ADMIN SECTION END -->
 			    </div>
@@ -212,7 +220,7 @@
 	    </div>
 	
     	<!-- dashboard specific functionality -->
-    	<script type="text/javascript">
+    	<r:script>
     		$(document).ready(function() {
     		
     			/**
@@ -225,46 +233,8 @@
     				return false;
     			});
     			
-    			/**
-    			 * facility type switcher
-    			 **/
-    			$('#facility-type-filter input').bind('click', function() {
-    				toggleFacilityType();
-    			});
-				
-    			toggleFacilityType();
     		});
-
-    		function addEvents(prefix) {
-    			$('#explanation-'+prefix+' .element').each(function(){
-	    			var id = $(this).data('id');
-    				var organisation = $(this).data('organisation');
-    				var objective = $(this).data('objective');
-    				var elementId = '#data-'+organisation+'-'+objective+'-'+id;
-    			
-    				$(this).bind('mouseenter mouseleave', function() {
-	    				$(elementId).toggleClass('highlighted');
-	    				$(this).toggleClass('highlighted');
-	    			});
-    				$(this).bind('mouseenter', function() {
-    					$(elementId).find('a.cluetip').mouseover();    					
-    				});
-    				$(this).bind('mouseleave', function() {
-    					$(elementId).find('a.cluetip').mouseleave();
-    				});
-	    			$(this).bind('click', function() {
-	    				if (!$(this).hasClass('selected')) {
-							$('.element').removeClass('selected');
-		   					$('.data').removeClass('selected');
-		    			}
-	   					$(elementId).toggleClass('selected');
-		   				$(this).toggleClass('selected');
-		   			});
-    			});
-    			
-    			$('a.cluetip').cluetip(cluetipOptions);
-    		}
-    	</script>
+    	</r:script>
     	<!-- explanation -->
     </body>
 </html>

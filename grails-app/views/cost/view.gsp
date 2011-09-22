@@ -5,6 +5,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
         <title><g:message code="cost.view.label" default="Costing" /></title>
+        
+        <!-- for admin forms -->
+        <shiro:hasPermission permission="cost:admin">
+        	<r:require modules="form,cluetip"/>
+        </shiro:hasPermission>
+        
+        <r:require modules="dropdown,nicetable,explanation"/>
     </head>
     <body>
     	<div id="cost">
@@ -150,7 +157,7 @@
 				<shiro:hasPermission permission="admin:cost">							
 	    			<div class="hidden flow-container"></div>
 
-					<script type="text/javascript">
+					<r:script>
 						$(document).ready(function() {
 							$('#values').flow({
 								onSuccess: function(data) {
@@ -160,14 +167,14 @@
 								}
 							});
 						});
-					</script>
+					</r:script>
 				</shiro:hasPermission>
 		    	<!-- ADMIN SECTION END -->
 				<div class="clear"></div>
     		</div>
     	</div>
     	
-    	<script type="text/javascript">
+    	<r:script>
     		$(document).ready(function(){
     			$('.cell.label').bind('click', function() {
     				var target = $(this).data('row');
@@ -175,6 +182,6 @@
     				return false;
     			});
     		});
-    	</script>
+    	</r:script>
     </body>
 </html>

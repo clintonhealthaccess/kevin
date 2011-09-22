@@ -22,7 +22,7 @@
 			
 			<div id="expressions-block">
 				<g:each status="i" in="${['','End']}" var="suffix">
-					<div class="group-list ${hasErrors(bean:target, field:'expression'+suffix, 'errors')}">
+					<div class="${hasErrors(bean:target, field:'expression'+suffix, 'errors')}">
 						<label for="expression${suffix}.id">${suffix} Expression:</label>
 						<select class="expression-list" name="expression${suffix}.id">
 							<option value="null">-- select an expression --</option>
@@ -89,9 +89,7 @@
     </g:form>
 	<div class="clear"></div>
 </div>
-
 <div class="hidden flow-container"></div>
-
 
 <script type="text/javascript">
 	$(document).ready(function() {

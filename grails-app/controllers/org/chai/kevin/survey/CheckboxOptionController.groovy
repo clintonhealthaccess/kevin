@@ -58,10 +58,10 @@ class CheckboxOptionController extends AbstractEntityController {
 
 	def getModel(def entity) {
 		[
-					option: entity,
-					groups: organisationService.getGroupsForExpression(),
-					groupUuids: Utils.split(entity.groupUuidString)
-				]
+			option: entity,
+			groups: organisationService.getGroupsForExpression(),
+			groupUuids: Utils.split(entity.groupUuidString)
+		]
 	}
 	
 	def html(def entity){
@@ -73,7 +73,6 @@ class CheckboxOptionController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
-		entity.surveyElement.surveyQuestion = entity.question
 		entity.save()
 		
 	}
@@ -85,7 +84,9 @@ class CheckboxOptionController extends AbstractEntityController {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):null
+		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
 		if (params.names!=null) entity.names = params.names
+		
+		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity.question
 	}
 }

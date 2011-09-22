@@ -121,6 +121,7 @@ public class SurveyCloner {
 	}
 
 	protected SurveyElement getElement(SurveyElement element) {
+		if (element == null) return null;
 		if (!elements.containsKey(element.getId())) {
 			SurveyElement copy = new SurveyElement(); 
 			elements.put(element.getId(), copy);

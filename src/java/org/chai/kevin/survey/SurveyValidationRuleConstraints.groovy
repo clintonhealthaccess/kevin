@@ -33,6 +33,7 @@ package org.chai.kevin.survey
  */
 constraints={
     surveyElement(nullable: false, blank:false)
+	prefix(nullable: false, blank: true)
     expression(nullable: false, blank:false)
 	validationMessage(nullable:false,blank:false)
 }

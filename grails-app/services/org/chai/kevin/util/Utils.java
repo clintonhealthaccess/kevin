@@ -47,7 +47,7 @@ public class Utils {
 
 	public static Set<String> split(String string) {
 		Set<String> result = new HashSet<String>();
-		if (string != null) result.addAll(Arrays.asList(StringUtils.split(string, ',')));
+		if (string != null) result.addAll(Arrays.asList(StringUtils.split(string.trim(), ',')));
 		return result;
 	}
 

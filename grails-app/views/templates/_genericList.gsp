@@ -34,7 +34,7 @@
 	<div class="clear"></div>
 </div>
 
-<script type="text/javascript">
+<r:script>
 	$(document).ready(function() {
 		$('#entities').flow({
 			onSuccess : function(data) {
@@ -44,4 +44,4 @@
 			}
 		});
 	});
-</script>
+</r:script>

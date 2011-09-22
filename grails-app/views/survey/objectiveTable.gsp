@@ -35,7 +35,7 @@
 			</tbody>
 		</table>
 	
-		<script type="text/javascript">
+		<r:script>
 			$(document).ready(function() {
 				$('.section-table-link').bind('click', function() {
     				var objective = $(this).data('objective');
@@ -45,6 +45,6 @@
     				return false;
     			});
 			});
-		</script>
+		</r:script>
 	</body>
 </html>

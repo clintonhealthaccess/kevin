@@ -51,16 +51,16 @@ public abstract class SurveyTranslatable extends Orderable implements Serializab
 	protected Translation descriptions = new Translation();
 	
 	@Embedded
-	@AttributeOverrides({
-    @AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
+		@AttributeOverrides({
+	    @AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
 	})
 	public Translation getNames() {
 		return names;
 	}
 	
 	@Embedded
-	@AttributeOverrides({
-    @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+		@AttributeOverrides({
+	    @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
 	})
 	public Translation getDescriptions() {
 		return descriptions;

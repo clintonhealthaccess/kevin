@@ -114,8 +114,8 @@ public class ValueService {
 					.set("organisationUnit", organisationUnit)
 					.set("expression", expression)
 				)
-				.setCacheable(true)
-				.setCacheRegion("org.hibernate.cache.ExpressionValueQueryCache")
+//				.setCacheable(true)
+//				.setCacheRegion("org.hibernate.cache.ExpressionValueQueryCache")
 				.uniqueResult();
 		}
 
@@ -131,8 +131,8 @@ public class ValueService {
 					.set("organisationUnit", organisationUnit)
 					.set("calculation", calculation)
 				)
-				.setCacheable(true)
-				.setCacheRegion("org.hibernate.cache.CalculationValueQueryCache")
+//				.setCacheable(true)
+//				.setCacheRegion("org.hibernate.cache.CalculationValueQueryCache")
 				.uniqueResult();
 		}
 		
@@ -150,6 +150,7 @@ public class ValueService {
 	        		 .set("period", period)
 	        		 .set("organisationUnit", organisation)
 	         );
+//			 .setCacheable(true);
 //	         .setCacheRegion("org.hibernate.cache.DataValueQueryCache");
 	
 			 DataValue value = (DataValue)criteria.uniqueResult();

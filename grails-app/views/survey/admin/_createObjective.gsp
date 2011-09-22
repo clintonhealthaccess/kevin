@@ -6,32 +6,25 @@
 	</div>
 
 	<g:form url="[controller:'objective', action:'save']" useToken="true">
-		<g:i18nInput name="names" bean="${objective}"
-			value="${objective?.names}" label="Name" field="names" />
-	   <g:i18nRichTextarea name="descriptions" bean="${objective}" value="${objective?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
+		<g:i18nInput name="names" bean="${objective}" value="${objective?.names}" label="Name" field="names" />
+	   	<g:i18nRichTextarea name="descriptions" bean="${objective}" value="${objective?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
+		
 		<div class="row">
-			<div id="survey-block">
-				<input type="hidden" name="survey.id" value="${objective.survey.id}" />
-			    <div class="row"><label for="survey">Survey:</label> <g:i18n field="${objective.survey.names}"/></div>
-		    <div class="clear"></div>
-
-			</div>
+			<input type="hidden" name="survey.id" value="${objective.survey.id}" />
+			<label>Survey:</label> <g:i18n field="${objective.survey.names}"/>
 		</div>
 		<div class="row">
-			<div id="orgunitgroup-block">
-				<div
-					class="group-list ${hasErrors(bean:objective, field:'groupUuidString', 'errors')}">
-					<label for="groups">Organisation Unit Group:</label>
-						<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
-							<g:each in="${groups}" var="group">
-								<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
-						           ${group.name}
-					            </option>
-							</g:each>
-						</select>
-					<div class="error-list">
-						<g:renderErrors bean="${objective}" field="groupUuidString" />
-					</div>
+			<div class="${hasErrors(bean:objective, field:'groupUuidString', 'errors')}">
+				<label for="groups" class="display-in-block">Organisation Unit Group:</label>
+					<select name="groupUuids" multiple="multiple" size="5" >
+						<g:each in="${groups}" var="group">
+							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
+					           ${group.name}
+				            </option>
+						</g:each>
+					</select>
+				<div class="error-list">
+					<g:renderErrors bean="${objective}" field="groupUuidString" />
 				</div>
 			</div>
 		</div>

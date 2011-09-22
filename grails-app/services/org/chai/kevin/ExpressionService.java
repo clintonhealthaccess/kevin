@@ -268,7 +268,7 @@ public class ExpressionService {
 	private ExpressionValue calculateValue(Expression expression, Period period, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",organisation="+organisation+")");
 		
-		Value value = null;
+		Value value;
 		Status status = null;
 		Map<String, Data<?>> datas = getDataInExpression(expression.getExpression());
 		if (hasNullValues(datas.values())) {
@@ -300,6 +300,7 @@ public class ExpressionService {
 						value = jaqlService.evaluate(expression.getExpression(), expression.getType(), valueMap, typeMap);
 						status = Status.VALID;
 					} catch (IllegalArgumentException e) {
+						log.error("there was an error evaluating expression: "+expression, e);
 						value = Value.NULL;
 						status = Status.ERROR;
 					}

@@ -1,62 +1,18 @@
-// This import applies a global reset to any page that imports this stylesheet.
-@import blueprint/reset
-// Import all the default blueprint modules so that we can access their mixins.
-@import blueprint
-// Import the non-default scaffolding module.
-@import blueprint/modules/scaffolding
-// To configure blueprint, edit the partials/base.sass file.
 @import partials/base
+@import partials/reset
+@import partials/default
 
-@import "compass/utilities/tables/scaffolding"
-@import "compass/utilities/lists/horizontal-list"
-@import "compass/utilities/lists/inline-list"
-@import "compass/utilities/lists/inline-block-list"
-@import "compass/css3/border-radius"
-
-// To generate css equivalent to the blueprint css but with your configuration applied, uncomment:
-// +blueprint
-+blueprint-global-reset
-
-//Recommended Blueprint configuration with scoping and semantic layout:
-body.bp
-  +blueprint-typography
-  +blueprint-utilities
-  +blueprint-debug
-  +blueprint-interaction
-  // Remove the scaffolding when you're ready to start doing visual design.
-  // Or leave it in if you're happy with how blueprint looks out-of-the-box
-  // +blueprint-scaffolding
-form.bp
-  +blueprint-form
-
-html
-  height: 100%
-
-body
-  background-color: $background-color
-  font-size: 77%
-  +normal-text
-  height: 100%
-  margin-top: 3px
-  
-// reset table
-body.bp table
-  th
-    background-color: inherit
-    font-weight: inherit
-a:hover
-  text-decoration: underline
-    
-   
 // Page layout can be done using mixins applied to your semantic classes and IDs:
-body.two-columns
+body
   #container
-    +container
     +white-box
     padding: 0px 0px 0px 0px
     height: auto !important
-    +box-round-corner
+    width: 990px
+    margin: 0 auto
+    overflow: hidden
     +box-drop-shadow
+    
     #content
       margin: 0px 2px 0px 2px
       padding: 0 0 10px 0
@@ -82,30 +38,8 @@ body.two-columns
     margin: 0 0 1px
     width: 100%
     background-repeat: no-repeat
+    background-image: url('../images/dhsst-banner.png')
     
-.ajax-search-field
-  width: 300px
-  
-.admin-table-list
-  table
-    background: #fff
-    margin 10px 1px 1px 1px
-  .admin-table-header
-    background: #739eee
-    color: #fff
-    font-weight: 600
-    text-align: center
-    a
-      color: #fff
-    a:hover
-      color: #fff
-    a:visited
-      color: #fff
-  .odd
-    background: #fff
-  .even
-    background: #739eee
-
 .display-in-block
   display: block
 
@@ -123,57 +57,7 @@ body.two-columns
     position: relative
     top: 50%
     
-.focus-field
-  border: solid 1px #73A6ff
-  background: #dbe5fb
-  color: #000
-  +field-round-corner
   
-.idle-field
-  background: #f7f9fe
-  color: #000
-  border: solid 1px #ababab
-  +field-round-corner
-  
-.completed-field
-  background: #ededed
-  color: #000
-  border: solid 1px #73A6ff
-  +field-round-corner
-
-.foldable
-  a.foldable-toggle
-    cursor: pointer
-    width: 20px
-    height: 20px
-    margin: -3px
-    display: block
-    float: left
-    text-indent: -9999px
-    background-image: url('../images/icons/toggle_plus.gif')
-    
-    &.toggled
-      background-image: url('../images/icons/toggle_minus.gif')
-     
-  &.opened > span, &.opened > a
-    font-weight: bold
-      
-  
-button
-  margin: 2px 3px 2px 2px
-  font-weight: bold
-  background: #73A6ff
-  color: #fff
-  border: solid 2px #739eee
-  +box-round-corner
-  
-button:hover
-  background: #739eee
-  
-select
-  background: #ededed
-  border: solid 1px #cccccc
-
 .locales
   float: right
   padding: 4px
@@ -185,7 +69,7 @@ select
   a.no-link
     font-weight: bold
 
-body.bp .breadcrumbs
+.breadcrumbs
   +grey-box
   margin-bottom: 2px
   height: 15px
@@ -209,7 +93,7 @@ body.bp .breadcrumbs
     a:hover
       text-decoration: underline
 
-body.bp .entity-list
+.entity-list
   +grey-box
     	    
   h5
@@ -257,20 +141,6 @@ body.bp .entity-list
     a:hover
       text-decoration: underline
 
-body.bp .white-dropdown
-  & > div
-    margin-top: -14px
-    +white-box
-    border-width: 2px
-    position: absolute
-    z-index: 10
-
-  ul
-    +inline-block-list
-    
-    li
-      display: block
-      margin: 4px
       
 .filter
   float: left
@@ -283,53 +153,25 @@ body.bp .white-dropdown
     float: left
     margin-right: 4px
 
+.flash-info
+  color: green
+  border-color: green
+    
+
 .errors 
   color: red
   input, select, textarea
     border-color: red
     
-.flash-info
-  color: green
-  border-color: green
-    
-div.error-list
-  font-size: 85%
-  color: red
-  ul
-    +inline-block-list
-    padding: 0
-    margin: 0
+  .error-list
+    font-size: 85%
+    color: red
       
     li
       display: block
       white-space: normal
 
-body.bp h5
-  margin-bottom: 0px
-  
-table.nice-table
-  .cell.value
-    opacity: 0.2
-
-  .highlighted.cell
-    opacity: 1
-    
-  .selected.cell
-    opacity: 1
-      
-  .highlighted.label, .selected.label
-    font-weight: bold
-    
-  .cell.me-selected
-    font-weight: bold
-    
-  .cell
-    cursor: default
-
-.italic
-  font-style: italic
-  
-body.bp ul.filtered
+ul.filtered
   border: 1px solid lightGrey
   padding: 4px
   height: 270px
@@ -344,68 +186,6 @@ body.bp ul.filtered
       
   li:hover
     background-color: yellow
-
-.entity-form-container
-  +white-box
-  +bordered-form-box
-  float: left
-  margin: 8px
-  padding: 10px 5px 10px 5px
-  +box-round-corner
-  +box-drop-shadow
-        
-  .entity-form-header
-    +field-round-corner
-    background-color: #739eee 
-    .title
-      float: left
-      color: #fff
-      margin: 3px 2px 2px 3px 
-    .locales
-      float: right
-      padding: 4px
-    
-      a
-        padding: 2px
-    
-      a.no-link
-        font-weight: bold
-  .forms-container 
-    width: 100%    
-  .data-search-column
-    float: right
-    width: 470px
-  .data-field-column
-    float: left
-    width: 460px
-    
-    
-
-.entity-form-container form
-  position: relative
-  border: none
-  background-color: inherit
-  
-  .row
-    width: 300px
-    margin: 4px
-    margin-bottom: 12px
-    
-    .error-list
-      height: 14px
-
-    h5
-      float: left
-      
-  input, textarea
-    width: 290px
-  
-  label
-    font-weight: bold
-    margin-bottom: 2px
-    
-  button
-    float: right
     
 #cost
   #top
@@ -469,7 +249,7 @@ body.bp ul.filtered
     margin-bottom: 10px
     .float
       +float-left
-      +column(2)
+
     ul
       +horizontal-list
     h5
@@ -485,11 +265,9 @@ body.bp ul.filtered
         width: 116px
         margin-bottom: 10px
         margin-right: 10px
-        
-        ul
-          +inline-block-list
-          li
-            display: block
+
+        li
+          display: block
             
 #dashboard #center
   width: 822px
@@ -515,10 +293,11 @@ body.bp ul.filtered
     height: inherit
   
   .cell
-    +column(2, true)
+    width: 73.333px
+    float: left
     div
       display: block
-      +border-radius(2px)
+      +round-corner(2px)
       height: 2em
       margin:
         top: 2px
@@ -543,67 +322,6 @@ body.bp ul.filtered
     width: 140px
 
 
-.explanation
-  +white-box
-  width: 100%
-  padding: 4px
-  
-  .highlighted div, .selected div, .highlighted, .selected
-    background: yellow
-    font-weight: bold
-
-  .info
-    margin-right: 18px
- 
-  .average
-    h5
-      float: left
-      padding-right: 4px
-      
-    span.value
-      float: left
-      color: red
-      padding-bottom: 4px
-      margin-right: 4px
-
-  div > ul
-    +inline-block-list
-    padding: 0px
-    margin: 0px
-    
-    li
-      width: 160px
-      margin-right: 8px
-      white-space: normal
-      
-  .span table
-    margin-bottom: 0px
-    th, td
-      margin-right: 4px
-      padding: 0px 4px 0px 0px
-
-    thead
-      font-weight: bold
-        
-    tbody
-      white-space: normal
-      
-    tbody td, thead th
-      text-align: right
- 
-  .element
-    &:hover
-      cursor: pointer
-    
-  .span
-    width: 100%
-    margin-top: 8px
-    margin-bottom: 4px
-    
-    div
-      margin-bottom: 4px
-      
-    
 #add-expression
   .row
     width: 290px
@@ -628,66 +346,11 @@ body.bp ul.filtered
   input, textarea 
     width: 240px
 
-#cluetip-inner
-  .type
-    font-weight: bold
 
-  .row
-    margin-bottom: 4px
-  
-  .enum
-    ul
-      +inline-block-list
-      
-    li
-      display: block
-      clear: both
-      
-      .name
-        +column(6, true)
-        white-space: normal
-        
-      .value
-        +column(3, true)
-       
-
-.ui-widget
-  .ui-widget-header
-    display: none
-  font-weight: normal
-  font-size: inherit
-  
-.red
-  color: red
-
-.hidden
-  display: none
-
-body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
+body a.no-link, body a.no-link:active, body a.no-link:visited
   text-decoration: none
   color: black
-  
-.float-left
-  float: left  
-
-.float-right
-  float: right
-
-.box
-  +grey-box
-  	    
-.ruler
-  +colruler
-
-.spacer
-  +colspacer
-  
-.margin-top
-  margin-top: 20px
-  
-.bold
-  font-weight: bold
-  
+    
 #dsr
   #values
     overflow: auto
@@ -790,23 +453,23 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
     padding : 5px
     margin-top: 8px
     margin-bottom: 2px
-    +box-top-round-corner
+    +top-round-corner(5px)
       
   .rounded-box-bottom
     +white-box
     padding : 5px
     margin-bottom: 8px
     margin-top: 2px
-    +box-bottom-round-corner
+    +bottom-round-corner(5px)
     
   .grey-rounded-box-top
     +grey-box
-    +box-top-round-corner
+    +top-round-corner(5px)
     padding: 3px
     
   .grey-rounded-box-bottom
     +grey-box
-    +box-bottom-round-corner
+    +bottom-round-corner(5px)
     padding: 3px
 
   // TODO check this
@@ -904,10 +567,10 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
         display: none
         
     .oddrow
-      +odd
+      background-color: #eee
       
     .evenrow
-      +even
+      background-color: #fff
         
   div.element-string
     display: block
@@ -1050,11 +713,6 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
           border-left: 5px #c32e06 solid
           
 
-          
-.white-box
-  +white-box
-  border: 0px
-      
 #add-question
   input.radio
     width: auto
@@ -1070,7 +728,7 @@ body.bp a.no-link, body.bp a.no-link:active, body.bp a.no-link:visited
   border-spacing: 4px
   td
     border: 1px solid #c7c7c7
-    +box-round-corner
+    +round-corner
     .option-element
       font-weight: bold
       span

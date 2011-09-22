@@ -9,7 +9,7 @@
 	<g:form url="[controller:'dataElement', action:'save']" useToken="true">
 	
 		<g:i18nInput name="names" bean="${dataElement}" value="${dataElement.names}" label="Name" field="names" />
-		<g:i18nRichTextarea name="descriptions" bean="${dataElement}" value="${dataElement.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
+		<g:i18nTextarea name="descriptions" bean="${dataElement}" value="${dataElement.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
 		
 		<g:input name="code" label="Code" bean="${dataElement}" field="code"/>
 		<g:input name="type.jsonType" label="Type" bean="${dataElement}" field="type"/>

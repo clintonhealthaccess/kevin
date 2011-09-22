@@ -46,7 +46,7 @@ import org.chai.kevin.util.JSONUtils;
 public class Translation implements Map<String, String>, Serializable {
 	
 	private static final long serialVersionUID = 659167226523919292L;
-	private String jsonText = "";
+	private String jsonText = " ";
 	
 	@Lob
 	@Column(nullable=false)
@@ -56,6 +56,7 @@ public class Translation implements Map<String, String>, Serializable {
 	
 	public void setJsonText(String jsonText) {
 		this.jsonText = jsonText;
+		if (this.jsonText.isEmpty()) this.jsonText = " ";
 		reloadMap();
 	}
 	
@@ -73,7 +74,7 @@ public class Translation implements Map<String, String>, Serializable {
 	@Override
 	@Transient
 	public void clear() {
-		setJsonText("");
+		setJsonText(" ");
 	}
 	
 	@Override

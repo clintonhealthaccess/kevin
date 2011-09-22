@@ -77,11 +77,11 @@ public class SurveyEnteredQuestion  {
 	
 	@OneToMany(targetEntity=SurveySkipRule.class)
 	@JoinTable(name="dhsst_survey_question_skipped")
-	public Set<SurveySkipRule> getSkipped() {
+	public Set<SurveySkipRule> getSkippedRules() {
 		return skipped;
 	}
 	
-	public void setSkipped(Set<SurveySkipRule> skipped) {
+	public void setSkippedRules(Set<SurveySkipRule> skipped) {
 		this.skipped = skipped;
 	}
 

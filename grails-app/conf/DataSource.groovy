@@ -47,7 +47,9 @@ dataSource {
 hibernate {
 	cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
 	naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
-//	flush.mode = 'commit'
+	// performance improvement, but keep in mind that it might 
+	// affect data consistency
+	flush.mode = 'commit'
 //	show_sql = true
 }
 naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
@@ -63,8 +65,8 @@ environments {
 			password = "";
 		}
 		hibernate {
-			cache.use_second_level_cache = false
-			cache.use_query_cache = false
+			cache.use_second_level_cache = true
+			cache.use_query_cache = true
 //			dialect = "org.hibernate.dialect.HSQLDialect"
 		}
 	}

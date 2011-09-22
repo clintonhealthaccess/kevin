@@ -47,44 +47,44 @@
     />
     
     <cache name="org.chai.kevin.data.DataElement"
-           maxElementsInMemory="2000"
+           maxElementsInMemory="4000"
             timeToLiveSeconds="3600"
     />
     
     <cache name="org.chai.kevin.data.Expression"
-           maxElementsInMemory="2000"
+           maxElementsInMemory="4000"
             timeToLiveSeconds="3600"
     />
     
     <cache name="org.chai.kevin.data.Calculation"
-           maxElementsInMemory="2000"
-            timeToLiveSeconds="3600"
-    />
-    
-    <cache name="org.chai.kevin.value.DataValue"
-           maxElementsInMemory="2000"
-            timeToLiveSeconds="3600"
-    />
-    
-    <cache name="org.chai.kevin.value.ExpressionValue"
            maxElementsInMemory="4000"
             timeToLiveSeconds="3600"
     />
     
-    <cache name="org.chai.kevin.value.CalculationValue"
-           maxElementsInMemory="2000"
-            timeToLiveSeconds="3600"
-    />
+<!--     <cache name="org.chai.kevin.value.DataValue" -->
+<!--            maxElementsInMemory="2000" -->
+<!--             timeToLiveSeconds="3600" -->
+<!--     /> -->
+    
+<!--     <cache name="org.chai.kevin.value.ExpressionValue" -->
+<!--            maxElementsInMemory="4000" -->
+<!--             timeToLiveSeconds="3600" -->
+<!--     /> -->
+    
+<!--     <cache name="org.chai.kevin.value.CalculationValue" -->
+<!--            maxElementsInMemory="2000" -->
+<!--             timeToLiveSeconds="3600" -->
+<!--     /> -->
         
-	<cache name="org.hibernate.cache.ExpressionValueQueryCache"
-           maxElementsInMemory="8000"
-            timeToLiveSeconds="3600"
-    />
+<!-- 	<cache name="org.hibernate.cache.ExpressionValueQueryCache" -->
+<!--            maxElementsInMemory="8000" -->
+<!--             timeToLiveSeconds="3600" -->
+<!--     /> -->
     
-	<cache name="org.hibernate.cache.CalculationValueQueryCache"
-           maxElementsInMemory="4000"
-            timeToLiveSeconds="3600"
-    />
+<!-- 	<cache name="org.hibernate.cache.CalculationValueQueryCache" -->
+<!--            maxElementsInMemory="4000" -->
+<!--             timeToLiveSeconds="3600" -->
+<!--     /> -->
     
 <!-- 	<cache name="org.hibernate.cache.DataValueQueryCache" -->
 <!--            maxElementsInMemory="4000" -->

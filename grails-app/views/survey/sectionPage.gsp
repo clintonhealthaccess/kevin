@@ -4,8 +4,9 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="surveyPage.section.label" default="District Health System Portal" />
-		</title>
+		<title><g:message code="survey.sectionPage.label" default="District Health System Portal" /></title>
+		
+		<r:require module="datepicker"/> 
 	</head>
 	<body>
 		<g:set var="closed" value="${surveyPage.objectives[surveyPage.objective].closed}"/>
@@ -68,7 +69,7 @@
 		</div>
 		<g:if test="${!readonly}">
 		
-			<script type="text/javascript">
+			<r:script>
 				$(document).ready(function() {
 					initializeSurvey(valueChangedInSection);
 				});
@@ -104,7 +105,7 @@
 						else $('#question-'+value.id).parents('.question-container').removeClass('skipped')
 					});
 				}
-			</script>
+			</r:script>
 		</g:if>
 	</body>
 </html>

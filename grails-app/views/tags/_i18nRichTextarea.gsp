@@ -1,8 +1,8 @@
 <g:set var="random" value="${org.apache.commons.lang.math.RandomUtils.nextInt()}"/>
 <script type="text/javascript">
-var maxH= '${maxheight}';
-var iconsP ='${resource(dir: "images", file: "nicEditorIcons.gif")}';
-var buttonL=['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','fontFormat','indent','outdent','image','link','unlink','subscript','superscript','strikethrough','hr','html'];
+	var maxH= '${maxheight}';
+	var iconsP ='${resource(dir: "images", file: "nicEditorIcons.gif")}';
+	var buttonL=['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','fontFormat','indent','outdent','image','link','unlink','subscript','superscript','strikethrough','hr','html'];
 </script>
 <div class="row ${hasErrors(bean:bean,field:field, 'errors')}">
 	<g:each in="${locales}" var="locale" status="i">

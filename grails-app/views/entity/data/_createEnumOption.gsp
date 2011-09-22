@@ -6,8 +6,8 @@
 	</div>
 	<g:form url="[controller:'enumOption', action:'save']" useToken="true">
 	<input type="hidden" name="enume.id" value="${option.enume.id}"/>
-	<g:i18nRichTextarea name="names" bean="${option}" value="${option.names}" label="Option" field="names" height="100"  width="300" maxHeight="100" />
-	<g:i18nRichTextarea name="descriptions" bean="${option}" value="${option.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
+	<g:i18nTextarea name="names" bean="${option}" value="${option.names}" label="Option" field="names" height="100"  width="300" maxHeight="100" />
+	<g:i18nTextarea name="descriptions" bean="${option}" value="${option.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
 	<g:input name="value" label="Value" bean="${option}" field="value"/>
 	<g:input name="code" label="Code" bean="${option}" field="code"/>
 	<g:input name="order" label="Order" bean="${option}" field="order"/>
@@ -25,5 +25,5 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		getRichTextContent();
-		});
+	});
 </script> 

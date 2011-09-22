@@ -4,6 +4,10 @@
 	<meta name="layout" content="main" />
 	<g:set var="entityName" value="${message(code: code, default: 'Entity')}" />
 	<title><g:message code="default.list.label" args="[entityName]" /></title>
+	
+	<!-- for admin forms -->
+	<r:require modules="chosen,richeditor,fieldselection,cluetip,form,dropdown,datepicker"/>
+	
 </head>
 <body>
 	

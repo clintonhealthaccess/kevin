@@ -15,7 +15,7 @@
 	    <div class="row">
 			<div class="clear"></div>
 			<div id="orgunitgroup-block">
-					<div class="group-list ${hasErrors(bean:target, field:'groupUuidString', 'errors')}">
+					<div class="${hasErrors(bean:target, field:'groupUuidString', 'errors')}">
 						<label for="groups">Organisation Unit Group:</label>
 						<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
 							<g:each in="${groups}" var="group">
@@ -34,7 +34,7 @@
 			</div>
 			<div class="clear"></div>
 			<div id="objective-block">
-					<div class="group-list ${hasErrors(bean:target, field:'objective', 'errors')}">
+					<div class="${hasErrors(bean:target, field:'objective', 'errors')}">
 						<label for="objective">Objective:</label>
 						<select class="objective-list" name="objective.id">
 							<option value="null">-- Select an Objective --</option>
@@ -54,7 +54,7 @@
 			</div>
 			<div class="clear"></div>
 			<div id="categories-block">
-					<div class="group-list ${hasErrors(bean:target, field:'category', 'errors')}">
+					<div class="${hasErrors(bean:target, field:'category', 'errors')}">
 						<label for="category.id">Category:</label>
 						<select class="category-list" name="category.id">
 							<option value="null">-- Select a Category --</option>
@@ -74,7 +74,7 @@
 			</div>
 			<div class="clear"></div>
 			<div id="expressions-block">
-					<div class="group-list ${hasErrors(bean:target, field:'expression', 'errors')}">
+					<div class="${hasErrors(bean:target, field:'expression', 'errors')}">
 						<label for="expression.id">Expression:</label>
 						<select class="expression-list" name="expression.id">
 							<option value="null">-- Select an Expression --</option>
@@ -98,7 +98,7 @@
 </div>
 <div class="hidden flow-container"></div>
 
-<script type="text/javascript">
+<script type="text/javascript)">
 	$(document).ready(function() {
 		
 		$('#add-dsr-target').flow({

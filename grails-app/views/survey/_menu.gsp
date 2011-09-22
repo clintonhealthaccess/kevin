@@ -34,7 +34,7 @@
 	</g:each>
 </ul>
 
-<script type="text/javascript">
+<r:script>
 	function initializeSurvey(callback) {
 		$('#survey').delegate('#survey-form input, #survey-form select, #survey-form textarea', 'change', function(){
 			var element = $(this).parents('.element');
@@ -120,4 +120,4 @@
 		
 		surveyValueChanged($(element).parents('.element'), callback);
 	}
-</script>
+</r:script>

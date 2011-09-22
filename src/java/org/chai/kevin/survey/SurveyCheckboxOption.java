@@ -99,7 +99,7 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 		this.question = question;
 	}
 
-	@OneToOne(optional = false, targetEntity = SurveyElement.class)
+	@OneToOne(targetEntity = SurveyElement.class)
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	public SurveyElement getSurveyElement() {
 		return surveyElement;

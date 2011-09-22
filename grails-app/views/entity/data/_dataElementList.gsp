@@ -66,12 +66,14 @@
 
 		})
 	});
+	
 	function getAddRow(element) {
 		$(element)
 				.parents('tr')
 				.after(
 						'<tr class="current-row"><td colspan="6" class="box"><div class="white-box"></div></td></tr>');
 	}
+	
 	function getDateElementExplainer(element) {
 		var htmlData = "";
 		$.ajax({

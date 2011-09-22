@@ -5,66 +5,69 @@
 		<div class="clear"></div>
 	</div>
 	<div class="forms-container">
-	<div class="data-field-column">
-	<g:form url="[controller:'surveySkipRule', action:'save']" useToken="true">
-	 <input type="hidden" name="survey.id" value="${skip.survey.id}" />
-	 <label class="display-in-block">Survey</label>
-	 <input type="text" name="survey.id" value="${i18n(field: skip.survey.names)}" class="idle-field" disabled />
-	 <g:i18nTextarea name="descriptions" bean="${skip}" value="${skip?.descriptions}" label="Descriptions" field="descriptions" />
-	 
-	 <div class="${hasErrors(bean:skip, field:'skippedSurveyElements', 'errors')}">
-	 <label class="display-in-block">Skipped Survey Elements: </label>
-     <select id="skipped-survey-elements-list" name="skippedSurveyElements" multiple="true" class="ajax-search-field">
-		<g:if test="${!skip.skippedSurveyElements.isEmpty()}">
-			<g:each in="${skip.skippedSurveyElements}" var="surveyElement">
-				<option value="${surveyElement.id}" selected>
-					<g:i18n field="${surveyElement.dataElement.names}" />
-					[${surveyElement.id}]
-				</option>
-			</g:each>
-		</g:if>
-	</select>
-	<div class="error-list"><g:renderErrors bean="${skip}" field="skippedSurveyElements" /></div>
-	</div>
-	
-  <div class="${hasErrors(bean:skip, field:'skippedSurveyQuestions', 'errors')}">
-	<label class="display-in-block">Skipped Questions: </label>
-	<select id="questions-list" name="skippedSurveyQuestions" multiple="true" class="ajax-search-field">
-		<g:if test="${!skip.skippedSurveyQuestions.isEmpty()}">
-			<g:each in="${skip.skippedSurveyQuestions}" var="question">
-				<option value="${question.id}" selected>
-				${question.getString(g.i18n(field: question.names).toString(),35)} Q: [${question.order}]
-				</option>
-			</g:each>
-		</g:if>
-	</select>
-	<div class="error-list"><g:renderErrors bean="${skip}" field="skippedSurveyQuestions" /></div>
-	</div>
-	 <g:textarea name="expression" label="Expression" bean="${skip}" field="expression" rows="5"/>
-	 
-		<g:if test="${skip.id != null}">
-			<input type="hidden" name="id" value="${skip.id}" />
-		</g:if>
-		<div class="row">
-			<button type="submit" class="rich-textarea-form">Save Skip Rule</button>
-			&nbsp;&nbsp;
-			<button id="cancel-button">Cancel</button>
-		</div>
-	</g:form>
-	</div>
-	<div class="data-search-column">
-		<g:form name="search-data-form" class="search-form" url="[controller:'surveyElement', action:'getData']">
+		<div class="data-field-column">
+		<g:form url="[controller:'surveySkipRule', action:'save']" useToken="true">
+			<input type="hidden" name="survey.id" value="${skip.survey.id}" />
 			<div class="row">
-				<label for="searchText">Search: </label>
-		    	<input name="searchText" class="idle-field"/>
-		    	<input type="hidden" name="surveyId" value="${skip.survey.id}"/>
-		    	<button type="submit">Search</button>
-				<div class="clear"></div>
+				<label class="display-in-block">Survey</label>
+			 	<input type="text" name="survey.id" value="${i18n(field: skip.survey.names)}" class="idle-field" disabled />
+		 	</div>
+		 	<g:i18nTextarea name="descriptions" bean="${skip}" value="${skip?.descriptions}" label="Descriptions" field="descriptions" />
+		 
+			<div class="row ${hasErrors(bean:skip, field:'skippedSurveyElements', 'errors')}">
+				<label>Skipped Survey Elements: </label>
+				<select id="skipped-survey-elements-list" name="skippedSurveyElements" multiple="true" class="ajax-search-field">
+					<g:if test="${!skip.skippedSurveyElements.isEmpty()}">
+						<g:each in="${skip.skippedSurveyElements}" var="surveyElement">
+							<option value="${surveyElement.id}" selected>
+								<g:i18n field="${surveyElement.dataElement.names}" />
+								[${surveyElement.id}]
+							</option>
+						</g:each>
+					</g:if>
+				</select>
+				<div class="error-list"><g:renderErrors bean="${skip}" field="skippedSurveyElements" /></div>
+			</div>
+
+			<div class="row s${hasErrors(bean:skip, field:'skippedSurveyQuestions', 'errors')}">
+				<label class="display-in-block">Skipped Questions: </label>
+				<select id="questions-list" name="skippedSurveyQuestions" multiple="true" class="ajax-search-field">
+					<g:if test="${!skip.skippedSurveyQuestions.isEmpty()}">
+						<g:each in="${skip.skippedSurveyQuestions}" var="question">
+							<option value="${question.id}" selected>
+								${question.getString(g.i18n(field: question.names).toString(),35)} Q: [${question.order}]
+							</option>
+						</g:each>
+					</g:if>
+				</select>
+				<div class="error-list"><g:renderErrors bean="${skip}" field="skippedSurveyQuestions" /></div>
+			</div>
+			
+		 	<g:textarea name="expression" label="Expression" bean="${skip}" field="expression" rows="5"/>
+		 
+			<g:if test="${skip.id != null}">
+				<input type="hidden" name="id" value="${skip.id}" />
+			</g:if>
+			<div class="row">
+				<button type="submit" class="rich-textarea-form">Save Skip Rule</button>
+				&nbsp;&nbsp;
+				<button id="cancel-button">Cancel</button>
 			</div>
 		</g:form>
-	    <ul class="filtered idle-field" id="data" ></ul>
-	</div>
-	<div class="clear"></div>
+		</div>
+		<div class="data-search-column">
+			<g:form name="search-data-form" class="search-form" url="[controller:'surveyElement', action:'getData']">
+				<div class="row">
+					<label for="searchText">Search: </label>
+			    	<input name="searchText" class="idle-field"/>
+			    	<input type="hidden" name="surveyId" value="${skip.survey.id}"/>
+			    	<button type="submit">Search</button>
+					<div class="clear"></div>
+				</div>
+			</g:form>
+		    <ul class="filtered idle-field" id="data" ></ul>
+		</div>
+		<div class="clear"></div>
 	</div>
 	<div class="clear"></div>
 </div>

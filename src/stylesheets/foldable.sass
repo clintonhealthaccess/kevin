@@ -1,0 +1,17 @@
+.foldable
+
+  a.foldable-toggle
+    display: block
+    cursor: pointer
+    width: 20px
+    height: 20px
+    margin: -3px
+    float: left
+    text-indent: -9999px
+    background-image: url('../images/icons/toggle_plus.gif')
+    
+    &.toggled
+      background-image: url('../images/icons/toggle_minus.gif')
+     
+  &.opened > span, &.opened > a
+    font-weight: bold

@@ -49,6 +49,7 @@ class UtilTagLib {
 	def i18nTextarea = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
 		if (attrs["rows"] == null) attrs["rows"] = '4'
+		if (attrs["width"] == null) attrs["width"] = '300'
 		attrs["locales"] = localeService.getAvailableLanguages();
 		out << render(template:"/tags/i18nTextarea", model: attrs)
 	}

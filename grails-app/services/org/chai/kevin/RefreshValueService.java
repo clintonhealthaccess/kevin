@@ -10,6 +10,7 @@ import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.codehaus.groovy.grails.commons.ApplicationHolder;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
@@ -29,6 +30,7 @@ public class RefreshValueService {
 	private SessionFactory sessionFactory;
 	private ExpressionService expressionService;
 	private ValueService valueService;
+	private GrailsApplication grailsApplication;
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
@@ -126,7 +128,7 @@ public class RefreshValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
-	private void refreshNonCalculatedCalculations(Calculation calculation) {
+	public void refreshNonCalculatedCalculations(Calculation calculation) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
@@ -184,6 +186,8 @@ public class RefreshValueService {
 		List<Calculation> calculations = sessionFactory.getCurrentSession().createCriteria(Calculation.class).list();
 		
 		for (Calculation calculation : calculations) {
+			calculation = (Calculation)sessionFactory.getCurrentSession().load(calculation.getClass(), calculation.getId());
+				
 			getMe().refreshOutdatedCalculations(calculation);
 			getMe().refreshNonCalculatedCalculations(calculation);
 			sessionFactory.getCurrentSession().clear();
@@ -202,9 +206,14 @@ public class RefreshValueService {
 		this.valueService = valueService;
 	}
 	
+	public void setGrailsApplication(GrailsApplication grailsApplication) {
+		this.grailsApplication = grailsApplication;
+	}
+	
 	// for internal call through transactional proxy
 	public RefreshValueService getMe() {
-		return ApplicationHolder.getApplication().getMainContext().getBean(RefreshValueService.class);
+		return grailsApplication.getMainContext().getBean(RefreshValueService.class);
 	}
+	
 	
 }

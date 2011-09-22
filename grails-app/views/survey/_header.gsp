@@ -1,3 +1,5 @@
+<r:require module="dropdown"/>
+
 <div id="survey-header" class="grey-rounded-box-top">
 	<div>
 		<div class="filter">

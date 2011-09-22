@@ -54,6 +54,7 @@ import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
 import org.codehaus.groovy.grails.commons.ApplicationHolder;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
@@ -73,6 +74,7 @@ public class SurveyPageService {
 	private ValueService valueService;
 	private ValidationService validationService;
 	private SessionFactory sessionFactory;
+	private GrailsApplication grailsApplication;
 	
 	@Transactional(readOnly = true)
 	public SummaryPage getSectionTable(Organisation organisation, SurveyObjective objective) {
@@ -145,6 +147,7 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(Organisation organisation, SurveyQuestion currentQuestion) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		Map<SurveyElement, SurveyEnteredValue> elements = new LinkedHashMap<SurveyElement, SurveyEnteredValue>();
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new LinkedHashMap<SurveyQuestion, SurveyEnteredQuestion>();
@@ -161,6 +164,8 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(Organisation organisation, SurveySection currentSection) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		
 		organisationService.loadGroup(organisation);
 		
 		SurveyObjective currentObjective = currentSection.getObjective();
@@ -195,6 +200,8 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(Organisation organisation, SurveyObjective currentObjective) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		
 		organisationService.loadGroup(organisation);
 		
 		Survey survey = currentObjective.getSurvey();
@@ -252,6 +259,8 @@ public class SurveyPageService {
 
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(Organisation organisation, Survey survey) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		
 		organisationService.loadGroup(organisation);
 		
 		Map<SurveyObjective, SurveyEnteredObjective> objectives = new LinkedHashMap<SurveyObjective, SurveyEnteredObjective>();
@@ -277,8 +286,8 @@ public class SurveyPageService {
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		for (Organisation facility : facilities) {
-			survey = (Survey)SessionFactoryUtils.getSession(sessionFactory, false).load(Survey.class, survey.getId());
-			facility.setOrganisationUnit((OrganisationUnit)SessionFactoryUtils.getSession(sessionFactory, false).get(OrganisationUnit.class, facility.getOrganisationUnit().getId()));
+			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
+			facility.setOrganisationUnit((OrganisationUnit)sessionFactory.getCurrentSession().get(OrganisationUnit.class, facility.getOrganisationUnit().getId()));
 
 			getMe().refreshSurveyForFacility(facility, survey, closeIfComplete);
 			sessionFactory.getCurrentSession().clear();
@@ -428,8 +437,8 @@ public class SurveyPageService {
 			for (SurveyQuestion question : surveySkipRule.getSkippedSurveyQuestions()) {
 
 				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
-				if (skipped) enteredQuestion.getSkipped().add(surveySkipRule);
-				else enteredQuestion.getSkipped().remove(surveySkipRule);
+				if (skipped) enteredQuestion.getSkippedRules().add(surveySkipRule);
+				else enteredQuestion.getSkippedRules().remove(surveySkipRule);
 				
 				affectedQuestions.put(question, enteredQuestion);
 			}
@@ -674,8 +683,12 @@ public class SurveyPageService {
 		this.sessionFactory = sessionFactory;
 	}
 	
+	public void setGrailsApplication(GrailsApplication grailsApplication) {
+		this.grailsApplication = grailsApplication;
+	}
+	
 	// for internal call through transactional proxy
 	private SurveyPageService getMe() {
-		return ApplicationHolder.getApplication().getMainContext().getBean(SurveyPageService.class);
+		return grailsApplication.getMainContext().getBean(SurveyPageService.class);
 	}
 }

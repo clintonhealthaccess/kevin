@@ -1,5 +1,3 @@
-import org.hisp.dhis.period.MonthlyPeriodType
-
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -60,13 +58,16 @@ grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000
 
+// What URL patterns should be processed by the resources plugin
+grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
+
 // The default codec used to encode data with ${}
 grails.views.default.codec = "none" // none, html, base64
 grails.views.gsp.encoding = "UTF-8"
 grails.converters.encoding = "UTF-8"
 // enable Sitemesh preprocessing of GSP pages
 grails.views.gsp.sitemesh.preprocess = true
-grails.views.javascript.library="jquery"
+
 // scaffolding templates configuration
 grails.scaffolding.templates.domainSuffix = 'Instance'
 
@@ -74,78 +75,89 @@ grails.scaffolding.templates.domainSuffix = 'Instance'
 grails.json.legacy.builder = false
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
-// whether to install the java.util.logging bridge for sl4j. Disable for AppEngine!
-grails.logging.jul.usebridge = true
 // packages to include in Spring bean scanning
 grails.spring.bean.packages = []
-
-// validateable classes
-//grails.validateable.packages = ['org.chai.kevin.survey']
-//grails.validateable.classes = [org.chai.kevin.survey.SurveyElementValue]
+// whether to disable processing of multi part requests
+grails.web.disable.multipart=false
 
 // request parameters to mask when logging exceptions
 grails.exceptionresolver.params.exclude = ['password']
 
 // set per-environment serverURL stem for creating absolute links
-grails.serverURL = "http://localhost:8080/${appName}"
+environments {
+	development {
+		// whether to install the java.util.logging bridge for sl4j. Disable for AppEngine!
+		grails.logging.jul.usebridge = true
+	}
+	production {
+		// whether to install the java.util.logging bridge for sl4j. Disable for AppEngine!
+		grails.logging.jul.usebridge = false
+	}
+}
 
 security.shiro.authc.required = false
 
 // log4j configuration
-log4j = {
-	appenders {
-		environments {
-			production {
-				file name: 'log-error', file:'errors.log'
-			}
+//environments {
+//	development {
+		log4j = {
+			// Example of changing the log pattern for the default console
+			// appender:
+			//
+			//appenders {
+			//    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+			//}
+		
+			error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
+				   'org.codehaus.groovy.grails.web.pages', //  GSP
+				   'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+				   'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+				   'org.codehaus.groovy.grails.web.mapping', // URL mapping
+				   'org.codehaus.groovy.grails.commons', // core / classloading
+				   'org.codehaus.groovy.grails.plugins', // plugins
+				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+				   'org.springframework',
+				   'org.hibernate',
+				   'net.sf.ehcache.hibernate'
+				  
+			debug  'grails.app',
+				   'org.chai.kevin'
 		}
-	}
-	
-//    debug  'org.codehaus.groovy.grails.web.servlet',  //  controllers
-//           'org.codehaus.groovy.grails.web.pages', //  GSP
-//           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-//           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-//           'org.codehaus.groovy.grails.web.mapping', // URL mapping
-//           'org.codehaus.groovy.grails.commons' // core / classloading
-		   
-//	debug 'grails.app.controller.org.chai.kevin.survey.SurveyController'
-//	debug 'org.chai.kevin.survey.ValidationService'
-	
-//    warn   'org.mortbay.log',
-//		   'net.sf.ehcache.hibernate'
-//	
-//	info   'org.codehaus.groovy.grails.plugins', // plugins
-//		   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-//		   'org.hsqldb.jdbc',
-//		   'org.springframework'
-		   
-	debug  'org.chai.kevin',
-		   'grails.app'
-//		   'org.springframework'
-//		   'org.hibernate',
-//		   'org.codehaus.groovy.grails'
-		   
-//	trace  'org.hibernate.SQL',
-//		   'org.hibernate.engine.query',
-//		   'org.hibernate.type',
-//		   'org.hibernate.jdbc'
-		   
+//	}
+//	production {
+//		log4j = {
+//			appenders {
+//				rollingFile name: "rolling",
+//				maxFileSize: 1024,
+//				file: "/var/log/kevin.log"
+//			}
+//			
+//			root {
+//				error 'rolling'
+//			}
+//			
+//			debug  'org.codehaus.groovy.grails.web.servlet',  //  controllers
+//				   'org.codehaus.groovy.grails.web.pages', //  GSP
+//				   'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+//				   'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+//				   'org.codehaus.groovy.grails.web.mapping', // URL mapping
+//				   'org.codehaus.groovy.grails.commons', // core / classloading
+//				   'org.codehaus.groovy.grails.plugins', // plugins
+//				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+//				   'org.springframework',
+//				   'org.hibernate',
+//				   'net.sf.ehcache.hibernate'
+//				  
+//			debug  'grails.app',
+//				   'org.chai.kevin'
+//		}
+//	}
+//}
 
-	environments {
-		production {
-			root {
-//				error 'log-error'
-			}
-			
-		}
-    }
 
-	//	trace  'org.hibernate.type'
-}
-
-cloudbees.api.url='https://api.cloudbees.com/api'
-cloudbees.api.key=System.properties['bees.key']
-cloudbees.api.secret=System.properties['bees.secret']
+//cloudbees.api.url='https://api.cloudbees.com/api'
+//cloudbees.api.key=System.properties['bees.key']
+//cloudbees.api.secret=System.properties['bees.secret']
 
 /**
  * Application specific config

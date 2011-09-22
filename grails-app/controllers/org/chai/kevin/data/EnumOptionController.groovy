@@ -29,7 +29,9 @@ package org.chai.kevin.data
 
 
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.data.EnumOption as EnumOption;
+import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.Enum as Enum;
+
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 /**

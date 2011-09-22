@@ -2,8 +2,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="surveyPage.objective.label" default="District Health System Portal" />
-		</title>
+		<title><g:message code="survey.objectivePage.label" default="District Health System Portal" /></title>
+		<r:require module="datepicker"/>
 	</head>
 	<body>
 		<div id="survey">
@@ -56,7 +56,7 @@
 			</div>
 		</div>
 		<g:if test="${!readonly}">
-			<script type="text/javascript">
+			<r:script>
 				$(document).ready(function() {
 					initializeSurvey(valueChangedInObjective);
 				});
@@ -68,7 +68,7 @@
 					if ($.trim(data.invalidQuestions) == '' && $.trim(data.incompleteSections) == '') $('#submit-objective').removeClass('hidden');
 					else $('#submit-objective').addClass('hidden')
 				}
-			</script>
+			</r:script>
 		</g:if>
 	</body>
 </html>

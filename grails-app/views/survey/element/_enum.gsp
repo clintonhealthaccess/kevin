@@ -1,5 +1,7 @@
 <%@ page import="org.chai.kevin.data.Enum" %>
-<g:set var="enume" value="${Enum.findByCode(type.enumCode)}"/>
+<g:if test="${type.enumCode != null}">
+	<g:set var="enume" value="${Enum.findByCode(type.enumCode)}"/>
+</g:if>
 
 <!-- Enum type question -->
 <div id="element-${surveyElement.id}-${suffix}" class="element element-enum ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
@@ -21,7 +23,7 @@
 		</g:each>
 	</g:else>
 	<g:if test="${lastValue!=null}">
-		<g:set var="option" value="${enume.getOptionForValue(lastValue.enumValue)}"/>
+		<g:set var="option" value="${enume?.getOptionForValue(lastValue.enumValue)}"/>
 		<span class="survey-old-value">(${option!=null?i18n(field: option.names):lastValue.enumValue})</span>
 	</g:if>
 	<div class="error-list">

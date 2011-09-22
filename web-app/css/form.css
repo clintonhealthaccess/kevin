@@ -1,0 +1,75 @@
+/* line 58, ../../src/stylesheets/partials/_base.sass */
+.red { color: red; }
+
+/* line 61, ../../src/stylesheets/partials/_base.sass */
+.hidden { display: none; }
+
+/* line 64, ../../src/stylesheets/partials/_base.sass */
+.float-left { float: left; }
+
+/* line 67, ../../src/stylesheets/partials/_base.sass */
+.float-right { float: right; }
+
+/* line 70, ../../src/stylesheets/partials/_base.sass */
+.box { border: 1px solid #dddddd; background-color: #f4f4f4; padding: 8px; }
+
+/* line 73, ../../src/stylesheets/partials/_base.sass */
+.margin-top { margin-top: 20px; }
+
+/* line 76, ../../src/stylesheets/partials/_base.sass */
+.bold { font-weight: bold; }
+
+/* line 79, ../../src/stylesheets/partials/_base.sass */
+.italic { font-style: italic; }
+
+/* line 82, ../../src/stylesheets/partials/_base.sass */
+.white-box { border: 1px solid #cccccc; background-color: white; padding: 2px; border: 0px; }
+
+/* line 86, ../../src/stylesheets/partials/_base.sass */
+.clear { clear: both; }
+
+/* line 3, ../../src/stylesheets/form.sass */
+.entity-form-container { border: 1px solid #cccccc; background-color: white; padding: 2px; float: left; border: 2px solid #739eee; margin: 8px; padding: 10px 5px 10px 5px; -webkit-border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -khtml-border-radius-topleft: 5px; -khtml-border-radius-topright: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-topleft: 5px; border-top-right-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -khtml-border-radius-bottomleft: 5px; -khtml-border-radius-bottomright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; -webkit-box-shadow: 0px 5px 8px #818181; -moz-box-shadow: 0px 5px 8px #818181; box-shadow: 0px 5px 8px #818181; }
+/* line 14, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header { -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; background-color: #739eee; }
+/* line 18, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header .title { float: left; color: white; margin: 3px 2px 2px 3px; }
+/* line 23, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header .locales { float: right; padding: 4px; }
+/* line 27, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header .locales a { padding: 2px; }
+/* line 30, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header .locales a.no-link { font-weight: bold; }
+/* line 33, ../../src/stylesheets/form.sass */
+.entity-form-container .forms-container { width: 100%; }
+/* line 36, ../../src/stylesheets/form.sass */
+.entity-form-container .data-search-column { float: right; width: 470px; }
+/* line 40, ../../src/stylesheets/form.sass */
+.entity-form-container .data-field-column { float: left; width: 460px; }
+
+/* line 44, ../../src/stylesheets/form.sass */
+.entity-form-container form { position: relative; border: none; background-color: inherit; }
+/* line 49, ../../src/stylesheets/form.sass */
+.entity-form-container form .row { width: 300px; margin: 4px; margin-bottom: 12px; }
+/* line 54, ../../src/stylesheets/form.sass */
+.entity-form-container form .row .error-list { height: 14px; }
+/* line 57, ../../src/stylesheets/form.sass */
+.entity-form-container form .row h5 { float: left; }
+/* line 60, ../../src/stylesheets/form.sass */
+.entity-form-container form input, .entity-form-container form textarea { width: 290px; }
+/* line 63, ../../src/stylesheets/form.sass */
+.entity-form-container form label { font-weight: bold; margin-bottom: 2px; }
+/* line 67, ../../src/stylesheets/form.sass */
+.entity-form-container form button { float: right; }
+
+/* line 70, ../../src/stylesheets/form.sass */
+.focus-field { -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; border: solid 1px #73a6ff; background: #dbe5fb; color: black; }
+
+/* line 76, ../../src/stylesheets/form.sass */
+.idle-field { -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; background: #f7f9fe; color: black; border: solid 1px #ababab; }
+
+/* line 82, ../../src/stylesheets/form.sass */
+.completed-field { -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; background: #ededed; color: black; border: solid 1px #73a6ff; }
+
+/* line 88, ../../src/stylesheets/form.sass */
+.ajax-search-field { width: 300px; }

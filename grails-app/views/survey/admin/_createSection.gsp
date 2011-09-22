@@ -6,40 +6,35 @@
 	</div>
 
 	<g:form url="[controller:'section', action:'save']" useToken="true">
-		<g:i18nInput name="names" bean="${section}"
-			value="${section?.names}" label="Name" field="names" />
-			<g:i18nRichTextarea name="descriptions" bean="${section}" value="${section?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
-			<div class="row">
-			<div id="objective-block">
-					<div class="group-list ${hasErrors(bean:section, field:'objective', 'errors')}">
-						<label for="objective.id">Objective:</label>
-						<select class="objective-list" name="objective.id">
-							<option value="null">-- Select an Objective --</option>
-							<g:each in="${objectives}" var="objective">
-								<option value="${objective.id}" ${objective.id+''==fieldValue(bean: section, field: 'objective.id')+''?'selected="selected"':''}>
-									<g:i18n field="${objective.names}"/>
-								</option>
-							</g:each>
-						</select>
-						<div class="error-list"><g:renderErrors bean="${section}" field="objective" /></div>
-					</div>
-			</div>
-			</div>
+		<g:i18nInput name="names" bean="${section}" value="${section?.names}" label="Name" field="names" />
+		<g:i18nRichTextarea name="descriptions" bean="${section}" value="${section?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
+			
 		<div class="row">
-			<div id="orgunitgroup-block">
-				<div
-					class="group-list ${hasErrors(bean:section, field:'groupUuidString', 'errors')}">
-					<label for="groups">Organisation Unit Group:</label>
-						<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
-							<g:each in="${groups}" var="group">
-								<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
-						           ${group.name}
-					            </option>
-							</g:each>
-						</select>
-					<div class="error-list">
-						<g:renderErrors bean="${section}" field="groupUuidString" />
-					</div>
+			<div class="${hasErrors(bean:section, field:'objective', 'errors')}">
+				<label for="objective.id">Objective:</label>
+				<select class="objective-list" name="objective.id">
+					<option value="null">-- Select an Objective --</option>
+					<g:each in="${objectives}" var="objective">
+						<option value="${objective.id}" ${objective.id+''==fieldValue(bean: section, field: 'objective.id')+''?'selected="selected"':''}>
+							<g:i18n field="${objective.names}"/>
+						</option>
+					</g:each>
+				</select>
+				<div class="error-list"><g:renderErrors bean="${section}" field="objective" /></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="${hasErrors(bean:section, field:'groupUuidString', 'errors')}">
+				<label for="groups" class="display-in-block">Organisation Unit Group:</label>
+					<select  name="groupUuids" multiple="multiple" size="5" >
+						<g:each in="${groups}" var="group">
+							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
+					           ${group.name}
+				            </option>
+						</g:each>
+					</select>
+				<div class="error-list">
+					<g:renderErrors bean="${section}" field="groupUuidString" />
 				</div>
 			</div>
 		</div>
@@ -49,7 +44,6 @@
 		</g:if>
 		<div class="row">
 			<button type="submit" class="rich-textarea-form">Save Section</button>
-			&nbsp;&nbsp;
 			<button id="cancel-button">Cancel</button>
 		</div>
 	</g:form>

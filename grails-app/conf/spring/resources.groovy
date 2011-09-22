@@ -68,7 +68,7 @@ beans = {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
-//		me = ref("refreshValueService")
+		grailsApplication = ref("grailsApplication")
 	}
 	
 	validationService(ValidationService){
@@ -82,7 +82,7 @@ beans = {
 		valueService = ref("valueService")
 		validationService = ref("validationService")
 		sessionFactory = ref("sessionFactory")
-//		me = ref("surveyPageService")
+		grailsApplication = ref("grailsApplication")
 	}
 	
 	chartService(ChartService){

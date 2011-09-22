@@ -1,0 +1,64 @@
+/* line 58, ../../src/stylesheets/partials/_base.sass */
+.red { color: red; }
+
+/* line 61, ../../src/stylesheets/partials/_base.sass */
+.hidden { display: none; }
+
+/* line 64, ../../src/stylesheets/partials/_base.sass */
+.float-left { float: left; }
+
+/* line 67, ../../src/stylesheets/partials/_base.sass */
+.float-right { float: right; }
+
+/* line 70, ../../src/stylesheets/partials/_base.sass */
+.box { border: 1px solid #dddddd; background-color: #f4f4f4; padding: 8px; }
+
+/* line 73, ../../src/stylesheets/partials/_base.sass */
+.margin-top { margin-top: 20px; }
+
+/* line 76, ../../src/stylesheets/partials/_base.sass */
+.bold { font-weight: bold; }
+
+/* line 79, ../../src/stylesheets/partials/_base.sass */
+.italic { font-style: italic; }
+
+/* line 82, ../../src/stylesheets/partials/_base.sass */
+.white-box { border: 1px solid #cccccc; background-color: white; padding: 2px; border: 0px; }
+
+/* line 86, ../../src/stylesheets/partials/_base.sass */
+.clear { clear: both; }
+
+/* line 3, ../../src/stylesheets/explanation.sass */
+.explanation { border: 1px solid #cccccc; background-color: white; padding: 2px; width: 100%; padding: 4px; }
+/* line 8, ../../src/stylesheets/explanation.sass */
+.explanation .highlighted div, .explanation .selected div, .explanation .highlighted, .explanation .selected { background: yellow; font-weight: bold; }
+/* line 12, ../../src/stylesheets/explanation.sass */
+.explanation .info { margin-right: 18px; }
+/* line 16, ../../src/stylesheets/explanation.sass */
+.explanation .average h5 { float: left; padding-right: 4px; }
+/* line 20, ../../src/stylesheets/explanation.sass */
+.explanation .average span.value { float: left; color: red; padding-bottom: 4px; margin-right: 4px; }
+/* line 26, ../../src/stylesheets/explanation.sass */
+.explanation div > ul { margin: 0; padding: 0; border: 0; outline: 0; overflow: hidden; *zoom: 1; padding: 0px; margin: 0px; }
+/* line 46, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/utilities/lists/_inline-block-list.scss */
+.explanation div > ul li { list-style-image: none; list-style-type: none; margin-left: 0px; display: -moz-inline-box; -moz-box-orient: vertical; display: inline-block; vertical-align: middle; *vertical-align: auto; white-space: nowrap; }
+/* line 7, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.explanation div > ul li { *display: inline; }
+/* line 31, ../../src/stylesheets/explanation.sass */
+.explanation div > ul li { width: 160px; margin-right: 8px; white-space: normal; }
+/* line 36, ../../src/stylesheets/explanation.sass */
+.explanation .span table { margin-bottom: 0px; }
+/* line 38, ../../src/stylesheets/explanation.sass */
+.explanation .span table th, .explanation .span table td { margin-right: 4px; padding: 0px 4px 0px 0px; }
+/* line 42, ../../src/stylesheets/explanation.sass */
+.explanation .span table thead { font-weight: bold; }
+/* line 45, ../../src/stylesheets/explanation.sass */
+.explanation .span table tbody { white-space: normal; }
+/* line 48, ../../src/stylesheets/explanation.sass */
+.explanation .span table tbody td, .explanation .span table thead th { text-align: right; }
+/* line 52, ../../src/stylesheets/explanation.sass */
+.explanation .element:hover { cursor: pointer; }
+/* line 55, ../../src/stylesheets/explanation.sass */
+.explanation .span { width: 100%; margin-top: 8px; margin-bottom: 4px; }
+/* line 60, ../../src/stylesheets/explanation.sass */
+.explanation .span div { margin-bottom: 4px; }

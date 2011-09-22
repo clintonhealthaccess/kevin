@@ -7,13 +7,14 @@
 	<g:form url="[controller:'survey', action:'save']" useToken="true">
 		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="Name" field="names"/>
 		<g:i18nRichTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
+		
 		<div class="row">
 			<div>
 				<a id="add-iteration-link" class="float-right"  href="${createLink(controller:'iteration', action:'create')}">New Iteration</a>
 			</div>
 			<div class="clear"></div>
 			<div id="iteration-block">
-				<div class="group-list ${hasErrors(bean:survey, field:'period', 'errors')}">
+				<div class="${hasErrors(bean:survey, field:'period', 'errors')}">
 					<label for="period.id">Period:</label>
 					<select class="iteration-list" name="period.id">
 						<option value="null">-- Select an Iteration --</option>
@@ -27,9 +28,10 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="row">
 			<div id="iteration-block">
-				<div class="group-list ${hasErrors(bean:survey, field:'period', 'errors')}">
+				<div class="${hasErrors(bean:survey, field:'period', 'errors')}">
 					<label for="lastPeriod.id">Last period (for reference to old values):</label>
 					<select class="iteration-list" name="lastPeriod.id">
 						<option value="null">-- Select an Iteration --</option>
@@ -43,6 +45,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="clear"></div>
 		<g:if test="${survey?.id != null}">
 			<input type="hidden" name="id" value="${survey?.id}"></input>

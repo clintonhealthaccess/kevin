@@ -54,7 +54,7 @@ import org.hisp.dhis.period.Period;
 		@UniqueConstraint(columnNames={"organisationUnit", "expression", "period"})
 	}
 )
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ExpressionValue extends StoredValue {
 	private Integer id;
 

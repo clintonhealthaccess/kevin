@@ -15,7 +15,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
 
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.util.Utils;
@@ -274,7 +273,7 @@ public class Type {
 			}
 			return new Value(object.toString());
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalArgumentException("object "+value+" does not correspond to type "+type, e);
 		}
 	}
 	
@@ -326,7 +325,7 @@ public class Type {
 			}
 			return new Value(object.toString());
 		} catch (JSONException e) {
-			return null;
+			throw new IllegalArgumentException("jaql value does not correspond to type", e);
 		}
 	}
 	

@@ -35,5 +35,4 @@ constraints = {
 	question(nullable: false)
 	order(nullable: false, blank:false)
 	groupUuidString(nullable:false /*,blank:false*/)
-	surveyElement(nullable:false)
 }

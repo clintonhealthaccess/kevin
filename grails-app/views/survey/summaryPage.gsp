@@ -2,8 +2,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="surveyPage.survey.label" default="District Health System Portal" />
-		</title>
+		<title><g:message code="survey.summaryPage.label" default="District Health System Portal" /></title>
+		<r:require modules="progressbar,dropdown,explanation"/>
 	</head>
 	<body>
 		<g:set var="survey" value="${summaryPage.survey}"/>
@@ -97,7 +97,7 @@
 			</div>
 		</div>
 		
-		<script type="text/javascript">
+		<r:script>
 			function progressBar() {
 				$(".progress-bar").each(function(){
 					var values = $(this).html().split('/');
@@ -126,6 +126,6 @@
     				return false;
     			});
 			});
-		</script>
+		</r:script>
 	</body>
 </html>

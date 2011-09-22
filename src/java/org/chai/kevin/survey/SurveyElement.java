@@ -137,6 +137,9 @@ public class SurveyElement {
 		for (Entry<String, SurveyValidationRule> entry : getValidationRules().entrySet()) {
 			copy.getValidationRules().put(entry.getKey(), cloner.getValidationRule(entry.getValue()));
 		}
+		for (Entry<String, Translation> entry : getHeaders().entrySet()) {
+			copy.getHeaders().put(entry.getKey(), entry.getValue());
+		}
 	}
 	
 }

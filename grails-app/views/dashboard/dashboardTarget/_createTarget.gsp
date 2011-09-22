@@ -57,7 +57,7 @@
 </div>
 <div class="hidden flow-container"></div>
 
-<script type="text/javascript">
+<script type="text/javascript)">
 	$(document).ready(function() {
 		$('#add-dashboard-target').flow({
 			addLinks: '#add-expression-link',

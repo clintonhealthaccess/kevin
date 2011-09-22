@@ -49,7 +49,7 @@ import org.hisp.dhis.period.Period;
 @Table(name="dhsst_data_value",
 		uniqueConstraints=@UniqueConstraint(columnNames={"dataElement", "period", "organisationUnit"})
 )
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DataValue extends StoredValue {
 	
 	private Long id;
