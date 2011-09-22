@@ -1,4 +1,4 @@
-<div id="add-row" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">Create a Row Option</h3>
 		<g:locales />
@@ -8,7 +8,7 @@
 		<div class="data-field-column">
 			<g:form url="[controller:'tableRow', action:'save']" useToken="true">
 				<div class="row">
-					<label class="display-in-block">Table Name :</label>
+					<label>Table Name :</label>
 					<input type="text" value="${i18n(field: row.question.tableNames)}" class="idle-field" disabled />
 				</div>
 				
@@ -20,14 +20,14 @@
 					<input type="hidden" name="surveyElement" value="_"/>
 			         <g:each in="${row.question.columns}" status="i" var="column">
 				         <div class="${(i % 2) == 0 ? 'odd' : 'even'}">
-				           <label>Colunm Name:</label><span> ${i18n(field: column.names)}</span>
-				           <span class="display-in-block">
+				           <span class="bold">Colunm Name:</span><span> ${i18n(field: column.names)}</span>
+				           <div>
 					           <label for="dataElement">Data Element:</label>
 					           <input type="text" name="dataElement" class="data-element-name idle-field" value="${i18n(field:row.surveyElements[column]?.dataElement?.names)}" />
 					           <input type="hidden" name="surveyElement[${column.id}].dataElement.id" class="data-element-id idle-field " value="${row.surveyElements[column]?.dataElement?.id}"/>
 					           <input type="hidden" name="surveyElement[${column.id}].id" class="idle-field" value="${row.surveyElements[column]?.id}"/>
 					           <input type="hidden" name="surveyElement" value="${column.id}"/>
-				           </span>
+				           </div>
 				         </div>
 					 </g:each>
 					 <div class="error-list"><g:renderErrors bean="${row}" field="surveyElements" /></div>
@@ -37,7 +37,7 @@
 			    <g:input name="order" label="Order" bean="${row}" field="order"/>
 		
 				<div class="row ${hasErrors(bean:row, field:'groupUuidString', 'errors')}">
-					<label for="groups" class="display-in-block">Organisation Unit Group:</label>
+					<label for="groups">Organisation Unit Group:</label>
 						<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
 							<g:each in="${groups}" var="group">
 								<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>

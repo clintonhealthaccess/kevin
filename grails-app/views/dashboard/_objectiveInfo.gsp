@@ -1,7 +1,7 @@
 <div class="info">	
 	<div>		
 		<div class="average">
-			<h5>Average value:</h5>
+			<span class="bold">Average value:</span>
 			<span class="value">
 				<g:if test="${info.numberValue != null}">
 					<g:formatNumber number="${info.numberValue * 100}" format="#0.0"/>%
@@ -12,7 +12,7 @@
 		</div>
 	
 		<div>
-			<h5><a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Scores</a></h5>
+			<span class="bold"><a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Scores</a></span>
 			<div class="box span">
 				<table>
 					<thead>

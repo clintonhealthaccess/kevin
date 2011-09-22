@@ -1,4 +1,5 @@
-<% def dataService = application.getAttribute("org.codehaus.groovy.grails.APPLICATION_CONTEXT").getBean("dataService") %>
+<%@ page import="org.chai.kevin.data.Enum" %>
+
 <!-- Value type question -->
 <div id="element-${surveyElement.id}-${suffix}" class="element element-map ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
@@ -12,12 +13,15 @@
 		
 		<div class="element-map-header">
 			<g:i18n field="${surveyElement.headers.get(suffix+'.'+key)}"/>
+			
 			<g:if test="${keyType.type.name().toLowerCase()=='enum' && print && appendix}">
-			<g:set var="enume" value="${dataService.getEnum(keyType.enumId)}"/>
-			<span class="display-in-block text-align-left">--Possible choice--</span>
-			  <g:each in="${enume?.enumOptions}" var="option">
-			    <span class="display-in-block text-align-left"><g:i18n field="${option.names}" /></span>
-			  </g:each>
+				<g:if test="${keyType.enumCode != null}">
+					<g:set var="enume" value="${Enum.findByCode(keyType.enumCode)}"/>
+					<div class="text-align-left">--Possible choice--</div>
+					<g:each in="${enume?.enumOptions}" var="option">
+						<div class="text-align-left"><g:i18n field="${option.names}" /></div>
+					</g:each>
+				</g:if>
 			</g:if>
 		</div>
 		<div class="element-map-body">

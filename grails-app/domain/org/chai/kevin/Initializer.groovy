@@ -78,9 +78,18 @@ class Initializer {
 	static Date mar311 = getDate( 2006, 3, 31 );
 
 	static def createUsers() {
-		def user = new User(username: "admin", passwordHash: new Sha256Hash("admin").toHex())
-		user.addToPermissions("*")
+		def user = new User(username: "dhsst", passwordHash: new Sha256Hash("dhsst").toHex())
+		user.addToPermissions("menu:reports")
+		user.addToPermissions("dashboard:*")
+		user.addToPermissions("dsr:*")
+		user.addToPermissions("maps:*")
+		user.addToPermissions("cost:*")
+		user.addToPermissions("home:*")
 		user.save()
+		
+		def admin = new User(username: "admin", passwordHash: new Sha256Hash("admin").toHex())
+		admin.addToPermissions("*")
+		admin.save()
 		
 		def kivuye = new SurveyUser(username: "kivuye", organisationUnitId: OrganisationUnit.findByName("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex())
 		kivuye.addToPermissions("editSurvey:view")
@@ -229,7 +238,7 @@ class Initializer {
 			)
 			
 			def dataElementListMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
-				type: JSONUtils.TYPE_LIST(JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER, "key2":JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": JSONUtils.TYPE_BOOL]))
+				type: JSONUtils.TYPE_LIST(JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER, "key2":JSONUtils.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": JSONUtils.TYPE_BOOL, "key4": JSONUtils.TYPE_STRING]))
 			)
 			
 			dataElement10.save(failOnError: true, flush:true)

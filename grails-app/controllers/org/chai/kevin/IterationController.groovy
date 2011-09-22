@@ -16,7 +16,11 @@ class IterationController extends AbstractEntityController  {
 	}
 
 	def createEntity() {
-		return new Period()
+		def entity = new Period()
+		entity.setStartDate(new Date())
+		entity.setEndDate(new Date())
+		entity.setPeriodType(periodService.getDefaultPeriodType())
+		return entity;
 	}
 
 	def getTemplate() {

@@ -1,40 +1,4 @@
-/* line 58, ../../src/stylesheets/partials/_base.sass */
-.red { color: red; }
-
-/* line 61, ../../src/stylesheets/partials/_base.sass */
-.hidden { display: none; }
-
-/* line 64, ../../src/stylesheets/partials/_base.sass */
-.float-left { float: left; }
-
-/* line 67, ../../src/stylesheets/partials/_base.sass */
-.float-right { float: right; }
-
-/* line 70, ../../src/stylesheets/partials/_base.sass */
-.box { border: 1px solid #dddddd; background-color: #f4f4f4; padding: 8px; }
-
-/* line 73, ../../src/stylesheets/partials/_base.sass */
-.margin-top { margin-top: 20px; }
-
-/* line 76, ../../src/stylesheets/partials/_base.sass */
-.bold { font-weight: bold; }
-
-/* line 79, ../../src/stylesheets/partials/_base.sass */
-.italic { font-style: italic; }
-
-/* line 82, ../../src/stylesheets/partials/_base.sass */
-.white-box { border: 1px solid #cccccc; background-color: white; padding: 2px; border: 0px; }
-
-/* line 86, ../../src/stylesheets/partials/_base.sass */
-.clear { clear: both; }
-
-/* line 4, ../../src/stylesheets/dropdown.sass */
-.white-dropdown > div { border: 1px solid #cccccc; background-color: white; padding: 2px; margin-top: -14px; border-width: 2px; position: absolute; z-index: 10; }
-/* line 12, ../../src/stylesheets/dropdown.sass */
-.white-dropdown ul { margin: 0; padding: 0; border: 0; outline: 0; overflow: hidden; *zoom: 1; }
-/* line 46, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/utilities/lists/_inline-block-list.scss */
-.white-dropdown ul li { list-style-image: none; list-style-type: none; margin-left: 0px; display: -moz-inline-box; -moz-box-orient: vertical; display: inline-block; vertical-align: middle; *vertical-align: auto; white-space: nowrap; }
-/* line 7, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.10.6/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
-.white-dropdown ul li { *display: inline; }
-/* line 15, ../../src/stylesheets/dropdown.sass */
-.white-dropdown ul li { display: block; margin: 4px; }
+/* line 5, ../../src/stylesheets/dropdown.sass */
+.white-dropdown > div { border: 1px solid #cccccc; background-color: white; padding: 2px; border-width: 2px; margin-left: 10px; position: absolute; z-index: 10; min-width: 100px; }
+/* line 13, ../../src/stylesheets/dropdown.sass */
+.white-dropdown > div ul li { display: block; margin: 4px; }

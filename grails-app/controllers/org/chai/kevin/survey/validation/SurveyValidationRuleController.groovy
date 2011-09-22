@@ -78,7 +78,7 @@ class SurveyValidationRuleController extends AbstractEntityController {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		SurveyElement surveyElement = SurveyElement.get(params.int('elementId'))
-		List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>(surveyElement.validationRules);
+		List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>(surveyElement.validationRules.values());
 
 		def max = Math.min(params['offset']+params['max'], validationRules.size())
 		

@@ -43,6 +43,7 @@ class SurveyQuestionService {
 
 
 	List<SurveyQuestion> searchSurveyQuestion(String text, Survey survey){
+		// TODO replace by query
 		List<SurveyQuestion> questions = null;
 		if(survey) {
 			questions = sessionFactory.currentSession.createCriteria(SurveyQuestion.class).createAlias("section", "sect").createAlias("sect.objective", "obj").add(Restrictions.eq("obj.survey", survey)).list();
@@ -53,7 +54,7 @@ class SurveyQuestionService {
 	}
 
 
-	List<SurveyQuestion> searchQuestion(String text,List<SurveyQuestion> questions){
+	private List<SurveyQuestion> searchQuestion(String text,List<SurveyQuestion> questions){
 		StringUtils.split(text).each { chunk ->
 			questions.retainAll { question ->
 				Utils.matches(chunk, question.names[localeService.getCurrentLanguage()])

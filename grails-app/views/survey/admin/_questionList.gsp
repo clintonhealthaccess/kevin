@@ -11,8 +11,8 @@
 	<tbody>
 		<g:each in="${entities}" status="i" var="question">
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-				<td><a class="question-explainer display-in-block"
-					title="Question" href="#"
+				<td><a
+					title="Question" href="#" class="cluetip"
 					rel="${createLink(controller:question.getType(), action:'getQuestionExplainer', params:[question: question.id])}"
 					onclick="return false;"> ${question.getString(i18n(field: question.names).toString(),100)} </a></td>
 				<td>${question.getType()}</td>
@@ -51,9 +51,3 @@
 	</tbody>
 </table>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('a.question-explainer').cluetip(cluetipOptions);
-		
-	});
-</script>

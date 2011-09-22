@@ -172,6 +172,7 @@ class SurveyElementService {
 		Set<SurveyElement> surveyElements = new HashSet<SurveyElement>();
 		List<DataElement> dataElements = dataService.searchDataElements(text);
 
+		// TODO limit number of results
 		for(DataElement dataElement : dataElements) {
 			if(!survey) {
 				surveyElements.addAll(this.getSurveyElements(dataElement));

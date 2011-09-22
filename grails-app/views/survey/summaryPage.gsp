@@ -3,7 +3,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
 		<title><g:message code="survey.summaryPage.label" default="District Health System Portal" /></title>
-		<r:require modules="progressbar,dropdown,explanation"/>
+		
+		<r:require modules="progressbar,dropdown,explanation,survey"/>
 	</head>
 	<body>
 		<g:set var="survey" value="${summaryPage.survey}"/>
@@ -11,8 +12,8 @@
 		<div id="survey">
 			<div id="survey-header" class="grey-rounded-box-top">
 				<div class="filter">
-					<h5>Survey:</h5>
-					<div class="dropdown white-dropdown">
+					<span class="bold">Survey:</span>
+					<span class="dropdown white-dropdown">
 						<a class="selected" href="#">
 							<g:if test="${survey != null}">
 								<g:i18n field="${survey.names}" />
@@ -34,11 +35,11 @@
 								</g:each>
 							</ul>
 						</div>
-					</div>
+					</span>
 				</div>
 				<div class="filter">
-					<h5>Facility Name:</h5>
-					<div class="dropdown white-dropdown">
+					<span class="bold">Facility Name:</span>
+					<span class="dropdown white-dropdown">
 						<g:if test="${organisation != null}">
 							<a class="selected" href="#" data-type="organisation">${organisation.name}</a>
 						</g:if>
@@ -51,7 +52,7 @@
 									model="[controller: 'editSurvey', action: 'summaryPage', organisation: organisationTree, current: organisation, params:[survey: '1'], displayLinkUntil: displayLinkUntil]" />
 							</ul>
 						</div>
-					</div>
+					</span>
 				</div>
 				<div class="clear"></div>
 			</div>

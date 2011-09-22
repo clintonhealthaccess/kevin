@@ -1,6 +1,6 @@
 <%@ page import="org.chai.kevin.cost.CostTarget.CostType" %>
 
-<div id="add-ramp-up" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
 		<h3 class="title">Costing ramp-up</h3>

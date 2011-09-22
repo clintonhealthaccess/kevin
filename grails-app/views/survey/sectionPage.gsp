@@ -6,7 +6,7 @@
 		<meta name="layout" content="main" />
 		<title><g:message code="survey.sectionPage.label" default="District Health System Portal" /></title>
 		
-		<r:require module="datepicker"/> 
+		<r:require modules="survey,datepicker"/> 
 	</head>
 	<body>
 		<g:set var="closed" value="${surveyPage.objectives[surveyPage.objective].closed}"/>
