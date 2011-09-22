@@ -1,4 +1,3 @@
-<g:set var="enteredQuestion" value="${surveyPage.questions[question]}"/>
 <g:set var="organisationUnitGroup" value="${surveyPage.organisation.organisationUnitGroup}"/>
 
 <div id="question-${question.id}" class="question question-table" data-question="${question.id}">

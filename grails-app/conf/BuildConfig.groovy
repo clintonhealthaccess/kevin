@@ -94,8 +94,6 @@ grails.project.dependency.resolution = {
 		}
 		compile ("org.json:json:20080701")
 		
-		compile 'net.bull.javamelody:javamelody-core:1.31.0'
-		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
 		//		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
