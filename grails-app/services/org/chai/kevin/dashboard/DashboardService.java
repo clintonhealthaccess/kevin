@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;

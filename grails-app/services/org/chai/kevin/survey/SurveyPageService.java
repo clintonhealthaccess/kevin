@@ -65,6 +65,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class SurveyPageService {
 	
+	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog(SurveyPageService.class);
 	
 	private SurveyElementService surveyElementService;
@@ -227,6 +228,28 @@ public class SurveyPageService {
 		return new SurveyPage(organisation, survey, currentObjective, null, objectives, sections, questions, elements);
 	}
 	
+	@Transactional(readOnly = true)
+	public SurveyPage getSurveyPagePrint(Organisation organisation,Survey survey) {
+		organisationService.loadGroup(organisation);
+		OrganisationUnitGroup organisationUnitGroup = organisation.getOrganisationUnitGroup();
+		
+		Map<SurveyElement, SurveyEnteredValue> elements = new LinkedHashMap<SurveyElement, SurveyEnteredValue>();
+		
+		for (SurveyObjective objective : survey.getObjectives(organisationUnitGroup)) {
+			for (SurveySection section : objective.getSections(organisationUnitGroup)) {
+				for (SurveyQuestion question : section.getQuestions(organisationUnitGroup)) {
+					for (SurveyElement element : question.getSurveyElements(organisationUnitGroup)) {
+						SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+						elements.put(element, enteredValue);
+					}
+				}
+			}
+
+		}
+		return new SurveyPage(organisation, survey, null, null, null, null,null, elements);
+	}
+	
+
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(Organisation organisation, Survey survey) {
 		organisationService.loadGroup(organisation);
@@ -324,7 +347,6 @@ public class SurveyPageService {
 		}
 		surveyElementService.save(enteredValue);
 	}
-	
 	
 	// returns the list of modified elements/questions/sections/objectives (skip, validation, etc..)
 	@Transactional(readOnly = false)

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
@@ -94,6 +95,21 @@ public class SurveyPage {
 			}
 		}
 		return result;
+	}
+	
+	public List<SurveyQuestion> getListQuestions(Survey survey){
+		List<SurveyQuestion> simpleQuestions = new ArrayList<SurveyQuestion>();
+		for (SurveyObjective obj : survey.getObjectives(organisation.getOrganisationUnitGroup()))
+			for(SurveySection section: obj.getSections(organisation.getOrganisationUnitGroup()))
+				for(SurveyQuestion question: section.getQuestions(organisation.getOrganisationUnitGroup()))
+					//TODO this has to apply to all type questions
+					if(question instanceof SurveySimpleQuestion) {
+						SurveySimpleQuestion simpleQuestion = (SurveySimpleQuestion)question;
+						if (simpleQuestion.getSurveyElement().getDataElement().getType().getType() == ValueType.LIST) {
+							simpleQuestions.add(simpleQuestion);
+						}
+					}
+		return simpleQuestions;
 	}
 	
 	public boolean isLastSection(SurveySection surveySection) {

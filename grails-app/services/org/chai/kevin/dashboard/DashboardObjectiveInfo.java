@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.chai.kevin.Info;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public class DashboardObjectiveInfo extends Info {

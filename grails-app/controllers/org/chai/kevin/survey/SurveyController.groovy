@@ -43,6 +43,7 @@ class SurveyController extends AbstractEntityController {
 
 	def surveyAdminService
 	OrganisationService organisationService;
+	SurveyPageService surveyPageService;
 
 	def getEntity(def id) {
 		return Survey.get(id)
@@ -119,16 +120,13 @@ class SurveyController extends AbstractEntityController {
 		
 		Organisation organisation = organisationService.getOrganisation(Integer.parseInt(params['organisation']));
 		organisationService.loadGroup(organisation);
-		
 		OrganisationUnitGroup  group = organisation.getOrganisationUnitGroup();
-		 
-		List<SurveyObjective> objectives = survey.getObjectives(group);
+		
+		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
 
 		render (view: '/survey/print/surveyPrint', model:[
-			        survey: survey,
-					organisation: organisation,
-					group: group,
-					objectives: objectives
+					organisationUnitGroup: group,
+					surveyPage: surveyPage
 				])
 	}
 }

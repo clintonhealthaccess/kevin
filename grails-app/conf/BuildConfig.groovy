@@ -48,7 +48,7 @@ grails.project.dependency.resolution = {
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         mavenLocal()
-		mavenRepo "http://m2repo.spockframework.org/snapshots"
+//		mavenRepo "http://m2repo.spockframework.org/snapshots"
 //        mavenCentral()
 //		mavenRepo "http://snapshots.repository.codehaus.org"
 //		mavenRepo "http://repository.codehaus.org"
@@ -57,8 +57,9 @@ grails.project.dependency.resolution = {
 //		mavenRepo "http://repository.jboss.org/nexus/"
 //		mavenRepo "https://maven.nuxeo.org/nexus/"
 //		mavenRepo "http://www.intalio.org/public/maven2/"
+//		mavenRepo "http://repo.opennms.org/maven2/"
 //		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
-		
+				
 //		/**
 //		 * Configure our resolver.
 //		 */
@@ -90,6 +91,8 @@ grails.project.dependency.resolution = {
 			transitive = false
 		}
 		compile ("org.json:json:20080701")
+		
+		compile 'net.bull.javamelody:javamelody-core:1.31.0'
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		

@@ -12,16 +12,23 @@
 	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
 	<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id"/>
 
-	<div id="element-${surveyElement.id}" class="survey-element">
-		<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}"  model="[
-			value: enteredValue.value,
-			lastValue: enteredValue.lastValue,
-			type: dataElement.type, 
-			suffix:'',
-			surveyElement: surveyElement, 
-			enteredValue: enteredValue, 
-			readonly: readonly
-		]"/>
-	</div>
+	<g:if test="${print && dataElement.type.type.name().toLowerCase()=='list' && !appendix}">
+		<h4>--- <g:message code="survey.print.see.appendix" default="See Appendix"/> ---</h4>
+	</g:if>
+	<g:else>
+		<div id="element-${surveyElement.id}" class="survey-element">
+			<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}"  model="[
+				value: enteredValue.value,
+				lastValue: enteredValue.lastValue,
+				type: dataElement.type, 
+				suffix:'',
+				surveyElement: surveyElement, 
+				enteredValue: enteredValue, 
+				readonly: readonly,
+				print: print,
+				appendix: appendix
+			]"/>
+		</div>
+	</g:else>
 </div>
 

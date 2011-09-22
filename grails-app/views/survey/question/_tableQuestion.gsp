@@ -7,7 +7,7 @@
 		<table>
 			<thead>
 				<tr>
-					<th><g:i18n field="${question.tableNames}" /></th>
+					<th class="question-tab-title-name"><g:i18n field="${question.tableNames}" /></th>
 				    <g:set var="j" value="${0}"/>
 					<g:each in="${question.getColumns(organisationUnitGroup)}" var="column">
 						<g:set var="j" value="${j++}"/>

@@ -23,12 +23,9 @@ import org.chai.kevin.Timestamped;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.StoredValue;
-import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueCalculator;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 @Entity(name="Data")
 @Table(name="dhsst_data", uniqueConstraints={@UniqueConstraint(columnNames="code")})

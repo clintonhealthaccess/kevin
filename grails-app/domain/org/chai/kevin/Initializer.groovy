@@ -1027,7 +1027,11 @@ class Initializer {
 			services.addQuestion(serviceQ5)
 			services.save(failOnError:true, flush:true)
 			
-			def surveyElementServiceQ5 = new SurveyElement(dataElement: DataElement.findByCode("MAP1"), surveyQuestion: serviceQ5).save(failOnError: true)
+			def surveyElementServiceQ5 = new SurveyElement(
+				dataElement: DataElement.findByCode("MAP1"), 
+				surveyQuestion: serviceQ5,
+				headers: [".key1":j(["en": "Header 1"]),".key2":j(["en": "Header 2"]),".key3":j(["en": "Header 3"])]
+				).save(failOnError: true)
 			serviceQ5.surveyElement = surveyElementServiceQ5
 			serviceQ5.save(failOnError: true)
 			
@@ -1095,7 +1099,7 @@ class Initializer {
 			surveyValidationMessage.save(failOnError: true)
 			
 			def openQ = new SurveySimpleQuestion(
-				names: j(["en":"Sample Open Question "]),
+				names: j(["en":"Sample Open Question Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module."]),
 				descriptions: j(["en":"Sample Open Question"]),
 				order: 1,
 				groupUuidString: "District Hospital,Health Center"

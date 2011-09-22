@@ -12,9 +12,8 @@
 
 			<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
 			<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id"/>
-
 		    <li id="element-${surveyElement.id}" class="survey-element">
-				<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
+				<span class="display-in-block"><g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
 					value: enteredValue.value, 
 					lastValue: enteredValue.lastValue,
 					type: dataElement.type, 
@@ -23,7 +22,7 @@
 					enteredValue: enteredValue, 
 					readonly: readonly
 				]"/>
-				<span><g:i18n field="${option.names}"/></span>
+				<span><g:i18n field="${option.names}"/></span></span>
 				<div class="clear"></div>
 			</li>
 		</g:each>

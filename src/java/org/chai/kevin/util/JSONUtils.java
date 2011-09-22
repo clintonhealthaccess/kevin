@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.chai.kevin.data.Type;
-import org.chai.kevin.value.Value;
 import org.codehaus.groovy.grails.web.json.JSONException;
 import org.codehaus.groovy.grails.web.json.JSONObject;
 
