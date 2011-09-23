@@ -43,11 +43,12 @@ public class DsrTable {
 	private List<DsrTarget> targets;
 	private List<OrganisationUnitGroup> facilityTypes;
 	private Map<Organisation, Map<DsrTarget, Dsr>> values;
+	private Map<Organisation,Organisation> organisationMap;
 
 
 	public DsrTable(Organisation organisation,List<Organisation> organisations, Period period, DsrObjective objective,
 			List<DsrTarget> targets,List<OrganisationUnitGroup> facilityTypes,
-			Map<Organisation, Map<DsrTarget, Dsr>> values) {
+			Map<Organisation, Map<DsrTarget, Dsr>> values, Map<Organisation,Organisation> organisationMap) {
 		super();
 		this.organisation = organisation;
 		this.organisations = organisations;
@@ -56,6 +57,7 @@ public class DsrTable {
 		this.objective = objective;
 		this.targets = targets;
 		this.values = values;
+		this.organisationMap=organisationMap;
 	}
 
 	public Period getPeriod() {
@@ -92,6 +94,14 @@ public class DsrTable {
 
 	public List<OrganisationUnitGroup> getFacilityTypes() {
 		return facilityTypes;
+	}
+
+	public void setOrganisationMap(Map<Organisation,Organisation> organisationMap) {
+		this.organisationMap = organisationMap;
+	}
+
+	public Map<Organisation,Organisation> getOrganisationMap() {
+		return organisationMap;
 	}
 
 }

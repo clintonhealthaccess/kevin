@@ -44,6 +44,7 @@ import org.chai.kevin.DataService;
 import org.chai.kevin.LocaleService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.OrganisationSorter;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
@@ -54,11 +55,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DsrService {
-	// private Log log = LogFactory.getLog(DsrService.class);
+   // private Log log = LogFactory.getLog(DsrService.class);
 	private OrganisationService organisationService;
 	private ValueService valueService;
 	private DataService dataService;
 	private LocaleService localeService;
+	private int groupLevel;
 	
 	
 	@Cacheable("dsrCache")
@@ -69,12 +71,17 @@ public class DsrService {
 		List<DsrTarget> targets = null;
 		List<OrganisationUnitGroup> facilityTypes = null;
 		Set<OrganisationUnitGroup> facilityTypeSet = null;
+		Map<Organisation,Organisation> orgParentMap = null;
 		if (objective == null || organisation == null) {
 			return new DsrTable(organisation, organisations, period, objective,
-					targets, facilityTypes, dsrMap);
+					targets, facilityTypes, dsrMap,orgParentMap);
 		} else {
 			organisations = organisationService.getChildrenOfLevel(
 					organisation, organisationService.getFacilityLevel());
+			orgParentMap=this.getParentOfLevel(organisations,groupLevel);
+			
+			Collections.sort(organisations,new OrganisationSorter(orgParentMap,organisationService));
+			
 			targets = objective.getTargets();
 			Collections.sort(targets, new DsrTargetSorter());
 			dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
@@ -121,7 +128,7 @@ public class DsrService {
 			facilityTypes = new ArrayList<OrganisationUnitGroup>(facilityTypeSet);
 		}
 		return new DsrTable(organisation, organisations, period, objective,
-				targets, facilityTypes, dsrMap);
+				targets, facilityTypes, dsrMap,orgParentMap);
 	}
 
 	private static String getFormat(DsrTarget target, Double value) {
@@ -130,6 +137,14 @@ public class DsrService {
 		
 		DecimalFormat frmt = new DecimalFormat(format);
 		return frmt.format(value).toString();
+	}
+	
+	public Map<Organisation,Organisation> getParentOfLevel(List<Organisation> organisations,Integer level){
+		Map<Organisation,Organisation> organisationMap = new HashMap<Organisation, Organisation>();
+		for(Organisation organisation : organisations){
+			organisationMap.put(organisation, organisationService.getParentOfLevel(organisation, level));
+		}
+		return organisationMap;
 	}
 	
 	
@@ -148,4 +163,10 @@ public class DsrService {
 	public void setLocaleService(LocaleService localeService) {
 		this.localeService = localeService;
 	}
+
+	public void setGroupLevel(int groupLevel) {
+		this.groupLevel = groupLevel;
+	}
+
+
 }

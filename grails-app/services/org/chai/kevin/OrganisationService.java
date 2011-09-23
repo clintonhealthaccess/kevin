@@ -191,6 +191,20 @@ public class OrganisationService {
 		return organisationUnit.getParent();
 	}
 	
+	public Organisation getParentOfLevel(Organisation organisation, Integer level) {
+		Organisation tmp = organisation;
+		this.loadParent(tmp);
+		while (tmp.getParent() != null) {
+			this.getLevel(tmp.getParent());
+			if (tmp.getParent().getLevel() == level)
+				return tmp.getParent();
+			tmp = tmp.getParent();
+			this.loadParent(tmp);
+
+		}
+		return null;
+	}
+
 	public List<Organisation> getChildrenOfLevel(Organisation organisation, int level) {
 		List<OrganisationUnit> children = getChildrenOfLevel(organisation.getOrganisationUnit(), level);
 		List<Organisation> result = new ArrayList<Organisation>();
@@ -243,6 +257,5 @@ public class OrganisationService {
 			OrganisationUnitService organisationUnitService) {
 		this.organisationUnitService = organisationUnitService;
 	}
-
 	
 }

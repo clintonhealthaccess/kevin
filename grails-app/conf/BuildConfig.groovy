@@ -62,15 +62,15 @@ grails.project.dependency.resolution = {
 //		mavenRepo "http://repo.opennms.org/maven2/"
 //		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 				
-//		/**
-//		 * Configure our resolver.
-//		 */
-//		def libResolver = new GrailsRepoResolver(null, null);
-//		libResolver.addArtifactPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]")
-//		libResolver.addIvyPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/ivys/ivy-[revision].xml")
-//		libResolver.name = "github"
-////		libResolver.settings = ivySettings
-//		resolver libResolver
+		/**
+		 * Configure our resolver.
+		 */
+		def libResolver = new GrailsRepoResolver(null, null);
+		libResolver.addArtifactPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]")
+		libResolver.addIvyPattern("https://github.com/fterrier/repository/raw/master/[organisation]/[module]/ivys/ivy-[revision].xml")
+		libResolver.name = "github"
+//		libResolver.settings = ivySettings
+		resolver libResolver
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
@@ -93,6 +93,8 @@ grails.project.dependency.resolution = {
 			transitive = false
 		}
 		compile ("org.json:json:20080701")
+		
+		compile ("net.bull.javamelody:javamelody-core:1.31.0")
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		

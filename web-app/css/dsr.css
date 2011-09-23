@@ -9,12 +9,14 @@
 /* line 19, ../../src/stylesheets/dsr.sass */
 #dsr td { background-color: white; }
 /* line 22, ../../src/stylesheets/dsr.sass */
+#dsr .parent-row { background-color: #ff66cc; border: 1px solid #a3a3a3; color: white; }
+/* line 27, ../../src/stylesheets/dsr.sass */
 #dsr .box-dsr-value { background-color: white; border: #cccccc solid; border-width: 0px 1px 1px 0px; text-align: right; }
-/* line 28, ../../src/stylesheets/dsr.sass */
+/* line 33, ../../src/stylesheets/dsr.sass */
 #dsr .box-dsr-organisation { background-color: #cccccc; border: #cccccc solid; border-width: 0px 1px 1px 0px; text-align: left; }
-/* line 34, ../../src/stylesheets/dsr.sass */
+/* line 39, ../../src/stylesheets/dsr.sass */
 #dsr .object-name-box { width: 70px; font-weight: bolder; }
-/* line 38, ../../src/stylesheets/dsr.sass */
+/* line 43, ../../src/stylesheets/dsr.sass */
 #dsr .title-th { width: 10px; color: white; background-color: #a3a3a3; border: white solid; border-width: 1px 1px 1px 0px; vertical-align: bottom; }
-/* line 45, ../../src/stylesheets/dsr.sass */
+/* line 50, ../../src/stylesheets/dsr.sass */
 #dsr .title-th a { font-size: 10px; font-weight: normal; }
