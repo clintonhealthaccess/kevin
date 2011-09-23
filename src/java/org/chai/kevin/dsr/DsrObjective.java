@@ -56,6 +56,11 @@ import org.hibernate.annotations.SortType;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DsrObjective extends Translatable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5921900390935911828L;
+	
 	private Long id;
 	private Integer order;
 	private List<DsrTarget> targets = new ArrayList<DsrTarget>();
