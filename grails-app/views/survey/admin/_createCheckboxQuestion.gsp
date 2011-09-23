@@ -15,10 +15,11 @@
 		<table id="question-option">
 			<g:each in="${question.options}" status="i" var="option">
 				<tr class="white-box"> 
-					<td id="question-option-${option.id}"><g:render template="/templates/checkboxOption" model="[option: option]" /></td>
+					<td id="question-option-${option.id}"><g:render template="/survey/admin/checkboxOption" model="[option: option]" /></td>
 				</tr>
 			</g:each>
 		</table>
+		
 		<g:if test="${question.id != null}">
 			<div>
 				<a id="add-option-link" class="flow-add float-right" href="${createLink(controller:'checkboxOption', action:'create',params:[questionId: question.id])}">
@@ -65,43 +66,41 @@
 <div class="hidden flow-container"></div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-	getRichTextContent();
-	getEditOption('.flow-edit-option');
-	getAddedOption('#add-option-link');
-});
-
-function getEditOption(selector) {
-	$('#add-checkbox-question').flow({
-		addLinks : [ selector ],
-		onSuccess : function(data) {
-			if (data.result == 'success') {
-			var checkboxOptionHtml = data.html;
-			var checkboxOptionId = data.newEntity;
-			var selector = '#question-option-'
-					+ checkboxOptionId.id;
-			$(selector).replaceWith(
-					'<td id="question-option-'+checkboxOptionId.id+'">'
-							+ checkboxOptionHtml + '</td>');
-			}
-		 	getEditOption('#question-option-'+checkboxOptionId.id+' .flow-edit-option');
-		}
+	$(document).ready(function() {
+		getRichTextContent();
+		getEditOption('.flow-edit-option');
+		getAddedOption('#add-option-link');
 	});
-}
-
-function getAddedOption(selector) {
-	$('#add-checkbox-question').flow({
-		addLinks : [ '#add-option-link' ],
-		onSuccess : function(data) {
-			if (data.result == 'success') {
-				var checkboxOptionHtml = data.html;
-				var checkboxOptionId = data.newEntity;
-				$('#question-option').append(
-						'<tr class="question-option"><td id="question-option-'+checkboxOptionId.id+'">'
-								+ checkboxOptionHtml + '</td></tr>');
-				getEditOption('#question-option-'+checkboxOptionId.id+' .flow-edit-option');
+	
+	function getEditOption(selector) {
+		$('#add-checkbox-question').flow({
+			addLinks : [ selector ],
+			onSuccess : function(data) {
+				if (data.result == 'success') {
+					var checkboxOptionHtml = data.html;
+					var checkboxOptionId = data.newEntity;
+					var selector = '#question-option-'+checkboxOptionId.id;
+					$(selector).replaceWith(
+						'<td id="question-option-'+checkboxOptionId.id+'">'+checkboxOptionHtml+'</td>');
+				}
+			 	getEditOption('#question-option-'+checkboxOptionId.id+' .flow-edit-option');
 			}
-		}
-	});
-}
+		});
+	}
+	
+	function getAddedOption(selector) {
+		$('#add-checkbox-question').flow({
+			addLinks : [ '#add-option-link' ],
+			onSuccess : function(data) {
+				if (data.result == 'success') {
+					var checkboxOptionHtml = data.html;
+					var checkboxOptionId = data.newEntity;
+					$('#question-option').append(
+							'<tr class="question-option"><td id="question-option-'+checkboxOptionId.id+'">'
+									+ checkboxOptionHtml + '</td></tr>');
+					getEditOption('#question-option-'+checkboxOptionId.id+' .flow-edit-option');
+				}
+			}
+		});
+	}
 </script>

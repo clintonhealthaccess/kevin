@@ -26,16 +26,11 @@
 		</g:form>
 	</div>
 	<div class="data-search-column">
-		<g:form name="search-data-form" class="search-form" url="[controller:'expression', action:'getData']">
+		<g:form name="search-data-form" class="search-form" url="[controller:'dataElement', action:'getData']">
 			<div class="row">
 				<label for="searchText">Search: </label>
 		    	<input name="searchText" class="idle-field"></input>
 		    </div>
-			<div class="row">
-				<label for="type">Search for: </label>
-				<input class="radio" type="radio" name="type" value="data-element" checked="checked"/>Data elements
-				<input class="radio" type="radio" name="type" value="constant"/>Constants
-			</div>
 			<div class="row">
 				<button type="submit">Search</button>
 				<div class="clear"></div>

@@ -42,7 +42,7 @@
 			</g:form>
 		</div>
 		<div class="data-search-column">
-			<g:form name="search-data-form" class="search-form" url="[controller:'dataElement', action:'getData']">
+			<g:form name="search-data-form" class="search-form" url="[controller:'dataElement', action:'getData', params:['include': ['bool']]]">
 				<div class="row">
 					<label for="searchText">Search: </label>
 			    	<input name="searchText" class="idle-field"></input>

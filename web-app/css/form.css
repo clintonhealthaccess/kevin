@@ -48,7 +48,7 @@
 .completed-field { -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; background: #ededed; color: black; border: solid 1px #73a6ff; }
 
 /* line 98, ../../src/stylesheets/form.sass */
-.ajax-search-field { width: 300px; }
+.ajax-search-field { width: 340px; }
 
 /* line 101, ../../src/stylesheets/form.sass */
 ul.filtered { border: 1px solid lightGrey; padding: 4px; height: 270px; overflow: auto; }

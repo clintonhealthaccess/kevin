@@ -16,20 +16,40 @@
 		 
 			<div class="row ${hasErrors(bean:skip, field:'skippedSurveyElements', 'errors')}">
 				<label>Skipped Survey Elements: </label>
-				<select id="skipped-survey-elements-list" name="skippedSurveyElements" multiple="true" class="ajax-search-field">
-					<g:if test="${!skip.skippedSurveyElements.isEmpty()}">
-						<g:each in="${skip.skippedSurveyElements}" var="surveyElement">
+				
+				<!-- START SKIPPED SURVEY ELEMENTS -->
+				<g:each in="${skip.skippedSurveyElements}" var="entry">
+					<div class="white-box">
+						<g:set var="surveyElement" value="${entry.key}"/>
+						<g:set var="prefixes" value="${entry.value}"/>
+						
+						<label for="skipped.element">Survey element:</label> 
+						<select name="skipped.element" class="ajax-search-field skipped-survey-elements-list">
 							<option value="${surveyElement.id}" selected>
-								<g:i18n field="${surveyElement.dataElement.names}" />
-								[${surveyElement.id}]
+								<g:i18n field="${surveyElement.dataElement.names}" />[${surveyElement.id}]
 							</option>
-						</g:each>
-					</g:if>
-				</select>
+						</select>
+						<label for="skipped.prefix">Prefixes (comma-separated):</label>
+						<input type="text" value="${prefixes}" name="skipped.prefix"/> 
+						<a href="#" onclick="$(this).parent().remove();return false;">delete</a>
+					</div>
+				</g:each>
+				<div class="white-box hidden">
+					<label for="">Survey element:</label> 
+					<select name="skipped.element" class="ajax-search-field skipped-survey-elements-list">
+						<option value="" selected></option>
+					</select>
+					<label for="skipped.prefix">Prefixes (comma-separated):</label>
+					<input type="text" value="${prefixes}" name="skipped.prefix"/> 
+					<a href="#" onclick="$(this).parent().remove();return false;">delete</a>
+				</div>
+				<a href="#" onclick="$(this).before($(this).prev().clone()); $(this).prev().prev().show(); return false;">add</a>
+				<!-- END SKIPPED SURVEY ELEMENTS -->
+				
 				<div class="error-list"><g:renderErrors bean="${skip}" field="skippedSurveyElements" /></div>
 			</div>
 
-			<div class="row s${hasErrors(bean:skip, field:'skippedSurveyQuestions', 'errors')}">
+			<div class="row ${hasErrors(bean:skip, field:'skippedSurveyQuestions', 'errors')}">
 				<label>Skipped Questions: </label>
 				<select id="questions-list" name="skippedSurveyQuestions" multiple="true" class="ajax-search-field">
 					<g:if test="${!skip.skippedSurveyQuestions.isEmpty()}">
@@ -56,11 +76,10 @@
 		</g:form>
 		</div>
 		<div class="data-search-column">
-			<g:form name="search-data-form" class="search-form" url="[controller:'surveyElement', action:'getData']">
+			<g:form name="search-data-form" class="search-form" url="[controller:'surveyElement', action:'getHtmlData']">
 				<div class="row">
 					<label for="searchText">Search: </label>
 			    	<input name="searchText" class="idle-field"/>
-			    	<input type="hidden" name="surveyId" value="${skip.survey.id}"/>
 			    	<button type="submit">Search</button>
 					<div class="clear"></div>
 				</div>
@@ -74,7 +93,7 @@
 <div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {		
-		$("#skipped-survey-elements-list").ajaxChosen({
+		$(".skipped-survey-elements-list").ajaxChosen({
 			type : 'GET',
 			dataType: 'json',
 			url : "${createLink(controller:'surveyElement', action:'getAjaxData',params:[surveyId: skip.survey.id])}"
@@ -89,7 +108,7 @@
 		$("#questions-list").ajaxChosen({
 			type : 'GET',
 			dataType: 'json',
-			url : "${createLink(controller:'surveySkipRule', action:'getAjaxDataQuestion',params:[surveyId: skip.survey.id])}"
+			url : "${createLink(controller:'question', action:'getAjaxData',params:[surveyId: skip.survey.id])}"
 		}, function (data) {
 			var terms = {};
 			$.each(data.questions, function (i, val) {

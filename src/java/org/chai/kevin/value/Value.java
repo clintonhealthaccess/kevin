@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -152,7 +153,7 @@ public class Value {
 	@Transient
 	public Map<String, Value> getMapValue() {
 		try {
-			Map<String, Value> result = new HashMap<String, Value>();
+			Map<String, Value> result = new LinkedHashMap<String, Value>();
 			JSONArray array = getJsonObject().getJSONArray("value");
 			for (int i = 0; i < array.length(); i++) {
 				JSONObject object = array.optJSONObject(i);

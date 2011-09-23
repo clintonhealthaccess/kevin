@@ -65,7 +65,7 @@ class CheckboxOptionController extends AbstractEntityController {
 	}
 	
 	def html(def entity){
-		return g.render (template:'/templates/checkboxOption', model:[option: entity])
+		return g.render (template:'/survey/admin/checkboxOption', model:[option: entity])
 	}
 
 	def validateEntity(def entity) {

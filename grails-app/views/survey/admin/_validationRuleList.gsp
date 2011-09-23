@@ -3,6 +3,7 @@
 		<tr>
 		    <th>Id</th>
 			<th>Data Element</th>
+			<th>Prefix</th>
 			<th>Expression</th>
 			<th>Allow Outlier</th>
 			<th>Validation Message</th>
@@ -14,6 +15,7 @@
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 				<td>${validationRule.id}</td>
 				<td><g:i18n field="${validationRule.surveyElement.dataElement?.names}" /></td>
+				<td>${validationRule.prefix}</td>
 				<td>${validationRule.expression}</td>
 				<td> 
 				    <g:if test="${validationRule.allowOutlier==true}">

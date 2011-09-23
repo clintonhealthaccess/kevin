@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -94,7 +96,7 @@ public class Type {
 	@Transient
 	public Map<String, Type> getElementMap() {
 		if (!getType().equals(ValueType.MAP)) throw new IllegalStateException();
-		Map<String, Type> result = new HashMap<String, Type>();
+		Map<String, Type> result = new LinkedHashMap<String, Type>();
 		try {
 			JSONArray array = getJsonObject().getJSONArray("elements");
 			for (int i = 0; i < array.length(); i++) {
@@ -528,8 +530,9 @@ public class Type {
 	}
 	
 	private void getPrefixes(Value value, String prefix, Map<String, Value> prefixes, PrefixPredicate predicate) {
+		predicate.types.push(this);
 		if (predicate.holds(this, value, prefix)) prefixes.put(prefix, value);
-		else if (!value.isNull()) {
+		else if (value == null || !value.isNull()) {
 			switch (getType()) {
 				case NUMBER:
 				case BOOL:
@@ -539,25 +542,44 @@ public class Type {
 					break;
 				case LIST:
 					Type listType = getListType();
-					List<Value> values = value.getListValue();
-					for (int i = 0; i < values.size(); i++) {
-						listType.getPrefixes(values.get(i), prefix+"["+i+"]", prefixes, predicate);
+					if (value == null) listType.getPrefixes(null, prefix+"[_]", prefixes, predicate);
+					else {
+						List<Value> values = value.getListValue();
+						for (int i = 0; i < values.size(); i++) {
+							listType.getPrefixes(values.get(i), prefix+"["+i+"]", prefixes, predicate);
+						}
 					}
 					break;
 				case MAP:
 					Map<String, Type> typeMap = getElementMap();
-					for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
-						typeMap.get(entry.getKey()).getPrefixes(entry.getValue(), prefix+"."+entry.getKey(), prefixes, predicate);
+					if (value == null) {
+						for (Entry<String, Type> entry : typeMap.entrySet()) {
+							entry.getValue().getPrefixes(null, prefix+"."+entry.getKey(), prefixes, predicate);
+						}
+					}
+					else {
+						for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
+							typeMap.get(entry.getKey()).getPrefixes(entry.getValue(), prefix+"."+entry.getKey(), prefixes, predicate);
+						}
 					}
 					break;
 				default:
 					throw new NotImplementedException();
 			}
 		}
+		predicate.types.pop();
 	}
 
-	public static interface PrefixPredicate {
-		public boolean holds(Type type, Value value, String prefix);
+	public static abstract class PrefixPredicate {
+		
+		Stack<Type> types = new Stack<Type>();
+		
+		public Type getParent() {
+			if (types.size() >= 2) return types.get(types.size() - 2);
+			return null;
+		}
+		
+		public abstract boolean holds(Type type, Value value, String prefix);
 	}
 	
 	public String getDisplayValue(Value value) {

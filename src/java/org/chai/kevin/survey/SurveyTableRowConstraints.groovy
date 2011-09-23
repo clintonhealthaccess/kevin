@@ -32,7 +32,18 @@ package org.chai.kevin.survey
  *
  */
 constraints = {
-	question(nullable:false,blank:false)
-	order(nullable:false, blank:false)
+	question(nullable:false)
+	order(nullable:false)
 	groupUuidString(nullable:false /*,blank:false*/ )
+	surveyElements(validator: {val, obj ->
+		boolean valid = true;
+		if (val != null) {
+			val.values().each { 
+				if (it != null) {
+					if (!["BOOL","ENUM","DATE","STRING","NUMBER"].contains(it.dataElement.type.type.name())) valid = false
+				}	
+			}
+		}
+		return valid;
+	})
 }

@@ -41,10 +41,6 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
  */
 class SurveyController extends AbstractEntityController {
 
-	def surveyAdminService
-	OrganisationService organisationService;
-	SurveyPageService surveyPageService;
-
 	def getEntity(def id) {
 		return Survey.get(id)
 	}
@@ -115,18 +111,5 @@ class SurveyController extends AbstractEntityController {
 		redirect (controller: 'survey', action: 'list')
 	}
 
-	def print = {
-		Survey survey = Survey.get(params['survey']);
-		
-		Organisation organisation = organisationService.getOrganisation(Integer.parseInt(params['organisation']));
-		organisationService.loadGroup(organisation);
-		OrganisationUnitGroup  group = organisation.getOrganisationUnitGroup();
-		
-		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
 
-		render (view: '/survey/print/surveyPrint', model:[
-					organisationUnitGroup: group,
-					surveyPage: surveyPage
-				])
-	}
 }

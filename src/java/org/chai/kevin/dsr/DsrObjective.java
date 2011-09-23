@@ -51,7 +51,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 
-@SuppressWarnings("serial")
 @Entity(name = "DsrObjective")
 @Table(name = "dhsst_dsr_objective")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

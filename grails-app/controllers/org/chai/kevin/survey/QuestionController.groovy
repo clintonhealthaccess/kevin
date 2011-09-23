@@ -36,6 +36,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class QuestionController {
 
+	def surveyQuestionService
+	
 	def index = {
 		redirect (action: "list", params: params)
 	}
@@ -58,5 +60,21 @@ class QuestionController {
 			code: 'survey.question.label',
 			addTemplate: 'addQuestion'
 		])
+	}
+	
+	def getAjaxData = {
+		Survey survey = Survey.get(params.int('surveyId'));
+		Set<SurveyQuestion> surveyQuestions = surveyQuestionService.searchSurveyQuestion(params['term'], survey);
+
+		render(contentType:"text/json") {
+			questions = array {
+				surveyQuestions.each { question ->
+					quest (
+						id: question.id,
+						question: question.getString(g.i18n(field: question.names).toString(),35)+'Q: ['+question.id+']'
+					)
+				}
+			}
+		}
 	}
 }
