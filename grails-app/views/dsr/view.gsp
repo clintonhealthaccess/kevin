@@ -1,4 +1,5 @@
 <html>
+<<<<<<< HEAD
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="layout" content="main" />
@@ -92,6 +93,117 @@
 			</g:if>
 			<div class="clear"></div>
 			<div>
+=======
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="layout" content="main" />
+		<title><g:message code="dsrTable.view.label" default="District Summary Reports" /></title>
+		
+		<!-- for admin forms -->
+		<shiro:hasPermission permission="admin:dsr">
+        	<r:require modules="form"/>
+        </shiro:hasPermission>
+        
+		<r:require modules="dsr"/>
+	</head>
+	<body>
+		<div id="dsr">
+			<div class="box margin-bottom-10">
+				<div class="filter">
+					<span class="bold">Iteration:</span>
+					<span class="dropdown white-dropdown">
+						<a class="selected" href="#" data-period="${dsrTable.period.id}" data-type="period">
+							<g:dateFormat format="yyyy" date="${dsrTable.period.startDate}" />
+						</a>
+						<div class="hidden dropdown-list">
+							<ul>
+								<g:each in="${periods}" var="period">
+									<li><a href="${createLink(controller: "dsr", action:"view", params:[period:period.id, objective: dsrTable.objective?.id, organisation: dsrTable.organisation?.id])}">
+										<span><g:dateFormat format="yyyy" date="${period.startDate}" /></span> 
+										</a>
+									</li>
+								</g:each>
+							</ul>
+						</div>
+					</span>
+				</div>
+				<div class="filter">
+					<span class="bold">Organisation:</span>
+					<span class="dropdown white-dropdown">
+						<g:if test="${dsrTable.organisation != null}">
+							<a class="selected" href="#" data-type="organisation">${dsrTable.organisation.name}</a>
+						</g:if>
+						<g:else>
+							<a class="selected" href="#" data-type="organisation">Select Organisation Unit</a>
+						</g:else> 
+						<div class="hidden dropdown-list">
+							<ul>
+								<g:render template="/templates/organisationTree"
+									model="[controller: 'dsr', action: 'view', organisation: organisationTree, current: dsrTable.organisation, params:[period: periods.startDate, objective: dsrTable.objective?.id], displayLinkUntil: displayLinkUntil]" />
+							</ul>
+						</div>
+					</span>
+				</div>
+				<div class="filter">
+					<span class="bold">Strategic Objective:</span>
+					<span class="dropdown white-dropdown">
+						<g:if test="${dsrTable.objective != null}">
+							<a class="selected" href="#"
+							data-organisation="${dsrTable.objective.id}"
+							data-type="objective"><g:i18n field="${dsrTable.objective.names}"/></a>
+						</g:if>
+						<g:else>
+							<a href="#" class="selected" data-type="objective">
+							Select Strategic Objective</a>
+						</g:else>
+						<div class="hidden dropdown-list">
+							<g:if test="${!objectives.empty}">
+								<ul>
+									<g:each in="${objectives}" var="objective">
+										<li>
+											<span>
+												<a href="${createLink(controller: "dsr", action:"view", params:[period: dsrTable.period.id, objective: objective?.id, organisation: dsrTable.organisation?.id])}">
+													<g:i18n field="${objective.names}"/>
+												</a>
+											</span>
+								    		<shiro:hasPermission permission="admin:dsr">
+												<span>
+													<g:link controller="dsrObjective" action="edit" id="${objective.id}" class="flow-edit">(Edit)</g:link>
+												</span>
+												<span>
+													<g:link controller="dsrObjective" action="delete" id="${objective.id}" class="flow-delete">(Delete)</g:link>
+												</span>
+											</shiro:hasPermission>
+										</li>
+									</g:each>
+								</ul>
+							</g:if>
+							<g:else>
+								<span>No Objectives Found</span>
+							</g:else>
+						</div>
+					</span>
+				</div>
+				<g:if test="${dsrTable.objective != null && dsrTable.organisation != null}">
+					<div class="clear"></div>
+					<div class="filter margin-top-20">
+			    		<div class="bold">Facility types</div>
+			    		<div id="facility-type-filter">
+				    		<g:if test="${!dsrTable.facilityTypes.isEmpty()}">
+					    		<g:each in="${dsrTable.facilityTypes}" var="group">
+						    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}
+					    		</g:each>
+				    		</g:if>
+			    		<g:else>
+			    			<span class="italic">No facility types</span>
+			    		</g:else>
+			    		</div>
+			    		<div class="clear"></div>
+			    	</div>
+				</g:if>
+				<div class="clear"></div>
+				<div>
+>>>>>>> new_branch_name
 				<!-- ADMIN SECTION -->
 				<shiro:hasPermission permission="admin:dsr">
 					<span> <a id="add-dsr-objective-link" class="flow-add" href="${createLink(controller:'dsrObjective', action:'create')}">Add Objective</a> </span>|

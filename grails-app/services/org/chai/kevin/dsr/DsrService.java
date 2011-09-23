@@ -51,6 +51,7 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DsrService {
@@ -61,9 +62,10 @@ public class DsrService {
 	private LocaleService localeService;
 	private int groupLevel;
 	
+	
+	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public DsrTable getDsr(Organisation organisation, DsrObjective objective,
-			Period period) {
+	public DsrTable getDsr(Organisation organisation, DsrObjective objective, Period period) {
 		List<Organisation> organisations = null;
 		Map<Organisation, Map<DsrTarget, Dsr>> dsrMap = null;
 		List<DsrTarget> targets = null;

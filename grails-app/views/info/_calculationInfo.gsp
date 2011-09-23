@@ -6,7 +6,7 @@
 	</g:if>
 	
 	<div class="average">
-		<h5>Average value:</h5>
+		<span class="bold">Average value:</span>
 		<span class="value">
 			<g:if test="${info.value.numberValue}">
 				<g:formatNumber number="${info.value.numberValue * 100}" format="#0.0"/>%
@@ -17,7 +17,7 @@
 	</div>
 	
 	<div>
-		<h5><a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Scores</a></h5>
+		<span class="bold"><a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Scores</a></span>
 		<div class="box span ${info.expressionValues.size()>10?'hidden':''}">
 			<g:if test="${info.groups != null}">
 				<g:each in="${info.groups}" var="groupOrganisation">
@@ -41,15 +41,15 @@
 		<g:each in="${info.calculation.expressions}" var="entry">
 			<g:set var="groupUuid" value="${entry.key}"/>
 			<g:set var="expression" value="${entry.value}"/>
-			<h5>
+			<span class="bold">
 				<a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Expression for ${groups.getGroupByUuid(groupUuid).name}</a>
-			</h5>
+			</span>
 			<div class="box span hidden">
 				<div class="expression">
 					<a href="#" class="cluetip" title="${i18n(field: expression.names)}" onclick="return false;" rel="${createLink(controller:'expression', action:'getDescription', id:expression.id)}"><g:i18n field="${expression.names}"/></a>
 				</div>
 				<div class="equation">
-					<h5>Equation</h5>
+					<span class="bold">Equation</span>
 					<div>
 						<div class="formula"><g:expression expression="${expression}"/></div>
 					</div>
@@ -60,9 +60,9 @@
 	</div>
 
 	<div>
-		<h5>
+		<span class="bold">
 			<a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Trend</a>
-		</h5>
+		</span>
 		<div class="span box hidden">
 			<g:render template="/chart/chart" model="[data: info.calculation.id, organisation: info.organisation.id]"/>
 		</div>

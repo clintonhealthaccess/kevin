@@ -1,4 +1,4 @@
-<div id="add-expression" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 	
 	<div class="entity-form-header">
 		<h3 class="title">Expression</h3>
@@ -11,8 +11,8 @@
 			<g:i18nInput name="names" bean="${expression}" value="${expression.names}" label="Name" field="names"/>
 			<g:i18nTextarea name="descriptions" bean="${expression}" value="${expression.descriptions}" label="Description" field="descriptions"/>
 			<g:input name="code" label="Code" bean="${expression}" field="code"/>
-			<g:input name="type.jsonType" label="Type" bean="${expression}" field="type"/>
 			
+			<g:textarea name="type.jsonType" label="Type" bean="${expression}" field="type"/>
 			<g:textarea name="expression" label="Expression" bean="${expression}" field="expression" rows="5"/>
 			
 			<g:if test="${expression.id != null}">
@@ -26,16 +26,11 @@
 		</g:form>
 	</div>
 	<div class="data-search-column">
-		<g:form name="search-data-form" class="search-form" url="[controller:'expression', action:'getData']">
+		<g:form name="search-data-form" class="search-form" url="[controller:'dataElement', action:'getData']">
 			<div class="row">
 				<label for="searchText">Search: </label>
 		    	<input name="searchText" class="idle-field"></input>
 		    </div>
-			<div class="row">
-				<label for="type">Search for: </label>
-				<input class="radio" type="radio" name="type" value="data-element" checked="checked"/>Data elements
-				<input class="radio" type="radio" name="type" value="constant"/>Constants
-			</div>
 			<div class="row">
 				<button type="submit">Search</button>
 				<div class="clear"></div>

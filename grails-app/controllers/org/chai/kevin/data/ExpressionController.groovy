@@ -54,7 +54,7 @@ class ExpressionController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		return [expression: entity, /*dataSets: dataService.getDataSets()*/]
+		return [expression: entity]
 	}
 
 	def validateEntity(def entity) {
@@ -103,47 +103,6 @@ class ExpressionController extends AbstractEntityController {
 				html = g.render (template: '/templates/expressionDescription', model: [expression: expression])
 			}
 		}
-	}
-	
-//	//FIXME getData Method has to be relocated
-//	def getConstantDescription = {
-//		def constant = null;
-//		if (NumberUtils.isNumber(params['constant'])) {
-//			constant = Constant.get(params['constant'])
-//		}
-//		
-//		if (constant == null) {
-//			render(contentType:"text/json") {
-//				result = 'error'
-//			}
-//		}
-//		else {
-//			render(contentType:"text/json") {
-//				result = 'success'
-//				html = g.render (template: '/templates/constantDescription', model: [constant: constant])
-//			}
-//		}
-//	}
-	
-	def getData = {
-//		def dataSet = null
-//		if (NumberUtils.isNumber(params['dataSetFilter'])) {
-//			dataSet = DataSet.get(params['dataSetFilter'])
-//		}
-//		if (params['type'] == 'constant') {
-//			def constants = dataService.searchConstants(params['searchText']);
-//			render(contentType:"text/json") {
-//				result = 'success'
-//				html = g.render(template:'/templates/constants', model:[constants: constants])
-//			}
-//		}
-//		else {
-			def dataElements = dataService.searchDataElements(params['searchText']);
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render(template:'/templates/dataElements', model:[dataElements: dataElements])
-			}
-//		}
 	}
 	
 }

@@ -38,11 +38,10 @@ class SurveyElementController {
 	def surveyElementService;
 	def localeService;
 	
-	def getData = {
-		Survey survey = null;
-		if(NumberUtils.isNumber(params['surveyId'])) survey = Survey.get(Integer.parseInt(params['surveyId']));
-		
-		Set<SurveyElement> surveyElements =surveyElementService.searchSurveyElements(params['searchText'],survey);
+	def getHtmlData = {
+		Survey survey = Survey.get(params.int('surveyId'));
+		List<String> allowedTypes = params.list('include');
+		Set<SurveyElement> surveyElements =surveyElementService.searchSurveyElements(params['searchText'], survey, allowedTypes);
 		
 		render(contentType:"text/json") {
 			result = 'success'
@@ -51,18 +50,17 @@ class SurveyElementController {
 	}
 
 	def getAjaxData = {
-		Survey survey = null;
-		if(NumberUtils.isNumber(params['surveyId'])) survey = Survey.get(Integer.parseInt(params['surveyId']));
-		
-		Set<SurveyElement> surveyElements =surveyElementService.searchSurveyElements(params['term'],survey);
+		Survey survey = Survey.get(params.int('surveyId'));
+		List<String> allowedTypes = params.list('include');
+		Set<SurveyElement> surveyElements =surveyElementService.searchSurveyElements(params['term'], survey, allowedTypes);
 
 		render(contentType:"text/json") {
 			elements = array {
 				surveyElements.each { surveyElement ->
 					elem (
-							id: surveyElement.id,
-							surveyElement: g.i18n(field: surveyElement.dataElement.names)+'['+surveyElement.id+']'
-							)
+						id: surveyElement.id,
+						surveyElement: g.i18n(field: surveyElement.dataElement.names)+'['+surveyElement.id+']'
+					)
 				}
 			}
 		}

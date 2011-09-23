@@ -35,6 +35,7 @@ import org.chai.kevin.ValueService
 import org.chai.kevin.security.User
 import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 class EditSurveyController extends AbstractReportController {
 	
@@ -328,15 +329,23 @@ class EditSurveyController extends AbstractReportController {
 		}
 	}
 	
+	def print = {
+		Survey survey = Survey.get(params.int('survey'));
+		Organisation organisation = organisationService.getOrganisation(params.int('organisation'));
+		
+		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
+
+		render (view: '/survey/print/surveyPrint', model:[
+			organisationUnitGroup: group,
+			surveyPage: surveyPage
+		])
+	}
 	
 	private def getSurveyElements() {
 		def result = []
 		// TODO test this
-		if (params.surveyElements instanceof String) result.add(SurveyElement.get(params.int('surveyElements')))
-		else {
-			params.surveyElements.each { id ->
-				result.add(SurveyElement.get(id))
-			}
+		params.list('surveyElements').each { id ->
+			result.add(SurveyElement.get(id))
 		}
 		return result
 	}

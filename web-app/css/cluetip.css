@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 Syntax error: Invalid CSS after "($radius": expected ")", was "=2px)"
         on line 29 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/partials/_base.sass
@@ -60,3 +61,15 @@ body:before {
   white-space: pre;
   font-family: monospace;
   content: "Syntax error: Invalid CSS after \"($radius\": expected \")\", was \"=2px)\"\A         on line 29 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/partials/_base.sass\A         from line 1 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/cluetip.sass"; }
+=======
+/* line 2, ../../src/stylesheets/cluetip.sass */
+#cluetip-inner .type { font-weight: bold; }
+/* line 5, ../../src/stylesheets/cluetip.sass */
+#cluetip-inner .row { margin-bottom: 4px; }
+/* line 9, ../../src/stylesheets/cluetip.sass */
+#cluetip-inner .enum li { display: block; clear: both; }
+/* line 13, ../../src/stylesheets/cluetip.sass */
+#cluetip-inner .enum li .name { float: left; width: 160px; white-space: normal; }
+/* line 18, ../../src/stylesheets/cluetip.sass */
+#cluetip-inner .enum li .value { float: left; width: 80px; }
+>>>>>>> new_branch_name

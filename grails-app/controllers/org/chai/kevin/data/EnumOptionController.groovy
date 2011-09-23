@@ -62,7 +62,7 @@ class EnumOptionController extends AbstractEntityController {
 	}
 	
 	def html(def entity){
-		return g.render (template:'/templates/enumOption', model:[option: entity])
+		return g.render (template:'/entity/data/enumOption', model:[option: entity])
 	}
 
 	def validateEntity(def entity) {

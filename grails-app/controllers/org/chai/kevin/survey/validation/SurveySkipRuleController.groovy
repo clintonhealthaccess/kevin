@@ -29,8 +29,8 @@ package org.chai.kevin.survey.validation
 
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.survey.Survey;
+import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyQuestion
-import org.chai.kevin.survey.SurveyQuestionService
 import org.chai.kevin.survey.SurveySkipRule;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.apache.commons.lang.math.NumberUtils;
@@ -39,8 +39,6 @@ import org.apache.commons.lang.math.NumberUtils;
  *
  */
 class SurveySkipRuleController  extends AbstractEntityController {
-
-	SurveyQuestionService surveyQuestionService;
 
 	def sessionFactory
 
@@ -79,12 +77,22 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
-		
-		// FIXME GRAILS-6967 makes this necessary
-		//SurveyQuestion is an abstract class
+		// binding skipped elements
+		entity.skippedSurveyElements.clear()
+		int i = 0;
+		params.skipped.element.each { skipped ->
+			def element = SurveyElement.get(skipped)
+			if (element != null) {
+				def prefix = params.skipped.prefix[i]
+				entity.skippedSurveyElements.put(element, prefix)
+			}
+			i++;
+		}
+						
 		List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
-		for(def qId: params.skippedSurveyQuestions)
-			questions.add(sessionFactory.currentSession.get(SurveyQuestion.class, Long.parseLong(qId)));
+		for(def question: params.skippedSurveyQuestions) { 
+			questions.add(sessionFactory.currentSession.get(SurveyQuestion.class, Long.parseLong(question)));
+		}
 		entity.skippedSurveyQuestions = questions
 	}
 	
@@ -101,21 +109,4 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		])
 	}
 
-	def getAjaxDataQuestion = {
-		Survey survey = null;
-		if(NumberUtils.isNumber(params['surveyId'])) survey = Survey.get(Integer.parseInt(params['surveyId']));
-
-		Set<SurveyQuestion> surveyQuestions = surveyQuestionService.searchSurveyQuestion(params['term'], survey);
-
-		render(contentType:"text/json") {
-			questions = array {
-				surveyQuestions.each { question ->
-					quest (
-							id: question.id,
-							question: question.getString(g.i18n(field: question.names).toString(),35)+'Q: ['+question.id+']'
-							)
-				}
-			}
-		}
-	}
 }

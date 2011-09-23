@@ -12,7 +12,7 @@
 		<g:i18nTextarea name="descriptions" bean="${dataElement}" value="${dataElement.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
 		
 		<g:input name="code" label="Code" bean="${dataElement}" field="code"/>
-		<g:input name="type.jsonType" label="Type" bean="${dataElement}" field="type"/>
+		<g:textarea name="type.jsonType" label="Type" bean="${dataElement}" field="type"/>
 		
 		<g:input name="info" label="Info" bean="${dataElement}" field="info"/>
 		

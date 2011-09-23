@@ -1,11 +1,20 @@
 /*
 Syntax error: Invalid CSS after "($radius": expected ")", was "=2px)"
+<<<<<<< HEAD
         on line 29 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/partials/_base.sass
         from line 1 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/form.sass
 
 Backtrace:
 /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/partials/_base.sass:29
 /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/form.sass:1
+=======
+        on line 11 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/partials/_mixins.sass
+        from line 1 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/./src/stylesheets/form.sass
+
+Backtrace:
+/Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/partials/_mixins.sass:11
+/Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/./src/stylesheets/form.sass:1
+>>>>>>> new_branch_name
 /Library/Ruby/Gems/1.8/gems/sass-3.1.1/lib/sass/../sass/scss/parser.rb:898:in `expected'
 /Library/Ruby/Gems/1.8/gems/sass-3.1.1/lib/sass/../sass/script/lexer.rb:193:in `expected!'
 /Library/Ruby/Gems/1.8/gems/sass-3.1.1/lib/sass/../sass/script/parser.rb:448:in `assert_tok'
@@ -59,4 +68,8 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
+<<<<<<< HEAD
   content: "Syntax error: Invalid CSS after \"($radius\": expected \")\", was \"=2px)\"\A         on line 29 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/partials/_base.sass\A         from line 1 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/form.sass"; }
+=======
+  content: "Syntax error: Invalid CSS after \"($radius\": expected \")\", was \"=2px)\"\A         on line 11 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/src/stylesheets/partials/_mixins.sass\A         from line 1 of /Users/JeanKahigiso/Documents/eclipseprojetcs/kevin/./src/stylesheets/form.sass"; }
+>>>>>>> new_branch_name

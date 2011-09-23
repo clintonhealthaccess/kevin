@@ -9,17 +9,17 @@
 			<g:form url="[controller:'surveyValidationRule', action:'save']" useToken="true">
 		 		<input type="hidden" name="surveyElement.id" value="${validation.surveyElement.id}" />
 		 		<div class="row">
-		 			<label class="display-in-block">Survey Element</label>
+		 			<label>Survey Element</label>
 		 			<input type="text" name="surveyElement.id" value="${i18n(field: validation.surveyElement.dataElement.names)}[${validation.surveyElement.id}]" class="idle-field" disabled />
 		 		</div>
 		 
 				<div class="row ${hasErrors(bean:validation, field:'prefix', 'errors')}">
-				 	<label class="display-in-block">Prefix: </label>
+				 	<label>Prefix: </label>
 				 	<input type="text" name="prefix" value="${validation.prefix}"/>
 				</div>
 		 
 				<div class="row ${hasErrors(bean:validation, field:'dependencies', 'errors')}">
-					<label class="display-in-block">Dependencies: </label>
+					<label>Dependencies: </label>
 				    <select id="dependencies-list" name="dependencies" multiple="true" class="ajax-search-field">
 						<g:if test="${validation.dependencies.size() != 0}">
 							<g:each in="${validation.dependencies}" var="dependency">
@@ -34,19 +34,19 @@
 				</div>
 		
 				<div class="row">
-					<label class="display-in-block">Allow Outlier</label>
+					<label>Allow Outlier</label>
 					<g:checkBox name="allowOutlier" value="${validation.allowOutlier}" />
 				</div>
 				
 				<g:textarea name="expression" label="Expression" bean="${validation}" field="expression" rows="5"/>
 		
 				<div class="row ${hasErrors(bean:validation, field:'validationMessage', 'errors')}">
-					<label class="display-in-block">Messages Test: </label>
+					<label>Messages Test: </label>
 					<select id="messages-list" name="validationMessage.id" class="ajax-search-field">
 						<g:if test="${validation.validationMessage}">
-								<option value="${validation.validationMessage.id}" selected>
-									<g:i18n field="${validation.validationMessage.messages}" />
-								</option>
+							<option value="${validation.validationMessage.id}" selected>
+								<g:i18n field="${validation.validationMessage.messages}" />
+							</option>
 						</g:if>
 					</select>
 					<div class="error-list"><g:renderErrors bean="${validation}" field="validationMessage" /></div>
@@ -63,11 +63,10 @@
 		</div>
 		
 		<div class="data-search-column">
-			<g:form name="search-data-form" class="search-form" url="[controller:'surveyElement', action:'getData']">
+			<g:form name="search-data-form" class="search-form" url="[controller:'surveyElement', action:'getHtmlData']">
 				<div class="row">
 					<label for="searchText">Search: </label>
 			    	<input name="searchText" class="idle-field"/>
-			    	<input type="hidden" name="surveyId" value=""/>
 			    	<button type="submit">Search</button>
 					<div class="clear"></div>
 				</div>

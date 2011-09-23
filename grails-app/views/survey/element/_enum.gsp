@@ -18,8 +18,10 @@
 	</g:if>
 	<g:else>
 		<g:each in="${enume?.enumOptions}" var="option">
-			<span class="display-in-block"><input type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''}/>
-			<span><g:i18n field="${option.names}" /></span></span>
+			<div>
+				<input type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''}/>
+				<span><g:i18n field="${option.names}" /></span>
+			</div>
 		</g:each>
 	</g:else>
 	<g:if test="${lastValue!=null}">

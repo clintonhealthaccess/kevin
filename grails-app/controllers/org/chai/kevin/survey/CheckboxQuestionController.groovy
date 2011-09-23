@@ -58,11 +58,11 @@ class CheckboxQuestionController extends AbstractEntityController {
 
 	def getModel(def entity) {
 		[
-					question: entity,
-					groups: organisationService.getGroupsForExpression(),
-					sections: (entity.section)!=null?entity.section.objective.sections:null,
-					groupUuids: Utils.split(entity.groupUuidString)
-				]
+			question: entity,
+			groups: organisationService.getGroupsForExpression(),
+			sections: (entity.section)!=null?entity.section.objective.sections:null,
+			groupUuids: Utils.split(entity.groupUuidString)
+		]
 	}
 
 	def validateEntity(def entity) {
@@ -86,10 +86,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 	}
 	
 	def getQuestionExplainer = {
-		def question = null;
-		if (NumberUtils.isNumber(params['question'])) {
-			question = SurveyCheckboxQuestion.get(params['question'])
-		}
+		def question = SurveyCheckboxQuestion.get(params.int('question'))
 		
 		if (question == null) {
 			render(contentType:"text/json") {

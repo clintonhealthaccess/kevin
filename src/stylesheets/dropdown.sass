@@ -1,17 +1,15 @@
-@import partials/base
+@import partials/mixins
 
 .white-dropdown
+  
   & > div
     +white-box
-    
-    margin-top: -14px
     border-width: 2px
+    margin-left: 10px
     position: absolute
     z-index: 10
-
-  ul
-    +inline-block-list
+    min-width: 100px
     
-    li
+    ul li
       display: block
       margin: 4px

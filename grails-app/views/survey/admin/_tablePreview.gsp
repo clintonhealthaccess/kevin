@@ -9,7 +9,7 @@
 					<g:set var="j" value="${j++}"/>
 					<th class="${question.getColumns().size()!=j?'question-tab-title':''}">
 						<g:i18n field="${column.names}" />			
-						<span class="display-in-block"> 
+						<div> 
 							<g:link controller="tableColumn" action="edit" id="${column.id}" class="flow-edit"> 
 								<g:message code="general.text.edit" default="Edit" />
 							</g:link>&nbsp;
@@ -17,7 +17,7 @@
 							<g:link controller="tableColumn" action="delete" id="${column.id}" class="flow-delete">
 								<g:message code="general.text.delete" default="Delete" />
 							</g:link> 
-						</span>
+						</div>
 					</th>
 				</g:each>
 			</tr>
@@ -27,7 +27,7 @@
 				<tr class="${i%2==0?'odd':'even'}">
 					<td>
 					<g:i18n field="${row.names}" />
-						<span class="display-in-block"> 
+						<div> 
 							<g:link controller="tableRow" action="edit" id="${row.id}" class="flow-edit"> 
 								<g:message code="general.text.edit" default="Edit" />
 							</g:link>&nbsp;
@@ -35,7 +35,7 @@
 							<g:link controller="tableRow" action="delete" id="${row.id}" class="flow-delete">
 								<g:message code="general.text.delete" default="Delete" />
 							</g:link> 
-						</span>
+						</div>
 					</td>
 					<g:each in="${question.getColumns()}" var="column">
 						<g:set var="surveyElement" value="${row.surveyElements[column]}"/>

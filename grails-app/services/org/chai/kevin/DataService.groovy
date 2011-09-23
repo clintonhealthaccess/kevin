@@ -1,4 +1,4 @@
-package org.chai.kevin
+package org.chai.kevin;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,32 +28,40 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.session.mgt.SessionFactory;
+import org.apache.commons.lang.math.NumberUtils;
 
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.util.Utils;
+import org.hibernate.Criteria;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Transactional;
+
 
 class DataService {
 
-    static transactional = true
+	static transactional = true
 	
-	def localeService
-	def sessionFactory
+	LocaleService localeService;
+	SessionFactory sessionFactory;
 	
-	Data getData(Long id) {
-		return sessionFactory.currentSession.get(Data.class, id)
+	public Data getData(Long id) {
+		return (Data)sessionFactory.getCurrentSession().get(Data.class, id);
 	}
 		
-	Enum getEnum(Long id) {
-		return sessionFactory.currentSession.get(Enum.class, id)
+	public Enum getEnum(Long id) {
+		return (Enum)sessionFactory.getCurrentSession().get(Enum.class, id);
 	}
 	
-	Enum findEnumByCode(String code) {
-		return Enum.findByCode(code);
+	public Enum findEnumByCode(String code) {
+		return Enum.findByCode(code)
 	}
 	
 //	def searchConstants(String text) {
@@ -68,8 +76,34 @@ class DataService {
 //		return constants.sort {it.names[localeService.getCurrentLanguage()]}
 //	}
 	
-    def searchDataElements(String text) {
-		def dataElements = DataElement.list();
+    public List<DataElement> searchDataElements(String text, List<String> allowedTypes) {
+		def criteria = DataElement.createCriteria()
+		
+		def textRestrictions = Restrictions.conjunction()
+		StringUtils.split(text).each { chunk ->
+			def disjunction = Restrictions.disjunction();
+			
+			disjunction.add(Restrictions.ilike("names.jsonText", text, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("code", text, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("info", text, MatchMode.ANYWHERE))
+			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
+			
+			textRestrictions.add(disjunction)
+		}
+		
+		if (!allowedTypes.isEmpty()) {
+			def typeRestrictions = Restrictions.disjunction()
+			allowedTypes.each { type ->
+				typeRestrictions.add(Restrictions.like("type.jsonType", type, MatchMode.ANYWHERE))
+			}
+			criteria.add(Restrictions.and(textRestrictions, typeRestrictions))
+		}
+		else {
+			criteria.add(textRestrictions)
+		}
+		
+		List<DataElement> dataElements = criteria.setMaxResults(200).list()
+		
 		StringUtils.split(text).each { chunk ->
 			dataElements.retainAll { element ->
 				Utils.matches(chunk, element.id+"") ||
@@ -78,7 +112,15 @@ class DataService {
 				Utils.matches(chunk, element.info)
 			}
 		}
+		
+		if (!allowedTypes.isEmpty()) {
+			dataElements.retainAll { element ->
+				element.type.type.name().toLowerCase() in allowedTypes 
+			}
+		}
+		
 		return dataElements.sort {it.names[localeService.getCurrentLanguage()]}
     }
 	
+    
 }

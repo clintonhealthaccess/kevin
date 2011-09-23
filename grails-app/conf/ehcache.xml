@@ -52,13 +52,18 @@
     />
     
     <cache name="org.chai.kevin.data.Expression"
-           maxElementsInMemory="4000"
+			maxElementsInMemory="4000"
             timeToLiveSeconds="3600"
     />
     
     <cache name="org.chai.kevin.data.Calculation"
-           maxElementsInMemory="4000"
-            timeToLiveSeconds="3600"
+			maxElementsInMemory="4000"
+			timeToLiveSeconds="3600"
+    />
+    
+    <cache name="dsrCache"
+    		maxElementsInMemory="8000"
+    		timeToLiveSeconds="3600"
     />
     
 <!--     <cache name="org.chai.kevin.value.DataValue" -->

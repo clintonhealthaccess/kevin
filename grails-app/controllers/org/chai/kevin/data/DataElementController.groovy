@@ -120,7 +120,7 @@ class DataElementController extends AbstractEntityController {
 			List<Period> iterations = Period.list();
 			Map<SurveyElement, Integer> surveyElmnts = new HashMap<SurveyElement,Integer>();
 			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
-			Set<SurveyElement> surveyElements = surveyElementService.getSurveyElements(dataElement);
+			Set<SurveyElement> surveyElements = surveyElementService.getSurveyElements(dataElement, null);
 
 
 			for(Period iteration : iterations)
@@ -137,7 +137,9 @@ class DataElementController extends AbstractEntityController {
 
 
 	def getData = {
-		def dataElements = dataService.searchDataElements(params['searchText']);
+		def includeTypes = params.list('include')
+		def dataElements = dataService.searchDataElements(params['searchText'], includeTypes);
+		
 		render(contentType:"text/json") {
 			result = 'success'
 			html = g.render(template:'/templates/dataElements', model:[dataElements: dataElements])
@@ -145,10 +147,7 @@ class DataElementController extends AbstractEntityController {
 	}
 
 	def getDescription = {
-		def dataElement = null;
-		if (NumberUtils.isNumber(params['dataElement'])) {
-			dataElement = DataElement.get(params['dataElement'])
-		}
+		def dataElement = DataElement.get(params.int('dataElement'))
 
 		if (dataElement == null) {
 			render(contentType:"text/json") { result = 'error' }

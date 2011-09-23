@@ -13,7 +13,7 @@
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 				<td>${dataElement.id}</td> 
 				<td>
-					<a class="data-element-explainer display-in-block" onclick="return false;"  href="${createLink(controller:'dataElement', action:'getExplainer', params:[dataElement: dataElement.id])}">
+					<a class="data-element-explainer" onclick="return false;"  href="${createLink(controller:'dataElement', action:'getExplainer', params:[dataElement: dataElement.id])}">
 						<g:i18n field="${dataElement.names}" />
 					</a>
 				</td>

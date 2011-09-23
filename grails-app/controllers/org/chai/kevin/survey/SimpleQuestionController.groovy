@@ -29,6 +29,7 @@ package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.DataService;
+import org.chai.kevin.Translation;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataElement
@@ -41,6 +42,8 @@ import org.apache.commons.lang.math.NumberUtils;
 class SimpleQuestionController extends AbstractEntityController {
 
 	def organisationService
+	def surveyElementService
+	def localeService
 	
 	def getEntity(def id) {
 		return SurveySimpleQuestion.get(id)
@@ -61,7 +64,8 @@ class SimpleQuestionController extends AbstractEntityController {
 			question: entity,
 			groups: organisationService.getGroupsForExpression(),
 			sections: (entity.section)!=null?entity.section.objective.sections:null,
-			groupUuids: Utils.split(entity.groupUuidString)
+			groupUuids: Utils.split(entity.groupUuidString),
+			headerPrefixes: entity.surveyElement!=null?surveyElementService.getHeaderPrefixes(entity.surveyElement):null
 		]
 	}
 
@@ -82,15 +86,19 @@ class SimpleQuestionController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
 		if (params.names!=null) entity.names = params.names
-		
+		params.list('headerList').each { prefix ->
+			Translation translation = new Translation()
+			localeService.availableLanguages.each { language -> 
+				translation[language] = params['headerList['+prefix+'].'+language]
+			}
+			entity.surveyElement.headers.put(prefix, translation)	
+		}
+				
 		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity
 	}
 	
 	def getQuestionExplainer = {
-		def question = null;
-		if (NumberUtils.isNumber(params['question'])) {
-			question = SurveySimpleQuestion.get(params['question'])
-		}
+		def question = SurveySimpleQuestion.get(params.int('question'))
 		
 		if (question == null) {
 			render(contentType:"text/json") {

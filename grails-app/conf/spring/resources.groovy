@@ -1,5 +1,6 @@
 import grails.util.GrailsUtil;
 
+import org.chai.kevin.DataService;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.RefreshValueService;
 import org.chai.kevin.TimestampListener;
@@ -59,6 +60,11 @@ int infoGroupLevel = config.info.group.level
 int dsrGroupLevel= config.dsr.group.level
 
 beans = {
+	
+//	dataService(DataService) {
+//		sessionFactory = ref("sessionFactory")
+//		localeService = ref("localeService")
+//	}
 	
 	jaqlService(JaqlService) { bean ->
 		bean.singleton = true

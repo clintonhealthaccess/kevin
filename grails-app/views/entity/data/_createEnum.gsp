@@ -10,25 +10,24 @@
 		<g:i18nTextarea name="descriptions" bean="${enumeration}" value="${enumeration.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
 		
 		<g:input name="code" label="Code" bean="${enumeration}" field="code" />
-		<div>
-			<table id="enum-option">
-				<g:each in="${enumeration.enumOptions}" status="i" var="option">
-					<tr>
-						<td id="enum-option-${option.id}">
-							<g:render template="/templates/enumOption" model="[option: option]" />
-						</td>
-					</tr>
-				</g:each>
-			</table>
-			<g:if test="${enumeration.id != null}">
-				<div>
-					<a class="add-option-link flow-add float-right" href="${createLink(controller:'enumOption', action:'create',params:[enumId: enumeration.id])}">
-						<g:message code="general.text.addOption" default="Add Option" />
-					</a>
-				</div>
-			</g:if>
-			<div class="clear"></div>
-		</div>
+		
+		<table id="enum-option">
+			<g:each in="${enumeration.enumOptions}" status="i" var="option">
+				<tr class="white-box">
+					<td id="enum-option-${option.id}">
+						<g:render template="/entity/data/enumOption" model="[option: option]" />
+					</td>
+				</tr>
+			</g:each>
+		</table>
+			
+		<g:if test="${enumeration.id != null}">
+			<div>
+				<a class="add-option-link flow-add float-right" href="${createLink(controller:'enumOption', action:'create',params:[enumId: enumeration.id])}">
+					<g:message code="general.text.addOption" default="Add Option" />
+				</a>
+			</div>
+		</g:if>
 
 		<g:if test="${enumeration.id != null}">
 			<input type="hidden" name="id" value="${enumeration.id}"></input>
@@ -54,15 +53,14 @@
 			addLinks : [ selector ],
 			onSuccess : function(data) {
 				if (data.result == 'success') {
-				var checkboxOptionHtml = data.html;
-				var checkboxOptionId = data.newEntity;
-				var selector = '#enum-option-'
-						+ checkboxOptionId.id;
-				$(selector).replaceWith(
-						'<td id="enum-option-'+checkboxOptionId.id+'">'
-								+ checkboxOptionHtml + '</td>');
+					var enumOptionHtml = data.html;
+					var enumOptionId = data.newEntity;
+					var selector = '#enum-option-'+enumOptionId.id;
+					$(selector).replaceWith(
+						'<td id="enum-option-'+enumOptionId.id+'">'+enumOptionHtml+'</td>'
+					);
 				}
-			 	getEditOption('#enum-option-'+checkboxOptionId.id+' .flow-edit-option');
+			 	getEditOption('#enum-option-'+enumOptionId.id+' .flow-edit-option');
 			}
 		});
 	}
@@ -72,12 +70,11 @@
 			addLinks : [ '.add-option-link' ],
 			onSuccess : function(data) {
 				if (data.result == 'success') {
-					var checkboxOptionHtml = data.html;
-					var checkboxOptionId = data.newEntity;
+					var enumOptionHtml = data.html;
+					var enumOptionId = data.newEntity;
 					$('#enum-option').append(
-							'<tr><td id="enum-option-'+checkboxOptionId.id+'">'
-									+ checkboxOptionHtml + '</td></tr>');
-					getEditOption('#enum-option-'+checkboxOptionId.id+' .flow-edit-option');
+							'<tr><td id="enum-option-'+enumOptionId.id+'">'+enumOptionHtml+'</td></tr>');
+					getEditOption('#enum-option-'+enumOptionId.id+' .flow-edit-option');
 				}
 			}
 		});

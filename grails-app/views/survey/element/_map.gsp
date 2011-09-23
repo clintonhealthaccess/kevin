@@ -16,9 +16,9 @@
 			<g:if test="${keyType.type.name().toLowerCase()=='enum' && print && appendix}">
 				<g:if test="${keyType.enumCode != null}">
 					<g:set var="enume" value="${Enum.findByCode(keyType.enumCode)}"/>
-					<span class="display-in-block text-align-left">--Possible choice--</span>
+					<div class="text-align-left">--Possible choice--</div>
 					<g:each in="${enume?.enumOptions}" var="option">
-						<span class="display-in-block text-align-left"><g:i18n field="${option.names}" /></span>
+						<div class="text-align-left"><g:i18n field="${option.names}" /></div>
 					</g:each>
 				</g:if>
 			</g:if>

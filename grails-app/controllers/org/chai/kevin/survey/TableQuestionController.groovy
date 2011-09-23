@@ -106,10 +106,7 @@ class TableQuestionController extends AbstractEntityController {
 
 
 	def getQuestionExplainer = {
-		def question = null;
-		if (NumberUtils.isNumber(params['question'])) {
-			question = SurveyTableQuestion.get(params['question'])
-		}
+		def question = SurveyTableQuestion.get(params.int('question'))
 
 		if (question == null) {
 			render(contentType:"text/json") { result = 'error' }

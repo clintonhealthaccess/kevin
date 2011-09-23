@@ -47,7 +47,6 @@ public class DashboardTarget extends DashboardEntry {
 
 	private Calculation calculation;
 	
-	
 //	@Cascade(value={CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@ManyToOne(targetEntity=Calculation.class, optional=false)
 	@JoinColumn(nullable=false)

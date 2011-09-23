@@ -1,9 +1,13 @@
 package org.chai.kevin.survey;
 
+import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.data.Type;
+import org.chai.kevin.value.Value;
 import org.chai.kevin.DataService
 import org.chai.kevin.LocaleService
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.data.DataElement
+import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
@@ -154,10 +158,15 @@ class SurveyElementService {
 		.list()
 	}
 	
-	Set<SurveyElement> getSurveyElements(DataElement dataElement) {
-		SurveyElement.createCriteria()
-		.add(Restrictions.eq("dataElement", dataElement))
-		.list();
+	Set<SurveyElement> getSurveyElements(DataElement dataElement, Survey survey) {
+		def c = SurveyElement.createCriteria()
+		if (survey != null) {
+			c.createAlias("surveyQuestion", "sq")
+			.createAlias("sq.section", "ss")
+			.createAlias("ss.objective", "so")
+			.add(Restrictions.eq("so.survey", survey))
+		}
+		c.add(Restrictions.eq("dataElement", dataElement)).list()
 	}
 
 	Integer getTotalOrgUnitApplicable(SurveyElement surveyElement){
@@ -168,24 +177,28 @@ class SurveyElementService {
 		return number;
 	}
 
-	Set<SurveyElement> searchSurveyElements(String text, Survey survey) {
-		Set<SurveyElement> surveyElements = new HashSet<SurveyElement>();
-		List<DataElement> dataElements = dataService.searchDataElements(text);
+	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes) {
+		List<SurveyElement> surveyElements = new ArrayList<SurveyElement>();
+		List<DataElement> dataElements = dataService.searchDataElements(text, allowedTypes);
 
 		for(DataElement dataElement : dataElements) {
-			if(!survey) {
-				surveyElements.addAll(this.getSurveyElements(dataElement));
-			}
-			else {
-				for(SurveyElement surveyElement: this.getSurveyElements(dataElement)) {
-					if(surveyElement.surveyQuestion.section.objective.survey==survey) surveyElements.add(surveyElement);
-				}
-			}
+			surveyElements.addAll(this.getSurveyElements(dataElement, survey));
 		}
 
 		return surveyElements.sort {
 			it.dataElement.names[localeService.getCurrentLanguage()]
 		}
+	}
+	
+	Set<String> getHeaderPrefixes(SurveyElement element) {
+		
+		element.getDataElement().getType().getPrefixes(null, new PrefixPredicate() {
+			@Override
+			public boolean holds(Type type, Value value, String prefix) {
+				if (getParent() != null && getParent().getType() == ValueType.MAP) return true;
+			}
+		}).keySet();
+		
 	}
 
 }

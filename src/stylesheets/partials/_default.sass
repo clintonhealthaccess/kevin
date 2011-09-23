@@ -1,3 +1,6 @@
+@import partials/mixins
+
+// base elements
 html
   height: 100%
   
@@ -28,18 +31,122 @@ ol li
 a
   color: #009
 
+h1, h2, h3, h4, h5, h6
+  font-weight: normal
+  color: #222
+
+h1
+  font-size: 3em
+  margin-bottom: 0.50em
+
+h2
+  font-size: 2em
+  margin-bottom: 0.75em
+
+h3
+  font-size: 1.5em
+  margin-bottom: 1.00em
+
+h4
+  font-size: 1.2em
+  margin-bottom: 1.25em
+
 h5
+  font-size: 1em
   font-weight: bold
-  margin-bottom: 0px
+  margin-bottom: 1.50em
   
 input, textarea
+  +round-corner(2px)
   padding: 1px
+  background: #F7F9FE
+  color: black
+  border: solid 1px #ABABAB
   
 input[type="radio"], input[type="checkbox"]
   margin: 3px 0.5ex
   
 select
   background: #ededed
+  border: 1px solid lightGrey
   
+button
+  +round-corner(2px)
+  margin: 2px 3px 2px 2px
+  font-weight: bold
+  background: #73A6ff
+  color: #fff
+  border: solid 2px #739eee
+
+button:hover
+  background: #739eee
+  
+// end of base CSS
 
   
+// default CSS semantic classes
+.box
+  +grey-box
+
+.white-box
+  +white-box
+  
+.red
+  color: red
+
+.hidden
+  display: none
+
+.float-left
+  float: left  
+
+.float-right
+  float: right
+
+.margin-top-20
+  margin-top: 20px
+  
+.margin-bottom-20
+  margin-bottom: 20px
+
+.margin-top-10
+  margin-top: 10px
+    
+.margin-bottom-10
+  margin-bottom: 10px
+  
+.bold
+  font-weight: bold
+
+.italic
+  font-style: italic
+
+.clear
+  clear: both
+
+a.no-link, a.no-link:active, a.no-link:visited
+  text-decoration: none
+  color: black
+
+ul.inline-list
+  display: inline
+  li 
+    display: inline
+
+// higher-level semantic classes
+.errors 
+  color: red
+  input, select, textarea
+    border-color: red
+    
+  .error-list
+    font-size: 85%
+    color: red
+      
+    li
+      display: block
+      white-space: normal
+      
+.filter
+  float: left
+  margin-right: 20px
