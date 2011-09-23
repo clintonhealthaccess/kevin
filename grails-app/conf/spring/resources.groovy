@@ -21,7 +21,6 @@ import org.springframework.format.number.PercentFormatter;
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.codehaus.groovy.grails.orm.hibernate.HibernateEventListeners;
-
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -57,6 +56,7 @@ Set<Integer> dashboardSkipLevels = config.dashboard.skip.levels
 Set<Integer> costSkipLevels = config.dashboard.skip.levels
 int organisationLevel = config.facility.level
 int infoGroupLevel = config.info.group.level
+int dsrGroupLevel= config.dsr.group.level
 
 beans = {
 	
@@ -95,6 +95,7 @@ beans = {
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		localeService = ref("localeService")
+		groupLevel = dsrGroupLevel
 	}
 
 	mapsService(MapsService) {

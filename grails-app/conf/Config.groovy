@@ -170,6 +170,7 @@ site.admin=true
 site.entity.list.max=40
 site.period=1
 
+
 facility.level=4
 facility.type.group="Type"
 
@@ -181,6 +182,7 @@ dashboard.skip.levels=[]
 cost.skip.levels=[]
 
 dsr.facility.checked=["District Hospital","Health Center"]
+dsr.group.level=3
 
 period.type = "Monthly"
 
