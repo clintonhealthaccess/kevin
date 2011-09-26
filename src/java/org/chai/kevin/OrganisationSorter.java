@@ -38,7 +38,7 @@ public class OrganisationSorter implements Comparator<Organisation> {
 
 	private Map<Organisation, Organisation> organisations;
 	private OrganisationService organisationService;
-
+	
 	public OrganisationSorter(Map<Organisation, Organisation> organisatons,OrganisationService organisationService) {
 		this.organisations = organisatons;
 		this.organisationService = organisationService;
@@ -46,15 +46,15 @@ public class OrganisationSorter implements Comparator<Organisation> {
 
 	@Override
 	public int compare(Organisation org1, Organisation org2) {
-		if (organisations.get(org1) == organisations.get(org2)) {
+		if (organisations.get(org1).equals(organisations.get(org2))) {
 			organisationService.loadGroup(org1);
 			organisationService.loadGroup(org2);
-			if(org1.getOrganisationUnitGroup() == org2.getOrganisationUnitGroup())
+			if (org1.getOrganisationUnitGroup().equals(org2.getOrganisationUnitGroup())) 
+				return org1.getName().compareTo(org2.getName());
+			 else 
 				return org1.getOrganisationUnitGroup().getName().compareTo(org2.getOrganisationUnitGroup().getName());
-			else
-				return org1.getOrganisationUnitGroup().getId()-org2.getOrganisationUnitGroup().getId();
 		}
-		return 1;
+		return organisations.get(org1).getName().compareTo(organisations.get(org2).getName());
 	}
 
 }

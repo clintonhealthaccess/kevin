@@ -177,6 +177,7 @@
 										</g:if>
 									</g:each>
 								</tr>
+								
 								<g:each in="${dsrTable.organisations}" var="organisation" status="i">
 									<g:if test="${dsrTable.organisationMap.get(organisation)!=currentParent}">
 										<g:set var="currentParent" value="${dsrTable.organisationMap.get(organisation)}" />
@@ -191,6 +192,7 @@
 										</g:each>
 									</tr>
 								</g:each>
+								
 							</tbody>
 						</table>
 					</g:if>
