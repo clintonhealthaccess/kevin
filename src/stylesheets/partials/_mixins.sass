@@ -8,11 +8,11 @@
   background-color: white
   padding: 2px
 
-=round-corner($radius=2px)
+=round-corner($radius)
   +top-round-corner($radius)
   +bottom-round-corner($radius)
   
-=top-round-corner($radius=2px)
+=top-round-corner($radius)
   -webkit-border-top-right-radius: $radius
   -webkit-border-top-left-radius: $radius
   -khtml-border-radius-topleft: $radius
@@ -22,7 +22,7 @@
   border-top-right-radius: $radius
   border-top-left-radius: $radius
   
-=bottom-round-corner($radius=2px)
+=bottom-round-corner($radius)
   -webkit-border-bottom-right-radius: $radius
   -webkit-border-bottom-left-radius: $radius
   -khtml-border-radius-bottomleft: $radius

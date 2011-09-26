@@ -1,6 +1,13 @@
-/* line 3, ../../src/stylesheets/foldable.sass */
-.foldable a.foldable-toggle { display: block; cursor: pointer; width: 20px; height: 20px; margin: -3px; float: left; text-indent: -9999px; background-image: url("../images/icons/toggle_plus.gif"); }
-/* line 13, ../../src/stylesheets/foldable.sass */
-.foldable a.foldable-toggle.toggled { background-image: url("../images/icons/toggle_minus.gif"); }
-/* line 16, ../../src/stylesheets/foldable.sass */
-.foldable.opened > span, .foldable.opened > a { font-weight: bold; }
+.foldable a.foldable-toggle {
+  display: block;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  margin: -3px;
+  float: left;
+  text-indent: -9999px;
+  background-image: url("../images/icons/toggle_plus.gif"); }
+  .foldable a.foldable-toggle.toggled {
+    background-image: url("../images/icons/toggle_minus.gif"); }
+.foldable.opened > span, .foldable.opened > a {
+  font-weight: bold; }

@@ -40,4 +40,5 @@ grass {
 	// other options: nested, expanded, compact, compressed
 	output_style = "compact"
 	
+	framework_output_type = "sass"
 }
