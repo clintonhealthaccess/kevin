@@ -56,13 +56,12 @@ import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DsrService {
-   // private Log log = LogFactory.getLog(DsrService.class);
+    //private Log log = LogFactory.getLog(DsrService.class);
 	private OrganisationService organisationService;
 	private ValueService valueService;
 	private DataService dataService;
 	private LocaleService localeService;
 	private int groupLevel;
-	
 	
 //	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
@@ -79,9 +78,9 @@ public class DsrService {
 		} else {
 			organisations = organisationService.getChildrenOfLevel(
 					organisation, organisationService.getFacilityLevel());
-			orgParentMap=this.getParentOfLevel(organisations,groupLevel);
 			
-			Collections.sort(organisations,new OrganisationSorter(orgParentMap,organisationService));
+			orgParentMap=this.getParentOfLevel(organisations,groupLevel);			
+			Collections.sort(organisations,new OrganisationSorter(orgParentMap,organisationService));  
 			
 			targets = objective.getTargets();
 			Collections.sort(targets, new DsrTargetSorter());
