@@ -16,12 +16,12 @@
 		</div>
 		<div id="print-questions">
 		<div>
-			<g:each in="${surveyPage.survey.getObjectives(organisationUnitGroup)}" var="objective">
+			<g:each in="${surveyPage.survey.getObjectives(surveyPage.organisation.organisationUnitGroup)}" var="objective">
 				<h3 class="objective-title"><g:i18n field="${objective.names}"/></h3>
-				<g:each in="${objective.getSections(organisationUnitGroup)}" var="section">
+				<g:each in="${objective.getSections(surveyPage.organisation.organisationUnitGroup)}" var="section">
 					<h4 class="section-title"><g:i18n field="${section.names}"/></h4>
 					<ol id="questions-section-${section.id}">
-					<g:each in="${section.getQuestions(organisationUnitGroup)}" var="question">
+					<g:each in="${section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question">
 						<li class="question-container">
 							<g:render template="/survey/question/${question.getType()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, print: true]" />
 						</li>

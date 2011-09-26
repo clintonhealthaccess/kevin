@@ -36,6 +36,7 @@ import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Sum;
 
 import grails.plugin.spock.UnitSpec;
 
@@ -51,10 +52,10 @@ class DomainSpec extends IntegrationTests {
 	
 	def "test calculations"() {
 		expect:
-		Calculation.count() == 2
+		Sum.count() == 2
 		def nurse = DashboardTarget.findByCode("A1");
 		nurse.save();
-		Calculation.count() == 2
+		Sum.count() == 2
 	}
 	
 	def "call twice in a row"() {

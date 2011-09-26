@@ -99,12 +99,14 @@ grails.project.dependency.resolution = {
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
 		//		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
-		test "org.codehaus.geb:geb-spock:0.6.0"
+		test"org.codehaus.geb:geb-spock:0.6.0"
 		test("org.seleniumhq.selenium:selenium-chrome-driver:2.0rc2")
 		test("org.seleniumhq.selenium:selenium-htmlunit-driver:2.0rc2") {
 			excludes "xml-apis", "xmlParserAPIs"
 		}
 		test 'org.gmock:gmock:0.8.1'
+		
+		test('org.spockframework:spock-core:0.5-groovy-1.8')
 		
 		// those are for the migration script to work
 //		compile 'org.hisp.dhis:dhis-service-importexport:2.2-SNAPSHOT'

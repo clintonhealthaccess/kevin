@@ -14,12 +14,14 @@ import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
+import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,10 @@ public class RefreshValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshOutdatedExpressionsInTransaction(Expression expression) {
+		refreshOutdatedExpressions(expression);
+	}
+	
 	public void refreshOutdatedExpressions(Expression expression) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -43,6 +49,7 @@ public class RefreshValueService {
 		.createAlias("expression", "e")
 		.add(Restrictions.ltProperty("ev.timestamp", "e.timestamp"))
 		.add(Restrictions.eq("expression", expression))
+//		.setLockMode(LockMode.READ)
 		.setCacheable(false);
 		
 		for (ExpressionValue expressionValue : (List<ExpressionValue>)criteria.list()) {
@@ -55,6 +62,10 @@ public class RefreshValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshNonCalculatedExpressionsInTransaction(Expression expression) {
+		refreshNonCalculatedExpressions(expression);
+	}
+	
 	public void refreshNonCalculatedExpressions(Expression expression) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -101,6 +112,10 @@ public class RefreshValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshOutdatedCalculationsInTransaction(Calculation calculation) {
+		refreshOutdatedCalculations(calculation);
+	}
+	
 	public void refreshOutdatedCalculations(Calculation calculation) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -114,6 +129,7 @@ public class RefreshValueService {
 				Restrictions.ltProperty("cv.timestamp", "e.timestamp")
 			))
 		.add(Restrictions.eq("calculation", calculation))
+//		.setLockMode(LockMode.READ)
 		.setCacheable(false)
 		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		
@@ -128,6 +144,10 @@ public class RefreshValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshNonCalculatedCalculationsInTransaction(Calculation calculation) {
+		refreshNonCalculatedCalculations(calculation);
+	}
+	
 	public void refreshNonCalculatedCalculations(Calculation calculation) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -164,7 +184,7 @@ public class RefreshValueService {
 		}
 	}
 	
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = true)
 	public void refreshExpressions() {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -172,13 +192,13 @@ public class RefreshValueService {
 		List<Expression> expressions = sessionFactory.getCurrentSession().createCriteria(Expression.class).list();
 		
 		for (Expression expression : expressions) {
-			getMe().refreshOutdatedExpressions(expression);
-			getMe().refreshNonCalculatedExpressions(expression);
+			getMe().refreshOutdatedExpressionsInTransaction(expression);
+			getMe().refreshNonCalculatedExpressionsInTransaction(expression);
 			sessionFactory.getCurrentSession().clear();
 		}
 	}
 	
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = true)
 	public void refreshCalculations() {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -188,8 +208,8 @@ public class RefreshValueService {
 		for (Calculation calculation : calculations) {
 			calculation = (Calculation)sessionFactory.getCurrentSession().load(calculation.getClass(), calculation.getId());
 				
-			getMe().refreshOutdatedCalculations(calculation);
-			getMe().refreshNonCalculatedCalculations(calculation);
+			getMe().refreshOutdatedCalculationsInTransaction(calculation);
+			getMe().refreshNonCalculatedCalculationsInTransaction(calculation);
 			sessionFactory.getCurrentSession().clear();
 		}
 	}

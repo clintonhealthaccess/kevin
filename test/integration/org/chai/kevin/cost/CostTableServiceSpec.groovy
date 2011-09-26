@@ -47,7 +47,8 @@ class CostTableServiceSpec extends IntegrationTests {
 
 	def costTableService;
 	def organisationService;
-	def expressionService;
+	
+	def sessionFactory;
 	
 	def setup() {
 		Initializer.createDummyStructure()
@@ -57,9 +58,8 @@ class CostTableServiceSpec extends IntegrationTests {
 	
 	def "cost service returns expected values"() {
 		setup:
-		expressionService.refreshExpressions()
-		expressionService.refreshCalculations()
-		
+		refresh()
+				
 		when:
 		def period = Period.list()[0]
 		def objective = CostObjective.findByCode("HRH")
@@ -90,8 +90,7 @@ class CostTableServiceSpec extends IntegrationTests {
 		def costObjective = new CostObjective(code:"Test Objective")
 		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("EXPRELEM1"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
 		costObjective.save(failOnError: true)
-		expressionService.refreshExpressions()
-		expressionService.refreshCalculations()
+		refresh()
 		
 		when:
 		def period = Period.list()[0]
@@ -116,9 +115,8 @@ class CostTableServiceSpec extends IntegrationTests {
 		def costObjective = new CostObjective(code:"Test Objective")
 		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
 		costObjective.save(failOnError: true)
-		expressionService.refreshExpressions()
-		expressionService.refreshCalculations()
-		
+		refresh()
+				
 		when:
 		def period = Period.list()[0]
 		def objective = CostObjective.findByCode("Test Objective")
@@ -140,9 +138,8 @@ class CostTableServiceSpec extends IntegrationTests {
 	
 	def "cost service returns expected years and targets"() {
 		setup:
-		expressionService.refreshExpressions()
-		expressionService.refreshCalculations()
-		
+		refresh()
+				
 		when:
 		def period = Period.list()[0]
 		def objective = CostObjective.findByCode("HRH")
@@ -159,9 +156,8 @@ class CostTableServiceSpec extends IntegrationTests {
 	
 	def "cost service returns correct explanation"() {
 		setup:
-		expressionService.refreshExpressions()
-		expressionService.refreshCalculations()
-		
+		refresh()
+				
 		when:
 		def period = Period.list()[0]
 		def target = CostTarget.findByCode(targetCode)
@@ -202,9 +198,9 @@ class CostTableServiceSpec extends IntegrationTests {
 		def costObjective = new CostObjective(code:"Test Objective")
 		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
 		costObjective.save(failOnError: true)
-		expressionService.refreshExpressions()
-		expressionService.refreshCalculations()
 		
+		refresh()
+				
 		when:
 		def period = Period.list()[0]
 		def target = CostTarget.findByCode("Test Target")

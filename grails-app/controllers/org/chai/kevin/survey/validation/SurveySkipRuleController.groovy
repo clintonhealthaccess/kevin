@@ -80,7 +80,7 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		// binding skipped elements
 		entity.skippedSurveyElements.clear()
 		int i = 0;
-		params.skipped.element.each { skipped ->
+		params.skipped?.element?.each { skipped ->
 			def element = SurveyElement.get(skipped)
 			if (element != null) {
 				def prefix = params.skipped.prefix[i]

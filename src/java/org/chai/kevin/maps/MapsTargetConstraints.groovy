@@ -34,6 +34,6 @@ import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 constraints = {
 	code (nullable: false, blank: false, unique: true)
 	type (nullable: false)
-//	expression (validator: { val, obj -> obj.type == MapsTargetType.AVERAGE || val != null})
+	expression (validator: { val, obj -> obj.type == MapsTargetType.AVERAGE || val != null})
 	calculation (validator: { val, obj -> obj.type == MapsTargetType.AGGREGATION || val != null})
 }

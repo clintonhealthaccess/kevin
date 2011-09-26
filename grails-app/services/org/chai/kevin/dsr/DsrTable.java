@@ -28,14 +28,25 @@ package org.chai.kevin.dsr;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.Organisation;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
-public class DsrTable {
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+public class DsrTable implements Serializable {
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private Period period;
 	private Organisation organisation;
 	private DsrObjective objective;

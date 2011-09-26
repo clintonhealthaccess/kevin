@@ -39,7 +39,7 @@ class DataServiceSpec extends IntegrationTests {
 	def setup() {
 		Initializer.createDummyStructure()
 		IntegrationTestInitializer.createDataElements()
-		IntegrationTestInitializer.createConstants()
+//		IntegrationTestInitializer.createConstants()
 	}
 	
 //	def "search for constant works"() {

@@ -116,7 +116,6 @@ class DomainSpec extends IntegrationTests {
 		def dh = OrganisationUnitGroup.findByUuid("District Hospital")
 		def hc = OrganisationUnitGroup.findByUuid("Health Center")
 		
-		
 		def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
 		def enumOption01 = new EnumOption(names:j(["en":"N/A Did not receive training"]), descriptions:j(["en":"N/A Did not receive training"]), value:"\"N/A Did not receive training\"", code:"OPTION01", enume: enume2);
 		def enumOption02 = new EnumOption(names:j(["en":"NGO or Partner"]), descriptions:j(["en":"NGO or Partner"]), value:"\"NGO or Partner\"", code:"OPTION02", enume: enume2);
@@ -133,7 +132,7 @@ class DomainSpec extends IntegrationTests {
 	
 		
 		//Create DataElement
-		new DataElement(names:j("en":"testTab"), code:"TESTTAB", type: JSONUtils.TYPE_ENUM(Enum.findByCode('ENUM2').id)).save(failOnError:true)
+		new DataElement(names:j("en":"testTab"), code:"TESTTAB", type: JSONUtils.TYPE_ENUM(Enum.findByCode('ENUM2').code)).save(failOnError:true)
 		def dataElement = DataElement.findByCode("TESTTAB")
 		
 		//Creating Survey

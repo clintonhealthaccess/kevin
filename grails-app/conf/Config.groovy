@@ -108,6 +108,11 @@ security.shiro.authc.required = false
 			//    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
 			//}
 		
+			error  'grails.app.services.org.grails.plugin.resource',
+				   'grails.app.resourceMappers.org.grails.plugin.resource',
+				   'grails.app.taglib.org.grails.plugin.resource',
+				   'grails.app.resourceMappers.org.grails.plugin.cachedresources'
+			
 			error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
 				   'org.codehaus.groovy.grails.web.pages', //  GSP
 				   'org.codehaus.groovy.grails.web.sitemesh', //  layouts
@@ -118,14 +123,11 @@ security.shiro.authc.required = false
 				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.springframework',
 				   'org.hibernate',
-				   'net.sf.ehcache.hibernate',
-				   'grails.app.services.org.grails.plugin.resource',
-				   'grails.app.resourceMappers.org.grails.plugin.resource',
-				   'grails.app.taglib.org.grails.plugin.resource',
-				   'grails.app.resourceMappers.org.grails.plugin.cachedresources'
+				   'net.sf.ehcache.hibernate'
 				   
 			debug  'grails.app',
 				   'org.chai.kevin',
+				   'grails.app.services.grails.plugin.springcache',
 				   'grails.plugin.springcache'
 				   
 		}

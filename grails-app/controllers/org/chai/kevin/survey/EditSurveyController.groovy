@@ -336,7 +336,6 @@ class EditSurveyController extends AbstractReportController {
 		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
 
 		render (view: '/survey/print/surveyPrint', model:[
-			organisationUnitGroup: group,
 			surveyPage: surveyPage
 		])
 	}

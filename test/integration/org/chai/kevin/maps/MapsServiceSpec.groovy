@@ -40,7 +40,6 @@ import org.hisp.dhis.period.Period;
 class MapsServiceSpec extends IntegrationTests {
 
 	def mapsService;
-	def expressionService;
 	
 	def setup() {
 		Initializer.createDummyStructure();
@@ -55,8 +54,7 @@ class MapsServiceSpec extends IntegrationTests {
 		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
 		calculation.save(failOnError: true)
 		new MapsTarget(code:"CODE", type:MapsTargetType.AVERAGE, calculation: calculation).save(failOnError: true)
-		expressionService.refreshExpressions()
-		expressionService.refreshCalculations()
+		refresh()
 		
 		when:
 		def period = Period.list()[1]

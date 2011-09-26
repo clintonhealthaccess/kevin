@@ -37,7 +37,9 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
+import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -52,6 +54,18 @@ import org.hisp.dhis.user.UserCredentials;
 
 abstract class IntegrationTests extends IntegrationSpec {
 	
+	def refreshValueService
+	
+	def refresh() {
+		Expression.list().each {
+			refreshValueService.refreshOutdatedExpressions(it)
+			refreshValueService.refreshNonCalculatedExpressions(it)
+		}
+		Calculation.list().each {
+			refreshValueService.refreshOutdatedCalculations(it)
+			refreshValueService.refreshNonCalculatedCalculations(it)
+		}
+	}
 	
 	static def getOrganisationUnitLevels(def levels) {
 		def result = []

@@ -9,7 +9,6 @@ import org.hisp.dhis.period.Period;
 class DsrServiceSpec extends IntegrationTests {
 
 	def dsrService
-	def expressionService
 	
 	def setup() {
 		IntegrationTestInitializer.createDummyStructure();
@@ -22,7 +21,7 @@ class DsrServiceSpec extends IntegrationTests {
 		def target = new DsrTarget(expression: expression)
 		objective.addTarget(target)
 		objective.save(failOnError: true)
-		expressionService.refreshExpressions()
+		refresh()
 		
 		when:
 		def organisation = getOrganisation("Burera")

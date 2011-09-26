@@ -3,8 +3,10 @@ package org.chai.kevin.survey
 import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -34,24 +36,6 @@ class ValidationSpec extends IntegrationTests {
 		question.save(failOnError: true)
 	}
 	
-	
-	def "true validation"() {
-		
-		setup:
-		createSurvey();
-		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM2", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
-		
-		when:
-		def surveyElementValue = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
-		surveyElementValue.userValidation(validationService, null, null)
-		
-		then:
-		surveyElementValue.isValid()
-		
-	}
-	
 	def "false validation"() {
 		
 		setup:
@@ -60,16 +44,17 @@ class ValidationSpec extends IntegrationTests {
 		def dataElement1 = new DataElement(code:"ELEM3", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		
-		def validationRule = new SurveyValidationRule(expression: "["+surveyElement1.id+"] > 1")
+		def validationRule = new SurveyValidationRule(expression: "\$"+surveyElement1.id+" > 1")
 		surveyElement1.addValidationRule(validationRule)
 		surveyElement1.save(failOnError: true)
 		
 		when:
-		def surveyElementValue = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
-		surveyElementValue.userValidation(validationService, null, null)
+		def organisation = getOrganisation("Kivuye HC")
+		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("1"), organisation: organisation.organisationUnit).save(failOnError: true)
+		Set<String> prefixes = validationService.getInvalidPrefix(validationRule, organisation)
 		
 		then:
-		!surveyElementValue.isValid()
+		prefixes.equals([""])
 		
 	}
 	
@@ -82,77 +67,30 @@ class ValidationSpec extends IntegrationTests {
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		def surveyElement2 = new SurveyElement(surveyQuestion: question, dataElement: dataElement2).save(failOnError: true)
 		
-		def validationRule = new SurveyValidationRule(expression: "["+surveyElement1.id+"] > ["+surveyElement2.id+"]")
+		def validationRule = new SurveyValidationRule(expression: "\$"+surveyElement1.id+" > \$"+surveyElement2.id)
 		surveyElement1.addValidationRule(validationRule)
 		surveyElement1.save(failOnError: true)
 		
 		when:
-		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
-		def surveyElementValue2 = new SurveyElementValue(surveyElement: surveyElement2, value: v("2"))
-		def surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1, (surveyElement2.id): surveyElementValue2])
-		surveyElementValue1.userValidation(validationService, null, null)
+		def organisation = getOrganisation("Kivuye HC")
+		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("1"), organisation: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement2, value: v("1"), organisation: organisation.organisationUnit).save(failOnError: true)
+		Set<String> prefixes = validationService.getInvalidPrefix(validationRule, organisation)
 		
 		then:
-		!surveyElementValue1.isValid()
+		prefixes.equals([""])
 		
 		when:
-		surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("2"))
-		surveyElementValue2 = new SurveyElementValue(surveyElement: surveyElement2, value: v("1"))
-		surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1, (surveyElement2.id): surveyElementValue2])
-		surveyElementValue1.userValidation(validationService, null, null)
+		organisation = getOrganisation("Kivuye HC")
+		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("2"), organisation: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement2, value: v("1"), organisation: organisation.organisationUnit).save(failOnError: true)
+		prefixes = validationService.getInvalidPrefix(validationRule, organisation)
 		
 		then:
-		surveyElementValue1.isValid()
+		prefixes.isEmpty()
 	}
 
-	def "false validation based on other elements in different pages"() {
-		setup:
-		createSurvey();
-		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM6", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		def dataElement2 = new DataElement(code:"ELEM7", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
-		def surveyElement2 = new SurveyElement(surveyQuestion: question, dataElement: dataElement2).save(failOnError: true)
-		
-		def validationRule = new SurveyValidationRule(expression: "["+surveyElement1.id+"] > ["+surveyElement2.id+"]")
-		surveyElement1.addValidationRule(validationRule)
-		surveyElement1.save(failOnError: true)
-		
-		def dataValue2 = new DataValue(
-			dataElement: dataElement2,
-			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			period: Period.list()[0],
-			value: v("2"),
-			timestamp: new Date()
-		).save(failOnError: true, flush: true)
-		
-		when:
-		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
-		def surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1], organisationUnit: OrganisationUnit.findByName("Butaro DH"), period: Period.list()[0])
-		surveyPage.userValidation(validationService)
-		
-		then:
-		!surveyPage.isValid()
-	}
 	
-	def "validation based on non-existing elements"() {
-		setup:
-		createSurvey();
-		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM8", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
-		def validationRule = new SurveyValidationRule(expression: "["+(surveyElement1.id+1)+"] > 0")
-		surveyElement1.addValidationRule(validationRule)
-		surveyElement1.save(failOnError: true)
-		
-		when:
-		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("1"))
-		def surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1])
-		surveyPage.userValidation(validationService)
-		
-		then:
-		!surveyPage.isValid()
-	}
 	
 	def "validation based on null values"() {
 		setup:
@@ -163,18 +101,18 @@ class ValidationSpec extends IntegrationTests {
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		def surveyElement2 = new SurveyElement(surveyQuestion: question, dataElement: dataElement2).save(failOnError: true)
 		
-		def validationRule = new SurveyValidationRule(expression: "if (["+surveyElement1.id+"] == 0, \"["+surveyElement2.id+"]\" == \"null\", 1==1)")
+		def validationRule = new SurveyValidationRule(expression: "if (\$"+surveyElement1.id+" == 0) \$"+surveyElement2.id+" == null else false")
 		surveyElement1.addValidationRule(validationRule)
 		surveyElement1.save(failOnError: true)
 		
 		when:
-		def surveyElementValue1 = new SurveyElementValue(surveyElement: surveyElement1, value: v("0"))
-		def surveyElementValue2 = new SurveyElementValue(surveyElement: surveyElement2, value: v(null))
-		def surveyPage = new SurveyPage(surveyElements: [(surveyElement1.id): surveyElementValue1, (surveyElement2.id): surveyElementValue2])
-		surveyElementValue1.userValidation(validationService, null, null)
+		def organisation = getOrganisation("Kivuye HC")
+		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("0"), organisation: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement2, value: Value.NULL, organisation: organisation.organisationUnit).save(failOnError: true)
+		def prefixes = validationService.getInvalidPrefix(validationRule, organisation)
 		
 		then:
-		surveyElementValue1.isValid()
+		prefixes.isEmpty()
 	}	
 		
 }

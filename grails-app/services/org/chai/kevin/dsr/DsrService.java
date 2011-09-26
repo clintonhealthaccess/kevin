@@ -31,6 +31,8 @@ package org.chai.kevin.dsr;
  * @author Jean Kahigiso M.
  *
  */
+import grails.plugin.springcache.annotations.Cacheable;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +53,6 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DsrService {
@@ -63,7 +64,7 @@ public class DsrService {
 	private int groupLevel;
 	
 	
-	@Cacheable("dsrCache")
+//	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective, Period period) {
 		List<Organisation> organisations = null;

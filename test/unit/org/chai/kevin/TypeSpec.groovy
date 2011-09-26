@@ -330,7 +330,7 @@ public class TypeSpec extends UnitSpec {
 		list.containsAll([[""]])
 	}
 	
-	public static class NullPrefixPredicate implements PrefixPredicate {
+	public static class NullPrefixPredicate extends PrefixPredicate {
 		public boolean holds(Type type, Value value, String prefix) {
 			return value.isNull();
 		}
@@ -466,7 +466,7 @@ public class TypeSpec extends UnitSpec {
 		type.setValue(value, ".key1", new Value("{\"value\":11}"))
 		
 		then:
-		value.equals(new Value("{\"value\":[{\"key\":\"key2\", \"value\":{\"value\": null}}, {\"key\":\"key1\", \"value\":{\"value\":11}}]}"))
+		value.equals(new Value("{\"value\":[{\"key\":\"key1\", \"value\":{\"value\":11}}, {\"key\":\"key2\", \"value\":{\"value\": null}}]}"))
 	}
 	
 	def "set value preserves attributes"() {

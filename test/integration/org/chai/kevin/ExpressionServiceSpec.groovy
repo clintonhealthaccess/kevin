@@ -10,7 +10,6 @@ import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
-import org.chai.kevin.value.ExpressionValue.Status;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -124,7 +123,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		enume.addEnumOption(new EnumOption(code: "ENUMtest", value: "test"))
 		enume.addEnumOption(new EnumOption(code: "ENUMtest", value: "absent"))
 		enume.save(failOnError: true)
-		new DataElement(names:j(["en":"Element Enum"]), code: "CODEENUM", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_ENUM (enume.id)).save(faileOnError: true, flush: true)
+		new DataElement(names:j(["en":"Element Enum"]), code: "CODEENUM", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_ENUM (enume.code)).save(faileOnError: true, flush: true)
 		new DataElement(names:j(["en":"Element Int"]), code: "CODEINT", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER).save(faileOnError: true)
 		
 		new DataValue(
@@ -191,7 +190,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupData();
 		setupSum();
-		expressionService.refreshExpressions()	
+		refresh()
 
 		when:
 		def period = Period.list()[1]
@@ -225,7 +224,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 			"Health Center": Expression.findByCode("EXPRCONST")
 		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
 		
-		expressionService.refreshExpressions();
+		refresh()
 		
 		when:
 		def period = Period.list()[1]
@@ -250,8 +249,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupData();
 		setupSum();
-		expressionService.refreshExpressions();
-		expressionService.refreshCalculations();
+		refresh()
 		
 		when:
 		def period = Period.list()[1]
