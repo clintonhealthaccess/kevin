@@ -1,12 +1,12 @@
-/* line 2, ../../src/stylesheets/nicetable.sass */
+/* line 2, src/stylesheets/nicetable.sass */
 table.nice-table .cell.value { opacity: 0.2; }
-/* line 5, ../../src/stylesheets/nicetable.sass */
+/* line 5, src/stylesheets/nicetable.sass */
 table.nice-table .highlighted.cell { opacity: 1; }
-/* line 8, ../../src/stylesheets/nicetable.sass */
+/* line 8, src/stylesheets/nicetable.sass */
 table.nice-table .selected.cell { opacity: 1; }
-/* line 11, ../../src/stylesheets/nicetable.sass */
+/* line 11, src/stylesheets/nicetable.sass */
 table.nice-table .highlighted.label, table.nice-table .selected.label { font-weight: bold; }
-/* line 14, ../../src/stylesheets/nicetable.sass */
+/* line 14, src/stylesheets/nicetable.sass */
 table.nice-table .cell.me-selected { font-weight: bold; }
-/* line 17, ../../src/stylesheets/nicetable.sass */
+/* line 17, src/stylesheets/nicetable.sass */
 table.nice-table .cell { cursor: default; }

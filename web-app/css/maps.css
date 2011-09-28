@@ -1,8 +1,8 @@
-/* line 1, ../../src/stylesheets/maps.sass */
+/* line 1, src/stylesheets/maps.sass */
 #maps { height: 100%; }
-/* line 4, ../../src/stylesheets/maps.sass */
+/* line 4, src/stylesheets/maps.sass */
 #maps #center { height: 100%; }
-/* line 7, ../../src/stylesheets/maps.sass */
+/* line 7, src/stylesheets/maps.sass */
 #maps #center #map_canvas { height: 650px; width: 100%; }
-/* line 11, ../../src/stylesheets/maps.sass */
+/* line 11, src/stylesheets/maps.sass */
 #maps #center #maps-explanation { width: 958px; }

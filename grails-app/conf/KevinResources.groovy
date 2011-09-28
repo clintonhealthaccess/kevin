@@ -17,14 +17,14 @@ modules = {
 	core {
 		dependsOn 'jquery'
 		
-		resource url: '/css/main.css', bundle: 'core'
+		//resource url: '/css/main.css', bundle: 'core'
 	}
 	
 	spinner {
 		dependsOn 'jquery'
 		
 		resource url: '/js/spinner.js'
-		resource url: '/css/spinner.css'
+		//resource url: '/css/spinner.css', bundle: 'core'
 	}
 	
 	fliptext {
@@ -47,7 +47,7 @@ modules = {
 		resource url: '/js/jquery/cluetip/lib/jquery.hoverIntent.js'
 		resource url: '/js/jquery/cluetip/jquery.cluetip.css'
 		resource url: '/js/cluetip_init.js'
-		resource url: '/css/cluetip.css'
+		//resource url: '/css/cluetip.css'
 	}
 	
 	form {
@@ -55,7 +55,7 @@ modules = {
 		
 		resource url: '/js/form-util.js'
 		resource url: '/js/form_init.js'
-		resource url: '/css/form.css'
+		//resource url: '/css/form.css'
 	}
 	
 	url {
@@ -93,21 +93,21 @@ modules = {
 		dependsOn 'jquery'
 		
 		resource url: '/js/foldable_init.js', bundle: 'core'
-		resource url: '/css/foldable.css', bundle: 'core'
+		//resource url: '/css/foldable.css', bundle: 'core'
 	}
 	
 	dropdown {
 		dependsOn 'jquery'
 		
 		resource url: '/js/dropdown_init.js', bundle: 'core'
-		resource url: '/css/dropdown.css', bundle: 'core'
+		//resource url: '/css/dropdown.css', bundle: 'core'
 	}
 	
 	nicetable {
 		dependsOn 'jquery'
 		
 		resource url: '/js/nicetable_init.js', bundle: 'core'
-		resource url: '/css/nicetable.css', bundle: 'core'
+		//resource url: '/css/nicetable.css', bundle: 'core'
 	}
 	
 	explanation {
@@ -132,37 +132,37 @@ modules = {
 	list {
 		dependsOn 'core,spinner'
 
-		resource url: '/css/list.css'
+		//resource url: '/css/list.css'
 	}
 	
 	survey {
 		dependsOn 'core,ajaxmanager'
 		
-		resource url: '/css/survey.css'
+		//resource url: '/css/survey.css'
 	}
 	
 	dsr {
 		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,report,spinner'
 		
-		resource url: '/css/dsr.css'
+		//resource url: '/css/dsr.css'
 	}
 	
 	dashboard {
 		dependsOn 'core,cluetip,dropdown,nicetable,explanation,report,spinner'
 		
-		resource url: '/css/dashboard.css'
+		//resource url: '/css/dashboard.css'
 	}
 	
 	maps {
 		dependsOn 'core,url,dropdown,explanation,spinner'
 		
-		resource url: '/css/maps.css'
+		//resource url: '/css/maps.css'
 	}
 	
 	cost {
 		dependsOn 'core,dropdown,nicetable,explanation,spinner'
 		
-		resource url: '/css/cost.css'
+		//resource url: '/css/cost.css'
 	}
 	
 }
