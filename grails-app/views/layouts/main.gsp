@@ -21,18 +21,23 @@
 	  <div class="wrapper">
 	    <h1 id="logo">DHSST</h1>
 			<% def localeService = application.getAttribute("org.codehaus.groovy.grails.APPLICATION_CONTEXT").getBean("localeService") %>
-			<div class="locales" id="switcher">
+			<ul class="locales" id="switcher">
 				<g:each in="${localeService.availableLanguages}" var="language" status="i">
 					<% params['lang'] = language %>
-					<a class="${localeService.currentLanguage==language?'no-link':''}" href="${createLink(controller: controller, action: action, params:params)}">${language}</a>
+					<li><a class="${localeService.currentLanguage==language?'no-link':''}" href="${createLink(controller: controller, action: action, params:params)}">${language}</a></li>
 				</g:each>
-			</div>
+			</ul>
 			<shiro:user>
-				<div id="logout">
-					<a href="${createLink(controller: 'auth', action: 'signOut')}">logout</a>					
+				<ul id="logout">
+				  <li>
+					  <shiro:hasPermission permission="admin">
+        			<a class="redmine" target="_blank" href="http://districthealth.moh.gov.rw/redmine">Found a bug? Go to REDMINE</a>
+        		</shiro:hasPermission>
+					</li>
+					<li><a href="${createLink(controller: 'auth', action: 'signOut')}">Logout</a></li>
+					
 				</div>
 			</shiro:user>
-			<div class="clear"></div>
 		</div>
 	</div>	
 
@@ -65,9 +70,7 @@
   				</li>
   			</shiro:hasPermission>
   		</ul>
-  		<shiro:hasPermission permission="admin">
-  			<div class="float-right" style="background-color: red;"><a target="_blank" href="http://districthealth.moh.gov.rw/redmine">Found a bug? Go to REDMINE</a></div>
-  		</shiro:hasPermission>
+  		
   	</div>
 	</div>
 			
@@ -80,7 +83,7 @@
 
 	<div id="footer">
 	  <div class="wrapper">
-		  &copy; - Clinton Health Access Initiative - <a href="#"><g:message code="footer.labels.about" default="About"/></a> | <a href="#"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="#"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
+		  &copy; Clinton Health Access Initiative <br /><a href="#"><g:message code="footer.labels.about" default="About"/></a> | <a href="#"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="#"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
 		</div>
 	</div>
 

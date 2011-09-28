@@ -12,7 +12,7 @@
     			<span>${group.name}</span><g:if test="${i < explanation.groups.size() - 1}">,</g:if>
     		</g:each>
     	</div>
-    	<table>
+    	<table class="listing">
 			<g:each in="${explanation.organisations}" var="organisation">
 				<tr>
 					<th>

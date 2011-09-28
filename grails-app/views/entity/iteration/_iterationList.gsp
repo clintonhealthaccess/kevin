@@ -1,4 +1,4 @@
-<table>
+<table class="listing">
 	<thead>
 		<tr>
 			<th><g:message code="general.text.startdate" default="Start Date" /></th>

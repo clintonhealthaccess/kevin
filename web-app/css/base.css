@@ -26,4 +26,4 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 @font-face { font-family: "Droid"; src: url("../fonts/DroidSans.eot"); src: local("☺"), url("../fonts/DroidSans.woff") format("woff"), url("../fonts/DroidSans.ttf") format("truetype"), url("../fonts/DroidSans.svg") format("svg"); font-weight: normal; font-style: normal; }
 
-@font-face { { font-family: "Droid-Bold"; src: url("../fonts/DroidSans-Bold.eot"); src: local("☺"), url("../fonts/DroidSans-Bold.woff") format("woff"), url("../fonts/DroidSans-Bold.ttf") format("truetype"), url("../fonts/DroidSans-Bold.svg") format("svg"); font-weight: normal; font-style: normal; }
+@font-face { font-family: "Droid-Bold"; src: url("../fonts/DroidSans-Bold.eot"); src: local("☺"), url("../fonts/DroidSans-Bold.woff") format("woff"), url("../fonts/DroidSans-Bold.ttf") format("truetype"), url("../fonts/DroidSans-Bold.svg") format("svg"); font-weight: normal; font-style: normal; }

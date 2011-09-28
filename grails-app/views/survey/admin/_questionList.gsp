@@ -1,4 +1,4 @@
-<table>
+<table class="listing">
 	<thead>
 		<tr>
 			<th>Question</th>
@@ -18,7 +18,7 @@
 				<td>${question.groupUuidString}</td>
 				<td>${question.order}</td>
 				<td>
-				<div class="dropdown white-dropdown"> 
+				<div class="dropdown subnav-dropdown"> 
 				     <a class="selected" href="#" data-type="question">Manage</a>
 				<div class="hidden dropdown-list">
 					<ul>

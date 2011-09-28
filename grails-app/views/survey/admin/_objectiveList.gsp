@@ -1,5 +1,5 @@
 <g:searchBox controller="question" action="search" params="${[surveyId: survey?.id]}" entityName="Survey Question"/>
-<table>
+<table class="listing">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -19,7 +19,7 @@
 				<td>${objective.sections.size()}</td>
 				<td>${objective.order}</td>
 				<td>
-					<div class="dropdown white-dropdown"> 
+					<div class="dropdown subnav-dropdown"> 
 						<a class="selected" href="#" data-type="objective">Manage</a>
 						<div class="hidden dropdown-list">
 							<ul>

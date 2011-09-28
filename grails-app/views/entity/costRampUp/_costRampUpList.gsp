@@ -1,7 +1,7 @@
 <!-- TODO fix this -->
 
 <%@ page import="org.chai.kevin.cost.CostRampUp" %>
-<table>
+<table class="listing">
     <thead>
         <tr>
             <g:sortableColumn property="id" title="${message(code: 'costRampUp.id.label', default: 'Id')}" />

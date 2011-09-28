@@ -1,7 +1,15 @@
 <div class="entity-list">
 	<div id="entities">
-		<h5 class="float-left">
-           	<g:message code="default.list.label" args="[entityName]" />
+		<h5 class="subnav">
+     	<g:message code="default.list.label" args="[entityName]" />
+     	<span class="right">
+     	  <g:if test="${!addTemplate}">
+  				<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
+  			</g:if>
+  			<g:else>
+  				<g:render template="/survey/admin/${addTemplate}"/>
+  			</g:else>
+     	</span>
 		</h5>
 		
 		<g:if test="${!search}">
@@ -17,9 +25,7 @@
 		<div class="clear"></div>
 
 		<g:if test="${flash.message}">
-			<div class="rounded-box-top rounded-box-bottom flash-info">
-           		${flash.message}
-           	</div>
+			<div class="message">${flash.message}</div>
         </g:if>
 			
 		<!-- Template goes here -->

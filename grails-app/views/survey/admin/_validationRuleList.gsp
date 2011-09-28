@@ -1,4 +1,4 @@
-<table>
+<table class="listing">
 	<thead>
 		<tr>
 			<th>Data Element</th>
@@ -27,16 +27,16 @@
 			    <td>${validationRule.groupUuidString}</td>
 				<td><g:i18n field="${validationRule.messages}" /></td>
 				<td>
-					<div class="dropdown white-dropdown"> 
+					<div class="dropdown subnav-dropdown"> 
 			     		<a class="selected" href="#" data-type="validation-rule">Manage</a>
 						<div class="hidden dropdown-list">
 							<ul>
-								<li class="edit-validation-rule-link">
+								<li>
 									<a href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'edit', params:[id: validationRule.id])}">
 										<g:message code="general.text.edit" default="Edit" /> 
 									</a>
 								</li>
-								<li class="delete-validation-rule-link">
+								<li>
 									<a href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'delete', params:[id: validationRule.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 										<g:message code="general.text.delete" default="Delete" /> 
 									</a>

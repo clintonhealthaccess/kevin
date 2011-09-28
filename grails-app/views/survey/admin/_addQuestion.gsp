@@ -1,5 +1,5 @@
 <div class="filter">
-	<div class="dropdown white-dropdown">
+	<div class="dropdown subnav-dropdown">
 		<a class="selected" href="#" data-type="question">New Question</a>
 		<div class="hidden dropdown-list">
 			<ul>

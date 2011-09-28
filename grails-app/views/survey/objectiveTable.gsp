@@ -6,7 +6,7 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
-		<table>
+		<table class="listing">
 			<thead>
 				<th>Objective</th>
 				<th>Submitted</th>

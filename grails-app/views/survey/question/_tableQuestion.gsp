@@ -3,7 +3,7 @@
 <div id="question-${question.id}" class="question question-table" data-question="${question.id}">
 	<g:i18n field="${question.names}" />
 	<div class="question-table-container">
-		<table>
+		<table class="listing">
 			<thead>
 				<tr>
 					<th class="question-tab-title-name"><g:i18n field="${question.tableNames}" /></th>

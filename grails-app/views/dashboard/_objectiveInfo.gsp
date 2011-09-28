@@ -14,7 +14,7 @@
 		<div>
 			<span class="bold"><a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Scores</a></span>
 			<div class="box span">
-				<table>
+				<table class="listing">
 					<thead>
 						<tr>
 							<th>&nbsp;</th>

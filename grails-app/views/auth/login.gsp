@@ -10,7 +10,7 @@
   </g:if>
   <g:form action="signIn" class="nice-form">
     <input type="hidden" name="targetUri" value="${targetUri}" />
-    <table>
+    <table class="listing">
       <tbody>
         <tr>
           <td>Username:</td>

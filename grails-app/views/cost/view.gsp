@@ -15,10 +15,10 @@
     </head>
     <body>
     	<div id="cost">
-			<div class="box margin-bottom-10">
+			<div class="main">
 				<div class="filter">
 					<span class="bold"><g:message code="costing.labels.iteration" default="Iteration"/></span>
-					<span class="dropdown white-dropdown">
+					<span class="dropdown subnav-dropdown">
 						<a href="#" class="selected"><g:dateFormat format="yyyy" date="${costTable.currentPeriod.startDate}"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
@@ -35,7 +35,7 @@
 				</div>
 				<div class="filter">
 					<span class="bold"><g:message code="costing.labels.organisation" default="Organisation"/></span>
-					<span class="dropdown white-dropdown">
+					<span class="dropdown subnav-dropdown">
 						<g:if test="${costTable.currentOrganisation != null}">
 							<a href="#" class="selected">${costTable.currentOrganisation.name}</a>
 						</g:if>
@@ -51,7 +51,7 @@
 				</div>
 				<div class="filter">
 					<span class="bold"><g:message code="costing.labels.objective" default="Strategic Objective"/></span>
-					<span class="dropdown white-dropdown">
+					<span class="dropdown subnav-dropdown">
 						<g:if test="${costTable.currentObjective != null}">
 							<a href="#" class="selected"><g:i18n field="${costTable.currentObjective.names}"/></a>
 						</g:if>
@@ -96,7 +96,7 @@
 				</shiro:hasPermission>
 				
 			</div>
-    		<div id="center" class="box">
+    		<div id="center" class="main">
     			<div id="values">
     				<g:if test="${costTable.currentObjective != null && costTable.currentOrganisation != null}">
 						<table class="nice-table">

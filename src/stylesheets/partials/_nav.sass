@@ -1,12 +1,172 @@
-#navigation
-  background: url('../images/bg/nav_bg.png') repeat-x
-  height: 42px
-  
-#main-menu 
+
+// Languages switch
+#switcher
+  right: 0
+  position: absolute
+  top: 0
   +pie-clearfix
+  
   li
     display: inline
     float: left
+    margin-left: 3px
+    
   a
+    background: $filler
+    color: $primary
+    display: inline-block
+    font-size: 9px
+    padding: 7px 6px 5px
+    text-decoration: none
+    text-transform: uppercase
+    +border-bottom-radius(3px)
+    &:hover, &:focus, &.active
+      background: $primary
+      color: #fff
+    
+
+// Main navigation
+#navigation
+  background: url('../images/bg/nav_bg.png') repeat-x
+  height: 42px
+  position: relative
+  z-index: 20
+
+#main-menu
+  float: left
+  +pie-clearfix
+  > li
+    display: inline
+    float: left
+    position: relative
+    &:first-child
+      border-left: 1px solid $primary_light
+    &:last-child
+      border-right: 1px solid $primary_dark
+    &:hover .submenu
+      display: block
+  a
+    border-left: 1px solid $primary_dark
+    border-right: 1px solid $primary_light
     color: #fff
     display: inline-block
+    font-size: 13px
+    font-weight: bold
+    padding: 14px 25px
+    text-decoration: none
+    +text-shadow(rgba(0, 0, 0, 0.3), 0, 1px, 0)
+    &:hover, &:focus, &.active
+      background: $primary_dark
+      +box-shadow($primary - #191919, -3px, 0, 8px, 8px, inset)
+    &:active
+      +box-shadow($primary - #222, 0, 0, 10px, 10px, inset)
+    
+  .submenu
+    background: $primary
+    border: 1px solid $primary_dark
+    display: none
+    opacity: 0.85
+    padding: 5px 0 10px
+    position: absolute
+    top: 42px
+    z-index: 1
+    +border-bottom-radius
+    +box-shadow(#ccc 2px 2px 3px, $primary_dark 0 0 8px 3px inset)
+    a
+      border-bottom: 1px solid $primary_dark
+      display: block
+      font-size: 12px
+      font-weight: normal
+      padding: 7px 25px 7px
+      white-space: nowrap
+      &:hover, &:focus
+        background: $primary_dark
+        
+        
+// Logout navigation
+#logout
+  position: absolute
+  right: 0
+  top: 100px
+  z-index: 30
+  
+  li
+    display: inline
+    float: left
+    margin-left: 7px
+    
+  a
+    background: $primary_dark
+    color: $filler
+    display: block
+    font-size: 11px
+    padding: 6px 12px
+    text-decoration: none
+    +border-radius(3px)
+    +box-shadow($primary - #333 0 -2px 9px 1px inset)
+    +text-shadow($primary - #333, 0, 1px, 0)
+    &:hover, &:focus
+      color: #fff
+      +box-shadow($primary - #333 0 -2px 9px 4px inset)
+    &:active
+      +box-shadow($primary - #333 0 2px 9px 4px inset)
+    &.redmine
+      color: #fff
+      opacity: 0.7
+      &:hover, &:focus
+        opacity: 1
+
+
+// Sub navigation
+.subnav, .entity-form-header
+  background: url('../images/bg/subnav_bg.png') repeat-x
+  color: #888
+  font-size: 11px
+  height: 11px
+  padding: 14px
+  a
+    font-size: 11px
+    font-weight: bold
+    
+.filter
+  display: inline
+  float: left
+  margin-right: 15px
+    
+.subnav-dropdown
+  position: relative
+  > a
+    padding: 6px 8px
+    &:hover, &:focus
+      background: $primary
+      color: #fff
+      +border-top-radius
+  
+.dropdown-list
+  background: $primary
+  border: 1px solid $primary_dark
+  display: none
+  left: 0
+  opacity: 0.85
+  padding: 5px 0 10px
+  position: absolute
+  top: 20px
+  z-index: 1
+  +border-bottom-radius
+  +box-shadow(#ccc 2px 2px 3px, $primary_dark 0 0 8px 3px inset)
+  
+  li
+    border-bottom: 1px solid $primary_dark
+    display: block
+    padding: 7px 0 7px
+    &:hover, &:focus
+      a
+        color: #fff
+    a
+      color: $filler
+      font-size: 12px
+      font-weight: normal
+      text-decoration: none
+      white-space: nowrap
+      &.foldable-toggle
+        float: left

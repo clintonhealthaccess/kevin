@@ -1,4 +1,4 @@
-<table>
+<table class="listing">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -18,7 +18,7 @@
 				<td>[${survey.period.startDate} - ${survey.period.startDate}]</td>
 				<td>${survey.objectives.size()}</td>
 				<td>
-					<div class="dropdown white-dropdown"> 
+					<div class="dropdown subnav-dropdown"> 
 						<a class="selected" href="#" data-type="survey">Manage</a>
 						<div class="hidden dropdown-list">
 							<ul>

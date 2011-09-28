@@ -1,4 +1,4 @@
-<table>
+<table class="listing">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -16,7 +16,7 @@
 				<td>${enumation.code}</td>
 				<td>${enumation.enumOptions.size()}</td>
 				<td>
-				<div class="dropdown white-dropdown"> 
+				<div class="dropdown subnav-dropdown"> 
 					<a class="selected" href="#" data-type="section">Manage</a>
 					<div class="hidden dropdown-list">
 						<ul>

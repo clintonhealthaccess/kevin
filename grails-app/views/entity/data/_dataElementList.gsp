@@ -1,4 +1,4 @@
-<table id="data-element-table">
+<table class="listing">
 	<thead>
 		<tr>
 		    <g:sortableColumn property="id" title="${message(code: 'dataelement.id.label', default: 'Id')}" />
@@ -18,7 +18,7 @@
 				<td><g:toHtml value="${dataElement.type.getDisplayedValue(2, 2)}"/></td>
 				<td>${dataElement.code}</td>
 				<td>
-					<div class="dropdown white-dropdown"> 
+					<div class="dropdown subnav-dropdown"> 
 						<a class="selected" href="#" data-type="section">Manage</a>
 						<div class="hidden dropdown-list">
 							<ul>

@@ -10,10 +10,10 @@
 		<g:set var="survey" value="${summaryPage.survey}"/>
 		<g:set var="organisation" value="${summaryPage.organisation}"/>
 		<div id="survey">
-			<div id="survey-header" class="grey-rounded-box-top">
+			<div id="survey-header" class="subnav grey-rounded-box-top">
 				<div class="filter">
 					<span class="bold">Survey:</span>
-					<span class="dropdown white-dropdown">
+					<span class="dropdown subnav-dropdown">
 						<a class="selected" href="#">
 							<g:if test="${survey != null}">
 								<g:i18n field="${survey.names}" />
@@ -39,7 +39,7 @@
 				</div>
 				<div class="filter">
 					<span class="bold">Facility Name:</span>
-					<span class="dropdown white-dropdown">
+					<span class="dropdown subnav-dropdown">
 						<g:if test="${organisation != null}">
 							<a class="selected" href="#" data-type="organisation">${organisation.name}</a>
 						</g:if>
@@ -58,19 +58,18 @@
 			</div>
 			
 			
-			<div class="grey-rounded-box-bottom">
+			<div class="grey-rounded-box-bottom main">
 				<g:if test="${summaryPage.organisation == null || summaryPage.survey == null}">
 					Please select a survey and a facility to get to the respective survey.
 				</g:if>
 				<g:else>
 					<div id="survey-summary">
-						<table>
+						<table class="listing">
 							<thead>
 								<th>Facility</th>
 								<th>Objectives submitted</th>
 								<th>Overall progress</th>
-								<th></th>
-								<th></th>
+								<th colspan="3"></th>
 							</thead>
 							<tbody>
 								<g:each in="${summaryPage.facilities}" var="facility">
@@ -86,7 +85,7 @@
 										<td><a href="${createLink(controller: 'editSurvey', action: 'print', params: [survey: summaryPage.survey.id, organisation: facility.id])}" target="_blank">Print Survey</a></td>
 									</tr>
 									<tr>
-										<td colspan="5">
+										<td colspan="6">
 											<div class="explanation-cell" id="explanation-${facility.id}"></div>
 										</td>
 									</tr>

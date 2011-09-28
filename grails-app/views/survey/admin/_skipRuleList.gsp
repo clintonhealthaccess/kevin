@@ -1,4 +1,4 @@
-<table>
+<table class="listing">
 	<thead>
 		<tr>
 		    <th>Id</th>
@@ -24,16 +24,16 @@
 					${skip.skippedSurveyQuestions.size()}
 				</td>
 				<td>
-					<div class="dropdown white-dropdown"> 
+					<div class="dropdown subnav-dropdown"> 
 			     		<a class="selected" href="#" data-type="skip-rule">Manage</a>
 						<div class="hidden dropdown-list">
 							<ul>
-								<li class="edit-skip-rule-link">
+								<li>
 					    			<a href="${createLinkWithTargetURI(controller:'surveySkipRule', action:'edit', params:[id: skip.id])}">
 							    		<g:message code="general.text.edit" default="Edit" /> 
 									</a>
 								</li>
-								<li class="delete-skip-rule-link">
+								<li>
 					    			<a href="${createLinkWithTargetURI(controller:'surveySkipRule', action:'delete', params:[id: skip.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 						        		<g:message code="general.text.delete" default="Delete" /> 
 									</a>

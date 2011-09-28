@@ -16,9 +16,9 @@
     </head>
     <body>
 		<div id="dashboard">
-			<div id="corner" class="box">
+			<div id="corner" class="main">
 				<span class="bold"><g:message code="dashboard.labels.iteration" default="Iteration"/></span>
-				<div class="dropdown white-dropdown">
+				<div class="dropdown subnav-dropdown">
 					<a class="selected" href="#"><g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/></a>
 					<div class="hidden dropdown-list">
 						<ul>

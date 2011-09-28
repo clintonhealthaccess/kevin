@@ -32,7 +32,7 @@
 	<g:if test="${info.valuesForOrganisation != null}">
 		<div class="span box">
 			<span class="bold">Data</span>
-			<table><g:each in="${info.valuesForOrganisation}" var="data">
+			<table class="listing"><g:each in="${info.valuesForOrganisation}" var="data">
 				<g:set var="dataElement" value="${data.key}"/>
 				<g:set var="dataValue" value="${data.value}"/>
 				

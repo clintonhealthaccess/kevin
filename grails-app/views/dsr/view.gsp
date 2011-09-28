@@ -13,11 +13,11 @@
 	</head>
 	<body>
 		<div id="dsr">
-			<div class="box margin-bottom-10">
+			<div class="subnav">
 				<div class="filter">
 					<span class="bold">Iteration:</span>
-					<span class="dropdown white-dropdown">
-						<a class="selected" href="#" data-period="${currentPeriod.id}" data-type="period">
+					<span class="dropdown subnav-dropdown">
+						<a class="selected" href="#" data-period="${dsrTable.period.id}" data-type="period">
 							<g:dateFormat format="yyyy" date="${currentPeriod.startDate}" />
 						</a>
 						<div class="hidden dropdown-list">
@@ -34,8 +34,8 @@
 				</div>
 				<div class="filter">
 					<span class="bold">Organisation:</span>
-					<span class="dropdown white-dropdown">
-						<g:if test="${currentOrganisation != null}">
+					<span class="dropdown subnav-dropdown">
+						<g:if test="${dsrTable.organisation != null}">
 							<a class="selected" href="#" data-type="organisation">${currentOrganisation.name}</a>
 						</g:if>
 						<g:else>
@@ -51,7 +51,7 @@
 				</div>
 				<div class="filter">
 					<span class="bold">Strategic Objective:</span>
-					<span class="dropdown white-dropdown">
+					<span class="dropdown subnav-dropdown">
 						<g:if test="${currentObjective != null}">
 							<a class="selected" href="#"
 							data-organisation="${currentObjective.id}"
@@ -92,7 +92,6 @@
 					</span>
 				</div>
 				<g:if test="${dsrTable != null}">
-					<div class="clear"></div>
 					<div class="filter margin-top-20">
 			    		<div class="bold">Facility types</div>
 			    		<div id="facility-type-filter">
@@ -105,11 +104,9 @@
 			    			<span class="italic">No facility types</span>
 			    		</g:else>
 			    		</div>
-			    		<div class="clear"></div>
 			    	</div>
 				</g:if>
-				<div class="clear"></div>
-				<div>
+				<div class="right">
 				<!-- ADMIN SECTION -->
 				<shiro:hasPermission permission="admin:dsr">
 					<span> <a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'create')}">Add Objective</a> </span>|
@@ -119,7 +116,7 @@
 				<!-- ADMIN SECTION END -->
 			</div>
 		</div>
-		<div id="center" class="box">
+		<div id="center" class="main">
 			<div id="values">
 				<g:if test="${dsrTable != null}">
 					<g:if test="${!dsrTable.targets.empty}">

@@ -17,7 +17,7 @@
 		
 		<div>
 			<g:if test="${surveyElements.size()!=0}">
-				<table>
+				<table class="listing">
 					<thead>
 						<tr>
 							<th>Iteration</th>
@@ -46,7 +46,7 @@
 		</div>
 		
 		<div>
-			<table>
+			<table class="listing">
 				<thead>
 					<tr>
 						<th>Iteration</th>
