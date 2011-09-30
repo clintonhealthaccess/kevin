@@ -17,7 +17,7 @@ modules = {
 	core {
 		dependsOn 'jquery'
 		
-		//resource url: '/css/main.css', bundle: 'core'
+		resource url: '/css/screen.css', bundle: 'core'
 	}
 	
 	spinner {

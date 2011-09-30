@@ -1158,7 +1158,8 @@ class Initializer {
 
 			//Adding a table type question
 			def tableQ = new SurveyTableQuestion(
-				names: j(["en":"For each training module:<br/>(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
+				names: j(["en":"For each training module:"]),
+				descriptions: j(["en":"(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
 				tableNames: j(["en":"Training Modules"]),
 				order: 1,
 				groupUuidString: "Health Center,District Hospital"
