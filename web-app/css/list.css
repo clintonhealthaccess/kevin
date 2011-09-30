@@ -1,31 +1,24 @@
-.entity-list {
-  border: 1px solid #dddddd;
-  background-color: #f4f4f4;
-  padding: 8px; }
-  .entity-list table thead tr {
-    background: #739eee;
-    color: white;
-    font-weight: 600;
-    text-align: center; }
-    .entity-list table thead tr a {
-      color: white; }
-    .entity-list table thead tr a:hover {
-      color: white; }
-    .entity-list table thead tr a:visited {
-      color: white; }
-  .entity-list table tr.odd td {
-    background-color: white; }
-  .entity-list table tr.even td {
-    background-color: #e5ecf9; }
-  .entity-list .paginateButtons {
-    background: white;
-    padding: 3px 2px 3px 2px;
-    border: 1px #c3c3c3 solid; }
-    .entity-list .paginateButtons a, .entity-list .paginateButtons span {
-      margin: 1px 3px 1px 3px; }
-    .entity-list .paginateButtons span {
-      font-weight: bold; }
-    .entity-list .paginateButtons a {
-      text-decoration: none; }
-    .entity-list .paginateButtons a:hover {
-      text-decoration: underline; }
+/* line 3, ../../src/stylesheets/list.sass */
+.entity-list { border: 1px solid #dddddd; background-color: #f4f4f4; padding: 8px; }
+/* line 9, ../../src/stylesheets/list.sass */
+.entity-list table thead tr { background: #739eee; color: white; font-weight: 600; text-align: center; }
+/* line 15, ../../src/stylesheets/list.sass */
+.entity-list table thead tr a { color: white; }
+/* line 18, ../../src/stylesheets/list.sass */
+.entity-list table thead tr a:hover { color: white; }
+/* line 21, ../../src/stylesheets/list.sass */
+.entity-list table thead tr a:visited { color: white; }
+/* line 24, ../../src/stylesheets/list.sass */
+.entity-list table tr.odd td { background-color: white; }
+/* line 27, ../../src/stylesheets/list.sass */
+.entity-list table tr.even td { background-color: #e5ecf9; }
+/* line 30, ../../src/stylesheets/list.sass */
+.entity-list .paginateButtons { background: white; padding: 3px 2px 3px 2px; border: 1px #c3c3c3 solid; }
+/* line 36, ../../src/stylesheets/list.sass */
+.entity-list .paginateButtons a, .entity-list .paginateButtons span { margin: 1px 3px 1px 3px; }
+/* line 39, ../../src/stylesheets/list.sass */
+.entity-list .paginateButtons span { font-weight: bold; }
+/* line 42, ../../src/stylesheets/list.sass */
+.entity-list .paginateButtons a { text-decoration: none; }
+/* line 45, ../../src/stylesheets/list.sass */
+.entity-list .paginateButtons a:hover { text-decoration: underline; }

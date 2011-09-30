@@ -54,9 +54,10 @@ class EditSurveyController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
 		User user = User.findByUsername(SecurityUtils.subject.principal)
 		
-		if (user.hasProperty('organisationUnit') != null) {
+		if (user.hasProperty('organisationUnitId') != null) {
 			Survey survey = Survey.get(params.int('survey'))
-			Organisation organisation = organisationService.getOrganisation(user.organisationUnit.id)
+			if (survey == null) survey = surveyPageService.getDefaultSurvey()
+			Organisation organisation = organisationService.getOrganisation(user.organisationUnitId)
 			
 			redirect (action: 'surveyPage', params: [survey: survey.id, organisation: organisation.id])
 		}

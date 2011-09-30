@@ -82,7 +82,7 @@ public class DomainSpec extends IntegrationTests {
 	
 	def "target constraint: calculation cannot be null"() {
 		when:
-		def calculation = new Average(expressions: [:], type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		def calculation = new Average(expressions: [:], type: Type.TYPE_NUMBER).save(failOnError: true)
 		new MapsTarget(code:"CODE1" , calculation: calculation, type: MapsTargetType.AVERAGE).save(failOnError:true)
 		
 		then:

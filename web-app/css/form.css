@@ -1,170 +1,60 @@
-.entity-form-container {
-  border: 1px solid #cccccc;
-  background-color: white;
-  padding: 2px;
-  float: left;
-  border: 2px solid #739eee;
-  margin: 8px;
-  padding: 10px 5px 10px 5px;
-  -webkit-border-top-right-radius: 5px;
-  -webkit-border-top-left-radius: 5px;
-  -khtml-border-radius-topleft: 5px;
-  -khtml-border-radius-topright: 5px;
-  -moz-border-radius-topright: 5px;
-  -moz-border-radius-topleft: 5px;
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -khtml-border-radius-bottomleft: 5px;
-  -khtml-border-radius-bottomright: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  -webkit-box-shadow: 0px 5px 8px #818181;
-  -moz-box-shadow: 0px 5px 8px #818181;
-  box-shadow: 0px 5px 8px #818181; }
-  .entity-form-container .entity-form-header {
-    -webkit-border-top-right-radius: 2px;
-    -webkit-border-top-left-radius: 2px;
-    -khtml-border-radius-topleft: 2px;
-    -khtml-border-radius-topright: 2px;
-    -moz-border-radius-topright: 2px;
-    -moz-border-radius-topleft: 2px;
-    border-top-right-radius: 2px;
-    border-top-left-radius: 2px;
-    -webkit-border-bottom-right-radius: 2px;
-    -webkit-border-bottom-left-radius: 2px;
-    -khtml-border-radius-bottomleft: 2px;
-    -khtml-border-radius-bottomright: 2px;
-    -moz-border-radius-bottomright: 2px;
-    -moz-border-radius-bottomleft: 2px;
-    border-bottom-right-radius: 2px;
-    border-bottom-left-radius: 2px;
-    background-color: #739eee; }
-    .entity-form-container .entity-form-header .title {
-      float: left;
-      color: white;
-      margin: 3px 2px 2px 3px; }
-    .entity-form-container .entity-form-header .locales {
-      float: right;
-      padding: 4px; }
-      .entity-form-container .entity-form-header .locales a {
-        padding: 2px; }
-      .entity-form-container .entity-form-header .locales a.no-link {
-        font-weight: bold; }
-  .entity-form-container .forms-container {
-    width: 100%; }
-  .entity-form-container .data-search-column {
-    float: right;
-    width: 470px; }
-    .entity-form-container .data-search-column input.radio {
-      width: auto; }
-      .entity-form-container .data-search-column input.radio label {
-        font-weight: bold;
-        margin-bottom: 2px; }
-      .entity-form-container .data-search-column input.radio #data {
-        width: 600px; }
-  .entity-form-container .data-field-column {
-    float: left;
-    width: 460px; }
+/* line 3, ../../src/stylesheets/form.sass */
+.entity-form-container { border: 1px solid #cccccc; background-color: white; padding: 2px; float: left; border: 2px solid #739eee; margin: 8px; padding: 10px 5px 10px 5px; -webkit-border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -khtml-border-radius-topleft: 5px; -khtml-border-radius-topright: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-topleft: 5px; border-top-right-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -khtml-border-radius-bottomleft: 5px; -khtml-border-radius-bottomright: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; -webkit-box-shadow: 0px 5px 8px #818181; -moz-box-shadow: 0px 5px 8px #818181; box-shadow: 0px 5px 8px #818181; }
+/* line 14, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header { -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; background-color: #739eee; }
+/* line 18, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header .title { float: left; color: white; margin: 3px 2px 2px 3px; }
+/* line 23, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header .locales { float: right; padding: 4px; }
+/* line 27, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header .locales a { padding: 2px; }
+/* line 30, ../../src/stylesheets/form.sass */
+.entity-form-container .entity-form-header .locales a.no-link { font-weight: bold; }
+/* line 33, ../../src/stylesheets/form.sass */
+.entity-form-container .forms-container { width: 100%; }
+/* line 36, ../../src/stylesheets/form.sass */
+.entity-form-container .data-search-column { float: right; width: 470px; }
+/* line 40, ../../src/stylesheets/form.sass */
+.entity-form-container .data-search-column input.radio { width: auto; }
+/* line 43, ../../src/stylesheets/form.sass */
+.entity-form-container .data-search-column input.radio label { font-weight: bold; margin-bottom: 2px; }
+/* line 47, ../../src/stylesheets/form.sass */
+.entity-form-container .data-search-column input.radio #data { width: 600px; }
+/* line 50, ../../src/stylesheets/form.sass */
+.entity-form-container .data-field-column { float: left; width: 460px; }
 
-.entity-form-container form {
-  position: relative;
-  border: none;
-  background-color: inherit; }
-  .entity-form-container form .row {
-    width: 400px;
-    margin: 4px; }
-    .entity-form-container form .row .error-list {
-      height: 14px; }
-  .entity-form-container form input, .entity-form-container form textarea {
-    width: 290px; }
-  .entity-form-container form input.radio {
-    width: auto; }
-  .entity-form-container form label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 2px; }
-  .entity-form-container form button {
-    float: right; }
+/* line 54, ../../src/stylesheets/form.sass */
+.entity-form-container form { position: relative; border: none; background-color: inherit; }
+/* line 59, ../../src/stylesheets/form.sass */
+.entity-form-container form .row { width: 400px; margin: 4px; }
+/* line 63, ../../src/stylesheets/form.sass */
+.entity-form-container form .row .error-list { height: 14px; }
+/* line 66, ../../src/stylesheets/form.sass */
+.entity-form-container form input, .entity-form-container form textarea { width: 290px; }
+/* line 69, ../../src/stylesheets/form.sass */
+.entity-form-container form input.radio { width: auto; }
+/* line 72, ../../src/stylesheets/form.sass */
+.entity-form-container form label { display: block; font-weight: bold; margin-bottom: 2px; }
+/* line 77, ../../src/stylesheets/form.sass */
+.entity-form-container form button { float: right; }
 
-.focus-field {
-  -webkit-border-top-right-radius: 2px;
-  -webkit-border-top-left-radius: 2px;
-  -khtml-border-radius-topleft: 2px;
-  -khtml-border-radius-topright: 2px;
-  -moz-border-radius-topright: 2px;
-  -moz-border-radius-topleft: 2px;
-  border-top-right-radius: 2px;
-  border-top-left-radius: 2px;
-  -webkit-border-bottom-right-radius: 2px;
-  -webkit-border-bottom-left-radius: 2px;
-  -khtml-border-radius-bottomleft: 2px;
-  -khtml-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomleft: 2px;
-  border-bottom-right-radius: 2px;
-  border-bottom-left-radius: 2px;
-  border: solid 1px #73a6ff;
-  background: #dbe5fb;
-  color: black; }
+/* line 80, ../../src/stylesheets/form.sass */
+.focus-field { -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; border: solid 1px #73a6ff; background: #dbe5fb; color: black; }
 
-.idle-field {
-  -webkit-border-top-right-radius: 2px;
-  -webkit-border-top-left-radius: 2px;
-  -khtml-border-radius-topleft: 2px;
-  -khtml-border-radius-topright: 2px;
-  -moz-border-radius-topright: 2px;
-  -moz-border-radius-topleft: 2px;
-  border-top-right-radius: 2px;
-  border-top-left-radius: 2px;
-  -webkit-border-bottom-right-radius: 2px;
-  -webkit-border-bottom-left-radius: 2px;
-  -khtml-border-radius-bottomleft: 2px;
-  -khtml-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomleft: 2px;
-  border-bottom-right-radius: 2px;
-  border-bottom-left-radius: 2px;
-  background: #f7f9fe;
-  color: black;
-  border: solid 1px #ababab; }
+/* line 86, ../../src/stylesheets/form.sass */
+.idle-field { -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; background: #f7f9fe; color: black; border: solid 1px #ababab; }
 
-.completed-field {
-  -webkit-border-top-right-radius: 2px;
-  -webkit-border-top-left-radius: 2px;
-  -khtml-border-radius-topleft: 2px;
-  -khtml-border-radius-topright: 2px;
-  -moz-border-radius-topright: 2px;
-  -moz-border-radius-topleft: 2px;
-  border-top-right-radius: 2px;
-  border-top-left-radius: 2px;
-  -webkit-border-bottom-right-radius: 2px;
-  -webkit-border-bottom-left-radius: 2px;
-  -khtml-border-radius-bottomleft: 2px;
-  -khtml-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomleft: 2px;
-  border-bottom-right-radius: 2px;
-  border-bottom-left-radius: 2px;
-  background: #ededed;
-  color: black;
-  border: solid 1px #73a6ff; }
+/* line 92, ../../src/stylesheets/form.sass */
+.completed-field { -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; background: #ededed; color: black; border: solid 1px #73a6ff; }
 
-.ajax-search-field {
-  width: 340px; }
+/* line 98, ../../src/stylesheets/form.sass */
+.ajax-search-field { width: 340px; }
 
-ul.filtered {
-  border: 1px solid lightGrey;
-  padding: 4px;
-  height: 270px;
-  overflow: auto; }
-  ul.filtered li {
-    display: block;
-    white-space: nowrap; }
-    ul.filtered li span {
-      color: grey; }
-  ul.filtered li:hover {
-    background-color: yellow; }
+/* line 101, ../../src/stylesheets/form.sass */
+ul.filtered { border: 1px solid lightGrey; padding: 4px; height: 270px; overflow: auto; }
+/* line 107, ../../src/stylesheets/form.sass */
+ul.filtered li { display: block; white-space: nowrap; }
+/* line 111, ../../src/stylesheets/form.sass */
+ul.filtered li span { color: grey; }
+/* line 114, ../../src/stylesheets/form.sass */
+ul.filtered li:hover { background-color: yellow; }

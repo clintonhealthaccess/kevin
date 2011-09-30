@@ -70,7 +70,7 @@ class DomainSpec extends IntegrationTests {
 
 	def "table question has data elements"() {
 		setup:
-		new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: JSONUtils.TYPE_NUMBER).save(failOnError: true, flush: true)
+		new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: Type.TYPE_NUMBER).save(failOnError: true, flush: true)
 		def section = createDummySection()
 		createDummyTableQuestion(section)
 		
@@ -132,7 +132,7 @@ class DomainSpec extends IntegrationTests {
 	
 		
 		//Create DataElement
-		new DataElement(names:j("en":"testTab"), code:"TESTTAB", type: JSONUtils.TYPE_ENUM(Enum.findByCode('ENUM2').code)).save(failOnError:true)
+		new DataElement(names:j("en":"testTab"), code:"TESTTAB", type: Type.TYPE_ENUM(Enum.findByCode('ENUM2').code)).save(failOnError:true)
 		def dataElement = DataElement.findByCode("TESTTAB")
 		
 		//Creating Survey

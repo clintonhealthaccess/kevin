@@ -33,6 +33,7 @@ package org.chai.kevin.data
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.DataService
+import org.chai.kevin.GroupCollection;
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.PeriodSorter
 import org.chai.kevin.ValueService
@@ -42,6 +43,7 @@ import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyElementService
 import org.chai.kevin.value.DataValue
 import org.hisp.dhis.organisationunit.OrganisationUnit
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
@@ -118,19 +120,21 @@ class DataElementController extends AbstractEntityController {
 		}
 		else {
 			List<Period> iterations = Period.list();
-			Map<SurveyElement, Integer> surveyElmnts = new HashMap<SurveyElement,Integer>();
-			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
 			Set<SurveyElement> surveyElements = surveyElementService.getSurveyElements(dataElement, null);
 
-
-			for(Period iteration : iterations)
+			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
+			for(Period iteration : iterations) {
 				periodValues.put(iteration, valueService.getNumberOfValues(dataElement, iteration));
-			for(SurveyElement surveyElement: surveyElements)
-				surveyElmnts.put(surveyElement, surveyElementService.getTotalOrgUnitApplicable(surveyElement));
+			}
+
+			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();
+			for(SurveyElement surveyElement: surveyElements) {
+				surveyElementMap.put(surveyElement, surveyElementService.getNumberOfOrganisationUnitApplicable(surveyElement));
+			}
 
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/templates/dataElementExplainer', model: [dataElement: dataElement,surveyElements: surveyElmnts,periodValues: periodValues])
+				html = g.render (template: '/templates/dataElementExplainer', model: [dataElement: dataElement, surveyElements: surveyElementMap, periodValues: periodValues])
 			}
 		}
 	}

@@ -43,6 +43,7 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -58,8 +59,8 @@ class IntegrationTestInitializer extends Initializer {
 //		new IndicatorType(names:j(["en":"one"]), factor: 1).save(failOnError: true)
 //		new Indicator(names:j(["en":"Constant 10"]), shortName: "Constant 10", code: "CONST10", numerator: "10", denominator: "1", indicatorType: IndicatorType.findByName("one")).save(failOnError: true);
 //		new Indicator(names:j(["en":"Constant 20"]), shortName: "Constant 20", code: "CONST20", numerator: "20", denominator: "1", indicatorType: IndicatorType.findByName("one")).save(failOnError: true);
-		new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: JSONUtils.TYPE_NUMBER, timestamp: new Date()).save(failOnError: true)
-		new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: JSONUtils.TYPE_NUMBER, timestamp: new Date()).save(failOnError: true)
+		new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: Type.TYPE_NUMBER, timestamp: new Date()).save(failOnError: true)
+		new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: Type.TYPE_NUMBER, timestamp: new Date()).save(failOnError: true)
 		
 	}
 	
@@ -80,7 +81,7 @@ class IntegrationTestInitializer extends Initializer {
 		def calculation1 = new Average(expressions: [
 			"District Hospital": Expression.findByCode("CONST10"),
 			"Health Center": Expression.findByCode("CONST20")
-		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
+		], timestamp:new Date(), type: Type.TYPE_NUMBER)
 		calculation1.save()
 		
 		def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -91,7 +92,7 @@ class IntegrationTestInitializer extends Initializer {
 		def calculation2 = new Average(expressions: [
 				"District Hospital": Expression.findByCode("CONST20"),
 				"Health Center": Expression.findByCode("CONST20")
-			], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
+			], timestamp:new Date(), type: Type.TYPE_NUMBER)
 		calculation2.save()
 		
 		def target2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -108,7 +109,7 @@ class IntegrationTestInitializer extends Initializer {
 	}
 	
 	static def createDataElements() {
-		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER)
+		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: Type.TYPE_NUMBER)
 		dataElement.save(failOnError: true)
 	}
 	
@@ -129,12 +130,12 @@ class IntegrationTestInitializer extends Initializer {
 		
 		// Indicators on data elements
 //		new Indicator(names:j(["en":"Indicator Element 1"]), shortName: "Indicator Element 1", code: "ELEM1", numerator: "["+dataElement.id+"]", denominator: "1", indicatorType: IndicatorType.findByName("one")).save(failOnError: true)
-		new Expression(names:j(["en":"Expression Element 1"]), code:"EXPRELEM1", expression: "["+DataElement.findByCode("CODE").id+"]", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		new Expression(names:j(["en":"Expression Element 1"]), code:"EXPRELEM1", expression: "["+DataElement.findByCode("CODE").id+"]", type: Type.TYPE_NUMBER).save(failOnError: true)
 		
 		def calculation3 = new Average(expressions: [
 			"District Hospital": Expression.findByCode("EXPRELEM1"),
 			"Health Center": Expression.findByCode("EXPRELEM1")
-		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
+		], timestamp:new Date(), type: Type.TYPE_NUMBER)
 		calculation3.save()
 		
 		// objectives and targets for dashboard
@@ -146,29 +147,6 @@ class IntegrationTestInitializer extends Initializer {
 		def staffing = DashboardObjective.findByCode("STAFFING")
 		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("TARGET1"), weight: 1, order: 3)
 		staffing.save(failOnError: true)
-	}
-	
-//	static def createConstants() {
-//		new Constant(names:j(["en":"Constant 1000"]), code:"CONST1", value: "1000", type: JSONUtils.TYPE_NUMBER, descriptions:j(["en":"Description"])).save(failOnError: true)
-//	}
-	
-	static def addCostData() {
-		
-		new CostRampUp(names:j(["en":"Constant"]), code:"CONST", years: [
-			1: new CostRampUpYear(year: 1, value: 0.2),
-			2: new CostRampUpYear(year: 2, value: 0.2),
-			3: new CostRampUpYear(year: 3, value: 0.2),
-			4: new CostRampUpYear(year: 4, value: 0.2),
-			5: new CostRampUpYear(year: 5, value: 0.2)
-		]).save(failOnError: true);
-	
-		def costObjective1 = new CostObjective(names:j(["en":"Human Resources for Health"]), code:"HRH")
-		costObjective1.addTarget new CostTarget(names:j(["en":"Training"]), code:"TRAINING", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "Health Center,District Hospital")
-		costObjective1.addTarget new CostTarget(names:j(["en":"Average"]), code:"AVERAGE", expression: Expression.findByCode("CONST10"), expressionEnd: Expression.findByCode("CONST20"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "Health Center,District Hospital")
-		costObjective1.save(failOnError: true)
-		
-		def costObjective2 = new CostObjective(names:j(["en":"Geographical Access"]), code:"GA")
-		costObjective2.save(failOnError: true)
 	}
 	
 	

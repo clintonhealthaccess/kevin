@@ -31,6 +31,7 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -51,6 +52,7 @@ import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
+import org.chai.kevin.survey.validation.SurveyLog;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
 import org.codehaus.groovy.grails.commons.ApplicationHolder;
@@ -58,6 +60,7 @@ import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
@@ -66,7 +69,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class SurveyPageService {
 	
-	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog(SurveyPageService.class);
 	
 	private SurveyElementService surveyElementService;
@@ -75,6 +77,12 @@ public class SurveyPageService {
 	private ValidationService validationService;
 	private SessionFactory sessionFactory;
 	private GrailsApplication grailsApplication;
+	
+	@Transactional(readOnly = true)
+	public Survey getDefaultSurvey() {
+		return (Survey)sessionFactory.getCurrentSession()
+			.createCriteria(Survey.class).add(Restrictions.eq("active", true)).uniqueResult();
+	}
 	
 	@Transactional(readOnly = true)
 	public SummaryPage getSectionTable(Organisation organisation, SurveyObjective objective) {
@@ -235,7 +243,7 @@ public class SurveyPageService {
 		return new SurveyPage(organisation, survey, currentObjective, null, objectives, sections, questions, elements);
 	}
 	
-	@Transactional(readOnly = true)
+	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPagePrint(Organisation organisation,Survey survey) {
 		organisationService.loadGroup(organisation);
 		OrganisationUnitGroup organisationUnitGroup = organisation.getOrganisationUnitGroup();
@@ -606,10 +614,20 @@ public class SurveyPageService {
 			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
 			enteredObjective.setClosed(true);
 			surveyElementService.save(enteredObjective);
+	
+			// log the event
+			logSurveyEvent(organisation, objective, "submit");
 			
 			return true;
 		}
 		else return false;
+	}
+
+	private void logSurveyEvent(Organisation organisation, SurveyObjective objective, String event) {
+		SurveyLog surveyLog = new SurveyLog(objective.getSurvey(), objective, organisation.getOrganisationUnit());
+		surveyLog.setEvent(event);
+		surveyLog.setTimestamp(new Date());
+		sessionFactory.getCurrentSession().save(surveyLog);
 	}
 	
 	public void reopen(Organisation organisation, SurveyObjective objective) {

@@ -15,10 +15,9 @@ class SecurityFilters {
 
 				// deny access to survey not corresponding to user
 				// leave access to /survey/view open
-				if (controllerName == 'survey') {
-					if (SecurityUtils.subject.isPermitted("survey:"+actionName+":"+params.organisation)) return true;
+				if (controllerName == 'editSurvey') {
+					if (SecurityUtils.subject.isPermitted("editSurvey:"+actionName+":"+params.organisation)) return true;
 				}
-				
 				
 				accessControl()
 			}

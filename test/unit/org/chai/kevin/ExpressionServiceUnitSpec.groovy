@@ -34,13 +34,9 @@ import grails.plugin.spock.UnitSpec;
 
 class ExpressionServiceUnitSpec extends UnitSpec {
 
-	ExpressionService expressionService;
-	
-	def setup() {
-		expressionService = new ExpressionService();
-	}
-	
 	def "test value"() {
+		setup:
+		def expressionService = new ExpressionService();
 		
 		expect:
 		newExpression == expressionService.convertStringExpression(expression, map)
@@ -50,6 +46,5 @@ class ExpressionServiceUnitSpec extends UnitSpec {
 		"1"			| new HashMap()			| "1"
 		"\$1"		| ["\$1": "test"]	| "test"
 	}
-	
 	
 }

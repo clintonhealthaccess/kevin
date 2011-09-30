@@ -1,3 +1,5 @@
+package org.chai.kevin
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -26,11 +28,48 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-jquery {
-	sources = 'jquery'
-    coreSuffix = 'core'
-	cssFolder = 'theme'
-	cssDefault = 'base'
-	minFolder = 'minified'
-	minExtension = 'min'
+import org.chai.kevin.data.DataElement;
+
+import grails.plugin.spock.UnitSpec;
+
+class ConstantControllerSpec extends IntegrationTests {
+
+//	def constantController
+//
+//	def "get constants"() {
+//		
+//		setup:
+//		Initializer.createDummyStructure()
+//		IntegrationTestInitializer.createConstants()
+//		constantController = new constantController()
+//		
+//		when:
+//		constantController.params.constant = 'con'
+//		constantController.params.type = 'constant'
+//		constantController.params.controller = 'expression'
+//		def model = constantController.getData()
+//		
+//		then:
+//		constantController.response.contentAsString.contains("success")
+//		constantController.response.contentAsString.contains("Constant 1000")
+//		
+//	}
+//	
+//	def "get constant description"() {
+//		
+//		setup:
+//		Initializer.createDummyStructure()
+//		IntegrationTestInitializer.createConstants()
+//		constantController = new constantController()
+//		
+//		when:
+//		constantController.params.constant = Constant.findByCode("CONST1").id+''
+//		def model = constantController.getConstantDescription()
+//		
+//		then:
+//		constantController.response.contentAsString.contains("success")
+//		constantController.response.contentAsString.contains("Description")
+//		
+//	}
+
 }

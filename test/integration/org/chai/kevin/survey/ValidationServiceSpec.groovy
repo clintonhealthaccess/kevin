@@ -10,7 +10,7 @@ import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
-class ValidationSpec extends IntegrationTests {
+class ValidationServiceSpec extends IntegrationTests {
 
 	def validationService;
 	
@@ -19,7 +19,7 @@ class ValidationSpec extends IntegrationTests {
 	}
 	
 	def createSurvey() {
-		def dataElement = new DataElement(code:"ELEM1", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		def dataElement = new DataElement(code:"ELEM1", type: Type.TYPE_NUMBER).save(failOnError: true)
 		
 		def survey = new Survey(period: Period.list()[0]).save(failOnError: true);
 		def objective = new SurveyObjective(survey: survey, order: 1, groupUuidString: "Health Center")
@@ -41,7 +41,7 @@ class ValidationSpec extends IntegrationTests {
 		setup:
 		createSurvey();
 		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM3", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		def dataElement1 = new DataElement(code:"ELEM3", type: Type.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		
 		def validationRule = new SurveyValidationRule(expression: "\$"+surveyElement1.id+" > 1")
@@ -50,7 +50,7 @@ class ValidationSpec extends IntegrationTests {
 		
 		when:
 		def organisation = getOrganisation("Kivuye HC")
-		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("1"), organisation: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("1"), organisationUnit: organisation.organisationUnit).save(failOnError: true)
 		Set<String> prefixes = validationService.getInvalidPrefix(validationRule, organisation)
 		
 		then:
@@ -62,8 +62,8 @@ class ValidationSpec extends IntegrationTests {
 		setup:
 		createSurvey();
 		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM4", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		def dataElement2 = new DataElement(code:"ELEM5", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		def dataElement1 = new DataElement(code:"ELEM4", type: Type.TYPE_NUMBER).save(failOnError: true)
+		def dataElement2 = new DataElement(code:"ELEM5", type: Type.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		def surveyElement2 = new SurveyElement(surveyQuestion: question, dataElement: dataElement2).save(failOnError: true)
 		
@@ -73,8 +73,8 @@ class ValidationSpec extends IntegrationTests {
 		
 		when:
 		def organisation = getOrganisation("Kivuye HC")
-		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("1"), organisation: organisation.organisationUnit).save(failOnError: true)
-		new SurveyEnteredValue(surveyElement: surveyElement2, value: v("1"), organisation: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("1"), organisationUnit: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement2, value: v("1"), organisationUnit: organisation.organisationUnit).save(failOnError: true)
 		Set<String> prefixes = validationService.getInvalidPrefix(validationRule, organisation)
 		
 		then:
@@ -82,8 +82,8 @@ class ValidationSpec extends IntegrationTests {
 		
 		when:
 		organisation = getOrganisation("Kivuye HC")
-		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("2"), organisation: organisation.organisationUnit).save(failOnError: true)
-		new SurveyEnteredValue(surveyElement: surveyElement2, value: v("1"), organisation: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("2"), organisationUnit: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement2, value: v("1"), organisationUnit: organisation.organisationUnit).save(failOnError: true)
 		prefixes = validationService.getInvalidPrefix(validationRule, organisation)
 		
 		then:
@@ -96,8 +96,8 @@ class ValidationSpec extends IntegrationTests {
 		setup:
 		createSurvey();
 		def question = SurveySimpleQuestion.list()[0]
-		def dataElement1 = new DataElement(code:"ELEM9", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		def dataElement2 = new DataElement(code:"ELEM10", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		def dataElement1 = new DataElement(code:"ELEM9", type: Type.TYPE_NUMBER).save(failOnError: true)
+		def dataElement2 = new DataElement(code:"ELEM10", type: Type.TYPE_NUMBER).save(failOnError: true)
 		def surveyElement1 = new SurveyElement(surveyQuestion: question, dataElement: dataElement1).save(failOnError: true)
 		def surveyElement2 = new SurveyElement(surveyQuestion: question, dataElement: dataElement2).save(failOnError: true)
 		
@@ -107,8 +107,8 @@ class ValidationSpec extends IntegrationTests {
 		
 		when:
 		def organisation = getOrganisation("Kivuye HC")
-		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("0"), organisation: organisation.organisationUnit).save(failOnError: true)
-		new SurveyEnteredValue(surveyElement: surveyElement2, value: Value.NULL, organisation: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement1, value: v("0"), organisationUnit: organisation.organisationUnit).save(failOnError: true)
+		new SurveyEnteredValue(surveyElement: surveyElement2, value: Value.NULL, organisationUnit: organisation.organisationUnit).save(failOnError: true)
 		def prefixes = validationService.getInvalidPrefix(validationRule, organisation)
 		
 		then:

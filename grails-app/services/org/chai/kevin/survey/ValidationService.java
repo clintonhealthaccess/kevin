@@ -14,7 +14,6 @@ import org.chai.kevin.JaqlService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
-import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,7 +121,7 @@ public class ValidationService {
 		
 		Value value = null;
 		try {
-			value = jaqlService.evaluate(expression, JSONUtils.TYPE_BOOL, valueMap, typeMap);
+			value = jaqlService.evaluate(expression, Type.TYPE_BOOL, valueMap, typeMap);
 		} catch (IllegalArgumentException e) {}
 		
 		Boolean result;

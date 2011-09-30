@@ -68,7 +68,7 @@ class MapsTargetController extends AbstractEntityController {
 	def saveEntity(def entity) {
 		if (entity.calculation != null) {
 			// FIXME change this to infer the correct type
-			entity.calculation.type = JSONUtils.TYPE_NUMBER
+			entity.calculation.type = Type.TYPE_NUMBER
 			if (entity.calculation.id == null) entity.calculation.code = UUID.randomUUID().toString();
 			entity.calculation.save();
 		}

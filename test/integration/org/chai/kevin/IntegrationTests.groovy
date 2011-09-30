@@ -28,40 +28,189 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.util.Date;
+import grails.plugin.spock.IntegrationSpec
 
-import grails.plugin.spock.IntegrationSpec;
-import groovy.sql.Sql;
+import java.util.Date
 
-import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.dashboard.DashboardTarget;
-import org.chai.kevin.dashboard.DashboardObjective;
-import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.value.DataValue;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
-import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
-import org.hisp.dhis.period.MonthlyPeriodType;
-import org.hisp.dhis.period.Period;
-import org.hisp.dhis.period.PeriodType;
-import org.hisp.dhis.user.User;
-import org.hisp.dhis.user.UserAuthorityGroup;
-import org.hisp.dhis.user.UserCredentials;
+import org.chai.kevin.data.Average
+import org.chai.kevin.data.DataElement
+import org.chai.kevin.data.Enum
+import org.chai.kevin.data.EnumOption
+import org.chai.kevin.data.Expression
+import org.chai.kevin.data.Sum
+import org.chai.kevin.value.CalculationValue
+import org.chai.kevin.value.DataValue
+import org.chai.kevin.value.ExpressionValue
+import org.hisp.dhis.organisationunit.OrganisationUnit
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet
+import org.hisp.dhis.organisationunit.OrganisationUnitLevel
+import org.hisp.dhis.period.MonthlyPeriodType
+import org.hisp.dhis.period.Period
 
 abstract class IntegrationTests extends IntegrationSpec {
 	
 	def refreshValueService
 	
+	static final String CODE (def number) { return "CODE"+number }
+	
+	static final String INVALID_TYPE = "invalid_type"
+	
+	static final String HEALTH_CENTER_GROUP = "Health Center"
+	static final String DISTRICT_HOSPITAL_GROUP = "District Hospital"
+	
+	static final String COUNTRY = "Country"
+	static final String DISTRICT = "District"
+	static final String PROVINCE = "Province"
+	static final String FACILITY = "Facility"
+	
+	static final String RWANDA = "Rwanda"
+	static final String NORTH = "North"
+	static final String BURERA = "Burera"
+	static final String BUTARO = "Butaro DH"
+	static final String KIVUYE = "Kivuye HC"
+	
+	static final String GROUP_SET_TYPE = "Type"
+	
+	static Date mar01 = Initializer.getDate( 2005, 3, 1 );
+	static Date mar31 = Initializer.getDate( 2005, 3, 31 );
+	
+	
+	def setupOrganisationUnitTree() {
+		// for the test environment, the facility level is set to 4
+		// so we create a tree accordingly
+		def set = newOrganisationUnitGroupSet(GROUP_SET_TYPE);
+		def hc = newOrganisationUnitGroup(HEALTH_CENTER_GROUP, set);
+		def dh = newOrganisationUnitGroup(DISTRICT_HOSPITAL_GROUP, set);
+		
+		newOrganisationUnitLevel(COUNTRY, 1)
+		newOrganisationUnitLevel(PROVINCE, 2)
+		newOrganisationUnitLevel(DISTRICT, 3)
+		newOrganisationUnitLevel(FACILITY, 4)
+		
+		def rwanda = newOrganisationUnit(RWANDA)
+		def north = newOrganisationUnit(NORTH, rwanda)
+		def burera = newOrganisationUnit(BURERA, north)
+		newOrganisationUnit(BUTARO, burera, dh)
+		newOrganisationUnit(KIVUYE, burera, hc)
+	}
+	
+	Period newPeriod() {
+		def monthly = new MonthlyPeriodType();
+		monthly.save(failOnError: true)
+		def period = new Period(periodType: monthly, startDate: mar01, endDate: mar31)
+		return period.save(failOnError: true)
+	} 
+	
+	private OrganisationUnitLevel newOrganisationUnitLevel(def name, def level) {
+		return new OrganisationUnitLevel(level: level, name: name).save(failOnError: true)
+	}
+	
+	private OrganisationUnit newOrganisationUnit(def name) {
+		return newOrganisationUnit(name, null, null)
+	}
+	
+	private OrganisationUnit newOrganisationUnit(def name, def parent) {
+		return newOrganisationUnit(name, parent, null)
+	}
+	
+	private OrganisationUnit newOrganisationUnit(def name, def parent, def group) {
+		def organisation = new OrganisationUnit(name: name, shortName: name).save(failOnError: true)
+		if (group != null) {
+			organisation.groups << group
+			group.members << organisation
+			group.save(failOnError: true)
+		}
+		if (parent != null) {
+			organisation.parent = parent
+			parent.children << organisation
+			parent.save(failOnError: true)
+		}
+		organisation.save(failOnError: true)
+		return organisation
+	}
+	
+	private OrganisationUnitGroupSet newOrganisationUnitGroupSet(def name) {
+		return new OrganisationUnitGroupSet(name: name).save(failOnError: true)
+	} 
+	
+	private OrganisationUnitGroup newOrganisationUnitGroup(def name, def set) {
+		def group = new OrganisationUnitGroup(name: name, uuid: name, groupSet: set).save(failOnError: true)
+		set.organisationUnitGroups << group
+		set.save(failOnError: true)
+		return group
+	}
+	
+	DataValue newDataValue(def dataElement, def period, def organisationUnit, def value) {
+		return new DataValue(dataElement: dataElement, period: period, organisationUnit: organisationUnit, value: value).save(failOnError: true)
+	}
+	
+	ExpressionValue newExpressionValue(def expression, def period, def organisationUnit, def status, def value) {
+		return new ExpressionValue(expression: expression, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
+	}
+	
+	ExpressionValue newExpressionValue(def expression, def period, def organisationUnit) {
+		return newExpressionValue(expression, period, organisationUnit, null, null)
+	}
+
+	CalculationValue newCalculationValue(def calculation, def period, def organisationUnit, def hasMissingValues, def hasMissingExpression, def value) {
+		return new CalculationValue(calculation: calculation, period: period, organisationUnit: organisationUnit, hasMissingValues: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
+	}
+	
+	DataElement newDataElement(def code, def type) {
+		return newDataElement(j([:]), code, type)
+	}
+	
+	DataElement newDataElement(def names, def code, def type) {
+		return new DataElement(names: names, code: code, type: type).save(failOnError: true)
+	}
+
+	Expression newExpression(def code, def type, String formula, def arguments = [:]) {
+		return newExpression([:], code, type, formula, arguments)
+	}
+		
+	Expression newExpression(def names, def code, def type, String formula, def arguments = [:]) {
+		arguments.failOnError = true
+		return new Expression(names: names, code: code, type: type, expression: formula).save(arguments)
+	}
+	
+	Average newAverage(def expressions, def code, def type) {
+		return new Average(expressions: expressions, code: code, type: type).save(failOnError: true)
+	}
+	
+	Sum newSum(def expressions, def code, def type) {
+		return new Sum(expressions: expressions, code: code, type: type).save(failOnError: true)
+	}
+	
+	Enum newEnume(def code) {
+		return new Enum(code: code).save(failOnError: true)
+	}
+	
+	EnumOption newEnumOption(def enume, def code, def value) {
+		def enumOption = new EnumOption(enume: enume, code: code, value: value).save(failOnError: true)
+		enume.enumOptions << enumOption
+		enume.save(failOnError: true)
+		return enumOption
+	}
+	
 	def refresh() {
+		refreshExpression()
+		refreshCalculation()
+	}
+	
+	def refreshExpression() {
 		Expression.list().each {
 			refreshValueService.refreshOutdatedExpressions(it)
 			refreshValueService.refreshNonCalculatedExpressions(it)
 		}
-		Calculation.list().each {
+	}
+	
+	def refreshCalculation() {
+		Sum.list().each {
+			refreshValueService.refreshOutdatedCalculations(it)
+			refreshValueService.refreshNonCalculatedCalculations(it)
+		}
+		Average.list().each {
 			refreshValueService.refreshOutdatedCalculations(it)
 			refreshValueService.refreshNonCalculatedCalculations(it)
 		}

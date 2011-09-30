@@ -36,21 +36,26 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import grails.test.GrailsUnitTestCase;
 import groovy.util.GroovyTestCase;
 
-class DomainIntegrationTests extends GroovyTestCase {
+class DomainSpec extends GroovyTestCase {
 	
-    protected void setUp() {
-        super.setUp()
-		
-		Initializer.createDummyStructure();
-    }
 
-    protected void tearDown() {
-        super.tearDown()
-    }
-
-  	public void testOrganisations() {
-		assertEquals 1, OrganisationUnit.findByName("Butaro DH").getGroups().size()
-		assertEquals 1, OrganisationUnitGroup.findByName("District Hospital").getMembers().size()
+  	def "test organisation"() {
+		expect:
+		1 == OrganisationUnit.findByName("Butaro DH").getGroups().size()
+		1 == OrganisationUnitGroup.findByName("District Hospital").getMembers().size()
 	}
+
 	  
+	def "organisation unit hashcode and equals"() {
+	  when:
+	  def org1 = new OrganisationUnit(name: "Test")
+	  def org2 = new OrganisationUnit(name: "Test")
+  
+		  then:
+		  org1.hashCode() == org2.hashCode()
+		  org1.equals(org2)
+		  org2.equals(org1)
+  
+	  }
+	  	  
 }

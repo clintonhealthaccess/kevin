@@ -35,108 +35,90 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Sum;
+import org.chai.kevin.data.Type;
 
 import grails.plugin.spock.UnitSpec;
 
-class DomainSpec extends IntegrationTests {
+class DomainSpec extends DashboardIntegrationTests {
 
 	private static final Log log = LogFactory.getLog(DomainSpec.class)
 
-	def setup() {
-		Initializer.createDummyStructure();
-		IntegrationTestInitializer.createExpressions()
-		IntegrationTestInitializer.createDashboard()
-	}
-	
-	def "test calculations"() {
-		expect:
-		Sum.count() == 2
-		def nurse = DashboardTarget.findByCode("A1");
-		nurse.save();
-		Sum.count() == 2
+	def "save target does not resave calculation"() {
+		when:
+		def calculation = newCalculation([:], CODE(3), Type.TYPE_NUMBER)
+		def objective = newDashboardObjective(CODE(2))
+		def target = newDashboardTarget(CODE(1), calculation, objective, 1)
+		
+		then:
+		Average.count() == 1
+		
+		when:
+		target.save(failOnError: true)
+		
+		then:
+		Average.count() == 1
 	}
 	
 	def "call twice in a row"() {
+		when:
+		def calculation = newCalculation([:], CODE(3), Type.TYPE_NUMBER)
+		def objective = newDashboardObjective(OBJECTIVE)
+		def target1 = newDashboardTarget(TARGET1, calculation, objective, 1)
+		def target2 = newDashboardTarget(TARGET2, calculation, objective, 2 )
 		
-		expect:
+		then:
 		DashboardObjective.findByCode(objectiveCode).objectiveEntries.size() == expectedSize
 		
 		where:
 		objectiveCode	| expectedSize
-		"STAFFING"		| 2
-		"STAFFING"		| 2
-		"HRH"			| 1
-		
+		OBJECTIVE		| 2
+		OBJECTIVE		| 2
 	}
 	
-	def "objective order can be null"() {
+	def "objective entry order can be null"() {
 		when:
-		def objective = DashboardObjective.findByCode("HRH");
-		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:j(["en":"Test"]), code:"TEST"), weight: 1);
-		objective.save(flush: true)
+		def objective = new DashboardObjective(root: true, names:[:], code: CODE(1)).save(failOnError: true)
+		def entry = new DashboardObjectiveEntry(entry: objective, weight: 1).save(failOnError: true)
 		
 		then:
-		def newObjective = DashboardObjective.findByCode("HRH");
-		newObjective.objectiveEntries.size() == 2
+		DashboardObjective.count() == 1
+		DashboardObjectiveEntry.count() == 1
 	}
 	
 	def "objective save preserves order"() {
 		when:
-		def objective = DashboardObjective.findByCode("HRH");
-		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:j(["en":"Test 4"]), code:"TEST4"), weight: 1, order: 5);
-		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:j(["en":"Test 5"]), code:"TEST5"), weight: 1, order: 4);
+		def objective = new DashboardObjective(root: true, names:[:], code: OBJECTIVE).save(failOnError: true)
+		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:[:], code: CODE(2)), weight: 1, order: 5);
+		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:[:], code: CODE(3)), weight: 1, order: 4);
 		objective.save(flush: true)
 		
 		then:
-		def newObjective = DashboardObjective.findByCode("HRH");
-		newObjective.objectiveEntries.size() == 3
+		def newObjective = DashboardObjective.findByCode(OBJECTIVE);
+		newObjective.objectiveEntries.size() == 2
 		newObjective.objectiveEntries[2].order == 5
 		newObjective.objectiveEntries[1].order == 4
 	}
 	
-	// integration test
-	def "weighted objective cascade"() {
-		
-		when:
-		def objective = DashboardObjective.findByCode("STAFFING");
-		
-		then:
-		objective.objectiveEntries.size() == 2
-	}
-	
-	// integration test
 	def "objective delete cascade deletes objective entry"() {
 		when:
-		def dashboardTargetCount = DashboardTarget.count()
-		def objective = DashboardObjective.findByCode("STAFFING");
-		objective.parent.parent.objectiveEntries.remove(objective.parent)
-		new ArrayList(objective.objectiveEntries).each { 
+		def root = new DashboardObjective(root: true, names:[:], code: ROOT).save(failOnError: true)
+		def objective = new DashboardObjective(names:[:], code: OBJECTIVE).save(failOnError: true)
+		root.addObjectiveEntry new DashboardObjectiveEntry(entry:objective, weight: 1, order: 5);
+
+		root.objectiveEntries.remove(objective)
+		new ArrayList(root.objectiveEntries).each { 
 			it.parent = null
 		}
 		objective.delete(flush: true)
 		
 		then:
-		DashboardObjectiveEntry.count() == 3
-		DashboardTarget.count() == dashboardTargetCount;
+		DashboardObjectiveEntry.count() == 0
+		DashboardObjective.count() == 1
 	}
 
-	def "delete objective entry cascade deletes targets"() {
-		when:
-		def dashboardObjectiveEntryCount = DashboardObjectiveEntry.count()
-		def dashboardTargetCount = DashboardTarget.count()
-		def objective = DashboardObjective.findByCode("STAFFING");
-		new ArrayList(objective.objectiveEntries).each { 
-			objective.objectiveEntries.remove(it);
-			it.delete(flush: true); 
-		}
-		
-		then:
-		DashboardObjectiveEntry.count() == dashboardObjectiveEntryCount - 2
-		DashboardTarget.count() == dashboardTargetCount - 2;
-	}
-	
 	def "objective save does not cascade objective entries"() {
 		when:
 		def dashboardObjectiveEntryCount = DashboardObjectiveEntry.count()
@@ -165,7 +147,6 @@ class DomainSpec extends IntegrationTests {
 	
 	// integration test
 	def "objective entries has parents"() {
-		
 		expect:
 		DashboardObjectiveEntry.count() == 4
 	}
@@ -182,4 +163,44 @@ class DomainSpec extends IntegrationTests {
 		
 	}
 	
+	
+	
+	def "get parent"() {
+		
+		when:
+		def child = DashboardTarget.findByCode(childCode)
+		def parent = child.parent.parent
+		
+		then:
+		parent != null
+		parent.code == parentCode
+		
+		where:
+		childCode	| parentCode
+		"TARGET"	| "OBJ"
+//		"objective"	| "root"
+	}
+	
+	def "get parent of root"() {
+		
+		when:
+		def child = DashboardObjective.findByCode("ROOT")
+		def parent = child.parent
+		
+		then:
+		parent == null
+	}
+	
+	def "exception when multiple parents"() {
+		when:
+		def root = new DashboardObjective(names:j(["en":"root2"]), code:"ROOT2", objectiveEntries: [])
+		root.save()
+		def entry = new DashboardObjectiveEntry(entry: DashboardObjective.findByCode("OBJ"), weight: 1, order: 10)
+		root.addObjectiveEntry entry
+		entry.save()
+		root.save()
+			
+		then:
+		thrown(DataIntegrityViolationException)
+	}
 }

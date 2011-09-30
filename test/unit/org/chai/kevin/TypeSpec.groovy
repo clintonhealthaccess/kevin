@@ -45,14 +45,14 @@ public class TypeSpec extends UnitSpec {
 		
 		then:
 		type.getType() == ValueType.LIST
-		type.getListType().equals(JSONUtils.TYPE_NUMBER)
+		type.getListType().equals(Type.TYPE_NUMBER)
 		
 		when:
 		type = new Type("{\"type\":\"map\", \"elements\":[{\"name\":\"key1\",\"element_type\":{\"type\":\"number\"}}]}");
 		
 		then:
 		type.getType() == ValueType.MAP
-		type.getElementMap().equals(["key1":JSONUtils.TYPE_NUMBER])
+		type.getElementMap().equals(["key1":Type.TYPE_NUMBER])
 	}
 	
 	def "test value"() {
@@ -157,14 +157,14 @@ public class TypeSpec extends UnitSpec {
 		
 		when:
 		value = Value.NULL
-		type = JSONUtils.TYPE_NUMBER
+		type = Type.TYPE_NUMBER
 		
 		then:
 		type.getJaqlValue(value) == "null";
 		
 		when:
 		value = new Value("{\"value\": \"10-02-2009\"}")
-		type = JSONUtils.TYPE_DATE
+		type = Type.TYPE_DATE
 		
 		then:
 		type.getJaqlValue(value) == "\"10-02-2009\""
@@ -219,14 +219,14 @@ public class TypeSpec extends UnitSpec {
 		value.getBooleanValue() == true
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = type.getValueFromMap(['value[0]':'10', 'value[_]':'2', 'value':['[0]', '[_]']], 'value', new HashSet([]))
 		
 		then:
 		value.equals(new Value("{\"value\":[{\"value\":10}]}"))
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = type.getValueFromMap([:], 'value', new HashSet([]))
 		
 		then:
@@ -253,7 +253,7 @@ public class TypeSpec extends UnitSpec {
 		type.getValueFromJaql(type.getJaqlValue(value)).isNull()
 		
 		where:
-		typeObject << [JSONUtils.TYPE_DATE, JSONUtils.TYPE_BOOL, JSONUtils.TYPE_NUMBER, JSONUtils.TYPE_STRING, JSONUtils.TYPE_ENUM("test"), JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER), JSONUtils.TYPE_MAP(["key1":JSONUtils.TYPE_NUMBER])]
+		typeObject << [Type.TYPE_DATE, Type.TYPE_BOOL, Type.TYPE_NUMBER, Type.TYPE_STRING, Type.TYPE_ENUM("test"), Type.TYPE_LIST(Type.TYPE_NUMBER), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER])]
 	}
 	
 	def "test from jaql"() {
@@ -262,21 +262,21 @@ public class TypeSpec extends UnitSpec {
 		def type = null
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		jaql = "[10, 11]"
 		
 		then:
 		type.getValueFromJaql(jaql).equals(new Value("{\"value\": [{\"value\":10}, {\"value\":11}]}"))
 		
 		when:
-		type = JSONUtils.TYPE_DATE
+		type = Type.TYPE_DATE
 		jaql = "\"10-02-2009\""
 		
 		then:
 		type.getValueFromJaql(jaql).equals(new Value("{\"value\": \"10-02-2009\"}"))
 		
 		when:
-		type = JSONUtils.TYPE_STRING
+		type = Type.TYPE_STRING
 		jaql = "\"a\""
 		
 		then:
@@ -310,7 +310,7 @@ public class TypeSpec extends UnitSpec {
 		def list = null
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = new Value("{\"value\": [{\"value\":10}, {\"value\":11}]}")
 		strings = ["values[_]"]
 		list = new HashSet();
@@ -320,7 +320,7 @@ public class TypeSpec extends UnitSpec {
 		list.containsAll([["values[0]"],["values[1]"]])
 		
 		when:
-		type = JSONUtils.TYPE_NUMBER
+		type = Type.TYPE_NUMBER
 		value = new Value("{\"value\":10}");
 		strings = [""]
 		list = new HashSet();
@@ -344,7 +344,7 @@ public class TypeSpec extends UnitSpec {
 		def prefixPredicate = new NullPrefixPredicate();
 		
 		when:
-		type = JSONUtils.TYPE_NUMBER
+		type = Type.TYPE_NUMBER
 		value = Value.NULL
 		list = new HashMap();
 		type.getPrefixes(value, "", list, prefixPredicate)
@@ -353,7 +353,7 @@ public class TypeSpec extends UnitSpec {
 		list.equals(["": Value.NULL])
 		
 		when:
-		type = JSONUtils.TYPE_NUMBER
+		type = Type.TYPE_NUMBER
 		value = new Value("{\"value\":10}");
 		list = new HashMap();
 		type.getPrefixes(value, "", list, prefixPredicate)
@@ -362,7 +362,7 @@ public class TypeSpec extends UnitSpec {
 		list.size() == 0
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}")
 		list = new HashMap();
 		type.getPrefixes(value, "", list, prefixPredicate)
@@ -398,7 +398,7 @@ public class TypeSpec extends UnitSpec {
 		def value = null
 
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = Value.NULL
 		type.getAttribute(value, "[0]", "attribute")
 		
@@ -413,7 +413,7 @@ public class TypeSpec extends UnitSpec {
 		def value = null
 		
 		when:
-		type = JSONUtils.TYPE_NUMBER
+		type = Type.TYPE_NUMBER
 		value = new Value("{\"value\":10}")
 		type.setAttribute(value, "", "attribute", "test")
 	
@@ -422,7 +422,7 @@ public class TypeSpec extends UnitSpec {
 		type.getAttribute(value, "", "attribute") == "test"
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}")
 		type.setAttribute(value, "[0]", "attribute", "test")
 	
@@ -431,7 +431,7 @@ public class TypeSpec extends UnitSpec {
 		type.getAttribute(value, "[0]", "attribute") == "test"
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = Value.NULL
 		type.setAttribute(value, "[0]", "attribute", "text")
 		
@@ -445,7 +445,7 @@ public class TypeSpec extends UnitSpec {
 		def value = null
 		
 		when:
-		type = JSONUtils.TYPE_NUMBER
+		type = Type.TYPE_NUMBER
 		value = new Value("{\"value\":10}")
 		type.setValue(value, "", new Value("{\"value\":11}"))
 		
@@ -453,7 +453,7 @@ public class TypeSpec extends UnitSpec {
 		value.equals(new Value("{\"value\":11}"))
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}")
 		type.setValue(value, "[0]", new Value("{\"value\":10}"))
 		
@@ -461,7 +461,7 @@ public class TypeSpec extends UnitSpec {
 		value.equals(new Value("{\"value\": [{\"value\":10},{\"value\":11}]}"))
 		
 		when:
-		type = JSONUtils.TYPE_MAP(["key1": (JSONUtils.TYPE_NUMBER), "key2": (JSONUtils.TYPE_NUMBER)])
+		type = Type.TYPE_MAP(["key1": (Type.TYPE_NUMBER), "key2": (Type.TYPE_NUMBER)])
 		value = new Value("{\"value\":[{\"key\":\"key1\", \"value\":{\"value\":10}}, {\"key\":\"key2\", \"value\":{\"value\": null}}]}")
 		type.setValue(value, ".key1", new Value("{\"value\":11}"))
 		
@@ -475,7 +475,7 @@ public class TypeSpec extends UnitSpec {
 		def value = null
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}], \"attribute\":\"test\"}")
 		type.setValue(value, "[0]", new Value("{\"value\":10}"))
 		
@@ -489,14 +489,14 @@ public class TypeSpec extends UnitSpec {
 		def value = null
 		
 		when:
-		type = JSONUtils.TYPE_NUMBER
+		type = Type.TYPE_NUMBER
 		value = new Value("{\"value\":10}")
 
 		then:
 		type.getValue(value, "").equals(value)
 				
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = new Value("{\"value\": [{\"value\":10}, {\"value\":11}]}")
 	
 		then:
@@ -504,14 +504,14 @@ public class TypeSpec extends UnitSpec {
 		type.getValue(value, "").equals(value)
 	
 		when:
-		type = JSONUtils.TYPE_MAP(["key1": JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)])
+		type = Type.TYPE_MAP(["key1": Type.TYPE_LIST(Type.TYPE_NUMBER)])
 		value = new Value("{\"value\":[{\"key\":\"key1\", \"value\":{\"value\": [{\"value\":10}, {\"value\":11}]}}]}")	
 		
 		then:
 		type.getValue(value, ".key1[0]").equals(new Value("{\"value\":10}"))
 		
 		when:
-		type = JSONUtils.TYPE_LIST(JSONUtils.TYPE_NUMBER)
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER)
 		value = Value.NULL
 		type.getValue(value, "[0]") == null
 		
@@ -519,7 +519,7 @@ public class TypeSpec extends UnitSpec {
 		thrown IndexOutOfBoundsException
 		
 		when:
-		type = JSONUtils.TYPE_MAP(["key":JSONUtils.TYPE_NUMBER])
+		type = Type.TYPE_MAP(["key":Type.TYPE_NUMBER])
 		value = Value.NULL
 		type.getValue(value, ".key").equals(Value.NULL)
 		
@@ -532,7 +532,7 @@ public class TypeSpec extends UnitSpec {
 		def type = null
 		
 		when:
-		type = JSONUtils.TYPE_MAP (["key1": JSONUtils.TYPE_NUMBER]);
+		type = Type.TYPE_MAP (["key1": Type.TYPE_NUMBER]);
 		
 		then:
 		type.getDisplayedValue(2) == "map\n  key1 : number"

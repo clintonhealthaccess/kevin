@@ -1,10 +1,8 @@
 package org.chai.kevin.value;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +129,8 @@ public class Value {
 		try {
 			return Utils.parseDate(getJsonObject().getString("value"));
 		} catch (JSONException e) {
+			return null;
+		} catch (ParseException e) {
 			return null;
 		}
 	}

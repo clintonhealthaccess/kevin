@@ -9,7 +9,7 @@ class ClonerSpec extends IntegrationTests {
 
 	def setup() {
 		IntegrationTestInitializer.createDummyStructure()
-		if (DataElement.count() == 0) new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: JSONUtils.TYPE_NUMBER).save(failOnError: true, flush: true)
+		if (DataElement.count() == 0) new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: Type.TYPE_NUMBER).save(failOnError: true, flush: true)
 	}
 	
 	def "test clone double number of elements"() {

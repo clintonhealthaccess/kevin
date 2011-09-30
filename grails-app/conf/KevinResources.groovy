@@ -3,7 +3,7 @@ modules = {
 	// special module for print, let's see if we move 
 	// that somewhere else later
 	print2 {
-		resource url: '/css/print.css'
+		resource url: '/css/print.css', attrs:[media:'screen, print']
 	}
 	
 	// overrides, let's put jquery in the core bundle

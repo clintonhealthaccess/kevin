@@ -22,8 +22,3 @@
 	<div class="clear"></div>
 </div>
 <div class="hidden flow-container"></div>
-<script type="text/javascript">
-	$(document).ready(function() {
-		getRichTextContent();
-	});
-</script> 

@@ -42,7 +42,7 @@
 						<g:if test="${surveyElement != null}">
 						<g:set var="dataElement" value="${surveyElement?.dataElement}"/>
 							<td class="element-${surveyElement?.id} element" data-element="${surveyElement?.id}">
-								<g:render template="/survey/element/${dataElement.type.type}" model="[
+								<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
 									value: null,
 									lastValue: null,
 									type: dataElement.type, 

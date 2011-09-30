@@ -30,6 +30,6 @@ package org.chai.kevin.data
 
 constraints = {
 	type(nullable: false, validator: {val, obj -> 
-		return val.isValid();	
+		return val.getType() != null && val.getType().name().toLowerCase().equals("number");
 	})
 }

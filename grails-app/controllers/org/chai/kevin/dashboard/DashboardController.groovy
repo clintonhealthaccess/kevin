@@ -102,9 +102,12 @@ class DashboardController extends AbstractReportController {
 		Set<String> defaultChecked = ConfigurationHolder.config.dashboard.facility.checked;
 		
 		if (log.isDebugEnabled()) log.debug("checked by default: "+defaultChecked)
-		[ dashboard: dashboard, periods: Period.list(), checkedFacilities: defaultChecked ]
+		[ 
+			dashboard: dashboard, 
+			periods: Period.list(), 
+			checkedFacilities: defaultChecked 
+		]
 	}
-	
 	
 	def getDescription = {
 		def objective = null;

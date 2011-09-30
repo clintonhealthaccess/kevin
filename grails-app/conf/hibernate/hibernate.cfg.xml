@@ -53,6 +53,7 @@
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredQuestion" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredSection" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredObjective" />
+		<mapping class="org.chai.kevin.survey.validation.SurveyLog" />
 		
 		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnit.hbm.xml" />
 		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitGroup.hbm.xml" />

@@ -31,34 +31,34 @@ package org.chai.kevin.cost
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
+import org.chai.kevin.cost.CostTarget.CostType;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 import grails.plugin.spock.IntegrationSpec;
 import grails.plugin.spock.UnitSpec;
 
-class CostControllerSpec extends IntegrationTests {
+class CostControllerSpec extends CostIntegrationTests {
 
 	def costController
-	
-	def setup() {
-		Initializer.createDummyStructure();
-		IntegrationTestInitializer.createExpressions();
-		IntegrationTestInitializer.addCostData();
-	}
 	
 	def "controller returns objective list"() {
 		setup:
 		costController = new CostController()
 		
 		when:
-		costController.params.period = Period.list()[0].id+''
-		costController.params.objective = CostObjective.list()[0].id+''
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def costObjective = newCostObjective(CODE(2))
+		def costTarget = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		
+		costController.params.period = period.id+''
+		costController.params.objective = costObjective.id+''
 		def model = costController.view()
 		
 		then:
 		def objectives = model.objectives;
-		objectives.size() == 2
+		objectives.size() == 1
 	}
 	
 }

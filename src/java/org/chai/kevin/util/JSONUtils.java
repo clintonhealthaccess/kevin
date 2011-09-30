@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.chai.kevin.data.Type;
 import org.codehaus.groovy.grails.web.json.JSONException;
 import org.codehaus.groovy.grails.web.json.JSONObject;
 
@@ -71,26 +70,6 @@ public class JSONUtils {
 			}
 		}
 		return descriptions;
-	}
-	
-	
-	public static Type TYPE_BOOL = new Type("{\"type\":\"bool\"}");
-	public static Type TYPE_NUMBER = new Type("{\"type\":\"number\"}");
-	public static Type TYPE_STRING = new Type("{\"type\":\"string\"}");
-	public static Type TYPE_DATE = new Type("{\"type\":\"date\"}");
-	public static Type TYPE_ENUM (String enumCode) {
-		return new Type("{\"type\":\"enum\", \"enum_code\":"+enumCode+"}");
-	}
-	public static Type TYPE_LIST (Type listType) {
-		return new Type("{\"type\":\"list\", \"list_type\":"+listType.toString()+"}");
-	}
-	public static Type TYPE_MAP (Map<String, Type> map) {
-		StringBuilder builder = new StringBuilder();
-		for (Entry<String, Type> entry : map.entrySet()) {
-			builder.append("{\"name\":\""+entry.getKey()+"\", \"element_type\":"+entry.getValue().toString()+"}");
-			builder.append(',');
-		}
-		return new Type("{\"type\":\"map\", \"elements\":["+builder.toString()+"]}");
 	}
 	
 }

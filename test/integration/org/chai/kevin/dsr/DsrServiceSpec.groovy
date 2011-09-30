@@ -16,7 +16,7 @@ class DsrServiceSpec extends IntegrationTests {
 	
 	def "test dsr formatting"() {
 		setup:
-		def expression = new Expression(code:"EXPR1", type: JSONUtils.TYPE_NUMBER, expression: "10").save(failOnError: true)
+		def expression = new Expression(code:"EXPR1", type: Type.TYPE_NUMBER, expression: "10").save(failOnError: true)
 		def objective = new DsrObjective(code: "OBJ1")
 		def target = new DsrTarget(expression: expression)
 		objective.addTarget(target)

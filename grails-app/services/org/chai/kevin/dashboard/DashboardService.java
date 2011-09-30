@@ -56,7 +56,7 @@ public class DashboardService {
 	
 	private Set<Integer> skipLevels;
 	
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = true)
 	public Dashboard getDashboard(Organisation organisation, DashboardObjective objective, Period period) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		for (Organisation child : organisation.getChildren()) {
@@ -84,7 +84,7 @@ public class DashboardService {
 				getValues(organisations, weightedObjectives, period));
 	}
 
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = true)
 	public DashboardExplanation getExplanation(Organisation organisation, DashboardEntry entry, Period period) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		organisationService.loadParent(organisation, getSkipLevelArray());

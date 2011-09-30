@@ -17,11 +17,12 @@ public class JaqlService {
 
 	private static final Log log = LogFactory.getLog(JaqlService.class);
 	
-	private final JaqlQuery query = new JaqlQuery();
+//	private final JaqlQuery query = new JaqlQuery();
 	
 	public synchronized JsonValue getJsonValue(String expression, Map<String, String> variables) {
 		JsonValue value = null;
 		
+		JaqlQuery query = new JaqlQuery();
 		Map<String, JsonValue> valueMap = new HashMap<String, JsonValue>();
 		for (Entry<String, String> variable : variables.entrySet()) {
 			JsonValue variableValue = null;
@@ -37,7 +38,7 @@ public class JaqlService {
 			
 			valueMap.put(variable.getKey(), variableValue);
 		}
-		
+
 		query.setQueryString(expression);
 		for (Entry<String, JsonValue> entry : valueMap.entrySet()) {
 			query.setVar(entry.getKey(), entry.getValue());
@@ -54,7 +55,7 @@ public class JaqlService {
 	}
 	
 	/**
-	 * return null if the expression is not correctly typed or returns null
+	 * Return null if the expression is not correctly typed or returns null
 	 * 
 	 * @throws {@link IllegalArgumentException} if one of the arguments is null
 	 */
@@ -65,7 +66,8 @@ public class JaqlService {
 		
 		Map<String, String> jaqlVariables = new HashMap<String, String>();
 		for (Entry<String, Value> variable : variables.entrySet()) {
-			if (!variable.getValue().isNull()) {
+			// value can be null
+			if (variable.getValue() != null && !variable.getValue().isNull()) {
 				jaqlVariables.put("$"+variable.getKey(), types.get(variable.getKey()).getJaqlValue(variable.getValue()));
 			}
 		}

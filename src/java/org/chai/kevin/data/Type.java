@@ -1,5 +1,6 @@
 package org.chai.kevin.data;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,8 +18,10 @@ import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.json.JSONArray;
@@ -49,6 +52,10 @@ public class Type {
 	}
 	
 	private JSONObject type = null;
+	public static Type TYPE_DATE = new Type("{\"type\":\"date\"}");
+	public static Type TYPE_STRING = new Type("{\"type\":\"string\"}");
+	public static Type TYPE_NUMBER = new Type("{\"type\":\"number\"}");
+	public static Type TYPE_BOOL = new Type("{\"type\":\"bool\"}");
 	
 	@Transient
 	public JSONObject getJsonObject() {
@@ -285,16 +292,25 @@ public class Type {
 			JSONObject object = new JSONObject();
 			switch (getType()) {
 				case NUMBER:
+					if (!NumberUtils.isNumber(jaqlString))
+						throw new IllegalArgumentException("jaql string is not a number: "+jaqlString);
 					object.put("value", Double.parseDouble(jaqlString));
 					break;
 				case BOOL:
+					if (!jaqlString.equals("true") && !jaqlString.equals("false")) 
+						throw new IllegalArgumentException("jaql string is not a boolean: "+jaqlString);
 					object.put("value", Boolean.parseBoolean(jaqlString));
 					break;
 				case STRING:
 					object.put("value", StringUtils.strip(jaqlString, "\""));
 					break;
 				case DATE:
-					object.put("value", StringUtils.strip(jaqlString, "\""));
+					try {
+						Date date = Utils.parseDate(StringUtils.strip(jaqlString, "\""));
+						object.put("value", Utils.formatDate(date));
+					} catch (ParseException e) {
+						throw new IllegalArgumentException("jaql string is not a date: "+jaqlString, e);
+					}
 					break;
 				case ENUM:
 					object.put("value", StringUtils.strip(jaqlString, "\""));
@@ -703,6 +719,23 @@ public class Type {
 		} else if (!getJsonObject().toString().equals(other.getJsonObject().toString()))
 			return false;
 		return true;
+	}
+
+	public static Type TYPE_MAP (Map<String, Type> map) {
+		StringBuilder builder = new StringBuilder();
+		for (Entry<String, Type> entry : map.entrySet()) {
+			builder.append("{\"name\":\""+entry.getKey()+"\", \"element_type\":"+entry.getValue().toString()+"}");
+			builder.append(',');
+		}
+		return new Type("{\"type\":\"map\", \"elements\":["+builder.toString()+"]}");
+	}
+
+	public static Type TYPE_LIST (Type listType) {
+		return new Type("{\"type\":\"list\", \"list_type\":"+listType.toString()+"}");
+	}
+
+	public static Type TYPE_ENUM (String enumCode) {
+		return new Type("{\"type\":\"enum\", \"enum_code\":"+enumCode+"}");
 	}
 
 }

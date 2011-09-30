@@ -41,8 +41,6 @@ class CostRampUpControllerSpec extends IntegrationTests {
 
 	def costRampUpController
 	
-	def setup() {
-	}
 	
 	def "create return years"() {
 		setup:

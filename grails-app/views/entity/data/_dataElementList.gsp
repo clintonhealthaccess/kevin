@@ -19,7 +19,7 @@
 				</td>
 				<td><g:toHtml value="${dataElement.type.getDisplayedValue(2)}"/></td>
 				<td>${dataElement.code}</td>
-				<td class="hidden">
+				<td>
 					<div class="dropdown white-dropdown"> 
 						<a class="selected" href="#" data-type="section">Manage</a>
 						<div class="hidden dropdown-list">
@@ -29,7 +29,7 @@
 										<g:message code="general.text.edit" default="Edit" />
 									</g:link>
 								</li>
-								<li>
+								<li class="hidden">
 									<g:link controller="dataElement" action="delete" id="${dataElement.id}" class="flow-delete">
 										<g:message code="general.text.delete" default="Delete" />
 									</g:link>

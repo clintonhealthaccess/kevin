@@ -3,7 +3,7 @@
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 
 	<textarea name="surveyElements[${surveyElement.id}].value${suffix}" cols="${print? 130:100}" rows="${print? 12:8}" class="idle-field" ${readonly?'disabled="disabled"':''}>${value?.stringValue}</textarea>
-	<g:if test="${lastValue!=null}"><span class="survey-old-value">(${lastValue})</span></g:if>
+	<g:if test="${lastValue!=null}"><span class="survey-old-value">(${lastValue.stringValue})</span></g:if>
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
 	</div>

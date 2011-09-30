@@ -167,9 +167,6 @@ public class ExpressionService {
 	private CalculationValue calculateAverageValue(Average average, Period period, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+average+",period="+period+",organisation="+organisation+")");
 		
-//		if (calculation.getType() != ValueType.NUMBER) log.error("averaging value of non NUMBER type calculation: "+calculation);
-		// we do it anyway in case it's a user error
-		
 		Map<Organisation, ExpressionValue> result = calculateExpressionValues(average.getExpressions(), period, organisation);
 
 		CalculationValue calculationValue = new CalculationValue(average, organisation.getOrganisationUnit(), period, 
@@ -385,6 +382,7 @@ public class ExpressionService {
 	// TODO do this for validation rules
 	public synchronized boolean expressionIsValid(String formula) {
 		Map<String, Data<?>> variables = getDataInExpression(formula);
+		if (hasNullValues(variables.values())) return false;
 		
 		Map<String, String> jaqlVariables = new HashMap<String, String>();
 		for (Entry<String, Data<?>> variable : variables.entrySet()) {

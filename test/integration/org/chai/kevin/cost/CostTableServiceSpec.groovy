@@ -37,177 +37,204 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 import grails.plugin.spock.IntegrationSpec;
 
-class CostTableServiceSpec extends IntegrationTests {
+class CostTableServiceSpec extends CostIntegrationTests {
 
 	def costTableService;
-	def organisationService;
 	
-	def sessionFactory;
 	
-	def setup() {
-		Initializer.createDummyStructure()
-		IntegrationTestInitializer.createExpressions()
-		IntegrationTestInitializer.addCostData()
-	}
-	
-	def "cost service returns expected values"() {
+	def "cost service returns expected values with no end"() {
 		setup:
-		refresh()
-				
+		setupOrganisationUnitTree()
+		
 		when:
-		def period = Period.list()[0]
-		def objective = CostObjective.findByCode("HRH")
-		def costTable = costTableService.getCostTable(period, objective, organisationService.getRootOrganisation())
-		def expectedTarget = CostTarget.findByCode(targetCode)
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def costObjective = newCostObjective(CODE(2))
+		def training = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		refreshExpression()
+		
+		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 
 		then:
 		costTable.getCost(expectedTarget, year).value == value
 		
 		where:
-		targetCode	| year	| value
-		"TRAINING"	| 1		| 4.0d
-		"TRAINING"	| 2		| 4.0d
-		"TRAINING"	| 3		| 4.0d
-		"TRAINING"	| 4		| 4.0d
-		"TRAINING"	| 5		| 4.0d
-		"AVERAGE"	| 1		| 4.0d
-		"AVERAGE"	| 2		| 5.0d
-		"AVERAGE"	| 3		| 6.0d
-		"AVERAGE"	| 4		| 7.0d
-		"AVERAGE"	| 5		| 8.0d
+		year	| value
+		1		| 4.0d
+		2		| 4.0d
+		3		| 4.0d
+		4		| 4.0d
+		5		| 4.0d
 	}
 	
-	def "missing values displayed correctly"() {
+	def "cost service returns expected values with end expression"() {
 		setup:
-		IntegrationTestInitializer.createDataElements()
-		new Expression(names:j(["en":"Expression Element 1"]), code:"EXPRELEM1", expression: "["+DataElement.findByCode("CODE").id+"]", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		def costObjective = new CostObjective(code:"Test Objective")
-		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("EXPRELEM1"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
-		costObjective.save(failOnError: true)
-		refresh()
+		setupOrganisationUnitTree()
 		
 		when:
-		def period = Period.list()[0]
-		def objective = CostObjective.findByCode("Test Objective")
-		def costTable = costTableService.getCostTable(period, objective, organisationService.getRootOrganisation())
-		def expectedTarget = CostTarget.findByCode(targetCode)
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def expressionEnd = newExpression(CODE(4), Type.TYPE_NUMBER, "40")
+		def costObjective = newCostObjective(CODE(2))
+		def training = newCostTarget(CODE(3), expression, expressionEnd, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		refreshExpression()
 		
+		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
+
 		then:
 		costTable.getCost(expectedTarget, year).value == value
 		
 		where:
-		targetCode		| year	| value
-		"Test Target"	| 1		| 0.0d
-		"Test Target"	| 2		| 0.0d
-		"Test Target"	| 3		| 0.0d
-		"Test Target"	| 4		| 0.0d
-		"Test Target"	| 5		| 0.0d
-	}
-	
-	def "cost service takes into account only selected groups"() {
-		setup:
-		def costObjective = new CostObjective(code:"Test Objective")
-		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
-		costObjective.save(failOnError: true)
-		refresh()
-				
-		when:
-		def period = Period.list()[0]
-		def objective = CostObjective.findByCode("Test Objective")
-		def costTable = costTableService.getCostTable(period, objective, organisationService.getRootOrganisation())
-		def expectedTarget = CostTarget.findByCode(targetCode)
-		
-		then:
-		costTable.getCost(expectedTarget, year).value == value
-		
-		where:
-		targetCode		| year	| value
-		"Test Target"	| 1		| 2.0d
-		"Test Target"	| 2		| 2.0d
-		"Test Target"	| 3		| 2.0d
-		"Test Target"	| 4		| 2.0d
-		"Test Target"	| 5		| 2.0d
-		
+		year	| value
+		1		| 4.0d
+		2		| 5.0d
+		3		| 6.0d
+		4		| 7.0d
+		5		| 8.0d
 	}
 	
 	def "cost service returns expected years and targets"() {
 		setup:
-		refresh()
-				
+		setupOrganisationUnitTree()
+		def TRAINING = "Training"
+		def AVERAGE = "Average"
+		
 		when:
-		def period = Period.list()[0]
-		def objective = CostObjective.findByCode("HRH")
-		def costTable = costTableService.getCostTable(period, objective, organisationService.getRootOrganisation())
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def costObjective = newCostObjective(CODE(2))
+		def training = newCostTarget(TRAINING, expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		def average = newCostTarget(AVERAGE, expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		refreshExpression()
+		
+		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 		
 		then:
 		costTable.targets.containsAll getTargets(expectedTargets)
 		costTable.years == expectedYears
 		
 		where:
-		expectedTargets			| expectedYears
-		["TRAINING", "AVERAGE"]	| [1, 2, 3, 4, 5]
+		expectedTargets		| expectedYears
+		[TRAINING, AVERAGE]	| [1, 2, 3, 4, 5]
 	}
 	
-	def "cost service returns correct explanation"() {
+	
+	def "missing values displayed correctly"() {
 		setup:
-		refresh()
-				
+		setupOrganisationUnitTree()
+		
 		when:
-		def period = Period.list()[0]
-		def target = CostTarget.findByCode(targetCode)
-		def organisation = organisationService.getOrganisation(OrganisationUnit.findByName(organisationName).id)
-		def explanation = costTableService.getExplanation(period, target, organisation)
+		def period = newPeriod()
+		def dataElement = newDataElement(CODE(3), Type.TYPE_NUMBER)
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "\$"+dataElement.id)
+		def costObjective = newCostObjective(CODE(2))
+		def target = newCostTarget(CODE(4), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		refreshExpression()
+		
+		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 		
 		then:
-		def cost = explanation.getCost(organisationService.getOrganisation(OrganisationUnit.findByName(expectedOrganisationName).id), year)
+		costTable.getCost(expectedTarget, year).value == value
+		
+		where:
+		year	| value
+		1		| 0.0d
+		2		| 0.0d
+		3		| 0.0d
+		4		| 0.0d
+		5		| 0.0d
+	}
+	
+	def "cost service takes into account only selected groups"() {
+		setup:
+		setupOrganisationUnitTree()
+		
+		when:
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def costObjective = newCostObjective(CODE(2))
+		def training = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		refreshExpression()
+		
+		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
+
+		then:
+		costTable.getCost(expectedTarget, year).value == value
+		
+		where:
+		year	| value
+		1		| 2.0d
+		2		| 2.0d
+		3		| 2.0d
+		4		| 2.0d
+		5		| 2.0d
+	}
+	
+
+	def "cost service returns correct explanation"() {
+		setup:
+		setupOrganisationUnitTree()
+		
+		when:
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def costObjective = newCostObjective(CODE(2))
+		def costTarget = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		refreshExpression()
+		
+		def explanation = costTableService.getExplanation(period, costTarget, getOrganisation(organisationName))
+		def cost = explanation.getCost(getOrganisation(expectedOrganisationName), year)
+		
+		then:
 		cost.value == expectedValue
 		
 		where:
-		targetCode	| organisationName	| expectedOrganisationName	| year	| expectedValue
-		"TRAINING"	| "Rwanda"			| "North"					| 1		| 4.0d
-		"TRAINING"	| "Rwanda"			| "North"					| 2		| 4.0d
-		"TRAINING"	| "Rwanda"			| "North"					| 3		| 4.0d
-		"TRAINING"	| "Rwanda"			| "North"					| 4		| 4.0d
-		"TRAINING"	| "Rwanda"			| "North"					| 5		| 4.0d
-		"TRAINING"	| "North"			| "Burera"					| 1		| 4.0d
-		"TRAINING"	| "North"			| "Burera"					| 2		| 4.0d
-		"TRAINING"	| "North"			| "Burera"					| 3		| 4.0d
-		"TRAINING"	| "North"			| "Burera"					| 4		| 4.0d
-		"TRAINING"	| "North"			| "Burera"					| 5		| 4.0d
-		"TRAINING"	| "Burera"			| "Kivuye HC"				| 1		| 2.0d
-		"TRAINING"	| "Burera"			| "Kivuye HC"				| 2		| 2.0d
-		"TRAINING"	| "Burera"			| "Kivuye HC"				| 3		| 2.0d
-		"TRAINING"	| "Burera"			| "Kivuye HC"				| 4		| 2.0d
-		"TRAINING"	| "Burera"			| "Kivuye HC"				| 5		| 2.0d
-		"TRAINING"	| "Burera"			| "Butaro DH"				| 1		| 2.0d
-		"TRAINING"	| "Burera"			| "Butaro DH"				| 2		| 2.0d
-		"TRAINING"	| "Burera"			| "Butaro DH"				| 3		| 2.0d
-		"TRAINING"	| "Burera"			| "Butaro DH"				| 4		| 2.0d
-		"TRAINING"	| "Burera"			| "Butaro DH"				| 5		| 2.0d
+		organisationName| expectedOrganisationName	| year	| expectedValue
+		RWANDA			| NORTH						| 1		| 4.0d
+		RWANDA			| NORTH						| 2		| 4.0d
+		RWANDA			| NORTH						| 3		| 4.0d
+		RWANDA			| NORTH						| 4		| 4.0d
+		RWANDA			| NORTH						| 5		| 4.0d
+		NORTH			| BURERA					| 1		| 4.0d
+		NORTH			| BURERA					| 2		| 4.0d
+		NORTH			| BURERA					| 3		| 4.0d
+		NORTH			| BURERA					| 4		| 4.0d
+		NORTH			| BURERA					| 5		| 4.0d
+		BURERA			| KIVUYE					| 1		| 2.0d
+		BURERA			| KIVUYE					| 2		| 2.0d
+		BURERA			| KIVUYE					| 3		| 2.0d
+		BURERA			| KIVUYE					| 4		| 2.0d
+		BURERA			| KIVUYE					| 5		| 2.0d
+		BURERA			| BUTARO					| 1		| 2.0d
+		BURERA			| BUTARO					| 2		| 2.0d
+		BURERA			| BUTARO					| 3		| 2.0d
+		BURERA			| BUTARO					| 4		| 2.0d
+		BURERA			| BUTARO					| 5		| 2.0d
 		
 	}
 	
 	def "explanation applies to correct organisation"() {
 		setup:
-		def costObjective = new CostObjective(code:"Test Objective")
-		costObjective.addTarget new CostTarget(code:"Test Target", expression: Expression.findByCode("CONST10"), costRampUp: CostRampUp.findByCode("CONST"), costType: CostType.INVESTMENT, groupUuidString: "District Hospital")
-		costObjective.save(failOnError: true)
+		setupOrganisationUnitTree()
 		
-		refresh()
-				
 		when:
-		def period = Period.list()[0]
-		def target = CostTarget.findByCode("Test Target")
-		def explanation = costTableService.getExplanation(period, target, getOrganisation("Burera"))
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def costObjective = newCostObjective(CODE(2))
+		def costTarget = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		refreshExpression()
+		
+		def explanation = costTableService.getExplanation(period, costTarget, getOrganisation(BURERA))
 		
 		then:
-		explanation.organisations.containsAll getOrganisations(["Butaro DH"])
+		explanation.organisations.containsAll getOrganisations([BUTARO])
 		explanation.organisations.size() == 1
 		
 	}

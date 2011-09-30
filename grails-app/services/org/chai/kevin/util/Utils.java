@@ -69,12 +69,8 @@ public class Utils {
 		return DATE_FORMAT.format(date);
 	}
 	
-	public static Date parseDate(String string) {
-		try {
-			return DATE_FORMAT.parse(string);
-		} catch (ParseException e) {
-			return null;
-		}
+	public static Date parseDate(String string) throws ParseException {
+		return DATE_FORMAT.parse(string);
 	}
 	
 	private static DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");

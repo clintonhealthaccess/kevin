@@ -31,7 +31,9 @@ package org.chai.kevin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,12 +63,26 @@ public class OrganisationService {
 		}
 		return createOrganisation(organisations.iterator().next());
     }
-	
-	public List<OrganisationUnitGroup> getGroupsForExpression() {
-		List<OrganisationUnitGroup> result = new ArrayList<OrganisationUnitGroup>();
+    
+    // optimization, we cache all the groups
+    private GroupCollection groupCollection = null;
+    
+    private GroupCollection getGroupCollection() {
+    	if (groupCollection == null) {
+    		groupCollection = new GroupCollection(getGroupsForExpression());
+    	}
+    	return groupCollection;
+    }
+    
+	public Set<OrganisationUnitGroup> getGroupsForExpression() {
+		Set<OrganisationUnitGroup> result = new HashSet<OrganisationUnitGroup>();
 		result.addAll(organisationUnitGroupService.getOrganisationUnitGroupSetByName(group).getOrganisationUnitGroups());
 		return result;
 	}
+    
+    public OrganisationUnitGroup getOrganisationUnitGroup(String uuid) {
+    	return getGroupCollection().getGroupByUuid(uuid);
+    }
 	
 	public List<OrganisationUnitLevel> getChildren(int level, Integer... skipLevels) {
 		List<Integer> skipLevelList = Arrays.asList(skipLevels);

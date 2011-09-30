@@ -4,6 +4,7 @@ import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.DataService
+import org.chai.kevin.GroupCollection;
 import org.chai.kevin.LocaleService
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.data.DataElement
@@ -169,14 +170,6 @@ class SurveyElementService {
 		c.add(Restrictions.eq("dataElement", dataElement)).list()
 	}
 
-	Integer getTotalOrgUnitApplicable(SurveyElement surveyElement){
-		Set<String> uuIds = surveyElement.getOrganisationUnitGroupApplicable();
-		Integer number = 0;
-		for(String uuId: uuIds)
-			number = number+organisationService.getNumberOfOrganisationForGroup(OrganisationUnitGroup.findByUuid(uuId));
-		return number;
-	}
-
 	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes) {
 		List<SurveyElement> surveyElements = new ArrayList<SurveyElement>();
 		List<DataElement> dataElements = dataService.searchDataElements(text, allowedTypes);
@@ -188,6 +181,16 @@ class SurveyElementService {
 		return surveyElements.sort {
 			it.dataElement.names[localeService.getCurrentLanguage()]
 		}
+	}
+	
+	Integer getNumberOfOrganisationUnitApplicable(SurveyElement surveyElement) {
+		Set<String> groupUuids = surveyElement.getOrganisationUnitGroupApplicable();
+		int number = 0;
+		for (String groupUuid : groupUuids) {
+			OrganisationUnitGroup group = organisationService.getOrganisationUnitGroup(groupUuid);
+			if (group != null) number += organisationService.getNumberOfOrganisationForGroup(group)
+		}
+		return number;
 	}
 	
 	Set<String> getHeaderPrefixes(SurveyElement element) {

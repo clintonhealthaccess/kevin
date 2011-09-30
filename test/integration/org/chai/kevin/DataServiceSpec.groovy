@@ -28,19 +28,20 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Type;
+import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.ExpressionValue.Status;
+import org.chai.kevin.value.Value;
 
 import grails.plugin.spock.UnitSpec;
 
 class DataServiceSpec extends IntegrationTests {
 
 	def dataService;
-	
-	def setup() {
-		Initializer.createDummyStructure()
-		IntegrationTestInitializer.createDataElements()
-//		IntegrationTestInitializer.createConstants()
-	}
 	
 //	def "search for constant works"() {
 //		expect:
@@ -49,9 +50,56 @@ class DataServiceSpec extends IntegrationTests {
 //	}
 	
 	def "search for data element works"() {
+		setup:
+		def dataElement = newDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER)
+		
 		expect:
-		def dataElements = dataService.searchDataElements("ele")
-		dataElements == [DataElement.findByCode("CODE")]
+		def dataElements = dataService.searchDataElements("ele", null)
+		dataElements == [dataElement]
+	}
+	
+	def "delete data element with associated values throws exception"() {
+		when:
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		def period = newPeriod()
+		def organisation = newOrganisationUnit(KIVUYE)
+		newDataValue(dataElement, period, organisation, Value.NULL)
+		
+		dataService.delete(dataElement)
+		
+		then:
+		thrown IllegalArgumentException
+		DataElement.count() == 1
+		
+	}
+	
+	def "delete expressions with associated values deletes values"() {
+		when:
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, expression: "1")
+		def period = newPeriod()
+		def organisation = newOrganisationUnit(KIVUYE)
+		newExpressionValue(expression, period, organisation, Status.VALID, Value.NULL)
+		
+		dataService.delete(expression)
+		
+		then:
+		Expression.count() == 0
+		ExpressionValue.count() == 0
+	}
+	
+	def "delete calculation with associated values deletes values"() {
+		when:
+		def calculation = newSum([:], CODE(1), Type.TYPE_NUMBER)
+		def period = newPeriod()
+		def organisation = newOrganisationUnit(KIVUYE)
+		newCalculationValue(calculation, period, organisation, false, false, Value.NULL)
+		
+		dataService.delete(calculation)
+		
+		then:
+		Calculation.count() == 0
+		CalculationValue.count() == 0
+		
 	}
 	
 }

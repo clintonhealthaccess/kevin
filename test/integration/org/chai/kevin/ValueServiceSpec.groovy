@@ -32,6 +32,7 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
@@ -44,227 +45,44 @@ class ValueServiceSpec extends IntegrationTests {
 
 	def valueService;
 	
-	def expressionService;
-	
-	def setup() {
-		IntegrationTestInitializer.createDummyStructure()
-	}
-	
-	def "test get non calculated expressions"() {
-		setup:
-		new Expression(
-			names:j(["en":"Constant 10"]), 
-			descriptions:j([:]), 
-			code:"Constant 10", expression: "10", 
-			type: JSONUtils.TYPE_NUMBER, 
-			timestamp:new Date()
-		).save(failOnError: true)
-		
-		expect:
-		List<ExpressionValue> values = valueService.getNonCalculatedExpressions();
-		values.size() == OrganisationUnit.count() * Period.count();
-	}
-	
-	def "test get non calculated expressions when already one expression value"() {
-		setup:
-		new Expression(
-			names:j(["en":"Constant 10"]),
-			descriptions:j([:]),
-			code:"Constant 10", expression: "10",
-			type: JSONUtils.TYPE_NUMBER,
-			timestamp:new Date()
-		).save(failOnError: true)
-		
-		new ExpressionValue(
-			period: Period.list()[0],
-			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			timestamp: new Date(),
-			status: Status.VALID,
-			value: v("10"),
-			expression: Expression.findByCode("Constant 10")
-		).save(failOnError: true)
-		
-		expect:
-		List<ExpressionValue> values = valueService.getNonCalculatedExpressions();
-		values.size() == OrganisationUnit.count() * Period.count() - 1;
-	}
-	
-	
-	def "test outdated expressions"() {
-		setup:
-		new Expression(
-			names:j(["en":"Constant 10"]),
-			descriptions:j([:]),
-			code:"Constant 10", expression: "10",
-			type: JSONUtils.TYPE_NUMBER,
-		).save(failOnError: true)
-		new ExpressionValue(
-			period: Period.list()[0],
-			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			status: Status.VALID,
-			value: v("10"),
-			expression: Expression.findByCode("Constant 10")
-		).save(failOnError: true)
-		
-		when:
-		List<ExpressionValue> values = valueService.getOutdatedExpressions();
-		
-		then:
-		values.size() == 0
-		
-		when:
-		def expression = Expression.findByCode("Constant 10")
-		expression.setTimestamp(new Date());
-		expression.save(failOnError: true);
-		values = valueService.getOutdatedExpressions();
-		
-		then:
-		values.size() == 1
-		values.get(0).expression.equals(Expression.findByCode("Constant 10"));
-	}
-	
-	def "test get non calculated calculations"() {
-		setup:
-		new Expression(
-			names:j(["en":"Constant 10"]),
-			descriptions:j([:]),
-			code:"Constant 10", expression: "10",
-			type: JSONUtils.TYPE_NUMBER,
-			timestamp:new Date()
-		).save(failOnError: true)
-		new Average(expressions: [
-			"District Hospital": Expression.findByCode("Constant 10"),
-			"Health Center": Expression.findByCode("Constant 10")
-		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		
-		expect:
-		List<CalculationValue> values = valueService.getNonCalculatedCalculations();
-		values.size() == OrganisationUnit.count() * Period.count();
-	}
-	
-	def "test outdated calculations"() {
-		setup:
-		new Expression(
-			names:j(["en":"Constant 10"]),
-			descriptions:j([:]),
-			code:"Constant 10", expression: "10",
-			type: JSONUtils.TYPE_NUMBER,
-			timestamp:new Date()
-		).save(failOnError: true)
-		new Average(expressions: [
-			"District Hospital": Expression.findByCode("Constant 10"),
-			"Health Center": Expression.findByCode("Constant 10")
-		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		new CalculationValue(
-			period: Period.list()[0],
-			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			timestamp: new Date(),
-			average: "10",
-			calculation: Calculation.list()[0],
-			hasMissingExpression: false,
-			hasMissingValues: false
-		).save(failOnError: true)
-		
-		when:
-		List<CalculationValue> values = valueService.getOutdatedCalculations();
-		
-		then:
-		values.size() == 0
-		
-		when:
-		def calculation = Calculation.list()[0]
-		calculation.setTimestamp(new Date());
-		calculation.save(failOnError: true, flush: true);
-		values = valueService.getOutdatedCalculations();
-		
-		then:
-		values.size() == 1
-		values.get(0).calculation.equals(Calculation.list()[0]);
-	}
-	
-	def "test outdated calculations when expression is saved"() {
-		setup:
-		new Expression(
-			names:j(["en":"Constant 10"]),
-			descriptions:j([:]),
-			code:"Constant 10", expression: "10",
-			type: JSONUtils.TYPE_NUMBER,
-			timestamp:new Date()
-		).save(failOnError: true)
-		new Average(expressions: [
-			"District Hospital": Expression.findByCode("Constant 10"),
-			"Health Center": Expression.findByCode("Constant 10")
-		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
-		new CalculationValue(
-			period: Period.list()[0],
-			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			timestamp: new Date(),
-			average: "10",
-			calculation: Calculation.list()[0],
-			hasMissingExpression: false,
-			hasMissingValues: false
-		).save(failOnError: true)
-		
-		when:
-		List<CalculationValue> values = valueService.getOutdatedCalculations();
-		
-		then:
-		values.size() == 0
-		
-		when:
-		def expression = Expression.findByCode("Constant 10")
-		expression.setTimestamp(new Date());
-		expression.save(failOnError: true, flush: true)
-		values = valueService.getOutdatedCalculations();
-		
-		then:
-		values.size() == 1
-		values.get(0).calculation.equals(Calculation.list()[0]);
-	}
-	
 	def "test number of values"() {
 		setup:
-		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER)
-		dataElement.save(failOnError: true)
-		def dataValue = new DataValue(
-			dataElement: DataElement.findByCode("CODE"),
-			period: Period.list()[1],
-			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			value: v("40"),
-			timestamp: new Date(),
-		).save(failOnError: true)
+		def period = newPeriod()
+		def organisationUnit = newOrganisationUnit(BUTARO)
 		
 		when: 
-		def nofValues1 = valueService.getNumberOfValues(dataElement, Period.list()[1])
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		newDataValue(dataElement, period, organisationUnit, v("40"))
 		
 		then:
-		nofValues1 == 1
+		valueService.getNumberOfValues(dataElement, period) == 1
 		
 		when:
-		def nofValues2 = valueService.getNumberOfValues(dataElement, Period.list()[0])
+		def newPeriod = period()
 		
 		then:
-		nofValues2 == 0
+		valueService.getNumberOfValues(dataElement, newPeriod) == 0
+				
+		when:
+		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER)
+		
+		then:
+		valueService.getNumberOfValues(dataElement2, period) == 0
 	}
 	
 	def "test value list"() {
+		
 		setup:
-		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", descriptions:j(["en":"Description"]), type: JSONUtils.TYPE_NUMBER)
-		dataElement.save(failOnError: true)
-		def dataValue = new DataValue(
-			dataElement: DataElement.findByCode("CODE"),
-			period: Period.list()[1],
-			organisationUnit: OrganisationUnit.findByName("Butaro DH"),
-			value: v("40"),
-			timestamp: new Date(),
-		).save(failOnError: true)
+		def period = newPeriod()
+		def organisationUnit = newOrganisationUnit(BUTARO)
 		
 		when:
-		def values = valueService.getValues(dataElement, Period.list()[1])
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		def dataValue = newDataValue(dataElement, period, organisationUnit, v("40"))
 		
 		then:
-		values.size() == 1
+		valueService.getValues(dataElement, period).equals(dataValue)
 		
 	}
-	
+
 }

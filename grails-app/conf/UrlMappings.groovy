@@ -44,6 +44,8 @@ class UrlMappings {
 		
 		"/auth/$action"(controller:"auth")
 		
+		"/editSurvey/$action/$organisation?"(controller:"editSurvey")
+		
 		"/$controller/$action?"{
 			constraints {
 				// apply constraints here
@@ -52,6 +54,7 @@ class UrlMappings {
 
 		// homepage in home controller
 		"/"(controller:"home", action:"index")
+		
 		"500"(view:'/error')
 	}
 }

@@ -64,17 +64,14 @@ class DataService {
 		return Enum.findByCode(code)
 	}
 	
-//	def searchConstants(String text) {
-//		def constants = Constant.list()
-//		StringUtils.split(text).each { chunk ->
-//			constants.retainAll { element ->
-//				Utils.matches(chunk, element.id+"") ||
-//				Utils.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
-//				Utils.matches(chunk, element.code) 
-//			}
-//		}
-//		return constants.sort {it.names[localeService.getCurrentLanguage()]}
-//	}
+	/**
+	 * 
+	 * @throws IllegalArgumentException if the data is a data element and has values associated to it
+	 * @param element
+	 */
+	public void delete(DataElement element) {
+		// TODO 
+	}
 	
     public List<DataElement> searchDataElements(String text, List<String> allowedTypes) {
 		def criteria = DataElement.createCriteria()

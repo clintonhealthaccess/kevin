@@ -31,6 +31,7 @@ package org.chai.kevin.dashboard
 import org.chai.kevin.Initializer;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.IntegrationTestInitializer;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Expression;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -40,9 +41,8 @@ import org.hisp.dhis.period.Period;
 import grails.plugin.spock.IntegrationSpec;
 import grails.plugin.spock.UnitSpec;
 
-class DashboardControllerSpec extends IntegrationTests {
+class DashboardTargetController extends DashboardIntegrationTests {
 
-	def dashboardObjectiveController
 	def dashboardTargetController
 	
 	def setup() {
@@ -55,27 +55,7 @@ class DashboardControllerSpec extends IntegrationTests {
 		expect:
 		DashboardObjectiveEntry.get(DashboardObjective.findByCode("HRH").objectiveEntries[0].id) != null
 		DashboardObjectiveEntry.get(DashboardObjective.findByCode("STAFFING").objectiveEntries[0].id) != null
-		
 	}
-	
-	def "delete objective with children"() {
-		setup:
-		def entries = DashboardObjectiveEntry.count()
-		def targets = DashboardTarget.count()
-		def objectives = DashboardObjective.count()
-		dashboardObjectiveController = new DashboardObjectiveController()
-		
-		when:
-		dashboardObjectiveController.params.id = DashboardObjective.findByCode("HRH").objectiveEntries[0].id
-		dashboardObjectiveController.delete()
-		
-		then:
-		entries == DashboardObjectiveEntry.count()
-		targets == DashboardTarget.count()
-		objectives == DashboardObjective.count()
-//		dashboardObjectiveController.response.contentAsString.contains "error";
-	}
-
 	
 	def "delete target deletes entry and target"() {
 		setup:
@@ -93,29 +73,6 @@ class DashboardControllerSpec extends IntegrationTests {
 		DashboardObjectiveEntry.count() == entries-1
 		DashboardObjective.count() == objectives
 		dashboardTargetController.response.contentAsString.contains "success";
-	}
-	
-	def "save new objective"() {
-		setup:
-		def entries = DashboardObjectiveEntry.count()
-		def targets = DashboardTarget.count()
-		def objectives = DashboardObjective.count()
-		dashboardObjectiveController = new DashboardObjectiveController()
-		
-		when:
-		dashboardObjectiveController.params['currentObjective'] = DashboardObjective.findByCode("STAFFING").id
-		dashboardObjectiveController.params['weight'] = 1
-		dashboardObjectiveController.params['entry.code'] = "NEW"
-		dashboardObjectiveController.saveWithoutTokenCheck()
-		def newObjective = DashboardObjective.findByCode("NEW")
-		
-		then:
-		dashboardObjectiveController.response.contentAsString.contains "success";
-		newObjective != null
-		entries + 1 == DashboardObjectiveEntry.count()
-		targets == DashboardTarget.count()
-		objectives + 1 == DashboardObjective.count()
-		newObjective.parent.weight == 1
 	}
 	
 	def "save new target"() {
@@ -147,7 +104,7 @@ class DashboardControllerSpec extends IntegrationTests {
 		def entries = DashboardObjectiveEntry.count()
 		def targets = DashboardTarget.count()
 		def objectives = DashboardObjective.count()
-		def calculations = Calculation.count()
+		def calculations = Average.count()
 		dashboardTargetController = new DashboardTargetController()
 		
 		when:
@@ -176,7 +133,7 @@ class DashboardControllerSpec extends IntegrationTests {
 		def entries = DashboardObjectiveEntry.count()
 		def targets = DashboardTarget.count()
 		def objectives = DashboardObjective.count()
-		def calculations = Calculation.count()
+		def calculations = Average.count()
 		dashboardTargetController = new DashboardTargetController()
 		
 		when:

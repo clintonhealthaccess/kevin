@@ -59,7 +59,7 @@ public class Survey extends SurveyTranslatable {
 	
 	private Long id;
 	private Integer order;
-	private boolean open = true;
+	private boolean active = false;
 	private Period lastPeriod;
 	private Period period;
 	private List<SurveyObjective> objectives = new ArrayList<SurveyObjective>();
@@ -86,12 +86,12 @@ public class Survey extends SurveyTranslatable {
 	}
 	
 	@Basic
-	public boolean isOpen() {
-		return open;
+	public boolean isActive() {
+		return active;
 	}
-
-	public void setOpen(boolean open) {
-		this.open = open;
+	
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 	
 	@ManyToOne(targetEntity=Period.class)
@@ -160,7 +160,7 @@ public class Survey extends SurveyTranslatable {
 	protected void deepCopy(Survey copy, SurveyCloner cloner) {
 		copy.setNames(getNames());
 		copy.setDescriptions(getDescriptions());
-		copy.setOpen(isOpen());
+		copy.setActive(isActive());
 		copy.setOrder(getOrder());
 		copy.setPeriod(getPeriod());
 		for (SurveyObjective objective : getObjectives()) {

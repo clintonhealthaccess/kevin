@@ -51,7 +51,7 @@ class MapsServiceSpec extends IntegrationTests {
 		def calculation = new Average(expressions: [
 			"District Hospital": Expression.findByCode("CONST10"),
 			"Health Center": Expression.findByCode("CONST10")
-		], timestamp:new Date(), type: JSONUtils.TYPE_NUMBER)
+		], timestamp:new Date(), type: Type.TYPE_NUMBER)
 		calculation.save(failOnError: true)
 		new MapsTarget(code:"CODE", type:MapsTargetType.AVERAGE, calculation: calculation).save(failOnError: true)
 		refresh()

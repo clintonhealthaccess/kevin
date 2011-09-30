@@ -14,8 +14,19 @@ class SurveyElementServiceSpec extends IntegrationTests {
 		IntegrationTestInitializer.createDummyStructure();
 	}
 	
+	def "test number of organisation applicable with unknown group"() {
+		when:
+		// TODO create survey with "unknown" group
+		createSurvey()
+		def element = SurveyElement.list()[0]
+		
+		then:
+		surveyElementService.getNumberOfOrganisationUnitApplicable(element) == 0
+		
+	}
+	
 	def createSurvey() {
-		def dataElement = new DataElement(code:"ELEM1", type: JSONUtils.TYPE_NUMBER).save(failOnError: true)
+		def dataElement = new DataElement(code:"ELEM1", type: Type.TYPE_NUMBER).save(failOnError: true)
 		
 		def survey = new Survey(period: Period.list()[0]).save(failOnError: true);
 		def objective = new SurveyObjective(survey: survey, order: 1, groupUuidString: "Health Center")

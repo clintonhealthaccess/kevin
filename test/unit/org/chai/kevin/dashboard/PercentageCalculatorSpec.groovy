@@ -64,8 +64,8 @@ class PercentageCalculatorSpec extends UnitTests {
 //		mockDomain(IndicatorType, [one])
 //		def const10 = new Indicator(names:j(["en":"Constant 10"]), shortName: "Constant 10", code: "CONST10", numerator: "10", denominator: "1", indicatorType: IndicatorType.findByName("one"))
 //		def const20 = new Indicator(names:j(["en":"Constant 20"]), shortName: "Constant 20", code: "CONST20", numerator: "20", denominator: "1", indicatorType: IndicatorType.findByName("one"))
-		def const10 = new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: JSONUtils.TYPE_NUMBER)
-		def const20 = new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: JSONUtils.TYPE_NUMBER)
+		def const10 = new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: Type.TYPE_NUMBER)
+		def const20 = new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: Type.TYPE_NUMBER)
 		mockDomain(Expression, [const10, const20])
 		
 		// objectives and targets for dashboard
@@ -142,9 +142,9 @@ class PercentageCalculatorSpec extends UnitTests {
 	
 	def "test absent value on target"() {
 		setup:
-		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", type: JSONUtils.TYPE_NUMBER)
+		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", type: Type.TYPE_NUMBER)
 		mockDomain(DataElement, [dataElement])
-		def expression = new Expression(names:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: JSONUtils.TYPE_NUMBER)
+		def expression = new Expression(names:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: Type.TYPE_NUMBER)
 		mockDomain(Expression, [expression])
 		
 		def target = new DashboardTarget(

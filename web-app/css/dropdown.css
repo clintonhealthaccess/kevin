@@ -1,12 +1,4 @@
-.white-dropdown > div {
-  border: 1px solid #cccccc;
-  background-color: white;
-  padding: 2px;
-  border-width: 2px;
-  margin-left: 10px;
-  position: absolute;
-  z-index: 10;
-  min-width: 100px; }
-  .white-dropdown > div ul li {
-    display: block;
-    margin: 4px; }
+/* line 5, ../../src/stylesheets/dropdown.sass */
+.white-dropdown > div { border: 1px solid #cccccc; background-color: white; padding: 2px; border-width: 2px; margin-left: 10px; position: absolute; z-index: 10; min-width: 100px; }
+/* line 13, ../../src/stylesheets/dropdown.sass */
+.white-dropdown > div ul li { display: block; margin: 4px; }

@@ -31,35 +31,37 @@ package org.chai.kevin
 import grails.plugin.spock.IntegrationSpec;
 
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 
 class OrganisationServiceSpec extends IntegrationTests {
 
 	def organisationService;
 	
-	def setup() {
-		Initializer.createDummyStructure()
-	}
-	
 	def "get organisations of level"() {
+		setup:
+		setupOrganisationUnitTree()
+		
 		expect:
 		organisationService.getOrganisationsOfLevel(level).containsAll (getOrganisations(expectedOrganisations))
 		
 		where:
 		level	| expectedOrganisations
-		1		| ["Rwanda"]
-		2		| ["North"]
-		3		| ["Burera"]
-		4		| ["Kivuye HC", "Butaro DH"]
+		1		| [RWANDA]
+		2		| [NORTH]
+		3		| [BURERA]
+		4		| [KIVUYE, BUTARO]
 	}
 	
 	def "get organisation tree until level"() {
+		setup:
+		setupOrganisationUnitTree()
 		
 		when:
 		def organisationTree = organisationService.getOrganisationTreeUntilLevel(level)
 		
 		then:
-		def organisation = getOrganisation("Rwanda")
+		def organisation = getOrganisation(RWANDA)
 		organisationTree == organisation
 		assertIsLoaded(organisationTree, level)
 		
@@ -68,6 +70,9 @@ class OrganisationServiceSpec extends IntegrationTests {
 	}
 	
 	def "get children level for level"() {
+		setup:
+		setupOrganisationUnitTree()
+		
 		when:
 		def children = organisationService.getChildren(level);
 		
@@ -84,6 +89,9 @@ class OrganisationServiceSpec extends IntegrationTests {
 	}
 	
 	def "get children of level for organisation"() {
+		setup:
+		setupOrganisationUnitTree()
+		
 		when:
 		def organisation = getOrganisation(organisationName)
 		def organisations = organisationService.getChildrenOfLevel(organisation, level)
@@ -94,13 +102,16 @@ class OrganisationServiceSpec extends IntegrationTests {
 		
 		where:
 		organisationName	| level	| expectedOrganisations
-		"Rwanda"			| 2		| ["North", "Kigali City", "West", "East", "South"]
-		"Rwanda"			| 3		| ["Burera", "Nyarugenge", "Gasabo", "Kicukiro"]
-		"Rwanda"			| 4		| ["Butaro DH", "Kivuye HC"]
+		"Rwanda"			| 2		| [NORTH]
+		"Rwanda"			| 3		| [BURERA]
+		"Rwanda"			| 4		| [BUTARO, KIVUYE]
 		
 	}
 	
 	def "get level for organisation"() {
+		setup:
+		setupOrganisationUnitTree()
+		
 		when:
 		def organisation = getOrganisation(organisationName)
 		def level = organisationService.getLevel(organisation)
@@ -115,6 +126,14 @@ class OrganisationServiceSpec extends IntegrationTests {
 		"North"				| 2
 		"Burera"			| 3
 		"Butaro DH"			| 4
+	}
+	
+	def "get groups for expression"() {
+		setup:
+		setupOrganisationUnitTree()
+		
+		expect:
+		organisationService.getGroupsForExpression().equals(new HashSet([OrganisationUnitGroup.findByUuid(HEALTH_CENTER_GROUP), OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)])) 
 	}
 	
 	def assertIsLoaded(def organisation, def level) {

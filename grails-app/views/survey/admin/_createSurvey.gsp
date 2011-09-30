@@ -46,6 +46,11 @@
 			</div>
 		</div>
 		
+		<div class="row">
+			<label>Active</label>
+			<g:checkBox name="active" value="${survey.active}" />
+		</div>
+		
 		<div class="clear"></div>
 		<g:if test="${survey?.id != null}">
 			<input type="hidden" name="id" value="${survey?.id}"></input>
