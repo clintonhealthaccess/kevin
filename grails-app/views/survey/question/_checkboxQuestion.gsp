@@ -2,6 +2,7 @@
 
 <div id="question-${question.id}" class="question question-checkbox" data-question="${question.id}">
 	<h4><span class="question-number">2</span><g:i18n field="${question.names}" /></h4>
+	<p><g:i18n field="${question.descriptions}"/></p>
 	<ul class="clear">
 		<g:each in="${question.getOptions(organisationUnitGroup)}" var="option">
 			<g:set var="surveyElement" value="${option.surveyElement}"/>
