@@ -1,9 +1,10 @@
 <g:set var="organisationUnitGroup" value="${surveyPage.organisation.organisationUnitGroup}"/>
 
 <div id="question-${question.id}" class="question question-table" data-question="${question.id}">
-	<g:i18n field="${question.names}" />
-	<div class="question-table-container">
-		<table class="listing">
+	<h4><span class="question-number">1</span><g:i18n field="${question.names}" /></h4>
+
+	<div class="question-table-container clear">
+		<table class="listing push-20">
 			<thead>
 				<tr>
 					<th class="question-tab-title-name"><g:i18n field="${question.tableNames}" /></th>

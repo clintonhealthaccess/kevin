@@ -16,7 +16,7 @@
 		</a>
 	</g:else>
 	<g:if test="${organisation.children != null}">
-		<ul id="organisation-fold-${organisation.id}">
+		<ul class="organisation-fold" id="organisation-fold-${organisation.id}">
 			<g:each in="${organisation.children}" var="child">
 				<g:render template="/templates/organisationTree" model="[ controller: controller, action: action, organisation: child, current: current, linkLevel: linkLevel, displayLinkUntil: displayLinkUntil]"/>
 			</g:each>

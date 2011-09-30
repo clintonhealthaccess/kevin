@@ -1,8 +1,9 @@
 .listing
+  clear: both
   font-size: 12px
   width: 100%
   th, td
-    padding: 5px 10px
+    padding: 7px 12px
   th
     background: $filler
     color: $primary
@@ -10,4 +11,20 @@
   td
     border-top: 1px solid $filler
     color: #444
+  
+  td:first-child, th:first-child
+    border-left: 1px solid $filler
+  td:last-child, th:last-child
+    border-right: 1px solid $filler
+    
+  tr:last-child td
+    border-bottom: 1px solid $filler
+
+.explanation-row
+  > td
+    border: none
+    padding: 0 10px
+    
+.explanation-cell table
+  margin-bottom: 10px
   

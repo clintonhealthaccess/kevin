@@ -1,8 +1,8 @@
 <g:set var="organisationUnitGroup" value="${surveyPage.organisation.organisationUnitGroup}"/>
 
 <div id="question-${question.id}" class="question question-checkbox" data-question="${question.id}">
-	<g:i18n field="${question.names}" />
-	<ul>
+	<h4><span class="question-number">2</span><g:i18n field="${question.names}" /></h4>
+	<ul class="clear">
 		<g:each in="${question.getOptions(organisationUnitGroup)}" var="option">
 			<g:set var="surveyElement" value="${option.surveyElement}"/>
 

@@ -1,10 +1,10 @@
 <r:require module="dropdown"/>
 
-<div id="survey-header" class="grey-rounded-box-top">
+<div id="survey-header" class="subnav">
 	<div>
 		<div class="filter">
 			<span class="bold">Strategic Objective:</span>
-			<span class="dropdown">
+			<span class="dropdown subnav-dropdown">
 				<a class="selected" href="#">
 					<g:if test="${objective != null}">
 						<g:i18n field="${objective.names}" />

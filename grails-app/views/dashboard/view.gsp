@@ -180,7 +180,7 @@
 											</g:else>
 										</td>
 									</g:each></tr>
-									<tr>
+									<tr class="explanation-row">
 										<g:each in="${dashboard.objectiveEntries}" var="objectiveEntry">
 											<g:set var="objective" value="${objectiveEntry.entry}"/>
 											<td class="explanation-cell" id="explanation-${organisation.id}-${objective.id}"></td>

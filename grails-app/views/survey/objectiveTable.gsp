@@ -26,7 +26,7 @@
 						<td><span class="progress-bar">${objectiveSummary.completedQuestions}/${objectiveSummary.questions}</span></td>
 						<td><a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: summaryPage.organisation.id])}">view survey</a></td>
 					</tr>
-					<tr>
+					<tr class="explanation-row">
 						<td colspan="4">
 							<div class="explanation-cell" id="explanation-objective-${summaryPage.organisation.id}-${objective.id}"></div>
 						</td>

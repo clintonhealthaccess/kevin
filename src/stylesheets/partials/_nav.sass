@@ -20,7 +20,7 @@
     text-decoration: none
     text-transform: uppercase
     +border-bottom-radius(3px)
-    &:hover, &:focus, &.active
+    &:hover, &:focus, &.no-link
       background: $primary
       color: #fff
     
@@ -140,7 +140,8 @@
     &:hover, &:focus
       background: $primary
       color: #fff
-      +border-top-radius
+      text-decoration: none
+      +border-radius
   
 .dropdown-list
   background: $primary
@@ -148,25 +149,60 @@
   display: none
   left: 0
   opacity: 0.85
-  padding: 5px 0 10px
+  padding: 5px 0 10px 10px
   position: absolute
-  top: 20px
+  top: 15px
   z-index: 1
   +border-bottom-radius
   +box-shadow(#ccc 2px 2px 3px, $primary_dark 0 0 8px 3px inset)
   
   li
-    border-bottom: 1px solid $primary_dark
     display: block
     padding: 7px 0 7px
     &:hover, &:focus
       a
         color: #fff
+        
     a
       color: $filler
       font-size: 12px
       font-weight: normal
+      padding-right: 15px
       text-decoration: none
       white-space: nowrap
-      &.foldable-toggle
-        float: left
+      
+  .survey-section
+    background: $filler
+    margin-top: 5px
+    +pie-clearfix
+    a
+      color: $primary
+      padding-left: 5px
+    li
+      &:focus, &:hover
+        a
+          color: $primary - #666
+        
+.foldable
+  padding-top: 3px
+  min-width: 75px
+  a.foldable-toggle
+    display: block
+    cursor: pointer
+    width: 20px
+    height: 20px
+    margin: -3px
+    float: left
+    text-indent: -9999px
+    background-image: url('../images/icons/toggle_plus.gif')
+    
+    &.toggled
+      background-image: url('../images/icons/toggle_minus.gif')
+  
+  &.opened > span, &.opened > a
+    font-weight: bold
+  .foldable
+    padding-bottom: 0
+    
+.organisation-fold
+  padding: 0 12px

@@ -1,9 +1,10 @@
 <g:set var="organisationUnitGroup" value="${surveyPage.organisation.organisationUnitGroup}"/>
 
 <div id="question-${question.id}" class="question question-simple" data-question="${question.id}">
-	<g:i18n field="${question.names}" />
-	
+	<h4><span class="question-number">2</span><g:i18n field="${question.names}" /></h4>
+
 	<g:set var="surveyElement" value="${question.surveyElement}"/>
+	<div class="clear"></div>
 
 	<g:if test="${print && surveyElement?.dataElement.type.type.name().toLowerCase()=='list' && !appendix}">
 		<h4>--- <g:message code="survey.print.see.appendix" default="See Appendix"/> ---</h4>
@@ -32,4 +33,3 @@
 		</div>
 	</g:else>
 </div>
-

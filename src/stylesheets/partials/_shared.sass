@@ -3,8 +3,51 @@ body
   font-family: 'Lucida Grande', Arial, Helvetica, sans-serif
 
 h1, h2, h3, h4
-  font-family: 'Droid', Arial, Helvetica, sans-serif
+  font-family: 'Droid-Bold', Arial, Helvetica, sans-serif
 
 a
   color: $primary
   font-size: 12px
+  &:hover, &:focus
+    color: $primary - #666
+    
+.main
+  color: #666
+  font-size: 12px
+  
+.form-heading
+  color: $primary
+  font-size: 24px
+  margin-bottom: 10px
+  
+.question h4
+  background: $filler
+  font-family: 'Droid', Arial, sans-serif
+  left: -15px
+  line-height: 1.5
+  margin: 0 50px 10px 0
+  padding: 7px 10px 7px 30px
+  position: relative
+  +border-right-radius(100px)
+  +box-shadow($filler - #090909, -2px, -2px, 2px, 0, inset)
+  
+  span
+    background: $primary
+    color: $filler
+    display: block
+    font-weight: bold
+    left: -10px
+    padding: 3px
+    position: absolute
+    text-align: center
+    top: 4px
+    width: 18px
+    +border-radius(50px)
+    +text-shadow(#000, 0, 1px, 0)
+    
+.push-10
+  margin-bottom: 10px
+.push-15
+  margin-bottom: 15px
+.push-20
+  margin-bottom: 20px

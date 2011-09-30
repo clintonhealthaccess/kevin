@@ -10,7 +10,7 @@
 		<g:set var="survey" value="${summaryPage.survey}"/>
 		<g:set var="organisation" value="${summaryPage.organisation}"/>
 		<div id="survey">
-			<div id="survey-header" class="subnav grey-rounded-box-top">
+			<div id="survey-header" class="subnav">
 				<div class="filter">
 					<span class="bold">Survey:</span>
 					<span class="dropdown subnav-dropdown">
@@ -84,7 +84,7 @@
 										<td><a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: summaryPage.survey.id, organisation: facility.id])}">refresh survey</a></td>
 										<td><a href="${createLink(controller: 'editSurvey', action: 'print', params: [survey: summaryPage.survey.id, organisation: facility.id])}" target="_blank">Print Survey</a></td>
 									</tr>
-									<tr>
+									<tr class="explanation-row">
 										<td colspan="6">
 											<div class="explanation-cell" id="explanation-${facility.id}"></div>
 										</td>

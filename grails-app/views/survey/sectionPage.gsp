@@ -15,7 +15,7 @@
 		<div id="survey">
 			<g:render template="/survey/header" model="[period: surveyPage.period, organisation: surveyPage.organisation, objective: surveyPage.objective]"/>
 			
-			<div class="grey-rounded-box-bottom">
+			<div class="main">
 
 				<g:if test="${flash.message}">
 					<div class="rounded-box-top rounded-box-bottom flash-info">
@@ -38,12 +38,12 @@
 <!-- 				</g:if>  -->
 				
 				<div class="rounded-box-top">
-					<h5>
+					<h3 class="form-heading">
 						<g:i18n field="${surveyPage.section.names}" />
-					</h5>
+					</h3>
 				</div>
-				<div class="rounded-box-bottom">
 				
+				<div class="rounded-box-bottom">
 					<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 						<ol id="questions">
 							<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question">
