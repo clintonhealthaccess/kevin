@@ -239,7 +239,7 @@
 					</g:else>
 				</g:if>
 				<g:else>
-					<div>Please select an Organisation / Objective</div>
+					<p class="help">Please select an Organisation / Objective</p>
 				</g:else>
 			</div>
 			<div class="clear"></div>

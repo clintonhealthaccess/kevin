@@ -16,9 +16,9 @@
     </head>
     <body>
 		<div id="dashboard">
-			<div id="corner" class="main">
+			<div id="corner" class="subnav">
 				<span class="bold"><g:message code="dashboard.labels.iteration" default="Iteration"/></span>
-				<div class="dropdown subnav-dropdown">
+				<div class="dropdown subnav-dropdown inline">
 					<a class="selected" href="#"><g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/></a>
 					<div class="hidden dropdown-list">
 						<ul>
@@ -34,7 +34,7 @@
 				</div>
 			</div>
 		
-			<div id="top" class="box margin-bottom-10">
+			<div id="top" class="main">
 	    		<span class="bold"><g:message code="dashboard.labels.objectives" default="Objectives"/></span>
 		    	<ul class="inline-list">
 		    		<g:each in="${dashboard.objectivePath}" var="objective">
@@ -48,7 +48,7 @@
 		    	</ul>
 	    	</div>
 	    	
-	    	<div id="bottom">
+	    	<div id="bottom" class="main">
 	    		<div id="left">
 			    	<div class="box margin-bottom-10">
 			    		<div class="bold"><g:message code="dashboard.labels.organisations" default="Organisations"/></div>

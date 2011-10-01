@@ -60,7 +60,7 @@
 			
 			<div class="grey-rounded-box-bottom main">
 				<g:if test="${summaryPage.organisation == null || summaryPage.survey == null}">
-					Please select a survey and a facility to get to the respective survey.
+					<p class="help">Please select a survey and a facility to get to the respective survey.</p>
 				</g:if>
 				<g:else>
 					<div id="survey-summary">

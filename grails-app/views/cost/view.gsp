@@ -155,7 +155,7 @@
 						<!-- ADMIN SECTION END -->
 					</g:if>
 					<g:else>
-						<div>Please select an organisation / objective</div>
+						<p class="help">Please select an organisation / objective</p>
 					</g:else>
 				</div>
 				<div class="clear"></div>

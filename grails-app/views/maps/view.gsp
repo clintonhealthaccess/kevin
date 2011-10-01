@@ -14,7 +14,7 @@
     </head>
     <body>
     	<div id="maps">
-			<div class="main">
+			<div class="subnav">
 				<div class="filter">
 					<span class="bold">Iteration</span>
 					<span class="dropdown dropdown-period subnav-dropdown">
