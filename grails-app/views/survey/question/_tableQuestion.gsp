@@ -2,7 +2,7 @@
 
 <div id="question-${question.id}" class="question question-table" data-question="${question.id}">
 	<h4><span class="question-number">1</span><g:i18n field="${question.names}" /></h4>
-	<p><g:i18n field="${question.descriptions}"/></p>
+	<p class="question-help"><g:i18n field="${question.descriptions}"/></p>
 	<div class="question-table-container clear">
 		<table class="listing push-20">
 			<thead>

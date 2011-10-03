@@ -27,6 +27,7 @@
 					<li><a class="${localeService.currentLanguage==language?'no-link':''}" href="${createLink(controller: controller, action: action, params:params)}">${language}</a></li>
 				</g:each>
 			</ul>
+			<h2><span>Rwanda Ministry Of Health</span>District Health Systems Strenghtening Tool</h2>
 			<shiro:user>
 				<ul id="logout">
 				  <li>

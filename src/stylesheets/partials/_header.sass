@@ -1,7 +1,25 @@
 #header
   background: url('../images/bg/header_bg.png') repeat-x center
   height: 90px
+  position: relative
   +pie-clearfix
+  
+  h2
+    color: $primary + #090909
+    font-family: 'Lucida Grande', Arial, sans-serif
+    font-size: 15px
+    line-height: 1.4
+    position: absolute
+    right: 0
+    text-align: right
+    top: 45px
+    +text-shadow(#fff, 0, 1px, 0)
+    span
+      color: $primary + #222
+      display: block
+      font-size: 11px
+      letter-spacing: 0.3px
+      text-transform: uppercase
   
 #logo
   color: $primary_alt

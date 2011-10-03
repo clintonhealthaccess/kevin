@@ -53,19 +53,24 @@
 							</g:each>
 						</ol>
 						
-						<g:if test="${!readonly}">
-							<button type="submit" class="loading-disabled">
-								<g:if test="${surveyPage.isLastSection(surveyPage.section)}">
-									Finish
-								</g:if>
-								<g:else>
-									Next
-								</g:else>
-							</button>
-							<button type="cancel" class="hidden">
-								Cancel
-							</button>
-						</g:if>
+						<ul>
+							<g:if test="${!readonly}">
+								<li>
+									<button type="submit" class="loading-disabled">
+										<g:if test="${surveyPage.isLastSection(surveyPage.section)}">
+											Finish
+										</g:if>
+										<g:else>
+											Next
+										</g:else>
+									</button>
+								</li>
+								<button type="cancel" class="hidden">
+									Cancel
+								</button>
+							</g:if>
+	  						<li><a href="#" class="go-back">Go back</a></li>
+	  					</ul>
 					</g:form>
 				</div>
 			</div>

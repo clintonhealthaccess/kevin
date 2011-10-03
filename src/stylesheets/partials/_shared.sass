@@ -12,24 +12,31 @@ a
     color: $primary - #666
     
 .main
+  clear: both
   color: #666
   font-size: 12px
+  +pie-clearfix
   
 .form-heading
   color: $primary
   font-size: 24px
   margin-bottom: 10px
+  padding-left: 10px
   
 .question h4
   background: $filler
-  font-family: 'Droid', Arial, sans-serif
+  color: $primary
+  display: inline-block
+  font-family: 'Lucida Grande', Arial, sans-serif
+  font-weight: bold
   left: -15px
   line-height: 1.5
   margin: 0 50px 10px 0
-  padding: 7px 10px 7px 30px
+  padding: 7px 20px 7px 20px
   position: relative
   +border-right-radius(100px)
   +box-shadow($filler - #090909, -2px, -2px, 2px, 0, inset)
+  +text-shadow(#fff, 0, 1px, 0)
   
   span
     background: $primary
@@ -43,7 +50,7 @@ a
     top: 4px
     width: 18px
     +border-radius(50px)
-    +text-shadow(#000, 0, 1px, 0)
+    +text-shadow($primary - #222, 0, 1px, 0)
     
 .push-10
   margin-bottom: 10px
@@ -51,8 +58,4 @@ a
   margin-bottom: 15px
 .push-20
   margin-bottom: 20px
-  
-.help
-  background: url('../images/icons/point.png') no-repeat 0 0
-  padding: 10px 10px 10px 42px
   

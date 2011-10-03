@@ -30,7 +30,7 @@
   background: url('../images/bg/nav_bg.png') repeat-x
   height: 42px
   position: relative
-  z-index: 20
+  z-index: 50
 
 #main-menu
   float: left
@@ -45,6 +45,7 @@
       border-right: 1px solid $primary_dark
     &:hover .submenu
       display: block
+      
   a
     border-left: 1px solid $primary_dark
     border-right: 1px solid $primary_light
@@ -69,7 +70,7 @@
     padding: 5px 0 10px
     position: absolute
     top: 42px
-    z-index: 1
+    z-index: 30
     +border-bottom-radius
     +box-shadow(#ccc 2px 2px 3px, $primary_dark 0 0 8px 3px inset)
     a
@@ -88,7 +89,7 @@
   position: absolute
   right: 0
   top: 100px
-  z-index: 30
+  z-index: 60
   
   li
     display: inline
@@ -127,6 +128,9 @@
   a
     font-size: 11px
     font-weight: bold
+  &.center
+    font-size: 14px
+    text-align: center
     
 .filter
   display: inline

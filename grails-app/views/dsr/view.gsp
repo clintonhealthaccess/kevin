@@ -91,160 +91,159 @@
 						</div>
 					</span>
 				</div>
-				<g:if test="${dsrTable != null}">
-					<div class="filter margin-top-20">
-			    		<div class="bold">Facility types</div>
-			    		<div id="facility-type-filter">
-				    		<g:if test="${!dsrTable.facilityTypes.isEmpty()}">
-					    		<g:each in="${dsrTable.facilityTypes}" var="group">
-						    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}
-					    		</g:each>
-				    		</g:if>
-			    		<g:else>
+				<div class="right">
+					<!-- ADMIN SECTION -->
+					<shiro:hasPermission permission="admin:dsr">
+						<span> <a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'create')}">Add Objective</a> </span>|
+						<span> <a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'create')}">Add Target</a> </span>|
+						<span> <a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'create')}">Add Target Category</a> </span>
+					</shiro:hasPermission>
+					<!-- ADMIN SECTION END -->
+				</div>
+			</div>
+			<g:if test="${dsrTable.objective != null && dsrTable.organisation != null}">
+				<div class="filter facility-type">
+		    		<h4 class="bold">Facility types</h4>
+		    		<div id="facility-type-filter">
+			    		<g:if test="${!dsrTable.facilityTypes.isEmpty()}">
+				    		<g:each in="${dsrTable.facilityTypes}" var="group">
+					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}
+				    		</g:each>
+			    		</g:if>
+		    			<g:else>
 			    			<span class="italic">No facility types</span>
 			    		</g:else>
-			    		</div>
-			    	</div>
-				</g:if>
-				<div class="right">
-				<!-- ADMIN SECTION -->
-				<shiro:hasPermission permission="admin:dsr">
-					<span> <a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'create')}">Add Objective</a> </span>|
-					<span> <a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'create')}">Add Target</a> </span>|
-					<span> <a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'create')}">Add Target Category</a> </span>
-				</shiro:hasPermission>
-				<!-- ADMIN SECTION END -->
-			</div>
-		</div>
-		<div id="center" class="main">
-			<div id="values">
-				<g:if test="${dsrTable != null}">
-					<g:if test="${!dsrTable.targets.empty}">
-						<table class="nice-table">
-							<thead>
-								<tr>
-									<th class="object-name-box" rowspan="2">
-										<div>
-											<g:i18n field="${currentObjective.names}" />
-										</div> 
-										<shiro:hasPermission permission="admin:dsr">
-											<span> 
-												<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:currentObjective.id)}">(Edit)</a> 
-											</span>
-											<br />
-											<span> 
-												<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-													(Delete)
-												</a> 
-											</span>
-										</shiro:hasPermission>
-									</th>
-									<g:set var="i" value="${0}" />
-									<g:each in="${dsrTable.targets}" var="target">
-										<g:if test="${target.category != null}">
-											<g:set var="i" value="${i+1}" />
-											<g:if test="${i==target.category.getTargetsForObjective(currentObjective).size()}">
-												<th class="title-th" colspan="${i}">
-													<div>
-														<g:i18n field="${target.category.names}" />
-													</div> 
+		    		</div>
+		    	</div>
+			</g:if>
+			<div id="center" class="main">
+				<div id="values">
+					<g:if test="${dsrTable != null}">
+						<g:if test="${!dsrTable.targets.empty}">
+							<table class="nice-table">
+								<thead>
+									<tr>
+										<th class="object-name-box" rowspan="2">
+											<div>
+												<g:i18n field="${currentObjective.names}" />
+											</div> 
+											<shiro:hasPermission permission="admin:dsr">
+												<span> 
+													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:currentObjective.id)}">(Edit)</a> 
+												</span>
+												<br />
+												<span> 
+													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+														(Delete)
+													</a> 
+												</span>
+											</shiro:hasPermission>
+										</th>
+										<g:set var="i" value="${0}" />
+										<g:each in="${dsrTable.targets}" var="target">
+											<g:if test="${target.category != null}">
+												<g:set var="i" value="${i+1}" />
+												<g:if test="${i==target.category.getTargetsForObjective(currentObjective).size()}">
+													<th class="title-th" colspan="${i}">
+														<div>
+															<g:i18n field="${target.category.names}" />
+														</div> 
+														<shiro:hasPermission permission="admin:dsr">
+															<span> 
+																<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'edit', id:target.category?.id)}">(Edit)</a> 
+															</span>
+															<br />
+															<span> 
+																<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'delete', id:target.category?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+																	(Delete)
+																</a> 
+															</span>
+														</shiro:hasPermission> <br />
+													</th>
+													<g:set var="i" value="${0}" />
+												</g:if>
+											</g:if>
+											<g:else>
+												<th class="title-th" rowspan="2">
+													<div class="bt">
+														<g:i18n field="${target.names}" />
+													</div>
 													<shiro:hasPermission permission="admin:dsr">
 														<span> 
-															<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'edit', id:target.category?.id)}">(Edit)</a> 
+															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">(Edit)</a> 
 														</span>
 														<br />
 														<span> 
-															<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'delete', id:target.category?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 																(Delete)
 															</a> 
 														</span>
-													</shiro:hasPermission> <br />
+													</shiro:hasPermission>
 												</th>
-												<g:set var="i" value="${0}" />
-											</g:if>
-										</g:if>
-										<g:else>
-											<th class="title-th" rowspan="2">
-												<div class="bt">
-													<g:i18n field="${target.names}" />
-												</div>
-												<shiro:hasPermission permission="admin:dsr">
-													<span> 
-														<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">(Edit)</a> 
-													</span>
-													<br />
-													<span> 
-														<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-															(Delete)
-														</a> 
-													</span>
-												</shiro:hasPermission>
-											</th>
-										</g:else>
-									</g:each>
-								</tr>
-								<tr>
-									<g:each in="${dsrTable.targets}" var="target">
-										<g:if test="${target.category != null}">
-											<th class="title-th">
-												<div class="bt">
-													<g:i18n field="${target.names}" />
-												</div> 
-												<shiro:hasPermission permission="admin:dsr">
-													<span> 
-														<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">(Edit)</a> 
-													</span>
-													<br />
-													<span> 
-														<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-															(Delete)
-														</a> 
-													</span>
-												</shiro:hasPermission>
-											</th>
-										</g:if>
-									</g:each>
-								</tr>
-							</thead>
-							<tbody>
-								<g:each in="${dsrTable.organisations}" var="organisation" status="i">
-									<g:if test="${dsrTable.organisationMap.get(organisation)!=currentParent}">
-										<g:set var="currentParent" value="${dsrTable.organisationMap.get(organisation)}" />
-										<tr>
-											<th colspan="${dsrTable.targets.size()+1}" class="parent-row">${currentParent.name}</th>
-										</tr>
-									</g:if>
-									<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
-										<th class="box-dsr-organisation">${organisation.name}</th>
-										<g:each in="${dsrTable.targets}" var="target">
-											<td class="box-dsr-value">
-												<g:if test="${!dsrTable.getDsr(organisation, target).applies}">
-
-												</g:if>
-												<g:else>
-													${dsrTable.getDsr(organisation, target).stringValue}
-												</g:else>
-											</td>
+											</g:else>
 										</g:each>
 									</tr>
-								</g:each>
-								
-							</tbody>
-						</table>
+									<tr>
+										<g:each in="${dsrTable.targets}" var="target">
+											<g:if test="${target.category != null}">
+												<th class="title-th">
+													<div class="bt">
+														<g:i18n field="${target.names}" />
+													</div> 
+													<shiro:hasPermission permission="admin:dsr">
+														<span> 
+															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">(Edit)</a> 
+														</span>
+														<br />
+														<span> 
+															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+																(Delete)
+															</a> 
+														</span>
+													</shiro:hasPermission>
+												</th>
+											</g:if>
+										</g:each>
+									</tr>
+								</thead>
+								<tbody>
+									<g:each in="${dsrTable.organisations}" var="organisation" status="i">
+										<g:if test="${dsrTable.organisationMap.get(organisation)!=currentParent}">
+											<g:set var="currentParent" value="${dsrTable.organisationMap.get(organisation)}" />
+											<tr>
+												<th colspan="${dsrTable.targets.size()+1}" class="parent-row">${currentParent.name}</th>
+											</tr>
+										</g:if>
+										<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
+											<th class="box-dsr-organisation">${organisation.name}</th>
+											<g:each in="${dsrTable.targets}" var="target">
+												<td class="box-dsr-value">
+													<g:if test="${!dsrTable.getDsr(organisation, target).applies}">
+	
+													</g:if>
+													<g:else>
+														${dsrTable.getDsr(organisation, target).stringValue}
+													</g:else>
+												</td>
+											</g:each>
+										</tr>
+									</g:each>
+									
+								</tbody>
+							</table>
+						</g:if>
+						<g:else>
+							<div>
+								Please <a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'create')}"> Add Target </a>
+							</div>
+						</g:else>
 					</g:if>
 					<g:else>
-						<div>
-							Please <a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'create')}"> Add Target </a>
-						</div>
+						<p class="help">Please select an Organisation / Objective</p>
 					</g:else>
-				</g:if>
-				<g:else>
-					<p class="help">Please select an Organisation / Objective</p>
-				</g:else>
+				</div>
+				<div class="clear"></div>
 			</div>
-			<div class="clear"></div>
 		</div>
-	</div>
-
-</body>
+	</body>
 </html>

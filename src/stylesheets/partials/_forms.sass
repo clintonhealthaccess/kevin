@@ -1,32 +1,77 @@
 .element-bool
   float: left
-.question-checkbox li
-  clear: both
-button
+.question-checkbox
+  li
+    clear: both
+    padding: 5px 10px
+  input[type=checkbox]
+    margin: 0 5px 0 0
+    
+.form-actions
+  border-top: 2px solid $filler
+  margin-top: 15px
+  +pie-clearfix
+  li
+    display: inline
+    float: left
+    padding: 10px 0 10px 10px
+    
+.go-back
+  color: $no
+  display: block
+  font-size: 11px
+  opacity: 0.6
+  padding: 16px 0 0
+  &:hover, &:focus
+    opacity: 1
+    
+.facility-type
+  background: $filler
+  border: 1px solid $filler - #111
+  margin: 15px
+  padding: 15px
+  +border-radius
+  h4
+    font-size: 14px
+  #facility-type-filter
+    color: $primary
+button, input[type=submit], .next
   background: $yes
   border: 1px solid $yes - #222
   clear: both
   color: $filler
-  display: block
+  cursor: pointer
+  display: inline-block
   font-size: 14px
   font-weight: bold
-  margin-top: 20px
   padding: 10px 20px
   +border-radius
   +box-shadow(#eee, 1px, 1px, 3px)
   +linear-gradient(color-stops($yes + #090909, $yes))
   +text-shadow($yes - #333, 0, 1px, 0)
+  &:hover, &:focus
+    background: $yes - #111
+    border: 1px solid $yes - #333
+    +linear-gradient(color-stops($yes, $yes - #111))
+  
+select
+  background: #f6f6f6
+  border: 1px solid $filler - #333
+  color: #444
+  font: normal 12px Arial, sans-serif
+  padding: 2px
+  +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
+  &:hover, &:focus
+    background: $filler + #030303
+    border-color: $primary
 
 .entity-form-container
   float: left
   border: 2px solid #739eee
-  
   margin: 8px
   padding: 10px 5px 10px 5px
   
-        
   .entity-form-header
-    
     background-color: #739eee 
     .title
       float: left
@@ -91,22 +136,51 @@ button
     float: right
     
 .focus-field
-  border: solid 1px #73A6ff
-  background: #dbe5fb
-  color: #000
+  border: solid 1px $filler - #222
+  background: $filler + #060606
+  color: #333
   
 .idle-field
-  background: #f7f9fe
-  color: #000
-  border: solid 1px #ababab
+  background: #f6f6f6
+  border: 1px solid $filler - #333
+  color: #444
+  font: normal 12px Arial, sans-serif
+  padding: 2px
+  text-align: right
+  +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
+  &:hover, &:focus
+    background: $filler + #030303
+    border-color: $primary
   
 .completed-field
   background: #ededed
-  color: #000
-  border: solid 1px #73A6ff
+  color: #333
+  border: solid 1px $yes
   
 .ajax-search-field
   width: 340px
+  
+.login-field
+  background: $filler
+  border: 1px solid $filler - #333
+  color: #444
+  font: normal 16px 'Lucida Grande', Arial, sans-serif
+  padding: 4px
+  text-align: center
+  width: 154px
+  +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
+  &:hover, &:focus
+    background: $filler + #030303
+    border-color: $primary
+    
+.login-label
+  color: $primary
+  font-family: 'Lucida Grande', Arial, sans-serif
+  font-size: 11px
+  margin: 0 auto
+  padding: 3px
+  text-align: center
+  width: 154px
   
 ul.filtered
   border: 1px solid lightGrey
