@@ -28,26 +28,15 @@ package org.chai.kevin.cost
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.util.List;
-
-import org.chai.kevin.Initializer;
-import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.IntegrationTestInitializer;
-import org.chai.kevin.Organisation;
-import org.chai.kevin.cost.CostTarget.CostType;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.util.JSONUtils;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.period.Period;
-
-import grails.plugin.spock.IntegrationSpec;
+import org.chai.kevin.cost.CostTarget.CostType
+import org.chai.kevin.data.Type
 
 class CostTableServiceSpec extends CostIntegrationTests {
 
 	def costTableService;
 	
+	static def TRAINING = "Training"
+	static def AVERAGE = "Average"
 	
 	def "cost service returns expected values with no end"() {
 		setup:
@@ -55,7 +44,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
 		def costObjective = newCostObjective(CODE(2))
 		def training = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
 		refreshExpression()
@@ -63,15 +52,15 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 
 		then:
-		costTable.getCost(expectedTarget, year).value == value
+		costTable.getCost(training, year).value == value
 		
 		where:
 		year	| value
-		1		| 4.0d
-		2		| 4.0d
-		3		| 4.0d
-		4		| 4.0d
-		5		| 4.0d
+		1		| 8.0d
+		2		| 8.0d
+		3		| 8.0d
+		4		| 8.0d
+		5		| 8.0d
 	}
 	
 	def "cost service returns expected values with end expression"() {
@@ -80,8 +69,8 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
-		def expressionEnd = newExpression(CODE(4), Type.TYPE_NUMBER, "40")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
+		def expressionEnd = newExpression(CODE(4), Type.TYPE_NUMBER(), "40")
 		def costObjective = newCostObjective(CODE(2))
 		def training = newCostTarget(CODE(3), expression, expressionEnd, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
 		refreshExpression()
@@ -89,29 +78,28 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 
 		then:
-		costTable.getCost(expectedTarget, year).value == value
+		costTable.getCost(training, year).value == value
 		
 		where:
 		year	| value
-		1		| 4.0d
-		2		| 5.0d
-		3		| 6.0d
-		4		| 7.0d
-		5		| 8.0d
+		1		| 8.0d
+		2		| 10.0d
+		3		| 12.0d
+		4		| 14.0d
+		5		| 16.0d
 	}
 	
 	def "cost service returns expected years and targets"() {
 		setup:
 		setupOrganisationUnitTree()
-		def TRAINING = "Training"
-		def AVERAGE = "Average"
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
 		def costObjective = newCostObjective(CODE(2))
-		def training = newCostTarget(TRAINING, expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
-		def average = newCostTarget(AVERAGE, expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		def rampUp = CONSTANT_RAMP_UP()
+		def training = newCostTarget(TRAINING, expression, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		def average = newCostTarget(AVERAGE, expression, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
 		refreshExpression()
 		
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
@@ -132,8 +120,8 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(3), Type.TYPE_NUMBER)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "\$"+dataElement.id)
+		def dataElement = newDataElement(CODE(3), Type.TYPE_NUMBER())
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		def costObjective = newCostObjective(CODE(2))
 		def target = newCostTarget(CODE(4), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
 		refreshExpression()
@@ -141,7 +129,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 		
 		then:
-		costTable.getCost(expectedTarget, year).value == value
+		costTable.getCost(target, year).value == value
 		
 		where:
 		year	| value
@@ -158,7 +146,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
 		def costObjective = newCostObjective(CODE(2))
 		def training = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
 		refreshExpression()
@@ -166,15 +154,15 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 
 		then:
-		costTable.getCost(expectedTarget, year).value == value
+		costTable.getCost(training, year).value == value
 		
 		where:
 		year	| value
-		1		| 2.0d
-		2		| 2.0d
-		3		| 2.0d
-		4		| 2.0d
-		5		| 2.0d
+		1		| 4.0d
+		2		| 4.0d
+		3		| 4.0d
+		4		| 4.0d
+		5		| 4.0d
 	}
 	
 
@@ -184,9 +172,9 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
 		def costObjective = newCostObjective(CODE(2))
-		def costTarget = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		def costTarget = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [(DISTRICT_HOSPITAL_GROUP), (HEALTH_CENTER_GROUP)], costObjective)
 		refreshExpression()
 		
 		def explanation = costTableService.getExplanation(period, costTarget, getOrganisation(organisationName))
@@ -197,26 +185,26 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		where:
 		organisationName| expectedOrganisationName	| year	| expectedValue
-		RWANDA			| NORTH						| 1		| 4.0d
-		RWANDA			| NORTH						| 2		| 4.0d
-		RWANDA			| NORTH						| 3		| 4.0d
-		RWANDA			| NORTH						| 4		| 4.0d
-		RWANDA			| NORTH						| 5		| 4.0d
-		NORTH			| BURERA					| 1		| 4.0d
-		NORTH			| BURERA					| 2		| 4.0d
-		NORTH			| BURERA					| 3		| 4.0d
-		NORTH			| BURERA					| 4		| 4.0d
-		NORTH			| BURERA					| 5		| 4.0d
-		BURERA			| KIVUYE					| 1		| 2.0d
-		BURERA			| KIVUYE					| 2		| 2.0d
-		BURERA			| KIVUYE					| 3		| 2.0d
-		BURERA			| KIVUYE					| 4		| 2.0d
-		BURERA			| KIVUYE					| 5		| 2.0d
-		BURERA			| BUTARO					| 1		| 2.0d
-		BURERA			| BUTARO					| 2		| 2.0d
-		BURERA			| BUTARO					| 3		| 2.0d
-		BURERA			| BUTARO					| 4		| 2.0d
-		BURERA			| BUTARO					| 5		| 2.0d
+		RWANDA			| NORTH						| 1		| 8.0d
+		RWANDA			| NORTH						| 2		| 8.0d
+		RWANDA			| NORTH						| 3		| 8.0d
+		RWANDA			| NORTH						| 4		| 8.0d
+		RWANDA			| NORTH						| 5		| 8.0d
+		NORTH			| BURERA					| 1		| 8.0d
+		NORTH			| BURERA					| 2		| 8.0d
+		NORTH			| BURERA					| 3		| 8.0d
+		NORTH			| BURERA					| 4		| 8.0d
+		NORTH			| BURERA					| 5		| 8.0d
+		BURERA			| KIVUYE					| 1		| 4.0d
+		BURERA			| KIVUYE					| 2		| 4.0d
+		BURERA			| KIVUYE					| 3		| 4.0d
+		BURERA			| KIVUYE					| 4		| 4.0d
+		BURERA			| KIVUYE					| 5		| 4.0d
+		BURERA			| BUTARO					| 1		| 4.0d
+		BURERA			| BUTARO					| 2		| 4.0d
+		BURERA			| BUTARO					| 3		| 4.0d
+		BURERA			| BUTARO					| 4		| 4.0d
+		BURERA			| BUTARO					| 5		| 4.0d
 		
 	}
 	
@@ -226,7 +214,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "20")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
 		def costObjective = newCostObjective(CODE(2))
 		def costTarget = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
 		refreshExpression()

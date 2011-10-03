@@ -28,15 +28,8 @@ package org.chai.kevin.cost
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.Initializer;
-import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.IntegrationTestInitializer;
-import org.chai.kevin.cost.CostTarget.CostType;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.period.Period;
-
-import grails.plugin.spock.IntegrationSpec;
-import grails.plugin.spock.UnitSpec;
+import org.chai.kevin.cost.CostTarget.CostType
+import org.chai.kevin.data.Type;
 
 class CostControllerSpec extends CostIntegrationTests {
 
@@ -50,7 +43,7 @@ class CostControllerSpec extends CostIntegrationTests {
 		setupOrganisationUnitTree()
 		def period = newPeriod()
 		def costObjective = newCostObjective(CODE(2))
-		def costTarget = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		def costTarget = newCostTarget(CODE(3), newExpression(CODE(4), Type.TYPE_NUMBER(), "1"), CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
 		
 		costController.params.period = period.id+''
 		costController.params.objective = costObjective.id+''

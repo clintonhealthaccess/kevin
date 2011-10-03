@@ -31,6 +31,7 @@ package org.chai.kevin.data
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.DataService
+import org.chai.kevin.ValueService;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
@@ -38,6 +39,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 class ExpressionController extends AbstractEntityController {
 
 	DataService dataService
+	ValueService valueService
 	
 	def getEntity(def id) {
 		return Expression.get(id)
@@ -67,7 +69,15 @@ class ExpressionController extends AbstractEntityController {
 	}
 	
 	def deleteEntity(def entity) {
-		entity.delete()
+		// we check if there are calculations
+		if (dataService.getCalculations(entity).isEmpty()) { 
+			// we delete all the values
+			valueService.deleteValues(entity)
+			entity.delete()
+		}
+		else {
+			// TODO error message ?
+		}
 	}
 	
 	def bindParams(def entity) {

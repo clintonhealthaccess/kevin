@@ -188,7 +188,14 @@
 									<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
 										<th class="box-dsr-organisation">${organisation.name}</th>
 										<g:each in="${dsrTable.targets}" var="target">
-											<td class="box-dsr-value">${dsrTable.getDsrValue(organisation, target)}</td>
+											<td class="box-dsr-value">
+												<g:if test="${!dsrTable.getDsr(organisation, target).applies}">
+
+												</g:if>
+												<g:else>
+													${dsrTable.getDsr(organisation, target).stringValue}
+												</g:else>
+											</td>
 										</g:each>
 									</tr>
 								</g:each>

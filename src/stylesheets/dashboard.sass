@@ -31,9 +31,10 @@
   width: 822px
   float: left
   
-  #values
+  #values 
     width: 100%
     float: left
+    overflow-x: scroll
 
   #values > table 
     &> thead, &> tbody
@@ -50,9 +51,14 @@
   .header .row .cell
     height: inherit
   
+  tbody tr.row
+    white-space: nowrap
+  
   .cell
+    display: inline-block
     width: 73.333px
     float: left
+    
     div
       display: block
       +round-corner(2px)

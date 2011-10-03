@@ -7,10 +7,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.ExpressionService;
+import org.chai.kevin.LocaleService;
 
 
 public class SurveyCloner {
 
+	private LocaleService localeService;
+	
 	private Survey survey;
 	private Survey copy;
 
@@ -25,8 +28,9 @@ public class SurveyCloner {
 	private Map<SurveyValidationRule, Long> unchangedValidationRules = new HashMap<SurveyValidationRule, Long>();
 	private Map<SurveySkipRule, Long> unchangedSkipRules = new HashMap<SurveySkipRule, Long>();
 	
-	public SurveyCloner(Survey survey) {
+	public SurveyCloner(Survey survey, LocaleService localeService) {
 		this.survey = survey;
+		this.localeService = localeService;
 	}
 
 	public Survey getSurvey() {
@@ -56,10 +60,10 @@ public class SurveyCloner {
 	protected String getExpression(String expression, SurveyValidationRule rule) {
 		Set<String> placeholders = ExpressionService.getVariables(expression);
 		Map<String, String> mapping = new HashMap<String, String>();
-		for (String string : placeholders) {
-			Long id = Long.parseLong(string);
+		for (String placeholder : placeholders) {
+			Long id = Long.parseLong(placeholder.replace("$", ""));
 			if (elements.containsKey(id)) {
-				mapping.put(string, "["+elements.get(id).getId().toString()+"]");
+				mapping.put(placeholder, "$"+elements.get(id).getId().toString());
 			}
 			else {
 				unchangedValidationRules.put(rule, id);
@@ -71,10 +75,10 @@ public class SurveyCloner {
 	protected String getExpression(String expression, SurveySkipRule rule) {
 		Set<String> placeholders = ExpressionService.getVariables(expression);
 		Map<String, String> mapping = new HashMap<String, String>();
-		for (String string : placeholders) {
-			Long id = Long.parseLong(string);
+		for (String placeholder : placeholders) {
+			Long id = Long.parseLong(placeholder.replace("$", ""));
 			if (elements.containsKey(id)) {
-				mapping.put(string, "["+elements.get(id).getId().toString()+"]");
+				mapping.put(placeholder, "$"+elements.get(id).getId().toString());
 			}
 			else {
 				unchangedSkipRules.put(rule, id);
@@ -88,6 +92,10 @@ public class SurveyCloner {
 		if (copy == null) {
 			copy = new Survey(); 
 			survey.deepCopy(copy, this);
+			for (String language : localeService.getAvailableLanguages()) {
+				// TODO localize "copy"
+				copy.getNames().put(language, survey.getNames().get(language) + " (copy)");
+			}
 		}
 		return copy;
 	}
@@ -122,12 +130,14 @@ public class SurveyCloner {
 
 	protected SurveyElement getElement(SurveyElement element) {
 		if (element == null) return null;
+		
 		if (!elements.containsKey(element.getId())) {
 			SurveyElement copy = new SurveyElement(); 
 			elements.put(element.getId(), copy);
 			element.deepCopy(copy, this);
 			oldElements.add(element);
 		}
+		
 		return elements.get(element.getId());
 	}
 

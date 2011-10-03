@@ -13,7 +13,7 @@ class ExpressionSpec extends IntegrationTests {
 
 	def "expression type cannot be invalid"() {
 		when:
-		newExpression(CODE(1), new Type(INVALID_TYPE), expression:"1")
+		new Expression(code: CODE(1), type: INVALID_TYPE, expression:"1").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -21,7 +21,7 @@ class ExpressionSpec extends IntegrationTests {
 
 	def "expression type cannot be null"() {
 		when:
-		def expression = newExpression(CODE(1), null, "1")
+		def expression = new Expression(code: CODE(1), expression: "1").save(failOnError: true)
 
 		then:
 		thrown ValidationException
@@ -30,13 +30,13 @@ class ExpressionSpec extends IntegrationTests {
 
 	def "expression code is unique"() {
 		when:
-		newExpression(CODE(1), Type.TYPE_NUMBER, "1")
+		new Expression(code: CODE(1), type: Type.TYPE_NUMBER(), expression: "1").save(failOnError: true)
 
 		then:
 		Expression.count();
 
 		when:
-		newExpression(CODE(1), Type.TYPE_NUMBER, "1")
+		new Expression(code: CODE(1), type: Type.TYPE_NUMBER(), expression: "1").save(failOnError: true)
 
 		then:
 		thrown ValidationException
@@ -45,13 +45,13 @@ class ExpressionSpec extends IntegrationTests {
 	
 	def "expression value hashcode and equals"() {
 		setup:
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "10")
 		def organisationUnit = newOrganisationUnit(name: BUTARO)
 		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
 
 		when:
-		def expr1 = newExpressionValue(expression, period, organisationUnit);
-		def expr2 = newExpressionValue(expression, period, organisationUnit);
+		def expr1 = new ExpressionValue(expression: expression, period: period, organisationUnit: organisationUnit);
+		def expr2 = new ExpressionValue(expression: expression, period: period, organisationUnit: organisationUnit);
 
 		then:
 		expr1.hashCode() == expr2.hashCode();
@@ -68,7 +68,7 @@ class ExpressionSpec extends IntegrationTests {
 
 	def "invalid expression"() {
 		when:
-		newExpression(CODE(1), Type.TYPE_NUMBER, formula)
+		new Expression(code: CODE(1), type: Type.TYPE_NUMBER(), expression: formula).save(failOnError: true)
 
 		then:
 		thrown ValidationException
@@ -87,7 +87,7 @@ class ExpressionSpec extends IntegrationTests {
 	//		IntegrationTestInitializer.createConstants()
 	//
 	//		when:
-	//		new newExpression(names:j(["en":"Expression"]), code:"EXPR", type:Type.TYPE_NUMBER, expression:"["+Constant.findByCode("CONST1").id+"]").save(failOnError:true)
+	//		new newExpression(names:j(["en":"Expression"]), code:"EXPR", type:Type.TYPE_NUMBER(), expression:"["+Constant.findByCode("CONST1").id+"]").save(failOnError:true)
 	//
 	//		then:
 	//		Expression.count() == 1;
@@ -97,7 +97,7 @@ class ExpressionSpec extends IntegrationTests {
 	
 	//	def "expression date is updated on save"() {
 	//		setup:
-	//		new newExpression(code:"CODE", expression: "1", type: Type.TYPE_NUMBER, timestamp: new Date()).save(failOnError: true)
+	//		new newExpression(code:"CODE", expression: "1", type: Type.TYPE_NUMBER(), timestamp: new Date()).save(failOnError: true)
 	//
 	//		when:
 	//		def expression = Expression.findByCode("CODE");

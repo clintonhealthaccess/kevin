@@ -47,6 +47,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Translation;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @SuppressWarnings("serial")
@@ -158,8 +159,8 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 
 	protected abstract SurveyQuestion newInstance();
 	protected void deepCopy(SurveyQuestion copy, SurveyCloner surveyCloner) {
-		copy.setNames(getNames());
-		copy.setDescriptions(getDescriptions());
+		copy.setNames(new Translation(getNames()));
+		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setGroupUuidString(getGroupUuidString());
 		copy.setOrder(getOrder());
 		copy.setSection(surveyCloner.getSection(getSection()));

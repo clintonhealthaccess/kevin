@@ -27,44 +27,28 @@
  */
 package org.chai.kevin.maps
 
-import org.chai.kevin.Initializer;
-import org.chai.kevin.IntegrationTestInitializer;
-import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.data.Average;
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.maps.MapsTarget.MapsTargetType;
-import org.chai.kevin.util.JSONUtils;
-import org.hisp.dhis.period.Period;
+import org.chai.kevin.data.Type
+import org.chai.kevin.maps.MapsTarget.MapsTargetType
+import org.hisp.dhis.period.Period
 
-class MapsServiceSpec extends IntegrationTests {
+class MapsServiceSpec extends MapsIntegrationTests {
 
 	def mapsService;
 	
-	def setup() {
-		Initializer.createDummyStructure();
-		IntegrationTestInitializer.createExpressions();
-	}
-	
 	def "calculation gives correct values"() {
 		setup:
-		def calculation = new Average(expressions: [
-			"District Hospital": Expression.findByCode("CONST10"),
-			"Health Center": Expression.findByCode("CONST10")
-		], timestamp:new Date(), type: Type.TYPE_NUMBER)
-		calculation.save(failOnError: true)
-		new MapsTarget(code:"CODE", type:MapsTargetType.AVERAGE, calculation: calculation).save(failOnError: true)
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+		def calculation = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
+		def mapsTarget = newMapsTarget(CODE(3), MapsTargetType.AVERAGE, calculation)
 		refresh()
 		
 		when:
-		def period = Period.list()[1]
-		def organisation = getOrganisation("Rwanda")
-		def level = 2
-		def target = MapsTarget.findByCode("CODE")
-		def maps = mapsService.getMap(period, organisation, level, target)
+		def maps = mapsService.getMap(period, getOrganisation(RWANDA), 2, mapsTarget)
 		
 		then:
-		maps.polygons.size() == 5
+		maps.polygons.size() == 1
 		def hasValues = false
 		for (def polygon : maps.polygons) {
 			if (polygon.value != null) hasValues = true

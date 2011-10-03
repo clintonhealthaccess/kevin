@@ -1,5 +1,6 @@
 package org.chai.kevin;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class RefreshValueService {
 			ExpressionValue newValue = expressionService.calculate(expressionValue.getExpression(), expressionValue.getOrganisationUnit(), expressionValue.getPeriod());
 			expressionValue.setStatus(newValue.getStatus());
 			expressionValue.setValue(newValue.getValue());
+			expressionValue.setTimestamp(new Date());
 			valueService.save(expressionValue);
 		}
 	}
@@ -96,6 +98,7 @@ public class RefreshValueService {
 				ExpressionValue value = new ExpressionValue(null, null, (OrganisationUnit)row[0], expression, (Period)row[1]);
 				if (valueService.getValue(value.getExpression(), value.getOrganisationUnit(), value.getPeriod()) == null) {
 					ExpressionValue newValue = expressionService.calculate(value.getExpression(), value.getOrganisationUnit(), value.getPeriod());
+					newValue.setTimestamp(new Date());
 					valueService.save(newValue);
 				}
 			}
@@ -138,6 +141,7 @@ public class RefreshValueService {
 			calculationValue.setValue(newValue.getValue());
 			calculationValue.setHasMissingExpression(newValue.getHasMissingExpression());
 			calculationValue.setHasMissingValues(newValue.getHasMissingValues());
+			calculationValue.setTimestamp(new Date());
 			valueService.save(calculationValue);
 		}
 	}
@@ -178,6 +182,7 @@ public class RefreshValueService {
 				CalculationValue value = new CalculationValue(calculation, (OrganisationUnit)row[0], (Period)row[1]);
 				if (valueService.getValue(value.getCalculation(), value.getOrganisationUnit(), value.getPeriod()) == null) {
 					CalculationValue newValue = expressionService.calculate(value.getCalculation(), value.getOrganisationUnit(), value.getPeriod());
+					newValue.setTimestamp(new Date());
 					valueService.save(newValue);
 				}
 			}

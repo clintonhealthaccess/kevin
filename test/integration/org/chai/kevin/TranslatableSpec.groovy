@@ -63,12 +63,12 @@ class TranslatableSpec extends IntegrationTests {
 
 	private static final Log log = LogFactory.getLog(TranslatableSpec.class)
 
-	static final String ENGLISH = ENGLISH
-	static final String FRANCAIS = FRANCAIS
+	static final String ENGLISH = "ENGLISH"
+	static final String FRANCAIS = "FRANCAIS"
 
 	def "empty name transfers properly to json"() {
 		when:
-		dataElement = newDataElement(new Translation(), CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(new Translation(), CODE(1), Type.TYPE_NUMBER())
 
 		then:
 		dataElement.names["en"] == null
@@ -78,7 +78,7 @@ class TranslatableSpec extends IntegrationTests {
 
 	def "translatable set map sets json"() {
 		when:
-		def dataElement = newDataElement(j(["en":ENGLISH, "fr":FRANCAIS]), CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(j(["en":ENGLISH, "fr":FRANCAIS]), CODE(1), Type.TYPE_NUMBER())
 
 		then:
 		(new HashMap(["en":ENGLISH, "fr":FRANCAIS])).equals(dataElement.names)
@@ -89,7 +89,7 @@ class TranslatableSpec extends IntegrationTests {
 
 	def "translatable set json sets map"() {
 		when:
-		dataElement = newDataElement(j("en":"test"), CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(j("en":"test"), CODE(1), Type.TYPE_NUMBER())
 		
 		dataElement.names.putAll([en: ENGLISH, fr: FRANCAIS]);
 		dataElement.save(failOnError:true);
@@ -103,7 +103,7 @@ class TranslatableSpec extends IntegrationTests {
 
 	def "translatable set map modifies json"() {
 		when:
-		def dataElement = newDataElement(new Translation(), CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(new Translation(), CODE(1), Type.TYPE_NUMBER())
 
 		dataElement.names = new Translation(jsonText: JSONUtils.getJSONFromMap([en: ENGLISH, fr: "Anglais"]));
 		dataElement.save(failOnError:true)

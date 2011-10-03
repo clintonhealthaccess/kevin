@@ -217,29 +217,29 @@ class Initializer {
 		if (!DataElement.count()) {
 			// Data Elements
 			def dataElement10 = new DataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
-			def dataElement1 = new DataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: Type.TYPE_NUMBER)
-			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: Type.TYPE_NUMBER)
+			def dataElement1 = new DataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: Type.TYPE_NUMBER())
+			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: Type.TYPE_NUMBER())
 			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: Type.TYPE_ENUM (Enum.findByCode('ENUM1').code))
-			def dataElement4 = new DataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: Type.TYPE_BOOL)
-			def dataElement5 = new DataElement(names:j(["en":"Element 5"]), descriptions:j([:]), code:"CODE5", type: Type.TYPE_BOOL)
-			def dataElement6 = new DataElement(names:j(["en":"Element 6"]), descriptions:j([:]), code:"CODE6", type: Type.TYPE_BOOL)
-			def dataElement7 = new DataElement(names:j(["en":"Element 7"]), descriptions:j([:]), code:"CODE7", type: Type.TYPE_BOOL)
-			def dataElement8 = new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: Type.TYPE_NUMBER)
-			def dataElement9 = new DataElement(names:j(["en":"Element 9"]), descriptions:j([:]), code:"CODE9", type: Type.TYPE_NUMBER)
-			def dataElement11 = new DataElement(names:j(["en":"Element 11"]), descriptions:j([:]), code:"CODE11", type: Type.TYPE_DATE)
-			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: Type.TYPE_STRING)
-			def dataElement81 = new DataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: Type.TYPE_NUMBER)
-			def dataElement91 = new DataElement(names:j(["en":"Element 91"]), descriptions:j([:]), code:"CODE91", type: Type.TYPE_NUMBER)
+			def dataElement4 = new DataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: Type.TYPE_BOOL())
+			def dataElement5 = new DataElement(names:j(["en":"Element 5"]), descriptions:j([:]), code:"CODE5", type: Type.TYPE_BOOL())
+			def dataElement6 = new DataElement(names:j(["en":"Element 6"]), descriptions:j([:]), code:"CODE6", type: Type.TYPE_BOOL())
+			def dataElement7 = new DataElement(names:j(["en":"Element 7"]), descriptions:j([:]), code:"CODE7", type: Type.TYPE_BOOL())
+			def dataElement8 = new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: Type.TYPE_NUMBER())
+			def dataElement9 = new DataElement(names:j(["en":"Element 9"]), descriptions:j([:]), code:"CODE9", type: Type.TYPE_NUMBER())
+			def dataElement11 = new DataElement(names:j(["en":"Element 11"]), descriptions:j([:]), code:"CODE11", type: Type.TYPE_DATE())
+			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: Type.TYPE_STRING())
+			def dataElement81 = new DataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: Type.TYPE_NUMBER())
+			def dataElement91 = new DataElement(names:j(["en":"Element 91"]), descriptions:j([:]), code:"CODE91", type: Type.TYPE_NUMBER())
 			def dataElement101 = new DataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
-			def dataElement111 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"CODE111", type: Type.TYPE_DATE)
+			def dataElement111 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"CODE111", type: Type.TYPE_DATE())
 			
-			def dataElementList = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LIST1", type: Type.TYPE_LIST(Type.TYPE_NUMBER))
+			def dataElementList = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LIST1", type: Type.TYPE_LIST(Type.TYPE_NUMBER()))
 			def dataElementMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"MAP1", 
-				type: Type.TYPE_MAP(["key1":Type.TYPE_NUMBER, "key2":Type.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": Type.TYPE_BOOL])
+				type: Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(), "key2":Type.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": Type.TYPE_BOOL()])
 			)
 			
 			def dataElementListMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
-				type: Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER, "key2":Type.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": Type.TYPE_BOOL, "key4": Type.TYPE_STRING]))
+				type: Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(), "key2":Type.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": Type.TYPE_BOOL(), "key4": Type.TYPE_STRING()]))
 			)
 			
 			dataElement10.save(failOnError: true, flush:true)
@@ -371,15 +371,15 @@ class Initializer {
 		if (!Expression.count()) {
 			// indicators
 			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
-			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: Type.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: Type.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "\$"+DataElement.findByCode("CODE1").id+"+\$"+DataElement.findByCode("CODE1").id, type: Type.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "\$"+DataElement.findByCode("CODE2").id, type: Type.TYPE_NUMBER, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\$"+DataElement.findByCode("CODE3").id, type: Type.TYPE_STRING, timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "\$"+DataElement.findByCode("CODE1").id+"+\$"+DataElement.findByCode("CODE1").id, type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "\$"+DataElement.findByCode("CODE2").id, type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\$"+DataElement.findByCode("CODE3").id, type: Type.TYPE_STRING(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
 		}
 
 //		if (!Constant.count()) {
-//			new Constant(names:j(["en":"Constant 1000"]), code:"CONST1", type: Type.TYPE_NUMBER, value: "1000", descriptions:j(["en":"Description"])).save(failOnError: true, flush:true)
+//			new Constant(names:j(["en":"Constant 1000"]), code:"CONST1", type: Type.TYPE_NUMBER(), value: "1000", descriptions:j(["en":"Description"])).save(failOnError: true, flush:true)
 //		}
 	}
 
@@ -390,7 +390,7 @@ class Initializer {
 					names:j(["en":"Map Expression 2"]),
 					descriptions:j([:]),
 					code:"Map Expression 2",
-					type: Type.TYPE_NUMBER,
+					type: Type.TYPE_NUMBER(),
 					expression: "\$"+DataElement.findByCode("CODE1").id+" / 100",
 					timestamp:new Date()
 					).save(failOnError: true, validate: false)
@@ -401,7 +401,7 @@ class Initializer {
 				names:j(["en":"Map Expression"]),
 				descriptions:j([:]),
 				code:"Map Expression", 
-				type: Type.TYPE_NUMBER,
+				type: Type.TYPE_NUMBER(),
 				expression: "10 / 100",
 				timestamp:new Date()
 			).save(failOnError: true, validate: false)
@@ -410,7 +410,7 @@ class Initializer {
 			def calculation1 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 10"),
 						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER)
+					], timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation1.save()
 			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1, type: MapsTargetType.AVERAGE).save(failOnError: true, flush:true)
 		}
@@ -490,7 +490,7 @@ class Initializer {
 			def calculation1 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 10"),
 						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER)
+					], timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation1.save()
 
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -501,7 +501,7 @@ class Initializer {
 			def calculation2 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 20"),
 						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER)
+					], timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation2.save()
 
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -512,7 +512,7 @@ class Initializer {
 			def calculation3 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
 						"Health Center": Expression.findByCode("Element 1")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER)
+					], timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation3.save()
 
 			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -522,7 +522,7 @@ class Initializer {
 
 			def calculation4 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 1"),
-					], timestamp:new Date(), type: Type.TYPE_NUMBER)
+					], timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation4.save()
 
 			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -533,7 +533,7 @@ class Initializer {
 			def calculation5 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 2"),
 						"Health Center": Expression.findByCode("Element 2")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER)
+					], timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation5.save()
 
 			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -544,7 +544,7 @@ class Initializer {
 			def calculation6 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Element 3"),
 						"Health Center": Expression.findByCode("Element 3")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER)
+					], timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation6.save()
 
 			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(

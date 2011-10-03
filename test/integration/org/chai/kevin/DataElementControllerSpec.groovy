@@ -6,6 +6,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataElementController;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.Value;
 
 class DataElementControllerSpec extends IntegrationTests {
 
@@ -14,11 +15,12 @@ class DataElementControllerSpec extends IntegrationTests {
 	def "cannot delete data element when it still has values"() {
 		setup:
 		dataElementController = new DataElementController()
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
 		def organisation = newOrganisationUnit(BUTARO)
 		def period = newPeriod()
+		def dataElement = null
 		
 		when:
+		dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		dataElementController.params.id = dataElement.id
 		dataElementController.delete()
 		
@@ -26,13 +28,42 @@ class DataElementControllerSpec extends IntegrationTests {
 		DataElement.count() == 0
 		
 		when:
-		newDataValue(dataElement, period, organisation)
+		dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		newDataValue(dataElement, period, organisation, Value.NULL)
 		dataElementController.params.id = dataElement.id
 		dataElementController.delete()
 		
 		then:
+//		dataElementController.response.contentAsString.contains("success")
 		DataElement.count() == 1
 		DataValue.count() == 1
+	}
+	
+	def "cannot edit data element type if it still has values" () {
+		setup:
+		dataElementController = new DataElementController()
+		def organisation = newOrganisationUnit(BUTARO)
+		def period = newPeriod()
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+	
+		when:
+		dataElementController.params.id = dataElement.id
+		dataElementController.params['type.jsonType'] = Type.TYPE_BOOL().getJsonType()
+		dataElementController.saveWithoutTokenCheck()
+		
+		then:
+		dataElementController.response.contentAsString.contains("success")
+		dataElement.type.equals(Type.TYPE_BOOL())
+		
+		when:
+		newDataValue(dataElement, period, organisation, Value.NULL)
+		dataElementController.params.id = dataElement.id
+		dataElementController.params['type.jsonType'] = Type.TYPE_STRING().getJsonType()
+		dataElementController.saveWithoutTokenCheck()
+		
+		then:
+//		dataElementController.response.contentAsString.contains("success")
+		(Type.TYPE_BOOL()).equals(dataElement.type)
 	}
 	
 	def "get data elements"() {
@@ -40,7 +71,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController = new DataElementController()
 		
 		when:
-		newDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER)
+		newDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		
 		dataElementController.params.searchText = 'ele'
 		def model = dataElementController.getData()
@@ -56,13 +87,13 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController = new DataElementController()
 		
 		when:
-		def dataElement = newDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		dataElementController.params.dataElement = dataElement.id+""
-		def model = dataElementController.getDataElementDescription()
+		def model = dataElementController.getDescription()
 		
 		then:
 		dataElementController.response.contentAsString.contains("success")
-		dataElementController.response.contentAsString.contains("Description")
+		dataElementController.response.contentAsString.contains("number")
 		
 	}
 }

@@ -28,133 +28,113 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.Initializer;
-import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.IntegrationTestInitializer;
 import org.chai.kevin.data.Average;
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Expression;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.period.Period;
+import org.chai.kevin.data.Calculation
+import org.chai.kevin.data.Type
 
-import grails.plugin.spock.IntegrationSpec;
-import grails.plugin.spock.UnitSpec;
-
-class DashboardTargetController extends DashboardIntegrationTests {
+class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 
 	def dashboardTargetController
 	
-	def setup() {
-		Initializer.createDummyStructure();
-		IntegrationTestInitializer.createExpressions();
-		IntegrationTestInitializer.createDashboard();
-	}
-	
-	def "test tests"() {
-		expect:
-		DashboardObjectiveEntry.get(DashboardObjective.findByCode("HRH").objectiveEntries[0].id) != null
-		DashboardObjectiveEntry.get(DashboardObjective.findByCode("STAFFING").objectiveEntries[0].id) != null
-	}
 	
 	def "delete target deletes entry and target"() {
 		setup:
-		def entries = DashboardObjectiveEntry.count()
-		def targets = DashboardTarget.count()
-		def objectives = DashboardObjective.count()
+		def root = newDashboardObjective(CODE(1))
+		def caculation = newAverage([:], CODE(2), Type.TYPE_NUMBER())
+		def target = newDashboardTarget(TARGET1, caculation, root, 1)
+	
 		dashboardTargetController = new DashboardTargetController();
 		
 		when:
-		dashboardTargetController.params.id = DashboardObjective.findByCode("STAFFING").objectiveEntries[0].id
+		dashboardTargetController.params.id = target.parent.id
 		dashboardTargetController.delete()
 		
 		then:
-		DashboardTarget.count() == targets-1
-		DashboardObjectiveEntry.count() == entries-1
-		DashboardObjective.count() == objectives
 		dashboardTargetController.response.contentAsString.contains "success";
+
+		DashboardTarget.count() == 0
+		DashboardObjectiveEntry.count() == 0
+		DashboardObjective.count() == 1
 	}
 	
 	def "save new target"() {
 		setup:
-		def entries = DashboardObjectiveEntry.count()
-		def targets = DashboardTarget.count()
-		def objectives = DashboardObjective.count()
+		def root = newDashboardObjective(CODE(1))
 		dashboardTargetController = new DashboardTargetController()
 		
 		when:
-		dashboardTargetController.params['currentObjective'] = DashboardObjective.findByCode("STAFFING").id
+		dashboardTargetController.params['currentObjective'] = root.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculation.expressions['+OrganisationUnitGroup.findByName('Health Center').uuid+'].id'] = "null"
+		dashboardTargetController.params['entry.calculation.expressions['+HEALTH_CENTER_GROUP+'].id'] = "null"
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
 		dashboardTargetController.response.contentAsString.contains "success";
 		newTarget != null
-		entries + 1 == DashboardObjectiveEntry.count()
-		targets + 1 == DashboardTarget.count() 
-		objectives == DashboardObjective.count() 
 		newTarget.parent.weight == 1
+		DashboardObjectiveEntry.count() == 1
+		DashboardTarget.count() == 1 
+		DashboardObjective.count() == 1 
 	}
 	
 	def "save target with calculations"() {
 		setup:
-		def entries = DashboardObjectiveEntry.count()
-		def targets = DashboardTarget.count()
-		def objectives = DashboardObjective.count()
-		def calculations = Average.count()
+		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
+		def root = newDashboardObjective(CODE(1))
 		dashboardTargetController = new DashboardTargetController()
 		
 		when:
-		dashboardTargetController.params['currentObjective'] = DashboardObjective.findByCode("STAFFING").id
+		dashboardTargetController.params['currentObjective'] = root.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculation.expressions['+OrganisationUnitGroup.findByName('Health Center').uuid+'].id'] = Expression.findByCode("CONST10").id+""
-		dashboardTargetController.params['entry.calculation.epxressions['+OrganisationUnitGroup.findByName('District Hospital').uuid+'].id'] = "null"
+		dashboardTargetController.params['entry.calculation.expressions['+HEALTH_CENTER_GROUP+'].id'] = expression.id+""
+		dashboardTargetController.params['entry.calculation.epxressions['+DISTRICT_HOSPITAL_GROUP+'].id'] = "null"
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
 		dashboardTargetController.response.contentAsString.contains "success";
 		newTarget != null
-		entries + 1 == DashboardObjectiveEntry.count()
-		targets + 1 == DashboardTarget.count()
-		objectives == DashboardObjective.count()
-		calculations + 1 == Calculation.count()
-		newTarget.calculation.expressions['Health Center'] == Expression.findByCode("CONST10")
+		newTarget.calculation.expressions['Health Center'] == expression
 		newTarget.calculation.expressions['District Hospital'] == null
 		newTarget.parent.weight == 1
+		
+		DashboardObjectiveEntry.count() == 1
+		DashboardTarget.count() == 1
+		DashboardObjective.count() == 1
+		Average.count() == 1
 	}
 	
 	def "edit target with calculations"() {
 		setup:
-		def entries = DashboardObjectiveEntry.count()
-		def targets = DashboardTarget.count()
-		def objectives = DashboardObjective.count()
-		def calculations = Average.count()
+		def root = newDashboardObjective(CODE(1))
+		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
+		def caculation = newAverage([:], CODE(3), Type.TYPE_NUMBER())
+		def target = newDashboardTarget(TARGET1, caculation, root, 1)
 		dashboardTargetController = new DashboardTargetController()
 		
 		when:
-		dashboardTargetController.params['id'] = DashboardTarget.findByCode('A2').parent.id
+		dashboardTargetController.params['id'] = target.parent.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculation.expressions['+OrganisationUnitGroup.findByName('Health Center').uuid+'].id'] = Expression.findByCode("CONST10").id+""
-		dashboardTargetController.params['entry.calculation.expressions['+OrganisationUnitGroup.findByName('District Hospital').uuid+'].id'] = "null"
+		dashboardTargetController.params['entry.calculation.expressions['+HEALTH_CENTER_GROUP+'].id'] = expression.id+""
+		dashboardTargetController.params['entry.calculation.expressions['+DISTRICT_HOSPITAL_GROUP+'].id'] = "null"
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
 		dashboardTargetController.response.contentAsString.contains "success";
 		newTarget != null
-		entries == DashboardObjectiveEntry.count()
-		targets == DashboardTarget.count()
-		objectives == DashboardObjective.count()
-		calculations == Calculation.count()
-		newTarget.calculation.expressions['Health Center'] == Expression.findByCode("CONST10")
+		newTarget.calculation.expressions['Health Center'] == expression
 		newTarget.calculation.expressions['District Hospital'] == null
 		newTarget.parent.weight == 1
+
+		DashboardObjectiveEntry.count() == 1
+		DashboardTarget.count() == 1
+		DashboardObjective.count() == 1
+		Average.count() == 1
 	}
 	
 }

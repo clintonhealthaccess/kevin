@@ -44,7 +44,22 @@ class ExpressionServiceUnitSpec extends UnitSpec {
 		where:
 		expression	| map					| newExpression
 		"1"			| new HashMap()			| "1"
-		"\$1"		| ["\$1": "test"]	| "test"
+		"\$1"		| ["\$1": "test"]		| "test"
+		"\$10"		| ["\$1": "test"]		| "\$10"
+		"\$1"		| ["\$1": "test"]		| "test"
+		"\$1"		| ["\$1": "\$2"]		| "\$2"
 	}
-	
+
+	def "test replace value"() {
+		setup:
+		def expressionService = new ExpressionService();
+		
+		when:
+		expressionService.convertStringExpression("", ["test": "test"])
+		
+		then:
+		thrown IllegalArgumentException
+		
+	}
+		
 }

@@ -49,13 +49,10 @@ public class Type {
 	
 	public void setJsonType(String jsonType) {
 		this.jsonType = jsonType;
+		this.type = null;
 	}
 	
 	private JSONObject type = null;
-	public static Type TYPE_DATE = new Type("{\"type\":\"date\"}");
-	public static Type TYPE_STRING = new Type("{\"type\":\"string\"}");
-	public static Type TYPE_NUMBER = new Type("{\"type\":\"number\"}");
-	public static Type TYPE_BOOL = new Type("{\"type\":\"bool\"}");
 	
 	@Transient
 	public JSONObject getJsonObject() {
@@ -126,6 +123,9 @@ public class Type {
 			for (Type type : getElementMap().values()) {
 				if (!type.isValid()) return false;
 			}
+			break;
+		case ENUM:
+			return getEnumCode() != null;
 		}
 		return true;
 	}
@@ -721,6 +721,11 @@ public class Type {
 		return true;
 	}
 
+	public static Type TYPE_DATE() { return new Type("{\"type\":\"date\"}");}
+	public static Type TYPE_STRING() { return new Type("{\"type\":\"string\"}");}
+	public static Type TYPE_NUMBER() { return new Type("{\"type\":\"number\"}");}
+	public static Type TYPE_BOOL() { return new Type("{\"type\":\"bool\"}");}
+	
 	public static Type TYPE_MAP (Map<String, Type> map) {
 		StringBuilder builder = new StringBuilder();
 		for (Entry<String, Type> entry : map.entrySet()) {

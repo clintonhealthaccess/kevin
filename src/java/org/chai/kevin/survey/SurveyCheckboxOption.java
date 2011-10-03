@@ -45,6 +45,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -116,8 +117,8 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 
 	public SurveyCheckboxOption deepCopy(SurveyCloner cloner) {
 		SurveyCheckboxOption copy = new SurveyCheckboxOption();
-		copy.setDescriptions(getDescriptions());
-		copy.setNames(getNames());
+		copy.setDescriptions(new Translation(getDescriptions()));
+		copy.setNames(new Translation(getNames()));
 		copy.setGroupUuidString(getGroupUuidString());
 		copy.setOrder(getOrder());
 		copy.setSurveyElement(cloner.getElement(getSurveyElement()));

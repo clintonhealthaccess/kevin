@@ -45,6 +45,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils;
 
 @SuppressWarnings("serial")
@@ -105,8 +106,8 @@ public class SurveyTableColumn extends SurveyTranslatable {
 	@Transient
 	protected SurveyTableColumn deepCopy(SurveyCloner cloner) {
 		SurveyTableColumn copy = new SurveyTableColumn();
-		copy.setNames(getNames());
-		copy.setDescriptions(getDescriptions());
+		copy.setNames(new Translation(getNames()));
+		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setGroupUuidString(getGroupUuidString());
 		copy.setOrder(getOrder());
 		copy.setQuestion((SurveyTableQuestion)cloner.getQuestion(getQuestion()));

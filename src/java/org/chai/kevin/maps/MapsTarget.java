@@ -60,10 +60,10 @@ public class MapsTarget extends Translatable {
 	
 	private Long id;
 	private MapsTargetType type;
-	private Expression expression;
 	private Calculation calculation;
 	private Integer order;
-	
+
+	private Expression expression;
 	private Double maxValue;
 	
 	@Id

@@ -1,37 +1,75 @@
 package org.chai.kevin.dsr
 
-import org.chai.kevin.IntegrationTestInitializer;
-import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.util.JSONUtils;
-import org.hisp.dhis.period.Period;
+import org.chai.kevin.data.Type
 
-class DsrServiceSpec extends IntegrationTests {
+class DsrServiceSpec extends DsrIntegrationTests {
 
 	def dsrService
 	
-	def setup() {
-		IntegrationTestInitializer.createDummyStructure();
-	}
-	
 	def "test dsr formatting"() {
-		setup:
-		def expression = new Expression(code:"EXPR1", type: Type.TYPE_NUMBER, expression: "10").save(failOnError: true)
-		def objective = new DsrObjective(code: "OBJ1")
-		def target = new DsrTarget(expression: expression)
-		objective.addTarget(target)
-		objective.save(failOnError: true)
-		refresh()
-		
 		when:
-		def organisation = getOrganisation("Burera")
-		def period = Period.list()[1]
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+		def objective = newDsrObjective(CODE(2))
+		def target = newDsrTarget(CODE(3), expression, format, [(DISTRICT_HOSPITAL_GROUP), (HEALTH_CENTER_GROUP)], objective)
+		refreshExpression()
+		def organisation = getOrganisation(BURERA)
+		
 		def dsrTable = dsrService.getDsr(organisation, objective, period)
 		
 		then:
-		dsrTable.getDsrValue(getOrganisation("Butaro DH"), target) == "10"
+		dsrTable.getDsr(getOrganisation(BUTARO), target).stringValue == value
+		dsrTable.getDsr(getOrganisation(BUTARO), target).applies == true
+		
+		where:
+		format	| value
+		"#"		| "10"
+		""		| "10"
+		"#.0"	| "10.0"
+		
+	}
+
+	def "test dsr with no groups should return no value"() {
+		when:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+		def objective = newDsrObjective(CODE(2))
+		def target = newDsrTarget(CODE(3), expression, [], objective)
+		refreshExpression()
+		def organisation = getOrganisation(BURERA)
+		
+		def dsrTable = dsrService.getDsr(organisation, objective, period)
+		
+		then:
+		dsrTable.getDsr(getOrganisation(organisationName), target).stringValue == null
+		dsrTable.getDsr(getOrganisation(organisationName), target).applies == false
+		
+		where:
+		organisationName << [BUTARO, KIVUYE]
 		
 	}
 	
+	def "test dsr with groups"() {
+		when:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+		def objective = newDsrObjective(CODE(2))
+		def target = newDsrTarget(CODE(3), expression, [(DISTRICT_HOSPITAL_GROUP)], objective)
+		refreshExpression()
+		def organisation = getOrganisation(BURERA)
+		
+		def dsrTable = dsrService.getDsr(organisation, objective, period)
+		
+		then:
+		dsrTable.getDsr(getOrganisation(BUTARO), target).stringValue == "10"
+		dsrTable.getDsr(getOrganisation(BUTARO), target).applies == true
+		
+		dsrTable.getDsr(getOrganisation(KIVUYE), target).stringValue == null
+		dsrTable.getDsr(getOrganisation(KIVUYE), target).applies == false
+		
+	}
 	
 }

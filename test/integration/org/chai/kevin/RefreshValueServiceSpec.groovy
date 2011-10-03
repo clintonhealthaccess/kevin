@@ -46,28 +46,39 @@ class RefreshValueServiceSpec extends IntegrationTests {
 
 	def refreshValueService;
 	
-	
 	def "test get non calculated expressions"() {
 		when:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER)
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
 		
 		then:
-		List<ExpressionValue> values = refreshValueService.getNonCalculatedExpressions(expression);
-		values.equals([new ExpressionValue(null, null, organisation, expression, period)])
+		ExpressionValue.count() == 0
+		
+		when:
+		refreshValueService.refreshNonCalculatedExpressions(expression);
+		
+		then:
+		ExpressionValue.count() == 1
 	}
 	
 	def "test get non calculated expressions when already one expression value"() {
 		when:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER)
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
 		def expressionValue = newExpressionValue(expression, period, organisation, Status.VALID, Value.NULL)
+		def timestamp = expressionValue.timestamp
 		
 		then:
-		List<ExpressionValue> values = refreshValueService.getNonCalculatedExpressions(expression);
-		values.size() == 0
+		ExpressionValue.count() == 1
+		
+		when:
+		refreshValueService.refreshNonCalculatedExpressions(expression);
+
+		then:
+		ExpressionValue.count() == 1
+		ExpressionValue.list()[0].timestamp.equals(timestamp)	
 	}
 	
 	
@@ -75,49 +86,55 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setup:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER)
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
 		def expressionValue = newExpressionValue(expression, period, organisation, Status.VALID, Value.NULL)
 		def values = null
 		
 		when:
 		expression.timestamp = new Date()
-		expression.save()
+		expression.save(flush: true)	
 		
 		expressionValue.timestamp = new Date()
-		expressionValue.save()
-		values = refreshValueService.getOutdatedExpressions(expression);
+		expressionValue.save(flush: true)
+		
+		def timestamp = expressionValue.timestamp
+		refreshValueService.refreshOutdatedExpressions(expression);
 		
 		then:
-		values.size() == 0
+		ExpressionValue.count() == 1
+		ExpressionValue.list()[0].timestamp.equals(timestamp)
 		
 		when:
-		expression.timestamp = new Date()
-		expression.save()
-		values = refreshValueService.getOutdatedExpressions(expression);
+		def newDate = new Date()
+		newDate.setSeconds(newDate.getSeconds() + 1)
+		expression.timestamp = newDate
+		expression.save(flush: true)
+		refreshValueService.refreshOutdatedExpressions(expression);
 		
 		then:
-		values.size() == 1
+		ExpressionValue.count() == 1
+		!ExpressionValue.list()[0].timestamp.equals(timestamp)
 	}
 	
 	def "test get non calculated calculations"() {
 		when:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER)
-		def average = newAverage([DISTRICT_HOSPITAL_GROUP:expression])
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		def average = newAverage([DISTRICT_HOSPITAL_GROUP:expression], CODE(2), Type.TYPE_NUMBER())
 		
-		List<CalculationValue> values = refreshValueService.getNonCalculatedCalculations(average);
+		refreshValueService.refreshNonCalculatedCalculations(average);
 
 		then:
-		values.size() == 1
+		CalculationValue.count() == 1
 	}
 	
 	def "test outdated calculations"() {
 		setup:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER)
-		def average = newAverage([DISTRICT_HOSPITAL_GROUP:expression])
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		def average = newAverage([(DISTRICT_HOSPITAL_GROUP):expression], CODE(2), Type.TYPE_NUMBER())
 		def calculationValue = newCalculationValue(average, period, organisation, false, false, Value.NULL)
 		def values = null
 		
@@ -126,39 +143,46 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		average.save()
 		
 		calculationValue.timestamp = new Date()
-		calculationValue.save()
+		calculationValue.save(flush: true)
 		
-		values = refreshValueService.getOutdatedCalculations(average);
+		def timestamp = calculationValue.timestamp
+		refreshValueService.refreshOutdatedCalculations(average);
 		
 		then:
-		values.size() == 0
+		CalculationValue.count() == 1
+		CalculationValue.list()[0].timestamp.equals(timestamp)
 		
 		when:
-		average.timestamp = new Date()
-		average.save()
-		
-		values = refreshValueService.getOutdatedCalculations();
+		def newDate = new Date()
+		newDate.setSeconds(newDate.getSeconds() + 1)
+		average.timestamp = newDate
+		average.save(flush: true)
+		refreshValueService.refreshOutdatedCalculations(average);
 
 		then:
-		values.size() == 1
+		CalculationValue.count() == 1
+		!CalculationValue.list()[0].timestamp.equals(timestamp)
+		
+//		when:
+//		newDate.setSeconds(newDate.getSeconds() + 1)
+//		calculationValue.timestamp = newDate
+//		calculationValue.save(flush: true)
+//		timestamp = calculationValue.timestamp	
+//		refreshValueService.refreshOutdatedCalculations(average);
+//
+//		then:
+//		CalculationValue.count() == 1
+//		CalculationValue.list()[0].timestamp.equals(timestamp)
 		
 		when:
-		calculationValue.timestamp = new Date()
-		calculationValue.save()
-				
-		values = refreshValueService.getOutdatedCalculations();
-
-		then:
-		values.size() == 0
-		
-		when:
-		expression.timestamp = new Date()
-		expression.save()
-		
-		values = refreshValueService.getOutdatedCalculations();
+		newDate.setSeconds(newDate.getSeconds() + 1)
+		expression.timestamp = newDate
+		expression.save(flush: true)
+		refreshValueService.refreshOutdatedCalculations(average);
 		
 		then:
-		values.size() == 1
+		CalculationValue.count() == 1
+		!CalculationValue.list()[0].timestamp.equals(timestamp)
 	}
 	
 	

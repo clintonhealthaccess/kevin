@@ -1,6 +1,8 @@
 package org.chai.kevin.survey
 
-class TableQuestionControllerSpec {
+import org.chai.kevin.IntegrationTests;
+
+class TableQuestionControllerSpec extends IntegrationTests {
 
 	
 	def "test table preview with enum"() {

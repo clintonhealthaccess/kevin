@@ -111,7 +111,15 @@ public class SurveyValidationRule {
 		copy.setSurveyElement(cloner.getElement(getSurveyElement()));
 		copy.setValidationMessage(getValidationMessage());
 		for (SurveyElement element : getDependencies()) {
-			copy.getDependencies().add(cloner.getElement(element));
+			SurveyElement newElement = null;
+			if (!element.getSurvey().equals(getSurveyElement().getSurvey())) {
+				cloner.getUnchangedValidationRules().put(this, element.getId());
+				newElement = element;
+			}
+			else {
+				newElement = cloner.getElement(element);
+			}
+			copy.getDependencies().add(newElement);
 		}
 	}
 	

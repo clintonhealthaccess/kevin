@@ -38,9 +38,12 @@ import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Expression
 import org.chai.kevin.data.Sum
+import org.chai.kevin.data.Type;
 import org.chai.kevin.value.CalculationValue
 import org.chai.kevin.value.DataValue
 import org.chai.kevin.value.ExpressionValue
+import org.chai.kevin.value.ExpressionValue.Status;
+import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet
@@ -54,7 +57,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	static final String CODE (def number) { return "CODE"+number }
 	
-	static final String INVALID_TYPE = "invalid_type"
+	static final Type INVALID_TYPE = new Type("invalid_type")
 	
 	static final String HEALTH_CENTER_GROUP = "Health Center"
 	static final String DISTRICT_HOSPITAL_GROUP = "District Hospital"
@@ -126,7 +129,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 			parent.children << organisation
 			parent.save(failOnError: true)
 		}
-		organisation.save(failOnError: true)
+		organisation.save(failOnError: true, flush: true)
 		return organisation
 	}
 	
@@ -150,7 +153,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	ExpressionValue newExpressionValue(def expression, def period, def organisationUnit) {
-		return newExpressionValue(expression, period, organisationUnit, null, null)
+		return newExpressionValue(expression, period, organisationUnit, Status.VALID, Value.NULL)
 	}
 
 	CalculationValue newCalculationValue(def calculation, def period, def organisationUnit, def hasMissingValues, def hasMissingExpression, def value) {
@@ -179,7 +182,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	Sum newSum(def expressions, def code, def type) {
-		return new Sum(expressions: expressions, code: code, type: type).save(failOnError: true)
+		return new Sum(expressions: expressions, code: code, type: type).save(failOnError: true, flush: true)
 	}
 	
 	Enum newEnume(def code) {

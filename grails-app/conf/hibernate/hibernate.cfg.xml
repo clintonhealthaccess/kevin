@@ -9,6 +9,7 @@
 <!-- 	    <mapping class="org.chai.kevin.Translation" /> -->
 	    
 	    <mapping class="org.chai.kevin.data.Expression" />
+	    <mapping class="org.chai.kevin.data.Calculation" />
 	    <mapping class="org.chai.kevin.data.Average" />
 	    <mapping class="org.chai.kevin.data.Sum" />
 	    <mapping class="org.chai.kevin.data.DataElement" />

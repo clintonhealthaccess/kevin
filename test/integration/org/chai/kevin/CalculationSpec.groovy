@@ -11,13 +11,13 @@ class CalculationSpec extends IntegrationTests {
 	
 	def "calculation type cannot be invalid"() {
 		when:
-		newSum([:], CODE(1), new Type(INVALID_TYPE))
+		new Sum(expressions:[:], code:CODE(1), type: INVALID_TYPE).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
-		newAverage([:], CODE(2), new Type(INVALID_TYPE))
+		new Average(expressions:[:], code:CODE(2), type: INVALID_TYPE).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -25,31 +25,31 @@ class CalculationSpec extends IntegrationTests {
 	
 	def "sum type cannot be of non-number"() {
 		when:
-		newSum([:], CODE(1), type)
+		new Sum(expressions:[:], code:CODE(1), type:type).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		where:
-		type << [Type.TYPE_BOOL, Type.TYPE_DATE, Type.TYPE_STRING, Type.TYPE_ENUM(CODE(3))]
+		type << [Type.TYPE_BOOL(), Type.TYPE_DATE(), Type.TYPE_STRING(), Type.TYPE_ENUM(CODE(3))]
 	}	
 	
 	def "average type cannot be of non-number"() {	
 		when:
-		newAverage([:], CODE(2), type)
+		new Average(expressions:[:], code:CODE(2), type:type).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 
 		where:
-		type << [Type.TYPE_BOOL, Type.TYPE_DATE, Type.TYPE_STRING, Type.TYPE_ENUM(CODE(3))]
+		type << [Type.TYPE_BOOL(), Type.TYPE_DATE(), Type.TYPE_STRING(), Type.TYPE_ENUM(CODE(3))]
 	}
 	
 	def "cannot delete expression with associated calculation"() {
 		when:
-		def expression = expression(CODE(1), Type.TYPE_NUMBER, "10")
-		def average = newAverage([HEALTH_CENTER_GROUP: expression], Type.TYPE_NUMBER)
-		expression.delete()
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+		def average = new Average(expressions: [HEALTH_CENTER_GROUP: expression], type:Type.TYPE_NUMBER()).save(failOnError: true)
+		expression.delete(flush: true)
 		
 		then:
 		thrown Exception

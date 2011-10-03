@@ -78,7 +78,7 @@ public abstract class StoredValue {
 		return period;
 	}
 
-	@Column(nullable=false, columnDefinition="datetime")
+	@Column(nullable=false)
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	public Date getTimestamp() {
 		return timestamp;

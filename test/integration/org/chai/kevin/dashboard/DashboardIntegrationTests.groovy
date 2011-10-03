@@ -3,7 +3,7 @@ package org.chai.kevin.dashboard
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
 
-class DashboardIntegrationTests extends IntegrationTests {
+abstract class DashboardIntegrationTests extends IntegrationTests {
 
 	static String ROOT = "Root"
 	static String OBJECTIVE = "Objective"
@@ -26,7 +26,7 @@ class DashboardIntegrationTests extends IntegrationTests {
 
 	def newDashboardTarget(def code, def calculation, def parent, def weight) {
 		def dashboardTarget = new DashboardTarget(names: [:], code: code, calculation: calculation).save(failOnError: true)
-		def dashboardObjectiveEntry = new DashboardObjectiveEntry(entry: dashboardTarget, weight: weight).save(failOnError: true)
+		def dashboardObjectiveEntry = new DashboardObjectiveEntry(parent: parent, entry: dashboardTarget, weight: weight).save(failOnError: true)
 		dashboardTarget.parent = dashboardObjectiveEntry
 		parent.objectiveEntries << dashboardObjectiveEntry
 		dashboardTarget.save(failOnError: true)
@@ -39,14 +39,14 @@ class DashboardIntegrationTests extends IntegrationTests {
 		def objective = newDashboardObjective(OBJECTIVE, root, 1)
 
 		def average1 = newAverage([
-				(DISTRICT_HOSPITAL_GROUP):newExpression(CODE(2), Type.TYPE_NUMBER, "40"),
-				(HEALTH_CENTER_GROUP):newExpression(CODE(3), Type.TYPE_NUMBER, "40")
-			], CODE(1), Type.TYPE_NUMBER)
+				(DISTRICT_HOSPITAL_GROUP):newExpression(CODE(2), Type.TYPE_NUMBER(), "40"),
+				(HEALTH_CENTER_GROUP):newExpression(CODE(3), Type.TYPE_NUMBER(), "40")
+			], CODE(1), Type.TYPE_NUMBER())
 		def target1 = newDashboardTarget(TARGET1, average1, objective, 1)
 		
 		def average2 = newAverage([
-			(DISTRICT_HOSPITAL_GROUP):newExpression(CODE(4), Type.TYPE_NUMBER, "20")
-		], CODE(5), Type.TYPE_NUMBER)
+			(DISTRICT_HOSPITAL_GROUP):newExpression(CODE(4), Type.TYPE_NUMBER(), "20")
+		], CODE(5), Type.TYPE_NUMBER())
 		def target2 = newDashboardTarget(TARGET2, average1, objective, 1)
 	}
 	

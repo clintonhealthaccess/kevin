@@ -31,8 +31,10 @@ package org.chai.kevin
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.ExpressionValue.Status;
 import org.chai.kevin.value.Value;
@@ -51,16 +53,16 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "search for data element works"() {
 		setup:
-		def dataElement = newDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
 		
 		expect:
-		def dataElements = dataService.searchDataElements("ele", null)
+		def dataElements = dataService.searchDataElements("ele", [])
 		dataElements == [dataElement]
 	}
 	
 	def "delete data element with associated values throws exception"() {
 		when:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(KIVUYE)
 		newDataValue(dataElement, period, organisation, Value.NULL)
@@ -70,12 +72,12 @@ class DataServiceSpec extends IntegrationTests {
 		then:
 		thrown IllegalArgumentException
 		DataElement.count() == 1
-		
+		DataValue.count() == 1
 	}
 	
-	def "delete expressions with associated values deletes values"() {
+	def "delete expressions with associated values throws exception"() {
 		when:
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, expression: "1")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(KIVUYE)
 		newExpressionValue(expression, period, organisation, Status.VALID, Value.NULL)
@@ -83,13 +85,14 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.delete(expression)
 		
 		then:
-		Expression.count() == 0
-		ExpressionValue.count() == 0
+		thrown IllegalArgumentException
+		Expression.count() == 1
+		ExpressionValue.count() == 1
 	}
 	
-	def "delete calculation with associated values deletes values"() {
+	def "delete calculation with associated values throws exception"() {
 		when:
-		def calculation = newSum([:], CODE(1), Type.TYPE_NUMBER)
+		def calculation = newSum([:], CODE(1), Type.TYPE_NUMBER())
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(KIVUYE)
 		newCalculationValue(calculation, period, organisation, false, false, Value.NULL)
@@ -97,9 +100,19 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.delete(calculation)
 		
 		then:
-		Calculation.count() == 0
-		CalculationValue.count() == 0
+		thrown IllegalArgumentException
+		Sum.count() == 1
+		CalculationValue.count() == 1
 		
+	}
+	
+	def "get calculations for expression"() {
+		when:
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		def calculation = newSum([(DISTRICT_HOSPITAL_GROUP):expression], CODE(2), Type.TYPE_NUMBER())
+		
+		then:
+		dataService.getCalculations(expression).equals([calculation])
 	}
 	
 }

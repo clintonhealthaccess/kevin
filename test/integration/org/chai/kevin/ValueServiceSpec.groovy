@@ -51,20 +51,20 @@ class ValueServiceSpec extends IntegrationTests {
 		def organisationUnit = newOrganisationUnit(BUTARO)
 		
 		when: 
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		newDataValue(dataElement, period, organisationUnit, v("40"))
 		
 		then:
 		valueService.getNumberOfValues(dataElement, period) == 1
 		
 		when:
-		def newPeriod = period()
+		def newPeriod = newPeriod()
 		
 		then:
 		valueService.getNumberOfValues(dataElement, newPeriod) == 0
 				
 		when:
-		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER)
+		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER())
 		
 		then:
 		valueService.getNumberOfValues(dataElement2, period) == 0
@@ -77,12 +77,69 @@ class ValueServiceSpec extends IntegrationTests {
 		def organisationUnit = newOrganisationUnit(BUTARO)
 		
 		when:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def dataValue = newDataValue(dataElement, period, organisationUnit, v("40"))
 		
 		then:
-		valueService.getValues(dataElement, period).equals(dataValue)
+		valueService.getValues(dataElement, period).equals([dataValue])
 		
 	}
 
+	def "test delete expression values"() {
+		setup:
+		def period = newPeriod()
+		def organisation = newOrganisationUnit(BUTARO)
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		
+		when:
+		newExpressionValue(expression, period, organisation)
+		
+		then:
+		ExpressionValue.count() == 1
+		
+		when:
+		valueService.deleteValues(expression)
+		
+		then:
+		ExpressionValue.count() == 0
+		
+		when:
+		def expression2 = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
+		newExpressionValue(expression, period, organisation)
+		newExpressionValue(expression2, period, organisation)
+		valueService.deleteValues(expression)
+		
+		then:
+		ExpressionValue.count() == 1
+	}
+	
+	
+	def "test delete calculation values"() {
+		setup:
+		def period = newPeriod()
+		def organisation = newOrganisationUnit(BUTARO)
+		def calculation = newAverage([:], CODE(1), Type.TYPE_NUMBER())
+		
+		when:
+		newCalculationValue(calculation, period, organisation, false, false, v("1"))
+		
+		then:
+		CalculationValue.count() == 1
+		
+		when:
+		valueService.deleteValues(calculation)
+		
+		then:
+		CalculationValue.count() == 0
+		
+		when:
+		def calculation2 = newAverage([:], CODE(2), Type.TYPE_NUMBER())
+		newCalculationValue(calculation, period, organisation, false, false, v("1"))
+		newCalculationValue(calculation2, period, organisation, false, false, v("1"))
+		valueService.deleteValues(calculation)
+		
+		then:
+		CalculationValue.count() == 1
+	}
+	
 }

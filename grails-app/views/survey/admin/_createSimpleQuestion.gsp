@@ -42,7 +42,7 @@
 				<g:input name="order" label="Order" bean="${question}" field="order" />
 
 				<div class="row ${hasErrors(bean:question, field:'section', 'errors')}">
-					<label for="section.id">Objective:</label> <select name="section.id">
+					<label for="section.id">Section:</label> <select name="section.id">
 						<option value="null">-- Select an Section --</option>
 						<g:each in="${sections}" var="section">
 							<option value="${section.id}" ${section.id+''==fieldValue(bean: question, field: 'section.id')+''?'selected="selected"':''}>

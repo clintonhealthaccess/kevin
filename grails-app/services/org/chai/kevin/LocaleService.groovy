@@ -40,7 +40,7 @@ class LocaleService {
 	
 	static transactional = false
 
-	def getAvailableLanguages() {
+	List<String> getAvailableLanguages() {
 		List<String> languages = ConfigurationHolder.config.site.languages;
 		return languages;
 	}

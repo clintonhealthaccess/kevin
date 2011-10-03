@@ -22,7 +22,7 @@
 		</g:if>
 		<g:input name="order" label="Order" bean="${question}" field="order"/>
 		<div class="row ${hasErrors(bean:question, field:'section', 'errors')}">
-			<label for="section.id">Objective:</label>
+			<label for="section.id">Section:</label>
 			<select class="section-list" name="section.id">
 				<option value="null">-- Select an Section --</option>
 				<g:each in="${sections}" var="section">

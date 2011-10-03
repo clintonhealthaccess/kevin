@@ -48,6 +48,14 @@ public class Translation implements Map<String, String>, Serializable {
 	private static final long serialVersionUID = 659167226523919292L;
 	private String jsonText = " ";
 	
+	public Translation() {
+		// default hibernate constructor
+	}
+	
+	public Translation(Translation translation) {
+		this.jsonText = translation.jsonText;
+	}
+	
 	@Lob
 	@Column(nullable=false)
 	public String getJsonText() {

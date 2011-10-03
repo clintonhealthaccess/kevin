@@ -28,18 +28,13 @@ package org.chai.kevin.cost
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import grails.validation.ValidationException;
+import grails.validation.ValidationException
 
-import org.chai.kevin.Initializer;
-import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.IntegrationTestInitializer;
-import org.chai.kevin.cost.CostTarget.CostType;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.util.Utils;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.chai.kevin.cost.CostTarget.CostType
+import org.chai.kevin.data.Type
 
-class DomainSpec extends CostIntegrationTests {
+
+abstract class CostDomainSpec extends CostIntegrationTests {
 
 	def "objective constraint: code cannot be null"() {
 		when:
@@ -57,13 +52,13 @@ class DomainSpec extends CostIntegrationTests {
 	
 	def "target constraint: code cannot be null"() {
 		when:
-		newCostTarget(CODE(1), newExpression(CODE(2), Type.TYPE_NUMBER, "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, null)
+		newCostTarget(CODE(1), newExpression(CODE(2), Type.TYPE_NUMBER(), "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, null)
 		
 		then:
 		CostTarget.count() == 1
 		
 		when:
-		newCostTarget(null, newExpression(CODE(2), Type.TYPE_NUMBER, "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, null)
+		newCostTarget(null, newExpression(CODE(2), Type.TYPE_NUMBER(), "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, null)
 		
 		then:
 		thrown ValidationException
@@ -71,7 +66,7 @@ class DomainSpec extends CostIntegrationTests {
 	
 	def "target constraint: expression cannot be null"() {
 		when:
-		newCostTarget(CODE(1), newExpression(CODE(2), Type.TYPE_NUMBER, "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, null)
+		newCostTarget(CODE(1), newExpression(CODE(2), Type.TYPE_NUMBER(), "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, null)
 		
 		then:
 		CostTarget.count() == 1
@@ -86,13 +81,13 @@ class DomainSpec extends CostIntegrationTests {
 	
 	def "ramp up constraint: code cannot be null"() {
 		when:
-		newCostRampUp(CODE(1))
+		newCostRampUp(CODE(1), [:])
 		
 		then:
 		CostRampUp.count() == 1
 		
 		when:
-		newCostRampUp(null)
+		new CostRampUp(code: null, years: [:]).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -117,7 +112,7 @@ class DomainSpec extends CostIntegrationTests {
 	def "delete objective cascade deletes target"() {
 		when:
 		def costObjective = newCostObjective(CODE(1))
-		newCostTarget(CODE(1), newExpression(CODE(2), Type.TYPE_NUMBER, "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, costObjective)
+		newCostTarget(CODE(1), newExpression(CODE(2), Type.TYPE_NUMBER(), "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, costObjective)
 		costObjective.delete();
 		
 		then:
@@ -127,7 +122,7 @@ class DomainSpec extends CostIntegrationTests {
 	
 	def "save objective saves target"() {
 		when:
-		def expression = newExpression(CODE(2), Type.TYPE_NUMBER)
+		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
 		def costObjective = newCostObjective(CODE(1))
 		costObjective.addTarget new CostTarget(names:j(["en":"Test Target"]), code:CODE(1), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT)
 		costObjective.save();
@@ -141,7 +136,7 @@ class DomainSpec extends CostIntegrationTests {
 	def "save target preserves order"() {
 		when:
 		def costObjective = newCostObjective(CODE(1))
-		def expression = newExpression(CODE(2), Type.TYPE_NUMBER)
+		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
 		costObjective.addTarget new CostTarget(names:j(["en":"Test 4"]), code:CODE(1), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT, order: 4)
 		costObjective.addTarget new CostTarget(names:j(["en":"Test 3"]), code:CODE(2), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT, order: 3)
 		costObjective.save();

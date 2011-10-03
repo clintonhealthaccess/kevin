@@ -50,6 +50,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -182,8 +183,8 @@ public class SurveySection extends SurveyTranslatable {
 	}
 
 	protected void deepCopy(SurveySection copy, SurveyCloner surveyCloner) {
-		copy.setNames(getNames());
-		copy.setDescriptions(getDescriptions());
+		copy.setNames(new Translation(getNames()));
+		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setGroupUuidString(getGroupUuidString());
 		copy.setObjective(surveyCloner.getObjective(getObjective()));
 		copy.setOrder(getOrder());

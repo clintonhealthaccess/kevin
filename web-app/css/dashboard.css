@@ -14,51 +14,53 @@
 /* line 30, ../../src/stylesheets/dashboard.sass */
 #dashboard #center { width: 822px; float: left; }
 /* line 34, ../../src/stylesheets/dashboard.sass */
-#dashboard #center #values { width: 100%; float: left; }
-/* line 40, ../../src/stylesheets/dashboard.sass */
+#dashboard #center #values { width: 100%; float: left; overflow-x: scroll; }
+/* line 41, ../../src/stylesheets/dashboard.sass */
 #dashboard #center #values > table > thead > tr > th, #dashboard #center #values > table > thead > tr > td, #dashboard #center #values > table > tbody > tr > th, #dashboard #center #values > table > tbody > tr > td { margin: 0; padding: 0; }
-/* line 44, ../../src/stylesheets/dashboard.sass */
+/* line 45, ../../src/stylesheets/dashboard.sass */
 #dashboard #center #values > table .explanation-cell { display: none; width: 98%; float: left; margin-right: 10px; }
-/* line 50, ../../src/stylesheets/dashboard.sass */
+/* line 51, ../../src/stylesheets/dashboard.sass */
 #dashboard #center .header .row .cell { height: inherit; }
-/* line 53, ../../src/stylesheets/dashboard.sass */
-#dashboard #center .cell { width: 73.333px; float: left; }
-/* line 56, ../../src/stylesheets/dashboard.sass */
+/* line 54, ../../src/stylesheets/dashboard.sass */
+#dashboard #center tbody tr.row { white-space: nowrap; }
+/* line 57, ../../src/stylesheets/dashboard.sass */
+#dashboard #center .cell { display: inline-block; width: 73.333px; float: left; }
+/* line 62, ../../src/stylesheets/dashboard.sass */
 #dashboard #center .cell div { display: block; -webkit-border-top-right-radius: 2px; -webkit-border-top-left-radius: 2px; -khtml-border-radius-topleft: 2px; -khtml-border-radius-topright: 2px; -moz-border-radius-topright: 2px; -moz-border-radius-topleft: 2px; border-top-right-radius: 2px; border-top-left-radius: 2px; -webkit-border-bottom-right-radius: 2px; -webkit-border-bottom-left-radius: 2px; -khtml-border-radius-bottomleft: 2px; -khtml-border-radius-bottomright: 2px; -moz-border-radius-bottomright: 2px; -moz-border-radius-bottomleft: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; height: 2em; margin-top: 2px; margin-bottom: 2px; margin-right: 4px; }
-/* line 65, ../../src/stylesheets/dashboard.sass */
+/* line 71, ../../src/stylesheets/dashboard.sass */
 #dashboard #center .cell.value { cursor: pointer; text-align: center; }
-/* line 70, ../../src/stylesheets/dashboard.sass */
-#dashboard #center .value span, #dashboard #center .label.left span { top: 25%; position: relative; }
-/* line 74, ../../src/stylesheets/dashboard.sass */
-#dashboard #center .label.top { text-align: center; }
 /* line 76, ../../src/stylesheets/dashboard.sass */
+#dashboard #center .value span, #dashboard #center .label.left span { top: 25%; position: relative; }
+/* line 80, ../../src/stylesheets/dashboard.sass */
+#dashboard #center .label.top { text-align: center; }
+/* line 82, ../../src/stylesheets/dashboard.sass */
 #dashboard #center .label.top div { height: auto; }
-/* line 79, ../../src/stylesheets/dashboard.sass */
+/* line 85, ../../src/stylesheets/dashboard.sass */
 #dashboard #center .label.left { width: 140px; }
 
-/* line 82, ../../src/stylesheets/dashboard.sass */
+/* line 88, ../../src/stylesheets/dashboard.sass */
 #dashboard .explanation { border: 1px solid #cccccc; background-color: white; padding: 2px; width: 100%; padding: 4px; }
-/* line 87, ../../src/stylesheets/dashboard.sass */
+/* line 93, ../../src/stylesheets/dashboard.sass */
 #dashboard .explanation .highlighted div, #dashboard .explanation .selected div, #dashboard .explanation .highlighted, #dashboard .explanation .selected { background: yellow; font-weight: bold; }
-/* line 91, ../../src/stylesheets/dashboard.sass */
+/* line 97, ../../src/stylesheets/dashboard.sass */
 #dashboard .explanation .info { margin-right: 18px; }
-/* line 94, ../../src/stylesheets/dashboard.sass */
+/* line 100, ../../src/stylesheets/dashboard.sass */
 #dashboard .explanation .average span.value { float: left; color: red; padding-bottom: 4px; margin-right: 4px; }
-/* line 101, ../../src/stylesheets/dashboard.sass */
+/* line 107, ../../src/stylesheets/dashboard.sass */
 #dashboard .explanation div > ul li { width: 160px; margin-right: 8px; white-space: normal; }
-/* line 106, ../../src/stylesheets/dashboard.sass */
-#dashboard .explanation .span table { margin-bottom: 0px; }
-/* line 108, ../../src/stylesheets/dashboard.sass */
-#dashboard .explanation .span table th, #dashboard .explanation .span table td { margin-right: 4px; padding: 0px 4px 0px 0px; }
 /* line 112, ../../src/stylesheets/dashboard.sass */
-#dashboard .explanation .span table thead { font-weight: bold; }
-/* line 115, ../../src/stylesheets/dashboard.sass */
-#dashboard .explanation .span table tbody { white-space: normal; }
+#dashboard .explanation .span table { margin-bottom: 0px; }
+/* line 114, ../../src/stylesheets/dashboard.sass */
+#dashboard .explanation .span table th, #dashboard .explanation .span table td { margin-right: 4px; padding: 0px 4px 0px 0px; }
 /* line 118, ../../src/stylesheets/dashboard.sass */
+#dashboard .explanation .span table thead { font-weight: bold; }
+/* line 121, ../../src/stylesheets/dashboard.sass */
+#dashboard .explanation .span table tbody { white-space: normal; }
+/* line 124, ../../src/stylesheets/dashboard.sass */
 #dashboard .explanation .span table tbody td, #dashboard .explanation .span table thead th { text-align: right; }
-/* line 122, ../../src/stylesheets/dashboard.sass */
+/* line 128, ../../src/stylesheets/dashboard.sass */
 #dashboard .explanation .element:hover { cursor: pointer; }
-/* line 125, ../../src/stylesheets/dashboard.sass */
+/* line 131, ../../src/stylesheets/dashboard.sass */
 #dashboard .explanation .span { width: 100%; margin-top: 8px; margin-bottom: 4px; }
-/* line 130, ../../src/stylesheets/dashboard.sass */
+/* line 136, ../../src/stylesheets/dashboard.sass */
 #dashboard .explanation .span div { margin-bottom: 4px; }

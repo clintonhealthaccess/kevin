@@ -1,7 +1,5 @@
 package org.chai.kevin;
 
-import static org.junit.Assert.*;
-
 import org.chai.kevin.data.DataElementController;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ExpressionController;
@@ -14,10 +12,10 @@ class ExpressionControllerSpec extends IntegrationTests {
 
 	def "deleting expression deletes expression values"() {
 		setup:
-		expressionController = new ExpressionController()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, expression: "1")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
 		def organisation = newOrganisationUnit(BUTARO)
 		def period = newPeriod()
+		expressionController = new ExpressionController()
 		
 		when:
 		newExpressionValue(expression, period, organisation)
@@ -27,6 +25,24 @@ class ExpressionControllerSpec extends IntegrationTests {
 		then:
 		Expression.count() == 0
 		ExpressionValue.count() == 0
+	}
+	
+	def "cannot delete expression if there are associated calculations"() {
+		setup:
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		
+		def calculation = newAverage([(DISTRICT_HOSPITAL_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
+		def organisation = newOrganisationUnit(BUTARO)
+		def period = newPeriod()
+		expressionController = new ExpressionController()
+		
+		when:
+		expressionController.params.id = expression.id
+		expressionController.delete()
+		
+		then:
+		Expression.count() == 1
+		
 	}
 	
 }

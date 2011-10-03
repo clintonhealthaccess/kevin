@@ -46,6 +46,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -148,6 +149,15 @@ public class Survey extends SurveyTranslatable {
 	}
 	
 	@Transient
+	public List<SurveySection> getSections() {
+		List<SurveySection> result = new ArrayList<SurveySection>();
+		for (SurveyObjective surveyObjective : getObjectives()) {
+			result.addAll(surveyObjective.getSections());
+		}
+		return result;
+	}
+	
+	@Transient
 	public List<SurveyObjective> getObjectives(OrganisationUnitGroup group) {
 		List<SurveyObjective> result = new ArrayList<SurveyObjective>();
 		for (SurveyObjective surveyObjective : getObjectives()) {
@@ -158,8 +168,8 @@ public class Survey extends SurveyTranslatable {
 	
 	@Transient
 	protected void deepCopy(Survey copy, SurveyCloner cloner) {
-		copy.setNames(getNames());
-		copy.setDescriptions(getDescriptions());
+		copy.setNames(new Translation(getNames()));
+		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setActive(isActive());
 		copy.setOrder(getOrder());
 		copy.setPeriod(getPeriod());

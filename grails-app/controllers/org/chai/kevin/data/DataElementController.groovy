@@ -84,15 +84,25 @@ class DataElementController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		entity.delete()
+		// we delete the entity only if there are no associated values
+		// should we throw an exception in case we can't delete ?
+		if (valueService.getNumberOfValues(entity) == 0) entity.delete()
+		else {
+			// TODO error message ?
+		}
 	}
 
 	def bindParams(def entity) {
-		entity.properties = params
-
+		bindData(entity, params, [exclude:'type.jsonType'])
+		
+		// we assign the new type only if there are no associated values
+		if (valueService.getNumberOfValues(entity) == 0) {
+			entity.type = new Type()
+			bindData(entity, params, [include:'type.jsonType'])
+		}
+		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}

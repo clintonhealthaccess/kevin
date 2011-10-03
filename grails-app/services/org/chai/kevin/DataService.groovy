@@ -33,10 +33,12 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
+import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.Expression;
 import org.chai.kevin.util.Utils;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
@@ -49,6 +51,7 @@ class DataService {
 
 	static transactional = true
 	
+	ValueService valueService;
 	LocaleService localeService;
 	SessionFactory sessionFactory;
 	
@@ -64,13 +67,43 @@ class DataService {
 		return Enum.findByCode(code)
 	}
 	
+	public List<Calculation> getCalculations(Expression expression) {
+		return (List<Calculation>)sessionFactory.currentSession.createCriteria(Calculation.class)
+		.createAlias("expressions", "e")
+		.add(Restrictions.eq("e.id", expression.id))
+		.setCacheable(false)
+		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+		.list();
+	}
+	
 	/**
 	 * 
-	 * @throws IllegalArgumentException if the data is a data element and has values associated to it
+	 * @throws IllegalArgumentException if the data element has values associated to it
 	 * @param element
 	 */
 	public void delete(DataElement element) {
-		// TODO 
+		if (valueService.getNumberOfValues(element) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
+		else element.delete();
+	}
+	
+	/**
+	*
+	* @throws IllegalArgumentException if the expression has values associated to it
+	* @param element
+	*/
+	public void delete(Expression expression) {
+		if (valueService.getNumberOfValues(expression) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
+		else expression.delete();
+	}
+	
+	/**
+	*
+	* @throws IllegalArgumentException if the calculation has values associated to it
+	* @param element
+	*/
+	public void delete(Calculation calculation) {
+		if (valueService.getNumberOfValues(calculation) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
+		else calculation.delete();
 	}
 	
     public List<DataElement> searchDataElements(String text, List<String> allowedTypes) {

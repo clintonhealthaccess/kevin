@@ -57,7 +57,7 @@ class DsrController extends AbstractReportController {
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		Set<String> defaultChecked = ConfigurationHolder.config.dsr.facility.checked;
 		
-		[ 
+		[
 			dsrTable: dsrTable, 
 			periods: Period.list(),
 			objectives: DsrObjective.list(),

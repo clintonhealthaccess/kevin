@@ -145,18 +145,27 @@ class SurveyElementService {
 
 	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement) {
 		def c = SurveyValidationRule.createCriteria()
-		c.add(
+		List<SurveyValidationRule> rules = c.add(
 			Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE)
 		)
 		.list()
+		return filter(rules, surveyElement);
 	}
 	
 	Set<SurveySkipRule> searchSkipRules(SurveyElement surveyElement) {
 		def c = SurveySkipRule.createCriteria()
-		c.add(
+		List<SurveySkipRule> rules = c.add(
 			Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE)
 		)
 		.list()
+		return filter(rules, surveyElement);
+	}
+	
+	
+	static def filter(def rules, def element) {
+		return rules.findAll { rule ->
+			return rule.expression.matches(".*\\\$"+element.id+"(\\z|\\D|\$).*")
+		}
 	}
 	
 	Set<SurveyElement> getSurveyElements(DataElement dataElement, Survey survey) {

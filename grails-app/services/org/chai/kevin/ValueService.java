@@ -28,14 +28,9 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,8 +46,6 @@ import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.ValueCalculator;
 import org.hibernate.Criteria;
-import org.hibernate.FlushMode;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -86,6 +79,44 @@ public class ValueService {
 		return data.getValue(calculator, organisationUnit, period);
 	}
 	
+	@Transactional(readOnly=false)
+	public void deleteValues(Expression expression) {
+		sessionFactory.getCurrentSession()
+		.createQuery("delete from ExpressionValue where expression = :expression")
+		.setParameter("expression", expression).executeUpdate();
+	}
+	
+	@Transactional(readOnly=false)
+	public void deleteValues(Calculation calculation) {
+		sessionFactory.getCurrentSession()
+		.createQuery("delete from CalculationValue where calculation = :calculation")
+		.setParameter("calculation", calculation).executeUpdate();
+	}
+	
+	@Transactional(readOnly=true)
+	public Long getNumberOfValues(DataElement dataElement) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
+		.add(Restrictions.eq("dataElement", dataElement))
+		.setProjection(Projections.count("id"))
+		.uniqueResult();
+	}
+	
+	@Transactional(readOnly=true)
+	public Long getNumberOfValues(Expression expression) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class)
+		.add(Restrictions.eq("expression", expression))
+		.setProjection(Projections.count("id"))
+		.uniqueResult();
+	}
+	
+	@Transactional(readOnly=true)
+	public Long getNumberOfValues(Calculation calculation) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class)
+		.add(Restrictions.eq("calculation", calculation))
+		.setProjection(Projections.count("id"))
+		.uniqueResult();
+	}
+	
 	@Transactional(readOnly=true)
 	public Long getNumberOfValues(DataElement dataElement, Period period) {
 		return (Long)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
@@ -114,8 +145,6 @@ public class ValueService {
 					.set("organisationUnit", organisationUnit)
 					.set("expression", expression)
 				)
-//				.setCacheable(true)
-//				.setCacheRegion("org.hibernate.cache.ExpressionValueQueryCache")
 				.uniqueResult();
 		}
 
@@ -131,8 +160,6 @@ public class ValueService {
 					.set("organisationUnit", organisationUnit)
 					.set("calculation", calculation)
 				)
-//				.setCacheable(true)
-//				.setCacheRegion("org.hibernate.cache.CalculationValueQueryCache")
 				.uniqueResult();
 		}
 		
@@ -150,8 +177,6 @@ public class ValueService {
 	        		 .set("period", period)
 	        		 .set("organisationUnit", organisation)
 	         );
-//			 .setCacheable(true);
-//	         .setCacheRegion("org.hibernate.cache.DataValueQueryCache");
 	
 			 DataValue value = (DataValue)criteria.uniqueResult();
 			 if (log.isDebugEnabled()) log.debug("getDataValue = "+value);
@@ -162,7 +187,7 @@ public class ValueService {
 	@Transactional(readOnly=false)
 	public <T extends StoredValue> T save(T value) {
 		log.debug("save(value="+value+")");
-		value.setTimestamp(new Date());
+//		value.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().saveOrUpdate(value);
 		return value;
 	}

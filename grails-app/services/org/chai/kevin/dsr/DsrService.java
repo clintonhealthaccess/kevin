@@ -50,6 +50,7 @@ import org.chai.kevin.OrganisationSorter;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
@@ -71,7 +72,7 @@ public class DsrService {
 		List<DsrTarget> targets = null;
 		List<OrganisationUnitGroup> facilityTypes = null;
 		Set<OrganisationUnitGroup> facilityTypeSet = null;
-		Map<Organisation,Organisation> orgParentMap = null;
+		Map<Organisation, Organisation> orgParentMap = null;
 		if (objective == null || organisation == null) {
 			return new DsrTable(organisation, organisations, period, objective,
 					targets, facilityTypes, dsrMap,orgParentMap);
@@ -93,35 +94,42 @@ public class DsrService {
 				}
 				Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
 				for (DsrTarget target : targets) {
-					ExpressionValue expressionValue = valueService.getValue( target.getExpression(), child.getOrganisationUnit(), period);
+					boolean applies = Utils.split(target.getGroupUuidString()).contains(child.getOrganisationUnitGroup().getUuid());
 					String value = null;
-					if (expressionValue != null && !expressionValue.getValue().isNull())
-						// TODO put this in templates ?
-						switch (expressionValue.getData().getType().getType()) {
-						case BOOL:
-							if (expressionValue.getValue().getBooleanValue()) value = "&#10003;";
-							else value = "";
-							break;
-						case STRING:
-							value = expressionValue.getValue().getStringValue();
-							break;
-						case NUMBER:
-							value = getFormat(target, expressionValue.getValue().getNumberValue().doubleValue());
-							break;
-						case ENUM:
-							String code = expressionValue.getData().getType().getEnumCode();
-							Enum enume = dataService.findEnumByCode(code);
-							if (enume != null) {
-								EnumOption option = enume.getOptionForValue(expressionValue.getValue().getEnumValue());
-								value = localeService.getText(option.getNames());
+					
+					if (applies) {
+						ExpressionValue expressionValue = valueService.getValue( target.getExpression(), child.getOrganisationUnit(), period);
+						
+						if (expressionValue != null && !expressionValue.getValue().isNull()) {
+							// TODO put this in templates ?
+							switch (expressionValue.getData().getType().getType()) {
+							case BOOL:
+								if (expressionValue.getValue().getBooleanValue()) value = "&#10003;";
+								else value = "";
+								break;
+							case STRING:
+								value = expressionValue.getValue().getStringValue();
+								break;
+							case NUMBER:
+								value = getFormat(target, expressionValue.getValue().getNumberValue().doubleValue());
+								break;
+							case ENUM:
+								String code = expressionValue.getData().getType().getEnumCode();
+								Enum enume = dataService.findEnumByCode(code);
+								if (enume != null) {
+									EnumOption option = enume.getOptionForValue(expressionValue.getValue().getEnumValue());
+									value = localeService.getText(option.getNames());
+								}
+								else value = "";
+								break;
+							default:
+								value = "";
+								break;
 							}
-							else value = "";
-							break;
-						default:
-							value = "";
-							break;
 						}
-					orgDsr.put(target, new Dsr(child, period, target, value));
+						
+					}
+					orgDsr.put(target, new Dsr(value, applies));
 				}
 				dsrMap.put(child, orgDsr);
 			}

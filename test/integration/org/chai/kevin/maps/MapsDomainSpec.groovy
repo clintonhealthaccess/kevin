@@ -1,4 +1,4 @@
-package org.chai.kevin
+package org.chai.kevin.maps;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,48 +28,64 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.dashboard.DashboardPage;
+import grails.validation.ValidationException
 
-class HomepageSpec extends GebTests {
-	
-	def transactional = true
-	
-	def setupSpec() {
-		Initializer.createDummyStructure();
-		Initializer.createDataElementsAndExpressions();
-		Initializer.createDashboard();
-		Initializer.createCost();
-	}
-	
-	def "header links are present"() {
-		when:
-			browser.to(HomepagePage)
-		then:
-			browser.at(HomepagePage)
-			header.present
-			!header.hasLink("Non-existing Link")
-			header.hasLink("Dashboard")
-			header.hasLink("Costing")
-			header.hasLink("Expressions")
-			header.hasLink("Constants")
-	}
-	
-	def "dashboard link works"() {
-		when:
-			browser.to(HomepagePage)
-			header.click("Dashboard")
-			
-		then:
-			browser.at(DashboardPage)
-	}
+import org.chai.kevin.data.Expression
+import org.chai.kevin.data.Type
+import org.chai.kevin.maps.MapsTarget.MapsTargetType
 
-	def "expression link works"() {
-		when:
-			browser.to(HomepagePage)
-			header.click("Expressions")
-			
-		then:
-			browser.at(ExpressionPage)
-	}
+public class MapsDomainSpec extends MapsIntegrationTests {
 
+	def "target constraint: type cannot be null"() {
+		when: 
+		new MapsTarget(code: CODE(1)).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "target constraint: code cannot be null"() {
+		when:
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		new MapsTarget(code:CODE(1), expression: expression, type: MapsTargetType.AGGREGATION).save(failOnError:true)
+		
+		then:
+		MapsTarget.count() == 1
+		
+		when:
+		new MapsTarget(expression: expression, type: MapsTargetType.AGGREGATION).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "target constraint: expression cannot be null"() {
+		when:
+		new MapsTarget(code:CODE(1), expression: newExpression(CODE(1), Type.TYPE_NUMBER(), "1"), type: MapsTargetType.AGGREGATION).save(failOnError:true)
+		
+		then:
+		MapsTarget.count() == 1
+		
+		when:
+		new MapsTarget(code:CODE(1), type: MapsTargetType.AGGREGATION).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "target constraint: calculation cannot be null"() {
+		when:
+		def calculation = newAverage([:], CODE(1), Type.TYPE_NUMBER())
+		new MapsTarget(code:CODE(1) , calculation: calculation, type: MapsTargetType.AVERAGE).save(failOnError:true)
+		
+		then:
+		MapsTarget.count() == 1
+		
+		when:
+		new MapsTarget(code:CODE(1), type: MapsTargetType.AVERAGE).save(failOnError:true)
+		
+		then:
+		thrown ValidationException
+	}
+	
 }

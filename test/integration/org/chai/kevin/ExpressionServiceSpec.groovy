@@ -54,14 +54,14 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def organisationUnit = OrganisationUnit.findByName(BUTARO)
 		def expression = null
 		def result = null
 		
 		when:
 		newDataValue(dataElement, period, organisationUnit, v("40"))
-		expression = newExpression(CODE(2), Type.TYPE_NUMBER, "\$"+dataElement.id+" * 2")
+		expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "\$"+dataElement.id+" * 2")
 		result = expressionService.calculate(expression, organisationUnit, period)
 		
 		then:
@@ -69,7 +69,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result.status == Status.VALID
 		
 		when:
-		expression = newExpression(CODE(3), Type.TYPE_NUMBER, "\$0", [validate: false])
+		expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$0", [validate: false])
 		result = expressionService.calculate(expression, organisationUnit, period)
 		
 		then:
@@ -77,7 +77,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result.status == Status.MISSING_DATA_ELEMENT
 		
 		when:
-		expression = newExpression(CODE(4), Type.TYPE_NUMBER, "\$"+dataElement.id)
+		expression = newExpression(CODE(4), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		result = expressionService.calculate(expression, OrganisationUnit.findByName(KIVUYE), period)
 		
 		then:
@@ -86,7 +86,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 				
 		when:
 		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), Value.NULL)
-		expression = newExpression(CODE(5), Type.TYPE_NUMBER, "\$"+dataElement.id)
+		expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		result = expressionService.calculate(expression, OrganisationUnit.findByName(KIVUYE), period)
 		
 		then:
@@ -113,8 +113,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		where:
 		type			| formula
-		Type.TYPE_BOOL	| "1"
-		Type.TYPE_NUMBER| "true"
+		Type.TYPE_BOOL()	| "1"
+		Type.TYPE_NUMBER()| "true"
 		
 	}
 	
@@ -136,7 +136,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		newDataValue(dataElement, period, kivuye, v("\"absent\""))
 		newDataValue(dataElement, period, butaro, v("\"test\""))
 		
-		expression = newExpression(CODE(5), Type.TYPE_NUMBER, "if(\$"+dataElement.id+"==\"test\") 20 else 10")
+		expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "if(\$"+dataElement.id+"==\"test\") 20 else 10")
 		result = expressionService.calculate(expression, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -160,10 +160,10 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def butaro = OrganisationUnit.findByName(BUTARO)
 	
 		when:
-		def dataElement = newDataElement(CODE(6), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(6), Type.TYPE_NUMBER())
 		newDataValue(dataElement, period, kivuye, v("10"))
 		newDataValue(dataElement, period, butaro, v("20"))
-		def expression = newExpression(CODE(7), Type.TYPE_NUMBER, "\$"+dataElement.id)
+		def expression = newExpression(CODE(7), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		def result = expressionService.calculate(expression, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -183,11 +183,11 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "1")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
 		refreshExpression()
 		
 		when:
-		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER)
+		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
 		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -210,7 +210,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		
 		when:
-		def sum = newSum([:], CODE(1), Type.TYPE_NUMBER)
+		def sum = newSum([:], CODE(1), Type.TYPE_NUMBER())
 		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -226,14 +226,14 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(2), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(2), Type.TYPE_NUMBER())
 		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
 		newDataValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("2"))
-		def expression = newExpression(CODE(3), Type.TYPE_NUMBER, "\$"+dataElement.id)
+		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		refreshExpression()
 		
 		when:
-		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER)
+		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
 		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -254,13 +254,13 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(4), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(4), Type.TYPE_NUMBER())
 		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
-		def expression = newExpression(CODE(5), Type.TYPE_NUMBER, "\$"+dataElement.id)
+		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		refreshExpression()
 		
 		when:
-		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER)
+		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
 		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -284,11 +284,11 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def kivuye = OrganisationUnit.findByName(KIVUYE)
 		def butaro = OrganisationUnit.findByName(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER, "1")
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
 		refreshExpression()
 		
 		when:
-		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER)
+		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
 		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -311,7 +311,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 				
 		when:
-		def average = newAverage([:], CODE(1), Type.TYPE_NUMBER)
+		def average = newAverage([:], CODE(1), Type.TYPE_NUMBER())
 		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -327,14 +327,14 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(2), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(2), Type.TYPE_NUMBER())
 		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
 		newDataValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("2"))
-		def expression = newExpression(CODE(3), Type.TYPE_NUMBER, "\$"+dataElement.id)
+		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		refreshExpression()
 		
 		when:
-		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER)
+		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
 		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -355,13 +355,13 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(4), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(4), Type.TYPE_NUMBER())
 		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
-		def expression = newExpression(CODE(5), Type.TYPE_NUMBER, "\$"+dataElement.id)
+		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		refreshExpression()
 		
 		when:
-		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER)
+		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
 		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
 		
 		then:
@@ -380,7 +380,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "data element in expression when wrong format"() {
 		when:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def dataElements = expressionService.getDataInExpression("\$"+dataElement.id)
 		
 		then:
@@ -403,7 +403,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "data elements in expression"() {
 		when:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def dataElements = expressionService.getDataInExpression("\$"+dataElement.id)
 		
 		then:
@@ -414,7 +414,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	def "test expression validation"() {
 
 		setup:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER)
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def formula = null
 				
 		when:
@@ -460,7 +460,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		expressionService.expressionIsValid(formula)
 		
 		when:
-		def dataElement2 = newDataElement(CODE(2), Type.TYPE_STRING)
+		def dataElement2 = newDataElement(CODE(2), Type.TYPE_STRING())
 		formula = "convert(\$"+dataElement2.id+", schema double)"
 		
 		then:

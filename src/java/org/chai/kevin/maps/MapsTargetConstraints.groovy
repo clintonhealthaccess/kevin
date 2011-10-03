@@ -31,6 +31,6 @@ package org.chai.kevin.maps
 constraints = {
 	code (nullable: false, blank: false, unique: true)
 	type (nullable: false)
-//	expression (validator: { val, obj -> obj.type.value() == "AVERAGE" || val != null})
-//	calculation (validator: { val, obj -> obj.type.value() == "AGGREGATION" || val != null})
+	expression (validator: { val, obj -> obj.type == null || (obj.type.value == "AVERAGE" || val != null)})
+	calculation (validator: { val, obj -> obj.type == null || (obj.type.value == "AGGREGATION" || val != null)})
 }

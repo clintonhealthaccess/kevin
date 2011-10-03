@@ -54,8 +54,7 @@ public class DsrTable implements Serializable {
 	private List<DsrTarget> targets;
 	private List<OrganisationUnitGroup> facilityTypes;
 	private Map<Organisation, Map<DsrTarget, Dsr>> values;
-	private Map<Organisation,Organisation> organisationMap;
-
+	private Map<Organisation, Organisation> organisationMap;
 
 	public DsrTable(Organisation organisation,List<Organisation> organisations, Period period, DsrObjective objective,
 			List<DsrTarget> targets,List<OrganisationUnitGroup> facilityTypes,
@@ -99,8 +98,8 @@ public class DsrTable implements Serializable {
 		return organisation!=null?organisation.getId():null;
 	}
 	
-	public Object getDsrValue(Organisation organisation, DsrTarget target) {
-		return values.get(organisation).get(target).getValue();
+	public Dsr getDsr(Organisation organisation, DsrTarget target) {
+		return values.get(organisation).get(target);
 	}
 
 	public List<OrganisationUnitGroup> getFacilityTypes() {

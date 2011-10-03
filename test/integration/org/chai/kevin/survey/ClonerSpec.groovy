@@ -1,22 +1,25 @@
 package org.chai.kevin.survey
 
-import org.chai.kevin.IntegrationTestInitializer;
-import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 
-class ClonerSpec extends IntegrationTests {
-
-	def setup() {
-		IntegrationTestInitializer.createDummyStructure()
-		if (DataElement.count() == 0) new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: Type.TYPE_NUMBER).save(failOnError: true, flush: true)
-	}
+class ClonerSpec extends SurveyIntegrationTests {
+	
+	def localeService
 	
 	def "test clone double number of elements"() {
 		setup:
-		def section = DomainSpec.createDummySection()
-		DomainSpec.createDummyTableQuestion(section)
-		def survey = section.getSurvey()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [])
+		def section = newSurveySection(objective, 1, [])
+		def question = newTableQuestion(section, 1, [])
+		
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		def column = newTableColumn(question, 1, [])
+		def row = newTableRow(question, 1, [], [(column): element])
 		
 		expect:
 		Survey.count() == 1
@@ -28,7 +31,7 @@ class ClonerSpec extends IntegrationTests {
 		SurveyElement.count() == 1
 			
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey)
+		SurveyCloner cloner = new SurveyCloner(survey, localeService)
 		cloner.cloneTree();
 		def copy = cloner.getSurvey()
 		copy.save(failOnError: true, flush: true)
@@ -41,25 +44,30 @@ class ClonerSpec extends IntegrationTests {
 		SurveyTableColumn.count() == 2
 		SurveyTableRow.count() == 2
 		SurveyElement.count() == 2
+		DataElement.count() == 1 
 		
-		!Survey.list()[1].objectives[0].equals(Survey.list()[0].objectives[0])
-		Survey.list()[1].objectives[0].survey.equals(Survey.list()[1])
-		Survey.list()[0].objectives[0].survey.equals(Survey.list()[0])
+		survey != copy
 		
+		!copy.objectives[0].equals(survey.objectives[0])
+		copy.objectives[0].survey.equals(copy)
+		survey.objectives[0].survey.equals(survey)
+		
+		survey.names['en']+' (copy)' == copy.names['en']
 	}
 	
 	def "test clone survey with skip rule"() {
 		setup:
-		def section = DomainSpec.createDummySection()
-		DomainSpec.createDummyTableQuestion(section)
-		def survey = section.getSurvey()
-		def element = SurveyElement.list()[0]
-		def skipRule = new SurveySkipRule(expression: "["+element.id+"]")
-		survey.addSkipRule(skipRule)
-		survey.save(failOnError: true)
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [])
+		def section = newSurveySection(objective, 1, [])
+		def question = newSimpleQuestion(section, 1, [])
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		def skipRule = newSkipRule(survey, "\$"+element.id+" == 1", [:], [])
 		
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey)
+		SurveyCloner cloner = new SurveyCloner(survey, localeService)
 		cloner.cloneTree();
 		def copy = cloner.getSurvey()
 		copy.save(failOnError: true, flush: true)
@@ -68,26 +76,31 @@ class ClonerSpec extends IntegrationTests {
 		then:
 		copy.getSkipRules().size() == 1
 		copy.getSkipRules()[0].expression != survey.getSkipRules()[0].expression
-		copy.getSkipRules()[0].expression == "["+SurveyElement.list()[1].id+"]"
+		copy.getSkipRules()[0].expression == "\$" + SurveyElement.list()[1].id + " == 1"
 		cloner.getUnchangedSkipRules().size() == 0
-		
 	}
 	
 	def "test clone survey with validation rule from other survey"() {
 		setup:
-		def section1 = DomainSpec.createDummySection()
-		DomainSpec.createDummyTableQuestion(section1)
-		def section2 = DomainSpec.createDummySection()
-		DomainSpec.createDummyTableQuestion(section2)
-		def element1 = SurveyElement.list()[0]
-		def element2 = SurveyElement.list()[1]
-		def validationRule = new SurveyValidationRule(expression: "["+element1.id+"]")
-		element2.addValidationRule(validationRule)
-		def survey2 = section2.getSurvey()
+		def period = newPeriod()
+		def survey1 = newSurvey(period)
+		def objective1 = newSurveyObjective(survey1, 1, [])
+		def section1 = newSurveySection(objective1, 1, [])
+		def question1 = newSimpleQuestion(section1, 1, [])
+		def dataElement1 = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element1 = newSurveyElement(question1, dataElement1)
 		
+		def survey2 = newSurvey(period)
+		def objective2 = newSurveyObjective(survey2, 1, [])
+		def section2 = newSurveySection(objective2, 1, [])
+		def question2 = newSimpleQuestion(section2, 1, [])
+		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER())
+		def element2 = newSurveyElement(question2, dataElement2)
+		def message = newValidationMessage()
+		def validationRule = newSurveyValidationRule(element2, "", "\$"+element1+" == 1", message, [element1])
 		
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey2)
+		SurveyCloner cloner = new SurveyCloner(survey2, localeService)
 		cloner.cloneTree();
 		def copy = cloner.getSurvey()
 		copy.save(failOnError: true, flush: true)
@@ -96,21 +109,24 @@ class ClonerSpec extends IntegrationTests {
 		then:
 		def element3 = SurveyElement.list()[2]
 		element3.validationRules.size() == 1
-		element3.validationRules.iterator().next().expression == element2.validationRules.iterator().next().expression
+		element3.validationRules.values().iterator().next().expression == element2.validationRules.values().iterator().next().expression
 		cloner.getUnchangedValidationRules().size() == 1
 	}
 
 	def "test clone survey with validation rule transforms dependencies"() {
 		setup:
-		def section1 = DomainSpec.createDummySection()
-		DomainSpec.createDummyTableQuestion(section1)
-		def element1 = SurveyElement.list()[0]
-		def validationRule = new SurveyValidationRule(expression: "["+element1.id+"]", dependencies: [element1])
-		element1.addValidationRule(validationRule)
-		def survey1 = section1.getSurvey()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [])
+		def section = newSurveySection(objective, 1, [])
+		def question = newSimpleQuestion(section, 1, [])
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		def message = newValidationMessage()
+		def validationRule = newSurveyValidationRule(element, "", "1 == 1", message, [element])
 		
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey1)
+		SurveyCloner cloner = new SurveyCloner(survey, localeService)
 		cloner.cloneTree();
 		def copy = cloner.getSurvey()
 		copy.save(failOnError: true, flush: true)
@@ -119,8 +135,8 @@ class ClonerSpec extends IntegrationTests {
 		then:
 		def elementCopy = SurveyElement.list()[1]
 		elementCopy.validationRules.size() == 1
-		elementCopy.validationRules.iterator().next().dependencies.size() == 1
-		elementCopy.validationRules.iterator().next().dependencies[0].equals(elementCopy)
+		elementCopy.validationRules.values().iterator().next().dependencies.size() == 1
+		elementCopy.validationRules.values().iterator().next().dependencies[0].equals(elementCopy)
 		cloner.getUnchangedValidationRules().size() == 0
 		
 	}

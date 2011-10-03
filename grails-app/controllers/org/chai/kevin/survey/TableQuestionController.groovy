@@ -60,7 +60,7 @@ class TableQuestionController extends AbstractEntityController {
 		[
 			question: entity,
 			groups: organisationService.getGroupsForExpression(),
-			sections: (entity.section)!=null?entity.section.objective.sections:null,
+			sections: (entity.section)!=null?entity.survey.sections:null,
 			groupUuids: Utils.split(entity.groupUuidString)
 		]
 	}

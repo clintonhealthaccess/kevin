@@ -121,7 +121,7 @@ public class ValidationService {
 		
 		Value value = null;
 		try {
-			value = jaqlService.evaluate(expression, Type.TYPE_BOOL, valueMap, typeMap);
+			value = jaqlService.evaluate(expression, Type.TYPE_BOOL(), valueMap, typeMap);
 		} catch (IllegalArgumentException e) {}
 		
 		Boolean result;

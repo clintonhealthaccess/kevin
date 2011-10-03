@@ -51,6 +51,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -126,8 +127,8 @@ public class SurveyTableRow extends SurveyTranslatable {
     @Transient
 	protected SurveyTableRow deepCopy(SurveyCloner cloner, Map<Long, SurveyTableColumn> columns) {
     	SurveyTableRow copy = new SurveyTableRow();
-    	copy.setNames(getNames());
-    	copy.setDescriptions(getDescriptions());
+    	copy.setNames(new Translation(getNames()));
+    	copy.setDescriptions(new Translation(getDescriptions()));
     	copy.setGroupUuidString(getGroupUuidString());
     	copy.setOrder(getOrder());
     	copy.setQuestion((SurveyTableQuestion)cloner.getQuestion(getQuestion()));

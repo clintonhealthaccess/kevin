@@ -28,14 +28,7 @@ package org.chai.kevin.cost
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.Initializer;
-import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.IntegrationTestInitializer;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.period.Period;
-
-import grails.plugin.spock.IntegrationSpec;
-import grails.plugin.spock.UnitSpec;
+import org.chai.kevin.IntegrationTests
 
 class CostRampUpControllerSpec extends IntegrationTests {
 

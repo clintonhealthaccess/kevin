@@ -428,13 +428,16 @@ public class ExpressionService {
 
             dataInExpression.put(placeholder, data);
         }
+    	
         return dataInExpression;
     }
 
     public static String convertStringExpression(String expression, Map<String, String> mapping) {
         String result = expression;
         for (Entry<String, String> entry : mapping.entrySet()) {
-        	result = result.replace(entry.getKey(), entry.getValue());
+        	// TODO validate key
+        	if (!Pattern.matches("\\$\\d+", entry.getKey())) throw new IllegalArgumentException("key does not match expression pattern: "+entry);
+        	result = result.replaceAll("\\"+entry.getKey()+"(\\z|\\D|$)", entry.getValue().replace("$", "\\$")+"$1");
 		}
         return result;
     }
