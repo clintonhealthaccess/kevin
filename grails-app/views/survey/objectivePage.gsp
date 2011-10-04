@@ -39,8 +39,8 @@
 <!-- 				</g:if> -->
 				
 				<g:if test="${!closed}">
-					<div id="submit-objective" class="${!surveyPage.canSubmit(surveyPage.objective)?'hidden':''} rounded-box-top rounded-box-bottom">
-						This part has been completed successfully. If you are sure that you entered the right data, please click submit.
+					<div id="submit-objective" class="${!surveyPage.canSubmit(surveyPage.objective)?'hidden':''} success-box">
+						<p class="success">This part has been completed successfully. If you are sure that you entered the right data, please click submit.
 						<g:form url="[controller:'editSurvey', action:'submit', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id]]">
 							<button type="submit">Submit</button>
 						</g:form>

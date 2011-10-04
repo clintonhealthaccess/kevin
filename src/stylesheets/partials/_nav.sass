@@ -171,6 +171,8 @@
     &:hover, &:focus
       a
         color: #fff
+      .survey-section a
+        color: $primary
         
     a
       border-bottom: 1px dotted $primary_dark
@@ -206,17 +208,20 @@
         &:hover
           color: $primary - #444
           +text-shadow($primary + #333, 0, 1px, 0)
-          
-    &.foldable
       
   .survey-section
     background: $filler
-    margin-top: 5px
+    margin-left: 5px
     +pie-clearfix
     
     a
       color: $primary
-      padding-left: 5px
+      padding-left: 10px
+      +text-shadow(#fff, 0, 1px, 0)
+      &:hover, &:focus
+        background: $filler - #111
+        color: $primary - #222
+        +text-shadow(#fff, 0, 1px, 0)
       
     li
       &:focus, &:hover

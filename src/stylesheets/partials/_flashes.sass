@@ -3,6 +3,25 @@
   background: url('../images/icons/point.png') no-repeat 0 0
   padding: 10px 10px 10px 42px
   
+.success-box
+  background: url('../images/icons/check.png') no-repeat 11px center $filler2
+  border: 1px solid $filler2 - #111
+  margin-bottom: 10px
+  padding: 10px
+  +border-radius(3px)
+  +pie-clearfix
+  +text-shadow(#fff, 0, 1px, 0)
+  
+  .success
+    float: left
+    width: 70%
+  form
+    float: right
+  
+.success
+  background: url('../images/icons/check.png') no-repeat 0 0
+  padding: 10px 10px 10px 42px
+  
 .question-help
   background: url('../images/icons/info.png') no-repeat 11px center $filler2
   border: 1px solid $filler2 - #111
@@ -25,3 +44,24 @@
     width: 400px
     +border-radius
     +text-shadow(#fff, 0, 1px, 0)
+
+.item-status
+  position: absolute
+  right: 0px
+
+  span
+    display: block
+    width: 16px
+    height: 16px
+    
+    &.hidden
+      display: none
+
+  .section-status-incomplete, .objective-status-incomplete
+
+  .section-status-complete, .objective-status-complete
+    background-image: url('../images/icons/positive_16.png')
+  .section-status-invalid, .objective-status-invalid
+    background-image: url('../images/icons/negative_16.png')
+  .section-status-closed, .objective-status-closed
+    background-image: url('../images/icons/check_16.png')

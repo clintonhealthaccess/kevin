@@ -15,7 +15,7 @@
     </head>
     <body>
     	<div id="cost">
-			<div class="main">
+			<div class="subnav">
 				<div class="filter">
 					<span class="bold"><g:message code="costing.labels.iteration" default="Iteration"/></span>
 					<span class="dropdown subnav-dropdown">

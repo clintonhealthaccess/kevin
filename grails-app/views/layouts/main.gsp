@@ -32,10 +32,10 @@
 				<ul id="logout">
 				  <li>
 					  <shiro:hasPermission permission="admin">
-        			<a class="redmine" target="_blank" href="http://districthealth.moh.gov.rw/redmine">Found a bug? Go to REDMINE</a>
+        			<a class="redmine follow" target="_blank" href="http://districthealth.moh.gov.rw/redmine">Found a bug? Go to REDMINE</a>
         		</shiro:hasPermission>
 					</li>
-					<li><a href="${createLink(controller: 'auth', action: 'signOut')}">Logout</a></li>
+					<li><a class="follow" href="${createLink(controller: 'auth', action: 'signOut')}">Logout</a></li>
 					
 				</div>
 			</shiro:user>

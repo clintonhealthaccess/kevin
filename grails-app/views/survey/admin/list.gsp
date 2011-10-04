@@ -11,7 +11,7 @@
 </head>
 <body>
 	
-	<div class="box margin-bottom-10">
+	<div class="subnav">
 		<ul class="inline-list">
 			<li>
 				<a href="${createLink(controller: 'survey', action:'list')}">Surveys</a>
