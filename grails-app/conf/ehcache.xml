@@ -18,88 +18,58 @@
 
     <cache name="org.hibernate.cache.UpdateTimestampsCache"
            maxElementsInMemory="10000"
-            timeToLiveSeconds="3600"
+            timeToLiveSeconds="86400"
     />
 
     <cache name="org.hibernate.cache.StandardQueryCache"
            maxElementsInMemory="500"
-            timeToLiveSeconds="3600"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit.children"
            maxElementsInMemory="5000"
-            timeToLiveSeconds="3600"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit.groups"
            maxElementsInMemory="2000"
-            timeToLiveSeconds="3600"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.period.Period"
            maxElementsInMemory="10"
-            timeToLiveSeconds="3600"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit"
            maxElementsInMemory="5000"
-            timeToLiveSeconds="3600"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.chai.kevin.data.DataElement"
            maxElementsInMemory="4000"
-            timeToLiveSeconds="3600"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.chai.kevin.data.Expression"
 			maxElementsInMemory="4000"
-            timeToLiveSeconds="3600"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.chai.kevin.data.Calculation"
 			maxElementsInMemory="4000"
-			timeToLiveSeconds="3600"
+			timeToLiveSeconds="86400"
     />
     
     <cache name="dsrCache"
     		maxElementsInMemory="8000"
-    		timeToLiveSeconds="3600"
+    		timeToLiveSeconds="86400"
     />
     
     <cache name="dashboardCache"
     		maxElementsInMemory="8000"
-    		timeToLiveSeconds="3600"
+    		timeToLiveSeconds="86400"
     />
     
-    
-<!--     <cache name="org.chai.kevin.value.DataValue" -->
-<!--            maxElementsInMemory="2000" -->
-<!--             timeToLiveSeconds="3600" -->
-<!--     /> -->
-    
-<!--     <cache name="org.chai.kevin.value.ExpressionValue" -->
-<!--            maxElementsInMemory="4000" -->
-<!--             timeToLiveSeconds="3600" -->
-<!--     /> -->
-    
-<!--     <cache name="org.chai.kevin.value.CalculationValue" -->
-<!--            maxElementsInMemory="2000" -->
-<!--             timeToLiveSeconds="3600" -->
-<!--     /> -->
-        
-<!-- 	<cache name="org.hibernate.cache.ExpressionValueQueryCache" -->
-<!--            maxElementsInMemory="8000" -->
-<!--             timeToLiveSeconds="3600" -->
-<!--     /> -->
-    
-<!-- 	<cache name="org.hibernate.cache.CalculationValueQueryCache" -->
-<!--            maxElementsInMemory="4000" -->
-<!--             timeToLiveSeconds="3600" -->
-<!--     /> -->
-    
-<!-- 	<cache name="org.hibernate.cache.DataValueQueryCache" -->
-<!--            maxElementsInMemory="4000" -->
-<!--             timeToLiveSeconds="3600" -->
-<!--     /> -->
     
 </ehcache>
