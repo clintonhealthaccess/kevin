@@ -134,6 +134,3 @@
 #survey #survey-objective-list ul li .item:hover { background: white; border: 1px #739eee solid; border-left: 5px #739eee solid; }
 /* line 264, ../../src/stylesheets/survey.sass */
 #survey #survey-objective-list ul li .opened { background: #dbfbde; border-left: 5px #c32e06 solid; }
-
-/* line 268, ../../src/stylesheets/survey.sass */
-.flash-info { color: green; border-color: green; }

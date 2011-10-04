@@ -28,6 +28,8 @@ package org.chai.kevin.dsr
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import grails.plugin.springcache.annotations.CacheFlush;
+
 import org.chai.kevin.AbstractEntityController;
 
 class DsrTargetCategoryController extends AbstractEntityController {
@@ -65,6 +67,16 @@ class DsrTargetCategoryController extends AbstractEntityController {
 			target.save()
 		}
 		entity.delete();
+	}
+	
+	@CacheFlush("dsrCache")
+	def save = {
+		super.save()
+	}
+	
+	@CacheFlush("dsrCache")
+	def delete = {
+		super.delete()
 	}
 	
 	def bindParams(def entity) {

@@ -93,7 +93,9 @@ public class ValueService {
 		.setParameter("calculation", calculation).executeUpdate();
 	}
 	
-	@Transactional(readOnly=true)
+	// if this is set readonly, it triggers an error when deleting a
+	// data element through DataElementController.deleteEntity
+	@Transactional
 	public Long getNumberOfValues(DataElement dataElement) {
 		return (Long)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
 		.add(Restrictions.eq("dataElement", dataElement))

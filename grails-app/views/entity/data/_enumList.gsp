@@ -25,7 +25,6 @@
 									<g:message code="general.text.options" default="Options" />
 								</a>
 							</li>
-							<div class="hidden">
 							<li>
 								<g:link controller="enum" action="edit" id="${enumation.id}" class="flow-edit">
 									<g:message code="general.text.edit" default="Edit" />
@@ -36,9 +35,8 @@
 									<g:message code="general.text.delete" default="Delete" />
 								</g:link>
 							</li>
-						</div>
-					</ul>
-				</div>
+						</ul>
+					</div>
 				</div> 		
 				</td>
 			</tr>

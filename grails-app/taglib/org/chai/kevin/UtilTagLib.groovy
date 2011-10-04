@@ -50,6 +50,7 @@ class UtilTagLib {
 		if (attrs["type"] == null) attrs["type"] = 'text'
 		if (attrs["rows"] == null) attrs["rows"] = '4'
 		if (attrs["width"] == null) attrs["width"] = '300'
+		if (attrs["readonly"] == null) attrs["readonly"] = false
 		attrs["locales"] = localeService.getAvailableLanguages();
 		out << render(template:"/tags/i18nTextarea", model: attrs)
 	}

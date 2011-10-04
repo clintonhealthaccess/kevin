@@ -161,6 +161,9 @@ ul.inline-list li { display: inline; }
 /* line 150, ../../src/stylesheets/partials/_default.sass */
 .filter { float: left; margin-right: 20px; }
 
+/* line 155, ../../src/stylesheets/partials/_default.sass */
+.flash-info { display: block; border: 1px solid #cccccc; background-color: white; padding: 2px; color: green; border-color: green; }
+
 /* line 4, ../../src/stylesheets/print.sass */
 body { line-height: 1.2; font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; font-size: 0.8em; width: 720px; }
 

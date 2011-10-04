@@ -28,6 +28,8 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import grails.plugin.springcache.annotations.CacheFlush;
+
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.dashboard.DashboardTarget;
@@ -58,6 +60,16 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 		if (params.entry?.descriptions!=null) objectiveEntry.entry.descriptions = params.entry?.descriptions
 		
 		objectiveEntry.properties = params;
+	}
+	
+	@CacheFlush("dashboardCache")
+	def save = {
+		super.save()
+	}
+	
+	@CacheFlush("dashboardCache")
+	def delete = {
+		super.delete()
 	}
 	
 }

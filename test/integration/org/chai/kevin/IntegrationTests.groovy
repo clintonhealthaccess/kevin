@@ -29,6 +29,7 @@ package org.chai.kevin
 */
 
 import grails.plugin.spock.IntegrationSpec
+import grails.plugin.springcache.annotations.CacheFlush;
 
 import java.util.Date
 
@@ -54,6 +55,7 @@ import org.hisp.dhis.period.Period
 abstract class IntegrationTests extends IntegrationSpec {
 	
 	def refreshValueService
+	def springcacheService
 	
 	static final String CODE (def number) { return "CODE"+number }
 	
@@ -78,6 +80,9 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static Date mar01 = Initializer.getDate( 2005, 3, 1 );
 	static Date mar31 = Initializer.getDate( 2005, 3, 31 );
 	
+	def setup() {
+		springcacheService.flushAll()
+	}
 	
 	def setupOrganisationUnitTree() {
 		// for the test environment, the facility level is set to 4

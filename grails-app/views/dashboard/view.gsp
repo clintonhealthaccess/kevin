@@ -19,12 +19,12 @@
 			<div id="corner" class="box">
 				<span class="bold"><g:message code="dashboard.labels.iteration" default="Iteration"/></span>
 				<div class="dropdown white-dropdown">
-					<a class="selected" href="#"><g:dateFormat format="yyyy" date="${dashboard.currentPeriod.startDate}"/></a>
+					<a class="selected" href="#"><g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/></a>
 					<div class="hidden dropdown-list">
 						<ul>
 							<g:each in="${periods}" var="period">
 								<li>
-									<a href="${createLink(controller: "dashboard", action:"view", params:[period: period.id, objective: dashboard.currentObjective.id, organisation: dashboard.currentOrganisation.id])}">
+									<a href="${createLink(controller: "dashboard", action:"view", params:[period: period.id, objective: currentObjective.id, organisation: currentOrganisation.id])}">
 										<span><g:dateFormat format="yyyy" date="${period.startDate}"/></span>
 									</a>
 								</li>
@@ -39,11 +39,11 @@
 		    	<ul class="inline-list">
 		    		<g:each in="${dashboard.objectivePath}" var="objective">
 			    		<li>
-			    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
+			    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: objective.id, organisation: currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
 			    		</li>
 		    		</g:each>
 		    		<li>
-		    			<g:i18n field="${dashboard.currentObjective.names}"/>
+		    			<g:i18n field="${currentObjective.names}"/>
 		    		</li>
 		    	</ul>
 	    	</div>
@@ -55,11 +55,11 @@
 				    	<ul>
 				    		<g:each in="${dashboard.organisationPath}" var="organisation">
 					    		<li>
-					    			<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: dashboard.currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
+					    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
 					    		</li>
 				    		</g:each>
 				    		<li>
-				    			${dashboard.currentOrganisation.name}
+				    			${currentOrganisation.name}
 				    		</li>
 				    	</ul>
 			    	</div>
@@ -90,7 +90,7 @@
 						    				<g:if test="${!objective.isTarget()}">
 												<a class="cluetip" 
 													title="${i18n(field:objective.names)}"
-													href="${createLink(controller:'dashboard', action:'view', params:[period: dashboard.currentPeriod.id, objective: objective.id, organisation: dashboard.currentOrganisation.id])}"
+													href="${createLink(controller:'dashboard', action:'view', params:[period: currentPeriod.id, objective: objective.id, organisation: currentOrganisation.id])}"
 												   	rel="${createLink(controller:'dashboard', action:'getDescription', id:objective.id)}">
 													<g:i18n field="${objective.names}"/>
 												</a>
@@ -139,7 +139,7 @@
 									<th class="cell label left row-${organisation.id}" data-row="${organisation.id}">
 										<div><span>
 										<g:if test="${organisation.getChildren().size() > 0}">
-											<g:link controller="dashboard" action="view" params="[period: dashboard.currentPeriod.id, objective: dashboard.currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
+											<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
 										</g:if>
 										<g:else>
 											${organisation.name}
@@ -153,7 +153,7 @@
 											<g:if test="${percentage!=null}">
 												<div style="background-color: ${percentage.color};">
 												    <span>
-												    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[objective: objective.id, organisation: organisation.id, period: dashboard.currentPeriod.id])}">
+												    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[objective: objective.id, organisation: organisation.id, period: currentPeriod.id])}">
 													    	<g:if test="${percentage.valid}">
 																${percentage.roundedValue}%
 															</g:if>
@@ -190,8 +190,8 @@
 				    	<!-- ADMIN SECTION -->
 			    		<shiro:hasPermission permission="admin:dashboard">
 			    			<div class="float-right">
-								<div><a id="add-dashboard-target-link" class="flow-add" href="${createLink(controller:'dashboardTarget', action:'create', params:[currentObjective: dashboard.currentObjective.id])}"><g:message code="dashboard.admin.add.target" default="Add indicator"/></a></div>
-								<div><a id="add-dashboard-objective-link" class="flow-add" href="${createLink(controller:'dashboardObjective', action:'create', params:[currentObjective: dashboard.currentObjective.id])}"><g:message code="dashboard.admin.add.objective" default="Add objective"/></a></div>
+								<div><a id="add-dashboard-target-link" class="flow-add" href="${createLink(controller:'dashboardTarget', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.target" default="Add indicator"/></a></div>
+								<div><a id="add-dashboard-objective-link" class="flow-add" href="${createLink(controller:'dashboardObjective', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.objective" default="Add objective"/></a></div>
 							</div>
 						</shiro:hasPermission>
 				    	<!-- ADMIN SECTION END -->

@@ -42,7 +42,6 @@ import org.hisp.dhis.period.Period;
 
 @Entity(name="StrategicTarget")
 @Table(name="dhsst_dashboard_target")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DashboardTarget extends DashboardEntry {
 
 	private Calculation calculation;

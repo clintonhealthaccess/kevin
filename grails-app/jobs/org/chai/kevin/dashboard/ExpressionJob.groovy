@@ -40,7 +40,7 @@ class ExpressionJob implements InterruptableJob {
 	
 	def sessionRequired = true
 	def concurrent = false
-	
+
 	def refreshValueService
 	
 	void execute(JobExecutionContext context) {
@@ -50,6 +50,7 @@ class ExpressionJob implements InterruptableJob {
 	
 		refreshValueService.refreshExpressions()
 		refreshValueService.refreshCalculations()
+		
 	}
 	
 	void interrupt() {}

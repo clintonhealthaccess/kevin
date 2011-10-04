@@ -9,7 +9,7 @@
 		
 		<g:i18nTextarea name="descriptions" bean="${enumeration}" value="${enumeration.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
 		
-		<g:input name="code" label="Code" bean="${enumeration}" field="code" />
+		<g:input name="code" label="Code" bean="${enumeration}" field="code" readonly="${enumeration.id != null}" />
 		
 		<table id="enum-option">
 			<g:each in="${enumeration.enumOptions}" status="i" var="option">

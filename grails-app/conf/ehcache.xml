@@ -11,7 +11,7 @@
     <defaultCache
     		eternal="false"
             maxElementsInMemory="500"
-            timeToLiveSeconds="3600"
+            timeToLiveSeconds="86400"
             overflowToDisk="false"
             diskPersistent="false"
     />
@@ -65,6 +65,12 @@
     		maxElementsInMemory="8000"
     		timeToLiveSeconds="3600"
     />
+    
+    <cache name="dashboardCache"
+    		maxElementsInMemory="8000"
+    		timeToLiveSeconds="3600"
+    />
+    
     
 <!--     <cache name="org.chai.kevin.value.DataValue" -->
 <!--            maxElementsInMemory="2000" -->

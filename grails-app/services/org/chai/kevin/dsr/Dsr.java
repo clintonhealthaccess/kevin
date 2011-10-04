@@ -1,6 +1,5 @@
 package org.chai.kevin.dsr;
 
-
 public class Dsr {
 
 	private String stringValue;

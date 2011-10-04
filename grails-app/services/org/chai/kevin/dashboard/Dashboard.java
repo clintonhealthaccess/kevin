@@ -38,10 +38,6 @@ import org.hisp.dhis.period.Period;
 
 public class Dashboard {
 	
-	private Organisation organisation;
-	private DashboardObjective objective;
-	private Period period;
-	
 	private List<Organisation> organisations;
 	private List<DashboardObjectiveEntry> objectiveEntries;
 	
@@ -52,15 +48,11 @@ public class Dashboard {
 	
 	private Map<Organisation, Map<DashboardEntry, DashboardPercentage>> values;
 	
-	public Dashboard(Organisation organisation, DashboardObjective objective, Period period, 
-			List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries,
+	public Dashboard(List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries,
 			List<Organisation> organisationPath, List<DashboardObjective> objectivePath,
 			List<OrganisationUnitGroup> facilityTypes,
 			Map<Organisation, Map<DashboardEntry, DashboardPercentage>> values
 	) {
-		this.organisation = organisation;
-		this.objective = objective;
-		this.period = period;
 		this.organisations = organisations;
 		this.objectiveEntries = objectiveEntries;
 		this.organisationPath = organisationPath;
@@ -70,18 +62,6 @@ public class Dashboard {
 	}
 	
 
-	public Organisation getCurrentOrganisation() {
-		return organisation;
-	}
-	
-	public DashboardObjective getCurrentObjective() {
-		return objective;
-	}
-	
-	public Period getCurrentPeriod() {
-		return period;
-	}
-	
 	public List<Organisation> getOrganisations() {
 		return organisations;
 	}

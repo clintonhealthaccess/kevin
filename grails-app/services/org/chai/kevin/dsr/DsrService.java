@@ -57,6 +57,7 @@ import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DsrService {
+	
     //private Log log = LogFactory.getLog(DsrService.class);
 	private OrganisationService organisationService;
 	private ValueService valueService;
@@ -64,79 +65,68 @@ public class DsrService {
 	private LocaleService localeService;
 	private int groupLevel;
 	
-//	@Cacheable("dsrCache")
+	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective, Period period) {
-		List<Organisation> organisations = null;
-		Map<Organisation, Map<DsrTarget, Dsr>> dsrMap = null;
-		List<DsrTarget> targets = null;
-		List<OrganisationUnitGroup> facilityTypes = null;
-		Set<OrganisationUnitGroup> facilityTypeSet = null;
-		Map<Organisation, Organisation> orgParentMap = null;
-		if (objective == null || organisation == null) {
-			return new DsrTable(organisation, organisations, period, objective,
-					targets, facilityTypes, dsrMap,orgParentMap);
-		} else {
-			organisations = organisationService.getChildrenOfLevel(
-					organisation, organisationService.getFacilityLevel());
-			
-			orgParentMap=this.getParentOfLevel(organisations,groupLevel);			
-			Collections.sort(organisations,new OrganisationSorter(orgParentMap,organisationService));  
-			
-			targets = objective.getTargets();
-			Collections.sort(targets, new DsrTargetSorter());
-			dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
-			facilityTypeSet = new LinkedHashSet<OrganisationUnitGroup>();
-			for (Organisation child : organisations) {
-				organisationService.loadGroup(child);
-				if (child.getOrganisationUnitGroup() != null) {
-					facilityTypeSet.add(child.getOrganisationUnitGroup());
-				}
-				Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
-				for (DsrTarget target : targets) {
-					boolean applies = Utils.split(target.getGroupUuidString()).contains(child.getOrganisationUnitGroup().getUuid());
-					String value = null;
-					
-					if (applies) {
-						ExpressionValue expressionValue = valueService.getValue( target.getExpression(), child.getOrganisationUnit(), period);
-						
-						if (expressionValue != null && !expressionValue.getValue().isNull()) {
-							// TODO put this in templates ?
-							switch (expressionValue.getData().getType().getType()) {
-							case BOOL:
-								if (expressionValue.getValue().getBooleanValue()) value = "&#10003;";
-								else value = "";
-								break;
-							case STRING:
-								value = expressionValue.getValue().getStringValue();
-								break;
-							case NUMBER:
-								value = getFormat(target, expressionValue.getValue().getNumberValue().doubleValue());
-								break;
-							case ENUM:
-								String code = expressionValue.getData().getType().getEnumCode();
-								Enum enume = dataService.findEnumByCode(code);
-								if (enume != null) {
-									EnumOption option = enume.getOptionForValue(expressionValue.getValue().getEnumValue());
-									value = localeService.getText(option.getNames());
-								}
-								else value = "";
-								break;
-							default:
-								value = "";
-								break;
-							}
-						}
-						
-					}
-					orgDsr.put(target, new Dsr(value, applies));
-				}
-				dsrMap.put(child, orgDsr);
+		
+		List<Organisation>  organisations = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		Map<Organisation, Organisation> orgParentMap = this.getParentOfLevel(organisations,groupLevel);			
+		Collections.sort(organisations,new OrganisationSorter(orgParentMap,organisationService));  
+		
+		List<DsrTarget> targets = objective.getTargets();
+		Collections.sort(targets, new DsrTargetSorter());
+		
+		Map<Organisation, Map<DsrTarget, Dsr>>  dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
+		Set<OrganisationUnitGroup> facilityTypes = new LinkedHashSet<OrganisationUnitGroup>();
+		
+		for (Organisation child : organisations) {
+			organisationService.loadGroup(child);
+			if (child.getOrganisationUnitGroup() != null) {
+				facilityTypes.add(child.getOrganisationUnitGroup());
 			}
-			facilityTypes = new ArrayList<OrganisationUnitGroup>(facilityTypeSet);
+			Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
+			for (DsrTarget target : targets) {
+				boolean applies = Utils.split(target.getGroupUuidString()).contains(child.getOrganisationUnitGroup().getUuid());
+				String value = null;
+				
+				if (applies) {
+					ExpressionValue expressionValue = valueService.getValue( target.getExpression(), child.getOrganisationUnit(), period);
+					
+					if (expressionValue != null && !expressionValue.getValue().isNull()) {
+						// TODO put this in templates ?
+						switch (expressionValue.getData().getType().getType()) {
+						case BOOL:
+							if (expressionValue.getValue().getBooleanValue()) value = "&#10003;";
+							else value = "";
+							break;
+						case STRING:
+							value = expressionValue.getValue().getStringValue();
+							break;
+						case NUMBER:
+							value = getFormat(target, expressionValue.getValue().getNumberValue().doubleValue());
+							break;
+						case ENUM:
+							String code = expressionValue.getData().getType().getEnumCode();
+							Enum enume = dataService.findEnumByCode(code);
+							if (enume != null) {
+								EnumOption option = enume.getOptionForValue(expressionValue.getValue().getEnumValue());
+								value = localeService.getText(option.getNames());
+							}
+							else value = "";
+							break;
+						default:
+							value = "";
+							break;
+						}
+					}
+					
+				}
+				orgDsr.put(target, new Dsr(value, applies));
+			}
+			dsrMap.put(child, orgDsr);
 		}
-		return new DsrTable(organisation, organisations, period, objective,
-				targets, facilityTypes, dsrMap,orgParentMap);
+
+		return new DsrTable(organisations, targets, facilityTypes, dsrMap,orgParentMap);
 	}
 
 	private static String getFormat(DsrTarget target, Double value) {

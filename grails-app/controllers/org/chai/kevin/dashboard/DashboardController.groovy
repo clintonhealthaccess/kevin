@@ -103,7 +103,10 @@ class DashboardController extends AbstractReportController {
 		
 		if (log.isDebugEnabled()) log.debug("checked by default: "+defaultChecked)
 		[ 
-			dashboard: dashboard, 
+			dashboard: dashboard,
+			currentPeriod: period,
+			currentObjective: entry,
+			currentOrganisation: organisation,
 			periods: Period.list(), 
 			checkedFacilities: defaultChecked 
 		]

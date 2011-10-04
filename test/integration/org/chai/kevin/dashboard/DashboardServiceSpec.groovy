@@ -78,15 +78,10 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 
 		when:
-		def organisation = getOrganisation(organisationName);
 		def objective = DashboardObjective.findByCode(objectiveCode);
-		def dashboard = dashboardService.getDashboard(organisation, objective, period);
+		def dashboard = dashboardService.getDashboard(getOrganisation(organisationName), objective, period);
 
 		then:
-		organisation.children.size() == 2
-
-		organisation == dashboard.currentOrganisation
-		objective == dashboard.currentObjective
 		dashboard.objectiveEntries == getWeightedObjectives(expectedObjectives)
 		// TODO order organisations
 		dashboard.organisations.containsAll getOrganisations(expectedOrganisations)

@@ -45,7 +45,6 @@ import org.hisp.dhis.period.Period;
 
 @Entity(name="StrategicObjective")
 @Table(name="dhsst_dashboard_objective")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DashboardObjective extends DashboardEntry {
 
 	private List<DashboardObjectiveEntry> objectiveEntries = new ArrayList<DashboardObjectiveEntry>();

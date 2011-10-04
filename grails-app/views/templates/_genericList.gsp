@@ -3,9 +3,6 @@
 		<h5 class="float-left">
            	<g:message code="default.list.label" args="[entityName]" />
 		</h5>
-		<g:if test="${flash.message}">
-           	<div class="message">${flash.message}</div>
-           </g:if>
 		
 		<div class="float-right">
 			<g:if test="${!addTemplate}">
@@ -16,6 +13,12 @@
 			</g:else>
 		</div>
 		<div class="clear"></div>
+
+		<g:if test="${flash.message}">
+			<div class="rounded-box-top rounded-box-bottom flash-info">
+           		<g:message code="${flash.message}" default="${flash.default}"/>
+           	</div>
+        </g:if>
 			
 		<!-- Template goes here -->
 		<g:if test="${!entities.isEmpty()}">

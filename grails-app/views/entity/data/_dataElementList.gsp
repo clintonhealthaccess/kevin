@@ -5,7 +5,7 @@
 			<th>Name</th>
 			<th>Type</th>
 			<g:sortableColumn property="code" title="${message(code: 'dataelement.code.label', default: 'Code')}" />
-			<th class="hidden">Manage</th>
+			<th>Manage</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -29,7 +29,7 @@
 										<g:message code="general.text.edit" default="Edit" />
 									</g:link>
 								</li>
-								<li class="hidden">
+								<li>
 									<g:link controller="dataElement" action="delete" id="${dataElement.id}" class="flow-delete">
 										<g:message code="general.text.delete" default="Delete" />
 									</g:link>

@@ -53,7 +53,6 @@ import org.hibernate.annotations.SortType;
 
 @Entity(name = "DsrObjective")
 @Table(name = "dhsst_dsr_objective")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DsrObjective extends Translatable {
 	
 	/**

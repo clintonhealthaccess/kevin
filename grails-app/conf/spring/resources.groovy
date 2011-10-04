@@ -18,6 +18,7 @@ import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.maps.MapsService;
 import org.chai.kevin.survey.SurveyPageService;
 import org.chai.kevin.survey.ValidationService;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.format.number.PercentFormatter;
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
@@ -60,11 +61,6 @@ int infoGroupLevel = config.info.group.level
 int dsrGroupLevel= config.dsr.group.level
 
 beans = {
-	
-//	dataService(DataService) {
-//		sessionFactory = ref("sessionFactory")
-//		localeService = ref("localeService")
-//	}
 	
 	jaqlService(JaqlService) { bean ->
 		bean.singleton = true
@@ -149,15 +145,11 @@ beans = {
 		organisationUnitGroupService = ref("organisationUnitGroupService")
 		facilityLevel = organisationLevel
 	}
-
-//	timestampListener(TimestampListener)
-//	
-//	hibernateEventListeners(HibernateEventListeners) {
-//		listenerMap = [	'pre-insert': timestampListener,
-//						'pre-update': timestampListener]
-//	}
 	
-//	beans = {
-//		customPropertyEditorRegistrar(TranslationPropertyEditorRegistrar)
-//	}
+	// override the spring cache manager to use the same as hibernate
+	springcacheCacheManager(EhCacheManagerFactoryBean) {
+		shared = true
+		cacheManagerName = "Springcache Plugin Cache Manager"
+	}
+	
 }

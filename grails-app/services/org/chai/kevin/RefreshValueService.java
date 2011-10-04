@@ -1,5 +1,7 @@
 package org.chai.kevin;
 
+import grails.plugin.springcache.annotations.CacheFlush;
+
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -190,6 +192,7 @@ public class RefreshValueService {
 	}
 	
 	@Transactional(readOnly = true)
+	@CacheFlush({"dsrCache", "dashboardCache"})
 	public void refreshExpressions() {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -204,6 +207,7 @@ public class RefreshValueService {
 	}
 	
 	@Transactional(readOnly = true)
+	@CacheFlush({"dsrCache", "dashboardCache"})
 	public void refreshCalculations() {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);

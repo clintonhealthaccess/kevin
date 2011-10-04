@@ -31,6 +31,8 @@ package org.chai.kevin.dsr
 * @author Jean Kahigiso M.
 *
 */
+import grails.plugin.springcache.annotations.CacheFlush;
+
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.GroupCollection;
@@ -69,6 +71,16 @@ class DsrObjectiveController extends AbstractEntityController{
 		
 	def deleteEntity(def entity) {
 		entity.delete();
+	}
+	
+	@CacheFlush("dsrCache")
+	def save = {
+		super.save()
+	}
+	
+	@CacheFlush("dsrCache")
+	def delete = {
+		super.delete()
 	}
 	
 	def bindParams(def entity) {

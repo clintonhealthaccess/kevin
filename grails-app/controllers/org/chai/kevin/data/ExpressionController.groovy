@@ -76,7 +76,8 @@ class ExpressionController extends AbstractEntityController {
 			entity.delete()
 		}
 		else {
-			// TODO error message ?
+			flash.message = "expression.delete.hasvalues";
+			flash.default = "Could not delete expression, it still has associated calculations";
 		}
 	}
 	

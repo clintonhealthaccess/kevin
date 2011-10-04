@@ -45,6 +45,7 @@ import org.chai.kevin.value.DataValue
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period
+import org.springframework.transaction.annotation.Transactional;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DataElementController extends AbstractEntityController {
@@ -71,12 +72,20 @@ class DataElementController extends AbstractEntityController {
 	def getModel(def entity) {
 		return [
 			dataElement: entity,
+			hasValues: valueService.getNumberOfValues(entity) != 0,
 			enumes: Enum.list()
 		]
 	}
 
 	def validateEntity(def entity) {
-		return entity.validate()
+		boolean valid = entity.validate()
+		
+		if (!entity.getType().equals(new Type(params['type.jsonType'])) && valueService.getNumberOfValues(entity) != 0) {
+			// error if types are different
+			entity.errors.rejectValue('type', 'dataElement.type.cannotChange', 'Cannot change type because the element has associated values.')
+			valid = false
+		}
+		return valid;
 	}
 
 	def saveEntity(def entity) {
@@ -86,9 +95,10 @@ class DataElementController extends AbstractEntityController {
 	def deleteEntity(def entity) {
 		// we delete the entity only if there are no associated values
 		// should we throw an exception in case we can't delete ?
-		if (valueService.getNumberOfValues(entity) == 0) entity.delete()
+		if (valueService.getNumberOfValues(entity) == 0) entity.delete(flush: true)
 		else {
-			// TODO error message ?
+			flash.message = "dataelement.delete.hasvalues";
+			flash.default = "Could not delete element, it still has values";
 		}
 	}
 
@@ -100,7 +110,7 @@ class DataElementController extends AbstractEntityController {
 			entity.type = new Type()
 			bindData(entity, params, [include:'type.jsonType'])
 		}
-		
+				
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
@@ -148,7 +158,6 @@ class DataElementController extends AbstractEntityController {
 			}
 		}
 	}
-
 
 	def getData = {
 		def includeTypes = params.list('include')

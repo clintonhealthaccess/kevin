@@ -31,8 +31,6 @@ package org.chai.kevin.survey;
  *
  */
 
-import java.io.Serializable;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -43,7 +41,7 @@ import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 
 @MappedSuperclass
-public abstract class SurveyTranslatable extends Orderable implements Serializable {
+public abstract class SurveyTranslatable extends Orderable {
 
 	private static final long serialVersionUID = -6838401416857236741L;
 

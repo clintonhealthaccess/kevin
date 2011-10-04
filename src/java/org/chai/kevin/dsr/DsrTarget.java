@@ -47,7 +47,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTarget extends Translatable {
 	
 	private Long id;

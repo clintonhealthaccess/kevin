@@ -161,6 +161,9 @@ ul.inline-list li { display: inline; }
 /* line 150, ../../src/stylesheets/partials/_default.sass */
 .filter { float: left; margin-right: 20px; }
 
+/* line 155, ../../src/stylesheets/partials/_default.sass */
+.flash-info { display: block; border: 1px solid #cccccc; background-color: white; padding: 2px; color: green; border-color: green; }
+
 /* line 5, ../../src/stylesheets/main.sass */
 #container { border: 1px solid #cccccc; background-color: white; padding: 2px; padding: 0px 0px 0px 0px; height: auto !important; width: 990px; margin: 0 auto; overflow: hidden; -webkit-box-shadow: 0px 5px 8px #818181; -moz-box-shadow: 0px 5px 8px #818181; box-shadow: 0px 5px 8px #818181; }
 /* line 14, ../../src/stylesheets/main.sass */

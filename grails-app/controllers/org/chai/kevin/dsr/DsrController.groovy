@@ -51,7 +51,11 @@ class DsrController extends AbstractReportController {
 		DsrObjective objective = DsrObjective.get(params.int('objective'));
 		Organisation organisation = getOrganisation(false)
 		
-		def dsrTable = dsrService.getDsr(organisation, objective, period);
+		def dsrTable = null
+		if (period != null && objective != null && organisation != null) {
+			 dsrTable = dsrService.getDsr(organisation, objective, period);
+		}
+		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
 		
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
@@ -59,6 +63,9 @@ class DsrController extends AbstractReportController {
 		
 		[
 			dsrTable: dsrTable, 
+			currentPeriod: period,
+			currentObjective: objective,
+			currentOrganisation: organisation,
 			periods: Period.list(),
 			objectives: DsrObjective.list(),
 		    organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),

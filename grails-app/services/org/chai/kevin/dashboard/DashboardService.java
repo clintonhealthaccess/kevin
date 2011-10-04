@@ -28,6 +28,8 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import grails.plugin.springcache.annotations.Cacheable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,6 +59,7 @@ public class DashboardService {
 	private Set<Integer> skipLevels;
 	
 	@Transactional(readOnly = true)
+	@Cacheable("dashboardCache")
 	public Dashboard getDashboard(Organisation organisation, DashboardObjective objective, Period period) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		for (Organisation child : organisation.getChildren()) {
@@ -78,8 +81,7 @@ public class DashboardService {
 		List<DashboardObjectiveEntry> weightedObjectives = objective.getObjectiveEntries();
 		List<Organisation> organisationPath = calculateOrganisationPath(organisation);
 		List<DashboardObjective> objectivePath = calculateObjectivePath(objective);
-		return new Dashboard(organisation, objective, period, 
-				organisations, weightedObjectives, 
+		return new Dashboard(organisations, weightedObjectives, 
 				organisationPath, objectivePath, facilityTypes,
 				getValues(organisations, weightedObjectives, period));
 	}

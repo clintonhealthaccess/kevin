@@ -31,16 +31,12 @@ quartz {
     jdbcStore = false
     waitForJobsToCompleteOnShutdown = false
     exposeSchedulerInRepository = false
-
-    props {
-        scheduler.skipUpdateCheck = true
-    }
 }
 
-environments {
+//environments {
 //    test {
 //        quartz {
 //            autoStartup = true
 //        }
 //    }
-}
+//}

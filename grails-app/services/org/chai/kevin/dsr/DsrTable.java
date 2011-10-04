@@ -28,50 +28,28 @@ package org.chai.kevin.dsr;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.chai.kevin.Organisation;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.period.Period;
 
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DsrTable implements Serializable {
+public class DsrTable {
 
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private Period period;
-	private Organisation organisation;
-	private DsrObjective objective;
 	private List<Organisation> organisations;
 	private List<DsrTarget> targets;
-	private List<OrganisationUnitGroup> facilityTypes;
+	private Set<OrganisationUnitGroup> facilityTypes;
 	private Map<Organisation, Map<DsrTarget, Dsr>> values;
 	private Map<Organisation, Organisation> organisationMap;
 
-	public DsrTable(Organisation organisation,List<Organisation> organisations, Period period, DsrObjective objective,
-			List<DsrTarget> targets,List<OrganisationUnitGroup> facilityTypes,
+	public DsrTable(List<Organisation> organisations, List<DsrTarget> targets, Set<OrganisationUnitGroup> facilityTypes,
 			Map<Organisation, Map<DsrTarget, Dsr>> values, Map<Organisation,Organisation> organisationMap) {
-		super();
-		this.organisation = organisation;
 		this.organisations = organisations;
 		this.facilityTypes = facilityTypes;
-		this.period = period;
-		this.objective = objective;
 		this.targets = targets;
 		this.values = values;
 		this.organisationMap=organisationMap;
-	}
-
-	public Period getPeriod() {
-		return period;
 	}
 
 	public List<Organisation> getOrganisations() {
@@ -82,27 +60,11 @@ public class DsrTable implements Serializable {
 		return targets;
 	}
 
-	public DsrObjective getObjective() {
-		return objective;
-	}
-	
-	public Long getObjectiveId(){
-		return objective!=null?objective.getId():null;
-	}
-	
-	public Organisation getOrganisation() {
-		return organisation;
-	}
-	
-	public Integer getOrganisationId(){
-		return organisation!=null?organisation.getId():null;
-	}
-	
 	public Dsr getDsr(Organisation organisation, DsrTarget target) {
 		return values.get(organisation).get(target);
 	}
 
-	public List<OrganisationUnitGroup> getFacilityTypes() {
+	public Set<OrganisationUnitGroup> getFacilityTypes() {
 		return facilityTypes;
 	}
 
