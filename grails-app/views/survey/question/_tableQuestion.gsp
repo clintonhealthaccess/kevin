@@ -3,8 +3,8 @@
 <div id="question-${question.id}" class="question question-table" data-question="${question.id}">
 	<h4><span class="question-number">1</span><g:i18n field="${question.names}" /></h4>
         <div class="question-help-container">
-          <p class="question-help"><g:i18n field="${question.descriptions}"/><span class='hide_question_help'>[x]</span></p>
-          <span class='show_question_help'>[show]</span>
+          <p class='show_question_help'><a href="#">Show tips</a></p>
+          <p class="question-help"><g:i18n field="${question.descriptions}"/><a class='hide_question_help'>Close tips</a></p>
         </div>
 	<div class="question-table-container clear">
 		<table class="listing push-20">

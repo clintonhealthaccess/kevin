@@ -9,12 +9,8 @@
 	<body>
 		<div id="survey">
 			<g:render template="/survey/header" model="[period: surveyPage.period, organisation: surveyPage.organisation]"/>
-			
-			<div class="grey-rounded-box-bottom">
-				<div class="rounded-box-top rounded-box-bottom">
-					Welcome to the survey, please fill in all the objectives above.
-				</div>
-				<div class="clear"></div>
+			<div class="main">  
+			  <p class="help">Welcome to the survey, please fill in all the objectives above.</p>
 			</div>
 		</div>
 	</body>

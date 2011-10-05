@@ -22,15 +22,45 @@
   background: url('../images/icons/check.png') no-repeat 0 0
   padding: 10px 10px 10px 42px
   
+.question-container
+  margin-bottom: 20px
+  +pie-clearfix
+
+.question-help-container
+  position: relative
+  
 .question-help
   background: url('../images/icons/info.png') no-repeat 11px center $filler2
   border: 1px solid $filler2 - #111
   font-size: 11px
   line-height: 1.5
   margin-bottom: 10px
-  padding: 15px 15px 15px 45px
+  padding: 15px 45px
+  position: relative
   +border-radius(3px)
   +text-shadow(#fff, 0, 1px, 0)
+  
+.show_question_help
+  display: none
+  a
+    font-size: 11px
+    opacity: 0.5
+    &:hover, &:focus
+      color: $primary
+      opacity: 1
+  
+.hide_question_help
+  background: url('../images/icons/icon_close_flash.png') no-repeat center
+  cursor: pointer
+  height: 12px
+  left: 97%
+  opacity: 0.3
+  position: absolute
+  text-indent: -6666px
+  top: 40%
+  width: 12px
+  &:hover, &:focus
+    opacity: 1
 
 .message
   &.login
