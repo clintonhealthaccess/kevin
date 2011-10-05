@@ -239,7 +239,27 @@ class Initializer {
 			)
 			
 			def dataElementListMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
-				type: Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(), "key2":Type.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": Type.TYPE_BOOL(), "key4": Type.TYPE_STRING()]))
+				type: Type.TYPE_LIST(
+					Type.TYPE_MAP([
+						"key1": Type.TYPE_STRING(), 
+						"key2": Type.TYPE_ENUM (Enum.findByCode('ENUM2').code), 
+						"key3": Type.TYPE_STRING(), 
+//						"key4": Type.TYPE_MAP([
+//							"key41": Type.TYPE_STRING,
+//							"key42": Type.TYPE_STRING,
+//							"key43": Type.TYPE_DATE,
+//						]),
+						"key5": Type.TYPE_MAP([
+							"key51": Type.TYPE_STRING(),
+							"key52": Type.TYPE_STRING(),
+							"key53": Type.TYPE_STRING(),
+							"key54": Type.TYPE_MAP([
+								"key541": Type.TYPE_NUMBER(),
+								"key542": Type.TYPE_NUMBER()
+							]),
+							"key55": Type.TYPE_STRING(),
+						])
+					]))
 			)
 			
 			dataElement10.save(failOnError: true, flush:true)
@@ -1039,8 +1059,11 @@ class Initializer {
 			def surveyElementServiceQ5 = new SurveyElement(
 				dataElement: DataElement.findByCode("MAP1"), 
 				surveyQuestion: serviceQ5,
-				headers: [".key1":j(["en": "Header 1"]),".key2":j(["en": "Header 2"]),".key3":j(["en": "Header 3"])]
-				).save(failOnError: true)
+				headers: [
+					".key1":j(["en": "Header 1"]),
+					".key2":j(["en": "Header 2"]),
+					".key3":j(["en": "Header 3"])
+				]).save(failOnError: true)
 			serviceQ5.surveyElement = surveyElementServiceQ5
 			serviceQ5.save(failOnError: true)
 			
@@ -1056,8 +1079,23 @@ class Initializer {
 			def surveyElementServiceQ6 = new SurveyElement(
 				dataElement: DataElement.findByCode("LISTMAP1"), 
 				surveyQuestion: serviceQ6,
-				headers: ["[_].key1":j(["en": "Header 1"]),"[_].key2":j(["en": "Header 2"]),"[_].key3":j(["en": "Header 3"])]
-			).save(failOnError: true)
+				headers: [
+					"[_].key1":j(["en": "First Name"]),
+					"[_].key2":j(["en": "Last Name"]),
+					"[_].key3":j(["en": "Other Info"]),
+					"[_].key4":j(["en": "Work History"]),
+					"[_].key4.key41":j(["en": "Primary Function"]),
+					"[_].key4.key42":j(["en": "Primary Department"]),
+					"[_].key4.key43":j(["en": "Begin employment at this facility"]),
+					"[_].key5":j(["en": "Education & Training"]),
+					"[_].key5.key51":j(["en": "Highest level of education"]),
+					"[_].key5.key52":j(["en": "Corresponding Institution"]),
+					"[_].key5.key53":j(["en": "Other"]),
+					"[_].key5.key54":j(["en": "Days of training received between July 2010 and June 2011, By Are"]),
+					"[_].key5.key54.key541":j(["en": "Environmental Health"]),
+					"[_].key5.key54.key542":j(["en": "Performance Based Financing"]),
+					"[_].key5.key55":j(["en": "Other"])
+				]).save(failOnError: true)
 			serviceQ6.surveyElement = surveyElementServiceQ6
 			serviceQ6.save(failOnError: true)
 			
