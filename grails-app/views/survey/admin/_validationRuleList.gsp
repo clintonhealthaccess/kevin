@@ -1,7 +1,6 @@
 <table>
 	<thead>
 		<tr>
-		    <th>Id</th>
 			<th>Data Element</th>
 			<th>Prefix</th>
 			<th>Expression</th>
@@ -14,7 +13,6 @@
 	<tbody>
 		<g:each in="${entities}" status="i" var="validationRule">
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-				<td>${validationRule.id}</td>
 				<td><g:i18n field="${validationRule.surveyElement.dataElement?.names}" /></td>
 				<td>${validationRule.prefix}</td>
 				<td>${validationRule.expression}</td>

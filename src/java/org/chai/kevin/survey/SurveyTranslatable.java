@@ -56,6 +56,10 @@ public abstract class SurveyTranslatable extends Orderable {
 		return names;
 	}
 	
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+	
 	@Embedded
 		@AttributeOverrides({
 	    @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
@@ -64,10 +68,6 @@ public abstract class SurveyTranslatable extends Orderable {
 		return descriptions;
 	}
 
-	public void setNames(Translation names) {
-		this.names = names;
-	}
-	
 	public void setDescriptions(Translation descriptions) {
 		this.descriptions = descriptions;
 	}
