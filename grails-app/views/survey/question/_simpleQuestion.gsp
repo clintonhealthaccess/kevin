@@ -2,8 +2,11 @@
 
 <div id="question-${question.id}" class="question question-simple" data-question="${question.id}">
 	<h4><span class="question-number">2</span><g:i18n field="${question.names}" /></h4>
-	<p><g:i18n field="${question.descriptions}"/></p>
-
+	<div class="question-help-container">
+		<p class="question-help"><g:i18n field="${question.descriptions}"/><span class='hide_question_help'>[x]</span></p>
+		<span class='show_question_help'>[show]</span>
+	</div>
+	
 	<g:set var="surveyElement" value="${question.surveyElement}"/>
 	<div class="clear"></div>
 
