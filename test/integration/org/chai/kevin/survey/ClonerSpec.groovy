@@ -97,7 +97,7 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER())
 		def element2 = newSurveyElement(question2, dataElement2)
 		def message = newValidationMessage()
-		def validationRule = newSurveyValidationRule(element2, "", "\$"+element1+" == 1", message, [element1])
+		def validationRule = newSurveyValidationRule(element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", message, [element1])
 		
 		when:
 		SurveyCloner cloner = new SurveyCloner(survey2, localeService)
@@ -109,7 +109,7 @@ class ClonerSpec extends SurveyIntegrationTests {
 		then:
 		def element3 = SurveyElement.list()[2]
 		element3.validationRules.size() == 1
-		element3.validationRules.values().iterator().next().expression == element2.validationRules.values().iterator().next().expression
+		element3.validationRules.iterator().next().expression == element2.validationRules.iterator().next().expression
 		cloner.getUnchangedValidationRules().size() == 1
 	}
 
@@ -123,7 +123,7 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		def message = newValidationMessage()
-		def validationRule = newSurveyValidationRule(element, "", "1 == 1", message, [element])
+		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", message, [element])
 		
 		when:
 		SurveyCloner cloner = new SurveyCloner(survey, localeService)
@@ -135,8 +135,8 @@ class ClonerSpec extends SurveyIntegrationTests {
 		then:
 		def elementCopy = SurveyElement.list()[1]
 		elementCopy.validationRules.size() == 1
-		elementCopy.validationRules.values().iterator().next().dependencies.size() == 1
-		elementCopy.validationRules.values().iterator().next().dependencies[0].equals(elementCopy)
+		elementCopy.validationRules.iterator().next().dependencies.size() == 1
+		elementCopy.validationRules.iterator().next().dependencies[0].equals(elementCopy)
 		cloner.getUnchangedValidationRules().size() == 0
 		
 	}

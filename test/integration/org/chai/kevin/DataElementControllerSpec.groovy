@@ -28,7 +28,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		DataElement.count() == 0
 		
 		when:
-		dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		dataElement = newDataElement(CODE(2), Type.TYPE_NUMBER())
 		newDataValue(dataElement, period, organisation, Value.NULL)
 		dataElementController.params.id = dataElement.id
 		dataElementController.delete()

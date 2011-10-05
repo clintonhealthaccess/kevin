@@ -3,6 +3,7 @@ package org.chai.kevin.survey
 import org.chai.kevin.IntegrationTests
 import org.chai.kevin.data.DataElement
 import org.chai.kevin.data.Type;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period
 
 class SurveyElementServiceSpec extends SurveyIntegrationTests {
@@ -151,18 +152,24 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		def list = null
 		
 		when:
-		list = surveyElementService.searchValidationRules(element)
+		list = surveyElementService.searchValidationRules(element, HEALTH_CENTER_GROUP)
 		
 		then:
 		list.isEmpty()
 		
 		when:
 		def message = newValidationMessage()
-		def rule1 = newSurveyValidationRule(element, "", "\$"+element.id+"==1", message)
-		list = surveyElementService.searchValidationRules(element)
+		def rule1 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1", message)
+		list = surveyElementService.searchValidationRules(element, HEALTH_CENTER_GROUP)
 		
 		then:
 		list.equals(new HashSet([rule1]))
+		
+		when:
+		list = surveyElementService.searchValidationRules(element, DISTRICT_HOSPITAL_GROUP)
+		
+		then:
+		list.isEmpty()
 	}
 	
 	def "test retrieve validation rule - several rules"() {
@@ -180,9 +187,9 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 	
 		when:
 		def message = newValidationMessage()
-		def rule3 = newSurveyValidationRule(element, "", "\$"+element.id+"0"+"==1", message)
-		def rule4 = newSurveyValidationRule(element, "", "\$"+element.id+"==1", message)
-		list = surveyElementService.searchValidationRules(element)
+		def rule3 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1", message)
+		def rule4 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1", message)
+		list = surveyElementService.searchValidationRules(element, HEALTH_CENTER_GROUP)
 		
 		then:
 		list.equals(new HashSet([rule4]))

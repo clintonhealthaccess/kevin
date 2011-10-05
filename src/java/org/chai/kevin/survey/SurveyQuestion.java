@@ -81,23 +81,23 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		this.order = order;
 	}
 
-	public void setSection(SurveySection section) {
-		this.section = section;
-	}
-
 	@ManyToOne(targetEntity = SurveySection.class, optional=false)
 	@JoinColumn(nullable=false)
 	public SurveySection getSection() {
 		return section;
 	}
 
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
+	public void setSection(SurveySection section) {
+		this.section = section;
 	}
 
 	@Lob
 	public String getGroupUuidString() {
 		return groupUuidString;
+	}
+
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
 	}
 
 	@Transient

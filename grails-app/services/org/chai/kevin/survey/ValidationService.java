@@ -12,8 +12,10 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.OrganisationService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ValidationService {
 	private static final Log log = LogFactory.getLog(ValidationService.class);
 	
+	private OrganisationService organisationService;
 	private SurveyElementService surveyElementService;
 	private JaqlService jaqlService;
 	
@@ -61,14 +64,18 @@ public class ValidationService {
 	@Transactional(readOnly=true)
 	public Set<String> getInvalidPrefix(SurveyValidationRule validationRule, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("validate(validationRule="+validationRule+")");
-		SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(validationRule.getSurveyElement(), organisation.getOrganisationUnit());
-
-		String prefix = validationRule.getPrefix();
-		String expression = validationRule.getExpression();
-		
 		Set<String> result = new HashSet<String>();
-		if (enteredValue != null) result.addAll(getPrefixes(expression, prefix, enteredValue, false));
 		
+		organisationService.loadGroup(organisation);
+		if (Utils.split(validationRule.getGroupUuidString()).contains(organisation.getOrganisationUnitGroup().getUuid())) {
+			// we validate only if that rule applies to the group
+			SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(validationRule.getSurveyElement(), organisation.getOrganisationUnit());
+	
+			String prefix = validationRule.getPrefix();
+			String expression = validationRule.getExpression();
+			
+			if (enteredValue != null) result.addAll(getPrefixes(expression, prefix, enteredValue, false));
+		}
 		if (log.isDebugEnabled()) log.debug("validate(...)="+result);
 		return result;
 	}
@@ -150,19 +157,16 @@ public class ValidationService {
     	return dataInExpression;
     }
 	
-//	private SurveyEnteredValue getValue(Collection<SurveyEnteredValue> values, SurveyElement element) {
-//		for (SurveyEnteredValue surveyEnteredValue : values) {
-//			if (surveyEnteredValue.getSurveyElement().equals(element)) return surveyEnteredValue;
-//		}
-//		return null;
-//	}
-
 	public void setJaqlService(JaqlService jaqlService) {
 		this.jaqlService = jaqlService;
 	}
 	
 	public void setSurveyElementService(SurveyElementService surveyElementService) {
 		this.surveyElementService = surveyElementService;
+	}
+	
+	public void setOrganisationService(OrganisationService organisationService) {
+		this.organisationService = organisationService;
 	}
 	
 }

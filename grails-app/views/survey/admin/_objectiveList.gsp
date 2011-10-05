@@ -1,3 +1,4 @@
+<g:searchBox controller="question" action="search" params="${[surveyId: survey?.id]}" entityName="Survey Question"/>
 <table>
 	<thead>
 		<tr>

@@ -27,6 +27,11 @@
  */
 package org.chai.kevin.survey
 
+import java.util.List;
+
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.util.Utils;
@@ -38,28 +43,54 @@ import org.chai.kevin.util.Utils;
 class SurveyQuestionService {
 
 	static transactional = true
+	
 	def localeService
 	def sessionFactory
 
-
-	List<SurveyQuestion> searchSurveyQuestion(String text, Survey survey){
-		// TODO replace by query
-		List<SurveyQuestion> questions = null;
-		if(survey) {
-			questions = sessionFactory.currentSession.createCriteria(SurveyQuestion.class).createAlias("section", "sect").createAlias("sect.objective", "obj").add(Restrictions.eq("obj.survey", survey)).list();
-		}else{
-			questions = SurveyQuestion.list();
-		}
-		return searchQuestion(text,questions);
-	}
-
-
-	private List<SurveyQuestion> searchQuestion(String text,List<SurveyQuestion> questions){
+	List<SurveyQuestion> searchSurveyQuestions(String text, Survey survey, def params = [:]) {
+		def criteria = getSearchCriteria(text, survey)
+		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+		if (params['max'] != null) criteria.setMaxResults(params['max'])
+		else criteria.setMaxResults(500)
+		
+		List<SurveyQuestion> questions = criteria.addOrder(Order.asc("id")).list()
+		
 		StringUtils.split(text).each { chunk ->
 			questions.retainAll { question ->
-				Utils.matches(chunk, question.names[localeService.getCurrentLanguage()])
+				Utils.matches(chunk, question.names[localeService.getCurrentLanguage()]) ||
+				Utils.matches(chunk, question.descriptions[localeService.getCurrentLanguage()])
 			}
 		}
-		return questions.sort{it.names[localeService.getCurrentLanguage()]}
+		
+		return questions;
 	}
+	
+	Integer countSurveyQuestions(String text, Survey survey) {
+		return getSearchCriteria(text, survey).setProjection(Projections.count("id")).uniqueResult()
+	}
+
+	private def getSearchCriteria(String text, Survey survey) {
+		def criteria = sessionFactory.currentSession.createCriteria(SurveyQuestion.class)
+		
+		def textRestrictions = Restrictions.conjunction()
+		StringUtils.split(text).each { chunk ->
+			def disjunction = Restrictions.disjunction();
+			
+			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("descriptions.jsonText", chunk, MatchMode.ANYWHERE))
+
+			textRestrictions.add(disjunction)
+		}
+		criteria.add(textRestrictions)
+		
+		if (survey != null) {
+			criteria.createAlias("section", "ss")
+			.createAlias("ss.objective", "so")
+			.add(Restrictions.eq("so.survey", survey))
+		}
+		
+		return criteria
+	}
+	
+	
 }

@@ -116,9 +116,26 @@ class DataElementController extends AbstractEntityController {
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
+	
+	def search = {
+		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		params.offset = params.offset ? params.int('offset'): 0
+		
+		List<DataElement> dataElements = dataService.searchDataElements(params['q'], [], params);
+		
+		render (view: '/entity/list', model:[
+			entities: dataElements,
+			template: "data/dataElementList",
+			code: "dataelement.label",
+			entityCount: dataService.countDataElements(params['q'], []),
+			search: true
+		])
+	}
 
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		params.offset = params.offset ? params.int('offset'): 0
+		
 		List<DataElement> dataElements = DataElement.list(params);
 		
 		render (view: '/entity/list', model:[

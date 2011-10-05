@@ -52,6 +52,17 @@
 					<div class="error-list"><g:renderErrors bean="${validation}" field="validationMessage" /></div>
 				</div>
 				
+				<div class="row ${hasErrors(bean:validation, field:'groupUuidString', 'errors')}">
+					<label for="groups">Organisation Unit Group:</label> <select name="groupUuids" multiple="multiple" size="5">
+						<g:each in="${groups}" var="group">
+							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>${group.name}</option>
+						</g:each>
+					</select>
+					<div class="error-list">
+						<g:renderErrors bean="${validation}" field="groupUuidString" />
+					</div>
+				</div>
+				
 				<g:if test="${validation.id != null}">
 					<input type="hidden" name="id" value="${validation.id}" />
 				</g:if>

@@ -40,6 +40,7 @@
 		<mapping class="org.chai.kevin.survey.SurveyObjective" />
 		<mapping class="org.chai.kevin.survey.SurveySection" />
 		<mapping class="org.chai.kevin.survey.SurveyElement" />
+		<mapping class="org.chai.kevin.survey.SurveyQuestion" />
 		<mapping class="org.chai.kevin.survey.SurveySimpleQuestion" />
 		<mapping class="org.chai.kevin.survey.SurveyCheckboxQuestion" />
 		<mapping class="org.chai.kevin.survey.SurveyCheckboxOption" />

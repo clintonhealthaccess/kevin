@@ -47,6 +47,7 @@ import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.ValueCalculator;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnit;

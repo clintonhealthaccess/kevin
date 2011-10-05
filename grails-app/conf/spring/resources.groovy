@@ -74,6 +74,7 @@ beans = {
 	}
 	
 	validationService(ValidationService){
+		organisationService = ref("organisationService")
 		surveyElementService = ref("surveyElementService")
 		jaqlService = ref("jaqlService")
 	}

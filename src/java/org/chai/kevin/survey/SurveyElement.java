@@ -1,6 +1,8 @@
 package org.chai.kevin.survey;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -29,7 +31,7 @@ public class SurveyElement {
 	private DataElement dataElement;
 	private SurveyQuestion surveyQuestion;
 	
-	private Map<String, SurveyValidationRule> validationRules = new HashMap<String, SurveyValidationRule>();
+	private List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
 	private Map<String, Translation> headers = new HashMap<String, Translation>();
 	
 	@Id
@@ -53,19 +55,17 @@ public class SurveyElement {
 	}
 
 	@OneToMany(mappedBy="surveyElement", targetEntity=SurveyValidationRule.class)
-//	@JoinTable(name="dhsst_survey_element_validation_rules")
-	@MapKeyColumn(name="prefix")
-	public Map<String, SurveyValidationRule> getValidationRules() {
+	public List<SurveyValidationRule> getValidationRules() {
 		return validationRules;
 	}
 	
-	public void setValidationRules(Map<String, SurveyValidationRule> validationRules) {
+	public void setValidationRules(List<SurveyValidationRule> validationRules) {
 		this.validationRules = validationRules;
 	}
 	
 	public void addValidationRule(SurveyValidationRule validationRule) {
 		validationRule.setSurveyElement(this);
-		validationRules.put(validationRule.getPrefix(), validationRule);
+		validationRules.add(validationRule);
 	}
 	
 	@ManyToOne(targetEntity=SurveyQuestion.class, optional=false)
@@ -135,8 +135,8 @@ public class SurveyElement {
 	
 	@Transient
 	protected void copyRules(SurveyElement copy, SurveyCloner cloner) {
-		for (Entry<String, SurveyValidationRule> entry : getValidationRules().entrySet()) {
-			copy.getValidationRules().put(entry.getKey(), cloner.getValidationRule(entry.getValue()));
+		for (SurveyValidationRule rule : getValidationRules()) {
+			copy.getValidationRules().add(cloner.getValidationRule(rule));
 		}
 		for (Entry<String, Translation> entry : getHeaders().entrySet()) {
 			copy.getHeaders().put(entry.getKey(), entry.getValue());

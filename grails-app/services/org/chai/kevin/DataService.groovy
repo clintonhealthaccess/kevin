@@ -43,6 +43,8 @@ import org.chai.kevin.util.Utils;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,33 +108,17 @@ class DataService {
 		else calculation.delete();
 	}
 	
-    public List<DataElement> searchDataElements(String text, List<String> allowedTypes) {
-		def criteria = DataElement.createCriteria()
+	public Integer countDataElements(String text, List<String> allowedTypes) {
+		return getSearchCriteria(text, allowedTypes).setProjection(Projections.count("id")).uniqueResult()
+	}
+	
+    public List<DataElement> searchDataElements(String text, List<String> allowedTypes, def params = [:]) {
+		def criteria = getSearchCriteria(text, allowedTypes)
+		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+		if (params['max'] != null) criteria.setMaxResults(params['max'])
+		else criteria.setMaxResults(500)
 		
-		def textRestrictions = Restrictions.conjunction()
-		StringUtils.split(text).each { chunk ->
-			def disjunction = Restrictions.disjunction();
-			
-			disjunction.add(Restrictions.ilike("names.jsonText", text, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("code", text, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("info", text, MatchMode.ANYWHERE))
-			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
-			
-			textRestrictions.add(disjunction)
-		}
-		
-		if (!allowedTypes.isEmpty()) {
-			def typeRestrictions = Restrictions.disjunction()
-			allowedTypes.each { type ->
-				typeRestrictions.add(Restrictions.like("type.jsonType", type, MatchMode.ANYWHERE))
-			}
-			criteria.add(Restrictions.and(textRestrictions, typeRestrictions))
-		}
-		else {
-			criteria.add(textRestrictions)
-		}
-		
-		List<DataElement> dataElements = criteria.setMaxResults(200).list()
+		List<DataElement> dataElements = criteria.addOrder(Order.asc("id")).list()
 		
 		StringUtils.split(text).each { chunk ->
 			dataElements.retainAll { element ->
@@ -149,8 +135,36 @@ class DataService {
 			}
 		}
 		
-		return dataElements.sort {it.names[localeService.getCurrentLanguage()]}
+		return dataElements
     }
 	
+	private def getSearchCriteria(String text, List<String> allowedTypes) {
+		def criteria = DataElement.createCriteria()
+		
+		def textRestrictions = Restrictions.conjunction()
+		StringUtils.split(text).each { chunk ->
+			def disjunction = Restrictions.disjunction();
+			
+			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("code", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("info", chunk, MatchMode.ANYWHERE))
+			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
+			
+			textRestrictions.add(disjunction)
+		}
+		
+		if (!allowedTypes.isEmpty()) {
+			def typeRestrictions = Restrictions.disjunction()
+			allowedTypes.each { type ->
+				typeRestrictions.add(Restrictions.like("type.jsonType", type, MatchMode.ANYWHERE))
+			}
+			criteria.add(Restrictions.and(textRestrictions, typeRestrictions))
+		}
+		else {
+			criteria.add(textRestrictions)
+		}
+		
+		return criteria
+	}
     
 }

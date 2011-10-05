@@ -143,11 +143,11 @@ class SurveyElementService {
 		return result
 	}
 
-	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement) {
+	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement, String groupUuid) {
 		def c = SurveyValidationRule.createCriteria()
-		List<SurveyValidationRule> rules = c.add(
-			Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE)
-		)
+		List<SurveyValidationRule> rules = c
+		.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
+		.add(Restrictions.like("groupUuidString", groupUuid, MatchMode.ANYWHERE))
 		.list()
 		return filter(rules, surveyElement);
 	}

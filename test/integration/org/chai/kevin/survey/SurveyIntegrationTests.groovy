@@ -47,8 +47,8 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return new SurveyValidationMessage(messages: messages).save(failOnError: true)
 	}
 	
-	def newSurveyValidationRule(def element, def prefix, def expression, def validationMessage, def dependencies = []) {
-		def validationRule = new SurveyValidationRule(expression: expression, surveyElement: element, validationMessage: validationMessage, dependencies: dependencies, allowOutlier: false).save(failOnError: true)
+	def newSurveyValidationRule(def element, def prefix, def groups, def expression, def validationMessage, def dependencies = []) {
+		def validationRule = new SurveyValidationRule(expression: expression, surveyElement: element, groupUuidString: Utils.unsplit(groups), validationMessage: validationMessage, dependencies: dependencies, allowOutlier: false).save(failOnError: true)
 		element.addValidationRule(validationRule)
 		element.save(failOnError: true)
 		validationMessage.addValidationRule(validationRule)
@@ -63,11 +63,15 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return skipRule
 	}
 	
-	def newSimpleQuestion(def section, def order, def groups) {
-		def question = new SurveySimpleQuestion(section: section, order: order, groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
+	def newSimpleQuestion(def names, def section, def order, def groups) {
+		def question = new SurveySimpleQuestion(names: names, section: section, order: order, groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
 		section.addQuestion(question)
 		section.save(failOnError: true)
 		return question
+	}
+	
+	def newSimpleQuestion(def section, def order, def groups) {
+		return newSimpleQuestion([:], section, order, groups)
 	}
 	
 	def newTableQuestion(def section, def order, def groups) {

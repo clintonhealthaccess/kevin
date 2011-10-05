@@ -6,6 +6,7 @@
 			<th>Prefix</th>
 			<th>Expression</th>
 			<th>Allow Outlier</th>
+			<th>Organisation Unit Groups</th>
 			<th>Validation Message</th>
 			<th>Manage</th>
 		</tr>
@@ -25,26 +26,27 @@
 			        X
 			        </g:else>
 			    </td>
+			    <td>${validationRule.groupUuidString}</td>
 				<td><g:i18n field="${validationRule.validationMessage.messages}" /></td>
 				<td>
-			<div class="dropdown white-dropdown"> 
-			     <a class="selected" href="#" data-type="validation-rule">Manage</a>
-			<div class="hidden dropdown-list">
-				<ul>
-					<li class="edit-validation-rule-link">
-					<g:link controller="surveyValidationRule" action="edit" id="${validationRule.id}" class="flow-edit">
-					    <g:message code="general.text.edit" default="Edit" /> 
-					</g:link>
-					</li>
-					<li class="delete-validation-rule-link">
-				    <g:link controller="surveyValidationRule" action="delete" id="${validationRule.id}" class="flow-delete">
-				        <g:message code="general.text.delete" default="Delete" /> 
-				    </g:link>
-					</li>
-				</ul>
-			</div>
-			</div> 		
-			</td>
+					<div class="dropdown white-dropdown"> 
+			     		<a class="selected" href="#" data-type="validation-rule">Manage</a>
+						<div class="hidden dropdown-list">
+							<ul>
+								<li class="edit-validation-rule-link">
+									<g:link controller="surveyValidationRule" action="edit" id="${validationRule.id}" class="flow-edit">
+										<g:message code="general.text.edit" default="Edit" /> 
+									</g:link>
+								</li>
+								<li class="delete-validation-rule-link">
+									<g:link controller="surveyValidationRule" action="delete" id="${validationRule.id}" class="flow-delete">
+										<g:message code="general.text.delete" default="Delete" /> 
+									</g:link>
+								</li>
+							</ul>
+						</div>
+					</div> 		
+				</td>
 			</tr>
 		</g:each>
 	</tbody>

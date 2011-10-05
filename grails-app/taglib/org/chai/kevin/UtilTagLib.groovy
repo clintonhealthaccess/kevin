@@ -62,6 +62,18 @@ class UtilTagLib {
 		out << render(template:"/tags/i18nRichTextarea", model: attrs)
 	}
 	
+	def searchBox = { attrs, body ->
+		if (attrs['controller'] == null) attrs['controller'] = controllerName;
+		if (attrs['action'] == null) attrs['action'] = actionName;
+		attrs['hiddenParams'] = new HashMap(attrs['params']?attrs['params']:params)
+		attrs['hiddenParams'].remove('max')
+		attrs['hiddenParams'].remove('offset')
+		attrs['hiddenParams'].remove('controller')
+		attrs['hiddenParams'].remove('action')
+		attrs['hiddenParams'].remove('q')
+		out << render(template:"/tags/searchBox", model: attrs);
+	}
+	
 	def input = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
 		out << render(template:"/tags/input", model: attrs)

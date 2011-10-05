@@ -41,11 +41,29 @@ class QuestionController {
 	def index = {
 		redirect (action: "list", params: params)
 	}
-
+	
+	def search = {
+		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		params.offset = params.offset ? params.int('offset'): 0
+		
+		Survey survey = Survey.get(params.int('surveyId'))
+		List<SurveyQuestion> questions = surveyQuestionService.searchSurveyQuestions(params['q'], survey, params);
+		
+		render (view: '/survey/admin/list', model:[
+			template:"questionList",
+			survey: survey,
+			entities: questions,
+			entityCount: surveyQuestionService.countSurveyQuestions(params['q'], survey),
+			code: 'survey.question.label',
+			search: true
+		])
+	}
+	
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
-		SurveySection section = SurveySection.get(params.sectionId)
+		
+		SurveySection section = SurveySection.get(params.int('sectionId'))
 		List<SurveyQuestion> questions = section.questions;
 
 		def max = Math.min(params['offset']+params['max'], questions.size())
@@ -62,9 +80,10 @@ class QuestionController {
 		])
 	}
 	
+	
 	def getAjaxData = {
 		Survey survey = Survey.get(params.int('surveyId'));
-		Set<SurveyQuestion> surveyQuestions = surveyQuestionService.searchSurveyQuestion(params['term'], survey);
+		Set<SurveyQuestion> surveyQuestions = surveyQuestionService.searchSurveyQuestions(params['term'], survey);
 
 		render(contentType:"text/json") {
 			questions = array {

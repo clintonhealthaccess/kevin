@@ -416,7 +416,7 @@ public class SurveyPageService {
 		Set<SurveyValidationRule> validationRules = new HashSet<SurveyValidationRule>();
 		Set<SurveySkipRule> skipRules = new HashSet<SurveySkipRule>();
 		for (SurveyElement element : elements) {
-			validationRules.addAll(surveyElementService.searchValidationRules(element));
+			validationRules.addAll(surveyElementService.searchValidationRules(element, organisation.getOrganisationUnitGroup().getUuid()));
 			skipRules.addAll(surveyElementService.searchSkipRules(element));
 		}
 		

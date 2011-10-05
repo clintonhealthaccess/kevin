@@ -53,11 +53,13 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "search for data element works"() {
 		setup:
-		def dataElement = newDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement1 = newDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newDataElement(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER())
 		
 		expect:
-		def dataElements = dataService.searchDataElements("ele", [])
-		dataElements == [dataElement]
+		dataService.searchDataElements("ele", []).equals([dataElement1])
+		dataService.searchDataElements("ele some", []).equals([])
+				
 	}
 	
 	def "delete data element with associated values throws exception"() {

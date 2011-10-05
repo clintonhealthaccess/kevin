@@ -81,4 +81,24 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		orgunitgroupList.size() == 1
 	}
 
+	def "survey elements can have 2 validation rules with the same prefix"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		def validationMessage = newValidationMessage()
+		
+		when:
+		newSurveyValidationRule(element, "", [], "true", validationMessage);
+		newSurveyValidationRule(element, "", [], "true", validationMessage);
+		
+		then:
+		SurveyElement.list()[0].validationRules.size() == 2
+		SurveyValidationRule.count() == 2
+	}
+	
 }

@@ -4,14 +4,16 @@
            	<g:message code="default.list.label" args="[entityName]" />
 		</h5>
 		
-		<div class="float-right">
-			<g:if test="${!addTemplate}">
-				<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
-			</g:if>
-			<g:else>
-				<g:render template="/survey/admin/${addTemplate}"/>
-			</g:else>
-		</div>
+		<g:if test="${!search}">
+			<div class="float-right">
+				<g:if test="${!addTemplate}">
+					<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
+				</g:if>
+				<g:else>
+					<g:render template="/survey/admin/${addTemplate}"/>
+				</g:else>
+			</div>
+		</g:if>
 		<div class="clear"></div>
 
 		<g:if test="${flash.message}">
@@ -21,12 +23,15 @@
         </g:if>
 			
 		<!-- Template goes here -->
+		<g:if test="${grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).hasProperty('search')}">
+			<g:searchBox action="search"/>
+		</g:if>
 		<g:if test="${!entities.isEmpty()}">
 			<g:render template="${template}"/>
 			
 			<!-- End of template -->
 			<div class="paginateButtons">
-				<g:paginate total="${entityCount}" params="${params}"/>
+				<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>
 			</div>
 		</g:if>
 		<g:else>

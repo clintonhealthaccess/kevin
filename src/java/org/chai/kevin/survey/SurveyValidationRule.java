@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -30,6 +31,7 @@ public class SurveyValidationRule {
 
 	private SurveyValidationMessage validationMessage;
 	private List<SurveyElement> dependencies = new ArrayList<SurveyElement>();
+	private String groupUuidString;
 	
 	@Id
 	@GeneratedValue
@@ -75,6 +77,15 @@ public class SurveyValidationRule {
 	
 	public void setDependencies(List<SurveyElement> dependencies) {
 		this.dependencies = dependencies;
+	}
+	
+	@Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
+	}
+
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
 	}
 	
 	@Basic(optional=false)
