@@ -4,7 +4,7 @@
   padding: 10px 10px 10px 42px
   
 .success-box
-  background: url('../images/icons/check.png') no-repeat 11px center $filler2
+  background-color: $filler2
   border: 1px solid $filler2 - #111
   margin-bottom: 10px
   padding: 10px
@@ -61,6 +61,14 @@
   width: 12px
   &:hover, &:focus
     opacity: 1
+    
+#incomplete-sections-container
+  background: url('../images/icons/fail.png') no-repeat 11px center $filler3
+  border: 1px solid $filler3 - #111
+  padding: 10px 10px 10px 52px
+  +border-radius(3px)
+  +pie-clearfix
+  +text-shadow(#fff, 0, 1px, 0)
 
 .message
   &.login

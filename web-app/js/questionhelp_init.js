@@ -1,6 +1,6 @@
 function hideQuestionHelp(el) {
   el.parents('.question-help').slideUp(500, function () {
-    el.parents('.question-help-container').prev().css({'display': 'inline'});
+    el.parents('.question-help-container').prev().css({'display': 'inline-block'});
   })
 }
 
