@@ -2,51 +2,61 @@
 
   #values
     overflow: auto
-
-  #facility-type-filter
-    float: right
     
   table
-    margin-bottom: 0px
-    margin-top: 4px
-    width: 95% 
-    margin: 0 auto
+    width: 100%
     
   th
     font-weight: bolder
+    padding: 5px
     text-align: center
     
   td
     background-color: #ffffff
+    padding: 5px
     
   .parent-row
-    background-color: #ff66cc
-    border: 1px solid #a3a3a3
+    background-color: $primary
     color: #fff
     
   .box-dsr-value
     background-color: #ffffff
-    border: #cccccc solid
-    border-width: 0px 1px 1px 0px
+    border: 1px solid $filler - #111
     text-align: right
     
   .box-dsr-organisation
-    background-color: #cccccc
-    border: #cccccc solid
-    border-width: 0px 1px 1px 0px
+    background-color: $filler
+    border: 1px solid $filler - #111
+    color: $primary
     text-align: left
     
   .object-name-box
+    background: $filler2
+    border: 1px solid $filler - #111
+    color: $primary
     width: 70px
-    font-weight: bolder
+    font-weight: bold
+    div
+      margin-bottom: 5px
+    span a
+      font-size: 10px
+      font-weight: normal
     
   .title-th
     width: 10px
-    color: #ffffff
-    background-color: #a3a3a3
-    border: #ffffff solid
+    color: $primary
+    background: $filler
+    border: 1px solid $filler - #111
     border-width: 1px 1px 1px 0px
     vertical-align: bottom
     a
       font-size: 10px
       font-weight: normal
+      
+  .flow-add, .flow-edit
+    &:hover, &:focus
+      color: $yes
+      
+  .flow-delete
+    &:hover, &:focus
+      color: $no
