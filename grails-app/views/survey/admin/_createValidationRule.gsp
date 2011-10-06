@@ -79,18 +79,6 @@
 <div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {		
-		$("#messages-list").ajaxChosen({
-			type : 'GET',
-			dataType: 'json',
-			url : "${createLink(controller:'validationMessage', action:'getAjaxData')}"
-		}, function (data) {
-			var terms = {};
-			$.each(data.messages, function (i, val) {
-				terms[val.id] = val.message;
-			});
-			return terms;
-		});
-		
 		$("#dependencies-list").ajaxChosen({
 			type : 'GET',
 			dataType: 'json',
@@ -121,5 +109,6 @@
 			}
 		);
 			 
+		getRichTextContent();
 	});					
 </script>

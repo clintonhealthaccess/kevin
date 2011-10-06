@@ -72,7 +72,6 @@
 				if (data.result == 'success') {
 					var period = data.newEntity;
 					$('.iteration-list').append('<option value="'+period.id+'">'+period.startDate+'<->'+period.endDate+'</option>');
-					$.sexyCombo.changeOptions('.iteration-list');
 				}
 			}
 		});

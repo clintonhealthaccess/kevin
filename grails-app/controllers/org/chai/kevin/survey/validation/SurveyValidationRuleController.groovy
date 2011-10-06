@@ -82,6 +82,10 @@ class SurveyValidationRuleController extends AbstractEntityController {
 		entity.properties = params
 		
 		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
+		
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.messages!=null) entity.messages = params.messages
 	}
 	
 	def list = {

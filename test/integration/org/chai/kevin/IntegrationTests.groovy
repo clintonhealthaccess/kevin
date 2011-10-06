@@ -170,7 +170,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	DataElement newDataElement(def names, def code, def type) {
-		return new DataElement(names: names, code: code, type: type).save(failOnError: true)
+		return newDataElement(names, code, type, null)
+	}
+	
+	DataElement newDataElement(def names, def code, def type, def info) {
+		return new DataElement(names: names, code: code, type: type, info: info).save(failOnError: true)
 	}
 
 	Expression newExpression(def code, def type, String formula, def arguments = [:]) {

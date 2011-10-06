@@ -96,4 +96,20 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController.response.contentAsString.contains("number")
 		
 	}
+	
+	def "search data element"() {
+		setup:
+		dataElementController = new DataElementController()
+		
+		when:
+		def dataElement = newDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		dataElementController.params.q = "ele"
+		dataElementController.search()
+		
+		then:
+		dataElementController.modelAndView.model.entities.size() == 1
+		dataElementController.modelAndView.model.entities[0].equals(dataElement)
+		dataElementController.modelAndView.model.entityCount == 1
+		
+	}
 }

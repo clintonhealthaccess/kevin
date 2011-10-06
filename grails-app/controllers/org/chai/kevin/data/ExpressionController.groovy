@@ -90,10 +90,28 @@ class ExpressionController extends AbstractEntityController {
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
+	def search = {
+		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		params.offset = params.offset ? params.int('offset'): 0
+		
+		List<Expression> expressions = dataService.searchData(Expression.class, params['q'], [], params);
+		
+		render (view: '/entity/list', model:[
+			entities: expressions,
+			template: "expression/expressionList",
+			code: "expression.label",
+			entityCount: dataService.countData(Expression.class, params['q'], []),
+			search: true
+		])
+	}
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		params.offset = params.offset ? params.int('offset'): 0
+		
+		List<Expression> expressions = Expression.list(params);
+		
 		render (view: '/entity/list' , model:[
-			entities: Expression.list(params), 
+			entities: expressions, 
 			entityCount: Expression.count(),
 			code: 'expression.label',
 			template: 'expression/expressionList'

@@ -3,6 +3,9 @@ package org.chai.kevin.survey
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.maps.MapsTarget.MapsTargetType;
+import org.chai.kevin.survey.validation.SurveyEnteredObjective;
+import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
+import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.util.Utils;
 
@@ -37,6 +40,18 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	
 	def newSurveyEnteredValue(def element, def period, def organisationUnit, def value) {
 		return new SurveyEnteredValue(surveyElement: element, value: value, organisationUnit: organisationUnit).save(failOnError: true, flush: true)
+	}
+
+	def newSurveyEnteredQuestion(def question, def period, def organisationUnit, def invalid, def complete) {
+		return new SurveyEnteredQuestion(question: question, organisationUnit: organisationUnit, invalid: invalid, complete: complete).save(failOnError: true)
+	}
+		
+	def newSurveyEnteredSection(def section, def period, def organisationUnit, def invalid, def complete) {
+		return new SurveyEnteredSection(section: section, organisationUnit: organisationUnit, invalid: invalid, complete: complete).save(failOnError: true)
+	}
+
+	def newSurveyEnteredObjective(def objective, def period, def organisationUnit, def invalid, def complete, def closed) {
+		return new SurveyEnteredObjective(objective: objective, organisationUnit: organisationUnit, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
 	}
 	
 	def newSurveyValidationRule(def element, def prefix, def groups, def expression, def dependencies = []) {

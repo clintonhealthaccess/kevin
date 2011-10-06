@@ -27,11 +27,14 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		surveyValidationRuleController.params['groupUuids'] = [(HEALTH_CENTER_GROUP)]
 		surveyValidationRuleController.params['expression'] = "true"
 		surveyValidationRuleController.params['allowOutlier'] = false
+		surveyValidationRuleController.params.messages = [:]
+		surveyValidationRuleController.params.messages['en'] = "Validation rule"
 		surveyValidationRuleController.saveWithoutTokenCheck()
 		
 		then:
 		SurveyValidationRule.count() == 1
 		SurveyValidationRule.list()[0].groupUuidString == Utils.unsplit([(HEALTH_CENTER_GROUP)])
+		SurveyValidationRule.list()[0].messages['en'] == "Validation rule"
 		
 	}
 	

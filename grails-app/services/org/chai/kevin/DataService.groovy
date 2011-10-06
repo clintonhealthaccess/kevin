@@ -108,46 +108,48 @@ class DataService {
 		else calculation.delete();
 	}
 	
-	public Integer countDataElements(String text, List<String> allowedTypes) {
-		return getSearchCriteria(text, allowedTypes).setProjection(Projections.count("id")).uniqueResult()
+	public Integer countData(Class<Data<?>> clazz, String text, List<String> allowedTypes) {
+		return getSearchCriteria(clazz, text, allowedTypes).setProjection(Projections.count("id")).uniqueResult()
 	}
 	
-    public List<DataElement> searchDataElements(String text, List<String> allowedTypes, def params = [:]) {
-		def criteria = getSearchCriteria(text, allowedTypes)
+    public <T extends Data<?>> List<T> searchData(Class<T> clazz, String text, List<String> allowedTypes, def params) {
+		def criteria = getSearchCriteria(clazz, text, allowedTypes)
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
 		if (params['max'] != null) criteria.setMaxResults(params['max'])
 		else criteria.setMaxResults(500)
 		
-		List<DataElement> dataElements = criteria.addOrder(Order.asc("id")).list()
+		List<Data<T>> data = criteria.addOrder(Order.asc("id")).list()
 		
 		StringUtils.split(text).each { chunk ->
-			dataElements.retainAll { element ->
+			data.retainAll { element ->
+				// we look in "info" if it is a data element
+				(clazz.equals(DataElement.class)?Utils.matches(chunk, element.info):false) ||
 				Utils.matches(chunk, element.id+"") ||
 				Utils.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, element.code) ||
-				Utils.matches(chunk, element.info)
+				Utils.matches(chunk, element.code)
 			}
 		}
 		
 		if (!allowedTypes.isEmpty()) {
-			dataElements.retainAll { element ->
+			data.retainAll { element ->
 				element.type.type.name().toLowerCase() in allowedTypes 
 			}
 		}
 		
-		return dataElements
+		return data
     }
 	
-	private def getSearchCriteria(String text, List<String> allowedTypes) {
-		def criteria = DataElement.createCriteria()
+	private def getSearchCriteria(Class<Data<?>> clazz, String text, List<String> allowedTypes) {
+		def criteria = sessionFactory.currentSession.createCriteria(clazz)
 		
 		def textRestrictions = Restrictions.conjunction()
 		StringUtils.split(text).each { chunk ->
 			def disjunction = Restrictions.disjunction();
 			
-			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
+			// we look in "info" if it is a data element
+			if (clazz.equals(DataElement.class)) disjunction.add(Restrictions.ilike("info", chunk, MatchMode.ANYWHERE))
 			disjunction.add(Restrictions.ilike("code", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("info", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
 			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
 			
 			textRestrictions.add(disjunction)

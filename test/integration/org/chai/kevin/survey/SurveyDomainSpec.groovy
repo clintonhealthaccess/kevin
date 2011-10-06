@@ -7,6 +7,7 @@ import org.chai.kevin.data.DataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Type;
+import org.chai.kevin.survey.validation.SurveyLog;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.period.Period
 
@@ -98,6 +99,21 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		then:
 		SurveyElement.list()[0].validationRules.size() == 2
 		SurveyValidationRule.count() == 2
+	}
+	
+	def "save surveylog"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		newSurveyObjective(survey, 2, [(DISTRICT_HOSPITAL_GROUP)])
+		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def kivuye = newOrganisationUnit(KIVUYE)
+		
+		when:
+		new SurveyLog(event: "test", organisationUnit: kivuye, timestamp: new Date(), survey: survey, objective: objective).save(failOnError: true)
+		
+		then:
+		SurveyLog.count() == 1
 	}
 	
 }

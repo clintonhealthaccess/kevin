@@ -45,4 +45,19 @@ class ExpressionControllerSpec extends IntegrationTests {
 		
 	}
 	
+	def "search expression"() {
+		setup:
+		def expression = newExpression(j(["en": "Expression"]), CODE(1), Type.TYPE_NUMBER(), "1")
+		expressionController = new ExpressionController()
+		
+		when:
+		expressionController.params.q = "expr"
+		expressionController.search()
+		
+		then:
+		expressionController.modelAndView.model.entities.size() == 1
+		expressionController.modelAndView.model.entities[0].equals(expression)
+		expressionController.modelAndView.model.entityCount == 1
+	}
+	
 }

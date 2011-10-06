@@ -26,7 +26,7 @@ function getDataElement(callback){
  */
 function getRichTextContent(){
 	$('.rich-textarea-form').bind('click',function(){
-		$('textarea').each(function(){
+		$('.toggle-entry textarea').each(function(){
 			$(this).val($(this).prev('div').children().html())
 		})
 	});

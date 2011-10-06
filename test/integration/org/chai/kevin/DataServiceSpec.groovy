@@ -55,11 +55,33 @@ class DataServiceSpec extends IntegrationTests {
 		setup:
 		def dataElement1 = newDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
 		def dataElement2 = newDataElement(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER())
+		def dataElement3 = newDataElement(j(["en": ""]), CODE(3), Type.TYPE_NUMBER(), "info")
 		
 		expect:
-		dataService.searchDataElements("ele", []).equals([dataElement1])
-		dataService.searchDataElements("ele some", []).equals([])
+		dataService.searchData(DataElement.class, "ele", [], [:]).equals([dataElement1])
+		dataService.countData(DataElement.class, "ele", []) == 1
+		dataService.searchData(DataElement.class, "some", [], [:]).equals([dataElement2])
+		dataService.countData(DataElement.class, "some", []) == 1
+		dataService.searchData(DataElement.class, "ele some", [], [:]).equals([])
+		dataService.countData(DataElement.class, "ele some", []) == 0
+		dataService.searchData(DataElement.class, "info", [], [:]).equals([dataElement3])
+		dataService.countData(DataElement.class, "info", []) == 1
 				
+	}
+	
+	def "search for expression works"() {
+		setup:
+		def expression1 = newExpression(j(["en": "expression"]), CODE(1), Type.TYPE_NUMBER(), "1")
+		def expression2 = newExpression(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER(), "1")
+		
+		expect:
+		dataService.searchData(Expression.class, "expr", [], [:]).equals([expression1])
+		dataService.countData(Expression.class, "expr", []) == 1
+		dataService.searchData(Expression.class, "some", [], [:]).equals([expression2])
+		dataService.countData(Expression.class, "some", []) == 1
+		dataService.searchData(Expression.class, "expr some", [], [:]).equals([])
+		dataService.countData(Expression.class, "expr some", []) == 0
+		
 	}
 	
 	def "delete data element with associated values throws exception"() {

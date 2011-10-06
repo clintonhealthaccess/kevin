@@ -121,13 +121,13 @@ class DataElementController extends AbstractEntityController {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		
-		List<DataElement> dataElements = dataService.searchDataElements(params['q'], [], params);
+		List<DataElement> dataElements = dataService.searchData(DataElement.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: dataElements,
 			template: "data/dataElementList",
 			code: "dataelement.label",
-			entityCount: dataService.countDataElements(params['q'], []),
+			entityCount: dataService.countData(DataElement.class, params['q'], []),
 			search: true
 		])
 	}
@@ -178,7 +178,7 @@ class DataElementController extends AbstractEntityController {
 
 	def getData = {
 		def includeTypes = params.list('include')
-		def dataElements = dataService.searchDataElements(params['searchText'], includeTypes);
+		def dataElements = dataService.searchData(DataElement.class, params['searchText'], includeTypes, [:]);
 		
 		render(contentType:"text/json") {
 			result = 'success'

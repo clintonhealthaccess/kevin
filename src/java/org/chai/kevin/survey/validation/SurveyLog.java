@@ -78,7 +78,7 @@ public class SurveyLog {
 		this.survey = survey;
 	}
 	
-	@ManyToOne(targetEntity=Survey.class, optional=true)
+	@ManyToOne(targetEntity=SurveyObjective.class, optional=true)
 	public SurveyObjective getObjective() {
 		return objective;
 	}
