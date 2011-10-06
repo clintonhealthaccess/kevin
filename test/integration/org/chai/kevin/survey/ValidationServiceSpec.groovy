@@ -26,11 +26,10 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def element1 = newSurveyElement(question1, dataElement1)
 		def element2 = newSurveyElement(question2, dataElement2)
 		
-		def validationMessage = newValidationMessage()
 		def validationRule = null
 		
 		when:
-		validationRule = newSurveyValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id, validationMessage)
+		validationRule = newSurveyValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id)
 		
 		newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(KIVUYE), v("1"))
 		newSurveyEnteredValue(element2, period, OrganisationUnit.findByName(KIVUYE), v("1"))
@@ -57,11 +56,10 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def element1 = newSurveyElement(question1, dataElement1)
 		def element2 = newSurveyElement(question2, dataElement2)
 		
-		def validationMessage = newValidationMessage()
 		def validationRule = null
 		
 		when:
-		validationRule = newSurveyValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id, validationMessage)
+		validationRule = newSurveyValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id)
 		
 		newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(KIVUYE), v("2"))
 		newSurveyEnteredValue(element2, period, OrganisationUnit.findByName(KIVUYE), v("1"))
@@ -89,11 +87,10 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def element1 = newSurveyElement(question1, dataElement1)
 		def element2 = newSurveyElement(question2, dataElement2)
 		
-		def validationMessage = newValidationMessage()
 		def validationRule = null
 		
 		when:
-		validationRule = newSurveyValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "if (\$"+element1.id+" == 0) \$"+element2.id+" == null else false", validationMessage)
+		validationRule = newSurveyValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "if (\$"+element1.id+" == 0) \$"+element2.id+" == null else false")
 		
 		newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(KIVUYE), v("0"))
 		newSurveyEnteredValue(element2, period, OrganisationUnit.findByName(KIVUYE), Value.NULL)
@@ -118,8 +115,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def dataElement1 = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element1 = newSurveyElement(question1, dataElement1)
 		
-		def validationMessage = newValidationMessage()
-		def validationRule = newSurveyValidationRule(element1, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > 0", validationMessage)
+		def validationRule = newSurveyValidationRule(element1, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > 0")
 		def prefixes = null
 		
 		when:

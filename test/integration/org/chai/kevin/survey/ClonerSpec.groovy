@@ -96,8 +96,7 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def question2 = newSimpleQuestion(section2, 1, [])
 		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER())
 		def element2 = newSurveyElement(question2, dataElement2)
-		def message = newValidationMessage()
-		def validationRule = newSurveyValidationRule(element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", message, [element1])
+		def validationRule = newSurveyValidationRule(element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", [element1])
 		
 		when:
 		SurveyCloner cloner = new SurveyCloner(survey2, localeService)
@@ -122,8 +121,7 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(section, 1, [])
 		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
-		def message = newValidationMessage()
-		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", message, [element])
+		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
 		
 		when:
 		SurveyCloner cloner = new SurveyCloner(survey, localeService)

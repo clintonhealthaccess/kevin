@@ -48,7 +48,6 @@
 		<mapping class="org.chai.kevin.survey.SurveyTableColumn" />
 		<mapping class="org.chai.kevin.survey.SurveyTableRow" />
 		<mapping class="org.chai.kevin.survey.SurveyValidationRule" />
-		<mapping class="org.chai.kevin.survey.SurveyValidationMessage" />
 		<mapping class="org.chai.kevin.survey.SurveySkipRule" />
 	
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredValue" />

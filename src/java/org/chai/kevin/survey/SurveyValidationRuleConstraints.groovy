@@ -35,6 +35,6 @@ constraints={
     surveyElement(nullable: false, blank:false)
 	prefix(nullable: false, blank: true)
     expression(nullable: false, blank:false)
-	validationMessage(nullable:false,blank:false)
+//	messages(nullable:false, blank:false)
 	allowOutlier(nullable: false)
 }

@@ -158,8 +158,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		list.isEmpty()
 		
 		when:
-		def message = newValidationMessage()
-		def rule1 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1", message)
+		def rule1 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
 		list = surveyElementService.searchValidationRules(element, HEALTH_CENTER_GROUP)
 		
 		then:
@@ -186,9 +185,8 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		def list = null
 	
 		when:
-		def message = newValidationMessage()
-		def rule3 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1", message)
-		def rule4 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1", message)
+		def rule3 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
+		def rule4 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
 		list = surveyElementService.searchValidationRules(element, HEALTH_CENTER_GROUP)
 		
 		then:

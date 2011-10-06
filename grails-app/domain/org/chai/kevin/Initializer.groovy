@@ -898,27 +898,25 @@ class Initializer {
 			serviceDev.addSection(patientReg)
 			serviceDev.save(failOnError:true);
 
-			def surveyValidationPatient = new SurveyValidationMessage(messages: j(["en":"Validation error {0}"])).save(failOnError: true);
 			def rulePatient1 = new SurveyValidationRule(
 				surveyElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 100",
-				validationMessage: surveyValidationPatient,
+				messages: j(["en":"Validation error {0}"]),
 				dependencies: [surveyElementPatientQ1],
+				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			def rulePatient2 = new SurveyValidationRule(
 				surveyElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 140",
-				validationMessage: surveyValidationPatient,
+				messages: j(["en":"Validation error {0}"]),
 				dependencies: [surveyElementPatientQ1],
+				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: true
 			).save(failOnError: true)
 			surveyElementPatientQ1.addValidationRule(rulePatient1)
 			surveyElementPatientQ1.addValidationRule(rulePatient2)
 			surveyElementPatientQ1.save(failOnError: true)
-			surveyValidationPatient.addValidationRule(rulePatient1)
-			surveyValidationPatient.addValidationRule(rulePatient2)
-			surveyValidationPatient.save(failOnError: true)
 			
 			def staffing=new SurveySection(
 				names: j(["en":"Staffing"]),
@@ -1071,43 +1069,38 @@ class Initializer {
 			services.addQuestion(serviceQ6)
 			services.save(failOnError:true)
 
-			def surveyValidationMessage = new SurveyValidationMessage(messages: j(["en":"Validation error {0}"])).save(failOnError: true);
-			
 			def ruleQ6 = new SurveyValidationRule(
 				surveyElement: surveyElementServiceQ6,
 				prefix: "[_].key2",
 				expression: "\$"+surveyElementServiceQ6.id+"[_].key1 > 100",
-				validationMessage: surveyValidationMessage,
+				messages: j(["en":"Validation error {0}"]),
 				dependencies: [surveyElementServiceQ6],
+				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			surveyElementServiceQ6.addValidationRule(ruleQ6)
 			surveyElementServiceQ6.save(failOnError: true)
 			
-			surveyValidationMessage.addValidationRule(ruleQ6)
-			surveyValidationMessage.save(failOnError: true)
 			
 			def rule1 = new SurveyValidationRule(
 				surveyElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 100",
-				validationMessage: surveyValidationMessage,
+				messages: j(["en":"Validation error {0}"]),
 				dependencies: [surveyElementServiceQ1],
+				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			def rule2 = new SurveyValidationRule(
 				surveyElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 140",
-				validationMessage: surveyValidationMessage,
+				messages: j(["en":"Validation error {0}"]),
+				groupUuidString: "District Hospital,Health Center",
 				dependencies: [surveyElementServiceQ1],
 				allowOutlier: true
 			).save(failOnError: true)
 			surveyElementServiceQ1.addValidationRule(rule1)
 			surveyElementServiceQ1.addValidationRule(rule2)
 			surveyElementServiceQ1.save(failOnError: true)
-			
-			surveyValidationMessage.addValidationRule(rule1)
-			surveyValidationMessage.addValidationRule(rule2)
-			surveyValidationMessage.save(failOnError: true)
 			
 			def openQ = new SurveySimpleQuestion(
 				names: j(["en":"Sample Open Question Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module."]),
@@ -1222,14 +1215,13 @@ class Initializer {
 			def ruleTable1 = new SurveyValidationRule(
 				surveyElement: surveyElementTable1,
 				expression: "\$"+surveyElementTable1.id+" < 100",
-				validationMessage: surveyValidationMessage,
+				messages: j(["en":"Validation error {0}"]),
 				dependencies: [surveyElementTable1],
+				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			surveyElementTable1.addValidationRule(ruleTable1)
 			surveyElementTable1.save(failOnError: true)
-			surveyValidationMessage.addValidationRule(ruleTable1)
-			surveyValidationMessage.save(failOnError: true)
 			
 			Map<SurveyTableColumn,SurveyElement> dataElmntsLine2= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
@@ -1269,14 +1261,13 @@ class Initializer {
 			def ruleCheckbox = new SurveyValidationRule(
 				surveyElement: surveyElementChecboxQ3,
 				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+" else true",
-				validationMessage: surveyValidationMessage,
+				messages: j(["en":"Validation error {0}"]),
 				dependencies: [surveyElementTable21],
+				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			surveyElementChecboxQ3.addValidationRule(ruleCheckbox)
 			surveyElementChecboxQ3.save(failOnError: true)
-			surveyValidationMessage.addValidationRule(ruleCheckbox)
-			surveyValidationMessage.save(failOnError: true)
 			
 			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedSurveyElements: [(surveyElementTable2): ""]);
 			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedSurveyElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
@@ -1292,20 +1283,6 @@ class Initializer {
 			
 		}
 	}
-
-	static def createRootObjective() {
-		// users
-		if (!DashboardObjective.count()) {
-			def root = new DashboardObjective(root: true, names:j(["en":"Strategic Objectives"]), code:"Strategic Objectives", descriptions:j(["en":"Strategic Objectives"]), weightedObjectives: [])
-			root.save(failOnError: true, flush:true)
-		}
-	}
-
-	//	static def createIndicatorType() {
-	//		if (!IndicatorType.count()) {
-	//			new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
-	//		}
-	//	}
 
 	public static Date getDate( int year, int month, int day )
 	{

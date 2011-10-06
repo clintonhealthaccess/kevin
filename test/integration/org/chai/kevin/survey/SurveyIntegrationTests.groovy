@@ -39,20 +39,10 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return new SurveyEnteredValue(surveyElement: element, value: value, organisationUnit: organisationUnit).save(failOnError: true, flush: true)
 	}
 	
-	def newValidationMessage() {
-		return newValidationMessage([:])
-	}
-	
-	def newValidationMessage(def messages) {
-		return new SurveyValidationMessage(messages: messages).save(failOnError: true)
-	}
-	
-	def newSurveyValidationRule(def element, def prefix, def groups, def expression, def validationMessage, def dependencies = []) {
-		def validationRule = new SurveyValidationRule(expression: expression, surveyElement: element, groupUuidString: Utils.unsplit(groups), validationMessage: validationMessage, dependencies: dependencies, allowOutlier: false).save(failOnError: true)
+	def newSurveyValidationRule(def element, def prefix, def groups, def expression, def dependencies = []) {
+		def validationRule = new SurveyValidationRule(expression: expression, messages: [:], surveyElement: element, groupUuidString: Utils.unsplit(groups), dependencies: dependencies, allowOutlier: false).save(failOnError: true)
 		element.addValidationRule(validationRule)
 		element.save(failOnError: true)
-		validationMessage.addValidationRule(validationRule)
-		validationMessage.save(failOnError: true)
 		return validationRule
 	}
 	

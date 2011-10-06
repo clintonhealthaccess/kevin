@@ -3,8 +3,11 @@ package org.chai.kevin.survey;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,6 +18,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.chai.kevin.Translation;
 
 
 @Entity(name="SurveyValidationRule")
@@ -29,7 +34,7 @@ public class SurveyValidationRule {
 	private String expression;
 	private Boolean allowOutlier;
 
-	private SurveyValidationMessage validationMessage;
+	private Translation messages = new Translation();
 	private List<SurveyElement> dependencies = new ArrayList<SurveyElement>();
 	private String groupUuidString;
 	
@@ -60,13 +65,16 @@ public class SurveyValidationRule {
 		this.expression = expression;
 	}
 	
-	@ManyToOne(targetEntity=SurveyValidationMessage.class, optional=false)
-	@JoinColumn(nullable=false)
-	public SurveyValidationMessage getValidationMessage() {
-		return validationMessage;
+	@Embedded
+		@AttributeOverrides({
+	    @AttributeOverride(name="jsonText", column=@Column(name="jsonMessages", nullable=false))
+	})
+	public Translation getMessages() {
+		return messages;
 	}
-	public void setValidationMessage(SurveyValidationMessage validationMessage) {
-		this.validationMessage = validationMessage;
+	
+	public void setMessages(Translation messages) {
+		this.messages = messages;
 	}
 	
 	@ManyToMany(targetEntity=SurveyElement.class)
@@ -120,7 +128,7 @@ public class SurveyValidationRule {
 		copy.setPrefix(getPrefix());
 		copy.setExpression(cloner.getExpression(getExpression(), copy));
 		copy.setSurveyElement(cloner.getElement(getSurveyElement()));
-		copy.setValidationMessage(getValidationMessage());
+		copy.setMessages(getMessages());
 		for (SurveyElement element : getDependencies()) {
 			SurveyElement newElement = null;
 			if (!element.getSurvey().equals(getSurveyElement().getSurvey())) {

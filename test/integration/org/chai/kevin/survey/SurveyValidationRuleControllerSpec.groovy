@@ -19,14 +19,11 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
-		def validationMessage = newValidationMessage()
-		
 		surveyValidationRuleController = new SurveyValidationRuleController()
 		
 		when:
 		surveyValidationRuleController.params['surveyElement.id'] = element.id
 		surveyValidationRuleController.params['prefix'] = ""
-		surveyValidationRuleController.params['validationMessage.id'] = validationMessage.id
 		surveyValidationRuleController.params['groupUuids'] = [(HEALTH_CENTER_GROUP)]
 		surveyValidationRuleController.params['expression'] = "true"
 		surveyValidationRuleController.params['allowOutlier'] = false
@@ -49,8 +46,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
-		def validationMessage = newValidationMessage()
-		def validationRule = newSurveyValidationRule(element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0", validationMessage)
+		def validationRule = newSurveyValidationRule(element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0")
 		surveyValidationRuleController = new SurveyValidationRuleController()
 		
 		when:

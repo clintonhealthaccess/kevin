@@ -57,7 +57,6 @@
 								<li><a href="${createLink(controller: 'enum', action:'list')}"><g:message code="header.navigation.enum" default="Enum"/></a></li>
 								<li><a href="${createLink(controller: 'iteration', action:'list')}"><g:message code="header.navigation.iteration" default="Iterations"/></a></li>
 								<li><a href="${createLink(controller: 'survey', action:'list')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
-								<li><a href="${createLink(controller: 'validationMessage', action:'list')}">Validation Messages</a></li>
 							</ul>
 						</li>
 					</shiro:hasPermission>

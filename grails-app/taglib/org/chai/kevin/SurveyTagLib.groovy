@@ -23,7 +23,7 @@ class SurveyTagLib {
 			rules.each { rule ->
 				def error = [:]
 				error.displayed = (hasErrors && !rule.allowOutlier) || (!hasErrors && rule.allowOutlier)
-				if (error.displayed) error.message = replacePlaceHolders(g.i18n(field: rule.validationMessage.messages).toString(), rule.dependencies, enteredValue.organisationUnit)
+				if (error.displayed) error.message = replacePlaceHolders(g.i18n(field: rule.messages).toString(), rule.dependencies, enteredValue.organisationUnit)
 				error.rule = rule
 				error.suffix = prefix
 				error.accepted = enteredValue.isAcceptedWarning(rule, prefix)

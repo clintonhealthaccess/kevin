@@ -18,6 +18,7 @@
 				 	<input type="text" name="prefix" value="${validation.prefix}"/>
 				</div>
 		 
+		 		<g:i18nRichTextarea name="messages" bean="${validation}" value="${validation.messages}" label="Messages" field="messages" height="150"  width="400" maxHeight="100" />
 				<div class="row ${hasErrors(bean:validation, field:'dependencies', 'errors')}">
 					<label>Dependencies: </label>
 				    <select id="dependencies-list" name="dependencies" multiple="true" class="ajax-search-field">
@@ -40,18 +41,6 @@
 				
 				<g:textarea name="expression" label="Expression" bean="${validation}" field="expression" rows="5"/>
 		
-				<div class="row ${hasErrors(bean:validation, field:'validationMessage', 'errors')}">
-					<label>Messages Test: </label>
-					<select id="messages-list" name="validationMessage.id" class="ajax-search-field">
-						<g:if test="${validation.validationMessage}">
-							<option value="${validation.validationMessage.id}" selected>
-								<g:i18n field="${validation.validationMessage.messages}" />
-							</option>
-						</g:if>
-					</select>
-					<div class="error-list"><g:renderErrors bean="${validation}" field="validationMessage" /></div>
-				</div>
-				
 				<div class="row ${hasErrors(bean:validation, field:'groupUuidString', 'errors')}">
 					<label for="groups">Organisation Unit Group:</label> <select name="groupUuids" multiple="multiple" size="5">
 						<g:each in="${groups}" var="group">

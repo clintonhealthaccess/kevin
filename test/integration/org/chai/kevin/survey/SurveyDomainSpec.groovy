@@ -90,11 +90,10 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def question = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
-		def validationMessage = newValidationMessage()
 		
 		when:
-		newSurveyValidationRule(element, "", [], "true", validationMessage);
-		newSurveyValidationRule(element, "", [], "true", validationMessage);
+		newSurveyValidationRule(element, "", [], "true");
+		newSurveyValidationRule(element, "", [], "true");
 		
 		then:
 		SurveyElement.list()[0].validationRules.size() == 2

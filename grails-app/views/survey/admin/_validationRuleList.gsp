@@ -6,7 +6,7 @@
 			<th>Expression</th>
 			<th>Allow Outlier</th>
 			<th>Organisation Unit Groups</th>
-			<th>Validation Message</th>
+			<th>Message</th>
 			<th>Manage</th>
 		</tr>
 	</thead>
@@ -25,7 +25,7 @@
 			        </g:else>
 			    </td>
 			    <td>${validationRule.groupUuidString}</td>
-				<td><g:i18n field="${validationRule.validationMessage.messages}" /></td>
+				<td><g:i18n field="${validationRule.messages}" /></td>
 				<td>
 					<div class="dropdown white-dropdown"> 
 			     		<a class="selected" href="#" data-type="validation-rule">Manage</a>

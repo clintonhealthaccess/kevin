@@ -57,7 +57,10 @@ class BootStrap {
 
 		switch (GrailsUtil.environment) {
 		case "production":
-			Initializer.createRootObjective()
+			if (!DashboardObjective.count()) {
+				def root = new DashboardObjective(root: true, names:Initializer.j(["en":"Strategic Objectives"]), code:"Strategic Objectives", descriptions:Initializer.j(["en":"Strategic Objectives"]), objectiveEntries: [])
+				root.save(failOnError: true, flush:true)
+			}
 			
 			if (User.findByUsername('admin') == null) {
 				def user = new User(username: "admin", passwordHash: new Sha256Hash("123admin!").toHex())
