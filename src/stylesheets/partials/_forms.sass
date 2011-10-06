@@ -76,16 +76,13 @@ select
 
 .entity-form-container
   float: left
-  border: 2px solid #739eee
-  margin: 8px
-  padding: 10px 5px 10px 5px
+  width: 100%
   
   .entity-form-header
-    background-color: #739eee 
+
     .title
       float: left
-      color: #fff
-      margin: 3px 2px 2px 3px
+      color: $primary
        
     .locales
       float: right
@@ -117,32 +114,37 @@ select
   .data-field-column
     float: left
     width: 460px
-
+    
 .entity-form-container form
-  position: relative
-  border: none
   background-color: inherit
+  border: 1px solid $filler
+  padding: 15px
+  position: relative
   
   .row
-    width: 400px
-    margin: 4px
+    border-bottom: 1px dotted $filler
+    margin-bottom: 10px
+    padding-bottom: 10px
+    +pie-clearfix
     
     .error-list
       height: 14px
+      
+  .toggle-entry
+    float: left
+    margin-right: 15px
 
   input, textarea
-    width: 290px
+    width: 280px
     
   input.radio
     width: auto
   
   label
+    color: $primary
     display: block
-    font-weight: bold
-    margin-bottom: 2px
-
-  button
-    float: right
+    font-size: 11px
+    margin-bottom: 3px
     
 .focus-field
   border: solid 1px $filler - #222
@@ -150,12 +152,11 @@ select
   color: #333
   
 .idle-field
-  background: #f6f6f6
+  background: #f9f9f9
   border: 1px solid $filler - #333
   color: #444
   font: normal 12px Arial, sans-serif
   padding: 2px
-  text-align: right
   +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
   &:hover, &:focus
     background: $filler + #030303

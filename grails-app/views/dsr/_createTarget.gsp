@@ -28,7 +28,6 @@
 			</div>
 		</div>
 		<div class="row">
-
 			<div id="objective-block">
 				<div class="${hasErrors(bean:target, field:'objective', 'errors')}">
 					<label for="objective">Objective:</label>
@@ -45,7 +44,6 @@
 			</div>
 		</div>
 		<div class="row">
-
 			<div id="categories-block">
 				<div class="${hasErrors(bean:target, field:'category', 'errors')}">
 					<label for="category.id">Category:</label>
@@ -62,7 +60,6 @@
 			</div>
 		</div>
 		<div class="row">
-
 			<div id="expressions-block">
 				<div class="${hasErrors(bean:target, field:'expression', 'errors')}">
 					<label for="expression.id">Expression:</label>
