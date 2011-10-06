@@ -24,7 +24,7 @@
 			<ul class="locales" id="switcher">
 				<g:each in="${localeService.availableLanguages}" var="language" status="i">
 					<% params['lang'] = language %>
-					<li><a class="${localeService.currentLanguage==language?'no-link':''}" href="${createLink(controller: controller, action: action, params:params)}">${language}</a></li>
+					<li><a class="${localeService.currentLanguage==language?'no-link':''}" href="${createLink(controller: controllerName, action: actionName, params: params)}">${language}</a></li>
 				</g:each>
 			</ul>
 			<h2><span>Rwanda Ministry Of Health</span>District Health Systems Strenghtening Tool</h2>

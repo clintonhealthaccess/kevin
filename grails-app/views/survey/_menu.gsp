@@ -12,24 +12,22 @@
 					<span class="objective-status-closed objective-status ${enteredObjective.displayedStatus!='closed'?'hidden':''}"></span>
 				</span>
 			</a>
-			<g:if test="${surveyPage.objective.equals(objective)}">
-				<ul class="survey-section">
-					<g:each in="${objective.getSections(surveyPage.organisation.organisationUnitGroup)}" var="section">
-						<g:set var="enteredSection" value="${surveyPage.sections[section]}"/>
+			<ul class="survey-section">
+				<g:each in="${objective.getSections(surveyPage.organisation.organisationUnitGroup)}" var="section">
+					<g:set var="enteredSection" value="${surveyPage.sections[section]}"/>
 
-						<li id="section-${section.id}">
-							<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
-								<span><g:i18n field="${section.names}" /></span>
-								<span class="item-status">
-									<span class="section-status-complete section-status ${enteredSection.displayedStatus!='complete'?'hidden':''}"></span>
-									<span class="section-status-invalid section-status ${enteredSection.displayedStatus!='invalid'?'hidden':''}"></span>
-									<span class="section-status-incomplete section-status ${enteredSection.displayedStatus!='incomplete'?'hidden':''}"></span>
-								</span>
-							</a>
-						</li>
-					</g:each>
-				</ul>
-			</g:if>
+					<li id="section-${section.id}">
+						<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
+							<span><g:i18n field="${section.names}" /></span>
+							<span class="item-status">
+								<span class="section-status-complete section-status ${enteredSection.displayedStatus!='complete'?'hidden':''}"></span>
+								<span class="section-status-invalid section-status ${enteredSection.displayedStatus!='invalid'?'hidden':''}"></span>
+								<span class="section-status-incomplete section-status ${enteredSection.displayedStatus!='incomplete'?'hidden':''}"></span>
+							</span>
+						</a>
+					</li>
+				</g:each>
+			</ul>
 		</li>
 	</g:each>
 </ul>

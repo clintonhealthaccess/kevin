@@ -417,6 +417,7 @@ public class Type {
 					result.append(value.getBooleanValue().toString());
 					break;
 				case STRING:
+				case TEXT:
 					result.append("\""+value.getStringValue()+"\"");
 					break;
 				case DATE:
@@ -535,6 +536,7 @@ public class Type {
 				switch (getType()) {
 					case NUMBER:
 					case STRING:
+					case TEXT:
 					case DATE:
 					case ENUM:
 					case BOOL:
@@ -596,6 +598,7 @@ public class Type {
 			case NUMBER:
 			case BOOL:
 			case STRING:
+			case TEXT:
 			case DATE:
 			case ENUM:
 				combinations.add(strings);
@@ -638,6 +641,7 @@ public class Type {
 				case NUMBER:
 				case BOOL:
 				case STRING:
+				case TEXT:
 				case DATE:
 				case ENUM:
 					break;
@@ -696,6 +700,7 @@ public class Type {
 				else result = JSONObject.NULL;
 				break;
 			case STRING:
+			case TEXT:
 				if (value == null || string.equals("")) result = JSONObject.NULL;
 				else result = string;
 				break;
@@ -734,6 +739,7 @@ public class Type {
 			case NUMBER:
 			case BOOL:
 			case STRING:
+			case TEXT:
 			case DATE:
 			case LIST:
 			case MAP:

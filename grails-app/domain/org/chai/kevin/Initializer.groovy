@@ -86,24 +86,24 @@ class Initializer {
 		user.addToPermissions("cost:*")
 		user.addToPermissions("home:*")
 		user.save()
-		
+
 		def admin = new User(username: "admin", passwordHash: new Sha256Hash("admin").toHex())
 		admin.addToPermissions("*")
 		admin.save()
-		
+
 		def kivuye = new SurveyUser(username: "kivuye", organisationUnitId: OrganisationUnit.findByName("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex())
 		kivuye.addToPermissions("editSurvey:view")
 		kivuye.addToPermissions("editSurvey:*:"+kivuye.organisationUnitId)
 		kivuye.addToPermissions("menu:survey")
 		kivuye.addToPermissions("home:*")
-		
-//		kivuye.addToPermissions("survey:surveyPage:12")
-//		kivuye.addToPermissions("survey:objectivePage:12")
-//		kivuye.addToPermissions("survey:sectionPage:12")
-		
+
+		//		kivuye.addToPermissions("survey:surveyPage:12")
+		//		kivuye.addToPermissions("survey:objectivePage:12")
+		//		kivuye.addToPermissions("survey:sectionPage:12")
+
 		kivuye.save()
 	}
-	
+
 	static def createDummyStructure() {
 
 		if (!Period.count()) {
@@ -163,8 +163,8 @@ class Initializer {
 
 			def butaro = new OrganisationUnit(name:"Butaro DH", shortName:"RW,N,BU,BUDH", parent: burera)
 			def kivuye = new OrganisationUnit(name:"Kivuye HC", shortName:"RW,N,BU,KIHC", parent: burera)
-//			def chk = new OrganisationUnit(name:"CHK HC", shortName:"RW,N,BU,CHUK", parent: burera)
-			burera.children = [butaro, kivuye /* ,chk */ ]
+			//			def chk = new OrganisationUnit(name:"CHK HC", shortName:"RW,N,BU,CHUK", parent: burera)
+			burera.children = [butaro, kivuye /* ,chk */]
 
 			rwanda.save(failOnError: true, flush: true)
 
@@ -172,7 +172,7 @@ class Initializer {
 			groupSet.save(failOnError: true)
 
 			// organisation groups
-			def dh = new OrganisationUnitGroup(name:"District Hospital", uuid: "District Hospital", members: [butaro /*,chk */ ], groupSet: OrganisationUnitGroupSet.findByName('Type'))
+			def dh = new OrganisationUnitGroup(name:"District Hospital", uuid: "District Hospital", members: [butaro /*,chk */], groupSet: OrganisationUnitGroupSet.findByName('Type'))
 			def hc = new OrganisationUnitGroup(name:"Health Center", uuid: "Health Center", members: [kivuye], groupSet: OrganisationUnitGroupSet.findByName('Type'))
 			butaro.groups = [dh]
 			kivuye.groups = [hc]
@@ -227,7 +227,7 @@ class Initializer {
 			def dataElement8 = new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: Type.TYPE_NUMBER())
 			def dataElement9 = new DataElement(names:j(["en":"Element 9"]), descriptions:j([:]), code:"CODE9", type: Type.TYPE_NUMBER())
 			def dataElement11 = new DataElement(names:j(["en":"Element 11"]), descriptions:j([:]), code:"CODE11", type: Type.TYPE_DATE())
-			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: Type.TYPE_STRING())
+			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: Type.TYPE_TEXT())
 			def dataElement81 = new DataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: Type.TYPE_NUMBER())
 			def dataElement91 = new DataElement(names:j(["en":"Element 91"]), descriptions:j([:]), code:"CODE91", type: Type.TYPE_NUMBER())
 			def dataElement101 = new DataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
@@ -239,29 +239,109 @@ class Initializer {
 			)
 			
 			def dataElementListMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
-				type: Type.TYPE_LIST(
+					type: Type.TYPE_LIST(
 					Type.TYPE_MAP([
-						"key1": Type.TYPE_STRING(), 
-						"key2": Type.TYPE_ENUM (Enum.findByCode('ENUM2').code), 
-						"key3": Type.TYPE_STRING(), 
-//						"key4": Type.TYPE_MAP([
-//							"key41": Type.TYPE_STRING,
-//							"key42": Type.TYPE_STRING,
-//							"key43": Type.TYPE_DATE,
-//						]),
-						"key5": Type.TYPE_MAP([
-							"key51": Type.TYPE_STRING(),
-							"key52": Type.TYPE_STRING(),
-							"key53": Type.TYPE_STRING(),
-							"key54": Type.TYPE_MAP([
-								"key541": Type.TYPE_NUMBER(),
-								"key542": Type.TYPE_NUMBER()
+						"key1": Type.TYPE_STRING(),
+						"key2": Type.TYPE_STRING(),
+						"key3": Type.TYPE_STRING(),
+						"key4": Type.TYPE_DATE(),
+						"key5": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+						"key6": Type.TYPE_STRING(),
+						"key7": Type.TYPE_MAP([
+							"key71": Type.TYPE_STRING(),
+							"key72": Type.TYPE_STRING(),
+							"key73": Type.TYPE_MAP([
+								"key731": Type.TYPE_MAP([
+									"key731_1": Type.TYPE_NUMBER(),
+									"key731_2": Type.TYPE_NUMBER(),
+									"key731_3": Type.TYPE_NUMBER(),
+									"key731_4": Type.TYPE_NUMBER(),
+									"key731_5": Type.TYPE_NUMBER(),
+									"key731_6": Type.TYPE_NUMBER(),
+									"key731_7": Type.TYPE_NUMBER(),
+									"key731_8": Type.TYPE_NUMBER(),
+									"key731_9": Type.TYPE_NUMBER(),
+									"key731_10": Type.TYPE_NUMBER(),
+									"key731_11": Type.TYPE_NUMBER(),
+									"key731_12": Type.TYPE_NUMBER(),
+									"key731_13": Type.TYPE_NUMBER(),
+									"key731_14": Type.TYPE_NUMBER(),
+									"key731_15": Type.TYPE_NUMBER(),
+									"key731_16": Type.TYPE_NUMBER(),
+									"key731_17": Type.TYPE_NUMBER(),
+									"key731_18": Type.TYPE_NUMBER(),
+									"key731_19": Type.TYPE_NUMBER()
+								]),
+								"key732": Type.TYPE_MAP([
+									"key732_1": Type.TYPE_NUMBER(),
+									"key732_2": Type.TYPE_NUMBER(),
+									"key732_3": Type.TYPE_NUMBER(),
+									"key732_4": Type.TYPE_NUMBER(),
+									"key732_5": Type.TYPE_NUMBER(),
+									"key732_6": Type.TYPE_NUMBER(),
+									"key732_7": Type.TYPE_NUMBER(),
+									"key732_8": Type.TYPE_NUMBER(),
+									"key732_9": Type.TYPE_NUMBER(),
+									"key732_10": Type.TYPE_NUMBER(),
+									"key732_11": Type.TYPE_NUMBER(),
+									"key732_12": Type.TYPE_NUMBER(),
+									"key732_13": Type.TYPE_NUMBER(),
+									"key732_14": Type.TYPE_NUMBER(),
+									"key732_15": Type.TYPE_NUMBER(),
+									"key732_16": Type.TYPE_NUMBER()
+								])
 							]),
-							"key55": Type.TYPE_STRING(),
+						]),
+						"key8": Type.TYPE_MAP([
+							"key81": Type.TYPE_STRING(),
+							"key82": Type.TYPE_STRING(),
+							"key83": Type.TYPE_NUMBER(),
+							"key84": Type.TYPE_MAP([
+								"key84_1": Type.TYPE_BOOL(),
+								"key84_2": Type.TYPE_BOOL(),
+								"key84_3": Type.TYPE_BOOL(),
+								"key84_4": Type.TYPE_BOOL(),
+								"key84_5": Type.TYPE_BOOL(),
+								"key84_6": Type.TYPE_BOOL(),
+								"key84_7": Type.TYPE_BOOL(),
+								"key84_8": Type.TYPE_BOOL(),
+								"key84_9": Type.TYPE_BOOL(),
+								"key84_10": Type.TYPE_BOOL(),
+								"key84_11": Type.TYPE_BOOL(),
+								"key84_12": Type.TYPE_BOOL(),
+								"key84_13": Type.TYPE_BOOL(),
+								"key84_14": Type.TYPE_BOOL(),
+								"key84_15": Type.TYPE_BOOL(),
+								"key84_16": Type.TYPE_BOOL(),
+								"key84_17": Type.TYPE_BOOL(),
+								"key84_18": Type.TYPE_BOOL(),
+								"key84_19": Type.TYPE_BOOL(),
+								"key84_20": Type.TYPE_BOOL(),
+								"key84_21": Type.TYPE_BOOL(),
+								"key84_22": Type.TYPE_BOOL(),
+								"key84_23": Type.TYPE_BOOL(),
+								"key84_24": Type.TYPE_BOOL()
+							]),
+							"key85": Type.TYPE_DATE(),
+							"key86": Type.TYPE_DATE(),
+						]),
+						"key9": Type.TYPE_MAP([
+							"key91": Type.TYPE_MAP([
+								"key911": Type.TYPE_NUMBER(),
+								"key912": Type.TYPE_NUMBER(),
+								"key913": Type.TYPE_NUMBER(),
+								"key914": Type.TYPE_NUMBER()
+							]),
+							"key92": Type.TYPE_MAP([
+								"key921": Type.TYPE_BOOL(),
+								"key922": Type.TYPE_BOOL(),
+								"key923": Type.TYPE_BOOL(),
+								"key924": Type.TYPE_BOOL()
+							])
 						])
 					]))
 			)
-			
+
 			dataElement10.save(failOnError: true, flush:true)
 			dataElement1.save(failOnError: true, flush: true)
 			dataElement2.save(failOnError: true, flush: true)
@@ -278,15 +358,15 @@ class Initializer {
 			dataElement101.save(failOnError: true, flush:true)
 			dataElement111.save(failOnError: true, flush:true)
 			dataElement12.save(failOnError: true, flush:true)
-			
+
 			dataElementList.save(failOnError: true, flush:true)
 			dataElementMap.save(failOnError: true, flush:true)
 			dataElementListMap.save(failOnError: true, flush:true)
-			
+
 			// data value
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE1"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Butaro DH"),
 					value: v("30"),
 					timestamp: new Date(),
@@ -294,7 +374,7 @@ class Initializer {
 			// data value
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE1"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("40"),
 					timestamp: new Date(),
@@ -302,77 +382,77 @@ class Initializer {
 			// data value
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE3"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"value1\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE4"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: v("1"),
+					value: v("true"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE6"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: v("0"),
+					value: v("false"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE8"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("10"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE9"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("31"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE10"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"NGO or Partner\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE11"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"2011-06-29\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE81"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("44"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE91"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("33"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE101"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"Ministry of Health\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE111"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"2011-06-30\""),
 					timestamp: new Date(),
@@ -380,7 +460,7 @@ class Initializer {
 
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE12"),
-					period: Period.list()[1],
+					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
 					timestamp: new Date(),
@@ -398,9 +478,6 @@ class Initializer {
 			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\$"+DataElement.findByCode("CODE3").id, type: Type.TYPE_STRING(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
 		}
 
-//		if (!Constant.count()) {
-//			new Constant(names:j(["en":"Constant 1000"]), code:"CONST1", type: Type.TYPE_NUMBER(), value: "1000", descriptions:j(["en":"Description"])).save(failOnError: true, flush:true)
-//		}
 	}
 
 	static def createMaps() {
@@ -426,7 +503,7 @@ class Initializer {
 				timestamp:new Date()
 			).save(failOnError: true, validate: false)
 			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression"), type: MapsTargetType.AGGREGATION, maxValue: 20d).save(failOnError: true, flush:true)
-			
+
 			def calculation1 = new Average(expressions: [
 						"District Hospital": Expression.findByCode("Constant 10"),
 						"Health Center": Expression.findByCode("Constant 20")
@@ -440,12 +517,12 @@ class Initializer {
 		if (!CostRampUp.count()) {
 			// Cost
 			new CostRampUp(names:j(["en":"Constant"]), descriptions:j([:]), code:"CONST", years: [
-				1: new CostRampUpYear(year: 1, value: 0.2),
-				2: new CostRampUpYear(year: 2, value: 0.2),
-				3: new CostRampUpYear(year: 3, value: 0.2),
-				4: new CostRampUpYear(year: 4, value: 0.2),
-				5: new CostRampUpYear(year: 5, value: 0.2)
-			]).save(failOnError: true);
+						1: new CostRampUpYear(year: 1, value: 0.2),
+						2: new CostRampUpYear(year: 2, value: 0.2),
+						3: new CostRampUpYear(year: 3, value: 0.2),
+						4: new CostRampUpYear(year: 4, value: 0.2),
+						5: new CostRampUpYear(year: 5, value: 0.2)
+					]).save(failOnError: true);
 		}
 
 		if (!CostObjective.count()) {
@@ -594,7 +671,7 @@ class Initializer {
 		if (!DsrTarget.count()) {
 			def dh = OrganisationUnitGroup.findByUuid("District Hospital")
 			def hc = OrganisationUnitGroup.findByUuid("Health Center")
-			
+
 			def finacss = new DsrObjective(
 					names:j(["en":"Service Delivery"]),
 					descriptions:j(["en":"Service Delivery"]),
@@ -630,7 +707,7 @@ class Initializer {
 					order: 2,
 					descriptions:j(["en":"Facility Water and Power Sources"]),
 					code: "Facility Water and Power Sources"
-			)
+					)
 
 
 			hmr.addTarget(new DsrTarget(
@@ -791,68 +868,69 @@ class Initializer {
 
 			//Creating Survey
 			def surveyOne = new Survey(
-				names: j(["en":"Survey Number 1"]),
-				descriptions: j(["en":"Survey Number 1 Description"]),
-				period: Period.list()[1],
-				active: true,
-				order: 0
-			)
+					names: j(["en":"Survey Number 1"]),
+					descriptions: j(["en":"Survey Number 1 Description"]),
+					period: Period.list()[1],
+					lastPeriod: Period.list()[0],
+					active: true,
+					order: 0
+					)
 			def surveyTwo = new Survey(
-				names: j(["en":"Survey Number 2"]),
-				descriptions: j(["en":"Survey Number 2 Description"]),
-				period: Period.list()[1],
-				order: 1
-			)
+					names: j(["en":"Survey Number 2"]),
+					descriptions: j(["en":"Survey Number 2 Description"]),
+					period: Period.list()[1],
+					order: 1
+					)
 
 			//Creating Objective
 			def serviceDev = new SurveyObjective(
-				names: j(["en":"Service Delivery"]),
-				descriptions: j(["en":"Service Delivery"]),
-				order: 2,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Service Delivery"]),
+					descriptions: j(["en":"Service Delivery"]),
+					order: 2,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			def hResourceHealth = new SurveyObjective(
-				names: j(["en":"Human Resources for Health"]),
-				descriptions: j(["en":"Human Resources for Health"]),
-				order: 4,
-				groupUuidString: "District Hospital,Health Center",
-			)
+					names: j(["en":"Human Resources for Health"]),
+					descriptions: j(["en":"Human Resources for Health"]),
+					order: 4,
+					groupUuidString: "District Hospital,Health Center",
+					)
 
 			def geoAccess = new SurveyObjective(
-				names: j(["en":"Geographic Access"]),
-				descriptions: j(["en":"Geographic Access"]),
-				order: 5,
-				groupUuidString: "District Hospital,Health Center",
-			)
+					names: j(["en":"Geographic Access"]),
+					descriptions: j(["en":"Geographic Access"]),
+					order: 5,
+					groupUuidString: "District Hospital,Health Center",
+					)
 
 			def institutCap = new SurveyObjective(
-				names: j(["en":"Institutional Capacity"]),
-				descriptions: j(["en":"Institutional Capacity"]),
-				order: 3,
-				groupUuidString: "Health Center",
-			)
+					names: j(["en":"Institutional Capacity"]),
+					descriptions: j(["en":"Institutional Capacity"]),
+					order: 3,
+					groupUuidString: "Health Center",
+					)
 
 			def coreFacId = new SurveyObjective(
-				names: j(["en":"Core Facility Identify"]),
-				descriptions: j(["en":"Core Facility Identify"]),
-				order: 1,
-//				dependency: serviceDev,
-				groupUuidString: "District Hospital,Health Center",
-			)
+					names: j(["en":"Core Facility Identify"]),
+					descriptions: j(["en":"Core Facility Identify"]),
+					order: 1,
+					//				dependency: serviceDev,
+					groupUuidString: "District Hospital,Health Center",
+					)
 
 			def finance = new SurveyObjective(
-				names: j(["en":"Finance"]),
-				descriptions: j(["en":"Finance"]),
-				order: 6,
-				groupUuidString: "District Hospital,Health Center",
-			)
-			
+					names: j(["en":"Finance"]),
+					descriptions: j(["en":"Finance"]),
+					order: 6,
+					groupUuidString: "District Hospital,Health Center",
+					)
+
 			def dvandC = new SurveyObjective(
-				names: j(["en":"Drugs, Vaccines, and Consumables"]),
-				descriptions: j(["en":"Drugs, Vaccines, and Consumables"]),
-				order: 7,
-				groupUuidString: "District Hospital,Health Center",
-			)
+					names: j(["en":"Drugs, Vaccines, and Consumables"]),
+					descriptions: j(["en":"Drugs, Vaccines, and Consumables"]),
+					order: 7,
+					groupUuidString: "District Hospital,Health Center",
+					)
 
 			surveyOne.addObjective(serviceDev)
 			surveyOne.addObjective(coreFacId)
@@ -867,52 +945,52 @@ class Initializer {
 
 			//Adding section to objective
 			def facilityId = new SurveySection(
-				names: j(["en":"Facility Identifier"]),
-				descriptions: j(["en":"Facility Identifier"]),
-				order: 1,
-				objective: coreFacId,
-				groupUuidString: "District Hospital,Health Center"
-				)
-			
+					names: j(["en":"Facility Identifier"]),
+					descriptions: j(["en":"Facility Identifier"]),
+					order: 1,
+					objective: coreFacId,
+					groupUuidString: "District Hospital,Health Center"
+					)
+
 			coreFacId.addSection(facilityId)
 			coreFacId.save(failOnError:true);
 
 			def services=new SurveySection(
-				names: j(["en":"Services"]),
-				descriptions: j(["en":"Services"]),
-				order: 2,
-				objective: serviceDev,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Services"]),
+					descriptions: j(["en":"Services"]),
+					order: 2,
+					objective: serviceDev,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			def labTests= new SurveySection(
-				names: j(["en":"Lab Tests"]),
-				descriptions: j(["en":"Lab Tests"]),
-				order: 1,
-				objective: serviceDev,
-				groupUuidString: "District Hospital"
-			)
-			
+					names: j(["en":"Lab Tests"]),
+					descriptions: j(["en":"Lab Tests"]),
+					order: 1,
+					objective: serviceDev,
+					groupUuidString: "District Hospital"
+					)
+
 			def patientReg=new SurveySection(
-				names: j(["en":"Patient Registration"]),
-				descriptions: j(["en":"Patient Registration"]),
-				order: 3,
-				objective: serviceDev,
-				groupUuidString: "District Hospital,Health Center"
-			)
-			
+					names: j(["en":"Patient Registration"]),
+					descriptions: j(["en":"Patient Registration"]),
+					order: 3,
+					objective: serviceDev,
+					groupUuidString: "District Hospital,Health Center"
+					)
+
 			def patientQ1 = new SurveySimpleQuestion(
-				names: j(["en":"Patient Section Simple Question NUMBER"]),
-				descriptions: j(["en":"Patient Section Simple Question"]),
-				order: 3,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Patient Section Simple Question NUMBER"]),
+					descriptions: j(["en":"Help text"]),
+					order: 3,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			patientReg.addQuestion(patientQ1)
 			patientReg.save(failOnError: true)
-			
+
 			def surveyElementPatientQ1 = new SurveyElement(dataElement: DataElement.findByCode("CODE1"), surveyQuestion: patientQ1).save(failOnError: true)
 			patientQ1.surveyElement = surveyElementPatientQ1
 			patientQ1.save(failOnError: true)
-			
+
 			serviceDev.addSection(services)
 			serviceDev.addSection(labTests)
 			serviceDev.addSection(patientReg)
@@ -939,28 +1017,28 @@ class Initializer {
 			surveyElementPatientQ1.save(failOnError: true)
 			
 			def staffing=new SurveySection(
-				names: j(["en":"Staffing"]),
-				descriptions: j(["en":"Staffing"]),
-				order: 1,
-				objective: hResourceHealth,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Staffing"]),
+					descriptions: j(["en":"Staffing"]),
+					order: 1,
+					objective: hResourceHealth,
+					groupUuidString: "District Hospital,Health Center"
+					)
 
 			def continuingEd = new SurveySection(
-				names: j(["en":"Continuing Education"]),
-				descriptions: j(["en":"Continuing Education"]),
-				order: 2,
-				objective: hResourceHealth,
-				groupUuidString: "Health Center"
-			)
+					names: j(["en":"Continuing Education"]),
+					descriptions: j(["en":"Continuing Education"]),
+					order: 2,
+					objective: hResourceHealth,
+					groupUuidString: "Health Center"
+					)
 
 			def openResponse = new SurveySection(
-				names: j(["en":"Open Response"]),
-				descriptions: j(["en":"Open Response"]),
-				order: 3,
-				objective: hResourceHealth,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Open Response"]),
+					descriptions: j(["en":"Open Response"]),
+					order: 3,
+					objective: hResourceHealth,
+					groupUuidString: "District Hospital,Health Center"
+					)
 
 			hResourceHealth.addSection(staffing)
 			hResourceHealth.addSection(continuingEd)
@@ -968,26 +1046,26 @@ class Initializer {
 			hResourceHealth.save(failOnError:true);
 
 			def infrastructure = new SurveySection(
-				names: j(["en":"Infrastructure"]),
-				descriptions: j(["en":"Infrastructure"]),
-				order: 3,
-				objective: geoAccess,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Infrastructure"]),
+					descriptions: j(["en":"Infrastructure"]),
+					order: 3,
+					objective: geoAccess,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			def medicalEq=new SurveySection(
-				names: j(["en":"Medical Equipment"]),
-				descriptions: j(["en":"Medical Equipment"]),
-				order: 2,
-				objective: geoAccess,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Medical Equipment"]),
+					descriptions: j(["en":"Medical Equipment"]),
+					order: 2,
+					objective: geoAccess,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			def wasteMgmnt=new SurveySection(
-				names: j(["en":"Waste Management"]),
-				descriptions: j(["en":"Waste Management"]),
-				order: 1,
-				objective: geoAccess,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Waste Management"]),
+					descriptions: j(["en":"Waste Management"]),
+					order: 1,
+					objective: geoAccess,
+					groupUuidString: "District Hospital,Health Center"
+					)
 
 			geoAccess.addSection(infrastructure)
 			geoAccess.addSection(medicalEq)
@@ -996,109 +1074,183 @@ class Initializer {
 
 			//Adding questions to sections
 			def serviceQ1 = new SurveySimpleQuestion(
-				names: j(["en":"Service Section Simple Question NUMBER"]),
-				descriptions: j(["en":"Service Section Simple Question"]),
-				order: 3,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Service Section Simple Question NUMBER"]),
+					descriptions: j(["en":"Help text"]),
+					order: 3,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			services.addQuestion(serviceQ1)
 			services.save(failOnError:true, flush:true)
-			
+
 			def surveyElementServiceQ1 = new SurveyElement(dataElement: DataElement.findByCode("CODE1"), surveyQuestion: serviceQ1).save(failOnError: true)
 			serviceQ1.surveyElement = surveyElementServiceQ1
 			serviceQ1.save(failOnError: true)
-			
+
 			def serviceQ2 = new SurveySimpleQuestion(
-				names: j(["en":"Service Section Simple Question BOOL"]),
-				descriptions: j(["en":"Service Section Simple Question BOOL"]),
-				order: 0,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Service Section Simple Question BOOL"]),
+					descriptions: j(["en":"Help text"]),
+					order: 0,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			services.addQuestion(serviceQ2)
 			services.save(failOnError:true, flush:true)
-			
+
 			def surveyElementServiceQ2 = new SurveyElement(dataElement: DataElement.findByCode("CODE7"), surveyQuestion: serviceQ2).save(failOnError: true)
 			serviceQ2.surveyElement = surveyElementServiceQ2
 			serviceQ2.save(failOnError: true)
-			
+
 			def serviceQ3 = new SurveySimpleQuestion(
-				names: j(["en":"Service Section Simple Question ENUM "]),
-				descriptions: j(["en":"Service Section Simple Question ENUM"]),
-				order: 1,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Service Section Simple Question ENUM "]),
+					descriptions: j(["en":"Help text"]),
+					order: 1,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			services.addQuestion(serviceQ3)
 			services.save(failOnError:true, flush:true)
-			
+
 			def surveyElementServiceQ3 = new SurveyElement(dataElement: DataElement.findByCode("CODE3"), surveyQuestion: serviceQ3).save(failOnError: true)
 			serviceQ3.surveyElement = surveyElementServiceQ3
 			serviceQ3.save(failOnError: true)
-			
+
 			def serviceQ4 = new SurveySimpleQuestion(
-				names: j(["en":"Service Section Simple Question LIST"]),
-				descriptions: j(["en":"Service Section Simple Question"]),
-				order: 4,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Service Section Simple Question LIST"]),
+					descriptions: j(["en":"Help text"]),
+					order: 4,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			services.addQuestion(serviceQ4)
 			services.save(failOnError:true, flush:true)
-			
+
 			def surveyElementServiceQ4 = new SurveyElement(dataElement: DataElement.findByCode("LIST1"), surveyQuestion: serviceQ4).save(failOnError: true)
 			serviceQ4.surveyElement = surveyElementServiceQ4
 			serviceQ4.save(failOnError: true)
-			
+
 			def serviceQ5 = new SurveySimpleQuestion(
-				names: j(["en":"Service Section Simple Question MAP"]),
-				descriptions: j(["en":"Service Section Simple Question"]),
-				order: 5,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Service Section Simple Question MAP"]),
+					descriptions: j(["en":"Help text"]),
+					order: 5,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			services.addQuestion(serviceQ5)
 			services.save(failOnError:true, flush:true)
-			
+
 			def surveyElementServiceQ5 = new SurveyElement(
-				dataElement: DataElement.findByCode("MAP1"), 
-				surveyQuestion: serviceQ5,
-				headers: [
-					".key1":j(["en": "Header 1"]),
-					".key2":j(["en": "Header 2"]),
-					".key3":j(["en": "Header 3"])
-				]).save(failOnError: true)
+					dataElement: DataElement.findByCode("MAP1"),
+					surveyQuestion: serviceQ5,
+					headers: [
+						".key1":j(["en": "Header 1"]),
+						".key2":j(["en": "Header 2"]),
+						".key3":j(["en": "Header 3"])
+					]).save(failOnError: true)
 			serviceQ5.surveyElement = surveyElementServiceQ5
 			serviceQ5.save(failOnError: true)
-			
+
 			def serviceQ6 = new SurveySimpleQuestion(
-				names: j(["en":"Service Section Simple Question LIST of MAP"]),
-				descriptions: j(["en":"Service Section Simple Question"]),
-				order: 6,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Service Section Simple Question LIST of MAP"]),
+					descriptions: j(["en":"Help text"]),
+					order: 6,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			services.addQuestion(serviceQ6)
 			services.save(failOnError:true, flush:true)
-			
+
 			def surveyElementServiceQ6 = new SurveyElement(
-				dataElement: DataElement.findByCode("LISTMAP1"), 
-				surveyQuestion: serviceQ6,
-				headers: [
-					"[_].key1":j(["en": "First Name"]),
-					"[_].key2":j(["en": "Last Name"]),
-					"[_].key3":j(["en": "Other Info"]),
-					"[_].key4":j(["en": "Work History"]),
-					"[_].key4.key41":j(["en": "Primary Function"]),
-					"[_].key4.key42":j(["en": "Primary Department"]),
-					"[_].key4.key43":j(["en": "Begin employment at this facility"]),
-					"[_].key5":j(["en": "Education & Training"]),
-					"[_].key5.key51":j(["en": "Highest level of education"]),
-					"[_].key5.key52":j(["en": "Corresponding Institution"]),
-					"[_].key5.key53":j(["en": "Other"]),
-					"[_].key5.key54":j(["en": "Days of training received between July 2010 and June 2011, By Are"]),
-					"[_].key5.key54.key541":j(["en": "Environmental Health"]),
-					"[_].key5.key54.key542":j(["en": "Performance Based Financing"]),
-					"[_].key5.key55":j(["en": "Other"])
-				]).save(failOnError: true)
+					dataElement: DataElement.findByCode("LISTMAP1"),
+					surveyQuestion: serviceQ6,
+					headers: [
+						"[_].key1":j(["en": "Family Name"]),
+						"[_].key2":j(["en": "Given Name"]),
+						"[_].key3":j(["en": "National ID Number"]),
+						"[_].key4":j(["en": "Date of Birth"]),
+						"[_].key5":j(["en": "Sex"]),
+						"[_].key6":j(["en": "Nationality"]),
+						"[_].key7":j(["en": "Education & Training"]),
+						"[_].key7.key71":j(["en": "Highest level of education"]),
+						"[_].key7.key72":j(["en": "Corresponding Institution"]),
+						"[_].key7.key73":j(["en": "Days of Training received between July 2010 and June 2011, by Area"]),
+						"[_].key7.key73.key731":j(["en": "Clinical"]),
+						"[_].key7.key73.key731.key731_1":j(["en": "HIV/AIDS"]),
+						"[_].key7.key73.key731.key731_2":j(["en": "Malaria"]),
+						"[_].key7.key73.key731.key731_3":j(["en": "Tuberculosis"]),
+						"[_].key7.key73.key731.key731_4":j(["en": "Diarrheal Diseases"]),
+						"[_].key7.key73.key731.key731_5":j(["en": "Other Infections & Parasitic Diseases"]),
+						"[_].key7.key73.key731.key731_6":j(["en": "Trauma & Burns"]),
+						"[_].key7.key73.key731.key731_7":j(["en": "Mental Health"]),
+						"[_].key7.key73.key731.key731_8":j(["en": "Environmental Health"]),
+						"[_].key7.key73.key731.key731_9":j(["en": "Internal Medicine"]),
+						"[_].key7.key73.key731.key731_10":j(["en": "Reproductive Health - Female"]),
+						"[_].key7.key73.key731.key731_11":j(["en": "Reproductive Health - Male"]),
+						"[_].key7.key73.key731.key731_12":j(["en": "Prenatal & Neonatal"]),
+						"[_].key7.key73.key731.key731_13":j(["en": "Oral Health"]),
+						"[_].key7.key73.key731.key731_14":j(["en": "Respiratory Health"]),
+						"[_].key7.key73.key731.key731_15":j(["en": "Nutrition"]),
+						"[_].key7.key73.key731.key731_16":j(["en": "Intestinal Health"]),
+						"[_].key7.key73.key731.key731_17":j(["en": "Cardiovascular Health"]),
+						"[_].key7.key73.key731.key731_18":j(["en": "Sexual Health (not HIV)"]),
+						"[_].key7.key73.key731.key731_19":j(["en": "Other"]),
+						"[_].key7.key73.key732":j(["en": "Non-Clinical"]),
+						"[_].key7.key73.key732.key732_1":j(["en": "Human Resources Management"]),
+						"[_].key7.key73.key732.key732_2":j(["en": "Facility Operations"]),
+						"[_].key7.key73.key732.key732_3":j(["en": "Clinical Supervision & Management"]),
+						"[_].key7.key73.key732.key732_4":j(["en": "Pharmacy Supervision & Management"]),
+						"[_].key7.key73.key732.key732_5":j(["en": "CHW Supervision & Management"]),
+						"[_].key7.key73.key732.key732_6":j(["en": "Laboratory Supervision & Management"]),
+						"[_].key7.key73.key732.key732_7":j(["en": "Administrative Procedures & Management"]),
+						"[_].key7.key73.key732.key732_8":j(["en": "Mutuelle Procedures & Protocol"]),
+						"[_].key7.key73.key732.key732_9":j(["en": "Claims Processing"]),
+						"[_].key7.key73.key732.key732_10":j(["en": "Performance Based Financing"]),
+						"[_].key7.key73.key732.key732_11":j(["en": "Health Economics"]),
+						"[_].key7.key73.key732.key732_12":j(["en": "Health Insurance"]),
+						"[_].key7.key73.key732.key732_13":j(["en": "ICT"]),
+						"[_].key7.key73.key732.key732_14":j(["en": "Basic Statistics / Analytics"]),
+						"[_].key7.key73.key732.key732_15":j(["en": "Presentation Techniques"]),
+						"[_].key7.key73.key732.key732_16":j(["en": "Communication Skills"]),
+						"[_].key8":j(["en": "Work History"]),
+						"[_].key8.key81":j(["en": "Primary Function"]),
+						"[_].key8.key82":j(["en": "Primary Department"]),
+						"[_].key8.key83":j(["en": "% of Time Spent on Primary Department"]),
+						"[_].key8.key84":j(["en": "Departments Served 1+ Day in a typical Week"]),
+						"[_].key8.key84.key84_1":j(["en": "Administration"]),
+						"[_].key8.key84.key84_2":j(["en": "Chronic Disease"]),
+						"[_].key8.key84.key84_3":j(["en": "Community Health"]),
+						"[_].key8.key84.key84_4":j(["en": "Dentistry"]),
+						"[_].key8.key84.key84_5":j(["en": "Emergency"]),
+						"[_].key8.key84.key84_6":j(["en": "Family Planning"]),
+						"[_].key8.key84.key84_7":j(["en": "General Consultation"]),
+						"[_].key8.key84.key84_8":j(["en": "HIV/AIDS"]),
+						"[_].key8.key84.key84_9":j(["en": "Inpatient"]),
+						"[_].key8.key84.key84_10":j(["en": "Intensive Care"]),
+						"[_].key8.key84.key84_11":j(["en": "Internal Medicine"]),
+						"[_].key8.key84.key84_12":j(["en": "Laboratory"]),
+						"[_].key8.key84.key84_13":j(["en": "Maternity"]),
+						"[_].key8.key84.key84_14":j(["en": "Mental Health"]),
+						"[_].key8.key84.key84_15":j(["en": "Mutuelle"]),
+						"[_].key8.key84.key84_16":j(["en": "Nutrition"]),
+						"[_].key8.key84.key84_17":j(["en": "Ophthalmology"]),
+						"[_].key8.key84.key84_18":j(["en": "Pediatrics"]),
+						"[_].key8.key84.key84_19":j(["en": "Pharmacy"]),
+						"[_].key8.key84.key84_20":j(["en": "Reception"]),
+						"[_].key8.key84.key84_21":j(["en": "Supporting Departments (Laundry, etc.)"]),
+						"[_].key8.key84.key84_22":j(["en": "Surgery"]),
+						"[_].key8.key84.key84_23":j(["en": "Tuberculosis"]),
+						"[_].key8.key84.key84_24":j(["en": "Vaccination"]),
+						"[_].key8.key85":j(["en": "Began Employment at this Facility"]),
+						"[_].key8.key86":j(["en": "Ended Employment at this Facility"]),
+						"[_].key9":j(["en": "Compensation"]),
+						"[_].key9.key91":j(["en": "Total Financial Compensation between July 2010 and June 2011 from the following"]),
+						"[_].key9.key91.key911":j(["en": "Facility"]),
+						"[_].key9.key91.key912":j(["en": "PBF"]),
+						"[_].key9.key91.key913":j(["en": "Non-Government Partner"]),
+						"[_].key9.key91.key914":j(["en": "Other"]),
+						"[_].key9.key92":j(["en": "Non-monetary Compensation received"]),
+						"[_].key9.key92.key921":j(["en": "Housing"]),
+						"[_].key9.key92.key922":j(["en": "Transportation"]),
+						"[_].key9.key92.key923":j(["en": "Mobile Credit"]),
+						"[_].key9.key92.key924":j(["en": "Fuel Credit"])
+					]).save(failOnError: true)
 			serviceQ6.surveyElement = surveyElementServiceQ6
 			serviceQ6.save(failOnError: true)
-			
+
 			services.addQuestion(serviceQ2)
 			services.addQuestion(serviceQ1)
 			services.addQuestion(serviceQ3)
@@ -1141,53 +1293,53 @@ class Initializer {
 			surveyElementServiceQ1.save(failOnError: true)
 			
 			def openQ = new SurveySimpleQuestion(
-				names: j(["en":"Sample Open Question Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module."]),
-				descriptions: j(["en":"Sample Open Question"]),
-				order: 1,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Sample Open Question Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module."]),
+					descriptions: j(["en":"Help text"]),
+					order: 1,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			openResponse.addQuestion(openQ)
 			openResponse.save(failOnError:true, flush: true)
-			
+
 			def surveyElementOpenQ = new SurveyElement(dataElement: DataElement.findByCode("CODE12"), surveyQuestion: openQ).save(failOnError: true)
 			openQ.surveyElement = surveyElementOpenQ
 			openQ.save(failOnError: true)
 
 			def checkBoxQ = new SurveyCheckboxQuestion(
-				names: j(["en":"Service Section CheckBox Question"]),
-				descriptions: j(["en":"Service Section CheckBox Question"]),
-				order: 2,
-				groupUuidString: "District Hospital,Health Center"
-			)
+					names: j(["en":"Service Section CheckBox Question"]),
+					descriptions: j(["en":"Help text"]),
+					order: 2,
+					groupUuidString: "District Hospital,Health Center"
+					)
 			staffing.addQuestion(checkBoxQ)
 			staffing.save(failOnError:true, flush: true)
-			
+
 			def surveyElementChecboxQ1 = new SurveyElement(dataElement: DataElement.findByCode("CODE4"), surveyQuestion: checkBoxQ).save(failOnError: true)
 			def surveyElementChecboxQ2 = new SurveyElement(dataElement: DataElement.findByCode("CODE5"), surveyQuestion: checkBoxQ).save(failOnError: true)
 			def surveyElementChecboxQ3 = new SurveyElement(dataElement: DataElement.findByCode("CODE6"), surveyQuestion: checkBoxQ).save(failOnError: true)
-			
+
 			//Checkbox Option
 			def option1 = new SurveyCheckboxOption(
-				names: j(["en":"None Or Not Applicable"]),
-				descriptions: j(["en":"None Or Not Applicable"]),
-				order: 2,
-				groupUuidString: "District Hospital,Health Center",
-				surveyElement: surveyElementChecboxQ1
-			)
+					names: j(["en":"None Or Not Applicable"]),
+					descriptions: j(["en":"None Or Not Applicable"]),
+					order: 2,
+					groupUuidString: "District Hospital,Health Center",
+					surveyElement: surveyElementChecboxQ1
+					)
 			def option2 = new SurveyCheckboxOption(
-				names: j(["en":"Second Option"]),
-				descriptions: j(["en":"Second Option"]),
-				order: 1,
-				groupUuidString: "District Hospital",
-				surveyElement: surveyElementChecboxQ2
-			)
+					names: j(["en":"Second Option"]),
+					descriptions: j(["en":"Second Option"]),
+					order: 1,
+					groupUuidString: "District Hospital",
+					surveyElement: surveyElementChecboxQ2
+					)
 			def option3 = new SurveyCheckboxOption(
-				names: j(["en":"Third Option"]),
-				descriptions: j(["en":"Third Option"]),
-				order: 3,
-				groupUuidString: "District Hospital,Health Center",
-				surveyElement: surveyElementChecboxQ3
-			)
+					names: j(["en":"Third Option"]),
+					descriptions: j(["en":"Third Option"]),
+					order: 3,
+					groupUuidString: "District Hospital,Health Center",
+					surveyElement: surveyElementChecboxQ3
+					)
 			checkBoxQ.addOption(option1)
 			checkBoxQ.addOption(option2)
 			checkBoxQ.addOption(option3)
@@ -1196,44 +1348,44 @@ class Initializer {
 
 			//Adding a table type question
 			def tableQ = new SurveyTableQuestion(
-				names: j(["en":"For each training module:"]),
-				descriptions: j(["en":"(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
-				tableNames: j(["en":"Training Modules"]),
-				order: 1,
-				groupUuidString: "Health Center,District Hospital"
-			)
+					names: j(["en":"For each training module:"]),
+					descriptions: j(["en":"(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
+					tableNames: j(["en":"Training Modules"]),
+					order: 1,
+					groupUuidString: "Health Center,District Hospital"
+					)
 			staffing.addQuestion(tableQ)
 			staffing.save(failOnError:true, flush: true)
-			
+
 			//Add columns
 			def tabColumnOne = new SurveyTableColumn(
-				names: j(["en":"Number Who Attended Training"]),
-				descriptions: j(["en":"Number Who Attended Training"]),
-				order: 1,
-				groupUuidString: "District Hospital,Health Center",
-				question: tableQ
-			)
+					names: j(["en":"Number Who Attended Training"]),
+					descriptions: j(["en":"Help text"]),
+					order: 1,
+					groupUuidString: "District Hospital,Health Center",
+					question: tableQ
+					)
 			def tabColumnTwo = new SurveyTableColumn(
-				names: j(["en":"Sum Total Number of Days"]),
-				descriptions: j(["en":"Sum Total Number of Days"]),
-				order: 2,
-				groupUuidString: "District Hospital,Health Center",
-				question: tableQ
-			)
+					names: j(["en":"Sum Total Number of Days"]),
+					descriptions: j(["en":"Help text"]),
+					order: 2,
+					groupUuidString: "District Hospital,Health Center",
+					question: tableQ
+					)
 			def tabColumnThree = new SurveyTableColumn(
-				names: j(["en":"Who Provided the Training"]),
-				descriptions: j(["en":"Who Provided the Training"]),
-				order: 3,
-				groupUuidString: "Health Center",
-				question: tableQ
-			)
+					names: j(["en":"Who Provided the Training"]),
+					descriptions: j(["en":"Help text"]),
+					order: 3,
+					groupUuidString: "Health Center",
+					question: tableQ
+					)
 			def tabColumnFour = new SurveyTableColumn(
-				names: j(["en":"Due Date"]),
-				descriptions: j(["en":"Due Date"]),
-				order: 4,
-				groupUuidString: "District Hospital",
-				question: tableQ
-			)
+					names: j(["en":"Due Date"]),
+					descriptions: j(["en":"Help text"]),
+					order: 4,
+					groupUuidString: "District Hospital",
+					question: tableQ
+					)
 
 			tableQ.addColumn(tabColumnThree)
 			tableQ.addColumn(tabColumnTwo)
@@ -1268,35 +1420,35 @@ class Initializer {
 			def surveyElementTable22 = new SurveyElement(dataElement: DataElement.findByCode("CODE91"), surveyQuestion: tableQ).save(failOnError: true)
 			def surveyElementTable23 = new SurveyElement(dataElement: DataElement.findByCode("CODE101"), surveyQuestion: tableQ).save(failOnError: true)
 			def surveyElementTable24 = new SurveyElement(dataElement: DataElement.findByCode("CODE111"), surveyQuestion: tableQ).save(failOnError: true)
-			
+
 			dataElmntsLine2.put(tabColumnOne, surveyElementTable21)
 			dataElmntsLine2.put(tabColumnTwo, surveyElementTable22)
 			dataElmntsLine2.put(tabColumnThree, surveyElementTable23)
 			dataElmntsLine2.put(tabColumnFour, surveyElementTable24)
-			
+
 			//Add rows
 			def tabRowOne = new SurveyTableRow(
-				names: j(["en":"Clinical Pharmacy :"]),
-				descriptions: j(["en":"Clinical Pharmacy :"]),
-				order: 1,
-				question: tableQ,
-				groupUuidString: "District Hospital,Health Center",
-				surveyElements: dataElmntsLine1
-			)
+					names: j(["en":"Clinical Pharmacy :"]),
+					descriptions: j(["en":"Help text"]),
+					order: 1,
+					question: tableQ,
+					groupUuidString: "District Hospital,Health Center",
+					surveyElements: dataElmntsLine1
+					)
 			def tabRowTwo = new SurveyTableRow(
-				names: j(["en":"Clinical Nurse Training :"]),
-				descriptions: j(["en":"Clinical Nurse Training :"]),
-				order: 2,
-				question: tableQ,
-				groupUuidString: "Health Center",
-				surveyElements: dataElmntsLine2
-			)
+					names: j(["en":"Clinical Nurse Training :"]),
+					descriptions: j(["en":"Help text"]),
+					order: 2,
+					question: tableQ,
+					groupUuidString: "Health Center",
+					surveyElements: dataElmntsLine2
+					)
 
 			tableQ.addRow(tabRowOne)
 			tableQ.addRow(tabRowTwo)
 			tableQ.save(failOnError:true)
 
-			
+
 			def ruleCheckbox = new SurveyValidationRule(
 				surveyElement: surveyElementChecboxQ3,
 				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+" else true",
@@ -1312,14 +1464,14 @@ class Initializer {
 			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedSurveyElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
 			def skipRule3 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==2", skippedSurveyQuestions: [checkBoxQ]);
 			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementPatientQ1.id+"==1000", skippedSurveyQuestions: [tableQ], skippedSurveyElements: [(surveyElementChecboxQ1): ""]);
-			
+
 			surveyOne.addSkipRule(skipRule1)
 			surveyOne.addSkipRule(skipRule2)
 			surveyOne.addSkipRule(skipRule3)
 			surveyOne.addSkipRule(skipRule4)
-			
+
 			surveyOne.save()
-			
+
 		}
 	}
 
@@ -1338,9 +1490,9 @@ class Initializer {
 	public static Value v(def value) {
 		return new Value("{\"value\":"+value+"}");
 	}
-	
+
 	public static Translation j(def map) {
 		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
 	}
-	
+
 }

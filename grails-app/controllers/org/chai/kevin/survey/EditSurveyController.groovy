@@ -334,6 +334,9 @@ class EditSurveyController extends AbstractController {
 				}
 			}
 			else {
+				flash.message = "survey.section.invalid";
+				flash.default = "This section is invalid, please check your answers."
+				
 				action = 'sectionPage'
 				params << [section: sectionPage.section.id]
 			}

@@ -36,6 +36,12 @@ public class TypeSpec extends UnitSpec {
 		type.getType() == ValueType.STRING
 		
 		when:
+		type = new Type("{\"type\":\"text\"}");
+		
+		then:
+		type.getType() == ValueType.TEXT
+		
+		when:
 		type = new Type("{\"type\":\"number\"}");
 		
 		then:
@@ -283,7 +289,7 @@ public class TypeSpec extends UnitSpec {
 		type.getValueFromJaql(type.getJaqlValue(value)).isNull()
 		
 		where:
-		typeObject << [Type.TYPE_DATE(), Type.TYPE_BOOL(), Type.TYPE_NUMBER(), Type.TYPE_STRING(), Type.TYPE_ENUM("test"), Type.TYPE_LIST(Type.TYPE_NUMBER()), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()])]
+		typeObject << [Type.TYPE_DATE(), Type.TYPE_BOOL(), Type.TYPE_NUMBER(), Type.TYPE_STRING(), Type.TYPE_TEXT(), Type.TYPE_ENUM("test"), Type.TYPE_LIST(Type.TYPE_NUMBER()), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()])]
 	}
 	
 	def "test from jaql"() {

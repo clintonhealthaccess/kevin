@@ -46,9 +46,9 @@
 				<div class="rounded-box-bottom">
 					<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 						<ol id="questions">
-							<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question">
+							<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question" status="i">
 								<li class="question-container ${surveyPage.questions[question].skipped?'skipped':''}">
-									<g:render template="/survey/question/${question.getType()}" model="[surveyPage: surveyPage, question: question, readonly: readonly]" />
+									<g:render template="/survey/question/${question.getType()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1]" />
 								</li> 
 							</g:each>
 						</ol>

@@ -50,7 +50,7 @@
 			</g:each>
 			<g:if test="${!readonly}">
 				<div class="hidden">
-					<div class="element-list-row hidden">
+					<div class="element-list-row">
 						<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
 						<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
 							value: null,
