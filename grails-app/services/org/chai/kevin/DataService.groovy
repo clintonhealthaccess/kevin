@@ -112,7 +112,7 @@ class DataService {
 		return getSearchCriteria(clazz, text, allowedTypes).setProjection(Projections.count("id")).uniqueResult()
 	}
 	
-    public <T extends Data<?>> List<T> searchData(Class<T> clazz, String text, List<String> allowedTypes, def params) {
+    public <T extends Data<?>> List<T> searchData(Class<T> clazz, String text, List<String> allowedTypes, Map<String, String> params) {
 		def criteria = getSearchCriteria(clazz, text, allowedTypes)
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
 		if (params['max'] != null) criteria.setMaxResults(params['max'])

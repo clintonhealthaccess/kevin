@@ -35,7 +35,7 @@ import org.quartz.InterruptableJob;
 class ExpressionJob implements InterruptableJob {
 
 	static triggers = {
-		cron name: 'trigger', startDelay: 10000, cronExpression: "0 0 * * * ?"
+		cron name: 'trigger', startDelay: 10000, cronExpression: "0 0 0 * * ?"
 	}
 	
 	def sessionRequired = true

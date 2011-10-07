@@ -51,6 +51,11 @@ class DataServiceSpec extends IntegrationTests {
 //		constants == [Constant.findByCode("CONST1")]
 //	}
 	
+	def "search for null"() {
+		expect:
+		dataService.searchData(DataElement.class, null, [], [:]).equals([])
+	}
+	
 	def "search for data element works"() {
 		setup:
 		def dataElement1 = newDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
