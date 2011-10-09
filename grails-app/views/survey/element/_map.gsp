@@ -3,19 +3,14 @@
 <div id="element-${surveyElement.id}-${suffix}" class="element element-map ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 
-	<g:set var="mapValue" value="${value?.mapValue}"/>
-	<g:set var="lastMapValue" value="${lastValue?.mapValue}"/>
-	
-	<g:each in="${type.elementMap}" var="entry" status="i">
-		<g:set var="key" value="${entry.key}"/>
-		<g:set var="keyType" value="${entry.value}"/>
+	<g:each in="${type.elementMap}">
 		
 		<div class="element-map-header">
-			<g:i18n field="${surveyElement.headers.get(suffix+'.'+key)}"/>
+			<g:i18n field="${surveyElement.headers.get(suffix+'.'+it.key)}"/>
 			
-			<g:if test="${keyType.type.name().toLowerCase()=='enum' && print && appendix}">
-				<g:if test="${keyType.enumCode != null}">
-					<g:set var="enume" value="${Enum.findByCode(keyType.enumCode)}"/>
+			<g:if test="${it.value.type.name().toLowerCase()=='enum' && print && appendix}">
+				<g:if test="${it.value.enumCode != null}">
+					<g:set var="enume" value="${Enum.findByCode(it.value.enumCode)}"/>
 					<div class="text-align-left">--Possible choice--</div>
 					<g:each in="${enume?.enumOptions}" var="option">
 						<div class="text-align-left"><g:i18n field="${option.names}" /></div>
@@ -25,11 +20,11 @@
 			
 		</div>
 		<div class="element-map-body">
-			<g:render template="/survey/element/${keyType.type.name().toLowerCase()}"  model="[
-				value: mapValue?.get(key),
-				lastValue: lastMapValue?.get(key),
-				type: keyType,
-				suffix: suffix+'.'+key,
+			<g:render template="/survey/element/${it.value.type.name().toLowerCase()}"  model="[
+				value: value?.mapValue?.get(it.key),
+				lastValue: lastValue?.mapValue?.get(it.key),
+				type: it.value,
+				suffix: suffix+'.'+it.key,
 				surveyElement: surveyElement,
 				enteredValue: enteredValue,
 				readonly: readonly

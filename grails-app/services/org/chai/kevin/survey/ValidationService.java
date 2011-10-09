@@ -29,7 +29,7 @@ public class ValidationService {
 	
 	@Transactional(readOnly=true)
 	public Set<String> getSkippedPrefix(SurveyElement element, SurveySkipRule rule, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("isSkipped(surveyElement="+element+")");
+		if (log.isDebugEnabled()) log.debug("getSkippedPrefix(surveyElement="+element+", rule="+rule+", organisation="+organisation+")");
 		
 		SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
 
@@ -43,13 +43,13 @@ public class ValidationService {
 			}
 		}
 		
-		if (log.isDebugEnabled()) log.debug("isSkipped(...)="+result);
+		if (log.isDebugEnabled()) log.debug("getSkippedPrefix(...)="+result);
 		return result;		
 	}
 	
 	@Transactional(readOnly=true)
 	public boolean isSkipped(SurveySkipRule skipRule, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("isSkipped(surveyQuestion="+skipRule+")");
+		if (log.isDebugEnabled()) log.debug("isSkipped(surveyQuestion="+skipRule+", organisation="+organisation+")");
 		
 		boolean result = false;
 		if (!isWildcard(skipRule.getExpression())) {
@@ -63,9 +63,9 @@ public class ValidationService {
 	
 	@Transactional(readOnly=true)
 	public Set<String> getInvalidPrefix(SurveyValidationRule validationRule, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("validate(validationRule="+validationRule+")");
+		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(validationRule="+validationRule+", organisation="+organisation+")");
+
 		Set<String> result = new HashSet<String>();
-		
 		organisationService.loadGroup(organisation);
 		if (Utils.split(validationRule.getGroupUuidString()).contains(organisation.getOrganisationUnitGroup().getUuid())) {
 			// we validate only if that rule applies to the group
@@ -76,7 +76,7 @@ public class ValidationService {
 			
 			if (enteredValue != null) result.addAll(getPrefixes(expression, prefix, enteredValue, false));
 		}
-		if (log.isDebugEnabled()) log.debug("validate(...)="+result);
+		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(...)="+result);
 		return result;
 	}
 

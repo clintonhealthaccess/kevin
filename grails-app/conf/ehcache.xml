@@ -28,48 +28,53 @@
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit.children"
            maxElementsInMemory="5000"
-            timeToLiveSeconds="86400"
+            timeToIdleSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit.groups"
            maxElementsInMemory="2000"
-            timeToLiveSeconds="86400"
+            timeToIdleSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.period.Period"
            maxElementsInMemory="10"
-            timeToLiveSeconds="86400"
+            timeToIdleSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit"
            maxElementsInMemory="5000"
-            timeToLiveSeconds="86400"
+            timeToIdleSeconds="86400"
     />
     
     <cache name="org.chai.kevin.data.DataElement"
            maxElementsInMemory="4000"
-            timeToLiveSeconds="86400"
+            timeToIdleSeconds="86400"
     />
     
     <cache name="org.chai.kevin.data.Expression"
 			maxElementsInMemory="4000"
-            timeToLiveSeconds="86400"
+            timeToIdleSeconds="86400"
     />
     
     <cache name="org.chai.kevin.data.Calculation"
 			maxElementsInMemory="4000"
-			timeToLiveSeconds="86400"
+			timeToIdleSeconds="86400"
     />
     
     <cache name="dsrCache"
     		maxElementsInMemory="8000"
-    		timeToLiveSeconds="86400"
+    		timeToIdleSeconds="86400"
     />
     
     <cache name="dashboardCache"
     		maxElementsInMemory="8000"
-    		timeToLiveSeconds="86400"
+    		timeToIdleSeconds="86400"
     />
-    
+
+    <cache name="jsonValueCache"
+    		maxElementsInMemory="2000"
+    		timeToLiveSeconds="0"
+    		timeToIdleSeconds="300"
+    />
     
 </ehcache>

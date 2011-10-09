@@ -15,7 +15,7 @@ modules = {
 	
 	// modules
 	core {
-		dependsOn 'jquery, spinner'
+		dependsOn 'jquery'
 		
 		resource url: '/css/main.css', bundle: 'core'
 	}
@@ -23,8 +23,8 @@ modules = {
 	spinner {
 		dependsOn 'jquery'
 		
-		resource url: '/js/spinner.js', bundle: 'core'
-		resource url: '/css/spinner.css', bundle: 'core'
+		resource url: '/js/spinner.js'
+		resource url: '/css/spinner.css'
 	}
 	
 	fliptext {
@@ -123,40 +123,45 @@ modules = {
 		resource url: '/js/report_init.js', bundle: 'core'
 	}
 	
-
-	// Start resources for pages	
-	list {
-		dependsOn 'core'
+	ajaxmanager {
+		dependsOn 'jquery'
 		
+		resource url: 'js/jquery/ajaxmanager/jquery.ajaxmanager.js'
+	}
+	
+	// Start resources for pages
+	list {
+		dependsOn 'core,spinner'
+
 		resource url: '/css/list.css'
 	}
 	
 	survey {
-		dependsOn 'core'
+		dependsOn 'core,ajaxmanager'
 		
 		resource url: '/css/survey.css'
 	}
 	
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,report'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,report,spinner'
 		
 		resource url: '/css/dsr.css'
 	}
 	
 	dashboard {
-		dependsOn 'core,cluetip,dropdown,nicetable,explanation,report'
+		dependsOn 'core,cluetip,dropdown,nicetable,explanation,report,spinner'
 		
 		resource url: '/css/dashboard.css'
 	}
 	
 	maps {
-		dependsOn 'core,url,dropdown,explanation'
+		dependsOn 'core,url,dropdown,explanation,spinner'
 		
 		resource url: '/css/maps.css'
 	}
 	
 	cost {
-		dependsOn 'core,dropdown,nicetable,explanation'
+		dependsOn 'core,dropdown,nicetable,explanation,spinner'
 		
 		resource url: '/css/cost.css'
 	}

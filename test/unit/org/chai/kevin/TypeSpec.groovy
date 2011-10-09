@@ -95,7 +95,7 @@ public class TypeSpec extends UnitSpec {
 		value.getNumberValue() == null
 		
 		when:
-		value = new Value("{\"value\": [{\"key\": \"key1\", \"value\": {\"value\":10}}, {\"key\": \"key2\", \"value\": {\"value\":11}}]}")
+		value = new Value("{\"value\": [{\"map_key\": \"key1\", \"map_value\": {\"value\":10}}, {\"map_key\": \"key2\", \"map_value\": {\"value\":11}}]}")
 		
 		then:
 		value.getMapValue().equals(["key1": new Value("{\"value\":10}"), "key2": new Value("{\"value\":11}")])
@@ -106,6 +106,14 @@ public class TypeSpec extends UnitSpec {
 		
 		then:
 		value.getDateValue().equals(Utils.DATE_FORMAT.parse("10-02-2009"));
+		
+		when:
+		value = new Value("{\"value\":[{\"map_value\":{\"value\":[{\"map_value\":{\"value\":[{\"map_value\":{\"value\":123},\"map_key\":\"key111\"}]},\"map_key\":\"key11\"}]},\"map_key\":\"key1\"}]}");
+		
+		then:
+		value.getMapValue().equals(["key1": new Value("{\"value\":[{\"map_value\":{\"value\":[{\"map_value\":{\"value\":123},\"map_key\":\"key111\"}]},\"map_key\":\"key11\"}]}")])
+		value.getMapValue().get('key1').getMapValue().equals(["key11": new Value("{\"value\":[{\"map_value\":{\"value\":123},\"map_key\":\"key111\"}]}")]);
+		value.getMapValue().get('key1').getMapValue().get('key11').getMapValue().equals(["key111": new Value("{\"value\":123}")])
 	}
 	
 	def "get value from object"() {
@@ -233,6 +241,13 @@ public class TypeSpec extends UnitSpec {
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		value = type.getValueFromMap(['value[0]':'10', 'value[_]':'2', 'value':['[0]', '[_]', '', '', '']], 'value', new HashSet([]))
+		
+		then:
+		value.equals(new Value("{\"value\":[{\"value\":10}]}"))
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		value = type.getValueFromMap([:], 'value', new HashSet([]))
 		
 		then:
@@ -243,6 +258,7 @@ public class TypeSpec extends UnitSpec {
 		expect:
 		new Value("{\"value\":10}").equals(new Value("{\"value\": 10}"));
 		new Value("{\"value\":[{\"value\":10}]}").equals(new Value("{\"value\": [{\"value\":10}]}"));
+		!new Value("{\"value\":[{\"value\":10}]}").equals(new Value("{\"value\": 10}"));
 	}
 	
 	def "test to jaql and back"() {
@@ -443,6 +459,24 @@ public class TypeSpec extends UnitSpec {
 		
 		then:
 		thrown IndexOutOfBoundsException
+		
+		when:
+		type = Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()])
+		value = new Value("{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":10}}]}")
+		type.setAttribute(value, ".key1", "attribute", "test")
+		
+		then:
+		value.getMapValue().get("key1").getAttribute("attribute") == "test"
+		type.getAttribute(value, ".key1", "attribute") == "test"
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
+		value = new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":10}}]}]}")
+		type.setAttribute(value, "[0].key1", "attribute", "test")
+		
+		then:
+		value.getListValue().get(0).getMapValue().get("key1").getAttribute("attribute") == "test"
+		type.getAttribute(value, "[0].key1", "attribute") == "test"
 	}
 	
 	def "set value"() {
@@ -468,11 +502,11 @@ public class TypeSpec extends UnitSpec {
 		
 		when:
 		type = Type.TYPE_MAP(["key1": (Type.TYPE_NUMBER()), "key2": (Type.TYPE_NUMBER())])
-		value = new Value("{\"value\":[{\"key\":\"key1\", \"value\":{\"value\":10}}, {\"key\":\"key2\", \"value\":{\"value\": null}}]}")
+		value = new Value("{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":10}}, {\"map_key\":\"key2\", \"map_value\":{\"value\": null}}]}")
 		type.setValue(value, ".key1", new Value("{\"value\":11}"))
 		
 		then:
-		value.equals(new Value("{\"value\":[{\"key\":\"key1\", \"value\":{\"value\":11}}, {\"key\":\"key2\", \"value\":{\"value\": null}}]}"))
+		value.equals(new Value("{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":11}}, {\"map_key\":\"key2\", \"map_value\":{\"value\": null}}]}"))
 	}
 	
 	def "set value preserves attributes"() {
@@ -511,7 +545,7 @@ public class TypeSpec extends UnitSpec {
 	
 		when:
 		type = Type.TYPE_MAP(["key1": Type.TYPE_LIST(Type.TYPE_NUMBER())])
-		value = new Value("{\"value\":[{\"key\":\"key1\", \"value\":{\"value\": [{\"value\":10}, {\"value\":11}]}}]}")	
+		value = new Value("{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\": [{\"value\":10}, {\"value\":11}]}}]}")	
 		
 		then:
 		type.getValue(value, ".key1[0]").equals(new Value("{\"value\":10}"))

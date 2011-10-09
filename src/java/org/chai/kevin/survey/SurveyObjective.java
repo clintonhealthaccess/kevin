@@ -39,6 +39,7 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -109,7 +110,7 @@ public class SurveyObjective extends SurveyTranslatable {
 		this.survey = survey;
 	}
 
-	@ManyToOne(targetEntity = Survey.class, optional = false)
+	@ManyToOne(targetEntity = Survey.class, optional = false, fetch=FetchType.LAZY)
 	@JoinColumn(nullable = false)
 	public Survey getSurvey() {
 		return survey;
@@ -172,7 +173,7 @@ public class SurveyObjective extends SurveyTranslatable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
 		return result;
 	}
 
@@ -182,13 +183,13 @@ public class SurveyObjective extends SurveyTranslatable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof SurveyObjective))
 			return false;
 		SurveyObjective other = (SurveyObjective) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (getId() == null) {
+			if (other.getId() != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
 	}

@@ -4,6 +4,7 @@ import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -51,7 +52,7 @@ public class SurveyEnteredObjective  {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=SurveyObjective.class, optional=false)
+	@ManyToOne(targetEntity=SurveyObjective.class, optional=false, fetch=FetchType.LAZY)
 	public SurveyObjective getObjective() {
 		return objective;
 	}
@@ -61,7 +62,7 @@ public class SurveyEnteredObjective  {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false)
+	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false, fetch=FetchType.LAZY)
 	public OrganisationUnit getOrganisationUnit() {
 		return organisationUnit;
 	}

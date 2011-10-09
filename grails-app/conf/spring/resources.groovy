@@ -64,6 +64,7 @@ beans = {
 	
 	jaqlService(JaqlService) { bean ->
 		bean.singleton = true
+		grailsApplication = ref("grailsApplication")
 	}
 	
 	refreshValueService(RefreshValueService) {

@@ -144,6 +144,8 @@ class SurveyElementService {
 	}
 
 	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement, String groupUuid) {
+		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", groupUuid="+groupUuid+")");
+		
 		def c = SurveyValidationRule.createCriteria()
 		List<SurveyValidationRule> rules = c
 		.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
@@ -153,6 +155,8 @@ class SurveyElementService {
 	}
 	
 	Set<SurveySkipRule> searchSkipRules(SurveyElement surveyElement) {
+		if (log.isDebugEnabled()) log.debug("searchSkipRules(surveyElement="+surveyElement+")");
+		
 		def c = SurveySkipRule.createCriteria()
 		List<SurveySkipRule> rules = c.add(
 			Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE)

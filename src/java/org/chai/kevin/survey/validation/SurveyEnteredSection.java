@@ -2,6 +2,7 @@ package org.chai.kevin.survey.validation;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -46,7 +47,7 @@ public class SurveyEnteredSection {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=SurveySection.class, optional=false)
+	@ManyToOne(targetEntity=SurveySection.class, optional=false, fetch=FetchType.LAZY)
 	public SurveySection getSection() {
 		return section;
 	}
@@ -56,7 +57,7 @@ public class SurveyEnteredSection {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false)
+	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false, fetch=FetchType.LAZY)
 	public OrganisationUnit getOrganisationUnit() {
 		return organisationUnit;
 	}

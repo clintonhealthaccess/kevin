@@ -68,7 +68,6 @@
 			</div>
 		</div>
 		<g:if test="${!readonly}">
-		
 			<r:script>
 				$(document).ready(function() {
 					initializeSurvey(valueChangedInSection);

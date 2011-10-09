@@ -10,6 +10,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -62,7 +63,7 @@ public class SurveyEnteredValue {
 	}
 	
 	@NaturalId
-	@OneToOne(targetEntity=SurveyElement.class)
+	@OneToOne(targetEntity=SurveyElement.class, fetch=FetchType.LAZY)
 	public SurveyElement getSurveyElement() {
 		return surveyElement;
 	}
@@ -96,7 +97,7 @@ public class SurveyEnteredValue {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false)
+	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false, fetch=FetchType.LAZY)
 	public OrganisationUnit getOrganisationUnit() {
 		return organisationUnit;
 	}
@@ -156,16 +157,6 @@ public class SurveyEnteredValue {
 		return !getSkipped(prefix).isEmpty();
 	}
 	
-	
-//	public Set<String> getAcceptedWarnings(String prefix) {
-//		try {
-//			return Utils.split(getType().getAttribute(value, prefix, "warning"));
-//		}
-//		catch (IndexOutOfBoundsException e) {
-//			return new HashSet<String>();
-//		}
-//	}
-	
 	public boolean isAcceptedWarning(SurveyValidationRule rule, String prefix) {
 		try {
 			return Utils.split(getType().getAttribute(value, prefix, "warning")).contains(rule.getId().toString());
@@ -184,12 +175,6 @@ public class SurveyEnteredValue {
 	public Set<String> getInvalidPrefixes() {
 		return getPrefixesWithAttribute("invalid").keySet();
 	}
-	
-//	@Transient
-//	public Set<String> getAcceptedPrefixes() {
-//		return getPrefixesWithAttribute("accepted");
-//	}
-
 	
 	@Transient
 	public Boolean isInvalid() {

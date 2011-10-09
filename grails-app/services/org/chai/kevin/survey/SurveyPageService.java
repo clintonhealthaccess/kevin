@@ -31,6 +31,8 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,11 +61,14 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
+import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -366,56 +371,85 @@ public class SurveyPageService {
 	}
 	
 	// returns the list of modified elements/questions/sections/objectives (skip, validation, etc..)
+	// we set the isolation level on READ_UNCOMMITTED to avoid deadlocks because in READ_COMMITTED
+	// mode, a write lock is acquired at the beginning and never released till this method terminates
+	// which causes other sessions calling this method to timeout
 	@Transactional(readOnly = false)
-	public SurveyPage modify(Organisation organisation, List<SurveyElement> elements, Map<String, Object> params) {
+	public SurveyPage modify(Organisation organisation, SurveyObjective objective, List<SurveyElement> elements, Map<String, Object> params) {
+		if (log.isDebugEnabled()) log.debug("modify(organisation="+organisation+", elements="+elements+")");
 		organisationService.loadGroup(organisation);
-		Set<String> attributes = new HashSet<String>();
-		attributes.add("warning");
 		
-		// first we save the values
-		Map<SurveyElement, SurveyEnteredValue> affectedElements = new HashMap<SurveyElement, SurveyEnteredValue>();
-		for (SurveyElement element : elements) {
-			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
-			
-			final Type valueType = element.getDataElement().getType();
-			final Value oldValue = enteredValue.getValue();
-			Value value = valueType.getValueFromMap(params, "surveyElements["+element.getId()+"].value", attributes);
-			// reset accepted warnings for changed values
-			Map<String, Value> modifiedPrefixes = valueType.getPrefixes(value, new PrefixPredicate() {
-				@Override
-				public boolean holds(Type type, Value value, String prefix) {
-					Value oldPrefix = valueType.getValue(oldValue, prefix);
-					if (oldPrefix != null) {
-						// TODO find another method for that comparison
-						return !type.getJaqlValue(oldPrefix).equals(type.getJaqlValue(value));
+		// we acquire a write lock on the objective
+		// this won't change anything for MyISAM tables
+		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
+		sessionFactory.getCurrentSession().buildLockRequest(LockOptions.NONE).setLockMode(LockMode.PESSIMISTIC_WRITE).lock(enteredObjective);
+		
+		SurveyPage surveyPage = null;
+		// if the objective is not closed, we go on with the save
+		if (!enteredObjective.isClosed()) {
+			Set<String> attributes = new HashSet<String>();
+			attributes.add("warning");
+
+			Map<SurveyElement, SurveyEnteredValue> affectedElements = new HashMap<SurveyElement, SurveyEnteredValue>();
+			// first we save the values
+			for (SurveyElement element : elements) {
+				if (log.isDebugEnabled()) log.debug("setting new value for element: "+element);
+				
+				SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+				
+				final Type valueType = element.getDataElement().getType();
+				final Value oldValue = enteredValue.getValue();
+				
+				if (log.isDebugEnabled()) log.debug("getting new value from parameters for element: "+element);
+				Value value = valueType.getValueFromMap(params, "surveyElements["+element.getId()+"].value", attributes);
+				
+				// reset accepted warnings for changed values
+				if (log.isDebugEnabled()) log.debug("getting modified prefixes for element: "+element);
+				Map<String, Value> modifiedPrefixes = valueType.getPrefixes(value, new PrefixPredicate() {
+					@Override
+					public boolean holds(Type type, Value value, String prefix) {
+						Value oldPrefix = valueType.getValue(oldValue, prefix);
+						if (oldPrefix != null) {
+							// TODO find another method for that comparison
+							return !type.getJaqlValue(oldPrefix).equals(type.getJaqlValue(value));
+						}
+						return false;
 					}
-					return false;
+				});
+				if (log.isDebugEnabled()) log.debug("resetting warning for modified prefixes: "+element);
+				for (Entry<String, Value> modifiedPrefix : modifiedPrefixes.entrySet()) {
+					valueType.setAttribute(value, modifiedPrefix.getKey(), "warning", null);
 				}
-			});
-			for (Entry<String, Value> modifiedPrefix : modifiedPrefixes.entrySet()) {
-				valueType.setAttribute(value, modifiedPrefix.getKey(), "warning", null);
+				
+				// set the value and save
+				// here, a write lock is acquired on the SurveyEnteredValue that will be kept
+				// till the end of the transaction, if in READ_COMMITTED isolation mode, a timeout
+				// is likely to occur because the transaction is quite long
+				enteredValue.setValue(value);
+				affectedElements.put(element, enteredValue);
+				
+				// if it is a checkbox question, we need to reset the values to null
+				// FIXME THIS IS A HACK
+				resetCheckboxQuestion(organisation, element, affectedElements);
 			}
-			
-			// set the value and save
-			enteredValue.setValue(value);
-			affectedElements.put(element, enteredValue);
-			
-			// if it is a checkbox question, we need to reset the values to null
-			// FIXME THIS IS A HACK
-			resetCheckboxQuestion(organisation, element, affectedElements);
+			// we evaluate the rules
+			surveyPage = evaluateRulesAndSave(organisation, elements, affectedElements);
 		}
-		
-		// we evaluate the rules
-		return evaluateRulesAndSave(organisation, elements, affectedElements);
+
+		if (log.isDebugEnabled()) log.debug("modify(...)="+surveyPage);
+		return surveyPage;
 	}
 		
 		
 	private SurveyPage evaluateRulesAndSave(Organisation organisation, List<SurveyElement> elements, Map<SurveyElement, SurveyEnteredValue> affectedElements) {  
-	
+		if (log.isDebugEnabled()) log.debug("evaluateRulesAndSave(organisation="+organisation+", elements="+elements+")");
+		
 		// second we get the rules that could be affected by the changes
 		Set<SurveyValidationRule> validationRules = new HashSet<SurveyValidationRule>();
 		Set<SurveySkipRule> skipRules = new HashSet<SurveySkipRule>();
 		for (SurveyElement element : elements) {
+			if (log.isDebugEnabled()) log.debug("getting skip and validation rules for element: "+element);
+
 			validationRules.addAll(surveyElementService.searchValidationRules(element, organisation.getOrganisationUnitGroup().getUuid()));
 			skipRules.addAll(surveyElementService.searchSkipRules(element));
 		}
@@ -423,6 +457,8 @@ public class SurveyPageService {
 		// third we evaluate those rules
 		Map<SurveyQuestion, SurveyEnteredQuestion> affectedQuestions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		for (SurveyValidationRule validationRule : validationRules) {
+			if (log.isDebugEnabled()) log.debug("getting invalid prefixes for validation rule: "+validationRule);
+			
 			Set<String> prefixes = validationService.getInvalidPrefix(validationRule, organisation);
 
 			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, validationRule.getSurveyElement());
@@ -433,6 +469,8 @@ public class SurveyPageService {
 		
 		for (SurveySkipRule surveySkipRule : skipRules) {
 			for (SurveyElement element : surveySkipRule.getSkippedSurveyElements().keySet()) {
+				if (log.isDebugEnabled()) log.debug("getting skipped prefixes for skip rule: "+surveySkipRule+", element: "+element);
+				
 				Set<String> prefixes = validationService.getSkippedPrefix(element, surveySkipRule, organisation);
 
 				SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
@@ -440,10 +478,10 @@ public class SurveyPageService {
 				
 				affectedElements.put(element, enteredValue);
 			}
-			
+
 			boolean skipped = validationService.isSkipped(surveySkipRule, organisation);
 			for (SurveyQuestion question : surveySkipRule.getSkippedSurveyQuestions()) {
-
+				
 				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
 				if (skipped) enteredQuestion.getSkippedRules().add(surveySkipRule);
 				else enteredQuestion.getSkippedRules().remove(surveySkipRule);
@@ -453,10 +491,8 @@ public class SurveyPageService {
 		}
 		
 		// fourth we propagate the affected changes up the survey tree and save
+		if (log.isDebugEnabled()) log.debug("propagating changes up the survey tree");
 		for (SurveyEnteredValue element : affectedElements.values()) {
-			// nothing to do here except save
-			surveyElementService.save(element);
-			
 			SurveyQuestion question = element.getSurveyElement().getSurveyQuestion();
 			if (!affectedQuestions.containsKey(question)) {
 				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
@@ -468,7 +504,6 @@ public class SurveyPageService {
 		for (SurveyEnteredQuestion question : affectedQuestions.values()) {
 			// we set the question status correctly and save
 			setQuestionStatus(question, organisation);
-			surveyElementService.save(question);
 			
 			SurveySection section = question.getQuestion().getSection();
 			if (!affectedSections.containsKey(section)) {
@@ -482,7 +517,6 @@ public class SurveyPageService {
 		for (SurveyEnteredSection section : affectedSections.values()) {
 			// we set the section status correctly and save
 			setSectionStatus(section, organisation);
-			surveyElementService.save(section);
 			
 			SurveyObjective objective = section.getSection().getObjective();
 			if (!affectedObjectives.containsKey(objective)) {
@@ -495,7 +529,6 @@ public class SurveyPageService {
 			// if the objective is not closed and available
 			// we set the objective status correctly and save
 			setObjectiveStatus(objective, organisation);
-			surveyElementService.save(objective);
 		}
 		
 		return new SurveyPage(organisation, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements);
@@ -564,7 +597,7 @@ public class SurveyPageService {
 		question.setComplete(complete);
 	}
 	
-	
+	@Transactional(readOnly = false)
 	public boolean submit(Organisation organisation, SurveyObjective objective) {
 		organisationService.loadGroup(organisation);
 		

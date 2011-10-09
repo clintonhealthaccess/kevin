@@ -123,7 +123,9 @@ security.shiro.authc.required = false
 				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.springframework',
 				   'org.hibernate',
-				   'net.sf.ehcache.hibernate'
+				   'net.sf.ehcache.hibernate',
+				   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
+				   'org.chai.kevin.JaqlService'
 				   
 			debug  'grails.app',
 				   'org.chai.kevin',

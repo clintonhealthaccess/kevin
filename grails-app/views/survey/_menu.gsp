@@ -54,6 +54,22 @@
 			listRemoveClick(this);
 			return false;
 		});
+		
+		$.manageAjax.create('surveyQueue', {
+			url : "${createLink(controller:'editSurvey', action:'saveValue', params: [organisation: surveyPage.organisation.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
+			type : 'POST',
+			dataType: 'json',
+			// ajax queue options
+			queue: true,
+			cacheResponse: true
+		});
+		
+		$('button[type=submit]').bind('click', function(){
+			$.manageAjax.clear('surveyQueue', true);
+			// wait until last ajax request finishes
+			return true;
+		});
+		
 	}
 
 	function surveyValueChanged(element, callback) {
@@ -63,26 +79,37 @@
 		var data = $('#survey-form').serialize();
 		data += '&element='+elementId+'&question='+questionId;
 		
-		$.ajax({
-			type : 'POST',
-			dataType: 'json',
+		$(element).removeClass('ajax-error');
+		$(element).addClass('ajax-in-process');
+		
+		// we add the request to the queue
+		$.manageAjax.add('surveyQueue', {
 			data : data,
-			url : "${createLink(controller:'editSurvey', action:'saveValue', params: [organisation: surveyPage.organisation.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
 			success : function(data, textStatus) {
+				$(element).removeClass('ajax-in-process');
 
-				// we go through all the sections
-				$.each(data.sections, function(index, section) {
-					$('#section-'+section.id).find('.section-status').addClass('hidden');
-					$('#section-'+section.id).find('.section-status-'+section.status).removeClass('hidden');
-				});
-				
-				// we go through the objectives
-				$.each(data.objectives, function(index, objective) {
-					$('#objective-'+objective.id).find('.objective-status').addClass('hidden');
-					$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
-				});
-				
-				callback(data, element);
+				if (data.status == 'success') {
+					// we go through all the sections
+					$.each(data.sections, function(index, section) {
+						$('#section-'+section.id).find('.section-status').addClass('hidden');
+						$('#section-'+section.id).find('.section-status-'+section.status).removeClass('hidden');
+					});
+					
+					// we go through the objectives
+					$.each(data.objectives, function(index, objective) {
+						$('#objective-'+objective.id).find('.objective-status').addClass('hidden');
+						$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
+					});
+					
+					callback(data, element);
+				}
+				else {
+					alert('Please reload the page, the objective has been closed.');
+				}
+			},
+			error: function() {
+				$(element).removeClass('ajax-in-process');
+				$(element).addClass('ajax-error');
 			}
 		});
 	}

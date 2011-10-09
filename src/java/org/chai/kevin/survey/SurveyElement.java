@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -68,7 +69,7 @@ public class SurveyElement {
 		validationRules.add(validationRule);
 	}
 	
-	@ManyToOne(targetEntity=SurveyQuestion.class, optional=false)
+	@ManyToOne(targetEntity=SurveyQuestion.class, optional=false, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public SurveyQuestion getSurveyQuestion() {
 		return surveyQuestion;

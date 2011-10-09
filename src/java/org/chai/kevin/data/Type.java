@@ -31,7 +31,7 @@ import org.json.JSONObject;
 @Embeddable
 public class Type {
 	
-	public enum ValueType {NUMBER, BOOL, STRING, DATE, ENUM, LIST, MAP}
+	public enum ValueType {NUMBER, BOOL, STRING, TEXT, DATE, ENUM, LIST, MAP}
 
 	private String jsonType = "";
 	
@@ -39,6 +39,7 @@ public class Type {
 	
 	public Type(String jsonType) {
 		this.jsonType = jsonType;
+		refreshType();
 	}
 	
 	@Lob
@@ -49,68 +50,89 @@ public class Type {
 	
 	public void setJsonType(String jsonType) {
 		this.jsonType = jsonType;
-		this.type = null;
+		refreshType();
 	}
 	
 	private JSONObject type = null;
 	
+	private Type listType = null;
+	private Map<String, Type> elementMap = null;
+	private String enumCode = null;
+	private ValueType valueType = null;
+	
+	private void refreshType() {
+		type = null;
+		
+		try {
+			type = new JSONObject(jsonType);
+		} catch (JSONException e) {}
+	}
+	
 	@Transient
 	public JSONObject getJsonObject() {
-		if (type == null) {
-			try {
-				type = new JSONObject(jsonType);
-			} catch (JSONException e) {}
-		}
 		return type;
 	}
 	
 	@Transient
 	public ValueType getType() {
-		try {
-			if (getJsonObject() == null) return null;
-			return ValueType.valueOf(getJsonObject().getString("type").toUpperCase());
-		} catch (JSONException e) {
-			return null;
-		} catch (IllegalArgumentException e) {
-			return null;
+		if (valueType == null) {
+			try {
+				if (getJsonObject() != null) {
+					valueType = ValueType.valueOf(getJsonObject().getString("type").toUpperCase());
+				}
+			} catch (JSONException e) {
+				valueType = null;
+			} catch (IllegalArgumentException e) {
+				valueType = null;
+			}
 		}
+		return valueType;
 	}
 	
 	@Transient
 	public String getEnumCode() {
-		// TODO think that through
-		if (!getType().equals(ValueType.ENUM)) throw new IllegalStateException();
-		try {
-			return getJsonObject().getString("enum_code");
-		} catch (JSONException e) {
-			return null;
+		if (enumCode == null) {
+			// TODO think that through
+			if (!getType().equals(ValueType.ENUM)) throw new IllegalStateException();
+			try {
+				enumCode = getJsonObject().getString("enum_code");
+			} catch (JSONException e) {
+				enumCode = null;
+			}
 		}
+		return enumCode;
 	}
 	
 	@Transient
 	public Type getListType() {
-		if (!getType().equals(ValueType.LIST)) throw new IllegalStateException();
-		try {
-			return new Type(getJsonObject().getString("list_type"));
-		} catch (JSONException e) {
-			return null;
+		if (listType == null) {
+			if (!getType().equals(ValueType.LIST)) throw new IllegalStateException();
+			try {
+				listType = new Type(getJsonObject().getString("list_type"));
+			} catch (JSONException e) {
+				listType = null;
+			}
 		}
+		return listType;
 	}
 	
 	@Transient
 	public Map<String, Type> getElementMap() {
-		if (!getType().equals(ValueType.MAP)) throw new IllegalStateException();
-		Map<String, Type> result = new LinkedHashMap<String, Type>();
-		try {
-			JSONArray array = getJsonObject().getJSONArray("elements");
-			for (int i = 0; i < array.length(); i++) {
-				JSONObject object = array.getJSONObject(i);
-				result.put(object.getString("name"), new Type(object.getString("element_type")));
+		if (elementMap == null) {
+			if (!getType().equals(ValueType.MAP)) throw new IllegalStateException();
+			Map<String, Type> result = new LinkedHashMap<String, Type>();
+			try {
+				JSONArray array = getJsonObject().getJSONArray("elements");
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject object = array.getJSONObject(i);
+					result.put(object.getString("name"), new Type(object.getString("element_type")));
+				}
+				elementMap = result;
+			} catch (JSONException e) {
+				elementMap = null;
 			}
-			return result;
-		} catch (JSONException e) {
-			return null;
 		}
+		return elementMap;
 	}
 	
 	@Transient
@@ -136,40 +158,41 @@ public class Type {
 			JSONObject object = new JSONObject();
 			switch (getType()) {
 				case NUMBER:
-					object.put("value", 0);
+					object.put(Value.VALUE_STRING, 0);
 					break;
 				case BOOL:
-					object.put("value", true);
+					object.put(Value.VALUE_STRING, true);
 					break;
 				case STRING:
-					object.put("value", "0");
+				case TEXT:
+					object.put(Value.VALUE_STRING, "0");
 					break;
 				case DATE:
-					object.put("value", "01-01-1970");
+					object.put(Value.VALUE_STRING, "01-01-1970");
 					break;
 				case ENUM:
-					object.put("value", "0");
+					object.put(Value.VALUE_STRING, "0");
 					break;
 				case LIST:
 					JSONArray array1 = new JSONArray();
 					array1.put(getListType().getPlaceHolderValue().getJsonObject());
-					object.put("value", array1);
+					object.put(Value.VALUE_STRING, array1);
 					break;
 				case MAP:
 					Map<String, Type> elementMap = getElementMap();
 					JSONArray array = new JSONArray();
 					for (Entry<String, Type> entry : elementMap.entrySet()) {
 						JSONObject element = new JSONObject();
-						element.put("key", entry.getKey());
-						element.put("value", elementMap.get(entry.getKey()).getPlaceHolderValue().getJsonObject());
+						element.put(Value.MAP_KEY, entry.getKey());
+						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).getPlaceHolderValue().getJsonObject());
 						array.put(element);
 					}
-					object.put("value", array);
+					object.put(Value.VALUE_STRING, array);
 					break;
 				default:
 					throw new NotImplementedException();
 			}
-			return new Value(object.toString());
+			return new Value(object);
 		} catch (JSONException e) {
 			return null;
 		}
@@ -181,19 +204,20 @@ public class Type {
 			JSONObject object = new JSONObject();
 			switch (getType()) {
 				case NUMBER:
-					object.put("value", sanitizeValue(map.get(suffix)));
+					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
 					break;
 				case BOOL:
-					object.put("value", sanitizeValue(map.get(suffix)));
+					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
 					break;
 				case STRING:
-					object.put("value", sanitizeValue(map.get(suffix)));
+				case TEXT:
+					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
 					break;
 				case DATE:
-					object.put("value", sanitizeValue(map.get(suffix)));
+					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
 					break;
 				case ENUM:
-					object.put("value", sanitizeValue(map.get(suffix)));
+					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
 					break;
 				case LIST:
 					JSONArray array1 = new JSONArray();
@@ -203,28 +227,28 @@ public class Type {
 					else if (map.get(suffix) instanceof String) suffixMap.add((String)map.get(suffix));
 					
 					for (String item : suffixMap) {
-						if (!item.equals("[_]")) { 
+						if (!item.equals("[_]") && !item.trim().isEmpty()) { 
 							array1.put(getListType().getValueFromMap(map, suffix+item, attributes).getJsonObject());
 						}
 					}
-					if (array1.length() == 0) object.put("value", JSONObject.NULL);
-					else object.put("value", array1);
+					if (array1.length() == 0) object.put(Value.VALUE_STRING, JSONObject.NULL);
+					else object.put(Value.VALUE_STRING, array1);
 					break;
 				case MAP:
 					Map<String, Type> elementMap = getElementMap();
 					JSONArray array = new JSONArray();
 					for (Entry<String, Type> entry : elementMap.entrySet()) {
 						JSONObject element = new JSONObject();
-						element.put("key", entry.getKey());
-						element.put("value", elementMap.get(entry.getKey()).getValueFromMap(map, suffix+"."+entry.getKey(), attributes).getJsonObject());
+						element.put(Value.MAP_KEY, entry.getKey());
+						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).getValueFromMap(map, suffix+"."+entry.getKey(), attributes).getJsonObject());
 						array.put(element);
 					}
-					object.put("value", array);
+					object.put(Value.VALUE_STRING, array);
 					break;
 				default:
 					throw new NotImplementedException();
 			}
-			Value value = new Value(object.toString());
+			Value value = new Value(object);
 			for (String attribute : attributes) {
 				Object attributeValue = map.get(suffix+"["+attribute+"]");
 				String attributeString = String.valueOf(attributeValue);
@@ -244,43 +268,44 @@ public class Type {
 			JSONObject object = new JSONObject();
 			switch (getType()) {
 				case NUMBER:
-					object.put("value", (Number)value);
+					object.put(Value.VALUE_STRING, (Number)value);
 					break;
 				case BOOL:
-					object.put("value", (Boolean)value);
+					object.put(Value.VALUE_STRING, (Boolean)value);
 					break;
 				case STRING:
-					object.put("value", (String)value);
+				case TEXT:
+					object.put(Value.VALUE_STRING, (String)value);
 					break;
 				case DATE:
-					object.put("value", (Utils.formatDate((Date)value)));
+					object.put(Value.VALUE_STRING, (Utils.formatDate((Date)value)));
 					break;
 				case ENUM:
-					object.put("value", (String)value);
+					object.put(Value.VALUE_STRING, (String)value);
 					break;
 				case LIST:
 					JSONArray array1 = new JSONArray();
 					for (Object item : (List<?>)value) {
 						array1.put(getListType().getValue(item).getJsonObject());
 					}
-					if (array1.length() == 0) object.put("value", JSONObject.NULL);
-					else object.put("value", array1);
+					if (array1.length() == 0) object.put(Value.VALUE_STRING, JSONObject.NULL);
+					else object.put(Value.VALUE_STRING, array1);
 					break;
 				case MAP:
 					Map<String, Type> elementMap = getElementMap();
 					JSONArray array = new JSONArray();
 					for (Entry<String, Object> entry : ((Map<String, Object>)value).entrySet()) {
 						JSONObject element = new JSONObject();
-						element.put("key", entry.getKey());
-						element.put("value", elementMap.get(entry.getKey()).getValue(entry.getValue()).getJsonObject());
+						element.put(Value.MAP_KEY, entry.getKey());
+						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).getValue(entry.getValue()).getJsonObject());
 						array.put(element);
 					}
-					object.put("value", array);
+					object.put(Value.VALUE_STRING, array);
 					break;
 				default:
 					throw new NotImplementedException();
 			}
-			return new Value(object.toString());
+			return new Value(object);
 		} catch (JSONException e) {
 			throw new IllegalArgumentException("object "+value+" does not correspond to type "+type, e);
 		}
@@ -294,26 +319,27 @@ public class Type {
 				case NUMBER:
 					if (!NumberUtils.isNumber(jaqlString))
 						throw new IllegalArgumentException("jaql string is not a number: "+jaqlString);
-					object.put("value", Double.parseDouble(jaqlString));
+					object.put(Value.VALUE_STRING, Double.parseDouble(jaqlString));
 					break;
 				case BOOL:
 					if (!jaqlString.equals("true") && !jaqlString.equals("false")) 
 						throw new IllegalArgumentException("jaql string is not a boolean: "+jaqlString);
-					object.put("value", Boolean.parseBoolean(jaqlString));
+					object.put(Value.VALUE_STRING, Boolean.parseBoolean(jaqlString));
 					break;
 				case STRING:
-					object.put("value", StringUtils.strip(jaqlString, "\""));
+				case TEXT:
+					object.put(Value.VALUE_STRING, StringUtils.strip(jaqlString, "\""));
 					break;
 				case DATE:
 					try {
 						Date date = Utils.parseDate(StringUtils.strip(jaqlString, "\""));
-						object.put("value", Utils.formatDate(date));
+						object.put(Value.VALUE_STRING, Utils.formatDate(date));
 					} catch (ParseException e) {
 						throw new IllegalArgumentException("jaql string is not a date: "+jaqlString, e);
 					}
 					break;
 				case ENUM:
-					object.put("value", StringUtils.strip(jaqlString, "\""));
+					object.put(Value.VALUE_STRING, StringUtils.strip(jaqlString, "\""));
 					break;
 				case LIST:
 					JSONArray values = new JSONArray();
@@ -322,8 +348,8 @@ public class Type {
 						String itemJaqlString = array.getString(i);
 						values.put(getListType().getValueFromJaql(itemJaqlString).getJsonObject());
 					}
-					if (values.length() == 0) object.put("value", JSONObject.NULL);
-					else object.put("value", values);
+					if (values.length() == 0) object.put(Value.VALUE_STRING, JSONObject.NULL);
+					else object.put(Value.VALUE_STRING, values);
 					break;
 				case MAP:
 					JSONObject jaqlObject = new JSONObject(jaqlString);
@@ -332,8 +358,8 @@ public class Type {
 					JSONArray array1 = new JSONArray();
 					for (Entry<String, Type> entry : elementMap.entrySet()) {
 						JSONObject element = new JSONObject();
-						element.put("key", entry.getKey());
-						element.put("value", entry.getValue().getValueFromJaql(jaqlObject.getString(entry.getKey())).getJsonObject());
+						element.put(Value.MAP_KEY, entry.getKey());
+						element.put(Value.MAP_VALUE, entry.getValue().getValueFromJaql(jaqlObject.getString(entry.getKey())).getJsonObject());
 						array1.put(element);
 					}
 					object.put("value", array1);
@@ -341,7 +367,7 @@ public class Type {
 				default:
 					throw new NotImplementedException();
 			}
-			return new Value(object.toString());
+			return new Value(object);
 		} catch (JSONException e) {
 			throw new IllegalArgumentException("jaql value does not correspond to type", e);
 		}
@@ -394,8 +420,11 @@ public class Type {
 	
 	public void setAttribute(Value value, String prefix, String attribute, String text) {
 		Value prefixedValue = getValue(value, prefix);
-		prefixedValue.setAttribute(attribute, text);
-		setValue(value, prefix, prefixedValue);
+		
+		Value newValue = new Value(prefixedValue.getJsonObject());
+		newValue.setAttribute(attribute, text);
+		
+		setValue(value, prefix, newValue);
 	}
 	
 	public String getAttribute(Value value, String prefix, String attribute) {
@@ -438,13 +467,13 @@ public class Type {
 	
 	public void setValue(Value value, final String prefix, final Value toSet) {
 		// TODO throw exception if prefix does not exist
-		value.setJsonValue(transformValue(value, "", new ValuePredicate() {
+		value.setJsonObject(transformValue(value, "", new ValuePredicate() {
 			@Override
 			public Value getValue(Value currentValue, Type currentType, String currentPrefix) {
 				if (currentPrefix.equals(prefix)) return toSet;
 				else return currentValue;
 			}
-		}).getJsonValue());
+		}).getJsonObject());
 	}
 	
 	public static interface ValuePredicate {
@@ -457,7 +486,6 @@ public class Type {
 	}
 	
 	private Value transformValue(Value currentValue, String currentPrefix, ValuePredicate predicate) {
-		Value value = null;
 		if (!currentValue.isNull()) {
 			try {
 				JSONObject object = currentValue.getJsonObject();
@@ -467,31 +495,43 @@ public class Type {
 					case DATE:
 					case ENUM:
 					case BOOL:
-						value = currentValue;
+//						value = currentValue;
 						break;
 					case LIST:
-						List<Value> values = currentValue.getListValue();
-						JSONArray array1 = new JSONArray();
 						Type listType = getListType();
-						for (int i = 0; i < values.size(); i++) {
-							array1.put(i, listType.transformValue(values.get(i), currentPrefix+"["+i+"]", predicate).getJsonObject());
+						
+						List<Value> listValues = currentValue.getListValue();
+						List<Value> transformedListValues = new ArrayList<Value>();
+						for (int i = 0; i < listValues.size(); i++) {
+							transformedListValues.add(listType.transformValue(listValues.get(i), currentPrefix+"["+i+"]", predicate));
 						}
-						if (array1.length() == 0) object.put("value", JSONObject.NULL);
-						else object.put("value", array1);
-						value = new Value(object.toString());
+					
+						JSONArray array1 = new JSONArray();
+						for (int i = 0; i < transformedListValues.size(); i++) {
+							array1.put(i, transformedListValues.get(i).getJsonObject());
+						}
+						object.put(Value.VALUE_STRING, array1);
+						currentValue.setJsonObject(object);
 						break;
 					case MAP:
+						Map<String, Type> typeMap = getElementMap();
+						
+						Map<String, Value> mapValues = currentValue.getMapValue();
+						Map<String, Value> transformedMapValues = new HashMap<String, Value>();
+						
+						for (Entry<String, Value> entry : currentValue.getMapValue().entrySet()) {
+							transformedMapValues.put(entry.getKey(), typeMap.get(entry.getKey()).transformValue(entry.getValue(), currentPrefix+"."+entry.getKey(), predicate));
+						}
 						
 						JSONArray array2 = new JSONArray();
-						Map<String, Type> typeMap = getElementMap();
 						for (Entry<String, Value> entry : currentValue.getMapValue().entrySet()) {
 							JSONObject element = new JSONObject();
-							element.put("key", entry.getKey());
-							element.put("value", typeMap.get(entry.getKey()).transformValue(entry.getValue(), currentPrefix+"."+entry.getKey(), predicate).getJsonObject());
+							element.put(Value.MAP_KEY, entry.getKey());
+							element.put(Value.MAP_VALUE, transformedMapValues.get(entry.getKey()).getJsonObject());
 							array2.put(element);
 						}
-						object.put("value", array2);
-						value = new Value(object.toString());
+						object.put(Value.VALUE_STRING, array2);
+						currentValue.setJsonObject(object);
 						break;
 					default:
 						throw new NotImplementedException();
@@ -499,11 +539,10 @@ public class Type {
 				
 			}
 			catch(JSONException e) {
-				value = null;
+				throw new IllegalArgumentException();
 			}
 		}
-		else value = currentValue;
-		return predicate.getValue(value, this, currentPrefix);
+		return predicate.getValue(currentValue, this, currentPrefix);
 	}
 	
 	public void getCombinations(Value value, List<String> strings, Set<List<String>> combinations, String prefix) {
@@ -608,10 +647,13 @@ public class Type {
 		String string = String.valueOf(value);
 		switch (getType()) {
 			case NUMBER:
-				try {
-					result = Double.parseDouble(string);
-				} catch (NumberFormatException e) {
-					result = JSONObject.NULL;
+				if (string.trim().isEmpty()) result = JSONObject.NULL;
+				else {
+					try {
+						result = Double.parseDouble(string);
+					} catch (NumberFormatException e) {
+						result = JSONObject.NULL;
+					}
 				}
 				break;
 			case BOOL:

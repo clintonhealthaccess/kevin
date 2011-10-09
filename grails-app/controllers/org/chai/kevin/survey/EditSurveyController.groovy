@@ -223,76 +223,85 @@ class EditSurveyController extends AbstractReportController {
 		def surveyQuestion = surveyElementService.getSurveyQuestion(Long.parseLong(params['question']))
 		def surveyElements = [SurveyElement.get(params.int('element'))]
 		
-		def surveyPage = surveyPageService.modify(currentOrganisation, surveyElements, params);
+		def surveyPage = surveyPageService.modify(currentOrganisation, currentObjective, surveyElements, params);
 			
-		def invalidQuestionsHtml = ''
-		def incompleteSectionsHtml = ''
-		
-		if (currentSection == null) {
-			completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective)
-			invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
-			incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
+		if (surveyPage == null) {
+			
+			render(contentType:"text/json") {
+				status = 'error'
+			}
+			
 		}
-		
-		render(contentType:"text/json") {
+		else {
+			def invalidQuestionsHtml = ''
+			def incompleteSectionsHtml = ''
 			
-			invalidQuestions = invalidQuestionsHtml
+			if (currentSection == null) {
+				completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective)
+				invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
+				incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
+			}
 			
-			incompleteSections = incompleteSectionsHtml
-
-			objectives = array {  
-				surveyPage.objectives.each { objective, enteredObjective -> 
-					obj (
-						id: objective.id,
-						status: enteredObjective.displayedStatus
-					)
+			render(contentType:"text/json") {
+				status = 'success'
+				
+				invalidQuestions = invalidQuestionsHtml
+				incompleteSections = incompleteSectionsHtml
+	
+				objectives = array {  
+					surveyPage.objectives.each { objective, enteredObjective -> 
+						obj (
+							id: objective.id,
+							status: enteredObjective.displayedStatus
+						)
+					}
 				}
-			}
-			sections = array {
-				surveyPage.sections.each { section, enteredSection ->
-					sec (
-						id: section.id,
-						objectiveId: section.objective.id,
-						invalid: enteredSection.invalid,
-						complete: enteredSection.complete,
-						status: enteredSection.displayedStatus
-					)
-				}	
-			}
-			questions = array { 
-				surveyPage.questions.each { question, enteredQuestion ->
-					ques (
-						id: question.id,
-						sectionId: question.section.id,
-						complete: enteredQuestion.complete,
-						invalid: enteredQuestion.invalid,
-						skipped: enteredQuestion.skipped,
-					)
-				}	
-			}
-			elements = array { 
-				surveyPage.elements.each { surveyElement, enteredValue ->
-					elem (
-						id: surveyElement.id,
-						questionId: surveyElement.surveyQuestion.id,
-						skipped: array {
-							enteredValue.skippedPrefixes.each { prefix ->
-								element prefix
-							}
-						},
-						invalid: array {
-							enteredValue.invalidPrefixes.each { invalidPrefix ->
-								pre (
-									prefix: invalidPrefix,
-									valid: enteredValue.isValid(invalidPrefix),
-									errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
-								)
-							}
-						}
-					)
+				sections = array {
+					surveyPage.sections.each { section, enteredSection ->
+						sec (
+							id: section.id,
+							objectiveId: section.objective.id,
+							invalid: enteredSection.invalid,
+							complete: enteredSection.complete,
+							status: enteredSection.displayedStatus
+						)
+					}	
 				}
+				questions = array { 
+					surveyPage.questions.each { question, enteredQuestion ->
+						ques (
+							id: question.id,
+							sectionId: question.section.id,
+							complete: enteredQuestion.complete,
+							invalid: enteredQuestion.invalid,
+							skipped: enteredQuestion.skipped,
+						)
+					}	
+				}
+				elements = array { 
+					surveyPage.elements.each { surveyElement, enteredValue ->
+						elem (
+							id: surveyElement.id,
+							questionId: surveyElement.surveyQuestion.id,
+							skipped: array {
+								enteredValue.skippedPrefixes.each { prefix ->
+									element prefix
+								}
+							},
+							invalid: array {
+								enteredValue.invalidPrefixes.each { invalidPrefix ->
+									pre (
+										prefix: invalidPrefix,
+										valid: enteredValue.isValid(invalidPrefix),
+										errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
+									)
+								}
+							}
+						)
+					}
+				}
+				
 			}
-			
 		}
 	}
 	
@@ -304,7 +313,7 @@ class EditSurveyController extends AbstractReportController {
 		
 		if (validateParameters(currentOrganisation, Utils.split(currentSection.groupUuidString))) {
 			def surveyElements = getSurveyElements()
-			surveyPageService.modify(currentOrganisation, surveyElements, params);
+			surveyPageService.modify(currentOrganisation, currentSection.objective, surveyElements, params);
 			def sectionPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection)
 			
 			def action
