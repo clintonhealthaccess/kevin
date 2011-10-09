@@ -20,6 +20,7 @@
 			
 		</div>
 		<div class="element-map-body">
+		
 			<g:render template="/survey/element/${it.value.type.name().toLowerCase()}"  model="[
 				value: value?.mapValue?.get(it.key),
 				lastValue: lastValue?.mapValue?.get(it.key),

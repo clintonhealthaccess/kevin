@@ -22,7 +22,7 @@ modules = {
 
 	spinner {
 		dependsOn 'jquery'
-		
+
 		resource url: '/js/spinner.js'
 		//resource url: '/css/spinner.css', bundle: 'core'
 	}
@@ -135,6 +135,12 @@ modules = {
 		resource url: 'js/questionhelp_init.js', bundle: 'core'
 	}
 
+	ajaxmanager {
+		dependsOn 'jquery'
+		
+		resource url: 'js/jquery/ajaxmanager/jquery.ajaxmanager.js'
+	}
+	
 	// Start resources for pages
 	list {
 		dependsOn 'core,spinner'
@@ -144,31 +150,31 @@ modules = {
 
 	survey {
 		dependsOn 'core,ajaxmanager'
-		
+
 		//resource url: '/css/survey.css'
 	}
 
 	dsr {
 		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,report,spinner'
-		
+
 		//resource url: '/css/dsr.css'
 	}
 
 	dashboard {
 		dependsOn 'core,cluetip,dropdown,nicetable,explanation,report,spinner'
-		
+
 		//resource url: '/css/dashboard.css'
 	}
 
 	maps {
 		dependsOn 'core,url,dropdown,explanation,spinner'
-		
+
 		//resource url: '/css/maps.css'
 	}
 
 	cost {
 		dependsOn 'core,dropdown,nicetable,explanation,spinner'
-		
+
 		//resource url: '/css/cost.css'
 	}
 

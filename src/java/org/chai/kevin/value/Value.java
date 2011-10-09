@@ -142,7 +142,7 @@ public class Value {
 		
 		if (!getJsonObject().has(attribute)) return null;
 		try {
-			return getJsonObject().getString(attribute);
+			return value.getString(attribute);
 		} catch (JSONException e) {
 			return null;
 		}

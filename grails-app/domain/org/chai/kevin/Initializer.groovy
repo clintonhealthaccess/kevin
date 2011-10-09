@@ -233,11 +233,27 @@ class Initializer {
 			def dataElement101 = new DataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
 			def dataElement111 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"CODE111", type: Type.TYPE_DATE())
 			
-			def dataElementList = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LIST1", type: Type.TYPE_LIST(Type.TYPE_NUMBER()))
-			def dataElementMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"MAP1", 
-				type: Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(), "key2":Type.TYPE_ENUM (Enum.findByCode('ENUM2').code), "key3": Type.TYPE_BOOL()])
+			def dataElementList = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LIST1", type: 
+				Type.TYPE_LIST(
+				Type.TYPE_MAP([
+					"key0": Type.TYPE_STRING(),
+					"key1": Type.TYPE_MAP([
+						"key11": Type.TYPE_MAP([
+							"key111": Type.TYPE_NUMBER()
+						])	
+					])	
+				]))
 			)
-			
+			def dataElementMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"MAP1", 
+				type: Type.TYPE_MAP([
+					"key1": Type.TYPE_MAP([
+						"key11": Type.TYPE_MAP([
+							"key111": Type.TYPE_NUMBER()
+						])	
+					])	
+				])
+			)
+
 			def dataElementListMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
 					type: Type.TYPE_LIST(
 					Type.TYPE_MAP([
