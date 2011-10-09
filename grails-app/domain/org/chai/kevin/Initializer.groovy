@@ -253,8 +253,45 @@ class Initializer {
 					])	
 				])
 			)
+			
+			def siyelo2 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP2",
+				type: Type.TYPE_LIST(
+					Type.TYPE_MAP([
+						"key1": Type.TYPE_MAP([
+							"key11": Type.TYPE_MAP([
+								"key111": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+								"key112": Type.TYPE_STRING
+							]),
+							"key12": Type.TYPE_STRING,
+							"key13": Type.TYPE_MAP([
+								"key131": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+								"key132": Type.TYPE_STRING	
+							]),
+							"key14": Type.TYPE_STRING,
+							"key15": Type.TYPE_STRING,
+							"key16": Type.TYPE_MAP([
+								"key161": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+								"key162": Type.TYPE_STRING
+							]),
+							"key17": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+							"key18": Type.TYPE_NUMBER
+						]),
+						"key2": Type.TYPE_MAP([
+							"key21": Type.TYPE_STRING,
+							"key22": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+							"key23": Type.TYPE_STRING,
+							"key24": Type.TYPE_DATE,
+							"key25": Type.TYPE_STRING,
+							"key26": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+							"key27": Type.TYPE_STRING,
+							"key28": Type.TYPE_DATE,
+							"key29": Type.TYPE_DATE
+						])	
+					])
+				)	
+			)
 
-			def dataElementListMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
+			def siyelo1 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
 					type: Type.TYPE_LIST(
 					Type.TYPE_MAP([
 						"key1": Type.TYPE_STRING(),
@@ -377,8 +414,9 @@ class Initializer {
 
 			dataElementList.save(failOnError: true, flush:true)
 			dataElementMap.save(failOnError: true, flush:true)
-			dataElementListMap.save(failOnError: true, flush:true)
-
+			siyelo1.save(failOnError: true, flush:true)
+			siyelo2.save(failOnError: true, flush:true)
+			
 			// data value
 			new DataValue(
 					dataElement: DataElement.findByCode("CODE1"),
@@ -1171,98 +1209,34 @@ class Initializer {
 			services.save(failOnError:true, flush:true)
 
 			def surveyElementServiceQ6 = new SurveyElement(
-					dataElement: DataElement.findByCode("LISTMAP1"),
+					dataElement: DataElement.findByCode("LISTMAP2"),
 					surveyQuestion: serviceQ6,
 					headers: [
-						"[_].key1":j(["en": "Family Name"]),
-						"[_].key2":j(["en": "Given Name"]),
-						"[_].key3":j(["en": "National ID Number"]),
-						"[_].key4":j(["en": "Date of Birth"]),
-						"[_].key5":j(["en": "Sex"]),
-						"[_].key6":j(["en": "Nationality"]),
-						"[_].key7":j(["en": "Education & Training"]),
-						"[_].key7.key71":j(["en": "Highest level of education"]),
-						"[_].key7.key72":j(["en": "Corresponding Institution"]),
-						"[_].key7.key73":j(["en": "Days of Training received between July 2010 and June 2011, by Area"]),
-						"[_].key7.key73.key731":j(["en": "Clinical"]),
-						"[_].key7.key73.key731.key731_1":j(["en": "HIV/AIDS"]),
-						"[_].key7.key73.key731.key731_2":j(["en": "Malaria"]),
-						"[_].key7.key73.key731.key731_3":j(["en": "Tuberculosis"]),
-						"[_].key7.key73.key731.key731_4":j(["en": "Diarrheal Diseases"]),
-						"[_].key7.key73.key731.key731_5":j(["en": "Other Infections & Parasitic Diseases"]),
-						"[_].key7.key73.key731.key731_6":j(["en": "Trauma & Burns"]),
-						"[_].key7.key73.key731.key731_7":j(["en": "Mental Health"]),
-						"[_].key7.key73.key731.key731_8":j(["en": "Environmental Health"]),
-						"[_].key7.key73.key731.key731_9":j(["en": "Internal Medicine"]),
-						"[_].key7.key73.key731.key731_10":j(["en": "Reproductive Health - Female"]),
-						"[_].key7.key73.key731.key731_11":j(["en": "Reproductive Health - Male"]),
-						"[_].key7.key73.key731.key731_12":j(["en": "Prenatal & Neonatal"]),
-						"[_].key7.key73.key731.key731_13":j(["en": "Oral Health"]),
-						"[_].key7.key73.key731.key731_14":j(["en": "Respiratory Health"]),
-						"[_].key7.key73.key731.key731_15":j(["en": "Nutrition"]),
-						"[_].key7.key73.key731.key731_16":j(["en": "Intestinal Health"]),
-						"[_].key7.key73.key731.key731_17":j(["en": "Cardiovascular Health"]),
-						"[_].key7.key73.key731.key731_18":j(["en": "Sexual Health (not HIV)"]),
-						"[_].key7.key73.key731.key731_19":j(["en": "Other"]),
-						"[_].key7.key73.key732":j(["en": "Non-Clinical"]),
-						"[_].key7.key73.key732.key732_1":j(["en": "Human Resources Management"]),
-						"[_].key7.key73.key732.key732_2":j(["en": "Facility Operations"]),
-						"[_].key7.key73.key732.key732_3":j(["en": "Clinical Supervision & Management"]),
-						"[_].key7.key73.key732.key732_4":j(["en": "Pharmacy Supervision & Management"]),
-						"[_].key7.key73.key732.key732_5":j(["en": "CHW Supervision & Management"]),
-						"[_].key7.key73.key732.key732_6":j(["en": "Laboratory Supervision & Management"]),
-						"[_].key7.key73.key732.key732_7":j(["en": "Administrative Procedures & Management"]),
-						"[_].key7.key73.key732.key732_8":j(["en": "Mutuelle Procedures & Protocol"]),
-						"[_].key7.key73.key732.key732_9":j(["en": "Claims Processing"]),
-						"[_].key7.key73.key732.key732_10":j(["en": "Performance Based Financing"]),
-						"[_].key7.key73.key732.key732_11":j(["en": "Health Economics"]),
-						"[_].key7.key73.key732.key732_12":j(["en": "Health Insurance"]),
-						"[_].key7.key73.key732.key732_13":j(["en": "ICT"]),
-						"[_].key7.key73.key732.key732_14":j(["en": "Basic Statistics / Analytics"]),
-						"[_].key7.key73.key732.key732_15":j(["en": "Presentation Techniques"]),
-						"[_].key7.key73.key732.key732_16":j(["en": "Communication Skills"]),
-						"[_].key8":j(["en": "Work History"]),
-						"[_].key8.key81":j(["en": "Primary Function"]),
-						"[_].key8.key82":j(["en": "Primary Department"]),
-						"[_].key8.key83":j(["en": "% of Time Spent on Primary Department"]),
-						"[_].key8.key84":j(["en": "Departments Served 1+ Day in a typical Week"]),
-						"[_].key8.key84.key84_1":j(["en": "Administration"]),
-						"[_].key8.key84.key84_2":j(["en": "Chronic Disease"]),
-						"[_].key8.key84.key84_3":j(["en": "Community Health"]),
-						"[_].key8.key84.key84_4":j(["en": "Dentistry"]),
-						"[_].key8.key84.key84_5":j(["en": "Emergency"]),
-						"[_].key8.key84.key84_6":j(["en": "Family Planning"]),
-						"[_].key8.key84.key84_7":j(["en": "General Consultation"]),
-						"[_].key8.key84.key84_8":j(["en": "HIV/AIDS"]),
-						"[_].key8.key84.key84_9":j(["en": "Inpatient"]),
-						"[_].key8.key84.key84_10":j(["en": "Intensive Care"]),
-						"[_].key8.key84.key84_11":j(["en": "Internal Medicine"]),
-						"[_].key8.key84.key84_12":j(["en": "Laboratory"]),
-						"[_].key8.key84.key84_13":j(["en": "Maternity"]),
-						"[_].key8.key84.key84_14":j(["en": "Mental Health"]),
-						"[_].key8.key84.key84_15":j(["en": "Mutuelle"]),
-						"[_].key8.key84.key84_16":j(["en": "Nutrition"]),
-						"[_].key8.key84.key84_17":j(["en": "Ophthalmology"]),
-						"[_].key8.key84.key84_18":j(["en": "Pediatrics"]),
-						"[_].key8.key84.key84_19":j(["en": "Pharmacy"]),
-						"[_].key8.key84.key84_20":j(["en": "Reception"]),
-						"[_].key8.key84.key84_21":j(["en": "Supporting Departments (Laundry, etc.)"]),
-						"[_].key8.key84.key84_22":j(["en": "Surgery"]),
-						"[_].key8.key84.key84_23":j(["en": "Tuberculosis"]),
-						"[_].key8.key84.key84_24":j(["en": "Vaccination"]),
-						"[_].key8.key85":j(["en": "Began Employment at this Facility"]),
-						"[_].key8.key86":j(["en": "Ended Employment at this Facility"]),
-						"[_].key9":j(["en": "Compensation"]),
-						"[_].key9.key91":j(["en": "Total Financial Compensation between July 2010 and June 2011 from the following"]),
-						"[_].key9.key91.key911":j(["en": "Facility"]),
-						"[_].key9.key91.key912":j(["en": "PBF"]),
-						"[_].key9.key91.key913":j(["en": "Non-Government Partner"]),
-						"[_].key9.key91.key914":j(["en": "Other"]),
-						"[_].key9.key92":j(["en": "Non-monetary Compensation received"]),
-						"[_].key9.key92.key921":j(["en": "Housing"]),
-						"[_].key9.key92.key922":j(["en": "Transportation"]),
-						"[_].key9.key92.key923":j(["en": "Mobile Credit"]),
-						"[_].key9.key92.key924":j(["en": "Fuel Credit"])
+						"[_].key1": j(["en":"Identifiers"]),
+						"[_].key1.key11": j(["en":"Type of equipment"]),
+						"[_].key1.key11.key111": j(["en":"Select from list"]),
+						"[_].key1.key11.key112": j(["en":"If other, specify:"]),
+						"[_].key1.key12": j(["en":"Description"]),
+						"[_].key1.key13": j(["en":"Serial"]),
+						"[_].key1.key13.key131": j(["en":"Select from list"]),
+						"[_].key1.key13.key132": j(["en":"If other, please specify"]),
+						"[_].key1.key14": j(["en":"Model"]),
+						"[_].key1.key15": j(["en":"Manufacturer"]),
+						"[_].key1.key16": j(["en":"Status"]),
+						"[_].key1.key16.key161": j(["en":"Please select from list:"]),
+						"[_].key1.key16.key162": j(["en":"If not fully functional:"]),
+						"[_].key1.key17": j(["en":"Primary location"]),
+						"[_].key1.key18": j(["en":"Avg. daily hours of use"]),
+						"[_].key2": j(["en":"Supply and Maintenance"]),
+						"[_].key2.key21": j(["en":"Supplier Name"]),
+						"[_].key2.key22": j(["en":"Supplier Type"]),
+						"[_].key2.key23": j(["en":"Supplier Mobile"]),
+						"[_].key2.key24": j(["en":"Date Acquired"]),
+						"[_].key2.key25": j(["en":"Service Provider Name"]),
+						"[_].key2.key26": j(["en":"Service Provider Type"]),
+						"[_].key2.key27": j(["en":"Service Provider Mobile"]),
+						"[_].key2.key28": j(["en":"Date of last repair"]),
+						"[_].key2.key29": j(["en":"Date of last service"])
 					]).save(failOnError: true)
 			serviceQ6.surveyElement = surveyElementServiceQ6
 			serviceQ6.save(failOnError: true)
@@ -1362,6 +1336,112 @@ class Initializer {
 			checkBoxQ.save(failOnError:true)
 
 
+			def staffingQ1 = new SurveySimpleQuestion(
+					names: j(["en":"List all of your staff"]),
+					descriptions: j(["en":"Help text"]),
+					order: 10,
+					groupUuidString: "District Hospital,Health Center"
+					)
+			staffing.addQuestion(staffingQ1)
+			staffing.save(failOnError:true, flush:true)
+
+			def staffingElementQ1 = new SurveyElement(
+					dataElement: DataElement.findByCode("LISTMAP1"),
+					surveyQuestion: staffingQ1,
+					headers: [
+						"[_].key1":j(["en": "Family Name"]),
+						"[_].key2":j(["en": "Given Name"]),
+						"[_].key3":j(["en": "National ID Number"]),
+						"[_].key4":j(["en": "Date of Birth"]),
+						"[_].key5":j(["en": "Sex"]),
+						"[_].key6":j(["en": "Nationality"]),
+						"[_].key7":j(["en": "Education & Training"]),
+						"[_].key7.key71":j(["en": "Highest level of education"]),
+						"[_].key7.key72":j(["en": "Corresponding Institution"]),
+						"[_].key7.key73":j(["en": "Days of Training received between July 2010 and June 2011, by Area"]),
+						"[_].key7.key73.key731":j(["en": "Clinical"]),
+						"[_].key7.key73.key731.key731_1":j(["en": "HIV/AIDS"]),
+						"[_].key7.key73.key731.key731_2":j(["en": "Malaria"]),
+						"[_].key7.key73.key731.key731_3":j(["en": "Tuberculosis"]),
+						"[_].key7.key73.key731.key731_4":j(["en": "Diarrheal Diseases"]),
+						"[_].key7.key73.key731.key731_5":j(["en": "Other Infections & Parasitic Diseases"]),
+						"[_].key7.key73.key731.key731_6":j(["en": "Trauma & Burns"]),
+						"[_].key7.key73.key731.key731_7":j(["en": "Mental Health"]),
+						"[_].key7.key73.key731.key731_8":j(["en": "Environmental Health"]),
+						"[_].key7.key73.key731.key731_9":j(["en": "Internal Medicine"]),
+						"[_].key7.key73.key731.key731_10":j(["en": "Reproductive Health - Female"]),
+						"[_].key7.key73.key731.key731_11":j(["en": "Reproductive Health - Male"]),
+						"[_].key7.key73.key731.key731_12":j(["en": "Prenatal & Neonatal"]),
+						"[_].key7.key73.key731.key731_13":j(["en": "Oral Health"]),
+						"[_].key7.key73.key731.key731_14":j(["en": "Respiratory Health"]),
+						"[_].key7.key73.key731.key731_15":j(["en": "Nutrition"]),
+						"[_].key7.key73.key731.key731_16":j(["en": "Intestinal Health"]),
+						"[_].key7.key73.key731.key731_17":j(["en": "Cardiovascular Health"]),
+						"[_].key7.key73.key731.key731_18":j(["en": "Sexual Health (not HIV)"]),
+						"[_].key7.key73.key731.key731_19":j(["en": "Other"]),
+						"[_].key7.key73.key732":j(["en": "Non-Clinical"]),
+						"[_].key7.key73.key732.key732_1":j(["en": "Human Resources Management"]),
+						"[_].key7.key73.key732.key732_2":j(["en": "Facility Operations"]),
+						"[_].key7.key73.key732.key732_3":j(["en": "Clinical Supervision & Management"]),
+						"[_].key7.key73.key732.key732_4":j(["en": "Pharmacy Supervision & Management"]),
+						"[_].key7.key73.key732.key732_5":j(["en": "CHW Supervision & Management"]),
+						"[_].key7.key73.key732.key732_6":j(["en": "Laboratory Supervision & Management"]),
+						"[_].key7.key73.key732.key732_7":j(["en": "Administrative Procedures & Management"]),
+						"[_].key7.key73.key732.key732_8":j(["en": "Mutuelle Procedures & Protocol"]),
+						"[_].key7.key73.key732.key732_9":j(["en": "Claims Processing"]),
+						"[_].key7.key73.key732.key732_10":j(["en": "Performance Based Financing"]),
+						"[_].key7.key73.key732.key732_11":j(["en": "Health Economics"]),
+						"[_].key7.key73.key732.key732_12":j(["en": "Health Insurance"]),
+						"[_].key7.key73.key732.key732_13":j(["en": "ICT"]),
+						"[_].key7.key73.key732.key732_14":j(["en": "Basic Statistics / Analytics"]),
+						"[_].key7.key73.key732.key732_15":j(["en": "Presentation Techniques"]),
+						"[_].key7.key73.key732.key732_16":j(["en": "Communication Skills"]),
+						"[_].key8":j(["en": "Work History"]),
+						"[_].key8.key81":j(["en": "Primary Function"]),
+						"[_].key8.key82":j(["en": "Primary Department"]),
+						"[_].key8.key83":j(["en": "% of Time Spent on Primary Department"]),
+						"[_].key8.key84":j(["en": "Departments Served 1+ Day in a typical Week"]),
+						"[_].key8.key84.key84_1":j(["en": "Administration"]),
+						"[_].key8.key84.key84_2":j(["en": "Chronic Disease"]),
+						"[_].key8.key84.key84_3":j(["en": "Community Health"]),
+						"[_].key8.key84.key84_4":j(["en": "Dentistry"]),
+						"[_].key8.key84.key84_5":j(["en": "Emergency"]),
+						"[_].key8.key84.key84_6":j(["en": "Family Planning"]),
+						"[_].key8.key84.key84_7":j(["en": "General Consultation"]),
+						"[_].key8.key84.key84_8":j(["en": "HIV/AIDS"]),
+						"[_].key8.key84.key84_9":j(["en": "Inpatient"]),
+						"[_].key8.key84.key84_10":j(["en": "Intensive Care"]),
+						"[_].key8.key84.key84_11":j(["en": "Internal Medicine"]),
+						"[_].key8.key84.key84_12":j(["en": "Laboratory"]),
+						"[_].key8.key84.key84_13":j(["en": "Maternity"]),
+						"[_].key8.key84.key84_14":j(["en": "Mental Health"]),
+						"[_].key8.key84.key84_15":j(["en": "Mutuelle"]),
+						"[_].key8.key84.key84_16":j(["en": "Nutrition"]),
+						"[_].key8.key84.key84_17":j(["en": "Ophthalmology"]),
+						"[_].key8.key84.key84_18":j(["en": "Pediatrics"]),
+						"[_].key8.key84.key84_19":j(["en": "Pharmacy"]),
+						"[_].key8.key84.key84_20":j(["en": "Reception"]),
+						"[_].key8.key84.key84_21":j(["en": "Supporting Departments (Laundry, etc.)"]),
+						"[_].key8.key84.key84_22":j(["en": "Surgery"]),
+						"[_].key8.key84.key84_23":j(["en": "Tuberculosis"]),
+						"[_].key8.key84.key84_24":j(["en": "Vaccination"]),
+						"[_].key8.key85":j(["en": "Began Employment at this Facility"]),
+						"[_].key8.key86":j(["en": "Ended Employment at this Facility"]),
+						"[_].key9":j(["en": "Compensation"]),
+						"[_].key9.key91":j(["en": "Total Financial Compensation between July 2010 and June 2011 from the following"]),
+						"[_].key9.key91.key911":j(["en": "Facility"]),
+						"[_].key9.key91.key912":j(["en": "PBF"]),
+						"[_].key9.key91.key913":j(["en": "Non-Government Partner"]),
+						"[_].key9.key91.key914":j(["en": "Other"]),
+						"[_].key9.key92":j(["en": "Non-monetary Compensation received"]),
+						"[_].key9.key92.key921":j(["en": "Housing"]),
+						"[_].key9.key92.key922":j(["en": "Transportation"]),
+						"[_].key9.key92.key923":j(["en": "Mobile Credit"]),
+						"[_].key9.key92.key924":j(["en": "Fuel Credit"])
+					]).save(failOnError: true)
+			staffingQ1.surveyElement = staffingElementQ1
+			staffingQ1.save(failOnError: true)
+			
 			//Adding a table type question
 			def tableQ = new SurveyTableQuestion(
 					names: j(["en":"For each training module:"]),
