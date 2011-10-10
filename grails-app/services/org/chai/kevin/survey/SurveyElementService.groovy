@@ -185,7 +185,7 @@ class SurveyElementService {
 
 	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes) {
 		List<SurveyElement> surveyElements = new ArrayList<SurveyElement>();
-		List<DataElement> dataElements = dataService.searchDataElements(text, allowedTypes);
+		List<DataElement> dataElements = dataService.searchData(DataElement.class, text, allowedTypes, [:]);
 
 		for(DataElement dataElement : dataElements) {
 			surveyElements.addAll(this.getSurveyElements(dataElement, survey));

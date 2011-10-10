@@ -214,4 +214,31 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		
 	}
 
+	def "search survey elements"() {
+		def period = newPeriod()
+		
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		
+		def dataElement = newDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+
+		def surveyElements = null
+				
+		when:
+		surveyElements = surveyElementService.searchSurveyElements("ele", survey, [])
+		
+		then:
+		surveyElements.equals([element])
+		
+		when:
+		def survey2 = newSurvey(period)
+		surveyElements = surveyElementService.searchSurveyElements("ele", survey2, [])
+		
+		then:
+		surveyElements.isEmpty()
+	}
+	
 }
