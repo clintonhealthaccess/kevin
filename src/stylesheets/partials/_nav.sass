@@ -66,7 +66,7 @@
     background: $primary
     border: 1px solid $primary_dark
     display: none
-    opacity: 0.85
+    opacity: 0.93
     padding: 5px 0 10px
     position: absolute
     top: 42px
@@ -152,51 +152,50 @@
       +border-radius(3px)
   
 .dropdown-list
-  background: $primary
-  border: 1px solid $primary_dark
+  background: $dropdown
+  border: 1px solid $dropdown - #222
   display: none
   left: 0
   min-width: 120px
   opacity: 0.95
-  padding: 5px 0 5px 0
+  padding: 5px 0 0 0
   position: absolute
   top: 13px
   z-index: 1
   +border-bottom-radius(3px)
   +border-top-right-radius(3px)
-  +box-shadow(#ccc 2px 2px 3px, $primary_dark 0 0 8px 3px inset)
+  +box-shadow(#ccc 2px 2px 3px, $dropdown - #111 0 0 8px 3px inset)
   
   li
+    border-bottom: 1px dotted $dropdown - #111
     display: block
+    padding: 7px 10px 5px
+    white-space: nowrap
     &:hover, &:focus
       a
-        color: #fff
+        color: $primary_dark
       .survey-section a
         color: $primary
+    &:last-child
+      border: none
         
     a
-      border-bottom: 1px dotted $primary_dark
-      color: $filler
-      display: block
+      color: $primary
       font-size: 10px
       font-weight: bold
-      padding: 7px 10px 5px
       text-decoration: none
-      white-space: nowrap
-      +text-shadow($primary - #222, 0, 1px, 0)
+      +text-shadow(#fff, 0, 1px, 0)
       &:hover
-        background: url('../images/select.png') no-repeat -1px center $primary_dark
-        color: #fff
-        +text-shadow($primary - #222, 0, 1px, 0)
+        color: $primary - #333
+        +text-shadow(#fff, 0, 1px, 0)
       &.foldable-toggle
         border: none
         cursor: pointer
         display: block
         float: left
-        padding: 4px 1px 4px 0
-        width: 20px
-        height: 20px
-        margin-left: 5px
+        margin-right: 5px
+        width: 15px
+        height: 15px
         text-indent: -9999px
         background: url('../images/icons/toggle_plus.png') no-repeat left center
     
@@ -207,7 +206,7 @@
         background: none
         &:hover
           color: $primary - #444
-          +text-shadow($primary + #333, 0, 1px, 0)
+          +text-shadow(#fff, 0, 1px, 0)
       
   .survey-section
     background: $filler
@@ -227,7 +226,10 @@
       &:focus, &:hover
         a
           color: $primary - #666
-        
+.organisation-fold
+  border-top: 1px solid $dropdown - #111
+  margin-top: 5px
+  padding-top: 5px
 .foldable
   min-width: 75px
   a.foldable-toggle
@@ -245,8 +247,6 @@
   
   &.opened > span, &.opened > a
     font-weight: bold
-  .foldable
-    padding-bottom: 0
     
 .organisation-fold
-  padding: 0 12px
+  padding: 0 5px

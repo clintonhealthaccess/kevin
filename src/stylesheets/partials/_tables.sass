@@ -11,6 +11,10 @@
   td
     border-top: 1px solid $filler
     color: #444
+    vertical-align: top
+    &.header
+      color: #888
+      font-weight: bold
   
   td:first-child, th:first-child
     border-left: 1px solid $filler
@@ -43,3 +47,15 @@
 .explanation-cell table
   margin-bottom: 10px
   
+.add-row
+  background: $filler
+  border: 1px solid $filler - #111
+  display: inline-block
+  margin-top: 10px
+  padding: 7px 15px
+  text-decoration: none
+  +border-radius
+  &:hover, &:focus
+    background: $yes
+    border: 1px solid $yes - #111
+    color: #fff

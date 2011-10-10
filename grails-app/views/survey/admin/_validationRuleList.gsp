@@ -28,7 +28,7 @@
 				<td><g:i18n field="${validationRule.messages}" /></td>
 				<td>
 					<div class="dropdown subnav-dropdown"> 
-			     		<a class="selected" href="#" data-type="validation-rule">Manage</a>
+			     		<a class="selected" href="#">Manage</a>
 						<div class="hidden dropdown-list">
 							<ul>
 								<li>

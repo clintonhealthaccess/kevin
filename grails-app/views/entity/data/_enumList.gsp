@@ -17,10 +17,10 @@
 				<td>${enumation.enumOptions.size()}</td>
 				<td>
 				<div class="dropdown subnav-dropdown"> 
-					<a class="selected" href="#" data-type="section">Manage</a>
+					<a class="selected" href="#">Manage</a>
 					<div class="hidden dropdown-list">
 						<ul>
-							<li class="add-enum-link">
+							<li>
 								<a href="${createLink(controller:'enumOption', action:'list',params:[enumId: enumation.id])}">
 									<g:message code="general.text.options" default="Options" />
 								</a>

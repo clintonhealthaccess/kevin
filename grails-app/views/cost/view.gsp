@@ -99,7 +99,7 @@
     		<div id="center" class="main">
     			<div id="values">
     				<g:if test="${costTable.currentObjective != null && costTable.currentOrganisation != null}">
-						<table class="nice-table">
+						<table class="listing">
 							<thead>
 								<tr>
 									<th class="empty">&nbsp;</th>
@@ -111,14 +111,14 @@
 							<tbody>
 								<g:each in="${CostType.values()}" var="costType">
 									<tr>
-										<th class="header" colspan="${costTable.years.size() + 1}">${costType.name}</th>
+										<td class="header" colspan="${costTable.years.size() + 1}">${costType.name}</td>
 									</tr>
 									<g:if test="${costTable.getTargetsOfType(costType).empty}">
 										<tr class="italic"><th colspan="${costTable.years.size() + 1}"><span>no target defined for this type</span></th></tr>
 									</g:if>
 									<g:each in="${costTable.getTargetsOfType(costType)}" var="target">
 										<tr>
-											<th class="cell label row-${target.id}" data-row="${target.id}">
+											<td class="cell label row-${target.id}" data-row="${target.id}">
 												<span>
 													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: costTable.currentOrganisationId])}"><g:i18n field="${target.names}"/></a>
 												</span>
@@ -137,9 +137,9 @@
 											</g:each>
 										</tr>
 										<tr class="explanation-row">
-											<th colspan="${costTable.years.size()+1}">
+											<td colspan="${costTable.years.size()+1}">
 												<div class="explanation-cell" id="explanation-target-${target.id}"></div>
-											</th>
+											</td>
 										</tr>
 									</g:each>
 								</g:each>
@@ -149,7 +149,7 @@
 						<!-- ADMIN SECTION -->
 						<shiro:hasPermission permission="admin:cost">							
 							<div>
-								<a href="${createLinkWithTargetURI(controller:'costTarget', action:'create', params:[currentObjective: costTable.currentObjective?.id])}">add target</a>
+								<a class="add-row" href="${createLinkWithTargetURI(controller:'costTarget', action:'create', params:[currentObjective: costTable.currentObjective?.id])}">add target</a>
 							</div>
 						</shiro:hasPermission>
 						<!-- ADMIN SECTION END -->
