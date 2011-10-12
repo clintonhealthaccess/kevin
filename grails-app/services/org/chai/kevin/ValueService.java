@@ -180,7 +180,7 @@ public class ValueService {
 	        		 .set("period", period)
 	        		 .set("organisationUnit", organisation)
 	         );
-	
+
 			 DataValue value = (DataValue)criteria.uniqueResult();
 			 if (log.isDebugEnabled()) log.debug("getDataValue = "+value);
 			 return value;

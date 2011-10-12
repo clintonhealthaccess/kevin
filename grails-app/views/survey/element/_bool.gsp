@@ -2,7 +2,7 @@
 <div id="element-${surveyElement.id}-${suffix}" class="element element-bool ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 
-	<input type="hidden" value="0" name="surveyElements[${surveyElement.id}].value${suffix}"/>
+	<input class="input" type="hidden" value="0" name="surveyElements[${surveyElement.id}].value${suffix}"/>
 	<g:if test="${lastValue!=null}">
 		<span class="survey-old-value">
 			(
@@ -15,7 +15,7 @@
 			)
 		</span>
 	</g:if>
-	<input type="checkbox" value="1" name="surveyElements[${surveyElement.id}].value${suffix}" ${value?.booleanValue==true?'checked="checked"':''} ${readonly?'disabled="disabled"':''}/>
+	<input type="checkbox" class="input ${!readonly?'loading-disabled':''}" value="1" name="surveyElements[${surveyElement.id}].value${suffix}" ${value?.booleanValue==true?'checked="checked"':''} disabled="disabled"/>
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
 	</div>

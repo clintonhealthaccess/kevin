@@ -28,7 +28,7 @@ package org.chai.kevin.survey;
  */
 
 import org.apache.shiro.SecurityUtils
-import org.chai.kevin.AbstractReportController
+import org.chai.kevin.AbstractController
 import org.chai.kevin.Organisation
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.ValueService
@@ -37,7 +37,7 @@ import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
-class EditSurveyController extends AbstractReportController {
+class EditSurveyController extends AbstractController {
 	
 	SurveyPageService surveyPageService;
 	ValidationService validationService;
@@ -70,12 +70,13 @@ class EditSurveyController extends AbstractReportController {
 		def valid = true;
 		
 		if (organisation == null) valid = false
-		
-		int level = organisationService.getLevel(organisation);
-		if (level != organisationService.getFacilityLevel()) valid = false
-
-		organisationService.loadGroup(organisation)
-		if (groups != null && !groups.contains(organisation.organisationUnitGroup.uuid)) valid = false
+		else {
+			int level = organisationService.getLevel(organisation);
+			if (level != organisationService.getFacilityLevel()) valid = false
+	
+			organisationService.loadGroup(organisation)
+			if (groups != null && !groups.contains(organisation.organisationUnitGroup.uuid)) valid = false
+		}
 		
 		if (!valid) {
 			response.sendError(404)
@@ -125,10 +126,10 @@ class EditSurveyController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
 		
 		// TODO make sure this is a facility
-		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation currentOrganisation = getOrganisation(false)
 		SurveySection currentSection =  SurveySection.get(params.int('section'));
 		
-		if (validateParameters(currentOrganisation, Utils.split(currentSection.groupUuidString))) {
+		if (validateParameters(currentOrganisation, Utils.split(currentSection?.groupUuidString))) {
 			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentSection)
 				
 			render (view: '/survey/sectionPage', model: [surveyPage: surveyPage])
@@ -139,10 +140,10 @@ class EditSurveyController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("survey.objective, params:"+params)
 		
 		// TODO make sure this is a facility
-		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation currentOrganisation = getOrganisation(false)
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 		
-		if (validateParameters(currentOrganisation, Utils.split(currentObjective.groupUuidString))) {
+		if (validateParameters(currentOrganisation, Utils.split(currentObjective?.groupUuidString))) {
 			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentObjective)
 			
 			render (view: '/survey/objectivePage', model: [surveyPage: surveyPage])
@@ -154,7 +155,7 @@ class EditSurveyController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
 		
 		// TODO make sure this is a facility
-		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation currentOrganisation = getOrganisation(false)
 		
 		if (validateParameters(currentOrganisation, null)) {
 			Survey survey = Survey.get(params.int('survey'))
@@ -169,7 +170,7 @@ class EditSurveyController extends AbstractReportController {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
 		
 		// TODO make sure this is a facility
-		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation currentOrganisation = getOrganisation(false)
 		
 		Survey survey = Survey.get(params.int('survey'))
 		surveyPageService.refresh(currentOrganisation, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
@@ -180,10 +181,10 @@ class EditSurveyController extends AbstractReportController {
 	def reopen = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 		
-		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation currentOrganisation = getOrganisation(false)
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 		
-		if (validateParameters(currentOrganisation, Utils.split(currentObjective.groupUuidString))) {
+		if (validateParameters(currentOrganisation, Utils.split(currentObjective?.groupUuidString))) {
 			surveyPageService.reopen(currentOrganisation, currentObjective);
 			
 			redirect (action: "objectivePage", params: [organisation: currentOrganisation.id, objective: currentObjective.id])
@@ -193,10 +194,10 @@ class EditSurveyController extends AbstractReportController {
 	def submit = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 		
-		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation currentOrganisation = getOrganisation(false)
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 		
-		if (validateParameters(currentOrganisation, Utils.split(currentObjective.groupUuidString))) {
+		if (validateParameters(currentOrganisation, Utils.split(currentObjective?.groupUuidString))) {
 			boolean success = surveyPageService.submit(currentOrganisation, currentObjective);
 						
 			if (success) {
@@ -215,22 +216,18 @@ class EditSurveyController extends AbstractReportController {
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 		
-		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
-
+		Organisation currentOrganisation = getOrganisation(false)
+		
 		def currentSection = SurveySection.get(params.int('section'))
 		def currentObjective = SurveyObjective.get(params.int('objective'))		
-		
-		def surveyQuestion = surveyElementService.getSurveyQuestion(Long.parseLong(params['question']))
 		def surveyElements = [SurveyElement.get(params.int('element'))]
 		
 		def surveyPage = surveyPageService.modify(currentOrganisation, currentObjective, surveyElements, params);
 			
 		if (surveyPage == null) {
-			
 			render(contentType:"text/json") {
 				status = 'error'
 			}
-			
 		}
 		else {
 			def invalidQuestionsHtml = ''
@@ -308,10 +305,10 @@ class EditSurveyController extends AbstractReportController {
 	def save = {
 		if (log.isDebugEnabled()) log.debug("survey.save, params:"+params)
 		
-		Organisation currentOrganisation = organisationService.getOrganisation(params.int('organisation'))
+		Organisation currentOrganisation = getOrganisation(false)
 		def currentSection = SurveySection.get(params.int('section'));
 		
-		if (validateParameters(currentOrganisation, Utils.split(currentSection.groupUuidString))) {
+		if (validateParameters(currentOrganisation, Utils.split(currentSection?.groupUuidString))) {
 			def surveyElements = getSurveyElements()
 			surveyPageService.modify(currentOrganisation, currentSection.objective, surveyElements, params);
 			def sectionPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection)
@@ -341,7 +338,7 @@ class EditSurveyController extends AbstractReportController {
 	
 	def print = {
 		Survey survey = Survey.get(params.int('survey'));
-		Organisation organisation = organisationService.getOrganisation(params.int('organisation'));
+		Organisation organisation = getOrganisation(false)
 		
 		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
 

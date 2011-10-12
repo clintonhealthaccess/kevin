@@ -1,5 +1,6 @@
 package org.chai.kevin.survey.validation;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,8 @@ import org.chai.kevin.survey.SurveySkipRule;
 import org.chai.kevin.survey.SurveyValidationRule;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
@@ -35,8 +38,11 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 @Table(name="dhsst_survey_entered_value", 
 		uniqueConstraints=@UniqueConstraint(columnNames={"surveyElement", "organisationUnit"}
 ))
-public class SurveyEnteredValue {
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+public class SurveyEnteredValue implements Serializable {
 
+	private static final long serialVersionUID = -7262945749639062551L;
+	
 	private Long id;
 	private SurveyElement surveyElement;
 	private Value value;

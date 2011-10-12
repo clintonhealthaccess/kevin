@@ -28,13 +28,13 @@ package org.chai.kevin.cost
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.AbstractReportController;
+import org.chai.kevin.AbstractController;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.cost.CostTableService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.period.Period;
 
-class CostController extends AbstractReportController {
+class CostController extends AbstractController {
 
 	CostTableService costTableService;
 	

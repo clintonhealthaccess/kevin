@@ -29,7 +29,7 @@ package org.chai.kevin.cost
 */
 
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.AbstractReportController;
+import org.chai.kevin.AbstractController;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.data.DataElement;

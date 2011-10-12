@@ -1,5 +1,7 @@
 package org.chai.kevin.value;
 
+import grails.converters.deep.JSON;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,7 +98,21 @@ public class Value {
 	
 	@Transient
 	public boolean isNull() {
-		return getJsonValue().equals(NULL.getJsonValue());
+		return value.isNull(VALUE_STRING);
+	}
+	
+	@Transient
+	public Value getValueWithoutAttributes() {
+		if (value.isNull(VALUE_STRING)) return Value.NULL;
+		else {
+			JSONObject object = new JSONObject();
+			try {
+				object.put(VALUE_STRING, value.get(VALUE_STRING));
+			} catch (JSONException e) {
+				return null;
+			}
+			return new Value(object);
+		}
 	}
 	
 	@Transient

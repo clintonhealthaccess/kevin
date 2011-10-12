@@ -7,7 +7,7 @@
 <div id="element-${surveyElement.id}-${suffix}" class="element element-enum ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
    	<g:if test="${!print}">
-		<select name="surveyElements[${surveyElement.id}].value${suffix}" ${readonly?'disabled="disabled"':''}>
+		<select class="input ${!readonly?'loading-disabled':''}" name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
 			<option value="null">Select</option>
 			<g:each in="${enume?.enumOptions}" var="option">
 				<option value="${option.value}"  ${option?.value==value?.enumValue ? 'selected':''}>
@@ -19,7 +19,7 @@
 	<g:else>
 		<g:each in="${enume?.enumOptions}" var="option">
 			<div>
-				<input type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''}/>
+				<input class="input" type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''}/>
 				<span><g:i18n field="${option.names}" /></span>
 			</div>
 		</g:each>

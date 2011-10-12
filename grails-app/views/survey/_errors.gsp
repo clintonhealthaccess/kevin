@@ -6,13 +6,13 @@
 				${error.message}
 				<g:if test="${error.rule.allowOutlier}">
 					Are you sure? <a class="outlier-validation" href="#" data-rule="${error.rule.id}">Yes</a>
-					<input type="hidden" name="surveyElements[${surveyElement.id}].value${error.suffix}[warning]" value=""/>
+					<input type="hidden" class="input" name="surveyElements[${surveyElement.id}].value${error.suffix}[warning]" value=""/>
 				</g:if>
 				</li>
 			</g:if>
 		</g:if>
 		<g:else>
-			<input type="hidden" name="surveyElements[${surveyElement.id}].value${error.suffix}[warning]" value="${error.rule.id}"/>
+			<input type="hidden" class="input" name="surveyElements[${surveyElement.id}].value${error.suffix}[warning]" value="${error.rule.id}"/>
 		</g:else>
 	</g:each>
 </ul>

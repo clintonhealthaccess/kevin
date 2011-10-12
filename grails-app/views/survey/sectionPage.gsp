@@ -54,13 +54,16 @@
 						</ol>
 						
 						<g:if test="${!readonly}">
-							<button type="submit">
+							<button type="submit" class="loading-disabled">
 								<g:if test="${surveyPage.isLastSection(surveyPage.section)}">
 									Finish
 								</g:if>
 								<g:else>
 									Next
 								</g:else>
+							</button>
+							<button type="cancel" class="hidden">
+								Cancel
 							</button>
 						</g:if>
 					</g:form>

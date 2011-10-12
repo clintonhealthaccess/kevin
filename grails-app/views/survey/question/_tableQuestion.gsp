@@ -25,13 +25,9 @@
 						<g:each in="${question.getColumns(organisationUnitGroup)}" var="column">
 							<g:set var="surveyElement" value="${row.surveyElements[column]}"/>
 							<g:set var="dataElement" value="${surveyElement.dataElement}"/>
-							
 							<g:set var="enteredValue" value="${surveyPage.elements[surveyElement]}" />
 			
 							<td id="element-${surveyElement.id}" class="survey-element">
-								<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
-								<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id"/>
-								
 								<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
 									value: enteredValue.value, 
 									lastValue: enteredValue.lastValue,

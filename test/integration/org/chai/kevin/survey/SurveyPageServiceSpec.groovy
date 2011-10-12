@@ -26,7 +26,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 				
 		then:
 		surveyPageService.submit(getOrganisation(KIVUYE), objective) == true
-		
 	}
+	
 	
 }

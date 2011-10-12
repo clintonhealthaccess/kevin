@@ -30,7 +30,7 @@ package org.chai.kevin.dashboard
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.AbstractReportController;
+import org.chai.kevin.AbstractController;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Translatable;
 import org.chai.kevin.Organisation;
@@ -49,7 +49,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.period.Period;
 
-class DashboardController extends AbstractReportController {
+class DashboardController extends AbstractController {
 
 	AggregationService aggregationService;
 	DashboardService dashboardService;

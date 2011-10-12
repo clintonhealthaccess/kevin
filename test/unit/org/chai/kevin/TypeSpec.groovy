@@ -182,6 +182,7 @@ public class TypeSpec extends UnitSpec {
 		
 		then:
 		type.getJaqlValue(value) == "\"10-02-2009\""
+		
 	}
 
 	
@@ -197,6 +198,12 @@ public class TypeSpec extends UnitSpec {
 		value.getListValue() == null
 		value.getDateValue() == null
 		value.getMapValue() == null
+		
+		when:
+		value = new Value("{\"value\": null, \"attribute\": \"test\"}")
+		
+		then:
+		value.isNull() == true
 	}
 	
 	def "test map"() {
@@ -206,49 +213,49 @@ public class TypeSpec extends UnitSpec {
 		
 		when:
 		type = new Type("{\"type\":\"number\"}");
-		value = type.getValueFromMap(['value': ''], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value': ''], 'value', new HashSet([]))
 		
 		then:
 		value.isNull() == true
 
 		when:
 		type = new Type("{\"type\":\"string\"}");
-		value = type.getValueFromMap(['value': ''], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value': ''], 'value', new HashSet([]))
 		
 		then:
 		value.isNull() == true
 		
 		when:
 		type = new Type("{\"type\":\"bool\"}");
-		value = type.getValueFromMap(['value': '0'], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value': '0'], 'value', new HashSet([]))
 		
 		then:
 		value.getBooleanValue() == false
 		
 		when:
 		type = new Type("{\"type\":\"bool\"}");
-		value = type.getValueFromMap(['value':["0", "1"]], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value':["0", "1"]], 'value', new HashSet([]))
 		
 		then:
 		value.getBooleanValue() == true
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.getValueFromMap(['value[0]':'10', 'value[_]':'2', 'value':['[0]', '[_]']], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value[0]':'10', 'value[_]':'2', 'value':['[0]', '[_]']], 'value', new HashSet([]))
 		
 		then:
 		value.equals(new Value("{\"value\":[{\"value\":10}]}"))
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.getValueFromMap(['value[0]':'10', 'value[_]':'2', 'value':['[0]', '[_]', '', '', '']], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value[0]':'10', 'value[_]':'2', 'value':['[0]', '[_]', '', '', '']], 'value', new HashSet([]))
 		
 		then:
 		value.equals(new Value("{\"value\":[{\"value\":10}]}"))
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.getValueFromMap([:], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, [:], 'value', new HashSet([]))
 		
 		then:
 		value.equals(Value.NULL)
@@ -391,6 +398,15 @@ public class TypeSpec extends UnitSpec {
 		
 		then:
 		list.equals(["[0]": Value.NULL]);
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		value = Value.NULL
+		list = new HashMap();
+		type.getPrefixes(value, "", list, prefixPredicate)
+		
+		then:
+		list.equals("": Value.NULL)
 		
 	}
 		

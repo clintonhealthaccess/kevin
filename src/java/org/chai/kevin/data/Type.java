@@ -198,37 +198,58 @@ public class Type {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Transient
-	public Value getValueFromMap(Map<String, Object> map, String suffix, Set<String> attributes) {
+	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String suffix, Set<String> attributes) {
 		try {
+			// first we construct the jsonobject containing the value only
 			JSONObject object = new JSONObject();
 			switch (getType()) {
 				case NUMBER:
-					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
-					break;
 				case BOOL:
-					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
-					break;
 				case STRING:
 				case TEXT:
-					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
-					break;
 				case DATE:
-					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
-					break;
 				case ENUM:
-					object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
+					if (!map.containsKey(suffix)) {
+						if (oldValue.isNull()) object.put(Value.VALUE_STRING, JSONObject.NULL);
+						else object.put(Value.VALUE_STRING, oldValue.getJsonObject().get(Value.VALUE_STRING));
+					}
+					else {
+						object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
+					}
 					break;
 				case LIST:
 					JSONArray array1 = new JSONArray();
-					List<String> suffixMap = new ArrayList<String>();
-					if (map.get(suffix) instanceof String[]) suffixMap.addAll(Arrays.asList((String[])map.get(suffix)));
-					else if (map.get(suffix) instanceof Collection) suffixMap.addAll((Collection<String>)map.get(suffix));
-					else if (map.get(suffix) instanceof String) suffixMap.add((String)map.get(suffix));
-					
-					for (String item : suffixMap) {
-						if (!item.equals("[_]") && !item.trim().isEmpty()) { 
-							array1.put(getListType().getValueFromMap(map, suffix+item, attributes).getJsonObject());
+					if (!map.containsKey(suffix)) {
+						// we don't modify the list but merge the values inside it
+						if (!oldValue.isNull()) { 
+							for (int i = 0; i < oldValue.getListValue().size(); i++) {
+								array1.put(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, suffix+"["+i+"]", attributes).getJsonObject());
+							}
+						}
+					}
+					else {
+						// the list gets modified with the new indexes
+						List<String> stringIndexList = new ArrayList<String>();
+						if (map.get(suffix) instanceof String[]) stringIndexList.addAll(Arrays.asList((String[])map.get(suffix)));
+						else if (map.get(suffix) instanceof Collection) stringIndexList.addAll((Collection<String>)map.get(suffix));
+						else if (map.get(suffix) instanceof String) stringIndexList.add((String)map.get(suffix));
+
+						List<Integer> filteredIndexList = new ArrayList<Integer>();
+						for (String suffixInBracket : stringIndexList) {
+							String index = suffixInBracket.replace("[", "").replace("]", "");
+							if (NumberUtils.isDigits(index)) filteredIndexList.add(Integer.valueOf(index));
+						}
+						
+						for (Integer index : filteredIndexList) {
+							Value oldListValue = null;
+							if (oldValue.isNull()) oldListValue = Value.NULL;
+							else {
+								if (index < oldValue.getListValue().size()) oldListValue = oldValue.getListValue().get(index);
+								else oldListValue = Value.NULL;
+							}
+							array1.put(getListType().mergeValueFromMap(oldListValue, map, suffix+"["+index+"]", attributes).getJsonObject());
 						}
 					}
 					if (array1.length() == 0) object.put(Value.VALUE_STRING, JSONObject.NULL);
@@ -240,7 +261,13 @@ public class Type {
 					for (Entry<String, Type> entry : elementMap.entrySet()) {
 						JSONObject element = new JSONObject();
 						element.put(Value.MAP_KEY, entry.getKey());
-						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).getValueFromMap(map, suffix+"."+entry.getKey(), attributes).getJsonObject());
+						Value oldMapValue = null;
+						if (oldValue.isNull()) oldMapValue = Value.NULL;
+						else {
+							oldMapValue = oldValue.getMapValue().get(entry.getKey());
+							if (oldMapValue == null) oldMapValue = Value.NULL;
+						}
+						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).mergeValueFromMap(oldMapValue, map, suffix+"."+entry.getKey(), attributes).getJsonObject());
 						array.put(element);
 					}
 					object.put(Value.VALUE_STRING, array);
@@ -248,11 +275,18 @@ public class Type {
 				default:
 					throw new NotImplementedException();
 			}
+			
+			// then we construct a new value object and set the attributes on it
 			Value value = new Value(object);
 			for (String attribute : attributes) {
-				Object attributeValue = map.get(suffix+"["+attribute+"]");
-				String attributeString = String.valueOf(attributeValue);
-				if (attributeValue != null && !attributeString.isEmpty()) value.setAttribute(attribute, attributeString);
+				if (!map.containsKey(suffix)) {
+					value.setAttribute(attribute, oldValue.getAttribute(attribute));
+				}
+				else {
+					Object attributeValue = map.get(suffix+"["+attribute+"]");
+					String attributeString = String.valueOf(attributeValue);
+					if (attributeValue != null && !attributeString.isEmpty()) value.setAttribute(attribute, attributeString);
+				}
 			}
 			return value;
 		} catch (JSONException e) {
@@ -438,6 +472,10 @@ public class Type {
 		return prefixedValue;
 	}
 	
+	public boolean hasPrefix(Value value, String prefix) {
+		return getValue(prefix, value, "") != null;
+	}
+	
 	private Value getValue(String prefix, Value currentValue, String currentPrefix) {
 		if (prefix.equals(currentPrefix)) return currentValue;
 		else if (!currentValue.isNull()) {
@@ -587,7 +625,7 @@ public class Type {
 	private void getPrefixes(Value value, String prefix, Map<String, Value> prefixes, PrefixPredicate predicate) {
 		predicate.types.push(this);
 		if (predicate.holds(this, value, prefix)) prefixes.put(prefix, value);
-		else if (value == null || !value.isNull()) {
+		if (!value.isNull()) {
 			switch (getType()) {
 				case NUMBER:
 				case BOOL:
@@ -597,25 +635,15 @@ public class Type {
 					break;
 				case LIST:
 					Type listType = getListType();
-					if (value == null) listType.getPrefixes(null, prefix+"[_]", prefixes, predicate);
-					else {
-						List<Value> values = value.getListValue();
-						for (int i = 0; i < values.size(); i++) {
-							listType.getPrefixes(values.get(i), prefix+"["+i+"]", prefixes, predicate);
-						}
+					List<Value> values = value.getListValue();
+					for (int i = 0; i < values.size(); i++) {
+						listType.getPrefixes(values.get(i), prefix+"["+i+"]", prefixes, predicate);
 					}
 					break;
 				case MAP:
 					Map<String, Type> typeMap = getElementMap();
-					if (value == null) {
-						for (Entry<String, Type> entry : typeMap.entrySet()) {
-							entry.getValue().getPrefixes(null, prefix+"."+entry.getKey(), prefixes, predicate);
-						}
-					}
-					else {
-						for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
-							typeMap.get(entry.getKey()).getPrefixes(entry.getValue(), prefix+"."+entry.getKey(), prefixes, predicate);
-						}
+					for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
+						typeMap.get(entry.getKey()).getPrefixes(entry.getValue(), prefix+"."+entry.getKey(), prefixes, predicate);
 					}
 					break;
 				default:

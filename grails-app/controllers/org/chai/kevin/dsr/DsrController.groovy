@@ -30,14 +30,14 @@ package org.chai.kevin.dsr
 
 import java.util.Collections;
 
-import org.chai.kevin.AbstractReportController;
+import org.chai.kevin.AbstractController;
 import org.chai.kevin.Organisation;
 import org.hisp.dhis.period.Period;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
-class DsrController extends AbstractReportController {
+class DsrController extends AbstractController {
 	
 	DsrService dsrService;
 

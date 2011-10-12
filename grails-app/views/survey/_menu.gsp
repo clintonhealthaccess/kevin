@@ -35,49 +35,73 @@
 </ul>
 
 <r:script>
+	var surveyQueue;
+
 	function initializeSurvey(callback) {
 		$('#survey').delegate('#survey-form input, #survey-form select, #survey-form textarea', 'change', function(){
-			var element = $(this).parents('.element');
-			surveyValueChanged(element, callback);
+			var element = $(this).parents('.element').first();
+			surveyValueChanged(element, $(element).find('.input'), callback);
 		});
 		$('#survey').delegate('#survey-form a.outlier-validation', 'click', function(){
 			$(this).next().val($(this).data('rule'));						
-			var element = $(this).parents('.element');
-			surveyValueChanged(element, callback);						
+			var element = $(this).parents('.element').first();
+			surveyValueChanged(element, $(element).find('.input'), callback);						
 			return false;
 		});
 		$('#survey').delegate('#survey-form .element-list-add', 'click', function(){
-			listAddClick(this, callback);
+			if (!$(this).hasClass('ajax-disabled')) {
+				listAddClick(this, callback);
+			}
 			return false;
 		});
 		$('#survey').delegate('#survey-form .element-list-remove', 'click', function(){
-			listRemoveClick(this);
+			if (!$(this).hasClass('ajax-disabled')) {
+				listRemoveClick(this);
+			}
 			return false;
 		});
 		
-		$.manageAjax.create('surveyQueue', {
+		surveyQueue = $.manageAjax.create('surveyQueue', {
 			url : "${createLink(controller:'editSurvey', action:'saveValue', params: [organisation: surveyPage.organisation.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
 			type : 'POST',
 			dataType: 'json',
 			// ajax queue options
 			queue: true,
-			cacheResponse: true
+			cacheResponse: false
 		});
 		
 		$('button[type=submit]').bind('click', function(){
-			$.manageAjax.clear('surveyQueue', true);
-			// wait until last ajax request finishes
-			return true;
+			if (!$(this).hasClass('ajax-disabled')) {
+				$.manageAjax.clear('surveyQueue', true);
+				// wait until last ajax request finishes
+				return true;
+			}
+			else {
+				alert('Some values are being saved, please wait before submitting.');
+				return false;
+			}
 		});
 		
+		$('button[type=cancel]').bind('click', function(){
+			$.manageAjax.clear('surveyQueue', true);
+			$('.ajax-in-process').removeClass('.ajax-in-process').addClass('ajax-error');
+			return false;
+		});
+		
+		$('.loading-disabled').removeClass('loading-disabled').removeAttr('disabled');
 	}
 
-	function surveyValueChanged(element, callback) {
+	function surveyValueChanged(element, inputs, callback) {
 		var elementId = $(element).data('element');
-		var questionId = $(element).parents('.question').data('question'); 
+		var suffix = $(element).data('suffix');
 		
-		var data = $('#survey-form').serialize();
-		data += '&element='+elementId+'&question='+questionId;
+		var data = '';
+		data += 'element='+elementId;
+		data += '&suffix='+suffix;
+		
+		$.each(inputs, function(i, input) {
+			data += '&'+$(input).serialize();
+		})
 		
 		$(element).removeClass('ajax-error');
 		$(element).addClass('ajax-in-process');
@@ -87,7 +111,8 @@
 			data : data,
 			success : function(data, textStatus) {
 				$(element).removeClass('ajax-in-process');
-
+				toggleControls($.queue(document, 'surveyQueue').length > 0);
+				
 				if (data.status == 'success') {
 					// we go through all the sections
 					$.each(data.sections, function(index, section) {
@@ -110,8 +135,22 @@
 			error: function() {
 				$(element).removeClass('ajax-in-process');
 				$(element).addClass('ajax-error');
+				toggleControls($.queue(document, 'surveyQueue').length > 0);
 			}
 		});
+		
+		toggleControls($.queue(document, 'surveyQueue').length > 0 || surveyQueue.inProgress > 0);
+	}
+	
+	function toggleControls(hide) {
+		if (hide) {
+			$('.element-list-add, .element-list-remove, button[type=submit]').addClass('ajax-disabled');
+			$('button[type=cancel]').show();
+		}
+		else {
+			$('.element-list-add, .element-list-remove, button[type=submit]').removeClass('ajax-disabled');
+			$('button[type=cancel]').hide();
+		}
 	}
 	
 	function getId(array, id) {
@@ -127,14 +166,14 @@
 	}
 	
 	function listRemoveClick(toRemove) {
-		var element = $(toRemove).parents('.element');
+		var element = $(toRemove).parents('.element').first();
 		
 		$(toRemove).parents('div').first().remove();
-		surveyValueChanged(element, function(data, element) {location.reload()});
+		surveyValueChanged(element, $(element).find('.list-input'), function(data, element) {location.reload()});
 	}
 	
 	function listAddClick(element, callback) {
-		var suffix = $(element).parents('.element').data('suffix');
+		var suffix = $(element).parents('.element').first().data('suffix');
 
 		var clone = $(element).prev().clone(true);
 		var index = $(element).prev().prev().data('index');
@@ -145,6 +184,6 @@
 		$(element).prev().before(copyHtml);
 		$(element).prev().prev().data('index', index);
 		
-		surveyValueChanged($(element).parents('.element'), callback);
+		surveyValueChanged($(element).parents('.element').first(), $(element).parents('.element').first().find('.list-input'), callback);
 	}
 </r:script>

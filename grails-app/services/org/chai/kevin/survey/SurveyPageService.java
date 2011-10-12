@@ -401,17 +401,16 @@ public class SurveyPageService {
 				final Value oldValue = enteredValue.getValue();
 				
 				if (log.isDebugEnabled()) log.debug("getting new value from parameters for element: "+element);
-				Value value = valueType.getValueFromMap(params, "surveyElements["+element.getId()+"].value", attributes);
+				Value value = valueType.mergeValueFromMap(oldValue, params, "surveyElements["+element.getId()+"].value", attributes);
 				
 				// reset accepted warnings for changed values
 				if (log.isDebugEnabled()) log.debug("getting modified prefixes for element: "+element);
 				Map<String, Value> modifiedPrefixes = valueType.getPrefixes(value, new PrefixPredicate() {
 					@Override
 					public boolean holds(Type type, Value value, String prefix) {
-						Value oldPrefix = valueType.getValue(oldValue, prefix);
-						if (oldPrefix != null) {
-							// TODO find another method for that comparison
-							return !type.getJaqlValue(oldPrefix).equals(type.getJaqlValue(value));
+						if (valueType.hasPrefix(oldValue, prefix)) {
+							Value oldPrefix = valueType.getValue(oldValue, prefix);
+							return !oldPrefix.getValueWithoutAttributes().equals(value.getValueWithoutAttributes());
 						}
 						return false;
 					}

@@ -70,6 +70,7 @@ class SurveyElementService {
 		c.createAlias("objective", "o").add(Restrictions.eq('o.survey', survey))
 		c.setProjection(Projections.rowCount())
 		c.setCacheable(false);
+		c.setFlushMode(FlushMode.COMMIT)
 		c.uniqueResult();
 	}
 	
@@ -92,6 +93,7 @@ class SurveyElementService {
 		c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
 		c.setProjection(Projections.rowCount())
 		c.setCacheable(false);
+		c.setFlushMode(FlushMode.COMMIT)
 		c.uniqueResult();
 	}
 	
@@ -102,6 +104,7 @@ class SurveyElementService {
 			.set("section", surveySection)
 		)
 		
+		c.setFlushMode(FlushMode.COMMIT)
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredSection(...)="+result);
 		return result
@@ -113,6 +116,7 @@ class SurveyElementService {
 			.set("organisationUnit", organisationUnit)
 			.set("objective", surveyObjective)
 		)
+		c.setFlushMode(FlushMode.COMMIT)
 		
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredObjective(...)="+result);
@@ -126,6 +130,7 @@ class SurveyElementService {
 			.set("question", surveyQuestion)
 		)
 		
+		c.setFlushMode(FlushMode.COMMIT)
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredQuestion(...)="+result);
 		return result
@@ -137,7 +142,10 @@ class SurveyElementService {
 			.set("organisationUnit", organisationUnit)
 			.set("surveyElement", surveyElement)
 		)
+		c.setCacheable(true)
+		c.setCacheRegion("surveyEnteredValueQueryCache")
 		
+		c.setFlushMode(FlushMode.COMMIT)
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
 		return result
@@ -147,10 +155,10 @@ class SurveyElementService {
 		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", groupUuid="+groupUuid+")");
 		
 		def c = SurveyValidationRule.createCriteria()
-		List<SurveyValidationRule> rules = c
-		.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		.add(Restrictions.like("groupUuidString", groupUuid, MatchMode.ANYWHERE))
-		.list()
+		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
+		c.add(Restrictions.like("groupUuidString", groupUuid, MatchMode.ANYWHERE))
+		
+		List<SurveyValidationRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
 		return filter(rules, surveyElement);
 	}
 	
@@ -158,10 +166,9 @@ class SurveyElementService {
 		if (log.isDebugEnabled()) log.debug("searchSkipRules(surveyElement="+surveyElement+")");
 		
 		def c = SurveySkipRule.createCriteria()
-		List<SurveySkipRule> rules = c.add(
-			Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE)
-		)
-		.list()
+		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
+		
+		List<SurveySkipRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
 		return filter(rules, surveyElement);
 	}
 	
@@ -180,7 +187,9 @@ class SurveyElementService {
 			.createAlias("ss.objective", "so")
 			.add(Restrictions.eq("so.survey", survey))
 		}
-		c.add(Restrictions.eq("dataElement", dataElement)).list()
+		c.add(Restrictions.eq("dataElement", dataElement))
+		
+		return c.setFlushMode(FlushMode.COMMIT).list()
 	}
 
 	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes) {

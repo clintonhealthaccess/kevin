@@ -5,11 +5,7 @@
 	
 	<g:set var="surveyElement" value="${question.surveyElement}"/>
 	<g:set var="dataElement" value="${surveyElement.dataElement}"/>
-					
 	<g:set var="enteredValue" value="${surveyPage.elements[surveyElement]}" />
-
-	<input type="hidden" value="${surveyElement.id}" name="surveyElements"/>
-	<input type="hidden" value="${surveyElement.id}" name="surveyElements[${surveyElement.id}].surveyElement.id"/>
 
 	<g:if test="${print && dataElement.type.type.name().toLowerCase()=='list' && !appendix}">
 		<h4>--- <g:message code="survey.print.see.appendix" default="See Appendix"/> ---</h4>

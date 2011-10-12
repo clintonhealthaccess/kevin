@@ -34,7 +34,7 @@
 		<g:else>
 			<g:each in="${value.listValue}" var="item" status="i">
 				<div class="element-list-row" data-index="${i}">
-					<input type="hidden" name="surveyElements[${surveyElement.id}].value${suffix}" value="[${i}]"/>
+					<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[${i}]"/>
 					<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
 						value: item,
 						lastValue: null,
@@ -44,14 +44,14 @@
 						enteredValue: enteredValue,
 						readonly: readonly
 					]"/>
-					<g:if test="${!readonly}"><span><a class="element-list-remove" href="#">remove line</a></span></g:if>
+					<g:if test="${!readonly}"><span><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">remove line</a></span></g:if>
 					<div class="clear"></div>
 				</div>
 			</g:each>
 			<g:if test="${!readonly}">
 				<div class="hidden">
 					<div class="element-list-row">
-						<input type="hidden" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
+						<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
 						<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
 							value: null,
 							lastValue: null,
@@ -61,11 +61,11 @@
 							enteredValue: enteredValue,
 							readonly: readonly 
 						]"/>
-						<span><a class="element-list-remove" href="#">remove line</a></span>
+						<span><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">remove line</a></span>
 						<div class="clear"></div>
 					</div>
 				</div>
-				<a class="element-list-add" href="#">add line</a>
+				<a class="element-list-add ${!readonly?'loading-disabled':''}" href="#">add line</a>
 			</g:if>
 		</g:else>
 	</div>

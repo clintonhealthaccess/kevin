@@ -79,7 +79,8 @@
   .question
     margin-bottom: 20px 
     font-weight: normal
-          
+    overflow: scroll
+
   .question-container.skipped
     display: none
     
@@ -130,10 +131,17 @@
       background-color: green
       border-color: green
       
+  .ajax-disabled
+    background-color: green
+    border-color: green
+      
   .ajax-error
     input, textarea, select
       background-color: red
       border-color: red
+      
+  a.loading-disabled, button.loading-disabled
+    display: none
         
   div.element-string
     display: block

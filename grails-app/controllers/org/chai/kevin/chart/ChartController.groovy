@@ -1,10 +1,10 @@
 package org.chai.kevin.chart
 
-import org.chai.kevin.AbstractReportController;
+import org.chai.kevin.AbstractController;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Data;
 
-class ChartController extends AbstractReportController {
+class ChartController extends AbstractController {
 
 	def chartService
 	def dataService

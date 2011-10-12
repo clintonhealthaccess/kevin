@@ -29,9 +29,10 @@ package org.chai.kevin;
  */
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+
 import org.hisp.dhis.period.Period
 
-abstract class AbstractReportController {
+abstract class AbstractController {
 
 	OrganisationService organisationService;
 

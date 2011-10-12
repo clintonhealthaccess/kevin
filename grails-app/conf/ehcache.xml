@@ -28,37 +28,37 @@
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit.children"
            maxElementsInMemory="5000"
-            timeToIdleSeconds="86400"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit.groups"
            maxElementsInMemory="2000"
-            timeToIdleSeconds="86400"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.period.Period"
            maxElementsInMemory="10"
-            timeToIdleSeconds="86400"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.hisp.dhis.organisationunit.OrganisationUnit"
            maxElementsInMemory="5000"
-            timeToIdleSeconds="86400"
+            timeToLiveSeconds="86400"
     />
     
     <cache name="org.chai.kevin.data.DataElement"
            maxElementsInMemory="4000"
-            timeToIdleSeconds="86400"
+            timeToIdleSeconds="60"
     />
     
     <cache name="org.chai.kevin.data.Expression"
 			maxElementsInMemory="4000"
-            timeToIdleSeconds="86400"
+            timeToIdleSeconds="60"
     />
     
     <cache name="org.chai.kevin.data.Calculation"
 			maxElementsInMemory="4000"
-			timeToIdleSeconds="86400"
+			timeToIdleSeconds="60"
     />
     
     <cache name="dsrCache"
@@ -71,10 +71,23 @@
     		timeToIdleSeconds="86400"
     />
 
+	<!-- short term cache for json values, to speed up survey save -->
     <cache name="jsonValueCache"
     		maxElementsInMemory="2000"
     		timeToLiveSeconds="0"
-    		timeToIdleSeconds="300"
+    		timeToIdleSeconds="120"
+    />
+    
+    <!-- short term cache for survey entered values, to speed up survey save -->
+    <cache name="org.chai.kevin.survey.validation.SurveyEnteredValue"
+    		maxElementsInMemory="2000"
+    		timeToLiveSeconds="0"
+    		timeToIdleSeconds="120"
+    />
+    <cache name="surveyEnteredValueQueryCache"
+    		maxElementsInMemory="2000"
+    		timeToLiveSeconds="0"
+    		timeToIdleSeconds="120"
     />
     
 </ehcache>

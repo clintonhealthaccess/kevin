@@ -28,7 +28,7 @@ package org.chai.kevin.maps
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.AbstractReportController;
+import org.chai.kevin.AbstractController;
 import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
@@ -36,7 +36,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
 
-class MapsController extends AbstractReportController {
+class MapsController extends AbstractController {
 
 	def mapsService
 	

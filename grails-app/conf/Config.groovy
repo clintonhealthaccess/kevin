@@ -132,6 +132,7 @@ security.shiro.authc.required = false
 				   'grails.app.services.grails.plugin.springcache',
 				   'grails.plugin.springcache'
 				   
+				   
 		}
 //	}
 //	production {
