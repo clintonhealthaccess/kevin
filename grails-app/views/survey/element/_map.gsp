@@ -1,12 +1,11 @@
 <%@ page import="org.chai.kevin.data.Enum" %>
 
+<% if (levels == null) levels = new java.util.Stack() %>
+<% levels.push(type) %>
 
 <!-- Value type question -->
 <ul id="element-${surveyElement.id}-${suffix}" class="element element-map-level-${levels.size()} element-map ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
-
-	<% if (levels == null) levels = new java.util.Stack() %>
-	<% levels.push(type) %>
 
 	<g:each in="${type.elementMap}">
 		<li>
