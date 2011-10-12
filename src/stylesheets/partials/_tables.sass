@@ -7,6 +7,10 @@
   th
     background: $filler
     color: $primary
+    &.label
+      white-space: nowrap
+      a
+        font-size: 11px
     
   td
     border-top: 1px solid $filler
@@ -38,6 +42,13 @@
       border: none
       padding: 0 0 5px
       text-align: center
+      
+.explanation-heading
+  background: $filler
+  font-size: 11px
+  font-style: italic
+  margin-top: 5px
+  padding: 7px 13px
 
 .explanation-row
   > td
@@ -51,11 +62,16 @@
   background: $filler
   border: 1px solid $filler - #111
   display: inline-block
+  font-size: 10px
   margin-top: 10px
   padding: 7px 15px
   text-decoration: none
-  +border-radius
+  +border-radius(3px)
+  +linear-gradient(color-stops($filler + #060606, $filler - #090909))
+  +text-shadow(#fff, 0, 1px, 0)
   &:hover, &:focus
     background: $yes
     border: 1px solid $yes - #111
     color: #fff
+    +linear-gradient(color-stops($yes + #060606, $yes - #090909))
+    +text-shadow($yes - #333, 0, 1px, 0)

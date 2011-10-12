@@ -167,7 +167,7 @@
   +box-shadow(#ccc 2px 2px 3px, $dropdown - #111 0 0 8px 3px inset)
   
   li
-    border-bottom: 1px dotted $dropdown - #111
+    border-bottom: 1px dotted $dropdown - #191919
     display: block
     padding: 7px 10px 5px
     white-space: nowrap
@@ -198,7 +198,6 @@
         height: 15px
         text-indent: -9999px
         background: url('../images/icons/toggle_plus.png') no-repeat left center
-    
         &.toggled
           background: url('../images/icons/toggle_minus.png') no-repeat left center
           
@@ -209,27 +208,30 @@
           +text-shadow(#fff, 0, 1px, 0)
       
   .survey-section
-    background: $filler
+    border-top: 1px dotted $dropdown - #191919
+    margin-top: 5px
     margin-left: 5px
     +pie-clearfix
     
     a
       color: $primary
-      padding-left: 10px
+      padding-right: 10px
       +text-shadow(#fff, 0, 1px, 0)
-      &:hover, &:focus
+      &:hover, &:focus, &.opened
         background: $filler - #111
-        color: $primary - #222
+        color: $primary - #444
         +text-shadow(#fff, 0, 1px, 0)
       
     li
       &:focus, &:hover
         a
           color: $primary - #666
+          
 .organisation-fold
-  border-top: 1px solid $dropdown - #111
+  border-top: 1px solid $dropdown - #191919
   margin-top: 5px
   padding-top: 5px
+  
 .foldable
   min-width: 75px
   a.foldable-toggle
@@ -241,7 +243,6 @@
     float: left
     text-indent: -9999px
     background-image: url('../images/icons/toggle_plus.png')
-    
     &.toggled
       background-image: url('../images/icons/toggle_minus.png')
   

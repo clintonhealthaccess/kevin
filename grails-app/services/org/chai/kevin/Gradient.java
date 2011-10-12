@@ -79,7 +79,7 @@ public abstract class Gradient {
 //
 //		.target5:hover
 //		  background-color: #0af626
-		if (!isValid()) return "#AAA";
+		if (!isValid()) return "#F6FDEB";
 		
 		switch (new Double(getValue() / 0.2d).intValue()) {
 		case 0:

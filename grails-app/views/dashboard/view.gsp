@@ -35,8 +35,8 @@
 			</div>
 		
 			<div id="top" class="main">
-	    		<span class="bold"><g:message code="dashboard.labels.objectives" default="Objectives"/></span>
-		    	<ul class="inline-list">
+	    		<h3 class="form-heading"><g:message code="dashboard.labels.objectives" default="Objectives"/></h3>
+		    	<ul class="form-heading-list horizontal inline-list">
 		    		<g:each in="${dashboard.objectivePath}" var="objective">
 			    		<li>
 			    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: objective.id, organisation: currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
@@ -49,10 +49,10 @@
 	    	</div>
 	    	
 	    	<div id="bottom" class="main">
-	    		<div id="left">
-			    	<div class="box margin-bottom-10">
-			    		<div class="bold"><g:message code="dashboard.labels.organisations" default="Organisations"/></div>
-				    	<ul>
+	    		<div class="facility-type no-margin">
+			    	<div class="left">
+			    		<div class="italic"><g:message code="dashboard.labels.organisations" default="Organisations"/></div>
+				    	<ul class="horizontal">
 				    		<g:each in="${dashboard.organisationPath}" var="organisation">
 					    		<li>
 					    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
@@ -64,7 +64,7 @@
 				    	</ul>
 			    	</div>
 			    	
-			    	<div class="box" id="facility-type-filter">
+			    	<div class="right" id="facility-type-filter">
 			    		<div class="bold"><g:message code="dashboard.labels.facility" default="Facility Types"/></div>
 			    		<g:if test="${!dashboard.facilityTypes.isEmpty()}">
 				    		<g:each in="${dashboard.facilityTypes}" var="group">
@@ -77,12 +77,12 @@
 			    	</div>
 		    	</div>
 		    
-		    	<div id="center" class="box">
+		    	<div class="box">
 		    		<div id="values">
-				    	<table class="nice-table">	
+				    	<table class="listing">	
 				    		<thead class="header">
 					    		<tr class="row">
-					    			<th class="cell label left">&nbsp;</th>
+					    			<th class="cell label">&nbsp;</th>
 					    			<g:each in="${dashboard.objectiveEntries}" var="objectiveEntry">
 						    			<g:set var="objective" value="${objectiveEntry.entry}"/>
 						    			<th class="cell label top col-${objective.id}" data-col="${objective.id}">
@@ -140,7 +140,7 @@
 							<tbody class="body">
 								<g:each in="${dashboard.organisations}" var="organisation">
 								<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
-									<th class="cell label left row-${organisation.id}" data-row="${organisation.id}">
+									<td class="cell label row-${organisation.id}" data-row="${organisation.id}">
 										<div><span>
 										<g:if test="${organisation.getChildren().size() > 0}">
 											<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
@@ -149,7 +149,7 @@
 											${organisation.name}
 										</g:else>
 										</span></div>
-									</th>
+									</td>
 									<g:each in="${dashboard.objectiveEntries}" var="objectiveEntry">
 										<g:set var="objective" value="${objectiveEntry.entry}"/>
 										<g:set var="percentage" value="${dashboard.getPercentage(organisation, objective)}"/>
@@ -194,8 +194,8 @@
 				    	<!-- ADMIN SECTION -->
 			    		<shiro:hasPermission permission="admin:dashboard">
 			    			<div class="float-right">
-								<div><a href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.target" default="Add target"/></a></div>
-								<div><a href="${createLinkWithTargetURI(controller:'dashboardObjective', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.objective" default="Add objective"/></a></div>
+								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.target" default="Add target"/></a></div>
+								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardObjective', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.objective" default="Add objective"/></a></div>
 							</div>
 						</shiro:hasPermission>
 				    	<!-- ADMIN SECTION END -->

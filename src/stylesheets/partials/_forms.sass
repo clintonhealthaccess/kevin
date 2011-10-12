@@ -32,6 +32,9 @@
   padding: 11px 15px
   width: 940px
   +border-radius
+  +pie-clearfix
+  &.no-margin
+    margin: 0 0 15px
   h4
     color: #888
     float: left
@@ -154,14 +157,14 @@ select
   border: solid 1px $filler - #222
   background: $filler + #060606
   color: #333
-  padding: 2px
+  padding: 3px
   
 .idle-field
   background: #f9f9f9
   border: 1px solid $filler - #333
   color: #444
   font: normal 12px Arial, sans-serif
-  padding: 2px
+  padding: 3px
   +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
   &:hover, &:focus
     background: $filler + #030303
@@ -212,3 +215,34 @@ ul.filtered
 
   li:hover
     background-color: yellow
+
+.element-list
+  .element-map-header, .element-map-body
+    display: block
+    .element-map-header, .element-map-body
+    .element-map-header
+      font-size: 11px
+    input
+      width: 95px
+ul.element-map
+  +pie-clearfix
+  li
+    +pie-clearfix
+  ul.element-map li
+    display: inline
+    float: left
+    margin-right: 5px
+    
+  input
+    padding: 3px
+    
+  label
+    font-size: 10px
+    max-width: 70px
+
+.form-heading-list
+  padding-left: 20px
+  li
+    background: url('../images/select.png') no-repeat left center
+    color: $primary
+    padding-left: 10px

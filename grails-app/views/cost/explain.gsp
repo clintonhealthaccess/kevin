@@ -6,7 +6,7 @@
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
-    	<div class="italic">
+    	<div class="explanation-heading">
     		Applies to:
     		<g:each in="${explanation.groups}" var="group" status="i">
     			<span>${group.name}</span><g:if test="${i < explanation.groups.size() - 1}">,</g:if>
@@ -15,7 +15,7 @@
     	<table class="listing">
 			<g:each in="${explanation.organisations}" var="organisation">
 				<tr>
-					<th>
+					<td>
 						<span>
 							<g:if test="${false}">
 								<a href="${createLink(controller:'cost', action:'view', params:[period: explanation.currentPeriod.id, objective: explanation.currentTarget.id, organisation: organisation.id])}">${organisation.name}</a>
