@@ -72,6 +72,11 @@ public class Type {
 	}
 	
 	@Transient
+	public boolean isComplexType() {
+		return getType() == ValueType.LIST || getType() == ValueType.MAP;
+	}
+	
+	@Transient
 	public ValueType getType() {
 		if (valueType == null) {
 			try {
