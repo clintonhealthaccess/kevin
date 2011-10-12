@@ -215,14 +215,20 @@ class SurveyElementService {
 		return number;
 	}
 	
-	Set<String> getHeaderPrefixes(SurveyElement element) {
+	List<String> getHeaderPrefixes(SurveyElement element) {
 		
-		element.getDataElement().getType().getPrefixes(null, new PrefixPredicate() {
-			@Override
-			public boolean holds(Type type, Value value, String prefix) {
-				if (getParent() != null && getParent().getType() == ValueType.MAP) return true;
-			}
-		}).keySet();
+		List<String> prefixes = new ArrayList(element.getDataElement().getType().getPrefixes(
+			element.getDataElement().getType().getPlaceHolderValue(),
+			new PrefixPredicate() {
+				@Override
+				public boolean holds(Type type, Value value, String prefix) {
+					if (getParent() != null && getParent().getType() == ValueType.MAP) return true;
+				}
+			}).keySet());
+		
+		return prefixes.collect { prefix ->
+			prefix.replace("[0]", "[_]")
+		}
 		
 	}
 

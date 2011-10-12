@@ -562,7 +562,7 @@ public class Type {
 						}
 						
 						JSONArray array2 = new JSONArray();
-						for (Entry<String, Value> entry : currentValue.getMapValue().entrySet()) {
+						for (Entry<String, Value> entry : mapValues.entrySet()) {
 							JSONObject element = new JSONObject();
 							element.put(Value.MAP_KEY, entry.getKey());
 							element.put(Value.MAP_VALUE, transformedMapValues.get(entry.getKey()).getJsonObject());
@@ -617,7 +617,7 @@ public class Type {
 	}
 
 	public Map<String, Value> getPrefixes(Value value, PrefixPredicate predicate) {
-		Map<String, Value> result = new HashMap<String, Value>();
+		Map<String, Value> result = new LinkedHashMap<String, Value>();
 		getPrefixes(value, "", result, predicate);
 		return result;
 	}
@@ -625,7 +625,7 @@ public class Type {
 	private void getPrefixes(Value value, String prefix, Map<String, Value> prefixes, PrefixPredicate predicate) {
 		predicate.types.push(this);
 		if (predicate.holds(this, value, prefix)) prefixes.put(prefix, value);
-		if (!value.isNull()) {
+		if (value != null && !value.isNull()) {
 			switch (getType()) {
 				case NUMBER:
 				case BOOL:
@@ -635,15 +635,13 @@ public class Type {
 					break;
 				case LIST:
 					Type listType = getListType();
-					List<Value> values = value.getListValue();
-					for (int i = 0; i < values.size(); i++) {
-						listType.getPrefixes(values.get(i), prefix+"["+i+"]", prefixes, predicate);
+					for (int i = 0; i < value.getListValue().size(); i++) {
+						listType.getPrefixes(value.getListValue().get(i), prefix+"["+i+"]", prefixes, predicate);
 					}
 					break;
 				case MAP:
-					Map<String, Type> typeMap = getElementMap();
-					for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
-						typeMap.get(entry.getKey()).getPrefixes(entry.getValue(), prefix+"."+entry.getKey(), prefixes, predicate);
+					for (Entry<String, Type> entry : getElementMap().entrySet()) {
+						entry.getValue().getPrefixes(value.getMapValue().get(entry.getKey()), prefix+"."+entry.getKey(), prefixes, predicate);
 					}
 					break;
 				default:

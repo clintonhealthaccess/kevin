@@ -241,4 +241,34 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		surveyElements.isEmpty()
 	}
 	
+	def "get header prefixes"() {
+		setup:
+		def period = newPeriod()
+		
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+
+		def dataElement = null
+		def element = null
+		def prefixes = null
+		
+		when:
+		dataElement = newDataElement(CODE(1), Type.TYPE_MAP(["key1": Type.TYPE_MAP(["key11": Type.TYPE_NUMBER()])]))
+		element = newSurveyElement(question, dataElement)
+		prefixes = surveyElementService.getHeaderPrefixes(element)
+		
+		then:
+		prefixes.equals([".key1", ".key1.key11"])
+		
+		when:
+		dataElement = newDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_MAP(["key11": Type.TYPE_NUMBER()])])))
+		element = newSurveyElement(question, dataElement)
+		prefixes = surveyElementService.getHeaderPrefixes(element)
+		
+		then:
+		prefixes.equals(["[_].key1", "[_].key1.key11"])
+	}
+	
 }
