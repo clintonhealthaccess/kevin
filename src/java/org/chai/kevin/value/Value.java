@@ -28,7 +28,7 @@ public class Value {
 
 	public static final Value NULL = new Value("{value: null}");
 	
-	private String jsonValue = "";
+	private String jsonValue = null;
 	
 	public Value() {}
 	
@@ -37,21 +37,30 @@ public class Value {
 		refreshValue();
 	}
 	
+	// use this method with caution, never set directly a JSONObject coming
+	// from another Value, as it could cause side effects
+	// should be "protected"
 	public Value(JSONObject object) {
-		this.jsonValue = object.toString();
 		this.value = object;
 	}
 	
 	@Lob
 	@Column(nullable=false)
 	public String getJsonValue() {
+		if (jsonValue == null) {
+			jsonValue = value.toString();
+		}
 		return jsonValue;
 	}
 	
+	// this method is perfectly safe to use since
+	// it constructs a new JSONObject from the given value
 	public void setJsonValue(String jsonValue) {
-		this.jsonValue = jsonValue;
-		refreshValue();
-		clearCache();
+		if (this.jsonValue == null || (this.jsonValue != jsonValue && !this.jsonValue.equals(jsonValue))) { 
+			this.jsonValue = jsonValue;
+			refreshValue();
+			clearCache();
+		}
 	}
 	
 	private JSONObject value = null;
@@ -66,13 +75,25 @@ public class Value {
 	
 	@Transient
 	public JSONObject getJsonObject() {
+		if (value == null) {
+			try {
+				value = new JSONObject(jsonValue);
+			} catch (JSONException e) {
+				throw new IllegalArgumentException(e);
+			}
+		}
 		return value;
 	}
-	
+
+	// use this method with caution, never set directly a JSONObject coming
+	// from another Value, as it could cause side effects
+	// should be "protected"
 	public void setJsonObject(JSONObject object) {
-		this.jsonValue = object.toString();
-		this.value = object;
-		clearCache();
+		if (this.value != object && !this.value.equals(object)) {
+			this.jsonValue = null;
+			this.value = object;
+			clearCache();
+		}
 	}
 	
 	private void clearCache() {
@@ -98,12 +119,12 @@ public class Value {
 	
 	@Transient
 	public boolean isNull() {
-		return value.isNull(VALUE_STRING);
+		return getJsonObject().isNull(VALUE_STRING);
 	}
 	
 	@Transient
 	public Value getValueWithoutAttributes() {
-		if (value.isNull(VALUE_STRING)) return Value.NULL;
+		if (getJsonObject().isNull(VALUE_STRING)) return Value.NULL;
 		else {
 			JSONObject object = new JSONObject();
 			try {
@@ -119,9 +140,9 @@ public class Value {
 	public String getAttribute(String attribute) {
 		if (attribute.equals(VALUE_STRING)) throw new IllegalArgumentException("trying to get "+VALUE_STRING+" attribute using getAttribute");
 		
-		if (!value.has(attribute)) return null;
+		if (!getJsonObject().has(attribute)) return null;
 		try {
-			return value.getString(attribute);
+			return getJsonObject().getString(attribute);
 		} catch (JSONException e) {
 			return null;
 		}
@@ -131,12 +152,12 @@ public class Value {
 	public void setAttribute(String attribute, String attributeValue) {
 		if (attribute.equals(VALUE_STRING)) throw new IllegalArgumentException("trying to set "+VALUE_STRING+" attribute using getAttribute");
 
+		// we get a reference to a JSON object
 		JSONObject object = getJsonObject();
 		try {
 			if (attributeValue == null) object.remove(attribute);
 			else object.put(attribute, attributeValue);
-			this.jsonValue = object.toString();
-			refreshValue();
+			this.jsonValue = null;
 		} catch (JSONException e) {
 			throw new IllegalArgumentException("could not set attribute", e);
 		}
@@ -214,7 +235,7 @@ public class Value {
 				JSONArray array = getJsonObject().getJSONArray(VALUE_STRING);
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject object = array.getJSONObject(i);
-					result.add(new Value(object.toString()));
+					result.add(new Value(object));
 				}
 				listValue = result;
 			} catch (JSONException e) {
@@ -233,7 +254,7 @@ public class Value {
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject object = array.optJSONObject(i);
 					try {
-						result.put(object.getString(MAP_KEY), new Value(object.getString(MAP_VALUE)));
+						result.put(object.getString(MAP_KEY), new Value(object.getJSONObject(MAP_VALUE)));
 					} catch (JSONException e) {}
 				}
 				mapValue = result;
@@ -246,14 +267,14 @@ public class Value {
 		
 	@Override
 	public String toString() {
-		return jsonValue;
+		return getJsonValue().toString();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((jsonValue == null) ? 0 : jsonValue.hashCode());
+		result = prime * result + ((getJsonValue() == null) ? 0 : getJsonValue().hashCode());
 		return result;
 	}
 
@@ -266,10 +287,10 @@ public class Value {
 		if (!(obj instanceof Value))
 			return false;
 		Value other = (Value) obj;
-		if (jsonValue == null) {
-			if (other.jsonValue != null)
+		if (getJsonValue() == null) {
+			if (other.getJsonValue() != null)
 				return false;
-		} else if (!jsonValue.equals(other.jsonValue.toString()))
+		} else if (!getJsonValue().equals(other.getJsonValue()))
 			return false;
 		return true;
 	}

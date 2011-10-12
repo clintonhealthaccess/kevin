@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -452,29 +450,49 @@ public class Type {
 		return result.toString();
 	}
 	
-	public void setAttribute(Value value, String prefix, String attribute, String text) {
-		Value prefixedValue = getValue(value, prefix);
-		
-		Value newValue = new Value(prefixedValue.getJsonObject());
-		newValue.setAttribute(attribute, text);
-		
-		setValue(value, prefix, newValue);
+	public void setAttribute(final Value value, final String prefix, final String attribute, final String text) {
+		// TODO throw exception if prefix does not exist
+		transformValue(value, "", new ValuePredicate() {
+			@Override
+			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+				if (currentPrefix.equals(prefix)) {
+					currentValue.setAttribute(attribute, text);
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+	
+	public void setValue(Value value, final String prefix, final Value toSet) {
+		// TODO throw exception if prefix does not exist
+		transformValue(value, "", new ValuePredicate() {
+			@Override
+			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+				if (currentPrefix.equals(prefix)) {
+					currentValue.setJsonValue(toSet.getJsonValue());
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 	
 	public String getAttribute(Value value, String prefix, String attribute) {
 		Value prefixedValue = getValue(value, prefix);
+		if (prefixedValue == null) return null;
 		return prefixedValue.getAttribute(attribute);
 	}
 	
 	public Value getValue(Value value, String prefix) {
 		Value prefixedValue = getValue(prefix, value, "");
-		if (prefixedValue == null) throw new IndexOutOfBoundsException("prefix "+prefix+" not found in value "+value);
+//		if (prefixedValue == null) throw new IndexOutOfBoundsException("prefix "+prefix+" not found in value "+value);
 		return prefixedValue;
 	}
 	
-	public boolean hasPrefix(Value value, String prefix) {
-		return getValue(prefix, value, "") != null;
-	}
+//	public	 boolean hasPrefix(Value value, String prefix) {
+//		return getValue(prefix, value, "") != null;
+//	}
 	
 	private Value getValue(String prefix, Value currentValue, String currentPrefix) {
 		if (prefix.equals(currentPrefix)) return currentValue;
@@ -484,16 +502,14 @@ public class Type {
 					List<Value> values = currentValue.getListValue();
 					Type listType = getListType();
 					for (int i = 0; i < values.size(); i++) {
-						Value value = listType.getValue(prefix, values.get(i), currentPrefix+"["+i+"]");
-						if (value != null) return value;
+						if (prefix.startsWith(currentPrefix+"["+i+"]")) return listType.getValue(prefix, values.get(i), currentPrefix+"["+i+"]");
 					}
 					break;
 				case MAP:
 					Map<String, Type> typeMap = getElementMap();
 					Map<String, Value> valueMap = currentValue.getMapValue();
 					for (Entry<String, Value> entry : valueMap.entrySet()) {
-						Value value = typeMap.get(entry.getKey()).getValue(prefix, entry.getValue(), currentPrefix+"."+entry.getKey());
-						if (value != null) return value;
+						if (prefix.startsWith(currentPrefix+"."+entry.getKey())) return typeMap.get(entry.getKey()).getValue(prefix, entry.getValue(), currentPrefix+"."+entry.getKey());
 					}
 					break;
 				default:
@@ -503,30 +519,19 @@ public class Type {
 		return null;
 	}
 	
-	public void setValue(Value value, final String prefix, final Value toSet) {
-		// TODO throw exception if prefix does not exist
-		value.setJsonObject(transformValue(value, "", new ValuePredicate() {
-			@Override
-			public Value getValue(Value currentValue, Type currentType, String currentPrefix) {
-				if (currentPrefix.equals(prefix)) return toSet;
-				else return currentValue;
-			}
-		}).getJsonObject());
-	}
-	
 	public static interface ValuePredicate {
-		public Value getValue(Value currentValue, Type currentType, String currentPrefix);
+		public boolean transformValue(Value currentValue, Type currentType, String currentPrefix);
 	}
 	
 	// depth-first transform
-	public Value transformValue(Value currentValue, ValuePredicate predicate) {
-		return transformValue(currentValue, "", predicate);
+	public void transformValue(Value currentValue, ValuePredicate predicate) {
+		transformValue(currentValue, "", predicate);
 	}
 	
-	private Value transformValue(Value currentValue, String currentPrefix, ValuePredicate predicate) {
+	private boolean transformValue(Value currentValue, String currentPrefix, ValuePredicate predicate) {
+		boolean changed = false;
 		if (!currentValue.isNull()) {
 			try {
-				JSONObject object = currentValue.getJsonObject();
 				switch (getType()) {
 					case NUMBER:
 					case STRING:
@@ -539,37 +544,40 @@ public class Type {
 						Type listType = getListType();
 						
 						List<Value> listValues = currentValue.getListValue();
-						List<Value> transformedListValues = new ArrayList<Value>();
 						for (int i = 0; i < listValues.size(); i++) {
-							transformedListValues.add(listType.transformValue(listValues.get(i), currentPrefix+"["+i+"]", predicate));
+							changed = changed | listType.transformValue(listValues.get(i), currentPrefix+"["+i+"]", predicate);
 						}
 					
-						JSONArray array1 = new JSONArray();
-						for (int i = 0; i < transformedListValues.size(); i++) {
-							array1.put(i, transformedListValues.get(i).getJsonObject());
+						if (changed) {
+							JSONObject object1 = new JSONObject(currentValue.getJsonValue());
+							JSONArray array1 = new JSONArray();
+							for (int i = 0; i < listValues.size(); i++) {
+								array1.put(i, listValues.get(i).getJsonObject());
+							}
+							object1.put(Value.VALUE_STRING, array1);
+							currentValue.setJsonObject(object1);
 						}
-						object.put(Value.VALUE_STRING, array1);
-						currentValue.setJsonObject(object);
 						break;
 					case MAP:
 						Map<String, Type> typeMap = getElementMap();
 						
 						Map<String, Value> mapValues = currentValue.getMapValue();
-						Map<String, Value> transformedMapValues = new HashMap<String, Value>();
-						
-						for (Entry<String, Value> entry : currentValue.getMapValue().entrySet()) {
-							transformedMapValues.put(entry.getKey(), typeMap.get(entry.getKey()).transformValue(entry.getValue(), currentPrefix+"."+entry.getKey(), predicate));
-						}
-						
-						JSONArray array2 = new JSONArray();
 						for (Entry<String, Value> entry : mapValues.entrySet()) {
-							JSONObject element = new JSONObject();
-							element.put(Value.MAP_KEY, entry.getKey());
-							element.put(Value.MAP_VALUE, transformedMapValues.get(entry.getKey()).getJsonObject());
-							array2.put(element);
+							changed = changed | typeMap.get(entry.getKey()).transformValue(entry.getValue(), currentPrefix+"."+entry.getKey(), predicate);
 						}
-						object.put(Value.VALUE_STRING, array2);
-						currentValue.setJsonObject(object);
+						
+						if (changed) {
+							JSONObject object2 = new JSONObject(currentValue.getJsonValue());
+							JSONArray array2 = new JSONArray();
+							for (Entry<String, Value> entry : mapValues.entrySet()) {
+								JSONObject element = new JSONObject();
+								element.put(Value.MAP_KEY, entry.getKey());
+								element.put(Value.MAP_VALUE, mapValues.get(entry.getKey()).getJsonObject());
+								array2.put(element);
+							}
+							object2.put(Value.VALUE_STRING, array2);
+							currentValue.setJsonObject(object2);
+						}
 						break;
 					default:
 						throw new NotImplementedException();
@@ -580,7 +588,7 @@ public class Type {
 				throw new IllegalArgumentException();
 			}
 		}
-		return predicate.getValue(currentValue, this, currentPrefix);
+		return changed | predicate.transformValue(currentValue, this, currentPrefix);
 	}
 	
 	public void getCombinations(Value value, List<String> strings, Set<List<String>> combinations, String prefix) {

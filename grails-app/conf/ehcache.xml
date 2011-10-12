@@ -62,32 +62,32 @@
     />
     
     <cache name="dsrCache"
-    		maxElementsInMemory="8000"
+    		maxElementsInMemory="4000"
     		timeToIdleSeconds="86400"
     />
     
     <cache name="dashboardCache"
-    		maxElementsInMemory="8000"
+    		maxElementsInMemory="4000"
     		timeToIdleSeconds="86400"
     />
 
 	<!-- short term cache for json values, to speed up survey save -->
     <cache name="jsonValueCache"
-    		maxElementsInMemory="2000"
+    		maxElementsInMemory="100"
     		timeToLiveSeconds="0"
-    		timeToIdleSeconds="120"
+    		timeToIdleSeconds="10"
     />
     
     <!-- short term cache for survey entered values, to speed up survey save -->
     <cache name="org.chai.kevin.survey.validation.SurveyEnteredValue"
-    		maxElementsInMemory="2000"
+    		maxElementsInMemory="1000"
     		timeToLiveSeconds="0"
-    		timeToIdleSeconds="120"
+    		timeToIdleSeconds="60"
     />
     <cache name="surveyEnteredValueQueryCache"
-    		maxElementsInMemory="2000"
+    		maxElementsInMemory="1000"
     		timeToLiveSeconds="0"
-    		timeToIdleSeconds="120"
+    		timeToIdleSeconds="60"
     />
     
 </ehcache>

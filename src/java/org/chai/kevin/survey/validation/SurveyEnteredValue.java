@@ -1,9 +1,11 @@
 package org.chai.kevin.survey.validation;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -23,6 +25,7 @@ import javax.persistence.UniqueConstraint;
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
+import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveySkipRule;
@@ -232,6 +235,7 @@ public class SurveyEnteredValue implements Serializable {
 			}
 		});
 		
+		final Map<String, String> newPrefixAttributes = new HashMap<String, String>();
 		// remove the attribute from prefixes which are not in the set
 		for (String prefixWithId : prefixesWithId.keySet()) {
 			if (!prefixes.contains(prefixWithId)) {
@@ -240,7 +244,7 @@ public class SurveyEnteredValue implements Serializable {
 				
 				String newAttributeValue = Utils.unsplit(attributeValue);
 				if (newAttributeValue.isEmpty()) newAttributeValue = null;
-				getType().setAttribute(value, prefixWithId, attribute, newAttributeValue);
+				newPrefixAttributes.put(prefixWithId, newAttributeValue);
 			}
 		}
 		
@@ -248,8 +252,25 @@ public class SurveyEnteredValue implements Serializable {
 		for (String prefix : prefixes) {
 			Set<String> attributeValue = Utils.split(getType().getAttribute(value, prefix, attribute));
 			attributeValue.add(id);
-			getType().setAttribute(value, prefix, attribute, Utils.unsplit(attributeValue));
+			newPrefixAttributes.put(prefix, Utils.unsplit(attributeValue));
 		}
+		
+		// set the attribute to the new value
+		getType().transformValue(value, new ValuePredicate() {
+			
+			@Override
+			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+				if (newPrefixAttributes.containsKey(currentPrefix)) {
+					String currentAttribute = currentValue.getAttribute(attribute);
+					if (currentAttribute == null || !currentAttribute.equals(newPrefixAttributes.get(currentPrefix))) {
+						currentValue.setAttribute(attribute, newPrefixAttributes.get(currentPrefix));
+						return true;
+					}
+				}
+				return false;
+			}
+			
+		});
 	}
 	
 	private Map<String, Value> getPrefixesWithAttribute(final String attribute) {

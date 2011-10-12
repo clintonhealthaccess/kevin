@@ -234,7 +234,7 @@ class EditSurveyController extends AbstractController {
 			def incompleteSectionsHtml = ''
 			
 			if (currentSection == null) {
-				completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective)
+				def completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective)
 				invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
 				incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
 			}

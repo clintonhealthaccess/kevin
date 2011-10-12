@@ -438,10 +438,10 @@ public class TypeSpec extends UnitSpec {
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		value = Value.NULL
-		type.getAttribute(value, "[0]", "attribute")
+		def attribute = type.getAttribute(value, "[0]", "attribute")
 		
 		then:
-		thrown IndexOutOfBoundsException
+		attribute == null
 		
 	}
 	
@@ -468,13 +468,13 @@ public class TypeSpec extends UnitSpec {
 		value.getListValue().get(0).getAttribute("attribute") == "test"
 		type.getAttribute(value, "[0]", "attribute") == "test"
 		
-		when:
-		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = Value.NULL
-		type.setAttribute(value, "[0]", "attribute", "text")
+//		when:
+//		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+//		value = Value.NULL
+//		type.setAttribute(value, "[0]", "attribute", "text")
 		
-		then:
-		thrown IndexOutOfBoundsException
+//		then:
+//		thrown IndexOutOfBoundsException
 		
 		when:
 		type = Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()])
@@ -569,18 +569,16 @@ public class TypeSpec extends UnitSpec {
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		value = Value.NULL
-		type.getValue(value, "[0]") == null
 		
 		then:
-		thrown IndexOutOfBoundsException
+		type.getValue(value, "[0]") == null
 		
 		when:
 		type = Type.TYPE_MAP(["key":Type.TYPE_NUMBER()])
 		value = Value.NULL
-		type.getValue(value, ".key").equals(Value.NULL)
 		
 		then:
-		thrown IndexOutOfBoundsException
+		type.getValue(value, ".key") == null
 	}
 	
 	def "get displayed value"() {

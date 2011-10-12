@@ -404,21 +404,20 @@ public class SurveyPageService {
 				Value value = valueType.mergeValueFromMap(oldValue, params, "surveyElements["+element.getId()+"].value", attributes);
 				
 				// reset accepted warnings for changed values
-				if (log.isDebugEnabled()) log.debug("getting modified prefixes for element: "+element);
-				Map<String, Value> modifiedPrefixes = valueType.getPrefixes(value, new PrefixPredicate() {
+				if (log.isDebugEnabled()) log.debug("resetting warning for modified prefixes: "+element);
+				valueType.transformValue(value, new ValuePredicate() {
 					@Override
-					public boolean holds(Type type, Value value, String prefix) {
-						if (valueType.hasPrefix(oldValue, prefix)) {
-							Value oldPrefix = valueType.getValue(oldValue, prefix);
-							return !oldPrefix.getValueWithoutAttributes().equals(value.getValueWithoutAttributes());
+					public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+						Value oldPrefix = valueType.getValue(oldValue, currentPrefix);
+						if (oldPrefix != null && oldPrefix.getAttribute("warning") != null) {
+							if (!oldPrefix.getValueWithoutAttributes().equals(currentValue.getValueWithoutAttributes())) {
+								currentValue.setAttribute("warning", null);
+								return true;
+							}
 						}
 						return false;
 					}
 				});
-				if (log.isDebugEnabled()) log.debug("resetting warning for modified prefixes: "+element);
-				for (Entry<String, Value> modifiedPrefix : modifiedPrefixes.entrySet()) {
-					valueType.setAttribute(value, modifiedPrefix.getKey(), "warning", null);
-				}
 				
 				// set the value and save
 				// here, a write lock is acquired on the SurveyEnteredValue that will be kept
@@ -618,18 +617,18 @@ public class SurveyPageService {
 				}
 				else {
 					final Type type = enteredValue.getType();
-					valueToSave = type.transformValue(enteredValue.getValue(), new ValuePredicate() {
+					Value newValue = new Value(enteredValue.getValue().getJsonValue());
+					type.transformValue(newValue, new ValuePredicate() {
 						@Override
-						public Value getValue(Value currentValue, Type currentType, String currentPrefix) {
-							Value result = new Value(currentValue.toString());
+						public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
 							// if it is skipped we return NULL
-							if (currentValue.getAttribute("skipped") != null) result = Value.NULL;
+							if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL.getStringValue());
 							// we remove the attributes
-							result.setAttribute("skipped", null);
-							result.setAttribute("invalid", null);
-							result.setAttribute("warning", null);
+							currentValue.setAttribute("skipped", null);
+							currentValue.setAttribute("invalid", null);
+							currentValue.setAttribute("warning", null);
 							
-							return result;
+							return true;
 						}
 					});
 				}
@@ -639,6 +638,8 @@ public class SurveyPageService {
 					dataValue = new DataValue(element.getDataElement(), organisation.getOrganisationUnit(), objective.getSurvey().getPeriod(), null);
 				}
 				dataValue.setValue(valueToSave);
+				
+				dataValue.setTimestamp(new Date());
 				valueService.save(dataValue);
 			}
 			
