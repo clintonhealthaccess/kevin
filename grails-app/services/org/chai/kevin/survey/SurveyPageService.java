@@ -555,8 +555,6 @@ public class SurveyPageService {
 		}
 	}
 	
-	
-	// TODO refactor this to use only one Status type, as it is the same for all levels
 	private void setObjectiveStatus(SurveyEnteredObjective objective, Organisation organisation) {
 		Boolean complete = true;
 		Boolean invalid = false;
@@ -569,7 +567,6 @@ public class SurveyPageService {
 		objective.setInvalid(invalid);
 	}
 	
-	// TODO refactor this to use only one Status type, as it is the same for all levels
 	private void setSectionStatus(SurveyEnteredSection section, Organisation organisation) {
 		Boolean complete = true;
 		Boolean invalid = false;
@@ -582,10 +579,11 @@ public class SurveyPageService {
 		section.setComplete(complete);
 	}
 	
-	// TODO refactor this to use only one Status type, as it is the same for all levels
 	private void setQuestionStatus(SurveyEnteredQuestion question, Organisation organisation) {
 		Boolean complete = true;
 		Boolean invalid = false;
+		
+		// TODO replace this method by a call to the survey element service
 		for (SurveyElement element : question.getQuestion().getSurveyElements(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
 			if (!enteredValue.isComplete()) complete = false;

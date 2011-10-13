@@ -179,6 +179,13 @@ class SurveyElementService {
 		}
 	}
 	
+	Set<SurveyElement> getSurveyElements(SurveyQuestion question) {
+		def c = SurveyElement.createCriteria()
+		.add(Restrictions.eq("surveyQuestion", question))
+		
+		return c.setFlushMode(FlushMode.COMMIT).list()
+	}
+	
 	Set<SurveyElement> getSurveyElements(DataElement dataElement, Survey survey) {
 		def c = SurveyElement.createCriteria()
 		if (survey != null) {
@@ -187,7 +194,9 @@ class SurveyElementService {
 			.createAlias("ss.objective", "so")
 			.add(Restrictions.eq("so.survey", survey))
 		}
-		c.add(Restrictions.eq("dataElement", dataElement))
+		if (dataElement != null) {
+			c.add(Restrictions.eq("dataElement", dataElement))
+		}
 		
 		return c.setFlushMode(FlushMode.COMMIT).list()
 	}

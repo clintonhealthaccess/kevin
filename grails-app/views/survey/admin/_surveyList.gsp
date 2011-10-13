@@ -29,6 +29,9 @@
 									<a href="${createLink(controller:'surveySkipRule', action:'list', params:[surveyId: survey?.id])}">Skip Rules</a>
 								</li>
 								<li>
+									<a href="${createLink(controller:'surveyValidationRule', action:'list', params:[surveyId: survey?.id])}">Validation Rules</a>
+								</li>
+								<li>
 									<g:link controller="survey" action="edit" id="${survey.id}" class="flow-edit">
 								    	<g:message code="general.text.edit" default="Edit" /> 
 									</g:link>

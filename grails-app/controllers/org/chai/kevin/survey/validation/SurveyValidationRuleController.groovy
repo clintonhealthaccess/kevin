@@ -28,6 +28,7 @@
 package org.chai.kevin.survey.validation
 
 import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElementService;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyValidationRule;
@@ -41,6 +42,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 class SurveyValidationRuleController extends AbstractEntityController {
 
 	def organisationService
+	def surveyElementService
 	
 	def getEntity(def id) {
 		return SurveyValidationRule.get(id)
@@ -91,8 +93,20 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
-		SurveyElement surveyElement = SurveyElement.get(params.int('elementId'))
-		List<SurveyValidationRule> validationRules = surveyElement.getValidationRules();
+
+		List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
+		if (params.int('elementId')) {		
+			SurveyElement surveyElement = SurveyElement.get(params.int('elementId'))
+			validationRules.addAll(surveyElement.getValidationRules());
+		}
+		else {
+			Survey survey = Survey.get(params.int('surveyId'))
+			Set<SurveyElement> surveyElements = surveyElementService.getSurveyElements(null, survey)
+			surveyElements.each { surveyElement ->
+				validationRules.addAll(surveyElement.getValidationRules())	
+			}
+		}
+		validationRules.sort {it.id}
 
 		def max = Math.min(params['offset']+params['max'], validationRules.size())
 		
