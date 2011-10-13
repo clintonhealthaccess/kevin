@@ -1,5 +1,6 @@
 <%@ page import="org.chai.kevin.data.Type.ValueType" %>
 
+		
 <div id="add-data-element" class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">Create Data Element</h3>
@@ -7,8 +8,6 @@
 		<div class="clear"></div>
 	</div>
 	<g:form url="[controller:'dataElement', action:'save']" useToken="true">
-		<g:set var="readonly" value="${dataElement.id != null}"/>
-	
 		<g:i18nInput name="names" bean="${dataElement}" value="${dataElement.names}" label="Name" field="names" />
 		<g:i18nTextarea name="descriptions" bean="${dataElement}" value="${dataElement.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
 		

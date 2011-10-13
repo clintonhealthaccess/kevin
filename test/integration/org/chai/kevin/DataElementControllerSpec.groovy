@@ -1,7 +1,5 @@
 package org.chai.kevin;
 
-import static org.junit.Assert.*;
-
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataElementController;
 import org.chai.kevin.data.Type;
@@ -12,6 +10,30 @@ class DataElementControllerSpec extends IntegrationTests {
 
 	def dataElementController
 
+	def "create new data element"() {
+		setup:
+		dataElementController = new DataElementController()
+		
+		when:
+		dataElementController.create()
+		
+		then:
+		dataElementController.response.contentAsString.contains("success")
+	}
+	
+	def "save new data element"() {
+		setup:
+		dataElementController = new DataElementController()
+		
+		when:
+		dataElementController.params.code = CODE(1)
+		dataElementController.params['type.jsonType'] = Type.TYPE_BOOL().getJsonType()
+		dataElementController.saveWithoutTokenCheck()
+		
+		then:
+		dataElementController.response.contentAsString.contains("success")
+	}
+		
 	def "cannot delete data element when it still has values"() {
 		setup:
 		dataElementController = new DataElementController()

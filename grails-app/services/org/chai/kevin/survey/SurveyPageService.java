@@ -302,12 +302,16 @@ public class SurveyPageService {
 			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
 			facility.setOrganisationUnit((OrganisationUnit)sessionFactory.getCurrentSession().get(OrganisationUnit.class, facility.getOrganisationUnit().getId()));
 
-			getMe().refreshSurveyForFacility(facility, survey, closeIfComplete);
+			getMe().refreshSurveyForFacilityWithNewTransaction(facility, survey, closeIfComplete);
 			sessionFactory.getCurrentSession().clear();
 		}
 	}
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshSurveyForFacilityWithNewTransaction(Organisation facility, Survey survey, boolean closeIfComplete) {
+		refreshSurveyForFacility(facility, survey, closeIfComplete);
+	}
+	
 	public void refreshSurveyForFacility(Organisation facility, Survey survey, boolean closeIfComplete) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -319,10 +323,9 @@ public class SurveyPageService {
 		}
 	}
 
-	
 	private void refreshObjectiveForFacility(Organisation facility, SurveyObjective objective, boolean closeIfComplete) {
 		for (SurveySection section : objective.getSections(facility.getOrganisationUnitGroup())) {
-			getMe().refreshSectionForFacility(facility, section);
+			getMe().refreshSectionForFacilityWithNewTransaction(facility, section);
 		}
 		
 		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(facility, objective);
@@ -332,6 +335,10 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshSectionForFacilityWithNewTransaction(Organisation facility, SurveySection section) {
+		refreshSectionForFacility(facility, section);
+	}
+	
 	public void refreshSectionForFacility(Organisation facility, SurveySection section) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -448,7 +455,7 @@ public class SurveyPageService {
 		for (SurveyElement element : elements) {
 			if (log.isDebugEnabled()) log.debug("getting skip and validation rules for element: "+element);
 
-			validationRules.addAll(surveyElementService.searchValidationRules(element, organisation.getOrganisationUnitGroup().getUuid()));
+			validationRules.addAll(surveyElementService.searchValidationRules(element, organisation.getOrganisationUnitGroup()));
 			skipRules.addAll(surveyElementService.searchSkipRules(element));
 		}
 		

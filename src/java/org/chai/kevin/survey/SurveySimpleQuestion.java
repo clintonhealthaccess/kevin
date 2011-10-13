@@ -78,7 +78,7 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 	@Override
 	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> elements = new ArrayList<SurveyElement>();
-		elements.add(surveyElement);
+		if (surveyElement != null) elements.add(surveyElement);
 		return elements;
 	}
 
@@ -86,7 +86,7 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 	@Override
 	public List<SurveyElement> getSurveyElements() {
 		List<SurveyElement> elements = new ArrayList<SurveyElement>();
-		elements.add(surveyElement);
+		if (surveyElement != null) elements.add(surveyElement);
 		return elements;
 	}
 

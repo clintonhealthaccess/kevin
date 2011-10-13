@@ -62,6 +62,32 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 	}
 	
 	
+	def "test get sruvey elements on questions without elements"() {
+		when:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def column = newTableColumn(question1, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def row = newTableRow(question1, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): null])
+
+		def question2 = newSimpleQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+
+		def question3 = newCheckboxQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def option = newCheckboxOption(question3, 1, [(DISTRICT_HOSPITAL_GROUP)], null)
+		
+		then:
+		question1.getSurveyElements().equals([])
+		question2.getSurveyElements().equals([])
+		question3.getSurveyElements().equals([])
+		
+		question1.getSurveyElements(OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)).equals([])
+		question2.getSurveyElements(OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)).equals([])
+		question3.getSurveyElements(OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)).equals([])
+	}
+	
 	def "test question table number of organisation unit applicable"(){
 		
 		setup:

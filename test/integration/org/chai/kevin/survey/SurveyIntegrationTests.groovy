@@ -104,11 +104,19 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return row
 	}
 	
-//	def newCheckboxQuestion(def section, def order, def groups) {
-//		def question = new SurveySimpleQuestion(section: section, order: order, groupUuidString: Utils.unsplit(groups))
-//		question.
-//	}
-//	
+	def newCheckboxQuestion(def section, def order, def groups) {
+		def question = new SurveyCheckboxQuestion(section: section, order: order, groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
+		section.addQuestion(question)
+		section.save(failOnError: true)
+		return question
+	}
+	
+	def newCheckboxOption(def question, def order, def groups, def element) {
+		def option = new SurveyCheckboxOption(question: question, order: order, groupUuidString: Utils.unsplit(groups), surveyElement: element).save(failOnError: true)
+		question.addOption(option)
+		question.save(failOnError: true)
+		return option
+	}
 
 //
 //	

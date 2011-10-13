@@ -9,8 +9,11 @@
 		
 		<g:i18nTextarea name="descriptions" bean="${enumeration}" value="${enumeration.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
 		
-		<g:input name="code" label="Code" bean="${enumeration}" field="code" readonly="${enumeration.id != null}" />
-		
+		<g:if test="${enumeration.id != null}">		
+			<p class="red">Warning: some survey fields might not be displayed correctly if the code is changed.</p>
+		</g:if>
+		<g:input name="code" label="Code" bean="${enumeration}" field="code" />
+	
 		<table id="enum-option">
 			<g:each in="${enumeration.enumOptions}" status="i" var="option">
 				<tr class="white-box">

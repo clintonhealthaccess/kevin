@@ -88,7 +88,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
 		for (SurveyCheckboxOption option : getOptions(group)) {
-			dataElements.add(option.getSurveyElement());
+			if (option.getSurveyElement() != null) dataElements.add(option.getSurveyElement());
 		}
 		return dataElements;
 	}
@@ -98,7 +98,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	public List<SurveyElement> getSurveyElements() {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
 		for (SurveyCheckboxOption option : getOptions()) {
-			dataElements.add(option.getSurveyElement());
+			if (option.getSurveyElement() != null) dataElements.add(option.getSurveyElement());
 		}
 		return dataElements;
 	}

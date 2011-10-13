@@ -1,6 +1,9 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.data.Type;
+import org.chai.kevin.survey.validation.SurveyEnteredObjective;
+import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
+import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
@@ -108,8 +111,8 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		then:
 		SurveyEnteredValue.count() == 1
 		SurveyEnteredValue.list()[0].value.numberValue == 5
-		SurveyEnteredValue.list()[0].value.getAttribute("invalid").contains(rule1.id)
-		SurveyEnteredValue.list()[0].value.getAttribute("invalid").contains(rule2.id)
+		SurveyEnteredValue.list()[0].value.getAttribute("invalid").contains(rule1.id+"")
+		SurveyEnteredValue.list()[0].value.getAttribute("invalid").contains(rule2.id+"")
 		
 	}
 	
@@ -152,5 +155,25 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredValue.list()[0].value.listValue[1].numberValue == 10
 
 	}
-	
+
+	def "test refresh without surveyelement"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		
+		when:
+		surveyPageService.refreshSectionForFacility(getOrganisation(KIVUYE), section)
+		
+		then:
+		SurveyEnteredValue.count() == 0
+		SurveyEnteredQuestion.count() == 1
+		SurveyEnteredSection.count() == 1
+		
+	}
+		
 }

@@ -123,7 +123,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
 		for (SurveyTableRow row : getRows()) {
 			for (SurveyTableColumn column : getColumns()) {
-				dataElements.add(row.getSurveyElements().get(column));
+				if (row.getSurveyElements().get(column) != null) dataElements.add(row.getSurveyElements().get(column));
 			}
 		}
 		return dataElements;
@@ -135,7 +135,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
 		for (SurveyTableRow row : getRows(group)) {
 			for (SurveyTableColumn column : getColumns(group)) {
-				dataElements.add(row.getSurveyElements().get(column));
+				if (row.getSurveyElements().get(column) != null) dataElements.add(row.getSurveyElements().get(column));
 			}
 		}
 		return dataElements;

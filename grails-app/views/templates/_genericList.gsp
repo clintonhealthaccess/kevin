@@ -7,7 +7,7 @@
 		<g:if test="${!search}">
 			<div class="float-right">
 				<g:if test="${!addTemplate}">
-					<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
+					<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}" onclick="return false;">New ${entityName}</a>
 				</g:if>
 				<g:else>
 					<g:render template="/survey/admin/${addTemplate}"/>

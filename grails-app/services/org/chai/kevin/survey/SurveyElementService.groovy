@@ -151,15 +151,15 @@ class SurveyElementService {
 		return result
 	}
 
-	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement, String groupUuid) {
+	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement, OrganisationUnitGroup group) {
 		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", groupUuid="+groupUuid+")");
 		
 		def c = SurveyValidationRule.createCriteria()
 		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		c.add(Restrictions.like("groupUuidString", groupUuid, MatchMode.ANYWHERE))
+		c.add(Restrictions.like("groupUuidString", group.uuid, MatchMode.ANYWHERE))
 		
 		List<SurveyValidationRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
-		return filter(rules, surveyElement);
+		return filter(rules, surveyElement.id);
 	}
 	
 	Set<SurveySkipRule> searchSkipRules(SurveyElement surveyElement) {
@@ -169,22 +169,23 @@ class SurveyElementService {
 		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
 		
 		List<SurveySkipRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
-		return filter(rules, surveyElement);
+		return filter(rules, surveyElement.id);
 	}
 	
 	
-	static def filter(def rules, def element) {
+	static def filter(def rules, Long id) {
 		return rules.findAll { rule ->
-			return rule.expression.matches(".*\\\$"+element.id+"(\\z|\\D|\$).*")
+			return rule.expression.matches(".*\\\$"+id+"(\\z|\\D|\$).*")
 		}
 	}
 	
-	Set<SurveyElement> getSurveyElements(SurveyQuestion question) {
-		def c = SurveyElement.createCriteria()
-		.add(Restrictions.eq("surveyQuestion", question))
-		
-		return c.setFlushMode(FlushMode.COMMIT).list()
-	}
+//	Set<SurveyElement> getSurveyElements(SurveyQuestion question, OrganisationUnitGroup group) {
+//		def c = SurveyElement.createCriteria()
+//		c.add(Restrictions.eq("surveyQuestion", question))
+//		c.add(Restrictions.like("groupUuidString", group.uuid, MatchMode.ANYWHERE))
+//		
+//		return c.setFlushMode(FlushMode.COMMIT).list()
+//	}
 	
 	Set<SurveyElement> getSurveyElements(DataElement dataElement, Survey survey) {
 		def c = SurveyElement.createCriteria()

@@ -24,19 +24,25 @@
 						<td><g:i18n field="${row.names}" /></td>
 						<g:each in="${question.getColumns(organisationUnitGroup)}" var="column">
 							<g:set var="surveyElement" value="${row.surveyElements[column]}"/>
-							<g:set var="dataElement" value="${surveyElement.dataElement}"/>
-							<g:set var="enteredValue" value="${surveyPage.elements[surveyElement]}" />
 			
-							<td id="element-${surveyElement.id}" class="survey-element">
-								<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
-									value: enteredValue.value, 
-									lastValue: enteredValue.lastValue,
-									type: dataElement.type, 
-									suffix:'',
-									surveyElement: surveyElement, 
-									enteredValue: enteredValue, 
-									readonly: readonly
-								]" />
+							<td id="element-${surveyElement?.id}" class="survey-element">
+								<g:if test="${surveyElement != null}">
+									<g:set var="dataElement" value="${surveyElement.dataElement}"/>
+									<g:set var="enteredValue" value="${surveyPage.elements[surveyElement]}" />
+				
+									<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
+										value: enteredValue.value, 
+										lastValue: enteredValue.lastValue,
+										type: dataElement.type, 
+										suffix:'',
+										surveyElement: surveyElement, 
+										enteredValue: enteredValue, 
+										readonly: readonly
+									]" />
+								</g:if>
+								<g:else>
+									No survey element for this cell.
+								</g:else>
 							</td>
 						</g:each>
 					</tr>

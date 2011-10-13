@@ -95,15 +95,16 @@ class SurveyValidationRuleController extends AbstractEntityController {
 		params.offset = params.offset ? params.int('offset'): 0
 
 		List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
+		SurveyElement surveyElement = null
 		if (params.int('elementId')) {		
-			SurveyElement surveyElement = SurveyElement.get(params.int('elementId'))
+			surveyElement = SurveyElement.get(params.int('elementId'))
 			validationRules.addAll(surveyElement.getValidationRules());
 		}
 		else {
 			Survey survey = Survey.get(params.int('surveyId'))
 			Set<SurveyElement> surveyElements = surveyElementService.getSurveyElements(null, survey)
-			surveyElements.each { surveyElement ->
-				validationRules.addAll(surveyElement.getValidationRules())	
+			surveyElements.each { element ->
+				validationRules.addAll(element.getValidationRules())	
 			}
 		}
 		validationRules.sort {it.id}

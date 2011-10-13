@@ -140,6 +140,10 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 	
 	def "test retrieve validation rules"() {
 		setup:
+		def set = newOrganisationUnitGroupSet(GROUP_SET_TYPE);
+		def hc = newOrganisationUnitGroup(HEALTH_CENTER_GROUP, set);
+		def dh = newOrganisationUnitGroup(DISTRICT_HOSPITAL_GROUP, set);
+		
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
@@ -152,20 +156,20 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		def list = null
 		
 		when:
-		list = surveyElementService.searchValidationRules(element, HEALTH_CENTER_GROUP)
+		list = surveyElementService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.isEmpty()
 		
 		when:
 		def rule1 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
-		list = surveyElementService.searchValidationRules(element, HEALTH_CENTER_GROUP)
+		list = surveyElementService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.equals(new HashSet([rule1]))
 		
 		when:
-		list = surveyElementService.searchValidationRules(element, DISTRICT_HOSPITAL_GROUP)
+		list = surveyElementService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (DISTRICT_HOSPITAL_GROUP) ))
 		
 		then:
 		list.isEmpty()
@@ -173,6 +177,10 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 	
 	def "test retrieve validation rule - several rules"() {
 		setup:
+		def set = newOrganisationUnitGroupSet(GROUP_SET_TYPE);
+		def hc = newOrganisationUnitGroup(HEALTH_CENTER_GROUP, set);
+		def dh = newOrganisationUnitGroup(DISTRICT_HOSPITAL_GROUP, set);
+		
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
@@ -187,7 +195,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		when:
 		def rule3 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
 		def rule4 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
-		list = surveyElementService.searchValidationRules(element, HEALTH_CENTER_GROUP)
+		list = surveyElementService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.equals(new HashSet([rule4]))
