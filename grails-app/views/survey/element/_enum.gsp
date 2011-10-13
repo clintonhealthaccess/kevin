@@ -7,7 +7,12 @@
 <div id="element-${surveyElement.id}-${suffix}" class="element element-enum ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
    	<g:if test="${!print}">
-		<select class="input ${!readonly?'loading-disabled':''}" name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
+	   	<g:if test="${lastValue!=null}">
+			<g:set var="option" value="${enume?.getOptionForValue(lastValue.enumValue)}"/>
+			<g:set var="tooltipValue" value="${option!=null?i18n(field: option.names):lastValue.enumValue}"/>
+		</g:if>
+		
+		<select class="tooltip input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
 			<option value="null">Select</option>
 			<g:each in="${enume?.enumOptions}" var="option">
 				<!-- TODO fix this, there should be a flag in the survey, not on the element directly -->
@@ -27,10 +32,6 @@
 			</div>
 		</g:each>
 	</g:else>
-	<g:if test="${lastValue!=null}">
-		<g:set var="option" value="${enume?.getOptionForValue(lastValue.enumValue)}"/>
-		<span class="survey-old-value">(${option!=null?i18n(field: option.names):lastValue.enumValue})</span>
-	</g:if>
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
 	</div>

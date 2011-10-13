@@ -135,12 +135,19 @@ modules = {
 		resource url: 'js/questionhelp_init.js', bundle: 'core'
 	}
 
+	tipsy {
+		dependsOn 'jquery'
+
+		resource url: 'js/jquery/tipsy/src/javascripts/jquery.tipsy.js', bundle: 'core'
+		resource url: 'js/tipsy_init.js', bundle: 'core'
+	}
+
 	ajaxmanager {
 		dependsOn 'jquery'
-		
+
 		resource url: 'js/jquery/ajaxmanager/jquery.ajaxmanager.js'
 	}
-	
+
 	// Start resources for pages
 	list {
 		dependsOn 'core,spinner'
