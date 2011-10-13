@@ -49,8 +49,12 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 		return entity
 	}
 	
+	def getLabel() {
+		return "dashboard.objective.label"
+	}
+	
 	def getTemplate() {
-		return '/dashboard/dashboardObjective/createObjective';
+		return '/dashboard/createObjective';
 	}
 	
 	def bindParams(def objectiveEntry) {
@@ -60,6 +64,11 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 		if (params.entry?.descriptions!=null) objectiveEntry.entry.descriptions = params.entry?.descriptions
 		
 		objectiveEntry.properties = params;
+	}
+	
+	@CacheFlush("dashboardCache")
+	def edit = {
+		super.edit()
 	}
 	
 	@CacheFlush("dashboardCache")

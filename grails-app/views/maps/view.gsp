@@ -67,10 +67,12 @@
 											</a>
 								  			<shiro:hasPermission permission="admin:maps">
 												<span>
-													<g:link class="flow-edit" controller="mapsTarget" action="edit" id="${target.id}">(edit)</g:link>
+													<a href="${createLinkWithTargetURI(controller:'mapsTarget', action:'edit', id:target.id)}">(Edit)</a>
 												</span>
 												<span>
-													<g:link class="flow-delete" controller="mapsTarget" action="delete" id="${target.id}">(delete)</g:link>
+													<a href="${createLinkWithTargetURI(controller:'mapsTarget', action:'delete', id:target.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+														(Delete)
+													</a>
 												</span>
 											</shiro:hasPermission>
 										</li>
@@ -85,7 +87,7 @@
 				</div>
 		   		<shiro:hasPermission permission="admin:maps">
 					<div>
-						<a id="add-maps-target-link" class="flow-add" href="${createLink(controller:'mapsTarget', action:'create')}" class="flow-add">add target</a>
+						<a href="${createLinkWithTargetURI(controller:'mapsTarget', action:'create')}" >add target</a>
 					</div>
 				</shiro:hasPermission>				
 				<div class="clear"></div>
@@ -96,23 +98,6 @@
 	    			<div id="map_canvas"></div>
     			</div>
     			
-    			<!-- ADMIN SECTION -->
-	  			<shiro:hasPermission permission="admin:maps">
-	    			<div class="hidden flow-container"></div>
-
-					<r:script>
-						$(document).ready(function() {
-							$('#maps-container').flow({
-								onSuccess: function(data) {
-									if (data.result == 'success') {
-										location.reload();
-									}
-								}
-							});
-						});
-					</r:script>
-					</shiro:hasPermission>		    	
-					<div class="clear"></div>
     		</div>
     	</div>
     	

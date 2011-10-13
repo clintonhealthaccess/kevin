@@ -1,4 +1,4 @@
-<div class="entity-form-container togglable" id="add-dashboard-objective">
+<div class="entity-form-container togglable">
 	
 	<div class="entity-form-header">
 		<h3 class="title">Dashboard objective</h3>
@@ -6,7 +6,7 @@
 		<div class="clear"></div>
 	</div>
 
-	<g:form url="[controller:'dashboardObjective', action:'save']" useToken="true">
+	<g:form url="[controller:'dashboardObjective', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="entry.names" label="Name" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.names}" field="names"/>
 		<g:i18nTextarea name="entry.descriptions" label="Description" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.descriptions}" field="descriptions"/>
 		<g:input name="entry.code" label="Code" bean="${objectiveEntry?.entry}" field="code"/>
@@ -24,7 +24,7 @@
 		
 		<div class="row">
 			<button type="submit">Save objective</button>
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
     </g:form>
 	<div class="clear"></div>

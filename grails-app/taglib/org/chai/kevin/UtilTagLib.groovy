@@ -32,6 +32,13 @@ class UtilTagLib {
 
 	def localeService;
 	
+	def createLinkWithTargetURI = {attrs, body ->
+		if (attrs['params'] == null) attrs['params'] = [:]
+		else attrs['params'] = new HashMap(attrs['params'])
+		attrs['params'] << [targetURI: g.createLink(controller: controllerName, action: actionName, params: params) - request.contextPath];
+		out << g.createLink(attrs, body)
+	}
+	
 	def toHtml = {attrs, body ->
 		out << attrs.value.replaceAll("(\\r\\n|\\n)", "<br/>").replaceAll("( )", "&nbsp;")	
 	}

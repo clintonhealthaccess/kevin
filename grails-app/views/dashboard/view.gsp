@@ -24,7 +24,7 @@
 						<ul>
 							<g:each in="${periods}" var="period">
 								<li>
-									<a href="${createLink(controller: "dashboard", action:"view", params:[period: period.id, objective: currentObjective.id, organisation: currentOrganisation.id])}">
+									<a href="${createLink(controller:'dashboard', action:'view', params:[period: period.id, objective: currentObjective.id, organisation: currentOrganisation.id])}">
 										<span><g:dateFormat format="yyyy" date="${period.startDate}"/></span>
 									</a>
 								</li>
@@ -106,23 +106,27 @@
 								    		<shiro:hasPermission permission="admin:dashboard">
 							    				<g:if test="${!objective.isTarget()}">
 													<span>
-														<a class="flow-edit" href="${createLink(controller:'dashboardObjective',action:'edit',id:objectiveEntry.id)}">(<g:message code="dashboard.admin.edit" default="edit"/>)</a>
+														<a href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'edit', id:objectiveEntry.id)}">(<g:message code="dashboard.admin.edit" default="edit"/>)</a>
 													</span>
 												</g:if>
 												<g:else>
 													<span>
-														<a class="flow-edit" href="${createLink(controller:'dashboardTarget',action:'edit',id:objectiveEntry.id)}">(<g:message code="dashboard.admin.edit" default="edit"/>)</a>
+														<a href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'edit', id:objectiveEntry.id)}">(<g:message code="dashboard.admin.edit" default="edit"/>)</a>
 													</span>
 												</g:else>
 												<g:if test="${!objective.hasChildren()}">
 													<g:if test="${!objective.isTarget()}">
 														<span>
-															<a class="flow-delete" href="${createLink(controller:'dashboardObjective',action:'delete',id:objectiveEntry.id)}">(<g:message code="dashboard.admin.delete" default="delete"/>)</a>
+															<a href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'delete', id:objectiveEntry.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+																(<g:message code="dashboard.admin.delete" default="delete"/>)
+															</a>
 														</span>
 													</g:if>
 													<g:else>
 														<span>
-															<a class="flow-delete" href="${createLink(controller:'dashboardTarget',action:'delete',id:objectiveEntry.id)}">(<g:message code="dashboard.admin.delete" default="delete"/>)</a>
+															<a href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'delete', id:objectiveEntry.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+																(<g:message code="dashboard.admin.delete" default="delete"/>)
+															</a>
 														</span>
 													</g:else>
 												</g:if>
@@ -190,30 +194,13 @@
 				    	<!-- ADMIN SECTION -->
 			    		<shiro:hasPermission permission="admin:dashboard">
 			    			<div class="float-right">
-								<div><a id="add-dashboard-target-link" class="flow-add" href="${createLink(controller:'dashboardTarget', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.target" default="Add indicator"/></a></div>
-								<div><a id="add-dashboard-objective-link" class="flow-add" href="${createLink(controller:'dashboardObjective', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.objective" default="Add objective"/></a></div>
+								<div><a href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.target" default="Add target"/></a></div>
+								<div><a href="${createLinkWithTargetURI(controller:'dashboardObjective', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.objective" default="Add objective"/></a></div>
 							</div>
 						</shiro:hasPermission>
 				    	<!-- ADMIN SECTION END -->
 				    	
 			    	</div>
-			    	<!-- ADMIN SECTION -->
-		    		<shiro:hasPermission permission="admin:dashboard">
-		    			<div class="hidden flow-container"></div>
-						
-						<r:script>
-							$(document).ready(function() {
-								$('#values').flow({
-									onSuccess: function(data){
-										if (data.result == 'success') {
-											location.reload();
-										}
-									}
-								});
-							});
-						</r:script>
-			    	</shiro:hasPermission>
-			    	<!-- ADMIN SECTION END -->
 			    </div>
 			    <!-- center -->
 	    	</div>

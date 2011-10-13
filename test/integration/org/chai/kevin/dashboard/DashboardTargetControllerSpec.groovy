@@ -77,7 +77,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		dashboardTargetController.delete()
 		
 		then:
-		dashboardTargetController.response.contentAsString.contains "success";
+		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 
 		DashboardTarget.count() == 0
 		DashboardObjectiveEntry.count() == 0
@@ -98,7 +98,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
-		dashboardTargetController.response.contentAsString.contains "success";
+		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 		newTarget != null
 		newTarget.parent.weight == 1
 		DashboardObjectiveEntry.count() == 1
@@ -122,7 +122,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
-		dashboardTargetController.response.contentAsString.contains "success";
+		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 		newTarget != null
 		newTarget.calculation.expressions['Health Center'] == expression
 		newTarget.calculation.expressions['District Hospital'] == null
@@ -152,7 +152,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
-		dashboardTargetController.response.contentAsString.contains "success";
+		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 		newTarget != null
 		newTarget.calculation.expressions['Health Center'] == expression
 		newTarget.calculation.expressions['District Hospital'] == null

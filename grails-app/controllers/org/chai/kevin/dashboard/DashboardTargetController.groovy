@@ -53,8 +53,12 @@ class DashboardTargetController extends AbstractObjectiveController {
 		return entity
 	}
 	
+	def getLabel() {
+		return 'dashboard.target.label'
+	}
+	
 	def getTemplate() {
-		return '/dashboard/dashboardTarget/createTarget'
+		return '/dashboard/createTarget'
 	}
 	
 	def saveEntity(def entity) {
@@ -83,6 +87,10 @@ class DashboardTargetController extends AbstractObjectiveController {
 		
 	}
 
+	@CacheFlush("dashboardCache")
+	def edit = {
+		super.edit()
+	}
 	
 	@CacheFlush("dashboardCache")
 	def save = {

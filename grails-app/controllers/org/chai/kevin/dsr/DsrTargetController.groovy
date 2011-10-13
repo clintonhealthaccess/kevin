@@ -55,6 +55,10 @@ class DsrTargetController extends AbstractEntityController {
 		return new DsrTarget()
 	}
 
+	def getLabel() {
+		return "dsr.target.label"
+	}
+	
 	def getTemplate() {
 		return "/dsr/createTarget"
 	}
@@ -68,15 +72,6 @@ class DsrTargetController extends AbstractEntityController {
 			categories: DsrTargetCategory.list(),
 			groupUuids: Utils.split(entity.groupUuidString)
 		]
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	
-	def saveEntity(def entity) {
-		entity.save();
 	}
 
 	def deleteEntity(def entity) {

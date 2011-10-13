@@ -41,28 +41,23 @@ class EnumController extends AbstractEntityController {
 	def getEntity(def id){
 		return Enum.get(id)
 	}
+	
 	def createEntity(){  
 		return new Enum();
 	}
+	
+	def getLabel() {
+		'enum.label'
+	}
+	
 	def getTemplate() {
 		return "/entity/data/createEnum"
 	}
+	
 	def getModel(def entity) {
-		[
-		 enumeration: entity,
-		]
+		[enumeration: entity]
 	}
 
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
-	}
 	def bindParams(def entity) {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary
@@ -78,7 +73,7 @@ class EnumController extends AbstractEntityController {
 			entities: enums,
 			template: "data/enumList",
 			entityCount: Enum.count(),
-			code: 'enum.label'
+			code: getLabel()
 		])
 		
 	}

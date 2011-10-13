@@ -1,4 +1,4 @@
-<div id="add-cost-objective" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
 		<h3 class="title">Dashboard objective</h3>
@@ -6,7 +6,7 @@
 		<div class="clear"></div>
 	</div>
 	
-	<g:form url="[controller:'costObjective', action:'save']" useToken="true">
+	<g:form url="[controller:'costObjective', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${objective}" value="${objective.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${objective}" value="${objective.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${objective}" field="code"/>
@@ -18,7 +18,7 @@
 		
 		<div class="row">
 			<button type="submit">Save objective</button>
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
     </g:form>
 	<div class="clear"></div>

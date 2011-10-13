@@ -1,13 +1,12 @@
 <%@ page import="org.chai.kevin.data.Type.ValueType" %>
 
-		
-<div id="add-data-element" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">Create Data Element</h3>
 		<g:locales/>
 		<div class="clear"></div>
 	</div>
-	<g:form url="[controller:'dataElement', action:'save']" useToken="true">
+	<g:form url="[controller:'dataElement', action:'save', params:[targetURI: targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${dataElement}" value="${dataElement.names}" label="Name" field="names" />
 		<g:i18nTextarea name="descriptions" bean="${dataElement}" value="${dataElement.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
 		
@@ -21,7 +20,7 @@
 		</g:if>
 		<div class="row">
 			<button type="submit" class="rich-textarea-form">Save Date Element</button>
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
 		
 	</g:form>

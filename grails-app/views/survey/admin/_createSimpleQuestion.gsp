@@ -8,7 +8,7 @@
 
 	<div class="forms-container">
 		<div class="data-field-column">
-			<g:form url="[controller:'simpleQuestion', action:'save']" useToken="true">
+			<g:form url="[controller:'simpleQuestion', action:'save', params:[targetURI: targetURI]]" useToken="true">
 				<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250" width="400" maxHeight="150" />
 
 				<input type="hidden" name="descriptions.jsonText" value=" " />
@@ -74,7 +74,7 @@
 				</g:if>
 				<div class="row">
 					<button type="submit" class="rich-textarea-form">Save Question</button>
-					<button id="cancel-button">Cancel</button>
+					<a href="${createLink(uri: targetURI)}">cancel</a>
 				</div>
 			</g:form>
 		</div>
@@ -92,7 +92,7 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		getDataElement(function(event){

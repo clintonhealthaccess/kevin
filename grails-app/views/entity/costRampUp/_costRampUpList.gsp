@@ -1,3 +1,5 @@
+<!-- TODO fix this -->
+
 <%@ page import="org.chai.kevin.cost.CostRampUp" %>
 <table>
     <thead>
@@ -8,9 +10,11 @@
         </tr>
     </thead>
     <tbody>
-    <g:each in="${entities}" status="i" var="costRampUpInstance">
+    <g:each in="${entities}" status="i" var="costRampUp">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-            <td><g:link action="show" id="${costRampUpInstance.id}">${fieldValue(bean: costRampUpInstance, field: "id")}</g:link></td>
+            <td>
+            	<a href="${createLinkWithTargetURI(action:'edit', id:costRampUp.id)}">${fieldValue(bean: costRampUpInstance, field: "id")}</a>
+            </td>
             <td><g:i18n field="${costRampUpInstance.names}" /></td>
             <td>${fieldValue(bean: costRampUpInstance, field: "years")}</td>
         </tr>

@@ -26,14 +26,14 @@
 								</a>
 							</li>
 							<li>
-								<g:link controller="enum" action="edit" id="${enumation.id}" class="flow-edit">
+								<a href="${createLinkWithTargetURI(controller:'enum', action:'edit', params:[id: enumation.id])}">
 									<g:message code="general.text.edit" default="Edit" />
-								</g:link>
+								</a>
 							</li>
 							<li>
-								<g:link controller="enum" action="delete" id="${enumation.id}" class="flow-delete">
+								<a href="${createLinkWithTargetURI(controller:'enum', action:'delete', params:[id: enumation.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 									<g:message code="general.text.delete" default="Delete" />
-								</g:link>
+								</a>
 							</li>
 						</ul>
 					</div>

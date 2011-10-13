@@ -1,6 +1,6 @@
 <%@ page import="org.chai.kevin.cost.CostTarget.CostType" %>
 
-<div id="add-cost-target" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
 		<h3 class="title">Costing target</h3>
@@ -8,18 +8,14 @@
 		<div class="clear"></div>
 	</div>
 
-	<g:form url="[controller:'costTarget', action:'save']" useToken="true">
+	<g:form url="[controller:'costTarget', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${target}" value="${target.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${target}" field="code"/>
 
 		<div class="row">
 			<h5>Expressions</h5>
-			<div class="float-right">
-				<a id="add-expression-link" href="${createLink(controller:'expression', action:'create')}">new expression</a>
-			</div>
-			<div class="clear"></div>
-			
+
 			<div id="expressions-block">
 				<g:each status="i" in="${['','End']}" var="suffix">
 					<div class="${hasErrors(bean:target, field:'expression'+suffix, 'errors')}">
@@ -59,7 +55,7 @@
 			<label for="costRampUp.id">Ramp up</label>
 
 			<div class="float-right">
-				<a id="add-ramp-up-link" href="${createLink(controller:'costRampUp', action:'create')}">new ramp-up</a>
+				<a href="${createLinkWithTargetURI(controller:'costRampUp', action:'create')}">new ramp-up</a>
 			</div>
 	
 			<select name="costRampUp.id" class="ramp-up-list">
@@ -84,35 +80,8 @@
 		</g:else>
 		<div class="row">
 			<button type="submit">Save target</button>
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
     </g:form>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('#add-cost-target').flow({
-			addLinks: '#add-ramp-up-link',
-			onSuccess: function(data) {
-				if (data.result == 'success') {
-					var rampUp = data.newEntity;
-					$('.ramp-up-list').append('<option value="'+rampUp.id+'">'+rampUp.names[data.locale]+'</option>');
-// 					$.sexyCombo.changeOptions('.ramp-up-list');
-				}
-			}
-		});
-		
-		$('#add-cost-target').flow({
-			addLinks: '#add-expression-link',
-			onSuccess: function(data) {
-				if (data.result == 'success') {
-					var expression = data.newEntity
-					$('.expression-list').append('<option value="'+expression.id+'">'+expression.names[data.locale]+'</option>');
-// 					$.sexyCombo.changeOptions('.expression-list');
-				}
-			}
-		});
-	});
-</script>

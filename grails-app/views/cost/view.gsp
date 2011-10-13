@@ -24,7 +24,7 @@
 							<ul>
 								<g:each in="${periods}" var="period">
 									<li>
-										<a href="${createLink(controller: "cost", action:"view", params:[period: period.id, objective: costTable.currentObjectiveId, organisation: costTable.currentOrganisationId])}">
+										<a href="${createLink(controller:'cost', action:'view', params:[period: period.id, objective: costTable.currentObjectiveId, organisation: costTable.currentOrganisationId])}">
 											<span><g:dateFormat format="yyyy" date="${period.startDate}"/></span>
 										</a>
 									</li>
@@ -64,16 +64,18 @@
 									<g:each in="${objectives}" var="objective">
 										<li>
 											<span>
-												<a href="${createLink(controller: "cost", action:"view", params:[period: costTable.currentPeriod.id, objective: objective.id, organisation: costTable.currentOrganisationId])}">
+												<a href="${createLink(controller:'cost', action:'view', params:[period: costTable.currentPeriod.id, objective: objective.id, organisation: costTable.currentOrganisationId])}">
 													<g:i18n field="${objective.names}"/>
 												</a>
 											</span>
 											<shiro:hasPermission permission="cost:admin">
 												<span>
-													<g:link controller="costObjective" action="edit" id="${objective.id}" class="flow-edit">(edit)</g:link>
+													<a href="${createLinkWithTargetURI(controller:'costObjective', action:'edit', id:objective.id)}">(Edit)</a>
 												</span>
 												<span>
-													<g:link controller="costObjective" action="delete" id="${objective.id}" class="flow-delete">(Delete)</g:link>
+													<a href="${createLinkWithTargetURI(controller:'costObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+														(Delete)
+													</a>
 												</span>
 											</shiro:hasPermission>
 										</li>
@@ -89,7 +91,7 @@
 				<div class="clear"></div>
 				<shiro:hasPermission permission="admin:cost">					
 				<div>
-						<a class="flow-add" id="add-cost-objective-link" href="${createLink(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
+						<a href="${createLinkWithTargetURI(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
 					</div>
 				</shiro:hasPermission>
 				
@@ -120,9 +122,12 @@
 												<span>
 													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: costTable.currentOrganisationId])}"><g:i18n field="${target.names}"/></a>
 												</span>
-												<span>
-													<a href=${createLink(controller:"costTarget", action:"edit", id: target.id)} class="flow-edit">(edit)</a>
-												</span>
+												
+												<shiro:hasPermission permission="admin:cost">		
+													<span>
+														<a href="${createLinkWithTargetURI(controller:'costTarget', action:'edit', id: target.id)}">(edit)</a>
+													</span>
+												</shiro:hasPermission>
 											</th>
 											<g:each in="${costTable.years}" var="year">
 												<g:set value="${costTable.getCost(target, year)}" var="cost"/>
@@ -144,7 +149,7 @@
 						<!-- ADMIN SECTION -->
 						<shiro:hasPermission permission="admin:cost">							
 							<div>
-								<a id="add-cost-target-link" class="flow-add" href="${createLink(controller:'costTarget', action:'create', params:[currentObjective: costTable.currentObjective?.id])}">add target</a>
+								<a href="${createLinkWithTargetURI(controller:'costTarget', action:'create', params:[currentObjective: costTable.currentObjective?.id])}">add target</a>
 							</div>
 						</shiro:hasPermission>
 						<!-- ADMIN SECTION END -->
@@ -153,23 +158,6 @@
 						<div>Please select an organisation / objective</div>
 					</g:else>
 				</div>
-				<!-- ADMIN SECTION -->
-				<shiro:hasPermission permission="admin:cost">							
-	    			<div class="hidden flow-container"></div>
-
-					<r:script>
-						$(document).ready(function() {
-							$('#values').flow({
-								onSuccess: function(data) {
-									if (data.result == 'success') {
-										location.reload();
-									}
-								}
-							});
-						});
-					</r:script>
-				</shiro:hasPermission>
-		    	<!-- ADMIN SECTION END -->
 				<div class="clear"></div>
     		</div>
     	</div>

@@ -201,12 +201,10 @@ class EditSurveyController extends AbstractController {
 			boolean success = surveyPageService.submit(currentOrganisation, currentObjective);
 						
 			if (success) {
-				flash.message = "survey.objective.submitted";
-				flash.default = "Thanks for submitting";
+				flash.message = message(code: "survey.objective.submitted", default: "Thanks for submitting.");
 			}
 			else {
-				flash.message = "survey.objective.review";
-				flash.default = "The survey could not be submitted, please review the sections."
+				flash.message = message(code: "survey.objective.review", default: "The survey could not be submitted, please review the sections.");
 			}
 			
 			redirect (action: "objectivePage", params: [organisation: currentOrganisation.id, objective: currentObjective.id])

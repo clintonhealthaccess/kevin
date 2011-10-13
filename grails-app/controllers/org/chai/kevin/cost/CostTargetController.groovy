@@ -52,8 +52,12 @@ class CostTargetController extends AbstractEntityController {
 		return new CostTarget()
 	}
 	
+	def getLabel() {
+		return "cost.target.label"
+	}
+	
 	def getTemplate() {
-		return "/cost/costTarget/createTarget"
+		return "/cost/createTarget"
 	}
 	
 	def getModel(def entity) {
@@ -73,10 +77,6 @@ class CostTargetController extends AbstractEntityController {
 		]
 	}
 	
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-	
 	def saveEntity(def entity) {
 		if (entity.id == null) {
 			def currentObjective = CostObjective.get(params['currentObjective']);
@@ -86,10 +86,6 @@ class CostTargetController extends AbstractEntityController {
 		else {
 			entity.save();
 		}
-	}
-	
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 	
 	def bindParams(def entity) {

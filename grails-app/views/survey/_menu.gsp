@@ -169,6 +169,8 @@
 		var element = $(toRemove).parents('.element').first();
 		
 		$(toRemove).parents('div').first().remove();
+		
+		// TODO get rid of the reload
 		surveyValueChanged(element, $(element).find('.list-input'), function(data, element) {location.reload()});
 	}
 	

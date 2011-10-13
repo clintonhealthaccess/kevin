@@ -32,14 +32,14 @@
 									<a href="${createLink(controller:'surveyValidationRule', action:'list', params:[surveyId: survey?.id])}">Validation Rules</a>
 								</li>
 								<li>
-									<g:link controller="survey" action="edit" id="${survey.id}" class="flow-edit">
+									<a href="${createLinkWithTargetURI(controller:'survey', action:'edit', params:[id: survey.id])}">
 								    	<g:message code="general.text.edit" default="Edit" /> 
-									</g:link>
+									</a>
 								</li>
 								<li>
-							    	<g:link controller="survey" action="delete" id="${survey.id}" class="flow-delete">
+							    	<a href="${createLinkWithTargetURI(controller:'survey', action:'delete', params:[id: survey.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 								        <g:message code="general.text.delete" default="Delete" /> 
-								    </g:link>
+								    </a>
 								</li>
 								<li>
 							    	<g:link controller="survey" action="clone" id="${survey.id}">

@@ -6,7 +6,7 @@
 	</div>
 	<div class="forms-container"">
 		<div class="data-field-column">
-			<g:form url="[controller:'surveyValidationRule', action:'save']" useToken="true">
+			<g:form url="[controller:'surveyValidationRule', action:'save', params:[targetURI: targetURI]]" useToken="true">
 		 		<input type="hidden" name="surveyElement.id" value="${validation.surveyElement.id}" />
 		 		<div class="row">
 		 			<label>Survey Element</label>
@@ -57,7 +57,7 @@
 				</g:if>
 				<div class="row">
 					<button type="submit" class="rich-textarea-form">Save Rule</button>
-					<button id="cancel-button">Cancel</button>
+					<a href="${createLink(uri: targetURI)}">cancel</a>
 				</div>
 			</g:form>
 		</div>
@@ -76,7 +76,7 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
+
 <script type="text/javascript">
 	$(document).ready(function() {		
 		$("#dependencies-list").ajaxChosen({

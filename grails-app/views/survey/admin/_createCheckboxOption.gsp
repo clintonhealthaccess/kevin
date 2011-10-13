@@ -6,7 +6,7 @@
 	</div>
 	<div class="forms-container">
 		<div class="data-field-column">
-			<g:form url="[controller:'checkboxOption', action:'save']" useToken="true">
+			<g:form url="[controller:'checkboxOption', action:'save', params:[targetURI: targetURI]]" useToken="true">
 				<input type="hidden" name="question.id"  value="${option.question?.id}" />
 				
 				<g:i18nRichTextarea name="names" bean="${option}" value="${option.names}" label="Option" field="names" height="150"  width="300" maxHeight="150" />
@@ -37,7 +37,7 @@
 				</g:if>
 				<div class="row">
 					<button type="submit" class="rich-textarea-form">Save Option</button>
-					<button id="cancel-button">Cancel</button>
+					<a href="${createLink(uri: targetURI)}">cancel</a>
 				</div>
 			</g:form>
 		</div>
@@ -56,7 +56,6 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		getDataElement(function(event) {

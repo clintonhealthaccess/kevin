@@ -1,4 +1,4 @@
-<div id="add-dsr-objective" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
 		<h3 class="title">D.S.Rs Objective</h3>
@@ -6,7 +6,7 @@
 		<div class="clear"></div>
 	</div>
 	
-	<g:form url="[controller:'dsrObjective', action:'save']" useToken="true">
+	<g:form url="[controller:'dsrObjective', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${objective}" value="${objective.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${objective}" value="${objective.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${objective}" field="code"/>
@@ -18,7 +18,7 @@
 		
 		<div class="row">
 			<button type="submit">Save Objective</button>&nbsp;&nbsp;
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
     </g:form>
 	<div class="clear"></div>

@@ -65,6 +65,10 @@ class DataElementController extends AbstractEntityController {
 		return entity;
 	}
 
+	def getLabel() {
+		return 'dataelement.label'
+	}
+	
 	def getTemplate() {
 		return "/entity/data/createDataElement";
 	}
@@ -88,17 +92,14 @@ class DataElementController extends AbstractEntityController {
 		return valid;
 	}
 
-	def saveEntity(def entity) {
-		entity.save()
-	}
-
 	def deleteEntity(def entity) {
 		// we delete the entity only if there are no associated values
 		// should we throw an exception in case we can't delete ?
+		
+		// TODO a data element can have associated survey elements
 		if (valueService.getNumberOfValues(entity) == 0) entity.delete(flush: true)
 		else {
-			flash.message = "dataelement.delete.hasvalues";
-			flash.default = "Could not delete element, it still has values";
+			flash.message = message(code: "dataelement.delete.hasvalues", default: "Could not delete element, it still has values");
 		}
 	}
 
@@ -126,7 +127,7 @@ class DataElementController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: dataElements,
 			template: "data/dataElementList",
-			code: "dataelement.label",
+			code: getLabel(),
 			entityCount: dataService.countData(DataElement.class, params['q'], []),
 			search: true
 		])
@@ -141,7 +142,7 @@ class DataElementController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: dataElements,
 			template: "data/dataElementList",
-			code: "dataelement.label",
+			code: getLabel(),
 			entityCount: DataElement.count()
 		])
 	}

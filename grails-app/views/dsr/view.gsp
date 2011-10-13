@@ -23,7 +23,7 @@
 						<div class="hidden dropdown-list">
 							<ul>
 								<g:each in="${periods}" var="period">
-									<li><a href="${createLink(controller: "dsr", action:"view", params:[period:period.id, objective: currentObjective?.id, organisation: currentOrganisation?.id])}">
+									<li><a href="${createLink(controller:'dsr', action:'view', params:[period:period.id, objective: currentObjective?.id, organisation: currentOrganisation?.id])}">
 										<span><g:dateFormat format="yyyy" date="${period.startDate}" /></span> 
 										</a>
 									</li>
@@ -67,16 +67,18 @@
 									<g:each in="${objectives}" var="objective">
 										<li>
 											<span>
-												<a href="${createLink(controller: "dsr", action:"view", params:[period: currentPeriod.id, objective: objective?.id, organisation: currentOrganisation?.id])}">
+												<a href="${createLink(controller: 'dsr', action:'view', params:[period: currentPeriod.id, objective: objective?.id, organisation: currentOrganisation?.id])}">
 													<g:i18n field="${objective.names}"/>
 												</a>
 											</span>
 								    		<shiro:hasPermission permission="admin:dsr">
 												<span>
-													<g:link controller="dsrObjective" action="edit" id="${objective.id}" class="flow-edit">(Edit)</g:link>
+													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:objective.id)}">(Edit)</a>
 												</span>
 												<span>
-													<g:link controller="dsrObjective" action="delete" id="${objective.id}" class="flow-delete">(Delete)</g:link>
+													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+														(Delete)
+													</a>
 												</span>
 											</shiro:hasPermission>
 										</li>
@@ -110,9 +112,9 @@
 				<div>
 				<!-- ADMIN SECTION -->
 				<shiro:hasPermission permission="admin:dsr">
-					<span> <a id="add-dsr-objective-link" class="flow-add" href="${createLink(controller:'dsrObjective', action:'create')}">Add Objective</a> </span>|
-						<span> <a id="add-dsr-target-link" class="flow-add" href="${createLink(controller:'dsrTarget', action:'create')}">Add Target</a> </span>|
-						<span> <a id="add-dsr-category-link" class="flow-add" href="${createLink(controller:'dsrTargetCategory', action:'create')}">Add Target Category</a> </span>
+					<span> <a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'create')}">Add Objective</a> </span>|
+					<span> <a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'create')}">Add Target</a> </span>|
+					<span> <a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'create')}">Add Target Category</a> </span>
 				</shiro:hasPermission>
 				<!-- ADMIN SECTION END -->
 			</div>
@@ -127,11 +129,19 @@
 									<th class="object-name-box" rowspan="2">
 										<div>
 											<g:i18n field="${currentObjective.names}" />
-										</div> <shiro:hasPermission permission="admin:dsr">
-											<span> <g:link controller="dsrObjective" action="delete" id="${currentObjective.id}" class="flow-delete">(Delete)</g:link> </span>
+										</div> 
+										<shiro:hasPermission permission="admin:dsr">
+											<span> 
+												<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:currentObjective.id)}">(Edit)</a> 
+											</span>
 											<br />
-											<span> <g:link controller="dsrObjective" action="edit" id="${currentObjective.id}" class="flow-edit">(Edit)</g:link> </span>
-										</shiro:hasPermission></th>
+											<span> 
+												<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+													(Delete)
+												</a> 
+											</span>
+										</shiro:hasPermission>
+									</th>
 									<g:set var="i" value="${0}" />
 									<g:each in="${dsrTable.targets}" var="target">
 										<g:if test="${target.category != null}">
@@ -142,10 +152,17 @@
 														<g:i18n field="${target.category.names}" />
 													</div> 
 													<shiro:hasPermission permission="admin:dsr">
-														<span> <a id="delete-dsr-target-category-link" class="flow-delete" href="${createLink(controller:'dsrTargetCategory', action:'delete', params:[id: target.category?.id])}"> (Delete) </a> </span>
+														<span> 
+															<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'edit', id:target.category?.id)}">(Edit)</a> 
+														</span>
 														<br />
-														<span> <a id="edit-dsr-target-category-link" class="flow-add" href="${createLink(controller:'dsrTargetCategory', action:'edit', params:[id: target.category?.id])}"> (Edit) </a> </span>
-													</shiro:hasPermission> <br /></th>
+														<span> 
+															<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'delete', id:target.category?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+																(Delete)
+															</a> 
+														</span>
+													</shiro:hasPermission> <br />
+												</th>
 												<g:set var="i" value="${0}" />
 											</g:if>
 										</g:if>
@@ -155,10 +172,17 @@
 													<g:i18n field="${target.names}" />
 												</div>
 												<shiro:hasPermission permission="admin:dsr">
-													<span> <a id="delete-dsr-target-link" class="flow-delete" href="${createLink(controller:'dsrTarget', action:'delete', params:[id: target?.id])}">(Delete)</a> </span>
+													<span> 
+														<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">(Edit)</a> 
+													</span>
 													<br />
-													<span> <a id="edit-dsr-target-link" class="flow-add" href="${createLink(controller:'dsrTarget', action:'edit', params:[id: target?.id])}">(Edit)</a> </span>
-												</shiro:hasPermission></th>
+													<span> 
+														<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+															(Delete)
+														</a> 
+													</span>
+												</shiro:hasPermission>
+											</th>
 										</g:else>
 									</g:each>
 								</tr>
@@ -170,10 +194,17 @@
 													<g:i18n field="${target.names}" />
 												</div> 
 												<shiro:hasPermission permission="admin:dsr">
-													<span> <a id="delete-dsr-target-link" class="flow-delete" href="${createLink(controller:'dsrTarget', action:'delete', params:[id: target?.id])}">(Delete)</a> </span>
+													<span> 
+														<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">(Edit)</a> 
+													</span>
 													<br />
-													<span> <a id="edit-dsr-target-link" class="flow-add" href="${createLink(controller:'dsrTarget', action:'edit', params:[id: target?.id])}">(Edit)</a> </span>
-												</shiro:hasPermission></th>
+													<span> 
+														<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+															(Delete)
+														</a> 
+													</span>
+												</shiro:hasPermission>
+											</th>
 										</g:if>
 									</g:each>
 								</tr>
@@ -206,7 +237,7 @@
 					</g:if>
 					<g:else>
 						<div>
-							Please <a id="add-dsr-target-link" class="flow-add" href="${createLink(controller:'dsrTarget', action:'create')}"> Add Target </a>
+							Please <a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'create')}"> Add Target </a>
 						</div>
 					</g:else>
 				</g:if>
@@ -214,22 +245,6 @@
 					<div>Please select an Organisation / Objective</div>
 				</g:else>
 			</div>
-			<!-- ADMIN SECTION -->
-			<shiro:hasPermission permission="admin:dsr">
-				<div class="hidden flow-container"></div>
-				<r:script>
-						$(document).ready(function() {
-							$('#values').flow({
-								onSuccess: function(data) {
-									if (data.result == 'success') {
-										location.reload();
-									}
-								}
-							});
-						});
-					</r:script>
-			</shiro:hasPermission>
-			<!-- ADMIN SECTION END -->
 			<div class="clear"></div>
 		</div>
 	</div>

@@ -11,6 +11,10 @@ class IterationController extends AbstractEntityController  {
 
 	def periodService
 
+	def getLabel() {
+		return 'iteration.label'
+	}
+	
 	def getEntity(def id) {
 		return Period.get(id)
 	}
@@ -31,18 +35,6 @@ class IterationController extends AbstractEntityController  {
 		return [iteration: entity]
 	}
 
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
-
-	def deleteEntity(def entity) {
-		entity.delete()
-	}
-
 	def bindParams(def entity) {
 		entity.properties = params
 		// TODO FIXME assumption : one and only one period type in database
@@ -57,7 +49,7 @@ class IterationController extends AbstractEntityController  {
 		render(view:'/entity/list', model: [
 			entities: iterations, 
 			entityCount: Period.count(),
-			code: 'iteration.label',
+			code: getLabel(),
 			template: 'iteration/iterationList'
 		])
 	}

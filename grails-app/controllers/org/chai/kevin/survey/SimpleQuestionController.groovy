@@ -48,6 +48,7 @@ class SimpleQuestionController extends AbstractEntityController {
 	def getEntity(def id) {
 		return SurveySimpleQuestion.get(id)
 	}
+	
 	def createEntity() {
 		def entity = new SurveySimpleQuestion();
 		//FIXME find a better to do this
@@ -55,6 +56,10 @@ class SimpleQuestionController extends AbstractEntityController {
 		return entity
 	}
 
+	def getLabel() {
+		return 'survey.simplequestion.label';
+	}
+	
 	def getTemplate() {
 		return "/survey/admin/createSimpleQuestion"
 	}
@@ -67,17 +72,6 @@ class SimpleQuestionController extends AbstractEntityController {
 			groupUuids: Utils.split(entity.groupUuidString),
 			headerPrefixes: entity.surveyElement!=null?surveyElementService.getHeaderPrefixes(entity.surveyElement):null
 		]
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 
 	def bindParams(def entity) {

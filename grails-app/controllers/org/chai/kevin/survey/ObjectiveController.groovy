@@ -43,12 +43,17 @@ class ObjectiveController extends AbstractEntityController {
 	def getEntity(def id) {
 		return SurveyObjective.get(id)
 	}
+	
 	def createEntity() {
 		def entity = new SurveyObjective()
 		if (!params['surveyId.id']) entity.survey = Survey.get(params.surveyId)
 		return entity;
 	}
 
+	def getLabel() {
+		return 'survey.objective.label'
+	}
+	
 	def getTemplate() {
 		return "/survey/admin/createObjective"
 	}
@@ -59,17 +64,6 @@ class ObjectiveController extends AbstractEntityController {
 			groups: organisationService.getGroupsForExpression(),
 			groupUuids: Utils.split(entity.groupUuidString)
 		]
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 
 	def bindParams(def entity) {
@@ -97,7 +91,7 @@ class ObjectiveController extends AbstractEntityController {
 			survey:survey,
 			entities: objectives.subList(params['offset'], max),
 			entityCount: objectives.size(),
-			code: 'survey.objective.label'
+			code: getLabel()
 		])
 	}
 }

@@ -1,4 +1,4 @@
-<div id="add-checkbox-question" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
 		<h3 class="title">Create a Checkbox Question</h3>
@@ -6,7 +6,7 @@
 		<div class="clear"></div>
 	</div>
 	
-	<g:form url="[controller:'checkboxQuestion', action:'save']" useToken="true">
+	<g:form url="[controller:'checkboxQuestion', action:'save', params:[targetURI: targetURI]]" useToken="true">
 		<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250" width="400" maxHeight="250" />
 		<g:input name="order" label="Order" bean="${question}" field="order"/>
 		
@@ -22,8 +22,8 @@
 		
 		<g:if test="${question.id != null}">
 			<div>
-				<a id="add-option-link" class="flow-add float-right" href="${createLink(controller:'checkboxOption', action:'create',params:[questionId: question.id])}">
-				<g:message code="general.text.addOption" default="Add Option" />
+				<a class="float-right" href="${createLinkWithTargetURI(controller:'checkboxOption', action:'create', params:[questionId: question.id])}">
+					<g:message code="general.text.addOption" default="Add Option" />
 				</a>
 			</div>
 		</g:if>
@@ -57,50 +57,14 @@
 		</g:if>
 		<div class="row">
 			<button type="submit" class="rich-textarea-form">Save Question</button>
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
 	</g:form>
 	<div class="clear"></div>
 </div>
 
-<div class="hidden flow-container"></div>
-
 <script type="text/javascript">
 	$(document).ready(function() {
 		getRichTextContent();
-		getEditOption('.flow-edit-option');
-		getAddedOption('#add-option-link');
 	});
-	
-	function getEditOption(selector) {
-		$('#add-checkbox-question').flow({
-			addLinks : [ selector ],
-			onSuccess : function(data) {
-				if (data.result == 'success') {
-					var checkboxOptionHtml = data.html;
-					var checkboxOptionId = data.newEntity;
-					var selector = '#question-option-'+checkboxOptionId.id;
-					$(selector).replaceWith(
-						'<td id="question-option-'+checkboxOptionId.id+'">'+checkboxOptionHtml+'</td>');
-				}
-			 	getEditOption('#question-option-'+checkboxOptionId.id+' .flow-edit-option');
-			}
-		});
-	}
-	
-	function getAddedOption(selector) {
-		$('#add-checkbox-question').flow({
-			addLinks : [ '#add-option-link' ],
-			onSuccess : function(data) {
-				if (data.result == 'success') {
-					var checkboxOptionHtml = data.html;
-					var checkboxOptionId = data.newEntity;
-					$('#question-option').append(
-							'<tr class="question-option"><td id="question-option-'+checkboxOptionId.id+'">'
-									+ checkboxOptionHtml + '</td></tr>');
-					getEditOption('#question-option-'+checkboxOptionId.id+' .flow-edit-option');
-				}
-			}
-		});
-	}
 </script>

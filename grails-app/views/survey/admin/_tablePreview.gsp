@@ -1,4 +1,4 @@
-<div id="table-preview" class="white-box">
+<div class="white-box entity-list">
 	<g:i18n field="${question.names}" />
 	<table class="question-table" id="question-table-${question.id}">
 		<thead>
@@ -10,13 +10,12 @@
 					<th class="${question.getColumns().size()!=j?'question-tab-title':''}">
 						<g:i18n field="${column.names}" />			
 						<div> 
-							<g:link controller="tableColumn" action="edit" id="${column.id}" class="flow-edit"> 
+							<a href="${createLinkWithTargetURI(controller:'tableColumn', action:'edit', id: column.id)}">
 								<g:message code="general.text.edit" default="Edit" />
-							</g:link>&nbsp;
-						   
-							<g:link controller="tableColumn" action="delete" id="${column.id}" class="flow-delete">
+							</a>&nbsp;
+							<a href="${createLinkWithTargetURI(controller:'tableColumn', action:'delete', id: column.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 								<g:message code="general.text.delete" default="Delete" />
-							</g:link> 
+							</a>
 						</div>
 					</th>
 				</g:each>
@@ -28,13 +27,12 @@
 					<td>
 					<g:i18n field="${row.names}" />
 						<div> 
-							<g:link controller="tableRow" action="edit" id="${row.id}" class="flow-edit"> 
+							<a href="${createLinkWithTargetURI(controller:'tableRow', action:'edit', id: row.id)}"> 
 								<g:message code="general.text.edit" default="Edit" />
-							</g:link>&nbsp;
-						   
-							<g:link controller="tableRow" action="delete" id="${row.id}" class="flow-delete">
+							</a>&nbsp;
+							<a href="${createLinkWithTargetURI(controller:'tableRow', action:'delete', id: row.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 								<g:message code="general.text.delete" default="Delete" />
-							</g:link> 
+							</a>
 						</div>
 					</td>
 					<g:each in="${question.getColumns()}" var="column">
@@ -62,14 +60,4 @@
 			</g:each>
 		</tbody>
 	</table>
-	<button id="cancel-button">Done</button>
 </div>
-
-<div class="hidden flow-container"></div>
-
-<script type="text/javascript">
-	$('#table-preview').flow({
-		addLinks : ['.flow-edit'],
-		onSuccess : function(data) {}
-	});
-</script>

@@ -51,7 +51,11 @@ class CheckboxQuestionController extends AbstractEntityController {
 		if (!params['sectionId.id']) entity.section = SurveySection.get(params.sectionId)
 		return entity
 	}
-
+	
+	def getLabel() {
+		return 'survey.checkboxquestion.label';
+	}
+	
 	def getTemplate() {
 		return "/survey/admin/createCheckboxQuestion"
 	}
@@ -63,17 +67,6 @@ class CheckboxQuestionController extends AbstractEntityController {
 			sections: (entity.section)!=null?entity.survey.sections:null,
 			groupUuids: Utils.split(entity.groupUuidString)
 		]
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 
 	def bindParams(def entity) {

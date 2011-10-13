@@ -43,8 +43,7 @@ class CostRampUpControllerSpec extends IntegrationTests {
 		costRampUpController.create()
 		
 		then:
-		costRampUpController.response.contentAsString.contains "success";
-		costRampUpController.response.contentAsString.contains "years[1].year";
+		costRampUpController.modelAndView.model.rampUp.id == null
 		
 	}
 	

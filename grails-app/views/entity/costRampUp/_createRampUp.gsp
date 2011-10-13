@@ -8,7 +8,7 @@
 		<div class="clear"></div>
 	</div>
 	
-	<g:form url="[controller:'costRampUp', action:'save']" useToken="true">
+	<g:form url="[controller:'costRampUp', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${rampUp}" value="${rampUp.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${rampUp}" value="${rampUp.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${rampUp}" field="code"/>
@@ -31,7 +31,7 @@
 		
 		<div class="row">
 			<button type="submit">Save ramp-up</button>
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
     </g:form>
 	<div class="clear"></div>

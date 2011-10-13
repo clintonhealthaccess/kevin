@@ -4,7 +4,7 @@
 		<g:locales/>
 		<div class="clear"></div>
 	</div>
-	<g:form url="[controller:'enumOption', action:'save']" useToken="true">
+	<g:form url="[controller:'enumOption', action:'save', params:[targetURI: targetURI]]" useToken="true">
 	<input type="hidden" name="enume.id" value="${option.enume.id}"/>
 	<g:i18nTextarea name="names" bean="${option}" value="${option.names}" label="Option" field="names" height="100"  width="300" maxHeight="100" />
 	<g:i18nTextarea name="descriptions" bean="${option}" value="${option.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
@@ -16,9 +16,8 @@
 		</g:if>
 		<div class="row">
 			<button type="submit" class="rich-textarea-form">Save Enum Option</button>
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
     </g:form>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>

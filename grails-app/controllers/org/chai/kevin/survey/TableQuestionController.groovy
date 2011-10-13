@@ -52,6 +52,10 @@ class TableQuestionController extends AbstractEntityController {
 		return entity
 	}
 
+	def getLabel() {
+		return 'survey.tablequestion.label';
+	}
+	
 	def getTemplate() {
 		return "/survey/admin/createTableQuestion"
 	}
@@ -63,18 +67,6 @@ class TableQuestionController extends AbstractEntityController {
 			sections: (entity.section)!=null?entity.survey.sections:null,
 			groupUuids: Utils.split(entity.groupUuidString)
 		]
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		log.debug("saving: "+entity)
-		entity.save()
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 
 	def bindParams(def entity) {
@@ -92,16 +84,10 @@ class TableQuestionController extends AbstractEntityController {
 		if (NumberUtils.isNumber(params['questionId'])) {
 			question = SurveyTableQuestion.get(params['questionId'])
 		}
-		if (question == null){
-			render(contentType:"text/json") { result = 'error' }
-		}
-		else {
-			def List<SurveyElement> surveyElnt = question.getSurveyElements();
-			render (contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/survey/admin/tablePreview', model:[question: question,surveyElements: surveyElnt])
-			}
-		}
+
+		def List<SurveyElement> surveyElements = question.getSurveyElements();
+		
+		render (view: '/entity/edit', model: [question: question, surveyElements: surveyElements, template: '/survey/admin/tablePreview'])
 	}
 
 

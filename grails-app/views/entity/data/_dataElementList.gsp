@@ -25,14 +25,14 @@
 						<div class="hidden dropdown-list">
 							<ul>
 								<li>
-									<g:link controller="dataElement" action="edit" id="${dataElement.id}" class="flow-edit">
+									<a href="${createLinkWithTargetURI(controller:'dataElement', action:'edit', params:[id: dataElement.id])}">
 										<g:message code="general.text.edit" default="Edit" />
-									</g:link>
+									</a>
 								</li>
 								<li>
-									<g:link controller="dataElement" action="delete" id="${dataElement.id}" class="flow-delete">
+									<a href="${createLinkWithTargetURI(controller:'dataElement', action:'delete', params:[id: dataElement.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 										<g:message code="general.text.delete" default="Delete" />
-									</g:link>
+									</a>
 								</li>
 							</ul>
 						</div>

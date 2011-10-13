@@ -32,14 +32,14 @@
 						<div class="hidden dropdown-list">
 							<ul>
 								<li class="edit-validation-rule-link">
-									<g:link controller="surveyValidationRule" action="edit" id="${validationRule.id}" class="flow-edit">
+									<a href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'edit', params:[id: validationRule.id])}">
 										<g:message code="general.text.edit" default="Edit" /> 
-									</g:link>
+									</a>
 								</li>
 								<li class="delete-validation-rule-link">
-									<g:link controller="surveyValidationRule" action="delete" id="${validationRule.id}" class="flow-delete">
+									<a href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'delete', params:[id: validationRule.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 										<g:message code="general.text.delete" default="Delete" /> 
-									</g:link>
+									</a>
 								</li>
 							</ul>
 						</div>

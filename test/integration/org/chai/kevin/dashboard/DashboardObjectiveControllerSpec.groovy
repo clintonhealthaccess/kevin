@@ -61,7 +61,7 @@ class DashboardObjectiveControllerSpec extends DashboardIntegrationTests {
 		def newObjective = DashboardObjective.findByCode("NEW")
 		
 		then:
-		dashboardObjectiveController.response.contentAsString.contains "success";
+		dashboardObjectiveController.response.redirectedUrl.equals(dashboardObjectiveController.getTargetURI())
 		newObjective != null
 		newObjective.parent.weight == 1
 		DashboardObjectiveEntry.count() == 1

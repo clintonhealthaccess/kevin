@@ -51,20 +51,18 @@ class EnumOptionController extends AbstractEntityController {
 		return entity;
 	}
 	
+	def getLabel() {
+		return 'enumoption.label'
+	}
+	
 	def getTemplate() {
 		return "/entity/data/createEnumOption"
 	}
 	
 	def getModel(def entity) {
-		[
-		 option: entity,
-		]
+		[option: entity]
 	}
 	
-	def html(def entity){
-		return g.render (template:'/entity/data/enumOption', model:[option: entity])
-	}
-
 	def validateEntity(def entity) {
 		return entity.validate()
 	}
@@ -89,13 +87,14 @@ class EnumOptionController extends AbstractEntityController {
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		Enum enume = Enum.get(params.int('enumId'));
+		
 		List<EnumOption> options = enume.enumOptions;
 		
 		render (view: '/entity/list', model:[
 			entities: options,
 			template: "data/enumOptionList",
 			entityCount: options.size(),
-			code: 'enumoption.label',
+			code: getLabel(),
 			enumeId: enume.id
 		])
 	}

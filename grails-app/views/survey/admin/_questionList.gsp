@@ -11,8 +11,7 @@
 	<tbody>
 		<g:each in="${entities}" status="i" var="question">
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-				<td><a
-					title="Question" href="#" class="cluetip"
+				<td><a title="Question" href="#" class="cluetip"
 					rel="${createLink(controller:question.getType(), action:'getQuestionExplainer', params:[question: question.id])}"
 					onclick="return false;"> ${question.getString(i18n(field: question.names).toString(),100)} </a></td>
 				<td>${question.getType()}</td>
@@ -24,24 +23,15 @@
 				<div class="hidden dropdown-list">
 					<ul>
 						<li>
-						<g:link class="flow-edit"
-							controller="${question.getType()}" action="edit"
-							id="${question.id}" class="flow-edit">
-							<g:message code="general.text.edit" default="Edit" />
-						</g:link>
-						
+							<a href="${createLinkWithTargetURI(controller:question.type, action:'edit', params:[id: question.id])}">
+								<g:message code="general.text.edit" default="Edit" />
+							</a>
 						</li>
-						<li class="flow-delete"><g:link
-							controller="${question.getType()}" action="delete"
-							id="${question.id}" class="flow-delete">
-							<g:message code="general.text.delete" default="Delete" />
-						</g:link>
+						<li>
+							<a href="${createLinkWithTargetURI(controller:question.type, action:'delete', params:[id: question.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+								<g:message code="general.text.delete" default="Delete" />
+							</a>
 						</li>
-						<g:if test="${question.getType()=='checkboxQuestion' && question.options.isEmpty()}">
-							<li>
-								<a class="flow-add" href="${createLink(controller:'checkboxOption', action:'create',params:[questionId: question.id])}">Add Option</a>
-							</li>
-						</g:if>
 					</ul>
 				</div>  
 				</div>

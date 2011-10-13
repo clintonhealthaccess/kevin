@@ -52,17 +52,17 @@ class MapsTargetController extends AbstractEntityController {
 		return new MapsTarget()
 	}
 	
+	def getLabel() {
+		return "maps.target.label"
+	}
+	
 	def getTemplate() {
-		return "/maps/mapsTarget/createTarget"
+		return "/maps/createTarget"
 	}
 	
 	def getModel(def entity) {
 		def groups = new GroupCollection(organisationService.getGroupsForExpression())
 		[ target: entity, expressions: Expression.list(), groups: groups]
-	}
-	
-	def validateEntity(def entity) {
-		return entity.validate()
 	}
 	
 	def saveEntity(def entity) {
@@ -73,10 +73,6 @@ class MapsTargetController extends AbstractEntityController {
 			entity.calculation.save();
 		}
 		entity.save();
-	}
-	
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 	
 	def bindParams(def entity) {

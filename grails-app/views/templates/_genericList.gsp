@@ -7,7 +7,7 @@
 		<g:if test="${!search}">
 			<div class="float-right">
 				<g:if test="${!addTemplate}">
-					<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}" onclick="return false;">New ${entityName}</a>
+					<a href="${createLinkWithTargetURI(controller: params['controller'], action:'create', params: params)}" >New ${entityName}</a>
 				</g:if>
 				<g:else>
 					<g:render template="/survey/admin/${addTemplate}"/>
@@ -18,7 +18,7 @@
 
 		<g:if test="${flash.message}">
 			<div class="rounded-box-top rounded-box-bottom flash-info">
-           		<g:message code="${flash.message}" default="${flash.default}"/>
+           		${flash.message}
            	</div>
         </g:if>
 			
@@ -38,18 +38,4 @@
 			<div>No ${entityName} available</div>
 		</g:else>				
 	</div>
-	<div class="hidden flow-container"></div>
-	<div class="clear"></div>
 </div>
-
-<r:script>
-	$(document).ready(function() {
-		$('#entities').flow({
-			onSuccess : function(data) {
-				if (data.result == 'success') {
-					location.reload();
-				}
-			}
-		});
-	});
-</r:script>

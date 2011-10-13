@@ -50,7 +50,11 @@ class ExpressionController extends AbstractEntityController {
 		expression.type = new Type()
 		return expression
 	}
-	
+
+	def getLabel() {
+		return "expression.label";
+	}
+		
 	def getTemplate() {
 		return "/entity/expression/createExpression";
 	}
@@ -59,10 +63,6 @@ class ExpressionController extends AbstractEntityController {
 		return [expression: entity]
 	}
 
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-	
 	def saveEntity(def entity) {
 		entity.setTimestamp(new Date());
 		entity.save()
@@ -76,8 +76,7 @@ class ExpressionController extends AbstractEntityController {
 			entity.delete()
 		}
 		else {
-			flash.message = "expression.delete.hasvalues";
-			flash.default = "Could not delete expression, it still has associated calculations";
+			flash.message = message(code: "expression.delete.hasvalues", default: "Could not delete expression, it still has associated calculations");
 		}
 	}
 	
@@ -98,9 +97,9 @@ class ExpressionController extends AbstractEntityController {
 		
 		render (view: '/entity/list', model:[
 			entities: expressions,
-			template: "expression/expressionList",
-			code: "expression.label",
 			entityCount: dataService.countData(Expression.class, params['q'], []),
+			template: "expression/expressionList",
+			code: getLabel(),
 			search: true
 		])
 	}
@@ -113,8 +112,8 @@ class ExpressionController extends AbstractEntityController {
 		render (view: '/entity/list' , model:[
 			entities: expressions, 
 			entityCount: Expression.count(),
-			code: 'expression.label',
-			template: 'expression/expressionList'
+			template: 'expression/expressionList',
+			code: getLabel()
 		])
 	}
 	

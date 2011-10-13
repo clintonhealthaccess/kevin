@@ -20,26 +20,28 @@
 				<td> 
 				   ${skip.skippedSurveyElements.size()}
 			    </td>
-				<td>${skip.skippedSurveyQuestions.size()}</td>
 				<td>
-			<div class="dropdown white-dropdown"> 
-			     <a class="selected" href="#" data-type="skip-rule">Manage</a>
-			<div class="hidden dropdown-list">
-				<ul>
-					<li class="edit-skip-rule-link">
-					<g:link controller="surveySkipRule" action="edit" id="${skip.id}" class="flow-edit">
-					    <g:message code="general.text.edit" default="Edit" /> 
-					</g:link>
-					</li>
-					<li class="delete-skip-rule-link">
-				    <g:link controller="surveySkipRule" action="delete" id="${skip.id}" class="flow-delete">
-				        <g:message code="general.text.delete" default="Delete" /> 
-				    </g:link>
-					</li>
-				</ul>
-			</div>
-			</div> 		
-			</td>
+					${skip.skippedSurveyQuestions.size()}
+				</td>
+				<td>
+					<div class="dropdown white-dropdown"> 
+			     		<a class="selected" href="#" data-type="skip-rule">Manage</a>
+						<div class="hidden dropdown-list">
+							<ul>
+								<li class="edit-skip-rule-link">
+					    			<a href="${createLinkWithTargetURI(controller:'surveySkipRule', action:'edit', params:[id: skip.id])}">
+							    		<g:message code="general.text.edit" default="Edit" /> 
+									</a>
+								</li>
+								<li class="delete-skip-rule-link">
+					    			<a href="${createLinkWithTargetURI(controller:'surveySkipRule', action:'delete', params:[id: skip.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+						        		<g:message code="general.text.delete" default="Delete" /> 
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div> 		
+				</td>
 			</tr>
 		</g:each>
 	</tbody>

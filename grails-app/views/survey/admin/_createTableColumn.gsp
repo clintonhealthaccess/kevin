@@ -6,7 +6,7 @@
 	</div>
 	<div>
 	<div id="add-column-col">
-	<g:form url="[controller:'tableColumn', action:'save']" useToken="true">
+	<g:form url="[controller:'tableColumn', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<div class="row">
 			<label>Table Name :</label>
 			<input type="text" value="${i18n(field: column.question.tableNames)}" class="idle-field" disabled />
@@ -36,14 +36,13 @@
 		</g:if>
 		<div class="row">
 			<button type="submit" class="rich-textarea-form">Save Column</button>
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
 	</g:form>
 	</div>
 	</div>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		getRichTextContent();	 

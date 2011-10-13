@@ -44,6 +44,10 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	def organisationService
 	def surveyElementService
 	
+	def getLabel() {
+		return 'survey.validationrule.label'
+	}
+	
 	def getEntity(def id) {
 		return SurveyValidationRule.get(id)
 	}
@@ -67,13 +71,6 @@ class SurveyValidationRuleController extends AbstractEntityController {
 		]
 	}
 
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
 	def deleteEntity(def entity) {
 		entity.surveyElement.validationRules.remove(entity);
 		entity.surveyElement.save();
@@ -116,7 +113,7 @@ class SurveyValidationRuleController extends AbstractEntityController {
 			surveyElement: surveyElement,
 			entities: validationRules.subList(params['offset'], max),
 			entityCount: validationRules.size(),
-			code: 'survey.validationrule.label'
+			code: getLabel()
 		])
 	}
 

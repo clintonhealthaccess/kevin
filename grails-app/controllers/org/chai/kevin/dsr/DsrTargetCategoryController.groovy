@@ -44,6 +44,10 @@ class DsrTargetCategoryController extends AbstractEntityController {
 		return new DsrTargetCategory();
 	}
 	
+	def getLabel() {
+		return "dsr.targetcategory.label"
+	}
+	
 	def getTemplate() {
 		return "/dsr/createTargetCategory"
 	}
@@ -52,14 +56,6 @@ class DsrTargetCategoryController extends AbstractEntityController {
 		[ category: entity ]
 	}
 	
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-	
-	def saveEntity(def entity) {
-		entity.save()
-	}
-		
 	def deleteEntity(def entity) {
 		//TODO delete target from category
 		for (def target : entity.targets) {

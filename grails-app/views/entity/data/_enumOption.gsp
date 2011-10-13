@@ -1,19 +1,22 @@
-<div class="float-right hidden">
-	<span> <g:link controller="enumOption" action="edit"
-			id="${option.id}" class="flow-edit-option">
+<div class="float-right">
+	<span> 
+		<a href="${createLinkWithTargetURI(controller:'enumOption', action:'edit', params:[id: option.id])}">
 			<g:message code="general.text.edit" default="Edit" />
-		</g:link>&nbsp; <g:link controller="enumOption" action="delete"
-			id="${option.id}" class="flow-delete">
+		</a>&nbsp; 
+		<a href="${createLinkWithTargetURI(controller:'enumOption', action:'delete', params:[id: option.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 			<g:message code="general.text.delete" default="Delete" />
-		</g:link> </span>
+		</a>
+	</span>
 </div>
-<div class="option-element">
-	<label>Option Name:</label> <span> ${i18n(field: option.names)}</span>
+<div>
+	<span class="bold">Option Name:</span> 
+	<span>${i18n(field: option.names)}</span>
 </div>
-<div class="option-element">
-	<label>Code:</label> <span>
-		${option.code}</span>
+<div>
+	<span class="bold">Code:</span> 
+	<span>${option.code}</span>
 </div>
-<div class="option-element">
-	<label>Value:</label> <span> ${option.value}</span>
+<div>
+	<span class="bold">Value:</span> 
+	<span>${option.value}</span>
 </div>

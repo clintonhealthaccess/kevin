@@ -51,24 +51,16 @@ class CostObjectiveController extends AbstractEntityController {
 		return new CostObjective()
 	}
 	
+	def getLabel() {
+		return "cost.objective.label"
+	}
+	
 	def getTemplate() {
-		return "/cost/costObjective/createObjective"
+		return "/cost/createObjective"
 	}
 	
 	def getModel(def entity) {
 		[ objective: entity ]
-	}
-	
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-	
-	def saveEntity(def entity) {
-		entity.save();
-	}
-	
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 	
 	def bindParams(def entity) {

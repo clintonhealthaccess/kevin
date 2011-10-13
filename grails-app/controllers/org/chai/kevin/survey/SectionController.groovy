@@ -42,6 +42,7 @@ class SectionController extends AbstractEntityController {
 	def getEntity(def id) {
 		return SurveySection.get(id)
 	}
+	
 	def createEntity() {
 		def entity = new SurveySection()
 		//FIXME find a better to do this
@@ -52,6 +53,10 @@ class SectionController extends AbstractEntityController {
 	def getTemplate() {
 		return "/survey/admin/createSection"
 	}
+	
+	def getLabel() {
+		return 'survey.section.label'
+	}
 
 	def getModel(def entity) {
 		[
@@ -60,17 +65,6 @@ class SectionController extends AbstractEntityController {
 			groups: organisationService.getGroupsForExpression(),
 			groupUuids: Utils.split(entity.groupUuidString)
 		]
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 
 	def bindParams(def entity) {
@@ -99,7 +93,7 @@ class SectionController extends AbstractEntityController {
 			objective: objective,
 			entities: sections.subList(params['offset'], max),
 			entityCount: sections.size(),
-			code: 'survey.section.label'
+			code: getLabel()
 		])
 	}
 

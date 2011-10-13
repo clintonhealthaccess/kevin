@@ -1,4 +1,4 @@
-<div class="entity-form-container togglable">
+<div id="add-expression" class="entity-form-container togglable">
 	
 	<div class="entity-form-header">
 		<h3 class="title">Expression</h3>
@@ -7,7 +7,7 @@
 	</div>
 	<div class="forms-container">
 	<div class="data-field-column">
-		<g:form url="[controller:'expression', action:'save']" useToken="true">
+		<g:form url="[controller:'expression', action:'save', params: [targetURI: targetURI]]" useToken="true">
 			<g:i18nInput name="names" bean="${expression}" value="${expression.names}" label="Name" field="names"/>
 			<g:i18nTextarea name="descriptions" bean="${expression}" value="${expression.descriptions}" label="Description" field="descriptions"/>
 			<g:input name="code" label="Code" bean="${expression}" field="code"/>
@@ -21,7 +21,7 @@
 			
 			<div class="row">
 				<button type="submit">Save Expression</button>
-				<button id="cancel-button">Cancel</button>
+				<a href="${createLink(uri: targetURI)}">cancel</a>
 			</div>
 		</g:form>
 	</div>

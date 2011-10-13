@@ -6,7 +6,7 @@
 	</div>
 	<div class="forms-container">
 		<div class="data-field-column">
-			<g:form url="[controller:'tableRow', action:'save']" useToken="true">
+			<g:form url="[controller:'tableRow', action:'save', params:[targetURI: targetURI]]" useToken="true">
 				<div class="row">
 					<label>Table Name :</label> 
 					<input type="text" value="${i18n(field: row.question.tableNames)}" class="idle-field" disabled />
@@ -54,7 +54,7 @@
 				</g:if>
 				<div class="row">
 					<button type="submit" class="rich-textarea-form">Save Row</button>
-					<button id="cancel-button">Cancel</button>
+					<a href="${createLink(uri: targetURI)}">cancel</a>
 				</div>
 			</g:form>
 		</div>
@@ -74,7 +74,6 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('input.data-element-name').bind('focus', function(){

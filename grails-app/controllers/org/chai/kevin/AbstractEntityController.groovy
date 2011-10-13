@@ -38,49 +38,60 @@ abstract class AbstractEntityController {
 	
 	def localeService
 	
+	def getTargetURI() {
+		return params.targetURI?: "/"
+	}
+	
 	def index = {
         redirect(action: "list", params: params)
     }
 
-	def delete = {
-		def entity = getEntity(params['id']);
+	def delete = {		
+		def entity = getEntity(params.int('id'));
 		if (log.isInfoEnabled()) log.info("deleting entity: "+entity)
 		
 		if (entity != null) {
 			try {
 				deleteEntity(entity)
-				render(contentType:"text/json") {
-					result = 'success'
-				}
+				
+				if (!flash.message) flash.message = message(code: 'default.deleted.message', args: [message(code: getLabel(), default: 'entity'), params.id])
+				redirect(uri: getTargetURI())
 			}
 			catch (org.springframework.dao.DataIntegrityViolationException e) {
-				render(contentType:"text/json") {
-					result = 'error'
-				}
+				flash.message = message(code: 'default.not.deleted.message', args: [message(code: getLabel(), default: 'entity'), params.id])
+				redirect(uri: getTargetURI())
 			}
 		}
-		render(contentType:"text/json") {
-			result = 'success'
+		else {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: getLabel(), default: 'entity'), params.id])
+			redirect(uri: getTargetURI())
 		}
 	}
 	
-	
 	def edit = {
-		def entity = getEntity(params['id']);
+		def entity = getEntity(params.int('id'));
 		if (log.isInfoEnabled()) log.info("editing entity: "+entity);
-		render(contentType:"text/json") {
-			result = 'success'
-			html = g.render(template:getTemplate(), model:getModel(entity))
+
+		if (entity == null) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: getLabel(), default: 'entity'), params.id])
+			redirect(uri: getTargetURI())
+		}
+		else {
+			def model = getModel(entity)
+			model << [template: getTemplate()]
+			model << [targetURI: getTargetURI()]
+			render(view: '/entity/edit', model: model)
 		}
 	}
 	
 	def create = {
 		def entity = createEntity()
 		bindParams(entity);
-		render(contentType:"text/json") {
-			result = 'success'
-			html = g.render(template:getTemplate(), model:getModel(entity))
-		}
+		
+		def model = getModel(entity)
+		model << [template: getTemplate()]
+		model << [targetURI: getTargetURI()]
+		render(view: '/entity/edit', model: model)
 	}
 	
 	def save = {
@@ -94,7 +105,7 @@ abstract class AbstractEntityController {
 	def saveWithoutTokenCheck = {
 		log.debug ('saving entity with params:'+params)
 		
-		def entity = getEntity(params.id);
+		def entity = getEntity(params.int('id'));
 		if (entity == null) {
 			entity = createEntity()
 		}
@@ -102,36 +113,33 @@ abstract class AbstractEntityController {
 		log.debug('bound params, entity: '+entity)
 		if (!validateEntity(entity)) {
 			log.info ("validation error in ${entity}: ${entity.errors}}")
-			def htmlText = g.render (template:getTemplate(), model:getModel(entity))
-			render(contentType:"text/json") {
-				result = 'error'
-				html = htmlText
-			}
+			
+			def model = getModel(entity)
+			model << [template: getTemplate()]
+			model << [targetURI: getTargetURI()]
+			render(view: "/entity/edit", model: model)
 		}
 		else {
 			saveEntity(entity);
 			
-			render(contentType:"text/json") {
-				result = 'success'
-				language = localeService.getCurrentLanguage()
-				newEntity = {
-					id = entity.id
-					if (entity.hasProperty("names")) names = entity.names
-				}
-				html = html(entity)
-			}
+			flash.message = message(code: 'default.saved.message', args: [message(code: getLabel(), default: 'entity'), params.id])
+			redirect(url: getTargetURI())
 		}
 	}
 	
-	protected def html(def entity) {return ""};
+	def validateEntity(def entity) {
+		return entity.validate()
+	}
+
+	def saveEntity(def entity) {
+		entity.save()
+	}
+
+	def deleteEntity(def entity) {
+		entity.delete()
+	}
 	
 	protected abstract def bindParams(def entity);
-	
-	protected abstract def saveEntity(def entity);
-	
-	protected abstract def deleteEntity(def entity);
-	
-	protected abstract def validateEntity(def entity);
 	
 	protected abstract def getModel(def entity);
 		
@@ -141,5 +149,6 @@ abstract class AbstractEntityController {
 	
 	protected abstract def getTemplate();
 	
+	protected abstract def getLabel();
 	
 }

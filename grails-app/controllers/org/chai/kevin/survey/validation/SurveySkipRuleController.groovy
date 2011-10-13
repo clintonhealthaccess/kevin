@@ -42,6 +42,10 @@ class SurveySkipRuleController  extends AbstractEntityController {
 
 	def sessionFactory
 
+	def getLabel() {
+		return 'survey.skiprule.label'
+	}
+	
 	def getEntity(def id) {
 		return SurveySkipRule.get(id)
 	}
@@ -58,18 +62,6 @@ class SurveySkipRuleController  extends AbstractEntityController {
 
 	def getModel(def entity) {
 		[ skip: entity ]
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		log.debug('===>'+entity.skippedSurveyQuestions+'<===')
-		entity.save()
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 
 	def bindParams(def entity) {
@@ -105,7 +97,7 @@ class SurveySkipRuleController  extends AbstractEntityController {
 			template: "skipRuleList",
 			entities: skipRules,
 			entityCount: skipRules.size(),
-			code: 'survey.skiprule.label'
+			code: getLabel()
 		])
 	}
 

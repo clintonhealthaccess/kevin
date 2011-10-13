@@ -18,7 +18,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController.create()
 		
 		then:
-		dataElementController.response.contentAsString.contains("success")
+		dataElementController.modelAndView.model.dataElement.id == null
 	}
 	
 	def "save new data element"() {
@@ -31,10 +31,10 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController.saveWithoutTokenCheck()
 		
 		then:
-		dataElementController.response.contentAsString.contains("success")
+		dataElementController.response.redirectedUrl.equals(dataElementController.getTargetURI())
 	}
-		
-	def "cannot delete data element when it still has values"() {
+	
+	def "can delete data element"() {
 		setup:
 		dataElementController = new DataElementController()
 		def organisation = newOrganisationUnit(BUTARO)
@@ -48,6 +48,14 @@ class DataElementControllerSpec extends IntegrationTests {
 		
 		then:
 		DataElement.count() == 0
+	}
+		
+	def "cannot delete data element when it still has values"() {
+		setup:
+		dataElementController = new DataElementController()
+		def organisation = newOrganisationUnit(BUTARO)
+		def period = newPeriod()
+		def dataElement = null
 		
 		when:
 		dataElement = newDataElement(CODE(2), Type.TYPE_NUMBER())
@@ -74,7 +82,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController.saveWithoutTokenCheck()
 		
 		then:
-		dataElementController.response.contentAsString.contains("success")
+		dataElementController.response.redirectedUrl.equals(dataElementController.getTargetURI())
 		dataElement.type.equals(Type.TYPE_BOOL())
 		
 		when:

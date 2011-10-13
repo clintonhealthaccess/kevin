@@ -50,6 +50,10 @@ class TableRowController extends AbstractEntityController {
 		return entity;
 	}
 
+	def getLabel() {
+		return "survey.tablequestion.row.label"
+	}
+	
 	def getTemplate() {
 		return "/survey/admin/createTableRow"
 	}
@@ -62,13 +66,6 @@ class TableRowController extends AbstractEntityController {
 		]
 	}
 
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
 	def deleteEntity(def entity) {
 		for(Map.Entry<SurveyTableColumn, SurveyElement> surveyElement: entity.surveyElements)
 			if(surveyElement.getValue())

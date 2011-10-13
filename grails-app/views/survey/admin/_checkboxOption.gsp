@@ -1,7 +1,11 @@
 <div class="float-right">
 	<span> 
-		<g:link controller="checkboxOption" action="edit" id="${option.id}" class="flow-edit-option"><g:message code="general.text.edit" default="Edit" /></g:link>  
-		<g:link controller="checkboxOption" action="delete" id="${option.id}" class="flow-delete"><g:message code="general.text.delete" default="Delete" /></g:link>  
+		<a href="${createLinkWithTargetURI(controller:'checkboxOption', action:'edit', id:option.id)}">
+			<g:message code="general.text.edit" default="Edit" />
+		</a>
+		<a href="${createLinkWithTargetURI(controller:'checkboxOption', action:'delete', id:option.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+			<g:message code="general.text.delete" default="Delete" />
+		</a>
 		<g:if test="${option.surveyElement != null}">
 	        <a href="${createLink(controller:'surveyValidationRule', action:'list', params:[elementId: option.surveyElement.id])}">
 	          View Validation Rules

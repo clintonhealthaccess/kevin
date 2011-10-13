@@ -1,18 +1,14 @@
-<div id="add-survey" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">Create Survey</h3>
 		<g:locales/>
 		<div class="clear"></div>
 	</div>
-	<g:form url="[controller:'survey', action:'save']" useToken="true">
+	<g:form url="[controller:'survey', action:'save', params:[targetURI: targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="Name" field="names"/>
 		<g:i18nRichTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
 		
 		<div class="row">
-			<div>
-				<a id="add-iteration-link" class="float-right"  href="${createLink(controller:'iteration', action:'create')}">New Iteration</a>
-			</div>
-			<div class="clear"></div>
 			<div id="iteration-block">
 				<div class="${hasErrors(bean:survey, field:'period', 'errors')}">
 					<label for="period.id">Period:</label>
@@ -57,23 +53,13 @@
 		</g:if>
 		<div class="row">
 			<button type="submit" class="rich-textarea-form">Save Survey</button>&nbsp;&nbsp;
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
     </g:form>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		getRichTextContent();
-		$('#add-survey').flow({
-			addLinks: '#add-iteration-link',
-			onSuccess: function(data) {
-				if (data.result == 'success') {
-					var period = data.newEntity;
-					$('.iteration-list').append('<option value="'+period.id+'">'+period.startDate+'<->'+period.endDate+'</option>');
-				}
-			}
-		});
 	})
 </script>

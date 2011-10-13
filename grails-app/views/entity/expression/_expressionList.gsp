@@ -11,15 +11,19 @@
 		<g:each in="${entities}" status="i" var="expression">
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 				<td>
-					<a href="${createLink(action:'edit', id: expression.id)}" title="${i18n(field: expression.names)}"  
+					<a href="${createLinkWithTargetURI(action:'edit', id: expression.id)}" title="${i18n(field: expression.names)}"  
 					rel="${createLink(controller:'expression', action:'getDescription', id:expression.id)}" 
-					class="flow-edit cluetip">
+					class="cluetip">
 						<g:i18n field="${expression.names}"/>
 					</a>
 				</td>
 				<td><g:toHtml value="${expression.type.getDisplayedValue(2)}"/></td>
 				<td>${expression.code}</td>
-				<td><a class="flow-delete" href="${createLink(controller:'expression', action:'delete', id:expression.id)}">delete</a></td>
+				<td>
+					<a href="${createLinkWithTargetURI(controller:'expression', action:'delete', params:[id:expression.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+						Delete
+					</a>
+				</td>
 			</tr>
 		</g:each>
 	</tbody>

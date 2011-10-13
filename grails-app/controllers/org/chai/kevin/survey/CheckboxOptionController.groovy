@@ -45,11 +45,16 @@ class CheckboxOptionController extends AbstractEntityController {
 	def getEntity(def id) {
 		return SurveyCheckboxOption.get(id)
 	}
+	
 	def createEntity() {
 		def entity = new SurveyCheckboxOption();
 		//FIXME find a better to do this
 		if (!params['question']) entity.question = SurveyCheckboxQuestion.get(params.questionId)
 		return entity
+	}
+	
+	def getLabel() {
+		return "survey.checkboxquestion.checkboxoption.label"
 	}
 
 	def getTemplate() {
@@ -64,22 +69,6 @@ class CheckboxOptionController extends AbstractEntityController {
 		]
 	}
 	
-	def html(def entity){
-		return g.render (template:'/survey/admin/checkboxOption', model:[option: entity])
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-		
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
-	}
-
 	def bindParams(def entity) {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary

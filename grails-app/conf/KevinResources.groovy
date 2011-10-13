@@ -53,7 +53,6 @@ modules = {
 	form {
 		dependsOn 'jquery,cluetip'
 		
-		resource url: '/js/jquery/form/jquery.form.js'
 		resource url: '/js/form-util.js'
 		resource url: '/js/form_init.js'
 		resource url: '/css/form.css'

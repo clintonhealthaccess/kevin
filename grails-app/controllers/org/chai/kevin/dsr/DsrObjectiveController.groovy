@@ -53,6 +53,10 @@ class DsrObjectiveController extends AbstractEntityController{
 		return new DsrObjective()
 	}
 	
+	def getLabel() {
+		return "dsr.objective.label"
+	}
+	
 	def getTemplate() {
 		return "/dsr/createObjective"
 	}
@@ -61,16 +65,9 @@ class DsrObjectiveController extends AbstractEntityController{
 		[ objective: entity ]
 	}
 	
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-	
-	def saveEntity(def entity) {
-		entity.save()
-	}
-		
-	def deleteEntity(def entity) {
-		entity.delete();
+	@CacheFlush("dsrCache")
+	def edit = {
+		super.edit()
 	}
 	
 	@CacheFlush("dsrCache")

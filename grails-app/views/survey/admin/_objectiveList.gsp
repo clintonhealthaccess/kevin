@@ -27,16 +27,14 @@
 									<a href="${createLink(controller:'section', action:'list', params:[surveyId:survey?.id,objectiveId: objective.id])}">Sections</a>
 								</li>
 								<li>
-								<g:link
-									controller="objective" action="edit" id="${objective.id}"
-									class="flow-edit">
-									<g:message code="general.text.edit" default="Edit" />
-								</g:link>
+									<a href="${createLinkWithTargetURI(controller:'objective', action:'edit', params:[id: objective.id])}">
+										<g:message code="general.text.edit" default="Edit" />
+									</a>
 								</li>
 								<li>
-									<g:link controller="objective" action="delete" id="${objective.id}" class="flow-delete">
+									<a href="${createLinkWithTargetURI(controller:'objective', action:'delete', params:[id: objective.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 										<g:message code="general.text.delete" default="Delete" />
-									</g:link>
+									</a>
 								</li>
 							</ul>
 						</div>

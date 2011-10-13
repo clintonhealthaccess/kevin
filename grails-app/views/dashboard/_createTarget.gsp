@@ -6,17 +6,13 @@
 		<div class="clear"></div>
 	</div>
 
-	<g:form url="[controller:'dashboardTarget', action:'save']" useToken="true" class="flow-form">
+	<g:form url="[controller:'dashboardTarget', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="entry.names" label="Name" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.names}" field="names"/>
 		<g:i18nTextarea name="entry.descriptions" label="Description" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.descriptions}" field="descriptions"/>
 		<g:input name="entry.code" label="Code" bean="${objectiveEntry?.entry}" field="code"/>
 		
 		<div class="row">
 			<h5>Expressions</h5>
-			<div>
-				<a id="add-expression-link" class="float-right" href="${createLink(controller:'expression', action:'create')}">new expression</a>
-			</div>
-			<div class="clear"></div>
 			
 			<div id="expressions-block">
 				<g:each status="i" in="${groups}" var="group">
@@ -49,25 +45,9 @@
 			<input type="hidden" name="id" value="${objectiveEntry.id}"></input>
 		</g:else>
 		<div class="row">
-			<button type="submit">Save objective</button>
-			<button id="cancel-button">Cancel</button>
+			<button type="submit">Save target</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
     </g:form>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
-
-<script type="text/javascript)">
-	$(document).ready(function() {
-		$('#add-dashboard-target').flow({
-			addLinks: '#add-expression-link',
-			onSuccess: function(data) {
-				if (data.result == 'success') {
-					var expression = data.newEntity
-					$('.expression-list').append('<option value="'+expression.id+'">'+expression.names[data.language]+'</option>');
-// 					$.sexyCombo.changeOptions('.expression-list');
-				}
-			}
-		});
-	});
-</script>

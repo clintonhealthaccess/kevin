@@ -40,7 +40,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
  *
  */
 class SurveyController extends AbstractEntityController {
-
+	
 	def getEntity(def id) {
 		return Survey.get(id)
 	}
@@ -49,6 +49,10 @@ class SurveyController extends AbstractEntityController {
 		return new Survey()
 	}
 
+	def getLabel() {
+		return 'survey.label'
+	}
+	
 	def getTemplate() {
 		return "/survey/admin/createSurvey"
 	}
@@ -60,17 +64,6 @@ class SurveyController extends AbstractEntityController {
 					survey: entity,
 					periods: periods
 				]
-	}
-
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-
-	def saveEntity(def entity) {
-		entity.save()
-	}
-	def deleteEntity(def entity) {
-		entity.delete()
 	}
 
 	def bindParams(def entity) {
@@ -94,7 +87,7 @@ class SurveyController extends AbstractEntityController {
 					template:"surveyList",
 					entities: surveys,
 					entityCount: Survey.count(),
-					code: 'survey.label'
+					code: getLabel()
 				])
 	}
 

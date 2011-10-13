@@ -6,7 +6,7 @@
 		<div class="clear"></div>
 	</div>
 	
-	<g:form url="[controller:'dsrTargetCategory', action:'save']" useToken="true">
+	<g:form url="[controller:'dsrTargetCategory', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${category}" value="${category.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${category}" value="${category.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${category}" field="code"/>
@@ -17,8 +17,8 @@
 		</g:if>
 		
 		<div class="row">
-			<button type="submit">Save Category</button>&nbsp;&nbsp;
-			<button id="cancel-button">Cancel</button>
+			<button type="submit">Save Category</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
     </g:form>
 	<div class="clear"></div>

@@ -1,4 +1,4 @@
-<div id="add-table-question" class="entity-form-container togglable">
+<div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
 		<h3 class="title">Create a Table Question</h3>
@@ -6,7 +6,7 @@
 		<div class="clear"></div>
 	</div>
 	
-	<g:form url="[controller:'tableQuestion', action:'save']" useToken="true">
+	<g:form url="[controller:'tableQuestion', action:'save', params:[targetURI: targetURI]]" useToken="true">
 		<g:i18nInput name="tableNames" bean="${question}" value="${question.tableNames}" label="Table Names" field="tableNames"/>
 		<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250" width="380" maxHeight="250" />
 		
@@ -15,9 +15,17 @@
 		<g:if test="${question.id != null}">
 			<div class="float-right">
 				<input type="hidden" name="id" value="${question.id}"></input>
-				<a class="flow-add-column" href="${createLink(controller:'tableColumn', action:'create',params:[questionId: question.id])}">Add Column</a>(<span id="column-number">${question.columns.size()}</span>) | 
-				<a class="flow-add-row" href="${createLink(controller:'tableRow', action:'create',params:[questionId: question.id])}">Add Row</a>(<span id="row-number">${question.rows.size()}</span>) |
-				<a class="flow-preview" href="${createLink(controller:'tableQuestion', action:'preview',params:[questionId: question.id])}">Preview</a>
+				<a href="${createLinkWithTargetURI(controller:'tableColumn', action:'create',params:[questionId: question.id])}">
+					Add Column
+				</a>
+				(<span id="column-number">${question.columns.size()}</span>) | 
+				<a href="${createLinkWithTargetURI(controller:'tableRow', action:'create',params:[questionId: question.id])}">
+					Add Row
+				</a>
+				(<span id="row-number">${question.rows.size()}</span>) |
+				<a href="${createLinkWithTargetURI(controller:'tableQuestion', action:'preview',params:[questionId: question.id])}">
+					Preview
+				</a>
 			</div>
 		</g:if>
 		<g:input name="order" label="Order" bean="${question}" field="order"/>
@@ -48,48 +56,14 @@
 		</div>
 		<div class="row">
 			<button type="submit" class="rich-textarea-form">Save Question</button>
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}">cancel</a>
 		</div>
 	</g:form>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
 
 <script type="text/javascript">
-	
-	$(document).ready(
-			function() {
-				getRichTextContent();
-
-				$('#add-table-question').flow({
-					addLinks : [ '.flow-preview' ],
-					onSuccess : function(data) {
-					}
-				});
-				
-				$('#add-table-question').flow(
-						{
-							addLinks : [ '.flow-add-column' ],
-							onSuccess : function(data) {
-								if (data.result == 'success') {
-									var colsNum = (parseInt($('#column-number')
-											.text()) + 1).toString();
-									$('#column-number').text(colsNum);
-								}
-							}
-						});
-				
-				$('#add-table-question').flow(
-						{
-							addLinks : [ '.flow-add-row' ],
-							onSuccess : function(data) {
-								if (data.result == 'success') {
-									var rowsNum = (parseInt($('#row-number')
-											.text()) + 1).toString();
-									$('#row-number').text(rowsNum);
-								}
-							}
-						});
-
-			})
+	$(document).ready(function() {
+		getRichTextContent();
+	});
 </script>

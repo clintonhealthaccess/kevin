@@ -6,7 +6,7 @@
 	</div>
 	<div class="forms-container">
 		<div class="data-field-column">
-		<g:form url="[controller:'surveySkipRule', action:'save']" useToken="true">
+		<g:form url="[controller:'surveySkipRule', action:'save', params:[targetURI:targetURI]]" useToken="true">
 			<input type="hidden" name="survey.id" value="${skip.survey.id}" />
 			<div class="row">
 				<label>Survey</label>
@@ -70,8 +70,7 @@
 			</g:if>
 			<div class="row">
 				<button type="submit" class="rich-textarea-form">Save Skip Rule</button>
-				&nbsp;&nbsp;
-				<button id="cancel-button">Cancel</button>
+				<a href="${createLink(uri: targetURI)}">cancel</a>
 			</div>
 		</g:form>
 		</div>
@@ -90,7 +89,6 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<div class="hidden flow-container"></div>
 <script type="text/javascript">
 	$(document).ready(function() {		
 		$(".skipped-survey-elements-list").ajaxChosen({
