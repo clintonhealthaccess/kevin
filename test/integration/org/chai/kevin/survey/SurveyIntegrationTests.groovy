@@ -54,11 +54,15 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return new SurveyEnteredObjective(objective: objective, organisationUnit: organisationUnit, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
 	}
 	
-	def newSurveyValidationRule(def element, def prefix, def groups, def expression, def dependencies = []) {
-		def validationRule = new SurveyValidationRule(expression: expression, messages: [:], surveyElement: element, groupUuidString: Utils.unsplit(groups), dependencies: dependencies, allowOutlier: false).save(failOnError: true)
+	def newSurveyValidationRule(def element, def prefix, def groups, def expression, boolean allowOutlier, def dependencies = []) {
+		def validationRule = new SurveyValidationRule(expression: expression, messages: [:], surveyElement: element, groupUuidString: Utils.unsplit(groups), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
 		element.addValidationRule(validationRule)
 		element.save(failOnError: true)
 		return validationRule
+	}
+	
+	def newSurveyValidationRule(def element, def prefix, def groups, def expression, def dependencies = []) {
+		return newSurveyValidationRule(element, prefix, groups, expression, false, dependencies)
 	}
 	
 	def newSkipRule(def survey, def expression, def skippedElements, def skippedQuestions) {

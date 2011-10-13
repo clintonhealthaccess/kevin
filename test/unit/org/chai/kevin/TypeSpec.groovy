@@ -2,6 +2,7 @@ package org.chai.kevin;
 
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
+import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
@@ -590,6 +591,30 @@ public class TypeSpec extends UnitSpec {
 		
 		then:
 		type.getDisplayedValue(2) == "map\n  key1 : number"
+		
+	}
+	
+	def "test transform"() {
+		setup:
+		def predicate = null
+		def type = null
+		def value = null
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		value = new Value("{\"value\": [{\"value\":10}, {\"value\":11}]}");
+		predicate = new ValuePredicate() {
+			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+				currentValue.setAttribute("attribute", "test");
+			}
+		}
+		type.transformValue(value, predicate);
+		
+		then:
+		type.getValue(value, "[0]").getAttribute("attribute") == "test"
+		type.getValue(value, "[1]").getAttribute("attribute") == "test"
+		type.getValue(value, "").getAttribute("attribute") == "test"
+		
 		
 	}
 	

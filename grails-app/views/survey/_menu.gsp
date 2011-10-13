@@ -172,18 +172,22 @@
 		surveyValueChanged(element, $(element).find('.list-input'), function(data, element) {location.reload()});
 	}
 	
-	function listAddClick(element, callback) {
-		var suffix = $(element).parents('.element').first().data('suffix');
+	function listAddClick(list, callback) {
+		var suffix = $(list).parents('.element').first().data('suffix');
 
-		var clone = $(element).prev().clone(true);
-		var index = $(element).prev().prev().data('index');
+		var clone = $(list).prev().clone(true);
+		var index = $(list).prev().prev().data('index');
 		if (index == null) index = "0";
 		else index = parseInt(index)+1;
 		var copyHtml = clone.html().replace(RegExp(suffix+'\\[_\\]', 'g'), suffix+'['+index+']')
 	
-		$(element).prev().before(copyHtml);
-		$(element).prev().prev().data('index', index);
+		$(list).prev().before(copyHtml);
+		$(list).prev().prev().data('index', index);
 		
-		surveyValueChanged($(element).parents('.element').first(), $(element).parents('.element').first().find('.list-input'), callback);
+		surveyValueChanged($(list).parents('.element').first(), $(list).parents('.element').first().find('.list-input'), function(data, element) {
+			$(list).prev().prev().show();
+					
+			callback(data, element);
+		});
 	}
 </r:script>
