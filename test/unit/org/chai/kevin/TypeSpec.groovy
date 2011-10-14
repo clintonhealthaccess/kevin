@@ -590,8 +590,14 @@ public class TypeSpec extends UnitSpec {
 		type = Type.TYPE_MAP (["key1": Type.TYPE_NUMBER()]);
 		
 		then:
-		type.getDisplayedValue(2) == "map\n  key1 : number"
+		type.getDisplayedValue(2, null) == "map\n  key1 : number"
+		type.getDisplayedValue(2, 1) == "map ..."
 		
+		when:
+		type = Type.TYPE_MAP (["key1": Type.TYPE_NUMBER(), "key2": Type.TYPE_NUMBER()]);
+		
+		then:
+		type.getDisplayedValue(2, 2) == "map\n  key1 : number ..."
 	}
 	
 	def "test transform"() {

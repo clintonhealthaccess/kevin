@@ -8,9 +8,8 @@
 	
 	<g:form url="[controller:'tableQuestion', action:'save', params:[targetURI: targetURI]]" useToken="true">
 		<g:i18nInput name="tableNames" bean="${question}" value="${question.tableNames}" label="Table Names" field="tableNames"/>
-		<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250" width="380" maxHeight="250" />
-		
-		<input type="hidden" name="descriptions.jsonText" value=" "/>
+		<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="100" width="380" maxHeight="250" />
+		<g:i18nRichTextarea name="descriptions" bean="${question}" value="${question.descriptions}" label="Help Text" field="descriptions" height="250" width="380" maxHeight="150" />
 		
 		<g:if test="${question.id != null}">
 			<div class="float-right">

@@ -12,12 +12,10 @@
 		<g:each in="${entities}" status="i" var="dataElement"> 
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 				<td>${dataElement.id}</td> 
-				<td>
-					<a class="data-element-explainer" onclick="return false;"  href="${createLink(controller:'dataElement', action:'getExplainer', params:[dataElement: dataElement.id])}">
-						<g:i18n field="${dataElement.names}" />
-					</a>
+				<td class="data-element-explainer" data-data="${dataElement.id}">
+					<a  href="${createLink(controller:'dataElement', action:'getExplainer', params:[dataElement: dataElement.id])}"><g:i18n field="${dataElement.names}" /></a>
 				</td>
-				<td><g:toHtml value="${dataElement.type.getDisplayedValue(2)}"/></td>
+				<td><g:toHtml value="${dataElement.type.getDisplayedValue(2, 2)}"/></td>
 				<td>${dataElement.code}</td>
 				<td>
 					<div class="dropdown white-dropdown"> 
@@ -39,51 +37,22 @@
 					</div> 		
 				</td>
 			</tr>
+			<tr>
+				<td colspan="5" class="explanation-row">
+					<div class="explanation-cell" id="explanation-${dataElement.id}"></div>
+				</td>
+			</tr>
 		</g:each>
 	</tbody>
 </table>
 <script type="text/javascript">
 	
 	$(document).ready(function() {
-		$('a.data-element-explainer').bind('click', function() {
-			var clickedElement = $(this);
-			var currentOpen = $('table#data-element-table tr.current-row');
-			if (currentOpen.html() == null) {
-				getAddRow(clickedElement);
-				$('tr.current-row').slideDown('slow', function() {
-					getDateElementExplainer(clickedElement);
-				});
-
-			} else {
-				$('tr.current-row').slideUp('slow', function() {
-					$('tr.current-row').remove();
-					getAddRow(clickedElement);
-					$('tr.current-row').slideDown('slow', function() {
-						getDateElementExplainer(clickedElement);
-					});
-				});
-			}
-
-		})
+		$('.data-element-explainer').bind('click', function() {
+			var dataElement = $(this).data('data');
+			explanationClick(this, dataElement, function(){});
+			return false;
+		});
 	});
 	
-	function getAddRow(element) {
-		$(element)
-				.parents('tr')
-				.after(
-						'<tr class="current-row"><td colspan="6" class="box"><div class="white-box"></div></td></tr>');
-	}
-	
-	function getDateElementExplainer(element) {
-		var htmlData = "";
-		$.ajax({
-			type : 'GET',
-			url : $(element).attr('href'),
-			success : function(data) {
-				if (data.result == 'success')
-					$('tr.current-row .white-box').html(data.html);
-			}
-		});
-		return false;
-	}
 </script>

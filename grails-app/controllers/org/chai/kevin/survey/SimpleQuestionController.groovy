@@ -80,6 +80,9 @@ class SimpleQuestionController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
 		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
+		
+		// headers
 		params.list('headerList').each { prefix ->
 			Translation translation = new Translation()
 			localeService.availableLanguages.each { language -> 

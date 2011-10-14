@@ -170,10 +170,9 @@ class DataElementController extends AbstractEntityController {
 				surveyElementMap.put(surveyElement, surveyElementService.getNumberOfOrganisationUnitApplicable(surveyElement));
 			}
 
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/templates/dataElementExplainer', model: [dataElement: dataElement, surveyElements: surveyElementMap, periodValues: periodValues])
-			}
+			render (view: '/entity/data/explain',  model: [
+				dataElement: dataElement, surveyElements: surveyElementMap, periodValues: periodValues
+			])
 		}
 	}
 

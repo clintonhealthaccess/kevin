@@ -9,9 +9,8 @@
 	<div class="forms-container">
 		<div class="data-field-column">
 			<g:form url="[controller:'simpleQuestion', action:'save', params:[targetURI: targetURI]]" useToken="true">
-				<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250" width="400" maxHeight="150" />
-
-				<input type="hidden" name="descriptions.jsonText" value=" " />
+				<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="100" width="400" maxHeight="150" />
+				<g:i18nRichTextarea name="descriptions" bean="${question}" value="${question.descriptions}" label="Help Text" field="descriptions" height="250" width="400" maxHeight="150" />
 
 				<input type="hidden" name="surveyElement.dataElement.id" value="${question.surveyElement?.dataElement?.id}" id="data-element-id" />
 				<div class="row ${hasErrors(bean:question, field:'surveyElement', 'errors')}">
@@ -33,7 +32,7 @@
 						<div class="white-box hidden">
 							<g:each in="${headerPrefixes}" var="headerPrefix">
 								<input type="hidden" name="headerList" value="${headerPrefix}"/>
-								<g:i18nRichTextarea name="headerList[${headerPrefix}]" bean="${question}" value="${question.surveyElement.headers[headerPrefix]}" label="${headerPrefix}" field="surveyElement.headers" height="100"/>
+								<g:i18nRichTextarea name="headerList[${headerPrefix}]" bean="${question}" value="${question.surveyElement.headers[headerPrefix]}" label="${headerPrefix}" field="surveyElement.headers" height="50"/>
 							</g:each>
 						</div>
 					</div>

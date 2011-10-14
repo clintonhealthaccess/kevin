@@ -7,18 +7,26 @@
 	<div class="forms-container"">
 		<div class="data-field-column">
 			<g:form url="[controller:'surveyValidationRule', action:'save', params:[targetURI: targetURI]]" useToken="true">
-		 		<input type="hidden" name="surveyElement.id" value="${validation.surveyElement.id}" />
-		 		<div class="row">
-		 			<label>Survey Element</label>
-		 			<input type="text" name="surveyElement.id" value="${i18n(field: validation.surveyElement.dataElement.names)}[${validation.surveyElement.id}]" class="idle-field" disabled />
-		 		</div>
-		 
+			
+				<div class="row ${hasErrors(bean:validation, field:'surveyElement', 'errors')}">
+					<label for="surveyElement.id">Survey Element: </label>
+				    <select id="elements-list" name="surveyElement.id" class="ajax-search-field">
+						<g:if test="${validation.surveyElement?.id != null}">
+							<option value="${validation.surveyElement.id}" selected>
+								<g:i18n field="${validation.surveyElement.dataElement.names}" />[${validation.surveyElement.id}]
+							</option>
+						</g:if>
+					</select>
+					<div class="error-list"><g:renderErrors bean="${validation}" field="surveyElement" /></div>
+				</div>
+			
 				<div class="row ${hasErrors(bean:validation, field:'prefix', 'errors')}">
 				 	<label>Prefix: </label>
 				 	<input type="text" name="prefix" value="${validation.prefix}"/>
 				</div>
 		 
 		 		<g:i18nRichTextarea name="messages" bean="${validation}" value="${validation.messages}" label="Messages" field="messages" height="150"  width="400" maxHeight="100" />
+		 		
 				<div class="row ${hasErrors(bean:validation, field:'dependencies', 'errors')}">
 					<label>Dependencies: </label>
 				    <select id="dependencies-list" name="dependencies" multiple="true" class="ajax-search-field">
@@ -80,6 +88,18 @@
 <script type="text/javascript">
 	$(document).ready(function() {		
 		$("#dependencies-list").ajaxChosen({
+			type : 'GET',
+			dataType: 'json',
+			url : "${createLink(controller:'surveyElement', action:'getAjaxData')}"
+		}, function (data) {
+			var terms = {};
+			$.each(data.elements, function (i, val) {
+				terms[val.id] = val.surveyElement;
+			});
+			return terms;
+		});
+		
+		$("#elements-list").ajaxChosen({
 			type : 'GET',
 			dataType: 'json',
 			url : "${createLink(controller:'surveyElement', action:'getAjaxData')}"

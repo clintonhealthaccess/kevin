@@ -721,11 +721,11 @@ public class Type {
 		return result;
 	}
 	
-	public String getDisplayedValue(int indent) {
-		return getDisplayedValue(indent, 0);
+	public String getDisplayedValue(int indent, Integer numberOfLines) {
+		return getDisplayedValue(indent, 0, numberOfLines, 1);
 	}
 		
-	private String getDisplayedValue(int indent, int currentIndent) {
+	private String getDisplayedValue(final int indent, int currentIndent, final Integer numberOfLines, Integer currentNumberOfLines) {
 		StringBuilder builder = new StringBuilder();
 		
 		String typeName = null;
@@ -750,13 +750,20 @@ public class Type {
 		switch (getType()) {
 			case LIST:
 				builder.append(" : ");
-				builder.append(getListType().getDisplayedValue(indent, currentIndent+indent));
+				builder.append(getListType().getDisplayedValue(indent, currentIndent+indent, numberOfLines, currentNumberOfLines));
 				break;
 			case MAP:
 				for (Entry<String, Type> entry : getElementMap().entrySet()) {
-					builder.append("\n");
-					builder.append(StringUtils.leftPad(entry.getKey()+" : ", entry.getKey().length()+3+currentIndent+indent));
-					builder.append(entry.getValue().getDisplayedValue(indent, currentIndent+indent));
+					if (numberOfLines == null || numberOfLines > currentNumberOfLines) {
+						currentNumberOfLines = currentNumberOfLines + 1;
+						builder.append("\n");
+						builder.append(StringUtils.leftPad(entry.getKey()+" : ", entry.getKey().length()+3+currentIndent+indent));
+						builder.append(entry.getValue().getDisplayedValue(indent, currentIndent+indent, numberOfLines, currentNumberOfLines));
+					}
+					else {
+						builder.append(" ...");
+						break;
+					}
 				}
 				break;
 			default:

@@ -17,7 +17,7 @@
 						<g:i18n field="${expression.names}"/>
 					</a>
 				</td>
-				<td><g:toHtml value="${expression.type.getDisplayedValue(2)}"/></td>
+				<td><g:toHtml value="${expression.type.getDisplayedValue(2, 2)}"/></td>
 				<td>${expression.code}</td>
 				<td>
 					<a href="${createLinkWithTargetURI(controller:'expression', action:'delete', params:[id:expression.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">

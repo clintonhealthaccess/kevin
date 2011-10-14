@@ -76,6 +76,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 		
 		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
 		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	def getQuestionExplainer = {

@@ -71,6 +71,12 @@ class SurveyValidationRuleController extends AbstractEntityController {
 		]
 	}
 
+	def saveEntity(def entity) {
+		entity.surveyElement.validationRules.add(entity)
+		entity.save()
+		entity.surveyElement.save()
+	}
+	
 	def deleteEntity(def entity) {
 		entity.surveyElement.validationRules.remove(entity);
 		entity.surveyElement.save();

@@ -7,10 +7,10 @@
 	</div>
 	
 	<g:form url="[controller:'checkboxQuestion', action:'save', params:[targetURI: targetURI]]" useToken="true">
-		<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="250" width="400" maxHeight="250" />
-		<g:input name="order" label="Order" bean="${question}" field="order"/>
+		<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="100" width="400" maxHeight="250" />
+		<g:i18nRichTextarea name="descriptions" bean="${question}" value="${question.descriptions}" label="Help Text" field="descriptions" height="250" width="400" maxHeight="150" />
 		
-		<input type="hidden" name="descriptions.jsonText" value=" "/>
+		<g:input name="order" label="Order" bean="${question}" field="order"/>
 		
 		<table id="question-option">
 			<g:each in="${question.options}" status="i" var="option">
