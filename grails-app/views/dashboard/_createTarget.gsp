@@ -13,10 +13,10 @@
 		
 		<div class="row">
 			<h5>Expressions</h5>
-			
-			<div id="expressions-block">
+
+			<ul id="expressions-block" class="horizontal">
 				<g:each status="i" in="${groups}" var="group">
-					<div id="group-${group.id}" class="group-list">
+					<li id="group-${group.id}" class="group-list">
 						<label for="entry.calculation.expressions[${group.uuid}].id">Expression for ${group.name}:</label>
 						<select class="expression-list" name="entry.calculation.expressions[${group.uuid}].id">
 							<option value="null">-- disabled --</option>
@@ -26,12 +26,12 @@
 								</option>
 							</g:each>
 						</select>
-					</div>
+					</li>
 				</g:each>
 				<g:if test="${currentObjective == null}">
 					<input type="hidden" name="entry.calculation.id" value="${objectiveEntry?.entry?.calculation.id}"></input>
 				</g:if>
-			</div>
+			</ul>
 		</div>
 		
 		<g:input name="weight" label="Weight" bean="${objectiveEntry}" field="weight"/>

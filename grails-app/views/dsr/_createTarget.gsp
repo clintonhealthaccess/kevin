@@ -6,7 +6,7 @@
 	</div>
 	<g:form url="[controller:'dsrTarget', action:'save', params:[targetURI:targetURI]]" useToken="true">
 	    <g:if test="${target != null}">
-		<input type="hidden" name="id" value="${target.id}"/>
+			<input type="hidden" name="id" value="${target.id}"/>
 		</g:if>
 		<g:i18nInput name="names" bean="${target}" value="${target.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
@@ -60,8 +60,8 @@
 			</div>
 		</div>
 		<div class="row">
-			<div id="expressions-block">
-				<div class="${hasErrors(bean:target, field:'expression', 'errors')}">
+			<ul id="expressions-block" class="horizontal">
+				<li class="${hasErrors(bean:target, field:'expression', 'errors')}">
 					<label for="expression.id">Expression:</label>
 					<select class="expression-list" name="expression.id">
 						<option value="null">-- Select an Expression --</option>
@@ -72,8 +72,8 @@
 						</g:each>
 					</select>
 					<div class="error-list"><g:renderErrors bean="${target}" field="expression" /></div>
-				</div>
-			</div>
+				</li>
+			</ul>
 		</div>
 		<g:input name="order" label="Order" bean="${target}" field="order"/>
 		<div class="row">

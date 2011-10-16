@@ -67,9 +67,11 @@
 			    	<div class="right" id="facility-type-filter">
 			    		<div class="bold"><g:message code="dashboard.labels.facility" default="Facility Types"/></div>
 			    		<g:if test="${!dashboard.facilityTypes.isEmpty()}">
-				    		<g:each in="${dashboard.facilityTypes}" var="group">
-					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}<br/>
-				    		</g:each>
+			    		  <ul>
+  				    		<g:each in="${dashboard.facilityTypes}" var="group">
+  					    		<li><input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}</li>
+  				    		</g:each>
+  				    	</ul>
 			    		</g:if>
 			    		<g:else>
 			    			<span class="italic"><g:message code="dashboard.labels.nofacility" default="filter not available at this level"/></span>

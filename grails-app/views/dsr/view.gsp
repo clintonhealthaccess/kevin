@@ -101,94 +101,55 @@
 					<!-- ADMIN SECTION END -->
 				</div>
 			</div>
-			<g:if test="${dsrTable.objective != null && dsrTable.organisation != null}">
-				<div class="filter facility-type">
-		    		<h4 class="bold">Facility types</h4>
-		    		<div id="facility-type-filter">
-			    		<g:if test="${!dsrTable.facilityTypes.isEmpty()}">
-				    		<g:each in="${dsrTable.facilityTypes}" var="group">
-					    		<input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}
-				    		</g:each>
-			    		</g:if>
-		    			<g:else>
-			    			<span class="italic">No facility types</span>
-			    		</g:else>
-		    		</div>
-		    	</div>
-			</g:if>
-			<div id="center" class="main">
-				<div id="values">
-					<g:if test="${dsrTable != null}">
-						<g:if test="${!dsrTable.targets.empty}">
-							<table class="nice-table">
-								<thead>
-									<tr>
-										<th class="object-name-box" rowspan="2">
-											<div>
-												<g:i18n field="${currentObjective.names}" />
-											</div> 
-											<shiro:hasPermission permission="admin:dsr">
-												<span> 
-													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:currentObjective.id)}">(Edit)</a> 
-												</span>
-												<br />
-												<span> 
-													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-														(Delete)
-													</a> 
-												</span>
-											</shiro:hasPermission>
-										</th>
-										<g:set var="i" value="${0}" />
-										<g:each in="${dsrTable.targets}" var="target">
-											<g:if test="${target.category != null}">
-												<g:set var="i" value="${i+1}" />
-												<g:if test="${i==target.category.getTargetsForObjective(currentObjective).size()}">
-													<th class="title-th" colspan="${i}">
-														<div>
-															<g:i18n field="${target.category.names}" />
-														</div> 
-														<shiro:hasPermission permission="admin:dsr">
-															<span> 
-																<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'edit', id:target.category?.id)}">(Edit)</a> 
-															</span>
-															<br />
-															<span> 
-																<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'delete', id:target.category?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																	(Delete)
-																</a> 
-															</span>
-														</shiro:hasPermission> <br />
-													</th>
-													<g:set var="i" value="${0}" />
-												</g:if>
-											</g:if>
-											<g:else>
-												<th class="title-th" rowspan="2">
-													<div class="bt">
-														<g:i18n field="${target.names}" />
-													</div>
-													<shiro:hasPermission permission="admin:dsr">
-														<span> 
-															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">(Edit)</a> 
-														</span>
-														<br />
-														<span> 
-															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																(Delete)
-															</a> 
-														</span>
-													</shiro:hasPermission>
-												</th>
-											</g:else>
-										</g:each>
-									</tr>
-									<tr>
-										<g:each in="${dsrTable.targets}" var="target">
-											<g:if test="${target.category != null}">
-												<th class="title-th">
-													<div class="bt">
-														<g:i18n field="${target.names}" />
+		</div>
+		<g:if test="${dsrTable.objective != null && dsrTable.organisation != null}">
+			<div class="filter facility-type">
+	    		<h4 class="bold">Facility types</h4>
+	    		<div id="facility-type-filter">
+		    		<g:if test="${!dsrTable.facilityTypes.isEmpty()}">
+		    		  <ul>
+  			    		<g:each in="${dsrTable.facilityTypes}" var="group">
+  				    		<li><input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}</li>
+  			    		</g:each>
+  			    	</ul>
+		    		</g:if>
+	    		<g:else>
+	    			<span class="italic">No facility types</span>
+	    		</g:else>
+	    		</div>
+	    	</div>
+		</g:if>
+		<div id="center" class="main">
+			<div id="values">
+				<g:if test="${dsrTable != null}">
+					<g:if test="${!dsrTable.targets.empty}">
+						<table class="nice-table">
+							<tbody>
+								<tr>
+									<th class="object-name-box" rowspan="2">
+										<div>
+											<g:i18n field="${currentObjective.names}" />
+										</div> 
+										<shiro:hasPermission permission="admin:dsr">
+											<span> 
+												<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:currentObjective.id)}">(Edit)</a> 
+											</span>
+											<br />
+											<span> 
+												<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+													(Delete)
+												</a> 
+											</span>
+										</shiro:hasPermission>
+									</th>
+									<g:set var="i" value="${0}" />
+									<g:each in="${dsrTable.targets}" var="target">
+										<g:if test="${target.category != null}">
+											<g:set var="i" value="${i+1}" />
+											<g:if test="${i==target.category.getTargetsForObjective(dsrTable.objective).size()}">
+												<th class="title-th" colspan="${i}">
+													<div>
+														<g:i18n field="${target.category.names}" />
 													</div> 
 													<shiro:hasPermission permission="admin:dsr">
 														<span> 

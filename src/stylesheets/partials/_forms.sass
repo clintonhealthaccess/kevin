@@ -65,6 +65,17 @@ button, input[type=submit], .next
     background: $yes - #111
     border: 1px solid $yes - #333
     +linear-gradient(color-stops($yes, $yes - #111))
+    
+  &#cancel-button
+    background: none
+    border: none
+    color: $no
+    font-size: 11px
+    padding: 7px 10px
+    text-decoration: underline
+    +box-shadow(none)
+    +linear-gradient(color-stops(#fff, #fff))
+    +text-shadow(#fff, 0, 0, 0)
   
 select
   background: #f6f6f6
@@ -223,22 +234,63 @@ ul.filtered
     .element-map-header
       font-size: 11px
     input
-      width: 95px
+      width: 121px
+    select
+      width: 129px
+      
+  li
+    position: relative
+      
+  h5
+    color: $primary
+    font-size: 14px
+    
+  h6
+    display: none
+    
+.element-map-level-1
+  > li
+    margin: 10px 0
+    
+.element-map-level-2
+  float: left
+  padding-top: 5px
+  position: relative
+  > li
+    margin-bottom: 5px
+    
+.element-list-row
+  background: #fafafa
+  border: 1px solid $dropdown
+  padding: 15px
+  position: relative
+  
+.element-list-remove
+  display: block
+  font-size: 11px
+  position: absolute
+  right: 15px
+  top: 15px
+    
 ul.element-map
   +pie-clearfix
   li
     +pie-clearfix
+    
   ul.element-map li
     display: inline
     float: left
+  
+  input, select
     margin-right: 5px
-    
+  
   input
     padding: 3px
     
   label
+    display: inline-block
     font-size: 10px
-    max-width: 70px
+    margin-bottom: 3px
 
 .form-heading-list
   padding-left: 20px

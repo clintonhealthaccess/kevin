@@ -16,9 +16,9 @@
 		<div class="row">
 			<h5>Expressions</h5>
 
-			<div id="expressions-block">
+			<ul id="expressions-block" class="horizontal">
 				<g:each status="i" in="${['','End']}" var="suffix">
-					<div class="${hasErrors(bean:target, field:'expression'+suffix, 'errors')}">
+					<li class="${hasErrors(bean:target, field:'expression'+suffix, 'errors')}">
 						<label for="expression${suffix}.id">${suffix} Expression:</label>
 						<select class="expression-list" name="expression${suffix}.id">
 							<option value="null">-- select an expression --</option>
@@ -34,9 +34,9 @@
 							</g:each>
 						</select>
 						<div class="error-list"><g:renderErrors bean="${target}" field="expression${suffix}" /></div>
-					</div>
+					</li>
 				</g:each>
-			</div>
+			</ul>
 		</div>
 
 		<div class="row ${hasErrors(bean:target, field:'groupUuidString', 'errors')}">
