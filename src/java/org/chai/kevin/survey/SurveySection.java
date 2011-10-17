@@ -139,6 +139,8 @@ public class SurveySection extends SurveyTranslatable {
 	}
 
 	@Transient
+	
+	@Transient
 	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> result = new ArrayList<SurveyElement>();
 		for (SurveyQuestion question : getQuestions(group)) {

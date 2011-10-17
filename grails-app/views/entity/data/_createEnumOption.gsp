@@ -9,6 +9,12 @@
 	<g:i18nTextarea name="names" bean="${option}" value="${option.names}" label="Option" field="names" height="100"  width="300" maxHeight="100" />
 	<g:i18nTextarea name="descriptions" bean="${option}" value="${option.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
 	<g:input name="value" label="Value" bean="${option}" field="value"/>
+	
+	<div class="row">
+		<label>Inactive</label>
+		<g:checkBox name="inactive" value="${option.inactive}" />
+	</div>
+		
 	<g:input name="code" label="Code" bean="${option}" field="code"/>
 	<g:input name="order" label="Order" bean="${option}" field="order"/>
 		<g:if test="${option.id != null}">

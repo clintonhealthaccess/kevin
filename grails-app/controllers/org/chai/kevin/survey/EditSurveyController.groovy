@@ -55,8 +55,16 @@ class EditSurveyController extends AbstractController {
 		User user = User.findByUsername(SecurityUtils.subject.principal)
 		
 		if (user.hasProperty('organisationUnitId') != null) {
+			if (Survey.count() == 0) {
+				response.sendError(404)
+			}
+			
 			Survey survey = Survey.get(params.int('survey'))
 			if (survey == null) survey = surveyPageService.getDefaultSurvey()
+			if (survey == null) {
+				log.info("no default survey - selecting last one in the list")
+				survey = Survey.list()[Survey.count()-1]
+			}
 			Organisation organisation = organisationService.getOrganisation(user.organisationUnitId)
 			
 			redirect (action: 'surveyPage', params: [survey: survey.id, organisation: organisation.id])

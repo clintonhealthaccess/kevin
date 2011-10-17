@@ -5,6 +5,7 @@ import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
+import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SurveyPageServiceSpec extends SurveyIntegrationTests {
@@ -50,6 +51,32 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		then:
 		SurveyEnteredValue.count() == 1
 		SurveyEnteredValue.list()[0].value.numberValue == 10
+	}
+	
+	def "test submit"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		
+		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		when:
+		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question, period, OrganisationUnit.findByName(KIVUYE), false, true);
+		newSurveyEnteredSection(section, period, OrganisationUnit.findByName(KIVUYE), false, true);
+		newSurveyEnteredObjective(objective, period, OrganisationUnit.findByName(KIVUYE), false, true, false);
+		def submitted = surveyPageService.submit(getOrganisation(KIVUYE), objective)
+		
+		then:
+		submitted == true
+		SurveyEnteredObjective.list()[0].closed == true
+		DataValue.count() == 1
+		DataValue.list()[0].value.equals(v("1"))
 	}
 	
 	def "test warning"() {

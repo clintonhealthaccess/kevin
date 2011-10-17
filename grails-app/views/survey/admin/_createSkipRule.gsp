@@ -94,7 +94,7 @@
 		$(".skipped-survey-elements-list").ajaxChosen({
 			type : 'GET',
 			dataType: 'json',
-			url : "${createLink(controller:'surveyElement', action:'getAjaxData',params:[surveyId: skip.survey.id])}"
+			url : "${createLink(controller:'surveyElement', action:'getAjaxData', params:[surveyId: skip.survey.id])}"
 		}, function (data) {
 			var terms = {};
 			$.each(data.elements, function (i, val) {
@@ -106,7 +106,7 @@
 		$("#questions-list").ajaxChosen({
 			type : 'GET',
 			dataType: 'json',
-			url : "${createLink(controller:'question', action:'getAjaxData',params:[surveyId: skip.survey.id])}"
+			url : "${createLink(controller:'question', action:'getAjaxData', params:[surveyId: skip.survey.id])}"
 		}, function (data) {
 			var terms = {};
 			$.each(data.questions, function (i, val) {

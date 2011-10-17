@@ -5,7 +5,7 @@
 	
 	<g:set var="surveyElement" value="${question.surveyElement}"/>
 
-	<g:if test="${print && dataElement.type.type.name().toLowerCase()=='list' && !appendix}">
+	<g:if test="${print && surveyElement?.dataElement.type.type.name().toLowerCase()=='list' && !appendix}">
 		<h4>--- <g:message code="survey.print.see.appendix" default="See Appendix"/> ---</h4>
 	</g:if>
 	<g:else>

@@ -170,8 +170,10 @@
 		
 		$(toRemove).parents('div').first().remove();
 		
-		// TODO get rid of the reload
-		surveyValueChanged(element, $(element).find('.list-input'), function(data, element) {location.reload()});
+		surveyValueChanged(element, $(element).find('.list-input'), function(data, element) {
+			// TODO get rid of the reload
+			location.reload()
+		});
 	}
 	
 	function listAddClick(list, callback) {

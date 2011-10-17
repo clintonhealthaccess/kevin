@@ -53,6 +53,11 @@ public class EnumOption extends Translatable {
 	private String value;
 	private Integer order;
 	
+	// TODO flag to deactivate option in survey, 
+	// think about how to make that better
+	// enum and enum options should not be directly linked to a survey
+	private Boolean inactive;
+	
 	private Enum enume;
 
 	@Id
@@ -86,6 +91,15 @@ public class EnumOption extends Translatable {
 		this.enume = enume;
 	}
 	
+	@Basic(optional=true)
+	public Boolean getInactive() {
+		return inactive;
+	}
+	
+	public void setInactive(Boolean inactive) {
+		this.inactive = inactive;
+	}
+
 	@Basic(optional=true)
 	@Column(name="ordering")
 	public Integer getOrder() {

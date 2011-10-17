@@ -10,9 +10,12 @@
 		<select class="input ${!readonly?'loading-disabled':''}" name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
 			<option value="null">Select</option>
 			<g:each in="${enume?.enumOptions}" var="option">
-				<option value="${option.value}"  ${option?.value==value?.enumValue ? 'selected':''}>
-					<g:i18n field="${option.names}" />
-				</option>
+				<!-- TODO fix this, there should be a flag in the survey, not on the element directly -->
+				<g:if test="${!option.inactive}">
+					<option value="${option.value}"  ${option?.value==value?.enumValue ? 'selected':''}>
+						<g:i18n field="${option.names}" />
+					</option>
+				</g:if>
 			</g:each>
 		</select>
 	</g:if>

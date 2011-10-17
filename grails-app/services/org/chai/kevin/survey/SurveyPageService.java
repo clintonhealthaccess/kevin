@@ -622,8 +622,8 @@ public class SurveyPageService {
 				}
 				else {
 					final Type type = enteredValue.getType();
-					Value newValue = new Value(enteredValue.getValue().getJsonValue());
-					type.transformValue(newValue, new ValuePredicate() {
+					valueToSave = new Value(enteredValue.getValue().getJsonValue());
+					type.transformValue(valueToSave, new ValuePredicate() {
 						@Override
 						public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
 							// if it is skipped we return NULL

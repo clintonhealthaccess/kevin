@@ -29,6 +29,7 @@ package org.chai.kevin.data;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
@@ -86,6 +87,7 @@ public class Enum {
 	public void addEnumOption(EnumOption enumOption) {
 		enumOptions.add(enumOption);
 		enumOption.setEnume(this);
+		Collections.sort(enumOptions);
 	}
 
 	@Embedded
