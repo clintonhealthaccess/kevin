@@ -11,14 +11,14 @@
 		<li>
 		  	<div class="element-map-header">
 		  		<g:if test="${!it.value.isComplexType()}">
-	  				<label><g:i18n field="${surveyElement.headers.get(suffix+'.'+it.key)}"/></label>
+	  				<label><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></label>
 	  			</g:if>
 	  			<g:else>
 	  				<g:if test="${levels.size() == 1}">
-	  					<h5><g:i18n field="${surveyElement.headers.get(suffix+'.'+it.key)}"/></h5>
+	  					<h5><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></h5>
 	  				</g:if>
 	  				<g:else>
-	  					<h6><g:i18n field="${surveyElement.headers.get(suffix+'.'+it.key)}"/></h6>
+	  					<h6><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></h6>
 	  				</g:else>
 	  			</g:else>
 				
@@ -39,6 +39,7 @@
 	  				lastValue: lastValue?.mapValue?.get(it.key),
 	  				type: it.value,
 	  				suffix: suffix+'.'+it.key,
+	  				headerSuffix:  (headerSuffix==null?suffix:headerSuffix)+'.'+it.key,
 	  				surveyElement: surveyElement,
 	  				enteredValue: enteredValue,
 	  				readonly: readonly

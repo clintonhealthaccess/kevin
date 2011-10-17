@@ -1251,12 +1251,11 @@ class Initializer {
 
 			def ruleQ6 = new SurveyValidationRule(
 				surveyElement: surveyElementServiceQ6,
-				prefix: "[_].key1",
-				expression: "\$"+surveyElementServiceQ6.id+"[_].key1 > 100",
+				prefix: "[_].key1.key18",
+				expression: "\$"+surveyElementServiceQ6.id+"[_].key1.key18 < 24",
 				messages: j(["en":"Validation error {0}"]),
 				dependencies: [surveyElementServiceQ6],
-				groupUuidString: "District Hospital,Health Center",
-				allowOutlier: true
+				allowOutlier: false
 			).save(failOnError: true)
 			surveyElementServiceQ6.addValidationRule(ruleQ6)
 			surveyElementServiceQ6.save(failOnError: true)

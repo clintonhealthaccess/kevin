@@ -2,7 +2,7 @@
 	<g:each in="${surveyPage.survey.getObjectives(surveyPage.organisation.organisationUnitGroup)}" var="objective">
 		<g:set var="enteredObjective" value="${surveyPage.objectives[objective]}"/>
 		
-		<li id="objective-${objective.id}" class="${surveyPage.section?.objective?.id == objective.id?'current':''}">
+		<li id="objective-${objective.id}" class="${surveyPage.section?.objective?.id == objective.id?'active':''}">
 			<a class="item" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
 				<span><g:i18n field="${objective.names}" /></span>
 				<span class="item-status">
@@ -17,7 +17,7 @@
 					<g:set var="enteredSection" value="${surveyPage.sections[section]}"/>
 
 					<li id="section-${section.id}">
-						<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
+						<a class="item ${surveyPage.section?.id == section.id?'active':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
 							<span><g:i18n field="${section.names}" /></span>
 							<span class="item-status">
 								<span class="section-status-complete section-status ${enteredSection.displayedStatus!='complete'?'hidden':''}"></span>
