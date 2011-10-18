@@ -14,14 +14,12 @@
 				<g:set value="${surveyPage.objectives[surveyPage.objective].closed}" var="closed"/>
 				<g:set var="readonly" value="${surveyPage.isReadonly(surveyPage.objective)}"/>
 				
-				<g:if test="${flash.message}">
-					<div class="rounded-box-top rounded-box-bottom flash-info">
-						<g:message code="${flash.message}" default="${flash.default}"/>
-					</div>
+				<g:if test="${flash.message != null}">
+					<div class="message">${flash.message}</div>
 				</g:if>
 				
 				<g:if test="${closed}">
-					<div class="rounded-box-top rounded-box-bottom">
+					<div>
 						This objective has been already been submitted. Please go on with the other sections.
 						<shiro:hasPermission permission="admin:survey">
 							<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])}">Reopen this objective.</a>

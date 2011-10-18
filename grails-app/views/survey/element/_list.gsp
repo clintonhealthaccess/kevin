@@ -25,6 +25,7 @@
 					lastValue: null,
 					type: type.listType, 
 					suffix: suffix+'['+i+']',
+					headerSuffix: (headerSuffix==null?suffix:headerSuffix)+'[_]',
 					surveyElement: surveyElement,
 					enteredValue: enteredValue,
 					readonly: readonly
@@ -42,6 +43,7 @@
 						lastValue: null,
 						type: type.listType, 
 						suffix: suffix+'[_]',
+						headerSuffix: (headerSuffix==null?suffix:headerSuffix)+'[_]',
 						surveyElement: surveyElement,
 						enteredValue: enteredValue,
 						readonly: readonly 

@@ -140,7 +140,7 @@ public class SurveySection extends SurveyTranslatable {
 
 	@Transient
 	public Integer getQuestionNumber(SurveyQuestion question) {
-		return questions.indexOf(question);
+		return questions.indexOf(question)+1;
 	}
 	
 	@Transient

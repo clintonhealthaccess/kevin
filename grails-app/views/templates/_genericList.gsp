@@ -1,29 +1,19 @@
 <div class="entity-list">
 	<div id="entities">
 		<h5 class="subnav">
-     	<g:message code="default.list.label" args="[entityName]" />
-     	<span class="right">
-     	  <g:if test="${!addTemplate}">
-  				<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
-  			</g:if>
-  			<g:else>
-  				<g:render template="/survey/admin/${addTemplate}"/>
-  			</g:else>
-     	</span>
+	     	<g:message code="default.list.label" args="[entityName]" />
+	     	<g:if test="${!search}">
+		     	<span class="right">
+					<g:if test="${!addTemplate}">
+		  				<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
+		  			</g:if>
+		  			<g:else>
+		  				<g:render template="/survey/admin/${addTemplate}"/>
+		  			</g:else>
+		     	</span>
+	     	</g:if>
 		</h5>
 		
-		<g:if test="${!search}">
-			<div class="float-right">
-				<g:if test="${!addTemplate}">
-					<a href="${createLinkWithTargetURI(controller: params['controller'], action:'create', params: params)}" >New ${entityName}</a>
-				</g:if>
-				<g:else>
-					<g:render template="/survey/admin/${addTemplate}"/>
-				</g:else>
-			</div>
-		</g:if>
-		<div class="clear"></div>
-
 		<g:if test="${flash.message}">
 			<div class="message">${flash.message}</div>
         </g:if>

@@ -260,32 +260,32 @@ class Initializer {
 						"key1": Type.TYPE_MAP([
 							"key11": Type.TYPE_MAP([
 								"key111": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
-								"key112": Type.TYPE_STRING
+								"key112": Type.TYPE_STRING()
 							]),
-							"key12": Type.TYPE_STRING,
+							"key12": Type.TYPE_STRING(),
 							"key13": Type.TYPE_MAP([
 								"key131": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
-								"key132": Type.TYPE_STRING	
+								"key132": Type.TYPE_STRING()
 							]),
-							"key14": Type.TYPE_STRING,
-							"key15": Type.TYPE_STRING,
+							"key14": Type.TYPE_STRING(),
+							"key15": Type.TYPE_STRING(),
 							"key16": Type.TYPE_MAP([
 								"key161": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
-								"key162": Type.TYPE_STRING
+								"key162": Type.TYPE_STRING()
 							]),
 							"key17": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
-							"key18": Type.TYPE_NUMBER
+							"key18": Type.TYPE_NUMBER()
 						]),
 						"key2": Type.TYPE_MAP([
-							"key21": Type.TYPE_STRING,
+							"key21": Type.TYPE_STRING(),
 							"key22": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
-							"key23": Type.TYPE_STRING,
-							"key24": Type.TYPE_DATE,
-							"key25": Type.TYPE_STRING,
+							"key23": Type.TYPE_STRING(),
+							"key24": Type.TYPE_DATE(),
+							"key25": Type.TYPE_STRING(),
 							"key26": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
-							"key27": Type.TYPE_STRING,
-							"key28": Type.TYPE_DATE,
-							"key29": Type.TYPE_DATE
+							"key27": Type.TYPE_STRING(),
+							"key28": Type.TYPE_DATE(),
+							"key29": Type.TYPE_DATE()
 						])	
 					])
 				)	
@@ -1237,7 +1237,7 @@ class Initializer {
 						"[_].key2.key29": j(["en":"Date of last service"])
 					]).save(failOnError: true)
 			serviceQ6.surveyElement = surveyElementServiceQ6
-			serviceQ6.save(failOnError: true)
+			serviceQ6.save(failOnError: true, flush: true)
 
 			services.addQuestion(serviceQ2)
 			services.addQuestion(serviceQ1)
@@ -1253,6 +1253,7 @@ class Initializer {
 				expression: "\$"+surveyElementServiceQ6.id+"[_].key1.key18 < 24",
 				messages: j(["en":"Validation error {0}"]),
 				dependencies: [surveyElementServiceQ6],
+				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			surveyElementServiceQ6.addValidationRule(ruleQ6)

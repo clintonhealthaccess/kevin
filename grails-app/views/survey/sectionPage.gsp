@@ -17,10 +17,8 @@
 			
 			<div class="main">
 
-				<g:if test="${flash.message}">
-					<div class="rounded-box-top rounded-box-bottom flash-info">
-						<g:message code="${flash.message}" default="${flash.default}"/>
-					</div>
+				<g:if test="${flash.message != null}">
+					<div class="message">${flash.message}</div>
 				</g:if>
 							
 				<g:if test="${closed}">
@@ -37,23 +35,23 @@
 <!-- 					</div> -->
 <!-- 				</g:if>  -->
 				
-				<div class="rounded-box-top">
+				<div>
 					<h3 class="form-heading">
 						<g:i18n field="${surveyPage.section.names}" />
 					</h3>
 				</div>
 				
-				<div class="rounded-box-bottom">
+				<div>
 					<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 						<ol id="questions">
 							<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question" status="i">
-								<li class="question-container ${surveyPage.questions[question].skipped?'skipped':''}">
+								<li class="question-container ${surveyPage.questions[question].skipped?'hidden':''}">
 									<g:render template="/survey/question/${question.getType()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1]" />
 								</li> 
 							</g:each>
 						</ol>
 						
-						<ul>
+						<ul class="form-actions">
 							<g:if test="${!readonly}">
 								<li>
 									<button type="submit" class="loading-disabled">
@@ -65,9 +63,11 @@
 										</g:else>
 									</button>
 								</li>
-								<button type="cancel" class="hidden">
-									Cancel
-								</button>
+								<li>
+									<button type="cancel" class="hidden">
+										Cancel
+									</button>
+								</li>
 							</g:if>
 	  						<li><a href="#" class="go-back">Go back</a></li>
 	  					</ul>
@@ -108,8 +108,8 @@
 					
 					// we go through all the questions
 					$.each(data.questions, function(index, value) {
-						if (value.skipped == true) $('#question-'+value.id).parents('.question-container').addClass('skipped')
-						else $('#question-'+value.id).parents('.question-container').removeClass('skipped')
+						if (value.skipped == true) $('#question-'+value.id).parents('.question-container').addClass('hidden')
+						else $('#question-'+value.id).parents('.question-container').removeClass('hidden')
 					});
 				}
 			</r:script>

@@ -818,6 +818,7 @@ public class Type {
 
 	public static Type TYPE_DATE() { return new Type("{\"type\":\"date\"}");}
 	public static Type TYPE_STRING() { return new Type("{\"type\":\"string\"}");}
+	public static Type TYPE_TEXT() { return new Type("{\"type\":\"text\"}");}
 	public static Type TYPE_NUMBER() { return new Type("{\"type\":\"number\"}");}
 	public static Type TYPE_BOOL() { return new Type("{\"type\":\"bool\"}");}
 	

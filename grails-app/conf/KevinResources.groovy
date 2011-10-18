@@ -123,12 +123,6 @@ modules = {
 		resource url: '/js/report_init.js', bundle: 'core'
 	}
 	
-	ajaxmanager {
-		dependsOn 'jquery'
-		
-		resource url: 'js/jquery/ajaxmanager/jquery.ajaxmanager.js'
-	}
-	
 	questionhelp {
 		dependsOn 'jquery'
 
