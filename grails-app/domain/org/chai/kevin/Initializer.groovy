@@ -1166,18 +1166,18 @@ class Initializer {
 			serviceQ3.surveyElement = surveyElementServiceQ3
 			serviceQ3.save(failOnError: true)
 
-			def serviceQ4 = new SurveySimpleQuestion(
-					names: j(["en":"Service Section Simple Question LIST"]),
-					descriptions: j(["en":"Help text"]),
-					order: 4,
-					groupUuidString: "District Hospital,Health Center"
-					)
-			services.addQuestion(serviceQ4)
-			services.save(failOnError:true, flush:true)
+//			def serviceQ4 = new SurveySimpleQuestion(
+//					names: j(["en":"Service Section Simple Question LIST"]),
+//					descriptions: j(["en":"Help text"]),
+//					order: 4,
+//					groupUuidString: "District Hospital,Health Center"
+//					)
+//			services.addQuestion(serviceQ4)
+//			services.save(failOnError:true, flush:true)
 
-			def surveyElementServiceQ4 = new SurveyElement(dataElement: DataElement.findByCode("LIST1"), surveyQuestion: serviceQ4).save(failOnError: true)
-			serviceQ4.surveyElement = surveyElementServiceQ4
-			serviceQ4.save(failOnError: true)
+//			def surveyElementServiceQ4 = new SurveyElement(dataElement: DataElement.findByCode("LIST1"), surveyQuestion: serviceQ4).save(failOnError: true)
+//			serviceQ4.surveyElement = surveyElementServiceQ4
+//			serviceQ4.save(failOnError: true)
 
 			def serviceQ5 = new SurveySimpleQuestion(
 					names: j(["en":"Service Section Simple Question MAP"]),
@@ -1192,9 +1192,7 @@ class Initializer {
 					dataElement: DataElement.findByCode("MAP1"),
 					surveyQuestion: serviceQ5,
 					headers: [
-						".key1":j(["en": "Header 1"]),
-						".key2":j(["en": "Header 2"]),
-						".key3":j(["en": "Header 3"])
+						".key1.key11.key111":j(["en": "Header 1"])
 					]).save(failOnError: true)
 			serviceQ5.surveyElement = surveyElementServiceQ5
 			serviceQ5.save(failOnError: true)
@@ -1244,7 +1242,7 @@ class Initializer {
 			services.addQuestion(serviceQ2)
 			services.addQuestion(serviceQ1)
 			services.addQuestion(serviceQ3)
-			services.addQuestion(serviceQ4)
+//			services.addQuestion(serviceQ4)
 			services.addQuestion(serviceQ5)
 			services.addQuestion(serviceQ6)
 			services.save(failOnError:true)
