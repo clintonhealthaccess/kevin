@@ -2,9 +2,7 @@
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>Description</th>
 			<th>Inactive</th>
-			<th>Code</th>
 			<th>Value</th>
 			<th>Order</th>
 			<th>Manage</th>
@@ -14,9 +12,7 @@
 		<g:each in="${entities}" status="i" var="option"> 
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 				<td><g:i18n field="${option.names}" /></td>
-				<td><g:i18n field="${option.descriptions}" /></td>
 				<td>${option.inactive?'\u2713':''}</td>
-				<td>${option.code}</td>
 				<td>${option.value}</td>
 				<td>${option.order}</td>
 				<td>

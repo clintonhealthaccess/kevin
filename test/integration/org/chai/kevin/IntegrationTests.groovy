@@ -198,9 +198,13 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new Enum(code: code).save(failOnError: true)
 	}
 	
-	EnumOption newEnumOption(def enume, def code, def value) {
-		def enumOption = new EnumOption(enume: enume, code: code, value: value).save(failOnError: true)
-		enume.enumOptions << enumOption
+	EnumOption newEnumOption(def enume, def value) {
+		return newEnumOption(enume, value, null)
+	}
+	
+	EnumOption newEnumOption(def enume, def value, def order) {
+		def enumOption = new EnumOption(enume: enume, value: value, order: order).save(failOnError: true)
+		enume.addEnumOption(enumOption)
 		enume.save(failOnError: true)
 		return enumOption
 	}

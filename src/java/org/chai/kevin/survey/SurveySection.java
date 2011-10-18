@@ -139,6 +139,9 @@ public class SurveySection extends SurveyTranslatable {
 	}
 
 	@Transient
+	public Integer getQuestionNumber(SurveyQuestion question) {
+		return questions.indexOf(question);
+	}
 	
 	@Transient
 	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {

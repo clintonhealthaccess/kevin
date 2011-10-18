@@ -691,8 +691,9 @@ public class Type {
 				}
 				break;
 			case BOOL:
-				if (value != null && !string.equals("0")) result = true;
-				else result = false;
+				if (value != null && string.equals("0")) result = false;
+				else if (value != null && !string.equals("") && !string.equals("0")) result = true;
+				else result = JSONObject.NULL;
 				break;
 			case STRING:
 				if (value == null || string.equals("")) result = JSONObject.NULL;

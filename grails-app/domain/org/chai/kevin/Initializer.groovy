@@ -192,12 +192,12 @@ class Initializer {
 		if (!Enum.count()) {
 			// Enumerations
 			def enume = new Enum(names:j(["en":"Enum 1"]), descriptions:j([:]), code:"ENUM1");
-			def enumOption1 = new EnumOption(names:j(["en":"Value 1"]), descriptions:j([:]), value:"value1", code:"OPTION1", enume: enume);
-			def enumOption2 = new EnumOption(names:j(["en":"Value 2"]), descriptions:j([:]), value:"value2", code:"OPTION2", enume: enume);
+			def enumOption1 = new EnumOption(names:j(["en":"Value 1"]), value:"value1", enume: enume);
+			def enumOption2 = new EnumOption(names:j(["en":"Value 2"]), value:"value2", enume: enume);
 			def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
-			def enumOption01 = new EnumOption(names:j(["en":"N/A Did not receive training"]), descriptions:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", code:"OPTION01", enume: enume2);
-			def enumOption02 = new EnumOption(names:j(["en":"NGO or Partner"]), descriptions:j(["en":"NGO or Partner"]), value:"NGO or Partner", code:"OPTION02", enume: enume2);
-			def enumOption03 = new EnumOption(names:j(["en":"Ministry of Health"]), descriptions:j(["en":"Ministry of Health"]), value:"Ministry of Health", code:"OPTION03", enume: enume2);
+			def enumOption01 = new EnumOption(names:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", enume: enume2);
+			def enumOption02 = new EnumOption(names:j(["en":"NGO or Partner"]), value:"NGO or Partner", enume: enume2);
+			def enumOption03 = new EnumOption(names:j(["en":"Ministry of Health"]), value:"Ministry of Health", enume: enume2);
 			enume.enumOptions = [enumOption1, enumOption2]
 			enume.save(failOnError: true)
 			enumOption1.save(failOnError: true)
@@ -319,7 +319,7 @@ class Initializer {
 					dataElement: DataElement.findByCode("CODE10"),
 					period: Period.list()[1],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: v("\""+EnumOption.findByCode("OPTION02").value+"\""),
+					value: v("\"NGO or Partner\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(
@@ -347,7 +347,7 @@ class Initializer {
 					dataElement: DataElement.findByCode("CODE101"),
 					period: Period.list()[1],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
-					value: v("\""+EnumOption.findByCode("OPTION03").value+"\""),
+					value: v("\"Ministry of Health\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new DataValue(

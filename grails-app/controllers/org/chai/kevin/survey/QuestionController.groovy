@@ -90,7 +90,7 @@ class QuestionController {
 				surveyQuestions.each { question ->
 					quest (
 						id: question.id,
-						question: question.getString(g.i18n(field: question.names).toString(),35)+' - '+ g.i18n(field: question.section.names)+' - '+ g.i18n(field: question.survey.names)
+						question: question.getString(g.i18n(field: question.names).toString(),35)+' - '+ g.i18n(field: question.section.names)
 					)
 				}
 			}

@@ -118,6 +118,19 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 	}
 	
+	def "test enum option ordering"() {
+		setup:
+		def enume = newEnume(CODE(1))
+		def option1 = newEnumOption(enume, v("\"test\""), 2)
+		def option2 = newEnumOption(enume, v("\"absent\""), 1)
+		
+		when:
+		def enumefromdb = Enum.findByCode(CODE(1))
+		
+		then:
+		enumefromdb.enumOptions.equals([option2, option1])
+	}
+	
 	def "test expressions at different levels"() {
 		setup:
 		setupOrganisationUnitTree()
@@ -129,8 +142,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		when:
 		def enume = newEnume(CODE(1))
-		newEnumOption(enume, CODE(2), v("\"test\""))
-		newEnumOption(enume, CODE(3), v("\"absent\""))
+		newEnumOption(enume, v("\"test\""))
+		newEnumOption(enume, v("\"absent\""))
 		
 		def dataElement = newDataElement(CODE(4), Type.TYPE_ENUM (enume.code))
 		newDataValue(dataElement, period, kivuye, v("\"absent\""))

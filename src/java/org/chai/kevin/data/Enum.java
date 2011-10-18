@@ -42,6 +42,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -76,6 +77,7 @@ public class Enum {
 		
 	@OneToMany(mappedBy="enume", targetEntity=EnumOption.class, fetch=FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
+	@OrderBy(value="order")
 	public List<EnumOption> getEnumOptions() {
 		return enumOptions;
 	}

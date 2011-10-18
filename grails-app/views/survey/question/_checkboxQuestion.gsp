@@ -18,7 +18,8 @@
 						suffix:'',
 						surveyElement: surveyElement, 
 						enteredValue: enteredValue, 
-						readonly: readonly
+						readonly: readonly,
+						isCheckbox: true
 					]"/>
 					<g:i18n field="${option.names}"/></span></span>
 				</g:if>

@@ -28,8 +28,11 @@ package org.chai.kevin.data;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -37,22 +40,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.chai.kevin.Orderable;
 import org.chai.kevin.Translatable;
+import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="EnumOption")
 @Table(name="dhsst_enum_option")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class EnumOption extends Translatable {
+public class EnumOption extends Orderable {
 
 	private static final long serialVersionUID = -7093395116301416126L;
 	
 	private Long id;
-	private String code;
 	private String value;
 	private Integer order;
-	
+	private Translation names = new Translation();
+
 	// TODO flag to deactivate option in survey, 
 	// think about how to make that better
 	// enum and enum options should not be directly linked to a survey
@@ -70,6 +75,19 @@ public class EnumOption extends Translatable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
+	})
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+	
 	
 	@Basic(optional=false)
 	@Column(nullable=false)
@@ -109,13 +127,12 @@ public class EnumOption extends Translatable {
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((enume == null) ? 0 : enume.hashCode());
+		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
 		return result;
 	}
 
@@ -125,20 +142,20 @@ public class EnumOption extends Translatable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof EnumOption))
 			return false;
 		EnumOption other = (EnumOption) obj;
-		if (code == null) {
-			if (other.code != null)
+		if (getId() == null) {
+			if (other.getId() != null)
 				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		if (enume == null) {
-			if (other.enume != null)
-				return false;
-		} else if (!enume.equals(other.enume))
+		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "EnumOption [id=" + id + ", value=" + value + "]";
 	}
 	
 }

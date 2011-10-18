@@ -5,7 +5,7 @@
 				<li>
 				${error.message}
 				<g:if test="${error.rule.allowOutlier}">
-					Are you sure? <a class="outlier-validation" href="#" data-rule="${error.rule.id}">Yes</a>
+					Please double check it. If it is correct, confirm by clicking <a class="outlier-validation" href="#" data-rule="${error.rule.id}">here</a>.
 					<input type="hidden" class="input" name="surveyElements[${surveyElement.id}].value${error.suffix}[warning]" value=""/>
 				</g:if>
 				</li>
