@@ -103,3 +103,30 @@
     background: url('../images/icons/status_invalid.png') center no-repeat
   .section-status-closed, .objective-status-closed
     background: url('../images/icons/status_closed.png') center no-repeat
+
+
+.element.errors
+  position: relative
+  
+.error-list 
+  opacity: 0.6
+  position: absolute
+  top: 21px
+  left: 0
+  z-index: 20
+  li
+    background: $no
+    color: #fff
+    float: left
+    font-size: 11px
+    font-weight: bold
+    padding: 7px 15px
+    +box-shadow(#aaa, 1px, 1px, 3px)
+    +text-shadow($no - #444, 0, 1px, 0)
+    &:last-child
+      +border-bottom-radius
+      +border-top-right-radius
+    a
+      color: #fff
+      font-size: 11px
+      
