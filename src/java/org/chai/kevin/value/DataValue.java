@@ -29,6 +29,7 @@ package org.chai.kevin.value;
  */
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -41,6 +42,7 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -57,8 +59,7 @@ public class DataValue extends StoredValue {
 	
 	public DataValue() {}
 
-	public DataValue(DataElement dataElement, OrganisationUnit organisationUnit, 
-			Period period, Value value) {
+	public DataValue(DataElement dataElement, OrganisationUnit organisationUnit, Period period, Value value) {
 		super(organisationUnit, period, value);
 		
 		this.dataElement = dataElement;
@@ -75,7 +76,7 @@ public class DataValue extends StoredValue {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=DataElement.class, optional=false)
+	@ManyToOne(targetEntity=DataElement.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public DataElement getDataElement() {
 		return dataElement;
@@ -93,9 +94,7 @@ public class DataValue extends StoredValue {
 	
 	@Override
 	public String toString() {
-		return "DataValue [dataElement=" + dataElement + ", organisationUnit="
-				+ organisationUnit + ", period=" + period + ", value=" + value
-				+ "]";
+		return "DataValue [value=" + value + "]";
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class SurveyElement {
 		this.id = id;
 	}
 	
-	@ManyToOne(optional=false, targetEntity=DataElement.class)
+	@ManyToOne(targetEntity=DataElement.class, optional=false)
 	@JoinColumn(nullable=false)
 	public DataElement getDataElement() {
 		return dataElement;
@@ -69,7 +69,7 @@ public class SurveyElement {
 		validationRules.add(validationRule);
 	}
 	
-	@ManyToOne(targetEntity=SurveyQuestion.class, optional=false, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=SurveyQuestion.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public SurveyQuestion getSurveyQuestion() {
 		return surveyQuestion;

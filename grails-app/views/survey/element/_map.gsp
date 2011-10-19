@@ -4,47 +4,44 @@
 <% levels.push(type) %>
 
 <!-- Value type question -->
-<ul id="element-${surveyElement.id}-${suffix}" class="element element-map-level-${levels.size()} element-map ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
+<ul id="element-${surveyElement.id}-${suffix}" class="horizontal element element-map-level-${levels.size()} element-map ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 
-	<g:each in="${type.elementMap}">
-		<li>
-		  	<div class="element-map-header">
-		  		<g:if test="${!it.value.isComplexType()}">
-	  				<label><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></label>
-	  			</g:if>
-	  			<g:else>
-	  				<g:if test="${levels.size() == 1}">
-	  					<h5><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></h5>
-	  				</g:if>
-	  				<g:else>
-	  					<h6><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></h6>
-	  				</g:else>
-	  			</g:else>
-				
-	  			<g:if test="${it.value.type.name().toLowerCase()=='enum' && print && appendix}">
-	  				<g:if test="${it.value.enumCode != null}">
-	  					<g:set var="enume" value="${Enum.findByCode(it.value.enumCode)}"/>
-	  					<div class="text-align-left">--Possible choice--</div>
-	  					<g:each in="${enume?.enumOptions}" var="option">
-	  						<div class="text-align-left"><g:i18n field="${option.names}" /></div>
-	  					</g:each>
-	  				</g:if>
-	  			</g:if>
-				
-	  		</div>
-	  		<div class="element-map-body">
-	  			<g:render template="/survey/element/${it.value.type.name().toLowerCase()}"  model="[
-	  				value: value?.mapValue?.get(it.key),
-	  				lastValue: lastValue?.mapValue?.get(it.key),
-	  				type: it.value,
-	  				suffix: suffix+'.'+it.key,
-	  				headerSuffix:  (headerSuffix==null?suffix:headerSuffix)+'.'+it.key,
-	  				surveyElement: surveyElement,
-	  				enteredValue: enteredValue,
-	  				readonly: readonly
-	  			]"/>
-	  		</div>
+	<g:each in="${type.elementMap}" var="it" status="i">
+	
+		<li class="${(levels.size() == 1 && it.value.isComplexType())?'adv-form-section':''} ${levels.size() > 1 && it.value.isComplexType()?'adv-form-subsection':''} ${type.elementMap.size() == i+1?'last':''}">
+	  		<g:if test="${!it.value.isComplexType()}">
+  				<label><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></label>
+  			</g:if>
+  			<g:else>
+  				<g:if test="${levels.size() == 1}">
+  					<h5><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></h5>
+  				</g:if>
+  				<g:if test="${levels.size() > 1}">
+  					<h6><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></h6>
+  				</g:if>
+  			</g:else>
+			
+  			<g:if test="${it.value.type.name().toLowerCase()=='enum' && print && appendix}">
+  				<g:if test="${it.value.enumCode != null}">
+  					<g:set var="enume" value="${Enum.findByCode(it.value.enumCode)}"/>
+  					<div class="text-align-left">--Possible choice--</div>
+  					<g:each in="${enume?.enumOptions}" var="option">
+  						<div class="text-align-left"><g:i18n field="${option.names}" /></div>
+  					</g:each>
+  				</g:if>
+  			</g:if>
+			
+  			<g:render template="/survey/element/${it.value.type.name().toLowerCase()}"  model="[
+  				value: value?.mapValue?.get(it.key),
+  				lastValue: lastValue?.mapValue?.get(it.key),
+  				type: it.value,
+  				suffix: suffix+'.'+it.key,
+  				headerSuffix:  (headerSuffix==null?suffix:headerSuffix)+'.'+it.key,
+  				surveyElement: surveyElement,
+  				enteredValue: enteredValue,
+  				readonly: readonly
+  			]"/>
 	  	</li>
 	</g:each>
 	

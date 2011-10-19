@@ -105,7 +105,7 @@ public class Survey extends SurveyTranslatable {
 		this.period = period;
 	}
 	
-	@ManyToOne(targetEntity=Period.class, optional=true)
+	@ManyToOne(targetEntity=Period.class)
 	@JoinColumn(name="last_iteration")
 	public Period getLastPeriod() {
 		return lastPeriod;

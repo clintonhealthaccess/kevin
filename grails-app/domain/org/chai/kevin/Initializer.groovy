@@ -257,6 +257,7 @@ class Initializer {
 			def siyelo2 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP2",
 				type: Type.TYPE_LIST(
 					Type.TYPE_MAP([
+						"key0": Type.TYPE_STRING(),
 						"key1": Type.TYPE_MAP([
 							"key11": Type.TYPE_MAP([
 								"key111": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
@@ -1210,6 +1211,7 @@ class Initializer {
 					dataElement: DataElement.findByCode("LISTMAP2"),
 					surveyQuestion: serviceQ6,
 					headers: [
+						"[_].key0": j(["en":"Name"]),
 						"[_].key1": j(["en":"Identifiers"]),
 						"[_].key1.key11": j(["en":"Type of equipment"]),
 						"[_].key1.key11.key111": j(["en":"Select from list"]),

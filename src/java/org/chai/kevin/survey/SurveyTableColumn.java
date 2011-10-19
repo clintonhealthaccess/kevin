@@ -37,6 +37,7 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -68,8 +69,8 @@ public class SurveyTableColumn extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic(optional = false)
-	@Column(name = "ordering")
+	@Basic
+	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;
 	}
@@ -87,8 +88,8 @@ public class SurveyTableColumn extends SurveyTranslatable {
 		return groupUuidString;
 	}
 
-	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
-	@JoinColumn(nullable = false)
+	@ManyToOne(targetEntity=SurveyTableQuestion.class, fetch=FetchType.LAZY)
+	@JoinColumn(nullable=false)
 	public SurveyTableQuestion getQuestion() {
 		return question;
 	}

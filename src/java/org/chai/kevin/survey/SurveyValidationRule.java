@@ -9,6 +9,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -47,7 +48,7 @@ public class SurveyValidationRule {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=SurveyElement.class, optional=false)
+	@ManyToOne(targetEntity=SurveyElement.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public SurveyElement getSurveyElement() {
 		return surveyElement;
@@ -56,7 +57,7 @@ public class SurveyValidationRule {
 		this.surveyElement = surveyElement;
 	}
 	
-	@Basic(optional=false)
+	@Basic
 	@Column(nullable=false)
 	public String getExpression() {
 		return expression;
@@ -96,7 +97,7 @@ public class SurveyValidationRule {
 		this.groupUuidString = groupUuidString;
 	}
 	
-	@Basic(optional=false)
+	@Basic
 	@Column(nullable=false)
 	public Boolean getAllowOutlier() {
 		return allowOutlier;
@@ -106,7 +107,7 @@ public class SurveyValidationRule {
 		this.allowOutlier = allowOutlier;
 	}
 	
-	@Basic(optional=false)
+	@Basic
 	@Column(nullable=false)
 	public String getPrefix() {
 		return prefix;

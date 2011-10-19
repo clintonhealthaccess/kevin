@@ -35,6 +35,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -88,6 +89,7 @@ public class ExpressionValue extends StoredValue {
 
 	@NaturalId
 	@ManyToOne(targetEntity=Expression.class, fetch=FetchType.LAZY)
+	@JoinColumn(nullable=false)
 	public Expression getExpression() {
 		return expression;
 	}
@@ -117,13 +119,6 @@ public class ExpressionValue extends StoredValue {
 	}
 	
 	@Override
-	public String toString() {
-		return "ExpressionValue [status=" + status + ", value=" + value
-				+ ", organisationUnit=" + organisationUnit + ", expression="
-				+ expression + ", period=" + period + "]";
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
@@ -149,4 +144,9 @@ public class ExpressionValue extends StoredValue {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "ExpressionValue [value=" + value + "]";
+	}
+	
 }

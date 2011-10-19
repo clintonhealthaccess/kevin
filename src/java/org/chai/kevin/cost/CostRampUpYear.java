@@ -51,7 +51,7 @@ public class CostRampUpYear {
 		this.id = id;
 	}
 	
-	@Basic(optional=false)
+	@Basic
 	public Integer getYear() {
 		return year;
 	}
@@ -59,7 +59,7 @@ public class CostRampUpYear {
 		this.year = year;
 	}
 	
-	@Basic(optional=false)
+	@Basic
 	public Double getValue() {
 		return value;
 	}

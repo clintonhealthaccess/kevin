@@ -34,6 +34,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -65,14 +66,14 @@ public abstract class StoredValue {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity = OrganisationUnit.class, optional = false)
+	@ManyToOne(targetEntity=OrganisationUnit.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public OrganisationUnit getOrganisationUnit() {
 		return organisationUnit;
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity = Period.class, optional = false)
+	@ManyToOne(targetEntity=Period.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public Period getPeriod() {
 		return period;

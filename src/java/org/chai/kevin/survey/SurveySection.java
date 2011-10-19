@@ -79,8 +79,8 @@ public class SurveySection extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic(optional = false)
-	@Column(name = "ordering")
+	@Basic
+	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;
 	}
@@ -93,8 +93,8 @@ public class SurveySection extends SurveyTranslatable {
 		this.objective = objective;
 	}
 
-	@ManyToOne(targetEntity = SurveyObjective.class, optional = false, fetch=FetchType.LAZY)
-	@JoinColumn(nullable = false)
+	@ManyToOne(targetEntity=SurveyObjective.class, fetch=FetchType.LAZY)
+	@JoinColumn(nullable=false)
 	public SurveyObjective getObjective() {
 		return objective;
 	}
@@ -112,9 +112,9 @@ public class SurveySection extends SurveyTranslatable {
 		this.questions = questions;
 	}
 
-	@OneToMany(targetEntity = SurveyQuestion.class, mappedBy = "section")
+	@OneToMany(targetEntity=SurveyQuestion.class, mappedBy="section")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	@OrderBy(value = "order")
+	@OrderBy(value="order")
 	public List<SurveyQuestion> getQuestions() {
 		return questions;
 	}

@@ -46,6 +46,8 @@ import org.chai.kevin.value.ExpressionValue;
 import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.ValueCalculator;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -84,14 +86,18 @@ public class ValueService {
 	public void deleteValues(Expression expression) {
 		sessionFactory.getCurrentSession()
 		.createQuery("delete from ExpressionValue where expression = :expression")
-		.setParameter("expression", expression).executeUpdate();
+		.setParameter("expression", expression)
+//		.setFlushMode(FlushMode.COMMIT)
+		.executeUpdate();
 	}
 	
 	@Transactional(readOnly=false)
 	public void deleteValues(Calculation calculation) {
 		sessionFactory.getCurrentSession()
 		.createQuery("delete from CalculationValue where calculation = :calculation")
-		.setParameter("calculation", calculation).executeUpdate();
+		.setParameter("calculation", calculation)
+//		.setFlushMode(FlushMode.COMMIT)
+		.executeUpdate();
 	}
 	
 	// if this is set readonly, it triggers an error when deleting a
@@ -101,6 +107,7 @@ public class ValueService {
 		return (Long)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
 		.add(Restrictions.eq("dataElement", dataElement))
 		.setProjection(Projections.count("id"))
+//		.setFlushMode(FlushMode.COMMIT)
 		.uniqueResult();
 	}
 	
@@ -109,6 +116,7 @@ public class ValueService {
 		return (Long)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class)
 		.add(Restrictions.eq("expression", expression))
 		.setProjection(Projections.count("id"))
+//		.setFlushMode(FlushMode.COMMIT)
 		.uniqueResult();
 	}
 	
@@ -117,6 +125,7 @@ public class ValueService {
 		return (Long)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class)
 		.add(Restrictions.eq("calculation", calculation))
 		.setProjection(Projections.count("id"))
+//		.setFlushMode(FlushMode.COMMIT)
 		.uniqueResult();
 	}
 	
@@ -126,6 +135,7 @@ public class ValueService {
 		.add(Restrictions.eq("dataElement", dataElement))
 		.add(Restrictions.eq("period", period))
 		.setProjection(Projections.count("id"))
+//		.setFlushMode(FlushMode.COMMIT)
 		.uniqueResult();
 	}
 	
@@ -135,6 +145,7 @@ public class ValueService {
 		return (List<DataValue>)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
 		.add(Restrictions.eq("dataElement", dataElement))
 		.add(Restrictions.eq("period", period))
+//		.setFlushMode(FlushMode.COMMIT)
 		.list();
 	}
 	
@@ -148,6 +159,7 @@ public class ValueService {
 					.set("organisationUnit", organisationUnit)
 					.set("expression", expression)
 				)
+//				.setFlushMode(FlushMode.COMMIT)
 				.uniqueResult();
 		}
 
@@ -163,6 +175,7 @@ public class ValueService {
 					.set("organisationUnit", organisationUnit)
 					.set("calculation", calculation)
 				)
+//				.setFlushMode(FlushMode.COMMIT)
 				.uniqueResult();
 		}
 		
@@ -180,8 +193,10 @@ public class ValueService {
 	        		 .set("period", period)
 	        		 .set("organisationUnit", organisation)
 	         );
-
-			 DataValue value = (DataValue)criteria.uniqueResult();
+			 
+			 DataValue value = (DataValue)criteria
+//			 .setFlushMode(FlushMode.COMMIT)
+			 .uniqueResult();
 			 if (log.isDebugEnabled()) log.debug("getDataValue = "+value);
 			 return value;
 		}

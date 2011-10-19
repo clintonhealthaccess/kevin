@@ -46,8 +46,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translatable;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 
@@ -55,9 +53,6 @@ import org.hibernate.annotations.SortType;
 @Table(name = "dhsst_dsr_objective")
 public class DsrObjective extends Translatable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5921900390935911828L;
 	
 	private Long id;
@@ -72,27 +67,27 @@ public class DsrObjective extends Translatable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public void setTargets(List<DsrTarget> targets) {
-		this.targets = targets;
-	}
-	
+		
 	@OneToMany(cascade=CascadeType.ALL,targetEntity=DsrTarget.class, mappedBy="objective")
 	@Sort(type=SortType.COMPARATOR, comparator=DsrTargetSorter.class)
 	public List<DsrTarget> getTargets() {
 		return targets;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setTargets(List<DsrTarget> targets) {
+		this.targets = targets;
 	}
-	
+
 	@Basic
 	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;
 	}
-	
+
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
 	@Transient
 	public void addTarget(DsrTarget target) {
 		target.setObjective(this);

@@ -89,7 +89,7 @@ public class EnumOption extends Orderable {
 	}
 	
 	
-	@Basic(optional=false)
+	@Basic
 	@Column(nullable=false)
 	public String getValue() {
 		return value;
@@ -99,7 +99,7 @@ public class EnumOption extends Orderable {
 		this.value = value;
 	}
 	
-	@ManyToOne(targetEntity=Enum.class, optional=false)
+	@ManyToOne(targetEntity=Enum.class)
 	@JoinColumn(nullable=false)
 	public Enum getEnume() {
 		return enume;
@@ -109,7 +109,7 @@ public class EnumOption extends Orderable {
 		this.enume = enume;
 	}
 	
-	@Basic(optional=true)
+	@Basic
 	public Boolean getInactive() {
 		return inactive;
 	}
@@ -118,7 +118,7 @@ public class EnumOption extends Orderable {
 		this.inactive = inactive;
 	}
 
-	@Basic(optional=true)
+	@Basic
 	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;

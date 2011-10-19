@@ -45,10 +45,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translatable;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@SuppressWarnings("serial")
 @Entity(name = "DsrTargetCategory")
 @Table(name = "dhsst_dsr_target_category")
 public class DsrTargetCategory extends Translatable {
@@ -67,21 +64,25 @@ public class DsrTargetCategory extends Translatable {
 		this.id = id;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-
 	@Basic
 	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;
 	}
 
-	@OneToMany(targetEntity = DsrTarget.class, mappedBy = "category", fetch=FetchType.EAGER)
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
+	@OneToMany(targetEntity=DsrTarget.class, mappedBy="category", fetch=FetchType.EAGER)
 	public List<DsrTarget> getTargets() {
 		return targets;
 	}
-	
+
+	public void setTargets(List<DsrTarget> targets) {
+		this.targets = targets;
+	}
+
 	public List<DsrTarget> getTargetsForObjective(DsrObjective objective) {
 		List<DsrTarget> result = new ArrayList<DsrTarget>();
 		for (DsrTarget dsrTarget : getTargets()) {
@@ -89,10 +90,7 @@ public class DsrTargetCategory extends Translatable {
 		}
 		return result;
 	}
-
-	public void setTargets(List<DsrTarget> targets) {
-		this.targets = targets;
-	}
+	
 	@Transient
 	public void addTarget(DsrTarget target) {
 		target.setCategory(this);

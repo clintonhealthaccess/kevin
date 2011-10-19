@@ -72,7 +72,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic(optional=false)
+	@Basic
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -82,7 +82,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		this.order = order;
 	}
 
-	@ManyToOne(targetEntity = SurveySection.class, optional=false, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity = SurveySection.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public SurveySection getSection() {
 		return section;

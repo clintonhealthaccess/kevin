@@ -53,6 +53,7 @@ public class RefreshValueService {
 		.add(Restrictions.ltProperty("ev.timestamp", "e.timestamp"))
 		.add(Restrictions.eq("expression", expression))
 //		.setLockMode(LockMode.READ)
+		.setFlushMode(FlushMode.COMMIT)
 		.setCacheable(false);
 		
 		for (ExpressionValue expressionValue : (List<ExpressionValue>)criteria.list()) {
@@ -135,6 +136,7 @@ public class RefreshValueService {
 			))
 		.add(Restrictions.eq("calculation", calculation))
 //		.setLockMode(LockMode.READ)
+		.setFlushMode(FlushMode.COMMIT)
 		.setCacheable(false)
 		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		

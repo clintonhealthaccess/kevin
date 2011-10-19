@@ -40,6 +40,7 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -77,8 +78,8 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic(optional = false)
-	@Column(name = "ordering")
+	@Basic
+	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;
 	}
@@ -96,8 +97,8 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.groupUuidString = groupUuidString;
 	}
 
-	@ManyToOne(targetEntity = SurveyTableQuestion.class, optional = false)
-	@JoinColumn(nullable = false)
+	@ManyToOne(targetEntity=SurveyTableQuestion.class, fetch=FetchType.LAZY)
+	@JoinColumn(nullable=false)
 	public SurveyTableQuestion getQuestion() {
 		return question;
 	}
@@ -106,9 +107,9 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.question = question;
 	}
 
-	@OneToMany(targetEntity = SurveyElement.class)
-	@JoinTable(name = "dhsst_survey_table_row_elements", joinColumns=@JoinColumn(nullable=false))
-	@MapKeyJoinColumn(nullable = false, name="survey_table_column")
+	@OneToMany(targetEntity=SurveyElement.class)
+	@JoinTable(name="dhsst_survey_table_row_elements", joinColumns=@JoinColumn(nullable=false))
+	@MapKeyJoinColumn(nullable=false, name="survey_table_column")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	public Map<SurveyTableColumn, SurveyElement> getSurveyElements() {
 		return surveyElements;

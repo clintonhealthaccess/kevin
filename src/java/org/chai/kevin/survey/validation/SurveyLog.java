@@ -6,6 +6,7 @@ import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -69,7 +70,8 @@ public class SurveyLog {
 		this.organisationUnit = organisationUnit;
 	}
 	
-	@ManyToOne(targetEntity=Survey.class, optional=true)
+	@ManyToOne(targetEntity=Survey.class)
+	@JoinColumn(nullable=false)
 	public Survey getSurvey() {
 		return survey;
 	}
@@ -78,7 +80,7 @@ public class SurveyLog {
 		this.survey = survey;
 	}
 	
-	@ManyToOne(targetEntity=SurveyObjective.class, optional=true)
+	@ManyToOne(targetEntity=SurveyObjective.class)
 	public SurveyObjective getObjective() {
 		return objective;
 	}

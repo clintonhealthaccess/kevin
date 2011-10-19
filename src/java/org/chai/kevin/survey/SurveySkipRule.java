@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -52,7 +53,7 @@ public class SurveySkipRule {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=Survey.class, optional=false)
+	@ManyToOne(targetEntity=Survey.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public Survey getSurvey() {
 		return survey;
@@ -62,7 +63,7 @@ public class SurveySkipRule {
 		this.survey = survey;
 	}
 	
-	@Basic(optional=false)
+	@Basic
 	@Column(nullable=false)
 	public String getExpression() {
 		return expression;

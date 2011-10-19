@@ -106,7 +106,7 @@ public class SurveyEnteredValue implements Serializable {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=OrganisationUnit.class, fetch=FetchType.LAZY)
 	public OrganisationUnit getOrganisationUnit() {
 		return organisationUnit;
 	}
@@ -284,16 +284,16 @@ public class SurveyEnteredValue implements Serializable {
 		});
 	}
 	
-	@Override
-	public String toString() {
-		return "SurveyEnteredValue [surveyElement=" + surveyElement
-				+ ", value=" + value + ", organisationUnit=" + organisationUnit + "]";
-	}
 	
 	@Transient
 	public Survey getSurvey() {
 		return surveyElement.getSurvey();
 	}
 
+	@Override
+	public String toString() {
+		return "SurveyEnteredValue [value=" + value + ", lastValue="
+				+ lastValue + "]";
+	}
 
 }

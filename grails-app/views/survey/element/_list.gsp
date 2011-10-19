@@ -1,5 +1,5 @@
 <!-- Value type question -->
-<div id="element-${surveyElement.id}-${suffix}" class="element element-list ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
+<ul id="element-${surveyElement.id}-${suffix}" class="adv-form element element-list ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 	
 	<g:if test="${print}">
@@ -18,7 +18,12 @@
 	</g:if>
 	<g:else>
 		<g:each in="${value.listValue}" var="item" status="i">
-			<div class="element-list-row" data-index="${i}">
+			<li class="element-list-row adv-form-row" data-index="${i}">
+				<ul class="adv-form-actions horizontal right">
+					<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#">minimize</a></li>
+					<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">delete</a></li>
+				</ul>
+			
 				<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[${i}]"/>
 				<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
 					value: item,
@@ -30,13 +35,17 @@
 					enteredValue: enteredValue,
 					readonly: readonly
 				]"/>
-				<g:if test="${!readonly}"><span><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">remove line</a></span></g:if>
 				<div class="clear"></div>
-			</div>
+			</li>
 		</g:each>
 		<g:if test="${!readonly}">
 			<div class="hidden">
-				<div class="element-list-row">
+				<li class="element-list-row adv-form-row">
+					<ul class="adv-form-actions horizontal right">
+						<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#">minimize</a></li>
+						<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">delete</a></li>
+					</ul>
+					
 					<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
 					<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
 						value: null,
@@ -48,9 +57,8 @@
 						enteredValue: enteredValue,
 						readonly: readonly 
 					]"/>
-					<span><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">remove line</a></span>
 					<div class="clear"></div>
-				</div>
+				</li>
 			</div>
 			<a class="element-list-add ${!readonly?'loading-disabled':''}" href="#">add line</a>
 		</g:if>
@@ -61,4 +69,4 @@
 	</div>	
 	
 	<!-- TODO last value -->
-</div>
+</ul>

@@ -73,7 +73,7 @@ public class CostObjective extends Translatable {
 		this.targets = targets;
 	}
 
-	@Basic(optional=true)
+	@Basic
 	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;

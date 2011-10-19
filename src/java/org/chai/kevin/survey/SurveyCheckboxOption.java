@@ -71,7 +71,7 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 		this.id = id;
 	}
 
-	@Basic(optional = false)
+	@Basic
 	@Column(name = "ordering")
 	public Integer getOrder() {
 		return order;
@@ -90,7 +90,7 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 		return groupUuidString;
 	}
 
-	@ManyToOne(targetEntity = SurveyCheckboxQuestion.class, optional = false)
+	@ManyToOne(targetEntity = SurveyCheckboxQuestion.class)
 	@JoinColumn(nullable = false)
 	public SurveyCheckboxQuestion getQuestion() {
 		return question;

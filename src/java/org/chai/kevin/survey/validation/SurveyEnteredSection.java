@@ -47,7 +47,7 @@ public class SurveyEnteredSection {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=SurveySection.class, optional=false, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=SurveySection.class, fetch=FetchType.LAZY)
 	public SurveySection getSection() {
 		return section;
 	}
@@ -57,7 +57,7 @@ public class SurveyEnteredSection {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, optional=false, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=OrganisationUnit.class, fetch=FetchType.LAZY)
 	public OrganisationUnit getOrganisationUnit() {
 		return organisationUnit;
 	}
@@ -129,8 +129,7 @@ public class SurveyEnteredSection {
 
 	@Override
 	public String toString() {
-		return "SurveyEnteredSection [section=" + section
-				+ ", organisationUnit=" + organisationUnit + "]";
+		return "SurveyEnteredSection [invalid=" + invalid + ", complete=" + complete + "]";
 	}
-	
+
 }

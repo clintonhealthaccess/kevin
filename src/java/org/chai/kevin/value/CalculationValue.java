@@ -31,8 +31,10 @@ package org.chai.kevin.value;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -92,7 +94,8 @@ public class CalculationValue extends StoredValue {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=Calculation.class, optional=false)
+	@ManyToOne(targetEntity=Calculation.class, fetch=FetchType.LAZY)
+	@JoinColumn(nullable=false)
 	public Calculation getCalculation() {
 		return calculation;
 	}
@@ -156,11 +159,9 @@ public class CalculationValue extends StoredValue {
 
 	@Override
 	public String toString() {
-		return "CalculationValue [calculation=" + calculation
-				+ ", hasMissingValues=" + hasMissingValues
-				+ ", hasMissingExpression=" + hasMissingExpression
-				+ ", value=" + getValue() + "]";
+		return "CalculationValue [value=" + value + "]";
 	}
+
 
 
 }
