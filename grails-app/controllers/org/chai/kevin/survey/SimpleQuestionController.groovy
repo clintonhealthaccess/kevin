@@ -31,6 +31,7 @@ import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.DataService;
 import org.chai.kevin.Translation;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataElement
 import org.apache.commons.lang.math.NumberUtils;
@@ -43,7 +44,6 @@ class SimpleQuestionController extends AbstractEntityController {
 
 	def organisationService
 	def surveyElementService
-	def localeService
 	
 	def getEntity(def id) {
 		return SurveySimpleQuestion.get(id)
@@ -85,7 +85,7 @@ class SimpleQuestionController extends AbstractEntityController {
 		// headers
 		params.list('headerList').each { prefix ->
 			Translation translation = new Translation()
-			localeService.availableLanguages.each { language -> 
+			LanguageUtils.availableLanguages.each { language -> 
 				translation[language] = params['headerList['+prefix+'].'+language]
 			}
 			entity.surveyElement.headers.put(prefix, translation)	

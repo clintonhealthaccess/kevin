@@ -36,8 +36,6 @@ import org.hisp.dhis.dataset.DataSet;
 
 abstract class AbstractEntityController {
 	
-	def localeService
-	
 	def getTargetURI() {
 		return params.targetURI?: "/"
 	}

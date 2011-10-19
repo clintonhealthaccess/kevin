@@ -1,5 +1,9 @@
 package org.chai.kevin
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.chai.kevin.util.LanguageUtils;
+import org.chai.kevin.util.Utils;
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -30,8 +34,6 @@ package org.chai.kevin
 
 class UtilTagLib {
 
-	def localeService;
-	
 	def createLinkWithTargetURI = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]
 		else attrs['params'] = new HashMap(attrs['params'])
@@ -49,7 +51,7 @@ class UtilTagLib {
 	
 	def i18nInput = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
-		attrs["locales"] = localeService.getAvailableLanguages();
+		attrs["locales"] = LanguageUtils.getAvailableLanguages();
 		out << render(template:"/tags/i18nInput", model: attrs)
 	}
 	
@@ -58,14 +60,14 @@ class UtilTagLib {
 		if (attrs["rows"] == null) attrs["rows"] = '4'
 		if (attrs["width"] == null) attrs["width"] = '300'
 		if (attrs["readonly"] == null) attrs["readonly"] = false
-		attrs["locales"] = localeService.getAvailableLanguages();
+		attrs["locales"] = LanguageUtils.getAvailableLanguages();
 		out << render(template:"/tags/i18nTextarea", model: attrs)
 	}
 	def i18nRichTextarea = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
 		if (attrs["rows"] == null) attrs["rows"] = '4'
 		if (attrs["width"] == null) attrs["width"] = '300'
-		attrs["locales"] = localeService.getAvailableLanguages();
+		attrs["locales"] = LanguageUtils.getAvailableLanguages();
 		out << render(template:"/tags/i18nRichTextarea", model: attrs)
 	}
 	
@@ -97,12 +99,17 @@ class UtilTagLib {
 	}
 	
 	def locales = { attrs, body ->
-		attrs["locales"] = localeService.getAvailableLanguages();
+		attrs["locales"] = LanguageUtils.getAvailableLanguages();
 		out << render(template:"/tags/locales", model: attrs)
 	}
 	
 	def i18n = { attrs, body ->
-		def text = localeService.getText(attrs['field'])
+		def text = LanguageUtils.getText(attrs['field'])
 		out << text 
+	}
+	
+	def ifText = { attrs, body ->
+		def text = LanguageUtils.getText(attrs['field'])
+		if (text != null && !Utils.stripHtml(text, null).trim().isEmpty()) out << body()
 	}
 }

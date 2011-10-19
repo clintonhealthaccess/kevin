@@ -84,11 +84,11 @@ class SurveyController extends AbstractEntityController {
 			Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/survey/admin/list', model:[
-					template:"surveyList",
-					entities: surveys,
-					entityCount: Survey.count(),
-					code: getLabel()
-				])
+			template:"surveyList",
+			entities: surveys,
+			entityCount: Survey.count(),
+			code: getLabel()
+		])
 	}
 
 	def clone = {

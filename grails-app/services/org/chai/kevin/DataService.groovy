@@ -39,6 +39,7 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
@@ -54,7 +55,6 @@ class DataService {
 	static transactional = true
 	
 	ValueService valueService;
-	LocaleService localeService;
 	SessionFactory sessionFactory;
 	
 	public Data getData(Long id) {
@@ -125,7 +125,7 @@ class DataService {
 				// we look in "info" if it is a data element
 				(clazz.equals(DataElement.class)?Utils.matches(chunk, element.info):false) ||
 				Utils.matches(chunk, element.id+"") ||
-				Utils.matches(chunk, element.names[localeService.getCurrentLanguage()]) ||
+				Utils.matches(chunk, element.names[LanguageUtils.getCurrentLanguage()]) ||
 				Utils.matches(chunk, element.code)
 			}
 		}

@@ -4,7 +4,7 @@
 <table class="listing">
     <thead>
         <tr>
-            <g:sortableColumn property="id" title="${message(code: 'costRampUp.id.label', default: 'Id')}" />
+        	<th/>
             <g:sortableColumn property="name" title="${message(code: 'costRampUp.name.label', default: 'Name')}" />
             <th><g:message code="costRampUp.years.label" default="Years" /></th>
         </tr>
@@ -13,10 +13,17 @@
     <g:each in="${entities}" status="i" var="costRampUp">
         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
             <td>
-            	<a href="${createLinkWithTargetURI(action:'edit', id:costRampUp.id)}">${fieldValue(bean: costRampUpInstance, field: "id")}</a>
+            	<ul class="horizontal">
+	            	<li>
+	            		<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id:costRampUp.id)}"><g:message code="general.text.edit" default="Edit" /></a>
+	            	</li>
+	            	<li>
+	            		<a class="delete-link" href="${createLinkWithTargetURI(action:'delete', id:costRampUp.id)}"><g:message code="general.text.delete" default="Delete" /></a>
+	            	</li>
+            	</ul>
             </td>
-            <td><g:i18n field="${costRampUpInstance.names}" /></td>
-            <td>${fieldValue(bean: costRampUpInstance, field: "years")}</td>
+            <td><g:i18n field="${costRampUp.names}" /></td>
+            <td>${fieldValue(bean: costRampUp, field: "years")}</td>
         </tr>
     </g:each>
     </tbody>

@@ -70,11 +70,13 @@
 											</span>
 											<shiro:hasPermission permission="cost:admin">
 												<span>
-													<a href="${createLinkWithTargetURI(controller:'costObjective', action:'edit', id:objective.id)}">(Edit)</a>
+													<a class="edit-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'edit', id:objective.id)}">
+														<g:message code="general.text.edit" default="Edit" />
+													</a>
 												</span>
 												<span>
-													<a href="${createLinkWithTargetURI(controller:'costObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-														(Delete)
+													<a class="delete-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+														<g:message code="general.text.delete" default="Delete" />
 													</a>
 												</span>
 											</shiro:hasPermission>
@@ -125,7 +127,7 @@
 												
 												<shiro:hasPermission permission="admin:cost">		
 													<span>
-														<a href="${createLinkWithTargetURI(controller:'costTarget', action:'edit', id: target.id)}">(edit)</a>
+														<a class="edit-link" href="${createLinkWithTargetURI(controller:'costTarget', action:'edit', id: target.id)}">(edit)</a>
 													</span>
 												</shiro:hasPermission>
 											</th>

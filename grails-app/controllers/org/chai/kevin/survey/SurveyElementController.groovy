@@ -36,7 +36,6 @@ import org.apache.commons.lang.math.NumberUtils;
 class SurveyElementController {
 
 	def surveyElementService;
-	def localeService;
 	
 	def getHtmlData = {
 		Survey survey = Survey.get(params.int('surveyId'));

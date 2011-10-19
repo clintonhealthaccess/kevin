@@ -48,7 +48,7 @@ a:hover, a:focus { color: #00266f; }
 .form-heading { color: #258cd5; font-size: 24px; margin-bottom: 10px; padding-left: 10px; }
 
 /* line 26, ../../src/stylesheets/partials/_shared.sass */
-.question h4 { background: #e9f4fc; color: #258cd5; display: inline-block; font-family: "Lucida Grande", Arial, sans-serif; font-weight: bold; left: -15px; line-height: 1.5; margin: 0 0 10px 0; max-width: 850px; padding: 7px 20px 7px 20px; position: relative; -moz-border-radius-topright: 100px; -webkit-border-top-right-radius: 100px; -o-border-top-right-radius: 100px; -ms-border-top-right-radius: 100px; -khtml-border-top-right-radius: 100px; border-top-right-radius: 100px; -moz-border-radius-bottomright: 100px; -webkit-border-bottom-right-radius: 100px; -o-border-bottom-right-radius: 100px; -ms-border-bottom-right-radius: 100px; -khtml-border-bottom-right-radius: 100px; border-bottom-right-radius: 100px; -moz-box-shadow: inset -2px -2px 2px 0 #e0ebf3; -webkit-box-shadow: inset -2px -2px 2px 0 #e0ebf3; -o-box-shadow: inset -2px -2px 2px 0 #e0ebf3; box-shadow: inset -2px -2px 2px 0 #e0ebf3; text-shadow: white 0 1px 0; }
+.question h4 { background: #e9f4fc; color: #258cd5; display: inline-block; font-family: "Lucida Grande", Arial, sans-serif; font-weight: bold; left: -15px; line-height: 1.5; margin: 0 0 10px 0; max-width: 850px; padding: 7px 20px 7px 22px; position: relative; -moz-border-radius-topright: 100px; -webkit-border-top-right-radius: 100px; -o-border-top-right-radius: 100px; -ms-border-top-right-radius: 100px; -khtml-border-top-right-radius: 100px; border-top-right-radius: 100px; -moz-border-radius-bottomright: 100px; -webkit-border-bottom-right-radius: 100px; -o-border-bottom-right-radius: 100px; -ms-border-bottom-right-radius: 100px; -khtml-border-bottom-right-radius: 100px; border-bottom-right-radius: 100px; -moz-box-shadow: inset -2px -2px 2px 0 #e0ebf3; -webkit-box-shadow: inset -2px -2px 2px 0 #e0ebf3; -o-box-shadow: inset -2px -2px 2px 0 #e0ebf3; box-shadow: inset -2px -2px 2px 0 #e0ebf3; text-shadow: white 0 1px 0; }
 /* line 42, ../../src/stylesheets/partials/_shared.sass */
 .question h4 span { background: #258cd5; color: #e9f4fc; display: block; font-weight: bold; left: -10px; padding: 3px; position: absolute; text-align: center; top: 4px; width: 18px; -moz-border-radius: 50px; -webkit-border-radius: 50px; -o-border-radius: 50px; -ms-border-radius: 50px; -khtml-border-radius: 50px; border-radius: 50px; text-shadow: #036ab3 0 1px 0; }
 
@@ -86,17 +86,17 @@ ul.horizontal li.last { margin-right: 0; }
 .italic { font-style: italic; }
 
 /* line 89, ../../src/stylesheets/partials/_shared.sass */
-.flow-edit { background: url("../images/icons/mini_edit.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
+.edit-link { background: url("../images/icons/mini_edit.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
 /* line 97, ../../src/stylesheets/partials/_shared.sass */
-.flow-edit:hover { opacity: 0.6; }
+.edit-link:hover { opacity: 0.6; }
 
 /* line 100, ../../src/stylesheets/partials/_shared.sass */
-.flow-delete { background: url("../images/icons/mini_delete.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
+.delete-link { background: url("../images/icons/mini_delete.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
 /* line 108, ../../src/stylesheets/partials/_shared.sass */
-.flow-delete:hover { opacity: 0.6; }
+.delete-link:hover { opacity: 0.6; }
 
 /* line 111, ../../src/stylesheets/partials/_shared.sass */
-.flow-form h5 { color: #888888; font-size: 16px; font-weight: bold; margin-top: 20px; }
+.entity-form-container h5 { color: #888888; font-size: 16px; font-weight: bold; margin-top: 20px; }
 
 /* line 1, ../../src/stylesheets/partials/_layout.sass */
 .wrapper { margin: 0 auto; position: relative; width: 1000px; *zoom: 1; }
@@ -300,228 +300,231 @@ ul.horizontal li.last { margin-right: 0; }
 .explanation-cell table { margin-bottom: 10px; }
 
 /* line 61, ../../src/stylesheets/partials/_tables.sass */
-.add-row, .element-list-add { background: #e9f4fc; border: 1px solid #d8e3eb; display: inline-block; font-size: 10px; margin-top: 10px; padding: 7px 15px; text-decoration: none; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #effaff), color-stop(100%, #e0ebf3)); background-image: -webkit-linear-gradient(top, #effaff, #e0ebf3); background-image: -moz-linear-gradient(top, #effaff, #e0ebf3); background-image: -o-linear-gradient(top, #effaff, #e0ebf3); background-image: -ms-linear-gradient(top, #effaff, #e0ebf3); background-image: linear-gradient(top, #effaff, #e0ebf3); text-shadow: white 0 1px 0; }
-/* line 72, ../../src/stylesheets/partials/_tables.sass */
-.add-row:hover, .add-row:focus, .element-list-add:hover, .element-list-add:focus { background: #65c029; border: 1px solid #54af18; color: white; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #6bc62f), color-stop(100%, #5cb720)); background-image: -webkit-linear-gradient(top, #6bc62f, #5cb720); background-image: -moz-linear-gradient(top, #6bc62f, #5cb720); background-image: -o-linear-gradient(top, #6bc62f, #5cb720); background-image: -ms-linear-gradient(top, #6bc62f, #5cb720); background-image: linear-gradient(top, #6bc62f, #5cb720); text-shadow: #328d00 0 1px 0; }
+.add-row, .element-list-add { background: url("../images/icons/toggle_plus.png") no-repeat 17% center #e9f4fc; border: 1px solid #c7d2da; display: inline-block; font-size: 12px; font-weight: bold; margin-top: 10px; padding: 8px 20px 7px 35px; text-decoration: none; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 0 2px 1px #eeeeee; -webkit-box-shadow: 0 2px 1px #eeeeee; -o-box-shadow: 0 2px 1px #eeeeee; box-shadow: 0 2px 1px #eeeeee; text-shadow: white 0 1px 0; }
+/* line 73, ../../src/stylesheets/partials/_tables.sass */
+.add-row:hover, .add-row:focus, .element-list-add:hover, .element-list-add:focus { background: url("../images/icons/toggle_plus.png") no-repeat 17% center #65c029; border: 1px solid #3c9700; color: white; -moz-box-shadow: 0 2px 1px #cccccc; -webkit-box-shadow: 0 2px 1px #cccccc; -o-box-shadow: 0 2px 1px #cccccc; box-shadow: 0 2px 1px #cccccc; text-shadow: #328d00 0 1px 0; }
+/* line 79, ../../src/stylesheets/partials/_tables.sass */
+.add-row:active, .element-list-add:active { position: relative; top: 1px; -moz-box-shadow: 0 1px 1px #cccccc; -webkit-box-shadow: 0 1px 1px #cccccc; -o-box-shadow: 0 1px 1px #cccccc; box-shadow: 0 1px 1px #cccccc; }
 
-/* line 1, ../../src/stylesheets/partials/_forms.sass */
-.element-bool { float: left; }
-
-/* line 4, ../../src/stylesheets/partials/_forms.sass */
-.question-checkbox li { clear: both; padding: 5px 10px; }
-/* line 7, ../../src/stylesheets/partials/_forms.sass */
-.question-checkbox input[type=checkbox] { margin: 0 5px 0 0; }
-
-/* line 10, ../../src/stylesheets/partials/_forms.sass */
-.form-actions { border-top: 2px solid #e9f4fc; margin-top: 15px; *zoom: 1; }
-/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
-.form-actions:after { content: ""; display: table; clear: both; }
-/* line 14, ../../src/stylesheets/partials/_forms.sass */
-.form-actions li { display: inline; float: left; padding: 10px 0 10px 10px; }
-
-/* line 19, ../../src/stylesheets/partials/_forms.sass */
-.go-back { color: #d30000; display: block; font-size: 11px; opacity: 0.6; padding: 11px 0 0; }
-/* line 25, ../../src/stylesheets/partials/_forms.sass */
-.go-back:hover, .go-back:focus { opacity: 1; }
-
-/* line 28, ../../src/stylesheets/partials/_forms.sass */
-.facility-type { background: #f6fdeb; border: 1px solid #e5ecda; margin: 15px; padding: 11px 15px; width: 940px; -moz-border-radius: 5px; -webkit-border-radius: 5px; -o-border-radius: 5px; -ms-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; *zoom: 1; }
-/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
-.facility-type:after { content: ""; display: table; clear: both; }
-/* line 36, ../../src/stylesheets/partials/_forms.sass */
-.facility-type.no-margin { margin: 0 0 15px; }
-/* line 38, ../../src/stylesheets/partials/_forms.sass */
-.facility-type h4 { color: #888888; float: left; font-size: 12px; padding: 3px 5px 0 0; }
-/* line 43, ../../src/stylesheets/partials/_forms.sass */
-.facility-type #facility-type-filter { color: #258cd5; font-size: 11px; }
-
-/* line 47, ../../src/stylesheets/partials/_forms.sass */
-#incomplete-sections-container li { padding: 6px 0 0 10px; }
-
-/* line 50, ../../src/stylesheets/partials/_forms.sass */
-button, input[type=submit], .next { background: #65c029; border: 1px solid #439e07; clear: both; color: #e9f4fc; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; padding: 7px 30px; -moz-border-radius: 5px; -webkit-border-radius: 5px; -o-border-radius: 5px; -ms-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; -moz-box-shadow: 1px 1px 3px #eeeeee; -webkit-box-shadow: 1px 1px 3px #eeeeee; -o-box-shadow: 1px 1px 3px #eeeeee; box-shadow: 1px 1px 3px #eeeeee; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #6ec932), color-stop(100%, #65c029)); background-image: -webkit-linear-gradient(top, #6ec932, #65c029); background-image: -moz-linear-gradient(top, #6ec932, #65c029); background-image: -o-linear-gradient(top, #6ec932, #65c029); background-image: -ms-linear-gradient(top, #6ec932, #65c029); background-image: linear-gradient(top, #6ec932, #65c029); text-shadow: #328d00 0 1px 0; }
-/* line 64, ../../src/stylesheets/partials/_forms.sass */
-button:hover, button:focus, input[type=submit]:hover, input[type=submit]:focus, .next:hover, .next:focus { background: #54af18; border: 1px solid #328d00; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #65c029), color-stop(100%, #54af18)); background-image: -webkit-linear-gradient(top, #65c029, #54af18); background-image: -moz-linear-gradient(top, #65c029, #54af18); background-image: -o-linear-gradient(top, #65c029, #54af18); background-image: -ms-linear-gradient(top, #65c029, #54af18); background-image: linear-gradient(top, #65c029, #54af18); }
-/* line 69, ../../src/stylesheets/partials/_forms.sass */
-button#cancel-button, input[type=submit]#cancel-button, .next#cancel-button { background: none; border: none; color: #d30000; font-size: 11px; padding: 7px 10px; text-decoration: underline; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; box-shadow: none; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #ffffff)); background-image: -webkit-linear-gradient(top, #ffffff, #ffffff); background-image: -moz-linear-gradient(top, #ffffff, #ffffff); background-image: -o-linear-gradient(top, #ffffff, #ffffff); background-image: -ms-linear-gradient(top, #ffffff, #ffffff); background-image: linear-gradient(top, #ffffff, #ffffff); text-shadow: white 0 0 0; }
-
-/* line 80, ../../src/stylesheets/partials/_forms.sass */
-select { background: #f6f6f6; border: 1px solid #b6c1c9; color: #444444; font: normal 12px Arial, sans-serif; padding: 2px; -moz-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -webkit-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -o-box-shadow: inset 1px 1px 3px 0 #d8e3eb; box-shadow: inset 1px 1px 3px 0 #d8e3eb; }
-/* line 87, ../../src/stylesheets/partials/_forms.sass */
-select:hover, select:focus { background: #ecf7ff; border-color: #258cd5; }
-
-/* line 91, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container { float: left; width: 100%; }
-/* line 97, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .entity-form-header .title { float: left; color: #258cd5; }
-/* line 101, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .entity-form-header .locales { float: right; padding: 4px; }
-/* line 105, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .entity-form-header .locales a { padding: 2px; }
-/* line 108, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .entity-form-header .locales a.no-link { font-weight: bold; }
-/* line 111, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .forms-container { width: 100%; }
-/* line 114, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .data-search-column { float: right; margin-right: 20px; width: 460px; }
-/* line 119, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .data-search-column form { border: none; }
-/* line 122, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .data-search-column input.radio { width: auto; }
-/* line 125, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .data-search-column input.radio label { font-weight: bold; margin-bottom: 2px; }
-/* line 129, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .data-search-column input.radio #data { width: 600px; }
-/* line 132, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container .data-field-column { float: left; width: 460px; }
-
-/* line 136, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container form { background-color: inherit; border: 1px solid #e9f4fc; padding: 15px; position: relative; }
-/* line 142, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container form .row { border-bottom: 1px dotted #e9f4fc; margin-bottom: 10px; padding-bottom: 10px; *zoom: 1; }
-/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
-.entity-form-container form .row:after { content: ""; display: table; clear: both; }
-/* line 151, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container form .toggle-entry { float: left; margin-right: 15px; }
-/* line 155, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container form input, .entity-form-container form textarea { width: 280px; }
-/* line 158, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container form input.radio { width: auto; }
-/* line 161, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container form label { color: #258cd5; display: block; font-size: 11px; margin-bottom: 3px; }
-
-/* line 167, ../../src/stylesheets/partials/_forms.sass */
-.focus-field { border: solid 1px #c7d2da; background: #effaff; color: #333333; padding: 3px; }
-
-/* line 173, ../../src/stylesheets/partials/_forms.sass */
-.idle-field { background: #f9f9f9; border: 1px solid #b6c1c9; color: #444444; font: normal 12px Arial, sans-serif; padding: 3px; -moz-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -webkit-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -o-box-shadow: inset 1px 1px 3px 0 #d8e3eb; box-shadow: inset 1px 1px 3px 0 #d8e3eb; }
-/* line 180, ../../src/stylesheets/partials/_forms.sass */
-.idle-field:hover, .idle-field:focus { background: #ecf7ff; border-color: #258cd5; }
-
-/* line 184, ../../src/stylesheets/partials/_forms.sass */
-.completed-field { background: #ededed; color: #333333; border: solid 1px #65c029; }
-
-/* line 189, ../../src/stylesheets/partials/_forms.sass */
-.ajax-search-field { width: 340px; }
-
-/* line 192, ../../src/stylesheets/partials/_forms.sass */
-.login-field { background: #e9f4fc; border: 1px solid #b6c1c9; color: #444444; font: normal 16px "Lucida Grande", Arial, sans-serif; padding: 4px; text-align: center; width: 154px; -moz-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -webkit-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -o-box-shadow: inset 1px 1px 3px 0 #d8e3eb; box-shadow: inset 1px 1px 3px 0 #d8e3eb; }
-/* line 201, ../../src/stylesheets/partials/_forms.sass */
-.login-field:hover, .login-field:focus { background: #ecf7ff; border-color: #258cd5; }
-
-/* line 205, ../../src/stylesheets/partials/_forms.sass */
-.login-label { color: #258cd5; font-family: "Lucida Grande", Arial, sans-serif; font-size: 11px; margin: 0 auto; padding: 3px; text-align: center; width: 154px; }
-
-/* line 214, ../../src/stylesheets/partials/_forms.sass */
-ul.filtered { border: 1px solid lightGrey; padding: 4px; height: 270px; overflow: auto; }
-/* line 220, ../../src/stylesheets/partials/_forms.sass */
-ul.filtered li { display: block; white-space: nowrap; }
-/* line 224, ../../src/stylesheets/partials/_forms.sass */
-ul.filtered li span { color: grey; }
-/* line 227, ../../src/stylesheets/partials/_forms.sass */
-ul.filtered li:hover { background-color: yellow; }
-
-/* line 231, ../../src/stylesheets/partials/_forms.sass */
-.element-list .element-map-header, .element-list .element-map-body { display: block; }
-/* line 234, ../../src/stylesheets/partials/_forms.sass */
-.element-list .element-map-header .element-map-header, .element-list .element-map-body .element-map-header { font-size: 11px; }
-/* line 236, ../../src/stylesheets/partials/_forms.sass */
-.element-list .element-map-header input, .element-list .element-map-body input { width: 121px; }
-/* line 238, ../../src/stylesheets/partials/_forms.sass */
-.element-list .element-map-header select, .element-list .element-map-body select { width: 129px; }
-/* line 241, ../../src/stylesheets/partials/_forms.sass */
-.element-list li { position: relative; }
-/* line 244, ../../src/stylesheets/partials/_forms.sass */
-.element-list h5 { color: #258cd5; font-size: 14px; }
-
-/* line 249, ../../src/stylesheets/partials/_forms.sass */
-.element-map-level-1 > li { margin: 10px 0; }
-
-/* line 252, ../../src/stylesheets/partials/_forms.sass */
-.element-map-level-2 { float: left; padding-top: 5px; position: relative; }
-/* line 256, ../../src/stylesheets/partials/_forms.sass */
-.element-map-level-2 > li { margin-bottom: 5px; }
-
-/* line 259, ../../src/stylesheets/partials/_forms.sass */
-.element-list-row { background: #fafafa; border: 1px solid #cfe4f4; padding: 15px; position: relative; }
-
-/* line 265, ../../src/stylesheets/partials/_forms.sass */
-.element-list-remove { display: block; font-size: 11px; position: absolute; right: 15px; top: 15px; }
-
-/* line 272, ../../src/stylesheets/partials/_forms.sass */
-ul.element-map { *zoom: 1; }
-/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
-ul.element-map:after { content: ""; display: table; clear: both; }
-/* line 274, ../../src/stylesheets/partials/_forms.sass */
-ul.element-map li { *zoom: 1; }
-/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
-ul.element-map li:after { content: ""; display: table; clear: both; }
-/* line 277, ../../src/stylesheets/partials/_forms.sass */
-ul.element-map ul.element-map li { display: inline; float: left; }
-/* line 281, ../../src/stylesheets/partials/_forms.sass */
-ul.element-map input, ul.element-map select { margin-right: 5px; }
-/* line 284, ../../src/stylesheets/partials/_forms.sass */
-ul.element-map input { padding: 3px; }
-/* line 287, ../../src/stylesheets/partials/_forms.sass */
-ul.element-map label { display: inline-block; font-size: 10px; margin-bottom: 3px; }
-
-/* line 292, ../../src/stylesheets/partials/_forms.sass */
-.form-heading-list { padding-left: 20px; }
-/* line 294, ../../src/stylesheets/partials/_forms.sass */
-.form-heading-list li { background: url("../images/select.png") no-repeat left center; color: #258cd5; padding-left: 10px; }
-
-/* line 302, ../../src/stylesheets/partials/_forms.sass */
-.adv-form-row { border: 1px solid #e9f4fc; padding: 15px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; *zoom: 1; }
+/* line 3, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-row { border: 1px solid #e9f4fc; padding: 25px 15px 15px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; *zoom: 1; }
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .adv-form-row:after { content: ""; display: table; clear: both; }
-/* line 307, ../../src/stylesheets/partials/_forms.sass */
+/* line 8, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-row.minimized { background: #e9f4fc; padding: 7px 15px; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #effaff), color-stop(100%, #e9f4fc)); background-image: -webkit-linear-gradient(top, #effaff, #e9f4fc); background-image: -moz-linear-gradient(top, #effaff, #e9f4fc); background-image: -o-linear-gradient(top, #effaff, #e9f4fc); background-image: -ms-linear-gradient(top, #effaff, #e9f4fc); background-image: linear-gradient(top, #effaff, #e9f4fc); text-shadow: white 0 1px 0; }
 
-/* line 313, ../../src/stylesheets/partials/_forms.sass */
-.adv-form-section { border-bottom: 1px dotted #d8e3eb; padding-bottom: 10px; margin-bottom: 10px; *zoom: 1; }
+/* line 14, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-section { *zoom: 1; }
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .adv-form-section:after { content: ""; display: table; clear: both; }
-/* line 318, ../../src/stylesheets/partials/_forms.sass */
+/* line 16, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-section.last { border: none; margin: 0; padding: 0; }
-/* line 322, ../../src/stylesheets/partials/_forms.sass */
+/* line 20, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-section.no-border { border: none; }
+/* line 22, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-section .adv-form-section { padding-bottom: 0; margin-bottom: 0; }
 
-/* line 325, ../../src/stylesheets/partials/_forms.sass */
+/* line 26, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-fields li { margin: 12px 5px 6px 0; }
-/* line 327, ../../src/stylesheets/partials/_forms.sass */
+/* line 28, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-fields li.adv-form-subsection { margin: 0 5px 0 0; }
 
-/* line 333, ../../src/stylesheets/partials/_forms.sass */
+/* line 34, ../../src/stylesheets/partials/_forms.sass */
 .adv-form .element-map-level-2 > h6 { margin-top: 5px; }
-/* line 336, ../../src/stylesheets/partials/_forms.sass */
-.adv-form h5 { margin-bottom: 10px; }
-/* line 339, ../../src/stylesheets/partials/_forms.sass */
+/* line 37, ../../src/stylesheets/partials/_forms.sass */
+.adv-form .horizontal li { margin-bottom: 10px; }
+/* line 40, ../../src/stylesheets/partials/_forms.sass */
+.adv-form h5 { border-bottom: 2px dotted #e0ebf3; font-weight: bold; margin-bottom: 12px; margin-top: 15px; padding-bottom: 5px; text-shadow: white 0 1px 0; }
+/* line 48, ../../src/stylesheets/partials/_forms.sass */
 .adv-form label { display: block; font-size: 10px; margin-bottom: 3px; }
-/* line 344, ../../src/stylesheets/partials/_forms.sass */
-.adv-form input { background: white; border: 1px solid #b6c1c9; color: #444444; font: normal 12px Arial, sans-serif; padding: 3px; width: 200px; -moz-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -webkit-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -o-box-shadow: inset 1px 1px 3px 0 #d8e3eb; box-shadow: inset 1px 1px 3px 0 #d8e3eb; }
-/* line 352, ../../src/stylesheets/partials/_forms.sass */
+/* line 53, ../../src/stylesheets/partials/_forms.sass */
+.adv-form input { background: white; border: 1px solid #b6c1c9; color: #444444; font: normal 12px Arial, sans-serif; margin-right: 5px; padding: 3px; width: 206px; -moz-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -webkit-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -o-box-shadow: inset 1px 1px 3px 0 #d8e3eb; box-shadow: inset 1px 1px 3px 0 #d8e3eb; }
+/* line 62, ../../src/stylesheets/partials/_forms.sass */
 .adv-form input:hover, .adv-form input:focus { background: #ecf7ff; border-color: #258cd5; }
-/* line 356, ../../src/stylesheets/partials/_forms.sass */
-.adv-form select { width: 207px; }
+/* line 66, ../../src/stylesheets/partials/_forms.sass */
+.adv-form select { background: white; margin-right: 14px; width: 205px; }
 
-/* line 359, ../../src/stylesheets/partials/_forms.sass */
-.adv-form-subsection { border: 1px solid #e9f4fc; padding: 2px 5px 5px; }
-/* line 363, ../../src/stylesheets/partials/_forms.sass */
+/* line 71, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-subsection { background: white; border: 1px solid #e0ebf3; clear: both; margin-top: 5px; margin-right: 0 !important; padding: 3px 7px 0; }
+/* line 79, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-subsection h6 { background: white; color: #258cd5; float: left; font-size: 9px; left: -2px; padding: 0 2px; position: relative; text-transform: uppercase; top: -7px; }
-/* line 374, ../../src/stylesheets/partials/_forms.sass */
+/* line 90, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-subsection input, .adv-form-subsection select { background: #f9f9f9; }
+/* line 93, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-subsection ul { clear: both; }
-/* line 377, ../../src/stylesheets/partials/_forms.sass */
+/* line 96, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-subsection li { margin-top: 0; margin-bottom: 0; }
 
-/* line 381, ../../src/stylesheets/partials/_forms.sass */
+/* line 100, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-actions a { font-size: 11px; }
 
-/* line 384, ../../src/stylesheets/partials/_forms.sass */
+/* line 103, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-checkbox { *zoom: 1; }
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .adv-form-checkbox:after { content: ""; display: table; clear: both; }
-/* line 386, ../../src/stylesheets/partials/_forms.sass */
+/* line 105, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-checkbox label { display: inline; float: none; }
+
+/* line 109, ../../src/stylesheets/partials/_forms.sass */
+.element-bool { float: left; }
+
+/* line 112, ../../src/stylesheets/partials/_forms.sass */
+.question-checkbox li { clear: both; padding: 5px 10px; }
+/* line 115, ../../src/stylesheets/partials/_forms.sass */
+.question-checkbox input[type=checkbox] { margin: 0 5px 0 0; }
+
+/* line 118, ../../src/stylesheets/partials/_forms.sass */
+.form-actions { border-top: 2px solid #e9f4fc; margin-top: 15px; *zoom: 1; }
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+.form-actions:after { content: ""; display: table; clear: both; }
+/* line 122, ../../src/stylesheets/partials/_forms.sass */
+.form-actions li { display: inline; float: left; padding: 10px 0 10px 10px; }
+
+/* line 127, ../../src/stylesheets/partials/_forms.sass */
+.go-back { color: #d30000; display: block; font-size: 11px; opacity: 0.6; padding: 11px 0 0; }
+/* line 133, ../../src/stylesheets/partials/_forms.sass */
+.go-back:hover, .go-back:focus { opacity: 1; }
+
+/* line 136, ../../src/stylesheets/partials/_forms.sass */
+.facility-type { background: #f6fdeb; border: 1px solid #e5ecda; margin: 15px; padding: 11px 15px; width: 940px; -moz-border-radius: 5px; -webkit-border-radius: 5px; -o-border-radius: 5px; -ms-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; *zoom: 1; }
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+.facility-type:after { content: ""; display: table; clear: both; }
+/* line 144, ../../src/stylesheets/partials/_forms.sass */
+.facility-type.no-margin { margin: 0 0 15px; }
+/* line 146, ../../src/stylesheets/partials/_forms.sass */
+.facility-type h4 { color: #888888; float: left; font-size: 12px; padding: 3px 5px 0 0; }
+/* line 151, ../../src/stylesheets/partials/_forms.sass */
+.facility-type #facility-type-filter { color: #258cd5; font-size: 11px; }
+
+/* line 155, ../../src/stylesheets/partials/_forms.sass */
+#incomplete-sections-container li { padding: 6px 0 0 10px; }
+
+/* line 158, ../../src/stylesheets/partials/_forms.sass */
+button, input[type=submit], .next { background: #65c029; border: 1px solid #439e07; clear: both; color: #e9f4fc; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; padding: 6px 40px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 0px 3px 1px #dddddd; -webkit-box-shadow: 0px 3px 1px #dddddd; -o-box-shadow: 0px 3px 1px #dddddd; box-shadow: 0px 3px 1px #dddddd; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #6ec932), color-stop(100%, #5cb720)); background-image: -webkit-linear-gradient(top, #6ec932, #5cb720); background-image: -moz-linear-gradient(top, #6ec932, #5cb720); background-image: -o-linear-gradient(top, #6ec932, #5cb720); background-image: -ms-linear-gradient(top, #6ec932, #5cb720); background-image: linear-gradient(top, #6ec932, #5cb720); text-shadow: #328d00 0 1px 0; }
+/* line 172, ../../src/stylesheets/partials/_forms.sass */
+button:hover, button:focus, input[type=submit]:hover, input[type=submit]:focus, .next:hover, .next:focus { background: #54af18; border: 1px solid #328d00; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #65c029), color-stop(100%, #54af18)); background-image: -webkit-linear-gradient(top, #65c029, #54af18); background-image: -moz-linear-gradient(top, #65c029, #54af18); background-image: -o-linear-gradient(top, #65c029, #54af18); background-image: -ms-linear-gradient(top, #65c029, #54af18); background-image: linear-gradient(top, #65c029, #54af18); }
+/* line 176, ../../src/stylesheets/partials/_forms.sass */
+button:active, input[type=submit]:active, .next:active { position: relative; top: 2px; -moz-box-shadow: 0px 1px 1px #dddddd; -webkit-box-shadow: 0px 1px 1px #dddddd; -o-box-shadow: 0px 1px 1px #dddddd; box-shadow: 0px 1px 1px #dddddd; }
+/* line 181, ../../src/stylesheets/partials/_forms.sass */
+button#cancel-button, input[type=submit]#cancel-button, .next#cancel-button { background: none; border: none; color: #d30000; font-size: 11px; padding: 7px 10px; text-decoration: underline; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; box-shadow: none; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #ffffff)); background-image: -webkit-linear-gradient(top, #ffffff, #ffffff); background-image: -moz-linear-gradient(top, #ffffff, #ffffff); background-image: -o-linear-gradient(top, #ffffff, #ffffff); background-image: -ms-linear-gradient(top, #ffffff, #ffffff); background-image: linear-gradient(top, #ffffff, #ffffff); text-shadow: white 0 0 0; }
+
+/* line 192, ../../src/stylesheets/partials/_forms.sass */
+select { background: #f6f6f6; border: 1px solid #b6c1c9; color: #444444; font: normal 12px Arial, sans-serif; padding: 2px; -moz-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -webkit-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -o-box-shadow: inset 1px 1px 3px 0 #d8e3eb; box-shadow: inset 1px 1px 3px 0 #d8e3eb; }
+/* line 199, ../../src/stylesheets/partials/_forms.sass */
+select:hover, select:focus { background: #ecf7ff; border-color: #258cd5; }
+
+/* line 203, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container { float: left; width: 100%; }
+/* line 209, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .entity-form-header .title { float: left; color: #258cd5; }
+/* line 213, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .entity-form-header .locales { float: right; padding: 4px; }
+/* line 217, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .entity-form-header .locales a { padding: 2px; }
+/* line 220, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .entity-form-header .locales a.no-link { font-weight: bold; }
+/* line 223, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .forms-container { width: 100%; }
+/* line 226, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .data-search-column { float: right; margin-right: 20px; width: 460px; }
+/* line 231, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .data-search-column form { border: none; }
+/* line 234, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .data-search-column input.radio { width: auto; }
+/* line 237, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .data-search-column input.radio label { font-weight: bold; margin-bottom: 2px; }
+/* line 241, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .data-search-column input.radio #data { width: 600px; }
+/* line 244, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container .data-field-column { float: left; width: 460px; }
+
+/* line 248, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container form { background-color: inherit; border: 1px solid #e9f4fc; padding: 15px; position: relative; }
+/* line 254, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container form .row { border-bottom: 1px dotted #e9f4fc; margin-bottom: 10px; padding-bottom: 10px; *zoom: 1; }
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+.entity-form-container form .row:after { content: ""; display: table; clear: both; }
+/* line 263, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container form .toggle-entry { float: left; margin-right: 15px; }
+/* line 267, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container form input, .entity-form-container form textarea { width: 280px; }
+/* line 270, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container form input.radio { width: auto; }
+/* line 273, ../../src/stylesheets/partials/_forms.sass */
+.entity-form-container form label { color: #258cd5; display: block; font-size: 11px; margin-bottom: 3px; }
+
+/* line 279, ../../src/stylesheets/partials/_forms.sass */
+.focus-field { border: solid 1px #c7d2da; background: #effaff; color: #333333; padding: 3px; }
+
+/* line 285, ../../src/stylesheets/partials/_forms.sass */
+.idle-field { background: #f9f9f9; border: 1px solid #b6c1c9; color: #444444; font: normal 12px Arial, sans-serif; padding: 3px; -moz-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -webkit-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -o-box-shadow: inset 1px 1px 3px 0 #d8e3eb; box-shadow: inset 1px 1px 3px 0 #d8e3eb; }
+/* line 292, ../../src/stylesheets/partials/_forms.sass */
+.idle-field:hover, .idle-field:focus { background: #ecf7ff; border-color: #258cd5; }
+
+/* line 296, ../../src/stylesheets/partials/_forms.sass */
+.completed-field { background: #ededed; color: #333333; border: solid 1px #65c029; }
+
+/* line 301, ../../src/stylesheets/partials/_forms.sass */
+.ajax-search-field { width: 340px; }
+
+/* line 304, ../../src/stylesheets/partials/_forms.sass */
+.login-field { background: #e9f4fc; border: 1px solid #b6c1c9; color: #444444; font: normal 16px "Lucida Grande", Arial, sans-serif; padding: 4px; text-align: center; width: 154px; -moz-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -webkit-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -o-box-shadow: inset 1px 1px 3px 0 #d8e3eb; box-shadow: inset 1px 1px 3px 0 #d8e3eb; }
+/* line 313, ../../src/stylesheets/partials/_forms.sass */
+.login-field:hover, .login-field:focus { background: #ecf7ff; border-color: #258cd5; }
+
+/* line 317, ../../src/stylesheets/partials/_forms.sass */
+.login-label { color: #258cd5; font-family: "Lucida Grande", Arial, sans-serif; font-size: 11px; margin: 0 auto; padding: 3px; text-align: center; width: 154px; }
+
+/* line 326, ../../src/stylesheets/partials/_forms.sass */
+ul.filtered { border: 1px solid lightGrey; padding: 4px; height: 270px; overflow: auto; }
+/* line 332, ../../src/stylesheets/partials/_forms.sass */
+ul.filtered li { display: block; white-space: nowrap; }
+/* line 336, ../../src/stylesheets/partials/_forms.sass */
+ul.filtered li span { color: grey; }
+/* line 339, ../../src/stylesheets/partials/_forms.sass */
+ul.filtered li:hover { background-color: yellow; }
+
+/* line 343, ../../src/stylesheets/partials/_forms.sass */
+.element-list .element-map-header, .element-list .element-map-body { display: block; }
+/* line 346, ../../src/stylesheets/partials/_forms.sass */
+.element-list .element-map-header .element-map-header, .element-list .element-map-body .element-map-header { font-size: 11px; }
+/* line 348, ../../src/stylesheets/partials/_forms.sass */
+.element-list .element-map-header input, .element-list .element-map-body input { width: 121px; }
+/* line 350, ../../src/stylesheets/partials/_forms.sass */
+.element-list .element-map-header select, .element-list .element-map-body select { width: 129px; }
+/* line 353, ../../src/stylesheets/partials/_forms.sass */
+.element-list li { position: relative; }
+/* line 356, ../../src/stylesheets/partials/_forms.sass */
+.element-list h5 { color: #258cd5; font-size: 14px; }
+
+/* line 360, ../../src/stylesheets/partials/_forms.sass */
+.element-map-level-2 { float: left; padding-top: 5px; position: relative; }
+/* line 364, ../../src/stylesheets/partials/_forms.sass */
+.element-map-level-2 > li { margin-bottom: 5px; }
+
+/* line 367, ../../src/stylesheets/partials/_forms.sass */
+.element-list-row { background: #fafafa; border: 1px solid #cfe4f4; padding: 15px; position: relative; }
+
+/* line 373, ../../src/stylesheets/partials/_forms.sass */
+.element-list-remove { display: block; font-size: 11px; position: absolute; right: 15px; top: 15px; }
+
+/* line 380, ../../src/stylesheets/partials/_forms.sass */
+ul.element-map { *zoom: 1; }
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+ul.element-map:after { content: ""; display: table; clear: both; }
+/* line 382, ../../src/stylesheets/partials/_forms.sass */
+ul.element-map li { *zoom: 1; }
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+ul.element-map li:after { content: ""; display: table; clear: both; }
+/* line 385, ../../src/stylesheets/partials/_forms.sass */
+ul.element-map ul.element-map li { display: inline; float: left; }
+/* line 389, ../../src/stylesheets/partials/_forms.sass */
+ul.element-map label { font-size: 10px; margin-bottom: 3px; }
+
+/* line 393, ../../src/stylesheets/partials/_forms.sass */
+.form-heading-list { padding-left: 20px; }
+/* line 395, ../../src/stylesheets/partials/_forms.sass */
+.form-heading-list li { background: url("../images/select.png") no-repeat left center; color: #258cd5; padding-left: 10px; }
 
 /* line 2, ../../src/stylesheets/partials/_flashes.sass */
 .help { background: url("../images/icons/point.png") no-repeat 0 0; padding: 10px 10px 10px 42px; }
@@ -632,9 +635,9 @@ table.nice-table .cell { cursor: default; }
 /* line 52, ../../src/stylesheets/partials/_dsr.sass */
 #dsr .title-th a { font-size: 10px; font-weight: normal; }
 /* line 57, ../../src/stylesheets/partials/_dsr.sass */
-#dsr .flow-add:hover, #dsr .flow-add:focus, #dsr .flow-edit:hover, #dsr .flow-edit:focus { color: #65c029; }
+#dsr .add-link:hover, #dsr .add-link:focus, #dsr .edit-link:hover, #dsr .edit-link:focus { color: #65c029; }
 /* line 61, ../../src/stylesheets/partials/_dsr.sass */
-#dsr .flow-delete:hover, #dsr .flow-delete:focus { color: #d30000; }
+#dsr .delete-link:hover, #dsr .delete-link:focus { color: #d30000; }
 
 /* line 4, ../../src/stylesheets/partials/_dashboard.sass */
 #dashboard #top { width: 822px; float: left; }

@@ -2,6 +2,7 @@
 <table class="listing">
 	<thead>
 		<tr>
+			<th/>
 			<th>Name</th>
 			<th>Description</th>
 			<th>Organisation Unit Groups</th>
@@ -13,6 +14,20 @@
 	<tbody>
 		<g:each in="${entities}" status="i" var="objective">
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+				<td>
+					<ul class="horizontal">
+						<li>
+							<a class="edit-link" href="${createLinkWithTargetURI(controller:'objective', action:'edit', params:[id: objective.id])}">
+								<g:message code="general.text.edit" default="Edit" />
+							</a>
+						</li>
+						<li>
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'objective', action:'delete', params:[id: objective.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+								<g:message code="general.text.delete" default="Delete" />
+							</a>
+						</li>
+					</ul>
+				</td>
 				<td><g:i18n field="${objective.names}" /></td>
 				<td><g:i18n field="${objective.descriptions}" /></td>
 				<td>${objective.groupUuidString}</td>
@@ -25,16 +40,6 @@
 							<ul>
 								<li>
 									<a href="${createLink(controller:'section', action:'list', params:[surveyId:survey?.id,objectiveId: objective.id])}">Sections</a>
-								</li>
-								<li>
-									<a href="${createLinkWithTargetURI(controller:'objective', action:'edit', params:[id: objective.id])}">
-										<g:message code="general.text.edit" default="Edit" />
-									</a>
-								</li>
-								<li>
-									<a href="${createLinkWithTargetURI(controller:'objective', action:'delete', params:[id: objective.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-										<g:message code="general.text.delete" default="Delete" />
-									</a>
 								</li>
 							</ul>
 						</div>

@@ -6,8 +6,6 @@ import org.chai.kevin.util.JSONUtils;
 
 class ClonerSpec extends SurveyIntegrationTests {
 	
-	def localeService
-	
 	def "test clone double number of elements"() {
 		setup:
 		def period = newPeriod()
@@ -31,7 +29,7 @@ class ClonerSpec extends SurveyIntegrationTests {
 		SurveyElement.count() == 1
 			
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey, localeService)
+		SurveyCloner cloner = new SurveyCloner(survey)
 		cloner.cloneTree();
 		def copy = cloner.getSurvey()
 		copy.save(failOnError: true, flush: true)
@@ -67,7 +65,7 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def skipRule = newSkipRule(survey, "\$"+element.id+" == 1", [:], [])
 		
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey, localeService)
+		SurveyCloner cloner = new SurveyCloner(survey)
 		cloner.cloneTree();
 		def copy = cloner.getSurvey()
 		copy.save(failOnError: true, flush: true)
@@ -99,7 +97,7 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def validationRule = newSurveyValidationRule(element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", [element1])
 		
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey2, localeService)
+		SurveyCloner cloner = new SurveyCloner(survey2)
 		cloner.cloneTree();
 		def copy = cloner.getSurvey()
 		copy.save(failOnError: true, flush: true)
@@ -124,7 +122,7 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
 		
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey, localeService)
+		SurveyCloner cloner = new SurveyCloner(survey)
 		cloner.cloneTree();
 		def copy = cloner.getSurvey()
 		copy.save(failOnError: true, flush: true)

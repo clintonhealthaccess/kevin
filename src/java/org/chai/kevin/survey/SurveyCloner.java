@@ -7,13 +7,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.ExpressionService;
-import org.chai.kevin.LocaleService;
+import org.chai.kevin.util.LanguageUtils;
 
 
 public class SurveyCloner {
 
-	private LocaleService localeService;
-	
 	private Survey survey;
 	private Survey copy;
 
@@ -28,9 +26,8 @@ public class SurveyCloner {
 	private Map<SurveyValidationRule, Long> unchangedValidationRules = new HashMap<SurveyValidationRule, Long>();
 	private Map<SurveySkipRule, Long> unchangedSkipRules = new HashMap<SurveySkipRule, Long>();
 	
-	public SurveyCloner(Survey survey, LocaleService localeService) {
+	public SurveyCloner(Survey survey) {
 		this.survey = survey;
-		this.localeService = localeService;
 	}
 
 	public Survey getSurvey() {
@@ -92,7 +89,7 @@ public class SurveyCloner {
 		if (copy == null) {
 			copy = new Survey(); 
 			survey.deepCopy(copy, this);
-			for (String language : localeService.getAvailableLanguages()) {
+			for (String language : LanguageUtils.getAvailableLanguages()) {
 				// TODO localize "copy"
 				copy.getNames().put(language, survey.getNames().get(language) + " (copy)");
 			}

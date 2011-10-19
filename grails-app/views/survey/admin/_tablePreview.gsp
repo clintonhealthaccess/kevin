@@ -10,10 +10,10 @@
 					<th class="${question.getColumns().size()!=j?'question-tab-title':''}">
 						<g:i18n field="${column.names}" />			
 						<div> 
-							<a href="${createLinkWithTargetURI(controller:'tableColumn', action:'edit', id: column.id)}">
+							<a class="edit-link" href="${createLinkWithTargetURI(controller:'tableColumn', action:'edit', id: column.id)}">
 								<g:message code="general.text.edit" default="Edit" />
 							</a>&nbsp;
-							<a href="${createLinkWithTargetURI(controller:'tableColumn', action:'delete', id: column.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'tableColumn', action:'delete', id: column.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 								<g:message code="general.text.delete" default="Delete" />
 							</a>
 						</div>
@@ -27,10 +27,10 @@
 					<td>
 					<g:i18n field="${row.names}" />
 						<div> 
-							<a href="${createLinkWithTargetURI(controller:'tableRow', action:'edit', id: row.id)}"> 
+							<a class="edit-link" href="${createLinkWithTargetURI(controller:'tableRow', action:'edit', id: row.id)}"> 
 								<g:message code="general.text.edit" default="Edit" />
 							</a>&nbsp;
-							<a href="${createLinkWithTargetURI(controller:'tableRow', action:'delete', id: row.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'tableRow', action:'delete', id: row.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
 								<g:message code="general.text.delete" default="Delete" />
 							</a>
 						</div>

@@ -1,12 +1,16 @@
 <%@ page import="org.chai.kevin.data.Enum" %>
 
 <% if (levels == null) levels = new java.util.Stack() %>
-<% levels.push(type) %>
 
 <!-- Value type question -->
 <ul id="element-${surveyElement.id}-${suffix}" class="horizontal element element-map-level-${levels.size()} element-map ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
-
+	
+	<g:if test="${levels.size() == 0}">
+		<h5>General Information</h5>
+	</g:if>	
+	
+	<% levels.push(type) %>
 	<g:each in="${type.elementMap}" var="it" status="i">
 	
 		<li class="${(levels.size() == 1 && it.value.isComplexType())?'adv-form-section':''} ${levels.size() > 1 && it.value.isComplexType()?'adv-form-subsection':''} ${type.elementMap.size() == i+1?'last':''}">
@@ -44,7 +48,6 @@
   			]"/>
 	  	</li>
 	</g:each>
-	
 	<% levels.pop() %>
 	
 	<div class="error-list">
