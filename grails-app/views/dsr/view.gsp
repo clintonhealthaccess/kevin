@@ -73,11 +73,13 @@
 											</span>
 								    		<shiro:hasPermission permission="admin:dsr">
 												<span>
-													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:objective.id)}">(Edit)</a>
+													<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:objective.id)}">
+														<g:message code="general.text.edit" default="Edit" />
+													</a>
 												</span>
 												<span>
-													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-														(Delete)
+													<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+														<g:message code="general.text.delete" default="Delete" />
 													</a>
 												</span>
 											</shiro:hasPermission>
@@ -129,17 +131,6 @@
 											<div>
 												<g:i18n field="${currentObjective.names}" />
 											</div> 
-											<shiro:hasPermission permission="admin:dsr">
-												<span> 
-													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:currentObjective.id)}">(Edit)</a> 
-												</span>
-												<br />
-												<span> 
-													<a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-														(Delete)
-													</a> 
-												</span>
-											</shiro:hasPermission>
 										</th>
 										<g:set var="i" value="${0}" />
 										<g:each in="${dsrTable.targets}" var="target">
@@ -147,19 +138,22 @@
 												<g:set var="i" value="${i+1}" />
 												<g:if test="${i==target.category.getTargetsForObjective(currentObjective).size()}">
 													<th class="title-th" colspan="${i}">
-														<div>
+														<span>
 															<g:i18n field="${target.category.names}" />
-														</div> 
+														</span> 
 														<shiro:hasPermission permission="admin:dsr">
-															<span> 
-																<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'edit', id:target?.id)}">(Edit)</a> 
-															</span>
-															<br />
-															<span> 
-																<a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																	(Delete)
-																</a> 
-															</span>
+															<ul class="horizontal">
+																<li>
+																	<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'edit', id:target?.id)}">
+																		<g:message code="general.text.edit" default="Edit" />
+																	</a>
+																</li>
+																<li> 
+																	<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+																		<g:message code="general.text.delete" default="Delete" />
+																	</a>
+																</li>
+															</ul>
 														</shiro:hasPermission>
 													</th>
 												</g:if>
@@ -170,15 +164,18 @@
 														<g:i18n field="${target.names}" />
 													</div>
 													<shiro:hasPermission permission="admin:dsr">
-														<span> 
-															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">(Edit)</a> 
-														</span>
-														<br />
-														<span> 
-															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																(Delete)
-															</a> 
-														</span>
+														<ul class="horizontal">
+															<li>
+																<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">
+																	<g:message code="general.text.edit" default="Edit" />
+																</a>
+															</li>
+															<li> 
+																<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+																	<g:message code="general.text.delete" default="Delete" />
+																</a>
+															</li>
+														</ul> 
 													</shiro:hasPermission></th>
 											</g:else>
 										</g:each>
@@ -191,16 +188,20 @@
 														<g:i18n field="${target.names}" />
 													</div> 
 													<shiro:hasPermission permission="admin:dsr">
-														<span> 
-															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">(Edit)</a> 
-														</span>
-														<br />
-														<span> 
-															<a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																(Delete)
-															</a> 
-														</span>
-													</shiro:hasPermission></th>
+														<ul class="horizontal">
+															<li>
+																<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">
+																	<g:message code="general.text.edit" default="Edit" />
+																</a>
+															</li>
+															<li> 
+																<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+																	<g:message code="general.text.delete" default="Delete" />
+																</a>
+															</li>
+														</ul>
+													</shiro:hasPermission>
+												</th>
 											</g:if>
 										</g:each>
 									</tr>

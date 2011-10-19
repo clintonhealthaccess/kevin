@@ -74,5 +74,18 @@ public class Utils {
 	}
 	
 	private static DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+
+	public static String stripHtml(String htmlString, Integer num) {
+		String noHtmlString;
+		Integer length = num;
+	
+		if (htmlString != null) noHtmlString = htmlString.replaceAll("\\<.*?\\>", "");
+		else noHtmlString = htmlString;
+	
+		if (num != null && noHtmlString.length() < num) length = noHtmlString.length();
+	
+		if (num == null) return noHtmlString;
+		return noHtmlString.substring(0, length);
+	}
 	
 }

@@ -51,7 +51,6 @@ import javax.persistence.Transient;
 import org.chai.kevin.Translation;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
-@SuppressWarnings("serial")
 @Entity(name = "SurveyQuestion")
 @Table(name = "dhsst_survey_question")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -141,21 +140,6 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	static String getString(String htmlString, Integer num) {
-		String noHtmlString;
-		Integer length = num;
-
-		if (htmlString != null)
-			noHtmlString = htmlString.replaceAll("\\<.*?\\>", "");
-		else
-			noHtmlString = htmlString;
-
-		if (noHtmlString.length() < num)
-			length = noHtmlString.length();
-
-		return noHtmlString.substring(0, length);
 	}
 
 	protected abstract SurveyQuestion newInstance();

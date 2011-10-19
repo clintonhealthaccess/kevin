@@ -34,6 +34,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils;
 
 /**
@@ -44,7 +45,6 @@ class SurveyQuestionService {
 
 	static transactional = true
 	
-	def localeService
 	def sessionFactory
 
 	List<SurveyQuestion> searchSurveyQuestions(String text, Survey survey, def params = [:]) {
@@ -57,8 +57,8 @@ class SurveyQuestionService {
 		
 		StringUtils.split(text).each { chunk ->
 			questions.retainAll { question ->
-				Utils.matches(chunk, question.names[localeService.getCurrentLanguage()]) ||
-				Utils.matches(chunk, question.descriptions[localeService.getCurrentLanguage()])
+				Utils.matches(chunk, question.names[LanguageUtils.getCurrentLanguage()]) ||
+				Utils.matches(chunk, question.descriptions[LanguageUtils.getCurrentLanguage()])
 			}
 		}
 		

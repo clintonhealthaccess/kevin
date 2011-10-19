@@ -78,17 +78,17 @@ ul.horizontal li { display: inline; float: left; margin-right: 5px; }
 .italic { font-style: italic; }
 
 /* line 80, ../../src/stylesheets/partials/_shared.sass */
-.flow-edit { background: url("../images/icons/mini_edit.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
+.edit-link { background: url("../images/icons/mini_edit.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
 /* line 88, ../../src/stylesheets/partials/_shared.sass */
-.flow-edit:hover { opacity: 0.6; }
+.edit-link:hover { opacity: 0.6; }
 
 /* line 91, ../../src/stylesheets/partials/_shared.sass */
-.flow-delete { background: url("../images/icons/mini_delete.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
+.delete-link { background: url("../images/icons/mini_delete.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
 /* line 99, ../../src/stylesheets/partials/_shared.sass */
-.flow-delete:hover { opacity: 0.6; }
+.delete-link:hover { opacity: 0.6; }
 
 /* line 102, ../../src/stylesheets/partials/_shared.sass */
-.flow-form h5 { color: #888888; font-size: 16px; font-weight: bold; margin-top: 20px; }
+.entity-form-container h5 { color: #888888; font-size: 16px; font-weight: bold; margin-top: 20px; }
 
 /* line 1, ../../src/stylesheets/partials/_layout.sass */
 .wrapper { margin: 0 auto; position: relative; width: 1000px; *zoom: 1; }
@@ -573,9 +573,9 @@ table.nice-table .cell { cursor: default; }
 /* line 52, ../../src/stylesheets/partials/_dsr.sass */
 #dsr .title-th a { font-size: 10px; font-weight: normal; }
 /* line 57, ../../src/stylesheets/partials/_dsr.sass */
-#dsr .flow-add:hover, #dsr .flow-add:focus, #dsr .flow-edit:hover, #dsr .flow-edit:focus { color: #65c029; }
+#dsr .add-link:hover, #dsr .add-link:focus, #dsr .edit-link:hover, #dsr .edit-link:focus { color: #65c029; }
 /* line 61, ../../src/stylesheets/partials/_dsr.sass */
-#dsr .flow-delete:hover, #dsr .flow-delete:focus { color: #d30000; }
+#dsr .delete-link:hover, #dsr .delete-link:focus { color: #d30000; }
 
 /* line 4, ../../src/stylesheets/partials/_dashboard.sass */
 #dashboard #top { width: 822px; float: left; }

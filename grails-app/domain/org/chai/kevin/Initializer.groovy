@@ -1035,7 +1035,7 @@ class Initializer {
 
 			def patientQ1 = new SurveySimpleQuestion(
 					names: j(["en":"Patient Section Simple Question NUMBER"]),
-					descriptions: j(["en":"Help text"]),
+					descriptions: j([:]),
 					order: 3,
 					groupUuidString: "District Hospital,Health Center"
 					)
@@ -1130,7 +1130,7 @@ class Initializer {
 			//Adding questions to sections
 			def serviceQ1 = new SurveySimpleQuestion(
 					names: j(["en":"Service Section Simple Question NUMBER"]),
-					descriptions: j(["en":"Help text"]),
+					descriptions: j(["en":"<br/>"]),
 					order: 3,
 					groupUuidString: "District Hospital,Health Center"
 					)
@@ -1143,7 +1143,7 @@ class Initializer {
 
 			def serviceQ2 = new SurveySimpleQuestion(
 					names: j(["en":"Service Section Simple Question BOOL"]),
-					descriptions: j(["en":"Help text"]),
+					descriptions: j(["en":""]),
 					order: 0,
 					groupUuidString: "District Hospital,Health Center"
 					)
@@ -1156,7 +1156,7 @@ class Initializer {
 
 			def serviceQ3 = new SurveySimpleQuestion(
 					names: j(["en":"Service Section Simple Question ENUM "]),
-					descriptions: j(["en":"Help text"]),
+					descriptions: j([:]),
 					order: 1,
 					groupUuidString: "District Hospital,Health Center"
 					)

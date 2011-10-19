@@ -4,10 +4,10 @@
 
 	<g:if test="${lastValue!=null}">
 		<g:if test="${lastValue.booleanValue == true}">
-			<g:set var="tooltipValue" value="${'\u2611'}"/>
+			<g:set var="tooltipValue" value="${'Yes'}"/>
 		</g:if>
 		<g:if test="${lastValue.booleanValue == false}">
-			<g:set var="tooltipValue" value="${'\u2611'}"/>
+			<g:set var="tooltipValue" value="${'No'}"/>
 		</g:if>
 	</g:if>
 		

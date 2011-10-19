@@ -2,10 +2,13 @@
 
 <div id="question-${question.id}" class="question question-checkbox" data-question="${question.id}">
 	<h4><span class="question-number">${question.section.getQuestionNumber(question)}</span><g:i18n field="${question.names}" /></h4>
-	<p class="show_question_help"><a href="#">Show tips</a></p>
-	<div class="question-help-container">
-		<p class="question-help"><g:i18n field="${question.descriptions}"/><a class="hide_question_help">Close tips</a></p>
-	</div>
+	
+	<g:ifText field="${question.descriptions}">
+		<p class="show_question_help"><a href="#">Show tips</a></p>
+		<div class="question-help-container">
+			<p class="question-help"><g:i18n field="${question.descriptions}"/><a class="hide_question_help">Close tips</a></p>
+		</div>
+	</g:ifText>
 	
 	<ul class="clear">
 		<g:each in="${question.getOptions(organisationUnitGroup)}" var="option">

@@ -67,11 +67,13 @@
 											</a>
 								  			<shiro:hasPermission permission="admin:maps">
 												<span>
-													<a href="${createLinkWithTargetURI(controller:'mapsTarget', action:'edit', id:target.id)}">(Edit)</a>
+													<a class="edit-link" href="${createLinkWithTargetURI(controller:'mapsTarget', action:'edit', id:target.id)}">
+														<g:message code="general.text.edit" default="Edit" />
+													</a>
 												</span>
 												<span>
-													<a href="${createLinkWithTargetURI(controller:'mapsTarget', action:'delete', id:target.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-														(Delete)
+													<a class="delete-link" href="${createLinkWithTargetURI(controller:'mapsTarget', action:'delete', id:target.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
+														<g:message code="general.text.delete" default="Delete" />
 													</a>
 												</span>
 											</shiro:hasPermission>
