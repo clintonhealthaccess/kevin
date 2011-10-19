@@ -1,4 +1,5 @@
 <!-- Value type question -->
+
 <ul id="element-${surveyElement.id}-${suffix}" class="adv-form element element-list ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 	

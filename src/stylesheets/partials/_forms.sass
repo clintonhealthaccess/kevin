@@ -245,9 +245,6 @@ ul.filtered
     color: $primary
     font-size: 14px
     
-  h6
-    display: none
-    
 .element-map-level-1
   > li
     margin: 10px 0
@@ -298,3 +295,94 @@ ul.element-map
     background: url('../images/select.png') no-repeat left center
     color: $primary
     padding-left: 10px
+    
+    
+// ADVANCED FORM STYLES
+
+.adv-form-row
+  border: 1px solid $filler
+  padding: 15px
+  +border-radius(3px)
+  +pie-clearfix
+  &.minimized
+    background: $filler
+    padding: 7px 15px
+    +linear-gradient(color-stops($filler + #060606, $filler))
+    +text-shadow(#fff, 0, 1px, 0)
+  
+.adv-form-section
+  border-bottom: 1px dotted $filler - #111
+  padding-bottom: 10px
+  margin-bottom: 10px
+  +pie-clearfix
+  &.last
+    border: none
+    margin: 0
+    padding: 0
+  &.no-border
+    border: none
+  
+.adv-form-fields li
+  margin: 12px 5px 6px 0
+  &.adv-form-subsection
+    margin: 0 5px 0 0
+  
+.adv-form
+
+  .element-map-level-2
+    > h6
+      margin-top: 5px
+  
+  h5
+    margin-bottom: 10px
+  
+  label
+    display: block
+    font-size: 10px
+    margin-bottom: 3px
+    
+  input
+    background: #fff
+    border: 1px solid $filler - #333
+    color: #444
+    font: normal 12px Arial, sans-serif
+    padding: 3px
+    width: 200px
+    +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
+    &:hover, &:focus
+      background: $filler + #030303
+      border-color: $primary
+      
+  select
+    width: 207px
+    
+.adv-form-subsection
+  border: 1px solid $filler
+  padding: 2px 5px 5px
+  
+  h6
+    background: #fff
+    color: $primary
+    float: left
+    font-size: 9px
+    left: -2px
+    padding: 0 2px
+    position: relative
+    text-transform: uppercase
+    top: -7px
+    
+  ul
+    clear: both
+    
+  li
+    margin-top: 0
+    margin-bottom: 0
+    
+.adv-form-actions a
+  font-size: 11px
+
+.adv-form-checkbox
+  +pie-clearfix
+  label
+    display: inline
+    float: none
