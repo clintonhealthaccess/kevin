@@ -24,9 +24,16 @@ $(document).delegate('input[type="text"],textarea','blur',function() {
 $(document).delegate('.togglable a.toggle-link', 'click', function(){
 	var togglable = $(this).parents('.togglable');
 	var toggle = $(this).data('toggle')
+	var allId = $(this).attr('id');
 	$(togglable).find('.toggle-entry').each(function(key, value){
-		if (toggle != $(this).data('toggle')) $(this).hide();
-		else $(this).show();
+		if(allId) 
+			$(this).show();
+		else{ 
+			if (toggle != $(this).data('toggle')) 
+				$(this).hide();
+			else 
+			 $(this).show();
+	   }
 	});
 	$(togglable).find('.toggle-link').each(function(key, value){
 		if (toggle != $(this).data('toggle')) $(this).removeClass('no-link');
