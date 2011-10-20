@@ -20,6 +20,10 @@ modules = {
 		resource url: '/css/screen.css', bundle: 'core'
 	}
 
+	error {
+		resource url: '/css/errors.css'
+	}
+	
 	spinner {
 		dependsOn 'jquery'
 

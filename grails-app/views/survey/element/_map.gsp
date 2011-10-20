@@ -29,7 +29,7 @@
   			<g:if test="${it.value.type.name().toLowerCase()=='enum' && print && appendix}">
   				<g:if test="${it.value.enumCode != null}">
   					<g:set var="enume" value="${Enum.findByCode(it.value.enumCode)}"/>
-  					<div class="text-align-left">--Possible choice--</div>
+					<div class="text-align-left">--<g:message code="survey.print.possiblechoice.label" default="Possible choices"/>--</div>
   					<g:each in="${enume?.enumOptions}" var="option">
   						<div class="text-align-left"><g:i18n field="${option.names}" /></div>
   					</g:each>

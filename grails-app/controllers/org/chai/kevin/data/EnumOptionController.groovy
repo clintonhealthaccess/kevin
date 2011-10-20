@@ -52,7 +52,7 @@ class EnumOptionController extends AbstractEntityController {
 	}
 	
 	def getLabel() {
-		return 'enumoption.label'
+		return 'enum.enumoption.label'
 	}
 	
 	def getTemplate() {

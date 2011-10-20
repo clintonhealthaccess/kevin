@@ -3,8 +3,8 @@
 		<tr>
 			<th/>
 		    <g:sortableColumn property="id" title="${message(code: 'dataelement.id.label', default: 'Id')}" />
-			<th>Name</th>
-			<th>Type</th>
+			<th><g:message code="entity.name.label" default="Name"/></th>
+			<th><g:message code="type.label" default="Type"/></th>
 			<g:sortableColumn property="code" title="${message(code: 'dataelement.code.label', default: 'Code')}" />
 		</tr>
 	</thead>
@@ -15,12 +15,12 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'dataElement', action:'edit', params:[id: dataElement.id])}">
-								<g:message code="general.text.edit" default="Edit" />
+								<g:message code="default.link.edit.label" default="Edit" />
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'dataElement', action:'delete', params:[id: dataElement.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="general.text.delete" default="Delete" />
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'dataElement', action:'delete', params:[id: dataElement.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+								<g:message code="default.link.delete.label" default="Delete" />
 							</a>
 						</li>
 					</ul>

@@ -108,26 +108,26 @@
 								    		<shiro:hasPermission permission="admin:dashboard">
 							    				<g:if test="${!objective.isTarget()}">
 													<span>
-														<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'edit', id:objectiveEntry.id)}"><g:message code="general.text.edit" default="Edit" /></a>
+														<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'edit', id:objectiveEntry.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
 													</span>
 												</g:if>
 												<g:else>
 													<span>
-														<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'edit', id:objectiveEntry.id)}"><g:message code="general.text.edit" default="Edit" /></a>
+														<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'edit', id:objectiveEntry.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
 													</span>
 												</g:else>
 												<g:if test="${!objective.hasChildren()}">
 													<g:if test="${!objective.isTarget()}">
 														<span>
-															<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'delete', id:objectiveEntry.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																<g:message code="general.text.delete" default="Delete" />
+															<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'delete', id:objectiveEntry.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+																<g:message code="default.link.delete.label" default="Delete" />
 															</a>
 														</span>
 													</g:if>
 													<g:else>
 														<span>
-															<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'delete', id:objectiveEntry.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																<g:message code="general.text.delete" default="Delete" />
+															<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'delete', id:objectiveEntry.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+																<g:message code="default.link.delete.label" default="Delete" />
 															</a>
 														</span>
 													</g:else>

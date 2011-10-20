@@ -9,9 +9,9 @@
     <div class="main">
   		<table class="listing">
   			<thead>
-  				<th>Objective</th>
-  				<th>Submitted</th>
-  				<th>Overall progress</th>
+  				<th><g:message code="survey.objective.label" default="Objective" /></th>
+				<th><g:message code="survey.summary.submitted" default="Submitted" /></th>
+				<th><g:message code="survey.summary.progress" default="Overall Progress" /></th>
   				<th></th>
   			</thead>
   			<tbody>
@@ -25,7 +25,7 @@
   						</td>
   						<td>${objectiveSummary.enteredObjective?.closed?'\u2713':''}</td>
   						<td><span class="progress-bar">${objectiveSummary.completedQuestions}/${objectiveSummary.questions}</span></td>
-  						<td><a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: summaryPage.organisation.id])}">view survey</a></td>
+  						<td><a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: summaryPage.organisation.id])}"><g:message code="survey.summary.viewsurvey.label" default="View Survey"/></a></td>
   					</tr>
   					<tr class="explanation-row">
   						<td colspan="4">

@@ -54,7 +54,8 @@
 		});
 		$('#survey').delegate('#survey-form .element-list-remove', 'click', function(){
 			if (!$(this).hasClass('ajax-disabled')) {
-				listRemoveClick(this);
+				var remove = confirm("${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}");
+				if (remove) listRemoveClick(this);
 			}
 			return false;
 		});
@@ -83,7 +84,7 @@
 				return true;
 			}
 			else {
-				alert('Some values are being saved, please wait before submitting.');
+				alert("${message(code:'survey.section.saving.text',default:'Some values are being saved, please wait before submitting.')}");
 				return false;
 			}
 		});
@@ -141,7 +142,7 @@
 					callback(data, element);
 				}
 				else {
-					alert('Please reload the page, the objective has been closed.');
+					alert("${message(code:'survey.section.objective.closed.text',default:'Please reload the page, the objective has been closed.')}");
 				}
 			},
 			error: function() {
@@ -177,9 +178,9 @@
 		return myid.replace(/(:|\.|\[|\])/g,'\\$1');
 	}
 	
-	function minimizeRows(rows) {
+	function minimizeRows(rows, keepOpen) {
 		$.each(rows, function(i, element) {
-			if (!$(element).hasClass('minimized')) {
+			if (!$(element).hasClass('minimized') && $(element).data('index') != $(keepOpen).data('index')) {
 				$(element).find('.input').each(function(i, input) {
 					var elementInRow = $(input).parents('.element').first();
 					if (!$(elementInRow).hasClass('skipped')) {
@@ -199,8 +200,6 @@
 	}
 	
 	function maximizeRow(row) {
-		minimizeRows($(row).parents('.element-list').first().find('.element-list-row'));
-	
 		$(row).find('.minimized-input').remove();
 		$(row).find('.input').show();
 		$(row).find('label, h5, h6').show();
@@ -209,6 +208,8 @@
 		$(row).find('.element-list-minimize').show();
 		$(row).find('.element-list-maximize').hide();
 		$(row).removeClass('minimized');
+		
+		minimizeRows($(row).parents('.element-list').first().find('.element-list-row'), row);
 	}
 	
 	function listRemoveClick(toRemove) {

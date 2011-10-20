@@ -1,7 +1,9 @@
 <div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
-		<h3 class="title">Create a Simple Question</h3>
+		<h3 class="title">
+			<g:message code="default.new.label" args="[message(code:'survey.simplequestion.label',default:'Simple Question')]"/>
+		</h3>
 		<g:locales />
 		<div class="clear"></div>
 	</div>
@@ -14,10 +16,10 @@
 
 				<input type="hidden" name="surveyElement.dataElement.id" value="${question.surveyElement?.dataElement?.id}" id="data-element-id" />
 				<div class="row ${hasErrors(bean:question, field:'surveyElement', 'errors')}">
-					<label for="surveyElement.dataElement.name">Data Element:</label>
+					<label for="surveyElement.dataElement.name"><g:message code="dataelement.label" default="Data Element"/>:</label>
 					<input type="text" name="surveyElement.dataElement.name" value="${i18n(field: question.surveyElement?.dataElement?.names)}" id="data-element-name" class="idle-field" disabled />
 					<g:if test="${question.surveyElement?.id != null}">
-						<span><a href="${createLink(controller:'surveyValidationRule', action:'list', params:[elementId: question.surveyElement?.id])}"> Validation Rules </a> </span>
+						<span><a href="${createLink(controller:'surveyValidationRule', action:'list', params:[elementId: question.surveyElement?.id])}"> <g:message code="default.list.label" args="[message(code:'survey.validationrule.label',default:'Validation Rules')]" /></a> </span>
 					</g:if>
 					<div class="error-list">
 						<g:renderErrors bean="${question}" field="surveyElement" />
@@ -27,7 +29,7 @@
 				<g:if test="${headerPrefixes != null && !headerPrefixes.empty}">
 					<div class="row ${hasErrors(bean:question, field:'surveyElement.headers', 'errors')}">
 						<span class="bold">
-							<a href="#" onclick="$(this).parent().next().toggle();return false;">Headers:</a> 
+							<a href="#" onclick="$(this).parent().next().toggle();return false;"><g:message code="survey.checkboxquestion.checkboxoption.label" default="Headers"/>:</a> 
 						</span>
 						<div class="white-box hidden">
 							<g:each in="${headerPrefixes}" var="headerPrefix">
@@ -41,8 +43,8 @@
 				<g:input name="order" label="Order" bean="${question}" field="order" />
 
 				<div class="row ${hasErrors(bean:question, field:'section', 'errors')}">
-					<label for="section.id">Section:</label> <select name="section.id">
-						<option value="null">-- Select an Section --</option>
+					<label for="section.id"><g:message code="survey.section.label" default="Section"/>:</label> <select name="section.id">
+						<option value="null">-- <g:message code="default.select.label" args="[message(code:'survey.section.label')]" default="Select a Section"/> --</option>
 						<g:each in="${sections}" var="section">
 							<option value="${section.id}" ${section.id+''==fieldValue(bean: question, field: 'section.id')+''?'selected="selected"':''}>
 								<g:i18n field="${section.names}" />
@@ -55,7 +57,7 @@
 				</div>
 
 				<div class="row ${hasErrors(bean:question, field:'groupUuidString', 'errors')}">
-					<label for="groups">Organisation Unit Group:</label> <select name="groupUuids" multiple="multiple" size="5">
+					<label for="groups"><g:message code="facility.type.label" default="Facility Groups"/>:</label> <select name="groupUuids" multiple="multiple" size="5">
 						<g:each in="${groups}" var="group">
 							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>${group.name}</option>
 						</g:each>
@@ -72,16 +74,16 @@
 					<input type="hidden" name="surveyElement.id" value="${question.surveyElement.id}"></input>
 				</g:if>
 				<div class="row">
-					<button type="submit" class="rich-textarea-form">Save Question</button>
-					<a href="${createLink(uri: targetURI)}">cancel</a>
+					<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>
+					<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
 				</div>
 			</g:form>
 		</div>
 		<div class="data-search-column">
 			<g:form name="search-data-form" class="search-form" url="[controller:'dataElement', action:'getData']">
 				<div class="row">
-					<label for="searchText">Search: </label> <input name="searchText" class="idle-field"></input>
-					<button type="submit">Search</button>
+					<label for="searchText"><g:message code="entity.search.label" default="Search"/>: </label> <input name="searchText" class="idle-field"></input>
+					<button type="submit"><g:message code="default.button.search.label" default="Search"/></button>
 					<div class="clear"></div>
 				</div>
 			</g:form>

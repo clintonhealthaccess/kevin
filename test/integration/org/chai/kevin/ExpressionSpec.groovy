@@ -11,6 +11,16 @@ import org.hisp.dhis.period.Period;
 
 class ExpressionSpec extends IntegrationTests {
 
+	def "expression type is valid"() {
+		when:
+		new Expression(code: CODE(1), type: Type.TYPE_NUMBER(), expression:"1").save(failOnError: true)
+		
+		then:
+		Expression.count() == 1
+		Expression.list()[0].type.jsonValue == "{\"type\":\"number\"}";
+	}
+
+	
 	def "expression type cannot be invalid"() {
 		when:
 		new Expression(code: CODE(1), type: INVALID_TYPE, expression:"1").save(failOnError: true)

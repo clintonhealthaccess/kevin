@@ -9,8 +9,8 @@
     <div class="main">
   		<table class="listing">
   			<thead>
-  				<th>Section</th>
-  				<th>Overall progress</th>
+  				<th><g:message code="survey.section.label" default="Section"/></th>
+  				<th><g:message code="survey.summary.progress" default="Overall Progress"/></th>
   				<th></th>
   			</thead>
   			<tbody>
@@ -19,12 +19,11 @@
   					<tr>
   						<td><g:i18n field="${sectionSummary.section.names}"/></td>
   						<td><span class="progress-bar">${sectionSummary.completedQuestions}/${sectionSummary.questions}</span></td>
-  						<td><a href="${createLink(controller: 'editSurvey', action: 'sectionPage', params: [section: section.id, organisation: summaryPage.organisation.id])}">view survey</a></td>
+  						<td><a href="${createLink(controller: 'editSurvey', action: 'sectionPage', params: [section: section.id, organisation: summaryPage.organisation.id])}"><g:message code="survey.viewsurvey.label" default="View Survey"/></a></td>
   					</tr>
   				</g:each>
   			</tbody>
   		</table>
-		</div>
-	
+		</div>	
 	</body>
 </html>

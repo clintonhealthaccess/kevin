@@ -15,10 +15,10 @@
             <td>
             	<ul class="horizontal">
 	            	<li>
-	            		<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id:costRampUp.id)}"><g:message code="general.text.edit" default="Edit" /></a>
+	            		<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id:costRampUp.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
 	            	</li>
 	            	<li>
-	            		<a class="delete-link" href="${createLinkWithTargetURI(action:'delete', id:costRampUp.id)}"><g:message code="general.text.delete" default="Delete" /></a>
+	            		<a class="delete-link" href="${createLinkWithTargetURI(action:'delete', id:costRampUp.id)}"><g:message code="default.link.delete.label" default="Delete" /></a>
 	            	</li>
             	</ul>
             </td>

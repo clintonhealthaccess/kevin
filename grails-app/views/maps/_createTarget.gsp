@@ -69,8 +69,8 @@
 		</g:if>
 		
 		<div class="row">
-			<button type="submit">Save target</button>
-			<a href="${createLink(uri: targetURI)}">cancel</a>
+			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
 		</div>
     </g:form>
 </div>

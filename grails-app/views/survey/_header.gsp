@@ -3,27 +3,27 @@
 <div id="survey-header" class="subnav">
 	<div>
 		<div class="filter">
-			<span class="bold">Strategic Objective:</span>
+			<span class="bold"><g:message code="survey.labels.objective" default="Strategic Objective" />:</span>
 			<span class="dropdown subnav-dropdown">
 				<a class="selected" href="#">
 					<g:if test="${objective != null}">
 						<g:i18n field="${objective.names}" />
 					</g:if>
 					<g:else>
-						select an objective
+					<g:message code="survey.labels.objective.select" default="Select an objective" />	
 					</g:else>
 				</a>
-				<div id="survey-menu" class="grey-rounded-box-bottom hidden dropdown-list">
+				<div id="survey-menu" class="hidden dropdown-list">
 					<g:render template="/survey/menu" model="[surveyPage: surveyPage]"/>
 				</div>
 			</span>
 		</div>
 		<div class="filter">
-			<span class="bold">Facility Name:</span>
+			<span class="bold"><g:message code="facility.label" default="Facility Name" />:</span>
 			<span>${organisation.name}</span>
 		</div>
 		<div class="filter">
-			<span class="bold">Year:</span>
+			<span class="bold"><g:message code="survey.labels.period" default="Year" />:</span>
 			<span> 
 				<g:dateFormat format="yyyy" date="${period.startDate}" />
 			</span>

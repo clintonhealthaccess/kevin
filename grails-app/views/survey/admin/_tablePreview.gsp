@@ -11,10 +11,10 @@
 						<g:i18n field="${column.names}" />			
 						<div> 
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'tableColumn', action:'edit', id: column.id)}">
-								<g:message code="general.text.edit" default="Edit" />
+								<g:message code="default.link.edit.label" default="Edit" />
 							</a>&nbsp;
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'tableColumn', action:'delete', id: column.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="general.text.delete" default="Delete" />
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'tableColumn', action:'delete', id: column.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+								<g:message code="default.link.delete.label" default="Delete" />
 							</a>
 						</div>
 					</th>
@@ -28,10 +28,10 @@
 					<g:i18n field="${row.names}" />
 						<div> 
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'tableRow', action:'edit', id: row.id)}"> 
-								<g:message code="general.text.edit" default="Edit" />
+								<g:message code="default.link.edit.label" default="Edit" />
 							</a>&nbsp;
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'tableRow', action:'delete', id: row.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="general.text.delete" default="Delete" />
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'tableRow', action:'delete', id: row.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+								<g:message code="default.link.delete.label" default="Delete" />
 							</a>
 						</div>
 					</td>
@@ -51,7 +51,7 @@
 								]" />
 								
 								<a href="${createLink(controller:'surveyValidationRule', action:'list', params:[elementId: surveyElement?.id])}">
-									View Validation Rules
+									<g:message code="survey.viewvalidationrule.label" default="View Validation Rules"/>
 								</a>
 							</td>
 						</g:if>

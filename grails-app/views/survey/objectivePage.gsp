@@ -20,26 +20,19 @@
 				
 				<g:if test="${closed}">
 					<div>
-						This objective has been already been submitted. Please go on with the other sections.
+						<g:message code="survey.objective.submitted.text" default="This objective has already been submitted, please go on with the other sections." />
 						<shiro:hasPermission permission="admin:survey">
-							<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])}">Reopen this objective.</a>
+							<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])}">
+								<g:message code="survey.objective.reopen.text"/>
+							</a>
 						</shiro:hasPermission>
 					</div>
 				</g:if>
-<!-- 				<g:if test="${unavailable}"> -->
-<!-- 					<div class="rounded-box-top rounded-box-bottom"> -->
-<!-- 						This objective can not yet be answered, please complete  -->
-<!-- 						<a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.dependency.id])}"> -->
-<!-- 							<g:i18n field="${surveyPage.objective.dependency.names}"/> -->
-<!-- 						</a> -->
-<!-- 						first. -->
-<!-- 					</div> -->
-<!-- 				</g:if> -->
 				
 				<g:if test="${!closed}">
 					<g:if test="${surveyPage.canSubmit(surveyPage.objective)}">
 						<div id="submit-objective" class="${!surveyPage.canSubmit(surveyPage.objective)?'hidden':''} success-box">
-							<p class="success">This part has been completed successfully. If you are sure that you entered the right data, please click submit.
+							<p class="success"><g:message code="survey.objective.ready.text" default="This part has been completed successfully. If you are sure that you entered the right data, please click submit." /></p>
 							<g:form url="[controller:'editSurvey', action:'submit', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id]]">
 								<button type="submit">Submit</button>
 							</g:form>

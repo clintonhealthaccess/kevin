@@ -27,7 +27,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		
 		when:
 		dataElementController.params.code = CODE(1)
-		dataElementController.params['type.jsonType'] = Type.TYPE_BOOL().getJsonType()
+		dataElementController.params['type.jsonValue'] = Type.TYPE_BOOL().getJsonObject()
 		dataElementController.saveWithoutTokenCheck()
 		
 		then:
@@ -78,7 +78,7 @@ class DataElementControllerSpec extends IntegrationTests {
 	
 		when:
 		dataElementController.params.id = dataElement.id
-		dataElementController.params['type.jsonType'] = Type.TYPE_BOOL().getJsonType()
+		dataElementController.params['type.jsonValue'] = Type.TYPE_BOOL().getJsonObject()
 		dataElementController.saveWithoutTokenCheck()
 		
 		then:
@@ -88,7 +88,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		when:
 		newDataValue(dataElement, period, organisation, Value.NULL)
 		dataElementController.params.id = dataElement.id
-		dataElementController.params['type.jsonType'] = Type.TYPE_STRING().getJsonType()
+		dataElementController.params['type.jsonValue'] = Type.TYPE_STRING().getJsonObject()
 		dataElementController.saveWithoutTokenCheck()
 		
 		then:

@@ -54,7 +54,7 @@ abstract public class Data<T extends StoredValue> implements Timestamped, Serial
 	
 	@Embedded
 	@AttributeOverrides({
-		@AttributeOverride(name="jsonType", column=@Column(name="type", nullable=false))
+		@AttributeOverride(name="jsonValue", column=@Column(name="type", nullable=false))
 	})
 	public Type getType() {
 		return type;

@@ -16,12 +16,12 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'enum', action:'edit', params:[id: enumation.id])}">
-								<g:message code="general.text.edit" default="Edit" />
+								<g:message code="default.link.edit.label" default="Edit" />
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'enum', action:'delete', params:[id: enumation.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="general.text.delete" default="Delete" />
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'enum', action:'delete', params:[id: enumation.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+								<g:message code="default.link.delete.label" default="Delete" />
 							</a>
 						</li>
 					</ul>
@@ -37,7 +37,7 @@
 						<ul>
 							<li>
 								<a href="${createLink(controller:'enumOption', action:'list',params:[enumId: enumation.id])}">
-									<g:message code="general.text.options" default="Options" />
+									<g:message code="default.list.label" args="[message(code:'enum.enumoption.label')]" />
 								</a>
 							</li>
 						</ul>

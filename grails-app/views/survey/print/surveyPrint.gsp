@@ -10,7 +10,7 @@
 		<div id="print-header">
 			<div><g:message code="survey.print.district.health.system.label" default="District Health System"/></div> 
 			<div><g:message code="survey.print.strengthening.framework.tool.label" default="Strengthening Framework Tool"/></div> 
-			<div><g:message code="survey.print.questionnaire.label" default="Questionnaire"/></div>
+			<div><g:message code="survey.label" default="Questionnaire"/></div>
 			<div>${surveyPage.organisation.organisationUnitGroup.name}</div>
 			<div>${surveyPage.organisation.organisationUnit.name}</div>
 		</div>
@@ -29,22 +29,6 @@
 					</ol>
 				</g:each>
 			</g:each>
-		</div>
-			<div>
-				<h3 class="appendix-title"><g:message code="survey.print.appendix" default="Appendix"/></h3>
-				<ol>
-					<g:each in="${surveyPage.getListQuestions(surveyPage.survey)}" var="question">
-						<li class="question-container">
-						<div>
-						   <h4><g:i18n field="${question.section.objective.names}"/> &rarr; 
-						   <g:i18n field="${question.section.names}"/></h4>
-						</div>
-						<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, print: true, appendix: true]" />
-						</li>
-					</g:each>
-				</ol>
-			</div>
-			<div class="clear"></div>
 		</div>
 		<div class="clear"></div>
 	</div>

@@ -23,8 +23,8 @@
 		<g:input name="order" label="Order" bean="${objectiveEntry}" field="order"/>
 		
 		<div class="row">
-			<button type="submit">Save objective</button>
-			<a href="${createLink(uri: targetURI)}">cancel</a>
+			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
 		</div>
     </g:form>
 	<div class="clear"></div>

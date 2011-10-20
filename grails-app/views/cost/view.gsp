@@ -71,12 +71,12 @@
 											<shiro:hasPermission permission="cost:admin">
 												<span>
 													<a class="edit-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'edit', id:objective.id)}">
-														<g:message code="general.text.edit" default="Edit" />
+														<g:message code="default.link.edit.label" default="Edit" />
 													</a>
 												</span>
 												<span>
-													<a class="delete-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-														<g:message code="general.text.delete" default="Delete" />
+													<a class="delete-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+														<g:message code="default.link.delete.label" default="Delete" />
 													</a>
 												</span>
 											</shiro:hasPermission>

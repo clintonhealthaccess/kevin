@@ -4,10 +4,10 @@
 
 	<g:if test="${lastValue!=null}">
 		<g:if test="${lastValue.booleanValue == true}">
-			<g:set var="tooltipValue" value="${'Yes'}"/>
+			<g:set var="tooltipValue" value="${message(code:'survey.element.bool.yes.label')}"/>
 		</g:if>
 		<g:if test="${lastValue.booleanValue == false}">
-			<g:set var="tooltipValue" value="${'No'}"/>
+			<g:set var="tooltipValue" value="${message(code:'survey.element.bool.no.label')}"/>
 		</g:if>
 	</g:if>
 		
@@ -18,9 +18,9 @@
 	</g:if>
 	<g:else>
 		<select class="tooltip input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
-			<option value="">Select</option>
-			<option value="1" ${value?.booleanValue==true ? 'selected':''}>Yes</option>
-			<option value="0" ${value?.booleanValue==false ? 'selected':''}>No</option>
+			<option value=""><g:message code="survey.element.bool.select.label"/></option>
+			<option value="1" ${value?.booleanValue==true ? 'selected':''}><g:message code="survey.element.bool.yes.label"/></option>
+			<option value="0" ${value?.booleanValue==false ? 'selected':''}><g:message code="survey.element.bool.no.label"/></option>
 		</select>
 	</g:else>
 	<div class="error-list">

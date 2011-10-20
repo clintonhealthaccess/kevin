@@ -16,7 +16,7 @@ public abstract class JSONValue {
 	protected String jsonValue = null;
 	protected JSONObject value = null;
 
-	public JSONValue() {}
+	public JSONValue() {jsonValue = "";}
 	
 	public JSONValue(String jsonValue) {
 		this.jsonValue = jsonValue;
@@ -95,7 +95,6 @@ public abstract class JSONValue {
 		}
 	}
 
-	@Transient
 	public void setAttribute(String attribute, String attributeValue) {
 		if (Arrays.binarySearch(getReservedKeywords(), attribute) >= 0) throw new IllegalArgumentException("trying to set reserved attribute using getAttribute");
 	

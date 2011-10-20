@@ -1,6 +1,8 @@
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
-		<h3 class="title">Create Survey</h3>
+		<h3 class="title">
+			<g:message code="default.new.label" args="[message(code:'survey.label',default:'Survey')]"/>
+		</h3>
 		<g:locales/>
 		<div class="clear"></div>
 	</div>
@@ -11,9 +13,9 @@
 		<div class="row">
 			<div id="iteration-block">
 				<div class="${hasErrors(bean:survey, field:'period', 'errors')}">
-					<label for="period.id">Period:</label>
+					<label for="period.id"><g:message code="period.label"default="Period"/>:</label>
 					<select class="iteration-list" name="period.id">
-						<option value="null">-- Select an Iteration --</option>
+						<option value="null">-- <g:message code="default.select.label" args="[message(code:'period.label')]" default="Select an Iteration"/> --</option>
 						<g:each in="${periods}" var="period">
 							<option value="${period.id}" ${period.id==survey.period?.id?'selected="selected"':''}>
 								${period.startDate} &harr; ${period.endDate}
@@ -28,9 +30,9 @@
 		<div class="row">
 			<div id="iteration-block">
 				<div class="${hasErrors(bean:survey, field:'period', 'errors')}">
-					<label for="lastPeriod.id">Last period (for reference to old values):</label>
+					<label for="lastPeriod.id"><g:message code="survey.lastperiod.label" default="Last period (for reference to old values)"/>:</label>
 					<select class="iteration-list" name="lastPeriod.id">
-						<option value="null">-- Select an Iteration --</option>
+						<option value="null">-- <g:message code="default.select.label" args="[message(code:'period.label')]" default="Select an Iteration"/> --</option>
 						<g:each in="${periods}" var="period">
 							<option value="${period.id}" ${period.id==survey.lastPeriod?.id?'selected="selected"':''}>
 								${period.startDate} &harr; ${period.endDate}
@@ -43,7 +45,7 @@
 		</div>
 		
 		<div class="row">
-			<label>Active</label>
+			<label><g:message code="survey.active.label" default="Active"/></label>
 			<g:checkBox name="active" value="${survey.active}" />
 		</div>
 		
@@ -52,8 +54,8 @@
 			<input type="hidden" name="id" value="${survey?.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit" class="rich-textarea-form">Save Survey</button>&nbsp;&nbsp;
-			<a href="${createLink(uri: targetURI)}">cancel</a>
+			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
 		</div>
     </g:form>
 	<div class="clear"></div>

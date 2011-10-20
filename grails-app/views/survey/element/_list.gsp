@@ -21,9 +21,9 @@
 		<g:each in="${value.listValue}" var="item" status="i">
 			<li class="element-list-row adv-form-row" data-index="${i}">
 				<ul class="adv-form-actions horizontal right">
-					<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#">minimize</a></li>
-					<li><a class="element-list-maximize hidden ${!readonly?'loading-disabled':''}" href="#">maximize</a></li>
-					<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">delete</a></li>
+					<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.minimize.label" /></a></li>
+					<li><a class="element-list-maximize hidden ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.maximize.label" /></a></li>
+					<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.removeline.label" /></a></li>
 				</ul>
 			
 				<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[${i}]"/>
@@ -45,9 +45,9 @@
 			<div class="hidden">
 				<li class="element-list-row adv-form-row">
 					<ul class="adv-form-actions horizontal right">
-						<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#">minimize</a></li>
-						<li><a class="element-list-maximize hidden ${!readonly?'loading-disabled':''}" href="#">maximize</a></li>
-						<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">delete</a></li>
+						<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.minimize.label" /></a></li>
+						<li><a class="element-list-maximize hidden ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.maximize.label" /></a></li>
+						<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.removeline.label" /></a></li>
 					</ul>
 					
 					<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
@@ -65,7 +65,7 @@
 					<div class="clear"></div>
 				</li>
 			</div>
-			<a class="element-list-add ${!readonly?'loading-disabled':''}" href="#">add line</a>
+			<a class="element-list-add ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.addline.label" default="Add Line"/></a>
 		</g:if>
 	</g:else>
 

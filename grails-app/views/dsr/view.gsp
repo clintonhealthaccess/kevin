@@ -74,12 +74,12 @@
 								    		<shiro:hasPermission permission="admin:dsr">
 												<span>
 													<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:objective.id)}">
-														<g:message code="general.text.edit" default="Edit" />
+														<g:message code="default.link.edit.label" default="Edit" />
 													</a>
 												</span>
 												<span>
-													<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-														<g:message code="general.text.delete" default="Delete" />
+													<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+														<g:message code="default.link.delete.label" default="Delete" />
 													</a>
 												</span>
 											</shiro:hasPermission>
@@ -145,12 +145,12 @@
 															<ul class="horizontal">
 																<li>
 																	<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'edit', id:target?.id)}">
-																		<g:message code="general.text.edit" default="Edit" />
+																		<g:message code="default.link.edit.label" default="Edit" />
 																	</a>
 																</li>
 																<li> 
-																	<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																		<g:message code="general.text.delete" default="Delete" />
+																	<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+																		<g:message code="default.link.delete.label" default="Delete" />
 																	</a>
 																</li>
 															</ul>
@@ -167,12 +167,12 @@
 														<ul class="horizontal">
 															<li>
 																<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">
-																	<g:message code="general.text.edit" default="Edit" />
+																	<g:message code="default.link.edit.label" default="Edit" />
 																</a>
 															</li>
 															<li> 
-																<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																	<g:message code="general.text.delete" default="Delete" />
+																<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+																	<g:message code="default.link.delete.label" default="Delete" />
 																</a>
 															</li>
 														</ul> 
@@ -191,12 +191,12 @@
 														<ul class="horizontal">
 															<li>
 																<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', id:target?.id)}">
-																	<g:message code="general.text.edit" default="Edit" />
+																	<g:message code="default.link.edit.label" default="Edit" />
 																</a>
 															</li>
 															<li> 
-																<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-																	<g:message code="general.text.delete" default="Delete" />
+																<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', id:target?.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+																	<g:message code="default.link.delete.label" default="Delete" />
 																</a>
 															</li>
 														</ul>

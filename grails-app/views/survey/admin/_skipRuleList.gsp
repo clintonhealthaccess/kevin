@@ -2,12 +2,11 @@
 	<thead>
 		<tr>
 			<th/>
-		    <th>Id</th>
-			<th>Survey</th>
-			<th>Description</th>
-			<th>Expression</th>
-			<th>Number of Survey Elements</th>
-			<th>Number of Questions</th>
+			<th><g:message code="survey.label" default="Survey"/></th>
+			<th><g:message code="entity.description.label" default="Description"/></th>
+			<th><g:message code="expression.label" default="Expression"/></th>
+			<th><g:message code="default.number.label" args="[message(code:'survey.surveyelement.label')]" default="Number of Survey Elements"/></th>
+			<th><g:message code="default.number.label" args="[message(code:'survey.question.label')]" default="Number of Questions"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -17,17 +16,16 @@
 					<ul class="horizontal">
 						<li>
 			    			<a class="edit-link" href="${createLinkWithTargetURI(controller:'surveySkipRule', action:'edit', params:[id: skip.id])}">
-					    		<g:message code="general.text.edit" default="Edit" /> 
+					    		<g:message code="default.link.edit.label" default="Edit" /> 
 							</a>
 						</li>
 						<li>
-			    			<a class="delete-link" href="${createLinkWithTargetURI(controller:'surveySkipRule', action:'delete', params:[id: skip.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-				        		<g:message code="general.text.delete" default="Delete" /> 
+			    			<a class="delete-link" href="${createLinkWithTargetURI(controller:'surveySkipRule', action:'delete', params:[id: skip.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+				        		<g:message code="default.link.delete.label" default="Delete" /> 
 							</a>
 						</li>
 					</ul>
 				</td>
-				<td>${skip.id}</td>
 				<td><g:i18n field="${skip.survey.names}" /></td>
 				<td><g:i18n field="${skip.descriptions}" /></td>
 				<td>${skip.expression}</td>

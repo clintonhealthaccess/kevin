@@ -2,12 +2,12 @@
 	<thead>
 		<tr>
 			<th/>
-			<th>Data Element</th>
-			<th>Prefix</th>
-			<th>Expression</th>
-			<th>Allow Outlier</th>
-			<th>Organisation Unit Groups</th>
-			<th>Message</th>
+			<th><g:message code="dataelement.label" default="Data Element"/></th>
+			<th><g:message code="survey.validationrule.prefix.label" default="Prefix"/></th>
+			<th><g:message code="expression.label" default="Expression"/></th>
+			<th><g:message code="survey.validationrule.allowoutlier.label" default="Allow Outlier"/></th>
+			<th><g:message code="facility.type.label" default="Facility Groups"/></th>
+			<th><g:message code="survey.validationrule.message.label" default="Message"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -17,12 +17,12 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'edit', params:[id: validationRule.id])}">
-								<g:message code="general.text.edit" default="Edit" /> 
+								<g:message code="default.link.edit.label" default="Edit" /> 
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'delete', params:[id: validationRule.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="general.text.delete" default="Delete" /> 
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'delete', params:[id: validationRule.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+								<g:message code="default.link.delete.label" default="Delete" /> 
 							</a>
 						</li>
 					</ul>

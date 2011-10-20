@@ -33,10 +33,10 @@
 				<ul id="logout">
 				  <li>
 					  <shiro:hasPermission permission="admin">
-        			<a class="redmine follow" target="_blank" href="http://districthealth.moh.gov.rw/redmine">Found a bug? Go to REDMINE</a>
+        			<a class="redmine follow" target="_blank" href="http://districthealth.moh.gov.rw/redmine"><g:message code="header.labels.redmine" default="Found a bug? Go to REDMINE"/></a>
         		</shiro:hasPermission>
 					</li>
-					<li><a class="follow" href="${createLink(controller: 'auth', action: 'signOut')}">Logout</a></li>
+					<li><a class="follow" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout" default="Logout"/></a></li>
 					
 				</div>
 			</shiro:user>
@@ -50,7 +50,7 @@
   				<li><a class="${controllerName=='editSurvey'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
   			</shiro:hasPermission>
   			<shiro:hasPermission permission="menu:reports">
-  				<li><a class="${controllerName in ['dashboard','cost','dsr','maps']?'active':''}" href="#"><g:message code="header.navigation.reports" default="Reports"/></a>
+  				<li><a class="${controllerName in ['dashboard','cost','dsr','maps']?'active':''}" href="#" onclick="return false;"><g:message code="header.navigation.reports" default="Reports"/></a>
   					<ul class="submenu">
   						<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.dashboard" default="Dashboard"/></a></li>
   						<li><a class="${controllerName=='cost'?'active':''}" href="${createLink(controller: 'cost', action:'view')}"><g:message code="header.navigation.costing" default="Costing"/></a></li>
@@ -60,14 +60,14 @@
   				</li>
   			</shiro:hasPermission>
   			<shiro:hasPermission permission="menu:admin">
-  				<li><a class="${org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"><g:message code="header.navigation.administration" default="Administration"/></a>
+  				<li><a class="${org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"  onclick="return false;"><g:message code="header.navigation.administration" default="Administration"/></a>
   					<ul class="submenu">
-  						<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
+  						<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'list')}"><g:message code="expression.label" default="Expressions"/></a></li>
   <!-- 								<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li> -->
-  						<li><a class="${controllerName=='dataElement'?'active':''}" href="${createLink(controller: 'dataElement', action:'list')}"><g:message code="header.navigation.dataelement" default="Data Element"/></a></li>
-  						<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="header.navigation.enum" default="Enum"/></a></li>
-  						<li><a class="${controllerName=='iteration'?'active':''}" href="${createLink(controller: 'iteration', action:'list')}"><g:message code="header.navigation.iteration" default="Iterations"/></a></li>
-  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+  						<li><a class="${controllerName=='dataElement'?'active':''}" href="${createLink(controller: 'dataElement', action:'list')}"><g:message code="dataelement.label" default="Data Element"/></a></li>
+  						<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="enum.label" default="Enum"/></a></li>
+  						<li><a class="${controllerName=='iteration'?'active':''}" href="${createLink(controller: 'iteration', action:'list')}"><g:message code="period.label" default="Iterations"/></a></li>
+  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a></li>
   					</ul>
   				</li>
   			</shiro:hasPermission>
@@ -85,7 +85,7 @@
 
 	<div id="footer">
 	  <div class="wrapper">
-		  &copy; Clinton Health Access Initiative <br /><a href="#"><g:message code="footer.labels.about" default="About"/></a> | <a href="#"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="#"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
+		  &copy; <g:message code="footer.labels.chai" default="Clinton Health Access Initiative"/> <br /><a href="#"><g:message code="footer.labels.about" default="About"/></a> | <a href="#"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="#"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
 		</div>
 	</div>
 

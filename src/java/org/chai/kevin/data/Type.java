@@ -12,7 +12,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -41,8 +43,8 @@ public class Type extends JSONValue {
 
 	public Type() {super();}
 	
-	public Type(String jsonType) {
-		super(jsonType);
+	public Type(String jsonValue) {
+		super(jsonValue);
 	}
 	
 	private Type listType = null;

@@ -158,7 +158,7 @@ class DataService {
 		if (!allowedTypes.isEmpty()) {
 			def typeRestrictions = Restrictions.disjunction()
 			allowedTypes.each { type ->
-				typeRestrictions.add(Restrictions.like("type.jsonType", type, MatchMode.ANYWHERE))
+				typeRestrictions.add(Restrictions.like("type.jsonValue", type, MatchMode.ANYWHERE))
 			}
 			criteria.add(Restrictions.and(textRestrictions, typeRestrictions))
 		}

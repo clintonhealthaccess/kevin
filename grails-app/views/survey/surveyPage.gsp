@@ -10,7 +10,9 @@
 		<div id="survey">
 			<g:render template="/survey/header" model="[period: surveyPage.period, organisation: surveyPage.organisation]"/>
 			<div class="main">  
-			  <p class="help">Welcome to the survey, please fill in all the objectives above.</p>
+				<p class="help">
+			  		<g:message code="survey.welcomemessage.label" default="Welcome to the survey, please fill in all the objectives above."/>
+				</p>
 			</div>
 		</div>
 	</body>

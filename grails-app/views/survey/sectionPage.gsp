@@ -1,5 +1,4 @@
 <%@ page import="org.apache.shiro.SecurityUtils" %>
-
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -22,18 +21,10 @@
 				</g:if>
 							
 				<g:if test="${closed}">
-					<div class="rounded-box-top rounded-box-bottom">
-						This section has been submitted, you can view your answer here but you cannot change them.
+					<div>
+						<g:message code="survey.section.submitted.text" default="This section has been submitted, you can view your answer here but you cannot change them."/>
 					</div>
 				</g:if>
-				
-<!-- 				<g:if test="${unavailable}"> -->
-<!-- 					<div class="rounded-box-top rounded-box-bottom"> -->
-<!-- 						This section can not yet be answered, please complete  -->
-<!-- 						<a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.dependency.id])}"><g:i18n field="${surveyPage.objective.dependency.names}"/></a> -->
-<!-- 						first. -->
-<!-- 					</div> -->
-<!-- 				</g:if>  -->
 				
 				<div>
 					<h3 class="form-heading">
@@ -56,20 +47,20 @@
 								<li>
 									<button type="submit" class="loading-disabled">
 										<g:if test="${surveyPage.isLastSection(surveyPage.section)}">
-											Finish
+											<g:message code="survey.section.finish.label" default="Finish"/>
 										</g:if>
 										<g:else>
-											Next
+											<g:message code="survey.section.next.label" default="Next"/>
 										</g:else>
 									</button>
 								</li>
 								<li>
 									<button type="cancel" class="hidden">
-										Cancel
+										<g:message code="survey.section.cancel.label" default="Cancel"/>
 									</button>
 								</li>
 							</g:if>
-	  						<li><a href="#" class="go-back">Go back</a></li>
+	  						<li><a href="#" class="go-back"><g:message code="survey.section.back.label" default="Go back"/></a></li>
 	  					</ul>
 					</g:form>
 				</div>

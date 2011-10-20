@@ -5,7 +5,9 @@
 	     	<g:if test="${!search}">
 		     	<span class="right">
 					<g:if test="${!addTemplate}">
-		  				<a href="${createLinkWithTargetURI(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
+		  				<a href="${createLinkWithTargetURI(controller: params['controller'], action:'create', params: params)}">
+		  					<g:message code="default.new.label" args="[entityName]"/>
+		  				</a>
 		  			</g:if>
 		  			<g:else>
 		  				<g:render template="/survey/admin/${addTemplate}"/>
@@ -30,7 +32,7 @@
 			</div>
 		</g:if>
 		<g:else>
-			<div>No ${entityName} available</div>
+			<div><g:message code="entity.list.empty.label" args="[entityName]"/></div>
 		</g:else>				
 	</div>
 </div>

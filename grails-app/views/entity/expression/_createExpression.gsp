@@ -12,7 +12,7 @@
 			<g:i18nTextarea name="descriptions" bean="${expression}" value="${expression.descriptions}" label="Description" field="descriptions"/>
 			<g:input name="code" label="Code" bean="${expression}" field="code"/>
 			
-			<g:textarea name="type.jsonType" label="Type" bean="${expression}" field="type"/>
+			<g:textarea name="type.jsonValue" label="Type" bean="${expression}" field="type"/>
 			<g:textarea name="expression" label="Expression" bean="${expression}" field="expression" rows="5"/>
 			
 			<g:if test="${expression.id != null}">
@@ -20,8 +20,8 @@
 			</g:if>
 			
 			<div class="row">
-				<button type="submit">Save Expression</button>
-				<a href="${createLink(uri: targetURI)}">cancel</a>
+				<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
+				<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
 			</div>
 		</g:form>
 	</div>

@@ -77,14 +77,15 @@ class DataElementController extends AbstractEntityController {
 		return [
 			dataElement: entity,
 			hasValues: entity.id != null && valueService.getNumberOfValues(entity) != 0,
-			enumes: Enum.list()
+			enumes: Enum.list(),
+			code: getLabel()
 		]
 	}
 
 	def validateEntity(def entity) {
 		boolean valid = entity.validate()
 		
-		if (entity.id != null && !entity.getType().equals(new Type(params['type.jsonType'])) && valueService.getNumberOfValues(entity) != 0) {
+		if (entity.id != null && !entity.getType().equals(new Type(params['type.jsonValue'])) && valueService.getNumberOfValues(entity) != 0) {
 			// error if types are different
 			entity.errors.rejectValue('type', 'dataElement.type.cannotChange', 'Cannot change type because the element has associated values.')
 			valid = false
@@ -104,12 +105,12 @@ class DataElementController extends AbstractEntityController {
 	}
 
 	def bindParams(def entity) {
-		bindData(entity, params, [exclude:'type.jsonType'])
+		bindData(entity, params, [exclude:'type.jsonValue'])
 		
 		// we assign the new type only if there are no associated values
 		if (entity.id == null || valueService.getNumberOfValues(entity) == 0) {
 			entity.type = new Type()
-			bindData(entity, params, [include:'type.jsonType'])
+			bindData(entity, params, [include:'type.jsonValue'])
 		}
 				
 		// FIXME GRAILS-6967 makes this necessary

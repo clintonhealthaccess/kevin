@@ -14,7 +14,7 @@
 	<div class="subnav">
 		<ul class="inline-list">
 			<li>
-				<a href="${createLink(controller: 'survey', action:'list')}">Surveys</a>
+				<a href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a>
 			</li>
 			<g:if test="${survey}">
 				<li>

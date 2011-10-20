@@ -11,7 +11,7 @@
 		<g:i18nTextarea name="descriptions" bean="${dataElement}" value="${dataElement.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
 		
 		<g:input name="code" label="Code" bean="${dataElement}" field="code" />
-		<g:textarea name="type.jsonType" label="Type" bean="${dataElement}" field="type" readonly="${hasValues}"/>
+		<g:textarea name="type.jsonValue" label="Type" bean="${dataElement}" field="type" readonly="${hasValues}"/>
 		
 		<g:input name="info" label="Info" bean="${dataElement}" field="info"/>
 		
@@ -19,8 +19,8 @@
 			<input type="hidden" name="id" value="${dataElement.id}"/>
 		</g:if>
 		<div class="row">
-			<button type="submit" class="rich-textarea-form">Save Date Element</button>
-			<a href="${createLink(uri: targetURI)}">cancel</a>
+			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
 		</div>
 		
 	</g:form>

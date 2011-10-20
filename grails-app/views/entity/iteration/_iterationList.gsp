@@ -2,8 +2,8 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="general.text.startdate" default="Start Date" /></th>
-			<th><g:message code="general.text.enddate" default="End Date" /></th>
+			<th><g:message code="period.startdate.label" default="Start Date" /></th>
+			<th><g:message code="period.enddate.label" default="End Date" /></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -13,11 +13,11 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'iteration', action:'edit', params:[id: iteration.id])}">
-								<g:message code="general.text.edit" default="Edit" />
+								<g:message code="default.link.edit.label" default="Edit" />
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'iteration', action:'delete', params:[id: iteration.id])}" onclick="return confirm('\${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="general.text.delete" default="Delete" /></a>
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'iteration', action:'delete', params:[id: iteration.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="default.link.delete.label" default="Delete" /></a>
 						</li>
 						
 					</ul>
