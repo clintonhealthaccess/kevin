@@ -99,7 +99,7 @@ class SectionController extends AbstractEntityController {
 			objective: objective,
 			entities: sections.subList(params['offset'], max),
 			entityCount: sections.size(),
-			code: 'survey.section.label'
+			code: 'general.text.section'
 		])
 	}
 

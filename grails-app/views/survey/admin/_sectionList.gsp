@@ -1,12 +1,12 @@
 <table>
 	<thead>
 		<tr>
-			<th>Name</th>
-			<th>Description</th>
-			<th>Organisation Unit Groups</th>
-			<th>Number of Questions</th>
-			<th>Order</th>
-			<th>Manage</th>
+			<th><g:message code="general.text.name" default="Name"/></th>
+			<th><g:message code="general.text.description" default="Description"/></th>
+			<th><g:message code="general.text.facilitygroups" default="Facility Groups"/></th>
+			<th><g:message code="survey.numberofquestions.label" default="Number of Questions"/></th>
+			<th><g:message code="general.text.order" default="Order"/></th>
+			<th><g:message code="general.text.manage" default="Manage"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -19,11 +19,13 @@
 				<td>${section.order}</td>
 				<td>
 					<div class="dropdown white-dropdown"> 
-						<a class="selected" href="#" data-type="section">Manage</a>
+						<a class="selected" href="#" data-type="section"><g:message code="general.text.manage" default="Manage"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'question', action:'list',params:[surveyId:objective.survey?.id,objectiveId: objective?.id,sectionId: section.id])}">Questions</a>
+									<a href="${createLink(controller:'question', action:'list',params:[surveyId:objective.survey?.id,objectiveId: objective?.id,sectionId: section.id])}">
+										<g:message code="default.list.label" args="${[message(code:'general.text.question',default:'Questions')]}" />
+									</a>
 								</li>
 								<li>
 				    			    <g:link controller="section" action="edit" id="${section.id}" class="flow-edit">

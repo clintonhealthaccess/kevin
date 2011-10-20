@@ -1,5 +1,4 @@
 <%@ page import="org.apache.shiro.SecurityUtils" %>
-
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -25,7 +24,7 @@
 							
 				<g:if test="${closed}">
 					<div class="rounded-box-top rounded-box-bottom">
-						This section has been submitted, you can view your answer here but you cannot change them.
+						<g:message code="survey.sectionsubmittedviewansweronly.label" default="This section has been submitted, you can view your answer here but you cannot change them."/>
 					</div>
 				</g:if>
 				
@@ -56,14 +55,14 @@
 						<g:if test="${!readonly}">
 							<button type="submit" class="loading-disabled">
 								<g:if test="${surveyPage.isLastSection(surveyPage.section)}">
-									Finish
+									<g:message code="general.text.finish" default="Finish"/>
 								</g:if>
 								<g:else>
-									Next
+									<g:message code="general.text.next" default="Next"/>
 								</g:else>
 							</button>
 							<button type="cancel" class="hidden">
-								Cancel
+								<g:message code="general.text.cancel" default="Cancel"/>
 							</button>
 						</g:if>
 					</g:form>

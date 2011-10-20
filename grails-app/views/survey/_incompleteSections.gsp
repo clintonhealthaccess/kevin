@@ -2,7 +2,7 @@
 
 <g:if test="${!incompleteSections.isEmpty()}">
 	<div class="rounded-box-top rounded-box-bottom">
-		The following sections are incomplete, please go back and complete them:
+		<g:message code="survey.followingsectionsincomplete.label" default="The following sections are incomplete, please go back and complete them" />:
 		<ul>
 			<g:each in="${incompleteSections}" var="section">
 				<li>

@@ -94,7 +94,7 @@ class SurveyController extends AbstractEntityController {
 					template:"surveyList",
 					entities: surveys,
 					entityCount: Survey.count(),
-					code: 'survey.label'
+					code: 'general.text.survey'
 				])
 	}
 

@@ -77,7 +77,7 @@
 				return true;
 			}
 			else {
-				alert('Some values are being saved, please wait before submitting.');
+				alert(\${message(code:'survey.somevaluebeingsaved.label',default:'Some values are being saved, please wait before submitting.')});
 				return false;
 			}
 		});
@@ -129,7 +129,7 @@
 					callback(data, element);
 				}
 				else {
-					alert('Please reload the page, the objective has been closed.');
+					alert(\${message(code:'survey.pleasereloadobjectiveclosed.label',default:'Please reload the page, the objective has been closed.')});
 				}
 			},
 			error: function() {

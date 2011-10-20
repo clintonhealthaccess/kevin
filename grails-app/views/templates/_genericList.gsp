@@ -1,13 +1,15 @@
 <div class="entity-list">
 	<div id="entities">
 		<h5 class="float-left">
-           	<g:message code="default.list.label" args="[entityName]" />
+           	<g:message code="default.list.label" args="${[entityName]}" />
 		</h5>
 		
 		<g:if test="${!search}">
 			<div class="float-right">
 				<g:if test="${!addTemplate}">
-					<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
+					<a class="flow-add" href="${createLink(controller: params['controller'], action:'create', params: params)}">
+						<g:message code="default.new.label" args="${[entityName]}"/>
+					</a>
 				</g:if>
 				<g:else>
 					<g:render template="/survey/admin/${addTemplate}"/>
@@ -35,7 +37,7 @@
 			</div>
 		</g:if>
 		<g:else>
-			<div>No ${entityName} available</div>
+			<div><g:message code="general.text.noentityavailable" args="${[entityName]}"/></div>
 		</g:else>				
 	</div>
 	<div class="hidden flow-container"></div>

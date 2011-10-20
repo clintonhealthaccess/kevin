@@ -4,17 +4,17 @@
 		<g:link controller="checkboxOption" action="delete" id="${option.id}" class="flow-delete"><g:message code="general.text.delete" default="Delete" /></g:link>  
 		<g:if test="${option.surveyElement != null}">
 	        <a href="${createLink(controller:'surveyValidationRule', action:'list', params:[elementId: option.surveyElement.id])}">
-	          View Validation Rules
+	        <g:message code="survey.viewvalidationrule.label" default="View Validation Rules" />
 	        </a> 
         </g:if>
 	</span>
 </div>
 <div>
-	<span class="bold">Option Name:</span><span> ${i18n(field: option.names)}</span>
+	<span class="bold"><g:message code="survey.optionname.label" default="Option Name"/>:</span><span> ${i18n(field: option.names)}</span>
 </div>
 <div>
-	<span class="bold">Data Element:</span><span>${i18n(field:option.surveyElement?.dataElement?.names)}</span>
+	<span class="bold"><g:message code="survey.dataelement.label" default="Data Element"/>:</span><span>${i18n(field:option.surveyElement?.dataElement?.names)}</span>
 </div>
 <div>
-	<span class="bold">Organisation Unit Group:</span><span> ${option.groupUuidString}</span>
+	<span class="bold"><g:message code="general.text.facilitygroups" default="Facility Groups"/>:</span><span> ${option.groupUuidString}</span>
 </div>

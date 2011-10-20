@@ -75,7 +75,7 @@ class QuestionController {
 			section: section,
 			entities: questions.subList(params['offset'], max),
 			entityCount: questions.size(),
-			code: 'survey.question.label',
+			code: 'general.text.question',
 			addTemplate: 'addQuestion'
 		])
 	}

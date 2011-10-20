@@ -1,6 +1,8 @@
 <div id="add-skip-rule" class="entity-form-container togglable">
 	<div class="entity-form-header">
-		<h3 class="title">Create a Skip Rule</h3>
+		<h3 class="title">
+			<g:message code="default.new.label" args="${[message(code:'survey.skiprule.label',default:'Skip Rule')]}"/>
+		</h3>
 		<g:locales />
 		<div class="clear"></div>
 	</div>
@@ -9,13 +11,13 @@
 		<g:form url="[controller:'surveySkipRule', action:'save']" useToken="true">
 			<input type="hidden" name="survey.id" value="${skip.survey.id}" />
 			<div class="row">
-				<label>Survey</label>
+				<label><g:message code="general.text.survey" default="Survey"/>:</label>
 			 	<input type="text" name="survey.id" value="${i18n(field: skip.survey.names)}" class="idle-field" disabled />
 		 	</div>
 		 	<g:i18nTextarea name="descriptions" bean="${skip}" value="${skip?.descriptions}" label="Descriptions" field="descriptions" />
 		 
 			<div class="row ${hasErrors(bean:skip, field:'skippedSurveyElements', 'errors')}">
-				<label>Skipped Survey Elements: </label>
+				<label><g:message code="survey.skippedsurveyelement.label" default="Skipped Survey Elements"/>: </label>
 				
 				<!-- START SKIPPED SURVEY ELEMENTS -->
 				<g:each in="${skip.skippedSurveyElements}" var="entry">
@@ -23,34 +25,34 @@
 						<g:set var="surveyElement" value="${entry.key}"/>
 						<g:set var="prefixes" value="${entry.value}"/>
 						
-						<label for="skipped.element">Survey element:</label> 
+						<label for="skipped.element"><g:message code="survey.surveyelement.label" default="Survey Element"/>:</label> 
 						<select name="skipped.element" class="ajax-search-field skipped-survey-elements-list">
 							<option value="${surveyElement.id}" selected>
 								<g:i18n field="${surveyElement.dataElement.names}" />[${surveyElement.id}]
 							</option>
 						</select>
-						<label for="skipped.prefix">Prefixes (comma-separated):</label>
+						<label for="skipped.prefix"><g:message code="survey.prefixescommaseparated.label" default="Prefixes (comma-separated)"/>:</label>
 						<input type="text" value="${prefixes}" name="skipped.prefix"/> 
-						<a href="#" onclick="$(this).parent().remove();return false;">delete</a>
+						<a href="#" onclick="$(this).parent().remove();return false;"><g:message code="general.text.delete" default="Delete"/></a>
 					</div>
 				</g:each>
 				<div class="white-box hidden">
-					<label for="">Survey element:</label> 
+					<label for=""><g:message code="survey.surveyelement.label" default="Survey Element"/>:</label> 
 					<select name="skipped.element" class="ajax-search-field skipped-survey-elements-list">
 						<option value="" selected></option>
 					</select>
-					<label for="skipped.prefix">Prefixes (comma-separated):</label>
+					<label for="skipped.prefix"><g:message code="survey.prefixescommaseparated.label" default="Prefixes (comma-separated)"/>:</label>
 					<input type="text" value="${prefixes}" name="skipped.prefix"/> 
-					<a href="#" onclick="$(this).parent().remove();return false;">delete</a>
+					<a href="#" onclick="$(this).parent().remove();return false;"><g:message code="general.text.delete" default="Delete"/></a>
 				</div>
-				<a href="#" onclick="$(this).before($(this).prev().clone()); $(this).prev().prev().show(); return false;">add</a>
+				<a href="#" onclick="$(this).before($(this).prev().clone()); $(this).prev().prev().show(); return false;"><g:message code="general.text.add" default="Add"/></a>
 				<!-- END SKIPPED SURVEY ELEMENTS -->
 				
 				<div class="error-list"><g:renderErrors bean="${skip}" field="skippedSurveyElements" /></div>
 			</div>
 
 			<div class="row ${hasErrors(bean:skip, field:'skippedSurveyQuestions', 'errors')}">
-				<label>Skipped Questions: </label>
+				<label><g:message code="survey.questionstoskip.label" default="Questions to Skip"/>: </label>
 				<select id="questions-list" name="skippedSurveyQuestions" multiple="true" class="ajax-search-field">
 					<g:if test="${!skip.skippedSurveyQuestions.isEmpty()}">
 						<g:each in="${skip.skippedSurveyQuestions}" var="question">
@@ -69,18 +71,18 @@
 				<input type="hidden" name="id" value="${skip.id}" />
 			</g:if>
 			<div class="row">
-				<button type="submit" class="rich-textarea-form">Save Skip Rule</button>
+				<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>
 				&nbsp;&nbsp;
-				<button id="cancel-button">Cancel</button>
+				<button id="cancel-button"><g:message code="general.text.cancel" default="Cancel"/></button>
 			</div>
 		</g:form>
 		</div>
 		<div class="data-search-column">
 			<g:form name="search-data-form" class="search-form" url="[controller:'surveyElement', action:'getHtmlData']">
 				<div class="row">
-					<label for="searchText">Search: </label>
+					<label for="searchText"><g:message code="general.text.search" default="Search"/>: </label>
 			    	<input name="searchText" class="idle-field"/>
-			    	<button type="submit">Search</button>
+			    	<button type="submit"><g:message code="default.button.search.label" default="Search"/></button>
 					<div class="clear"></div>
 				</div>
 			</g:form>

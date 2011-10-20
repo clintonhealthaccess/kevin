@@ -8,7 +8,7 @@
 	<a name="element-${surveyElement.id}-${suffix}"></a>
    	<g:if test="${!print}">
 		<select class="input ${!readonly?'loading-disabled':''}" name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
-			<option value="null">Select</option>
+			<option value="null"><g:message code="general.text.select" default="Select"/></option>
 			<g:each in="${enume?.enumOptions}" var="option">
 				<option value="${option.value}"  ${option?.value==value?.enumValue ? 'selected':''}>
 					<g:i18n field="${option.names}" />
@@ -17,6 +17,7 @@
 		</select>
 	</g:if>
 	<g:else>
+	<label>--<g:message code="survey.print.selectonlyoneoption.label" default="Select only one response"/>--</label>
 		<g:each in="${enume?.enumOptions}" var="option">
 			<div>
 				<input class="input" type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''}/>

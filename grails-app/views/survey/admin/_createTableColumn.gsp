@@ -1,6 +1,8 @@
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
-		<h3 class="title">Create a Table Column </h3>
+		<h3 class="title">
+			<g:message code="default.new.label" args="${[message(code:'survey.tablecolumn.label',default:'Table Column')]}"/>
+		</h3>
 		<g:locales />
 		<div class="clear"></div>
 	</div>
@@ -8,7 +10,7 @@
 	<div id="add-column-col">
 	<g:form url="[controller:'tableColumn', action:'save']" useToken="true">
 		<div class="row">
-			<label>Table Name :</label>
+			<label><g:message code="survey.tablename.label" default="Table Name"/>:</label>
 			<input type="text" value="${i18n(field: column.question.tableNames)}" class="idle-field" disabled />
 		</div>
 		<input type="hidden" name="question.id"  value="${column.question?.id}" />
@@ -19,7 +21,7 @@
 		<g:input name="order" label="Order" bean="${column}" field="order"/>
 		
 		<div class="row ${hasErrors(bean:column, field:'groupUuidString', 'errors')}">
-			<label for="groups">Organisation Unit Group:</label>
+			<label for="groups"><g:message code="general.text.facilitygroups" default="Facility Groups"/>:</label>
 				<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
 					<g:each in="${groups}" var="group">
 						<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
@@ -35,8 +37,8 @@
 			<input type="hidden" name="id" value="${column.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit" class="rich-textarea-form">Save Column</button>
-			<button id="cancel-button">Cancel</button>
+			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>
+			<button id="cancel-button"><g:message code="general.text.cancel" default="Cancel"/></button>
 		</div>
 	</g:form>
 	</div>

@@ -44,7 +44,7 @@
 						enteredValue: enteredValue,
 						readonly: readonly
 					]"/>
-					<g:if test="${!readonly}"><span><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">remove line</a></span></g:if>
+					<g:if test="${!readonly}"><span><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.removeline.label" default="Remove Line"/></a></span></g:if>
 					<div class="clear"></div>
 				</div>
 			</g:each>
@@ -61,11 +61,11 @@
 							enteredValue: enteredValue,
 							readonly: readonly 
 						]"/>
-						<span><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">remove line</a></span>
+						<span><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.removeline.label" default="Remove Line"/></a></span>
 						<div class="clear"></div>
 					</div>
 				</div>
-				<a class="element-list-add ${!readonly?'loading-disabled':''}" href="#">add line</a>
+				<a class="element-list-add ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.addline.label" default="Add Line"/></a>
 			</g:if>
 		</g:else>
 	</div>

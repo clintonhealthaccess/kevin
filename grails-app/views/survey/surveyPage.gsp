@@ -12,7 +12,7 @@
 			
 			<div class="grey-rounded-box-bottom">
 				<div class="rounded-box-top rounded-box-bottom">
-					Welcome to the survey, please fill in all the objectives above.
+				<g:message code="survey.welcomemessage.label" default="Welcome to the survey, please fill in all the objectives above."/>
 				</div>
 				<div class="clear"></div>
 			</div>

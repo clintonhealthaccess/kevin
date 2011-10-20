@@ -1,11 +1,11 @@
 <table>
 	<thead>
 		<tr>
-			<th>Question</th>
-			<th>Type</th>
-			<th>Organisation Unit Groups</th>
-			<th>Order</th>
-			<th>Manage</th>
+			<th><g:message code="general.text.question" default="Question"/></th>
+			<th><g:message code="general.text.type" default="Type"/></th>
+			<th><g:message code="general.text.facilitygroups" default="Facility Groups"/></th>
+			<th><g:message code="general.text.order" default="Order"/></th>
+			<th><g:message code="general.text.manage" default="Manage"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -20,7 +20,7 @@
 				<td>${question.order}</td>
 				<td>
 				<div class="dropdown white-dropdown"> 
-				     <a class="selected" href="#" data-type="question">Manage</a>
+				     <a class="selected" href="#" data-type="question"><g:message code="general.text.manage" default="Manage"/></a>
 				<div class="hidden dropdown-list">
 					<ul>
 						<li>
@@ -39,7 +39,9 @@
 						</li>
 						<g:if test="${question.getType()=='checkboxQuestion' && question.options.isEmpty()}">
 							<li>
-								<a class="flow-add" href="${createLink(controller:'checkboxOption', action:'create',params:[questionId: question.id])}">Add Option</a>
+								<a class="flow-add" href="${createLink(controller:'checkboxOption', action:'create',params:[questionId: question.id])}">
+									<g:message code="survey.addoption.label" default="Add Option"/>
+								</a>
 							</li>
 						</g:if>
 					</ul>

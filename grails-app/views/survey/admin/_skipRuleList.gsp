@@ -1,13 +1,13 @@
 <table>
 	<thead>
 		<tr>
-		    <th>Id</th>
-			<th>Survey</th>
-			<th>Description</th>
-			<th>Expression</th>
-			<th>Number of Survey Elements</th>
-			<th>Number of Questions</th>
-			<th>Manage</th>
+		    <th><g:message code="general.text.id" default="Id"/></th>
+			<th><g:message code="general.text.survey" default="Survey"/></th>
+			<th><g:message code="general.text.description" default="Description"/></th>
+			<th><g:message code="general.text.expression" default="Expression"/></th>
+			<th><g:message code="survey.numberofsurveyelements.label" default="Number of Survey Elements"/></th>
+			<th><g:message code="survey.numberofquestions.label" default="Number of Questions"/></th>
+			<th><g:message code="general.text.manage" default="Manage"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -23,7 +23,7 @@
 				<td>${skip.skippedSurveyQuestions.size()}</td>
 				<td>
 			<div class="dropdown white-dropdown"> 
-			     <a class="selected" href="#" data-type="skip-rule">Manage</a>
+			     <a class="selected" href="#" data-type="skip-rule"><g:message code="general.text.manage" default="Manage"/></a>
 			<div class="hidden dropdown-list">
 				<ul>
 					<li class="edit-skip-rule-link">

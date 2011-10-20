@@ -2,10 +2,10 @@
 	<thead>
 		<tr>
 		    <g:sortableColumn property="id" title="${message(code: 'dataelement.id.label', default: 'Id')}" />
-			<th>Name</th>
-			<th>Type</th>
+			<th><g:message code="general.text.name" default="Name"/></th>
+			<th><g:message code="general.text.type" default="Type"/></th>
 			<g:sortableColumn property="code" title="${message(code: 'dataelement.code.label', default: 'Code')}" />
-			<th>Manage</th>
+			<th><g:message code="general.text.manage" default="Manage"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -21,7 +21,7 @@
 				<td>${dataElement.code}</td>
 				<td>
 					<div class="dropdown white-dropdown"> 
-						<a class="selected" href="#" data-type="section">Manage</a>
+						<a class="selected" href="#" data-type="section"><g:message code="general.text.manage" default="Manage"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
 								<li>

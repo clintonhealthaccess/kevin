@@ -2,6 +2,9 @@
 
 <div id="question-${question.id}" class="question question-checkbox" data-question="${question.id}">
 	<g:i18n field="${question.names}" />
+	<g:if test="${print}">
+		<label>--<g:message code="survey.print.selectallthatapply.label" default="Select all that apply"/>--</label>
+	</g:if>
 	<ul>
 		<g:each in="${question.getOptions(organisationUnitGroup)}" var="option">
 			<g:set var="surveyElement" value="${option.surveyElement}"/>

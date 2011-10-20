@@ -1,13 +1,13 @@
 <table>
 	<thead>
 		<tr>
-			<th>Data Element</th>
-			<th>Prefix</th>
-			<th>Expression</th>
-			<th>Allow Outlier</th>
-			<th>Organisation Unit Groups</th>
-			<th>Message</th>
-			<th>Manage</th>
+			<th><g:message code="survey.dataelement.label" default="Data Element"/></th>
+			<th><g:message code="general.text.prefix" default="Prefix"/></th>
+			<th><g:message code="general.text.expression" default="Expression"/></th>
+			<th><g:message code="survey.allowoutlier.label" default="Allow Outlier"/></th>
+			<th><g:message code="general.text.facilitygroups" default="Facility Groups"/></th>
+			<th><g:message code="general.text.message" default="Message"/></th>
+			<th><g:message code="general.text.manage" default="Manage"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -28,7 +28,7 @@
 				<td><g:i18n field="${validationRule.messages}" /></td>
 				<td>
 					<div class="dropdown white-dropdown"> 
-			     		<a class="selected" href="#" data-type="validation-rule">Manage</a>
+			     		<a class="selected" href="#" data-type="validation-rule"><g:message code="general.text.manage" default="Manage"/></a>
 						<div class="hidden dropdown-list">
 							<ul>
 								<li class="edit-validation-rule-link">

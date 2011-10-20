@@ -97,7 +97,7 @@ class ObjectiveController extends AbstractEntityController {
 			survey:survey,
 			entities: objectives.subList(params['offset'], max),
 			entityCount: objectives.size(),
-			code: 'survey.objective.label'
+			code: 'general.text.objective'
 		])
 	}
 }

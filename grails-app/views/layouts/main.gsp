@@ -27,7 +27,7 @@
 			</div>
 			<shiro:user>
 				<div id="logout">
-					<a href="${createLink(controller: 'auth', action: 'signOut')}">logout</a>					
+					<a href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="general.text.logout" default="Logout"/></a>					
 				</div>
 			</shiro:user>
 			<div class="clear"></div>
@@ -36,7 +36,7 @@
 			<div id="navigation">
 				<ul id="main-menu" class="menu">
 				    <shiro:hasPermission permission="menu:survey">
-						<li><a href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+						<li><a href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="general.text.survey" default="Survey"/></a></li>
 					</shiro:hasPermission>
 					<shiro:hasPermission permission="menu:reports">
 						<li><a href="#"><g:message code="header.navigation.reports" default="Reports"/></a>
@@ -51,18 +51,22 @@
 					<shiro:hasPermission permission="menu:admin">
 						<li><a href="#"><g:message code="header.navigation.administration" default="Administration"/></a>
 							<ul class="submenu">
-								<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="header.navigation.expressions" default="Expressions"/></a></li>
+								<li><a href="${createLink(controller: 'expression', action:'list')}"><g:message code="general.text.expression" default="Expression"/></a></li>
 <!-- 								<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li> -->
-								<li><a href="${createLink(controller: 'dataElement', action:'list')}"><g:message code="header.navigation.dataelement" default="Data Element"/></a></li>
-								<li><a href="${createLink(controller: 'enum', action:'list')}"><g:message code="header.navigation.enum" default="Enum"/></a></li>
-								<li><a href="${createLink(controller: 'iteration', action:'list')}"><g:message code="header.navigation.iteration" default="Iterations"/></a></li>
-								<li><a href="${createLink(controller: 'survey', action:'list')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+								<li><a href="${createLink(controller: 'dataElement', action:'list')}"><g:message code="survey.dataelement.label" default="Data Element"/></a></li>
+								<li><a href="${createLink(controller: 'enum', action:'list')}"><g:message code="general.text.enum" default="Enum"/></a></li>
+								<li><a href="${createLink(controller: 'iteration', action:'list')}"><g:message code="general.text.iteration" default="Iteration"/></a></li>
+								<li><a href="${createLink(controller: 'survey', action:'list')}"><g:message code="general.text.survey" default="Survey"/></a></li>
 							</ul>
 						</li>
 					</shiro:hasPermission>
 				</ul>
 				<shiro:hasPermission permission="admin">
-					<div class="float-right" style="background-color: red;"><a target="_blank" href="http://districthealth.moh.gov.rw/redmine">Found a bug? Go to REDMINE</a></div>
+					<div class="float-right" style="background-color: red;">
+						<a target="_blank" href="http://districthealth.moh.gov.rw/redmine">
+						<g:message code="general.text.foundbug" default="Found a bug? Go to REDMINE"/>
+						</a>
+					</div>
 				</shiro:hasPermission>
 				<div class="clear"></div>
 			</div>
@@ -74,7 +78,7 @@
 			<div class=clear></div>
 		</div>
 
-		<div id="footer">&copy; - Clinton Health Access Initiative - <a href="#"><g:message code="footer.labels.about" default="About"/></a> | 
+		<div id="footer">&copy; - <g:message code="general.text.clintonhealthaccessinitiative" default="Clinton Health Access Initiative"/> - <a href="#"><g:message code="footer.labels.about" default="About"/></a> | 
 		<a href="#"><g:message code="footer.labels.contact" default="Contact"/></a> 
 		| <a href="#"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a></div>
 	</div>

@@ -1,6 +1,6 @@
 <div class="box">
 	<div><g:i18n field="${dataElement.names}"/></div>
-	<div class="row">Type: <span class="type"><g:toHtml value="${dataElement.type.getDisplayedValue(2)}"/></span></div>
+	<div class="row"><g:message code="general.text.type" default="Type"/>: <span class="type"><g:toHtml value="${dataElement.type.getDisplayedValue(2)}"/></span></div>
 	<div><g:i18n field="${dataElement.descriptions}"/></div>
 	<div class="clear"></div>
 </div>
@@ -10,10 +10,10 @@
 		<table>
 			<thead>
 				<tr>
-					<th>Iteration</th>
-					<th>Survey</th>
-					<th>Question</th>
-					<th>Total Number of OrgUnit Applicable</th>
+					<th><g:message code="general.text.iteration" default="Iteration"/></th>
+					<th><g:message code="general.text.survey" default="Survey"/></th>
+					<th><g:message code="general.text.question" default="Question"/></th>
+					<th><g:message code="survey.totalnumoffacapplicable.label" default="Total Number of Facility Applicable"/></th>
 				</tr>
 			</thead>
 			<tbod>
@@ -30,7 +30,7 @@
 		</table>
 	</g:if>
 	<g:else>
-		No Survey Element Associated to This Data Element
+		<g:message code="survey.nosurveyelementassociated.label" default="No Survey Element Associated to This Data Element"/>
 	</g:else>
 	<div class="clear"></div>
 </div>
@@ -39,8 +39,8 @@
 	<table>
 		<thead>
 			<tr>
-				<th>Iteration</th>
-				<th>Number of Data Value</th>
+				<th><g:message code="general.text.iteration" default="Iteration"/></th>
+				<th><g:message code="survey.numberofdatavalue.label" default="Number of Data Value"/></th>
 			</tr>
 		</thead>
 		<tbody>

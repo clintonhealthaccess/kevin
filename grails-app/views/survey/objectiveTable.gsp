@@ -2,15 +2,15 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="ajax" />
-        <g:set var="entityName" value="${message(code: 'dashboard.explanation.label', default: 'Dashboard explanation')}" />
+        <g:set var="entityName" value="${message(code: 'dashboard.explanation.label', default: 'Dashboard Explanation')}" />
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
 		<table>
 			<thead>
-				<th>Objective</th>
-				<th>Submitted</th>
-				<th>Overall progress</th>
+				<th><g:message code="general.text.objective" default="Objective" /></th>
+				<th><g:message code="general.text.submitted" default="Submitted" /></th>
+				<th><g:message code="general.text.overallprogress" default="Overall Progress" /></th>
 				<th></th>
 			</thead>
 			<tbody>
@@ -24,7 +24,7 @@
 						</td>
 						<td>${objectiveSummary.enteredObjective?.closed?'\u2713':''}</td>
 						<td><span class="progress-bar">${objectiveSummary.completedQuestions}/${objectiveSummary.questions}</span></td>
-						<td><a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: summaryPage.organisation.id])}">view survey</a></td>
+						<td><a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: summaryPage.organisation.id])}"><g:message code="survey.viewsurvey.label" default="View Survey"/></a></td>
 					</tr>
 					<tr>
 						<td colspan="4">

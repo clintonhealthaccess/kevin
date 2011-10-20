@@ -40,10 +40,21 @@ class UtilTagLib {
 		out << new java.text.SimpleDateFormat(attrs.format).format(attrs.date)
 	}
 	
+	def input = { attrs, body ->
+		if (attrs["type"] == null) attrs["type"] = 'text'
+		out << render(template:"/tags/input", model: attrs)
+	}
+	
 	def i18nInput = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
 		attrs["locales"] = localeService.getAvailableLanguages();
 		out << render(template:"/tags/i18nInput", model: attrs)
+	}
+	
+	def textarea = { attrs, body ->
+		if (attrs["type"] == null) attrs["type"] = 'text'
+		if (attrs["rows"] == null) attrs["rows"] = '1'
+		out << render(template:"/tags/textarea", model: attrs)
 	}
 	
 	def i18nTextarea = { attrs, body ->
@@ -74,19 +85,8 @@ class UtilTagLib {
 		out << render(template:"/tags/searchBox", model: attrs);
 	}
 	
-	def input = { attrs, body ->
-		if (attrs["type"] == null) attrs["type"] = 'text'
-		out << render(template:"/tags/input", model: attrs)
-	}
-	
 	def selectFromEnum = { attrs, body ->
 		out << render(template:"/tags/selectFromEnum", model: attrs)
-	}
-	
-	def textarea = { attrs, body ->
-		if (attrs["type"] == null) attrs["type"] = 'text'
-		if (attrs["rows"] == null) attrs["rows"] = '1'
-		out << render(template:"/tags/textarea", model: attrs)
 	}
 	
 	def locales = { attrs, body ->

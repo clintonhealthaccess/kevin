@@ -1,6 +1,8 @@
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
-		<h3 class="title">Create a Row Option</h3>
+		<h3 class="title">
+			<g:message code="default.new.label" args="${[message(code:'survey.tablerow.label',default:'Table Row')]}"/>
+		</h3>
 		<g:locales />
 		<div class="clear"></div>
 	</div>
@@ -8,7 +10,7 @@
 		<div class="data-field-column">
 			<g:form url="[controller:'tableRow', action:'save']" useToken="true">
 				<div class="row">
-					<label>Table Name :</label> 
+					<label><g:message code="survey.tablename.label" default="Table Name"/>:</label> 
 					<input type="text" value="${i18n(field: row.question.tableNames)}" class="idle-field" disabled />
 				</div>
 
@@ -21,9 +23,9 @@
 					<input type="hidden" name="surveyElement" value="_" />
 					<g:each in="${row.question.columns}" status="i" var="column">
 						<div class="${(i % 2) == 0 ? 'odd' : 'even'}">
-							<span class="bold">Colunm Name:</span><span> ${i18n(field: column.names)}</span>
+							<span class="bold"><g:message code="survey.columnname.label" default="Column Name"/>:</span><span> ${i18n(field: column.names)}</span>
 							<div>
-								<label for="dataElement[${column.id}]">Data Element:</label> 
+								<label for="dataElement[${column.id}]"><g:message code="survey.dataelement.label" default="Data Element"/>:</label> 
 								<input type="text" name="dataElement[${column.id}]" class="data-element-name idle-field" value="${i18n(field:row.surveyElements[column]?.dataElement?.names)}" /> 
 								<input type="hidden" name="surveyElement[${column.id}].dataElement.id" class="data-element-id idle-field " value="${row.surveyElements[column]?.dataElement?.id}" /> 
 								<input type="hidden" name="surveyElement[${column.id}].id" class="idle-field" value="${row.surveyElements[column]?.id}" /> <input type="hidden" name="surveyElement" value="${column.id}" />
@@ -39,7 +41,7 @@
 				<g:input name="order" label="Order" bean="${row}" field="order" />
 
 				<div class="row ${hasErrors(bean:row, field:'groupUuidString', 'errors')}">
-					<label for="groups">Organisation Unit Group:</label> <select class="group-list" name="groupUuids" multiple="multiple" size="5">
+					<label for="groups"><g:message code="general.text.facilitygroups" default="Facility Groups"/>:</label> <select class="group-list" name="groupUuids" multiple="multiple" size="5">
 						<g:each in="${groups}" var="group">
 							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>${group.name}</option>
 						</g:each>
@@ -53,8 +55,8 @@
 					<input type="hidden" name="id" value="${row.id}"></input>
 				</g:if>
 				<div class="row">
-					<button type="submit" class="rich-textarea-form">Save Row</button>
-					<button id="cancel-button">Cancel</button>
+					<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>
+					<button id="cancel-button"><g:message code="general.text.cancel" default="Cancel"/></button>
 				</div>
 			</g:form>
 		</div>
@@ -62,9 +64,9 @@
 		<div class="data-search-column">
 			<g:form name="search-data-form" class="search-form" url="[controller:'dataElement', action:'getData', params: [include: ['bool', 'enum', 'string', 'number', 'date']]]">
 				<div class="row">
-					<label for="searchText">Search: </label> 
+					<label for="searchText"><g:message code="general.text.search" default="Search"/>: </label> 
 					<input name="searchText" class="idle-field"></input>
-					<button type="submit">Search</button>
+					<button type="submit"><g:message code="default.button.search.label" default="Search"/></button>
 					<div class="clear"></div>
 				</div>
 			</g:form>

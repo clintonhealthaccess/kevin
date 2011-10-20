@@ -22,7 +22,7 @@
 				
 				<g:if test="${closed}">
 					<div class="rounded-box-top rounded-box-bottom">
-						This objective has been already been submitted. Please go on with the other sections.
+					    <g:message code="survey.objectivealreadysubmitted.label" default="This objective has already been submitted, please go on with the other sections." />
 						<shiro:hasPermission permission="admin:survey">
 							<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])}">Reopen this objective.</a>
 						</shiro:hasPermission>
@@ -40,9 +40,9 @@
 				
 				<g:if test="${!closed}">
 					<div id="submit-objective" class="${!surveyPage.canSubmit(surveyPage.objective)?'hidden':''} rounded-box-top rounded-box-bottom">
-						This part has been completed successfully. If you are sure that you entered the right data, please click submit.
+					<g:message code="survey.partcompletedsuccessfully.label" default="This part has been completed successfully. If you are sure that you entered the right data, please click submit." />
 						<g:form url="[controller:'editSurvey', action:'submit', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id]]">
-							<button type="submit">Submit</button>
+							<button type="submit"><g:message code="general.text.submit" default="Submit" /></button>
 						</g:form>
 					</div>
 

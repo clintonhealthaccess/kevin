@@ -53,7 +53,7 @@
 								]" />
 								
 								<a href="${createLink(controller:'surveyValidationRule', action:'list', params:[elementId: surveyElement?.id])}">
-									View Validation Rules
+									<g:message code="survey.viewvalidationrule.label" default="View Validation Rules"/>
 								</a>
 							</td>
 						</g:if>
@@ -62,7 +62,7 @@
 			</g:each>
 		</tbody>
 	</table>
-	<button id="cancel-button">Done</button>
+	<button id="cancel-button"><g:message code="general.text.done" default="Done"/></button>
 </div>
 
 <div class="hidden flow-container"></div>

@@ -126,7 +126,7 @@ class DataElementController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: dataElements,
 			template: "data/dataElementList",
-			code: "dataelement.label",
+			code: "survey.dataelement.label",
 			entityCount: dataService.countData(DataElement.class, params['q'], []),
 			search: true
 		])
@@ -141,7 +141,7 @@ class DataElementController extends AbstractEntityController {
 		render (view: '/entity/list', model:[
 			entities: dataElements,
 			template: "data/dataElementList",
-			code: "dataelement.label",
+			code: "survey.dataelement.label",
 			entityCount: DataElement.count()
 		])
 	}

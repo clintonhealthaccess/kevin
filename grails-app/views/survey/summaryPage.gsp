@@ -12,14 +12,14 @@
 		<div id="survey">
 			<div id="survey-header" class="grey-rounded-box-top">
 				<div class="filter">
-					<span class="bold">Survey:</span>
+					<span class="bold"><g:message code="general.text.survey" default="Survey"/>:</span>
 					<span class="dropdown white-dropdown">
 						<a class="selected" href="#">
 							<g:if test="${survey != null}">
 								<g:i18n field="${survey.names}" />
 							</g:if>
 							<g:else>
-								Select a survey
+							    <g:message code="survey.selectasurvey.label" default="Select a survey"/>
 							</g:else>
 						</a>
 						<div id="survey-menu" class="hidden dropdown-list">
@@ -38,13 +38,13 @@
 					</span>
 				</div>
 				<div class="filter">
-					<span class="bold">Facility Name:</span>
+					<span class="bold"><g:message code="survey.facilityname.label" default="Facility Name"/>:</span>
 					<span class="dropdown white-dropdown">
 						<g:if test="${organisation != null}">
 							<a class="selected" href="#" data-type="organisation">${organisation.name}</a>
 						</g:if>
 						<g:else>
-							<a class="selected" href="#" data-type="organisation">Select Organisation Unit</a>
+							<a class="selected" href="#" data-type="organisation"><g:message code="survey.selectlocation.label" default="Select location"/></a>
 						</g:else> 
 						<div class="hidden dropdown-list">
 							<ul>
@@ -57,18 +57,17 @@
 				<div class="clear"></div>
 			</div>
 			
-			
 			<div class="grey-rounded-box-bottom">
 				<g:if test="${summaryPage.organisation == null || summaryPage.survey == null}">
-					Please select a survey and a facility to get to the respective survey.
+				<g:message code="survey.selectsurveyfacility.label" default="Please select a survey and a facility to get to the respective survey."/>
 				</g:if>
 				<g:else>
 					<div id="survey-summary">
 						<table>
 							<thead>
-								<th>Facility</th>
-								<th>Objectives submitted</th>
-								<th>Overall progress</th>
+								<th><g:message code="general.text.facility" default="Facility"/></th>
+								<th><g:message code="survey.objectivesubmitted.label" default="Objectives submitted"/></th>
+								<th><g:message code="general.text.overallprogress" default="Overall progress"/></th>
 								<th></th>
 								<th></th>
 							</thead>
@@ -81,9 +80,9 @@
 										</td>
 										<td>${organisationSummary.submittedObjectives}/${organisationSummary.objectives}</td>
 										<td><span class="progress-bar">${organisationSummary.completedQuestions}/${organisationSummary.questions}</span></td>
-										<td><a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: summaryPage.survey.id, organisation: facility.id])}">view survey</a></td>
-										<td><a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: summaryPage.survey.id, organisation: facility.id])}">refresh survey</a></td>
-										<td><a href="${createLink(controller: 'editSurvey', action: 'print', params: [survey: summaryPage.survey.id, organisation: facility.id])}" target="_blank">Print Survey</a></td>
+										<td><a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: summaryPage.survey.id, organisation: facility.id])}"><g:message code="survey.viewsurvey.label" default="View Survey"/></a></td>
+										<td><a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: summaryPage.survey.id, organisation: facility.id])}"><g:message code="survey.refreshsurvey.label" default="Refresh Survey"/></a></td>
+										<td><a href="${createLink(controller: 'editSurvey', action: 'print', params: [survey: summaryPage.survey.id, organisation: facility.id])}" target="_blank"><g:message code="survey.printsurvey.label" default="Print Survey"/></a></td>
 									</tr>
 									<tr>
 										<td colspan="5">

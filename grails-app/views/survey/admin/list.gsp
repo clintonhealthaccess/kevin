@@ -14,7 +14,7 @@
 	<div class="box margin-bottom-10">
 		<ul class="inline-list">
 			<li>
-				<a href="${createLink(controller: 'survey', action:'list')}">Surveys</a>
+				<a href="${createLink(controller: 'survey', action:'list')}"><g:message code="general.text.survey" default="Survey"/></a>
 			</li>
 			<g:if test="${survey}">
 				<li>
