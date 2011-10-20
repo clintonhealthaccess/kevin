@@ -88,7 +88,7 @@ class UtilTagLib {
 	def selectFromEnum = { attrs, body ->
 		out << render(template:"/tags/selectFromEnum", model: attrs)
 	}
-	
+			
 	def locales = { attrs, body ->
 		attrs["locales"] = localeService.getAvailableLanguages();
 		out << render(template:"/tags/locales", model: attrs)
