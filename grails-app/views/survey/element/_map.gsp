@@ -7,21 +7,21 @@
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 	
 	<g:if test="${levels.size() == 0}">
-		<h5>General Information</h5>
+		<h5 class="adv-form-title">General Information</h5>
 	</g:if>	
 	
 	<% levels.push(type) %>
 	<g:each in="${type.elementMap}" var="it" status="i">
 	
-		<li class="${(levels.size() == 1 && it.value.isComplexType())?'adv-form-section':''} ${levels.size() > 1 && it.value.isComplexType()?'adv-form-subsection':''} ${type.elementMap.size() == i+1?'last':''}">
+		<li class="${(it.value.isComplexType() && levels.size() == 1 && it.value.getAttribute('block')!='true')?'adv-form-section':''} ${it.value.isComplexType() && (levels.size() > 1 || it.value.getAttribute('block')=='true')?'adv-form-subsection':''} ${type.elementMap.size() == i+1?'last':''}">
 	  		<g:if test="${!it.value.isComplexType()}">
   				<label><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></label>
   			</g:if>
   			<g:else>
-  				<g:if test="${levels.size() == 1}">
+  				<g:if test="${levels.size() == 1 && it.value.getAttribute('block')!='true'}">
   					<h5><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></h5>
   				</g:if>
-  				<g:if test="${levels.size() > 1}">
+  				<g:if test="${levels.size() > 1 || it.value.getAttribute('block')=='true'}">
   					<h6><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></h6>
   				</g:if>
   			</g:else>

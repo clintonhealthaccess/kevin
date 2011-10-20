@@ -56,6 +56,19 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class SurveyQuestion extends SurveyTranslatable {
 
+	public enum QuestionType {CHECKBOX("checkboxQuestion"), TABLE("tableQuestion"), SIMPLE("simpleQuestion");
+		private String template;
+	
+		private QuestionType(String template) {
+			this.template = template;
+		}
+		
+		public String getTemplate() {
+			return template;
+		}
+	
+	}
+	
 	private Long id;
 	private Integer order;
 	private SurveySection section;
@@ -101,7 +114,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	}
 
 	@Transient
-	public abstract String getType();
+	public abstract QuestionType getType();
 
 	@Transient
 	public abstract List<SurveyElement> getSurveyElements(OrganisationUnitGroup group);

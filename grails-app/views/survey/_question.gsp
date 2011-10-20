@@ -1,1 +1,0 @@
-<g:render template="/survey/question/${question.getType()}" model="[question: question, surveyPage: surveyPage]"/>

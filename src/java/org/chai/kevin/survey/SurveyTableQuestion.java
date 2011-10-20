@@ -100,9 +100,8 @@ public class SurveyTableQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
-	public String getType() {
-		String gspName = "tableQuestion";
-		return gspName;
+	public QuestionType getType() {
+		return QuestionType.TABLE;
 	}
 
 	public void addColumn(SurveyTableColumn column) {

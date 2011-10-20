@@ -5,7 +5,7 @@
 	     	<g:if test="${!search}">
 		     	<span class="right">
 					<g:if test="${!addTemplate}">
-		  				<a href="${createLink(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
+		  				<a href="${createLinkWithTargetURI(controller: params['controller'], action:'create', params: params)}">New ${entityName}</a>
 		  			</g:if>
 		  			<g:else>
 		  				<g:render template="/survey/admin/${addTemplate}"/>

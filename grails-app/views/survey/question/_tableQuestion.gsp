@@ -1,12 +1,14 @@
 <g:set var="organisationUnitGroup" value="${surveyPage.organisation.organisationUnitGroup}"/>
 
 <div id="question-${question.id}" class="question question-table" data-question="${question.id}">
-	<h4><span class="question-number">${question.section.getQuestionNumber(question)}</span><g:i18n field="${question.names}" /></h4>
+	<h4>
+		<span class="question-number">${question.section.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
+	</h4>
 	
 	<g:ifText field="${question.descriptions}">
-		<p class="show_question_help"><a href="#">Show tips</a></p>
+		<p class="show-question-help"><a href="#">Show tips</a></p>
 		<div class="question-help-container">
-			<p class="question-help"><g:i18n field="${question.descriptions}"/><a class="hide_question_help">Close tips</a></p>
+			<p class="question-help"><g:i18n field="${question.descriptions}"/><a class="hide-question-help">Close tips</a></p>
 		</div>
 	</g:ifText>
 	

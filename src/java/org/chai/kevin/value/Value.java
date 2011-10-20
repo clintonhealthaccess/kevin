@@ -1,7 +1,5 @@
 package org.chai.kevin.value;
 
-import grails.converters.deep.JSON;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,9 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Lob;
 import javax.persistence.Transient;
 
 import org.chai.kevin.util.Utils;
@@ -20,50 +16,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @Embeddable
-public class Value {
+public class Value extends JSONValue {
 	
 	public static final String MAP_KEY = "map_key";
 	public static final String MAP_VALUE = "map_value";
 	public static final String VALUE_STRING = "value";
-
-	public static final Value NULL = new Value("{value: null}");
 	
-	private String jsonValue = null;
+	private static final String[] KEYWORDS = new String[]{MAP_KEY, MAP_VALUE, VALUE_STRING};
 	
-	public Value() {}
+	public static final Value NULL = new Value("{"+VALUE_STRING+": null}");
+	
+	public Value() {super();}
 	
 	public Value(String jsonValue) {
-		this.jsonValue = jsonValue;
-		refreshValue();
+		super(jsonValue);
 	}
 	
 	// use this method with caution, never set directly a JSONObject coming
 	// from another Value, as it could cause side effects
 	// should be "protected"
 	public Value(JSONObject object) {
-		this.value = object;
+		super(object);
 	}
-	
-	@Lob
-	@Column(nullable=false)
-	public String getJsonValue() {
-		if (jsonValue == null) {
-			jsonValue = value.toString();
-		}
-		return jsonValue;
-	}
-	
-	// this method is perfectly safe to use since
-	// it constructs a new JSONObject from the given value
-	public void setJsonValue(String jsonValue) {
-		if (this.jsonValue == null || (this.jsonValue != jsonValue && !this.jsonValue.equals(jsonValue))) { 
-			this.jsonValue = jsonValue;
-			refreshValue();
-			clearCache();
-		}
-	}
-	
-	private JSONObject value = null;
 	
 	private List<Value> listValue = null;
 	private Map<String, Value> mapValue = null;
@@ -73,30 +47,7 @@ public class Value {
 	private Boolean booleanValue = null;
 	private Date dateValue = null;
 	
-	@Transient
-	public JSONObject getJsonObject() {
-		if (value == null) {
-			try {
-				value = new JSONObject(jsonValue);
-			} catch (JSONException e) {
-				throw new IllegalArgumentException(e);
-			}
-		}
-		return value;
-	}
-
-	// use this method with caution, never set directly a JSONObject coming
-	// from another Value, as it could cause side effects
-	// should be "protected"
-	public void setJsonObject(JSONObject object) {
-		if (this.value != object && !this.value.equals(object)) {
-			this.jsonValue = null;
-			this.value = object;
-			clearCache();
-		}
-	}
-	
-	private void clearCache() {
+	protected void clearCache() {
 		this.listValue = null;
 		this.mapValue = null;
 		this.numberValue = null;
@@ -106,15 +57,10 @@ public class Value {
 		this.dateValue = null;
 	}
 	
-	private void refreshValue() {
-		this.value = null;
-		
-		try {
-			value = new JSONObject(jsonValue);
-		} catch (JSONException e) {
-			value = new JSONObject();
-		}
-		this.jsonValue = value.toString();
+	@Override
+	@Transient
+	protected String[] getReservedKeywords() {
+		return KEYWORDS;
 	}
 	
 	@Transient
@@ -133,33 +79,6 @@ public class Value {
 				return null;
 			}
 			return new Value(object);
-		}
-	}
-	
-	@Transient
-	public String getAttribute(String attribute) {
-		if (attribute.equals(VALUE_STRING)) throw new IllegalArgumentException("trying to get "+VALUE_STRING+" attribute using getAttribute");
-		
-		if (!getJsonObject().has(attribute)) return null;
-		try {
-			return value.getString(attribute);
-		} catch (JSONException e) {
-			return null;
-		}
-	}
-	
-	@Transient
-	public void setAttribute(String attribute, String attributeValue) {
-		if (attribute.equals(VALUE_STRING)) throw new IllegalArgumentException("trying to set "+VALUE_STRING+" attribute using getAttribute");
-
-		// we get a reference to a JSON object
-		JSONObject object = getJsonObject();
-		try {
-			if (attributeValue == null) object.remove(attribute);
-			else object.put(attribute, attributeValue);
-			this.jsonValue = null;
-		} catch (JSONException e) {
-			throw new IllegalArgumentException("could not set attribute", e);
 		}
 	}
 	
@@ -264,35 +183,6 @@ public class Value {
 		}
 		return mapValue;
 	}
-		
-	@Override
-	public String toString() {
-		return getJsonValue().toString();
-	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((getJsonValue() == null) ? 0 : getJsonValue().hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Value))
-			return false;
-		Value other = (Value) obj;
-		if (getJsonValue() == null) {
-			if (other.getJsonValue() != null)
-				return false;
-		} else if (!getJsonValue().equals(other.getJsonValue()))
-			return false;
-		return true;
-	}
 	
 }

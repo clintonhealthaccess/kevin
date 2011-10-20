@@ -78,9 +78,8 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
-	public String getType() {
-		String gspName = "checkboxQuestion";
-		return gspName;
+	public QuestionType getType() {
+		return QuestionType.CHECKBOX;
 	}
 
 	@Transient

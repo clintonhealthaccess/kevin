@@ -69,9 +69,8 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
-	public String getType() {
-		String gspName = "simpleQuestion";
-		return gspName;
+	public QuestionType getType() {
+		return QuestionType.SIMPLE;
 	}
 
 	@Transient

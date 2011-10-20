@@ -22,10 +22,12 @@
 			<li class="element-list-row adv-form-row" data-index="${i}">
 				<ul class="adv-form-actions horizontal right">
 					<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#">minimize</a></li>
+					<li><a class="element-list-maximize hidden ${!readonly?'loading-disabled':''}" href="#">maximize</a></li>
 					<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">delete</a></li>
 				</ul>
 			
 				<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[${i}]"/>
+				<input type="hidden" class="list-input-indexes" name="surveyElements[${surveyElement.id}].value${suffix}.indexes" value="[${i}]"/>
 				<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
 					value: item,
 					lastValue: null,
@@ -44,10 +46,12 @@
 				<li class="element-list-row adv-form-row">
 					<ul class="adv-form-actions horizontal right">
 						<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#">minimize</a></li>
+						<li><a class="element-list-maximize hidden ${!readonly?'loading-disabled':''}" href="#">maximize</a></li>
 						<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#">delete</a></li>
 					</ul>
 					
 					<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
+					<input type="hidden" class="list-input-indexes" name="surveyElements[${surveyElement.id}].value${suffix}.indexes" value="[_]"/>
 					<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
 						value: null,
 						lastValue: null,

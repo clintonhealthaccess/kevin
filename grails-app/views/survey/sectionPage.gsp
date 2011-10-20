@@ -45,8 +45,8 @@
 					<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 						<ol id="questions">
 							<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question" status="i">
-								<li class="question-container ${surveyPage.questions[question].skipped?'hidden':''}">
-									<g:render template="/survey/question/${question.getType()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1]" />
+								<li class="question-container ${surveyPage.questions[question].skipped?'hidden':''} ${!surveyPage.questions[question].complete?'incomplete':''}">
+									<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1]" />
 								</li> 
 							</g:each>
 						</ol>
@@ -110,6 +110,9 @@
 					$.each(data.questions, function(index, value) {
 						if (value.skipped == true) $('#question-'+value.id).parents('.question-container').addClass('hidden')
 						else $('#question-'+value.id).parents('.question-container').removeClass('hidden')
+						
+						if (value.complete == true) $('#question-'+value.id).parents('.question-container').removeClass('incomplete')
+						else $('#question-'+value.id).parents('.question-container').addClass('incomplete')
 					});
 				}
 			</r:script>

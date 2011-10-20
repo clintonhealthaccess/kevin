@@ -58,6 +58,14 @@
 			}
 			return false;
 		});
+		$('#survey').delegate('#survey-form .element-list-minimize', 'click', function(){
+			minimizeRows($(this).parents('.element-list-row'));
+			return false;
+		});
+		$('#survey').delegate('#survey-form .element-list-maximize', 'click', function(){
+			maximizeRow($(this).parents('.element-list-row').first());
+			return false;
+		});
 		
 		surveyQueue = $.manageAjax.create('surveyQueue', {
 			url : "${createLink(controller:'editSurvey', action:'saveValue', params: [organisation: surveyPage.organisation.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
@@ -85,7 +93,8 @@
 			$('.ajax-in-process').removeClass('.ajax-in-process').addClass('ajax-error');
 			return false;
 		});
-		
+
+		minimizeRows($('#survey').find('.element-list-row'));		
 		$('.loading-disabled').removeClass('loading-disabled').removeAttr('disabled');
 	}
 
@@ -97,9 +106,14 @@
 		data += 'element='+elementId;
 		data += '&suffix='+suffix;
 		
+		// we send all the modified inputs
 		$.each(inputs, function(i, input) {
 			data += '&'+$(input).serialize();
 		})
+		// we send the list indexes
+		$(element).parents('.element-list').find('.list-input-indexes').each(function(i, input) {
+			data += '&'+$(input).serialize();
+		});
 		
 		$(element).removeClass('ajax-error');
 		$(element).addClass('ajax-in-process');
@@ -163,14 +177,48 @@
 		return myid.replace(/(:|\.|\[|\])/g,'\\$1');
 	}
 	
+	function minimizeRows(rows) {
+		$.each(rows, function(i, element) {
+			if (!$(element).hasClass('minimized')) {
+				$(element).find('.input').each(function(i, input) {
+					var elementInRow = $(input).parents('.element').first();
+					if (!$(elementInRow).hasClass('skipped')) {
+						$(input).after('<span class="minimized-input" onclick="maximizeRow($(this).parents(\'.element-list-row\')); return false;">'+$(input).attr('value')+'</span>');
+					}
+				});
+				
+				$(element).find('.input').hide();
+				$(element).find('label, h5, h6').hide();
+				$(element).find('.adv-form-section').hide();
+				$(element).find('.adv-form-title').hide();
+				$(element).find('.element-list-minimize').hide();
+				$(element).find('.element-list-maximize').show();
+				$(element).addClass('minimized');
+			}
+		});
+	}
+	
+	function maximizeRow(row) {
+		minimizeRows($(row).parents('.element-list').first().find('.element-list-row'));
+	
+		$(row).find('.minimized-input').remove();
+		$(row).find('.input').show();
+		$(row).find('label, h5, h6').show();
+		$(row).find('.adv-form-section').show();
+		$(row).find('.adv-form-title').show();
+		$(row).find('.element-list-minimize').show();
+		$(row).find('.element-list-maximize').hide();
+		$(row).removeClass('minimized');
+	}
+	
 	function listRemoveClick(toRemove) {
 		var element = $(toRemove).parents('.element').first();
+		var index = $(toRemove).parents('.element-list-row').first().data('index');
 		
-		$(toRemove).parents('div').first().remove();
-		
+		$(toRemove).parents('.element-list-row').find('.list-input').remove();
+
 		surveyValueChanged(element, $(element).find('.list-input'), function(data, element) {
-			// TODO get rid of the reload
-			location.reload()
+			$(toRemove).parents('.element-list-row').first().remove();	
 		});
 	}
 	
@@ -188,7 +236,8 @@
 		
 		surveyValueChanged($(list).parents('.element').first(), $(list).parents('.element').first().find('.list-input'), function(data, element) {
 			$(list).prev().prev().show();
-					
+
+			maximizeRow($(list).prev().prev());
 			callback(data, element);
 		});
 	}

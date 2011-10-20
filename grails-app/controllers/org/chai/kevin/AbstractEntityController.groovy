@@ -115,7 +115,7 @@ abstract class AbstractEntityController {
 			def model = getModel(entity)
 			model << [template: getTemplate()]
 			model << [targetURI: getTargetURI()]
-			render(view: "/entity/edit", model: model)
+			render(view: '/entity/edit', model: model)
 		}
 		else {
 			saveEntity(entity);

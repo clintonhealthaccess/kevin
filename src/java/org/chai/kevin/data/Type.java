@@ -12,63 +12,57 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Lob;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.JSONValue;
 import org.chai.kevin.value.Value;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 @Embeddable
-public class Type {
+public class Type extends JSONValue {
+	
+	private static final String TYPE_STRING = "type";
+	private static final String ENUM_CODE = "enum_code";
+	private static final String LIST_TYPE = "list_type";
+	private static final String ELEMENT_TYPE = "element_type";
+	private static final String ELEMENTS = "elements";
+	private static final String KEY_NAME = "name";
+	
+	private static final String[] KEYWORDS = new String[]{TYPE_STRING, ENUM_CODE, LIST_TYPE, ELEMENT_TYPE, ELEMENTS, KEY_NAME};
 	
 	public enum ValueType {NUMBER, BOOL, STRING, TEXT, DATE, ENUM, LIST, MAP}
 
-	private String jsonType = "";
-	
-	public Type() {}
+	public Type() {super();}
 	
 	public Type(String jsonType) {
-		this.jsonType = jsonType;
-		refreshType();
+		super(jsonType);
 	}
-	
-	@Lob
-	@Column(nullable=false)
-	public String getJsonType() {
-		return jsonType;
-	}
-	
-	public void setJsonType(String jsonType) {
-		this.jsonType = jsonType;
-		refreshType();
-	}
-	
-	private JSONObject type = null;
 	
 	private Type listType = null;
 	private Map<String, Type> elementMap = null;
 	private String enumCode = null;
 	private ValueType valueType = null;
 	
-	private void refreshType() {
-		type = null;
-		
-		try {
-			type = new JSONObject(jsonType);
-		} catch (JSONException e) {}
+	@Override
+	protected void clearCache() {
+//		throw new NotImplementedException();
+		listType = null;
+		elementMap = null;
+		enumCode = null;
+		valueType = null;
 	}
 	
+	@Override
 	@Transient
-	public JSONObject getJsonObject() {
-		return type;
+	protected String[] getReservedKeywords() {
+		return KEYWORDS;
 	}
 	
 	@Transient
@@ -81,7 +75,7 @@ public class Type {
 		if (valueType == null) {
 			try {
 				if (getJsonObject() != null) {
-					valueType = ValueType.valueOf(getJsonObject().getString("type").toUpperCase());
+					valueType = ValueType.valueOf(getJsonObject().getString(TYPE_STRING).toUpperCase());
 				}
 			} catch (JSONException e) {
 				valueType = null;
@@ -98,7 +92,7 @@ public class Type {
 			// TODO think that through
 			if (!getType().equals(ValueType.ENUM)) throw new IllegalStateException();
 			try {
-				enumCode = getJsonObject().getString("enum_code");
+				enumCode = getJsonObject().getString(ENUM_CODE);
 			} catch (JSONException e) {
 				enumCode = null;
 			}
@@ -111,7 +105,7 @@ public class Type {
 		if (listType == null) {
 			if (!getType().equals(ValueType.LIST)) throw new IllegalStateException();
 			try {
-				listType = new Type(getJsonObject().getString("list_type"));
+				listType = new Type(getJsonObject().getString(LIST_TYPE));
 			} catch (JSONException e) {
 				listType = null;
 			}
@@ -125,10 +119,10 @@ public class Type {
 			if (!getType().equals(ValueType.MAP)) throw new IllegalStateException();
 			Map<String, Type> result = new LinkedHashMap<String, Type>();
 			try {
-				JSONArray array = getJsonObject().getJSONArray("elements");
+				JSONArray array = getJsonObject().getJSONArray(ELEMENTS);
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject object = array.getJSONObject(i);
-					result.put(object.getString("name"), new Type(object.getString("element_type")));
+					result.put(object.getString(KEY_NAME), new Type(object.getString(ELEMENT_TYPE)));
 				}
 				elementMap = result;
 			} catch (JSONException e) {
@@ -201,6 +195,20 @@ public class Type {
 		}
 	}
 	
+	private static List<Integer> getIndexList(Map<String, Object> map, String key) {
+		List<String> stringIndexList = new ArrayList<String>();
+		if (map.get(key) instanceof String[]) stringIndexList.addAll(Arrays.asList((String[])map.get(key)));
+		else if (map.get(key) instanceof Collection) stringIndexList.addAll((Collection<String>)map.get(key));
+		else if (map.get(key) instanceof String) stringIndexList.add((String)map.get(key));
+
+		List<Integer> filteredIndexList = new ArrayList<Integer>();
+		for (String suffixInBracket : stringIndexList) {
+			String index = suffixInBracket.replace("[", "").replace("]", "");
+			if (NumberUtils.isDigits(index)) filteredIndexList.add(Integer.valueOf(index));
+		}
+		return filteredIndexList;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Transient
 	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String suffix, Set<String> attributes) {
@@ -227,23 +235,15 @@ public class Type {
 					if (!map.containsKey(suffix)) {
 						// we don't modify the list but merge the values inside it
 						if (!oldValue.isNull()) { 
+							List<Integer> indexList = Type.getIndexList(map, suffix+".indexes");
 							for (int i = 0; i < oldValue.getListValue().size(); i++) {
-								array1.put(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, suffix+"["+i+"]", attributes).getJsonObject());
+								array1.put(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, suffix+"["+indexList.get(i)+"]", attributes).getJsonObject());
 							}
 						}
 					}
 					else {
 						// the list gets modified with the new indexes
-						List<String> stringIndexList = new ArrayList<String>();
-						if (map.get(suffix) instanceof String[]) stringIndexList.addAll(Arrays.asList((String[])map.get(suffix)));
-						else if (map.get(suffix) instanceof Collection) stringIndexList.addAll((Collection<String>)map.get(suffix));
-						else if (map.get(suffix) instanceof String) stringIndexList.add((String)map.get(suffix));
-
-						List<Integer> filteredIndexList = new ArrayList<Integer>();
-						for (String suffixInBracket : stringIndexList) {
-							String index = suffixInBracket.replace("[", "").replace("]", "");
-							if (NumberUtils.isDigits(index)) filteredIndexList.add(Integer.valueOf(index));
-						}
+						List<Integer> filteredIndexList = Type.getIndexList(map, suffix);
 						
 						for (Integer index : filteredIndexList) {
 							Value oldListValue = null;
@@ -344,7 +344,7 @@ public class Type {
 			}
 			return new Value(object);
 		} catch (JSONException e) {
-			throw new IllegalArgumentException("object "+value+" does not correspond to type "+type, e);
+			throw new IllegalArgumentException("object "+value+" does not correspond to type "+getJsonObject(), e);
 		}
 	}
 	
@@ -470,7 +470,7 @@ public class Type {
 		});
 	}
 	
-	public void setValue(Value value, final String prefix, final Value toSet) {
+	public void setValue(Value value, final String prefix, final JSONValue toSet) {
 		// TODO throw exception if prefix does not exist
 		transformValue(value, "", new ValuePredicate() {
 			@Override
@@ -485,7 +485,7 @@ public class Type {
 	}
 	
 	public String getAttribute(Value value, String prefix, String attribute) {
-		Value prefixedValue = getValue(value, prefix);
+		JSONValue prefixedValue = getValue(value, prefix);
 		if (prefixedValue == null) return null;
 		return prefixedValue.getAttribute(attribute);
 	}
@@ -714,11 +714,11 @@ public class Type {
 				else result = string;
 				break;
 			case ENUM:
-				if (value == null || string.equals("null")) result = JSONObject.NULL;
+				if (value == null || string.equals("")) result = JSONObject.NULL;
 				else result = string; 
 				break;
 			default:
-				if (value == null || string.equals("null")) result = JSONObject.NULL;
+				if (value == null || string.equals("")) result = JSONObject.NULL;
 				else result = string;
 		}
 		return result;
@@ -785,58 +785,33 @@ public class Type {
 		return builder.toString();
 	}
 	
-	@Override
-	public String toString() {
-		return jsonType;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((getJsonObject() == null) ? 0 : getJsonObject().toString().hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof Type))
-			return false;
-		Type other = (Type) obj;
-		if (getJsonObject() == null) {
-			if (other.getJsonObject() != null)
-				return false;
-		} else if (!getJsonObject().toString().equals(other.getJsonObject().toString()))
-			return false;
-		return true;
-	}
-
-	public static Type TYPE_DATE() { return new Type("{\"type\":\"date\"}");}
-	public static Type TYPE_STRING() { return new Type("{\"type\":\"string\"}");}
-	public static Type TYPE_TEXT() { return new Type("{\"type\":\"text\"}");}
-	public static Type TYPE_NUMBER() { return new Type("{\"type\":\"number\"}");}
-	public static Type TYPE_BOOL() { return new Type("{\"type\":\"bool\"}");}
+	public static Type TYPE_DATE() { return new Type("{\""+TYPE_STRING+"\":\"date\"}");}
+	public static Type TYPE_STRING() { return new Type("{\""+TYPE_STRING+"\":\"string\"}");}
+	public static Type TYPE_TEXT() { return new Type("{\""+TYPE_STRING+"\":\"text\"}");}
+	public static Type TYPE_NUMBER() { return new Type("{\""+TYPE_STRING+"\":\"number\"}");}
+	public static Type TYPE_BOOL() { return new Type("{\""+TYPE_STRING+"\":\"bool\"}");}
 	
 	public static Type TYPE_MAP (Map<String, Type> map) {
+		return TYPE_MAP(map, null);
+	}
+	
+	public static Type TYPE_MAP (Map<String, Type> map, Boolean isBlock) {
 		StringBuilder builder = new StringBuilder();
 		for (Entry<String, Type> entry : map.entrySet()) {
-			builder.append("{\"name\":\""+entry.getKey()+"\", \"element_type\":"+entry.getValue().toString()+"}");
+			builder.append("{\""+KEY_NAME+"\":\""+entry.getKey()+"\", \""+ELEMENT_TYPE+"\":"+entry.getValue().toString()+"}");
 			builder.append(',');
 		}
-		return new Type("{\"type\":\"map\", \"elements\":["+builder.toString()+"]}");
+		Type type = new Type("{\""+TYPE_STRING+"\":\"map\", \""+ELEMENTS+"\":["+builder.toString()+"]}");
+		if (isBlock != null) type.setAttribute("block", isBlock.toString());
+		return type;
 	}
 
 	public static Type TYPE_LIST (Type listType) {
-		return new Type("{\"type\":\"list\", \"list_type\":"+listType.toString()+"}");
+		return new Type("{\""+TYPE_STRING+"\":\"list\", \""+LIST_TYPE+"\":"+listType.toString()+"}");
 	}
 
 	public static Type TYPE_ENUM (String enumCode) {
-		return new Type("{\"type\":\"enum\", \"enum_code\":"+enumCode+"}");
+		return new Type("{\""+TYPE_STRING+"\":\"enum\", \""+ENUM_CODE+"\":"+enumCode+"}");
 	}
 
 }

@@ -8,7 +8,7 @@
 				<h5>In section: <g:i18n field="${question.section.names}" /> </h5>
 				<div class="question-container">
 					<!-- separation -->
-					<g:render template="/survey/question/${question.getType()}" model="[question: question, surveyPage: surveyPage, readonly: surveyPage.isReadonly(surveyPage.objective)]" />
+					<g:render template="/survey/question/${question.getType().getTemplate()}" model="[question: question, surveyPage: surveyPage, readonly: surveyPage.isReadonly(surveyPage.objective)]" />
 				</div> 
 				<g:if test="${i!=0}">
 					<a href="#" onclick="$(this).parents('.invalid-question').hide();$(this).parents('.invalid-question').prev().show();">previous</a>

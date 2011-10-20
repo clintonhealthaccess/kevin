@@ -23,7 +23,7 @@
 					<ol id="questions-section-${section.id}">
 					<g:each in="${section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question">
 						<li class="question-container">
-							<g:render template="/survey/question/${question.getType()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, print: true]" />
+							<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, print: true]" />
 						</li>
 					</g:each>
 					</ol>
@@ -39,7 +39,7 @@
 						   <h4><g:i18n field="${question.section.objective.names}"/> &rarr; 
 						   <g:i18n field="${question.section.names}"/></h4>
 						</div>
-						<g:render template="/survey/question/${question.getType()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, print: true, appendix: true]" />
+						<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, print: true, appendix: true]" />
 						</li>
 					</g:each>
 				</ol>

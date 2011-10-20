@@ -11,12 +11,12 @@ function showQuestionHelp(el) {
 }
 
 $(document).ready(function(){
-  $('.hide_question_help').click(function () {
+  $('.hide-question-help').click(function () {
     hideQuestionHelp($(this));
     return false;
   });
 
-  $('.show_question_help').click(function () {
+  $('.show-question-help').click(function () {
     showQuestionHelp($(this));
     return false;
   });

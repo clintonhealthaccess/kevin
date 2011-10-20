@@ -50,6 +50,7 @@ import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.ValuePredicate;
+import org.chai.kevin.survey.SurveyQuestion.QuestionType;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
@@ -250,6 +251,8 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPagePrint(Organisation organisation,Survey survey) {
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		
 		organisationService.loadGroup(organisation);
 		OrganisationUnitGroup organisationUnitGroup = organisation.getOrganisationUnitGroup();
 		
@@ -296,7 +299,7 @@ public class SurveyPageService {
 		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 	
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
+//		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		for (Organisation facility : facilities) {
 			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
@@ -312,12 +315,13 @@ public class SurveyPageService {
 		refreshSurveyForFacility(facility, survey, closeIfComplete);
 	}
 	
+	@Transactional(readOnly = false)
 	public void refreshSurveyForFacility(Organisation facility, Survey survey, boolean closeIfComplete) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
-
 		organisationService.loadGroup(facility);
 
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+//		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
+		
 		for (SurveyObjective objective : survey.getObjectives(facility.getOrganisationUnitGroup())) {
 			refreshObjectiveForFacility(facility, objective, closeIfComplete);
 		}
@@ -339,9 +343,10 @@ public class SurveyPageService {
 		refreshSectionForFacility(facility, section);
 	}
 	
+	@Transactional(readOnly = false)
 	public void refreshSectionForFacility(Organisation facility, SurveySection section) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
+//		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		organisationService.loadGroup(facility);
 		
@@ -542,19 +547,22 @@ public class SurveyPageService {
 	// FIXME HACK 
 	// TODO get rid of this
 	private void resetCheckboxQuestion(Organisation organisation, SurveyElement element, Map<SurveyElement, SurveyEnteredValue> affectedElements) {
-		if (element.getSurveyQuestion() instanceof SurveyCheckboxQuestion) {
+		if (log.isDebugEnabled()) log.debug("question is of type: "+element.getSurveyQuestion().getType());
+		if (element.getSurveyQuestion().getType() == QuestionType.CHECKBOX) {
+			if (log.isDebugEnabled()) log.debug("checking if checkbox question needs to be reset");
 			boolean reset = true;
 			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(organisation.getOrganisationUnitGroup())) {
 				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(organisation, elementInQuestion);
 
 				if (enteredValueForElementInQuestion.getValue().getBooleanValue() == Boolean.TRUE) reset = false;
 			}
+			if (log.isDebugEnabled()) log.debug("resetting checkbox question: "+reset);
 			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(organisation.getOrganisationUnitGroup())) {
 				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(organisation, elementInQuestion);
 
-				if (reset) enteredValueForElementInQuestion.setValue(Value.NULL);
+				if (reset) enteredValueForElementInQuestion.getValue().setJsonObject(Value.NULL.getJsonObject());
 				else if (enteredValueForElementInQuestion.getValue().isNull()) {
-					enteredValueForElementInQuestion.setValue(enteredValueForElementInQuestion.getType().getValue(false));
+					enteredValueForElementInQuestion.getValue().setJsonObject(enteredValueForElementInQuestion.getType().getValue(false).getJsonObject());
 				}
 				
 				affectedElements.put(elementInQuestion, enteredValueForElementInQuestion);

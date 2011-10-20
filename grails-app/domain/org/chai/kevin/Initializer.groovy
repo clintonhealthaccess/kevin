@@ -257,23 +257,26 @@ class Initializer {
 			def siyelo2 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP2",
 				type: Type.TYPE_LIST(
 					Type.TYPE_MAP([
-						"key0": Type.TYPE_STRING(),
+						"key0": Type.TYPE_MAP([
+							"key01": Type.TYPE_STRING(),
+							"key02": Type.TYPE_STRING()
+						], true),
 						"key1": Type.TYPE_MAP([
 							"key11": Type.TYPE_MAP([
 								"key111": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 								"key112": Type.TYPE_STRING()
-							]),
+							], true),
 							"key12": Type.TYPE_STRING(),
 							"key13": Type.TYPE_MAP([
 								"key131": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 								"key132": Type.TYPE_STRING()
-							]),
+							], true),
 							"key14": Type.TYPE_STRING(),
 							"key15": Type.TYPE_STRING(),
 							"key16": Type.TYPE_MAP([
 								"key161": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 								"key162": Type.TYPE_STRING()
-							]),
+							], true),
 							"key17": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 							"key18": Type.TYPE_NUMBER()
 						]),
@@ -1212,6 +1215,8 @@ class Initializer {
 					surveyQuestion: serviceQ6,
 					headers: [
 						"[_].key0": j(["en":"Name"]),
+						"[_].key0.key01": j(["en":"Select from list"]),
+						"[_].key0.key02": j(["en":"If other"]),
 						"[_].key1": j(["en":"Identifiers"]),
 						"[_].key1.key11": j(["en":"Type of equipment"]),
 						"[_].key1.key11.key111": j(["en":"Select from list"]),
