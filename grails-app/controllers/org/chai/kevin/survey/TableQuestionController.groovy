@@ -92,7 +92,7 @@ class TableQuestionController extends AbstractEntityController {
 	}
 
 
-	def getQuestionExplainer = {
+	def getDescription = {
 		def question = SurveyTableQuestion.get(params.int('question'))
 
 		if (question == null) {
@@ -101,7 +101,7 @@ class TableQuestionController extends AbstractEntityController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/templates/questionExplainer', model: [question: question])
+				html = g.render (template: '/survey/admin/questionDescription', model: [question: question])
 			}
 		}
 	}

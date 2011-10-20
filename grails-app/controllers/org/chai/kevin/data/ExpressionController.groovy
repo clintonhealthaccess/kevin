@@ -128,7 +128,7 @@ class ExpressionController extends AbstractEntityController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/templates/expressionDescription', model: [expression: expression])
+				html = g.render (template: '/entity/expression/expressionDescription', model: [expression: expression])
 			}
 		}
 	}

@@ -5,7 +5,7 @@
 			<th><g:message code="entity.name.label" default="Name"/></th>
 			<th><g:message code="entity.description.label" default="Description"/></th>
 			<th><g:message code="facility.type.label" default="Facility Groups"/></th>
-			<th><g:message code="default.number.label" args="message(code:'survey.question.label')" default="Number of Questions"/></th>
+			<th><g:message code="default.number.label" args="[message(code:'survey.question.label')]" default="Number of Questions"/></th>
 			<th><g:message code="entity.order.label" default="Order"/></th>
 			<th><g:message code="entity.list.manage.label" default="Manage"/></th>
 		</tr>

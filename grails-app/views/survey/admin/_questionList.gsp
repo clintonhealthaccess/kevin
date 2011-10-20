@@ -26,8 +26,8 @@
 					</ul>
 				</td>
 				<td><a title="Question" href="#" class="cluetip"
-					rel="${createLink(controller:question.getType().getTemplate(), action:'getQuestionExplainer', params:[question: question.id])}"
-					onclick="return false;"> ${org.chai.kevin.util.Utils.stripHtml(i18n(field: question.names).toString(),100)} </a></td>
+					rel="${createLink(controller:question.getType().getTemplate(), action:'getDescription', params:[question: question.id])}"
+					onclick="return false;"><g:stripHtml field="${question.names}" chars="100"/></a></td>
 				<td>${question.getType()}</td>
 				<td>${question.groupUuidString}</td>
 				<td>${question.order}</td>

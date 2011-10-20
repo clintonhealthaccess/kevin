@@ -77,6 +77,11 @@ public class OrganisationService {
 	public Set<OrganisationUnitGroup> getGroupsForExpression() {
 		Set<OrganisationUnitGroup> result = new HashSet<OrganisationUnitGroup>();
 		result.addAll(organisationUnitGroupService.getOrganisationUnitGroupSetByName(group).getOrganisationUnitGroups());
+		for (OrganisationUnitGroup organisationUnitGroup : result) {
+			for (OrganisationUnit organisationUnit : organisationUnitGroup.getMembers()) {
+				// EAGER load		
+			}
+		}
 		return result;
 	}
     

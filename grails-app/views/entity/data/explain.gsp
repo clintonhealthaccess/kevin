@@ -20,10 +20,10 @@
 				<table class="listing">
 					<thead>
 						<tr>
-							<th>Iteration</th>
-							<th>Survey</th>
-							<th>Question</th>
-							<th>Total Number of OrgUnit Applicable</th>
+							<th><g:message code="period.label" default="Iteration"/></th>
+							<th><g:message code="survey.label" default="Survey"/></th>
+							<th><g:message code="survey.question.label" default="Question"/></th>
+							<th><g:message code="dataelement.surveyelement.facility.applicable.label" default="Total Number of Facility Applicable"/></th>
 						</tr>
 					</thead>
 					<tbod>
@@ -32,7 +32,7 @@
 							<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 								<td>${question.section.objective.survey.period.startDate} &harr; ${question.section.objective.survey.period.endDate}</td>
 								<td>${i18n(field:question.section.objective.survey.names)}</td>
-								<td>${question.getString(i18n(field: question.names).toString(),100)} </a></td>
+								<td><g:stripHtml field="${question.names}" chars="100"/></a></td>
 								<td>${surveyElement.value}</td>
 							</tr>
 						</g:each>
@@ -49,8 +49,8 @@
 			<table class="listing">
 				<thead>
 					<tr>
-						<th>Iteration</th>
-						<th>Number of Data Value</th>
+						<th><g:message code="period.label" default="Iteration"/></th>
+						<th><g:message code="default.number.label" args="[message(code:'datavalue.label')]" default="Number of Data Value"/></th>
 					</tr>
 				</thead>
 				<tbody>

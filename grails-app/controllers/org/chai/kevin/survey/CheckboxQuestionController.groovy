@@ -79,7 +79,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
-	def getQuestionExplainer = {
+	def getDescription = {
 		def question = SurveyCheckboxQuestion.get(params.int('question'))
 		
 		if (question == null) {
@@ -90,7 +90,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/templates/questionExplainer', model: [question: question])
+				html = g.render (template: '/survey/admin/questionDescription', model: [question: question])
 			}
 		}
 	}

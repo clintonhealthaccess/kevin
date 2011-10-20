@@ -129,6 +129,8 @@ public class SurveyPage {
 	}
 	
 	public boolean isReadonly(SurveyObjective surveyObjective) {
-		return !SecurityUtils.getSubject().isPermitted("editSurvey:save:"+organisation.getId()) || objectives.get(objective).isClosed(); 
+		return !surveyObjective.getSurvey().isActive()
+		|| !SecurityUtils.getSubject().isPermitted("editSurvey:save:"+organisation.getId()) 
+		|| objectives.get(objective).isClosed(); 
 	}
 }

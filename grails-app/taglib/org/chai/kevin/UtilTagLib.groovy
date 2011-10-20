@@ -112,4 +112,9 @@ class UtilTagLib {
 		def text = LanguageUtils.getText(attrs['field'])
 		if (text != null && !Utils.stripHtml(text, null).trim().isEmpty()) out << body()
 	}
+	
+	def stripHtml = { attrs, body ->
+		def text = LanguageUtils.getText(attrs['field'])
+		if (text != null) out << Utils.stripHtml(text, attrs.int('chars'))
+	}
 }

@@ -44,7 +44,7 @@ class SurveyElementController {
 		
 		render(contentType:"text/json") {
 			result = 'success'
-			html = g.render(template:'/templates/surveyElements', model:[surveyElements: surveyElements])
+			html = g.render(template:'/survey/admin/surveyElements', model:[surveyElements: surveyElements])
 		}
 	}
 
@@ -66,7 +66,7 @@ class SurveyElementController {
 	}
 
 
-	def getSurveyElementExplainer = {
+	def getDescription = {
 		def surveyElement = null;
 		if (NumberUtils.isNumber(params['surveyElement'])) {
 			surveyElement = SurveyElement.get(params['surveyElement'])
@@ -78,7 +78,7 @@ class SurveyElementController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/templates/surveyElementExplainer', model: [surveyElement: surveyElement])
+				html = g.render (template: '/survey/admin/surveyElementDescription', model: [surveyElement: surveyElement])
 			}
 		}
 	}

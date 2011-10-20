@@ -49,6 +49,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
+import org.chai.kevin.util.Utils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @Entity(name = "SurveyQuestion")
@@ -130,6 +131,13 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		return section.getSurvey();
 	}
 	
+//	@Transient
+//	// this method is here to avoid calling Utils in the gsp,
+//	// which can be 
+//	public String getString(String text, Integer strip) {
+//		return Utils.stripHtml(text, strip);
+//	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

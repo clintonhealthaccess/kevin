@@ -59,7 +59,7 @@
 					<g:if test="${!skip.skippedSurveyQuestions.isEmpty()}">
 						<g:each in="${skip.skippedSurveyQuestions}" var="question">
 							<option value="${question.id}" selected>
-								${question.getString(g.i18n(field: question.names).toString(),35)} Q: [${question.order}]
+								<g:stripHtml field="${question.names}" chars="35"/> - <g:i18n field="${question.section.names}"/>
 							</option>
 						</g:each>
 					</g:if>

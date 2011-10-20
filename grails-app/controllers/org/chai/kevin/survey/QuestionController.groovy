@@ -27,6 +27,7 @@
  */
 package org.chai.kevin.survey
 
+import org.chai.kevin.util.Utils;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 /**
@@ -90,7 +91,7 @@ class QuestionController {
 				surveyQuestions.each { question ->
 					quest (
 						id: question.id,
-						question: question.getString(g.i18n(field: question.names).toString(),35)+' - '+ g.i18n(field: question.section.names)
+						question: Utils.stripHtml(g.i18n(field: question.names).toString(), 35)+' - '+ g.i18n(field: question.section.names)
 					)
 				}
 			}

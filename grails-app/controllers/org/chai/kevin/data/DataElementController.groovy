@@ -148,16 +148,10 @@ class DataElementController extends AbstractEntityController {
 		])
 	}
 
-	def getExplainer={
-		def dataElement = null;
-		if (NumberUtils.isNumber(params['dataElement'])) {
-			dataElement = DataElement.get(params['dataElement'])
-		}
+	def getExplainer = {
+		def dataElement = DataElement.get(params.int('dataElement'))
 
-		if (dataElement == null) {
-			render(contentType:"text/json") { result = 'error' }
-		}
-		else {
+		if (dataElement != null) {
 			List<Period> iterations = Period.list();
 			Set<SurveyElement> surveyElements = surveyElementService.getSurveyElements(dataElement, null);
 
@@ -183,7 +177,7 @@ class DataElementController extends AbstractEntityController {
 		
 		render(contentType:"text/json") {
 			result = 'success'
-			html = g.render(template:'/templates/dataElements', model:[dataElements: dataElements])
+			html = g.render(template:'/entity/data/dataElements', model:[dataElements: dataElements])
 		}
 	}
 
@@ -196,7 +190,7 @@ class DataElementController extends AbstractEntityController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/templates/dataElementDescription', model: [dataElement: dataElement])
+				html = g.render (template: '/entity/data/dataElementDescription', model: [dataElement: dataElement])
 			}
 		}
 	}

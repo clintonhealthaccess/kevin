@@ -156,6 +156,7 @@
 															</ul>
 														</shiro:hasPermission>
 													</th>
+													<g:set var="i" value="${0}" />
 												</g:if>
 											</g:if>
 											<g:else>

@@ -82,9 +82,7 @@ public class Utils {
 		if (htmlString != null) noHtmlString = htmlString.replaceAll("\\<.*?\\>", "");
 		else noHtmlString = htmlString;
 	
-		if (num != null && noHtmlString.length() < num) length = noHtmlString.length();
-	
-		if (num == null) return noHtmlString;
+		if (num == null || noHtmlString.length() <= num) return noHtmlString;
 		return noHtmlString.substring(0, length);
 	}
 	
