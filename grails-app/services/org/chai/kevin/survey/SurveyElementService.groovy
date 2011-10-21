@@ -151,7 +151,7 @@ class SurveyElementService {
 	}
 
 	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement, OrganisationUnitGroup group) {
-		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", groupUuid="+groupUuid+")");
+		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", group="+group+")");
 		
 		def c = SurveyValidationRule.createCriteria()
 		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))

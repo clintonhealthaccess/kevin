@@ -15,9 +15,5 @@ class FctControllerSpec extends IntegrationTests {
 		organisation == null
 	}
 	
-	def ""(){
-		
-	}
-	
 }
 
