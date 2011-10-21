@@ -239,7 +239,7 @@ public class Type extends JSONValue {
 						if (!oldValue.isNull()) { 
 							List<Integer> indexList = Type.getIndexList(map, suffix+".indexes");
 							for (int i = 0; i < oldValue.getListValue().size(); i++) {
-								array1.put(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, suffix+"["+indexList.get(i)+"]", attributes).getJsonObject());
+								if (indexList.size() > i) array1.put(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, suffix+"["+indexList.get(i)+"]", attributes).getJsonObject());
 							}
 						}
 					}

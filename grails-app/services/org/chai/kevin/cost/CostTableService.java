@@ -57,10 +57,8 @@ public class CostTableService {
 	private Set<Integer> skipLevels;
 	
 	public CostTable getCostTable(Period period, CostObjective objective, Organisation organisation) {
-		if (objective == null || organisation == null) return new CostTable(period, objective, new ArrayList<CostTarget>(), costService.getYears(), organisation, new HashMap<CostTarget, Map<Integer,Cost>>());
 		List<CostTarget> targets = objective.getTargets();
-		
-		return new CostTable(period, objective, targets, costService.getYears(), organisation, getValues(period, targets, organisation));
+		return new CostTable(targets, costService.getYears(), getValues(period, targets, organisation));
 	}
 
 	public Explanation getExplanation(Period period, CostTarget target, Organisation organisation) {

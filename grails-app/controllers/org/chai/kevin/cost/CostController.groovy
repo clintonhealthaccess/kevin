@@ -62,12 +62,18 @@ class CostController extends AbstractController {
 		
 		if (log.isInfoEnabled()) log.info("view cost for period: "+period.id);
 		
-		def costTable = costTableService.getCostTable(period, objective, organisation);
+		def costTable = null
+		if (period != null && objective != null && organisation != null) {
+			costTable = costTableService.getCostTable(period, objective, organisation);
+		}
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		
 		if (log.isDebugEnabled()) log.debug('costTable: '+costTable)
 		[
 			costTable: costTable,
+			currentPeriod: period,
+			currentObjective: objective,
+			currentOrganisation: organisation,
 			objectives: CostObjective.list(), 
 			periods: Period.list(),
 			organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),

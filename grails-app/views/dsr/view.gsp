@@ -14,85 +14,10 @@
 	<body>
 		<div id="dsr">
 			<div class="subnav">
-				<div class="filter">
-					<span class="bold">Iteration:</span>
-					<span class="dropdown subnav-dropdown">
-						<a class="selected" href="#" data-period="${currentPeriod.id}" data-type="period">
-							<g:dateFormat format="yyyy" date="${currentPeriod.startDate}" />
-						</a>
-						<div class="hidden dropdown-list">
-							<ul>
-								<g:each in="${periods}" var="period">
-									<li><a href="${createLink(controller:'dsr', action:'view', params:[period:period.id, objective: currentObjective?.id, organisation: currentOrganisation?.id])}">
-										<span><g:dateFormat format="yyyy" date="${period.startDate}" /></span> 
-										</a>
-									</li>
-								</g:each>
-							</ul>
-						</div>
-					</span>
-				</div>
-				<div class="filter">
-					<span class="bold">Organisation:</span>
-					<span class="dropdown subnav-dropdown">
-						<g:if test="${currentOrganisation != null}">
-							<a class="selected" href="#" data-type="organisation">${currentOrganisation.name}</a>
-						</g:if>
-						<g:else>
-							<a class="selected" href="#" data-type="organisation">Select Organisation Unit</a>
-						</g:else> 
-						<div class="hidden dropdown-list">
-							<ul>
-								<g:render template="/templates/organisationTree"
-									model="[controller: 'dsr', action: 'view', organisation: organisationTree, current: currentOrganisation, params:[period: currentPeriod.id, objective: currentObjective?.id], displayLinkUntil: displayLinkUntil]" />
-							</ul>
-						</div>
-					</span>
-				</div>
-				<div class="filter">
-					<span class="bold">Strategic Objective:</span>
-					<span class="dropdown subnav-dropdown">
-						<g:if test="${currentObjective != null}">
-							<a class="selected" href="#"
-							data-organisation="${currentObjective.id}"
-							data-type="objective"><g:i18n field="${currentObjective.names}"/></a>
-						</g:if>
-						<g:else>
-							<a href="#" class="selected" data-type="objective">
-							Select Strategic Objective</a>
-						</g:else>
-						<div class="hidden dropdown-list">
-							<g:if test="${!objectives.empty}">
-								<ul>
-									<g:each in="${objectives}" var="objective">
-										<li>
-											<span>
-												<a href="${createLink(controller: 'dsr', action:'view', params:[period: currentPeriod.id, objective: objective?.id, organisation: currentOrganisation?.id])}">
-													<g:i18n field="${objective.names}"/>
-												</a>
-											</span>
-								    		<shiro:hasPermission permission="admin:dsr">
-												<span>
-													<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:objective.id)}">
-														<g:message code="default.link.edit.label" default="Edit" />
-													</a>
-												</span>
-												<span>
-													<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-														<g:message code="default.link.delete.label" default="Delete" />
-													</a>
-												</span>
-											</shiro:hasPermission>
-										</li>
-									</g:each>
-								</ul>
-							</g:if>
-							<g:else>
-								<span>No Objectives Found</span>
-							</g:else>
-						</div>
-					</span>
-				</div>
+				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation: currentOrganisation?.id, objective: currentObjective?.id]]"/>
+				<g:render template="/templates/organisationFilter" model="[linkParams:[period: currentPeriod.id, objective: currentObjective?.id]]"/>
+				<g:render template="/templates/objectiveFilter" model="[linkParams:[period: currentPeriod.id, organisation: currentOrganisation?.id]]"/>
+								
 				<div class="right">
 					<!-- ADMIN SECTION -->
 					<shiro:hasPermission permission="admin:dsr">
@@ -104,21 +29,7 @@
 				</div>
 			</div>
 			<g:if test="${dsrTable != null}">
-				<div class="filter facility-type">
-		    		<h4 class="bold">Facility types</h4>
-		    		<div id="facility-type-filter">
-			    		<g:if test="${!dsrTable.facilityTypes.isEmpty()}">
-			    		  <ul>
-	  			    		<g:each in="${dsrTable.facilityTypes}" var="group">
-	  				    		<li><input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}</li>
-	  			    		</g:each>
-	  			    	</ul>
-			    		</g:if>
-		    		<g:else>
-		    			<span class="italic">No facility types</span>
-		    		</g:else>
-		    		</div>
-		    	</div>
+				<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: dsrTable.facilityTypes]"/>
 			</g:if>
 			<div id="center" class="main">
 				<div id="values">
@@ -131,6 +42,18 @@
 											<div>
 												<g:i18n field="${currentObjective.names}" />
 											</div> 
+											<shiro:hasPermission permission="admin:dsr">
+												<span>
+													<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrObjective', action:'edit', id:currentObjective.id)}">
+														<g:message code="default.link.edit.label" default="Edit" />
+													</a>
+												</span>
+												<span>
+													<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+														<g:message code="default.link.delete.label" default="Delete" />
+													</a>
+												</span>
+											</shiro:hasPermission>
 										</th>
 										<g:set var="i" value="${0}" />
 										<g:each in="${dsrTable.targets}" var="target">

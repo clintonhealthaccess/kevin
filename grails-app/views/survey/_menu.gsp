@@ -192,6 +192,7 @@
 				$(element).find('label, h5, h6').hide();
 				$(element).find('.adv-form-section').hide();
 				$(element).find('.adv-form-title').hide();
+				$(element).find('.element-map').addClass('adv-form-mini');
 				$(element).find('.element-list-minimize').hide();
 				$(element).find('.element-list-maximize').show();
 				$(element).addClass('minimized');
@@ -205,6 +206,7 @@
 		$(row).find('label, h5, h6').show();
 		$(row).find('.adv-form-section').show();
 		$(row).find('.adv-form-title').show();
+		$(row).find('.element-map').removeClass('adv-form-mini');
 		$(row).find('.element-list-minimize').show();
 		$(row).find('.element-list-maximize').hide();
 		$(row).removeClass('minimized');

@@ -38,58 +38,22 @@ import org.hisp.dhis.period.Period;
 
 public class CostTable {
 
-	private Period currentPeriod;
-	private Organisation currentOrganisation;
-	private CostObjective currentObjective;
-
 	private List<CostTarget> targets;
 	private List<Integer> years;
 	private Map<CostTarget, Map<Integer, Cost>> values;
 
 
-	public CostTable(Period currentPeriod, CostObjective currentObjective, List<CostTarget> targets, List<Integer> years, Organisation currentOrganisation,
+	public CostTable(List<CostTarget> targets, List<Integer> years,
 			Map<CostTarget, Map<Integer, Cost>> values) {
 		super();
-		this.currentPeriod = currentPeriod;
 		this.years = years;
 		this.values = values;
 		this.targets = targets;
-		
-		this.currentObjective = currentObjective;
-		this.currentOrganisation = currentOrganisation;
 	}
 	
-//	public CostTable(Period currentPeriod, List<Integer> years,
-//			Organisation currentOrganisation) {
-//		this.currentPeriod = currentPeriod;
-//		this.years = years;
-//		this.currentOrganisation = currentOrganisation;
-//		this.targets = new ArrayList<CostTarget>();
-//		this.values = new HashMap<CostTarget, Map<Integer,Cost>>();
-//	}
-
-	public Period getCurrentPeriod() {
-		return currentPeriod;
-	}
-	
-	public CostObjective getCurrentObjective() {
-		return currentObjective;
-	}
-	
-	public Long getCurrentObjectiveId() {
-		return currentObjective!=null?currentObjective.getId():null;
-	}
 	
 	public List<CostTarget> getTargets() {
 		return targets;
-	}
-	
-	public Organisation getCurrentOrganisation() {
-		return currentOrganisation;
-	}
-	
-	public Integer getCurrentOrganisationId() {
-		return currentOrganisation!=null?currentOrganisation.getId():null;
 	}
 	
 	public List<CostTarget> getTargetsOfType(CostType type) {

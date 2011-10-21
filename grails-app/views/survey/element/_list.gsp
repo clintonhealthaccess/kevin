@@ -25,6 +25,8 @@
 					<li><a class="element-list-maximize hidden ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.maximize.label" /></a></li>
 					<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.removeline.label" /></a></li>
 				</ul>
+				
+				<ul class="minimized-content"></ul>
 			
 				<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[${i}]"/>
 				<input type="hidden" class="list-input-indexes" name="surveyElements[${surveyElement.id}].value${suffix}.indexes" value="[${i}]"/>
@@ -49,6 +51,8 @@
 						<li><a class="element-list-maximize hidden ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.maximize.label" /></a></li>
 						<li><a class="element-list-remove ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.removeline.label" /></a></li>
 					</ul>
+					
+					<ul class="minimized-content"></ul>
 					
 					<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
 					<input type="hidden" class="list-input-indexes" name="surveyElements[${surveyElement.id}].value${suffix}.indexes" value="[_]"/>

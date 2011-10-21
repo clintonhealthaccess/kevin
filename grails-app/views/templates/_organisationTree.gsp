@@ -9,7 +9,6 @@
 		<span>${organisation.name}</span>
 	</g:if>
 	<g:else>
-		<% def linkParams = new HashMap(params) %>
 		<% linkParams['organisation'] = organisation.id %>	
 		<a class="dropdown-link parameter" data-type="organisation" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:linkParams)}">
 			${organisation.name}

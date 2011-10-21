@@ -17,21 +17,7 @@
     <body>
 		<div id="dashboard">
 			<div id="corner" class="subnav">
-				<span class="bold"><g:message code="dashboard.labels.iteration" default="Iteration"/></span>
-				<div class="dropdown subnav-dropdown inline">
-					<a class="selected" href="#"><g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/></a>
-					<div class="hidden dropdown-list">
-						<ul>
-							<g:each in="${periods}" var="period">
-								<li>
-									<a href="${createLink(controller:'dashboard', action:'view', params:[period: period.id, objective: currentObjective.id, organisation: currentOrganisation.id])}">
-										<span><g:dateFormat format="yyyy" date="${period.startDate}"/></span>
-									</a>
-								</li>
-							</g:each>
-						</ul>
-					</div> 
-				</div>
+				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation: currentOrganisation?.id, objective: currentObjective?.id]]"/>
 			</div>
 		
 			<div id="top" class="main">
@@ -49,7 +35,7 @@
 	    	</div>
 	    	
 	    	<div id="bottom" class="main">
-	    		<div class="facility-type no-margin">
+	    		<div class="no-margin">
 			    	<div class="left">
 			    		<div class="italic"><g:message code="dashboard.labels.organisations" default="Organisations"/></div>
 				    	<ul class="horizontal">
@@ -64,19 +50,9 @@
 				    	</ul>
 			    	</div>
 			    	
-			    	<div class="right" id="facility-type-filter">
-			    		<div class="bold"><g:message code="dashboard.labels.facility" default="Facility Types"/></div>
-			    		<g:if test="${!dashboard.facilityTypes.isEmpty()}">
-			    		  <ul>
-  				    		<g:each in="${dashboard.facilityTypes}" var="group">
-  					    		<li><input type="checkbox" value="${group.uuid}" ${checkedFacilities.contains(group.uuid)?'checked="checked"':'""'}/>${group.name}</li>
-  				    		</g:each>
-  				    	</ul>
-			    		</g:if>
-			    		<g:else>
-			    			<span class="italic"><g:message code="dashboard.labels.nofacility" default="filter not available at this level"/></span>
-			    		</g:else>
-			    	</div>
+			    	<g:if test="${dashboard.facilityTypes != null}">
+			    		<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: dashboard.facilityTypes]"/>
+			    	</g:if>
 		    	</div>
 		    
 		    	<div class="box">
@@ -196,8 +172,8 @@
 				    	<!-- ADMIN SECTION -->
 			    		<shiro:hasPermission permission="admin:dashboard">
 			    			<div class="float-right">
-								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.target" default="Add target"/></a></div>
-								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardObjective', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="dashboard.admin.add.objective" default="Add objective"/></a></div>
+								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="default.add.label" args="[message(code:'dashboard.target.label')]" default="Add target"/></a></div>
+								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardObjective', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="default.add.label" args="[message(code:'dashboard.objective.label')]" default="Add objective"/></a></div>
 							</div>
 						</shiro:hasPermission>
 				    	<!-- ADMIN SECTION END -->

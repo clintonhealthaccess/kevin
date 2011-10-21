@@ -15,39 +15,10 @@
     <body>
     	<div id="maps">
 			<div class="subnav">
-				<div class="filter">
-					<span class="bold">Iteration</span>
-					<span class="dropdown dropdown-period subnav-dropdown">
-						<a class="selected" href="#" data-period="${currentPeriod.id}" data-type="period"><g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/></a>
-						<div class="hidden dropdown-list">
-							<ul>
-								<g:each in="${periods}" var="period">
-									<li>
-										<a class="parameter" href="#" data-period="${period.id}" data-type="period">
-											<g:dateFormat format="yyyy" date="${period.startDate}"/>
-										</a>
-									</li>
-								</g:each>
-							</ul>
-						</div> 
-					</span>
-				</div>
-				<div class="filter">
-					<span class="bold">Organisation:</span>
-					<span class="dropdown dropdown-organisation subnav-dropdown">
-						<g:if test="${currentOrganisation != null}">
-							<a class="selected" href="#" data-organisation="${currentOrganisation.id}" data-type="organisation">${currentOrganisation.name}</a>
-						</g:if>
-						<g:else>
-							<a class="selected" href="#" data-type="organisation">no organisation selected</a>
-						</g:else>
-						<div class="hidden dropdown-list">
-							<ul>
-								<g:render template="/templates/organisationTree" model="[controller: 'maps', action: 'view', organisation: organisationTree, params:[period: currentPeriod.id, objective: currentTarget?.id], displayLinkUntil: displayLinkUntil]"/>
-							</ul>
-						</div>
-					</span>
-				</div>
+				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation: currentOrganisation?.id, objective: currentObjective?.id]]"/>
+				<g:render template="/templates/organisationFilter" model="[linkParams:[period: currentPeriod.id, objective: currentObjective?.id]]"/>
+								
+				<!-- TODO use a filter here -->
 				<div class="filter">
 					<span class="bold">Target:</span>
 					<span class="dropdown dropdown-target subnav-dropdown">
@@ -65,7 +36,7 @@
 											<a class="parameter" href="#" data-target="${target.id}" data-type="target">
 												<g:i18n field="${target.names}"/>
 											</a>
-								  			<shiro:hasPermission permission="admin:maps">
+											<shiro:hasPermission permission="admin:maps">
 												<span>
 													<a class="edit-link" href="${createLinkWithTargetURI(controller:'mapsTarget', action:'edit', id:target.id)}">
 														<g:message code="default.link.edit.label" default="Edit" />
@@ -99,7 +70,6 @@
 	    			<div id="maps-explanation" class="explanation-row margin-bottom-10"></div>
 	    			<div id="map_canvas"></div>
     			</div>
-    			
     		</div>
     	</div>
     	

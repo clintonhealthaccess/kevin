@@ -100,7 +100,11 @@ public class MapsService {
 			else if (target.getType() == MapsTargetType.AVERAGE) {
 				if (log.isDebugEnabled()) log.debug("getting values for AVERAGE map with calculation: "+target.getCalculation());
 				CalculationValue calculationValue = valueService.getValue(target.getCalculation(), child.getOrganisationUnit(), period);
-				if (calculationValue != null) value = calculationValue.getValue().getNumberValue().doubleValue();
+				if (calculationValue != null) {
+					if (!calculationValue.getValue().isNull()) {
+						value = calculationValue.getValue().getNumberValue().doubleValue();
+					}
+				}
 			}
 			
 			

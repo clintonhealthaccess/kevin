@@ -1,8 +1,9 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.data.Type;
 
-class QuestionControllerSpec extends IntegrationTests {
+class QuestionControllerSpec extends SurveyIntegrationTests {
 
 	def questionController
 	

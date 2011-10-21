@@ -702,6 +702,9 @@ table.nice-table .cell { cursor: default; }
 /* line 125, ../../src/stylesheets/partials/_dashboard.sass */
 #dashboard .explanation .span div { margin-bottom: 4px; }
 
+/* line 1, ../../src/stylesheets/partials/_maps.sass */
+#maps #map_canvas { height: 640px; }
+
 /* line 1, ../../src/stylesheets/partials/_tipsy.sass */
 .tipsy { padding: 5px; font-size: 12px; line-height: 1.4; position: absolute; z-index: 100000; letter-spacing: 0.05; }
 

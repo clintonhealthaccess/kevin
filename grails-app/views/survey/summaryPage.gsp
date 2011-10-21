@@ -11,49 +11,8 @@
 		<g:set var="organisation" value="${summaryPage.organisation}"/>
 		<div id="survey">
 			<div id="survey-header" class="subnav">
-				<div class="filter">
-					<span class="bold"><g:message code="survey.label" default="Survey"/>:</span>
-					<span class="dropdown subnav-dropdown">
-						<a class="selected" href="#">
-							<g:if test="${survey != null}">
-								<g:i18n field="${survey.names}" />
-							</g:if>
-							<g:else>
-							    <g:message code="default.select.label" args="[message(code:'survey.label')]" default="Select a survey"/>
-							</g:else>
-						</a>
-						<div id="survey-menu" class="hidden dropdown-list">
-							<ul>
-								<g:each in="${surveys}" var="survey">
-									<li>
-										<span>
-											<a href="${createLink(controller: 'editSurvey', action:'summaryPage', params:[organisation: organisation?.id, survey: survey.id])}">
-												<g:i18n field="${survey.names}"/>
-											</a>
-										</span>
-									</li>
-								</g:each>
-							</ul>
-						</div>
-					</span>
-				</div>
-				<div class="filter">
-					<span class="bold"><g:message code="facility.label" default="Facility Name"/>:</span>
-					<span class="dropdown subnav-dropdown">
-						<g:if test="${organisation != null}">
-							<a class="selected" href="#" data-type="organisation">${organisation.name}</a>
-						</g:if>
-						<g:else>
-							<a class="selected" href="#" data-type="organisation"><g:message code="default.select.label" args="[message(code:'location.label')]" default="Select location"/></a>
-						</g:else> 
-						<div class="hidden dropdown-list">
-							<ul>
-								<g:render template="/templates/organisationTree"
-									model="[controller: 'editSurvey', action: 'summaryPage', organisation: organisationTree, current: organisation, params:[survey: '1'], displayLinkUntil: displayLinkUntil]" />
-							</ul>
-						</div>
-					</span>
-				</div>
+				<g:render template="/survey/surveyFilter"/>
+				<g:render template="/templates/organisationFilter" model="[currentOrganisation: organisation, linkParams:[survey: summaryPage.survey?.id]]"/>
 				<div class="clear"></div>
 			</div>
 			

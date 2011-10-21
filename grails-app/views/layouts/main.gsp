@@ -5,7 +5,6 @@
 <head>
 	<title><g:layoutTitle default="Grails" /></title>
 	<link rel="shortcut icon" href="${resource(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
-	<link href="${resource(dir:'css',file:'screen.css')}" type="text/css" rel="stylesheet" media="screen, projection" />
 
 	<g:layoutHead />	
 	<r:require module="core"/>

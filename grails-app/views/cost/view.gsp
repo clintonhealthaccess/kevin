@@ -16,95 +16,35 @@
     <body>
     	<div id="cost">
 			<div class="subnav">
-				<div class="filter">
-					<span class="bold"><g:message code="costing.labels.iteration" default="Iteration"/></span>
-					<span class="dropdown subnav-dropdown">
-						<a href="#" class="selected"><g:dateFormat format="yyyy" date="${costTable.currentPeriod.startDate}"/></a>
-						<div class="hidden dropdown-list">
-							<ul>
-								<g:each in="${periods}" var="period">
-									<li>
-										<a href="${createLink(controller:'cost', action:'view', params:[period: period.id, objective: costTable.currentObjectiveId, organisation: costTable.currentOrganisationId])}">
-											<span><g:dateFormat format="yyyy" date="${period.startDate}"/></span>
-										</a>
-									</li>
-								</g:each>
-							</ul>
-						</div> 
-					</span>
-				</div>
-				<div class="filter">
-					<span class="bold"><g:message code="costing.labels.organisation" default="Organisation"/></span>
-					<span class="dropdown subnav-dropdown">
-						<g:if test="${costTable.currentOrganisation != null}">
-							<a href="#" class="selected">${costTable.currentOrganisation.name}</a>
-						</g:if>
-						<g:else>
-							<a href="#" class="selected"><g:message code="costing.labels.noorganisation" default="no organisation selected"/></a>
-						</g:else>
-						<div class="hidden dropdown-list">
-							<ul>
-								<g:render template="/templates/organisationTree" model="[controller: 'cost', action: 'view',organisation: organisationTree,current: costTable.currentOrganisation, params:[period: costTable.currentPeriod.id, objective: costTable.currentObjectiveId], displayLinkUntil: displayLinkUntil]"/>
-							</ul>
-						</div>
-					</span>
-				</div>
-				<div class="filter">
-					<span class="bold"><g:message code="costing.labels.objective" default="Strategic Objective"/></span>
-					<span class="dropdown subnav-dropdown">
-						<g:if test="${costTable.currentObjective != null}">
-							<a href="#" class="selected"><g:i18n field="${costTable.currentObjective.names}"/></a>
-						</g:if>
-						<g:else>
-							<a href="#" class="selected"><g:message code="costing.labels.noobjective" default="no objective selected"/></a>
-						</g:else>
-						<div class="hidden dropdown-list">
-							<g:if test="${!objectives.empty}">
-								<ul>
-									<g:each in="${objectives}" var="objective">
-										<li>
-											<span>
-												<a href="${createLink(controller:'cost', action:'view', params:[period: costTable.currentPeriod.id, objective: objective.id, organisation: costTable.currentOrganisationId])}">
-													<g:i18n field="${objective.names}"/>
-												</a>
-											</span>
-											<shiro:hasPermission permission="cost:admin">
-												<span>
-													<a class="edit-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'edit', id:objective.id)}">
-														<g:message code="default.link.edit.label" default="Edit" />
-													</a>
-												</span>
-												<span>
-													<a class="delete-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'delete', id:objective.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-														<g:message code="default.link.delete.label" default="Delete" />
-													</a>
-												</span>
-											</shiro:hasPermission>
-										</li>
-									</g:each>
-								</ul>
-							</g:if>
-							<g:else>
-								<span><g:message code="costing.labels.noobjectivesfound" default="no objectives found"/></span>
-							</g:else>
-						</div>
-					</span>
-				</div>
-				<div class="clear"></div>
-				<shiro:hasPermission permission="admin:cost">					
-				<div>
-						<a href="${createLinkWithTargetURI(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
-					</div>
-				</shiro:hasPermission>
+				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation: currentOrganisation?.id, objective: currentObjective?.id]]"/>
+				<g:render template="/templates/organisationFilter" model="[linkParams:[period: currentPeriod.id, objective: currentObjective?.id]]"/>
+				<g:render template="/templates/objectiveFilter" model="[linkParams:[period: currentPeriod.id, organisation: currentOrganisation?.id]]"/>
 				
+				<shiro:hasPermission permission="admin:cost">					
+					<span>
+						<a href="${createLinkWithTargetURI(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
+					</span>
+				</shiro:hasPermission>
 			</div>
     		<div id="center" class="main">
     			<div id="values">
-    				<g:if test="${costTable.currentObjective != null && costTable.currentOrganisation != null}">
+    				<g:if test="${costTable != null}">
 						<table class="listing">
 							<thead>
 								<tr>
-									<th class="empty">&nbsp;</th>
+									<th class="empty">
+										<g:i18n field="${currentObjective.names}"/>
+										<span>
+											<a class="edit-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'edit', id:currentObjective.id)}">
+												<g:message code="default.link.edit.label" default="Edit" />
+											</a>
+										</span>
+										<span>
+											<a class="delete-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+												<g:message code="default.link.delete.label" default="Delete" />
+											</a>
+										</span>
+									</th>
 									<g:each in="${costTable.years}" var="year">
 										<th class="cell label col-${year}" data-col="${year}">${year}</th>
 									</g:each>
@@ -122,7 +62,7 @@
 										<tr>
 											<td class="cell label row-${target.id}" data-row="${target.id}">
 												<span>
-													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: costTable.currentOrganisationId])}"><g:i18n field="${target.names}"/></a>
+													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: currentOrganisation?.id])}"><g:i18n field="${target.names}"/></a>
 												</span>
 												
 												<shiro:hasPermission permission="admin:cost">		
@@ -151,7 +91,7 @@
 						<!-- ADMIN SECTION -->
 						<shiro:hasPermission permission="admin:cost">							
 							<div>
-								<a class="add-row" href="${createLinkWithTargetURI(controller:'costTarget', action:'create', params:[currentObjective: costTable.currentObjective?.id])}">add target</a>
+								<a class="add-row" href="${createLinkWithTargetURI(controller:'costTarget', action:'create', params:[currentObjective: currentObjective?.id])}">add target</a>
 							</div>
 						</shiro:hasPermission>
 						<!-- ADMIN SECTION END -->

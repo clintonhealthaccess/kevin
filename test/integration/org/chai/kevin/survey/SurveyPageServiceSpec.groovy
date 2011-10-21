@@ -163,8 +163,9 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredValue.list()[0].value.listValue.size() == 2
 		SurveyEnteredValue.list()[0].value.listValue[0].isNull()
 		SurveyEnteredValue.list()[0].value.listValue[1].isNull()
+		
 		when:
-		surveyPageService.modify(getOrganisation(KIVUYE), objective, [element], [("surveyElements["+element.id+"].value[0]"): "5", ("surveyElements["+element.id+"].value.indexes"): ["[0]"]])
+		surveyPageService.modify(getOrganisation(KIVUYE), objective, [element], [("surveyElements["+element.id+"].value[0]"): "5", ("surveyElements["+element.id+"].value.indexes"): ["[0]", "[1]"]])
 		
 		then:
 		SurveyEnteredValue.count() == 1
