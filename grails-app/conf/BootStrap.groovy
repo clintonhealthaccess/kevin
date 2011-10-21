@@ -87,6 +87,7 @@ class BootStrap {
 			Initializer.createDashboard();
 			Initializer.createCost();
 			Initializer.createDsr();
+			Initializer.createFct();
 			Initializer.createMaps();
 			Initializer.createQuestionaire();
 			

@@ -34,6 +34,9 @@
 		<mapping class="org.chai.kevin.dsr.DsrObjective"/>	
 		<mapping class="org.chai.kevin.dsr.DsrTargetCategory"/>	
 	
+	    <mapping class="org.chai.kevin.fct.FctTarget"/>
+		<mapping class="org.chai.kevin.fct.FctObjective"/>	
+	
 	    <mapping class="org.chai.kevin.maps.MapsTarget" />	
 	
         <mapping class="org.chai.kevin.survey.Survey" />

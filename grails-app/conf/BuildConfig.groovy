@@ -59,7 +59,7 @@ grails.project.dependency.resolution = {
 //		mavenRepo "http://repository.jboss.org/nexus/"
 //		mavenRepo "https://maven.nuxeo.org/nexus/"
 //		mavenRepo "http://www.intalio.org/public/maven2/"
-mavenRepo "http://repo.opennms.org/maven2/"
+		mavenRepo "http://repo.opennms.org/maven2/"
 //		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 				
 		/**
@@ -106,7 +106,7 @@ mavenRepo "http://repo.opennms.org/maven2/"
 		}
 		test 'org.gmock:gmock:0.8.1'
 		
-		test('org.spockframework:spock-core:0.5-groovy-1.8')
+		test('org.spockframework:spock-core:0.6-SNAPSHOT')
 		
 		// those are for the migration script to work
 //		compile 'org.hisp.dhis:dhis-service-importexport:2.2-SNAPSHOT'

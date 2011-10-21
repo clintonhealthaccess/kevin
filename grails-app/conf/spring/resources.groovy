@@ -15,6 +15,7 @@ import org.chai.kevin.dashboard.DashboardService;
 import org.chai.kevin.dashboard.ExplanationCalculator;
 import org.chai.kevin.dashboard.PercentageCalculator;
 import org.chai.kevin.dsr.DsrService;
+import org.chai.kevin.fct.FctService;
 import org.chai.kevin.maps.MapsService;
 import org.chai.kevin.survey.SurveyPageService;
 import org.chai.kevin.survey.ValidationService;
@@ -101,6 +102,14 @@ beans = {
 		groupLevel = dsrGroupLevel
 	}
 
+	fctService(FctService){
+		organisationService = ref("organisationService")
+		valueService = ref("valueService")
+		dataService = ref("dataService")
+		localeService = ref("localeService")
+		groupLevel = dsrGroupLevel
+	}
+	
 	mapsService(MapsService) {
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")

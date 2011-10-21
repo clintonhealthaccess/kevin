@@ -28,8 +28,9 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.ReflectionUtils;
 import grails.plugin.springcache.annotations.CacheFlush;
-
 import org.apache.catalina.util.RequestUtil;
 import org.apache.jasper.compiler.Node.ParamsAction;
 import org.chai.kevin.AbstractEntityController;
@@ -40,7 +41,6 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
@@ -64,7 +64,7 @@ class DashboardTargetController extends AbstractObjectiveController {
 	def saveEntity(def entity) {
 		entity.entry.calculation.timestamp = new Date()
 		// FIXME change this to infer the correct type
-		entity.entry.calculation.type = Type.TYPE_NUMBER()
+		entity.entry.calculation.type = JSONUtils.TYPE_NUMBER
 		if (entity.entry.calculation.id == null) entity.entry.calculation.code = UUID.randomUUID().toString();
 		entity.entry.calculation.save()
 		super.saveEntity(entity)

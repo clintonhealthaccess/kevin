@@ -39,8 +39,6 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
-import com.sun.tools.javac.code.Type.ForAll;
-
 class MapsTargetController extends AbstractEntityController {
 	
 	def organisationService

@@ -29,7 +29,6 @@ package org.chai.kevin.dsr
 */
 
 import java.util.Collections;
-
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.Organisation;
 import org.hisp.dhis.period.Period;

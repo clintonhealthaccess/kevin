@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.dsr;
+package org.chai.kevin.fct;
 /**
  * @author Jean Kahigiso M.
  *
@@ -41,18 +41,21 @@ import javax.persistence.Table;
 
 import org.chai.kevin.Translatable;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Sum;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name = "DsrTarget")
-@Table(name = "dhsst_dsr_target")
-public class DsrTarget extends Translatable {
+@SuppressWarnings("serial")
+@Entity(name = "FctTarget")
+@Table(name = "dhsst_fct_target")
+public class FctTarget extends Translatable {
 	
 	private Long id;
 	private Integer order;
-	private DsrObjective objective;
-	private Expression expression;
-	private DsrTargetCategory category;
+	private FctObjective objective;
+	private Sum sum;
 	private String format;
-	private String groupUuidString;  //comma-separated list of organisation ids
+	private String groupUuidString; //comma-separated list of organisation ids
 	
 
 	@Id
@@ -70,36 +73,28 @@ public class DsrTarget extends Translatable {
 	public Integer getOrder() {
 		return order;
 	}
-	
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
 
-	@ManyToOne(targetEntity=Expression.class, optional=false)
-	public Expression getExpression() {
-		return expression;
-	}
-
-	public void setExpression(Expression expression) {
-		this.expression = expression;
-	}
-
-	@ManyToOne(targetEntity=DsrObjective.class)
-	public DsrObjective getObjective() {
+	@ManyToOne(targetEntity = FctObjective.class)
+	public FctObjective getObjective() {
 		return objective;
 	}
-
-	public void setObjective(DsrObjective objective) {
+	public void setObjective(FctObjective objective) {
 		this.objective = objective;
+	}	
+	
+	@ManyToOne(targetEntity=Sum.class)
+	public Sum getSum() {
+		return sum;		
+	}	
+	public void setSum(Sum sum){
+		this.sum = sum;
 	}
-
-	@ManyToOne(targetEntity=DsrTargetCategory.class)
-	public DsrTargetCategory getCategory() {
-		return category;
-	}
-
-	public void setCategory(DsrTargetCategory category) {
-		this.category = category;
+	
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	@Basic
@@ -107,17 +102,12 @@ public class DsrTarget extends Translatable {
 		return format;
 	}
 
-	public void setFormat(String format) {
-		this.format = format;
-	}
-
-	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
-	}
-
 	public void setGroupUuidString(String groupUuidString) {
 		this.groupUuidString = groupUuidString;
+	}
+    @Lob
+	public String getGroupUuidString() {
+		return groupUuidString;
 	}
 	
 }

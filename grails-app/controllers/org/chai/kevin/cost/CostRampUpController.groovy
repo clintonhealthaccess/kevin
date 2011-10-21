@@ -37,8 +37,6 @@ import org.chai.kevin.data.Expression;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
-import com.sun.tools.javac.code.Type.ForAll;
-
 class CostRampUpController extends AbstractEntityController {
 
 	def costService

@@ -31,7 +31,6 @@ package org.chai.kevin.dsr;
  * @author Jean Kahigiso M.
  *
  */
-import grails.plugin.springcache.annotations.Cacheable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class DsrService {
 	private DataService dataService;
 	private int groupLevel;
 	
-	@Cacheable("dsrCache")
+//	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective, Period period) {
 		

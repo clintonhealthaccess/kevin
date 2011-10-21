@@ -1,6 +1,4 @@
-package org.chai.kevin;
-
-/*
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -15,7 +13,7 @@ package org.chai.kevin;
  *     * Neither the name of the <organization> nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,41 +25,19 @@ package org.chai.kevin;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.fct;
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
 
-import org.chai.kevin.fct.FctObjective
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.hisp.dhis.period.Period
+import java.util.Comparator;
 
-abstract class AbstractController {
-
-	OrganisationService organisationService;
-
-	protected def getObjective(){		
-		FctObjective objective = FctObjective.get(params.int('objective'));	
-		return objective;
+public class FctTargetSorter implements Comparator<FctTarget> {
+	
+	@Override
+	public int compare(FctTarget targetOne, FctTarget targetTwo) {
+		return targetOne.compareTo(targetTwo);
 	}
 	
-	protected def getOrganisation(def defaultIfNull) {
-		
-		Organisation organisation = null;		
-		if (params.int('organisation')){
-			 organisation = organisationService.getOrganisation(params.int('organisation'));			 
-		}
-		
-		//if true, return the root organisation
-		//if false, don't return the root organisation
-		if (organisation == null && defaultIfNull) {
-			organisation = organisationService.getRootOrganisation();
-		}		
-		return organisation
-	}
-
-	protected def getPeriod() {
-		Period period = Period.get(params.int('period'))
-		if (period == null) {
-			period = Period.findAll()[ConfigurationHolder.config.site.period]
-		}
-		return period
-	}
-
 }

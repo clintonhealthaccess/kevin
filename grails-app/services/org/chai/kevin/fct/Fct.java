@@ -1,6 +1,6 @@
-package org.chai.kevin;
+package org.chai.kevin.fct;
 
-/*
+/* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -15,7 +15,7 @@ package org.chai.kevin;
  *     * Neither the name of the <organization> nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,40 +28,55 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.fct.FctObjective
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.hisp.dhis.period.Period
+import org.chai.kevin.Organisation;
+import org.chai.kevin.dsr.DsrTarget;
+import org.hisp.dhis.period.Period;
 
-abstract class AbstractController {
+public class Fct {
+	private Organisation organisation;
+	private Period period;
+	private FctTarget target;
+	private String value;
+	
 
-	OrganisationService organisationService;
-
-	protected def getObjective(){		
-		FctObjective objective = FctObjective.get(params.int('objective'));	
-		return objective;
+	public Fct(Organisation organisation, Period period, FctTarget target, String value) {
+		this.organisation = organisation;
+		this.period = period;
+		this.setTarget(target);
+		this.setValue(value);
 	}
 	
-	protected def getOrganisation(def defaultIfNull) {
-		
-		Organisation organisation = null;		
-		if (params.int('organisation')){
-			 organisation = organisationService.getOrganisation(params.int('organisation'));			 
-		}
-		
-		//if true, return the root organisation
-		//if false, don't return the root organisation
-		if (organisation == null && defaultIfNull) {
-			organisation = organisationService.getRootOrganisation();
-		}		
-		return organisation
+	public Organisation getOrganisation() {
+		return organisation;
 	}
 
-	protected def getPeriod() {
-		Period period = Period.get(params.int('period'))
-		if (period == null) {
-			period = Period.findAll()[ConfigurationHolder.config.site.period]
-		}
-		return period
+	public void setOrganisation(Organisation organisation) {
+		this.organisation = organisation;
 	}
+
+	public Period getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(Period period) {
+		this.period = period;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setTarget(FctTarget target) {
+		this.target = target;
+	}
+
+	public FctTarget getTarget() {
+		return target;
+	}
+
 
 }

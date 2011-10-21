@@ -25,44 +25,69 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.dsr;
+package org.chai.kevin.fct;
 /**
  * @author Jean Kahigiso M.
  *
  */
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Translatable;
-import org.chai.kevin.data.Expression;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
-@Entity(name = "DsrTarget")
-@Table(name = "dhsst_dsr_target")
-public class DsrTarget extends Translatable {
+@Entity(name = "FctObjective")
+@Table(name = "dhsst_fct_objective")
+public class FctObjective extends Translatable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5921900390935911828L;
 	
 	private Long id;
 	private Integer order;
-	private DsrObjective objective;
-	private Expression expression;
-	private DsrTargetCategory category;
-	private String format;
-	private String groupUuidString;  //comma-separated list of organisation ids
+	private List<FctTarget> targets = new ArrayList<FctTarget>();
 	
-
 	@Id
 	@GeneratedValue
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public void setTargets(List<FctTarget> targets) {
+		this.targets = targets;
+	}
+	
+	@OneToMany(cascade=CascadeType.ALL,targetEntity=FctTarget.class, mappedBy="objective")
+	@Sort(type=SortType.COMPARATOR, comparator=FctTargetSorter.class)
+	public List<FctTarget> getTargets() {
+		if(targets.size() > 1){
+			Collections.sort(targets, new FctTargetSorter());	
+		}		
+		return targets;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 	
 	@Basic
@@ -71,53 +96,11 @@ public class DsrTarget extends Translatable {
 		return order;
 	}
 	
-	public void setOrder(Integer order) {
-		this.order = order;
+	@Transient
+	public void addTarget(FctTarget target) {
+		target.setObjective(this);
+		targets.add(target);
+		Collections.sort(targets, new FctTargetSorter());
 	}
 
-	@ManyToOne(targetEntity=Expression.class, optional=false)
-	public Expression getExpression() {
-		return expression;
-	}
-
-	public void setExpression(Expression expression) {
-		this.expression = expression;
-	}
-
-	@ManyToOne(targetEntity=DsrObjective.class)
-	public DsrObjective getObjective() {
-		return objective;
-	}
-
-	public void setObjective(DsrObjective objective) {
-		this.objective = objective;
-	}
-
-	@ManyToOne(targetEntity=DsrTargetCategory.class)
-	public DsrTargetCategory getCategory() {
-		return category;
-	}
-
-	public void setCategory(DsrTargetCategory category) {
-		this.category = category;
-	}
-
-	@Basic
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
-	}
-
-	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
-	}
-
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
-	}
-	
 }

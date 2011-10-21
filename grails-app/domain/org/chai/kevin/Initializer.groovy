@@ -52,6 +52,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
@@ -59,6 +60,8 @@ import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
+import org.chai.kevin.fct.FctObjective
+import org.chai.kevin.fct.FctTarget
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
@@ -85,6 +88,7 @@ class Initializer {
 		user.addToPermissions("maps:*")
 		user.addToPermissions("cost:*")
 		user.addToPermissions("home:*")
+		user.addToPermissions("fct:*")
 		user.save()
 
 		def admin = new User(username: "admin", passwordHash: new Sha256Hash("admin").toHex())
@@ -918,6 +922,63 @@ class Initializer {
 		}
 	}
 
+	static def createFct() {
+		if (!FctTarget.count()) {
+			def dh = OrganisationUnitGroup.findByUuid("District Hospital")
+			def hc = OrganisationUnitGroup.findByUuid("Health Center")
+			
+			def hmr = new FctObjective(
+				names:j(["en":"Human Resources"]),
+				descriptions:j(["en":"Human Resources"]),
+				order: 1,
+				code: "Human Resources"
+				)
+			
+			def servdeliv = new FctObjective(
+				names:j(["en":"Service Delivery"]),
+				descriptions:j(["en":"Service Delivery"]),
+				code: "Service Delivery"
+				)
+			
+			def geoacss= new FctObjective(
+					names:j(["en":"Geographical Access"]),
+					order: 3,
+					descriptions:j(["en":"Geographical Access"]),
+					code:"Geographical Access",
+					)			
+			
+			def sum1 = new Sum(expressions: [
+						"District Hospital": Expression.findByCode("Constant 10"),
+						"Health Center": Expression.findByCode("Constant 20")
+					], timestamp:new Date(), type: Type.TYPE_NUMBER());
+			sum1.save();
+						
+			FctTarget fctTarget1 = new FctTarget(
+				names:j(["en":"Fct Target 1"]), descriptions:j([:]), 
+				code:"TARGET 1",
+				sum: sum1,
+				groupUuidString: "District Hospital,Health Center").save(failOnError: true, flush:true)
+			
+			hmr.addTarget(fctTarget1);
+			hmr.save(failOnError:true)
+			
+			def sum2 = new Sum(expressions: [
+				"District Hospital": Expression.findByCode("Constant 10"),
+				"Health Center": Expression.findByCode("Constant 20")
+			], timestamp:new Date(), type: Type.TYPE_NUMBER());
+			sum2.save();
+			
+			FctTarget fctTarget2 = new FctTarget(
+				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
+				code:"TARGET 2",
+				sum: sum2,
+				groupUuidString: "District Hospital,Health Center").save(failOnError: true, flush:true)
+			
+			hmr.addTarget(fctTarget2);
+			hmr.save(failOnError:true)
+		}
+	}	
+	
 	static def createQuestionaire(){
 		if(!Survey.count()){
 

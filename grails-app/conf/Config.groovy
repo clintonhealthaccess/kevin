@@ -194,6 +194,8 @@ cost.skip.levels=[]
 dsr.facility.checked=["District Hospital","Health Center"]
 dsr.group.level=3
 
+fct.facility.checked=["District Hospital","Health Center"]
+
 period.type = "Monthly"
 
 

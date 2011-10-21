@@ -12,7 +12,14 @@ abstract class DsrIntegrationTests extends IntegrationTests {
 	}
 	
 	def newDsrTarget(def code, def expression, def format, def groups, def objective) {
-		def target = new DsrTarget(names: [:], code: code, format: format, expression: expression, objective: objective, groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
+		
+		def target = new DsrTarget(names: [:], 
+			code: code, 
+			format: format, 
+			expression: expression, 
+			objective: objective, 
+			groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
+			
 		objective.targets << target
 		objective.save(failOnError: true)
 		return target

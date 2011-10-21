@@ -1,6 +1,4 @@
-package org.chai.kevin;
-
-/*
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,41 +25,75 @@ package org.chai.kevin;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.fct;
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
 
-import org.chai.kevin.fct.FctObjective
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.hisp.dhis.period.Period
+import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.GroupCollection;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.Expression;
+import org.chai.kevin.dsr.DsrTarget
+import org.chai.kevin.util.Utils;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
-abstract class AbstractController {
+class FctTargetController extends AbstractEntityController {
 
-	OrganisationService organisationService;
+	def organisationService
 
-	protected def getObjective(){		
-		FctObjective objective = FctObjective.get(params.int('objective'));	
-		return objective;
+	def getEntity(def id) {
+		return FctTarget.get(id)
+	}
+
+	def createEntity() {
+		return new DsrTarget()
+	}
+
+	def getLabel() {
+		return "fct.target.label"
 	}
 	
-	protected def getOrganisation(def defaultIfNull) {
-		
-		Organisation organisation = null;		
-		if (params.int('organisation')){
-			 organisation = organisationService.getOrganisation(params.int('organisation'));			 
-		}
-		
-		//if true, return the root organisation
-		//if false, don't return the root organisation
-		if (organisation == null && defaultIfNull) {
-			organisation = organisationService.getRootOrganisation();
-		}		
-		return organisation
+	def getTemplate() {
+		return "/Fct/createTarget"
 	}
 
-	protected def getPeriod() {
-		Period period = Period.get(params.int('period'))
-		if (period == null) {
-			period = Period.findAll()[ConfigurationHolder.config.site.period]
-		}
-		return period
+	def getModel(def entity) {
+		[
+			target: entity,
+			objectives: FctObjective.list(),
+			groups: organisationService.getGroupsForExpression(),
+			expressions: Expression.list(),
+			groupUuids: Utils.split(entity.groupUuidString)
+		]
 	}
 
+	def validateEntity(def entity) {
+		return entity.validate()
+	}
+
+	def saveEntity(def entity) {
+		entity.save();
+	}
+
+	def deleteEntity(def entity) {
+		if(entity.category != null){
+			entity.category.targets.remove(entity)
+			entity.category.save()
+		}
+		entity.objective.targets.remove(entity)
+		entity.objective.save()
+		entity.delete()
+	}
+
+	def bindParams(def entity) {
+		entity.properties = params
+
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		entity.groupUuidString = Utils.unsplit(params['groupUuids'])
+		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
+	}
 }
