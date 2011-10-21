@@ -24,7 +24,7 @@ class QuestionControllerSpec extends SurveyIntegrationTests {
 		questionController.getAjaxData()
 		
 		then:
-		questionController.responseAsString.contains('element')
+		questionController.response.contentAsString.contains('element')
 		
 	}
 	
