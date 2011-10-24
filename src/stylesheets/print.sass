@@ -1,6 +1,3 @@
-//@import partials/reset
-//@import partials/default
-
 body
   line-height: 1.2
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif
@@ -13,7 +10,7 @@ body
 
   ol
     margin-bottom: 16px
-
+    
 div
   page-break-inside: avoid
 label
@@ -40,11 +37,11 @@ label
     margin-top: 10px
   
   ol > li
-    margin-left: 30px
-    padding-left: 4px
-    list-style: inherit
+    margin-left: 10px
+    padding-left: 4px 4px 4px 0px
+    list-style: none
   
-  .objective-title, .appendix-title
+  .objective-title
     font-weight: bold
     font-size: 14px
     border-bottom: 3px solid #000
@@ -82,9 +79,11 @@ label
       border: 1px solid #ccc
       padding: 3px
     h4
-      font-weight: bold
+      font-weight: normal
       margin-top: 10px
       margin-bottom: 10px
+      .question-number
+        margin-right: 5px
       
   .block-with-height
     height: 30px
@@ -108,11 +107,9 @@ label
     
   .question-simple
     textarea
-      display: block  
-  
-  .appendix-title
-    margin-top: 100px
-    
+      display: block 
+      width: 600px 
+      
   .oddrow
     background-color: #eee
     
@@ -124,49 +121,7 @@ label
   
   .element-enum > div
     display: block
-    
-  .element-list .element-map 
-    .element-map-body, .element-map-header
-      width: 300px
-      
-  div.element-list
-    margin: 10px 0px 1px 0px
-    display: table
-        
-    .element-map
-      display: table-row
-      float: left
-    
-      .element-map-header, .element-map-body
-        display: table-cell
-        min-height: 30px
-        padding: 4px 10px 4px 5px
-        border-bottom: 1px solid #d3d3d3
-        border-left: 1px solid #d3d3d3
-        border-right: 1px solid #d3d3d3
 
-        select, input
-          width: 98px
-          
-  .text-align-left
-    text-align: left  
-            
-  .element-list .element-list-header .element-map .element-map-body
-    display: none
-    
-  .element-list .element-list-body .element-map .element-map-header
-    display: none
-    
-  .element-list .element-list-body .element-map .element-map-body 
-    height: 20px
-    div
-      display: none
-    
-  div.element-map
-    display: block
-    
-    .element-map-body
-      display: block
-    
-    div, .element
-      display: inline   
+.appendix-content h3, .appendix-content ol
+  display: none
+ 

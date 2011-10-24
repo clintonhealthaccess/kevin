@@ -4,7 +4,6 @@
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 	
 	<g:if test="${print}">
-		<g:each in="${0..100}" var="item" status="i">
 			<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
 				value: null,
 				lastValue: null,
@@ -15,7 +14,6 @@
 				enteredValue: enteredValue,
 				readonly: readonly
 			]"/>
-		</g:each>
 	</g:if>
 	<g:else>
 		<g:each in="${value.listValue}" var="item" status="i">

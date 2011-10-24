@@ -14,9 +14,9 @@
 	
 	<g:set var="surveyElement" value="${question.surveyElement}"/>
 	<div class="clear"></div>
-
+    
 	<g:if test="${print && surveyElement?.dataElement.type.type.name().toLowerCase()=='list' && !appendix}">
-		<h4>--- <g:message code="survey.print.see.appendix" default="See Appendix"/> ---</h4>
+		<label>--- <g:message code="survey.print.see.appendix" default="See Appendix"/> ---</label>
 	</g:if>
 	<g:else>
 		<div id="element-${surveyElement?.id}" class="survey-element">
