@@ -29,7 +29,7 @@
 				<g:if test="${headerPrefixes != null && !headerPrefixes.empty}">
 					<div class="row ${hasErrors(bean:question, field:'surveyElement.headers', 'errors')}">
 						<span class="bold">
-							<a href="#" onclick="$(this).parent().next().toggle();return false;"><g:message code="survey.checkboxquestion.checkboxoption.label" default="Headers"/>:</a> 
+							<a href="#" onclick="$(this).parent().next().toggle();return false;"><g:message code="survey.simplequestion.headers.label" default="Headers"/>:</a> 
 						</span>
 						<div class="white-box hidden">
 							<g:each in="${headerPrefixes}" var="headerPrefix">

@@ -28,18 +28,23 @@
 				</g:each>
 			</ul>
 			<h2><span>Rwanda Ministry Of Health</span>District Health Systems Strenghtening Tool</h2>
-			<shiro:user>
-				<ul id="logout">
-				  <li>
-					<shiro:hasPermission permission="admin">
-						<a class="redmine follow" target="_blank" href="http://districthealth.moh.gov.rw/redmine"><g:message code="header.labels.redmine" default="Found a bug? Go to REDMINE"/></a>
-        			</shiro:hasPermission>
-					</li>
+			
+			<ul id="logout">
+				<shiro:hasPermission permission="admin">
 					<li>
-						<a class="follow" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout" default="Logout"/></a>
-					</li>
-				</div>
-			</shiro:user>
+						<a class="redmine follow" target="_blank" href="http://districthealth.moh.gov.rw/redmine"><g:message code="header.labels.redmine" default="Found a bug? Go to REDMINE"/></a>
+    				</li>
+				</shiro:hasPermission>
+				<li>
+					<a class="redmine follow" href="${createLink(uri:'/helpdesk')}"><g:message code="header.labels.helpdesk" default="Questions? Call the Helpdesk 114"/></a>
+				</li>
+				<shiro:user>
+				<li>
+					<a class="follow" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout" default="Logout"/></a>
+				</li>
+				</shiro:user>
+			</div>
+			
 			<div class="clear"></div>
 		</div>			
 			<!--<h1>Welcome to Kevin</h1>-->
@@ -61,7 +66,7 @@
 			  				</li>
 			  			</shiro:hasPermission>
 			  			<shiro:hasPermission permission="menu:admin">
-			  				<li><a class="${org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"  onclick="return false;"><g:message code="header.navigation.administration" default="Administration"/></a>
+			  				<li><a class="${controllerName!=null && org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"  onclick="return false;"><g:message code="header.navigation.administration" default="Administration"/></a>
 			  					<ul class="submenu">
 			  						<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'list')}"><g:message code="expression.label" default="Expressions"/></a></li>
 			  <!-- 								<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li> -->
@@ -87,7 +92,7 @@
 
 	<div id="footer">
 	  <div class="wrapper">
-		  &copy; <g:message code="footer.labels.chai" default="Clinton Health Access Initiative"/> <br /><a href="#"><g:message code="footer.labels.about" default="About"/></a> | <a href="#"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="#"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
+		  &copy; <g:message code="footer.labels.chai" default="Clinton Health Access Initiative"/> <br /><a href="${createLink(uri: '/about')}"><g:message code="footer.labels.about" default="About"/></a> | <a href="${createLink(uri:'/contact')}"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="${createLink(uri:'/helpdesk')}"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
 		</div>
 	</div>
 

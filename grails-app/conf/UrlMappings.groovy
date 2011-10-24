@@ -29,7 +29,14 @@
 class UrlMappings {
 
 	static mappings = {
+		// TODO serve those statically, they shouldn't be here
+		// since they are implementation-specific
+		"/about"(view:"about_contact")
+		"/helpdesk"(view:"helpdesk")
+		"/contact"(view:"about_contact")
+		"/upgrade"(view:"upgrade")
 		
+				
 		"/dashboard/$action/$period?/$objective?/$organisation?"(controller:"dashboard")
 		
 		"/cost/$action/$period?/$objective?/$organisation?"(controller:"cost")
