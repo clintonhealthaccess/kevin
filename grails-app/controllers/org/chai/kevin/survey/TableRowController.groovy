@@ -61,8 +61,7 @@ class TableRowController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			row: entity,
-			groups: organisationService.getGroupsForExpression(),
-			groupUuids: Utils.split(entity.groupUuidString)
+			groups: organisationService.getGroupsForExpression()
 		]
 	}
 
@@ -79,7 +78,7 @@ class TableRowController extends AbstractEntityController {
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString = params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
+//		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
 
 		params.surveyElement.each { columnId ->

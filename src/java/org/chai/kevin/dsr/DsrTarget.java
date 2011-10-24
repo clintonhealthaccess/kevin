@@ -30,6 +30,8 @@ package org.chai.kevin.dsr;
  * @author Jean Kahigiso M.
  *
  */
+import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,9 +40,11 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Translatable;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.util.Utils;
 
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target")
@@ -118,6 +122,14 @@ public class DsrTarget extends Translatable {
 
 	public void setGroupUuidString(String groupUuidString) {
 		this.groupUuidString = groupUuidString;
+	}
+	
+	@Transient
+	public Set<String> getGroupUuids() {
+		return Utils.split(groupUuidString);
+	}
+	public void setGroupUuids(Set<String> groupUuids) {
+		this.groupUuidString = Utils.unsplit(groupUuids);
 	}
 	
 }

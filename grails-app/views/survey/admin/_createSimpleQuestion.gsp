@@ -56,16 +56,8 @@
 					</div>
 				</div>
 
-				<div class="row ${hasErrors(bean:question, field:'groupUuidString', 'errors')}">
-					<label for="groups"><g:message code="facility.type.label" default="Facility Groups"/>:</label> <select name="groupUuids" multiple="multiple" size="5">
-						<g:each in="${groups}" var="group">
-							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>${group.name}</option>
-						</g:each>
-					</select>
-					<div class="error-list">
-						<g:renderErrors bean="${question}" field="groupUuidString" />
-					</div>
-				</div>
+				<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${question}" field="groupUuidString" 
+					from="${groups}" value="${question.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
 
 				<g:if test="${question.id != null}">
 					<input type="hidden" name="id" value="${question.id}"></input>

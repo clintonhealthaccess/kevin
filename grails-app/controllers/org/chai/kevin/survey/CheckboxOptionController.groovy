@@ -64,8 +64,7 @@ class CheckboxOptionController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			option: entity,
-			groups: organisationService.getGroupsForExpression(),
-			groupUuids: Utils.split(entity.groupUuidString)
+			groups: organisationService.getGroupsForExpression()
 		]
 	}
 	
@@ -73,7 +72,7 @@ class CheckboxOptionController extends AbstractEntityController {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
+//		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
 		
 		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity.question

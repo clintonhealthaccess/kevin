@@ -96,6 +96,15 @@ public class SurveyTableRow extends SurveyTranslatable {
 	public void setGroupUuidString(String groupUuidString) {
 		this.groupUuidString = groupUuidString;
 	}
+	
+	@Transient
+	public Set<String> getGroupUuids() {
+		return Utils.split(groupUuidString);
+	}
+	
+	public void setGroupUuids(Set<String> groupUuids) {
+		this.groupUuidString = Utils.unsplit(groupUuids);
+	}
 
 	@ManyToOne(targetEntity=SurveyTableQuestion.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)

@@ -12,21 +12,10 @@
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${target}" field="code"/>
 		<g:input name="format" label="Format" bean="${target}" field="format"/>
-	    <div class="row">
-			<div id="orgunitgroup-block">
-				<div class="${hasErrors(bean:target, field:'groupUuidString', 'errors')}">
-					<label for="groups">Organisation Unit Group:</label>
-					<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
-						<g:each in="${groups}" var="group">
-							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
-					           ${group.name}
-				            </option>
-						</g:each>
-					</select>
-					<div class="error-list"><g:renderErrors bean="${target}" field="groupUuidString" /></div>
-				</div>
-			</div>
-		</div>
+		
+   		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
+				from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+
 		<div class="row">
 			<div id="objective-block">
 				<div class="${hasErrors(bean:target, field:'objective', 'errors')}">

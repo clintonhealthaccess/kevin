@@ -40,16 +40,9 @@
 				<div class="clear"></div>
 				<g:input name="order" label="Order" bean="${row}" field="order" />
 
-				<div class="row ${hasErrors(bean:row, field:'groupUuidString', 'errors')}">
-					<label for="groups"><g:message code="facility.type.label" default="Facility Groups"/>:</label> <select class="group-list" name="groupUuids" multiple="multiple" size="5">
-						<g:each in="${groups}" var="group">
-							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>${group.name}</option>
-						</g:each>
-					</select>
-					<div class="error-list">
-						<g:renderErrors bean="${row}" field="groupUuidString" />
-					</div>
-				</div>
+				<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${row}" field="groupUuidString" 
+					from="${groups}" value="${row.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+
 
 				<g:if test="${row.id != null}">
 					<input type="hidden" name="id" value="${row.id}"></input>

@@ -125,6 +125,14 @@ public class SurveyObjective extends SurveyTranslatable {
 		return groupUuidString;
 	}
 
+	@Transient
+	public Set<String> getGroupUuids() {
+		return Utils.split(groupUuidString);
+	}
+	public void setGroupUuids(Set<String> groupUuids) {
+		this.groupUuidString = Utils.unsplit(groupUuids);
+	}
+	
 //	@ManyToOne(targetEntity = SurveyObjective.class, optional = true)
 //	@JoinTable(name="dhsst_survey_objective_dependencies")
 //	public SurveyObjective getDependency() {

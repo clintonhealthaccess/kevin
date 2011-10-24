@@ -7,7 +7,7 @@
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 	
 	<g:if test="${levels.size() == 0}">
-		<h5 class="adv-form-title">General Information</h5>
+		<h5 class="adv-form-title">Basic Identifiers</h5>
 	</g:if>	
 	
 	<% levels.push(type) %>

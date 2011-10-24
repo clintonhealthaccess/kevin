@@ -22,11 +22,7 @@
 					<div class="error-list"><g:renderErrors bean="${validation}" field="surveyElement" /></div>
 				</div>
 			
-				<div class="row ${hasErrors(bean:validation, field:'prefix', 'errors')}">
-				 	<label><g:message code="survey.validationrule.prefix.label" default="Prefix"/>: </label>
-				 	<input type="text" name="prefix" value="${validation.prefix}"/>
-				</div>
-		 
+				<g:input name="prefix" label="${message(code:'survey.validationrule.prefix.label')}" bean="${validation}" field="prefix"/>
 		 		<g:i18nRichTextarea name="messages" bean="${validation}" value="${validation.messages}" label="Messages" field="messages" height="150"  width="400" maxHeight="100" />
 		 		
 				<div class="row ${hasErrors(bean:validation, field:'dependencies', 'errors')}">
@@ -50,21 +46,9 @@
 				</div>
 				
 				<g:textarea name="expression" label="Expression" bean="${validation}" field="expression" rows="5"/>
-		
-				<div class="row ${hasErrors(bean:validation, field:'groupUuidString', 'errors')}">
-					<label for="groups">
-					   <g:message code="facility.type.label" default="Facility Groups"/>:
-					</label> 
-					<select name="groupUuids" multiple="multiple" size="5">
-						<g:each in="${groups}" var="group">
-							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>${group.name}</option>
-						</g:each>
-					</select>
-					<div class="error-list">
-						<g:renderErrors bean="${validation}" field="groupUuidString" />
-					</div>
-				</div>
-				
+				<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${validation}" field="groupUuidString" 
+					from="${groups}" value="${validation.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+			
 				<g:if test="${validation.id != null}">
 					<input type="hidden" name="id" value="${validation.id}" />
 				</g:if>

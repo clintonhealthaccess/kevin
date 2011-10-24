@@ -69,7 +69,6 @@ class SimpleQuestionController extends AbstractEntityController {
 			question: entity,
 			groups: organisationService.getGroupsForExpression(),
 			sections: (entity.section)!=null?entity.survey.sections:null,
-			groupUuids: Utils.split(entity.groupUuidString),
 			headerPrefixes: entity.surveyElement!=null?surveyElementService.getHeaderPrefixes(entity.surveyElement):null
 		]
 	}
@@ -78,7 +77,7 @@ class SimpleQuestionController extends AbstractEntityController {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
+//		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		

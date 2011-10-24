@@ -1,8 +1,8 @@
 package org.chai.kevin.survey
 
-import org.chai.kevin.data.Type;
-import org.chai.kevin.survey.validation.SurveyValidationRuleController;
-import org.chai.kevin.util.Utils;
+import org.chai.kevin.data.Type
+import org.chai.kevin.survey.validation.SurveyValidationRuleController
+import org.chai.kevin.util.Utils
 
 class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 

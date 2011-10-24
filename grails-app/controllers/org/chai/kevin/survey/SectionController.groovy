@@ -62,8 +62,7 @@ class SectionController extends AbstractEntityController {
 		[
 			section: entity,
 			objectives: entity.objective.survey.objectives,
-			groups: organisationService.getGroupsForExpression(),
-			groupUuids: Utils.split(entity.groupUuidString)
+			groups: organisationService.getGroupsForExpression()
 		]
 	}
 
@@ -73,7 +72,7 @@ class SectionController extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		
-		entity.groupUuidString =  params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''
+//		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
