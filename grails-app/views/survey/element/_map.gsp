@@ -25,17 +25,7 @@
   					<h6><g:i18n field="${surveyElement.headers.get(headerSuffix+'.'+it.key)}"/></h6>
   				</g:if>
   			</g:else>
-			
-  			<g:if test="${it.value.type.name().toLowerCase()=='enum' && print && appendix}">
-  				<g:if test="${it.value.enumCode != null}">
-  					<g:set var="enume" value="${Enum.findByCode(it.value.enumCode)}"/>
-					<div class="text-align-left">--<g:message code="survey.print.possiblechoice.label" default="Possible choices"/>--</div>
-  					<g:each in="${enume?.enumOptions}" var="option">
-  						<div class="text-align-left"><g:i18n field="${option.names}" /></div>
-  					</g:each>
-  				</g:if>
-  			</g:if>
-			
+						
   			<g:render template="/survey/element/${it.value.type.name().toLowerCase()}"  model="[
   				value: value?.mapValue?.get(it.key),
   				lastValue: lastValue?.mapValue?.get(it.key),
