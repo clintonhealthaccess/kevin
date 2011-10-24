@@ -51,7 +51,7 @@ grails.project.dependency.resolution = {
         // from public Maven repositories
         mavenLocal()
 //	    mavenCentral()	
-//		mavenRepo "http://m2repo.spockframework.org/snapshots"
+		mavenRepo "http://m2repo.spockframework.org/snapshots"
 //		mavenRepo "http://snapshots.repository.codehaus.org"
 //		mavenRepo "http://repository.codehaus.org"
 //		mavenRepo "http://download.java.net/maven/2/"
@@ -106,7 +106,7 @@ grails.project.dependency.resolution = {
 		}
 		test 'org.gmock:gmock:0.8.1'
 		
-		test('org.spockframework:spock-core:0.6-SNAPSHOT')
+		test('org.spockframework:spock-core:0.6-groovy-1.8-SNAPSHOT')
 		
 		// those are for the migration script to work
 //		compile 'org.hisp.dhis:dhis-service-importexport:2.2-SNAPSHOT'

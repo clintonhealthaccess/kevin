@@ -21,9 +21,9 @@
 				<div class="right">
 					<!-- ADMIN SECTION -->
 					<shiro:hasPermission permission="admin:dsr">
-						<span> <a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'create')}">Add Objective</a> </span>|
-						<span> <a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'create')}">Add Target</a> </span>|
-						<span> <a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'create')}">Add Target Category</a> </span>
+						<span><a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'create')}">Add Objective</a> </span>|
+						<span><a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'create')}">Add Target</a> </span>|
+						<span><a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'create')}">Add Target Category</a> </span>
 					</shiro:hasPermission>
 					<!-- ADMIN SECTION END -->
 				</div>
