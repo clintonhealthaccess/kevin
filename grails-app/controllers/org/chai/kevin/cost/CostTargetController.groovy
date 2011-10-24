@@ -67,7 +67,6 @@ class CostTargetController extends AbstractEntityController {
 		def groups = new GroupCollection(organisationService.getGroupsForExpression())
 		[
 			target: entity, 
-			groupUuids: Utils.split(entity.groupUuidString),
 			currentObjective: currentObjective, 
 			expressions: Expression.list(), 
 			costRampUps: CostRampUp.list(), 
@@ -91,7 +90,7 @@ class CostTargetController extends AbstractEntityController {
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString = Utils.unsplit(params['groupUuids']);
+//		entity.groupUuids = params['groupUuids'];
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = entity.descriptions
 

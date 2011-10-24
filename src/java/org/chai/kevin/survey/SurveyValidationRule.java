@@ -2,6 +2,7 @@ package org.chai.kevin.survey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -21,6 +22,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
+import org.chai.kevin.util.Utils;
 
 
 @Entity(name="SurveyValidationRule")
@@ -95,6 +97,15 @@ public class SurveyValidationRule {
 
 	public void setGroupUuidString(String groupUuidString) {
 		this.groupUuidString = groupUuidString;
+	}
+	
+	@Transient
+	public Set<String> getGroupUuids() {
+		return Utils.split(groupUuidString);
+	}
+	
+	public void setGroupUuids(Set<String> groupUuids) {
+		this.groupUuidString = Utils.unsplit(groupUuids);
 	}
 	
 	@Basic

@@ -30,6 +30,7 @@ package org.chai.kevin.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -52,10 +53,17 @@ public class Utils {
 	}
 
 	public static String unsplit(Object list) {
-		if (list == null) return "";
-		if (list instanceof String) return (String) list;
-		if (list instanceof Collection) return StringUtils.join(((Collection<String>)list).toArray(), ',');
-		else return StringUtils.join((Object[]) list, ',');
+		List<String> result = new ArrayList<String>();
+		
+		if (list instanceof String) result.add((String) list);
+		if (list instanceof Collection) result.addAll((Collection<String>)list);
+		else result.addAll(Arrays.asList((String[]) list));
+		
+		for (String string : new ArrayList<String>(result)) {
+			if (string.trim().isEmpty()) result.remove(string);
+		}
+		
+		return StringUtils.join(result, ',');
 	}
 	
 	@SuppressWarnings("unused")

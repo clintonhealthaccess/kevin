@@ -115,6 +115,14 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	}
 
 	@Transient
+	public Set<String> getGroupUuids() {
+		return Utils.split(groupUuidString);
+	}
+	public void setGroupUuids(Set<String> groupUuids) {
+		this.groupUuidString = Utils.unsplit(groupUuids);
+	}
+	
+	@Transient
 	public abstract QuestionType getType();
 
 	@Transient

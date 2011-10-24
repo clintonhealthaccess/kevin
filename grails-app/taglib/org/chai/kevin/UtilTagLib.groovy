@@ -97,7 +97,11 @@ class UtilTagLib {
 	def selectFromEnum = { attrs, body ->
 		out << render(template:"/tags/selectFromEnum", model: attrs)
 	}
-			
+	
+	def multipleSelect = { attrs, body ->
+		out << render(template:"/tags/multipleSelect", model: attrs)	
+	}		
+	
 	def locales = { attrs, body ->
 		attrs["locales"] = LanguageUtils.getAvailableLanguages();
 		out << render(template:"/tags/locales", model: attrs)

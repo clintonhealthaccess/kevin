@@ -107,9 +107,13 @@ public class SurveySection extends SurveyTranslatable {
 	public void setGroupUuidString(String groupUuidString) {
 		this.groupUuidString = groupUuidString;
 	}
-
-	public void setQuestions(List<SurveyQuestion> questions) {
-		this.questions = questions;
+	
+	@Transient
+	public Set<String> getGroupUuids() {
+		return Utils.split(groupUuidString);
+	}
+	public void setGroupUuids(Set<String> groupUuids) {
+		this.groupUuidString = Utils.unsplit(groupUuids);
 	}
 
 	@OneToMany(targetEntity=SurveyQuestion.class, mappedBy="section")
@@ -117,6 +121,10 @@ public class SurveySection extends SurveyTranslatable {
 	@OrderBy(value="order")
 	public List<SurveyQuestion> getQuestions() {
 		return questions;
+	}
+
+	public void setQuestions(List<SurveyQuestion> questions) {
+		this.questions = questions;
 	}
 
 	public void addQuestion(SurveyQuestion question) {

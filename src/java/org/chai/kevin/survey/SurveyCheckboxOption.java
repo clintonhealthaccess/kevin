@@ -89,6 +89,14 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 	public String getGroupUuidString() {
 		return groupUuidString;
 	}
+	
+	@Transient
+	public Set<String> getGroupUuids() {
+		return Utils.split(groupUuidString);
+	}
+	public void setGroupUuids(Set<String> groupUuids) {
+		this.groupUuidString = Utils.unsplit(groupUuids);
+	}
 
 	@ManyToOne(targetEntity = SurveyCheckboxQuestion.class)
 	@JoinColumn(nullable = false)

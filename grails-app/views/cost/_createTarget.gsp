@@ -39,17 +39,8 @@
 			</ul>
 		</div>
 
-		<div class="row ${hasErrors(bean:target, field:'groupUuidString', 'errors')}">
-			<label for="groupUuids">Applies to:</label>
-			<select class="group-list" name="groupUuids" multiple="multiple">
-				<g:each in="${groups}" var="group">
-					<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
-						${group.name}
-					</option>
-				</g:each>
-			</select>
-			<div class="error-list"><g:renderErrors bean="${target}" field="groupUuidString" /></div>
-		</div>
+		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
+					from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
 
 		<div class="row ${hasErrors(bean:target,field:'costRampUp','errors')}">
 			<label for="costRampUp.id">Ramp up</label>

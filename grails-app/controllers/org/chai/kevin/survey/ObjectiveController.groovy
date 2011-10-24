@@ -62,7 +62,6 @@ class ObjectiveController extends AbstractEntityController {
 		[
 			objective: entity,
 			groups: organisationService.getGroupsForExpression(),
-			groupUuids: Utils.split(entity.groupUuidString)
 		]
 	}
 
@@ -71,8 +70,7 @@ class ObjectiveController extends AbstractEntityController {
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-//		entity.groupUuidString = Utils.getGroupUuidString(params['groupUuids'])
-		entity.groupUuidString = params['groupUuids']!=null?Utils.unsplit(params['groupUuids']):''	
+//		entity.groupUuids = params['groupUuids']	
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}

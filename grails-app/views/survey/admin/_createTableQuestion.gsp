@@ -42,19 +42,10 @@
 			</select>
 			<div class="error-list"><g:renderErrors bean="${question}" field="section" /></div>
 		</div>
-		<div class="row ${hasErrors(bean:question, field:'groupUuidString', 'errors')}">
-			<label for="groups"><g:message code="facility.type.label" default="Facility Groups"/>:</label>
-				<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
-					<g:each in="${groups}" var="group">
-						<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
-				           ${group.name}
-			            </option>
-					</g:each>
-				</select>
-			<div class="error-list">
-				<g:renderErrors bean="${question}" field="groupUuidString" />
-			</div>
-		</div>
+		
+		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${question}" field="groupUuidString" 
+			from="${groups}" value="${question.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+
 		<div class="row">
 			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>
 			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>

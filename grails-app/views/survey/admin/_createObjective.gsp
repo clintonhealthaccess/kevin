@@ -15,21 +15,10 @@
 			<input type="hidden" name="survey.id" value="${objective.survey.id}" />
 			<label><g:message code="survey.label" default="Survey"/>:</label> <g:i18n field="${objective.survey.names}"/>
 		</div>
-		<div class="row">
-			<div class="${hasErrors(bean:objective, field:'groupUuidString', 'errors')}">
-				<label for="groups"><g:message code="facility.type.label" default="Facility Groups"/>:</label>
-					<select name="groupUuids" multiple="multiple" size="5" >
-						<g:each in="${groups}" var="group">
-							<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
-					           ${group.name}
-				            </option>
-						</g:each>
-					</select>
-				<div class="error-list">
-					<g:renderErrors bean="${objective}" field="groupUuidString" />
-				</div>
-			</div>
-		</div>
+		
+		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${objective}" field="groupUuidString" 
+			from="${groups}" value="${objective.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+
 		<g:input name="order" label="Order" bean="${objective}" field="order"/>
 		<g:if test="${objective.id != null}">
 			<input type="hidden" name="id" value="${objective.id}"></input>

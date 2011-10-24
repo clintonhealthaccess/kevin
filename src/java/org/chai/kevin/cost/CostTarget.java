@@ -28,6 +28,8 @@ package org.chai.kevin.cost;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,6 +43,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Translatable;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.util.Utils;
 
 @Entity(name="CostTarget")
 @Table(name="dhsst_cost_target")
@@ -68,7 +71,7 @@ public class CostTarget extends Translatable {
 	private CostObjective parent;
 	private CostRampUp costRampUp;
 	private CostType costType;
-	private String groupUuidString;
+	private String groupUuidString = "";
 	
 	private Integer order;
 	
@@ -130,14 +133,13 @@ public class CostTarget extends Translatable {
 		this.groupUuidString = groupUuidString;
 	}
 	
-//	@Transient
-//	public Set<String> getGroupUuids() {
-//		if (groupUuidString == null) return new HashSet<String>();
-//		return new HashSet<String>(Arrays.asList(StringUtils.split(groupUuidString, ',')));
-//	}
-//	public void setGroupUuids(Set<String> groupUuids) {
-//		this.groupUuidString = StringUtils.join(groupUuids, ',');
-//	}
+	@Transient
+	public Set<String> getGroupUuids() {
+		return Utils.split(groupUuidString);
+	}
+	public void setGroupUuids(Set<String> groupUuids) {
+		this.groupUuidString = Utils.unsplit(groupUuids);
+	}
 	
 	@Basic(optional=true)
 	@Column(name="ordering")

@@ -68,8 +68,7 @@ class DsrTargetController extends AbstractEntityController {
 			objectives: DsrObjective.list(),
 			groups: organisationService.getGroupsForExpression(),
 			expressions: Expression.list(),
-			categories: DsrTargetCategory.list(),
-			groupUuids: Utils.split(entity.groupUuidString)
+			categories: DsrTargetCategory.list()
 		]
 	}
 
@@ -88,7 +87,7 @@ class DsrTargetController extends AbstractEntityController {
 
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString = Utils.unsplit(params['groupUuids'])
+//		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
