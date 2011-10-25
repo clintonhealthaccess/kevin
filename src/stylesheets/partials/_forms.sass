@@ -68,6 +68,22 @@
     margin-right: 14px
     width: 205px
     
+.adv-form-mini
+  float: left
+  margin-bottom: -1px
+  
+  .horizontal li
+    margin-bottom: 0
+    
+  .adv-form-subsection
+    background: none
+    border: none
+    cursor: pointer
+    font-weight: bold
+    margin-top: 0
+    margin-bottom: 0 !important
+    padding: 3px 0
+    
 .adv-form-subsection
   background: #fff
   border: 1px solid $filler - #090909
@@ -96,8 +112,11 @@
     margin-top: 0
     margin-bottom: 0
     
-.adv-form-actions a
-  font-size: 11px
+.adv-form-actions
+  li
+    margin-bottom: 0 !important
+  a
+    font-size: 11px
 
 .adv-form-checkbox
   +pie-clearfix
@@ -194,6 +213,7 @@ select
   color: #444
   font: normal 12px Arial, sans-serif
   padding: 2px
+  min-width: 140px
   +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
   &:hover, &:focus
     background: $filler + #030303
@@ -372,9 +392,6 @@ ul.filtered
 .element-list-remove
   display: block
   font-size: 11px
-  position: absolute
-  right: 15px
-  top: 15px
     
 ul.element-map
   +pie-clearfix
@@ -395,5 +412,3 @@ ul.element-map
     background: url('../images/select.png') no-repeat left center
     color: $primary
     padding-left: 10px
-    
-    

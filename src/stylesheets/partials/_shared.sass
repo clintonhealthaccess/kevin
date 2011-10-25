@@ -40,8 +40,8 @@ a
   +text-shadow(#fff, 0, 1px, 0)
   
   span
-    background: $primary
-    color: $filler
+    background: $yes
+    color: #fff
     display: block
     font-weight: bold
     left: -10px
@@ -51,7 +51,12 @@ a
     top: 4px
     width: 18px
     +border-radius(50px)
-    +text-shadow($primary - #222, 0, 1px, 0)
+    +text-shadow($yes - #222, 0, 1px, 0)
+      
+#questions .incomplete h4 span
+  background: $primary
+  color: $filler
+  +text-shadow($primary - #222, 0, 1px, 0)
   
 .follow
   background: url('../images/icons/follow.png') no-repeat right center !important

@@ -27,7 +27,7 @@
 					<li><a class="${LanguageUtils.currentLanguage==language?'no-link':''}" href="${createLink(controller: controllerName, action: actionName, params: params)}">${language}</a></li>
 				</g:each>
 			</ul>
-			<h2><span>Rwanda Ministry Of Health</span>District Health Systems Strenghtening Tool</h2>
+			<h2><span class="right"><img src="${resource(dir:'images',file:'rwanda.png')}" alt='Rwanda coat of arms' width='33' /></span><span>Rwanda Ministry Of Health</span>District Health Systems Strenghtening Tool</h2>
 			
 			<ul id="logout">
 				<shiro:hasPermission permission="admin">

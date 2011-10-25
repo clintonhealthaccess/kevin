@@ -109,11 +109,7 @@
   position: relative
   
 .error-list 
-  opacity: 0.6
-  position: absolute
-  top: 21px
-  left: 0
-  z-index: 20
+  opacity: 0.75
   li
     background: $no
     color: #fff
@@ -129,4 +125,28 @@
     a
       color: #fff
       font-size: 11px
-      
+
+.adv-form .error-list
+  position: absolute
+  top: 21px
+  left: 0
+  z-index: 20
+  
+  
+// Status notifications
+
+.ajax-in-process
+  input
+    background: url("../images/icons/in_progress.gif") no-repeat 95% center
+  select
+    background: url("../images/icons/in_progress.gif") no-repeat 85% center
+  
+.ajax-error
+  input
+    background: url("../images/icons/input_error.png") no-repeat 95% center
+  select
+    background: url("../images/icons/input_error.png") no-repeat 85% center
+
+.ajax-disabled
+  cursor: wait
+  opacity: 0.5
