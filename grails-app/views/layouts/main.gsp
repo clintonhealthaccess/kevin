@@ -19,8 +19,14 @@
 	</div>
 
 	<div id="header">
-	  <div class="wrapper">
-	    <h1 id="logo">DHSST</h1>
+		<div class="wrapper">
+		    <h1 id="logo">DHSST</h1>
+		    
+			<g:if test="${flash.message}">
+				<!-- TODO add error class if it's an error -->
+				<div class="message">${flash.message}</div>
+        	</g:if>
+		    
 			<ul class="locales" id="switcher">
 				<g:each in="${LanguageUtils.availableLanguages}" var="language" status="i">
 					<% params['lang'] = language %>
@@ -33,7 +39,7 @@
 				<shiro:hasPermission permission="admin">
 					<li>
 						<a class="redmine follow" target="_blank" href="http://districthealth.moh.gov.rw/redmine"><g:message code="header.labels.redmine" default="Found a bug? Go to REDMINE"/></a>
-    				</li>
+	   				</li>
 				</shiro:hasPermission>
 				<li>
 					<a class="redmine follow" href="${createLink(uri:'/helpdesk')}"><g:message code="header.labels.helpdesk" default="Questions? Call the Helpdesk 114"/></a>
@@ -43,9 +49,10 @@
 					<a class="follow" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout" default="Logout"/></a>
 				</li>
 				</shiro:user>
-			</div>
+			</ul>
+		</div>
 			
-			<div class="clear"></div>
+		<div class="clear"></div>
 		</div>			
 			<!--<h1>Welcome to Kevin</h1>-->
 			<div id="navigation">

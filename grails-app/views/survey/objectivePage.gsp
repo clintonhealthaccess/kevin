@@ -14,10 +14,6 @@
 				<g:set value="${surveyPage.objectives[surveyPage.objective].closed}" var="closed"/>
 				<g:set var="readonly" value="${surveyPage.isReadonly(surveyPage.objective)}"/>
 				
-				<g:if test="${flash.message != null}">
-					<div class="message">${flash.message}</div>
-				</g:if>
-				
 				<g:if test="${closed}">
 					<div>
 						<g:message code="survey.objective.submitted.text" default="This objective has already been submitted, please go on with the other sections." />
@@ -60,7 +56,9 @@
 					$('#invalid-questions-container').html(data.invalidQuestions);
 					
 					if ($.trim(data.invalidQuestions) == '' && $.trim(data.incompleteSections) == '') $('#submit-objective').removeClass('hidden');
-					else $('#submit-objective').addClass('hidden')
+					else $('#submit-objective').addClass('hidden');
+					
+					$('.loading-disabled').removeClass('loading-disabled').removeAttr('disabled');
 				}
 			</r:script>
 		</g:if>

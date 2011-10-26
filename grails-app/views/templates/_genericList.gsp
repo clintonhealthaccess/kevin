@@ -16,16 +16,12 @@
 	     	</g:if>
 		</h5>
 		
-		<g:if test="${flash.message}">
-			<div class="message">${flash.message}</div>
-        </g:if>
-			
 		<!-- Template goes here -->
 		<g:if test="${grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).hasProperty('search')}">
 			<g:searchBox action="search"/>
 		</g:if>
 		<g:if test="${!entities.isEmpty()}">
-			  <g:render template="${template}"/>
+			<g:render template="${template}"/>
 			<!-- End of template -->
 			<div class="paginateButtons main">
 				<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>

@@ -28,13 +28,10 @@ package org.chai.kevin.data
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.DataService
-import org.chai.kevin.ValueService;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.ValueService
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class ExpressionController extends AbstractEntityController {
 

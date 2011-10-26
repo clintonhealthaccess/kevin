@@ -6,9 +6,6 @@
 </head>
 <body>
   <h3 class="subnav center">Log in</h3>
-  <g:if test="${flash.message}">
-    <div class="message login">${flash.message}</div>
-  </g:if>
   <g:form action="signIn" class="nice-form">
     <input type="hidden" name="targetUri" value="${targetUri}" />
     

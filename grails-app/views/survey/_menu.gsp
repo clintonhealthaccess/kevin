@@ -2,8 +2,8 @@
 	<g:each in="${surveyPage.survey.getObjectives(surveyPage.organisation.organisationUnitGroup)}" var="objective">
 		<g:set var="enteredObjective" value="${surveyPage.objectives[objective]}"/>
 		
-		<li id="objective-${objective.id}" class="${surveyPage.section?.objective?.id == objective.id?'current':''}">
-			<a class="item" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
+		<li id="objective-${objective.id}">
+			<a class="item ${surveyPage.objective?.id == objective.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
 				<span><g:i18n field="${objective.names}" /></span>
 				<span class="item-status">
 					<span class="objective-status-complete objective-status ${enteredObjective.displayedStatus!='complete'?'hidden':''}"></span>
@@ -91,7 +91,9 @@
 		
 		$('button[type=cancel]').bind('click', function(){
 			$.manageAjax.clear('surveyQueue', true);
-			$('.ajax-in-process').removeClass('.ajax-in-process').addClass('ajax-error');
+			$('.ajax-in-process').removeClass('.ajax-in-process')
+			$('.ajax-in-process').find('.input').removeAttr('disabled');
+			$('.ajax-in-process').addClass('ajax-error');
 			return false;
 		});
 
@@ -118,12 +120,15 @@
 		
 		$(element).removeClass('ajax-error');
 		$(element).addClass('ajax-in-process');
+		$(element).find('.input').attr('disabled', 'disabled');
 		
 		// we add the request to the queue
 		$.manageAjax.add('surveyQueue', {
 			data : data,
 			success : function(data, textStatus) {
 				$(element).removeClass('ajax-in-process');
+				$(element).find('.input').removeAttr('disabled');
+				
 				toggleControls($.queue(document, 'surveyQueue').length > 0);
 				
 				if (data.status == 'success') {
@@ -147,6 +152,8 @@
 			},
 			error: function() {
 				$(element).removeClass('ajax-in-process');
+				$(element).find('.input').removeAttr('disabled');
+				
 				$(element).addClass('ajax-error');
 				toggleControls($.queue(document, 'surveyQueue').length > 0);
 			}
@@ -157,11 +164,11 @@
 	
 	function toggleControls(hide) {
 		if (hide) {
-			$('.element-list-add, .element-list-remove, button[type=submit]').addClass('ajax-disabled');
+			$('.element-list-add, .element-list-remove, button[type=submit]').addClass('ajax-disabled').attr('disabled', 'disabled');
 			$('button[type=cancel]').show();
 		}
 		else {
-			$('.element-list-add, .element-list-remove, button[type=submit]').removeClass('ajax-disabled');
+			$('.element-list-add, .element-list-remove, button[type=submit]').removeClass('ajax-disabled').removeAttr('disabled');
 			$('button[type=cancel]').hide();
 		}
 	}

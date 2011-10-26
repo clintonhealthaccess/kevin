@@ -9,6 +9,14 @@ import org.chai.kevin.util.JSONUtils;
 
 class DataElementSpec extends IntegrationTests {
 
+	def "data element type is not blank"() {
+		when:
+		new DataElement(code: CODE(1), type: new Type("")).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
 	def "data element code is unique"() {
 		when:
 		new DataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)

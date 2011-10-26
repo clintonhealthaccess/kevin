@@ -9,7 +9,6 @@ class IE6Filters {
 				if (actionName != null && controllerName != null) {
 					
 					def userAgent = RequestContextHolder.currentRequestAttributes().currentRequest.getHeader('user-agent')
-					log.error(userAgent)
 					
 					if (userAgent.contains('MSIE 6.0')) {
 						redirect(uri:'/upgrade')
