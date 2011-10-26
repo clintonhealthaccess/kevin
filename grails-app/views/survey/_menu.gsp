@@ -4,9 +4,13 @@
 	<g:each in="${surveyPage.survey.getObjectives(surveyPage.organisation.organisationUnitGroup)}" var="objective">
 		<g:set var="enteredObjective" value="${surveyPage.objectives[objective]}"/>
 		
+<<<<<<< HEAD
 		<li id="objective-${objective.id}" class="foldable ${surveyPage.objective?.id == objective.id?'current':''}">
 			<a class="foldable-toggle" href="#">(toggle)</a>
 		
+=======
+		<li id="objective-${objective.id}">
+>>>>>>> in progress, design work
 			<a class="item ${surveyPage.objective?.id == objective.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
 				<span><g:i18n field="${objective.names}" /></span>
 				<span class="item-status">
