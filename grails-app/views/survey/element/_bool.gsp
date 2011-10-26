@@ -19,7 +19,7 @@
 	</g:if>
 	<g:else>
 		<g:if test="${!print}">
-			<select class="tooltip input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
+			<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
 				<option value=""><g:message code="survey.element.bool.select.label"/></option>
 				<option value="1" ${value?.booleanValue==true ? 'selected':''}><g:message code="survey.element.bool.yes.label"/></option>
 				<option value="0" ${value?.booleanValue==false ? 'selected':''}><g:message code="survey.element.bool.no.label"/></option>
