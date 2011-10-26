@@ -220,7 +220,13 @@ ul.horizontal li.last { margin-right: 0; }
 #main-menu a { border-left: 1px solid #1f7cbd; border-right: 1px solid #238eda; color: white; display: inline-block; font-size: 13px; font-weight: bold; padding: 14px 25px; text-decoration: none; text-shadow: rgba(0, 0, 0, 0.3) 0 1px 0; }
 #main-menu a:hover, #main-menu a:focus, #main-menu a.active { background: #1f7cbd; -moz-box-shadow: inset 0 -3px 8px 6px #036ab3; -webkit-box-shadow: inset 0 -3px 8px 6px #036ab3; -o-box-shadow: inset 0 -3px 8px 6px #036ab3; box-shadow: inset 0 -3px 8px 6px #036ab3; }
 #main-menu a:active { -moz-box-shadow: inset 0 -2px 10px 10px #0063ac; -webkit-box-shadow: inset 0 -2px 10px 10px #0063ac; -o-box-shadow: inset 0 -2px 10px 10px #0063ac; box-shadow: inset 0 -2px 10px 10px #0063ac; }
+<<<<<<< HEAD
 #main-menu .submenu { background: #258cd5; border: 1px solid #1f7cbd; display: none; opacity: 0.93; padding: 5px 0 10px; position: absolute; top: 41px; z-index: 30; -moz-border-radius-bottomleft: 5px; -webkit-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -khtml-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -khtml-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -moz-box-shadow: #cccccc 2px 2px 3px, #1f7cbd 0 0 8px 3px inset; -webkit-box-shadow: #cccccc 2px 2px 3px, #1f7cbd 0 0 8px 3px inset; -o-box-shadow: #cccccc 2px 2px 3px, #1f7cbd 0 0 8px 3px inset; box-shadow: #cccccc 2px 2px 3px, #1f7cbd 0 0 8px 3px inset; }
+=======
+/* line 65, ../../src/stylesheets/partials/_nav.sass */
+#main-menu .submenu { background: #258cd5; border: 1px solid #1f7cbd; display: none; opacity: 0.93; padding: 5px 0 10px; position: absolute; top: 41px; z-index: 30; -moz-border-radius-bottomleft: 5px; -webkit-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -khtml-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -khtml-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -moz-box-shadow: #cccccc 2px 2px 3px, #1f7cbd 0 0 8px 3px inset; -webkit-box-shadow: #cccccc 2px 2px 3px, #1f7cbd 0 0 8px 3px inset; -o-box-shadow: #cccccc 2px 2px 3px, #1f7cbd 0 0 8px 3px inset; box-shadow: #cccccc 2px 2px 3px, #1f7cbd 0 0 8px 3px inset; }
+/* line 76, ../../src/stylesheets/partials/_nav.sass */
+>>>>>>> bugfixes
 #main-menu .submenu a { border-bottom: 1px solid #1f7cbd; display: block; font-size: 12px; font-weight: normal; padding: 7px 25px 7px; white-space: nowrap; }
 #main-menu .submenu a:hover, #main-menu .submenu a:focus { background: #1f7cbd; }
 
@@ -332,14 +338,22 @@ ul.horizontal li.last { margin-right: 0; }
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> styles
 .adv-form-row:after { content: ""; display: table; clear: both; }
+<<<<<<< HEAD
 .adv-form-row.minimized { background: #e9f4fc; margin-bottom: -1px; padding: 7px 15px; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #effaff), color-stop(100%, #e9f4fc)); background-image: -webkit-linear-gradient(top, #effaff, #e9f4fc); background-image: -moz-linear-gradient(top, #effaff, #e9f4fc); background-image: -o-linear-gradient(top, #effaff, #e9f4fc); background-image: -ms-linear-gradient(top, #effaff, #e9f4fc); background-image: linear-gradient(top, #effaff, #e9f4fc); text-shadow: white 0 1px 0; }
 
+=======
+/* line 8, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-row.minimized { background: #e9f4fc; margin-bottom: -1px; padding: 7px 15px; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #effaff), color-stop(100%, #e9f4fc)); background-image: -webkit-linear-gradient(top, #effaff, #e9f4fc); background-image: -moz-linear-gradient(top, #effaff, #e9f4fc); background-image: -o-linear-gradient(top, #effaff, #e9f4fc); background-image: -ms-linear-gradient(top, #effaff, #e9f4fc); background-image: linear-gradient(top, #effaff, #e9f4fc); text-shadow: white 0 1px 0; }
+
+/* line 15, ../../src/stylesheets/partials/_forms.sass */
+>>>>>>> bugfixes
 .adv-form-section { *zoom: 1; }
 <<<<<<< HEAD
 =======
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> styles
 .adv-form-section:after { content: ""; display: table; clear: both; }
+<<<<<<< HEAD
 .adv-form-section.last { border: none; margin: 0; padding: 0; }
 .adv-form-section.no-border { border: none; }
 .adv-form-section .adv-form-section { padding-bottom: 0; margin-bottom: 0; }
@@ -397,6 +411,37 @@ button:active, input[type=submit]:active, .next:active { position: relative; top
 =======
 /* line 71, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-mini { float: left; margin-bottom: -1px; }
+=======
+/* line 17, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-section.last { border: none; margin: 0; padding: 0; }
+/* line 21, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-section.no-border { border: none; }
+/* line 23, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-section .adv-form-section { padding-bottom: 0; margin-bottom: 0; }
+
+/* line 27, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-fields li { margin: 12px 5px 6px 0; }
+/* line 29, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-fields li.adv-form-subsection { margin: 0 5px 0 0; }
+
+/* line 35, ../../src/stylesheets/partials/_forms.sass */
+.adv-form .element-map-level-2 > h6 { margin-top: 5px; }
+/* line 38, ../../src/stylesheets/partials/_forms.sass */
+.adv-form .horizontal li { margin-bottom: 10px; }
+/* line 41, ../../src/stylesheets/partials/_forms.sass */
+.adv-form h5 { border-bottom: 2px dotted #e0ebf3; font-weight: bold; margin-bottom: 12px; margin-top: 15px; padding-bottom: 5px; text-shadow: white 0 1px 0; }
+/* line 49, ../../src/stylesheets/partials/_forms.sass */
+.adv-form label { display: block; font-size: 10px; margin-bottom: 3px; }
+/* line 54, ../../src/stylesheets/partials/_forms.sass */
+.adv-form input { background: white; border: 1px solid #b6c1c9; color: #444444; font: normal 12px Arial, sans-serif; margin-right: 5px; padding: 3px; width: 206px; -moz-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -webkit-box-shadow: inset 1px 1px 3px 0 #d8e3eb; -o-box-shadow: inset 1px 1px 3px 0 #d8e3eb; box-shadow: inset 1px 1px 3px 0 #d8e3eb; }
+/* line 63, ../../src/stylesheets/partials/_forms.sass */
+.adv-form input:hover, .adv-form input:focus { background: #ecf7ff; border-color: #258cd5; }
+/* line 67, ../../src/stylesheets/partials/_forms.sass */
+.adv-form select { background: white; margin-right: 14px; width: 205px; }
+
+/* line 72, ../../src/stylesheets/partials/_forms.sass */
+.adv-form-mini { float: left; }
+>>>>>>> bugfixes
 /* line 75, ../../src/stylesheets/partials/_forms.sass */
 .adv-form-mini .horizontal li { margin-bottom: 0; }
 /* line 78, ../../src/stylesheets/partials/_forms.sass */
@@ -882,14 +927,22 @@ table.nice-table .cell { cursor: default; }
 
 #maps #map_canvas { height: 640px; }
 
+<<<<<<< HEAD
+=======
+/* line 1, ../../src/stylesheets/partials/_tipsy.sass */
+>>>>>>> bugfixes
 .tipsy { padding: 5px; font-size: 11px; line-height: 1.4; position: absolute; z-index: 100000; letter-spacing: 0.05; }
 
 <<<<<<< HEAD
 .tipsy-inner { padding: 5px 10px; background: white; border: 1px solid #dddddd; -moz-box-shadow: #dddddd 0 0 5px; -webkit-box-shadow: #dddddd 0 0 5px; -o-box-shadow: #dddddd 0 0 5px; box-shadow: #dddddd 0 0 5px; max-width: 400px; color: #425160; text-align: left; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
 =======
 /* line 9, ../../src/stylesheets/partials/_tipsy.sass */
+<<<<<<< HEAD
 .tipsy-inner { padding: 10px; border: 1px solid #dddddd; -moz-box-shadow: #dddddd 0 0 5px; -webkit-box-shadow: #dddddd 0 0 5px; -o-box-shadow: #dddddd 0 0 5px; box-shadow: #dddddd 0 0 5px; max-width: 400px; color: #425160; text-align: left; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
 >>>>>>> design tasks cleanup
+=======
+.tipsy-inner { padding: 5px 10px; background: white; border: 1px solid #dddddd; -moz-box-shadow: #dddddd 0 0 5px; -webkit-box-shadow: #dddddd 0 0 5px; -o-box-shadow: #dddddd 0 0 5px; box-shadow: #dddddd 0 0 5px; max-width: 400px; color: #425160; text-align: left; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; }
+>>>>>>> bugfixes
 
 .tipsy-arrow { position: absolute; background: url("../images/tipsy.gif") no-repeat top left; width: 9px; height: 5px; }
 
