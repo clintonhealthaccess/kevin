@@ -63,18 +63,18 @@ function addData(prefix, data) {
 // END of explanation functionality
 
 /**
- * element explanations
+ * data element explanations
  */
-$(document).delegate('.element', 'mouseenter mouseleave', function() {
+$(document).delegate('.data-element', 'mouseenter mouseleave', function() {
 	var data = $(this).data('id');
 	
 	$(this).parents('.info').find('.data-'+data).toggleClass('highlighted');
 	$(this).toggleClass('highlighted');
 });
 
-$(document).delegate('.element', 'click', function(){
+$(document).delegate('.data-element', 'click', function(){
 	if (!$(this).hasClass('selected')) {
-		$(this).parents('.info').find('.element').removeClass('selected');
+		$(this).parents('.info').find('.data-element').removeClass('selected');
 		$(this).parents('.info').find('.data').removeClass('selected');
 	}
 	var data = $(this).data('id');

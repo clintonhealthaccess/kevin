@@ -40,7 +40,11 @@
 	var surveyQueue;
 
 	function initializeSurvey(callback) {
-		$('#survey').delegate('#survey-form input, #survey-form select, #survey-form textarea', 'change', function(){
+		$('#survey').delegate('#survey-form .input', 'change', function(){
+			var element = $(this).parents('.element').first();
+			surveyValueChanged(element, $(element).find('.input'), callback);
+		});
+		$('#survey').delegate('#survey-form .ajax-error .input', 'focus', function(){
 			var element = $(this).parents('.element').first();
 			surveyValueChanged(element, $(element).find('.input'), callback);
 		});
@@ -72,6 +76,13 @@
 			return false;
 		});
 		
+		// stop all calls to external links while values are saving
+		$(document).delegate('a', 'click', function(){
+			if (ajaxCallsInProgress() || $('.element.ajax-error').length > 0) {
+				return confirm("${message(code: 'survey.exit.saving.confirm.text', default:"Are you sure you want to exit this page? Some values you entered may be lost.")}");
+			}
+		});
+		
 		surveyQueue = $.manageAjax.create('surveyQueue', {
 			url : "${createLink(controller:'editSurvey', action:'saveValue', params: [organisation: surveyPage.organisation.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
 			type : 'POST',
@@ -82,22 +93,20 @@
 		});
 		
 		$('button[type=submit]').bind('click', function(){
-			if (!$(this).hasClass('ajax-disabled')) {
-				$.manageAjax.clear('surveyQueue', true);
-				// wait until last ajax request finishes
-				return true;
-			}
-			else {
-				alert("${message(code:'survey.section.saving.text',default:'Some values are being saved, please wait before submitting.')}");
+			if (ajaxCallsInProgress()) {
+				alert("${message(code:'survey.exit.saving.alert.text',default:'Some values are being saved, please wait before submitting.')}");
 				return false;
+			}
+			else if ($('.question-container.incomplete').length > 0) {
+				return confirm("${message(code:'survey.exit.incomplete.confirm.text',default:'Some questions are incomplete, are you sure you want to go to the next section?')}");
 			}
 		});
 		
 		$('button[type=cancel]').bind('click', function(){
 			$.manageAjax.clear('surveyQueue', true);
-			$('.ajax-in-process').removeClass('.ajax-in-process')
 			$('.ajax-in-process').find('.input').removeAttr('disabled');
 			$('.ajax-in-process').addClass('ajax-error');
+			$('.ajax-in-process').removeClass('.ajax-in-process')
 			return false;
 		});
 
@@ -159,7 +168,7 @@
 					callback(data, element);
 				}
 				else {
-					alert("${message(code:'survey.section.objective.closed.text',default:'Please reload the page, the objective has been closed.')}");
+					alert("${message(code:'survey.saving.objective.closed.text',default:'Please reload the page, the objective has been closed.')}");
 				}
 			},
 			error: function() {
@@ -171,7 +180,11 @@
 			}
 		});
 		
-		toggleControls($.queue(document, 'surveyQueue').length > 0 || surveyQueue.inProgress > 0);
+		toggleControls(ajaxCallsInProgress());
+	}
+	
+	function ajaxCallsInProgress() {
+		return $.queue(document, 'surveyQueue').length > 0 || surveyQueue.inProgress > 0;
 	}
 	
 	function toggleControls(hide) {
@@ -204,11 +217,10 @@
 					var elementInRow = $(input).parents('.element').first();
 					if (!$(elementInRow).hasClass('skipped')) {
 						var value = $(input).attr('value');
-						if ($(input).prop('nodeName') == 'SELECT') {
-							alert($(input).find("option[selected='selected']").html());
-							value = $(input).find("select[selected='selected']").innerHtml;
+						if ($(input).prop('nodeName') == 'SELECT' && $(input).attr('value')) {
+							value = $(input).find("option[selected]").html();
 						}
-						$(input).after('<span class="minimized-input" onclick="maximizeRow($(this).parents(\'.element-list-row\')); return false;">'+$(input).attr('value')+'</span>');
+						$(input).after('<span class="minimized-input" onclick="maximizeRow($(this).parents(\'.element-list-row\')); return false;">'+value+'</span>');
 					}
 				});
 				

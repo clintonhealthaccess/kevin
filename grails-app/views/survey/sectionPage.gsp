@@ -34,7 +34,7 @@
 						<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 							<ol id="questions">
 								<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question" status="i">
-									<li class="question-container ${surveyPage.questions[question].skipped?'hidden':''} ${!surveyPage.questions[question].complete?'incomplete':''}">
+									<li class="question-container ${surveyPage.questions[question].skipped?'hidden':''} ${!surveyPage.questions[question].complete?'incomplete':''} ${surveyPage.questions[question].invalid?'invalid':''}">
 										<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1]" />
 									</li> 
 								</g:each>
@@ -58,7 +58,7 @@
 										</button>
 									</li>
 								</g:if>
-		  						<li><a href="#" class="go-back"><g:message code="survey.section.back.label" default="Go back"/></a></li>
+		  						<li><a href="${createLink(controller:'editSurvey', action:'objectivePage', params:[objective: surveyPage.objective.id, organisation: surveyPage.organisation.id])}" class="go-back"><g:message code="survey.section.back.label"/></a></li>
 		  					</ul>
 						</g:form>
 					</div>
@@ -104,6 +104,9 @@
 						
 						if (value.complete == true) $('#question-'+value.id).parents('.question-container').removeClass('incomplete')
 						else $('#question-'+value.id).parents('.question-container').addClass('incomplete')
+						
+						if (value.invalid == false) $('#question-'+value.id).parents('.question-container').removeClass('invalid')
+						else $('#question-'+value.id).parents('.question-container').addClass('invalid')
 					});
 				}
 			</r:script>

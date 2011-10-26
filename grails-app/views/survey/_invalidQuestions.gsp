@@ -6,7 +6,7 @@
 		<g:each in="${invalidQuestions}" var="question" status="i">
 			<div class="invalid-question ${i!=0?'hidden':''}">
 				<h5>In section: <g:i18n field="${question.section.names}" /> </h5>
-				<div class="question-container">
+				<div class="question-container" class="invalid ${!surveyPage.questions[question].complete?'incomplete':''}">
 					<!-- separation -->
 					<g:render template="/survey/question/${question.getType().getTemplate()}" model="[question: question, surveyPage: surveyPage, readonly: surveyPage.isReadonly(surveyPage.objective)]" />
 				</div> 

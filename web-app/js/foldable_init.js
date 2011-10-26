@@ -13,8 +13,8 @@ $(document).ready(function(){
 	var current = $('.foldable.current');
 	while (current.hasClass('foldable') && current.size() > 0) {
 		current.addClass('opened');
-		current.children('ul').show();
-		current.children('a').addClass('toggled');
 		current = current.parents('li');
 	}
+	$('.opened').children('ul').show();
+	$('.opened').children('a').addClass('toggled');
 });
