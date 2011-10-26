@@ -1,8 +1,12 @@
-<ul id="survey-objective-list">
+<r:require module="foldable"/>
+
+<ul>
 	<g:each in="${surveyPage.survey.getObjectives(surveyPage.organisation.organisationUnitGroup)}" var="objective">
 		<g:set var="enteredObjective" value="${surveyPage.objectives[objective]}"/>
 		
-		<li id="objective-${objective.id}">
+		<li id="objective-${objective.id}" class="foldable ${surveyPage.objective?.id == objective.id?'current':''}">
+			<a class="foldable-toggle" href="#">(toggle)</a>
+		
 			<a class="item ${surveyPage.objective?.id == objective.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
 				<span><g:i18n field="${objective.names}" /></span>
 				<span class="item-status">
@@ -98,7 +102,15 @@
 		});
 
 		minimizeRows($('#survey').find('.element-list-row'));		
-		$('.loading-disabled').removeClass('loading-disabled').removeAttr('disabled');
+		enableAfterLoading();
+	}
+
+	function enableAfterLoading() {
+		$('.loading-disabled').each(function(index, disabled) {
+			if (!$(disabled).parents('.element').first().hasClass('skipped')) {
+				$(disabled).removeClass('loading-disabled').removeAttr('disabled');
+			}
+		})
 	}
 
 	function surveyValueChanged(element, inputs, callback) {
@@ -191,6 +203,11 @@
 				$(element).find('.input').each(function(i, input) {
 					var elementInRow = $(input).parents('.element').first();
 					if (!$(elementInRow).hasClass('skipped')) {
+						var value = $(input).attr('value');
+						if ($(input).prop('nodeName') == 'SELECT') {
+							alert($(input).find("option[selected='selected']").html());
+							value = $(input).find("select[selected='selected']").innerHtml;
+						}
 						$(input).after('<span class="minimized-input" onclick="maximizeRow($(this).parents(\'.element-list-row\')); return false;">'+$(input).attr('value')+'</span>');
 					}
 				});

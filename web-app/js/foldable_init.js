@@ -10,18 +10,11 @@ $(document).ready(function(){
 	// we hide everything
 	$('.foldable ul').hide();
 	// we show the current
-	var current = $('.foldable .current');
-	while (current.parents('li').hasClass('foldable') && current.size() > 0) {
+	var current = $('.foldable.current');
+	while (current.hasClass('foldable') && current.size() > 0) {
 		current.addClass('opened');
 		current.children('ul').show();
 		current.children('a').addClass('toggled');
 		current = current.parents('li');
 	}
-	// we open the first one
-	$('.foldable').each(function(index, element){
-		if (!$(element).parents('li').hasClass('foldable')) {
-			$(element).children('ul').show();
-			$(element).children('a').addClass('toggled');
-		}
-	});
 });

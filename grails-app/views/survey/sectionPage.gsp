@@ -17,8 +17,10 @@
 			<div class="main">
 
 				<g:if test="${closed}">
-					<div>
-						<g:message code="survey.section.submitted.text" default="This section has been submitted, you can view your answer here but you cannot change them."/>
+					<div class="success-box">
+						<p class="success">
+							<g:message code="survey.section.submitted.text" default="This section has been submitted, you can view your answer here but you cannot change them."/>
+						</p>
 					</div>
 				</g:if>
 				<g:else>
@@ -75,11 +77,12 @@
 					$.each(data.elements, function(index, element) {
 						
 						// we remove all the skips
-						$('#element-'+element.id).find('.element').removeClass('skipped');
+						$('#element-'+element.id).find('.element').removeClass('skipped').find('input').removeAttr('disabled');
 						
 						// we add them again
 						$.each(element.skipped, function(index, skipped) {
-							$('#element-'+element.id).find('#element-'+element.id+'-'+escape(skipped)).addClass('skipped');
+							$('#element-'+element.id).find('#element-'+element.id+'-'+escape(skipped))
+							.addClass('skipped').find('.input').attr('disabled', 'disabled');
 						});
 						
 						// we remove all the errors

@@ -15,13 +15,15 @@
 				<g:set var="readonly" value="${surveyPage.isReadonly(surveyPage.objective)}"/>
 				
 				<g:if test="${closed}">
-					<div>
-						<g:message code="survey.objective.submitted.text" default="This objective has already been submitted, please go on with the other sections." />
-						<shiro:hasPermission permission="admin:survey">
-							<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])}">
-								<g:message code="survey.objective.reopen.text"/>
-							</a>
-						</shiro:hasPermission>
+					<div class="success-box">
+						<p class="success">
+							<g:message code="survey.objective.submitted.text" default="This objective has already been submitted, please go on with the other sections." />
+							<shiro:hasPermission permission="admin:survey">
+								<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])}">
+									<g:message code="survey.objective.reopen.text"/>
+								</a>
+							</shiro:hasPermission>
+						</p>
 					</div>
 				</g:if>
 				
@@ -58,7 +60,7 @@
 					if ($.trim(data.invalidQuestions) == '' && $.trim(data.incompleteSections) == '') $('#submit-objective').removeClass('hidden');
 					else $('#submit-objective').addClass('hidden');
 					
-					$('.loading-disabled').removeClass('loading-disabled').removeAttr('disabled');
+					enableAfterLoading();
 				}
 			</r:script>
 		</g:if>
