@@ -32,7 +32,7 @@
 			</div>
 		</g:if>
 		<g:else>
-			<div><g:message code="entity.list.empty.label" args="[entityName]"/></div>
+			<div class="main"><g:message code="entity.list.empty.label" args="[entityName]"/></div>
 		</g:else>				
 	</div>
 </div>
