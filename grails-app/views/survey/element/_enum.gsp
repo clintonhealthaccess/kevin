@@ -11,8 +11,9 @@
 			<g:set var="option" value="${enume?.getOptionForValue(lastValue.enumValue)}"/>
 			<g:set var="tooltipValue" value="${option!=null?i18n(field: option.names):lastValue.enumValue}"/>
 		</g:if>
-		
-		<select class="tooltip input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
+
+                <select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
+
 			<option value=""><g:message code="survey.element.enum.select.label"/></option>
 			<g:each in="${enume?.enumOptions}" var="option">
 				<!-- TODO fix this, there should be a flag in the survey, not on the element directly -->

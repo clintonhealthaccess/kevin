@@ -6,10 +6,10 @@
 		<g:set var="tooltipValue" value="${lastValue.stringValue}" />
 	</g:if>
 
-	<input 	size="0" type="text" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} 
-			value="${value?.stringValue}" name="surveyElements[${surveyElement.id}].value${suffix}" 
-			class="tooltip input idle-field ${!readonly?'loading-disabled':''}" disabled="disabled"/>
-	
+        <input 	size="0" type="text" ${tooltipValue!=null?'title="'+tooltipValue+'"':''}
+			value="${value?.stringValue}" name="surveyElements[${surveyElement.id}].value${suffix}"
+			class="${tooltipValue!=null?'tooltip':''} input idle-field ${!readonly?'loading-disabled':''}" disabled="disabled"/>
+
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
 	</div>

@@ -7,8 +7,9 @@
 	<g:if test="${lastValue!=null}">
 		<g:set var="tooltipValue" value="${Utils.formatDate(lastValue?.dateValue)}" />
 	</g:if>
-        
-	<input id="date-${surveyElement.id}-${suffix}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} type="text" value="${Utils.formatDate(value?.dateValue)}" name="surveyElements[${surveyElement.id}].value${suffix}" class="tooltip idle-field input ${!readonly?'loading-disabled':''}" disabled="disabled"/>
+
+        <input id="date-${surveyElement.id}-${suffix}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} type="text" value="${Utils.formatDate(value?.dateValue)}" name="surveyElements[${surveyElement.id}].value${suffix}" class="${tooltipValue!=null?'tooltip':''} idle-field input ${!readonly?'loading-disabled':''}" disabled="disabled"/>
+
 
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
