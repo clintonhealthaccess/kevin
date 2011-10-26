@@ -1,4 +1,4 @@
-<dic class="main">
+<div class="main">
   <table class="listing">
   	<thead>
   		<tr>

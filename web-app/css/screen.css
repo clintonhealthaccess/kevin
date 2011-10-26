@@ -38,67 +38,69 @@ h1, h2, h3, h4 { font-family: "Droid-Bold", Arial, Helvetica, sans-serif; }
 a { color: #258cd5; font-size: 12px; }
 /* line 11, ../../src/stylesheets/partials/_shared.sass */
 a:hover, a:focus { color: #00266f; }
+/* line 13, ../../src/stylesheets/partials/_shared.sass */
+a.no-link { color: #0059a2; text-decoration: none; }
 
-/* line 14, ../../src/stylesheets/partials/_shared.sass */
+/* line 17, ../../src/stylesheets/partials/_shared.sass */
 .main { clear: both; color: #666666; font-size: 12px; *zoom: 1; }
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .main:after { content: ""; display: table; clear: both; }
 
-/* line 20, ../../src/stylesheets/partials/_shared.sass */
+/* line 23, ../../src/stylesheets/partials/_shared.sass */
 .form-heading { color: #258cd5; font-size: 24px; margin-bottom: 10px; padding-left: 10px; }
 
-/* line 26, ../../src/stylesheets/partials/_shared.sass */
+/* line 31, ../../src/stylesheets/partials/_shared.sass */
 .question h4 { background: #e9f4fc; color: #258cd5; display: inline-block; font-family: "Lucida Grande", Arial, sans-serif; font-weight: bold; left: -15px; line-height: 1.5; margin: 0 0 10px 0; max-width: 850px; padding: 7px 20px 7px 22px; position: relative; -moz-border-radius-topright: 100px; -webkit-border-top-right-radius: 100px; -o-border-top-right-radius: 100px; -ms-border-top-right-radius: 100px; -khtml-border-top-right-radius: 100px; border-top-right-radius: 100px; -moz-border-radius-bottomright: 100px; -webkit-border-bottom-right-radius: 100px; -o-border-bottom-right-radius: 100px; -ms-border-bottom-right-radius: 100px; -khtml-border-bottom-right-radius: 100px; border-bottom-right-radius: 100px; -moz-box-shadow: inset -2px -2px 2px 0 #e0ebf3; -webkit-box-shadow: inset -2px -2px 2px 0 #e0ebf3; -o-box-shadow: inset -2px -2px 2px 0 #e0ebf3; box-shadow: inset -2px -2px 2px 0 #e0ebf3; text-shadow: white 0 1px 0; }
-/* line 42, ../../src/stylesheets/partials/_shared.sass */
+/* line 47, ../../src/stylesheets/partials/_shared.sass */
 .question h4 span { background: #65c029; color: white; display: block; font-weight: bold; left: -10px; padding: 3px; position: absolute; text-align: center; top: 4px; width: 18px; -moz-border-radius: 50px; -webkit-border-radius: 50px; -o-border-radius: 50px; -ms-border-radius: 50px; -khtml-border-radius: 50px; border-radius: 50px; text-shadow: #439e07 0 1px 0; }
 
-/* line 56, ../../src/stylesheets/partials/_shared.sass */
+/* line 61, ../../src/stylesheets/partials/_shared.sass */
 #questions .incomplete h4 span { background: #258cd5; color: #e9f4fc; text-shadow: #036ab3 0 1px 0; }
 
-/* line 61, ../../src/stylesheets/partials/_shared.sass */
+/* line 66, ../../src/stylesheets/partials/_shared.sass */
 .follow { background: url("../images/icons/follow.png") no-repeat right center !important; padding-right: 20px !important; }
 
-/* line 65, ../../src/stylesheets/partials/_shared.sass */
+/* line 70, ../../src/stylesheets/partials/_shared.sass */
 .hidden { display: none; }
 
-/* line 68, ../../src/stylesheets/partials/_shared.sass */
+/* line 73, ../../src/stylesheets/partials/_shared.sass */
 .push-10 { margin-bottom: 10px; }
 
-/* line 70, ../../src/stylesheets/partials/_shared.sass */
+/* line 75, ../../src/stylesheets/partials/_shared.sass */
 .push-15 { margin-bottom: 15px; }
 
-/* line 72, ../../src/stylesheets/partials/_shared.sass */
+/* line 77, ../../src/stylesheets/partials/_shared.sass */
 .push-20 { margin-bottom: 20px; }
 
-/* line 75, ../../src/stylesheets/partials/_shared.sass */
+/* line 80, ../../src/stylesheets/partials/_shared.sass */
 .third { float: left; width: 33%; }
 
-/* line 78, ../../src/stylesheets/partials/_shared.sass */
+/* line 83, ../../src/stylesheets/partials/_shared.sass */
 .fourth { float: left; width: 25%; }
 
-/* line 82, ../../src/stylesheets/partials/_shared.sass */
+/* line 87, ../../src/stylesheets/partials/_shared.sass */
 ul.horizontal { *zoom: 1; }
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 ul.horizontal:after { content: ""; display: table; clear: both; }
-/* line 84, ../../src/stylesheets/partials/_shared.sass */
+/* line 89, ../../src/stylesheets/partials/_shared.sass */
 ul.horizontal li { display: inline; float: left; margin-right: 5px; }
-/* line 88, ../../src/stylesheets/partials/_shared.sass */
+/* line 93, ../../src/stylesheets/partials/_shared.sass */
 ul.horizontal li.last { margin-right: 0; }
 
-/* line 91, ../../src/stylesheets/partials/_shared.sass */
+/* line 96, ../../src/stylesheets/partials/_shared.sass */
 .italic { font-style: italic; }
 
-/* line 94, ../../src/stylesheets/partials/_shared.sass */
+/* line 99, ../../src/stylesheets/partials/_shared.sass */
 .edit-link { background: url("../images/icons/mini_edit.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
-/* line 102, ../../src/stylesheets/partials/_shared.sass */
+/* line 107, ../../src/stylesheets/partials/_shared.sass */
 .edit-link:hover { opacity: 0.6; }
 
-/* line 105, ../../src/stylesheets/partials/_shared.sass */
+/* line 110, ../../src/stylesheets/partials/_shared.sass */
 .delete-link { background: url("../images/icons/mini_delete.png") no-repeat; display: inline-block; height: 14px; margin-left: 3px; opacity: 0.3; text-indent: -9999px; width: 12px; }
-/* line 113, ../../src/stylesheets/partials/_shared.sass */
+/* line 118, ../../src/stylesheets/partials/_shared.sass */
 .delete-link:hover { opacity: 0.6; }
 
-/* line 116, ../../src/stylesheets/partials/_shared.sass */
+/* line 121, ../../src/stylesheets/partials/_shared.sass */
 .entity-form-container h5 { color: #888888; font-size: 16px; font-weight: bold; margin-top: 20px; }
 
 /* line 1, ../../src/stylesheets/partials/_layout.sass */
@@ -225,45 +227,47 @@ ul.horizontal li.last { margin-right: 0; }
 .dropdown-list li a { color: #258cd5; font-size: 10px; font-weight: bold; text-decoration: none; text-shadow: white 0 1px 0; }
 /* line 188, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list li a:hover { color: #0059a2; text-shadow: white 0 1px 0; }
-/* line 191, ../../src/stylesheets/partials/_nav.sass */
+/* line 192, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list li a.foldable-toggle { border: none; cursor: pointer; display: block; float: left; margin-right: 5px; width: 15px; height: 15px; text-indent: -9999px; background: url("../images/icons/toggle_plus.png") no-repeat left center; }
-/* line 201, ../../src/stylesheets/partials/_nav.sass */
+/* line 202, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list li a.foldable-toggle.toggled { background: url("../images/icons/toggle_minus.png") no-repeat left center; }
-/* line 204, ../../src/stylesheets/partials/_nav.sass */
+/* line 205, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list li a.dropdown-link { background: none; }
-/* line 206, ../../src/stylesheets/partials/_nav.sass */
+/* line 207, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list li a.dropdown-link:hover { color: #004891; text-shadow: white 0 1px 0; }
-/* line 210, ../../src/stylesheets/partials/_nav.sass */
+/* line 211, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list li a.opened { background: #cfe4f4; color: #004891; text-shadow: white 0 1px 0; }
+/* line 216, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list .survey-section { border-top: 1px dotted #b6cbdb; margin-top: 5px; margin-left: 5px; *zoom: 1; }
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .dropdown-list .survey-section:after { content: ""; display: table; clear: both; }
-/* line 216, ../../src/stylesheets/partials/_nav.sass */
+/* line 222, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list .survey-section a { color: #258cd5; padding-right: 10px; text-shadow: white 0 1px 0; }
-/* line 220, ../../src/stylesheets/partials/_nav.sass */
-.dropdown-list .survey-section a:hover, .dropdown-list .survey-section a:focus, .dropdown-list .survey-section a.opened { background: #cfe4f4; color: #004891; text-shadow: white 0 1px 0; }
-/* line 227, ../../src/stylesheets/partials/_nav.sass */
+/* line 226, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list .survey-section a:hover, .dropdown-list .survey-section a:focus { background: #cfe4f4; color: #004891; text-shadow: white 0 1px 0; }
+/* line 233, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list .survey-section li:focus a, .dropdown-list .survey-section li:hover a { color: #00266f; }
 
-/* line 230, ../../src/stylesheets/partials/_nav.sass */
+/* line 236, ../../src/stylesheets/partials/_nav.sass */
 .organisation-fold { border-top: 1px solid #b6cbdb; margin-top: 5px; padding-top: 5px; }
 
-/* line 235, ../../src/stylesheets/partials/_nav.sass */
+/* line 241, ../../src/stylesheets/partials/_nav.sass */
 .foldable { min-width: 75px; }
-/* line 237, ../../src/stylesheets/partials/_nav.sass */
+/* line 243, ../../src/stylesheets/partials/_nav.sass */
 .foldable a.foldable-toggle { display: block; cursor: pointer; width: 20px; height: 20px; margin: -3px; float: left; text-indent: -9999px; background-image: url("../images/icons/toggle_plus.png"); }
-/* line 246, ../../src/stylesheets/partials/_nav.sass */
+/* line 252, ../../src/stylesheets/partials/_nav.sass */
 .foldable a.foldable-toggle.toggled { background-image: url("../images/icons/toggle_minus.png"); }
-/* line 249, ../../src/stylesheets/partials/_nav.sass */
+/* line 255, ../../src/stylesheets/partials/_nav.sass */
 .foldable.opened > span, .foldable.opened > a { font-weight: bold; }
 
-/* line 252, ../../src/stylesheets/partials/_nav.sass */
+/* line 258, ../../src/stylesheets/partials/_nav.sass */
 .organisation-fold { padding: 0 5px; }
 
-/* line 256, ../../src/stylesheets/partials/_nav.sass */
+/* line 262, ../../src/stylesheets/partials/_nav.sass */
 .paginateButtons .step { background: #e9f4fc; border: 1px solid #d8e3eb; color: #258cd5; display: inline-block; margin-right: 4px; padding: 3px 5px; text-decoration: none; -moz-border-radius: 2px; -webkit-border-radius: 2px; -o-border-radius: 2px; -ms-border-radius: 2px; -khtml-border-radius: 2px; border-radius: 2px; }
-/* line 265, ../../src/stylesheets/partials/_nav.sass */
+/* line 271, ../../src/stylesheets/partials/_nav.sass */
 .paginateButtons .step:hover, .paginateButtons .step:focus { border: 1px solid #c7d2da; color: #0059a2; }
-/* line 268, ../../src/stylesheets/partials/_nav.sass */
+/* line 274, ../../src/stylesheets/partials/_nav.sass */
 .paginateButtons .currentStep { background: #258cd5; border: 1px solid #258cd5; color: white; display: inline-block; margin-right: 4px; padding: 3px 5px; -moz-border-radius: 2px; -webkit-border-radius: 2px; -o-border-radius: 2px; -ms-border-radius: 2px; -khtml-border-radius: 2px; border-radius: 2px; }
 
 /* line 1, ../../src/stylesheets/partials/_footer.sass */
@@ -654,6 +658,13 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 
 /* line 166, ../../src/stylesheets/partials/_flashes.sass */
 .ajax-disabled, .skipped { cursor: wait; opacity: 0.5; }
+
+/* line 172, ../../src/stylesheets/partials/_flashes.sass */
+.message { background: #65c029; border: 1px solid #54af18; color: white; font-size: 11px; font-weight: bold; margin: 0 275px; opacity: 0.8; padding: 5px 10px; position: absolute; text-align: center; top: 0; width: 430px; -moz-border-radius-bottomleft: 3px; -webkit-border-bottom-left-radius: 3px; -o-border-bottom-left-radius: 3px; -ms-border-bottom-left-radius: 3px; -khtml-border-bottom-left-radius: 3px; border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-bottom-right-radius: 3px; -o-border-bottom-right-radius: 3px; -ms-border-bottom-right-radius: 3px; -khtml-border-bottom-right-radius: 3px; border-bottom-right-radius: 3px; -moz-box-shadow: 0 1px 3px #cccccc; -webkit-box-shadow: 0 1px 3px #cccccc; -o-box-shadow: 0 1px 3px #cccccc; box-shadow: 0 1px 3px #cccccc; text-shadow: #439e07 0 1px 0; }
+/* line 188, ../../src/stylesheets/partials/_flashes.sass */
+.message.error { background: #d30000; border: 1px solid #c20000; text-shadow: #b10000 0 1px 0; }
+/* line 192, ../../src/stylesheets/partials/_flashes.sass */
+.message:hover { opacity: 1; }
 
 /* line 2, ../../src/stylesheets/partials/_nicetable.sass */
 table.nice-table .cell.value { opacity: 0.2; }

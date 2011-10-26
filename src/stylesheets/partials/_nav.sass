@@ -188,6 +188,7 @@
       &:hover
         color: $primary - #333
         +text-shadow(#fff, 0, 1px, 0)
+        
       &.foldable-toggle
         border: none
         cursor: pointer
@@ -206,6 +207,11 @@
         &:hover
           color: $primary - #444
           +text-shadow(#fff, 0, 1px, 0)
+          
+      &.opened
+        background: $dropdown
+        color: $primary - #444
+        +text-shadow(#fff, 0, 1px, 0)
       
   .survey-section
     border-top: 1px dotted $dropdown - #191919
@@ -217,7 +223,7 @@
       color: $primary
       padding-right: 10px
       +text-shadow(#fff, 0, 1px, 0)
-      &:hover, &:focus, &.opened
+      &:hover, &:focus
         background: $dropdown
         color: $primary - #444
         +text-shadow(#fff, 0, 1px, 0)
