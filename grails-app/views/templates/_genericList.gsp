@@ -27,7 +27,7 @@
 		<g:if test="${!entities.isEmpty()}">
 			  <g:render template="${template}"/>
 			<!-- End of template -->
-			<div class="paginateButtons">
+			<div class="paginateButtons main">
 				<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>
 			</div>
 		</g:if>

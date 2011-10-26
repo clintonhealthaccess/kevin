@@ -218,7 +218,7 @@
       padding-right: 10px
       +text-shadow(#fff, 0, 1px, 0)
       &:hover, &:focus, &.opened
-        background: $filler - #111
+        background: $dropdown
         color: $primary - #444
         +text-shadow(#fff, 0, 1px, 0)
       
@@ -251,3 +251,25 @@
     
 .organisation-fold
   padding: 0 5px
+  
+.paginateButtons
+  .step
+    background: $filler
+    border: 1px solid $filler - #111
+    color: $primary
+    display: inline-block
+    margin-right: 4px
+    padding: 3px 5px
+    text-decoration: none
+    +border-radius(2px)
+    &:hover, &:focus
+      border: 1px solid $filler - #222
+      color: $primary - #333
+  .currentStep
+    background: $primary
+    border: 1px solid $primary
+    color: #fff
+    display: inline-block
+    margin-right: 4px
+    padding: 3px 5px
+    +border-radius(2px)

@@ -169,9 +169,6 @@
   #facility-type-filter
     color: $primary
     font-size: 11px
-    
-#incomplete-sections-container li
-  padding: 6px 0 0 10px
   
 button, input[type=submit], .next
   background: $yes
@@ -206,6 +203,9 @@ button, input[type=submit], .next
     +box-shadow(none)
     +linear-gradient(color-stops(#fff, #fff))
     +text-shadow(#fff, 0, 0, 0)
+  &.medium
+    font-size: 12px
+    padding: 4px 20px
   
 select
   background: #f6f6f6
@@ -412,3 +412,27 @@ ul.element-map
     background: url('../images/select.png') no-repeat left center
     color: $primary
     padding-left: 10px
+
+.inline-list li
+  display: inline
+  float: left
+  
+form.search-form
+  background: $filler
+  border: 1px solid $filler - #111
+  color: $primary
+  font-size: 12px
+  margin: 10px 15px 5px
+  padding: 10px
+  text-align: center
+  +border-radius
+  input
+    background: #f9f9f9
+    border: 1px solid $filler - #333
+    color: #444
+    font: normal 12px Arial, sans-serif
+    padding: 5px
+    +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
+    &:hover, &:focus
+      background: $filler + #030303
+      border-color: $primary
