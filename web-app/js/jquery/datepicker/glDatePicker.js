@@ -292,9 +292,7 @@
 					.css(
 					{
 						"position":settings.position,
-						"z-index":settings.zIndex,
-						"left":(target.offset().left),
-						"top":target.offset().top+target.outerHeight(true)
+						"z-index":settings.zIndex
 					})
 				);
 			}

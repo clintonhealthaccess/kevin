@@ -43,14 +43,14 @@
 .cluetip-default h3#cluetip-title {
   margin: 0 0 5px;
   padding: 8px 10px 4px;
-  font-size: 1.1em;
+  font-size: 12px;
   font-weight: normal;
   background-color: #87876a;
   color: #fff;
 }
 .cluetip-default #cluetip-title a {
   color: #d9d9c2;
-  font-size: 0.95em;
+  font-size: 11px;
 }  
 .cluetip-default #cluetip-inner {
   padding: 10px;
@@ -95,24 +95,41 @@
   background-color: transparent;
 }
 .cluetip-jtip #cluetip-outer {
-  border: 2px solid #ccc;
+  border: 1px solid #258CD5;
   position: relative;
   background-color: #fff;
+	box-shadow: #ccc 0 1px 3px;
+	border-radius: 3px;
 }
 
 .cluetip-jtip h3#cluetip-title {
   margin: 0 0 5px;
-  padding: 2px 5px;
-  font-size: 16px;
+  padding: 4px 5px;
+  font-size: 12px;
   font-weight: normal;
-  background-color: #ccc;
-  color: #333;
+  background-color: #258CD5;
+  color: #fff;
 }
 
 .cluetip-jtip #cluetip-inner {
   padding: 0 5px 5px;
+	color: #444;
+	font-size: 11px;
   display: inline-block;
 }
+
+#cluetip-inner {
+	line-height: 1.5;
+}
+
+#cluetip-inner .bold {
+	font-weight: bold;
+}
+
+#cluetip-inner .type {
+	font-style: italic;;
+}
+
 .cluetip-jtip div#cluetip-close { 
   text-align: right;
   margin: 0 5px 5px;

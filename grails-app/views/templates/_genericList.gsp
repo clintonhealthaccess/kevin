@@ -21,7 +21,9 @@
 			<g:searchBox action="search"/>
 		</g:if>
 		<g:if test="${!entities.isEmpty()}">
-			<g:render template="${template}"/>
+		  <div class="main">
+			  <g:render template="${template}"/>
+			</div>
 			<!-- End of template -->
 			<div class="paginateButtons main">
 				<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>

@@ -23,7 +23,8 @@
 					onChange : function(target, newDate) {
 						target.val(newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear());
 						target.trigger('change')
-					}
+					},
+					zIndex : "10"
 				});
 			}
 		);
