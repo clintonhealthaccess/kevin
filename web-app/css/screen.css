@@ -298,6 +298,7 @@ ul.horizontal li.last { margin-right: 0; }
 .filter { display: inline; float: left; margin-right: 15px; }
 
 .subnav-dropdown { position: relative; }
+<<<<<<< HEAD
 .subnav-dropdown > a { background: url("../images/expand.png") no-repeat 95% 57%; padding: 5px 18px 5px 8px; }
 .subnav-dropdown > a:hover, .subnav-dropdown > a:focus { background: url("../images/expand.png") no-repeat 95% 58% #258cd5 !important; color: white; position: relative; text-decoration: none; z-index: 20; -moz-box-shadow: #036ab3 0 2px 9px 0 inset; -webkit-box-shadow: #036ab3 0 2px 9px 0 inset; -o-box-shadow: #036ab3 0 2px 9px 0 inset; box-shadow: #036ab3 0 2px 9px 0 inset; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; }
 
@@ -316,17 +317,43 @@ ul.horizontal li.last { margin-right: 0; }
 .dropdown-list li a.opened { background: #cfe4f4; color: #004891; text-shadow: white 0 1px 0; }
 =======
 /* line 192, ../../src/stylesheets/partials/_nav.sass */
+=======
+/* line 142, ../../src/stylesheets/partials/_nav.sass */
+.subnav-dropdown > a { background: url("../images/expand.png") no-repeat 95% 57%; padding: 5px 18px 5px 8px; }
+/* line 147, ../../src/stylesheets/partials/_nav.sass */
+.subnav-dropdown > a:hover, .subnav-dropdown > a:focus { background: url("../images/expand.png") no-repeat 95% 58% #258cd5 !important; color: white; position: relative; text-decoration: none; z-index: 20; -moz-box-shadow: #036ab3 0 2px 9px 0 inset; -webkit-box-shadow: #036ab3 0 2px 9px 0 inset; -o-box-shadow: #036ab3 0 2px 9px 0 inset; box-shadow: #036ab3 0 2px 9px 0 inset; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; }
+
+/* line 156, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list { background: #cfe4f4; border: 1px solid #adc2d2; display: none; left: 0; min-width: 120px; opacity: 0.95; padding: 5px 0 0 0; position: absolute; top: 13px; z-index: 1; -moz-border-radius-bottomleft: 3px; -webkit-border-bottom-left-radius: 3px; -o-border-bottom-left-radius: 3px; -ms-border-bottom-left-radius: 3px; -khtml-border-bottom-left-radius: 3px; border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-bottom-right-radius: 3px; -o-border-bottom-right-radius: 3px; -ms-border-bottom-right-radius: 3px; -khtml-border-bottom-right-radius: 3px; border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -webkit-border-top-right-radius: 3px; -o-border-top-right-radius: 3px; -ms-border-top-right-radius: 3px; -khtml-border-top-right-radius: 3px; border-top-right-radius: 3px; -moz-box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; -webkit-box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; -o-box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; }
+/* line 171, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list li { border-bottom: 1px dotted #b6cbdb; display: block; padding: 7px 10px 5px; white-space: nowrap; }
+/* line 177, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list li:hover a, .dropdown-list li:focus a { color: #1f7cbd; }
+/* line 179, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list li:hover .survey-section a, .dropdown-list li:focus .survey-section a { color: #258cd5; }
+/* line 181, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list li:last-child { border: none; }
+/* line 184, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list li a { color: #258cd5; font-size: 10px; font-weight: bold; text-decoration: none; text-shadow: white 0 1px 0; }
+/* line 190, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list li a:hover { color: #0059a2; text-shadow: white 0 1px 0; }
+/* line 194, ../../src/stylesheets/partials/_nav.sass */
+>>>>>>> random styling tasks
 .dropdown-list li a.foldable-toggle { border: none; cursor: pointer; display: block; float: left; margin-right: 5px; width: 15px; height: 15px; text-indent: -9999px; background: url("../images/icons/toggle_plus.png") no-repeat left center; }
-/* line 202, ../../src/stylesheets/partials/_nav.sass */
+/* line 204, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list li a.foldable-toggle.toggled { background: url("../images/icons/toggle_minus.png") no-repeat left center; }
-/* line 205, ../../src/stylesheets/partials/_nav.sass */
-.dropdown-list li a.dropdown-link { background: none; }
 /* line 207, ../../src/stylesheets/partials/_nav.sass */
+.dropdown-list li a.dropdown-link { background: none; }
+/* line 209, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list li a.dropdown-link:hover { color: #004891; text-shadow: white 0 1px 0; }
-/* line 211, ../../src/stylesheets/partials/_nav.sass */
+/* line 213, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list li a.opened { background: #cfe4f4; color: #004891; text-shadow: white 0 1px 0; }
+<<<<<<< HEAD
 /* line 216, ../../src/stylesheets/partials/_nav.sass */
 >>>>>>> tables, messages, dropdown fix, bugfixes
+=======
+/* line 218, ../../src/stylesheets/partials/_nav.sass */
+>>>>>>> random styling tasks
 .dropdown-list .survey-section { border-top: 1px dotted #b6cbdb; margin-top: 5px; margin-left: 5px; *zoom: 1; }
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -337,6 +364,7 @@ ul.horizontal li.last { margin-right: 0; }
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> survey tweaks, data consistency
 .dropdown-list .survey-section:after { content: ""; display: table; clear: both; }
+<<<<<<< HEAD
 <<<<<<< HEAD
 .dropdown-list .survey-section a { color: #258cd5; padding-right: 10px; text-shadow: white 0 1px 0; }
 <<<<<<< HEAD
@@ -366,33 +394,40 @@ ul.horizontal li.last { margin-right: 0; }
 /* line 256, ../../src/stylesheets/partials/_nav.sass */
 =======
 /* line 222, ../../src/stylesheets/partials/_nav.sass */
+=======
+/* line 224, ../../src/stylesheets/partials/_nav.sass */
+>>>>>>> random styling tasks
 .dropdown-list .survey-section a { color: #258cd5; padding-right: 10px; text-shadow: white 0 1px 0; }
-/* line 226, ../../src/stylesheets/partials/_nav.sass */
+/* line 228, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list .survey-section a:hover, .dropdown-list .survey-section a:focus { background: #cfe4f4; color: #004891; text-shadow: white 0 1px 0; }
-/* line 233, ../../src/stylesheets/partials/_nav.sass */
+/* line 235, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list .survey-section li:focus a, .dropdown-list .survey-section li:hover a { color: #00266f; }
 
-/* line 236, ../../src/stylesheets/partials/_nav.sass */
+/* line 238, ../../src/stylesheets/partials/_nav.sass */
 .organisation-fold { border-top: 1px solid #b6cbdb; margin-top: 5px; padding-top: 5px; }
 
-/* line 241, ../../src/stylesheets/partials/_nav.sass */
-.foldable { min-width: 75px; }
 /* line 243, ../../src/stylesheets/partials/_nav.sass */
+.foldable { min-width: 75px; }
+/* line 245, ../../src/stylesheets/partials/_nav.sass */
 .foldable a.foldable-toggle { display: block; cursor: pointer; width: 20px; height: 20px; margin: -3px; float: left; text-indent: -9999px; background-image: url("../images/icons/toggle_plus.png"); }
-/* line 252, ../../src/stylesheets/partials/_nav.sass */
+/* line 254, ../../src/stylesheets/partials/_nav.sass */
 .foldable a.foldable-toggle.toggled { background-image: url("../images/icons/toggle_minus.png"); }
-/* line 255, ../../src/stylesheets/partials/_nav.sass */
+/* line 257, ../../src/stylesheets/partials/_nav.sass */
 .foldable.opened > span, .foldable.opened > a { font-weight: bold; }
 
-/* line 258, ../../src/stylesheets/partials/_nav.sass */
+/* line 260, ../../src/stylesheets/partials/_nav.sass */
 .organisation-fold { padding: 0 5px; }
 
+<<<<<<< HEAD
 /* line 262, ../../src/stylesheets/partials/_nav.sass */
 >>>>>>> tables, messages, dropdown fix, bugfixes
+=======
+/* line 264, ../../src/stylesheets/partials/_nav.sass */
+>>>>>>> random styling tasks
 .paginateButtons .step { background: #e9f4fc; border: 1px solid #d8e3eb; color: #258cd5; display: inline-block; margin-right: 4px; padding: 3px 5px; text-decoration: none; -moz-border-radius: 2px; -webkit-border-radius: 2px; -o-border-radius: 2px; -ms-border-radius: 2px; -khtml-border-radius: 2px; border-radius: 2px; }
-/* line 271, ../../src/stylesheets/partials/_nav.sass */
+/* line 273, ../../src/stylesheets/partials/_nav.sass */
 .paginateButtons .step:hover, .paginateButtons .step:focus { border: 1px solid #c7d2da; color: #0059a2; }
-/* line 274, ../../src/stylesheets/partials/_nav.sass */
+/* line 276, ../../src/stylesheets/partials/_nav.sass */
 .paginateButtons .currentStep { background: #258cd5; border: 1px solid #258cd5; color: white; display: inline-block; margin-right: 4px; padding: 3px 5px; -moz-border-radius: 2px; -webkit-border-radius: 2px; -o-border-radius: 2px; -ms-border-radius: 2px; -khtml-border-radius: 2px; border-radius: 2px; }
 
 /* line 1, ../../src/stylesheets/partials/_footer.sass */
@@ -403,6 +438,7 @@ ul.horizontal li.last { margin-right: 0; }
 .spinner { position: fixed; text-align: center; overflow: auto; width: 100%; height: 100%; opacity: 0.4; background-color: grey; z-index: 20; }
 .spinner img { position: relative; top: 50%; }
 
+<<<<<<< HEAD
 .listing { clear: both; color: #444444; font-size: 12px; width: 100%; }
 .listing th, .listing td { padding: 7px 12px; }
 .listing th { background: #e9f4fc; color: #258cd5; }
@@ -427,6 +463,53 @@ ul.horizontal li.last { margin-right: 0; }
 
 .add-row, .element-list-add { background: url("../images/icons/toggle_plus.png") no-repeat 10px center #e9f4fc; border: 1px solid #c7d2da; display: inline-block; font-size: 12px; font-weight: bold; margin-top: 10px; padding: 8px 20px 7px 35px; text-decoration: none; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 0 2px 1px #eeeeee; -webkit-box-shadow: 0 2px 1px #eeeeee; -o-box-shadow: 0 2px 1px #eeeeee; box-shadow: 0 2px 1px #eeeeee; text-shadow: white 0 1px 0; }
 .add-row:hover, .add-row:focus, .element-list-add:hover, .element-list-add:focus { background: url("../images/icons/toggle_plus.png") no-repeat 10px center #65c029; border: 1px solid #3c9700; color: white; -moz-box-shadow: 0 2px 1px #cccccc; -webkit-box-shadow: 0 2px 1px #cccccc; -o-box-shadow: 0 2px 1px #cccccc; box-shadow: 0 2px 1px #cccccc; text-shadow: #328d00 0 1px 0; }
+=======
+/* line 1, ../../src/stylesheets/partials/_tables.sass */
+.listing { clear: both; color: #444444; font-size: 12px; width: 100%; }
+/* line 6, ../../src/stylesheets/partials/_tables.sass */
+.listing th, .listing td { padding: 7px 12px; }
+/* line 8, ../../src/stylesheets/partials/_tables.sass */
+.listing th { background: #e9f4fc; color: #258cd5; }
+/* line 11, ../../src/stylesheets/partials/_tables.sass */
+.listing th.label { white-space: nowrap; }
+/* line 13, ../../src/stylesheets/partials/_tables.sass */
+.listing th.label a { font-size: 11px; }
+/* line 16, ../../src/stylesheets/partials/_tables.sass */
+.listing a, .listing th, .listing td { line-height: 1.4; }
+/* line 19, ../../src/stylesheets/partials/_tables.sass */
+.listing td { border-top: 1px solid #e9f4fc; color: #444444; font-size: 11px; vertical-align: top; }
+/* line 24, ../../src/stylesheets/partials/_tables.sass */
+.listing td.header { color: #888888; font-weight: bold; }
+/* line 28, ../../src/stylesheets/partials/_tables.sass */
+.listing td:first-child, .listing th:first-child { border-left: 1px solid #e9f4fc; }
+/* line 31, ../../src/stylesheets/partials/_tables.sass */
+.listing td:last-child, .listing th:last-child { border-right: 1px solid #e9f4fc; }
+/* line 34, ../../src/stylesheets/partials/_tables.sass */
+.listing tr:last-child td { border-bottom: 1px solid #e9f4fc; }
+/* line 37, ../../src/stylesheets/partials/_tables.sass */
+.listing.login { margin: 0 auto; width: 160px; }
+/* line 40, ../../src/stylesheets/partials/_tables.sass */
+.listing.login tr:first-child td { padding-top: 15px; }
+/* line 42, ../../src/stylesheets/partials/_tables.sass */
+.listing.login tr:last-child td { border-top: 1px dashed #d8e3eb; padding-top: 10px; padding-bottom: 20px; }
+/* line 46, ../../src/stylesheets/partials/_tables.sass */
+.listing.login td { border: none; padding: 0 0 5px; text-align: center; }
+
+/* line 51, ../../src/stylesheets/partials/_tables.sass */
+.explanation-heading { background: #e9f4fc; font-size: 11px; font-style: italic; margin-top: 5px; padding: 7px 13px; }
+
+/* line 59, ../../src/stylesheets/partials/_tables.sass */
+.explanation-row > td { border: none; padding: 0 10px; }
+
+/* line 63, ../../src/stylesheets/partials/_tables.sass */
+.explanation-cell table { margin-bottom: 10px; }
+
+/* line 66, ../../src/stylesheets/partials/_tables.sass */
+.add-row, .element-list-add { background: url("../images/icons/toggle_plus.png") no-repeat 17% center #e9f4fc; border: 1px solid #c7d2da; display: inline-block; font-size: 12px; font-weight: bold; margin-top: 10px; padding: 8px 20px 7px 35px; text-decoration: none; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 0 2px 1px #eeeeee; -webkit-box-shadow: 0 2px 1px #eeeeee; -o-box-shadow: 0 2px 1px #eeeeee; box-shadow: 0 2px 1px #eeeeee; text-shadow: white 0 1px 0; }
+/* line 78, ../../src/stylesheets/partials/_tables.sass */
+.add-row:hover, .add-row:focus, .element-list-add:hover, .element-list-add:focus { background: url("../images/icons/toggle_plus.png") no-repeat 17% center #65c029; border: 1px solid #3c9700; color: white; -moz-box-shadow: 0 2px 1px #cccccc; -webkit-box-shadow: 0 2px 1px #cccccc; -o-box-shadow: 0 2px 1px #cccccc; box-shadow: 0 2px 1px #cccccc; text-shadow: #328d00 0 1px 0; }
+/* line 84, ../../src/stylesheets/partials/_tables.sass */
+>>>>>>> random styling tasks
 .add-row:active, .element-list-add:active { position: relative; top: 1px; -moz-box-shadow: 0 1px 1px #cccccc; -webkit-box-shadow: 0 1px 1px #cccccc; -o-box-shadow: 0 1px 1px #cccccc; box-shadow: 0 1px 1px #cccccc; }
 
 .adv-form-row { border: 1px solid #e9f4fc; padding: 25px 15px 15px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; *zoom: 1; }
