@@ -52,17 +52,17 @@ grails.project.dependency.resolution = {
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         mavenLocal()
-//	    mavenCentral()	
+	    mavenCentral()	
 		mavenRepo "http://m2repo.spockframework.org/snapshots"
-//		mavenRepo "http://snapshots.repository.codehaus.org"
-//		mavenRepo "http://repository.codehaus.org"
-//		mavenRepo "http://download.java.net/maven/2/"
-//		mavenRepo "http://mirrors.ibiblio.org/pub/mirrors/maven2/"
-//		mavenRepo "http://repository.jboss.org/nexus/"
-//		mavenRepo "https://maven.nuxeo.org/nexus/"
-//		mavenRepo "http://www.intalio.org/public/maven2/"
+		mavenRepo "http://snapshots.repository.codehaus.org"
+		mavenRepo "http://repository.codehaus.org"
+		mavenRepo "http://download.java.net/maven/2/"
+		mavenRepo "http://mirrors.ibiblio.org/pub/mirrors/maven2/"
+		mavenRepo "http://repository.jboss.org/nexus/"
+		mavenRepo "https://maven.nuxeo.org/nexus/"
+		mavenRepo "http://www.intalio.org/public/maven2/"
 		mavenRepo "http://repo.opennms.org/maven2/"
-//		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
+		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 				
 		/**
 		 * Configure our resolver.
@@ -114,7 +114,7 @@ grails.project.dependency.resolution = {
 		
 		// those are for the migration script to work
 //		compile 'org.hisp.dhis:dhis-service-importexport:2.2-SNAPSHOT'
-//		compile 'org.supercsv:SuperCSV:1.52'
+		compile 'org.supercsv:SuperCSV:1.52'
     }
 
 	plugins {
