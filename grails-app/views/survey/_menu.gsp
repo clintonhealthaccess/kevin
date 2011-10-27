@@ -218,7 +218,8 @@
 					if (!$(elementInRow).hasClass('skipped')) {
 						var value = $(input).attr('value');
 						if ($(input).prop('nodeName') == 'SELECT' && $(input).attr('value')) {
-							value = $(input).find("option[selected]").html();
+							value = $(input).find("option:selected").html();
+							alert(value);
 						}
 						$(input).after('<span class="minimized-input" onclick="maximizeRow($(this).parents(\'.element-list-row\')); return false;">'+value+'</span>');
 					}

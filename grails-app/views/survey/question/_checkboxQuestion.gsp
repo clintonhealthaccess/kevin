@@ -8,7 +8,7 @@
 	<g:ifText field="${question.descriptions}">
 		<p class="show-question-help"><a href="#">Show tips</a></p>
 		<div class="question-help-container">
-			<p class="question-help"><g:i18n field="${question.descriptions}"/><a class="hide-question-help">Close tips</a></p>
+			<div class="question-help"><g:i18n field="${question.descriptions}"/><a class="hide-question-help">Close tips</a></div>
 		</div>
 	</g:ifText>
 	

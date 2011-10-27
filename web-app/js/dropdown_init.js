@@ -4,11 +4,12 @@
  **/
 $(document).delegate('.dropdown .selected', 'click', function(e) {
 	$(this).parent(".dropdown").find("div.dropdown-list").toggle();
-	e.stopEventPropagation();
+	e.stopPropagation();
 	return false;
 });
 $(".dropdown-list a.dropdown-link").bind('click', function() {
 	$(this).parents('.dropdown-list').hide();
+//	return false;
 });
 $(document).bind('click', function(e) {
 	var clicked = e.target;
@@ -17,4 +18,5 @@ $(document).bind('click', function(e) {
 			$(this).parent(".dropdown").find("div.dropdown-list").hide();	
 		}
 	});
+//	return false;
 });

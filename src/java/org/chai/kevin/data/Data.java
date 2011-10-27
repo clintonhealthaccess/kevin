@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
@@ -98,7 +99,7 @@ abstract public class Data<T extends StoredValue> implements Timestamped, Serial
 		this.descriptions = descriptions;
 	}
 
-	@Basic(fetch=FetchType.EAGER)
+	@Lob
 	public String getCode() {
 		return code;
 	}

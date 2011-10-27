@@ -1246,7 +1246,7 @@ class Initializer {
 
 			def serviceQ5 = new SurveySimpleQuestion(
 					names: j(["en":"Service Section Simple Question MAP"]),
-					descriptions: j(["en":"Help text"]),
+					descriptions: j(["en":"<div>Help text</div>"]),
 					order: 5,
 					groupUuidString: "District Hospital,Health Center"
 					)

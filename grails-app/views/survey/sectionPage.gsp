@@ -77,7 +77,7 @@
 					$.each(data.elements, function(index, element) {
 						
 						// we remove all the skips
-						$('#element-'+element.id).find('.element').removeClass('skipped').find('input').removeAttr('disabled');
+						$('#element-'+element.id).find('.element').removeClass('skipped').find('.input').removeAttr('disabled');
 						
 						// we add them again
 						$.each(element.skipped, function(index, skipped) {
