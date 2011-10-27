@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
 
 body { line-height: 1; }
@@ -58,33 +59,40 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-weight: inherit; font-style: inherit; font-size: 100%; font-family: inherit; vertical-align: baseline; }
 =======
 /* line 17, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+=======
+/* line 17, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+>>>>>>> tipsy and bugfixes
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
 >>>>>>> bug fixes design
 
-/* line 20, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 20, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 body { line-height: 1; }
 
-/* line 22, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 22, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 ol, ul { list-style: none; }
 
-/* line 24, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 24, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 table { border-collapse: collapse; border-spacing: 0; }
 
-/* line 26, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 26, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 caption, th, td { text-align: left; font-weight: normal; vertical-align: middle; }
 
-/* line 28, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 28, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 q, blockquote { quotes: none; }
-/* line 101, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 101, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 q:before, q:after, blockquote:before, blockquote:after { content: ""; content: none; }
 
-/* line 30, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+/* line 30, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 a img { border: none; }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> fixes for tipsy
 =======
 /* line 114, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+=======
+/* line 114, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+>>>>>>> tipsy and bugfixes
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary { display: block; }
 
 >>>>>>> bug fixes design
@@ -192,7 +200,7 @@ a.no-link { color: #0059a2; text-decoration: none; }
 
 /* line 17, ../../src/stylesheets/partials/_shared.sass */
 .main { clear: both; color: #666666; font-size: 12px; *zoom: 1; }
-/* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .main:after { content: ""; display: table; clear: both; }
 
 /* line 23, ../../src/stylesheets/partials/_shared.sass */
@@ -237,6 +245,7 @@ a.no-link { color: #0059a2; text-decoration: none; }
 ul.horizontal { *zoom: 1; }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 ul.horizontal:after { content: ""; display: table; clear: both; }
 /* line 89, ../../src/stylesheets/partials/_shared.sass */
@@ -247,6 +256,9 @@ ul.horizontal:after { content: "\0020"; display: block; height: 0; clear: both; 
 >>>>>>> fixes for tipsy
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 ul.horizontal:after { content: ""; display: table; clear: both; }
 /* line 89, ../../src/stylesheets/partials/_shared.sass */
 >>>>>>> bug fixes design
@@ -288,6 +300,7 @@ ul.horizontal li.last { margin-right: 0; }
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> styles
@@ -301,6 +314,9 @@ ul.horizontal li.last { margin-right: 0; }
 >>>>>>> fixes for tipsy
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .wrapper:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 
@@ -329,6 +345,7 @@ ul.horizontal li.last { margin-right: 0; }
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #header:after { content: ""; display: table; clear: both; }
 #header h2 { color: #2e95de; font-family: "Lucida Grande", Arial, sans-serif; font-size: 15px; line-height: 1.4; position: absolute; right: 0; text-align: right; top: 45px; width: 500px; text-shadow: white 0 1px 0; }
 #header h2 span { color: #47aef7; display: block; font-size: 11px; letter-spacing: 0.3px; text-transform: uppercase; }
@@ -344,6 +361,9 @@ ul.horizontal li.last { margin-right: 0; }
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> survey tweaks, data consistency
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 #header:after { content: ""; display: table; clear: both; }
 =======
 /* line 22, ../../../../../../../usr/share/compass/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
@@ -371,6 +391,7 @@ ul.horizontal li.last { margin-right: 0; }
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> styles
 =======
@@ -382,6 +403,9 @@ ul.horizontal li.last { margin-right: 0; }
 #switcher:after { content: "\0020"; display: block; height: 0; clear: both; overflow: hidden; visibility: hidden; }
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 #switcher:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 /* line 9, ../../src/stylesheets/partials/_nav.sass */
@@ -393,6 +417,7 @@ ul.horizontal li.last { margin-right: 0; }
 #navigation { background: url("../images/bg/nav_bg.png") repeat-x; height: 42px; position: relative; z-index: 50; }
 
 #main-menu { float: left; *zoom: 1; }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -409,6 +434,9 @@ ul.horizontal li.last { margin-right: 0; }
 #main-menu:after { content: "\0020"; display: block; height: 0; clear: both; overflow: hidden; visibility: hidden; }
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 #main-menu:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 /* line 38, ../../src/stylesheets/partials/_nav.sass */
@@ -492,7 +520,7 @@ ul.horizontal li.last { margin-right: 0; }
 .subnav-dropdown > a:hover, .subnav-dropdown > a:focus { background: url("../images/expand.png") no-repeat 95% 58% #258cd5 !important; color: white; position: relative; text-decoration: none; z-index: 20; -moz-box-shadow: #036ab3 0 2px 9px 0 inset; -webkit-box-shadow: #036ab3 0 2px 9px 0 inset; -o-box-shadow: #036ab3 0 2px 9px 0 inset; box-shadow: #036ab3 0 2px 9px 0 inset; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; }
 
 /* line 156, ../../src/stylesheets/partials/_nav.sass */
-.dropdown-list { background: #cfe4f4; border: 1px solid #adc2d2; display: none; left: 0; min-width: 120px; opacity: 0.95; padding: 5px 0 0 0; position: absolute; top: 13px; z-index: 1; -moz-border-radius-bottomleft: 3px; -webkit-border-bottom-left-radius: 3px; -o-border-bottom-left-radius: 3px; -ms-border-bottom-left-radius: 3px; -khtml-border-bottom-left-radius: 3px; border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-bottom-right-radius: 3px; -o-border-bottom-right-radius: 3px; -ms-border-bottom-right-radius: 3px; -khtml-border-bottom-right-radius: 3px; border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -webkit-border-top-right-radius: 3px; -o-border-top-right-radius: 3px; -ms-border-top-right-radius: 3px; -khtml-border-top-right-radius: 3px; border-top-right-radius: 3px; -moz-box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; -webkit-box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; -o-box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; }
+.dropdown-list { background: #cfe4f4; border: 1px solid #adc2d2; display: none; left: 0; min-width: 200px; opacity: 0.95; padding: 5px 0 0 0; position: absolute; top: 13px; z-index: 1; -moz-border-radius-bottomleft: 3px; -webkit-border-bottom-left-radius: 3px; -o-border-bottom-left-radius: 3px; -ms-border-bottom-left-radius: 3px; -khtml-border-bottom-left-radius: 3px; border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-bottom-right-radius: 3px; -o-border-bottom-right-radius: 3px; -ms-border-bottom-right-radius: 3px; -khtml-border-bottom-right-radius: 3px; border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -webkit-border-top-right-radius: 3px; -o-border-top-right-radius: 3px; -ms-border-top-right-radius: 3px; -khtml-border-top-right-radius: 3px; border-top-right-radius: 3px; -moz-box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; -webkit-box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; -o-box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; box-shadow: #cccccc 2px 2px 3px, #bed3e3 0 0 8px 3px inset; }
 /* line 171, ../../src/stylesheets/partials/_nav.sass */
 .dropdown-list li { border-bottom: 1px dotted #b6cbdb; display: block; padding: 7px 10px 5px; white-space: nowrap; }
 /* line 177, ../../src/stylesheets/partials/_nav.sass */
@@ -527,12 +555,16 @@ ul.horizontal li.last { margin-right: 0; }
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> styles
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> survey tweaks, data consistency
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .dropdown-list .survey-section:after { content: ""; display: table; clear: both; }
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -703,6 +735,7 @@ ul.horizontal li.last { margin-right: 0; }
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> styles
@@ -720,6 +753,9 @@ ul.horizontal li.last { margin-right: 0; }
 >>>>>>> fixes for tipsy
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .adv-form-row:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 /* line 8, ../../src/stylesheets/partials/_forms.sass */
@@ -732,12 +768,16 @@ ul.horizontal li.last { margin-right: 0; }
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> styles
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> survey tweaks, data consistency
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .adv-form-section:after { content: ""; display: table; clear: both; }
 <<<<<<< HEAD
 .adv-form-section.last { border: none; margin: 0; padding: 0; }
@@ -861,6 +901,7 @@ button:active, input[type=submit]:active, .next:active { position: relative; top
 .adv-form-checkbox { *zoom: 1; }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .adv-form-checkbox:after { content: ""; display: table; clear: both; }
 =======
@@ -869,6 +910,9 @@ button:active, input[type=submit]:active, .next:active { position: relative; top
 >>>>>>> fixes for tipsy
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .adv-form-checkbox:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 /* line 123, ../../src/stylesheets/partials/_forms.sass */
@@ -886,7 +930,11 @@ button:active, input[type=submit]:active, .next:active { position: relative; top
 .form-actions { border-top: 2px solid #e9f4fc; margin-top: 15px; *zoom: 1; }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .form-actions:after { content: ""; display: table; clear: both; }
 =======
 /* line 22, ../../../../../../../usr/share/compass/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
@@ -908,6 +956,7 @@ button:active, input[type=submit]:active, .next:active { position: relative; top
 .facility-type { background: #f6fdeb; border: 1px solid #e5ecda; margin: 15px; padding: 11px 15px; width: 940px; -moz-border-radius: 5px; -webkit-border-radius: 5px; -o-border-radius: 5px; -ms-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; *zoom: 1; }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .facility-type:after { content: ""; display: table; clear: both; }
 =======
@@ -916,6 +965,9 @@ button:active, input[type=submit]:active, .next:active { position: relative; top
 >>>>>>> fixes for tipsy
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .facility-type:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 /* line 162, ../../src/stylesheets/partials/_forms.sass */
@@ -1011,6 +1063,7 @@ select:hover, select:focus { background: #ecf7ff; border-color: #258cd5; }
 .entity-form-container form .row { border-bottom: 1px dotted #e9f4fc; margin-bottom: 10px; padding-bottom: 10px; *zoom: 1; }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .entity-form-container form .row:after { content: ""; display: table; clear: both; }
 =======
@@ -1019,6 +1072,9 @@ select:hover, select:focus { background: #ecf7ff; border-color: #258cd5; }
 >>>>>>> fixes for tipsy
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .entity-form-container form .row:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 /* line 282, ../../src/stylesheets/partials/_forms.sass */
@@ -1132,6 +1188,7 @@ ul.filtered li:hover { background-color: yellow; }
 ul.element-map { *zoom: 1; }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 ul.element-map:after { content: ""; display: table; clear: both; }
 /* line 394, ../../src/stylesheets/partials/_forms.sass */
@@ -1148,10 +1205,13 @@ ul.element-map li:after { content: "\0020"; display: block; height: 0; clear: bo
 >>>>>>> fixes for tipsy
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 ul.element-map:after { content: ""; display: table; clear: both; }
 /* line 394, ../../src/stylesheets/partials/_forms.sass */
 ul.element-map li { *zoom: 1; }
-/* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 ul.element-map li:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 /* line 397, ../../src/stylesheets/partials/_forms.sass */
@@ -1199,6 +1259,7 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> styles
@@ -1211,6 +1272,9 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 .success-box:after { content: "\0020"; display: block; height: 0; clear: both; overflow: hidden; visibility: hidden; }
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .success-box:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 /* line 15, ../../src/stylesheets/partials/_flashes.sass */
@@ -1225,12 +1289,16 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> styles
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 >>>>>>> survey tweaks, data consistency
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 .question-container:after { content: ""; display: table; clear: both; }
 =======
 /* line 22, ../../../../../../../usr/share/compass/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
@@ -1306,7 +1374,11 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 #incomplete-sections-container > div { background: url("../images/icons/fail.png") no-repeat 11px center #f4e9e9; border: 1px solid #e3d8d8; margin-bottom: 10px; padding: 10px 10px 10px 52px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; *zoom: 1; text-shadow: white 0 1px 0; }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 #incomplete-sections-container > div:after { content: ""; display: table; clear: both; }
 =======
 /* line 22, ../../../../../../../usr/share/compass/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
@@ -1323,6 +1395,7 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 #invalid-questions-container > div { background: url("../images/icons/warning.png") no-repeat 11px center #e9f4fc; border: 1px solid #e5ecda; padding: 10px 10px 10px 52px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; *zoom: 1; text-shadow: white 0 1px 0; }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 #invalid-questions-container > div:after { content: ""; display: table; clear: both; }
 =======
@@ -1331,6 +1404,9 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 >>>>>>> fixes for tipsy
 =======
 /* line 38, ../../../../../../../Library/Frameworks/JRuby.framework/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+=======
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+>>>>>>> tipsy and bugfixes
 #invalid-questions-container > div:after { content: ""; display: table; clear: both; }
 >>>>>>> bug fixes design
 /* line 85, ../../src/stylesheets/partials/_flashes.sass */
@@ -1456,6 +1532,7 @@ table.nice-table .cell { cursor: default; }
 <<<<<<< HEAD
 =======
 /* line 1, ../../src/stylesheets/partials/_tipsy.sass */
+<<<<<<< HEAD
 >>>>>>> bugfixes
 .tipsy { padding: 5px; font-size: 11px; line-height: 1.4; position: absolute; z-index: 100000; letter-spacing: 0.05; }
 
@@ -1490,4 +1567,36 @@ table.nice-table .cell { cursor: default; }
 
 .tipsy-e .tipsy-arrow { top: 50%; margin-top: -4px; right: 0; width: 5px; height: 9px; background-position: top right; }
 
+=======
+.tipsy { padding: 5px; font-size: 11px; font-weight: bold; line-height: 1.4; opacity: 1; position: absolute; z-index: 100000; letter-spacing: 0.05; }
+
+/* line 11, ../../src/stylesheets/partials/_tipsy.sass */
+.tipsy-inner { padding: 5px 10px; background: #111111; border: 1px solid black; box-shadow: #dddddd 0 0 5px; max-width: 400px; color: white; text-align: left; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 0 0 5px #dddddd; -webkit-box-shadow: 0 0 5px #dddddd; -o-box-shadow: 0 0 5px #dddddd; box-shadow: 0 0 5px #dddddd; text-shadow: black 0 1px 0; }
+
+/* line 23, ../../src/stylesheets/partials/_tipsy.sass */
+.tipsy-arrow { position: absolute; background: url("../images/tipsy.gif") no-repeat top left; width: 9px; height: 5px; }
+
+/* line 29, ../../src/stylesheets/partials/_tipsy.sass */
+.tipsy-n .tipsy-arrow { top: 0; left: 50%; margin-left: -4px; }
+
+/* line 34, ../../src/stylesheets/partials/_tipsy.sass */
+.tipsy-nw .tipsy-arrow { top: 0; left: 10px; }
+
+/* line 38, ../../src/stylesheets/partials/_tipsy.sass */
+.tipsy-ne .tipsy-arrow { top: 0; right: 10px; }
+
+/* line 42, ../../src/stylesheets/partials/_tipsy.sass */
+.tipsy-south .tipsy-arrow { bottom: 0; left: 50%; margin-left: -4px; background-position: bottom; }
+
+/* line 48, ../../src/stylesheets/partials/_tipsy.sass */
+.tipsy-sw .tipsy-arrow { bottom: 0; left: 10px; background-position: bottom left; }
+
+/* line 53, ../../src/stylesheets/partials/_tipsy.sass */
+.tipsy-se .tipsy-arrow { bottom: 0; right: 10px; background-position: bottom left; }
+
+/* line 58, ../../src/stylesheets/partials/_tipsy.sass */
+.tipsy-e .tipsy-arrow { top: 50%; margin-top: -4px; right: 0; width: 5px; height: 9px; background-position: top right; }
+
+/* line 66, ../../src/stylesheets/partials/_tipsy.sass */
+>>>>>>> tipsy and bugfixes
 .tipsy-w .tipsy-arrow { top: 50%; margin-top: -4px; left: 0; width: 5px; height: 9px; }
