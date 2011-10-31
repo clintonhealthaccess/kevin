@@ -3,6 +3,7 @@ package org.chai.kevin
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
+import org.chai.kevin.util.LanguageUtils;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -46,4 +47,8 @@ class HomeController {
 		}
 	}
 	
+	def upgrade = {render (view:'upgrade_'+LanguageUtils.currentLanguage)}
+	def about = {render (view:'about_contact_'+LanguageUtils.currentLanguage)}
+	def contact = {render (view:'about_contact_'+LanguageUtils.currentLanguage)}
+	def helpdesk = {render (view:'helpdesk_'+LanguageUtils.currentLanguage)}
 }

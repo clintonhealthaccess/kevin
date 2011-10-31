@@ -93,11 +93,12 @@ abstract class AbstractEntityController {
 	}
 	
 	def save = {
-		withForm {
+		// TODO uncomment this to enable multiple send check
+//		withForm {
 			saveWithoutTokenCheck()
-		}.invalidToken {
-			log.warn("clicked twice");
-		}
+//		}.invalidToken {
+//			log.warn("clicked twice");
+//		}
 	}
 	
 	def saveWithoutTokenCheck = {

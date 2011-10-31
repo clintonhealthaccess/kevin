@@ -1,3 +1,5 @@
+import org.chai.kevin.security.Role;
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -62,22 +64,43 @@ class BootStrap {
 				root.save(failOnError: true, flush:true)
 			}
 			
-			if (User.findByUsername('admin') == null) {
-				def user = new User(username: "admin", passwordHash: new Sha256Hash("123admin!").toHex())
-				user.addToPermissions("*")
-				user.save()
+			if (Role.findByName('reports-all-readonly') == null) {
+				def reportAllReadonly = new Role(name: "report-all-readonly")
+				reportAllReadonly.addToPermissions("menu:reports")
+				reportAllReadonly.addToPermissions("dashboard:*")
+				reportAllReadonly.addToPermissions("dsr:*")
+				reportAllReadonly.addToPermissions("maps:*")
+				reportAllReadonly.addToPermissions("cost:*")
+				reportAllReadonly.addToPermissions("fct:*")
+				reportAllReadonly.save()
 			}
 			
-			if (User.findByUsername('dhsst') == null) {
-				def user = new User(username: "dhsst", passwordHash: new Sha256Hash("123chai!").toHex())
-				user.addToPermissions("menu:reports")
-				user.addToPermissions("dashboard:*")
-				user.addToPermissions("dsr:*")
-				user.addToPermissions("maps:*")
-				user.addToPermissions("cost:*")
-				user.addToPermissions("home:*")
-				user.save()
+			if (Role.findByName('survey-all-readonly') == null) {
+				def surveyAllReadonly = new Role(name: "survey-all-readonly")
+				surveyAllReadonly.addToPermissions("menu:survey")
+				surveyAllReadonly.addToPermissions("editSurvey:view")
+				surveyAllReadonly.addToPermissions("editSurvey:summaryPage")
+				surveyAllReadonly.addToPermissions("editSurvey:sectionTable")
+				surveyAllReadonly.addToPermissions("editSurvey:objectiveTable")
+				surveyAllReadonly.addToPermissions("editSurvey:surveyPage")
+				surveyAllReadonly.addToPermissions("editSurvey:objectivePage")
+				surveyAllReadonly.addToPermissions("editSurvey:sectionPage")
+				surveyAllReadonly.addToPermissions("editSurvey:print")
+				surveyAllReadonly.save()
 			}
+			
+//			if (User.findByUsername('admin') == null) {
+//				def user = new User(username: "admin", passwordHash: new Sha256Hash("123admin!").toHex())
+//				user.addToPermissions("*")
+//				user.save()
+//			}
+			
+//			if (User.findByUsername('dhsst') == null) {
+//				def user = new User(username: "dhsst", passwordHash: new Sha256Hash("123chai!").toHex())
+////				user.addToRoles(Role.findByName('survey-all-readonly'))
+//				user.addToRoles(Role.findByName('reports-all-readonly'))
+//				user.save()
+//			}
 			
 			break;
 		case "development":

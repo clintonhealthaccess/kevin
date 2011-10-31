@@ -14,21 +14,24 @@
 		
 		<g:input name="order" label="Order" bean="${question}" field="order"/>
 		
-		<table id="question-option">
-			<g:each in="${question.options}" status="i" var="option">
-				<tr class="white-box"> 
-					<td id="question-option-${option.id}"><g:render template="/survey/admin/checkboxOption" model="[option: option]" /></td>
-				</tr>
-			</g:each>
-		</table>
-		
 		<g:if test="${question.id != null}">
-			<div>
-				<a class="float-right" href="${createLinkWithTargetURI(controller:'checkboxOption', action:'create', params:[questionId: question.id])}">
-					<g:message code="default.add.label" args="[message(code:'survey.checkboxquestion.checkboxoption.label')]" default="Add Option" />
-				</a>
+			<div class="row">
+				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="survey.checkboxquestion.checkboxoption.label"/>:</a>
+				<div class="hidden">
+					<ul>
+						<g:each in="${question.options}" status="i" var="option">
+							<li>
+								<g:render template="/survey/admin/checkboxOption" model="[option: option, index: i]" />
+							</li>
+						</g:each>
+					</ul>
+					<a href="${createLinkWithTargetURI(controller:'checkboxOption', action:'create', params:[questionId: question.id])}">
+						<g:message code="default.add.label" args="[message(code:'survey.checkboxquestion.checkboxoption.label')]" default="Add Option" />
+					</a>
+				</div>
 			</div>
 		</g:if>
+		
 		<div class="row ${hasErrors(bean:question, field:'section', 'errors')}">
 			<label for="section.id"><g:message code="survey.section.label" default="Section"/>:</label>
 			<select class="section-list" name="section.id">

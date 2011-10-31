@@ -56,6 +56,7 @@ import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
+import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTarget;
@@ -81,14 +82,31 @@ class Initializer {
 	static Date mar311 = getDate( 2006, 3, 31 );
 
 	static def createUsers() {
+		def reportAllReadonly = new Role(name: "reports-all-readonly")
+		reportAllReadonly.addToPermissions("menu:reports")
+		reportAllReadonly.addToPermissions("dashboard:*")
+		reportAllReadonly.addToPermissions("dsr:*")
+		reportAllReadonly.addToPermissions("maps:*")
+		reportAllReadonly.addToPermissions("cost:*")
+		reportAllReadonly.addToPermissions("fct:*")
+		reportAllReadonly.save()
+		
+		def surveyAllReadonly = new Role(name: "survey-all-readonly")
+		surveyAllReadonly.addToPermissions("menu:survey")
+		surveyAllReadonly.addToPermissions("editSurvey:view")
+		surveyAllReadonly.addToPermissions("editSurvey:summaryPage")
+		surveyAllReadonly.addToPermissions("editSurvey:sectionTable")
+		surveyAllReadonly.addToPermissions("editSurvey:objectiveTable")
+		surveyAllReadonly.addToPermissions("editSurvey:surveyPage")
+		surveyAllReadonly.addToPermissions("editSurvey:objectivePage")
+		surveyAllReadonly.addToPermissions("editSurvey:sectionPage")
+		surveyAllReadonly.addToPermissions("editSurvey:print")
+		surveyAllReadonly.save()
+		
 		def user = new User(username: "dhsst", passwordHash: new Sha256Hash("dhsst").toHex())
-		user.addToPermissions("menu:reports")
-		user.addToPermissions("dashboard:*")
-		user.addToPermissions("dsr:*")
-		user.addToPermissions("maps:*")
-		user.addToPermissions("cost:*")
-		user.addToPermissions("home:*")
-		user.addToPermissions("fct:*")
+		user.addToRoles(reportAllReadonly)
+		user.addToRoles(surveyAllReadonly)
+		// access to site
 		user.save()
 
 		def admin = new User(username: "admin", passwordHash: new Sha256Hash("admin").toHex())
@@ -99,12 +117,6 @@ class Initializer {
 		kivuye.addToPermissions("editSurvey:view")
 		kivuye.addToPermissions("editSurvey:*:"+kivuye.organisationUnitId)
 		kivuye.addToPermissions("menu:survey")
-		kivuye.addToPermissions("home:*")
-
-		//		kivuye.addToPermissions("survey:surveyPage:12")
-		//		kivuye.addToPermissions("survey:objectivePage:12")
-		//		kivuye.addToPermissions("survey:sectionPage:12")
-
 		kivuye.save()
 	}
 

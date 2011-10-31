@@ -47,6 +47,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.apache.commons.collections.CollectionUtils;
+
 import org.chai.kevin.util.Utils;
 
 @SuppressWarnings("serial")

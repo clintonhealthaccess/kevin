@@ -41,6 +41,8 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
  */
 class SurveyController extends AbstractEntityController {
 	
+	def surveyCopyService
+	
 	def getEntity(def id) {
 		return Survey.get(id)
 	}
@@ -61,9 +63,9 @@ class SurveyController extends AbstractEntityController {
 		List<Period> periods = Period.list()
 		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		[
-					survey: entity,
-					periods: periods
-				]
+			survey: entity,
+			periods: periods
+		]
 	}
 
 	def bindParams(def entity) {
@@ -90,19 +92,12 @@ class SurveyController extends AbstractEntityController {
 			code: getLabel()
 		])
 	}
-
-	def clone = {
-		def survey = getEntity(params['id'])
-
-		SurveyCloner cloner = new SurveyCloner(survey)
-		cloner.cloneTree();
-		def copy = cloner.getSurvey()
-		copy.save(failOnError: true)
-
-		cloner.cloneRules();
-
-		redirect (controller: 'survey', action: 'list')
+	
+	def copy = {
+		def survey = getEntity(params.int('surveyId'))
+		def clone = surveyCopyService.copySurvey(survey)
+		
+		redirect (controller: 'survey', action: 'list')	
 	}
-
 
 }

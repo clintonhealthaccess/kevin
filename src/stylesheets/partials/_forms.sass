@@ -295,6 +295,14 @@ select
     font-size: 11px
     margin-bottom: 3px
     
+  // fterrier start: added span for summary in admin forms
+  span
+    font-size: 11px
+    
+  span.bold
+    color: $primary
+  // fterrier end
+    
 .focus-field
   border: solid 1px $filler - #222
   background: $filler + #060606
@@ -332,6 +340,13 @@ select
   &:hover, &:focus
     background: $filler + #030303
     border-color: $primary
+    
+// fterrier start: added textare style
+textarea.login-field
+  width: 400px
+  height: 50px
+  text-align: left
+// fterrier end
     
 .login-label
   color: $primary

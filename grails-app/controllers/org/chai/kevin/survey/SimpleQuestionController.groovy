@@ -43,7 +43,7 @@ import org.apache.commons.lang.math.NumberUtils;
 class SimpleQuestionController extends AbstractEntityController {
 
 	def organisationService
-	def surveyElementService
+	def surveyService
 	
 	def getEntity(def id) {
 		return SurveySimpleQuestion.get(id)
@@ -69,7 +69,7 @@ class SimpleQuestionController extends AbstractEntityController {
 			question: entity,
 			groups: organisationService.getGroupsForExpression(),
 			sections: (entity.section)!=null?entity.survey.sections:null,
-			headerPrefixes: entity.surveyElement!=null?surveyElementService.getHeaderPrefixes(entity.surveyElement):null
+			headerPrefixes: entity.surveyElement!=null?surveyService.getHeaderPrefixes(entity.surveyElement):null
 		]
 	}
 

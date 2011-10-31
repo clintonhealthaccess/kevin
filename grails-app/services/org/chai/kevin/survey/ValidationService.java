@@ -24,14 +24,15 @@ public class ValidationService {
 	private static final Log log = LogFactory.getLog(ValidationService.class);
 	
 	private OrganisationService organisationService;
-	private SurveyElementService surveyElementService;
+	private SurveyService surveyService;
+	private SurveyValueService surveyValueService;
 	private JaqlService jaqlService;
 	
 	@Transactional(readOnly=true)
 	public Set<String> getSkippedPrefix(SurveyElement element, SurveySkipRule rule, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("getSkippedPrefix(surveyElement="+element+", rule="+rule+", organisation="+organisation+")");
 		
-		SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
+		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
 
 		Set<String> prefixes = rule.getSkippedPrefixes(element);
 		String expression = rule.getExpression();
@@ -69,7 +70,7 @@ public class ValidationService {
 		organisationService.loadGroup(organisation);
 		if (Utils.split(validationRule.getGroupUuidString()).contains(organisation.getOrganisationUnitGroup().getUuid())) {
 			// we validate only if that rule applies to the group
-			SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(validationRule.getSurveyElement(), organisation.getOrganisationUnit());
+			SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(validationRule.getSurveyElement(), organisation.getOrganisationUnit());
 	
 			String prefix = validationRule.getPrefix();
 			String expression = validationRule.getExpression();
@@ -117,7 +118,7 @@ public class ValidationService {
 		for (SurveyElement element : elements.values()) {
 			Value value = null;
 			if (element != null) {
-				SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisationUnit);
+				SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, organisationUnit);
 				if (enteredValue != null) value = enteredValue.getValue();
 			}
 			else if (log.isErrorEnabled()) log.error("expression "+expression+" refers to unknown survey element");
@@ -146,7 +147,7 @@ public class ValidationService {
     	for (String placeholder : placeholders) {
             SurveyElement surveyElement = null;
             try {
-            	surveyElement = surveyElementService.getSurveyElement(Long.parseLong(placeholder.replace("$", "")));
+            	surveyElement = surveyService.getSurveyElement(Long.parseLong(placeholder.replace("$", "")));
             }
             catch (NumberFormatException e) {
             	log.error("wrong format for dataelement: "+placeholder);
@@ -161,8 +162,12 @@ public class ValidationService {
 		this.jaqlService = jaqlService;
 	}
 	
-	public void setSurveyElementService(SurveyElementService surveyElementService) {
-		this.surveyElementService = surveyElementService;
+	public void setSurveyService(SurveyService surveyService) {
+		this.surveyService = surveyService;
+	}
+	
+	public void setSurveyValueService(SurveyValueService surveyValueService) {
+		this.surveyValueService = surveyValueService;
 	}
 	
 	public void setOrganisationService(OrganisationService organisationService) {

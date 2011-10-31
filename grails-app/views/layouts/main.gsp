@@ -33,7 +33,11 @@
 					<li><a class="${LanguageUtils.currentLanguage==language?'no-link':''}" href="${createLink(controller: controllerName, action: actionName, params: params)}">${language}</a></li>
 				</g:each>
 			</ul>
-			<h2><span class="right"><img src="${resource(dir:'images',file:'rwanda.png')}" alt='Rwanda coat of arms' width='33' /></span><span>Rwanda Ministry Of Health</span>District Health Systems Strenghtening Tool</h2>
+			<h2>
+				<span class="right"><img src="${resource(dir:'images',file:'rwanda.png')}" alt='Rwanda coat of arms' width='33' /></span>
+				<span><g:message code="header.labels.moh"/></span>
+				<g:message code="header.labels.dhsst"/>
+			</h2>
 			
 			<ul id="logout">
 				<shiro:hasPermission permission="admin">
@@ -45,10 +49,22 @@
 					<a class="redmine follow" href="${createLink(uri:'/helpdesk')}"><g:message code="header.labels.helpdesk" default="Questions? Call the Helpdesk 114"/></a>
 				</li>
 				<shiro:user>
-				<li>
-					<a class="follow" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout" default="Logout"/></a>
-				</li>
+					<li>
+						<a class="follow" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout" default="Logout"/></a>
+					</li>
 				</shiro:user>
+				<shiro:notUser>
+					<g:if test="${controllerName != 'auth' || actionName != 'login'}">
+						<li>
+							<a class="follow" href="${createLink(controller: 'auth', action: 'login')}"><g:message code="header.labels.login" default="Login"/></a>
+						</li>
+					</g:if>
+					<g:if test="${controllerName != 'auth' || actionName != 'register'}">
+						<li>
+							<a class="follow" href="${createLink(controller: 'auth', action: 'register')}"><g:message code="header.labels.register" default="Request access"/></a>
+						</li>
+					</g:if>
+				</shiro:notUser>
 			</ul>
 		</div>
 			
@@ -99,7 +115,7 @@
 
 	<div id="footer">
 	  <div class="wrapper">
-		  &copy; <g:message code="footer.labels.chai" default="Clinton Health Access Initiative"/> <br /><a href="${createLink(uri: '/about')}"><g:message code="footer.labels.about" default="About"/></a> | <a href="${createLink(uri:'/contact')}"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="${createLink(uri:'/helpdesk')}"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
+		  &copy; <g:message code="footer.labels.chai" default="Clinton Health Access Initiative"/> <br /><a href="${createLink(controller:'home', action:'about')}"><g:message code="footer.labels.about" default="About"/></a> | <a href="${createLink(controller:'home', action:'contact')}"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="${createLink(controller:'home', action:'helpdesk')}"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
 		</div>
 	</div>
 

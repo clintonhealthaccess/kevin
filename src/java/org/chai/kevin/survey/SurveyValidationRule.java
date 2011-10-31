@@ -24,7 +24,6 @@ import javax.persistence.Transient;
 import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils;
 
-
 @Entity(name="SurveyValidationRule")
 @Table(name="dhsst_survey_validation_rule")
 public class SurveyValidationRule {
@@ -141,10 +140,11 @@ public class SurveyValidationRule {
 		copy.setExpression(cloner.getExpression(getExpression(), copy));
 		copy.setSurveyElement(cloner.getElement(getSurveyElement()));
 		copy.setMessages(getMessages());
+		copy.setGroupUuidString(getGroupUuidString());
 		for (SurveyElement element : getDependencies()) {
 			SurveyElement newElement = null;
 			if (!element.getSurvey().equals(getSurveyElement().getSurvey())) {
-				cloner.getUnchangedValidationRules().put(this, element.getId());
+				cloner.addUnchangedValidationRule(this, element.getId());
 				newElement = element;
 			}
 			else {

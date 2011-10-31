@@ -29,7 +29,6 @@ package org.chai.kevin.survey.validation
 
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.survey.Survey;
-import org.chai.kevin.survey.SurveyElementService;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyValidationRule;
 import org.chai.kevin.util.Utils;
@@ -42,7 +41,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 class SurveyValidationRuleController extends AbstractEntityController {
 
 	def organisationService
-	def surveyElementService
+	def surveyService
+	def surveyCopyService
 	
 	def getLabel() {
 		return 'survey.validationrule.label'
@@ -103,7 +103,7 @@ class SurveyValidationRuleController extends AbstractEntityController {
 		}
 		else {
 			Survey survey = Survey.get(params.int('surveyId'))
-			Set<SurveyElement> surveyElements = surveyElementService.getSurveyElements(null, survey)
+			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(null, survey)
 			surveyElements.each { element ->
 				validationRules.addAll(element.getValidationRules())	
 			}
@@ -120,5 +120,11 @@ class SurveyValidationRuleController extends AbstractEntityController {
 			code: getLabel()
 		])
 	}
-
+	
+	def copy = {
+		def rule = getEntity(params.int('id'))
+		def clone = surveyCopyService.copyValidationRule(rule)
+		
+		redirect (uri:getTargetURI())
+	}
 }

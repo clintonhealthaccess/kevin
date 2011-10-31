@@ -37,7 +37,7 @@
 						readonly: readonly,
 						isCheckbox: true
 					]"/>
-					<g:i18n field="${option.names}"/></span></span>
+					<g:i18n field="${option.names}"/>
 				</g:if>
 				<g:else>
 					No survey element for this option.

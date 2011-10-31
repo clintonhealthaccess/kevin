@@ -28,10 +28,8 @@
 
 				<g:if test="${headerPrefixes != null && !headerPrefixes.empty}">
 					<div class="row ${hasErrors(bean:question, field:'surveyElement.headers', 'errors')}">
-						<span class="bold">
-							<a href="#" onclick="$(this).parent().next().toggle();return false;"><g:message code="survey.simplequestion.headers.label" default="Headers"/>:</a> 
-						</span>
-						<div class="white-box hidden">
+						<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="survey.simplequestion.headers.label" default="Headers"/>:</a> 
+						<div class="hidden">
 							<g:each in="${headerPrefixes}" var="headerPrefix">
 								<input type="hidden" name="headerList" value="${headerPrefix}"/>
 								<g:i18nRichTextarea name="headerList[${headerPrefix}]" bean="${question}" value="${question.surveyElement.headers[headerPrefix]}" label="${headerPrefix}" field="surveyElement.headers" height="50"/>

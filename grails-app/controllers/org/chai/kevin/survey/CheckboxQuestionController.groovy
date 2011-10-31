@@ -29,7 +29,9 @@ package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.DataService;
+import org.chai.kevin.Translation;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataElement
 import org.apache.commons.lang.math.NumberUtils;
@@ -76,6 +78,15 @@ class CheckboxQuestionController extends AbstractEntityController {
 //		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
+		
+		params.optionNames.each { i ->
+			Translation translation = new Translation()
+			LanguageUtils.availableLanguages.each { language ->
+				translation[language] = params['optionNames['+i+'].names.'+language]
+			}
+			// TODO what if i is bigger than list size
+			entity.options.get(Integer.parseInt(i)).names = translation
+		}
 	}
 	
 	def getDescription = {

@@ -41,6 +41,8 @@ grails.project.dependency.resolution = {
          excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+//	checksums true
+	
     repositories {
 		inherits false 
 //        grailsPlugins()
@@ -50,17 +52,17 @@ grails.project.dependency.resolution = {
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         mavenLocal()
-	    mavenCentral()	
+//	    mavenCentral()	
 		mavenRepo "http://m2repo.spockframework.org/snapshots"
-		mavenRepo "http://snapshots.repository.codehaus.org"
-		mavenRepo "http://repository.codehaus.org"
-		mavenRepo "http://download.java.net/maven/2/"
-		mavenRepo "http://mirrors.ibiblio.org/pub/mirrors/maven2/"
-		mavenRepo "http://repository.jboss.org/nexus/"
-		mavenRepo "https://maven.nuxeo.org/nexus/"
-		mavenRepo "http://www.intalio.org/public/maven2/"
+//		mavenRepo "http://snapshots.repository.codehaus.org"
+//		mavenRepo "http://repository.codehaus.org"
+//		mavenRepo "http://download.java.net/maven/2/"
+//		mavenRepo "http://mirrors.ibiblio.org/pub/mirrors/maven2/"
+//		mavenRepo "http://repository.jboss.org/nexus/"
+//		mavenRepo "https://maven.nuxeo.org/nexus/"
+//		mavenRepo "http://www.intalio.org/public/maven2/"
 		mavenRepo "http://repo.opennms.org/maven2/"
-		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
+//		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 				
 		/**
 		 * Configure our resolver.
@@ -74,6 +76,8 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+		
+		// DHIS2 dependencies
 		compile ('org.hisp.dhis:dhis-api:2.3')  {
 			transitive = false
 		} 
@@ -88,36 +92,38 @@ grails.project.dependency.resolution = {
 		}
 		compile ('org.amplecode:quick:1.5') {
 			transitive = false
-		} 
+		}
+		
+		// JAQL dependencies - jaql itself is in the lib/ folder
 		compile ("org.apache.hadoop:hadoop-core:0.20.203.0") {
 			transitive = false
 		}
 		compile ("org.json:json:20080701")
 		
-		compile ("net.bull.javamelody:javamelody-core:1.31.0")
-		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
-		//		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
-		test"org.codehaus.geb:geb-spock:0.6.0"
-		test("org.seleniumhq.selenium:selenium-chrome-driver:2.0rc2")
-		test("org.seleniumhq.selenium:selenium-htmlunit-driver:2.0rc2") {
-			excludes "xml-apis", "xmlParserAPIs"
-		}
-		test 'org.gmock:gmock:0.8.1'
-		
-		test('org.spockframework:spock-core:0.6-SNAPSHOT')
+//		compile ("net.bull.javamelody:javamelody-core:1.31.0")
+
+//		test"org.codehaus.geb:geb-spock:0.6.0"
+//		test("org.seleniumhq.selenium:selenium-firefox-driver:latest.release")
+//		test("org.seleniumhq.selenium:selenium-chrome-driver:2.0rc2")
+//		test("org.seleniumhq.selenium:selenium-htmlunit-driver:2.0rc2") {
+//			excludes "xml-apis", "xmlParserAPIs"
+//		}
+//		test 'org.gmock:gmock:0.8.1'
 		
 		// those are for the migration script to work
 //		compile 'org.hisp.dhis:dhis-service-importexport:2.2-SNAPSHOT'
-		compile 'org.supercsv:SuperCSV:1.52'
+//		compile 'org.supercsv:SuperCSV:1.52'
     }
 
 	plugins {
 		compile ":hibernate:$grailsVersion"
 		compile ":jquery:1.6.1.1"
-		compile ":resources:1.0.2"
+		compile ":resources:1.1.1"
 
+		test ":spock:0.6-SNAPSHOT"
+		
 		build ":tomcat:$grailsVersion"
 	}
 

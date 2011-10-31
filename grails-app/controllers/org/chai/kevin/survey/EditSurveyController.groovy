@@ -42,7 +42,6 @@ class EditSurveyController extends AbstractController {
 	SurveyPageService surveyPageService;
 	ValidationService validationService;
 	ValueService valueService;
-	SurveyElementService surveyElementService;
 	
 	def index = {
 		redirect (action: 'view', params: params)

@@ -1,15 +1,41 @@
 package org.chai.kevin.survey
 
-import org.chai.kevin.IntegrationTests
-import org.chai.kevin.data.DataElement
 import org.chai.kevin.data.Type;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.period.Period
 
-class SurveyElementServiceSpec extends SurveyIntegrationTests {
+class SurveyServiceSpec extends SurveyIntegrationTests {
 
-	def surveyElementService;
+	def surveyService
 	
+	def "search question test"() {
+		setup:
+		def period = newPeriod() 
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
+		
+		expect:
+		surveyService.searchSurveyQuestions("que", survey).equals([question1])
+		surveyService.searchSurveyQuestions("que some", survey).equals([])
+	}
+	
+	def "search question - paging works"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
+		
+		expect:
+		surveyService.searchSurveyQuestions("", survey, [offset: 0, max:1]).equals([question1])
+		surveyService.searchSurveyQuestions("", survey, [offset: 1, max:1]).equals([question2])
+	}
+		
+
 	def "test number of organisation applicable with all groups"() {
 		setup:
 		setupOrganisationUnitTree()
@@ -29,7 +55,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		
 		then:
 		element.getOrganisationUnitGroupApplicable().equals(new HashSet([(HEALTH_CENTER_GROUP)]))
-		surveyElementService.getNumberOfOrganisationUnitApplicable(element) == 1
+		surveyService.getNumberOfOrganisationUnitApplicable(element) == 1
 	}
 	
 	def "test number of organisation applicable with empty group"() {
@@ -51,7 +77,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		element.getOrganisationUnitGroupApplicable().equals(new HashSet([]))
-		surveyElementService.getNumberOfOrganisationUnitApplicable(element) == 0
+		surveyService.getNumberOfOrganisationUnitApplicable(element) == 0
 	}
 	
 	def "test retrieve skip rule - no rule"() {
@@ -68,7 +94,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		def list = null
 		
 		when:
-		list = surveyElementService.searchSkipRules(element)
+		list = surveyService.searchSkipRules(element)
 		
 		then:
 		list.isEmpty()
@@ -89,7 +115,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		def rule1 = newSkipRule(survey, "1==1", [(element): ""], [])
-		list = surveyElementService.searchSkipRules(element)
+		list = surveyService.searchSkipRules(element)
 		
 		then:
 		list.isEmpty()
@@ -110,7 +136,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		def rule2 = newSkipRule(survey, "\$"+element.id+"==1", [(element): ""], [])
-		list = surveyElementService.searchSkipRules(element)
+		list = surveyService.searchSkipRules(element)
 		
 		then:
 		list.equals(new HashSet([rule2]))
@@ -132,7 +158,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		when:
 		def rule3 = newSkipRule(survey, "\$"+element.id+"0"+"==1", [(element): ""], [])
 		def rule4 = newSkipRule(survey, "\$"+element.id+"==1", [(element): ""], [])
-		list = surveyElementService.searchSkipRules(element)
+		list = surveyService.searchSkipRules(element)
 		
 		then:
 		list.equals(new HashSet([rule4]))
@@ -156,20 +182,20 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		def list = null
 		
 		when:
-		list = surveyElementService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
+		list = surveyService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.isEmpty()
 		
 		when:
 		def rule1 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
-		list = surveyElementService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
+		list = surveyService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.equals(new HashSet([rule1]))
 		
 		when:
-		list = surveyElementService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (DISTRICT_HOSPITAL_GROUP) ))
+		list = surveyService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (DISTRICT_HOSPITAL_GROUP) ))
 		
 		then:
 		list.isEmpty()
@@ -195,7 +221,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		when:
 		def rule3 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
 		def rule4 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
-		list = surveyElementService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
+		list = surveyService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.equals(new HashSet([rule4]))
@@ -214,7 +240,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, dataElement)
 
 		when:
-		def surveyElements = surveyElementService.getSurveyElements(dataElement, null)
+		def surveyElements = surveyService.getSurveyElements(dataElement, null)
 		
 		then:
 		surveyElements.size() == 1
@@ -236,14 +262,14 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		def surveyElements = null
 				
 		when:
-		surveyElements = surveyElementService.searchSurveyElements("ele", survey, [])
+		surveyElements = surveyService.searchSurveyElements("ele", survey, [])
 		
 		then:
 		surveyElements.equals([element])
 		
 		when:
 		def survey2 = newSurvey(period)
-		surveyElements = surveyElementService.searchSurveyElements("ele", survey2, [])
+		surveyElements = surveyService.searchSurveyElements("ele", survey2, [])
 		
 		then:
 		surveyElements.isEmpty()
@@ -265,7 +291,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		when:
 		dataElement = newDataElement(CODE(1), Type.TYPE_MAP(["key1": Type.TYPE_MAP(["key11": Type.TYPE_NUMBER()])]))
 		element = newSurveyElement(question, dataElement)
-		prefixes = surveyElementService.getHeaderPrefixes(element)
+		prefixes = surveyService.getHeaderPrefixes(element)
 		
 		then:
 		prefixes.equals([".key1", ".key1.key11"])
@@ -273,7 +299,7 @@ class SurveyElementServiceSpec extends SurveyIntegrationTests {
 		when:
 		dataElement = newDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_MAP(["key11": Type.TYPE_NUMBER()])])))
 		element = newSurveyElement(question, dataElement)
-		prefixes = surveyElementService.getHeaderPrefixes(element)
+		prefixes = surveyService.getHeaderPrefixes(element)
 		
 		then:
 		prefixes.equals(["[_].key1", "[_].key1.key11"])

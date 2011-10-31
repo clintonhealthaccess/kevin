@@ -95,6 +95,28 @@ environments {
 	}
 }
 
+environments {
+	production {
+		grails.mail.host = "smtp.gmail.com"
+		grails.mail.port = 465
+		// configuration defined in ${home}/.grails/kevin-config.groovy
+//		grails.mail.username = "youracount@gmail.com"
+//		grails.mail.password = "yourpassword"
+		grails.mail.props = [
+			"mail.smtp.auth":"true",
+			"mail.smtp.socketFactory.port":"465",
+			"mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
+			"mail.smtp.socketFactory.fallback":"false"
+		]
+	}
+	development {
+		grails.mail.disabled = true
+	}
+	test {
+		grails.mail.disabled = true
+	}
+}
+
 security.shiro.authc.required = false
 
 // log4j configuration
@@ -113,7 +135,7 @@ security.shiro.authc.required = false
 				   'grails.app.taglib.org.grails.plugin.resource',
 				   'grails.app.resourceMappers.org.grails.plugin.cachedresources'
 			
-			error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
+			debug  'org.codehaus.groovy.grails.web.servlet',  //  controllers
 				   'org.codehaus.groovy.grails.web.pages', //  GSP
 				   'org.codehaus.groovy.grails.web.sitemesh', //  layouts
 				   'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
@@ -180,6 +202,9 @@ site.fallback.language="en"
 site.admin=true
 site.entity.list.max=40
 site.period=1
+
+site.contact.email="contact@dhsst.org"
+site.from.email="no-reply@dhsst.org"
 
 facility.level=4
 facility.type.group="Type"

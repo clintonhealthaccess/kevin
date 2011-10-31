@@ -4,7 +4,9 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 
-class ClonerSpec extends SurveyIntegrationTests {
+class SurveyCopyServiceSpec extends SurveyIntegrationTests {
+	
+	def surveyCopyService
 	
 	def "test clone double number of elements"() {
 		setup:
@@ -29,10 +31,8 @@ class ClonerSpec extends SurveyIntegrationTests {
 		SurveyElement.count() == 1
 			
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey)
-		cloner.cloneTree();
-		def copy = cloner.getSurvey()
-		copy.save(failOnError: true, flush: true)
+		def surveyCopy = surveyCopyService.copySurvey(survey)
+		def copy = surveyCopy.copy
 				
 		then:
 		Survey.count() == 2
@@ -65,17 +65,15 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def skipRule = newSkipRule(survey, "\$"+element.id+" == 1", [:], [])
 		
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey)
-		cloner.cloneTree();
-		def copy = cloner.getSurvey()
-		copy.save(failOnError: true, flush: true)
-		cloner.cloneRules();
+		def surveyCopy = surveyCopyService.copySurvey(survey)
+		def copy = surveyCopy.copy
 		
 		then:
+		SurveySkipRule.count() == 2
 		copy.getSkipRules().size() == 1
 		copy.getSkipRules()[0].expression != survey.getSkipRules()[0].expression
 		copy.getSkipRules()[0].expression == "\$" + SurveyElement.list()[1].id + " == 1"
-		cloner.getUnchangedSkipRules().size() == 0
+		surveyCopy.getUnchangedSkipRules().size() == 0
 	}
 	
 	def "test clone survey with validation rule from other survey"() {
@@ -97,17 +95,15 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def validationRule = newSurveyValidationRule(element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", [element1])
 		
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey2)
-		cloner.cloneTree();
-		def copy = cloner.getSurvey()
-		copy.save(failOnError: true, flush: true)
-		cloner.cloneRules();
+		def surveyCopy = surveyCopyService.copySurvey(survey2)
+		def copy = surveyCopy.copy
 		
 		then:
+		SurveyValidationRule.count() == 2
 		def element3 = SurveyElement.list()[2]
 		element3.validationRules.size() == 1
 		element3.validationRules.iterator().next().expression == element2.validationRules.iterator().next().expression
-		cloner.getUnchangedValidationRules().size() == 1
+		surveyCopy.getUnchangedValidationRules().size() == 1
 	}
 
 	def "test clone survey with validation rule transforms dependencies"() {
@@ -122,18 +118,37 @@ class ClonerSpec extends SurveyIntegrationTests {
 		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
 		
 		when:
-		SurveyCloner cloner = new SurveyCloner(survey)
-		cloner.cloneTree();
-		def copy = cloner.getSurvey()
-		copy.save(failOnError: true, flush: true)
-		cloner.cloneRules();
+		def surveyCopy = surveyCopyService.copySurvey(survey)
+		def copy = surveyCopy.copy
 		
 		then:
 		def elementCopy = SurveyElement.list()[1]
 		elementCopy.validationRules.size() == 1
 		elementCopy.validationRules.iterator().next().dependencies.size() == 1
 		elementCopy.validationRules.iterator().next().dependencies[0].equals(elementCopy)
-		cloner.getUnchangedValidationRules().size() == 0
+		surveyCopy.getUnchangedValidationRules().size() == 0
+		
+	}
+	
+	def "test clone validation rule"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [])
+		def section = newSurveySection(objective, 1, [])
+		def question = newSimpleQuestion(section, 1, [])
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def element = newSurveyElement(question, dataElement)
+		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
+		
+		when:
+		def validationCopy = surveyCopyService.copyValidationRule(validationRule)
+		def copy = validationCopy.copy
+		
+		then:
+		SurveyValidationRule.count() == 2
+		SurveyValidationRule.list()[1].expression == SurveyValidationRule.list()[0].expression
+		SurveyValidationRule.list()[1].groupUuidString == SurveyValidationRule.list()[0].groupUuidString
 		
 	}
 		

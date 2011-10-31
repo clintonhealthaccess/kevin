@@ -8,6 +8,7 @@
 			<th><g:message code="survey.validationrule.allowoutlier.label" default="Allow Outlier"/></th>
 			<th><g:message code="facility.type.label" default="Facility Groups"/></th>
 			<th><g:message code="survey.validationrule.message.label" default="Message"/></th>
+			<th><g:message code="entity.list.manage.label" default="Manage"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -40,6 +41,18 @@
 			    </td>
 			    <td>${validationRule.groupUuidString}</td>
 				<td><g:i18n field="${validationRule.messages}" /></td>
+				<td>
+					<div class="dropdown subnav-dropdown"> 
+						<a class="selected" href="#" data-type="survey"><g:message code="entity.list.manage.label" default="Manage"/></a>
+						<div class="hidden dropdown-list">
+							<ul>
+								<li>
+							 		<a href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'copy', params:[id: validationRule.id])}"><g:message code="survey.clone.label" default="Clone" /> </a>
+								</li>
+							</ul>
+						</div>
+					</div> 		
+				</td>
 			</tr>
 		</g:each>
 	</tbody>

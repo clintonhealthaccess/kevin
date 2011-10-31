@@ -40,7 +40,8 @@ import org.chai.kevin.ValueService
 import org.chai.kevin.data.DataElement
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement
-import org.chai.kevin.survey.SurveyElementService
+import org.chai.kevin.survey.SurveyValueService
+import org.chai.kevin.survey.SurveyService;
 import org.chai.kevin.value.DataValue
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -53,7 +54,7 @@ class DataElementController extends AbstractEntityController {
 	DataService dataService;
 	ValueService valueService;
 	OrganisationService organisationService;
-	SurveyElementService surveyElementService;
+	SurveyService surveyService;
 
 	def getEntity(def id) {
 		return DataElement.get(id)
@@ -153,7 +154,7 @@ class DataElementController extends AbstractEntityController {
 
 		if (dataElement != null) {
 			List<Period> iterations = Period.list();
-			Set<SurveyElement> surveyElements = surveyElementService.getSurveyElements(dataElement, null);
+			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(dataElement, null);
 
 			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
 			for(Period iteration : iterations) {
@@ -162,7 +163,7 @@ class DataElementController extends AbstractEntityController {
 
 			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();
 			for(SurveyElement surveyElement: surveyElements) {
-				surveyElementMap.put(surveyElement, surveyElementService.getNumberOfOrganisationUnitApplicable(surveyElement));
+				surveyElementMap.put(surveyElement, surveyService.getNumberOfOrganisationUnitApplicable(surveyElement));
 			}
 
 			render (view: '/entity/data/explain',  model: [

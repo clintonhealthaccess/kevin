@@ -30,8 +30,6 @@ package org.chai.kevin.dashboard;
 
 import grails.plugin.spock.UnitSpec;
 
-import org.gmock.WithGMock
-
 //@WithGMock
 class PercentageCalculatorSpec extends UnitSpec {
 

@@ -28,7 +28,7 @@
 								<th><g:message code="facility.label" default="Facility"/></th>
 								<th><g:message code="survey.summary.objectivesubmitted.label" default="Objectives submitted"/></th>
 								<th><g:message code="survey.summary.progress" default="Overall progress"/></th>
-								<th colspan="3"></th>
+								<th></th>
 							</thead>
 							<tbody>
 								<g:each in="${summaryPage.facilities}" var="facility">
@@ -39,9 +39,17 @@
 										</td>
 										<td>${organisationSummary.submittedObjectives}/${organisationSummary.objectives}</td>
 										<td><span class="progress-bar">${organisationSummary.completedQuestions}/${organisationSummary.questions}</span></td>
-										<td><a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: summaryPage.survey.id, organisation: facility.id])}"><g:message code="survey.summary,viewsurvey.label" default="View Survey"/></a></td>
-										<td><a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: summaryPage.survey.id, organisation: facility.id])}"><g:message code="survey.summary.refreshsurvey.label" default="Refresh Survey"/></a></td>
-										<td><a href="${createLink(controller: 'editSurvey', action: 'print', params: [survey: summaryPage.survey.id, organisation: facility.id])}" target="_blank"><g:message code="survey.summary.printsurvey.label" default="Print Survey"/></a></td>
+										<td>
+											<ul class="horizontal">
+											<li><a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: summaryPage.survey.id, organisation: facility.id])}"><g:message code="survey.summary,viewsurvey.label" default="View Survey"/></a></li>
+											<shiro:hasPermission permission="editSurvey:refresh">
+												<li><a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: summaryPage.survey.id, organisation: facility.id])}"><g:message code="survey.summary.refreshsurvey.label" default="Refresh Survey"/></a></li>
+											</shiro:hasPermission>
+											<shiro:hasPermission permission="editSurvey:print">
+												<li><a href="${createLink(controller: 'editSurvey', action: 'print', params: [survey: summaryPage.survey.id, organisation: facility.id])}" target="_blank"><g:message code="survey.summary.printsurvey.label" default="Print Survey"/></a></li>
+											</shiro:hasPermission>
+											</ul>
+										</td>
 									</tr>
 									<tr class="explanation-row">
 										<td colspan="6">

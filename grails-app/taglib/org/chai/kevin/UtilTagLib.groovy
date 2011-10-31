@@ -38,7 +38,9 @@ class UtilTagLib {
 		if (attrs['params'] == null) attrs['params'] = [:]
 		else attrs['params'] = new HashMap(attrs['params'])
 		attrs['params'] << [targetURI: g.createLink(controller: controllerName, action: actionName, params: params) - request.contextPath];
-		out << g.createLink(attrs, body)
+		
+		log.debug('creating link with attrs: '+attrs)
+		out << createLink(attrs, body)
 	}
 	
 	def toHtml = {attrs, body ->

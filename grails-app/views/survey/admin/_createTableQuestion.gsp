@@ -14,21 +14,46 @@
 		<g:i18nRichTextarea name="descriptions" bean="${question}" value="${question.descriptions}" label="Help Text" field="descriptions" height="250" width="380" maxHeight="150" />
 		
 		<g:if test="${question.id != null}">
-			<div class="float-right">
-				<input type="hidden" name="id" value="${question.id}"></input>
-				<a href="${createLinkWithTargetURI(controller:'tableColumn', action:'create',params:[questionId: question.id])}">
-					<g:message code="default.new.label" args="[message(code:'survey.tablequestion.tablecolumn.label')]" default="Add Column"/>
-				</a>
-				(<span id="column-number">${question.columns.size()}</span>) | 
-				<a href="${createLinkWithTargetURI(controller:'tableRow', action:'create',params:[questionId: question.id])}">
-					<g:message code="default.new.label" args="[message(code:'survey.tablequestion.tablerow.label')]"default="Add Row"/>
-				</a>
-				(<span id="row-number">${question.rows.size()}</span>) |
+			<input type="hidden" name="id" value="${question.id}"></input>
+			<div class="row">
 				<a href="${createLinkWithTargetURI(controller:'tableQuestion', action:'preview',params:[questionId: question.id])}">
 					<g:message code="survey.tablequestion.preview.label" default="Preview"/></a>
 				</a>
 			</div>
+			
+			<div class="row">
+				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="survey.tablequestion.tablecolumn.label"/>:</a>
+				<div class="hidden">
+					<ul>
+						<g:each in="${question.columns}" status="i" var="column">
+							<li>
+								<g:render template="/survey/admin/tableColumn" model="[column: column, index: i]" />
+							</li>
+						</g:each>
+					</ul>
+					<a href="${createLinkWithTargetURI(controller:'tableColumn', action:'create', params:[questionId: question.id])}">
+						<g:message code="default.add.label" args="[message(code:'survey.tablequestion.tablecolumn.label')]" />
+					</a>
+				</div>
+			</div>
+			
+			<div class="row">
+				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="survey.tablequestion.tablerow.label"/>:</a>
+				<div class="hidden">
+					<ul>
+						<g:each in="${question.rows}" status="i" var="row">
+							<li>
+								<g:render template="/survey/admin/tableRow" model="[row: row, index: i]" />
+							</li>
+						</g:each>
+					</ul>
+					<a href="${createLinkWithTargetURI(controller:'tableRow', action:'create', params:[questionId: question.id])}">
+						<g:message code="default.add.label" args="[message(code:'survey.tablequestion.tablerow.label')]" />
+					</a>
+				</div>
+			</div>
 		</g:if>
+		
 		<g:input name="order" label="Order" bean="${question}" field="order"/>
 		<div class="row ${hasErrors(bean:question, field:'section', 'errors')}">
 			<label for="section.id"><g:message code="survey.section.label" default="Section"/>:</label>

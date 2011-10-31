@@ -47,9 +47,7 @@
 									<a href="${createLink(controller:'surveyValidationRule', action:'list', params:[surveyId: survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.validationrule.label',default:'Validation Rules')]" /></a>
 								</li>
 								<li>
-							    	<g:link controller="survey" action="clone" id="${survey.id}">
-								        <g:message code="survey.clone.label" default="Clone" /> 
-								    </g:link>
+							    	<a href="${createLink(controller:'survey', action:'copy', params:[surveyId: survey.id])}"><g:message code="survey.clone.label" default="Clone" /> </a>
 								</li>
 							</ul>
 						</div>

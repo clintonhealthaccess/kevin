@@ -18,6 +18,7 @@ import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.fct.FctService;
 import org.chai.kevin.maps.MapsService;
 import org.chai.kevin.survey.SurveyPageService;
+import org.chai.kevin.survey.SurveyCopyService;
 import org.chai.kevin.survey.ValidationService;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.format.number.PercentFormatter;
@@ -63,6 +64,10 @@ int dsrGroupLevel= config.dsr.group.level
 
 beans = {
 	
+	surveyCopyService(SurveyCopyService) {
+		sessionFactory = ref("sessionFactory")
+	}
+	
 	jaqlService(JaqlService) { bean ->
 		bean.singleton = true
 		grailsApplication = ref("grailsApplication")
@@ -77,12 +82,14 @@ beans = {
 	
 	validationService(ValidationService){
 		organisationService = ref("organisationService")
-		surveyElementService = ref("surveyElementService")
+		surveyValueService = ref("surveyValueService")
+		surveyService = ref("surveyService")
 		jaqlService = ref("jaqlService")
 	}
 	
 	surveyPageService(SurveyPageService){
-		surveyElementService = ref("surveyElementService")
+		surveyValueService = ref("surveyValueService")
+		surveyService = ref("surveyService")
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
 		validationService = ref("validationService")

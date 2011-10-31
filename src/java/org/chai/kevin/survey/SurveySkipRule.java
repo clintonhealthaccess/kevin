@@ -29,6 +29,7 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyQuestion;
+
 import org.chai.kevin.util.Utils;
 
 @Entity(name="SurveySkipRule")

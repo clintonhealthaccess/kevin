@@ -23,6 +23,9 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.DataElement;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 
 @Entity(name = "SurveyElement")
 @Table(name = "dhsst_survey_element")
@@ -56,6 +59,7 @@ public class SurveyElement {
 	}
 
 	@OneToMany(mappedBy="surveyElement", targetEntity=SurveyValidationRule.class)
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	public List<SurveyValidationRule> getValidationRules() {
 		return validationRules;
 	}

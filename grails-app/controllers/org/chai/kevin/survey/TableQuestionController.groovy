@@ -29,7 +29,9 @@ package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.DataService;
+import org.chai.kevin.Translation;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataElement
 import org.apache.commons.lang.math.NumberUtils
@@ -77,6 +79,17 @@ class TableQuestionController extends AbstractEntityController {
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		if (params.tableNames!=null) entity.tableNames = params.tableNames
+		
+		['row', 'column'].each { type ->
+			params[type+'Names'].each { i ->
+				Translation translation = new Translation()
+				LanguageUtils.availableLanguages.each { language ->
+					translation[language] = params[type+'Names['+i+'].names.'+language]
+				}
+				// TODO what if i is bigger than list size
+				entity."${type}s".get(Integer.parseInt(i)).names = translation
+			}
+		}
 	}
 
 	def preview = {

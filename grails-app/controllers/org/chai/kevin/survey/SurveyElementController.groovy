@@ -35,12 +35,12 @@ import org.apache.commons.lang.math.NumberUtils;
  */
 class SurveyElementController {
 
-	def surveyElementService;
+	def surveyService;
 	
 	def getHtmlData = {
 		Survey survey = Survey.get(params.int('surveyId'));
 		List<String> allowedTypes = params.list('include');
-		Set<SurveyElement> surveyElements =surveyElementService.searchSurveyElements(params['searchText'], survey, allowedTypes);
+		Set<SurveyElement> surveyElements =surveyService.searchSurveyElements(params['searchText'], survey, allowedTypes);
 		
 		render(contentType:"text/json") {
 			result = 'success'
@@ -51,7 +51,7 @@ class SurveyElementController {
 	def getAjaxData = {
 		Survey survey = Survey.get(params.int('surveyId'));
 		List<String> allowedTypes = params.list('include');
-		Set<SurveyElement> surveyElements =surveyElementService.searchSurveyElements(params['term'], survey, allowedTypes);
+		Set<SurveyElement> surveyElements =surveyService.searchSurveyElements(params['term'], survey, allowedTypes);
 
 		render(contentType:"text/json") {
 			elements = array {

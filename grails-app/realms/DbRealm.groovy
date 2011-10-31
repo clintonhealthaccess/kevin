@@ -71,6 +71,8 @@ class DbRealm {
         // First find all the permissions that the user has that match
         // the required permission's type and project code.
         def user = User.findByUsername(principal)
+		if (user == null) return false;
+		
         def permissions = user.permissions
 
         // Try each of the permissions found and see whether any of
@@ -106,20 +108,22 @@ class DbRealm {
         // create a real permission from each result and check it
         // against the required one.
 		results.each { permissionString ->
-			retval = Utils.split(permissionString).find { permission ->
-	            // Create a real permission instance from the database
-	            // permission.
-	            def perm = shiroPermissionResolver.resolvePermission(permission)
-	
-	            // Now check whether this permission implies the required
-	            // one.
-	            if (perm.implies(requiredPermission)) {
-	                // User has the permission!
-	                return true
-	            }
-	            else {
-	                return false
-	            }
+			if (retval == null) {
+				retval = Utils.split(permissionString).find { permission ->
+		            // Create a real permission instance from the database
+		            // permission.
+		            def perm = shiroPermissionResolver.resolvePermission(permission)
+		
+		            // Now check whether this permission implies the required
+		            // one.
+		            if (perm.implies(requiredPermission)) {
+		                // User has the permission!
+		                return true
+		            }
+		            else {
+		                return false
+		            }
+				}
 			}
         }
 

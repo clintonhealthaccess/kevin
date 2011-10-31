@@ -10,12 +10,12 @@
     	</div>
 		<div class="main">
 			<p class="push-20">
-			DHSST has been developed by the <a href="http://www.clintonhealthaccess.org">Clinton Health Access Initiative</a> in partnership
-			with the <a href="http://www.moh.gov.rw">Rwandan Ministry of Health</a>.
+				DHSST a été dévolppé par <a href="http://www.clintonhealthaccess.org">Clinton Health Access Initiative</a> en partenariat avec
+				la <a href="http://www.moh.gov.rw">Ministère de la Santé du Rwanda</a>.
 			</p>
 		
 			<p>
-			If you have any questions concerning the site, please <a href="mailto:contact@dhsst.org">contact us</a>.
+				Si vous avez des questions concernant le site, <a href="mailto:${grailsApplication.config.site.contact.email}">contactez-nous</a>.
 			</p>
 		</div>
     </body>

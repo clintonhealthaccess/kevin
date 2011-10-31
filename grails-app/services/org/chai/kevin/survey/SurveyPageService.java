@@ -31,15 +31,12 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -48,7 +45,6 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
@@ -58,9 +54,7 @@ import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveyLog;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
-import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
@@ -68,8 +62,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +69,8 @@ public class SurveyPageService {
 	
 	private static Log log = LogFactory.getLog(SurveyPageService.class);
 	
-	private SurveyElementService surveyElementService;
+	private SurveyService surveyService;
+	private SurveyValueService surveyValueService;
 	private OrganisationService organisationService;
 	private ValueService valueService;
 	private ValidationService validationService;
@@ -99,7 +92,7 @@ public class SurveyPageService {
 		
 		for (SurveySection section : sections) {
 			List<SurveyQuestion> questions = section.getQuestions(organisation.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyElementService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), organisation.getOrganisationUnit(), null, section, true, false);
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), organisation.getOrganisationUnit(), null, section, true, false);
 			
 			sectionSummaryMap.put(section, new SectionSummary(section, questions.size(), completedQuestions));
 		}
@@ -114,9 +107,9 @@ public class SurveyPageService {
 		Map<SurveyObjective, ObjectiveSummary> objectiveSummaryMap = new HashMap<SurveyObjective, ObjectiveSummary>();
 		
 		for (SurveyObjective objective : objectives) {
-			SurveyEnteredObjective enteredObjective = surveyElementService.getSurveyEnteredObjective(objective, organisation.getOrganisationUnit());
+			SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, organisation.getOrganisationUnit());
 			List<SurveyQuestion> questions = objective.getQuestions(organisation.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyElementService.getNumberOfSurveyEnteredQuestions(survey, organisation.getOrganisationUnit(), objective, null, true, false);
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, organisation.getOrganisationUnit(), objective, null, true, false);
 			
 			objectiveSummaryMap.put(objective, new ObjectiveSummary(objective, enteredObjective, questions.size(), completedQuestions));
 		}
@@ -139,7 +132,7 @@ public class SurveyPageService {
 			if (!objectiveMap.containsKey(facility.getOrganisationUnitGroup())) {
 				objectiveMap.put(facility.getOrganisationUnitGroup(), survey.getObjectives(facility.getOrganisationUnitGroup()));
 			}
-			Integer submittedObjectives = surveyElementService.getNumberOfSurveyEnteredObjectives(survey, facility.getOrganisationUnit(), true, null, null);
+			Integer submittedObjectives = surveyValueService.getNumberOfSurveyEnteredObjectives(survey, facility.getOrganisationUnit(), true, null, null);
 			
 			if (!questionMap.containsKey(facility.getOrganisationUnitGroup())) {
 				List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
@@ -148,7 +141,7 @@ public class SurveyPageService {
 				}
 				questionMap.put(facility.getOrganisationUnitGroup(), questions);
 			}
-			Integer completedQuestions = surveyElementService.getNumberOfSurveyEnteredQuestions(survey, facility.getOrganisationUnit(), null, null, true, false);
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, facility.getOrganisationUnit(), null, null, true, false);
 			
 			OrganisationSummary summary = new OrganisationSummary(facility,  
 					submittedObjectives, objectiveMap.get(facility.getOrganisationUnitGroup()).size(), 
@@ -335,7 +328,7 @@ public class SurveyPageService {
 		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(facility, objective);
 		setObjectiveStatus(enteredObjective, facility);
 		if (closeIfComplete && enteredObjective.isComplete() && !enteredObjective.isInvalid()) enteredObjective.setClosed(true); 
-		surveyElementService.save(enteredObjective);
+		surveyValueService.save(enteredObjective);
 	}
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
@@ -356,7 +349,7 @@ public class SurveyPageService {
 		
 		SurveyEnteredSection enteredSection = getSurveyEnteredSection(facility, section);
 		setSectionStatus(enteredSection, facility);
-		surveyElementService.save(enteredSection);
+		surveyValueService.save(enteredSection);
 	}
 	
 	private void refreshQuestionForFacility(Organisation facility, SurveyQuestion question) {
@@ -366,7 +359,7 @@ public class SurveyPageService {
 		
 		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(facility, question);
 		setQuestionStatus(enteredQuestion, facility);
-		surveyElementService.save(enteredQuestion);
+		surveyValueService.save(enteredQuestion);
 	}
 	
 	private void refreshElementForFacility(Organisation facility, SurveyElement element) {
@@ -379,7 +372,7 @@ public class SurveyPageService {
 			DataValue lastDataValue = valueService.getValue(element.getDataElement(), facility.getOrganisationUnit(), survey.getLastPeriod());
 			if (lastDataValue != null) enteredValue.setLastValue(lastDataValue.getValue());
 		}
-		surveyElementService.save(enteredValue);
+		surveyValueService.save(enteredValue);
 	}
 	
 	// returns the list of modified elements/questions/sections/objectives (skip, validation, etc..)
@@ -460,8 +453,8 @@ public class SurveyPageService {
 		for (SurveyElement element : elements) {
 			if (log.isDebugEnabled()) log.debug("getting skip and validation rules for element: "+element);
 
-			validationRules.addAll(surveyElementService.searchValidationRules(element, organisation.getOrganisationUnitGroup()));
-			skipRules.addAll(surveyElementService.searchSkipRules(element));
+			validationRules.addAll(surveyService.searchValidationRules(element, organisation.getOrganisationUnitGroup()));
+			skipRules.addAll(surveyService.searchSkipRules(element));
 		}
 		
 		// third we evaluate those rules
@@ -659,7 +652,7 @@ public class SurveyPageService {
 			// close the objective
 			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
 			enteredObjective.setClosed(true);
-			surveyElementService.save(enteredObjective);
+			surveyValueService.save(enteredObjective);
 	
 			// log the event
 			logSurveyEvent(organisation, objective, "submit");
@@ -679,41 +672,41 @@ public class SurveyPageService {
 	public void reopen(Organisation organisation, SurveyObjective objective) {
 		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective); 
 		enteredObjective.setClosed(false);
-		surveyElementService.save(enteredObjective);
+		surveyValueService.save(enteredObjective);
 	}
 	
 	private SurveyEnteredObjective getSurveyEnteredObjective(Organisation organisation, SurveyObjective surveyObjective) {
-		SurveyEnteredObjective enteredObjective = surveyElementService.getSurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit());
+		SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit());
 		if (enteredObjective == null) {
 			enteredObjective = new SurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit(), false, false, false);
 //			setObjectiveStatus(enteredObjective, organisation);
-			surveyElementService.save(enteredObjective);
+			surveyValueService.save(enteredObjective);
 		}
 		return enteredObjective;
 	}
 	
 	private SurveyEnteredSection getSurveyEnteredSection(Organisation organisation, SurveySection surveySection) {
-		SurveyEnteredSection enteredSection = surveyElementService.getSurveyEnteredSection(surveySection, organisation.getOrganisationUnit());
+		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(surveySection, organisation.getOrganisationUnit());
 		if (enteredSection == null) {
 			enteredSection = new SurveyEnteredSection(surveySection, organisation.getOrganisationUnit(), false, false);
 //			setSectionStatus(enteredSection, organisation);
-			surveyElementService.save(enteredSection);
+			surveyValueService.save(enteredSection);
 		}
 		return enteredSection;
 	}
 	
 	private SurveyEnteredQuestion getSurveyEnteredQuestion(Organisation organisation, SurveyQuestion surveyQuestion) {
-		SurveyEnteredQuestion enteredQuestion = surveyElementService.getSurveyEnteredQuestion(surveyQuestion, organisation.getOrganisationUnit());
+		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(surveyQuestion, organisation.getOrganisationUnit());
 		if (enteredQuestion == null) {
 			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, organisation.getOrganisationUnit(), false, false);
 //			setQuestionStatus(enteredQuestion, organisation);
-			surveyElementService.save(enteredQuestion);
+			surveyValueService.save(enteredQuestion);
 		}
 		return enteredQuestion;
 	}
 	
 	private SurveyEnteredValue getSurveyEnteredValue(Organisation organisation, SurveyElement element) {
-		SurveyEnteredValue enteredValue = surveyElementService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
+		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
 		if (enteredValue == null) {
 //			Value lastValue = null;
 //			if (element.getSurvey().getLastPeriod() != null) {
@@ -721,18 +714,18 @@ public class SurveyPageService {
 //				if (lastDataValue != null) lastValue = lastDataValue.getValue();
 //			}
 			enteredValue = new SurveyEnteredValue(element, organisation.getOrganisationUnit(), Value.NULL, null);
-			surveyElementService.save(enteredValue);
+			surveyValueService.save(enteredValue);
 		}
 		return enteredValue;
 	}
 
 	
-	public void setSurveyElementService(SurveyElementService surveyElementService) {
-		this.surveyElementService = surveyElementService;
-	}
-	
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
+	}
+	
+	public void setSurveyValueService(SurveyValueService surveyValueService) {
+		this.surveyValueService = surveyValueService;
 	}
 	
 	public void setValueService(ValueService valueService) {
@@ -745,6 +738,10 @@ public class SurveyPageService {
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+	
+	public void setSurveyService(SurveyService surveyService) {
+		this.surveyService = surveyService;
 	}
 	
 	public void setGrailsApplication(GrailsApplication grailsApplication) {

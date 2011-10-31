@@ -22,22 +22,11 @@ import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 
 
-class SurveyElementService {
+class SurveyValueService {
 	
 	static transactional = true
 	
-	OrganisationService organisationService;
-	DataService dataService;
 	def sessionFactory;
-	
-	SurveyElement getSurveyElement(Long id) {
-		return SurveyElement.get(id)
-	}
-
-	SurveyQuestion getSurveyQuestion(Long id) {
-		// TODO test this with Grails 2.0
-		return sessionFactory.currentSession.get(SurveyQuestion.class, id)
-	}
 	
 	void save(SurveyEnteredObjective surveyEnteredObjective) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredObjective=${surveyEnteredObjective}})")
@@ -148,97 +137,6 @@ class SurveyElementService {
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
 		return result
-	}
-
-	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement, OrganisationUnitGroup group) {
-		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", group="+group+")");
-		
-		def c = SurveyValidationRule.createCriteria()
-		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		c.add(Restrictions.like("groupUuidString", group.uuid, MatchMode.ANYWHERE))
-		
-		List<SurveyValidationRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
-		return filter(rules, surveyElement.id);
-	}
-	
-	Set<SurveySkipRule> searchSkipRules(SurveyElement surveyElement) {
-		if (log.isDebugEnabled()) log.debug("searchSkipRules(surveyElement="+surveyElement+")");
-		
-		def c = SurveySkipRule.createCriteria()
-		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		
-		List<SurveySkipRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
-		return filter(rules, surveyElement.id);
-	}
-	
-	
-	static def filter(def rules, Long id) {
-		return rules.findAll { rule ->
-			return rule.expression.matches(".*\\\$"+id+"(\\z|\\D|\$).*")
-		}
-	}
-	
-//	Set<SurveyElement> getSurveyElements(SurveyQuestion question, OrganisationUnitGroup group) {
-//		def c = SurveyElement.createCriteria()
-//		c.add(Restrictions.eq("surveyQuestion", question))
-//		c.add(Restrictions.like("groupUuidString", group.uuid, MatchMode.ANYWHERE))
-//		
-//		return c.setFlushMode(FlushMode.COMMIT).list()
-//	}
-	
-	Set<SurveyElement> getSurveyElements(DataElement dataElement, Survey survey) {
-		def c = SurveyElement.createCriteria()
-		if (survey != null) {
-			c.createAlias("surveyQuestion", "sq")
-			.createAlias("sq.section", "ss")
-			.createAlias("ss.objective", "so")
-			.add(Restrictions.eq("so.survey", survey))
-		}
-		if (dataElement != null) {
-			c.add(Restrictions.eq("dataElement", dataElement))
-		}
-		
-		return c.setFlushMode(FlushMode.COMMIT).list()
-	}
-
-	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes) {
-		List<SurveyElement> surveyElements = new ArrayList<SurveyElement>();
-		List<DataElement> dataElements = dataService.searchData(DataElement.class, text, allowedTypes, [:]);
-
-		for(DataElement dataElement : dataElements) {
-			surveyElements.addAll(this.getSurveyElements(dataElement, survey));
-		}
-
-		return surveyElements.sort {
-			it.dataElement.names[LanguageUtils.getCurrentLanguage()]
-		}
-	}
-	
-	Integer getNumberOfOrganisationUnitApplicable(SurveyElement surveyElement) {
-		Set<String> groupUuids = surveyElement.getOrganisationUnitGroupApplicable();
-		int number = 0;
-		for (String groupUuid : groupUuids) {
-			OrganisationUnitGroup group = organisationService.getOrganisationUnitGroup(groupUuid);
-			if (group != null) number += organisationService.getNumberOfOrganisationForGroup(group)
-		}
-		return number;
-	}
-	
-	List<String> getHeaderPrefixes(SurveyElement element) {
-		
-		List<String> prefixes = new ArrayList(element.getDataElement().getType().getPrefixes(
-			element.getDataElement().getType().getPlaceHolderValue(),
-			new PrefixPredicate() {
-				@Override
-				public boolean holds(Type type, Value value, String prefix) {
-					if (getParent() != null && getParent().getType() == ValueType.MAP) return true;
-				}
-			}).keySet());
-		
-		return prefixes.collect { prefix ->
-			prefix.replace("[0]", "[_]")
-		}
-		
 	}
 
 }
