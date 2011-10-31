@@ -10,17 +10,14 @@
         </shiro:hasPermission>        
 	</head>
 	<body>
-		<div id="fct">
-			<div class="box margin-bottom-10">
-				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation: currentOrganisation?.id, objective: currentObjective?.id]]"/>
-				<g:render template="/templates/organisationFilter" model="[linkParams:[period: currentPeriod.id, objective: currentObjective?.id]]"/>
-				<g:render template="/templates/objectiveFilter" model="[linkParams:[period: currentPeriod.id, organisation: currentOrganisation?.id]]"/>
+		<div id="report">
+			<div class="subnav">
+				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation:currentOrganisation?.id, objective:currentObjective?.id, level:currentLevel?.id]]"/>
+				<g:render template="/templates/organisationFilter" model="[linkParams:[period:currentPeriod.id, objective:currentObjective?.id, level:currentLevel?.id, filter:'organisation']]"/>
+				<g:render template="/templates/objectiveFilter" model="[linkParams:[period:currentPeriod.id, organisation:currentOrganisation?.id, level:currentLevel?.id]]"/>
+				<g:render template="/templates/levelFilter" model="[linkParams:[period:currentPeriod.id, organisation:currentOrganisation?.id, objective:currentObjective?.id, filter:'level']]"/>												
 				
-				<g:if test="${dsrTable != null}">
-					<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: dsrTable.facilityTypes]"/>
-				</g:if>
-				<div class="clear"></div>
-				<div>
+				<div class="right">
 				<!-- ADMIN SECTION -->
 				<shiro:hasPermission permission="admin:fct">
 					<span> <a href="${createLinkWithTargetURI(controller:'fctObjective', action:'create')}">Add Objective</a> </span>|
@@ -28,8 +25,11 @@
 				</shiro:hasPermission>
 				<!-- ADMIN SECTION END -->
 			</div>
-		</div>
-		<div id="center" class="box">
+		</div>						
+		<g:if test="${fctTable != null}">
+			<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: fctTable.facilityTypes]"/>
+		</g:if>
+		<div id="center" class="main">
 			<div id="values">
 				<g:if test="${dsrTable != null}">
 					<g:if test="${!dsrTable.targets.empty}">
@@ -45,7 +45,6 @@
 													<g:message code="default.link.edit.label" default="Edit" />
 												</a> 
 											</span>
-											<br />
 											<span> 
 												<a class="delete-link" href="${createLinkWithTargetURI(controller:'fctObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
 													<g:message code="default.link.edit.label" default="Delete" />
@@ -64,7 +63,6 @@
 														<g:message code="default.link.edit.label" default="Edit" />
 													</a> 
 												</span>
-												<br />
 												<span> 
 													<a class="delete-link" href="${createLinkWithTargetURI(controller:'fctTarget', action:'delete', id:target.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
 														<g:message code="default.link.edit.label" default="Delete" />
@@ -76,25 +74,25 @@
 								</tr>
 							</thead>
 							<tbody>
-								<g:each in="${dsrTable.organisations}" var="organisation" status="i">
-									<g:if test="${dsrTable.organisationMap.get(organisation)!=currentParent}">
-										<g:set var="currentParent" value="${dsrTable.organisationMap.get(organisation)}" />
-										<tr>
-											<th colspan="${dsrTable.targets.size()+1}" class="parent-row">${currentParent.name}</th>
-										</tr>
-									</g:if>
-									<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
-										<th class="box-dsr-organisation">${organisation.name}</th>
-										<g:each in="${dsrTable.targets}" var="target">
-											<td class="box-dsr-value">
-												<g:if test="${!dsrTable.getFct(organisation, target) != null}">
-													${dsrTable.getFct(organisation, target).value}
-												</g:if>
-											</td>
-										</g:each>
+								<g:each in="${fctTable.organisationMap.keySet()}" var="orgMapParent">
+									<tr>
+										<th colspan="${fctTable.targets.size()+1}" class="parent-row">${orgMapParent.name}</th>
 									</tr>
+									<g:each in="${fctTable.organisationMap.get(orgMapParent)}" var="orgMapChildren">
+										<g:each in="${orgMapChildren}" var="orgMapChild">										
+											<tr class="row organisation" data-group="${orgMapChild.organisationUnitGroup?.uuid ?: 'Total' }">
+												<th class="box-report-organisation">${orgMapChild.name}</th>
+												<g:each in="${fctTable.targets}" var="target">
+													<td class="box-report-value">
+														<g:if test="${!fctTable.getFct(orgMapChild, target) != null}">
+															${fctTable.getFct(orgMapChild, target).value}
+														</g:if>
+													</td>
+												</g:each>
+											</tr>
+										</g:each>
+									</g:each>
 								</g:each>
-								
 							</tbody>
 						</table>
 					</g:if>

@@ -58,12 +58,11 @@ public class FctTable implements Serializable {
 	private List<FctTarget> targets;
 	private Set<OrganisationUnitGroup> facilityTypes;
 	private Map<Organisation, Map<FctTarget, Fct>> values;
-	private Map<Organisation,Organisation> organisationMap;
+	private Map<Organisation, List<Organisation>> organisationMap;
 
 
-	public FctTable(Organisation organisation,List<Organisation> organisations, Period period, FctObjective objective,
-			List<FctTarget> targets, Set<OrganisationUnitGroup> facilityTypes,
-			Map<Organisation, Map<FctTarget, Fct>> values, Map<Organisation,Organisation> organisationMap) {
+	public FctTable(List<Organisation> organisations, List<FctTarget> targets, Set<OrganisationUnitGroup> facilityTypes,
+			Map<Organisation, Map<FctTarget, Fct>> values, Map<Organisation,List<Organisation>> organisationMap) {
 		super();
 		this.organisation = organisation;
 		this.organisations = organisations;
@@ -111,11 +110,11 @@ public class FctTable implements Serializable {
 		return facilityTypes;
 	}
 
-	public void setOrganisationMap(Map<Organisation,Organisation> organisationMap) {
+	public void setOrganisationMap(Map<Organisation, List<Organisation>> organisationMap) {
 		this.organisationMap = organisationMap;
 	}
 
-	public Map<Organisation,Organisation> getOrganisationMap() {
+	public Map<Organisation, List<Organisation>> getOrganisationMap() {
 		return organisationMap;
 	}
 

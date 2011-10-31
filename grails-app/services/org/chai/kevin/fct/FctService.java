@@ -32,15 +32,23 @@ package org.chai.kevin.fct;
  *
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.OrganisationSorter;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.CalculationValue;
@@ -57,13 +65,11 @@ public class FctService {
 	
 	public FctTable getFct(Organisation organisation, FctObjective objective, Period period) {
 		
-		if (log.isDebugEnabled()) log.debug("getFct(period="+period+",organisation="+organisation+",objective="+objective+")");
-		
-		organisationService.loadParent(organisation);
-		organisationService.getLevel(organisation);
+		if (log.isDebugEnabled()) 
+			log.debug("getFct(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
 
 		List<FctTarget> targets = null;
-		Map<Organisation,Organisation> orgParentMap = null;
+		Map<Organisation, List<Organisation>> orgParentMap = null;
 		Map<FctTarget, Fct> orgFct = null;
 		Map<Organisation, Map<FctTarget, Fct>> fctMap = null;
 		Set<OrganisationUnitGroup> facilityTypes = null;
@@ -74,28 +80,12 @@ public class FctService {
 			// TODO throw exception 
 		}
 		
-		//get level
-		Integer level = organisationService.getLevel(organisation);
+		organisationService.loadParent(organisation);
+		organisationService.getLevel(organisation);
 		
-		List<OrganisationUnitLevel> childLevels = organisationService.getChildren(level);
-		if (levels.size() > 0) level = childLevels.get(0).getLevel();
-		else level = levels.get(0).getLevel();
+		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());				
 		
-		// if we ask for an organisation level bigger than the organisation's, we go back to the right level
-		while (level <= organisation.getLevel()) {
-			organisation = organisation.getParent();
-			organisationService.loadParent(organisation);
-		}
-		
-		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation, level);
-		
-		//organisation, organisations, period, objective, targets, facilityTypes, fctMap, orgParentMap
-		if (objective == null || organisation == null) {
-			return new FctTable(organisation, organisations, period, objective,
-					targets, facilityTypes, fctMap, orgParentMap);
-		}				
-		
-		orgParentMap = this.getParentOfLevel(organisations,groupLevel);		
+		orgParentMap = this.getParents(organisation, organisations);
 		targets = objective.getTargets();
 		
 		orgFct = new HashMap<FctTarget, Fct>();
@@ -135,25 +125,63 @@ public class FctService {
 			fctMap.put(child, orgFct);
 		}
 
-		return new FctTable(organisation, organisations, period, objective,
-				targets, facilityTypes, fctMap, orgParentMap);
+		return new FctTable(organisations, targets, facilityTypes, fctMap, orgParentMap);
 	}
 	
-	public Map<Organisation,Organisation> getParentOfLevel(List<Organisation> organisations,Integer level){
-		Map<Organisation,Organisation> organisationMap = new HashMap<Organisation, Organisation>();
-		for(Organisation organisation : organisations){
-			organisationMap.put(organisation, organisationService.getParentOfLevel(organisation, level));
+	private Map<Organisation, List<Organisation>> getParents(
+			Organisation organisation, List<Organisation> organisations) {
+		
+		Map<Organisation, List<Organisation>> organisationMap = new HashMap<Organisation, List<Organisation>>();										
+		
+		//add "total" organisation
+		organisations.add(0, organisation);
+		organisationService.loadParent(organisation);
+		organisationService.getLevel(organisation);
+		Organisation parentOrg = organisationService.getParentOfLevel(organisation, organisation.getLevel()-1);
+		if(parentOrg == null){
+			Organisation rootOrg = organisationService.getRootOrganisation();
+			if(organisation.equals(rootOrg))
+				parentOrg = rootOrg;
 		}
-		return organisationMap;
-	}	
-	
+		organisationMap.put(parentOrg, new ArrayList<Organisation>());
+		organisationMap.get(parentOrg).add(organisation);
+		
+		for (Organisation org : organisations) {
+			//skip "total" organisation
+			if(org == organisation) continue;
+			
+			organisationService.loadParent(org);
+			organisationService.getLevel(org);
+			parentOrg = organisationService.getParentOfLevel(org, org.getLevel()-1);			
+			
+			if(!organisationMap.containsKey(parentOrg))
+				organisationMap.put(parentOrg, new ArrayList<Organisation>());
+			organisationMap.get(parentOrg).add(org);
+		}
+				
+		//sort organisation map keys
+		List<Organisation> sortedOrganisations = new ArrayList<Organisation>(organisationMap.keySet());
+		Collections.sort(sortedOrganisations, OrganisationSorter.BY_LEVEL);
+		
+		//sort organisation map values
+		LinkedHashMap<Organisation, List<Organisation>> sortedOrganisationMap = new LinkedHashMap<Organisation, List<Organisation>>();		
+		for (Organisation org : sortedOrganisations)
+		{
+			List<Organisation> sortedList = organisationMap.get(org);
+			Collections.sort(sortedList, OrganisationSorter.BY_LEVEL);
+			sortedOrganisationMap.put(org, sortedList);
+		}
+		
+		return sortedOrganisationMap;
+	}
+
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;
 	}
 
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
-	}
+	}		
 
 	public void setGroupLevel(int groupLevel) {
 		this.groupLevel = groupLevel;

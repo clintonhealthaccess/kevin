@@ -397,6 +397,7 @@ table.nice-table .highlighted.label, table.nice-table .selected.label { font-wei
 table.nice-table .cell.me-selected { font-weight: bold; }
 table.nice-table .cell { cursor: default; }
 
+<<<<<<< HEAD
 #dsr #values { overflow: auto; }
 #dsr table { width: 100%; }
 #dsr th { font-weight: bolder; padding: 5px; text-align: center; }
@@ -411,6 +412,36 @@ table.nice-table .cell { cursor: default; }
 #dsr .title-th a { font-size: 10px; font-weight: normal; }
 #dsr .add-link:hover, #dsr .add-link:focus, #dsr .edit-link:hover, #dsr .edit-link:focus { color: #65c029; }
 #dsr .delete-link:hover, #dsr .delete-link:focus { color: #d30000; }
+=======
+/* line 3, ../../src/stylesheets/partials/_dsr.sass */
+#report #values { overflow: auto; }
+/* line 6, ../../src/stylesheets/partials/_dsr.sass */
+#report table { width: 100%; }
+/* line 9, ../../src/stylesheets/partials/_dsr.sass */
+#report th { font-weight: bolder; padding: 5px; text-align: center; }
+/* line 14, ../../src/stylesheets/partials/_dsr.sass */
+#report td { background-color: white; padding: 5px; }
+/* line 18, ../../src/stylesheets/partials/_dsr.sass */
+#report .parent-row { background-color: #258cd5; color: white; }
+/* line 22, ../../src/stylesheets/partials/_dsr.sass */
+#report .box-report-value { background-color: white; border: 1px solid #d8e3eb; text-align: right; }
+/* line 27, ../../src/stylesheets/partials/_dsr.sass */
+#report .box-report-organisation { background-color: #e9f4fc; border: 1px solid #d8e3eb; color: #258cd5; text-align: left; }
+/* line 33, ../../src/stylesheets/partials/_dsr.sass */
+#report .object-name-box { background: #f6fdeb; border: 1px solid #d8e3eb; color: #258cd5; width: 70px; font-weight: bold; }
+/* line 39, ../../src/stylesheets/partials/_dsr.sass */
+#report .object-name-box div { margin-bottom: 5px; }
+/* line 41, ../../src/stylesheets/partials/_dsr.sass */
+#report .object-name-box span a { font-size: 10px; font-weight: normal; }
+/* line 45, ../../src/stylesheets/partials/_dsr.sass */
+#report .title-th { width: 10px; color: #258cd5; background: #e9f4fc; border: 1px solid #d8e3eb; border-width: 1px 1px 1px 0px; vertical-align: bottom; }
+/* line 52, ../../src/stylesheets/partials/_dsr.sass */
+#report .title-th a { font-size: 10px; font-weight: normal; }
+/* line 57, ../../src/stylesheets/partials/_dsr.sass */
+#report .add-link:hover, #dsr .add-link:focus, #dsr .edit-link:hover, #dsr .edit-link:focus { color: #65c029; }
+/* line 61, ../../src/stylesheets/partials/_dsr.sass */
+#report .delete-link:hover, #dsr .delete-link:focus { color: #d30000; }
+>>>>>>> see previous 2 commit messages
 
 #dashboard #top { width: 822px; float: left; }
 #dashboard #bottom #left { width: 144px; float: left; }

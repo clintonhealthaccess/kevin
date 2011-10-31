@@ -18,19 +18,15 @@ class FctController extends AbstractController {
 	
 	def view = {
 		if (log.isDebugEnabled()) log.debug("fct.view, params:"+params)
-		
-		Period period = getPeriod()
-		FctObjective objective = getObjective()		
-		Organisation organisation = getOrganisation(false)
-		
-		def fctTable = null;
-		if(period != null && objective != null && organisation != null) {
-			fctTable = fctService.getFct(organisation, objective, period);
-			
-			if (log.isDebugEnabled()) log.debug("\nfct: "+fctTable+"\n period: "+fctTable.period+"\n root objective: "
-				+fctTable.objective+"\n org: "+fctTable.organisation+"\n orgs: "+fctTable.organisations+"\n targets: "
-				+fctTable.targets+"\n facilityTypes: "+fctTable.facilityTypes+"\n values: "+fctTable.values+"\n orgMap: "
-				+fctTable.organisationMap)
+
+		Period period = getPeriod();
+		Organisation organisation = getOrganisation(false);
+		FctObjective objective = FctObjective.get(params.int('objective'));
+		OrganisationUnitLevel orgUnitLevel = getLevel();
+
+		FctTable fctTable = null;
+		if((period != null && objective != null && organisation != null && orgUnitLevel != null)) {
+			fctTable = fctService.getFct(organisation, objective, period, orgUnitLevel);
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root objective: "+objective)				
@@ -39,8 +35,7 @@ class FctController extends AbstractController {
 		Set<String> defaultChecked = ConfigurationHolder.config.fct.facility.checked;
 		
 		[
-			// FIXME view should replace any occurrence of "dsr" prefix with "fct"
-			dsrTable: fctTable,
+			fctTable: fctTable,
 			currentPeriod: period,
 			currentObjective: objective,
 			currentOrganisation: organisation,

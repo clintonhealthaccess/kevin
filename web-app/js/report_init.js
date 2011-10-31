@@ -18,8 +18,8 @@ function toggleFacilityType() {
 		$('#facility-type-filter input').each(function(){
 			if (this.checked) checked.push($(this).val())
 		});
-		$('.row.organisation').each(function(){
-			if ($.inArray($(this).data('group'), checked) >= 0) $(this).show();
+		$('.row.organisation').not('[data-group="Total"])').each(function(){
+			if($.inArray($(this).data('group'), checked) >= 0) $(this).show();
 			else $(this).hide()
 		});
 	}

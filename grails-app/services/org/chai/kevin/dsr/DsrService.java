@@ -68,8 +68,9 @@ public class DsrService {
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective, Period period) {
 		
 		List<Organisation>  organisations = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
-		Map<Organisation, Organisation> orgParentMap = this.getParentOfLevel(organisations,groupLevel);			
-		Collections.sort(organisations,new OrganisationSorter(orgParentMap,organisationService));  
+		Map<Organisation, Organisation> orgParentMap = this.getParentOfLevel(organisations,groupLevel);
+		OrganisationSorter organisationSorter = new OrganisationSorter(orgParentMap,organisationService);
+		Collections.sort(organisations, organisationSorter.BY_FACILITY_TYPE);
 		
 		List<DsrTarget> targets = objective.getTargets();
 		Collections.sort(targets, new DsrTargetSorter());

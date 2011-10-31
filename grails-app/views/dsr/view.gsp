@@ -12,7 +12,7 @@
 		<r:require modules="dsr"/>
 	</head>
 	<body>
-		<div id="dsr">
+		<div id="report">
 			<div class="subnav">
 				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation: currentOrganisation?.id, objective: currentObjective?.id]]"/>
 				<g:render template="/templates/organisationFilter" model="[linkParams:[period: currentPeriod.id, objective: currentObjective?.id]]"/>
@@ -139,9 +139,9 @@
 											</tr>
 										</g:if>
 										<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
-											<th class="box-dsr-organisation">${organisation.name}</th>
+											<th class="box-report-organisation">${organisation.name}</th>
 											<g:each in="${dsrTable.targets}" var="target">
-												<td class="box-dsr-value">
+												<td class="box-report-value">
 													<g:if test="${!dsrTable.getDsr(organisation, target).applies}">
 	
 													</g:if>

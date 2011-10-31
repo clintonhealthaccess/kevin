@@ -28,33 +28,62 @@
 package org.chai.kevin;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Jean Kahigiso M.
  * 
  */
-public class OrganisationSorter implements Comparator<Organisation> {
+public class OrganisationSorter {
 
-	private Map<Organisation, Organisation> organisations;
-	private OrganisationService organisationService;
-	
-	public OrganisationSorter(Map<Organisation, Organisation> organisatons,OrganisationService organisationService) {
-		this.organisations = organisatons;
+	private static Map<Organisation, Organisation> organisations;
+	private static OrganisationService organisationService;
+
+	public OrganisationSorter(Map<Organisation, Organisation> organisations, OrganisationService organisationService) {
+		this.organisations = organisations;
 		this.organisationService = organisationService;
 	}
 
-	@Override
-	public int compare(Organisation org1, Organisation org2) {
-		if (organisations.get(org1).equals(organisations.get(org2))) {
-			organisationService.loadGroup(org1);
-			organisationService.loadGroup(org2);
-			if (org1.getOrganisationUnitGroup().equals(org2.getOrganisationUnitGroup())) 
-				return org1.getName().compareTo(org2.getName());
-			 else 
-				return org1.getOrganisationUnitGroup().getName().compareTo(org2.getOrganisationUnitGroup().getName());
-		}
-		return organisations.get(org1).getName().compareTo(organisations.get(org2).getName());
-	}
+	public static final Comparator<Organisation> BY_FACILITY_TYPE = new Comparator<Organisation>() {
 
+		public int compare(Organisation org1, Organisation org2) {			
+			if(org1 == null || org2 == null) return 0;
+			
+			if (organisations.get(org1).equals(organisations.get(org2))) {
+				organisationService.loadGroup(org1);
+				organisationService.loadGroup(org2);
+				if (org1.getOrganisationUnitGroup().equals(
+						org2.getOrganisationUnitGroup()))
+					return org1.getName().compareTo(org2.getName());
+				else
+					return org1
+							.getOrganisationUnitGroup()
+							.getName()
+							.compareTo(
+									org2.getOrganisationUnitGroup().getName());
+			}
+			return organisations.get(org1).getName()
+					.compareTo(organisations.get(org2).getName());
+		}
+	};
+
+	public static final Comparator<Organisation> BY_LEVEL = new Comparator<Organisation>() {
+		public int compare(Organisation org1, Organisation org2) {			
+			if(org1 == null || org2 == null) return 0;
+			
+			if (org1.getLevel().equals(org2.getLevel()))
+				return org1.getName().compareTo(org2.getName());
+			else
+				return org1.getLevel().compareTo(org2.getLevel());
+		}
+	};
+
+	public static final Comparator<Organisation> BY_NAME = new Comparator<Organisation>() {
+		public int compare(Organisation org1, Organisation org2) {
+			if(org1 == null || org2 == null) return 0;
+			
+			return org1.getName().compareTo(org2.getName());
+		}
+	};
 }
