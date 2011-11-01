@@ -11,12 +11,12 @@
 			<div class="question-help"><g:i18n field="${question.descriptions}"/><a class="hide-question-help">Close tips</a></div>
 		</div>
 	</g:ifText>
-	
-	<g:set var="surveyElement" value="${question.surveyElement}"/>
 	<div class="clear"></div>
+	
+    <g:set var="surveyElement" value="${question.surveyElement}"/>
     
 	<g:if test="${print && surveyElement?.dataElement.type.type.name().toLowerCase()=='list' && !appendix}">
-		<label>--- <g:message code="survey.print.see.appendix" default="See Appendix"/> ---</label>
+		<label>-- <g:message code="survey.print.see.appendix" default="See Appendix"/> --</label>
 	</g:if>
 	<g:else>
 		<div id="element-${surveyElement?.id}" class="survey-element">

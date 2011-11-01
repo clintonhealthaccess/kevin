@@ -11,11 +11,10 @@
 			<div class="question-help"><g:i18n field="${question.descriptions}"/><a class="hide-question-help">Close tips</a></div>
 		</div>
 	</g:ifText>
-	
-	<ul class="clear">
+	<div class="clear"></div>
 
 	<g:if test="${print}">
-		<label>--<g:message code="survey.print.selectallthatapply.label" default="Select all that apply"/>--</label>
+		<label>-- <g:message code="survey.print.selectallthatapply.label" default="Select all that apply"/> --</label>
 	</g:if>
 	
 	<ul>

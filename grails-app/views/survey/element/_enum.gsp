@@ -12,8 +12,7 @@
 			<g:set var="tooltipValue" value="${option!=null?i18n(field: option.names):lastValue.enumValue}"/>
 		</g:if>
 
-                <select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
-
+		<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
 			<option value=""><g:message code="survey.element.enum.select.label"/></option>
 			<g:each in="${enume?.enumOptions}" var="option">
 				<!-- TODO fix this, there should be a flag in the survey, not on the element directly -->
@@ -26,10 +25,10 @@
 		</select>
 	</g:if>
 	<g:else>
-	<label>--<g:message code="survey.print.selectonlyoneoption.label" default="Select only one response"/>--</label>
+	<label>-- <g:message code="survey.print.selectonlyoneoption.label" default="Select only one response"/> --</label>
 		<g:each in="${enume?.enumOptions}" var="option">
 			<div>
-				<input class="input" type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''}/>
+				<input class="input" type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''} disabled="disabled"/>
 				<span><g:i18n field="${option.names}" /></span>
 			</div>
 		</g:each>
