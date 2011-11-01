@@ -30,7 +30,7 @@ label { display: block; font-weight: bold; }
 #print-questions .question-tab-title-name { border: 1px solid #cccccc; }
 #print-questions .question-checkbox ul { padding-left: 0px; }
 #print-questions .show-question-help, #print-questions .hide-question-help { display: none; }
-#print-questions .question-help-container { display: block; margin-bottom: 4px; }
+#print-questions .question-help-container { border: 0.5px dotted grey; padding: 4px; display: block; margin-top: 0px; margin-bottom: 4px; }
 #print-questions .question-simple textarea { display: block; width: 600px; }
 #print-questions .oddrow { background-color: #eeeeee; }
 #print-questions .element-number input, #print-questions .element-date input { border: none; background: transparent; border-bottom: 2px solid black; }
