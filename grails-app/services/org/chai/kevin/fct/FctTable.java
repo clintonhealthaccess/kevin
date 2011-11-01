@@ -51,9 +51,6 @@ public class FctTable implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Period period;
-	private Organisation organisation;
-	private FctObjective objective;
 	private List<Organisation> organisations;
 	private List<FctTarget> targets;
 	private Set<OrganisationUnitGroup> facilityTypes;
@@ -64,7 +61,6 @@ public class FctTable implements Serializable {
 	public FctTable(List<Organisation> organisations, List<FctTarget> targets, Set<OrganisationUnitGroup> facilityTypes,
 			Map<Organisation, Map<FctTarget, Fct>> values, Map<Organisation,List<Organisation>> organisationMap) {
 		super();
-		this.organisation = organisation;
 		this.organisations = organisations;
 		this.facilityTypes = facilityTypes;
 		this.period = period;
@@ -74,32 +70,12 @@ public class FctTable implements Serializable {
 		this.organisationMap=organisationMap;
 	}
 
-	public Period getPeriod() {
-		return period;
-	}
-
 	public List<Organisation> getOrganisations() {
 		return organisations;
 	}
 
 	public List<FctTarget> getTargets() {
 		return targets;
-	}
-
-	public FctObjective getObjective() {
-		return objective;
-	}
-	
-	public Long getObjectiveId(){
-		return objective!=null?objective.getId():null;
-	}
-	
-	public Organisation getOrganisation() {
-		return organisation;
-	}
-	
-	public Integer getOrganisationId(){
-		return organisation!=null?organisation.getId():null;
 	}
 	
 	public Fct getFct(Organisation organisation, FctTarget target) {
@@ -108,10 +84,6 @@ public class FctTable implements Serializable {
 
 	public Set<OrganisationUnitGroup> getFacilityTypes() {
 		return facilityTypes;
-	}
-
-	public void setOrganisationMap(Map<Organisation, List<Organisation>> organisationMap) {
-		this.organisationMap = organisationMap;
 	}
 
 	public Map<Organisation, List<Organisation>> getOrganisationMap() {
