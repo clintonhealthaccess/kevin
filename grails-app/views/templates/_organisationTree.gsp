@@ -10,7 +10,7 @@
 	</g:if>
 	<g:else>
 		<% linkParams['organisation'] = organisation.id %>	
-		<a class="dropdown-link parameter" data-type="organisation" data-organisation="${organisation.id}" href="${createLink(controller:controller, action:action, params:linkParams)}">
+		<a class="dropdown-link parameter" data-type="organisation" data-organisation="${organisation.id}" href="${createLinkByFilter(controller:controller, action:action, params:linkParams)}">
 			${organisation.name}
 		</a>
 	</g:else>

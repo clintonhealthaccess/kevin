@@ -63,8 +63,6 @@ public class FctTable implements Serializable {
 		super();
 		this.organisations = organisations;
 		this.facilityTypes = facilityTypes;
-		this.period = period;
-		this.objective = objective;
 		this.targets = targets;
 		this.values = values;
 		this.organisationMap=organisationMap;

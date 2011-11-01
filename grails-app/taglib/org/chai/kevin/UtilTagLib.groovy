@@ -33,15 +33,15 @@ import org.chai.kevin.util.Utils;
 */
 
 class UtilTagLib {
-
+	
 	def createLinkWithTargetURI = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]
 		else attrs['params'] = new HashMap(attrs['params'])
-		attrs['params'] << [targetURI: g.createLink(controller: controllerName, action: actionName, params: params) - request.contextPath];
+		attrs['params'] << [targetURI: createLink(controller: controllerName, action: actionName, params: params) - request.contextPath];
 		
 		log.debug('creating link with attrs: '+attrs)
 		out << createLink(attrs, body)
-	}
+	}		
 	
 	def toHtml = {attrs, body ->
 		out << attrs.value.replaceAll("(\\r\\n|\\n)", "<br/>").replaceAll("( )", "&nbsp;")	

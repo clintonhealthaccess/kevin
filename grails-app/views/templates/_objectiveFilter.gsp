@@ -18,7 +18,7 @@
 						<% linkParams << [objective: objective.id] %>
 						<li>
 							<span>
-								<a href="${createLink(controller:controllerName, action:actionName, params:linkParams)}">
+								<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:linkParams)}">
 									<g:i18n field="${objective.names}"/>
 								</a>
 							</span>

@@ -165,6 +165,12 @@ modules = {
 		//resource url: '/css/dsr.css'
 	}
 
+	fct {
+		dependsOn 'core,cluetip,dropdown,nicetable,report,spinner'
+
+		//resource url: '/css/dsr.css'
+	}
+	
 	dashboard {
 		dependsOn 'core,cluetip,dropdown,nicetable,explanation,report,spinner'
 

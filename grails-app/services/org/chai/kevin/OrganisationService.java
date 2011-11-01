@@ -31,8 +31,10 @@ package org.chai.kevin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -217,7 +219,7 @@ public class OrganisationService {
 		this.loadParent(tmp);
 		while (tmp.getParent() != null) {
 			this.getLevel(tmp.getParent());
-			if (tmp.getParent().getLevel() == level)
+			if (tmp.getParent().getLevel().intValue() == level.intValue())
 				return tmp.getParent();
 			tmp = tmp.getParent();
 			this.loadParent(tmp);
@@ -276,63 +278,6 @@ public class OrganisationService {
 	public void setOrganisationUnitService(
 			OrganisationUnitService organisationUnitService) {
 		this.organisationUnitService = organisationUnitService;
-	}
-
-	public HashMap updateParamsByFilter(HashMap params) {
-
-		if (!params.containsKey("filter"))
-			return params;
-		String filter = (String) params.get("filter");
-
-		Organisation organisation = null;
-		if (params.containsKey("organisation")
-				&& params.get("organisation") != null)
-			organisation = this.getOrganisation((Integer) params
-					.get("organisation"));
-
-		OrganisationUnitLevel orgUnitLevel = null;
-		if (params.containsKey("level") && params.get("level") != null)
-			orgUnitLevel = organisationUnitService
-					.getOrganisationUnitLevel((Integer) params.get("level"));
-
-		if (organisation != null) {
-			this.getLevel(organisation);
-
-			if (orgUnitLevel != null) {
-				
-				if (organisation.getLevel() >= orgUnitLevel.getLevel()) {
-					// conflict
-					if (filter == "level") {
-						// adjust organisation to level
-						if (orgUnitLevel.getLevel() == 1)
-							organisation = this.getRootOrganisation();
-						else
-							organisation = this.getParentOfLevel(organisation, orgUnitLevel.getLevel() - 1);
-						params.put("organisation", organisation.getId());
-					}
-					// conflict
-					else {
-						// adjust level to organisation
-						orgUnitLevel = organisationUnitService
-								.getOrganisationUnitLevelByLevel(organisation
-										.getLevel() + 1);
-						params.put("level", orgUnitLevel.getId());
-					}
-				}
-				else {
-					params.put("level", orgUnitLevel.getId());
-				}
-			}
-			// conflict
-			else {
-				// adjust level to organisation
-				orgUnitLevel = organisationUnitService
-						.getOrganisationUnitLevelByLevel(organisation
-								.getLevel() + 1);
-				params.put("level", orgUnitLevel.getId());
-			}
-		}
-		return params;
 	}
 
 }

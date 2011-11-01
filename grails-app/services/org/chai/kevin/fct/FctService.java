@@ -63,7 +63,7 @@ public class FctService {
 	private ValueService valueService;
 	private int groupLevel;
 	
-	public FctTable getFct(Organisation organisation, FctObjective objective, Period period) {
+	public FctTable getFct(Organisation organisation, FctObjective objective, Period period, OrganisationUnitLevel orgUnitLevel) {
 		
 		if (log.isDebugEnabled()) 
 			log.debug("getFct(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		

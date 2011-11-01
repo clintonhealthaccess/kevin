@@ -30,6 +30,7 @@ package org.chai.kevin;
 
 import org.chai.kevin.fct.FctObjective
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.period.Period
 
 abstract class AbstractController {
@@ -62,6 +63,14 @@ abstract class AbstractController {
 			period = Period.findAll()[ConfigurationHolder.config.site.period]
 		}
 		return period
+	}
+	
+	protected def getLevel(){
+		OrganisationUnitLevel level = null;
+		if(params.int('level')){
+			level = OrganisationUnitLevel.get(params.int('level'));
+		}
+		return level;
 	}
 
 }

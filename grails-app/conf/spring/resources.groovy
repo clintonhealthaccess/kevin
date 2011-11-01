@@ -112,7 +112,6 @@ beans = {
 	fctService(FctService){
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
-		groupLevel = dsrGroupLevel
 	}
 	
 	mapsService(MapsService) {

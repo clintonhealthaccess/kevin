@@ -8,6 +8,9 @@
 		<shiro:hasPermission permission="admin:fct">
         	<r:require modules="form"/>
         </shiro:hasPermission>        
+        
+        <r:require modules="fct"/>
+        
 	</head>
 	<body>
 		<div id="report">
@@ -31,8 +34,8 @@
 		</g:if>
 		<div id="center" class="main">
 			<div id="values">
-				<g:if test="${dsrTable != null}">
-					<g:if test="${!dsrTable.targets.empty}">
+				<g:if test="${fctTable != null}">
+					<g:if test="${!fctTable.targets.empty}">
 						<table class="nice-table">
 							<thead>
 								<tr>
@@ -52,7 +55,7 @@
 											</span>
 										</shiro:hasPermission></th>
 									<g:set var="i" value="${0}" />
-									<g:each in="${dsrTable.targets}" var="target">
+									<g:each in="${fctTable.targets}" var="target">
 										<th class="title-th" rowspan="2">
 											<div class="bt">
 												<g:i18n field="${target.names}" />
@@ -80,7 +83,7 @@
 									</tr>
 									<g:each in="${fctTable.organisationMap.get(orgMapParent)}" var="orgMapChildren">
 										<g:each in="${orgMapChildren}" var="orgMapChild">										
-											<tr class="row organisation" data-group="${orgMapChild.organisationUnitGroup?.uuid ?: 'Total' }">
+											<tr class="row organisation" data-group="${orgMapChild.organisationUnitGroup?.uuid ?: 'Total'}">
 												<th class="box-report-organisation">${orgMapChild.name}</th>
 												<g:each in="${fctTable.targets}" var="target">
 													<td class="box-report-value">
