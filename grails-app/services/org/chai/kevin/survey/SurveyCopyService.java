@@ -16,7 +16,7 @@ public class SurveyCopyService {
 
 	private SessionFactory sessionFactory;
 	
-	@Transactional(readOnly=true)
+	@Transactional(readOnly=false)
 	public SurveyCopy<SurveyValidationRule> copyValidationRule(SurveyValidationRule rule) {
 		SurveyCloner cloner = new SurveyCloner() {};
 		SurveyValidationRule copy = new SurveyValidationRule();

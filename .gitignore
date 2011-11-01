@@ -3,8 +3,6 @@ target
 *.class
 .bzr
 *.log
-.classpath
-.project
 classes
 .sass-cache
 .DS_Store
