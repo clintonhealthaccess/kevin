@@ -55,6 +55,8 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
+import grails.plugin.springcache.annotations.Cacheable;
+
 public class DsrService {
 	
     //private Log log = LogFactory.getLog(DsrService.class);
@@ -63,7 +65,7 @@ public class DsrService {
 	private DataService dataService;
 	private int groupLevel;
 	
-//	@Cacheable("dsrCache")
+	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
 	public DsrTable getDsr(Organisation organisation, DsrObjective objective, Period period) {
 		

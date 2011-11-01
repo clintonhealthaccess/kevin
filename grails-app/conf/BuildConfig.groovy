@@ -39,29 +39,31 @@ grails.project.dependency.resolution = {
     inherits("global") {
         // uncomment to disable ehcache
          excludes 'ehcache'
+		 
+		 buildSettings.dependenciesExternallyConfigured = true
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
 //	checksums true
 	
     repositories {
 		inherits false 
-//        grailsPlugins()
+        grailsPlugins()
         grailsHome()
         grailsCentral()
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         mavenLocal()
-	    mavenCentral()	
+//	    mavenCentral()	
 		mavenRepo "http://m2repo.spockframework.org/snapshots"
-		mavenRepo "http://snapshots.repository.codehaus.org"
-		mavenRepo "http://repository.codehaus.org"
-		mavenRepo "http://download.java.net/maven/2/"
-		mavenRepo "http://mirrors.ibiblio.org/pub/mirrors/maven2/"
-		mavenRepo "http://repository.jboss.org/nexus/"
-		mavenRepo "https://maven.nuxeo.org/nexus/"
-		mavenRepo "http://www.intalio.org/public/maven2/"
-		mavenRepo "http://repo.opennms.org/maven2/"
+//		mavenRepo "http://snapshots.repository.codehaus.org"
+//		mavenRepo "http://repository.codehaus.org"
+//		mavenRepo "http://download.java.net/maven/2/"
+//		mavenRepo "http://mirrors.ibiblio.org/pub/mirrors/maven2/"
+//		mavenRepo "http://repository.jboss.org/nexus/"
+//		mavenRepo "https://maven.nuxeo.org/nexus/"
+//		mavenRepo "http://www.intalio.org/public/maven2/"
+//		mavenRepo "http://repo.opennms.org/maven2/"
 		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 				
 		/**
@@ -114,7 +116,7 @@ grails.project.dependency.resolution = {
 		
 		// those are for the migration script to work
 //		compile 'org.hisp.dhis:dhis-service-importexport:2.2-SNAPSHOT'
-		compile 'org.supercsv:SuperCSV:1.52'
+//		compile 'org.supercsv:SuperCSV:1.52'
     }
 
 	plugins {
@@ -122,8 +124,20 @@ grails.project.dependency.resolution = {
 		compile ":jquery:1.6.1.1"
 		//GPRESOURCES-102
 		compile ":resources:1.0.2"
-
-		test ":spock:0.6-SNAPSHOT"
+		compile ":shiro:1.1.5"
+		compile ":springcache:1.3.1"
+		compile ":compass-sass:0.5.5"
+		compile ":google-analytics:1.0"
+		compile ":grails-melody:1.9"
+		compile ":quartz:0.4.2"
+		compile ":constraints:0.6.0"
+		compile ":cached-resources:1.0"
+		compile ":cache-headers:1.1.5"
+		compile ":svn:1.0.0.M1"
+		
+		compile (":mail:1.0-SNAPSHOT") {changing = false}
+		
+		test (":spock:0.6-SNAPSHOT") {changing = false}
 		
 		build ":tomcat:$grailsVersion"
 	}
