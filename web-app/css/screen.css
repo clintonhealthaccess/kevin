@@ -310,6 +310,7 @@ ul.horizontal li.last { margin-right: 0; }
 .listing.login tr:last-child td { border-top: 1px dashed #d8e3eb; padding-top: 10px; padding-bottom: 20px; }
 /* line 46, ../../src/stylesheets/partials/_tables.sass */
 .listing.login td { border: none; padding: 0 0 5px; text-align: center; }
+.listing.login a { font-size: 11px; }
 
 /* line 51, ../../src/stylesheets/partials/_tables.sass */
 .explanation-heading { background: #e9f4fc; font-size: 11px; font-style: italic; margin-top: 5px; padding: 7px 13px; }
