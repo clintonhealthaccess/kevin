@@ -1,5 +1,4 @@
 <g:set value="${surveyPage.getIncompleteSections(surveyPage.objective)}" var="incompleteSections"/>
-
 <g:if test="${!incompleteSections.isEmpty()}">
 	<div>
 		<g:message code="survey.objective.incomplete.text" default="The following sections are incomplete, please go back and complete them" />:

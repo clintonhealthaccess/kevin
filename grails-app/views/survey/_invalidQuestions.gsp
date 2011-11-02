@@ -1,5 +1,4 @@
 <g:set value="${surveyPage.getInvalidQuestions(surveyPage.objective)}" var="invalidQuestions"/>
-
 <g:if test="${!invalidQuestions.isEmpty()}">
 	<div><g:message code="survey.objective.error.text" default="The following questions do not pass validation, please check" />:</div>
 	<form id="survey-form">

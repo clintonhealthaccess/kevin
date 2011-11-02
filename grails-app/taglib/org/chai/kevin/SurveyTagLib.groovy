@@ -57,7 +57,7 @@ class SurveyTagLib {
 			SurveySection section = surveyElement.surveyQuestion.section
 			Survey survey = section.objective.survey 
 			String replacement = 
-				'<a href="'+g.createLink(controller: "survey", action: "sectionPage", params: [section: section.id, organisation: organisationUnit.id], fragment: 'element-'+surveyElement.id)+'">'+
+				'<a href="'+createLink(controller: "survey", action: "sectionPage", params: [section: section.id, organisation: organisationUnit.id], fragment: 'element-'+surveyElement.id)+'">'+
 				surveyElement.id +
 				'</a>'
 			result = StringUtils.replace(result, "{"+integer+"}", replacement);

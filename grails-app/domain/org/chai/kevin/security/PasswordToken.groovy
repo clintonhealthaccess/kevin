@@ -1,8 +1,6 @@
 package org.chai.kevin.security
 
-class Token {
-
-	String email
+class PasswordToken {
+	User user
 	String token
-	
 }

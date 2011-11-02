@@ -55,7 +55,7 @@ class LanguageUtils {
 	
 	static String getText(Translation translation) {
 		def text = translation?.get(getCurrentLanguage())
-		if (text == null || text.trim().equals("")) text = translation?.get(getFallbackLanguage())
+		if (text == null || text.trim().equals("") || Utils.stripHtml(text, null).trim().equals("")) text = translation?.get(getFallbackLanguage())
 		return text;
 	}
 	

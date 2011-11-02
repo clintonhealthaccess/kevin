@@ -7,7 +7,7 @@
 	<body>
 		<h3 class="subnav center"><g:message code="login.header.label"/></h3>
 		<g:form action="signIn" class="nice-form">
-			<input type="hidden" name="targetUri" value="${targetUri}" />
+			<input type="hidden" name="targetURI" value="${targetURI}" />
     
 			<table class="listing login">
 				<tbody>

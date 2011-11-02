@@ -1,3 +1,4 @@
+package org.chai.kevin.security
 import org.apache.shiro.authc.AccountException
 import org.apache.shiro.authc.IncorrectCredentialsException
 import org.apache.shiro.authc.UnknownAccountException
@@ -30,7 +31,7 @@ class DbRealm {
         }
 
         log.info "Found user '${user.username}' in DB"
-
+		
         // Now check the user's password against the hashed value stored
         // in the database.
         def account = new SimpleAccount(username, user.passwordHash, "DbRealm")
@@ -38,6 +39,16 @@ class DbRealm {
             log.info "Invalid password (DB realm)"
             throw new IncorrectCredentialsException("Invalid password for user '${username}'")
         }
+		
+		// Now check if the account is confirmed and active
+		if (!user.confirmed) {
+			log.info "User ${user.username} tried to login but his account has not been confirmed yet"
+			throw new UnconfirmedAccountException("This account hasn't been confirmed yet.")
+		}
+		if (!user.active) {
+			log.info "User ${user.username} tried to login but his account is inactive"
+			throw new InactiveAccountException("This account hasn't been activated yet.")
+		}
 
         return account
     }
@@ -71,7 +82,7 @@ class DbRealm {
         // First find all the permissions that the user has that match
         // the required permission's type and project code.
         def user = User.findByUsername(principal)
-		if (user == null) return false;
+		if (user == null || !user.active || !user.confirmed) return false;
 		
         def permissions = user.permissions
 

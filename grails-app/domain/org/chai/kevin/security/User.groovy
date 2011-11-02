@@ -4,10 +4,15 @@ import org.chai.kevin.util.Utils;
 
 class User {
 	
+	String email
     String username
-    String passwordHash
-	String permissionString
-	    
+    String passwordHash = ''
+	String permissionString = ''
+	Boolean confirmed = false
+	Boolean active = false
+	
+	String firstname, lastname
+	
     static hasMany = [ roles: Role ]
 
 	def getPermissions() {
@@ -24,7 +29,14 @@ class User {
 		this.permissionString = Utils.unsplit(permissions)
 	}
 	
+	def canActivate() {
+		return confirmed == true && active == false
+	}
+	
     static constraints = {
+		email(email:true, unique: true, nullable: true)
         username(nullable: false, blank: false, unique: true)
+		firstname(nullable: true)
+		lastname(nullable: true)
     }
 }
