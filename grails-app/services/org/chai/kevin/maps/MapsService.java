@@ -59,7 +59,7 @@ public class MapsService {
 
 		List<Polygon> polygons = new ArrayList<Polygon>();
 		organisationService.loadParent(organisation);
-		organisationService.getLevel(organisation);
+		organisationService.loadLevel(organisation);
 		
 		List<OrganisationUnitLevel> levels = organisationService.getAllLevels();
 		levels.remove(0);
@@ -69,7 +69,7 @@ public class MapsService {
 		}
 		
 		if (level == null) {
-			List<OrganisationUnitLevel> childLevels = organisationService.getChildren(organisationService.getLevel(organisation));
+			List<OrganisationUnitLevel> childLevels = organisationService.getChildren(organisationService.loadLevel(organisation));
 			if (levels.size() > 0) level = childLevels.get(0).getLevel();
 			else level = levels.get(0).getLevel();
 		}
@@ -83,7 +83,7 @@ public class MapsService {
 		if (target == null) return new Maps(period, target, organisation, level, polygons, levels);
 		
 		for (Organisation child : organisationService.getChildrenOfLevel(organisation, level)) {
-			organisationService.getLevel(child);
+			organisationService.loadLevel(child);
 			
 			Double value = null;
 			if (target.getType() == MapsTargetType.AGGREGATION) {

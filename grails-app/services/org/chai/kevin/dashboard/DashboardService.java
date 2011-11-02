@@ -91,10 +91,10 @@ public class DashboardService {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		organisationService.loadParent(organisation, getSkipLevelArray());
 		organisationService.loadGroup(organisation);
-		organisationService.getLevel(organisation);
+		organisationService.loadLevel(organisation);
 		
 		ExplanationCalculator calculator = createExplanationCalculator();
-		return entry.getExplanation(calculator, organisation, period, organisationService.getFacilityLevel() == organisationService.getLevel(organisation));
+		return entry.getExplanation(calculator, organisation, period, organisationService.getFacilityLevel() == organisationService.loadLevel(organisation));
 	}
 	
 	private ExplanationCalculator createExplanationCalculator() {
@@ -122,7 +122,7 @@ public class DashboardService {
 		for (Organisation organisation : organisations) {
 			Map<DashboardEntry, DashboardPercentage> organisationMap = new HashMap<DashboardEntry, DashboardPercentage>();
 			for (DashboardObjectiveEntry objectiveEntry : objectiveEntries) {
-				DashboardPercentage percentage = objectiveEntry.getEntry().getValue(calculator, organisation, period, organisationService.getFacilityLevel() == organisationService.getLevel(organisation));
+				DashboardPercentage percentage = objectiveEntry.getEntry().getValue(calculator, organisation, period, organisationService.getFacilityLevel() == organisationService.loadLevel(organisation));
 				organisationMap.put(objectiveEntry.getEntry(), percentage);
 			}
 			values.put(organisation, organisationMap);

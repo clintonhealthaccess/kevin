@@ -273,7 +273,7 @@ public class ExpressionService {
 			status = Status.MISSING_DATA_ELEMENT;
 		}
 		else {
-			if (!isAggregatable(datas.values()) && organisationService.getLevel(organisation) != organisationService.getFacilityLevel()) {
+			if (!isAggregatable(datas.values()) && organisationService.loadLevel(organisation) != organisationService.getFacilityLevel()) {
 				status = Status.NOT_AGGREGATABLE;
 				value = Value.NULL;
 			}
@@ -344,7 +344,7 @@ public class ExpressionService {
 				values.put(organisation, valuesForOrganisation);
 			}
 			
-			if (!dataElement.isAggregatable() || organisationService.getLevel(organisation) == organisationService.getFacilityLevel()) {
+			if (!dataElement.isAggregatable() || organisationService.loadLevel(organisation) == organisationService.getFacilityLevel()) {
 				result = valueService.getValue(dataElement, organisation.getOrganisationUnit(), period);
 			}
 			else {

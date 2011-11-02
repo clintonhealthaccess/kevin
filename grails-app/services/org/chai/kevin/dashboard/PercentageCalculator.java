@@ -91,7 +91,7 @@ public class PercentageCalculator {
 	protected Map<DashboardObjectiveEntry, DashboardPercentage> getValues(DashboardObjective objective, Organisation organisation, Period period){
 		Map<DashboardObjectiveEntry, DashboardPercentage> result = new HashMap<DashboardObjectiveEntry, DashboardPercentage>();
 		for (DashboardObjectiveEntry child : objective.getObjectiveEntries()) {
-			DashboardPercentage childPercentage = child.getEntry().getValue(this, organisation, period, organisationService.getFacilityLevel() == organisationService.getLevel(organisation));
+			DashboardPercentage childPercentage = child.getEntry().getValue(this, organisation, period, organisationService.getFacilityLevel() == organisationService.loadLevel(organisation));
 			result.put(child, childPercentage);
 		}
 		return result;
@@ -103,7 +103,7 @@ public class PercentageCalculator {
 		boolean hasMissingExpression = false;
 		boolean hasMissingValue = false;
 		for (DashboardObjectiveEntry child : objective.getObjectiveEntries()) {
-			DashboardPercentage childPercentage = child.getEntry().getValue(this, organisation, period, organisationService.getFacilityLevel() == organisationService.getLevel(organisation));
+			DashboardPercentage childPercentage = child.getEntry().getValue(this, organisation, period, organisationService.getFacilityLevel() == organisationService.loadLevel(organisation));
 			if (childPercentage == null) {
 				if (log.isErrorEnabled()) log.error("found null percentage, objective: "+child.getEntry()+", organisation: "+organisation.getOrganisationUnit()+", period: "+period);
 				return null;

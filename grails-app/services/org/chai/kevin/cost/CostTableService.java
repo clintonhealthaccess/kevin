@@ -68,7 +68,7 @@ public class CostTableService {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
 		for (Organisation child : organisation.getChildren()) {
-			if (	organisationService.getLevel(child) != organisationService.getFacilityLevel()
+			if (	organisationService.loadLevel(child) != organisationService.getFacilityLevel()
 					|| 
 					appliesToOrganisation(target, child, collection)
 			) {
@@ -94,7 +94,7 @@ public class CostTableService {
 	private Map<Integer, Cost> getCost(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
-		if (organisationService.getLevel(organisation) == organisationService.getFacilityLevel()) {
+		if (organisationService.loadLevel(organisation) == organisationService.getFacilityLevel()) {
 			return getCostForLeafOrganisation(target, organisation, period, collection);
 		}
 		else {

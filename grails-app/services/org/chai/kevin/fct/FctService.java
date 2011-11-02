@@ -81,7 +81,7 @@ public class FctService {
 		}
 		
 		organisationService.loadParent(organisation);
-		organisationService.getLevel(organisation);
+		organisationService.loadLevel(organisation);
 		
 		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());				
 		
@@ -94,7 +94,7 @@ public class FctService {
 		
 		for (Organisation child : organisations) {
 			
-			organisationService.getLevel(child);
+			organisationService.loadLevel(child);
 			organisationService.loadGroup(child);
 			
 			OrganisationUnitGroup orgFacilityType = child.getOrganisationUnitGroup();
@@ -136,7 +136,7 @@ public class FctService {
 		//add "total" organisation
 		organisations.add(0, organisation);
 		organisationService.loadParent(organisation);
-		organisationService.getLevel(organisation);
+		organisationService.loadLevel(organisation);
 		Organisation parentOrg = organisationService.getParentOfLevel(organisation, organisation.getLevel()-1);
 		if(parentOrg == null){
 			Organisation rootOrg = organisationService.getRootOrganisation();
@@ -151,7 +151,7 @@ public class FctService {
 			if(org == organisation) continue;
 			
 			organisationService.loadParent(org);
-			organisationService.getLevel(org);
+			organisationService.loadLevel(org);
 			parentOrg = organisationService.getParentOfLevel(org, org.getLevel()-1);			
 			
 			if(!organisationMap.containsKey(parentOrg))

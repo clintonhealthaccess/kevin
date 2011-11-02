@@ -115,7 +115,7 @@ public class OrganisationService {
 		return result;
 	}
 	
-	public int getLevel(Organisation organisation) {
+	public int loadLevel(Organisation organisation) {
 		if (organisation.getLevel() != 0) return organisation.getLevel();
 		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation.getOrganisationUnit());
 		organisation.setLevel(level);
@@ -182,7 +182,7 @@ public class OrganisationService {
 	} 
 	
 	public void loadUntilLevel(Organisation organisation, int level, Integer... skipLevels) {
-		getLevel(organisation);
+		loadLevel(organisation);
 		if (organisation.getLevel() < level) {
 			loadChildren(organisation, skipLevels);
 			for (Organisation child : organisation.getChildren()) {
@@ -218,7 +218,7 @@ public class OrganisationService {
 		Organisation tmp = organisation;
 		this.loadParent(tmp);
 		while (tmp.getParent() != null) {
-			this.getLevel(tmp.getParent());
+			this.loadLevel(tmp.getParent());
 			if (tmp.getParent().getLevel().intValue() == level.intValue())
 				return tmp.getParent();
 			tmp = tmp.getParent();
