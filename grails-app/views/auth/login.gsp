@@ -16,7 +16,7 @@
 					<tr><td><label class="login-label"><g:message code="login.password.label"/></label></td></tr>
 					<tr><td><input class="login-field" type="password" name="password" value="" /></td></tr>
 					<tr><td><g:checkBox name="rememberMe" value="${rememberMe}" /> <label class="login-label"><g:message code="login.rememberme.label"/></label></td></tr>
-					<tr><td><ul><li><input type="submit" value="${message(code:'login.signin.label')}" /></li><li><span class="login-label"><a href="${createLink(controller:'auth', action:'forgotPassword')}">Forgot password?</a></span></li></td></tr>
+					<tr><td><ul><li><input type="submit" value="${message(code:'login.signin.label')}" /></li><li><span class="login-label"><a href="${createLink(controller:'auth', action:'forgotPassword')}"><g:message code="login.forgot.password.label"/></a></span></li></td></tr>
 				</tbody>
 			</table>
 		</g:form>

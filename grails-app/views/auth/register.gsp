@@ -34,14 +34,14 @@
 						</td>
 					</tr>
 					
-					<tr><td><label class="login-label"><g:message code="new.password.password.label" default="Password"/></label></td></tr>
+					<tr><td><label class="login-label"><g:message code="register.password.label" default="Password"/></label></td></tr>
 					<tr>
 						<td>
 							<input class="login-field" type="password" name="password" value="" />
 							<div class="error-list"><g:renderErrors bean="${register}" field="password" /></div>
 						</td>
 					</tr>
-					<tr><td><label class="login-label"><g:message code="new.password.repeat.label" default="Repeat password"/></label></td></tr>
+					<tr><td><label class="login-label"><g:message code="register.repeat.label" default="Repeat password"/></label></td></tr>
 					<tr>
 						<td>
 							<input class="login-field" type="password" name="repeat" value="" />

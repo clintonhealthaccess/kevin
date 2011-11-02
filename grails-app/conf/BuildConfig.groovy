@@ -122,6 +122,7 @@ grails.project.dependency.resolution = {
 	plugins {
 		compile ":hibernate:$grailsVersion"
 		compile ":jquery:1.6.1.1"
+		
 		//GPRESOURCES-102
 		compile ":resources:1.0.2"
 		compile ":shiro:1.1.5"

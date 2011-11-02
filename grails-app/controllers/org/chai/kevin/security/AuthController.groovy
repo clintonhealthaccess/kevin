@@ -54,11 +54,11 @@ class AuthController {
 			sendMail {
 				to user.email
 				from getFromEmail()
-				subject message(code:'register.confirm.email.subject', default:'DHSST - your account has been created, please confirm your email address.')
-				body message(code:'register.confirm.email.body', args:[user.firstname, url], default:'Dear {0},\n\nPlease confirm your email address by following this link: {1}\nSomeone will then review your account and activate it.\n\nYour DHSST Team.')
+				subject message(code:'register.account.email.subject', default:'DHSST - your account has been created, please confirm your email address.')
+				body message(code:'register.account.email.body', args:[user.firstname, url], default:'Dear {0},\n\nPlease confirm your email address by following this link: {1}\nSomeone will then review your account and activate it.\n\nYour DHSST Team.')
 			}
 			
-			flash.message = message(code:'register.request.sent', default:'Thanks for registering, you should receive a confirmation email.')
+			flash.message = message(code:'register.account.successful', default:'Thanks for registering, you should receive a confirmation email.')
 			redirect(action: "login")
 		}
 	}
@@ -215,7 +215,7 @@ class AuthController {
 				subject message(code:'forgot.password.email.subject', default: "DHSST - Lost password?")
 				body message(code:'forgot.password.email.body', args:[user.firstname, url], default: "Dear {0}\n\nTo set a new password, please go to {1}.\n\nYour DHSST Team.")
 			}
-			flash.message = message(code:'forgot.password.email.sent', default:'An email has been sent with the instructions.')
+			flash.message = message(code:'forgot.password.successful', default:'An email has been sent with the instructions.')
 			redirect(action:'login')
 		}
 	}
@@ -283,7 +283,7 @@ class RetrievePasswordCommand {
 	String email
 	
 	static constraints = {
-		email(blank:false, email:true, validator: {val, obj ->
+		email(blank:false, validator: {val, obj ->
 			return User.findByEmail(val) != null
 		})	
 	}
@@ -295,7 +295,7 @@ class NewPasswordCommand {
 
 	static constraints = {
 		password(blank: false, minSize: 4)
-		repeat(blank: false, minSize: 4, validator: {val, obj ->
+		repeat(validator: {val, obj ->
 			val == obj.password
 		})
 	}
