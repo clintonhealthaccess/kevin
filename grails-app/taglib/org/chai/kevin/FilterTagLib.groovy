@@ -63,7 +63,7 @@ class FilterTagLib {
 					.getOrganisationUnitLevel((Integer) params.get("level"));
 
 		if (organisation != null) {
-			organisationService.getLevel(organisation);
+			organisationService.loadLevel(organisation);
 
 			if (orgUnitLevel != null) {
 
