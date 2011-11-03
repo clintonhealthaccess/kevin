@@ -89,7 +89,11 @@ public class MapsService {
 			if (target.getType() == MapsTargetType.AGGREGATION) {
 				if (log.isDebugEnabled()) log.debug("getting values for AGGREGATION map with expression: "+target.getExpression());
 				ExpressionValue expressionValue = valueService.getValue(target.getExpression(), child.getOrganisationUnit(), period);
-				if (expressionValue != null) value = expressionValue.getValue().getNumberValue().doubleValue();
+				if (expressionValue != null) {
+					if (!expressionValue.getValue().isNull()) {
+						value = expressionValue.getValue().getNumberValue().doubleValue();
+					}
+				}
 
 				if (value != null) {
 					if (target.getMaxValue() != null) {

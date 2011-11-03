@@ -39,8 +39,8 @@ class AuthController {
 			render(view:'register', model:[register: cmd])
 		}
 		else {
-			def user = new User(username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname).save()
-			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user).save()
+			def user = new User(username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation).save()
+			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
 			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])
 			
 			def contactEmail = ConfigurationHolder.config.site.contact.email;
@@ -51,6 +51,7 @@ class AuthController {
 				body "Registration received from ${user.email}, first name: ${user.firstname}, last name: ${user.lastname}"
 			}
 			
+			if (log.isDebugEnabled()) log.debug("sending email to: ${user.email}, token: ${token.token}, url: ${url}")
 			sendMail {
 				to user.email
 				from getFromEmail()
@@ -69,28 +70,35 @@ class AuthController {
 		RegistrationToken token = null
 		if (params.token != null) token = RegistrationToken.findByToken(params.token)
 		if (token != null) {
-			def user = token.user
-			user.confirmed = true
-			user.save()
-			token.delete()
-			
-			def contactEmail = ConfigurationHolder.config.site.contact.email;
-			sendMail {
-				to contactEmail
-				from getFromEmail()
-				subject "Email verified from ${user.email}."
-				body "Email verified from ${user.email}, please review and activate."
+			if (!token.used) {
+				def user = token.user
+				user.confirmed = true
+				user.save()
+				token.used = true
+				token.save()
+				
+				def contactEmail = ConfigurationHolder.config.site.contact.email;
+				sendMail {
+					to contactEmail
+					from getFromEmail()
+					subject "Email verified from ${user.email}."
+					body "Email verified from ${user.email}, please review and activate."
+				}
+				
+				sendMail {
+					to user.email
+					from getFromEmail()
+					subject message(code:'confirm.account.email.subject', default:'DHSST - your account has been verified.')
+					body message(code:'confirm.account.email.body', args:[user.firstname], default:'Dear {0},\n\nThank you, your email has been verified, someone will review your account and activate it.\nWe will let you know when it is ready.\n\nYour DHSST Team.')
+				}
+				
+				flash.message = message(code:'confirm.account.successful', default:'Your email has been verified. We will review your account and let you know when it is ready.')
+				redirect(action: 'login')
 			}
-			
-			sendMail {
-				to user.email
-				from getFromEmail()
-				subject message(code:'confirm.account.email.subject', default:'DHSST - your account has been verified.')
-				body message(code:'confirm.account.email.body', args:[user.firstname], default:'Dear {0},\n\nThank you, your email has been verified, someone will review your account and activate it.\nWe will let you know when it is ready.\n\nYour DHSST Team.')
+			else {
+				flash.message = message(code:'confirm.account.used.token', default:'Your email has already been verified, please wait for us to activate your account.')
+				redirect(action: 'login')
 			}
-			
-			flash.message = message(code:'confirm.account.successful', default:'Your email has been verified. We will review your account and let you know when it is ready.')
-			redirect(action: 'login')
 		}
 		else {
 			response.sendError(404)
@@ -105,6 +113,9 @@ class AuthController {
 			if (user.confirmed) { 
 				user.active = true
 				user.save()
+				
+				RegistrationToken token = RegistrationToken.findByUser(user)
+				if (token != null) token.delete()
 				
 				def url = createLink(absolute: true, controller:'auth', action:'login', params:[username:user.username])
 				
@@ -132,6 +143,8 @@ class AuthController {
 	}
 
     def signIn = {
+		// TODO fix this with a command object
+		// and record statistics
         def authToken = new UsernamePasswordToken(params.username, params.password as String)
 
         // Support for "remember me"
@@ -304,11 +317,13 @@ class NewPasswordCommand {
 class RegisterCommand extends NewPasswordCommand {
 	String firstname
 	String lastname
+	String organisation
 	String email
 	
 	static constraints = {
 		firstname(nullable:false, blank:false)
 		lastname(nullable:false, blank:false)
+		organisation(nullable:false, blank:false)
 		email(blank:false, email:true, validator: {val, obj ->
 			return User.findByEmail(val) == null && User.findByUsername(val) == null
 		})

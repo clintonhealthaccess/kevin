@@ -39,8 +39,9 @@ class AuthControllerSpec extends IntegrationTests {
 		
 		when:
 		authController.params.email = 'test@test.com'
-		authController.params.firstname = 'test'
-		authController.params.lastname = 'test'
+		authController.params.firstname = 'first'
+		authController.params.lastname = 'last'
+		authController.params.organisation = 'org'
 		authController.params.password = '1234'
 		authController.params.repeat = '1234'
 		authController.sendRegistration()
@@ -49,8 +50,9 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.response.redirectedUrl == '/auth/login'
 		RegistrationToken.count() == 1
 		User.count() == 1
-		User.findByEmail('test@test.com').firstname == 'test'
-		User.findByEmail('test@test.com').lastname == 'test'
+		User.findByEmail('test@test.com').firstname == 'first'
+		User.findByEmail('test@test.com').lastname == 'last'
+		User.findByEmail('test@test.com').organisation == 'org'
 		User.findByEmail('test@test.com').passwordHash == new Sha256Hash('1234').toString()
 	}
 	
@@ -63,6 +65,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.params.email = 'test@test.com'
 		authController.params.firstname = 'test'
 		authController.params.lastname = 'test'
+		authController.params.organisation = 'test'
 		authController.params.password = '1234'
 		authController.params.repeat = '1234'
 		authController.sendRegistration()
@@ -81,6 +84,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.params.email = 'test@test.com'
 		authController.params.firstname = 'test'
 		authController.params.lastname = 'test'
+		authController.params.organisation = 'test'
 		authController.params.password = '1234'
 		authController.params.repeat = '1234'
 		authController.sendRegistration()
@@ -105,7 +109,7 @@ class AuthControllerSpec extends IntegrationTests {
 		setup:
 		authController = new AuthController()
 		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '').save(failOnError: true)
-		new RegistrationToken(token: '123', user:user).save(failOnError: true)
+		new RegistrationToken(token: '123', user: user, used: false).save(failOnError: true)
 		
 		when:
 		authController.params.token = '123'
@@ -114,7 +118,25 @@ class AuthControllerSpec extends IntegrationTests {
 		then:
 		authController.response.redirectedUrl == '/auth/login'
 		User.findByEmail('test@test.com').confirmed == true
-		RegistrationToken.count() == 0
+		RegistrationToken.count() == 1
+		RegistrationToken.list()[0].used == true
+	}
+	
+	def "confirm account with used token does not change user state"() {
+		setup:
+		authController = new AuthController()
+		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '').save(failOnError: true)
+		new RegistrationToken(token: '123', user:user, used:true).save(failOnError: true)
+		
+		when:
+		authController.params.token = '123'
+		authController.confirmRegistration()
+		
+		then:
+		authController.response.redirectedUrl == '/auth/login'
+		User.findByEmail('test@test.com').confirmed == false
+		RegistrationToken.count() == 1
+		RegistrationToken.list()[0].used == true
 	}
 	
 	def "activate account with unconfirmed user"() {
@@ -145,6 +167,24 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.response.redirectedUrl == '/user/list'
 		User.findByEmail('test@test.com').active == true 
 	}
+	
+	def "activate account with confirmed user deletes registration token"() {
+		setup:
+		authController = new AuthController()
+		def user = new User(username: 'not_important', email: 'test@test.com', passwordHash: '', active: false, confirmed: true).save(failOnError: true)
+		new RegistrationToken(token: '123', user:user, used:true).save(failOnError: true)
+		
+		when:
+		authController.params.id = user.id
+		authController.params.targetURI = '/user/list'
+		authController.activate()
+		
+		then:
+		authController.response.redirectedUrl == '/user/list'
+		User.findByEmail('test@test.com').active == true
+		RegistrationToken.count() == 0
+	}
+	
 	
 	def "retrieve password with wrong email address"() {
 		setup:

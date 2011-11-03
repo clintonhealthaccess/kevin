@@ -4,5 +4,6 @@ class RegistrationToken {
 	
 	User user
 	String token
+	Boolean used = false
 	
 }

@@ -10,6 +10,7 @@
 			<g:input name="username" label="Username" bean="${user}" field="username"/>
 			<g:input name="firstname" label="First name" bean="${user}" field="firstname"/>
 			<g:input name="lastname" label="Last name" bean="${user}" field="lastname"/>
+			<g:input name="organisation" label="Organisation" bean="${user}" field="organisation"/>
 			<g:input name="email" label="Email" bean="${user}" field="email"/>
 			<g:input name="permissionString" label="Permission" bean="${user}" field="permissionString"/>
 			

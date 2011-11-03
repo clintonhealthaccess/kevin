@@ -20,7 +20,7 @@
 
 	<div id="header">
 		<div class="wrapper">
-		    <h1 id="logo">DHSST</h1>
+		    <h1 id="logo"><a href="${createLink(controller:'home', action:'index')}">DHSST</a></h1>
 		    
 			<g:if test="${flash.message}">
 				<!-- TODO add error class if it's an error -->

@@ -13,7 +13,7 @@ class SecurityFilters {
 				// Ignore direct views (e.g. the default main index page).
 				if (!controllerName) return true
 
-				// Ignore home controller, except when the esur is logged in
+				// Ignore home controller, except when the user is logged in
 				if (controllerName == 'home' && (actionName != 'index' || SecurityUtils.subject.principal != null)) return true
 				
 				// deny access to survey not corresponding to user

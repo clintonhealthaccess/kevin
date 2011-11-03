@@ -11,7 +11,7 @@ class User {
 	Boolean confirmed = false
 	Boolean active = false
 	
-	String firstname, lastname
+	String firstname, lastname, organisation
 	
     static hasMany = [ roles: Role ]
 
@@ -38,5 +38,6 @@ class User {
         username(nullable: false, blank: false, unique: true)
 		firstname(nullable: true)
 		lastname(nullable: true)
+		organisation(nullable: true)
     }
 }

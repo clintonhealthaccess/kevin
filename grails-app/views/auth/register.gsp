@@ -26,6 +26,14 @@
 						</td>
 					</tr>
 					
+					<tr><td><label class="login-label"><g:message code="register.organisation.label" default="Organisation"/></label></td></tr>
+					<tr>
+						<td>
+							<input class="login-field" type="text" name="organisation" value="${register?.organisation}" />
+							<div class="error-list"><g:renderErrors bean="${register}" field="organisation" /></div>
+						</td>
+					</tr>
+					
 					<tr><td><label class="login-label"><g:message code="register.email.label"/></label></td></tr>
 					<tr>
 						<td>
