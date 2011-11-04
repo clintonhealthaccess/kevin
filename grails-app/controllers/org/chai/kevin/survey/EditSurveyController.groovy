@@ -78,7 +78,7 @@ class EditSurveyController extends AbstractController {
 		
 		if (organisation == null) valid = false
 		else {
-			int level = organisationService.getLevel(organisation);
+			int level = organisationService.loadLevel(organisation);
 			if (level != organisationService.getFacilityLevel()) valid = false
 	
 			organisationService.loadGroup(organisation)
