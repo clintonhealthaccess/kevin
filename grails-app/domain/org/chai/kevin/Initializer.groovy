@@ -1638,12 +1638,14 @@ class Initializer {
 			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedSurveyElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
 			def skipRule3 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==2", skippedSurveyQuestions: [checkBoxQ]);
 			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementPatientQ1.id+"==1000", skippedSurveyQuestions: [tableQ], skippedSurveyElements: [(surveyElementChecboxQ1): ""]);
-
+			def skipRule5 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementServiceQ6.id+"[_].key0.key01=='value1'", skippedSurveyQuestions: [], skippedSurveyElements: [(surveyElementServiceQ6): "[_].key0.key02"]);
+			
 			surveyOne.addSkipRule(skipRule1)
 			surveyOne.addSkipRule(skipRule2)
 			surveyOne.addSkipRule(skipRule3)
 			surveyOne.addSkipRule(skipRule4)
-
+			surveyOne.addSkipRule(skipRule5)
+			
 			surveyOne.save()
 
 		}
