@@ -14,7 +14,7 @@
 
 		<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
 			<option value=""><g:message code="survey.element.enum.select.label"/></option>
-			<g:each in="${enume?.enumOptions}" var="option">
+			<g:each in="${enume?.activeEnumOptions}" var="option">
 				<!-- TODO fix this, there should be a flag in the survey, not on the element directly -->
 				<g:if test="${!option.inactive}">
 					<option value="${option.value}"  ${option?.value==value?.enumValue ? 'selected':''}>
@@ -26,7 +26,7 @@
 	</g:if>
 	<g:else>
 	<label>-- <g:message code="survey.print.selectonlyoneoption.label" default="Select only one response"/> --</label>
-		<g:each in="${enume?.enumOptions}" var="option">
+		<g:each in="${enume?.activeEnumOptions}" var="option">
 			<div>
 				<input class="input" type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''} disabled="disabled"/>
 				<span><g:i18n field="${option.names}" /></span>

@@ -91,6 +91,15 @@ public class Enum {
 		enumOption.setEnume(this);
 		Collections.sort(enumOptions);
 	}
+	
+	@Transient
+	public List<EnumOption> getActiveEnumOptions() {
+		List<EnumOption> result = new ArrayList<EnumOption>();
+		for (EnumOption enumOption : getEnumOptions()) {
+			if (!enumOption.getInactive()) result.add(enumOption);
+		}
+		return result;
+	}
 
 	@Embedded
 	@AttributeOverrides({

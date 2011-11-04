@@ -225,12 +225,12 @@
 		<link>
 			<name>.plugin-src-springcache-1.3.1-grails-app-services</name>
 			<type>2</type>
-			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/springcache-1.3.1/grails-app/services</location>
+			<location>GRAILS_WORKDIR/projects/kevin/plugins/springcache-1.3.1/grails-app/services</location>
 		</link>
 		<link>
 			<name>.plugin-src-springcache-1.3.1-src-groovy</name>
 			<type>2</type>
-			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/springcache-1.3.1/src/groovy</location>
+			<location>GRAILS_WORKDIR/projects/kevin/plugins/springcache-1.3.1/src/groovy</location>
 		</link>
 		<link>
 			<name>.plugin-src-svn-1.0.0.M1-grails-app-conf</name>
