@@ -96,7 +96,7 @@ public class Enum {
 	public List<EnumOption> getActiveEnumOptions() {
 		List<EnumOption> result = new ArrayList<EnumOption>();
 		for (EnumOption enumOption : getEnumOptions()) {
-			if (!enumOption.getInactive()) result.add(enumOption);
+			if (enumOption.getInactive() == null || !enumOption.getInactive()) result.add(enumOption);
 		}
 		return result;
 	}
