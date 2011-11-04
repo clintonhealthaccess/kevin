@@ -48,6 +48,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Orderable;
+import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
 
 import org.chai.kevin.util.Utils;
@@ -57,10 +59,10 @@ import org.hibernate.annotations.CascadeType;
 @SuppressWarnings("serial")
 @Entity(name = "SurveyCheckboxOption")
 @Table(name = "dhsst_survey_checkbox_option")
-public class SurveyCheckboxOption extends SurveyTranslatable {
+public class SurveyCheckboxOption extends Orderable<Ordering> {
 
 	private Long id;
-	private Integer order;
+	private Ordering order;
 	private String groupUuidString;
 	private SurveyCheckboxQuestion question;
 	private SurveyElement surveyElement;

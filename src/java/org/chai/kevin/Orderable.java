@@ -59,7 +59,7 @@ public abstract class Orderable<T extends Comparable<T>> implements Comparable<O
 		}
 	}
 	
-	private <T> int compare(Comparable<T> o1, T o2) {
+	private static <S> int compare(Comparable<S> o1, S o2) {
 		if (o1 == null && o2 == null) return 0;
 		else if (o1 == null) return 1;
 		else if (o2 == null) return -1;

@@ -9,7 +9,6 @@
 
 	<g:form url="[controller:'section', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${section}" value="${section?.names}" label="Name" field="names" />
-		<g:i18nRichTextarea name="descriptions" bean="${section}" value="${section?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
 			
 		<div class="row">
 			<div class="${hasErrors(bean:section, field:'objective', 'errors')}">

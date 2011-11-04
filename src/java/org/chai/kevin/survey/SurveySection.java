@@ -54,6 +54,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Orderable;
+import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
 
 import org.chai.kevin.util.Utils;
@@ -65,15 +67,14 @@ import org.apache.commons.collections.*;
 @SuppressWarnings("serial")
 @Entity(name = "SurveySection")
 @Table(name = "dhsst_survey_section")
-public class SurveySection extends SurveyTranslatable {
+public class SurveySection extends Orderable<Ordering> {
 
 	private Long id;
-	private Integer order;
+	private Ordering order;
 	private SurveyObjective objective;
 	private String groupUuidString;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
-	protected Translation names = new Translation();
-	protected Translation descriptions = new Translation();
+	private Translation names = new Translation();
 
 	@Id
 	@GeneratedValue
@@ -137,6 +138,16 @@ public class SurveySection extends SurveyTranslatable {
 		question.setSection(this);
 		questions.add(question);
 		Collections.sort(questions);
+	}
+
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
 	}
 
 	@Transient
@@ -204,7 +215,6 @@ public class SurveySection extends SurveyTranslatable {
 
 	protected void deepCopy(SurveySection copy, SurveyCloner surveyCloner) {
 		copy.setNames(new Translation(getNames()));
-		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setGroupUuidString(getGroupUuidString());
 		copy.setObjective(surveyCloner.getObjective(getObjective()));
 		copy.setOrder(getOrder());
@@ -213,24 +223,4 @@ public class SurveySection extends SurveyTranslatable {
 		}
 	}
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
-	public Translation getNames() {
-		return names;
-	}
-
-	public void setNames(Translation names) {
-		this.names = names;
-	}
-
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
-	public Translation getDescriptions() {
-		return descriptions;
-	}
-
-	public void setDescriptions(Translation descriptions) {
-		this.descriptions = descriptions;
-	}
-	
 }

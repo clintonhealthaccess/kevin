@@ -72,8 +72,7 @@ public class SurveyObjective extends SurveyTranslatable {
 	private List<SurveySection> sections = new ArrayList<SurveySection>();
 //	private SurveyObjective dependency;
 	private String groupUuidString;
-	protected Translation names = new Translation();
-	protected Translation descriptions = new Translation();
+	private Translation names = new Translation();
 
 	@Id
 	@GeneratedValue
@@ -137,6 +136,17 @@ public class SurveyObjective extends SurveyTranslatable {
 	}
 	public void setGroupUuids(Set<String> groupUuids) {
 		this.groupUuidString = Utils.unsplit(groupUuids);
+	}
+	
+
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
 	}
 	
 //	@ManyToOne(targetEntity = SurveyObjective.class, optional = true)
@@ -211,7 +221,6 @@ public class SurveyObjective extends SurveyTranslatable {
 	@Transient
 	protected void deepCopy(SurveyObjective copy, SurveyCloner cloner) {
 		copy.setNames(new Translation(getNames()));
-		copy.setDescriptions(new Translation(getDescriptions()));
 //		if (getDependency() != null) copy.setDependency(cloner.getObjective(getDependency()));
 		copy.setGroupUuidString(getGroupUuidString());
 		copy.setOrder(getOrder());
@@ -221,24 +230,5 @@ public class SurveyObjective extends SurveyTranslatable {
 		}
 	}
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
-	public Translation getNames() {
-		return names;
-	}
-
-	public void setNames(Translation names) {
-		this.names = names;
-	}
-
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
-	public Translation getDescriptions() {
-		return descriptions;
-	}
-
-	public void setDescriptions(Translation descriptions) {
-		this.descriptions = descriptions;
-	}
 
 }

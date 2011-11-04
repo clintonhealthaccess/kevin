@@ -9,7 +9,6 @@
 
 	<g:form url="[controller:'objective', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${objective}" value="${objective?.names}" label="Name" field="names" />
-	   	<g:i18nRichTextarea name="descriptions" bean="${objective}" value="${objective?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
 		
 		<div class="row">
 			<input type="hidden" name="survey.id" value="${objective.survey.id}" />

@@ -55,6 +55,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Orderable;
+import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
 
 import org.chai.kevin.util.Utils;
@@ -64,15 +66,14 @@ import org.hibernate.annotations.CascadeType;
 @SuppressWarnings("serial")
 @Entity(name = "SurveyTableRow")
 @Table(name = "dhsst_survey_table_row")
-public class SurveyTableRow extends SurveyTranslatable {
+public class SurveyTableRow extends Orderable<Ordering> {
 
 	private Long id;
 	private Integer order;
 	private String groupUuidString;
 	private SurveyTableQuestion question;
 	private Map<SurveyTableColumn, SurveyElement> surveyElements = new LinkedHashMap<SurveyTableColumn, SurveyElement>();
-	protected Translation names = new Translation();
-	protected Translation descriptions = new Translation();
+	private Translation names = new Translation();
 
 	@Id
 	@GeneratedValue
@@ -134,26 +135,7 @@ public class SurveyTableRow extends SurveyTranslatable {
 			Map<SurveyTableColumn, SurveyElement> surveyElements) {
 		this.surveyElements = surveyElements;
 	}
-
-	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable() {
-		return Utils.split(this.groupUuidString);
-	}
 	
-    @Transient
-	protected SurveyTableRow deepCopy(SurveyCloner cloner, Map<Long, SurveyTableColumn> columns) {
-    	SurveyTableRow copy = new SurveyTableRow();
-    	copy.setNames(new Translation(getNames()));
-    	copy.setDescriptions(new Translation(getDescriptions()));
-    	copy.setGroupUuidString(getGroupUuidString());
-    	copy.setOrder(getOrder());
-    	copy.setQuestion((SurveyTableQuestion)cloner.getQuestion(getQuestion()));
-    	for (Entry<SurveyTableColumn, SurveyElement> entry : getSurveyElements().entrySet()) {
-			copy.getSurveyElements().put(columns.get(entry.getKey().getId()), cloner.getElement(entry.getValue()));
-		}
-    	return copy;
-	}
-
 	@Embedded
 	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
 	public Translation getNames() {
@@ -164,14 +146,22 @@ public class SurveyTableRow extends SurveyTranslatable {
 		this.names = names;
 	}
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
-	public Translation getDescriptions() {
-		return descriptions;
+	@Transient
+	public Set<String> getOrganisationUnitGroupApplicable() {
+		return Utils.split(this.groupUuidString);
 	}
-
-	public void setDescriptions(Translation descriptions) {
-		this.descriptions = descriptions;
+	
+    @Transient
+	protected SurveyTableRow deepCopy(SurveyCloner cloner, Map<Long, SurveyTableColumn> columns) {
+    	SurveyTableRow copy = new SurveyTableRow();
+    	copy.setNames(new Translation(getNames()));
+    	copy.setGroupUuidString(getGroupUuidString());
+    	copy.setOrder(getOrder());
+    	copy.setQuestion((SurveyTableQuestion)cloner.getQuestion(getQuestion()));
+    	for (Entry<SurveyTableColumn, SurveyElement> entry : getSurveyElements().entrySet()) {
+			copy.getSurveyElements().put(columns.get(entry.getKey().getId()), cloner.getElement(entry.getValue()));
+		}
+    	return copy;
 	}
 
 }

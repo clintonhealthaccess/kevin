@@ -16,7 +16,6 @@
 		<input type="hidden" name="question.id"  value="${column.question?.id}" />
 		
 		<g:i18nRichTextarea name="names" bean="${column}" value="${column.names}" label="Option" field="names" height="150"  width="300" maxHeight="150" />
-		<input type="hidden" name="descriptions.jsonText" value=" "/>
 		
 		<g:input name="order" label="Order" bean="${column}" field="order"/>
 		

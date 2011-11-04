@@ -49,6 +49,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Orderable;
+import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
 
 import org.chai.kevin.util.Utils;
@@ -60,13 +62,13 @@ import org.hisp.dhis.period.Period;
 @SuppressWarnings("serial")
 @Entity(name="Survey")
 @Table(name="dhsst_survey")
-public class Survey extends SurveyTranslatable {
+public class Survey extends Orderable<Ordering> {
 	
 	private Long id;
-	private Integer order;
-	private boolean active = false;
+	private Ordering order;
 	private Period lastPeriod;
 	private Period period;
+	private boolean active = false;
 	private List<SurveyObjective> objectives = new ArrayList<SurveyObjective>();
 	private List<SurveySkipRule> skipRules = new ArrayList<SurveySkipRule>();
 	private Translation names = new Translation();

@@ -51,6 +51,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Orderable;
+import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
 
 import org.chai.kevin.util.Utils;
@@ -59,7 +61,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 @Entity(name = "SurveyQuestion")
 @Table(name = "dhsst_survey_question")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class SurveyQuestion extends SurveyTranslatable {
+public abstract class SurveyQuestion extends Orderable<Ordering> {
 
 	public enum QuestionType {CHECKBOX("checkboxQuestion"), TABLE("tableQuestion"), SIMPLE("simpleQuestion");
 		private String template;
@@ -75,11 +77,11 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	}
 	
 	private Long id;
-	private Integer order;
+	private Ordering order;
 	private SurveySection section;
 	private String groupUuidString;
-	protected Translation names = new Translation();
-	protected Translation descriptions = new Translation();
+	private Translation names = new Translation();
+	private Translation descriptions = new Translation();
 
 	@Id
 	@GeneratedValue
@@ -93,7 +95,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 
 	@Basic
 	@Column(name = "ordering")
-	public Integer getOrder() {
+	public Ordering getOrder() {
 		return order;
 	}
 
@@ -127,6 +129,26 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	
 	public void setGroupUuids(Set<String> groupUuids) {
 		this.groupUuidString = Utils.unsplit(groupUuids);
+	}
+	
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
 	}
 	
 	@Transient
@@ -180,24 +202,5 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		copy.setSection(surveyCloner.getSection(getSection()));
 	}
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
-	public Translation getNames() {
-		return names;
-	}
-
-	public void setNames(Translation names) {
-		this.names = names;
-	}
-
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
-	public Translation getDescriptions() {
-		return descriptions;
-	}
-
-	public void setDescriptions(Translation descriptions) {
-		this.descriptions = descriptions;
-	}
 
 }

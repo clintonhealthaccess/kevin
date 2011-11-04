@@ -3,7 +3,6 @@ import grails.util.GrailsUtil;
 import org.chai.kevin.DataService;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.RefreshValueService;
-import org.chai.kevin.TimestampListener;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.InfoService;
