@@ -14,13 +14,11 @@
 
 		<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
 			<option value=""><g:message code="survey.element.enum.select.label"/></option>
+			<!-- TODO fix this, there should be a flag in the survey, not on the element directly -->
 			<g:each in="${enume?.activeEnumOptions}" var="option">
-				<!-- TODO fix this, there should be a flag in the survey, not on the element directly -->
-				<g:if test="${!option.inactive}">
-					<option value="${option.value}"  ${option?.value==value?.enumValue ? 'selected':''}>
-						<g:i18n field="${option.names}" />
-					</option>
-				</g:if>
+				<option value="${option.value}"  ${option?.value==value?.enumValue ? 'selected':''}>
+					<g:i18n field="${option.names}" />
+				</option>
 			</g:each>
 		</select>
 	</g:if>
