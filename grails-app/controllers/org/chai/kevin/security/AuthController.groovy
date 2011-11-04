@@ -1,51 +1,150 @@
 package org.chai.kevin.security
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.authc.AuthenticationException
 import org.apache.shiro.authc.UsernamePasswordToken
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.web.util.SavedRequest
 import org.apache.shiro.web.util.WebUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.springframework.web.servlet.FlashMap;
 
 class AuthController {
+	
     def shiroSecurityManager
 
+	def getTargetURI() {
+		return params.targetURI?: "/"
+	}
+	
+	def getFromEmail() {
+		def fromEmail = ConfigurationHolder.config.site.from.email;
+		return fromEmail
+	}
+	
     def index = { redirect(action: "login", params: params) }
 
-	
 	def register = {
-		return [ ]
+		render (view:'register', model:[register: null])
 	}
-
+	
 	// this will disappear once we have a real registration mechanism
-	def requestAccess = {
-		if (params.email?.trim() != '') {
-			User user = User.findByUsername(params.email)
-			if (user == null) {
-				log.info("creating user ${params.email}")
-				new User(username: params.email, passwordHash:'', permissionString:'').save()
-			} 
+	def sendRegistration = { RegisterCommand cmd ->
+		if (log.isDebugEnabled()) log.debug("auth.sendRegistration, params:"+params)
+		
+		if (cmd.hasErrors()) {
+			if (log.isDebugEnabled()) log.debug("command has errors: "+cmd)
+
+			render(view:'register', model:[register: cmd])
 		}
-		
-		def contactEmail = ConfigurationHolder.config.site.contact.email;
-		def fromEmail = ConfigurationHolder.config.site.from.email;
-		
-		sendMail {
-			to contactEmail
-			from fromEmail
-			subject "Access request from ${params.email}"
-			body "Access request received from ${params.email}\nComments: ${params.comment}"
+		else {
+			def user = new User(username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation).save()
+			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
+			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])
+			
+			def contactEmail = ConfigurationHolder.config.site.contact.email;
+			sendMail {
+				to contactEmail
+				from getFromEmail()
+				subject "Registration received from ${user.email}"
+				body "Registration received from ${user.email}, first name: ${user.firstname}, last name: ${user.lastname}"
+			}
+			
+			if (log.isDebugEnabled()) log.debug("sending email to: ${user.email}, token: ${token.token}, url: ${url}")
+			sendMail {
+				to user.email
+				from getFromEmail()
+				subject message(code:'register.account.email.subject', default:'DHSST - your account has been created, please confirm your email address.')
+				body message(code:'register.account.email.body', args:[user.firstname, url], default:'Dear {0},\n\nPlease confirm your email address by following this link: {1}\nSomeone will then review your account and activate it.\n\nYour DHSST Team.')
+			}
+			
+			flash.message = message(code:'register.account.successful', default:'Thanks for registering, you should receive a confirmation email.')
+			redirect(action: "login")
 		}
+	}
+	
+	def confirmRegistration = {
+		if (log.isDebugEnabled()) log.debug("auth.confirmRegistration, params:"+params)
 		
-		flash.message = message(code:'register.request.sent', default:'Thanks for submitting, we will send you the credentials shortly.')
-		redirect(action: "login", params: params)
+		RegistrationToken token = null
+		if (params.token != null) token = RegistrationToken.findByToken(params.token)
+		if (token != null) {
+			if (!token.used) {
+				def user = token.user
+				user.confirmed = true
+				user.save()
+				token.used = true
+				token.save()
+				
+				def contactEmail = ConfigurationHolder.config.site.contact.email;
+				sendMail {
+					to contactEmail
+					from getFromEmail()
+					subject "Email verified from ${user.email}."
+					body "Email verified from ${user.email}, please review and activate."
+				}
+				
+				sendMail {
+					to user.email
+					from getFromEmail()
+					subject message(code:'confirm.account.email.subject', default:'DHSST - your account has been verified.')
+					body message(code:'confirm.account.email.body', args:[user.firstname], default:'Dear {0},\n\nThank you, your email has been verified, someone will review your account and activate it.\nWe will let you know when it is ready.\n\nYour DHSST Team.')
+				}
+				
+				flash.message = message(code:'confirm.account.successful', default:'Your email has been verified. We will review your account and let you know when it is ready.')
+				redirect(action: 'login')
+			}
+			else {
+				flash.message = message(code:'confirm.account.used.token', default:'Your email has already been verified, please wait for us to activate your account.')
+				redirect(action: 'login')
+			}
+		}
+		else {
+			response.sendError(404)
+		}
+	}
+	
+	def activate = {
+		if (log.isDebugEnabled()) log.debug("auth.confirmRegistration, params:"+params)
+		
+		User user = User.get(params.int('id'))
+		if (user != null) {
+			if (user.confirmed) { 
+				user.active = true
+				user.save()
+				
+				RegistrationToken token = RegistrationToken.findByUser(user)
+				if (token != null) token.delete()
+				
+				def url = createLink(absolute: true, controller:'auth', action:'login', params:[username:user.username])
+				
+				sendMail {
+					to user.email
+					from getFromEmail()
+					subject message(code:'activate.account.email.subject', default:'DHSST - your account has been activated.')
+					body message(code:'activate.account.email.body', args:[user.firstname, user.username, url], default:'Dear {0},\n\nYour email has just been activated by the DHSST team. You can now login using {1} as username and the password you set when you registered.\nOr follow this URL: {2}\n\nYour DHSST Team.')
+				}
+				
+				flash.message = message(code:'activate.account.successful', default:'The account has been activated and the user notified.')
+				redirect(uri: getTargetURI())
+			}
+			else {
+				flash.message = message(code:'activate.account.unconfirmed', default:'The account has not been confirmed. Let the user confirm its address and activate later.')
+			}
+		}
+		else {
+			response.sendError(404)
+		}
 	}
 	
 	def login = {
-		return [ username: params.username, rememberMe: (params.rememberMe != null), targetUri: params.targetUri ]
+		return [ username: params.username, rememberMe: (params.rememberMe != null), targetURI: params.targetURI ]
 	}
 
     def signIn = {
+		// TODO fix this with a command object
+		// and record statistics
         def authToken = new UsernamePasswordToken(params.username, params.password as String)
 
         // Support for "remember me"
@@ -55,13 +154,13 @@ class AuthController {
         
         // If a controller redirected to this page, redirect back
         // to it. Otherwise redirect to the root URI.
-        def targetUri = params.targetUri ?: "/"
+        def targetURI = getTargetURI()
         
         // Handle requests saved by Shiro filters.
         def savedRequest = WebUtils.getSavedRequest(request)
         if (savedRequest) {
-            targetUri = savedRequest.requestURI - request.contextPath
-            if (savedRequest.queryString) targetUri = targetUri + '?' + savedRequest.queryString
+            targetURI = savedRequest.requestURI - request.contextPath
+            if (savedRequest.queryString) targetURI = targetURI + '?' + savedRequest.queryString
         }
         
         try{
@@ -70,13 +169,13 @@ class AuthController {
             // password is incorrect.
             SecurityUtils.subject.login(authToken)
 
-            log.info "Redirecting to '${targetUri}'."
-            redirect(uri: targetUri)
+            if (log.isInfoEnabled()) log.info "Redirecting to '${targetURI}'."
+            redirect(uri: targetURI)
         }
         catch (AuthenticationException ex){
             // Authentication failed, so display the appropriate message
             // on the login page.
-            log.info "Authentication failure for user '${params.username}'."
+            if (log.isInfoEnabled()) log.info "Authentication failure for user '${params.username}'."
             flash.message = message(code: "login.failed")
 
             // Keep the username and "remember me" setting so that the
@@ -87,8 +186,8 @@ class AuthController {
             }
 
             // Remember the target URI too.
-            if (params.targetUri) {
-                m["targetUri"] = params.targetUri
+            if (params.targetURI) {
+                m["targetURI"] = params.targetURI
             }
 
             // Now redirect back to the login page.
@@ -103,8 +202,130 @@ class AuthController {
         // For now, redirect back to the home page.
         redirect(uri: "/")
     }
+	
+	def forgotPassword = {
+		render (view:'forgotPassword', model: [retrievePassword: null])
+	}
 
+	def retrievePassword = { RetrievePasswordCommand cmd ->
+		if (log.isDebugEnabled()) log.debug("auth.retrievePassword, params:"+params)
+		
+		if (cmd.hasErrors()) {
+			render (view:'forgotPassword', model:[retrievePassword: cmd])	
+		}
+		else {
+			// create token
+			def user = User.findByEmail(cmd.email)
+			PasswordToken token = new PasswordToken(token: RandomStringUtils.randomAlphabetic(20), user: user).save()
+			
+			def url = createLink(absolute: true, controller:'auth', action:'newPassword', params:[token:token.token])
+			if (log.isDebugEnabled()) log.debug("sending email to: ${user.email}, token: ${token.token}, url: ${url}")
+			
+			// send email
+			sendMail {
+				to user.email
+				from getFromEmail()
+				subject message(code:'forgot.password.email.subject', default: "DHSST - Lost password?")
+				body message(code:'forgot.password.email.body', args:[user.firstname, url], default: "Dear {0}\n\nTo set a new password, please go to {1}.\n\nYour DHSST Team.")
+			}
+			flash.message = message(code:'forgot.password.successful', default:'An email has been sent with the instructions.')
+			redirect(action:'login')
+		}
+	}
+	
+	def newPassword = { 
+		if (log.isDebugEnabled()) log.debug("auth.newPassword, params:"+params)
+		
+		PasswordToken token = null
+		if (params.token != null) token = PasswordToken.findByToken(params.token)
+		if (token != null) {
+			// if token in URL
+			render (view:'newPassword', model:[token: token.token, newPassword: null, targetURI: getTargetURI()])
+		}
+		else if (SecurityUtils.subject?.principal != null) {
+			// if user is logged in
+			render (view:'newPassword', model:[newPassword: null, targetURI: getTargetURI()])
+		}
+		else {
+			// to 404 error page
+			response.sendError(404)
+		}
+	}
+
+	def setPassword = { NewPasswordCommand cmd ->
+		if (log.isDebugEnabled()) log.debug("auth.setPassword, params:"+params)
+		
+		if (cmd.hasErrors()) {
+			render (view: 'newPassword', model:[token: params.token, newPassword: cmd, targetURI: getTargetURI()])
+		}
+		else {
+			PasswordToken token = null
+			if (params.token != null) token = PasswordToken.findByToken(params.token)
+			User user = null
+			if (token != null) {
+				// retrieve user from token
+				user = token.user
+				// delete the token
+				token.delete()
+			}
+			else if (SecurityUtils.subject?.principal != null) {
+				user = User.findByUsername(SecurityUtils.subject.principal)
+			}
+			
+			if (user != null) {
+				user.passwordHash = new Sha256Hash(cmd.password).toHex()
+				user.save()
+				
+				log.info("password changed succesfully, redirecting to: "+getTargetURI())
+				flash.message = message(code:'set.password.success', default:'Your new password has been set.')
+				redirect(uri: getTargetURI())
+			}
+			else {
+				// to 404 error page
+				response.sendError(404)
+			}
+		}
+	}
+	
     def unauthorized = {
         render "You do not have permission to access this page."
     }
+}
+
+class RetrievePasswordCommand {
+	String email
+	
+	static constraints = {
+		email(blank:false, validator: {val, obj ->
+			return User.findByEmail(val) != null
+		})	
+	}
+}
+
+class NewPasswordCommand {
+	String password
+	String repeat
+
+	static constraints = {
+		password(blank: false, minSize: 4)
+		repeat(validator: {val, obj ->
+			val == obj.password
+		})
+	}
+}
+
+class RegisterCommand extends NewPasswordCommand {
+	String firstname
+	String lastname
+	String organisation
+	String email
+	
+	static constraints = {
+		firstname(nullable:false, blank:false)
+		lastname(nullable:false, blank:false)
+		organisation(nullable:false, blank:false)
+		email(blank:false, email:true, validator: {val, obj ->
+			return User.findByEmail(val) == null && User.findByUsername(val) == null
+		})
+	}
 }

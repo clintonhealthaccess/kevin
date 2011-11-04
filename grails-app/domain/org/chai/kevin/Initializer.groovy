@@ -103,21 +103,21 @@ class Initializer {
 		surveyAllReadonly.addToPermissions("editSurvey:print")
 		surveyAllReadonly.save()
 		
-		def user = new User(username: "dhsst", passwordHash: new Sha256Hash("dhsst").toHex())
+		def user = new User(username: "dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true)
 		user.addToRoles(reportAllReadonly)
 		user.addToRoles(surveyAllReadonly)
 		// access to site
-		user.save()
+		user.save(failOnError: true)
 
-		def admin = new User(username: "admin", passwordHash: new Sha256Hash("admin").toHex())
+		def admin = new User(username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true)
 		admin.addToPermissions("*")
-		admin.save()
+		admin.save(failOnError: true)
 
-		def kivuye = new SurveyUser(username: "kivuye", organisationUnitId: OrganisationUnit.findByName("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex())
+		def kivuye = new SurveyUser(username: "kivuye", organisationUnitId: OrganisationUnit.findByName("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true)
 		kivuye.addToPermissions("editSurvey:view")
 		kivuye.addToPermissions("editSurvey:*:"+kivuye.organisationUnitId)
 		kivuye.addToPermissions("menu:survey")
-		kivuye.save()
+		kivuye.save(failOnError: true)
 	}
 
 	static def createDummyStructure() {

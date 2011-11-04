@@ -20,7 +20,7 @@
 
 	<div id="header">
 		<div class="wrapper">
-		    <h1 id="logo">DHSST</h1>
+		    <h1 id="logo"><a href="${createLink(controller:'home', action:'index')}">DHSST</a></h1>
 		    
 			<g:if test="${flash.message}">
 				<!-- TODO add error class if it's an error -->
@@ -97,9 +97,17 @@
 			  						<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="enum.label" default="Enum"/></a></li>
 			  						<li><a class="${controllerName=='iteration'?'active':''}" href="${createLink(controller: 'iteration', action:'list')}"><g:message code="period.label" default="Iterations"/></a></li>
 			  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a></li>
+			  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'user', action:'list')}"><g:message code="user.label" default="User"/></a></li>
 			  					</ul>
 			  				</li>
 			  			</shiro:hasPermission>
+			  			<shiro:user>
+			  				<li><a class="${controllerName in ['auth']?'active':''}" href="#" onclick="return false;"><g:message code="header.navigation.account" default="My Account"/></a>
+			  					<ul class="submenu">
+			  						<li><a class="${controllerName=='auth'?'active':''}" href="${createLinkWithTargetURI(controller: 'auth', action:'newPassword')}"><g:message code="header.navigation.password" default="Change password"/></a></li>
+			  					</ul>
+			  				</li>
+			  			</shiro:user>
 			  		</ul>
 			  	</div>
 			</div>

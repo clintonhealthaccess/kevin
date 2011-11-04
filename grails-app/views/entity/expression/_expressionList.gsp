@@ -14,9 +14,7 @@
   				<td>
   	            	<ul class="horizontal">
   			           	<li>
-  			           		<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id: expression.id)}" title="${i18n(field: expression.names)}"  
-  							rel="${createLink(controller:'expression', action:'getDescription', id:expression.id)}" 
-  							class="cluetip"><g:message code="default.link.edit.label" default="Edit" /></a>
+  			           		<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id: expression.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
   						</li>
   			           	<li>
   			           		<a class="delete-link" href="${createLinkWithTargetURI(controller:'expression', action:'delete', params:[id:expression.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="default.link.delete.label" default="Delete" /></a>

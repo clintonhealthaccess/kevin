@@ -28,7 +28,7 @@
   				</td>
   				<td>${dataElement.id}</td> 
   				<td class="data-element-explainer" data-data="${dataElement.id}">
-  					<a  href="${createLink(controller:'dataElement', action:'getExplainer', params:[dataElement: dataElement.id])}"><g:i18n field="${dataElement.names}" /></a>
+  					<a href="${createLink(controller:'dataElement', action:'getExplainer', params:[dataElement: dataElement.id])}"><g:i18n field="${dataElement.names}" /></a>
   				</td>
   				<td><g:toHtml value="${dataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td>${dataElement.code}</td>

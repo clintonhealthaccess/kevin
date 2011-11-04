@@ -28,14 +28,12 @@
 				</g:if>
 				
 				<g:if test="${!closed}">
-					<g:if test="${surveyPage.canSubmit(surveyPage.objective)}">
-						<div id="submit-objective" class="${!surveyPage.canSubmit(surveyPage.objective)?'hidden':''} success-box">
-							<p class="success"><g:message code="survey.objective.ready.text" default="This part has been completed successfully. If you are sure that you entered the right data, please click submit." /></p>
-							<g:form url="[controller:'editSurvey', action:'submit', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id]]">
-								<button type="submit">Submit</button>
-							</g:form>
-						</div>
-					</g:if>
+					<div id="submit-objective" class="${!surveyPage.canSubmit(surveyPage.objective)?'hidden':''} success-box">
+						<p class="success"><g:message code="survey.objective.ready.text" default="This part has been completed successfully. If you are sure that you entered the right data, please click submit." /></p>
+						<g:form url="[controller:'editSurvey', action:'submit', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id]]">
+							<button type="submit">Submit</button>
+						</g:form>
+					</div>
 
 					<div id="incomplete-sections-container">
 						<g:render template="/survey/incompleteSections" model="[surveyPage: surveyPage]" />
