@@ -110,16 +110,17 @@ class OrganisationServiceSpec extends IntegrationTests {
 	
 	def "get parent of level for organisation" (){
 		setup:
-		Organisation rootOrg = getRootOrganisation();
-		loadLevel(rootOrg);
-		Organisation rootOrgChild = getChildrenOfLevel(rootOrg, rootOrg.getLevel()+1).get(0);
+		setupOrganisationUnitTree()
+		Organisation parentOrgBefore = getOrganisation(RWANDA);
+		Organisation childOrg = getOrganisation(NORTH);
+		organisationService.loadLevel(childOrg);
 		
 		when:
-		Organisation rootOrgParent = getParentOfLevel(rootOrgChild, rootOrg.getLevel());
+		Organisation ParentOrgAfter = organisationService.getParentOfLevel(childOrg, childOrg.getLevel()-1);
 
 		then:
-		rootOrgParent != null
-		rootOrgParent == rootOrg
+		ParentOrgAfter != null
+		ParentOrgAfter == parentOrgBefore
 		
 	}
 	
@@ -156,7 +157,7 @@ class OrganisationServiceSpec extends IntegrationTests {
 		organisation.children.each { 
 			if (!assertIsLoaded(it, level)) success = false
 		}
-		if (loadLevel(organisation) == level) {
+		if (organisationService.loadLevel(organisation) == level) {
 			if (organisation.children != null) success = false
 		}
 		else {
