@@ -27,8 +27,24 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController.sectionPage()
 		
 		then:
-		editSurveyController.modelAndView.model.surveyPage != null
+		editSurveyController.modelAndView.model.surveyPage.survey.equals(survey)
+		editSurveyController.modelAndView.model.surveyPage.section.equals(section)
 		
+	}
+	
+	def "get survey page with valid parameters"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		when:
+		editSurveyController.params.organisation = getOrganisation(BUTARO).id
+		editSurveyController.params.survey = survey.id
+		editSurveyController.surveyPage()
+		
+		then:
+		editSurveyController.modelAndView.model.surveyPage.survey.equals(survey)
 	}
 	
 }

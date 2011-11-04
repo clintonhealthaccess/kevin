@@ -34,8 +34,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -66,6 +69,8 @@ public class Survey extends SurveyTranslatable {
 	private Period period;
 	private List<SurveyObjective> objectives = new ArrayList<SurveyObjective>();
 	private List<SurveySkipRule> skipRules = new ArrayList<SurveySkipRule>();
+	private Translation names = new Translation();
+	private Translation descriptions = new Translation();
 	
 	@Id
 	@GeneratedValue
@@ -114,6 +119,26 @@ public class Survey extends SurveyTranslatable {
 	
 	public void setLastPeriod(Period lastPeriod) {
 		this.lastPeriod = lastPeriod;
+	}
+	
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
 	}
 	
 	@OneToMany(targetEntity = SurveyObjective.class, mappedBy="survey")
@@ -185,4 +210,6 @@ public class Survey extends SurveyTranslatable {
 			copy.getSkipRules().add(cloner.getSkipRule(skipRule));
 		}
 	}
+
+
 }

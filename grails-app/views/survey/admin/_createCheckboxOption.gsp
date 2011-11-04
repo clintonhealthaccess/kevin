@@ -12,7 +12,6 @@
 				<input type="hidden" name="question.id"  value="${option.question?.id}" />
 				
 				<g:i18nRichTextarea name="names" bean="${option}" value="${option.names}" label="Option" field="names" height="150"  width="300" maxHeight="150" />
-				<input type="hidden" name="descriptions.jsonText" value=" "/>
 				
 				<input type="hidden" name="surveyElement.dataElement.id"  value="${option.surveyElement?.dataElement?.id}" id="data-element-id" />
 				<div class="row ${hasErrors(bean:option, field:'surveyElement', 'errors')}">

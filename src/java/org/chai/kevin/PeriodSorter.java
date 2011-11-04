@@ -36,6 +36,8 @@ import org.hisp.dhis.period.Period;
  * @author Jean Kahigiso M.
  *
  */
+
+// TODO move this to the service layer
 public class PeriodSorter implements Comparator<Period> {
 	@Override
 	public int compare(Period periodOne, Period periodTwo) {

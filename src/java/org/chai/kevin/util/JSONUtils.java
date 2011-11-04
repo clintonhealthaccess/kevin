@@ -38,12 +38,12 @@ import org.codehaus.groovy.grails.web.json.JSONObject;
 
 public class JSONUtils {
 
-	public static String getJSONFromMap(Map<String, String> map) {
+	public static String getJSONFromMap(Map<String, ? extends Object> map) {
 		String result = null;
 		if (map != null) {
 			try {
 				JSONObject jsonObject = new JSONObject();
-				for (Entry<String, String> entry : map.entrySet()) {
+				for (Entry<String, ? extends Object> entry : map.entrySet()) {
 					jsonObject.put(entry.getKey(), entry.getValue());
 				}
 				result = jsonObject.toString();
@@ -55,15 +55,15 @@ public class JSONUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Map<String, String> getMapFromJSON(String jsonString) {
-		Map<String, String> descriptions = new HashMap<String, String>();
+	public static Map<String, Object> getMapFromJSON(String jsonString) {
+		Map<String, Object> descriptions = new HashMap<String, Object>();
 		if (jsonString != null) {
 			try {
 				JSONObject jsonObject = new JSONObject(jsonString);
 				Iterator<String> keyIterator = jsonObject.keys();
 				while (keyIterator.hasNext()) {
 					String type = (String) keyIterator.next();
-					descriptions.put(type, jsonObject.getString(type));
+					descriptions.put(type, (Object)jsonObject.getString(type));
 				}
 			} catch (JSONException e) {
 				// log

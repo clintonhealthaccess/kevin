@@ -34,8 +34,11 @@ package org.chai.kevin.survey;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -75,6 +78,8 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	private Integer order;
 	private SurveySection section;
 	private String groupUuidString;
+	protected Translation names = new Translation();
+	protected Translation descriptions = new Translation();
 
 	@Id
 	@GeneratedValue
@@ -119,6 +124,7 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 	public Set<String> getGroupUuids() {
 		return Utils.split(groupUuidString);
 	}
+	
 	public void setGroupUuids(Set<String> groupUuids) {
 		this.groupUuidString = Utils.unsplit(groupUuids);
 	}
@@ -140,13 +146,6 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		return section.getSurvey();
 	}
 	
-//	@Transient
-//	// this method is here to avoid calling Utils in the gsp,
-//	// which can be 
-//	public String getString(String text, Integer strip) {
-//		return Utils.stripHtml(text, strip);
-//	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -179,6 +178,26 @@ public abstract class SurveyQuestion extends SurveyTranslatable {
 		copy.setGroupUuidString(getGroupUuidString());
 		copy.setOrder(getOrder());
 		copy.setSection(surveyCloner.getSection(getSection()));
+	}
+
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
 	}
 
 }

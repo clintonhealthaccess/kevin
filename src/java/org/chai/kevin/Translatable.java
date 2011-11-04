@@ -36,6 +36,7 @@ import javax.persistence.Embedded;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
+// TODO get rid of this class
 @MappedSuperclass
 public abstract class Translatable extends Orderable {
 

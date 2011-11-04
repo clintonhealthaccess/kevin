@@ -32,14 +32,14 @@ package org.chai.kevin;
  * @author Jean Kahigiso M.
  *
  */
-public abstract class Orderable implements Comparable<Orderable> {
+public abstract class Orderable<T extends Comparable<T>> implements Comparable<Orderable<T>> {
 	
-	public abstract Integer getOrder();
+	public abstract T getOrder();
 	
 	public abstract Long getId();
 	
 	@Override
-	public int compareTo(Orderable sectionTwo) {
+	public int compareTo(Orderable<T> sectionTwo) {
 		if (getOrder() == null) {
 			if (sectionTwo.getOrder() == null) {
 				return compare(getId(), sectionTwo.getId());
@@ -54,7 +54,7 @@ public abstract class Orderable implements Comparable<Orderable> {
 				return compare(getId(), sectionTwo.getId());
 			} 
 			else {
-				return getOrder() - sectionTwo.getOrder();
+				return getOrder().compareTo(sectionTwo.getOrder());
 			}
 		}
 	}

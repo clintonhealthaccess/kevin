@@ -33,8 +33,11 @@ package org.chai.kevin.survey;
  */
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -61,6 +64,7 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 	private String groupUuidString;
 	private SurveyCheckboxQuestion question;
 	private SurveyElement surveyElement;
+	protected Translation names = new Translation();
 
 	@Id
 	@GeneratedValue
@@ -119,6 +123,16 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 		this.surveyElement = surveyElement;
 	}
 
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+	
 	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable() {
 		return Utils.split(this.groupUuidString);
@@ -126,7 +140,6 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 
 	public SurveyCheckboxOption deepCopy(SurveyCloner cloner) {
 		SurveyCheckboxOption copy = new SurveyCheckboxOption();
-		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setNames(new Translation(getNames()));
 		copy.setGroupUuidString(getGroupUuidString());
 		copy.setOrder(getOrder());
@@ -134,5 +147,5 @@ public class SurveyCheckboxOption extends SurveyTranslatable {
 		copy.setQuestion((SurveyCheckboxQuestion)cloner.getQuestion(getQuestion()));
 		return copy;
 	}
-	
+
 }

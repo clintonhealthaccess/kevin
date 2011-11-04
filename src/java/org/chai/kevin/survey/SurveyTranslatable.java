@@ -31,45 +31,14 @@ package org.chai.kevin.survey;
  *
  */
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 
 import org.chai.kevin.Orderable;
-import org.chai.kevin.Translation;
 
+// TODO get rid of this class
 @MappedSuperclass
 public abstract class SurveyTranslatable extends Orderable {
 
 	private static final long serialVersionUID = -6838401416857236741L;
-
-	protected Translation names = new Translation();
-	protected Translation descriptions = new Translation();
-	
-	@Embedded
-		@AttributeOverrides({
-	    @AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
-	})
-	public Translation getNames() {
-		return names;
-	}
-	
-	public void setNames(Translation names) {
-		this.names = names;
-	}
-	
-	@Embedded
-		@AttributeOverrides({
-	    @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
-	})
-	public Translation getDescriptions() {
-		return descriptions;
-	}
-
-	public void setDescriptions(Translation descriptions) {
-		this.descriptions = descriptions;
-	}
 
 }

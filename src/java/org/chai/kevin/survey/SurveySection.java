@@ -37,8 +37,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -69,6 +72,8 @@ public class SurveySection extends SurveyTranslatable {
 	private SurveyObjective objective;
 	private String groupUuidString;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
+	protected Translation names = new Translation();
+	protected Translation descriptions = new Translation();
 
 	@Id
 	@GeneratedValue
@@ -206,6 +211,26 @@ public class SurveySection extends SurveyTranslatable {
 		for (SurveyQuestion question : getQuestions()) {
 			copy.getQuestions().add(surveyCloner.getQuestion(question));
 		}
+	}
+
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNames", nullable = false)) })
+	public Translation getNames() {
+		return names;
+	}
+
+	public void setNames(Translation names) {
+		this.names = names;
+	}
+
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonDescriptions", nullable = false)) })
+	public Translation getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
 	}
 	
 }

@@ -35,6 +35,8 @@ import java.util.Map;
  * @author Jean Kahigiso M.
  * 
  */
+
+// TODO fix this and move to the service layer
 public class OrganisationSorter {
 
 	private static Map<Organisation, Organisation> organisations;
