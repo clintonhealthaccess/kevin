@@ -1,3 +1,5 @@
+.classpath
+.project
 *.bat
 *.bak
 target
@@ -11,4 +13,3 @@ classes
 eclipse_workspace_settings.epf
 userScripts/**
 bin/
-grailsRunAppOutput.txt

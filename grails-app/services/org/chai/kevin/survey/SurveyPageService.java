@@ -97,7 +97,7 @@ public class SurveyPageService {
 			sectionSummaryMap.put(section, new SectionSummary(section, questions.size(), completedQuestions));
 		}
 		return new SummaryPage(objective, organisation, sections, sectionSummaryMap);
-	}
+	}	
 	
 	@Transactional(readOnly = true)
 	public SummaryPage getObjectiveTable(Organisation organisation, Survey survey) {
@@ -115,11 +115,12 @@ public class SurveyPageService {
 		}
 		
 		return new SummaryPage(survey, organisation, objectives, objectiveSummaryMap, false);
-	}
+	}	
 	
 	@Transactional(readOnly = true)
-	public SummaryPage getSummaryPage(Organisation organisation, Survey survey) {
-		if (organisation == null || survey == null) return new SummaryPage(survey, organisation, null, null);
+	public SummaryPage getSurveySummaryPage(Organisation organisation, Survey survey) {
+		if (organisation == null || survey == null) 
+				return new SummaryPage(survey, organisation, null, null);
 		
 		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 		Map<OrganisationUnitGroup, List<SurveyObjective>> objectiveMap = new HashMap<OrganisationUnitGroup, List<SurveyObjective>>();
@@ -150,6 +151,51 @@ public class SurveyPageService {
 			summaryMap.put(facility, summary);
 		}
 		return new SummaryPage(survey, organisation, facilities, summaryMap);
+	}
+	
+	@Transactional(readOnly = true)
+	public SummaryPage getObjectiveSummaryPage(Organisation organisation, SurveyObjective objective) {
+		if (organisation == null || objective == null) 
+				return new SummaryPage(objective, organisation, null);
+		
+		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+
+		Map<Organisation, ObjectiveSummary> summaryMap = new HashMap<Organisation, ObjectiveSummary>();
+		
+		for (Organisation facility : facilities) {
+			organisationService.loadGroup(facility);						
+			
+			SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, facility.getOrganisationUnit());
+			List<SurveyQuestion> questions = objective.getQuestions(facility.getOrganisationUnitGroup());
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), facility.getOrganisationUnit(), objective, null, true, false);
+			
+			ObjectiveSummary summary = new ObjectiveSummary(objective, enteredObjective, questions.size(), completedQuestions);
+
+			summaryMap.put(facility, summary);
+		}
+		return new SummaryPage(objective, organisation, summaryMap);
+	}
+	
+	@Transactional(readOnly = true)
+	public SummaryPage getSectionSummaryPage(Organisation organisation, SurveySection section) {
+		if (organisation == null || section == null) 
+				return new SummaryPage(section, organisation, null);
+		
+		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+
+		Map<Organisation, SectionSummary> summaryMap = new HashMap<Organisation, SectionSummary>();
+		
+		for (Organisation facility : facilities) {
+			organisationService.loadGroup(facility);						
+			
+			List<SurveyQuestion> questions = section.getQuestions(facility.getOrganisationUnitGroup());
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(section.getSurvey(), facility.getOrganisationUnit(), null, section, true, false);
+			
+			SectionSummary summary = new SectionSummary(section, questions.size(), completedQuestions);
+			
+			summaryMap.put(facility, summary);
+		}
+		return new SummaryPage(section, organisation, summaryMap);		
 	}
 	
 	@Transactional(readOnly = false)

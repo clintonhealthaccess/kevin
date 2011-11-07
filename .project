@@ -163,34 +163,34 @@
 			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/quartz-0.4.2/src/java</locationURI>
 		</link>
 		<link>
-			<name>.plugin-src-resources-1.1.1-grails-app-conf</name>
+			<name>.plugin-src-resources-1.0.2-grails-app-conf</name>
 			<type>2</type>
-			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/grails-app/conf</locationURI>
+			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/grails-app/conf</location>
 		</link>
 		<link>
-			<name>.plugin-src-resources-1.1.1-grails-app-i18n</name>
+			<name>.plugin-src-resources-1.0.2-grails-app-i18n</name>
 			<type>2</type>
-			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/grails-app/i18n</locationURI>
+			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/grails-app/i18n</location>
 		</link>
 		<link>
-			<name>.plugin-src-resources-1.1.1-grails-app-resourceMappers</name>
+			<name>.plugin-src-resources-1.0.2-grails-app-resourceMappers</name>
 			<type>2</type>
-			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/grails-app/resourceMappers</locationURI>
+			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/grails-app/resourceMappers</location>
 		</link>
 		<link>
-			<name>.plugin-src-resources-1.1.1-grails-app-taglib</name>
+			<name>.plugin-src-resources-1.0.2-grails-app-taglib</name>
 			<type>2</type>
-			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/grails-app/taglib</locationURI>
+			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/grails-app/taglib</location>
 		</link>
 		<link>
-			<name>.plugin-src-resources-1.1.1-src-groovy</name>
+			<name>.plugin-src-resources-1.0.2-src-groovy</name>
 			<type>2</type>
-			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/src/groovy</locationURI>
+			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/src/groovy</location>
 		</link>
 		<link>
-			<name>.plugin-src-resources-1.1.1-src-java</name>
+			<name>.plugin-src-resources-1.0.2-src-java</name>
 			<type>2</type>
-			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/src/java</locationURI>
+			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/src/java</location>
 		</link>
 		<link>
 			<name>.plugin-src-shiro-1.1.5-grails-app-conf</name>

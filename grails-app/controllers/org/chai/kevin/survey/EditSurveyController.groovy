@@ -38,286 +38,297 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 class EditSurveyController extends AbstractController {
-	
+
 	SurveyPageService surveyPageService;
 	ValidationService validationService;
 	ValueService valueService;
-	
+
 	def index = {
 		redirect (action: 'view', params: params)
 	}
-	
+
 	def view = {
 		// this action redirects to the current survey if a SurveyUser logs in
 		// or to a survey summary page if an admin logs in
 		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
 		User user = User.findByUsername(SecurityUtils.subject.principal)
-		
+
 		if (user.hasProperty('organisationUnitId') != null) {
 			if (Survey.count() == 0) {
 				response.sendError(404)
 			}
-			
+
 			Survey survey = Survey.get(params.int('survey'))
-			if (survey == null) survey = surveyPageService.getDefaultSurvey()
+
+			if (survey == null) {
+				survey = surveyPageService.getDefaultSurvey()
+			}
 			if (survey == null) {
 				log.info("no default survey - selecting last one in the list")
 				survey = Survey.list()[Survey.count()-1]
 			}
 			Organisation organisation = organisationService.getOrganisation(user.organisationUnitId)
-			
-			redirect (action: 'surveyPage', params: [survey: survey.id, organisation: organisation.id])
+
+			redirect (action: 'surveyPage',
+					params: [survey: survey?.id, objective: objective?.id, section: section?.id, organisation: organisation.id])
 		}
 		else {
 			redirect (action: 'summaryPage')
 		}
 	}
-	
+
 	def validateParameters(def organisation, def groups) {
 		def valid = true;
-		
+
 		if (organisation == null) valid = false
 		else {
-			int level = organisationService.getLevel(organisation);
+			int level = organisationService.loadLevel(organisation);
 			if (level != organisationService.getFacilityLevel()) valid = false
-	
+
 			organisationService.loadGroup(organisation)
 			if (groups != null && !groups.contains(organisation.organisationUnitGroup.uuid)) valid = false
 		}
-		
+
 		if (!valid) {
 			response.sendError(404)
 		}
 		return valid
 	}
-	
+
 	def summaryPage = {
-		Organisation currentOrganisation = getOrganisation(false)
-		Survey currentSurvey = Survey.get(params.int('survey'))
+		Organisation organisation = getOrganisation(false)
+
+		SummaryPage summaryPage = null;
+		SurveySection section = SurveySection.get(params.int('section'))
+		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
+		Survey survey = Survey.get(params.int('survey'))
 		
-		SummaryPage summaryPage = surveyPageService.getSummaryPage(currentOrganisation, currentSurvey);
-		
+		if(section != null)
+			summaryPage = surveyPageService.getSectionSummaryPage(organisation, section)
+		else if(objective != null)
+			summaryPage = surveyPageService.getObjectiveSummaryPage(organisation, objective)
+		else if(survey != null)
+			summaryPage = surveyPageService.getSurveySummaryPage(organisation, survey);
+
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		def organisationTree = organisationService.getOrganisationTreeUntilLevel(organisationLevel)
 
 		render (view: '/survey/summaryPage', model: [
-			summaryPage: summaryPage,
-			surveys: Survey.list(),
-			organisationTree: organisationTree
-		])
+					organisation: organisation,
+					summaryPage: summaryPage,
+					surveys: Survey.list(),
+					organisationTree: organisationTree
+				])
 	}
 
 	def objectiveTable = {
 		Organisation currentOrganisation = getOrganisation(false)
 		Survey currentSurvey = Survey.get(params.int('survey'))
-		
+
 		SummaryPage summaryPage = surveyPageService.getObjectiveTable(currentOrganisation, currentSurvey)
-		
+
 		render (view: '/survey/objectiveTable', model: [
-			summaryPage: summaryPage
-		])
+					summaryPage: summaryPage
+				])
 	}
-	
+
 	def sectionTable = {
 		Organisation currentOrganisation = getOrganisation(false)
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'))
-		
+
 		SummaryPage summaryPage = surveyPageService.getSectionTable(currentOrganisation, currentObjective)
-		
+
 		render (view: '/survey/sectionTable', model: [
-			summaryPage: summaryPage
-		])
+					summaryPage: summaryPage
+				])
 	}
-	
+
 	def sectionPage = {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
-		
+
 		// TODO make sure this is a facility
 		Organisation currentOrganisation = getOrganisation(false)
 		SurveySection currentSection =  SurveySection.get(params.int('section'));
-		
+
 		if (validateParameters(currentOrganisation, Utils.split(currentSection?.groupUuidString))) {
 			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentSection)
-				
+
 			render (view: '/survey/sectionPage', model: [surveyPage: surveyPage])
 		}
 	}
-	
+
 	def objectivePage = {
 		if (log.isDebugEnabled()) log.debug("survey.objective, params:"+params)
-		
+
 		// TODO make sure this is a facility
 		Organisation currentOrganisation = getOrganisation(false)
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
-		
+
 		if (validateParameters(currentOrganisation, Utils.split(currentObjective?.groupUuidString))) {
 			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentObjective)
-			
+
 			render (view: '/survey/objectivePage', model: [surveyPage: surveyPage])
 		}
 	}
-	
-	
+
 	def surveyPage = {
 		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
-		
+
 		// TODO make sure this is a facility
 		Organisation currentOrganisation = getOrganisation(false)
-		
+
 		if (validateParameters(currentOrganisation, null)) {
 			Survey survey = Survey.get(params.int('survey'))
-			
+
 			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, survey)
-			
+
 			render (view: '/survey/surveyPage', model: [surveyPage: surveyPage])
 		}
 	}
-	
+
 	def refresh = {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
-		
+
 		// TODO make sure this is a facility
 		Organisation currentOrganisation = getOrganisation(false)
-		
+
 		Survey survey = Survey.get(params.int('survey'))
 		surveyPageService.refresh(currentOrganisation, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
 
 		redirect (action: "surveyPage", params: [organisation: currentOrganisation.id, survey: survey.id])
 	}
-	
+
 	def reopen = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
-		
+
 		Organisation currentOrganisation = getOrganisation(false)
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
-		
+
 		if (validateParameters(currentOrganisation, Utils.split(currentObjective?.groupUuidString))) {
 			surveyPageService.reopen(currentOrganisation, currentObjective);
-			
+
 			redirect (action: "objectivePage", params: [organisation: currentOrganisation.id, objective: currentObjective.id])
 		}
 	}
-	
+
 	def submit = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
-		
+
 		Organisation currentOrganisation = getOrganisation(false)
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
-		
+
 		if (validateParameters(currentOrganisation, Utils.split(currentObjective?.groupUuidString))) {
 			boolean success = surveyPageService.submit(currentOrganisation, currentObjective);
-						
+
 			if (success) {
 				flash.message = message(code: "survey.objective.submitted", default: "Thanks for submitting.");
 			}
 			else {
 				flash.message = message(code: "survey.objective.review", default: "The survey could not be submitted, please review the sections.");
 			}
-			
+
 			redirect (action: "objectivePage", params: [organisation: currentOrganisation.id, objective: currentObjective.id])
 		}
 	}
-	
+
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
-		
+
 		Organisation currentOrganisation = getOrganisation(false)
-		
+
 		def currentSection = SurveySection.get(params.int('section'))
-		def currentObjective = SurveyObjective.get(params.int('objective'))		
-		def surveyElements = [SurveyElement.get(params.int('element'))]
-		
+		def currentObjective = SurveyObjective.get(params.int('objective'))
+		def surveyElements = [
+			SurveyElement.get(params.int('element'))
+		]
+
 		def surveyPage = surveyPageService.modify(currentOrganisation, currentObjective, surveyElements, params);
-			
+
 		if (surveyPage == null) {
-			render(contentType:"text/json") {
-				status = 'error'
-			}
+			render(contentType:"text/json") { status = 'error' }
 		}
 		else {
 			def invalidQuestionsHtml = ''
 			def incompleteSectionsHtml = ''
-			
+
 			if (currentSection == null) {
 				def completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective)
 				invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
 				incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
 			}
-			
+
 			render(contentType:"text/json") {
 				status = 'success'
-				
+
 				invalidQuestions = invalidQuestionsHtml
 				incompleteSections = incompleteSectionsHtml
-	
-				objectives = array {  
-					surveyPage.objectives.each { objective, enteredObjective -> 
+
+				objectives = array {
+					surveyPage.objectives.each { objective, enteredObjective ->
 						obj (
-							id: objective.id,
-							status: enteredObjective.displayedStatus
-						)
+								id: objective.id,
+								status: enteredObjective.displayedStatus
+								)
 					}
 				}
 				sections = array {
 					surveyPage.sections.each { section, enteredSection ->
 						sec (
-							id: section.id,
-							objectiveId: section.objective.id,
-							invalid: enteredSection.invalid,
-							complete: enteredSection.complete,
-							status: enteredSection.displayedStatus
-						)
-					}	
-				}
-				questions = array { 
-					surveyPage.questions.each { question, enteredQuestion ->
-						ques (
-							id: question.id,
-							sectionId: question.section.id,
-							complete: enteredQuestion.complete,
-							invalid: enteredQuestion.invalid,
-							skipped: enteredQuestion.skipped,
-						)
-					}	
-				}
-				elements = array { 
-					surveyPage.elements.each { surveyElement, enteredValue ->
-						elem (
-							id: surveyElement.id,
-							questionId: surveyElement.surveyQuestion.id,
-							skipped: array {
-								enteredValue.skippedPrefixes.each { prefix ->
-									element prefix
-								}
-							},
-							invalid: array {
-								enteredValue.invalidPrefixes.each { invalidPrefix ->
-									pre (
-										prefix: invalidPrefix,
-										valid: enteredValue.isValid(invalidPrefix),
-										errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
-									)
-								}
-							}
-						)
+								id: section.id,
+								objectiveId: section.objective.id,
+								invalid: enteredSection.invalid,
+								complete: enteredSection.complete,
+								status: enteredSection.displayedStatus
+								)
 					}
 				}
-				
+				questions = array {
+					surveyPage.questions.each { question, enteredQuestion ->
+						ques (
+								id: question.id,
+								sectionId: question.section.id,
+								complete: enteredQuestion.complete,
+								invalid: enteredQuestion.invalid,
+								skipped: enteredQuestion.skipped,
+								)
+					}
+				}
+				elements = array {
+					surveyPage.elements.each { surveyElement, enteredValue ->
+						elem (
+								id: surveyElement.id,
+								questionId: surveyElement.surveyQuestion.id,
+								skipped: array {
+									enteredValue.skippedPrefixes.each { prefix -> element prefix }
+								},
+								invalid: array {
+									enteredValue.invalidPrefixes.each { invalidPrefix ->
+										pre (
+												prefix: invalidPrefix,
+												valid: enteredValue.isValid(invalidPrefix),
+												errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
+												)
+									}
+								}
+								)
+					}
+				}
+
 			}
 		}
 	}
-	
+
 	def save = {
 		if (log.isDebugEnabled()) log.debug("survey.save, params:"+params)
-		
+
 		Organisation currentOrganisation = getOrganisation(false)
 		def currentSection = SurveySection.get(params.int('section'));
-		
+
 		if (validateParameters(currentOrganisation, Utils.split(currentSection?.groupUuidString))) {
 			def surveyElements = getSurveyElements()
 			surveyPageService.modify(currentOrganisation, currentSection.objective, surveyElements, params);
 			def sectionPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection)
-			
+
 			def action
 			def params = [organisation: sectionPage.organisation.id]
 			if (!sectionPage.sections[currentSection].invalid) {
@@ -335,26 +346,39 @@ class EditSurveyController extends AbstractController {
 			else {
 				flash.message = "survey.section.invalid";
 				flash.default = "This section is invalid, please check your answers."
-				
+
 				action = 'sectionPage'
 				params << [section: sectionPage.section.id]
 			}
-			
+
 			redirect (action: action, params: params)
 		}
 	}
-	
+
 	def print = {
 		Survey survey = Survey.get(params.int('survey'));
 		Organisation organisation = getOrganisation(false)
-		
+
 		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
 
 		render (view: '/survey/print/surveyPrint', model:[
-			surveyPage: surveyPage
-		])
+					surveyPage: surveyPage
+				])
 	}
-	
+
+	def export = {
+		//Survey survey = Survey.get(params.int('survey'));
+		//Organisation organisation = getOrganisation(false)
+
+		//SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
+
+		StringWriter sw = new StringWriter();
+		
+		def filename = "SummaryPageTest";		
+		response.setHeader("Content-disposition", "attachment; filename=" + filename + ".csv");
+		render(contentType: "text/csv", text: sw.toString());
+	}
+
 	private def getSurveyElements() {
 		def result = []
 		// TODO test this
@@ -363,6 +387,6 @@ class EditSurveyController extends AbstractController {
 		}
 		return result
 	}
-	
+
 
 }

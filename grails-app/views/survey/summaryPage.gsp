@@ -7,59 +7,36 @@
 		<r:require modules="progressbar,dropdown,explanation,survey"/>
 	</head>
 	<body>
-		<g:set var="survey" value="${summaryPage.survey}"/>
-		<g:set var="organisation" value="${summaryPage.organisation}"/>
 		<div id="survey">
+		
+			<g:if test="${summaryPage != null}">			
+			<g:set var="section" value="${summaryPage.section}" />
+			<g:set var="objective" value="${summaryPage.objective}" />
+			<g:set var="survey" value="${summaryPage.survey}" />						
+			</g:if>
+
 			<div id="survey-header" class="subnav">
 				<g:render template="/survey/surveyFilter"/>
-				<g:render template="/templates/organisationFilter" model="[currentOrganisation: organisation, linkParams:[survey: summaryPage.survey?.id]]"/>
+				<g:render template="/templates/organisationFilter" model="[currentOrganisation: organisation, linkParams:[survey: survey?.id, objective: objective?.id, section: section?.id]]"/>
 				<div class="clear"></div>
 			</div>
-			
-			
-			<div class="main">
-				<g:if test="${summaryPage.organisation == null || summaryPage.survey == null}">
+						
+			<div class="main">			
+				
+				<g:if test="${organisation == null || (survey == null && objective == null && section == null)}">
 				<p class="help"><g:message code="survey.summary.selectsurveyfacility.text" default="Please select a survey and a facility to get to the respective survey."/></p>
 				</g:if>
-				<g:else>
-					<div id="survey-summary">
-						<table class="listing">
-							<thead>
-								<th><g:message code="facility.label" default="Facility"/></th>
-								<th><g:message code="survey.summary.objectivesubmitted.label" default="Objectives submitted"/></th>
-								<th><g:message code="survey.summary.progress" default="Overall progress"/></th>
-								<th></th>
-							</thead>
-							<tbody>
-								<g:each in="${summaryPage.facilities}" var="facility">
-									<g:set var="organisationSummary" value="${summaryPage.getOrganisationSummary(facility)}"/>
-									<tr>
-										<td class="objective-table-link" data-facility="${facility.id}">
-											<a href="${createLink(controller: 'editSurvey', action: 'objectiveTable', params: [survey: summaryPage.survey.id, organisation: facility.id])}">${facility.name}</a>
-										</td>
-										<td>${organisationSummary.submittedObjectives}/${organisationSummary.objectives}</td>
-										<td><span class="progress-bar">${organisationSummary.completedQuestions}/${organisationSummary.questions}</span></td>
-										<td>
-											<ul class="horizontal">
-											<li><a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: summaryPage.survey.id, organisation: facility.id])}"><g:message code="survey.summary,viewsurvey.label" default="View Survey"/></a></li>
-											<shiro:hasPermission permission="editSurvey:refresh">
-												<li><a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: summaryPage.survey.id, organisation: facility.id])}"><g:message code="survey.summary.refreshsurvey.label" default="Refresh Survey"/></a></li>
-											</shiro:hasPermission>
-											<shiro:hasPermission permission="editSurvey:print">
-												<li><a href="${createLink(controller: 'editSurvey', action: 'print', params: [survey: summaryPage.survey.id, organisation: facility.id])}" target="_blank"><g:message code="survey.summary.printsurvey.label" default="Print Survey"/></a></li>
-											</shiro:hasPermission>
-											</ul>
-										</td>
-									</tr>
-									<tr class="explanation-row">
-										<td colspan="6">
-											<div class="explanation-cell" id="explanation-${facility.id}"></div>
-										</td>
-									</tr>
-								</g:each>
-							</tbody>
-						</table>
-					</div>
+				<g:else>				
+					
+					<g:if test="${section != null}">
+						<g:render template="/survey/summarySectionTable" model="[linkParams:[section: section.id]]"/>
+					</g:if>
+					<g:elseif test="${objective != null}">
+						<g:render template="/survey/summaryObjectiveTable" model="[linkParams:[objective: objective.id]]"/>
+					</g:elseif>
+					<g:elseif test="${survey != null}">
+						<g:render template="/survey/summarySurveyTable" model="[linkParams:[survey: survey.id]]"/>
+					</g:elseif>
 				</g:else>
 			</div>
 		</div>
@@ -70,7 +47,9 @@
 					var values = $(this).html().split('/');
 					
 					if (values.length == 2) {
-						var value = (values[0]/values[1])*100;
+						var value;
+						if(values[1] == 0) value = 0;
+						else value = (values[0]/values[1])*100;
 						$(this).progressBar(value, {
 							steps: 0,
 							boxImage: "${resource(dir:'js/jquery/progressbar/images',file:'progressbar.gif')}",
