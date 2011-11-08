@@ -116,11 +116,11 @@ class OrganisationServiceSpec extends IntegrationTests {
 		organisationService.loadLevel(childOrg);
 		
 		when:
-		Organisation ParentOrgAfter = organisationService.getParentOfLevel(childOrg, childOrg.getLevel()-1);
+		Organisation parentOrgAfter = organisationService.getParentOfLevel(childOrg, childOrg.getLevel()-1);
 
 		then:
-		ParentOrgAfter != null
-		ParentOrgAfter == parentOrgBefore
+		parentOrgAfter != null
+		parentOrgAfter == parentOrgBefore
 		
 	}
 	

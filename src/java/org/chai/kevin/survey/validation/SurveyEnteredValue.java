@@ -224,7 +224,7 @@ public class SurveyEnteredValue implements Serializable {
 			}
 		});
 		
-		return CollectionUtils.subtract(nullPrefixes.entrySet(), skippedPrefixes).isEmpty();
+		return CollectionUtils.subtract(nullPrefixes.keySet(), skippedPrefixes).isEmpty();
 	}
 	
 	private void setAttribute(final String attribute, final String id, Set<String> prefixes) {

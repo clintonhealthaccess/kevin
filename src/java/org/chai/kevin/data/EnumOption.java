@@ -61,7 +61,7 @@ public class EnumOption extends Orderable {
 	// TODO flag to deactivate option in survey, 
 	// think about how to make that better
 	// enum and enum options should not be directly linked to a survey
-	private Boolean inactive;
+	private Boolean inactive = false;
 	
 	private Enum enume;
 
