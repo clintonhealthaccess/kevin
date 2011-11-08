@@ -165,32 +165,32 @@
 		<link>
 			<name>.plugin-src-resources-1.0.2-grails-app-conf</name>
 			<type>2</type>
-			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/grails-app/conf</location>
+			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/grails-app/conf</locationURI>
 		</link>
 		<link>
 			<name>.plugin-src-resources-1.0.2-grails-app-i18n</name>
 			<type>2</type>
-			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/grails-app/i18n</location>
+			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/grails-app/i18n</locationURI>
 		</link>
 		<link>
 			<name>.plugin-src-resources-1.0.2-grails-app-resourceMappers</name>
 			<type>2</type>
-			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/grails-app/resourceMappers</location>
+			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/grails-app/resourceMappers</locationURI>
 		</link>
 		<link>
 			<name>.plugin-src-resources-1.0.2-grails-app-taglib</name>
 			<type>2</type>
-			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/grails-app/taglib</location>
+			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/grails-app/taglib</locationURI>
 		</link>
 		<link>
 			<name>.plugin-src-resources-1.0.2-src-groovy</name>
 			<type>2</type>
-			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/src/groovy</location>
+			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/src/groovy</locationURI>
 		</link>
 		<link>
 			<name>.plugin-src-resources-1.0.2-src-java</name>
 			<type>2</type>
-			<location>C:/Users/user/.grails/2.0.0.RC1/projects/kevin/plugins/resources-1.0.2/src/java</location>
+			<locationURI>GRAILS_WORKDIR/projects/kevin/plugins/resources-1.1.1/src/java</locationURI>
 		</link>
 		<link>
 			<name>.plugin-src-shiro-1.1.5-grails-app-conf</name>

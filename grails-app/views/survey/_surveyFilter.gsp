@@ -1,6 +1,5 @@
 <div class="filter">
-	<span class="bold"><g:message code="survey.label"
-			default="Survey" />:</span> <span class="dropdown subnav-dropdown">
+	<span class="bold"><g:message code="survey.label" default="Survey" />:</span> <span class="dropdown subnav-dropdown">
 		<a class="selected" href="#"> 
 			<g:if test="${section != null}">
 				<g:i18n field="${section.names}" />
@@ -12,43 +11,37 @@
 				<g:i18n field="${survey.names}" />
 			</g:elseif> 
 			<g:else>
-				<g:message code="default.select.label"
-					args="[message(code:'survey.label')]" default="Select a survey" />
+				<g:message code="default.select.label" args="[message(code:'survey.label')]" default="Select a survey" />
 			</g:else>
-	</a>
-		<div id="survey-menu" class="hidden dropdown-list">
+		</a>
+		<div class="hidden dropdown-list">
 			<ul>
 				<g:each in="${surveys}" var="survey">
-					<li id="survey-${survey.id}"
-						class="foldable ${currentSurvey?.id == survey.id? 'current':''}"><a
-						class="foldable-toggle" href="#">(toggle)</a> <a
-						class="item ${currentSurvey?.id == survey.id? 'opened':''}"
-						href="${createLink(controller: 'editSurvey', action:'summaryPage', params:[organisation: organisation?.id, survey: survey.id])}">
+					<li id="survey-${survey.id}" class="foldable ${currentSurvey?.id == survey.id? 'current':''}">
+						<a class="foldable-toggle" href="#">(toggle)</a> 
+						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLink(controller: 'editSurvey', action:'summaryPage', params:[organisation: organisation?.id, survey: survey.id])}">
 							<g:i18n field="${survey.names}" />
-					</a>
+						</a>
 						<ul>
 							<g:each in="${survey.getObjectives()}" var="objective">
-
-								<li id="objective-${objective.id}"
-									class="foldable ${currentSurveyObjective?.id == objective.id?'current':''}">
-									<a class="foldable-toggle" href="#">(toggle)</a> <a
-									class="item ${currentSurveyObjective?.id == objective.id?'opened':''}"
-									href="${createLink(controller:'editSurvey', action:'summaryPage', params:[organisation: organisation?.id, objective: objective.id])}">
+								<li id="objective-${objective.id}" class="foldable ${currentSurveyObjective?.id == objective.id?'current':''}">
+									<a class="foldable-toggle" href="#">(toggle)</a> 
+									<a class="item ${currentSurveyObjective?.id == objective.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'summaryPage', params:[organisation: organisation?.id, objective: objective.id])}">
 										<span><g:i18n field="${objective.names}" /></span>
-								</a>
+									</a>
 									<ul class="survey-section">
 										<g:each in="${objective.getSections()}" var="section">
-
-											<li id="section-${section.id}"><a
-												class="item ${currentSurveySection?.id == section.id?'opened':''}"
-												href="${createLink(controller:'editSurvey', action:'summaryPage', params:[organisation: organisation?.id, section: section.id])}">
+											<li id="section-${section.id}">
+												<a class="item ${currentSurveySection?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'summaryPage', params:[organisation: organisation?.id, section: section.id])}">
 													<span><g:i18n field="${section.names}" /></span>
-											</a></li>
+												</a>
+											</li>
 										</g:each>
 									</ul>
 								</li>
 							</g:each>
-						</ul></li>
+						</ul>
+					</li>
 				</g:each>
 			</ul>
 		</div>
