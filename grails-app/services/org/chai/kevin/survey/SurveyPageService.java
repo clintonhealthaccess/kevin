@@ -31,6 +31,7 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,6 +42,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.LanguageService;
+import org.chai.kevin.Orderable;
+import org.chai.kevin.Ordering;
+import org.chai.kevin.Ordering.OrderingComparator;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
@@ -69,6 +74,7 @@ public class SurveyPageService {
 	
 	private static Log log = LogFactory.getLog(SurveyPageService.class);
 	
+	private LanguageService languageService;
 	private SurveyService surveyService;
 	private SurveyValueService surveyValueService;
 	private OrganisationService organisationService;
@@ -76,6 +82,10 @@ public class SurveyPageService {
 	private ValidationService validationService;
 	private SessionFactory sessionFactory;
 	private GrailsApplication grailsApplication;
+	
+	private Comparator<Orderable<Ordering>> getOrderingComparator() {
+		return Ordering.getOrderableComparator(languageService.getCurrentLanguage(), languageService.getFallbackLanguage());
+	}
 	
 	@Transactional(readOnly = true)
 	public Survey getDefaultSurvey() {
@@ -202,8 +212,8 @@ public class SurveyPageService {
 	public SurveyPage getSurveyPage(Organisation organisation, SurveyQuestion currentQuestion) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
-		Map<SurveyElement, SurveyEnteredValue> elements = new LinkedHashMap<SurveyElement, SurveyEnteredValue>();
-		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new LinkedHashMap<SurveyQuestion, SurveyEnteredQuestion>();
+		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
+		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		
 		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, currentQuestion);
 		questions.put(currentQuestion, enteredQuestion);
@@ -212,7 +222,7 @@ public class SurveyPageService {
 			elements.put(element, enteredValue);
 		}
 		
-		return new SurveyPage(organisation, currentQuestion.getSurvey(), null, null, null, null, questions, elements);
+		return new SurveyPage(organisation, currentQuestion.getSurvey(), null, null, null, null, questions, elements, getOrderingComparator());
 	}
 	
 	@Transactional(readOnly = false)
@@ -224,8 +234,8 @@ public class SurveyPageService {
 		SurveyObjective currentObjective = currentSection.getObjective();
 		Survey survey = currentObjective.getSurvey();
 		
-		Map<SurveyObjective, SurveyEnteredObjective> objectives = new LinkedHashMap<SurveyObjective, SurveyEnteredObjective>();
-		Map<SurveySection, SurveyEnteredSection> sections = new LinkedHashMap<SurveySection, SurveyEnteredSection>();
+		Map<SurveyObjective, SurveyEnteredObjective> objectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
+		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
 		for (SurveyObjective objective : survey.getObjectives(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
 			objectives.put(objective, enteredObjective);
@@ -236,8 +246,8 @@ public class SurveyPageService {
 			}
 		}
 		
-		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new LinkedHashMap<SurveyQuestion, SurveyEnteredQuestion>();
-		Map<SurveyElement, SurveyEnteredValue> elements = new LinkedHashMap<SurveyElement, SurveyEnteredValue>();
+		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
+		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
 		for (SurveyQuestion question : currentSection.getQuestions(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
 			questions.put(question, enteredQuestion);
@@ -248,7 +258,7 @@ public class SurveyPageService {
 			}
 		}
 		
-		return new SurveyPage(organisation, survey, currentObjective, currentSection, objectives, sections, questions, elements);
+		return new SurveyPage(organisation, survey, currentObjective, currentSection, objectives, sections, questions, elements, getOrderingComparator());
 	}
 	
 	@Transactional(readOnly = false)
@@ -259,8 +269,8 @@ public class SurveyPageService {
 		
 		Survey survey = currentObjective.getSurvey();
 		
-		Map<SurveyObjective, SurveyEnteredObjective> objectives = new LinkedHashMap<SurveyObjective, SurveyEnteredObjective>();
-		Map<SurveySection, SurveyEnteredSection> sections = new LinkedHashMap<SurveySection, SurveyEnteredSection>();
+		Map<SurveyObjective, SurveyEnteredObjective> objectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
+		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
 		for (SurveyObjective objective : survey.getObjectives(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
 			objectives.put(objective, enteredObjective);
@@ -271,8 +281,8 @@ public class SurveyPageService {
 			}
 		}
 
-		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new LinkedHashMap<SurveyQuestion, SurveyEnteredQuestion>();
-		Map<SurveyElement, SurveyEnteredValue> elements = new LinkedHashMap<SurveyElement, SurveyEnteredValue>();
+		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
+		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
 		for (SurveySection section : currentObjective.getSections(organisation.getOrganisationUnitGroup())) {
 			for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
 				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
@@ -285,7 +295,7 @@ public class SurveyPageService {
 			}
 		}
 		
-		return new SurveyPage(organisation, survey, currentObjective, null, objectives, sections, questions, elements);
+		return new SurveyPage(organisation, survey, currentObjective, null, objectives, sections, questions, elements, getOrderingComparator());
 	}
 	
 	@Transactional(readOnly = false)
@@ -308,7 +318,7 @@ public class SurveyPageService {
 			}
 
 		}
-		return new SurveyPage(organisation, survey, null, null, null, null,null, elements);
+		return new SurveyPage(organisation, survey, null, null, null, null,null, elements, getOrderingComparator());
 	}
 	
 
@@ -318,19 +328,18 @@ public class SurveyPageService {
 		
 		organisationService.loadGroup(organisation);
 		
-		Map<SurveyObjective, SurveyEnteredObjective> objectives = new LinkedHashMap<SurveyObjective, SurveyEnteredObjective>();
-		Map<SurveySection, SurveyEnteredSection> sections = new LinkedHashMap<SurveySection, SurveyEnteredSection>();
+		Map<SurveyObjective, SurveyEnteredObjective> objectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
+		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
 		for (SurveyObjective objective : survey.getObjectives(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
 			objectives.put(objective, enteredObjective);
-			
 			
 			for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
 				SurveyEnteredSection enteredSection = getSurveyEnteredSection(organisation, section);
 				sections.put(section, enteredSection);
 			}
 		}
-		return new SurveyPage(organisation, survey, null, null, objectives, sections, null, null);
+		return new SurveyPage(organisation, survey, null, null, objectives, sections, null, null, getOrderingComparator());
 	}
 	
 	@Transactional(readOnly = false)
@@ -580,7 +589,7 @@ public class SurveyPageService {
 			setObjectiveStatus(objective, organisation);
 		}
 		
-		return new SurveyPage(organisation, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements);
+		return new SurveyPage(organisation, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements, getOrderingComparator());
 	}
 
 	// FIXME HACK 
@@ -788,6 +797,10 @@ public class SurveyPageService {
 	
 	public void setSurveyService(SurveyService surveyService) {
 		this.surveyService = surveyService;
+	}
+
+	public void setLanguageService(LanguageService languageService) {
+		this.languageService = languageService;
 	}
 	
 	public void setGrailsApplication(GrailsApplication grailsApplication) {

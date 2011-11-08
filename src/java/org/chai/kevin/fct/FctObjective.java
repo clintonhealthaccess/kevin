@@ -42,26 +42,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Translatable;
+import org.chai.kevin.reports.ReportEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 
 @Entity(name = "FctObjective")
 @Table(name = "dhsst_fct_objective")
-public class FctObjective extends Translatable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5921900390935911828L;
+public class FctObjective extends ReportEntity {
 	
 	private Long id;
-	private Integer order;
 	private List<FctTarget> targets = new ArrayList<FctTarget>();
 	
 	@Id
@@ -73,34 +69,21 @@ public class FctObjective extends Translatable {
 		this.id = id;
 	}
 	
+	@OneToMany(cascade=CascadeType.ALL,targetEntity=FctTarget.class, mappedBy="objective")
+	@OrderBy("order")
+	public List<FctTarget> getTargets() {
+		return targets;
+	}
+	
 	public void setTargets(List<FctTarget> targets) {
 		this.targets = targets;
 	}
-	
-	@OneToMany(cascade=CascadeType.ALL,targetEntity=FctTarget.class, mappedBy="objective")
-	@Sort(type=SortType.COMPARATOR, comparator=FctTargetSorter.class)
-	public List<FctTarget> getTargets() {
-		if(targets.size() > 1){
-			Collections.sort(targets, new FctTargetSorter());	
-		}		
-		return targets;
-	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-	
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	
 	@Transient
 	public void addTarget(FctTarget target) {
 		target.setObjective(this);
 		targets.add(target);
-		Collections.sort(targets, new FctTargetSorter());
+		Collections.sort(targets);
 	}
 
 }

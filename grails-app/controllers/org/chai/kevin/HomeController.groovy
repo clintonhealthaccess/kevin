@@ -3,7 +3,6 @@ package org.chai.kevin
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
-import org.chai.kevin.util.LanguageUtils;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -35,6 +34,8 @@ import org.chai.kevin.util.LanguageUtils;
 
 class HomeController {
 	
+	def languageService
+	
 	def index = {
 		if (log.isDebugEnabled()) log.debug("home.index, params:"+params)
 		User user = User.findByUsername(SecurityUtils.subject.principal)
@@ -47,8 +48,8 @@ class HomeController {
 		}
 	}
 	
-	def upgrade = {render (view:'upgrade_'+LanguageUtils.currentLanguage)}
-	def about = {render (view:'about_contact_'+LanguageUtils.currentLanguage)}
-	def contact = {render (view:'about_contact_'+LanguageUtils.currentLanguage)}
-	def helpdesk = {render (view:'helpdesk_'+LanguageUtils.currentLanguage)}
+	def upgrade = {render (view:'upgrade_'+languageService.currentLanguage)}
+	def about = {render (view:'about_contact_'+languageService.currentLanguage)}
+	def contact = {render (view:'about_contact_'+languageService.currentLanguage)}
+	def helpdesk = {render (view:'helpdesk_'+languageService.currentLanguage)}
 }

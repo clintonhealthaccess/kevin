@@ -63,10 +63,9 @@ import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-@SuppressWarnings("serial")
 @Entity(name = "SurveyTableRow")
 @Table(name = "dhsst_survey_table_row")
-public class SurveyTableRow extends Orderable<Ordering> {
+public class SurveyTableRow extends Orderable<Integer> {
 
 	private Long id;
 	private Integer order;
@@ -90,7 +89,7 @@ public class SurveyTableRow extends Orderable<Ordering> {
 	public Integer getOrder() {
 		return order;
 	}
-
+	
 	public void setOrder(Integer order) {
 		this.order = order;
 	}

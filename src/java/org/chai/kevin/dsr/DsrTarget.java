@@ -42,22 +42,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Translatable;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target")
-public class DsrTarget extends Translatable {
+public class DsrTarget extends ReportEntity {
 	
 	private Long id;
-	private Integer order;
 	private DsrObjective objective;
 	private Expression expression;
 	private DsrTargetCategory category;
 	private String format;
 	private String groupUuidString;  //comma-separated list of organisation ids
-	
 
 	@Id
 	@GeneratedValue
@@ -69,16 +67,6 @@ public class DsrTarget extends Translatable {
 		this.id = id;
 	}
 	
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-
 	@ManyToOne(targetEntity=Expression.class, optional=false)
 	public Expression getExpression() {
 		return expression;
@@ -128,6 +116,7 @@ public class DsrTarget extends Translatable {
 	public Set<String> getGroupUuids() {
 		return Utils.split(groupUuidString);
 	}
+	
 	public void setGroupUuids(Set<String> groupUuids) {
 		this.groupUuidString = Utils.unsplit(groupUuids);
 	}

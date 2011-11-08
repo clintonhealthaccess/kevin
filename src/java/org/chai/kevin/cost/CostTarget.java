@@ -41,13 +41,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Translatable;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="CostTarget")
 @Table(name="dhsst_cost_target")
-public class CostTarget extends Translatable {
+public class CostTarget extends ReportEntity {
 
 	private static final long serialVersionUID = 2450846525775669571L;
 
@@ -72,8 +72,6 @@ public class CostTarget extends Translatable {
 	private CostRampUp costRampUp;
 	private CostType costType;
 	private String groupUuidString = "";
-	
-	private Integer order;
 	
 	@Id
 	@GeneratedValue
@@ -139,15 +137,6 @@ public class CostTarget extends Translatable {
 	}
 	public void setGroupUuids(Set<String> groupUuids) {
 		this.groupUuidString = Utils.unsplit(groupUuids);
-	}
-	
-	@Basic(optional=true)
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	public void setOrder(Integer order) {
-		this.order = order;
 	}
 	
 	@Transient

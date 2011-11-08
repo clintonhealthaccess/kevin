@@ -44,14 +44,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Translatable;
+import org.chai.kevin.reports.ReportEntity;
 
 @Entity(name = "DsrTargetCategory")
 @Table(name = "dhsst_dsr_target_category")
-public class DsrTargetCategory extends Translatable {
+public class DsrTargetCategory extends ReportEntity {
 
 	private Long id;
-	private Integer order;
 	private List<DsrTarget> targets = new ArrayList<DsrTarget>();
 
 	@Id
@@ -62,16 +61,6 @@ public class DsrTargetCategory extends Translatable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-
-	public void setOrder(Integer order) {
-		this.order = order;
 	}
 
 	@OneToMany(targetEntity=DsrTarget.class, mappedBy="category", fetch=FetchType.EAGER)

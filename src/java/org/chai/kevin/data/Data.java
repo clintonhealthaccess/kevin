@@ -20,7 +20,6 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.Timestamped;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.StoredValue;
@@ -31,7 +30,7 @@ import org.hisp.dhis.period.Period;
 @Entity(name="Data")
 @Table(name="dhsst_data", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy=InheritanceType.JOINED)
-abstract public class Data<T extends StoredValue> implements Timestamped, Serializable {
+abstract public class Data<T extends StoredValue> implements Serializable {
 	
 	private static final long serialVersionUID = 7470871788061305391L;
 

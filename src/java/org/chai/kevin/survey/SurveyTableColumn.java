@@ -55,10 +55,9 @@ import org.chai.kevin.Translation;
 
 import org.chai.kevin.util.Utils;
 
-@SuppressWarnings("serial")
 @Entity(name = "SurveyTableColumn")
 @Table(name = "dhsst_survey_table_column")
-public class SurveyTableColumn extends Orderable<Ordering> {
+public class SurveyTableColumn extends Orderable<Integer> {
 
 	private Long id;
 	private Integer order;
@@ -81,7 +80,7 @@ public class SurveyTableColumn extends Orderable<Ordering> {
 	public Integer getOrder() {
 		return order;
 	}
-
+	
 	public void setOrder(Integer order) {
 		this.order = order;
 	}

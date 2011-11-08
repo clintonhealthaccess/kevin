@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,19 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.fct;
+package org.chai.kevin.fct
+
 /**
  * @author Jean Kahigiso M.
  *
  */
-
-import java.util.Comparator;
-
-public class FctTargetSorter implements Comparator<FctTarget> {
-	
-	@Override
-	public int compare(FctTarget targetOne, FctTarget targetTwo) {
-		return targetOne.compareTo(targetTwo);
-	}
-	
+constraints ={
+	code(nullable: false, blank: false, unique: true)
 }

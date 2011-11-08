@@ -59,13 +59,11 @@ import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
-@SuppressWarnings("serial")
 @Entity(name="Survey")
 @Table(name="dhsst_survey")
-public class Survey extends Orderable<Ordering> {
+public class Survey {
 	
 	private Long id;
-	private Ordering order;
 	private Period lastPeriod;
 	private Period period;
 	private boolean active = false;
@@ -82,16 +80,6 @@ public class Survey extends Orderable<Ordering> {
 	
 	public void setId(Long id) {
 		this.id = id;
-	}
-	
-	@Basic
-	@Column(name = "ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	
-	public void setOrder(Integer order) {
-		this.order = order;
 	}
 	
 	@Basic
@@ -145,7 +133,6 @@ public class Survey extends Orderable<Ordering> {
 	
 	@OneToMany(targetEntity = SurveyObjective.class, mappedBy="survey")
 	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
-	@OrderBy(value="order")
 	public List<SurveyObjective> getObjectives() {
 		return objectives;
 	}
@@ -158,7 +145,6 @@ public class Survey extends Orderable<Ordering> {
 	public void addObjective(SurveyObjective objective){
 		objective.setSurvey(this);
 		objectives.add(objective);
-		Collections.sort(objectives);
 	}
 	
 	@OneToMany(mappedBy="survey", targetEntity=SurveySkipRule.class)
@@ -199,7 +185,6 @@ public class Survey extends Orderable<Ordering> {
 		copy.setNames(new Translation(getNames()));
 		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setActive(isActive());
-		copy.setOrder(getOrder());
 		copy.setPeriod(getPeriod());
 		for (SurveyObjective objective : getObjectives()) {
 			copy.getObjectives().add(cloner.getObjective(objective));

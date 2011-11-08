@@ -74,15 +74,16 @@ class SectionController extends AbstractEntityController {
 		
 //		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	
 	def list = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
+		
 		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
 		List<SurveySection> sections = objective.sections;
+		Collections.sort(sections)
 
 		def max = Math.min(params['offset']+params['max'], sections.size())
 		

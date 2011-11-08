@@ -30,6 +30,8 @@ package org.chai.kevin.fct;
  * @author Jean Kahigiso M.
  *
  */
+import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,26 +40,26 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.chai.kevin.Translatable;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.Sum;
+import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @SuppressWarnings("serial")
 @Entity(name = "FctTarget")
 @Table(name = "dhsst_fct_target")
-public class FctTarget extends Translatable {
+public class FctTarget extends ReportEntity {
 	
 	private Long id;
-	private Integer order;
 	private FctObjective objective;
 	private Sum sum;
 	private String format;
 	private String groupUuidString; //comma-separated list of organisation ids
 	
-
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -68,19 +70,11 @@ public class FctTarget extends Translatable {
 		this.id = id;
 	}
 	
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-
 	@ManyToOne(targetEntity = FctObjective.class)
 	public FctObjective getObjective() {
 		return objective;
 	}
+	
 	public void setObjective(FctObjective objective) {
 		this.objective = objective;
 	}	
@@ -88,26 +82,37 @@ public class FctTarget extends Translatable {
 	@ManyToOne(targetEntity=Sum.class)
 	public Sum getSum() {
 		return sum;		
-	}	
+	}
+	
 	public void setSum(Sum sum){
 		this.sum = sum;
 	}
 	
-	public void setFormat(String format) {
-		this.format = format;
-	}
-
 	@Basic
 	public String getFormat() {
 		return format;
 	}
 
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
+	public void setFormat(String format) {
+		this.format = format;
 	}
+
     @Lob
 	public String getGroupUuidString() {
 		return groupUuidString;
+    }
+
+	public void setGroupUuidString(String groupUuidString) {
+		this.groupUuidString = groupUuidString;
+	}
+	
+    @Transient
+	public Set<String> getGroupUuids() {
+		return Utils.split(groupUuidString);
+	}
+	
+	public void setGroupUuids(Set<String> groupUuids) {
+		this.groupUuidString = Utils.unsplit(groupUuids);
 	}
 	
 }

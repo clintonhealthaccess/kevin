@@ -50,7 +50,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 import org.chai.kevin.util.Utils;
 
-@SuppressWarnings("serial")
 @Entity(name = "SurveySimpleQuestion")
 @Table(name = "dhsst_survey_single_question")
 public class SurveySimpleQuestion extends SurveyQuestion {

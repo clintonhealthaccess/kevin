@@ -5,7 +5,7 @@
 			<th>Name</th>
 			<th>Inactive</th>
 			<th>Value</th>
-			<th>Order</th>
+			<th>Order (language dependent)</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -28,7 +28,7 @@
 				<td><g:i18n field="${option.names}" /></td>
 				<td>${option.inactive?'\u2713':''}</td>
 				<td>${option.value}</td>
-				<td>${option.order}</td>
+				<td><g:i18n field="${option.order}" /></td>
 			</tr>
 		</g:each>
 	</tbody>

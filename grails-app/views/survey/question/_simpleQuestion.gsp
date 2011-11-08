@@ -2,7 +2,7 @@
 
 <div id="question-${question.id}" class="question question-simple" data-question="${question.id}">
 	<h4>
-		<span class="question-number">${question.section.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
+		<span class="question-number">${surveyPage.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
 	</h4>
 
 	<g:ifText field="${question.descriptions}">

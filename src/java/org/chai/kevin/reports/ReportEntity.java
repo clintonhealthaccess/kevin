@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.reports;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -36,13 +36,16 @@ import javax.persistence.Embedded;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 
+import org.chai.kevin.Orderable;
+import org.chai.kevin.Translation;
+
 // TODO get rid of this class
 @MappedSuperclass
-public abstract class Translatable extends Orderable {
+public abstract class ReportEntity extends Orderable<Integer> {
 
+	protected Integer order;
 	protected Translation names = new Translation();
 	protected Translation descriptions = new Translation();
-
 	protected String code;
 	
 	@Embedded
@@ -77,6 +80,16 @@ public abstract class Translatable extends Orderable {
 	public void setCode(String code) {
 		this.code = code;
 	}
+	
+	@Basic
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
+	}
+	
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
 
 	@Override
 	public int hashCode() {
@@ -92,9 +105,9 @@ public abstract class Translatable extends Orderable {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof Translatable))
+		if (!(obj instanceof ReportEntity))
 			return false;
-		Translatable other = (Translatable) obj;
+		ReportEntity other = (ReportEntity) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;

@@ -66,7 +66,8 @@ class QuestionController {
 		
 		SurveySection section = SurveySection.get(params.int('sectionId'))
 		List<SurveyQuestion> questions = section.questions;
-
+		Collections.sort(questions)
+		
 		def max = Math.min(params['offset']+params['max'], questions.size())
 		
 		render (view: '/survey/admin/list', model:[

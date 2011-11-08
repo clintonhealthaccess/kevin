@@ -61,7 +61,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 @Entity(name = "SurveyQuestion")
 @Table(name = "dhsst_survey_question")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class SurveyQuestion extends Orderable<Ordering> {
+public abstract class SurveyQuestion extends Orderable<Integer> {
 
 	public enum QuestionType {CHECKBOX("checkboxQuestion"), TABLE("tableQuestion"), SIMPLE("simpleQuestion");
 		private String template;
@@ -77,7 +77,7 @@ public abstract class SurveyQuestion extends Orderable<Ordering> {
 	}
 	
 	private Long id;
-	private Ordering order;
+	private Integer order;
 	private SurveySection section;
 	private String groupUuidString;
 	private Translation names = new Translation();
@@ -94,11 +94,11 @@ public abstract class SurveyQuestion extends Orderable<Ordering> {
 	}
 
 	@Basic
-	@Column(name = "ordering")
-	public Ordering getOrder() {
+	@Column(name="ordering")
+	public Integer getOrder() {
 		return order;
 	}
-
+	
 	public void setOrder(Integer order) {
 		this.order = order;
 	}

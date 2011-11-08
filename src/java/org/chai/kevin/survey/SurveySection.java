@@ -64,13 +64,12 @@ import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.apache.commons.collections.*;
 
-@SuppressWarnings("serial")
 @Entity(name = "SurveySection")
 @Table(name = "dhsst_survey_section")
-public class SurveySection extends Orderable<Ordering> {
+public class SurveySection extends Orderable<Integer> {
 
 	private Long id;
-	private Ordering order;
+	private Integer order;
 	private SurveyObjective objective;
 	private String groupUuidString;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
@@ -91,7 +90,7 @@ public class SurveySection extends Orderable<Ordering> {
 	public Integer getOrder() {
 		return order;
 	}
-
+	
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
@@ -125,7 +124,6 @@ public class SurveySection extends Orderable<Ordering> {
 
 	@OneToMany(targetEntity=SurveyQuestion.class, mappedBy="section")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	@OrderBy(value="order")
 	public List<SurveyQuestion> getQuestions() {
 		return questions;
 	}
@@ -137,7 +135,6 @@ public class SurveySection extends Orderable<Ordering> {
 	public void addQuestion(SurveyQuestion question) {
 		question.setSection(this);
 		questions.add(question);
-		Collections.sort(questions);
 	}
 
 	@Embedded
@@ -163,11 +160,6 @@ public class SurveySection extends Orderable<Ordering> {
 				this.objective.getOrganisationUnitGroupApplicable()));
 	}
 
-	@Transient
-	public Integer getQuestionNumber(SurveyQuestion question) {
-		return questions.indexOf(question)+1;
-	}
-	
 	@Transient
 	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
 		List<SurveyElement> result = new ArrayList<SurveyElement>();

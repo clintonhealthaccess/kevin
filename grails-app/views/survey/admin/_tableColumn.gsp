@@ -8,7 +8,11 @@
 </div>
 <div>
 	<span class="bold"><g:message code="facility.type.label" default="Facility Groups"/>:</span>
-	<span> ${column.groupUuidString}</span>
+	<span>${column.groupUuidString}</span>
+</div>
+<div>
+	<span class="bold"><g:message code="survey.tablequestion.tablecolumn.order.label" default="Order"/>:</span>
+	<span>${column.order}</span>
 </div>
 <input type="hidden" name="columnNames" value="${index}"/>
 <g:i18nRichTextarea name="columnNames[${index}].names" bean="${column}" value="${column.names}" height="50"

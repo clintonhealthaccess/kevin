@@ -30,24 +30,14 @@ package org.chai.kevin.data
  * @author JeanKahigiso
  *
  */
-import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.DataService
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.OrganisationService
-import org.chai.kevin.PeriodSorter
 import org.chai.kevin.ValueService
-import org.chai.kevin.data.DataElement
-import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement
-import org.chai.kevin.survey.SurveyValueService
-import org.chai.kevin.survey.SurveyService;
-import org.chai.kevin.value.DataValue
-import org.hisp.dhis.organisationunit.OrganisationUnit
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.survey.SurveyService
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
-import org.springframework.transaction.annotation.Transactional;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DataElementController extends AbstractEntityController {
 

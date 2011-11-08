@@ -1,11 +1,17 @@
 package org.chai.kevin.survey;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
+import org.chai.kevin.Orderable;
+import org.chai.kevin.Ordering;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
@@ -23,13 +29,15 @@ public class SurveyPage {
 	private Map<SurveySection, SurveyEnteredSection> sections;
 	private Map<SurveyQuestion, SurveyEnteredQuestion> questions;
 	private Map<SurveyElement, SurveyEnteredValue> elements;
+	private Comparator<Orderable<Ordering>> comparator;
 	
 	public SurveyPage(Organisation organisation, Survey survey, 
 			SurveyObjective objective, SurveySection section,
 			Map<SurveyObjective, SurveyEnteredObjective> objectives,
 			Map<SurveySection, SurveyEnteredSection> sections,
 			Map<SurveyQuestion, SurveyEnteredQuestion> questions,
-			Map<SurveyElement, SurveyEnteredValue> elements) {
+			Map<SurveyElement, SurveyEnteredValue> elements,
+			Comparator<Orderable<Ordering>> comparator) {
 		super();
 		this.organisation = organisation;
 		this.survey = survey;
@@ -39,6 +47,8 @@ public class SurveyPage {
 		this.sections = sections;
 		this.questions = questions;
 		this.elements = elements;
+		this.comparator = comparator;
+		
 	}
 
 	public Period getPeriod() {
@@ -61,20 +71,67 @@ public class SurveyPage {
 		return section;
 	}
 	
-	public Map<SurveyObjective, SurveyEnteredObjective> getObjectives() {
+	public Map<SurveyObjective, SurveyEnteredObjective> getEnteredObjectives() {
 		return objectives;
 	}
 
-	public Map<SurveySection, SurveyEnteredSection> getSections() {
+	public Map<SurveySection, SurveyEnteredSection> getEnteredSections() {
 		return sections;
 	}
 
-	public Map<SurveyQuestion, SurveyEnteredQuestion> getQuestions() {
+	public Map<SurveyQuestion, SurveyEnteredQuestion> getEnteredQuestions() {
 		return questions;
 	}
 
 	public Map<SurveyElement, SurveyEnteredValue> getElements() {
 		return elements;
+	}
+	
+	public Integer getQuestionNumber(SurveyQuestion question) {
+		return getQuestions(question.getSection()).indexOf(question)+1;
+	}
+
+	public List<SurveyCheckboxOption> getOptions(SurveyCheckboxQuestion question) {
+		List<SurveyCheckboxOption> options = question.getOptions(organisation.getOrganisationUnitGroup());
+		Collections.sort(options);
+		return options;
+	}
+	
+	public List<SurveyTableColumn> getColumns(SurveyTableQuestion question) {
+		List<SurveyTableColumn> columns = question.getColumns(organisation.getOrganisationUnitGroup());
+		Collections.sort(columns);
+		return columns;
+	}
+	
+	public List<SurveyTableRow> getRows(SurveyTableQuestion question) {
+		List<SurveyTableRow> rows = question.getRows(organisation.getOrganisationUnitGroup());
+		Collections.sort(rows);
+		return rows;
+	}
+	
+	public List<SurveyQuestion> getQuestions(SurveySection section) {
+		List<SurveyQuestion> questions = section.getQuestions(organisation.getOrganisationUnitGroup());
+		Collections.sort(questions);
+		return questions;
+	}
+	
+	public List<SurveySection> getSections(SurveyObjective objective) {
+		List<SurveySection> sections = objective.getSections(organisation.getOrganisationUnitGroup());
+		Collections.sort(sections);
+		return sections;
+	}
+	
+	public List<SurveyObjective> getObjectives() {
+		List<SurveyObjective> objectives = survey.getObjectives(organisation.getOrganisationUnitGroup());
+		Collections.sort(objectives);
+		return objectives;
+	}
+	
+	public List<EnumOption> getEnumOptions(Enum enume) {
+		if (enume == null) return new ArrayList<EnumOption>();
+		List<EnumOption> options = enume.getActiveEnumOptions();
+		Collections.sort(options, comparator);
+		return options;
 	}
 
 	public List<SurveySection> getIncompleteSections(SurveyObjective objective) {

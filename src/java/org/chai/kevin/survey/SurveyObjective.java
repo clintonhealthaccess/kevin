@@ -54,6 +54,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Orderable;
+import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
 
 import org.chai.kevin.util.Utils;
@@ -61,16 +63,14 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
-@SuppressWarnings("serial")
 @Entity(name = "SurveyObjective")
 @Table(name = "dhsst_survey_objective")
-public class SurveyObjective extends SurveyTranslatable {
+public class SurveyObjective extends Orderable<Integer> {
 
 	private Long id;
 	private Integer order;
 	private Survey survey;
 	private List<SurveySection> sections = new ArrayList<SurveySection>();
-//	private SurveyObjective dependency;
 	private String groupUuidString;
 	private Translation names = new Translation();
 
@@ -89,14 +89,13 @@ public class SurveyObjective extends SurveyTranslatable {
 	public Integer getOrder() {
 		return order;
 	}
-
+	
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
-
+	
 	@OneToMany(targetEntity=SurveySection.class, mappedBy="objective")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	@OrderBy(value = "order")
 	public List<SurveySection> getSections() {
 		return sections;
 	}
@@ -108,7 +107,6 @@ public class SurveyObjective extends SurveyTranslatable {
 	public void addSection(SurveySection section) {
 		section.setObjective(this);
 		sections.add(section);
-		Collections.sort(sections);
 	}
 
 	public void setSurvey(Survey survey) {

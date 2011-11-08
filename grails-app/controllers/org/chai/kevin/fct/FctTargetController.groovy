@@ -32,9 +32,9 @@ package org.chai.kevin.fct;
  */
 
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.dsr.DsrTarget
 import org.chai.kevin.util.Utils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -48,7 +48,7 @@ class FctTargetController extends AbstractEntityController {
 	}
 
 	def createEntity() {
-		return new DsrTarget()
+		return new FctTarget()
 	}
 
 	def getLabel() {
@@ -56,7 +56,7 @@ class FctTargetController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "/Fct/createTarget"
+		return "/fct/createTarget"
 	}
 
 	def getModel(def entity) {
@@ -64,7 +64,7 @@ class FctTargetController extends AbstractEntityController {
 			target: entity,
 			objectives: FctObjective.list(),
 			groups: organisationService.getGroupsForExpression(),
-			expressions: Expression.list(),
+			sums: Sum.list(),
 			groupUuids: Utils.split(entity.groupUuidString)
 		]
 	}
@@ -78,10 +78,6 @@ class FctTargetController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		if(entity.category != null){
-			entity.category.targets.remove(entity)
-			entity.category.save()
-		}
 		entity.objective.targets.remove(entity)
 		entity.objective.save()
 		entity.delete()
@@ -92,7 +88,7 @@ class FctTargetController extends AbstractEntityController {
 
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		entity.groupUuidString = Utils.unsplit(params['groupUuids'])
+//		entity.groupUuidString = Utils.unsplit(params['groupUuids'])
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}

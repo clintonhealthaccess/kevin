@@ -30,7 +30,6 @@ package org.chai.kevin.cost
 
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.data.DataElement;

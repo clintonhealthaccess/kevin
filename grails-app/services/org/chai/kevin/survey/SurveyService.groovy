@@ -37,11 +37,11 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 
@@ -53,6 +53,7 @@ class SurveyService {
 
 	static transactional = true
 	
+	def languageService
 	def dataService
 	def organisationService
 	def sessionFactory
@@ -76,8 +77,8 @@ class SurveyService {
 		
 		StringUtils.split(text).each { chunk ->
 			questions.retainAll { question ->
-				Utils.matches(chunk, question.names[LanguageUtils.getCurrentLanguage()]) ||
-				Utils.matches(chunk, question.descriptions[LanguageUtils.getCurrentLanguage()])
+				Utils.matches(chunk, question.names[languageService.getCurrentLanguage()]) ||
+				Utils.matches(chunk, question.descriptions[languageService.getCurrentLanguage()])
 			}
 		}
 		
@@ -171,7 +172,7 @@ class SurveyService {
 		}
 
 		return surveyElements.sort {
-			it.dataElement.names[LanguageUtils.getCurrentLanguage()]
+			it.dataElement.names[languageService.getCurrentLanguage()]
 		}
 	}
 	

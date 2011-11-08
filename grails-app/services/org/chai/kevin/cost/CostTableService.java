@@ -36,7 +36,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
@@ -62,7 +61,6 @@ public class CostTableService {
 	}
 
 	public Explanation getExplanation(Period period, CostTarget target, Organisation organisation) {
-		GroupCollection collection = new GroupCollection(organisationService.getGroupsForExpression());
 		
 		Map<Organisation, Map<Integer, Cost>> explanationMap = new HashMap<Organisation, Map<Integer,Cost>>();
 		organisationService.loadChildren(organisation, getSkipLevelArray());
@@ -70,32 +68,29 @@ public class CostTableService {
 		for (Organisation child : organisation.getChildren()) {
 			if (	organisationService.loadLevel(child) != organisationService.getFacilityLevel()
 					|| 
-					appliesToOrganisation(target, child, collection)
+					appliesToOrganisation(target, child)
 			) {
-				explanationMap.put(child, getCost(target, child, period, collection));
+				explanationMap.put(child, getCost(target, child, period));
 			}
 		}
 		
 		List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
 		for (String groupUuid : Utils.split(target.getGroupUuidString())) {
-			groups.add(collection.getGroupByUuid(groupUuid));
+			groups.add(organisationService.getOrganisationUnitGroup(groupUuid));
 		}
 		return new Explanation(target, groups, target.getParent(), period, new ArrayList<Organisation>(explanationMap.keySet()), costService.getYears(), explanationMap);
 	}
 	
-	private boolean appliesToOrganisation(CostTarget target, Organisation organisation, GroupCollection collection) {
-		Set<OrganisationUnitGroup> groups = organisation.getOrganisationUnit().getGroups();
-		for (String groupUuid : Utils.split(target.getGroupUuidString())) {
-			if (groups.contains(collection.getGroupByUuid(groupUuid))) return true;
-		}
-		return false;
+	private boolean appliesToOrganisation(CostTarget target, Organisation organisation) {
+		organisationService.loadGroup(organisation);
+		return Utils.split(target.getGroupUuidString()).contains(organisation.getOrganisationUnitGroup().getUuid());
 	}
 	
-	private Map<Integer, Cost> getCost(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
+	private Map<Integer, Cost> getCost(CostTarget target, Organisation organisation, Period period) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
 		if (organisationService.loadLevel(organisation) == organisationService.getFacilityLevel()) {
-			return getCostForLeafOrganisation(target, organisation, period, collection);
+			return getCostForLeafOrganisation(target, organisation, period);
 		}
 		else {
 			Map<Integer, Cost> result = new HashMap<Integer, Cost>();
@@ -104,7 +99,7 @@ public class CostTableService {
 				result.put(year, new Cost(target, year, period, organisation));
 			}
 			for (Organisation child : organisation.getChildren()) {
-				Map<Integer, Cost> costs = getCost(target, child, period, collection);
+				Map<Integer, Cost> costs = getCost(target, child, period);
 				
 				for (Integer year : costService.getYears()) {
 					if (costs.containsKey(year)) {
@@ -117,11 +112,11 @@ public class CostTableService {
 		}
 	}
 	
-	private Map<Integer, Cost> getCostForLeafOrganisation(CostTarget target, Organisation organisation, Period period, GroupCollection collection) {
-		if (log.isDebugEnabled()) log.debug("getCostForLeafOrganisation(target="+target+", organisation:"+organisation+", period:"+period+", groupCollection:"+collection+")");
+	private Map<Integer, Cost> getCostForLeafOrganisation(CostTarget target, Organisation organisation, Period period) {
+		if (log.isDebugEnabled()) log.debug("getCostForLeafOrganisation(target="+target+", organisation:"+organisation+", period:"+period+")");
 		
 		Map<Integer, Cost> result = new HashMap<Integer, Cost>();
-		if (appliesToOrganisation(target, organisation, collection)) {
+		if (appliesToOrganisation(target, organisation)) {
 			boolean hasMissingValues = false;
 
 			if (log.isDebugEnabled()) log.debug("target "+target+" applies to organisation "+organisation);
@@ -170,9 +165,8 @@ public class CostTableService {
 	private Map<CostTarget, Map<Integer, Cost>> getValues(Period period, List<CostTarget> targets, Organisation organisation) {
 		Map<CostTarget, Map<Integer, Cost>> result = new HashMap<CostTarget, Map<Integer,Cost>>();
 		
-		GroupCollection collection = new GroupCollection(organisationService.getGroupsForExpression());
 		for (CostTarget target : targets) {
-			result.put(target, getCost(target, organisation, period, collection));
+			result.put(target, getCost(target, organisation, period));
 		}
 		return result;
 	}

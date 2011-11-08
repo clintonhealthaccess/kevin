@@ -7,6 +7,8 @@
 	<g:form url="[controller:'enumOption', action:'save', params:[targetURI: targetURI]]" useToken="true">
 	<input type="hidden" name="enume.id" value="${option.enume.id}"/>
 	<g:i18nTextarea name="names" bean="${option}" value="${option.names}" label="Option" field="names" height="100"  width="300" maxHeight="100" />
+	<g:i18nInput name="order" label="Order" bean="${option}" value="${option.order}" field="order"/>
+	
 	<g:input name="value" label="Value" bean="${option}" field="value"/>
 	
 	<div class="row">
@@ -14,8 +16,7 @@
 		<g:checkBox name="inactive" value="${option.inactive}" />
 	</div>
 		
-	<g:input name="order" label="Order" bean="${option}" field="order"/>
-		<g:if test="${option.id != null}">
+	<g:if test="${option.id != null}">
 			<input type="hidden" name="id" value="${option.id}"></input>
 		</g:if>
 		<div class="row">

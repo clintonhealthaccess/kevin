@@ -77,7 +77,6 @@ public class Enum {
 		
 	@OneToMany(mappedBy="enume", targetEntity=EnumOption.class, fetch=FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
-	@OrderBy(value="order")
 	public List<EnumOption> getEnumOptions() {
 		return enumOptions;
 	}
@@ -89,7 +88,6 @@ public class Enum {
 	public void addEnumOption(EnumOption enumOption) {
 		enumOptions.add(enumOption);
 		enumOption.setEnume(this);
-		Collections.sort(enumOptions);
 	}
 	
 	@Transient

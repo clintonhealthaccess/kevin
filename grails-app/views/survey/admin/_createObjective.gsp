@@ -9,6 +9,7 @@
 
 	<g:form url="[controller:'objective', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${objective}" value="${objective?.names}" label="Name" field="names" />
+		<g:input name="order" label="Order" bean="${objective}" field="order"/>
 		
 		<div class="row">
 			<input type="hidden" name="survey.id" value="${objective.survey.id}" />
@@ -18,7 +19,6 @@
 		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${objective}" field="groupUuidString" 
 			from="${groups}" value="${objective.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
 
-		<g:input name="order" label="Order" bean="${objective}" field="order"/>
 		<g:if test="${objective.id != null}">
 			<input type="hidden" name="id" value="${objective.id}"></input>
 		</g:if>

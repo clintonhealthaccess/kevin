@@ -45,18 +45,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Translatable;
+import org.chai.kevin.reports.ReportEntity;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 
 @Entity(name = "DsrObjective")
 @Table(name = "dhsst_dsr_objective")
-public class DsrObjective extends Translatable {
+public class DsrObjective extends ReportEntity {
 	
 	private static final long serialVersionUID = 5921900390935911828L;
 	
 	private Long id;
-	private Integer order;
 	private List<DsrTarget> targets = new ArrayList<DsrTarget>();
 	
 	@Id
@@ -76,16 +75,6 @@ public class DsrObjective extends Translatable {
 
 	public void setTargets(List<DsrTarget> targets) {
 		this.targets = targets;
-	}
-
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-
-	public void setOrder(Integer order) {
-		this.order = order;
 	}
 
 	@Transient

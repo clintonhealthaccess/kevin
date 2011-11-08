@@ -8,7 +8,7 @@
 		<r:require modules="survey,datepicker"/> 
 	</head>
 	<body>
-		<g:set var="closed" value="${surveyPage.objectives[surveyPage.objective].closed}"/>
+		<g:set var="closed" value="${surveyPage.enteredObjectives[surveyPage.objective].closed}"/>
 		<g:set var="readonly" value="${surveyPage.isReadonly(surveyPage.objective)}"/>
 	
 		<div id="survey">
@@ -33,8 +33,8 @@
 					<div>
 						<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 							<ol id="questions">
-								<g:each in="${surveyPage.section.getQuestions(surveyPage.organisation.organisationUnitGroup)}" var="question" status="i">
-									<li class="question-container ${surveyPage.questions[question].skipped?'hidden':''} ${!surveyPage.questions[question].complete?'incomplete':''} ${surveyPage.questions[question].invalid?'invalid':''}">
+								<g:each in="${surveyPage.getQuestions(surveyPage.section)}" var="question" status="i">
+									<li class="question-container ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}">
 										<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1]" />
 									</li> 
 								</g:each>

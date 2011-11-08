@@ -162,7 +162,7 @@ public class JSONMap<T> implements Map<String, T>, Serializable {
 
 	@Override
 	public String toString() {
-		return "Translation [jsonText=" + jsonText + "]";
+		return "JSONMap [jsonText=" + jsonText + "]";
 	}
 	
 	

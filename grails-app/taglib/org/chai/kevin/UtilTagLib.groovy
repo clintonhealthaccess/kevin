@@ -1,7 +1,6 @@
 package org.chai.kevin
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils;
 
 /*
@@ -34,6 +33,8 @@ import org.chai.kevin.util.Utils;
 
 class UtilTagLib {
 	
+	def languageService
+	
 	def createLinkWithTargetURI = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]
 		else attrs['params'] = new HashMap(attrs['params'])
@@ -58,7 +59,7 @@ class UtilTagLib {
 	
 	def i18nInput = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
-		attrs["locales"] = LanguageUtils.getAvailableLanguages();
+		attrs["locales"] = languageService.getAvailableLanguages();
 		out << render(template:"/tags/i18nInput", model: attrs)
 	}
 	
@@ -73,14 +74,14 @@ class UtilTagLib {
 		if (attrs["rows"] == null) attrs["rows"] = '4'
 		if (attrs["width"] == null) attrs["width"] = '300'
 		if (attrs["readonly"] == null) attrs["readonly"] = false
-		attrs["locales"] = LanguageUtils.getAvailableLanguages();
+		attrs["locales"] = languageService.getAvailableLanguages();
 		out << render(template:"/tags/i18nTextarea", model: attrs)
 	}
 	def i18nRichTextarea = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
 		if (attrs["rows"] == null) attrs["rows"] = '4'
 		if (attrs["width"] == null) attrs["width"] = '300'
-		attrs["locales"] = LanguageUtils.getAvailableLanguages();
+		attrs["locales"] = languageService.getAvailableLanguages();
 		out << render(template:"/tags/i18nRichTextarea", model: attrs)
 	}
 	
@@ -105,22 +106,22 @@ class UtilTagLib {
 	}		
 	
 	def locales = { attrs, body ->
-		attrs["locales"] = LanguageUtils.getAvailableLanguages();
+		attrs["locales"] = languageService.getAvailableLanguages();
 		out << render(template:"/tags/locales", model: attrs)
 	}
 	
 	def i18n = { attrs, body ->
-		def text = LanguageUtils.getText(attrs['field'])
+		def text = languageService.getText(attrs['field'])
 		out << text 
 	}
 	
 	def ifText = { attrs, body ->
-		def text = LanguageUtils.getText(attrs['field'])
+		def text = languageService.getText(attrs['field'])
 		if (text != null && !Utils.stripHtml(text, null).trim().isEmpty()) out << body()
 	}
 	
 	def stripHtml = { attrs, body ->
-		def text = LanguageUtils.getText(attrs['field'])
+		def text = languageService.getText(attrs['field'])
 		if (text != null) out << Utils.stripHtml(text, attrs.int('chars'))
 	}
 }

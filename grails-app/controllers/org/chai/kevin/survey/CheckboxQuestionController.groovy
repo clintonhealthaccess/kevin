@@ -29,9 +29,9 @@ package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.DataService;
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Translation;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
-import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataElement
 import org.apache.commons.lang.math.NumberUtils;
@@ -42,6 +42,7 @@ import org.apache.commons.lang.math.NumberUtils;
  */
 class CheckboxQuestionController extends AbstractEntityController {
 
+	def languageService
 	def organisationService
 	
 	def getEntity(def id) {
@@ -63,8 +64,11 @@ class CheckboxQuestionController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
+		def options = entity.options
+		Collections.sort(options)
 		[
 			question: entity,
+			options: options,
 			groups: organisationService.getGroupsForExpression(),
 			sections: (entity.section)!=null?entity.survey.sections:null
 		]
@@ -81,7 +85,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 		
 		params.optionNames.each { i ->
 			Translation translation = new Translation()
-			LanguageUtils.availableLanguages.each { language ->
+			languageService.availableLanguages.each { language ->
 				translation[language] = params['optionNames['+i+'].names.'+language]
 			}
 			// TODO what if i is bigger than list size

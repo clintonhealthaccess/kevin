@@ -3,7 +3,6 @@
 		<tr>
 			<th/>
 			<th><g:message code="entity.name.label" default="Name"/></th>
-			<th><g:message code="entity.description.label" default="Description"/></th>
 			<th><g:message code="facility.type.label" default="Facility Groups"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'survey.question.label')]" default="Number of Questions"/></th>
 			<th><g:message code="entity.order.label" default="Order"/></th>
@@ -28,7 +27,6 @@
 					</ul>
 				</td>
 				<td><g:i18n field="${section.names}" /></td>
-				<td><g:i18n field="${section.descriptions}" /></td>
 				<td>${section.groupUuidString}</td>
 				<td>${section.questions.size()}</td>
 				<td>${section.order}</td>

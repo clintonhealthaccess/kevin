@@ -42,16 +42,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import org.chai.kevin.Translatable;
+import org.chai.kevin.reports.ReportEntity;
 
 @Entity(name="CostObjective")
 @Table(name="dhsst_cost_objective")
-public class CostObjective extends Translatable {
+public class CostObjective extends ReportEntity {
 
 	private static final long serialVersionUID = 6797783931128622696L;
 
 	private Long id;
-	private Integer order;
 	private List<CostTarget> targets = new ArrayList<CostTarget>();
 
 	@Id
@@ -73,16 +72,6 @@ public class CostObjective extends Translatable {
 		this.targets = targets;
 	}
 
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-	
 	public void addTarget(CostTarget target) {
 		target.setParent(this);
 		targets.add(target);

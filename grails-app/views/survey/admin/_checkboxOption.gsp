@@ -17,7 +17,11 @@
 </div>
 <div>
 	<span class="bold"><g:message code="facility.type.label" default="Facility Groups"/>:</span>
-	<span> ${option.groupUuidString}</span>
+	<span>${option.groupUuidString}</span>
+</div>
+<div>
+	<span class="bold"><g:message code="survey.checkboxquestion.checkboxoption.order.label" default="Order"/>:</span>
+	<span>${option.order}</span>
 </div>
 <input type="hidden" name="optionNames" value="${index}"/>
 <g:i18nRichTextarea name="optionNames[${index}].names" bean="${option}" value="${option.names}" height="50"

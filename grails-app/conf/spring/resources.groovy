@@ -65,6 +65,7 @@ beans = {
 	
 	surveyCopyService(SurveyCopyService) {
 		sessionFactory = ref("sessionFactory")
+		languageService = ref("languageService")
 	}
 	
 	jaqlService(JaqlService) { bean ->
@@ -87,6 +88,7 @@ beans = {
 	}
 	
 	surveyPageService(SurveyPageService){
+		languageService = ref("languageService")
 		surveyValueService = ref("surveyValueService")
 		surveyService = ref("surveyService")
 		organisationService = ref("organisationService")
@@ -105,6 +107,7 @@ beans = {
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
+		languageService = ref("languageService")
 		groupLevel = dsrGroupLevel
 	}
 

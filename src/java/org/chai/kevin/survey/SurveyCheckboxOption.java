@@ -56,13 +56,12 @@ import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-@SuppressWarnings("serial")
 @Entity(name = "SurveyCheckboxOption")
 @Table(name = "dhsst_survey_checkbox_option")
-public class SurveyCheckboxOption extends Orderable<Ordering> {
+public class SurveyCheckboxOption extends Orderable<Integer> {
 
 	private Long id;
-	private Ordering order;
+	private Integer order;
 	private String groupUuidString;
 	private SurveyCheckboxQuestion question;
 	private SurveyElement surveyElement;
@@ -79,11 +78,11 @@ public class SurveyCheckboxOption extends Orderable<Ordering> {
 	}
 
 	@Basic
-	@Column(name = "ordering")
+	@Column(name="ordering")
 	public Integer getOrder() {
 		return order;
 	}
-
+	
 	public void setOrder(Integer order) {
 		this.order = order;
 	}

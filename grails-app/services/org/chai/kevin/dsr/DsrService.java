@@ -42,13 +42,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.DataService;
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.OrganisationSorter;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.ExpressionValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -59,10 +59,10 @@ import grails.plugin.springcache.annotations.Cacheable;
 
 public class DsrService {
 	
-    //private Log log = LogFactory.getLog(DsrService.class);
 	private OrganisationService organisationService;
 	private ValueService valueService;
 	private DataService dataService;
+	private LanguageService languageService;
 	private int groupLevel;
 	
 	@Cacheable("dsrCache")
@@ -111,7 +111,7 @@ public class DsrService {
 							Enum enume = dataService.findEnumByCode(code);
 							if (enume != null) {
 								EnumOption option = enume.getOptionForValue(expressionValue.getValue().getEnumValue());
-								value = LanguageUtils.getText(option.getNames());
+								value = languageService.getText(option.getNames());
 							}
 							else value = "";
 							break;
@@ -163,5 +163,8 @@ public class DsrService {
 		this.groupLevel = groupLevel;
 	}
 
-
+	public void setLanguageService(LanguageService languageService) {
+		this.languageService = languageService;
+	}
+	
 }

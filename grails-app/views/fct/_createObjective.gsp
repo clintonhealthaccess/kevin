@@ -6,7 +6,7 @@
 		<div class="clear"></div>
 	</div>
 	
-	<g:form url="[controller:'fctObjective', action:'save']" useToken="true">
+	<g:form url="[controller:'fctObjective', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${objective}" value="${objective.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${objective}" value="${objective.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${objective}" field="code"/>
@@ -18,7 +18,7 @@
 		
 		<div class="row">
 			<button type="submit">Save Objective</button>&nbsp;&nbsp;
-			<button id="cancel-button">Cancel</button>
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
 		</div>
     </g:form>
 	<div class="clear"></div>

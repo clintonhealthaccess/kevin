@@ -38,14 +38,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.chai.kevin.Translatable;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Expression;
+import org.chai.kevin.reports.ReportEntity;
 
 @SuppressWarnings("serial")
 @Entity(name="MapsTarget")
 @Table(name="dhsst_maps_target")
-public class MapsTarget extends Translatable {
+public class MapsTarget extends ReportEntity {
 
 	public static enum MapsTargetType {AGGREGATION("AGGREGATION", "Aggregation"), AVERAGE("AVERAGE", "Average");
 		final String value;
@@ -61,7 +61,6 @@ public class MapsTarget extends Translatable {
 	private Long id;
 	private MapsTargetType type;
 	private Calculation calculation;
-	private Integer order;
 
 	private Expression expression;
 	private Double maxValue;
@@ -101,15 +100,6 @@ public class MapsTarget extends Translatable {
 	
 	public void setExpression(Expression expression) {
 		this.expression = expression;
-	}
-	
-	@Basic(optional=true)
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	public void setOrder(Integer order) {
-		this.order = order;
 	}
 	
 	@Basic(optional=true)

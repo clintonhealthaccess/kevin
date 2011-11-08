@@ -1,6 +1,5 @@
 package org.chai.kevin.survey;
 
-import java.util.Map;
 
 abstract class SurveyCloner {
 

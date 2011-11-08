@@ -1,4 +1,4 @@
-package org.chai.kevin.maps
+package org.chai.kevin
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,58 +28,38 @@ package org.chai.kevin.maps
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.dashboard.DashboardTarget;
-import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.util.JSONUtils;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.apache.commons.lang.LocaleUtils;
+import org.chai.kevin.Translation;
+import org.chai.kevin.util.Utils;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
-class MapsTargetController extends AbstractEntityController {
+class LanguageService {
 	
-	def organisationService
-	
-	def getEntity(def id) {
-		return MapsTarget.get(id)
+	List<String> getAvailableLanguages() {
+		List<String> languages = ConfigurationHolder.config.site.languages;
+		return languages;
 	}
 	
-	def createEntity() {
-		return new MapsTarget()
+	String getCurrentLanguage() {
+		Locale locale = RequestContextUtils.getLocale(RequestContextHolder.currentRequestAttributes().getRequest());
+		return locale.getLanguage();
 	}
 	
-	def getLabel() {
-		return "maps.target.label"
+	String getFallbackLanguage() {
+		return ConfigurationHolder.config.site.fallback.language;
 	}
 	
-	def getTemplate() {
-		return "/maps/createTarget"
+	String getText(JSONMap<?> translation) {
+		def text = translation?.get(getCurrentLanguage())
+		if (text != null) text = text.toString()
+		if (text == null || text.trim().equals("") || Utils.stripHtml(text, null).trim().equals("")) text = translation?.get(getFallbackLanguage())
+		if (text != null) text = text.toString()
+		return text;
 	}
-	
-	def getModel(def entity) {
-		[ target: entity, expressions: Expression.list(), groups: organisationService.getGroupsForExpression()]
-	}
-	
-	def saveEntity(def entity) {
-		if (entity.calculation != null) {
-			// FIXME change this to infer the correct type
-			entity.calculation.type = Type.TYPE_NUMBER()
-			if (entity.calculation.id == null) entity.calculation.code = UUID.randomUUID().toString();
-			entity.calculation.save();
-		}
-		entity.save();
-	}
-	
-	def bindParams(def entity) {
-		entity.properties = params
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = entity.descriptions
-	}
-	
 	
 }

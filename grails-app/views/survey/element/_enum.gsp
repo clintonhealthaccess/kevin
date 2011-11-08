@@ -15,8 +15,11 @@
 		<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
 			<option value=""><g:message code="survey.element.enum.select.label"/></option>
 			<!-- TODO fix this, there should be a flag in the survey, not on the element directly -->
-			<g:each in="${enume?.activeEnumOptions}" var="option">
-				<option value="${option.value}"  ${option?.value==value?.enumValue ? 'selected':''}>
+			<g:if test="${surveyPage!=null}">
+				<g:set var="enumOptions" value="${surveyPage.getEnumOptions(enume)}"/>
+			</g:if>
+			<g:each in="${enumOptions}" var="option">
+				<option value="${option.value}" ${option?.value==value?.enumValue ? 'selected':''}>
 					<g:i18n field="${option.names}" />
 				</option>
 			</g:each>
@@ -24,7 +27,7 @@
 	</g:if>
 	<g:else>
 	<label>-- <g:message code="survey.print.selectonlyoneoption.label" default="Select only one response"/> --</label>
-		<g:each in="${enume?.activeEnumOptions}" var="option">
+		<g:each in="${surveyPage.getEnumOptions(enume)}" var="option">
 			<div>
 				<input class="input" type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''} disabled="disabled"/>
 				<span><g:i18n field="${option.names}" /></span>

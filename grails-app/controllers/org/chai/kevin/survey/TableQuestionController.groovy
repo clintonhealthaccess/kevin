@@ -29,9 +29,9 @@ package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.DataService;
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Translation;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
-import org.chai.kevin.util.LanguageUtils;
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataElement
 import org.apache.commons.lang.math.NumberUtils
@@ -42,6 +42,7 @@ import org.apache.commons.lang.math.NumberUtils
  */
 class TableQuestionController extends AbstractEntityController {
 
+	def languageService
 	def organisationService
 	
 	def getEntity(def id) {
@@ -63,7 +64,13 @@ class TableQuestionController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
+		def columns = entity.columns
+		Collections.sort(columns)
+		def rows = entity.rows
+		Collections.sort(rows)
 		[
+			columns: columns,
+			rows: rows,
 			question: entity,
 			groups: organisationService.getGroupsForExpression(),
 			sections: (entity.section)!=null?entity.survey.sections:null
@@ -83,7 +90,7 @@ class TableQuestionController extends AbstractEntityController {
 		['row', 'column'].each { type ->
 			params[type+'Names'].each { i ->
 				Translation translation = new Translation()
-				LanguageUtils.availableLanguages.each { language ->
+				languageService.availableLanguages.each { language ->
 					translation[language] = params[type+'Names['+i+'].names.'+language]
 				}
 				// TODO what if i is bigger than list size
@@ -98,9 +105,9 @@ class TableQuestionController extends AbstractEntityController {
 			question = SurveyTableQuestion.get(params['questionId'])
 		}
 
-		def List<SurveyElement> surveyElements = question.getSurveyElements();
-		
-		render (view: '/entity/edit', model: [question: question, surveyElements: surveyElements, template: '/survey/admin/tablePreview'])
+		def model = getModel(question)
+		model << [template: '/survey/admin/tablePreview']
+		render (view: '/entity/edit', model: model)
 	}
 
 

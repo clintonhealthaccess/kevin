@@ -41,7 +41,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.chai.kevin.Orderable;
-import org.chai.kevin.Translatable;
+import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -49,13 +49,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name="EnumOption")
 @Table(name="dhsst_enum_option")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class EnumOption extends Orderable {
+public class EnumOption extends Orderable<Ordering> {
 
 	private static final long serialVersionUID = -7093395116301416126L;
 	
 	private Long id;
 	private String value;
-	private Integer order;
+	private Ordering order = new Ordering();
 	private Translation names = new Translation();
 
 	// TODO flag to deactivate option in survey, 
@@ -118,13 +118,13 @@ public class EnumOption extends Orderable {
 		this.inactive = inactive;
 	}
 
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "ordering", nullable = false)) })
+	public Ordering getOrder() {
 		return order;
 	}
 	
-	public void setOrder(Integer order) {
+	public void setOrder(Ordering order) {
 		this.order = order;
 	}
 

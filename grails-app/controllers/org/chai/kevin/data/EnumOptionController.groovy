@@ -28,7 +28,9 @@
 package org.chai.kevin.data
 
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.Ordering;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Enum as Enum;
 
@@ -40,6 +42,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
  */
 class EnumOptionController extends AbstractEntityController {
 
+	def languageService
+	
 	def getEntity(def id){
 		return EnumOption.get(id)
 	}
@@ -81,7 +85,7 @@ class EnumOptionController extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
+		if (params.order!=null) entity.order = params.order.collectEntries ([:]) { i,val -> [i, NumberUtils.toInt(val)] }
 	}
 	
 	def list = {
@@ -89,6 +93,7 @@ class EnumOptionController extends AbstractEntityController {
 		Enum enume = Enum.get(params.int('enumId'));
 		
 		List<EnumOption> options = enume.enumOptions;
+		Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
 		
 		render (view: '/entity/list', model:[
 			entities: options,

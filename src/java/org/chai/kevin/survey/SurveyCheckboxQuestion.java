@@ -52,7 +52,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
-@SuppressWarnings("serial")
 @Entity(name = "SurveyCheckboxQuestion")
 @Table(name = "dhsst_survey_checkbox_question")
 public class SurveyCheckboxQuestion extends SurveyQuestion {
@@ -61,8 +60,8 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 
 	@OneToMany(targetEntity = SurveyCheckboxOption.class, mappedBy = "question")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	@OrderBy(value = "order")
 	@Fetch(FetchMode.SELECT)
+	@OrderBy("order")
 	public List<SurveyCheckboxOption> getOptions() {
 		return options;
 	}

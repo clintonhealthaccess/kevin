@@ -28,6 +28,7 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
+import org.chai.kevin.Ordering;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
@@ -38,6 +39,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
  */
 class ObjectiveController extends AbstractEntityController {
 
+	def languageService
 	def organisationService
 	
 	def getEntity(def id) {
@@ -72,7 +74,6 @@ class ObjectiveController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 //		entity.groupUuids = params['groupUuids']	
 		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
 	def list = {
@@ -81,7 +82,8 @@ class ObjectiveController extends AbstractEntityController {
 		
 		Survey survey = Survey.get(params.surveyId);
 		List<SurveyObjective> objectives = survey.objectives;
-
+		Collections.sort(objectives)
+		
 		def max = Math.min(params['offset']+params['max'], objectives.size())
 		
 		render (view: '/survey/admin/list', model:[

@@ -40,6 +40,7 @@ import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Expression
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.CalculationValue
 import org.chai.kevin.value.DataValue
 import org.chai.kevin.value.ExpressionValue
@@ -199,7 +200,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	EnumOption newEnumOption(def enume, def value) {
-		return newEnumOption(enume, value, null)
+		return newEnumOption(enume, value, new Ordering())
 	}
 	
 	EnumOption newEnumOption(def enume, def value, def order) {
@@ -232,6 +233,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 		}
 	}
 	
+	static def g(def groups) {
+		return Utils.unsplit(groups)
+	}
+	
 	static def getOrganisationUnitLevels(def levels) {
 		def result = []
 		for (def level : levels) {
@@ -254,6 +259,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	static j(def map) {
 		return Initializer.j(map)
+	}
+	
+	static o(def map) {
+		return Initializer.o(map)
 	}
 	
 	static v(def value) {

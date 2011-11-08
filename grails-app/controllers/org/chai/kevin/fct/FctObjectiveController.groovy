@@ -33,23 +33,21 @@ package org.chai.kevin.fct
 */
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.dsr.DsrObjective
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-
 
 class FctObjectiveController extends AbstractEntityController {
 	
 	def organisationService
 	
 	def getEntity(def id) {
-		return DsrObjective.get(id)
+		return FctObjective.get(id)
 	}
 	
 	def createEntity() {
-		return new DsrObjective()
+		return new FctObjective()
 	}
 	
 	def getLabel() {

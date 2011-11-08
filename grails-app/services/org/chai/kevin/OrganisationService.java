@@ -280,4 +280,24 @@ public class OrganisationService {
 		this.organisationUnitService = organisationUnitService;
 	}
 
+	private static class GroupCollection extends ArrayList<OrganisationUnitGroup> {
+
+		private static final long serialVersionUID = -3757208121878793028L;
+		
+		private Map<String, OrganisationUnitGroup> groupsByUuid;
+
+		public GroupCollection(Collection<OrganisationUnitGroup> groups) {
+			super(groups);
+			this.groupsByUuid = new HashMap<String, OrganisationUnitGroup>();
+			for (OrganisationUnitGroup group : groups) {
+				this.groupsByUuid.put(group.getUuid(), group);
+			}
+		}
+		
+		public OrganisationUnitGroup getGroupByUuid(String uuid) {
+			return groupsByUuid.get(uuid);
+		}
+		
+	}
+
 }

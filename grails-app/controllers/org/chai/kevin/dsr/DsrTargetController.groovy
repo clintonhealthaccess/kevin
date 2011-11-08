@@ -36,7 +36,6 @@ package org.chai.kevin.dsr;
 import grails.plugin.springcache.annotations.CacheFlush;
 
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.util.Utils;

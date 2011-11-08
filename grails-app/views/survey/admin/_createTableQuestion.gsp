@@ -25,7 +25,7 @@
 				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="survey.tablequestion.tablecolumn.label"/>:</a>
 				<div class="hidden">
 					<ul>
-						<g:each in="${question.columns}" status="i" var="column">
+						<g:each in="${columns}" status="i" var="column">
 							<li>
 								<g:render template="/survey/admin/tableColumn" model="[column: column, index: i]" />
 							</li>
@@ -41,7 +41,7 @@
 				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="survey.tablequestion.tablerow.label"/>:</a>
 				<div class="hidden">
 					<ul>
-						<g:each in="${question.rows}" status="i" var="row">
+						<g:each in="${rows}" status="i" var="row">
 							<li>
 								<g:render template="/survey/admin/tableRow" model="[row: row, index: i]" />
 							</li>

@@ -208,8 +208,8 @@ class Initializer {
 		if (!Enum.count()) {
 			// Enumerations
 			def enume = new Enum(names:j(["en":"Enum 1"]), descriptions:j([:]), code:"ENUM1");
-			def enumOption1 = new EnumOption(names:j(["en":"Value 1"]), value:"value1", enume: enume);
-			def enumOption2 = new EnumOption(names:j(["en":"Value 2"]), value:"value2", enume: enume);
+			def enumOption1 = new EnumOption(names:j(["en":"Value 1"]), value:"value1", enume: enume, order: o(["en":1,"fr":2]));
+			def enumOption2 = new EnumOption(names:j(["en":"Value 2"]), value:"value2", enume: enume, order: o(["en":2,"fr":1]));
 			def enume2 = new Enum(names:j(["en":"Enum 2"]), descriptions:j([:]), code:"ENUM2");
 			def enumOption01 = new EnumOption(names:j(["en":"N/A Did not receive training"]), value:"N/A Did not receive training", enume: enume2);
 			def enumOption02 = new EnumOption(names:j(["en":"NGO or Partner"]), value:"NGO or Partner", enume: enume2);
@@ -966,10 +966,11 @@ class Initializer {
 			sum1.save();
 						
 			FctTarget fctTarget1 = new FctTarget(
-				names:j(["en":"Fct Target 1"]), descriptions:j([:]), 
+				names:j(["en":"Fct Target 1"]), 
+				descriptions:j([:]), 
 				code:"TARGET 1",
 				sum: sum1,
-				groupUuidString: "District Hospital,Health Center").save(failOnError: true, flush:true)
+				groupUuidString: "District Hospital,Health Center")
 			
 			hmr.addTarget(fctTarget1);
 			hmr.save(failOnError:true)
@@ -984,7 +985,7 @@ class Initializer {
 				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
 				code:"TARGET 2",
 				sum: sum2,
-				groupUuidString: "District Hospital,Health Center").save(failOnError: true, flush:true)
+				groupUuidString: "District Hospital,Health Center")
 			
 			hmr.addTarget(fctTarget2);
 			hmr.save(failOnError:true)
@@ -1004,62 +1005,60 @@ class Initializer {
 					period: Period.list()[1],
 					lastPeriod: Period.list()[0],
 					active: true,
-					order: 0
 					)
 			def surveyTwo = new Survey(
 					names: j(["en":"Survey Number 2"]),
 					descriptions: j(["en":"Survey Number 2 Description"]),
 					period: Period.list()[1],
-					order: 1
 					)
 
 			//Creating Objective
 			def serviceDev = new SurveyObjective(
 					names: j(["en":"Service Delivery"]),
-					descriptions: j(["en":"Service Delivery"]),
 					order: 2,
+//					order: o(["en":2]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			def hResourceHealth = new SurveyObjective(
 					names: j(["en":"Human Resources for Health"]),
-					descriptions: j(["en":"Human Resources for Health"]),
 					order: 4,
+//					order: o(["en":4]),
 					groupUuidString: "District Hospital,Health Center",
 					)
 
 			def geoAccess = new SurveyObjective(
 					names: j(["en":"Geographic Access"]),
-					descriptions: j(["en":"Geographic Access"]),
 					order: 5,
+//					order: o(["en":5]),
 					groupUuidString: "District Hospital,Health Center",
 					)
 
 			def institutCap = new SurveyObjective(
 					names: j(["en":"Institutional Capacity"]),
-					descriptions: j(["en":"Institutional Capacity"]),
 					order: 3,
+//					order: o(["en":3]),
 					groupUuidString: "Health Center",
 					)
 
 			def coreFacId = new SurveyObjective(
 					names: j(["en":"Core Facility Identify"]),
-					descriptions: j(["en":"Core Facility Identify"]),
 					order: 1,
+//					order: o(["en":1]),
 					//				dependency: serviceDev,
 					groupUuidString: "District Hospital,Health Center",
 					)
 
 			def finance = new SurveyObjective(
 					names: j(["en":"Finance"]),
-					descriptions: j(["en":"Finance"]),
 					order: 6,
+//					order: o(["en":6]),
 					groupUuidString: "District Hospital,Health Center",
 					)
 
 			def dvandC = new SurveyObjective(
 					names: j(["en":"Drugs, Vaccines, and Consumables"]),
-					descriptions: j(["en":"Drugs, Vaccines, and Consumables"]),
 					order: 7,
+//					order: o(["en":7]),
 					groupUuidString: "District Hospital,Health Center",
 					)
 
@@ -1077,8 +1076,8 @@ class Initializer {
 			//Adding section to objective
 			def facilityId = new SurveySection(
 					names: j(["en":"Facility Identifier"]),
-					descriptions: j(["en":"Facility Identifier"]),
 					order: 1,
+//					order: o(["en":1]),
 					objective: coreFacId,
 					groupUuidString: "District Hospital,Health Center"
 					)
@@ -1088,23 +1087,23 @@ class Initializer {
 
 			def services=new SurveySection(
 					names: j(["en":"Services"]),
-					descriptions: j(["en":"Services"]),
 					order: 2,
+//					order: o(["en":2]),
 					objective: serviceDev,
 					groupUuidString: "District Hospital,Health Center"
 					)
 			def labTests= new SurveySection(
 					names: j(["en":"Lab Tests"]),
-					descriptions: j(["en":"Lab Tests"]),
 					order: 1,
+//					order: o(["en":1]),
 					objective: serviceDev,
 					groupUuidString: "District Hospital"
 					)
 
 			def patientReg=new SurveySection(
 					names: j(["en":"Patient Registration"]),
-					descriptions: j(["en":"Patient Registration"]),
 					order: 3,
+//					order: o(["en":3]),
 					objective: serviceDev,
 					groupUuidString: "District Hospital,Health Center"
 					)
@@ -1113,6 +1112,7 @@ class Initializer {
 					names: j(["en":"Patient Section Simple Question NUMBER"]),
 					descriptions: j([:]),
 					order: 3,
+//					order: o(["en":3]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			patientReg.addQuestion(patientQ1)
@@ -1149,24 +1149,24 @@ class Initializer {
 			
 			def staffing=new SurveySection(
 					names: j(["en":"Staffing"]),
-					descriptions: j(["en":"Staffing"]),
 					order: 1,
+//					order: o(["en":1]),
 					objective: hResourceHealth,
 					groupUuidString: "District Hospital,Health Center"
 					)
 
 			def continuingEd = new SurveySection(
 					names: j(["en":"Continuing Education"]),
-					descriptions: j(["en":"Continuing Education"]),
 					order: 2,
+//					order: o(["en":2]),
 					objective: hResourceHealth,
 					groupUuidString: "Health Center"
 					)
 
 			def openResponse = new SurveySection(
 					names: j(["en":"Open Response"]),
-					descriptions: j(["en":"Open Response"]),
 					order: 3,
+//					order: o(["en":3]),
 					objective: hResourceHealth,
 					groupUuidString: "District Hospital,Health Center"
 					)
@@ -1178,22 +1178,22 @@ class Initializer {
 
 			def infrastructure = new SurveySection(
 					names: j(["en":"Infrastructure"]),
-					descriptions: j(["en":"Infrastructure"]),
 					order: 3,
+//					order: o(["en":3]),
 					objective: geoAccess,
 					groupUuidString: "District Hospital,Health Center"
 					)
 			def medicalEq=new SurveySection(
 					names: j(["en":"Medical Equipment"]),
-					descriptions: j(["en":"Medical Equipment"]),
 					order: 2,
+//					order: o(["en":2]),
 					objective: geoAccess,
 					groupUuidString: "District Hospital,Health Center"
 					)
 			def wasteMgmnt=new SurveySection(
 					names: j(["en":"Waste Management"]),
-					descriptions: j(["en":"Waste Management"]),
 					order: 1,
+//					order: o(["en":1]),
 					objective: geoAccess,
 					groupUuidString: "District Hospital,Health Center"
 					)
@@ -1208,6 +1208,7 @@ class Initializer {
 					names: j(["en":"Service Section Simple Question NUMBER"]),
 					descriptions: j(["en":"<br/>"]),
 					order: 3,
+//					order: o(["en":3]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			services.addQuestion(serviceQ1)
@@ -1221,6 +1222,7 @@ class Initializer {
 					names: j(["en":"Service Section Simple Question BOOL"]),
 					descriptions: j(["en":""]),
 					order: 0,
+//					order: o(["en":0]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			services.addQuestion(serviceQ2)
@@ -1233,7 +1235,8 @@ class Initializer {
 			def serviceQ3 = new SurveySimpleQuestion(
 					names: j(["en":"Service Section Simple Question ENUM "]),
 					descriptions: j([:]),
-					order: 1,
+					order: 0,
+//					order: o(["en":0]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			services.addQuestion(serviceQ3)
@@ -1246,7 +1249,7 @@ class Initializer {
 //			def serviceQ4 = new SurveySimpleQuestion(
 //					names: j(["en":"Service Section Simple Question LIST"]),
 //					descriptions: j(["en":"Help text"]),
-//					order: 4,
+//  				order: o(["en":4]),
 //					groupUuidString: "District Hospital,Health Center"
 //					)
 //			services.addQuestion(serviceQ4)
@@ -1260,6 +1263,7 @@ class Initializer {
 					names: j(["en":"Service Section Simple Question MAP"]),
 					descriptions: j(["en":"<div>Help text</div>"]),
 					order: 5,
+//					order: o(["en":5]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			services.addQuestion(serviceQ5)
@@ -1278,6 +1282,7 @@ class Initializer {
 					names: j(["en":"Service Section Simple Question LIST of MAP"]),
 					descriptions: j(["en":"Help text"]),
 					order: 6,
+//					order: o(["en":6]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			services.addQuestion(serviceQ6)
@@ -1364,6 +1369,7 @@ class Initializer {
 					names: j(["en":"Sample Open Question Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module."]),
 					descriptions: j(["en":"Help text"]),
 					order: 1,
+//					order: o(["en":1]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			openResponse.addQuestion(openQ)
@@ -1377,6 +1383,7 @@ class Initializer {
 					names: j(["en":"Service Section CheckBox Question"]),
 					descriptions: j(["en":"Help text"]),
 					order: 2,
+//					order: o(["en":2]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			staffing.addQuestion(checkBoxQ)
@@ -1389,22 +1396,22 @@ class Initializer {
 			//Checkbox Option
 			def option1 = new SurveyCheckboxOption(
 					names: j(["en":"None Or Not Applicable"]),
-					descriptions: j(["en":"None Or Not Applicable"]),
 					order: 2,
+//					order: o(["en":2]),
 					groupUuidString: "District Hospital,Health Center",
 					surveyElement: surveyElementChecboxQ1
 					)
 			def option2 = new SurveyCheckboxOption(
 					names: j(["en":"Second Option"]),
-					descriptions: j(["en":"Second Option"]),
 					order: 1,
+//					order: o(["en":1]),
 					groupUuidString: "District Hospital",
 					surveyElement: surveyElementChecboxQ2
 					)
 			def option3 = new SurveyCheckboxOption(
 					names: j(["en":"Third Option"]),
-					descriptions: j(["en":"Third Option"]),
 					order: 3,
+//					order: o(["en":3]),
 					groupUuidString: "District Hospital,Health Center",
 					surveyElement: surveyElementChecboxQ3
 					)
@@ -1418,6 +1425,7 @@ class Initializer {
 					names: j(["en":"List all of your staff"]),
 					descriptions: j(["en":"Help text"]),
 					order: 10,
+//					order: o(["en":10]),
 					groupUuidString: "District Hospital,Health Center"
 					)
 			staffing.addQuestion(staffingQ1)
@@ -1526,6 +1534,7 @@ class Initializer {
 					descriptions: j(["en":"(a) Enter the total number of staff members that received training in this subject from July 2009 - June 2010, regardless of how many days' training they received.<br/>(b) Enter the cumulative number of training days spent on that module. To do so, add up all of the days spent by every person who participated in that module. "]),
 					tableNames: j(["en":"Training Modules"]),
 					order: 1,
+//					order: o(["en":1]),
 					groupUuidString: "Health Center,District Hospital"
 					)
 			staffing.addQuestion(tableQ)
@@ -1534,29 +1543,29 @@ class Initializer {
 			//Add columns
 			def tabColumnOne = new SurveyTableColumn(
 					names: j(["en":"Number Who Attended Training"]),
-					descriptions: j(["en":"Help text"]),
 					order: 1,
+//					order: o(["en":1]),
 					groupUuidString: "District Hospital,Health Center",
 					question: tableQ
 					)
 			def tabColumnTwo = new SurveyTableColumn(
 					names: j(["en":"Sum Total Number of Days"]),
-					descriptions: j(["en":"Help text"]),
 					order: 2,
+//					order: o(["en":2]),
 					groupUuidString: "District Hospital,Health Center",
 					question: tableQ
 					)
 			def tabColumnThree = new SurveyTableColumn(
 					names: j(["en":"Who Provided the Training"]),
-					descriptions: j(["en":"Help text"]),
 					order: 3,
+//					order: o(["en":3]),
 					groupUuidString: "Health Center",
 					question: tableQ
 					)
 			def tabColumnFour = new SurveyTableColumn(
 					names: j(["en":"Due Date"]),
-					descriptions: j(["en":"Help text"]),
 					order: 4,
+//					order: o(["en":4]),
 					groupUuidString: "District Hospital",
 					question: tableQ
 					)
@@ -1603,16 +1612,16 @@ class Initializer {
 			//Add rows
 			def tabRowOne = new SurveyTableRow(
 					names: j(["en":"Clinical Pharmacy :"]),
-					descriptions: j(["en":"Help text"]),
 					order: 1,
+//					order: o(["en":1]),
 					question: tableQ,
 					groupUuidString: "District Hospital,Health Center",
 					surveyElements: dataElmntsLine1
 					)
 			def tabRowTwo = new SurveyTableRow(
 					names: j(["en":"Clinical Nurse Training :"]),
-					descriptions: j(["en":"Help text"]),
 					order: 2,
+//					order: o(["en":2]),
 					question: tableQ,
 					groupUuidString: "Health Center",
 					surveyElements: dataElmntsLine2
@@ -1669,6 +1678,10 @@ class Initializer {
 
 	public static Translation j(def map) {
 		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
+	}
+	
+	public static Ordering o(def map) {
+		return new Ordering(jsonText: JSONUtils.getJSONFromMap(map));
 	}
 
 }

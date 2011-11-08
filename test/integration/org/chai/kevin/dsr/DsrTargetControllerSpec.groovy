@@ -65,4 +65,22 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 	}
 	
 	
+	def "save target saves target"() {
+		setup:
+		setupOrganisationUnitTree()
+		def objective = newDsrObjective(CODE(1))
+		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		dsrTargetController = new DsrTargetController()
+		
+		when:
+		dsrTargetController.params.code = CODE(2)
+		dsrTargetController.params['expression.id'] = expression.id
+		dsrTargetController.params['objective.id'] = objective.id
+		dsrTargetController.params.groupUuids = [DISTRICT_HOSPITAL_GROUP]
+		dsrTargetController.saveWithoutTokenCheck()
+		
+		then:
+		DsrTarget.count() == 1
+	}
+	
 }

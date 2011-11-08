@@ -29,7 +29,6 @@ package org.chai.kevin.maps
 */
 
 import org.chai.kevin.AbstractController;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.Organisation;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -71,9 +70,8 @@ class MapsController extends AbstractController {
 		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
 		MapsExplanation explanation = mapsService.getExplanation(period, organisation, target);
-		def groups = new GroupCollection(organisationService.getGroupsForExpression())
 		
-		[explanation: explanation, groups: groups]
+		[explanation: explanation, groups: organisationService.getGroupsForExpression(),]
 	}
 	
 	def map = {

@@ -1,8 +1,8 @@
 <r:require module="foldable"/>
 
 <ul>
-	<g:each in="${surveyPage.survey.getObjectives(surveyPage.organisation.organisationUnitGroup)}" var="objective">
-		<g:set var="enteredObjective" value="${surveyPage.objectives[objective]}"/>
+	<g:each in="${surveyPage.getObjectives()}" var="objective">
+		<g:set var="enteredObjective" value="${surveyPage.enteredObjectives[objective]}"/>
 		
 		<li id="objective-${objective.id}" class="foldable ${surveyPage.objective?.id == objective.id?'current':''}">
 			<a class="foldable-toggle" href="#">(toggle)</a>
@@ -17,8 +17,8 @@
 				</span>
 			</a>
 			<ul class="survey-section">
-				<g:each in="${objective.getSections(surveyPage.organisation.organisationUnitGroup)}" var="section">
-					<g:set var="enteredSection" value="${surveyPage.sections[section]}"/>
+				<g:each in="${surveyPage.getSections(objective)}" var="section">
+					<g:set var="enteredSection" value="${surveyPage.enteredSections[section]}"/>
 
 					<li id="section-${section.id}">
 						<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">

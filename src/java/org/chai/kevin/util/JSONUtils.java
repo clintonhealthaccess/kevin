@@ -63,7 +63,7 @@ public class JSONUtils {
 				Iterator<String> keyIterator = jsonObject.keys();
 				while (keyIterator.hasNext()) {
 					String type = (String) keyIterator.next();
-					descriptions.put(type, (Object)jsonObject.getString(type));
+					descriptions.put(type, (Object)jsonObject.get(type));
 				}
 			} catch (JSONException e) {
 				// log

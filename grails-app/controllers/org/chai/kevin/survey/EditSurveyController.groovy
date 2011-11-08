@@ -262,9 +262,8 @@ class EditSurveyController extends AbstractController {
 
 				invalidQuestions = invalidQuestionsHtml
 				incompleteSections = incompleteSectionsHtml
-
-				objectives = array {
-					surveyPage.objectives.each { objective, enteredObjective ->
+				objectives = array {  
+					surveyPage.enteredObjectives.each { objective, enteredObjective -> 
 						obj (
 								id: objective.id,
 								status: enteredObjective.displayedStatus
@@ -272,7 +271,7 @@ class EditSurveyController extends AbstractController {
 					}
 				}
 				sections = array {
-					surveyPage.sections.each { section, enteredSection ->
+					surveyPage.enteredSections.each { section, enteredSection ->
 						sec (
 								id: section.id,
 								objectiveId: section.objective.id,
@@ -282,8 +281,8 @@ class EditSurveyController extends AbstractController {
 								)
 					}
 				}
-				questions = array {
-					surveyPage.questions.each { question, enteredQuestion ->
+				questions = array { 
+					surveyPage.enteredQuestions.each { question, enteredQuestion ->
 						ques (
 								id: question.id,
 								sectionId: question.section.id,

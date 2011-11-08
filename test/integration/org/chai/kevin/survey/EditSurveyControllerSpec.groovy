@@ -37,6 +37,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		setupOrganisationUnitTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
+		editSurveyController = new EditSurveyController()
 		
 		when:
 		editSurveyController.params.organisation = getOrganisation(BUTARO).id

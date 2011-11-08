@@ -19,7 +19,7 @@
 				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="survey.checkboxquestion.checkboxoption.label"/>:</a>
 				<div class="hidden">
 					<ul>
-						<g:each in="${question.options}" status="i" var="option">
+						<g:each in="${options}" status="i" var="option">
 							<li>
 								<g:render template="/survey/admin/checkboxOption" model="[option: option, index: i]" />
 							</li>

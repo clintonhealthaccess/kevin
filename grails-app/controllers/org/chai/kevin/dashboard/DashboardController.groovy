@@ -31,8 +31,6 @@ package org.chai.kevin.dashboard
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractController;
-import org.chai.kevin.GroupCollection;
-import org.chai.kevin.Translatable;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.dashboard.Dashboard;
 import org.chai.kevin.dashboard.DashboardService;
@@ -40,6 +38,7 @@ import org.chai.kevin.dashboard.DashboardPercentage;
 import org.chai.kevin.dashboard.PercentageCalculator;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.reports.ReportEntity;
 import org.hibernate.cache.ReadWriteCache.Item;
 import org.hisp.dhis.aggregation.AggregationService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
@@ -65,7 +64,7 @@ class DashboardController extends AbstractController {
 		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
 
 		def explanation = dashboardService.getExplanation(organisation, entry, period)
-		def groups = new GroupCollection(organisationService.getGroupsForExpression())
+		def groups = organisationService.getGroupsForExpression()
 		[explanation: explanation, groups: groups]
 	}
 	

@@ -29,7 +29,6 @@ package org.chai.kevin.dashboard
 */
 
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.GroupCollection;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
@@ -76,7 +75,7 @@ abstract class AbstractObjectiveController extends AbstractEntityController {
 			if (log.isInfoEnabled()) log.info('fetched current objective: '+currentObjective);
 		}
 		
-		def groups = new GroupCollection(organisationService.getGroupsForExpression())
+		def groups = organisationService.getGroupsForExpression()
 		return [objectiveEntry: entity, groups: groups, expressions: Expression.list(), currentObjective: currentObjective]
 	}
 }

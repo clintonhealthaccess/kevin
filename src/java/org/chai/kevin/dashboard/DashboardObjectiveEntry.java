@@ -45,7 +45,7 @@ import org.hibernate.annotations.Cascade;
 @Entity(name="WeightedObjective")
 @Table(name="dhsst_dashboard_objective_entry", 
 		uniqueConstraints=@UniqueConstraint(columnNames={"entry"}))
-public class DashboardObjectiveEntry extends Orderable {
+public class DashboardObjectiveEntry extends Orderable<Integer> {
 
 	private Long id;
 	private DashboardObjective parent;

@@ -34,7 +34,7 @@ package org.chai.kevin.dsr;
 
 constraints = {
 	code (nullable: false, blank: false, unique: true)
-//	expression (nullable: false)
+	expression (nullable: false)
 	objective (nullable: false)
 	groupUuidString (nullable: null)
 }

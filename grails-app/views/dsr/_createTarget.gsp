@@ -16,37 +16,29 @@
    		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
 				from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
 
-		<div class="row">
-			<div id="objective-block">
-				<div class="${hasErrors(bean:target, field:'objective', 'errors')}">
-					<label for="objective">Objective:</label>
-					<select class="objective-list" name="objective.id">
-						<option value="null">-- Select an Objective --</option>
-						<g:each in="${objectives}" var="objective">
-							<option value="${objective.id}" ${objective.id==target.objective?.id?'selected="selected"':''}>
-								<g:i18n field="${objective.names}"/>
-							</option>
-						</g:each>
-					</select>
-					<div class="error-list"><g:renderErrors bean="${target}" field="objective" /></div>
-				</div>
-			</div>
+		<div class="row ${hasErrors(bean:target, field:'objective', 'errors')}">
+			<label for="objective.id">Objective:</label>
+			<select class="objective-list" name="objective.id">
+				<option value="null">-- Select an Objective --</option>
+				<g:each in="${objectives}" var="objective">
+					<option value="${objective.id}" ${objective.id==target.objective?.id?'selected="selected"':''}>
+						<g:i18n field="${objective.names}"/>
+					</option>
+				</g:each>
+			</select>
+			<div class="error-list"><g:renderErrors bean="${target}" field="objective" /></div>
 		</div>
-		<div class="row">
-			<div id="categories-block">
-				<div class="${hasErrors(bean:target, field:'category', 'errors')}">
-					<label for="category.id">Category:</label>
-					<select class="category-list" name="category.id">
-						<option value="null">-- Select a Category --</option>
-						<g:each in="${categories}" var="category">
-							<option value="${category.id}" ${category.id==target.category?.id?'selected="selected"':''}>
-								<g:i18n field="${category.names}"/>
-							</option>
-						</g:each>
-					</select>
-					<div class="error-list"><g:renderErrors bean="${target}" field="category" /></div>
-				</div>
-			</div>
+		<div class="row ${hasErrors(bean:target, field:'category', 'errors')}">
+			<label for="category.id">Category:</label>
+			<select class="category-list" name="category.id">
+				<option value="null">-- Select a Category --</option>
+				<g:each in="${categories}" var="category">
+					<option value="${category.id}" ${category.id==target.category?.id?'selected="selected"':''}>
+						<g:i18n field="${category.names}"/>
+					</option>
+				</g:each>
+			</select>
+			<div class="error-list"><g:renderErrors bean="${target}" field="category" /></div>
 		</div>
 		<div class="row">
 			<ul id="expressions-block" class="horizontal">

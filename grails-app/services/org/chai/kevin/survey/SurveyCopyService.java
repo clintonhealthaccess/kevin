@@ -8,13 +8,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.ExpressionService;
-import org.chai.kevin.util.LanguageUtils;
+import org.chai.kevin.LanguageService;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SurveyCopyService {
 
 	private SessionFactory sessionFactory;
+	private LanguageService languageService;
 	
 	@Transactional(readOnly=false)
 	public SurveyCopy<SurveyValidationRule> copyValidationRule(SurveyValidationRule rule) {
@@ -43,12 +44,15 @@ public class SurveyCopyService {
 		return new SurveyCopy<Survey>(cloner.getSurvey(), cloner.getUnchangedValidationRules(), cloner.getUnchangedSkipRules());
 	}
 	
+	public void setLanguageService(LanguageService languageService) {
+		this.languageService = languageService;
+	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	private static class CompleteSurveyCloner extends SurveyCloner {
+	private class CompleteSurveyCloner extends SurveyCloner {
 
 		private Survey survey;
 		private Survey copy;
@@ -157,7 +161,7 @@ public class SurveyCopyService {
 			if (copy == null) {
 				copy = new Survey(); 
 				survey.deepCopy(copy, this);
-				for (String language : LanguageUtils.getAvailableLanguages()) {
+				for (String language : languageService.getAvailableLanguages()) {
 					// TODO localize "copy"
 					copy.getNames().put(language, survey.getNames().get(language) + " (copy)");
 				}

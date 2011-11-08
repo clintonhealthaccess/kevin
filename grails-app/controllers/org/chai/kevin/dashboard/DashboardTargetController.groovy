@@ -28,22 +28,10 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.ReflectionUtils;
-import grails.plugin.springcache.annotations.CacheFlush;
-import org.apache.catalina.util.RequestUtil;
-import org.apache.jasper.compiler.Node.ParamsAction;
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.GroupCollection;
-import org.chai.kevin.dashboard.DashboardTarget;
-import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.data.Average;
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.util.JSONUtils;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.chai.kevin.data.Type;
+import grails.plugin.springcache.annotations.CacheFlush
+
+import org.chai.kevin.data.Average
+import org.chai.kevin.data.Type
 
 class DashboardTargetController extends AbstractObjectiveController {
 

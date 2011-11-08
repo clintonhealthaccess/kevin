@@ -56,7 +56,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
-@SuppressWarnings("serial")
 @Entity(name = "SurveyTableQuestion")
 @Table(name = "dhsst_survey_table_question")
 public class SurveyTableQuestion extends SurveyQuestion {
@@ -75,10 +74,10 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		this.tableNames = tableNames;
 	}
 
-	@OneToMany(targetEntity = SurveyTableColumn.class, mappedBy = "question")
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	@OrderBy(value = "order")
+	@OneToMany(targetEntity = SurveyTableColumn.class, mappedBy = "question", orphanRemoval=true)
+	@Cascade({ CascadeType.ALL })
 	@Fetch(FetchMode.SELECT)
+	@OrderBy("order")
 	public List<SurveyTableColumn> getColumns() {
 		return columns;
 	}
@@ -87,10 +86,10 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		this.columns = columns;
 	}
 
-	@OneToMany(targetEntity = SurveyTableRow.class, mappedBy = "question")
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	@OrderBy(value = "order")
+	@OneToMany(targetEntity = SurveyTableRow.class, mappedBy = "question", orphanRemoval=true)
+	@Cascade({ CascadeType.ALL })
 	@Fetch(FetchMode.SELECT)
+	@OrderBy("order")
 	public List<SurveyTableRow> getRows() {
 		return rows;
 	}

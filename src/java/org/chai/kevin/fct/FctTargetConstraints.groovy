@@ -1,6 +1,4 @@
-package org.chai.kevin.util
-
-/*
+/**
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
@@ -28,35 +26,15 @@ package org.chai.kevin.util
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.LocaleUtils;
-import org.chai.kevin.Translation;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import org.springframework.web.servlet.support.RequestContextUtils;
+package org.chai.kevin.fct;
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
 
-class LanguageUtils {
-	
-	static List<String> getAvailableLanguages() {
-		List<String> languages = ConfigurationHolder.config.site.languages;
-		return languages;
-	}
-	
-	static def getCurrentLanguage() {
-		Locale locale = RequestContextUtils.getLocale(RequestContextHolder.currentRequestAttributes().getRequest());
-		return locale.getLanguage();
-	}
-	
-	static def getFallbackLanguage() {
-		return ConfigurationHolder.config.site.fallback.language;
-	}
-	
-	static String getText(Translation translation) {
-		def text = translation?.get(getCurrentLanguage())
-		if (text == null || text.trim().equals("") || Utils.stripHtml(text, null).trim().equals("")) text = translation?.get(getFallbackLanguage())
-		return text;
-	}
-	
+constraints = {
+	code (nullable: false, blank: false, unique: true)
+	sum (nullable: false)
+	objective (nullable: false)
+	groupUuidString (nullable: null)
 }

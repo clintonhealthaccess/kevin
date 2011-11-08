@@ -2,7 +2,7 @@
 
 <div id="question-${question.id}" class="question question-checkbox" data-question="${question.id}">
 	<h4>
-		<span class="question-number">${question.section.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
+		<span class="question-number">${surveyPage.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
 	</h4>
 	
 	<g:ifText field="${question.descriptions}">
@@ -18,7 +18,7 @@
 	</g:if>
 	
 	<ul>
-		<g:each in="${question.getOptions(organisationUnitGroup)}" var="option">
+		<g:each in="${surveyPage.getOptions(question)}" var="option">
 			<g:set var="surveyElement" value="${option.surveyElement}"/>
 
 		    <li id="element-${surveyElement?.id}" class="survey-element">

@@ -4,7 +4,6 @@
 		<tr>
 			<th/>
 			<th><g:message code="entity.name.label" default="Name"/></th>
-			<th><g:message code="entity.description.label" default="Description"/></th>
 			<th><g:message code="facility.type.label" default="Facility Groups"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'survey.section.label')]" default="Number of Sections"/></th>
 			<th><g:message code="entity.order.label" default="Order"/></th>
@@ -29,7 +28,6 @@
 					</ul>
 				</td>
 				<td><g:i18n field="${objective.names}" /></td>
-				<td><g:i18n field="${objective.descriptions}" /></td>
 				<td>${objective.groupUuidString}</td>
 				<td>${objective.sections.size()}</td>
 				<td>${objective.order}</td>

@@ -2,7 +2,7 @@
 
 <div id="question-${question.id}" class="question question-table" data-question="${question.id}">
 	<h4>
-		<span class="question-number">${question.section.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
+		<span class="question-number">${surveyPage.getQuestionNumber(question)}</span><g:i18n field="${question.names}" />
 	</h4>
 	
 	<g:ifText field="${question.descriptions}">
@@ -18,9 +18,9 @@
 				<tr>
 					<th class="question-tab-title-name"><g:i18n field="${question.tableNames}" /></th>
 				    <g:set var="j" value="${0}"/>
-					<g:each in="${question.getColumns(organisationUnitGroup)}" var="column">
+					<g:each in="${surveyPage.getColumns(question)}" var="column">
 						<g:set var="j" value="${j++}"/>
-						<th class="${question.getColumns(organisationUnitGroup).size()!=j?'question-tab-title':''}">
+						<th class="${surveyPage.getColumns(question).size()!=j?'question-tab-title':''}">
 							<g:i18n field="${column.names}" />
 						</th>
 					</g:each>
@@ -28,11 +28,11 @@
 			</thead>
 			<tbody>
 				<g:set var="i" value="${0}"/>
-				<g:each in="${question.getRows(organisationUnitGroup)}" var="row">
+				<g:each in="${surveyPage.getRows(question)}" var="row">
 					<g:set var="i" value="${i+1}"/>
 					<tr class="${i%2==0?'oddrow':'evenrow'}">
 						<td><g:i18n field="${row.names}" /></td>
-						<g:each in="${question.getColumns(organisationUnitGroup)}" var="column">
+						<g:each in="${surveyPage.getColumns(question)}" var="column">
 							<g:set var="surveyElement" value="${row.surveyElements[column]}"/>
 			
 							<td id="element-${surveyElement?.id}" class="survey-element">

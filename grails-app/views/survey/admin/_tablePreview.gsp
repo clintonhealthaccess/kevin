@@ -5,9 +5,9 @@
 			<tr>
 				<th><g:i18n field="${question.tableNames}" /></th>
 			    <g:set var="j" value="${0}"/>
-				<g:each in="${question.getColumns()}" var="column">
+				<g:each in="${columns}" var="column">
 					<g:set var="j" value="${j++}"/>
-					<th class="${question.getColumns().size()!=j?'question-tab-title':''}">
+					<th class="${columns.size()!=j?'question-tab-title':''}">
 						<g:i18n field="${column.names}" />			
 						<div> 
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'tableColumn', action:'edit', id: column.id)}">
@@ -22,7 +22,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<g:each in="${question.getRows()}" var="row" status="i">
+			<g:each in="${rows}" var="row" status="i">
 				<tr class="${i%2==0?'odd':'even'}">
 					<td>
 					<g:i18n field="${row.names}" />
@@ -35,7 +35,7 @@
 							</a>
 						</div>
 					</td>
-					<g:each in="${question.getColumns()}" var="column">
+					<g:each in="${columns}" var="column">
 						<g:set var="surveyElement" value="${row.surveyElements[column]}"/>
 						<g:if test="${surveyElement != null}">
 						<g:set var="dataElement" value="${surveyElement?.dataElement}"/>
