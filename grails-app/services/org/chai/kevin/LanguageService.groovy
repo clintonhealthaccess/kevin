@@ -54,7 +54,7 @@ class LanguageService {
 		return ConfigurationHolder.config.site.fallback.language;
 	}
 	
-	String getText(JSONMap<?> translation) {
+	String getText(Translation translation) {
 		def text = translation?.get(getCurrentLanguage())
 		if (text != null) text = text.toString()
 		if (text == null || text.trim().equals("") || Utils.stripHtml(text, null).trim().equals("")) text = translation?.get(getFallbackLanguage())

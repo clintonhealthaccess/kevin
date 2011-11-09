@@ -1,5 +1,4 @@
-package org.chai.kevin.data
-
+AggregationConstraintsackage org.chai.kevin.data
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -31,10 +30,8 @@ package org.chai.kevin.data
 
 constraints = {
 	
-	code (nullable: false, blank: false, unique: true)
-	type (nullable: false, blank: false, validator: {val, obj -> 
-		return val.isValid();	
+	type(nullable: false, validator: {val, obj -> 
+		return val.getType() != null && val.getType().name().toLowerCase().equals("number");
 	})
-	expression (nullable: false, blank: false, expressionValid: true)
 	
 }

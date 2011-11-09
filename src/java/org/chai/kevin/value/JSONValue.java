@@ -7,8 +7,8 @@ import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 @MappedSuperclass
 public abstract class JSONValue {
@@ -56,7 +56,7 @@ public abstract class JSONValue {
 		this.value = null;
 		
 		try {
-			value = new JSONObject(jsonValue);
+			value = JSONObject.fromObject(jsonValue);
 		} catch (JSONException e) {
 			value = new JSONObject();
 		}
@@ -67,7 +67,7 @@ public abstract class JSONValue {
 	public JSONObject getJsonObject() {
 		if (value == null) {
 			try {
-				value = new JSONObject(jsonValue);
+				value = JSONObject.fromObject(jsonValue);
 			} catch (JSONException e) {
 				throw new IllegalArgumentException(e);
 			}

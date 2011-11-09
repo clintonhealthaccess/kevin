@@ -117,7 +117,7 @@ public class ExpressionService {
 		}
 		@SuppressWarnings("unchecked")
 		ValueCalculator<T> calculator = (ValueCalculator<T>)calculatorMap.get(clazz);
-		return data.getValue(calculator, organisationUnit, period);
+		return calculator.getValue(data, organisationUnit, period);
 	}
 	
 	/**

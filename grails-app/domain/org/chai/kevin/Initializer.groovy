@@ -51,7 +51,6 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
 import org.chai.kevin.security.SurveyUser;

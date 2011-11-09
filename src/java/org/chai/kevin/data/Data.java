@@ -142,7 +142,4 @@ abstract public class Data<T extends StoredValue> implements Serializable {
 		return "Data [type=" + type + ", code=" + code + "]";
 	}
 
-	@Transient
-	public abstract T getValue(ValueCalculator<T> calculator, OrganisationUnit organisationUnit, Period period);
-
 }

@@ -96,7 +96,10 @@ grails.project.dependency.resolution = {
 		compile ("org.apache.hadoop:hadoop-core:0.20.203.0") {
 			transitive = false
 		}
-		compile ("org.json:json:20080701")
+		
+		// because of GRAILS-6147, this dependency is in lib instead of here
+//		compile group: "net.sf.json-lib", name: "json-lib", version: "2.4", classifier: "jdk15"
+		compile 'net.sf.ezmorph:ezmorph:1.0.6'
 		
         runtime 'mysql:mysql-connector-java:5.1.13'
 		
@@ -119,7 +122,7 @@ grails.project.dependency.resolution = {
 		compile ":hibernate:$grailsVersion"
 		compile ":jquery:1.6.1.1"
 		
-		//GPRESOURCES-102
+		// GPRESOURCES-102 forces us to go back to resources 1.0.2
 		compile ":resources:1.0.2"
 		compile ":shiro:1.1.5"
 		compile ":springcache:1.3.1"

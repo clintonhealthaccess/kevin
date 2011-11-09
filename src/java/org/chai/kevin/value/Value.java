@@ -12,10 +12,13 @@ import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONNull;
+import net.sf.json.JSONObject;
+import net.sf.json.util.JSONUtils;
+
 import org.chai.kevin.util.Utils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 @Embeddable
 public class Value extends JSONValue {
@@ -67,12 +70,12 @@ public class Value extends JSONValue {
 	
 	@Transient
 	public boolean isNull() {
-		return getJsonObject().isNull(VALUE_STRING);
+		return JSONUtils.isNull(getJsonObject().get(VALUE_STRING));
 	}
 	
 	@Transient
 	public Value getValueWithoutAttributes() {
-		if (getJsonObject().isNull(VALUE_STRING)) return Value.NULL;
+		if (isNull()) return Value.NULL;
 		else {
 			JSONObject object = new JSONObject();
 			try {
@@ -100,7 +103,7 @@ public class Value extends JSONValue {
 	public String getStringValue() {
 		if (stringValue == null) {
 			try {
-				if (getJsonObject().isNull(VALUE_STRING)) stringValue = null;
+				if (isNull()) stringValue = null;
 				else stringValue = getJsonObject().getString(VALUE_STRING);
 			} catch (JSONException e) {
 				stringValue = null;
@@ -155,7 +158,7 @@ public class Value extends JSONValue {
 			try {
 				List<Value> result = new ArrayList<Value>();
 				JSONArray array = getJsonObject().getJSONArray(VALUE_STRING);
-				for (int i = 0; i < array.length(); i++) {
+				for (int i = 0; i < array.size(); i++) {
 					JSONObject object = array.getJSONObject(i);
 					result.add(new Value(object));
 				}
@@ -173,7 +176,7 @@ public class Value extends JSONValue {
 			try {
 				Map<String, Value> result = new LinkedHashMap<String, Value>();
 				JSONArray array = getJsonObject().getJSONArray(VALUE_STRING);
-				for (int i = 0; i < array.length(); i++) {
+				for (int i = 0; i < array.size(); i++) {
 					JSONObject object = array.optJSONObject(i);
 					try {
 						result.put(object.getString(MAP_KEY), new Value(object.getJSONObject(MAP_VALUE)));

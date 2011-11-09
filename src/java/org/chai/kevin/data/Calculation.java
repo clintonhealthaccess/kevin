@@ -31,11 +31,13 @@ package org.chai.kevin.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
@@ -52,29 +54,21 @@ public abstract class Calculation extends Data<CalculationValue> {
 
 	private static final long serialVersionUID = -633638638981261851L;
 	
-	private Map<String, Expression> expressions = new HashMap<String, Expression>();
-	
-	@ManyToMany(targetEntity=Expression.class)
-	@JoinTable(name="dhsst_calculation_expression", 
-		inverseJoinColumns=@JoinColumn(name="expression", nullable=false)
-	)
-	@MapKeyColumn(name="groupUuid")
-	public Map<String, Expression> getExpressions() {
-		return expressions;
+	private String expression;
+
+	@Lob
+	@Column(nullable=false)
+	public String getExpression() {
+		return expression;
 	}
 	
-	public void setExpressions(Map<String, Expression> expressions) {
-		this.expressions = expressions;
+	public void setExpression(String expression) {
+		this.expression = expression;
 	}
 
 	@Override
 	public String toString() {
-		return "Calculation [expressions=" + expressions + "]";
+		return "Calculation [expression=" + expression + "]";
 	}
 
-	@Override
-	public CalculationValue getValue(ValueCalculator<CalculationValue> calculator, OrganisationUnit organisationUnit, Period period) {
-		return calculator.getValue(this, organisationUnit, period);
-	}
-	
 }

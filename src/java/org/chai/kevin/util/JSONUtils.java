@@ -31,10 +31,10 @@ package org.chai.kevin.util;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.codehaus.groovy.grails.web.json.JSONException;
-import org.codehaus.groovy.grails.web.json.JSONObject;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 public class JSONUtils {
 
@@ -42,10 +42,7 @@ public class JSONUtils {
 		String result = null;
 		if (map != null) {
 			try {
-				JSONObject jsonObject = new JSONObject();
-				for (Entry<String, ? extends Object> entry : map.entrySet()) {
-					jsonObject.put(entry.getKey(), entry.getValue());
-				}
+				JSONObject jsonObject = (JSONObject)JSONSerializer.toJSON(map);
 				result = jsonObject.toString();
 			} catch (JSONException e) {
 				// log
@@ -59,7 +56,7 @@ public class JSONUtils {
 		Map<String, Object> descriptions = new HashMap<String, Object>();
 		if (jsonString != null) {
 			try {
-				JSONObject jsonObject = new JSONObject(jsonString);
+				JSONObject jsonObject = JSONObject.fromObject(jsonString);
 				Iterator<String> keyIterator = jsonObject.keys();
 				while (keyIterator.hasNext()) {
 					String type = (String) keyIterator.next();

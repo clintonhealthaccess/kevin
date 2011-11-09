@@ -245,6 +245,7 @@ class SurveyService {
 		return number;
 	}
 	
+	// TODO move this somewhere else and change signature to getHeaderPrefixes(Type type)
 	List<String> getHeaderPrefixes(SurveyElement element) {
 		
 		List<String> prefixes = new ArrayList(element.getDataElement().getType().getPrefixes(

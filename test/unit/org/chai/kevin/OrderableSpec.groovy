@@ -2,6 +2,8 @@ package org.chai.kevin
 
 import java.util.Comparator;
 import org.chai.kevin.Ordering.OrderingComparator;
+import org.chai.kevin.util.JSONUtils;
+
 import grails.plugin.spock.UnitSpec;
 
 class OrderableSpec extends UnitSpec {
@@ -100,6 +102,6 @@ class OrderableSpec extends UnitSpec {
 	}
 	
 	static o(def map) {
-		return Initializer.o(map)
+		return new Ordering(jsonText: JSONUtils.getJSONFromMap(map));
 	}
 }

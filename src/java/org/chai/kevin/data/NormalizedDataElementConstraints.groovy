@@ -1,6 +1,4 @@
-package org.chai.kevin.data;
-
-/* 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,46 +25,13 @@ package org.chai.kevin.data;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.data
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-
-import org.chai.kevin.value.ExpressionValue;
-import org.chai.kevin.value.ValueCalculator;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.period.Period;
-
-@Entity(name="Expression")
-@Table(name="dhsst_expression")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class Expression extends Data<ExpressionValue> {
-
-	private static final long serialVersionUID = 4195611279267888574L;
-	
-	private String expression;
-	
-	@Lob
-	@Column(nullable=false)
-	public String getExpression() {
-		return expression;
-	}
-	
-	public void setExpression(String expression) {
-		this.expression = expression;
-	}
-	
-	@Override
-	public String toString() {
-		return "Expression [code=" + getCode() + ", expression=" + expression + "]";
-	}
-	
-	@Override
-	public ExpressionValue getValue(ValueCalculator<ExpressionValue> calculator, OrganisationUnit organisationUnit, Period period) {
-		return calculator.getValue(this, organisationUnit, period);
-	}
-	
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
+constraints ={
+ 
+	expressionMap(nullable: false)
 }

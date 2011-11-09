@@ -20,16 +20,17 @@ import java.util.TreeMap;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONNull;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.JSONValue;
 import org.chai.kevin.value.Value;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.context.annotation.DependsOn;
 
 @Embeddable
 public class Type extends JSONValue {
@@ -126,7 +127,7 @@ public class Type extends JSONValue {
 			Map<String, Type> result = new LinkedHashMap<String, Type>();
 			try {
 				JSONArray array = getJsonObject().getJSONArray(ELEMENTS);
-				for (int i = 0; i < array.length(); i++) {
+				for (int i = 0; i < array.size(); i++) {
 					JSONObject object = array.getJSONObject(i);
 					result.put(object.getString(KEY_NAME), new Type(object.getString(ELEMENT_TYPE)));
 				}
@@ -178,7 +179,7 @@ public class Type extends JSONValue {
 					break;
 				case LIST:
 					JSONArray array1 = new JSONArray();
-					array1.put(getListType().getPlaceHolderValue().getJsonObject());
+					array1.add(getListType().getPlaceHolderValue().getJsonObject());
 					object.put(Value.VALUE_STRING, array1);
 					break;
 				case MAP:
@@ -188,7 +189,7 @@ public class Type extends JSONValue {
 						JSONObject element = new JSONObject();
 						element.put(Value.MAP_KEY, entry.getKey());
 						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).getPlaceHolderValue().getJsonObject());
-						array.put(element);
+						array.add(element);
 					}
 					object.put(Value.VALUE_STRING, array);
 					break;
@@ -229,7 +230,7 @@ public class Type extends JSONValue {
 				case DATE:
 				case ENUM:
 					if (!map.containsKey(suffix)) {
-						if (oldValue.isNull()) object.put(Value.VALUE_STRING, JSONObject.NULL);
+						if (oldValue.isNull()) object.put(Value.VALUE_STRING, JSONNull.getInstance());
 						else object.put(Value.VALUE_STRING, oldValue.getJsonObject().get(Value.VALUE_STRING));
 					}
 					else {
@@ -243,7 +244,7 @@ public class Type extends JSONValue {
 						if (!oldValue.isNull()) { 
 							List<Integer> indexList = Type.getIndexList(map, suffix+".indexes");
 							for (int i = 0; i < oldValue.getListValue().size(); i++) {
-								if (indexList.size() > i) array1.put(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, suffix+"["+indexList.get(i)+"]", attributes).getJsonObject());
+								if (indexList.size() > i) array1.add(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, suffix+"["+indexList.get(i)+"]", attributes).getJsonObject());
 							}
 						}
 					}
@@ -258,10 +259,10 @@ public class Type extends JSONValue {
 								if (index < oldValue.getListValue().size()) oldListValue = oldValue.getListValue().get(index);
 								else oldListValue = Value.NULL;
 							}
-							array1.put(getListType().mergeValueFromMap(oldListValue, map, suffix+"["+index+"]", attributes).getJsonObject());
+							array1.add(getListType().mergeValueFromMap(oldListValue, map, suffix+"["+index+"]", attributes).getJsonObject());
 						}
 					}
-					if (array1.length() == 0) object.put(Value.VALUE_STRING, JSONObject.NULL);
+					if (array1.size() == 0) object.put(Value.VALUE_STRING, JSONNull.getInstance());
 					else object.put(Value.VALUE_STRING, array1);
 					break;
 				case MAP:
@@ -277,7 +278,7 @@ public class Type extends JSONValue {
 							if (oldMapValue == null) oldMapValue = Value.NULL;
 						}
 						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).mergeValueFromMap(oldMapValue, map, suffix+"."+entry.getKey(), attributes).getJsonObject());
-						array.put(element);
+						array.add(element);
 					}
 					object.put(Value.VALUE_STRING, array);
 					break;
@@ -329,9 +330,9 @@ public class Type extends JSONValue {
 				case LIST:
 					JSONArray array1 = new JSONArray();
 					for (Object item : (List<?>)value) {
-						array1.put(getListType().getValue(item).getJsonObject());
+						array1.add(getListType().getValue(item).getJsonObject());
 					}
-					if (array1.length() == 0) object.put(Value.VALUE_STRING, JSONObject.NULL);
+					if (array1.size() == 0) object.put(Value.VALUE_STRING, JSONNull.getInstance());
 					else object.put(Value.VALUE_STRING, array1);
 					break;
 				case MAP:
@@ -341,7 +342,7 @@ public class Type extends JSONValue {
 						JSONObject element = new JSONObject();
 						element.put(Value.MAP_KEY, entry.getKey());
 						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).getValue(entry.getValue()).getJsonObject());
-						array.put(element);
+						array.add(element);
 					}
 					object.put(Value.VALUE_STRING, array);
 					break;
@@ -386,16 +387,16 @@ public class Type extends JSONValue {
 					break;
 				case LIST:
 					JSONArray values = new JSONArray();
-					JSONArray array = new JSONArray(jaqlString);
-					for (int i = 0; i < array.length(); i++) {
+					JSONArray array = JSONArray.fromObject(jaqlString);
+					for (int i = 0; i < array.size(); i++) {
 						String itemJaqlString = array.getString(i);
-						values.put(getListType().getValueFromJaql(itemJaqlString).getJsonObject());
+						values.add(getListType().getValueFromJaql(itemJaqlString).getJsonObject());
 					}
-					if (values.length() == 0) object.put(Value.VALUE_STRING, JSONObject.NULL);
+					if (values.size() == 0) object.put(Value.VALUE_STRING, JSONNull.getInstance());
 					else object.put(Value.VALUE_STRING, values);
 					break;
 				case MAP:
-					JSONObject jaqlObject = new JSONObject(jaqlString);
+					JSONObject jaqlObject = JSONObject.fromObject(jaqlString);
 					
 					Map<String, Type> elementMap = getElementMap();
 					JSONArray array1 = new JSONArray();
@@ -403,7 +404,7 @@ public class Type extends JSONValue {
 						JSONObject element = new JSONObject();
 						element.put(Value.MAP_KEY, entry.getKey());
 						element.put(Value.MAP_VALUE, entry.getValue().getValueFromJaql(jaqlObject.getString(entry.getKey())).getJsonObject());
-						array1.put(element);
+						array1.add(element);
 					}
 					object.put("value", array1);
 					break;
@@ -536,6 +537,7 @@ public class Type extends JSONValue {
 	}
 	
 	// depth-first transform
+	// TODO change name
 	public void transformValue(Value currentValue, ValuePredicate predicate) {
 		transformValue(currentValue, "", predicate);
 	}
@@ -562,10 +564,10 @@ public class Type extends JSONValue {
 						}
 					
 						if (changed) {
-							JSONObject object1 = new JSONObject(currentValue.getJsonValue());
+							JSONObject object1 = JSONObject.fromObject(currentValue.getJsonValue());
 							JSONArray array1 = new JSONArray();
 							for (int i = 0; i < listValues.size(); i++) {
-								array1.put(i, listValues.get(i).getJsonObject());
+								array1.add(i, listValues.get(i).getJsonObject());
 							}
 							object1.put(Value.VALUE_STRING, array1);
 							currentValue.setJsonObject(object1);
@@ -580,13 +582,13 @@ public class Type extends JSONValue {
 						}
 						
 						if (changed) {
-							JSONObject object2 = new JSONObject(currentValue.getJsonValue());
+							JSONObject object2 = JSONObject.fromObject(currentValue.getJsonValue());
 							JSONArray array2 = new JSONArray();
 							for (Entry<String, Value> entry : mapValues.entrySet()) {
 								JSONObject element = new JSONObject();
 								element.put(Value.MAP_KEY, entry.getKey());
 								element.put(Value.MAP_VALUE, mapValues.get(entry.getKey()).getJsonObject());
-								array2.put(element);
+								array2.add(element);
 							}
 							object2.put(Value.VALUE_STRING, array2);
 							currentValue.setJsonObject(object2);
@@ -734,35 +736,35 @@ public class Type extends JSONValue {
 		String string = String.valueOf(value);
 		switch (getType()) {
 			case NUMBER:
-				if (string.trim().isEmpty()) result = JSONObject.NULL;
+				if (string.trim().isEmpty()) result = JSONNull.getInstance();
 				else {
 					try {
 						result = Double.parseDouble(string);
 					} catch (NumberFormatException e) {
-						result = JSONObject.NULL;
+						result = JSONNull.getInstance();
 					}
 				}
 				break;
 			case BOOL:
 				if (value != null && string.equals("0")) result = false;
 				else if (value != null && !string.equals("") && !string.equals("0")) result = true;
-				else result = JSONObject.NULL;
+				else result = JSONNull.getInstance();
 				break;
 			case STRING:
 			case TEXT:
-				if (value == null || string.equals("")) result = JSONObject.NULL;
+				if (value == null || string.equals("")) result = JSONNull.getInstance();
 				else result = string;
 				break;
 			case DATE:
-				if (value == null || string.equals("")) result = JSONObject.NULL;
+				if (value == null || string.equals("")) result = JSONNull.getInstance();
 				else result = string;
 				break;
 			case ENUM:
-				if (value == null || string.equals("")) result = JSONObject.NULL;
+				if (value == null || string.equals("")) result = JSONNull.getInstance();
 				else result = string; 
 				break;
 			default:
-				if (value == null || string.equals("")) result = JSONObject.NULL;
+				if (value == null || string.equals("")) result = JSONNull.getInstance();
 				else result = string;
 		}
 		return result;
