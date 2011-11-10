@@ -34,7 +34,6 @@ import org.chai.kevin.OrganisationService
 import org.chai.kevin.ValueService
 import org.chai.kevin.security.User
 import org.chai.kevin.util.Utils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 class EditSurveyController extends AbstractController {
@@ -51,7 +50,7 @@ class EditSurveyController extends AbstractController {
 		// this action redirects to the current survey if a SurveyUser logs in
 		// or to a survey summary page if an admin logs in
 		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
-		User user = User.findByUsername(SecurityUtils.subject.principal)
+		User user = User.findByUuid(SecurityUtils.subject.principal)
 
 		if (user.hasProperty('organisationUnitId') != null) {
 			if (Survey.count() == 0) {
@@ -69,11 +68,11 @@ class EditSurveyController extends AbstractController {
 			}
 			Organisation organisation = organisationService.getOrganisation(user.organisationUnitId)
 
-			redirect (action: 'surveyPage',
+			redirect (controller:'editSurvey', action: 'surveyPage',
 					params: [survey: survey?.id, objective: objective?.id, section: section?.id, organisation: organisation.id])
 		}
 		else {
-			redirect (action: 'summaryPage')
+			redirect (controller: 'summary', action: 'summaryPage')
 		}
 	}
 
@@ -93,54 +92,6 @@ class EditSurveyController extends AbstractController {
 			response.sendError(404)
 		}
 		return valid
-	}
-
-	def summaryPage = {
-		Organisation organisation = getOrganisation(false)
-
-		SummaryPage summaryPage = null;
-		SurveySection section = SurveySection.get(params.int('section'))
-		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
-		Survey survey = Survey.get(params.int('survey'))
-		
-		if(section != null)
-			summaryPage = surveyPageService.getSectionSummaryPage(organisation, section)
-		else if(objective != null)
-			summaryPage = surveyPageService.getObjectiveSummaryPage(organisation, objective)
-		else if(survey != null)
-			summaryPage = surveyPageService.getSurveySummaryPage(organisation, survey);
-
-		Integer organisationLevel = ConfigurationHolder.config.facility.level;
-		def organisationTree = organisationService.getOrganisationTreeUntilLevel(organisationLevel)
-
-		render (view: '/survey/summaryPage', model: [
-					organisation: organisation,
-					summaryPage: summaryPage,
-					surveys: Survey.list(),
-					organisationTree: organisationTree
-				])
-	}
-
-	def objectiveTable = {
-		Organisation currentOrganisation = getOrganisation(false)
-		Survey currentSurvey = Survey.get(params.int('survey'))
-
-		SummaryPage summaryPage = surveyPageService.getObjectiveTable(currentOrganisation, currentSurvey)
-
-		render (view: '/survey/objectiveTable', model: [
-					summaryPage: summaryPage
-				])
-	}
-
-	def sectionTable = {
-		Organisation currentOrganisation = getOrganisation(false)
-		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'))
-
-		SummaryPage summaryPage = surveyPageService.getSectionTable(currentOrganisation, currentObjective)
-
-		render (view: '/survey/sectionTable', model: [
-					summaryPage: summaryPage
-				])
 	}
 
 	def sectionPage = {

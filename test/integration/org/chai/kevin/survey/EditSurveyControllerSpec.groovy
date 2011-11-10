@@ -7,6 +7,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 	def "get survey page with null survey elements"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])

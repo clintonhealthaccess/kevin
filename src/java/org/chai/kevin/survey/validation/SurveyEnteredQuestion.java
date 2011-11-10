@@ -5,8 +5,6 @@ import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -26,7 +24,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 @Table(name="dhsst_survey_entered_question", uniqueConstraints=@UniqueConstraint(
 		columnNames={"question", "organisationUnit"})
 )
-public class SurveyEnteredQuestion  {
+public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 	
 	private Long id;
 	private SurveyQuestion question;

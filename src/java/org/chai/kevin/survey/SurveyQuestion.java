@@ -182,7 +182,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof SurveyQuestion))
 			return false;
 		SurveyQuestion other = (SurveyQuestion) obj;
 		if (id == null) {

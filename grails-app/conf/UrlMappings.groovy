@@ -52,6 +52,8 @@ class UrlMappings {
 		
 		"/editSurvey/$action/$organisation?"(controller:"editSurvey")
 		
+		"/summary/$action/$organisation?"(controller:"summary")
+		
 		"/$controller/$action?"{
 			constraints {
 				// apply constraints here

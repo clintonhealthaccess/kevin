@@ -38,7 +38,7 @@ class HomeController {
 	
 	def index = {
 		if (log.isDebugEnabled()) log.debug("home.index, params:"+params)
-		User user = User.findByUsername(SecurityUtils.subject.principal)
+		User user = User.findByUuid(SecurityUtils.subject.principal)
 		
 		if (user instanceof SurveyUser) {
 			redirect (controller: "editSurvey", action: "view")

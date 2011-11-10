@@ -1,5 +1,8 @@
 package org.chai.kevin.survey
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.maps.MapsTarget.MapsTargetType;
@@ -43,7 +46,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	}
 
 	def newSurveyEnteredQuestion(def question, def period, def organisationUnit, def invalid, def complete) {
-		return new SurveyEnteredQuestion(question: question, organisationUnit: organisationUnit, invalid: invalid, complete: complete).save(failOnError: true)
+		return new SurveyEnteredQuestion(question: question, organisationUnit: organisationUnit, invalid: invalid, complete: complete).save(failOnError: true, flush: true)
 	}
 		
 	def newSurveyEnteredSection(def section, def period, def organisationUnit, def invalid, def complete) {

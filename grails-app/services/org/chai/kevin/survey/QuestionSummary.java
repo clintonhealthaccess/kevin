@@ -1,23 +1,16 @@
 package org.chai.kevin.survey;
 
-public class SectionSummary implements Comparable<SectionSummary> {
+public class QuestionSummary implements Comparable<QuestionSummary> {
 
-	private SurveySection section;
-	
 	private int questions;
 	private int completedQuestions;
 	
-	public SectionSummary(SurveySection section, Integer questions, Integer completedQuestions) {
+	public QuestionSummary(int questions, int completedQuestions) {
 		super();
-		this.section = section;
 		this.questions = questions;
 		this.completedQuestions = completedQuestions;
 	}
 
-	public SurveySection getSection() {
-		return section;
-	}
-	
 	public Integer getQuestions() {
 		return questions;
 	}
@@ -27,7 +20,7 @@ public class SectionSummary implements Comparable<SectionSummary> {
 	}
 	
 	@Override
-	public int compareTo(SectionSummary o) {
+	public int compareTo(QuestionSummary o) {
 		if (questions == 0 && o.getQuestions() == 0) return 0;
 		if (questions == 0) return -1;
 		if (o.getQuestions() == 0) return 1;

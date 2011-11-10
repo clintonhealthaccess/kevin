@@ -42,6 +42,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
@@ -91,121 +92,6 @@ public class SurveyPageService {
 	public Survey getDefaultSurvey() {
 		return (Survey)sessionFactory.getCurrentSession()
 			.createCriteria(Survey.class).add(Restrictions.eq("active", true)).uniqueResult();
-	}
-	
-	@Transactional(readOnly = true)
-	public SummaryPage getSectionTable(Organisation organisation, SurveyObjective objective) {
-		organisationService.loadGroup(organisation);
-		
-		List<SurveySection> sections = objective.getSections(organisation.getOrganisationUnitGroup());
-		Map<SurveySection, SectionSummary> sectionSummaryMap = new HashMap<SurveySection, SectionSummary>();
-		
-		for (SurveySection section : sections) {
-			List<SurveyQuestion> questions = section.getQuestions(organisation.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), organisation.getOrganisationUnit(), null, section, true, false);
-			
-			sectionSummaryMap.put(section, new SectionSummary(section, questions.size(), completedQuestions));
-		}
-		return new SummaryPage(objective, organisation, sections, sectionSummaryMap);
-	}	
-	
-	@Transactional(readOnly = true)
-	public SummaryPage getObjectiveTable(Organisation organisation, Survey survey) {
-		organisationService.loadGroup(organisation);
-		
-		List<SurveyObjective> objectives = survey.getObjectives(organisation.getOrganisationUnitGroup());
-		Map<SurveyObjective, ObjectiveSummary> objectiveSummaryMap = new HashMap<SurveyObjective, ObjectiveSummary>();
-		
-		for (SurveyObjective objective : objectives) {
-			SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, organisation.getOrganisationUnit());
-			List<SurveyQuestion> questions = objective.getQuestions(organisation.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, organisation.getOrganisationUnit(), objective, null, true, false);
-			
-			objectiveSummaryMap.put(objective, new ObjectiveSummary(objective, enteredObjective, questions.size(), completedQuestions));
-		}
-		
-		return new SummaryPage(survey, organisation, objectives, objectiveSummaryMap, false);
-	}	
-	
-	@Transactional(readOnly = true)
-	public SummaryPage getSurveySummaryPage(Organisation organisation, Survey survey) {
-		if (organisation == null || survey == null) 
-				return new SummaryPage(survey, organisation, null, null);
-		
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
-		Map<OrganisationUnitGroup, List<SurveyObjective>> objectiveMap = new HashMap<OrganisationUnitGroup, List<SurveyObjective>>();
-		Map<OrganisationUnitGroup, List<SurveyQuestion>> questionMap = new HashMap<OrganisationUnitGroup, List<SurveyQuestion>>();
-
-		Map<Organisation, OrganisationSummary> summaryMap = new HashMap<Organisation, OrganisationSummary>();
-		for (Organisation facility : facilities) {
-			organisationService.loadGroup(facility);
-
-			if (!objectiveMap.containsKey(facility.getOrganisationUnitGroup())) {
-				objectiveMap.put(facility.getOrganisationUnitGroup(), survey.getObjectives(facility.getOrganisationUnitGroup()));
-			}
-			Integer submittedObjectives = surveyValueService.getNumberOfSurveyEnteredObjectives(survey, facility.getOrganisationUnit(), true, null, null);
-			
-			if (!questionMap.containsKey(facility.getOrganisationUnitGroup())) {
-				List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
-				for (SurveyObjective objective : objectiveMap.get(facility.getOrganisationUnitGroup())) {
-					questions.addAll(objective.getQuestions(facility.getOrganisationUnitGroup()));				
-				}
-				questionMap.put(facility.getOrganisationUnitGroup(), questions);
-			}
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, facility.getOrganisationUnit(), null, null, true, false);
-			
-			OrganisationSummary summary = new OrganisationSummary(facility,  
-					submittedObjectives, objectiveMap.get(facility.getOrganisationUnitGroup()).size(), 
-					completedQuestions, questionMap.get(facility.getOrganisationUnitGroup()).size());
-			
-			summaryMap.put(facility, summary);
-		}
-		return new SummaryPage(survey, organisation, facilities, summaryMap);
-	}
-	
-	@Transactional(readOnly = true)
-	public SummaryPage getObjectiveSummaryPage(Organisation organisation, SurveyObjective objective) {
-		if (organisation == null || objective == null) 
-				return new SummaryPage(objective, organisation, null);
-		
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
-
-		Map<Organisation, ObjectiveSummary> summaryMap = new HashMap<Organisation, ObjectiveSummary>();
-		
-		for (Organisation facility : facilities) {
-			organisationService.loadGroup(facility);						
-			
-			SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, facility.getOrganisationUnit());
-			List<SurveyQuestion> questions = objective.getQuestions(facility.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), facility.getOrganisationUnit(), objective, null, true, false);
-			
-			ObjectiveSummary summary = new ObjectiveSummary(objective, enteredObjective, questions.size(), completedQuestions);
-
-			summaryMap.put(facility, summary);
-		}
-		return new SummaryPage(objective, organisation, summaryMap);
-	}
-	
-	@Transactional(readOnly = true)
-	public SummaryPage getSectionSummaryPage(Organisation organisation, SurveySection section) {
-		if (organisation == null || section == null) 
-				return new SummaryPage(section, organisation, null);
-		
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
-
-		Map<Organisation, SectionSummary> summaryMap = new HashMap<Organisation, SectionSummary>();
-		
-		for (Organisation facility : facilities) {
-			organisationService.loadGroup(facility);						
-			
-			List<SurveyQuestion> questions = section.getQuestions(facility.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(section.getSurvey(), facility.getOrganisationUnit(), null, section, true, false);
-			
-			SectionSummary summary = new SectionSummary(section, questions.size(), completedQuestions);
-			
-			summaryMap.put(facility, summary);
-		}
-		return new SummaryPage(section, organisation, summaryMap);		
 	}
 	
 	@Transactional(readOnly = false)
@@ -370,14 +256,18 @@ public class SurveyPageService {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		for (SurveyObjective objective : survey.getObjectives(facility.getOrganisationUnitGroup())) {
-			refreshObjectiveForFacility(facility, objective, closeIfComplete);
+		Set<SurveyObjective> validObjectives = new HashSet<SurveyObjective>(survey.getObjectives(facility.getOrganisationUnitGroup()));
+		for (SurveyObjective objective : survey.getObjectives()) {
+			if (validObjectives.contains(objective)) refreshObjectiveForFacility(facility, objective, closeIfComplete);
+			else deleteSurveyEnteredObjective(objective, facility);
 		}
 	}
-
+	
 	private void refreshObjectiveForFacility(Organisation facility, SurveyObjective objective, boolean closeIfComplete) {
-		for (SurveySection section : objective.getSections(facility.getOrganisationUnitGroup())) {
-			getMe().refreshSectionForFacilityWithNewTransaction(facility, section);
+		Set<SurveySection> validSections = new HashSet<SurveySection>(objective.getSections(facility.getOrganisationUnitGroup()));
+		for (SurveySection section : objective.getSections()) {
+			if (validSections.contains(section)) refreshSectionForFacility(facility, section);
+			else deleteSurveyEnteredSection(section, facility);
 		}
 		
 		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(facility, objective);
@@ -386,10 +276,10 @@ public class SurveyPageService {
 		surveyValueService.save(enteredObjective);
 	}
 	
-	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshSectionForFacilityWithNewTransaction(Organisation facility, SurveySection section) {
-		refreshSectionForFacility(facility, section);
-	}
+//	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
+//	public void refreshSectionForFacilityWithNewTransaction(Organisation facility, SurveySection section) {
+//		refreshSectionForFacility(facility, section);
+//	}
 	
 	@Transactional(readOnly = false)
 	public void refreshSectionForFacility(Organisation facility, SurveySection section) {
@@ -398,18 +288,21 @@ public class SurveyPageService {
 		
 		organisationService.loadGroup(facility);
 		
-		for (SurveyQuestion question : section.getQuestions(facility.getOrganisationUnitGroup())) {
-			refreshQuestionForFacility(facility, question); 
+		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(facility.getOrganisationUnitGroup()));
+		for (SurveyQuestion question : section.getQuestions()) {
+			if (validQuestions.contains(question)) refreshQuestionForFacility(facility, question);
+			else deleteSurveyEnteredQuestion(question, facility);
 		}
-		
 		SurveyEnteredSection enteredSection = getSurveyEnteredSection(facility, section);
 		setSectionStatus(enteredSection, facility);
 		surveyValueService.save(enteredSection);
 	}
 	
 	private void refreshQuestionForFacility(Organisation facility, SurveyQuestion question) {
-		for (SurveyElement element : question.getSurveyElements(facility.getOrganisationUnitGroup())) {
-			refreshElementForFacility(facility, element);
+		Set<SurveyElement> validElements = new HashSet<SurveyElement>(question.getSurveyElements(facility.getOrganisationUnitGroup()));
+		for (SurveyElement element : question.getSurveyElements()) {
+			if (validElements.contains(element)) refreshElementForFacility(facility, element);
+			else deleteSurveyEnteredValue(element, facility);
 		}
 		
 		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(facility, question);
@@ -423,9 +316,11 @@ public class SurveyPageService {
 		SurveyEnteredValue enteredValue = getSurveyEnteredValue(facility, element);
 		DataValue dataValue = valueService.getValue(element.getDataElement(), facility.getOrganisationUnit(), survey.getPeriod());
 		if (dataValue != null) enteredValue.setValue(dataValue.getValue());
+		else enteredValue.setValue(Value.NULL);
 		if (survey.getLastPeriod() != null) {
 			DataValue lastDataValue = valueService.getValue(element.getDataElement(), facility.getOrganisationUnit(), survey.getLastPeriod());
 			if (lastDataValue != null) enteredValue.setLastValue(lastDataValue.getValue());
+			else enteredValue.setLastValue(Value.NULL);
 		}
 		surveyValueService.save(enteredValue);
 	}
@@ -587,6 +482,20 @@ public class SurveyPageService {
 			// if the objective is not closed and available
 			// we set the objective status correctly and save
 			setObjectiveStatus(objective, organisation);
+		}
+		
+		// fifth we save all the values
+		for (SurveyEnteredValue surveyEnteredValue : affectedElements.values()) {
+			surveyValueService.save(surveyEnteredValue);
+		}
+		for (SurveyEnteredQuestion surveyEnteredQuestion : affectedQuestions.values()) {
+			surveyValueService.save(surveyEnteredQuestion);
+		}
+		for (SurveyEnteredSection surveyEnteredSection : affectedSections.values()) {
+			surveyValueService.save(surveyEnteredSection);
+		}
+		for (SurveyEnteredObjective surveyEnteredObjective : affectedObjectives.values()) {
+			surveyValueService.save(surveyEnteredObjective);
 		}
 		
 		return new SurveyPage(organisation, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements, getOrderingComparator());
@@ -774,6 +683,37 @@ public class SurveyPageService {
 		return enteredValue;
 	}
 
+	private void deleteSurveyEnteredObjective(SurveyObjective objective, Organisation facility) {
+		SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, facility.getOrganisationUnit());
+		if (enteredObjective != null) surveyValueService.delete(enteredObjective); 
+		
+		for (SurveySection section : objective.getSections()) {
+			deleteSurveyEnteredSection(section, facility);
+		}
+	}
+
+	private void deleteSurveyEnteredSection(SurveySection section, Organisation facility) {
+		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(section, facility.getOrganisationUnit());
+		if (enteredSection != null) surveyValueService.delete(enteredSection);
+		
+		for (SurveyQuestion question : section.getQuestions()) {
+			deleteSurveyEnteredQuestion(question, facility);
+		}
+	}
+
+	private void deleteSurveyEnteredQuestion(SurveyQuestion question, Organisation facility) {
+		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(question, facility.getOrganisationUnit());
+		if (enteredQuestion != null) surveyValueService.delete(enteredQuestion);
+		
+		for (SurveyElement element : question.getSurveyElements()) {
+			deleteSurveyEnteredValue(element, facility);
+		}
+	}
+
+	private void deleteSurveyEnteredValue(SurveyElement element, Organisation facility) {
+		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, facility.getOrganisationUnit());
+		if (enteredValue != null) surveyValueService.delete(enteredValue);
+	}
 	
 	public void setOrganisationService(OrganisationService organisationService) {
 		this.organisationService = organisationService;

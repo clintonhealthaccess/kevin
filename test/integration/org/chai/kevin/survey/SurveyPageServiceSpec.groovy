@@ -7,12 +7,15 @@ import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SurveyPageServiceSpec extends SurveyIntegrationTests {
 
 	def surveyPageService
 	def languageService
+	
+	def sessionFactory
 	
 	protected void tearDown() {
 		super.tearDown()
@@ -22,6 +25,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	def "test submit objective"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
@@ -43,6 +47,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	def "test modify"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
@@ -63,6 +68,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	def "test submit"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
@@ -89,6 +95,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	def "test warning"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
@@ -128,6 +135,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	def "test warning and invalid values"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
@@ -152,6 +160,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	def "test modify does not touch unmodified values"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
@@ -192,6 +201,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	def "test refresh without surveyelement"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
@@ -207,10 +217,55 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredQuestion.count() == 1
 		SurveyEnteredSection.count() == 1
 	}
+	
+	def "test refresh erases old values"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		when:
+		newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(KIVUYE), v("1"))
+		surveyPageService.refreshSectionForFacility(getOrganisation(KIVUYE), section)
+		
+		then:
+		SurveyEnteredValue.list()[0].value.equals(Value.NULL)
+	}
+	
+	def "test refresh erases unused entered values"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		when:
+		newSurveyEnteredQuestion(question1, period, OrganisationUnit.findByName(BUTARO), false, true)
+		newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(BUTARO), v("1"))
+		newSurveyEnteredSection(section, period, OrganisationUnit.findByName(BUTARO), false, true)
+		newSurveyEnteredObjective(objective, period, OrganisationUnit.findByName(BUTARO), false, true, false)
+		surveyPageService.refreshSurveyForFacility(getOrganisation(BUTARO), survey, false)
+		sessionFactory.currentSession.flush()
+		
+		then:
+		SurveyEnteredQuestion.count() == 0
+		SurveyEnteredValue.count() == 0
+		SurveyEnteredSection.count() == 0
+		SurveyEnteredObjective.count() == 0
+		
+	}
 		
 	def "test objective order"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective1 = newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
@@ -226,6 +281,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	def "test checkbox option order"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
@@ -244,6 +300,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	def "test enum option order"() {
 		setup:
 		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
@@ -272,5 +329,6 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		then:
 		surveyPage.getEnumOptions(enume).equals([option1, option2])
 	}
+	
 	
 }

@@ -1,3 +1,5 @@
+<%@ page import="org.chai.kevin.survey.SummaryPage" %>
+
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -9,34 +11,18 @@
 	<body>
 		<div id="survey">
 		
-			<g:if test="${summaryPage != null}">			
-			<g:set var="section" value="${summaryPage.section}" />
-			<g:set var="objective" value="${summaryPage.objective}" />
-			<g:set var="survey" value="${summaryPage.survey}" />						
-			</g:if>
-
 			<div id="survey-header" class="subnav">
-				<g:render template="/survey/surveyFilter"/>
-				<g:render template="/templates/organisationFilter" model="[currentOrganisation: organisation, linkParams:[survey: survey?.id, objective: objective?.id, section: section?.id]]"/>
+				<g:render template="/survey/summary/surveyFilter"/>
+				<g:render template="/templates/organisationFilter" model="[currentOrganisation: organisation, linkParams:[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']]"/>
 				<div class="clear"></div>
 			</div>
 						
 			<div class="main">			
-				
-				<g:if test="${organisation == null || (survey == null && objective == null && section == null)}">
-				<p class="help"><g:message code="survey.summary.selectsurveyfacility.text" default="Please select a survey and a facility to get to the respective survey."/></p>
+				<g:if test="${summaryPage == null}">
+					<p class="help"><g:message code="survey.summary.selectsurveyfacility.text" default="Please select a survey and a facility to get to the respective survey."/></p>
 				</g:if>
-				<g:else>				
-					
-					<g:if test="${section != null}">
-						<g:render template="/survey/summarySectionTable" model="[linkParams:[section: section.id]]"/>
-					</g:if>
-					<g:elseif test="${objective != null}">
-						<g:render template="/survey/summaryObjectiveTable" model="[linkParams:[objective: objective.id]]"/>
-					</g:elseif>
-					<g:elseif test="${survey != null}">
-						<g:render template="/survey/summarySurveyTable" model="[linkParams:[survey: survey.id]]"/>
-					</g:elseif>
+				<g:else>
+					<g:render template="${template}"/>
 				</g:else>
 			</div>
 		</div>

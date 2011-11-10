@@ -16,24 +16,25 @@
   			</thead>
   			<tbody>
   				<g:each in="${summaryPage.objectives}" var="objective">
-  					<g:set var="objectiveSummary" value="${summaryPage.getObjectiveSummary(objective)}"/>
+  					<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(objective)}"/>
   					<tr>
-  						<td class="section-table-link" data-objective="${objective.id}" data-organisation="${summaryPage.organisation.id}">
-  							<a href="${createLink(controller: 'editSurvey', action: 'sectionTable', params: [organisation: summaryPage.organisation.id, objective: objective.id])}">
-  								<g:i18n field="${objectiveSummary.objective.names}"/>
+  						<td class="section-table-link" data-objective="${objective.id}" data-organisation="${organisation.id}">
+  							<a href="${createLink(controller: 'summary', action: 'sectionTable', params: [organisation: organisation.id, objective: objective.id])}">
+  								<g:i18n field="${objective.names}"/>
   							</a>
   						</td>
-  						<td>${objectiveSummary.enteredObjective?.closed?'\u2713':''}</td>
-  						<td><span class="progress-bar">${objectiveSummary.completedQuestions}/${objectiveSummary.questions}</span></td>
-  						<td><a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: summaryPage.organisation.id])}"><g:message code="survey.summary.viewsurvey.label" default="View Survey"/></a>
+  						<td>${summaryPage.getSurveyEnteredObjective(objective)?.closed?'\u2713':''}</td>
+  						<td><span class="progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
+  						<td><a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: organisation.id])}"><g:message code="survey.summary.viewsurvey.label" default="View Survey"/></a>
   						<shiro:hasPermission permission="editSurvey:export"> 
-						<a href="${createLink(controller: 'editSurvey', action: 'export', params: [objective: objective.id, organisation: summaryPage.organisation.id])}">
-						<g:message code="survey.summary.exportobjective.label" default="Export Survey Objective" /></a>
+							<a href="${createLink(controller: 'editSurvey', action: 'export', params: [objective: objective.id, organisation: organisation.id])}">
+								<g:message code="survey.summary.exportobjective.label" default="Export Survey Objective" />
+							</a>
 						</shiro:hasPermission></td>
   					</tr>
   					<tr class="explanation-row">
   						<td colspan="4">
-  							<div class="explanation-cell" id="explanation-objective-${summaryPage.organisation.id}-${objective.id}"></div>
+  							<div class="explanation-cell" id="explanation-objective-${organisation.id}-${objective.id}"></div>
   						</td>
   					</tr>
   				</g:each>

@@ -1,11 +1,8 @@
 package org.chai.kevin.survey.validation;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -42,10 +39,8 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 		uniqueConstraints=@UniqueConstraint(columnNames={"surveyElement", "organisationUnit"}
 ))
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class SurveyEnteredValue implements Serializable {
+public class SurveyEnteredValue extends SurveyEnteredEntity {
 
-	private static final long serialVersionUID = -7262945749639062551L;
-	
 	private Long id;
 	private SurveyElement surveyElement;
 	private Value value;

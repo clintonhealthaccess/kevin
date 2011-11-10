@@ -34,7 +34,7 @@ class DbRealm {
 		
         // Now check the user's password against the hashed value stored
         // in the database.
-        def account = new SimpleAccount(username, user.passwordHash, "DbRealm")
+        def account = new SimpleAccount(user.uuid, user.passwordHash, "DbRealm")
         if (!credentialMatcher.doCredentialsMatch(authToken, account)) {
             log.info "Invalid password (DB realm)"
             throw new IncorrectCredentialsException("Invalid password for user '${username}'")
@@ -81,7 +81,7 @@ class DbRealm {
         //
         // First find all the permissions that the user has that match
         // the required permission's type and project code.
-        def user = User.findByUsername(principal)
+        def user = User.findByUuid(principal)
 		if (user == null || !user.active || !user.confirmed) return false;
 		
         def permissions = user.permissions

@@ -10,6 +10,7 @@ class User {
 	String permissionString = ''
 	Boolean confirmed = false
 	Boolean active = false
+	String uuid
 	
 	String firstname, lastname, organisation
 	
@@ -39,5 +40,6 @@ class User {
 		firstname(nullable: true)
 		lastname(nullable: true)
 		organisation(nullable: true)
+		uuid(nullable: false, blank: false, unique: true)
     }
 }

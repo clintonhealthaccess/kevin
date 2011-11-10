@@ -1,5 +1,6 @@
 package org.chai.kevin.survey;
 
+import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.Value;
@@ -8,6 +9,8 @@ import org.chai.kevin.LanguageService;
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.data.DataElement
 import org.chai.kevin.data.Type.PrefixPredicate;
+import org.chai.kevin.security.User;
+import org.chai.kevin.survey.validation.SurveyEnteredEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
@@ -29,21 +32,46 @@ class SurveyValueService {
 	
 	void save(SurveyEnteredObjective surveyEnteredObjective) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredObjective=${surveyEnteredObjective}})")
+		surveyEnteredObjective.setUserUuid(SecurityUtils.subject.principal)
+		surveyEnteredObjective.setTimestamp(new Date());
 		surveyEnteredObjective.save();
 	}
 
+	void delete(SurveyEnteredObjective surveyEnteredObjective) {
+		surveyEnteredObjective.delete()
+	}
+	
 	void save(SurveyEnteredValue surveyEnteredValue) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredValue=${surveyEnteredValue}})")
+		surveyEnteredValue.setUserUuid(SecurityUtils.subject.principal)
+		surveyEnteredValue.setTimestamp(new Date());
 		surveyEnteredValue.save();
+	}
+	
+	void delete(SurveyEnteredValue surveyEnteredValue) {
+		surveyEnteredValue.delete()
 	}
 	
 	void save(SurveyEnteredQuestion surveyEnteredQuestion) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredQuestion=${surveyEnteredQuestion}})")
+		surveyEnteredQuestion.setUserUuid(SecurityUtils.subject.principal)
+		surveyEnteredQuestion.setTimestamp(new Date());
 		surveyEnteredQuestion.save();
 	}
 	
+	void delete(SurveyEnteredQuestion surveyEnteredQuestion) {
+		surveyEnteredQuestion.delete()
+	}
+	
 	void save(SurveyEnteredSection surveyEnteredSection) {
+		if (log.isDebugEnabled()) log.debug("save(surveyEnteredSection=${surveyEnteredSection}})")
+		surveyEnteredSection.setUserUuid(SecurityUtils.subject.principal)
+		surveyEnteredSection.setTimestamp(new Date());
 		surveyEnteredSection.save();
+	}
+	
+	void delete(SurveyEnteredSection surveyEnteredSection) {
+		surveyEnteredSection.delete()
 	}
 	
 	Integer getNumberOfSurveyEnteredObjectives(Survey survey, OrganisationUnit organisationUnit, Boolean closed, Boolean complete, Boolean invalid) {

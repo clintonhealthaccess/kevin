@@ -103,17 +103,17 @@ class Initializer {
 		surveyAllReadonly.addToPermissions("editSurvey:print")
 		surveyAllReadonly.save()
 		
-		def user = new User(username: "dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true)
+		def user = new User(username: "dhsst", email:'dhsst@dhsst.org', passwordHash: new Sha256Hash("dhsst").toHex(), active: true, confirmed: true, uuid:'dhsst_uuid')
 		user.addToRoles(reportAllReadonly)
 		user.addToRoles(surveyAllReadonly)
 		// access to site
 		user.save(failOnError: true)
 
-		def admin = new User(username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true)
+		def admin = new User(username: "admin", email:'admin@dhsst.org', passwordHash: new Sha256Hash("admin").toHex(), active: true, confirmed: true, uuid:'admin_uuid')
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def kivuye = new SurveyUser(username: "kivuye", organisationUnitId: OrganisationUnit.findByName("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true)
+		def kivuye = new SurveyUser(username: "kivuye", organisationUnitId: OrganisationUnit.findByName("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
 		kivuye.addToPermissions("editSurvey:view")
 		kivuye.addToPermissions("editSurvey:*:"+kivuye.organisationUnitId)
 		kivuye.addToPermissions("menu:survey")

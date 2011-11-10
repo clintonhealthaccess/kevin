@@ -15,7 +15,10 @@ class AuthController {
     def shiroSecurityManager
 
 	def getTargetURI() {
-		return params.targetURI?: "/"
+		// this is because shiro automatically adds the parameter 'targetUri'
+		// and there is no way to change it so we expect it here as well
+		if (params.targetUri != null) return params.targetUri
+		else return params.targetURI?: "/"
 	}
 	
 	def getFromEmail() {
@@ -39,7 +42,7 @@ class AuthController {
 			render(view:'register', model:[register: cmd])
 		}
 		else {
-			def user = new User(username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation).save()
+			def user = new User(username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation, uuid: UUID.randomUUID().toString()).save()
 			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
 			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])
 			
@@ -269,7 +272,7 @@ class AuthController {
 				token.delete()
 			}
 			else if (SecurityUtils.subject?.principal != null) {
-				user = User.findByUsername(SecurityUtils.subject.principal)
+				user = User.findByUuid(SecurityUtils.subject.principal)
 			}
 			
 			if (user != null) {

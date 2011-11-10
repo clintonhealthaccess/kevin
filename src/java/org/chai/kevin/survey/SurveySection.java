@@ -194,7 +194,7 @@ public class SurveySection extends Orderable<Integer> {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof SurveySection))
 			return false;
 		SurveySection other = (SurveySection) obj;
 		if (id == null) {

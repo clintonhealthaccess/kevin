@@ -18,7 +18,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 @Table(name="dhsst_survey_entered_section", uniqueConstraints=@UniqueConstraint(
 		columnNames={"section", "organisationUnit"})
 )
-public class SurveyEnteredSection {
+public class SurveyEnteredSection extends SurveyEnteredEntity {
 	
 	private Long id;
 	private SurveySection section;

@@ -111,7 +111,7 @@ public class SurveyElement {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof SurveyElement))
 			return false;
 		SurveyElement other = (SurveyElement) obj;
 		if (id == null) {

@@ -2,8 +2,6 @@ package org.chai.kevin.survey.validation;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,7 +18,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 @Table(name="dhsst_survey_entered_objective", uniqueConstraints=@UniqueConstraint(
 		columnNames={"objective", "organisationUnit"})
 )
-public class SurveyEnteredObjective  {
+public class SurveyEnteredObjective extends SurveyEnteredEntity {
 
 	private Long id;
 	private SurveyObjective objective;

@@ -8,91 +8,87 @@ import java.util.Map;
 
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationSorter;
+import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 
 public class SummaryPage {
 
-	private Organisation organisation;
+	private static final String PROGRESS_SORT = "progress";
+	private static final String FACILITY_SORT = "facility";
 	
-	private Survey survey;
-	private SurveyObjective objective;
-	private SurveySection section;
+	private List<Organisation> facilities;
 	
-	private Map<Organisation, OrganisationSummary> organisationSummaryMap;
-	private Map<SurveyObjective, ObjectiveSummary> objectiveSummaryMap;
-	private Map<SurveySection, SectionSummary> sectionSummaryMap;
+	// for survey summary page
+	private Map<Organisation, ObjectiveSummary> objectiveSummaryMap;
 	
-	private Map<Organisation, ObjectiveSummary> facilityObjectiveSummaryMap;
-	private Map<Organisation, SectionSummary> facilitySectionSummaryMap;
+	// for objective summary page
+	private Map<Organisation, SurveyEnteredObjective> enteredObjectiveSummaryMap;
+	
+	// for survey + objective + section summary page
+	private Map<Organisation, QuestionSummary> questionSummaryMap;
+	
+	// for smaller information tables
+	private Map<SurveyObjective, SurveyEnteredObjective> enteredObjectiveTableMap;
+	private Map<SurveyObjective, QuestionSummary> objectiveQuestionTableMap;
+	private Map<SurveySection, QuestionSummary> sectionQuestionTableMap;
 
-	public SummaryPage(Survey survey, Organisation organisation,
-			List<Organisation> facilities,
-			Map<Organisation, OrganisationSummary> organisationSummaryMap) {
-		this.survey = survey;
-		this.organisation = organisation;
-		this.organisationSummaryMap = organisationSummaryMap;
-	}
-
-	public SummaryPage(Survey survey, Organisation organisation,
-			List<SurveyObjective> objectives,
-			Map<SurveyObjective, ObjectiveSummary> objectiveSummaryMap,
-			boolean test) {
-		this.survey = survey;
-		this.organisation = organisation;
+	// for survey summary page
+	public SummaryPage(List<Organisation> facilities, Map<Organisation, QuestionSummary> questionSummaryMap, Map<Organisation, ObjectiveSummary> objectiveSummaryMap) {
+		this.facilities = facilities;
+		this.questionSummaryMap = questionSummaryMap;
 		this.objectiveSummaryMap = objectiveSummaryMap;
 	}
-
-	public SummaryPage(SurveyObjective objective, Organisation organisation,
-			List<SurveySection> sections,
-			Map<SurveySection, SectionSummary> sectionSummaryMap) {
-		this.survey = objective.getSurvey();
-		this.objective = objective;
-		this.organisation = organisation;
-		this.sectionSummaryMap = sectionSummaryMap;
+	
+	// for objective summary page
+	public SummaryPage(List<Organisation> facilities, Map<Organisation, QuestionSummary> questionSummaryMap, Map<Organisation, SurveyEnteredObjective> enteredObjectiveMap, boolean test) {
+		this.facilities = facilities;
+		this.enteredObjectiveSummaryMap = enteredObjectiveMap;
+		this.questionSummaryMap = questionSummaryMap;
 	}
 
-	public SummaryPage(SurveyObjective objective, Organisation organisation,
-			Map<Organisation, ObjectiveSummary> facilityObjectiveSummaryMap) {
-		this.objective = objective;
-		this.organisation = organisation;
-		this.facilityObjectiveSummaryMap = facilityObjectiveSummaryMap;
+	// for section summary page
+	public SummaryPage(List<Organisation> facilities, Map<Organisation, QuestionSummary> questionSummaryMap) {
+		this.facilities = facilities;
+		this.questionSummaryMap = questionSummaryMap;
 	}
 
-	public SummaryPage(SurveySection section, Organisation organisation,
-			Map<Organisation, SectionSummary> facilitySectionSummaryMap) {
-		this.section = section;
-		this.organisation = organisation;
-		this.facilitySectionSummaryMap = facilitySectionSummaryMap;
-	}
-
-	public Organisation getOrganisation() {
-		return organisation;
+	// for objective table page
+	public SummaryPage(Map<SurveyObjective, SurveyEnteredObjective> enteredObjectiveTableMap, Map<SurveyObjective, QuestionSummary> objectiveQuestionTableMap) {
+		this.enteredObjectiveTableMap = enteredObjectiveTableMap;
+		this.objectiveQuestionTableMap = objectiveQuestionTableMap;
 	}
 	
-	public Survey getSurvey() {
-		return survey;
+	// for section table page
+	public SummaryPage(Map<SurveySection, QuestionSummary> sectionQuestionTableMap) {
+		this.sectionQuestionTableMap = sectionQuestionTableMap;
 	}
-
-	public SurveyObjective getObjective() {
-		return objective;
+	
+	
+	public void sort(String parameter, String order) {
+		if (facilities == null || parameter == null || order == null) return;
+		if (parameter.equals(FACILITY_SORT)) {
+			Collections.sort(facilities, OrganisationSorter.BY_LEVEL);
+			if (order.equals("desc")) Collections.reverse(facilities); 
+		}
+		else if (parameter.equals(PROGRESS_SORT)) {
+			Collections.sort(facilities, new Comparator<Organisation>() {
+				@Override
+				public int compare(Organisation arg0, Organisation arg1) {
+					QuestionSummary summary0 = questionSummaryMap.get(arg0);
+					QuestionSummary summary1 = questionSummaryMap.get(arg1);
+					return summary0.compareTo(summary1);
+				}
+			});
+			if (order.equals("desc")) Collections.reverse(facilities);
+		}
 	}
-
-	public SurveySection getSection() {
-		return section;
-	}
-
-	public List<Organisation> getFacilities() {
-		List<Organisation> sortedFacilities = new ArrayList<Organisation>(organisationSummaryMap.keySet());
-		Collections.sort(sortedFacilities, OrganisationSorter.BY_LEVEL);
-		return sortedFacilities;
-	}
-
+	
 	public List<SurveyObjective> getObjectives() {
-		List<SurveyObjective> sortedObjectives = new ArrayList<SurveyObjective>(objectiveSummaryMap.keySet());
+		List<SurveyObjective> sortedObjectives = new ArrayList<SurveyObjective>(objectiveQuestionTableMap.keySet());
 		Collections.sort(sortedObjectives, new Comparator<SurveyObjective>() {
 			@Override
 			public int compare(SurveyObjective arg0, SurveyObjective arg1) {
-				ObjectiveSummary summary0 = objectiveSummaryMap.get(arg0);
-				ObjectiveSummary summary1 = objectiveSummaryMap.get(arg1);
+				QuestionSummary summary0 = objectiveQuestionTableMap.get(arg0);
+				QuestionSummary summary1 = objectiveQuestionTableMap.get(arg1);
 				return summary0.compareTo(summary1);
 			}
 		});
@@ -101,57 +97,45 @@ public class SummaryPage {
 	}	
 
 	public List<SurveySection> getSections() {
-		List<SurveySection> sortedSections = new ArrayList<SurveySection>(sectionSummaryMap.keySet());
+		List<SurveySection> sortedSections = new ArrayList<SurveySection>(sectionQuestionTableMap.keySet());
 		Collections.sort(sortedSections, new Comparator<SurveySection>() {
 			@Override
 			public int compare(SurveySection arg0, SurveySection arg1) {
-				SectionSummary summary0 = sectionSummaryMap.get(arg0);
-				SectionSummary summary1 = sectionSummaryMap.get(arg1);
+				QuestionSummary summary0 = sectionQuestionTableMap.get(arg0);
+				QuestionSummary summary1 = sectionQuestionTableMap.get(arg1);
 				return summary0.compareTo(summary1);
 			}
 		});
 		Collections.reverse(sortedSections);
 		return sortedSections;
 	}
-
-	public OrganisationSummary getOrganisationSummary(Organisation organisation) {
-		return organisationSummaryMap.get(organisation);
-	}
-
-	public ObjectiveSummary getObjectiveSummary(SurveyObjective objective) {
-		return objectiveSummaryMap.get(objective);
+	
+	public List<Organisation> getFacilities() {
+		return facilities;
 	}
 
-	public SectionSummary getSectionSummary(SurveySection section) {
-		return sectionSummaryMap.get(section);
+	public QuestionSummary getQuestionSummary(Organisation organisation) {
+		return questionSummaryMap.get(organisation);
 	}
 
-	public Map<Organisation, ObjectiveSummary> getFacilityObjectiveSummaryMap() {
-		return facilityObjectiveSummaryMap;
-	}	
-	
-	public List<Organisation> getObjectiveFacilities() {
-		List<Organisation> sortedFacilities = new ArrayList<Organisation>(facilityObjectiveSummaryMap.keySet());
-		Collections.sort(sortedFacilities, OrganisationSorter.BY_LEVEL);
-		return sortedFacilities;
-	}
-	
-	public ObjectiveSummary getObjectiveSummary(Organisation facility) {
-		return facilityObjectiveSummaryMap.get(facility);
-	}
-	
-	public Map<Organisation, SectionSummary> getFacilitySectionSummaryMap() {
-		return facilitySectionSummaryMap;
-	}
-	
-	public List<Organisation> getSectionFacilities() {
-		List<Organisation> sortedFacilities = new ArrayList<Organisation>(facilitySectionSummaryMap.keySet());
-		Collections.sort(sortedFacilities, OrganisationSorter.BY_LEVEL);
-		return sortedFacilities;
-	}
-	
-	public SectionSummary getSectionSummary(Organisation facility) {
-		return facilitySectionSummaryMap.get(facility);
+	public ObjectiveSummary getObjectiveSummary(Organisation organisation) {
+		return objectiveSummaryMap.get(organisation);
 	}
 
+	public SurveyEnteredObjective getSurveyEnteredObjective(Organisation organisation) {
+		return enteredObjectiveSummaryMap.get(organisation);
+	}
+	
+	public QuestionSummary getQuestionSummary(SurveyObjective objective) {
+		return objectiveQuestionTableMap.get(objective);
+	}
+
+	public QuestionSummary getQuestionSummary(SurveySection section) {
+		return sectionQuestionTableMap.get(section);
+	}
+
+	public SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective objective) {
+		return enteredObjectiveTableMap.get(objective);
+	}
+	
 }

@@ -15,13 +15,13 @@
   			</thead>
   			<tbody>
   				<g:each in="${summaryPage.sections}" var="section">
-  					<g:set var="sectionSummary" value="${summaryPage.getSectionSummary(section)}"/>
+  					<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(section)}"/>
   					<tr>
-  						<td><g:i18n field="${sectionSummary.section.names}"/></td>
-  						<td><span class="progress-bar">${sectionSummary.completedQuestions}/${sectionSummary.questions}</span></td>
-  						<td><a href="${createLink(controller: 'editSurvey', action: 'sectionPage', params: [section: section.id, organisation: summaryPage.organisation.id])}"><g:message code="survey.viewsurvey.label" default="View Survey"/></a>
+  						<td><g:i18n field="${section.names}"/></td>
+  						<td><span class="progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
+  						<td><a href="${createLink(controller: 'editSurvey', action: 'sectionPage', params: [section: section.id, organisation: organisation.id])}"><g:message code="survey.viewsurvey.label" default="View Survey"/></a>
   						<shiro:hasPermission permission="editSurvey:export"> 
-						<a href="${createLink(controller: 'editSurvey', action: 'export', params: [section: section.id, organisation: summaryPage.organisation.id])}">
+						<a href="${createLink(controller: 'editSurvey', action: 'export', params: [section: section.id, organisation: organisation.id])}">
 						<g:message code="survey.summary.exportsection.label" default="Export Survey Section" /></a>
 						</shiro:hasPermission></td>
   					</tr>

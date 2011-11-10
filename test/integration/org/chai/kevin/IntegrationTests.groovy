@@ -33,6 +33,9 @@ import grails.plugin.springcache.annotations.CacheFlush;
 
 import java.util.Date
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.chai.kevin.data.Average
 import org.chai.kevin.data.DataElement
 import org.chai.kevin.data.Enum
@@ -46,6 +49,7 @@ import org.chai.kevin.value.DataValue
 import org.chai.kevin.value.ExpressionValue
 import org.chai.kevin.value.ExpressionValue.Status;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.security.User;
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet
@@ -150,6 +154,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return group
 	}
 	
+	def newUser(def username, def uuid) {
+		return new User(username: username, permissionString: '', passwordHash:'', uuid: uuid).save(failOnError: true)
+	}
+	
 	DataValue newDataValue(def dataElement, def period, def organisationUnit, def value) {
 		return new DataValue(dataElement: dataElement, period: period, organisationUnit: organisationUnit, value: value).save(failOnError: true)
 	}
@@ -231,6 +239,12 @@ abstract class IntegrationTests extends IntegrationSpec {
 			refreshValueService.refreshOutdatedCalculations(it)
 			refreshValueService.refreshNonCalculatedCalculations(it)
 		}
+	}
+	
+	def setupSecurityManager(def user) {
+		def subject = [getPrincipal: { user?.uuid }, isAuthenticated: { user==null?false:true }] as Subject
+		ThreadContext.put( ThreadContext.SECURITY_MANAGER_KEY, [ getSubject: { subject } ] as SecurityManager )
+		SecurityUtils.metaClass.static.getSubject = { subject }
 	}
 	
 	static def g(def groups) {
