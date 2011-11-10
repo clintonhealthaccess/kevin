@@ -42,7 +42,7 @@ import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.ValueCalculator;
 import org.hibernate.Criteria;
@@ -110,7 +110,7 @@ public class ValueService {
 	
 	@Transactional(readOnly=true)
 	public Long getNumberOfValues(Expression expression) {
-		return (Long)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class)
+		return (Long)sessionFactory.getCurrentSession().createCriteria(NormalizedDataElementValue.class)
 		.add(Restrictions.eq("expression", expression))
 		.setProjection(Projections.count("id"))
 //		.setFlushMode(FlushMode.COMMIT)
@@ -146,11 +146,11 @@ public class ValueService {
 		.list();
 	}
 	
-	private class ExpressionValueCalculator implements ValueCalculator<ExpressionValue> {
+	private class ExpressionValueCalculator implements ValueCalculator<NormalizedDataElementValue> {
 		
 		@Transactional(readOnly=true)
-		public ExpressionValue getValue(Data<ExpressionValue> expression, OrganisationUnit organisationUnit, Period period) {
-			return (ExpressionValue)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class)
+		public NormalizedDataElementValue getValue(Data<NormalizedDataElementValue> expression, OrganisationUnit organisationUnit, Period period) {
+			return (NormalizedDataElementValue)sessionFactory.getCurrentSession().createCriteria(NormalizedDataElementValue.class)
 				.add(Restrictions.naturalId()
 					.set("period", period)
 					.set("organisationUnit", organisationUnit)

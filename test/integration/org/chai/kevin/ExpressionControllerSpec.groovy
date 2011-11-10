@@ -3,7 +3,7 @@ package org.chai.kevin;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.ExpressionController;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 
 class ExpressionControllerSpec extends IntegrationTests {
 
@@ -23,7 +23,7 @@ class ExpressionControllerSpec extends IntegrationTests {
 		
 		then:
 		Expression.count() == 0
-		ExpressionValue.count() == 0
+		NormalizedDataElementValue.count() == 0
 	}
 	
 	def "cannot delete expression if there are associated calculations"() {

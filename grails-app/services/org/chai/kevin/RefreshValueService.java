@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
@@ -45,7 +45,7 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		Criteria criteria = sessionFactory.getCurrentSession()
-		.createCriteria(ExpressionValue.class, "ev")
+		.createCriteria(NormalizedDataElementValue.class, "ev")
 		.createAlias("expression", "e")
 		.add(Restrictions.ltProperty("ev.timestamp", "e.timestamp"))
 		.add(Restrictions.eq("expression", expression))
@@ -53,8 +53,8 @@ public class RefreshValueService {
 		.setFlushMode(FlushMode.COMMIT)
 		.setCacheable(false);
 		
-		for (ExpressionValue expressionValue : (List<ExpressionValue>)criteria.list()) {
-			ExpressionValue newValue = expressionService.calculate(expressionValue.getExpression(), expressionValue.getOrganisationUnit(), expressionValue.getPeriod());
+		for (NormalizedDataElementValue expressionValue : (List<NormalizedDataElementValue>)criteria.list()) {
+			NormalizedDataElementValue newValue = expressionService.calculate(expressionValue.getExpression(), expressionValue.getOrganisationUnit(), expressionValue.getPeriod());
 			expressionValue.setStatus(newValue.getStatus());
 			expressionValue.setValue(newValue.getValue());
 			expressionValue.setTimestamp(new Date());
@@ -72,7 +72,7 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		Long numValues = (Long)sessionFactory.getCurrentSession().createCriteria(ExpressionValue.class).add(Restrictions.eq("expression", expression)).setProjection(Projections.rowCount()).uniqueResult();
+		Long numValues = (Long)sessionFactory.getCurrentSession().createCriteria(NormalizedDataElementValue.class).add(Restrictions.eq("expression", expression)).setProjection(Projections.rowCount()).uniqueResult();
 		Long numOrganisations = getNumberOfOrganisations();
 		Long numPeriods = getNumberOfPeriods();
 		
@@ -95,9 +95,9 @@ public class RefreshValueService {
 			if (log.isDebugEnabled()) log.debug("starting sorting non calculated expressions");
 			for (Iterator<Object[]> iterator = query2.iterate(); iterator.hasNext();) {
 				Object[] row = (Object[]) iterator.next();
-				ExpressionValue value = new ExpressionValue(null, null, (OrganisationUnit)row[0], expression, (Period)row[1]);
+				NormalizedDataElementValue value = new NormalizedDataElementValue(null, null, (OrganisationUnit)row[0], expression, (Period)row[1]);
 				if (valueService.getValue(value.getExpression(), value.getOrganisationUnit(), value.getPeriod()) == null) {
-					ExpressionValue newValue = expressionService.calculate(value.getExpression(), value.getOrganisationUnit(), value.getPeriod());
+					NormalizedDataElementValue newValue = expressionService.calculate(value.getExpression(), value.getOrganisationUnit(), value.getPeriod());
 					newValue.setTimestamp(new Date());
 					valueService.save(newValue);
 				}

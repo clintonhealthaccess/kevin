@@ -36,7 +36,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.ExpressionValue.Status;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -53,13 +53,13 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
 		
 		then:
-		ExpressionValue.count() == 0
+		NormalizedDataElementValue.count() == 0
 		
 		when:
 		refreshValueService.refreshNonCalculatedExpressions(expression);
 		
 		then:
-		ExpressionValue.count() == 1
+		NormalizedDataElementValue.count() == 1
 	}
 	
 	def "test get non calculated expressions when already one expression value"() {
@@ -71,14 +71,14 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def timestamp = expressionValue.timestamp
 		
 		then:
-		ExpressionValue.count() == 1
+		NormalizedDataElementValue.count() == 1
 		
 		when:
 		refreshValueService.refreshNonCalculatedExpressions(expression);
 
 		then:
-		ExpressionValue.count() == 1
-		ExpressionValue.list()[0].timestamp.equals(timestamp)	
+		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)	
 	}
 	
 	
@@ -101,8 +101,8 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		refreshValueService.refreshOutdatedExpressions(expression);
 		
 		then:
-		ExpressionValue.count() == 1
-		ExpressionValue.list()[0].timestamp.equals(timestamp)
+		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)
 		
 		when:
 		def newDate = new Date()
@@ -112,8 +112,8 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		refreshValueService.refreshOutdatedExpressions(expression);
 		
 		then:
-		ExpressionValue.count() == 1
-		!ExpressionValue.list()[0].timestamp.equals(timestamp)
+		NormalizedDataElementValue.count() == 1
+		!NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)
 	}
 	
 	def "test get non calculated calculations"() {

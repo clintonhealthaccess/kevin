@@ -40,7 +40,7 @@ import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,7 +88,7 @@ public class MapsService {
 			Double value = null;
 			if (target.getType() == MapsTargetType.AGGREGATION) {
 				if (log.isDebugEnabled()) log.debug("getting values for AGGREGATION map with expression: "+target.getExpression());
-				ExpressionValue expressionValue = valueService.getValue(target.getExpression(), child.getOrganisationUnit(), period);
+				NormalizedDataElementValue expressionValue = valueService.getValue(target.getExpression(), child.getOrganisationUnit(), period);
 				if (expressionValue != null) {
 					if (!expressionValue.getValue().isNull()) {
 						value = expressionValue.getValue().getNumberValue().doubleValue();

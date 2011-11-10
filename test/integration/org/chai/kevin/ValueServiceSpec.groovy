@@ -36,7 +36,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.ExpressionValue.Status;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -95,13 +95,13 @@ class ValueServiceSpec extends IntegrationTests {
 		newExpressionValue(expression, period, organisation)
 		
 		then:
-		ExpressionValue.count() == 1
+		NormalizedDataElementValue.count() == 1
 		
 		when:
 		valueService.deleteValues(expression)
 		
 		then:
-		ExpressionValue.count() == 0
+		NormalizedDataElementValue.count() == 0
 		
 		when:
 		def expression2 = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
@@ -110,7 +110,7 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.deleteValues(expression)
 		
 		then:
-		ExpressionValue.count() == 1
+		NormalizedDataElementValue.count() == 1
 	}
 	
 	

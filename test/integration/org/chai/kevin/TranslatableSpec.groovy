@@ -52,7 +52,7 @@ import org.chai.kevin.survey.SurveyTableColumn
 import org.chai.kevin.survey.SurveyTableQuestion
 import org.chai.kevin.survey.SurveyTableRow
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 import org.json.JSONObject;

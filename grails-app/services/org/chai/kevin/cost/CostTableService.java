@@ -40,7 +40,7 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,8 +123,8 @@ public class CostTableService {
 			List<Integer> years = costService.getYears();
 
 			
-			ExpressionValue expressionValue = valueService.getValue(target.getExpression(), organisation.getOrganisationUnit(), period);
-			ExpressionValue expressionEndValue = null;
+			NormalizedDataElementValue expressionValue = valueService.getValue(target.getExpression(), organisation.getOrganisationUnit(), period);
+			NormalizedDataElementValue expressionEndValue = null;
 			if (target.isAverage()) expressionEndValue = valueService.getValue(target.getExpressionEnd(), organisation.getOrganisationUnit(), period);
 			if (expressionValue != null && expressionValue.getValue().getNumberValue() != null && (!target.isAverage() || (expressionEndValue != null && expressionEndValue.getValue().getNumberValue() != null))) { 
 				Double baseCost = expressionValue.getValue().getNumberValue().doubleValue();

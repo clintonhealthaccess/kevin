@@ -35,7 +35,7 @@ import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.ExpressionValue.Status;
 import org.chai.kevin.value.Value;
 
@@ -116,7 +116,7 @@ class DataServiceSpec extends IntegrationTests {
 		then:
 		thrown IllegalArgumentException
 		Expression.count() == 1
-		ExpressionValue.count() == 1
+		NormalizedDataElementValue.count() == 1
 	}
 	
 	def "delete calculation with associated values throws exception"() {

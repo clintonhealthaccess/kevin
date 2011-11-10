@@ -5,7 +5,7 @@ import grails.validation.ValidationException;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -60,8 +60,8 @@ class ExpressionSpec extends IntegrationTests {
 		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
 
 		when:
-		def expr1 = new ExpressionValue(expression: expression, period: period, organisationUnit: organisationUnit);
-		def expr2 = new ExpressionValue(expression: expression, period: period, organisationUnit: organisationUnit);
+		def expr1 = new NormalizedDataElementValue(expression: expression, period: period, organisationUnit: organisationUnit);
+		def expr2 = new NormalizedDataElementValue(expression: expression, period: period, organisationUnit: organisationUnit);
 
 		then:
 		expr1.hashCode() == expr2.hashCode();

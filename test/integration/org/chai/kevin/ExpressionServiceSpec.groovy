@@ -5,13 +5,12 @@ import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
-import org.chai.kevin.value.ExpressionValue.Status;
+import org.chai.kevin.value.NormalizedDataElementValue;
+import org.chai.kevin.value.NormalizedDataElementValue.Status;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -44,77 +43,102 @@ import org.hisp.dhis.period.Period;
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 public class ExpressionServiceSpec extends IntegrationTests {
 
 	def expressionService;
 	def valueService;
 	
-	def "test basic expression at facility level"() {
+	def "test normalized data elements at facility level"() {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
-		def organisationUnit = OrganisationUnit.findByName(BUTARO)
-		def expression = null
+		def dataElement = newDataElement(CODE(10), Type.TYPE_NUMBER())
+		def normalizedDataElement = null
 		def result = null
 		
-		when:
-		newDataValue(dataElement, period, organisationUnit, v("40"))
-		expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "\$"+dataElement.id+" * 2")
-		result = expressionService.calculate(expression, organisationUnit, period)
-		
-		then:
-		result.value.numberValue == 80d
-		result.status == Status.VALID
-		
-		when:
-		expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$0", [validate: false])
-		result = expressionService.calculate(expression, organisationUnit, period)
+		when: "data element is missing"
+		normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$0"]]))
+		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
 		
 		then:
 		result.value == Value.NULL
 		result.status == Status.MISSING_DATA_ELEMENT
 		
-		when:
-		expression = newExpression(CODE(4), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-		result = expressionService.calculate(expression, OrganisationUnit.findByName(KIVUYE), period)
+		when: "value is missing for facility"
+		normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
+		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
 		
 		then:
 		result.value == Value.NULL
-		result.status == Status.MISSING_NUMBER
+		result.status == Status.MISSING_VALUE
+
+		when: "expression is missing for facility type"
+		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(KIVUYE), period)
 				
-		when:
+		then:
+		result.value == Value.NULL
+		result.status == Status.DOES_NOT_APPLY
+		
+		when: "everything is fine"
+		newDataValue(dataElement, period, organisationUnit, v("40"))
+		normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id+" * 2"]]))
+		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
+		
+		then:
+		result.value.numberValue == 80d
+		result.status == Status.VALID
+			
+		when: "null value"
 		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), Value.NULL)
-		expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
+		normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
 		result = expressionService.calculate(expression, OrganisationUnit.findByName(KIVUYE), period)
 		
 		then:
 		result.value == Value.NULL
 		result.status == Status.ERROR
-		
 	}
 	
-	def "test errors of typing"() {
+	def "test normalized data element at different levels"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def dataElement = newDataElement(CODE(10), Type.TYPE_NUMBER())
+		def normalizedDataElement = null
+		def result = null
+		
+		when: 
+		normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(organisation), period)
+		
+		then:
+		// exception ?
+		result == null
+		
+		where:
+		organisation << [RWANDA, NORTH, BURERA]
+	}
+	
+	
+	def "test typing errors"() {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
 		def organisationUnit = OrganisationUnit.findByName(BUTARO)
-		def expression = null
+		def normalizedDataElement = null
 		def result = null
 		
 		when:
-		expression = newExpression(CODE(2), type, formula)
-		result = expressionService.calculate(expression, organisationUnit, period)
+		normalizedDataElement = newNormalizedDataElement(CODE(2), type, [(period.id):[(DISTRICT_HOSPITAL_GROUP):formula]])
+		result = expressionService.calculate(normalizedDataElement, organisationUnit, period)
 		
 		then:
 		result.status == Status.ERROR
 		result.value == Value.NULL
 		
 		where:
-		type			| formula
+		type				| formula
 		Type.TYPE_BOOL()	| "1"
-		Type.TYPE_NUMBER()| "true"
+		Type.TYPE_NUMBER()	| "true"
 		
 	}
 	
@@ -130,6 +154,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		then:
 		enumefromdb.enumOptions.equals([option2, option1])
 	}
+	
 	
 	def "test expressions at different levels"() {
 		setup:
@@ -164,6 +189,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		NORTH				| Value.NULL| Status.NOT_AGGREGATABLE
 		RWANDA				| Value.NULL| Status.NOT_AGGREGATABLE
 	}
+	
 		
 	def "test valid expression at different levels"() {
 		setup:

@@ -42,42 +42,40 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Data;
-import org.chai.kevin.data.Expression;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
-@Entity(name="ExpressionValue")
-@Table(name="dhsst_expression_value",
+@Entity(name="NormalizedDataElementValue")
+@Table(name="dhsst_normalized_data_element_value",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"organisationUnit", "expression", "period"})
+		@UniqueConstraint(columnNames={"organisationUnit", "normalizedDataElement", "period"})
 	}
 )
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ExpressionValue extends StoredValue {
+public class NormalizedDataElementValue extends StoredValue {
+	
 	private Integer id;
 
 	private Status status;
-	
-	private Expression expression;
+	private NormalizedDataElement normalizedDataElement;
 	
 	public enum Status {
 		VALID,
-		MISSING_NUMBER,
-		NOT_AGGREGATABLE,
+		MISSING_VALUE,
+		DOES_NOT_APPLY,
 		MISSING_DATA_ELEMENT,
 		ERROR 
 	}
 	
-	public ExpressionValue() {}
+	public NormalizedDataElementValue() {}
 	
-	public ExpressionValue(Value value, Status status, OrganisationUnit organisationUnit, Expression expression, Period period) {
+	public NormalizedDataElementValue(Value value, Status status, OrganisationUnit organisationUnit, NormalizedDataElement normalizedDataElement, Period period) {
 		super(organisationUnit, period, value);
 
 		this.status = status;
-		this.expression = expression;
+		this.normalizedDataElement = normalizedDataElement;
 	}
 	
 
@@ -88,10 +86,14 @@ public class ExpressionValue extends StoredValue {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=Expression.class, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=NormalizedDataElement.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
-	public Expression getExpression() {
-		return expression;
+	public NormalizedDataElement getExpression() {
+		return normalizedDataElement;
+	}
+	
+	public void setNormalizedDataElement(NormalizedDataElement normalizedDataElement) {
+		this.normalizedDataElement = normalizedDataElement;
 	}
 	
 	@Enumerated(EnumType.STRING)
@@ -108,14 +110,10 @@ public class ExpressionValue extends StoredValue {
 		this.status = status;
 	}
 	
-	public void setExpression(Expression expression) {
-		this.expression = expression;
-	}
-	
 	@Override
 	@Transient
 	public Data<?> getData() {
-		return expression;
+		return normalizedDataElement;
 	}
 	
 	@Override
@@ -133,9 +131,9 @@ public class ExpressionValue extends StoredValue {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (!(obj instanceof ExpressionValue))
+		if (!(obj instanceof NormalizedDataElementValue))
 			return false;
-		ExpressionValue other = (ExpressionValue) obj;
+		NormalizedDataElementValue other = (NormalizedDataElementValue) obj;
 		if (getExpression() == null) {
 			if (other.getExpression() != null)
 				return false;

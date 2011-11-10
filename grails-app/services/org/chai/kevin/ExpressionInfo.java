@@ -34,23 +34,23 @@ import java.util.Map.Entry;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public class ExpressionInfo extends Info {
 
 	private Double maxValue;
-	private ExpressionValue expressionValue;
+	private NormalizedDataElementValue expressionValue;
 	private Map<Organisation, Map<DataElement, DataValue>> values;
 	
-	public ExpressionInfo(ExpressionValue expressionValue, Map<Organisation, Map<DataElement, DataValue>> values, Double maxValue) {
+	public ExpressionInfo(NormalizedDataElementValue expressionValue, Map<Organisation, Map<DataElement, DataValue>> values, Double maxValue) {
 		this.maxValue = maxValue;
 		this.expressionValue = expressionValue;
 		this.values = values;
 	}
 
-	public ExpressionValue getExpressionValue() {
+	public NormalizedDataElementValue getExpressionValue() {
 		return expressionValue;
 	}
 	

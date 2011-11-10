@@ -36,7 +36,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.period.Period;
 
 public class InfoService {
@@ -47,7 +47,7 @@ public class InfoService {
 	private int groupLevel;
 	
 	public ExpressionInfo getInfo(Expression expression, Organisation organisation, Period period, Double maxValue) {
-		ExpressionValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
+		NormalizedDataElementValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
 		if (expressionValue == null) return null;
 		Map<Organisation, Map<DataElement, DataValue>> calculateDataValues = expressionService.calculateDataValues(expression, period, organisation);
 		return new ExpressionInfo(expressionValue, calculateDataValues, maxValue);
@@ -64,7 +64,7 @@ public class InfoService {
 				organisationService.loadUntilLevel(groupOrganisation, organisationService.getFacilityLevel());
 			}
 		}
-		Map<Organisation, ExpressionValue> expressionValues = expressionService.calculateExpressionValues(calculation.getExpressions(), period, organisation);
+		Map<Organisation, NormalizedDataElementValue> expressionValues = expressionService.calculateExpressionValues(calculation.getExpressions(), period, organisation);
 		CalculationInfo info = new CalculationInfo(calculationValue, groupOrganisations, expressionValues);
 		return info;
 	}

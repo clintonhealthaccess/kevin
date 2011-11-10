@@ -50,7 +50,7 @@ import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.ExpressionValue;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,7 +91,7 @@ public class DsrService {
 				String value = null;
 				
 				if (applies) {
-					ExpressionValue expressionValue = valueService.getValue( target.getExpression(), child.getOrganisationUnit(), period);
+					NormalizedDataElementValue expressionValue = valueService.getValue( target.getExpression(), child.getOrganisationUnit(), period);
 					
 					if (expressionValue != null && !expressionValue.getValue().isNull()) {
 						// TODO put this in templates ?

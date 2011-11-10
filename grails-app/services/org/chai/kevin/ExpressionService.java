@@ -48,8 +48,8 @@ import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.ExpressionValue;
-import org.chai.kevin.value.ExpressionValue.Status;
+import org.chai.kevin.value.NormalizedDataElementValue;
+import org.chai.kevin.value.NormalizedDataElementValue.Status;
 import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueCalculator;
@@ -87,9 +87,9 @@ public class ExpressionService {
 		}
 	}
 	
-	private class ExpressionValueCalculator implements ValueCalculator<ExpressionValue> {
+	private class ExpressionValueCalculator implements ValueCalculator<NormalizedDataElementValue> {
 		@Override
-		public ExpressionValue getValue(Data<ExpressionValue> expression, OrganisationUnit organisationUnit, Period period) {
+		public NormalizedDataElementValue getValue(Data<NormalizedDataElementValue> expression, OrganisationUnit organisationUnit, Period period) {
 			return calculateValue((Expression)expression, period, organisationService.getOrganisation(organisationUnit.getId()));
 		}
 	}
@@ -128,18 +128,18 @@ public class ExpressionService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public Map<Organisation, ExpressionValue> calculateExpressionValues(Map<String, Expression> expressions, Period period, Organisation organisation) {
-		Map<Organisation, ExpressionValue> result = new HashMap<Organisation, ExpressionValue>();
+	public Map<Organisation, NormalizedDataElementValue> calculateExpressionValues(Map<String, Expression> expressions, Period period, Organisation organisation) {
+		Map<Organisation, NormalizedDataElementValue> result = new HashMap<Organisation, NormalizedDataElementValue>();
 		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 		
 		for (Organisation child : organisations) {
 			// TODO use group collection ?
 			organisationService.loadGroup(child);
 			
-			ExpressionValue expressionValue = null;
+			NormalizedDataElementValue expressionValue = null;
 			Expression expression = getMatchingExpression(expressions, child);
 			if (expression != null) { 
-				expressionValue = (ExpressionValue)valueService.getValue(expression, child.getOrganisationUnit(), period);
+				expressionValue = (NormalizedDataElementValue)valueService.getValue(expression, child.getOrganisationUnit(), period);
 			}
 			result.put(child, expressionValue);
 		}
@@ -167,7 +167,7 @@ public class ExpressionService {
 	private CalculationValue calculateAverageValue(Average average, Period period, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+average+",period="+period+",organisation="+organisation+")");
 		
-		Map<Organisation, ExpressionValue> result = calculateExpressionValues(average.getExpressions(), period, organisation);
+		Map<Organisation, NormalizedDataElementValue> result = calculateExpressionValues(average.getExpressions(), period, organisation);
 
 		CalculationValue calculationValue = new CalculationValue(average, organisation.getOrganisationUnit(), period, 
 				average.getType().getValue(calculateAverage(result)), calculateHasMissingValues(result), calculateHasMissingExpression(result));
@@ -180,7 +180,7 @@ public class ExpressionService {
 	private CalculationValue calculateSumValue(Sum sum, Period period, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(sum="+sum+",period="+period+",organisation="+organisation+")");
 		
-		Map<Organisation, ExpressionValue> result = calculateExpressionValues(sum.getExpressions(), period, organisation);
+		Map<Organisation, NormalizedDataElementValue> result = calculateExpressionValues(sum.getExpressions(), period, organisation);
 		
 		CalculationValue countValue = new CalculationValue(sum, organisation.getOrganisationUnit(), period, 
 				sum.getType().getValue(calculateSum(result)), calculateHasMissingValues(result), calculateHasMissingExpression(result));
@@ -189,23 +189,23 @@ public class ExpressionService {
 		return countValue;
 	}
 	
-	private boolean calculateHasMissingValues(Map<Organisation, ExpressionValue> values) {
-		for (ExpressionValue expressionValue : values.values()) {
+	private boolean calculateHasMissingValues(Map<Organisation, NormalizedDataElementValue> values) {
+		for (NormalizedDataElementValue expressionValue : values.values()) {
 			if (expressionValue != null && expressionValue.getStatus() == Status.MISSING_NUMBER) return true;
 		}
 		return false;
 	}
 	
-	private boolean calculateHasMissingExpression(Map<Organisation, ExpressionValue> values) {
-		for (ExpressionValue expressionValue : values.values()) {
+	private boolean calculateHasMissingExpression(Map<Organisation, NormalizedDataElementValue> values) {
+		for (NormalizedDataElementValue expressionValue : values.values()) {
 			if (expressionValue == null) return true;
 		}
 		return false;
 	}
 
-	private Double calculateSum(Map<Organisation, ExpressionValue> values) {
+	private Double calculateSum(Map<Organisation, NormalizedDataElementValue> values) {
 		Double sum = 0d;
-		for (ExpressionValue expressionValue : values.values()) {
+		for (NormalizedDataElementValue expressionValue : values.values()) {
 			if (expressionValue != null && expressionValue.getStatus() == Status.VALID) {
 				try {
 					sum += expressionValue.getValue().getNumberValue().doubleValue();
@@ -217,10 +217,10 @@ public class ExpressionService {
 		return sum;
 	}
 	
-	private Double calculateAverage(Map<Organisation, ExpressionValue> values) {
+	private Double calculateAverage(Map<Organisation, NormalizedDataElementValue> values) {
 		Double sum = 0d;
 		Integer num = 0;
-		for (ExpressionValue expressionValue : values.values()) {
+		for (NormalizedDataElementValue expressionValue : values.values()) {
 			if (expressionValue != null && expressionValue.getStatus() == Status.VALID) {
 				if (expressionValue.getValue().getNumberValue() != null) {
 					sum += expressionValue.getValue().getNumberValue().doubleValue();
@@ -262,7 +262,7 @@ public class ExpressionService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	private ExpressionValue calculateValue(Expression expression, Period period, Organisation organisation) {
+	private NormalizedDataElementValue calculateValue(Expression expression, Period period, Organisation organisation) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",organisation="+organisation+")");
 		
 		Value value;
@@ -304,7 +304,7 @@ public class ExpressionService {
 				}
 			}
 		}
-		ExpressionValue expressionValue = new ExpressionValue(value, status, organisation.getOrganisationUnit(), expression, period);
+		NormalizedDataElementValue expressionValue = new NormalizedDataElementValue(value, status, organisation.getOrganisationUnit(), expression, period);
 		
 		if (log.isDebugEnabled()) log.debug("getValue()="+expressionValue);
 		return expressionValue;

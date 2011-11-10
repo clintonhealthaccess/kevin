@@ -39,8 +39,8 @@ import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.ExpressionValue;
-import org.chai.kevin.value.ExpressionValue.Status;
+import org.chai.kevin.value.NormalizedDataElementValue;
+import org.chai.kevin.value.NormalizedDataElementValue.Status;
 import org.hisp.dhis.period.Period;
 
 public class PercentageCalculator {
@@ -77,7 +77,7 @@ public class PercentageCalculator {
 		DashboardPercentage percentage;
 		Expression expression = expressionService.getMatchingExpression(target.getCalculation().getExpressions(), organisation);
 		if (expression != null) {
-			ExpressionValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
+			NormalizedDataElementValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
 			if (expressionValue == null) return null;
 			percentage = new DashboardPercentage(expressionValue.getValue(), expressionValue.getStatus() == Status.MISSING_NUMBER, false);
 		}

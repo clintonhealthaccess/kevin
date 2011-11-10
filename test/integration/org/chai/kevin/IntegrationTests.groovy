@@ -40,14 +40,15 @@ import org.chai.kevin.data.Average
 import org.chai.kevin.data.DataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
-import org.chai.kevin.data.Expression
+import org.chai.kevin.data.ExpressionMap;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
+import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.CalculationValue
 import org.chai.kevin.value.DataValue
-import org.chai.kevin.value.ExpressionValue
-import org.chai.kevin.value.ExpressionValue.Status;
+import org.chai.kevin.value.NormalizedDataElementValue
 import org.chai.kevin.value.Value;
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
@@ -85,8 +86,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	static final String GROUP_SET_TYPE = "Type"
 	
-	static Date mar01 = Initializer.getDate( 2005, 3, 1 );
-	static Date mar31 = Initializer.getDate( 2005, 3, 31 );
+	static Date mar01 = getDate( 2005, 3, 1 );
+	static Date mar31 = getDate( 2005, 3, 31 );
 	
 	def setup() {
 		springcacheService.flushAll()
@@ -170,11 +171,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new DataValue(dataElement: dataElement, period: period, organisationUnit: organisationUnit, value: value).save(failOnError: true)
 	}
 	
-	ExpressionValue newExpressionValue(def expression, def period, def organisationUnit, def status, def value) {
-		return new ExpressionValue(expression: expression, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
+	NormalizedDataElementValue newExpressionValue(def expression, def period, def organisationUnit, def status, def value) {
+		return new NormalizedDataElementValue(expression: expression, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
 	}
 	
-	ExpressionValue newExpressionValue(def expression, def period, def organisationUnit) {
+	NormalizedDataElementValue newExpressionValue(def expression, def period, def organisationUnit) {
 		return newExpressionValue(expression, period, organisationUnit, Status.VALID, Value.NULL)
 	}
 
@@ -193,15 +194,19 @@ abstract class IntegrationTests extends IntegrationSpec {
 	DataElement newDataElement(def names, def code, def type, def info) {
 		return new DataElement(names: names, code: code, type: type, info: info).save(failOnError: true)
 	}
+	
+	NormalizedDataElement newNormalizedDataElement(def code, def type, def expressionMap) {
+		return new NormalizedDataElement(names: names, code: code, type: type, expressionMap: expressionMap)
+	}
 
-	Expression newExpression(def code, def type, String formula, def arguments = [:]) {
-		return newExpression([:], code, type, formula, arguments)
-	}
+//	Expression newExpression(def code, def type, String formula, def arguments = [:]) {
+//		return newExpression([:], code, type, formula, arguments)
+//	}
 		
-	Expression newExpression(def names, def code, def type, String formula, def arguments = [:]) {
-		arguments.failOnError = true
-		return new Expression(names: names, code: code, type: type, expression: formula).save(arguments)
-	}
+//	Expression newExpression(def names, def code, def type, String formula, def arguments = [:]) {
+//		arguments.failOnError = true
+//		return new Expression(names: names, code: code, type: type, expression: formula).save(arguments)
+//	}
 	
 	Average newAverage(def expressions, def code, def type) {
 		return new Average(expressions: expressions, code: code, type: type).save(failOnError: true)
@@ -279,15 +284,31 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return result
 	}
 	
+	static e(def map) {
+		return new ExpressionMap(jsonText: JSONUtils.getJSONFromMap(map))
+	}
+	
 	static j(def map) {
-		return Initializer.j(map)
+		return new Translation(jsonText: JSONUtils.getJSONFromMap(map));
 	}
 	
 	static o(def map) {
-		return Initializer.o(map)
+		return new Ordering(jsonText: JSONUtils.getJSONFromMap(map));
 	}
 	
 	static v(def value) {
-		return Initializer.v(value)
+		return new Value("{\"value\":"+value+"}");
+	}
+	
+	static Date getDate( int year, int month, int day )
+	{
+		final Calendar calendar = Calendar.getInstance();
+
+		calendar.clear();
+		calendar.set( Calendar.YEAR, year );
+		calendar.set( Calendar.MONTH, month - 1 );
+		calendar.set( Calendar.DAY_OF_MONTH, day );
+
+		return calendar.getTime();
 	}
 }
