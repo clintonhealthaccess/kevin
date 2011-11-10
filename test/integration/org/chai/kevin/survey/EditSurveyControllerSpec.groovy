@@ -49,4 +49,49 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController.modelAndView.model.surveyPage.survey.equals(survey)
 	}
 	
+	def "access to view action redirects to active survey if SurveyUser"() {
+		setup:
+		setupOrganisationUnitTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', getOrganisation(BUTARO)))
+		def period = newPeriod()
+		def survey = newSurvey(period, true)
+		editSurveyController = new EditSurveyController()
+		
+		when:
+		editSurveyController.view()
+		
+		then:
+		editSurveyController.response.redirectedUrl == '/editSurvey/surveyPage/'+getOrganisation(BUTARO).id+'?survey='+survey.id
+	}
+	
+	def "access to view action redirects to 404 if no active survey with SurveyUser"() {
+		setup:
+		setupOrganisationUnitTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', getOrganisation(BUTARO)))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		editSurveyController = new EditSurveyController()
+		
+		when:
+		editSurveyController.view()
+		
+		then:
+		editSurveyController.response.redirectedUrl == null
+	}
+	
+	def "access to view action redirects to summary page if normal User"() {
+		setup:
+		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		editSurveyController = new EditSurveyController()
+		
+		when:
+		editSurveyController.view()
+		
+		then:
+		editSurveyController.response.redirectedUrl == '/summary/summaryPage'
+	}
+	
 }

@@ -49,6 +49,7 @@ import org.chai.kevin.value.DataValue
 import org.chai.kevin.value.ExpressionValue
 import org.chai.kevin.value.ExpressionValue.Status;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
@@ -156,6 +157,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	def newUser(def username, def uuid) {
 		return new User(username: username, permissionString: '', passwordHash:'', uuid: uuid).save(failOnError: true)
+	}
+	
+	def newSurveyUser(def username, def uuid, def organisation) {
+		return new SurveyUser(username: username, permissionString: '', passwordHash:'', uuid: uuid, organisationUnitId: organisation.id).save(failOnError: true)
 	}
 	
 	DataValue newDataValue(def dataElement, def period, def organisationUnit, def value) {

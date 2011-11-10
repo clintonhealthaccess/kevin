@@ -15,7 +15,11 @@ import org.chai.kevin.util.Utils;
 abstract class SurveyIntegrationTests extends IntegrationTests {
 
 	def newSurvey(def period) {
-		return new Survey(period: period).save(failOnError: true);
+		return newSurvey(period, false)
+	}
+	
+	def newSurvey(def period, def active) {
+		return new Survey(period: period, active: active).save(failOnError: true);
 	}
 	
 	def newSurveyObjective(def survey, def order, def groups) {
