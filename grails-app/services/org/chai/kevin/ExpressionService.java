@@ -403,7 +403,7 @@ public class ExpressionService {
     	Set<String> placeholders = null;
         if ( expression != null ) {
         	placeholders = new HashSet<String>();
-            final Matcher matcher = Pattern.compile("\\$\\d+").matcher( expression );
+            final Matcher matcher = Pattern.compile("\\$\\d+").matcher(expression);
             
             while (matcher.find())  {
             	String match = matcher.group();

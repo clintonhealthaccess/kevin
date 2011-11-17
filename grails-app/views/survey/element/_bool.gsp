@@ -13,9 +13,7 @@
 
 	<g:if test="${isCheckbox}">
 		<input class="input" type="hidden" value="0" name="surveyElements[${surveyElement.id}].value${suffix}"/>
-
-                <input type="checkbox" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" value="1" name="surveyElements[${surveyElement.id}].value${suffix}" ${value?.booleanValue==true?'checked="checked"':''} disabled="disabled"/>
-
+		<input type="checkbox" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" value="1" name="surveyElements[${surveyElement.id}].value${suffix}" ${value?.booleanValue==true?'checked="checked"':''} disabled="disabled"/>
 	</g:if>
 	<g:else>
 		<g:if test="${!print}">
@@ -34,6 +32,10 @@
 			</div>
 		</g:else>
 	</g:else>
+
+	<shiro:hasPermission permission="admin">
+		<div class="admin-hint">Element: ${surveyElement.id} - Prefix: ${suffix}</div>
+	</shiro:hasPermission>
 
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>

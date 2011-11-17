@@ -573,6 +573,9 @@ form.search-form input { background: #f9f9f9; border: 1px solid #b6c1c9; color: 
 /* line 447, ../../src/stylesheets/partials/_forms.sass */
 form.search-form input:hover, form.search-form input:focus { background: #ecf7ff; border-color: #258cd5; }
 
+/* line 452, ../../src/stylesheets/partials/_forms.sass */
+.admin-hint { display: none; font-size: 9px; color: red; margin-top: 4px; margin-bottom: 8px; }
+
 /* line 2, ../../src/stylesheets/partials/_flashes.sass */
 .help { background: url("../images/icons/point.png") no-repeat 0 0; padding: 10px 10px 10px 42px; }
 

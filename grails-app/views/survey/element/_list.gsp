@@ -1,5 +1,9 @@
 <!-- Value type question -->
 
+<div class="error-list">
+	<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
+</div>	
+
 <ul id="element-${surveyElement.id}-${suffix}" class="adv-form element element-list ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
 	<a name="element-${surveyElement.id}-${suffix}"></a>
 	
@@ -71,9 +75,9 @@
 		</g:if>
 	</g:else>
 
-	<div class="error-list">
-		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
-	</div>	
-	
+	<shiro:hasPermission permission="admin">
+		<div class="admin-hint">Element: ${surveyElement.id} - Prefix: ${suffix}</div>
+	</shiro:hasPermission>
+
 	<!-- TODO last value -->
 </ul>

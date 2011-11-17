@@ -6,9 +6,7 @@
 				${error.message}
 				<g:if test="${error.rule.allowOutlier}">
 					<g:message code="survey.validation.error.outlier.text"/>
-					<a class="outlier-validation" href="#" data-rule="${error.rule.id}">
-						<g:message code="survey.validation.error.outlier.link"/>	
-					</a>.
+					<a class="outlier-validation" href="#" data-rule="${error.rule.id}"><g:message code="survey.validation.error.outlier.link"/></a>.
 					<input type="hidden" class="input" name="surveyElements[${surveyElement.id}].value${error.suffix}[warning]" value=""/>
 				</g:if>
 				</li>

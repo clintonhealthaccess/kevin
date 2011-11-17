@@ -29,5 +29,8 @@
 			</span>
 		</div>
 	</div>
+	<shiro:hasPermission permission="admin">
+		<div class="right"><a href="#" onclick="$('.admin-hint').toggle();return false;">Toggle element information</a></div>
+	</shiro:hasPermission>
 	<div class="clear"></div>
 </div>

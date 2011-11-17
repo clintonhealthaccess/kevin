@@ -29,10 +29,8 @@ package org.chai.kevin.data
 */
 
 constraints = {
-	
 	code(nullable: false, blank: false, unique: true)
 	type(nullable: false, validator: {val, obj -> 
 		return val.isValid();
 	})
-	
 }

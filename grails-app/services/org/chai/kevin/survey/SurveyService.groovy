@@ -28,6 +28,7 @@
 package org.chai.kevin.survey
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.FlushMode;
@@ -37,7 +38,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
@@ -68,7 +71,7 @@ class SurveyService {
 	}
 	
 	List<SurveyQuestion> searchSurveyQuestions(String text, Survey survey, def params = [:]) {
-		def criteria = getSearchCriteria(text, survey)
+		def criteria = getQuestionSearchCriteria(text, survey)
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
 		if (params['max'] != null) criteria.setMaxResults(params['max'])
 		else criteria.setMaxResults(500)
@@ -86,10 +89,10 @@ class SurveyService {
 	}
 	
 	Integer countSurveyQuestions(String text, Survey survey) {
-		return getSearchCriteria(text, survey).setProjection(Projections.count("id")).uniqueResult()
+		return getQuestionSearchCriteria(text, survey).setProjection(Projections.count("id")).uniqueResult()
 	}
 
-	private def getSearchCriteria(String text, Survey survey) {
+	private def getQuestionSearchCriteria(String text, Survey survey) {
 		def criteria = sessionFactory.currentSession.createCriteria(SurveyQuestion.class)
 		
 		def textRestrictions = Restrictions.conjunction()
@@ -163,17 +166,73 @@ class SurveyService {
 		return c.setFlushMode(FlushMode.COMMIT).list()
 	}
 
-	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes) {
-		List<SurveyElement> surveyElements = new ArrayList<SurveyElement>();
-		List<DataElement> dataElements = dataService.searchData(DataElement.class, text, allowedTypes, [:]);
-
-		for(DataElement dataElement : dataElements) {
-			surveyElements.addAll(this.getSurveyElements(dataElement, survey));
+	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes, Map<String, String> params) {
+		def criteria = getSurveyElementSearchCriteria(text, survey, allowedTypes)
+		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+		if (params['max'] != null) criteria.setMaxResults(params['max'])
+		else criteria.setMaxResults(500)
+		
+		List<SurveyElement> data = criteria.addOrder(Order.asc("id")).list()
+		
+		StringUtils.split(text).each { chunk ->
+			data.retainAll { element ->
+				// we look in "info" if it is a data element
+				Utils.matches(chunk, element.dataElement.id+"") ||
+				Utils.matches(chunk, element.dataElement.info) ||
+				Utils.matches(chunk, element.dataElement.names[languageService.getCurrentLanguage()]) ||
+				Utils.matches(chunk, element.dataElement.code) ||
+				Utils.matches(chunk, element.surveyQuestion.names[languageService.getCurrentLanguage()]) ||
+				Utils.matches(chunk, element.id+"")
+			}
+		}
+		
+		if (!allowedTypes.isEmpty()) {
+			data.retainAll { element ->
+				element.dataElement.type.type.name().toLowerCase() in allowedTypes
+			}
+		}
+		
+		return data
+	}
+	
+	private def getSurveyElementSearchCriteria(String text, Survey survey, List<String> allowedTypes) {
+		def criteria = sessionFactory.currentSession.createCriteria(SurveyElement.class)
+		criteria.createAlias("dataElement", "de")
+		criteria.createAlias("surveyQuestion", "sq")
+		
+		def textRestrictions = Restrictions.conjunction()
+		StringUtils.split(text).each { chunk ->
+			def disjunction = Restrictions.disjunction();
+			
+			// data element
+			disjunction.add(Restrictions.ilike("de.info", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("de.code", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("de.names.jsonText", chunk, MatchMode.ANYWHERE))
+			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("de.id", Long.parseLong(chunk)))
+			// question
+			disjunction.add(Restrictions.ilike("sq.names.jsonText", chunk, MatchMode.ANYWHERE))
+			// survey element
+			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
+			
+			textRestrictions.add(disjunction)
+		}
+		criteria.add(textRestrictions)
+		
+		if (!allowedTypes.isEmpty()) {
+			def typeRestrictions = Restrictions.disjunction()
+			allowedTypes.each { type ->
+				typeRestrictions.add(Restrictions.like("de.type.jsonValue", type, MatchMode.ANYWHERE))
+			}
+			criteria.add(typeRestrictions)
 		}
 
-		return surveyElements.sort {
-			it.dataElement.names[languageService.getCurrentLanguage()]
+		if (survey != null) {
+			criteria.createAlias("sq.section", "ss")
+			.createAlias("ss.objective", "so")
+			.add(Restrictions.eq("so.survey", survey))
 		}
+		
+		return criteria
 	}
 	
 	Integer getNumberOfOrganisationUnitApplicable(SurveyElement surveyElement) {

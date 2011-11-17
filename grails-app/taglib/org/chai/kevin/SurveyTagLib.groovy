@@ -28,7 +28,7 @@ class SurveyTagLib {
 				error.suffix = prefix
 				error.accepted = enteredValue.isAcceptedWarning(rule, prefix)
 				errors.add(error)
-			}
+			} 
 			out << g.render(template: '/survey/errors', model: [errors: errors, surveyElement: enteredValue.surveyElement])
 		}
 	}
@@ -51,16 +51,27 @@ class SurveyTagLib {
 	def replacePlaceHolders(String message, List<SurveyElement> elements, OrganisationUnit organisationUnit) {
 		String[] placeholders = StringUtils.substringsBetween(message, "{", "}")
 		String result = message;
-		for (String integer : placeholders) {
-			if (!NumberUtils.isNumber(integer)) continue;
-			SurveyElement surveyElement = elements[Integer.parseInt(integer)];
-			SurveySection section = surveyElement.surveyQuestion.section
-			Survey survey = section.objective.survey 
-			String replacement = 
-				'<a href="'+createLink(controller: "survey", action: "sectionPage", params: [section: section.id, organisation: organisationUnit.id], fragment: 'element-'+surveyElement.id)+'">'+
-				surveyElement.id +
-				'</a>'
-			result = StringUtils.replace(result, "{"+integer+"}", replacement);
+		for (String placeholder : placeholders) {
+			Integer id = null
+			String text = null
+			if (NumberUtils.isNumber(placeholder)) id = Integer.parseInt(placeholder);
+			else {
+				String[] parts = StringUtils.split(placeholder, ',', 2)
+				if (NumberUtils.isNumber(parts[0])) {
+					id = Integer.parseInt(parts[0]);
+					text = parts[1]
+				}
+			}
+			
+			if (id != null) {
+				SurveyElement surveyElement = elements[id];
+				SurveySection section = surveyElement.surveyQuestion.section
+				Survey survey = section.objective.survey 
+				String replacement = 
+					'<a href="'+createLink(controller: "editSurvey", action: "sectionPage", params: [section: section.id, organisation: organisationUnit.id], fragment: 'element-'+surveyElement.id)+'">'+
+					(text!=null?text:surveyElement.id)+'</a>'
+				result = StringUtils.replace(result, "{"+placeholder+"}", replacement);
+			}
 		}
 		return result
 	}

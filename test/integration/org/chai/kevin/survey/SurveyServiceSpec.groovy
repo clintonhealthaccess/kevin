@@ -7,6 +7,20 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 
 	def surveyService
 	
+	def "get survey question"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
+		
+		expect:
+		surveyService.getSurveyQuestion(question1.id).equals(question1)
+		surveyService.getSurveyQuestion(question2.id).equals(question2)
+	}
+	
 	def "search question test"() {
 		setup:
 		def period = newPeriod() 
@@ -261,15 +275,39 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 
 		def surveyElements = null
 				
-		when:
-		surveyElements = surveyService.searchSurveyElements("ele", survey, [])
+		when: "search by element text"
+		surveyElements = surveyService.searchSurveyElements("ele", survey, [], [:])
 		
 		then:
 		surveyElements.equals([element])
 		
-		when:
+		when: "search by element id"
+		surveyElements = surveyService.searchSurveyElements(""+element.id, survey, [], [:])
+		
+		then:
+		surveyElements.equals([element])
+		
+		when: "search by data element id"
+		surveyElements = surveyService.searchSurveyElements(""+dataElement.id, survey, [], [:])
+		
+		then:
+		surveyElements.equals([element])
+
+		when: "search filtered by type"
+		surveyElements = surveyService.searchSurveyElements("ele", survey, ['bool'], [:])
+		
+		then:
+		surveyElements.isEmpty()
+
+		when: "search filtered by type"
+		surveyElements = surveyService.searchSurveyElements("ele", survey, ['number'], [:])
+		
+		then:
+		surveyElements.equals([element])
+				
+		when: "search filtered by survey"
 		def survey2 = newSurvey(period)
-		surveyElements = surveyService.searchSurveyElements("ele", survey2, [])
+		surveyElements = surveyService.searchSurveyElements("ele", survey2, [], [:])
 		
 		then:
 		surveyElements.isEmpty()

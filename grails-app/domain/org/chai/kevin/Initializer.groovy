@@ -1130,7 +1130,7 @@ class Initializer {
 			def rulePatient1 = new SurveyValidationRule(
 				surveyElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 100",
-				messages: j(["en":"Validation error {0}"]),
+				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
 				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
@@ -1138,7 +1138,7 @@ class Initializer {
 			def rulePatient2 = new SurveyValidationRule(
 				surveyElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 140",
-				messages: j(["en":"Validation error {0}"]),
+				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
 				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: true
@@ -1336,7 +1336,7 @@ class Initializer {
 				surveyElement: surveyElementServiceQ6,
 				prefix: "[_].key1.key18",
 				expression: "\$"+surveyElementServiceQ6.id+"[_].key1.key18 < 24",
-				messages: j(["en":"Validation error {0}"]),
+				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementServiceQ6],
 				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
@@ -1348,7 +1348,7 @@ class Initializer {
 			def rule1 = new SurveyValidationRule(
 				surveyElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 100",
-				messages: j(["en":"Validation error {0}"]),
+				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementServiceQ1],
 				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
@@ -1356,7 +1356,7 @@ class Initializer {
 			def rule2 = new SurveyValidationRule(
 				surveyElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 140",
-				messages: j(["en":"Validation error {0}"]),
+				messages: j(["en":"Validation error {0,here}"]),
 				groupUuidString: "District Hospital,Health Center",
 				dependencies: [surveyElementServiceQ1],
 				allowOutlier: true
@@ -1589,7 +1589,7 @@ class Initializer {
 			def ruleTable1 = new SurveyValidationRule(
 				surveyElement: surveyElementTable1,
 				expression: "\$"+surveyElementTable1.id+" < 100",
-				messages: j(["en":"Validation error {0}"]),
+				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable1],
 				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false
@@ -1635,7 +1635,7 @@ class Initializer {
 			def ruleCheckbox = new SurveyValidationRule(
 				surveyElement: surveyElementChecboxQ3,
 				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+" else true",
-				messages: j(["en":"Validation error {0}"]),
+				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable21],
 				groupUuidString: "District Hospital,Health Center",
 				allowOutlier: false

@@ -34,6 +34,11 @@
 			</div>
 		</g:each>
 	</g:else>
+	
+	<shiro:hasPermission permission="admin">
+		<div class="admin-hint">Element: ${surveyElement.id} - Prefix: ${suffix}</div>
+	</shiro:hasPermission>
+	
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
 	</div>

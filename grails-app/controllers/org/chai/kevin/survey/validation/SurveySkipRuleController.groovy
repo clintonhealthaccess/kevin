@@ -40,7 +40,7 @@ import org.apache.commons.lang.math.NumberUtils;
  */
 class SurveySkipRuleController  extends AbstractEntityController {
 
-	def sessionFactory
+	def surveyService
 
 	def getLabel() {
 		return 'survey.skiprule.label'
@@ -82,8 +82,9 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		}
 						
 		List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
-		for(def question: params.skippedSurveyQuestions) { 
-			questions.add(sessionFactory.currentSession.get(SurveyQuestion.class, Long.parseLong(question)));
+		params.list('skippedSurveyQuestions').each { id -> 
+			def question = surveyService.getSurveyQuestion(Long.parseLong(id))
+			if (question != null) questions.add(question);
 		}
 		entity.skippedSurveyQuestions = questions
 	}

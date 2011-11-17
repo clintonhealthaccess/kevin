@@ -82,7 +82,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	def newSimpleQuestion(def names, def section, def order, def groups) {
 		def question = new SurveySimpleQuestion(names: names, section: section, order: order, groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
 		section.addQuestion(question)
-		section.save(failOnError: true)
+		section.save(failOnError: true, flush: true)
 		return question
 	}
 	
