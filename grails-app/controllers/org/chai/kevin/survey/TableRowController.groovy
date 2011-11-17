@@ -30,7 +30,7 @@ package org.chai.kevin.survey
 import org.chai.kevin.AbstractEntityController;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.util.Utils
 
 /**
@@ -84,12 +84,12 @@ class TableRowController extends AbstractEntityController {
 		params.surveyElement.each { columnId ->
 			if (columnId != '_') {
 				def column = SurveyTableColumn.get(columnId)
-				def dataElement = DataElement.get(params.int('surveyElement['+columnId+'].dataElement.id'))
+				def dataElement = RawDataElement.get(params.int('surveyElement['+columnId+'].dataElement.id'))
 				if (dataElement != null) {
 					def surveyElement = SurveyElement.get(params.int('surveyElement['+columnId+'].id'))
 					if (surveyElement == null) surveyElement = new SurveyElement();
 					surveyElement.setSurveyQuestion(entity.question)
-					surveyElement.dataElement = dataElement
+					surveyElement.rawDataElement = dataElement
 					entity.surveyElements[column] = surveyElement
 				}
 			}

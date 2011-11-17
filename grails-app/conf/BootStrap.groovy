@@ -47,11 +47,11 @@ import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.security.User;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.RawDataElementValue;
 
 class BootStrap {
 

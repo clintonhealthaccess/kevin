@@ -120,7 +120,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(3), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		def costObjective = newCostObjective(CODE(2))
 		def target = newCostTarget(CODE(4), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)

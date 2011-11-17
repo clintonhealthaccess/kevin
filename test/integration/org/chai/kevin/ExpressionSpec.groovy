@@ -3,7 +3,6 @@ package org.chai.kevin
 import grails.validation.ValidationException;
 
 import org.chai.kevin.data.Average;
-import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;

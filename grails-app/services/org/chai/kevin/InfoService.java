@@ -32,10 +32,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.period.Period;
 
@@ -49,12 +49,12 @@ public class InfoService {
 	public ExpressionInfo getInfo(Expression expression, Organisation organisation, Period period, Double maxValue) {
 		NormalizedDataElementValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
 		if (expressionValue == null) return null;
-		Map<Organisation, Map<DataElement, DataValue>> calculateDataValues = expressionService.calculateDataValues(expression, period, organisation);
+		Map<Organisation, Map<RawDataElement, RawDataElementValue>> calculateDataValues = expressionService.calculateDataValues(expression, period, organisation);
 		return new ExpressionInfo(expressionValue, calculateDataValues, maxValue);
 	}
 	
 	public CalculationInfo getInfo(Calculation calculation, Organisation organisation, Period period) {
-		CalculationValue calculationValue = valueService.getValue(calculation, organisation.getOrganisationUnit(), period);
+		CalculationPartialValue calculationValue = valueService.getValue(calculation, organisation.getOrganisationUnit(), period);
 		if (calculationValue == null) return null;
 		
 		List<Organisation> groupOrganisations = null;

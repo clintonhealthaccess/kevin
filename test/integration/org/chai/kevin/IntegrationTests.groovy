@@ -36,8 +36,9 @@ import java.util.Date
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Average
-import org.chai.kevin.data.DataElement
+import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.ExpressionMap;
@@ -46,9 +47,12 @@ import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.CalculationValue
-import org.chai.kevin.value.DataValue
+import org.chai.kevin.value.AggregationPartialValue;
+import org.chai.kevin.value.AveragePartialValue;
+import org.chai.kevin.value.CalculationPartialValue
+import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
+import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
@@ -167,37 +171,50 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new SurveyUser(username: username, permissionString: '', passwordHash:'', uuid: uuid, organisationUnitId: organisation.id).save(failOnError: true)
 	}
 	
-	DataValue newDataValue(def dataElement, def period, def organisationUnit, def value) {
-		return new DataValue(dataElement: dataElement, period: period, organisationUnit: organisationUnit, value: value).save(failOnError: true)
+	RawDataElementValue newRawDataElementValue(def rawDataElement, def period, def organisationUnit, def value) {
+		return new RawDataElementValue(data: rawDataElement, period: period, organisationUnit: organisationUnit, value: value).save(failOnError: true)
 	}
 	
-	NormalizedDataElementValue newExpressionValue(def expression, def period, def organisationUnit, def status, def value) {
-		return new NormalizedDataElementValue(expression: expression, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
+	AggregationPartialValue newAggregationPartialValue(def aggregation, def period, def organisationUnit, def groupUuid, def expressionData, def hasMissingValues, def hasMissingExpression, def value) {
+		return new AggregationPartialValue(aggregation: aggregation, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, expressionData: expressionData, hasMissingValues: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
 	}
 	
-	NormalizedDataElementValue newExpressionValue(def expression, def period, def organisationUnit) {
-		return newExpressionValue(expression, period, organisationUnit, Status.VALID, Value.NULL)
-	}
-
-	CalculationValue newCalculationValue(def calculation, def period, def organisationUnit, def hasMissingValues, def hasMissingExpression, def value) {
-		return new CalculationValue(calculation: calculation, period: period, organisationUnit: organisationUnit, hasMissingValues: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
+	SumPartialValue newSumPartialValue(def sum, def period, def organisationUnit, def groupUuid, def hasMissingValues, def hasMissingExpression, def value) {
+		return new SumPartialValue(sum: sum, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, hasMissingValue: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
 	}
 	
-	DataElement newDataElement(def code, def type) {
-		return newDataElement(j([:]), code, type)
+	AveragePartialValue newAveragePartialValue(def average, def period, def organisationUnit, def groupUuid, def numberOfFacilities, def hasMissingValues, def hasMissingExpression, def value) {
+		return new AveragePartialValue(average: average, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, numberOfFacilities: numberOfFacilities, hasMissingValue: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
 	}
 	
-	DataElement newDataElement(def names, def code, def type) {
-		return newDataElement(names, code, type, null)
+	RawDataElement newRawDataElement(def code, def type) {
+		return newRawDataElement(j([:]), code, type)
 	}
 	
-	DataElement newDataElement(def names, def code, def type, def info) {
-		return new DataElement(names: names, code: code, type: type, info: info).save(failOnError: true)
+	RawDataElement newRawDataElement(def names, def code, def type) {
+		return newRawDataElement(names, code, type, null)
+	}
+	
+	RawDataElement newRawDataElement(def names, def code, def type, def info) {
+		return new RawDataElement(names: names, code: code, type: type, info: info).save(failOnError: true)
 	}
 	
 	NormalizedDataElement newNormalizedDataElement(def code, def type, def expressionMap) {
 		return new NormalizedDataElement(names: names, code: code, type: type, expressionMap: expressionMap)
 	}
+	
+	NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def organisationUnit, def status, def value) {
+		return new NormalizedDataElementValue(normalizedDataElement: normalizedDataElement, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
+	}
+	
+//	NormalizedDataElementValue newExpressionValue(def expression, def period, def organisationUnit, def status, def value) {
+//		return new NormalizedDataElementValue(expression: expression, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
+//	}
+	
+//	NormalizedDataElementValue newExpressionValue(def expression, def period, def organisationUnit) {
+//		return newExpressionValue(expression, period, organisationUnit, Status.VALID, Value.NULL)
+//	}
+
 
 //	Expression newExpression(def code, def type, String formula, def arguments = [:]) {
 //		return newExpression([:], code, type, formula, arguments)
@@ -208,12 +225,16 @@ abstract class IntegrationTests extends IntegrationSpec {
 //		return new Expression(names: names, code: code, type: type, expression: formula).save(arguments)
 //	}
 	
-	Average newAverage(def expressions, def code, def type) {
-		return new Average(expressions: expressions, code: code, type: type).save(failOnError: true)
+	Aggregation newAggregation(def expression, def code) {
+		return new Aggregation(expression: expression, code: code).save(failOnError: true)
 	}
 	
-	Sum newSum(def expressions, def code, def type) {
-		return new Sum(expressions: expressions, code: code, type: type).save(failOnError: true, flush: true)
+	Average newAverage(def expression, def code) {
+		return new Average(expression: expression, code: code).save(failOnError: true)
+	}
+	
+	Sum newSum(def expression, def code) {
+		return new Sum(expression: expression, code: code).save(failOnError: true, flush: true)
 	}
 	
 	Enum newEnume(def code) {
@@ -232,25 +253,19 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def refresh() {
-		refreshExpression()
+		refreshNormalizedDataElement()
 		refreshCalculation()
 	}
 	
-	def refreshExpression() {
-		Expression.list().each {
-			refreshValueService.refreshOutdatedExpressions(it)
-			refreshValueService.refreshNonCalculatedExpressions(it)
+	def refreshNormalizedDataElement() {
+		NormalizedDataElement.list().each {
+			refreshValueService.refreshNormalizedDataElement(it)
 		}
 	}
 	
 	def refreshCalculation() {
-		Sum.list().each {
-			refreshValueService.refreshOutdatedCalculations(it)
-			refreshValueService.refreshNonCalculatedCalculations(it)
-		}
-		Average.list().each {
-			refreshValueService.refreshOutdatedCalculations(it)
-			refreshValueService.refreshNonCalculatedCalculations(it)
+		Calculation.list().each {
+			refreshValueService.refreshCalculation(it)
 		}
 	}
 	

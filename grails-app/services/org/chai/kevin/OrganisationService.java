@@ -126,7 +126,7 @@ public class OrganisationService {
 		return level;
 	}
 	
-	public int getNumberOfOrganisationForGroup(OrganisationUnitGroup organisationUnitGroup){
+	public int getNumberOfOrganisationOfGroup(OrganisationUnitGroup organisationUnitGroup){
 		return organisationUnitGroup.getMembers().size();
 	}
 		
@@ -135,6 +135,19 @@ public class OrganisationService {
 		List<Organisation> result = new ArrayList<Organisation>();
 		for (OrganisationUnit organisationUnit : organisationUnits) {
 			result.add(createOrganisation(organisationUnit));
+		}
+		return result;
+	}
+	
+	public Integer getNumberOfOrganisationsOfLevel(int level) {
+		return getOrganisationsOfLevel(level).size();
+	}
+	
+	public List<Organisation> getFacilitiesOfGroup(OrganisationUnitGroup group) {
+		Collection<OrganisationUnit> organisationUnits = organisationUnitService.getOrganisationUnitsAtLevel(getFacilityLevel());
+		List<Organisation> result = new ArrayList<Organisation>();
+		for (OrganisationUnit organisationUnit : organisationUnits) {
+			if (organisationUnit.getGroupInGroupSet(getOrganisationUnitGroupSet()).equals(group)) result.add(createOrganisation(organisationUnit));
 		}
 		return result;
 	}

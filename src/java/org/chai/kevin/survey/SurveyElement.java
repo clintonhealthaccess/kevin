@@ -22,7 +22,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -32,7 +32,7 @@ import org.hibernate.annotations.CascadeType;
 public class SurveyElement {
 
 	private Long id;
-	private DataElement dataElement;
+	private RawDataElement rawDataElement;
 	private SurveyQuestion surveyQuestion;
 	
 	private List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
@@ -48,14 +48,14 @@ public class SurveyElement {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=DataElement.class, optional=false)
+	@ManyToOne(targetEntity=RawDataElement.class, optional=false)
 	@JoinColumn(nullable=false)
-	public DataElement getDataElement() {
-		return dataElement;
+	public RawDataElement getDataElement() {
+		return rawDataElement;
 	}
 	
-	public void setDataElement(DataElement dataElement) {
-		this.dataElement = dataElement;
+	public void setDataElement(RawDataElement rawDataElement) {
+		this.rawDataElement = rawDataElement;
 	}
 
 	@OneToMany(mappedBy="surveyElement", targetEntity=SurveyValidationRule.class)

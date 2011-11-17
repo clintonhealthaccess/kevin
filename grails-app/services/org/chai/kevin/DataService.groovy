@@ -36,9 +36,9 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.util.Utils;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
@@ -48,7 +48,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
-
 class DataService {
 
 	static transactional = true
@@ -57,10 +56,6 @@ class DataService {
 	def valueService;
 	def sessionFactory;
 	
-	public Data getData(Long id) {
-		return (Data)sessionFactory.getCurrentSession().get(Data.class, id);
-	}
-		
 	public Enum getEnum(Long id) {
 		return (Enum)sessionFactory.getCurrentSession().get(Enum.class, id);
 	}
@@ -69,50 +64,26 @@ class DataService {
 		return Enum.findByCode(code)
 	}
 	
-	public List<Calculation> getCalculations(Expression expression) {
-		return (List<Calculation>)sessionFactory.currentSession.createCriteria(Calculation.class)
-		.createAlias("expressions", "e")
-		.add(Restrictions.eq("e.id", expression.id))
-		.setCacheable(false)
-		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-		.list();
+	public <T extends Data<?>> T getData(Long id, Class<T> clazz) {
+		return (Data)sessionFactory.getCurrentSession().get(clazz, id);
 	}
-	
+		
 	/**
 	 * 
 	 * @throws IllegalArgumentException if the data element has values associated to it
 	 * @param element
 	 */
-	public void delete(DataElement element) {
-		if (valueService.getNumberOfValues(element) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
+	public void delete(Data<?> data) {
+		if (valueService.getNumberOfValues(data) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
 		else element.delete();
 	}
 	
-	/**
-	*
-	* @throws IllegalArgumentException if the expression has values associated to it
-	* @param element
-	*/
-	public void delete(Expression expression) {
-		if (valueService.getNumberOfValues(expression) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
-		else expression.delete();
-	}
 	
-	/**
-	*
-	* @throws IllegalArgumentException if the calculation has values associated to it
-	* @param element
-	*/
-	public void delete(Calculation calculation) {
-		if (valueService.getNumberOfValues(calculation) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
-		else calculation.delete();
-	}
-	
-	public Integer countData(Class<Data<?>> clazz, String text, List<String> allowedTypes) {
+	public Integer countData(Class<Data> clazz, String text, List<String> allowedTypes) {
 		return getSearchCriteria(clazz, text, allowedTypes).setProjection(Projections.count("id")).uniqueResult()
 	}
 	
-    public <T extends Data<?>> List<T> searchData(Class<T> clazz, String text, List<String> allowedTypes, Map<String, String> params) {
+    public <T extends Data> List<T> searchData(Class<T> clazz, String text, List<String> allowedTypes, Map<String, String> params) {
 		def criteria = getSearchCriteria(clazz, text, allowedTypes)
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
 		if (params['max'] != null) criteria.setMaxResults(params['max'])
@@ -123,7 +94,7 @@ class DataService {
 		StringUtils.split(text).each { chunk ->
 			data.retainAll { element ->
 				// we look in "info" if it is a data element
-				(clazz.equals(DataElement.class)?Utils.matches(chunk, element.info):false) ||
+				(clazz.equals(RawDataElement.class)?Utils.matches(chunk, element.info):false) ||
 				Utils.matches(chunk, element.id+"") ||
 				Utils.matches(chunk, element.names[languageService.getCurrentLanguage()]) ||
 				Utils.matches(chunk, element.code)
@@ -139,7 +110,7 @@ class DataService {
 		return data
     }
 	
-	private def getSearchCriteria(Class<Data<?>> clazz, String text, List<String> allowedTypes) {
+	private def getSearchCriteria(Class<Data> clazz, String text, List<String> allowedTypes) {
 		def criteria = sessionFactory.currentSession.createCriteria(clazz)
 		
 		def textRestrictions = Restrictions.conjunction()
@@ -147,7 +118,7 @@ class DataService {
 			def disjunction = Restrictions.disjunction();
 			
 			// we look in "info" if it is a data element
-			if (clazz.equals(DataElement.class)) disjunction.add(Restrictions.ilike("info", chunk, MatchMode.ANYWHERE))
+			if (clazz.equals(RawDataElement.class)) disjunction.add(Restrictions.ilike("info", chunk, MatchMode.ANYWHERE))
 			disjunction.add(Restrictions.ilike("code", chunk, MatchMode.ANYWHERE))
 			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
 			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))

@@ -1,15 +1,12 @@
 package org.chai.kevin.data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -21,21 +18,15 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Translation;
-import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.StoredValue;
-import org.chai.kevin.value.ValueCalculator;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.period.Period;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity(name="Data")
 @Table(name="dhsst_data", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy=InheritanceType.JOINED)
-abstract public class Data<T extends StoredValue> implements Serializable {
+abstract public class Data<T extends StoredValue> {
 	
-	private static final long serialVersionUID = 7470871788061305391L;
-
 	private Long id;
-	private Type type;
 	private Date timestamp = new Date();
 	
 	private String code;
@@ -50,18 +41,6 @@ abstract public class Data<T extends StoredValue> implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-	
-	@Embedded
-	@AttributeOverrides({
-		@AttributeOverride(name="jsonValue", column=@Column(name="type", nullable=false))
-	})
-	public Type getType() {
-		return type;
-	}
-	
-	public void setType(Type type) {
-		this.type = type;
 	}
 	
 	@Column(nullable=false, columnDefinition="datetime")
@@ -108,15 +87,21 @@ abstract public class Data<T extends StoredValue> implements Serializable {
 	}
 
 	@Transient
-	public boolean isAggregatable() {
-		return type.getType() == ValueType.NUMBER;
-	}
+	public abstract Type getType();
 	
+	@Transient
+	public abstract Class<T> getValueClass();
+	
+	@Override
+	public String toString() {
+		return "Data [code=" + code + "]";
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((getCode() == null) ? 0 : getCode().hashCode());
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		return result;
 	}
 
@@ -128,18 +113,13 @@ abstract public class Data<T extends StoredValue> implements Serializable {
 			return false;
 		if (!(obj instanceof Data))
 			return false;
-		Data<?> other = (Data<?>) obj;
-		if (getCode() == null) {
-			if (other.getCode() != null)
+		Data other = (Data) obj;
+		if (code == null) {
+			if (other.code != null)
 				return false;
-		} else if (!getCode().equals(other.getCode()))
+		} else if (!code.equals(other.code))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "Data [type=" + type + ", code=" + code + "]";
 	}
 
 }

@@ -1,6 +1,6 @@
 package org.chai.kevin.survey
 
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 
@@ -16,7 +16,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [])
 		def question = newTableQuestion(section, 1, [])
 		
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		def column = newTableColumn(question, 1, [])
 		def row = newTableRow(question, 1, [], [(column): element])
@@ -42,7 +42,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		SurveyTableColumn.count() == 2
 		SurveyTableRow.count() == 2
 		SurveyElement.count() == 2
-		DataElement.count() == 1 
+		RawDataElement.count() == 1 
 		
 		survey != copy
 		
@@ -60,7 +60,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [])
 		def section = newSurveySection(objective, 1, [])
 		def question = newSimpleQuestion(section, 1, [])
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		def skipRule = newSkipRule(survey, "\$"+element.id+" == 1", [:], [])
 		
@@ -83,14 +83,14 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		def objective1 = newSurveyObjective(survey1, 1, [])
 		def section1 = newSurveySection(objective1, 1, [])
 		def question1 = newSimpleQuestion(section1, 1, [])
-		def dataElement1 = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element1 = newSurveyElement(question1, dataElement1)
 		
 		def survey2 = newSurvey(period)
 		def objective2 = newSurveyObjective(survey2, 1, [])
 		def section2 = newSurveySection(objective2, 1, [])
 		def question2 = newSimpleQuestion(section2, 1, [])
-		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def element2 = newSurveyElement(question2, dataElement2)
 		def validationRule = newSurveyValidationRule(element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", [element1])
 		
@@ -113,7 +113,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [])
 		def section = newSurveySection(objective, 1, [])
 		def question = newSimpleQuestion(section, 1, [])
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
 		
@@ -137,7 +137,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [])
 		def section = newSurveySection(objective, 1, [])
 		def question = newSimpleQuestion(section, 1, [])
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
 		

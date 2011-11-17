@@ -1,16 +1,17 @@
 package org.chai.kevin;
 
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Sum;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.NormalizedDataElementValue.Status;
+import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -52,13 +53,13 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(10), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(10), Type.TYPE_NUMBER())
 		def normalizedDataElement = null
 		def result = null
 		
 		when: "data element is missing"
 		normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$0"]]))
-		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
+		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
 		
 		then:
 		result.value == Value.NULL
@@ -66,32 +67,32 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		when: "value is missing for facility"
 		normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
-		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
+		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
 		
 		then:
 		result.value == Value.NULL
 		result.status == Status.MISSING_VALUE
 
 		when: "expression is missing for facility type"
-		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(KIVUYE), period)
+		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(KIVUYE), period)
 				
 		then:
 		result.value == Value.NULL
 		result.status == Status.DOES_NOT_APPLY
 		
 		when: "everything is fine"
-		newDataValue(dataElement, period, organisationUnit, v("40"))
+		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("40"))
 		normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id+" * 2"]]))
-		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
+		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
 		
 		then:
 		result.value.numberValue == 80d
 		result.status == Status.VALID
 			
 		when: "null value"
-		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), Value.NULL)
+		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), Value.NULL)
 		normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
-		result = expressionService.calculate(expression, OrganisationUnit.findByName(KIVUYE), period)
+		result = expressionService.calculateValue(expression, OrganisationUnit.findByName(KIVUYE), period)
 		
 		then:
 		result.value == Value.NULL
@@ -102,24 +103,23 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(10), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(10), Type.TYPE_NUMBER())
 		def normalizedDataElement = null
 		def result = null
 		
 		when: 
 		normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		result = expressionService.calculate(normalizedDataElement, OrganisationUnit.findByName(organisation), period)
+		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(organisation), period)
 		
 		then:
-		// exception ?
-		result == null
+		thrown IllegalArgumentException
 		
 		where:
 		organisation << [RWANDA, NORTH, BURERA]
 	}
 	
 	
-	def "test typing errors"() {
+	def "test normalized data element with typing errors"() {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
@@ -129,7 +129,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		when:
 		normalizedDataElement = newNormalizedDataElement(CODE(2), type, [(period.id):[(DISTRICT_HOSPITAL_GROUP):formula]])
-		result = expressionService.calculate(normalizedDataElement, organisationUnit, period)
+		result = expressionService.calculateValue(normalizedDataElement, organisationUnit, period)
 		
 		then:
 		result.status == Status.ERROR
@@ -142,17 +142,29 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 	}
 	
-	def "test enum option ordering"() {
+	def "test sum with valid calculation"() {
 		setup:
-		def enume = newEnume(CODE(1))
-		def option1 = newEnumOption(enume, v("\"test\""), o("en":2, "fr":1))
-		def option2 = newEnumOption(enume, v("\"absent\""), o("en":1, "fr":2))
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
+		def sum = newSum("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def result = null
+		refreshNormalizedDataElement()
 		
 		when:
-		def enumefromdb = Enum.findByCode(CODE(1))
+		result = expressionService.calculatePartialValues(sum, getOrganisation(BUTARO), period)
 		
 		then:
-		enumefromdb.enumOptions.equals([option2, option1])
+		result.size() == 1
+		result*.value.equals(new HashSet([v("1")]))
+
+		when:
+		result = expressionService.calculatePartialValues(sum, getOrganisation(BURERA), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals(new HashSet([v("1"), v("1")]))
+
 	}
 	
 	
@@ -170,9 +182,9 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		newEnumOption(enume, v("\"test\""))
 		newEnumOption(enume, v("\"absent\""))
 		
-		def dataElement = newDataElement(CODE(4), Type.TYPE_ENUM (enume.code))
-		newDataValue(dataElement, period, kivuye, v("\"absent\""))
-		newDataValue(dataElement, period, butaro, v("\"test\""))
+		def dataElement = newRawDataElement(CODE(4), Type.TYPE_ENUM (enume.code))
+		newRawDataElementValue(dataElement, period, kivuye, v("\"absent\""))
+		newRawDataElementValue(dataElement, period, butaro, v("\"test\""))
 		
 		expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "if(\$"+dataElement.id+"==\"test\") 20 else 10")
 		result = expressionService.calculate(expression, OrganisationUnit.findByName(organisationName), period)
@@ -199,9 +211,9 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def butaro = OrganisationUnit.findByName(BUTARO)
 	
 		when:
-		def dataElement = newDataElement(CODE(6), Type.TYPE_NUMBER())
-		newDataValue(dataElement, period, kivuye, v("10"))
-		newDataValue(dataElement, period, butaro, v("20"))
+		def dataElement = newRawDataElement(CODE(6), Type.TYPE_NUMBER())
+		newRawDataElementValue(dataElement, period, kivuye, v("10"))
+		newRawDataElementValue(dataElement, period, butaro, v("20"))
 		def expression = newExpression(CODE(7), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		def result = expressionService.calculate(expression, OrganisationUnit.findByName(organisationName), period)
 		
@@ -218,242 +230,249 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		RWANDA				| v("30")	| Status.VALID
 	}
 	
-	def "test sum with valid calculation"() {
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-		refreshExpression()
-		
-		when:
-		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
-		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
-		
-		then:
-		result.hasMissingValues == false
-		result.hasMissingExpression == false  
-		result.value == value
-		
-		where:
-		organisationName	| value
-		BUTARO				| v("1")
-		KIVUYE				| v("1")
-		BURERA				| v("2")
-		NORTH				| v("2")
-		RWANDA				| v("2")
-	}
 	
-	def "test sum with missing expression"() {
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		
-		when:
-		def sum = newSum([:], CODE(1), Type.TYPE_NUMBER())
-		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
-		
-		then:
-		result.hasMissingValues == false
-		result.hasMissingExpression == true
-		result.value == v("0")
+//	def "test sum with missing expression"() {
+//		setup:
+//		setupOrganisationUnitTree()
+//		def period = newPeriod()
+//		
+//		when:
+//		def sum = newSum([:], CODE(1), Type.TYPE_NUMBER())
+//		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
+//		
+//		then:
+//		result.hasMissingValues == false
+//		result.hasMissingExpression == true
+//		result.value == v("0")
+//	
+//		where:
+//		organisationName << [BUTARO, KIVUYE, BURERA, NORTH, RWANDA]
+//	}
+//		
+//	def "test sum with data element"() {
+//		setup:
+//		setupOrganisationUnitTree()
+//		def period = newPeriod()
+//		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+//		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
+//		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("2"))
+//		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
+//		refreshExpression()
+//		
+//		when:
+//		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
+//		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
+//		
+//		then:
+//		result.hasMissingValues == false
+//		result.hasMissingExpression == false
+//		result.value == value
+//		
+//		where:
+//		organisationName	| value
+//		KIVUYE				| v("1")
+//		BUTARO				| v("2")
+//		BURERA				| v("3")
+//		NORTH				| v("3")
+//		RWANDA				| v("3")
+//	}
+//	
+//	def "test sum with missing values"() {
+//		setup:
+//		setupOrganisationUnitTree()
+//		def period = newPeriod()
+//		def dataElement = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
+//		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
+//		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
+//		refreshExpression()
+//		
+//		when:
+//		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
+//		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
+//		
+//		then:
+//		result.hasMissingValues == missingValues
+//		result.hasMissingExpression == false
+//		result.value == value
+//		
+//		where:
+//		organisationName	| value		| missingValues
+//		BUTARO				| v("0")	| true
+//		KIVUYE				| v("1")	| false
+//		BURERA				| v("1")	| true
+//		NORTH				| v("1")	| true	
+//		RWANDA				| v("1")	| true
+//		
+//	}
+//	
+//	def "test average"() {
+//		setup:
+//		setupOrganisationUnitTree()
+//		def period = newPeriod()
+//		def kivuye = OrganisationUnit.findByName(KIVUYE)
+//		def butaro = OrganisationUnit.findByName(BUTARO)
+//		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+//		refreshExpression()
+//		
+//		when:
+//		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
+//		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
+//		
+//		then:
+//		result.hasMissingValues == false
+//		result.hasMissingExpression == false  
+//		result.value == value
+//		
+//		where:
+//		organisationName	| value
+//		BUTARO				| v("1")
+//		KIVUYE				| v("1")
+//		BURERA				| v("1")
+//		NORTH				| v("1")
+//		RWANDA				| v("1")
+//	}
+//	
+//	def "test average with missing expression"() {
+//		setup:
+//		setupOrganisationUnitTree()
+//		def period = newPeriod()
+//				
+//		when:
+//		def average = newAverage([:], CODE(1), Type.TYPE_NUMBER())
+//		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
+//		
+//		then:
+//		result.hasMissingValues == false
+//		result.hasMissingExpression == true
+//		result.value == Value.NULL
+//		
+//		where:
+//		organisationName << [BUTARO, KIVUYE, BURERA, NORTH, RWANDA]
+//	}
+//	
+//	def "test average with data element"() {
+//		setup:
+//		setupOrganisationUnitTree()
+//		def period = newPeriod()
+//		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+//		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
+//		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("2"))
+//		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
+//		refreshExpression()
+//		
+//		when:
+//		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
+//		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
+//		
+//		then:
+//		result.hasMissingValues == false
+//		result.hasMissingExpression == false
+//		result.value == value
+//		
+//		where:
+//		organisationName	| value
+//		BUTARO				| v("2")
+//		KIVUYE				| v("1")
+//		BURERA				| v("1.5")
+//		NORTH				| v("1.5")
+//		RWANDA				| v("1.5")
+//	}
+//		
+//	def "test average with missing values"() {
+//		setup:
+//		setupOrganisationUnitTree()
+//		def period = newPeriod()
+//		def dataElement = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
+//		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
+//		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
+//		refreshExpression()
+//		
+//		when:
+//		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
+//		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
+//		
+//		then:
+//		result.hasMissingValues == missingValues
+//		result.hasMissingExpression == false
+//		result.value == value
+//		
+//		where:
+//		organisationName	| value		| missingValues
+//		BUTARO				| Value.NULL| true
+//		KIVUYE				| v("1")	| false
+//		BURERA				| v("1")	| true
+//		NORTH				| v("1")	| true
+//		RWANDA				| v("1")	| true
+//	}
 	
-		where:
-		organisationName << [BUTARO, KIVUYE, BURERA, NORTH, RWANDA]
-	}
-		
-	def "test sum with data element"() {
+	def "data elements in expression"() {
 		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def dataElement = newDataElement(CODE(2), Type.TYPE_NUMBER())
-		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
-		newDataValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("2"))
-		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-		refreshExpression()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def average = newAverage("1", CODE(1))
+		def data = null
 		
 		when:
-		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
-		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
+		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, RawDataElement.class)
 		
 		then:
-		result.hasMissingValues == false
-		result.hasMissingExpression == false
-		result.value == value
-		
-		where:
-		organisationName	| value
-		KIVUYE				| v("1")
-		BUTARO				| v("2")
-		BURERA				| v("3")
-		NORTH				| v("3")
-		RWANDA				| v("3")
-	}
-	
-	def "test sum with missing values"() {
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def dataElement = newDataElement(CODE(4), Type.TYPE_NUMBER())
-		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
-		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-		refreshExpression()
+		data.size() == 1
+		data.values().iterator().next().equals(rawDataElement)
 		
 		when:
-		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
-		def result = expressionService.calculate(sum, OrganisationUnit.findByName(organisationName), period)
+		data = expressionService.getDataInExpression("\$"+rawDataElement.id, Average.class)
 		
 		then:
-		result.hasMissingValues == missingValues
-		result.hasMissingExpression == false
-		result.value == value
-		
-		where:
-		organisationName	| value		| missingValues
-		BUTARO				| v("0")	| true
-		KIVUYE				| v("1")	| false
-		BURERA				| v("1")	| true
-		NORTH				| v("1")	| true	
-		RWANDA				| v("1")	| true
-		
-	}
-	
-	def "test average"() {
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def kivuye = OrganisationUnit.findByName(KIVUYE)
-		def butaro = OrganisationUnit.findByName(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-		refreshExpression()
+		data.size() == 0
 		
 		when:
-		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
-		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
+		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, Average.class)
 		
 		then:
-		result.hasMissingValues == false
-		result.hasMissingExpression == false  
-		result.value == value
-		
-		where:
-		organisationName	| value
-		BUTARO				| v("1")
-		KIVUYE				| v("1")
-		BURERA				| v("1")
-		NORTH				| v("1")
-		RWANDA				| v("1")
-	}
-	
-	def "test average with missing expression"() {
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-				
-		when:
-		def average = newAverage([:], CODE(1), Type.TYPE_NUMBER())
-		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
-		
-		then:
-		result.hasMissingValues == false
-		result.hasMissingExpression == true
-		result.value == Value.NULL
-		
-		where:
-		organisationName << [BUTARO, KIVUYE, BURERA, NORTH, RWANDA]
-	}
-	
-	def "test average with data element"() {
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def dataElement = newDataElement(CODE(2), Type.TYPE_NUMBER())
-		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
-		newDataValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("2"))
-		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-		refreshExpression()
+		data.size() == 1
+		data.values().iterator().next().equals(average)
 		
 		when:
-		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
-		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
+		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, Data.class)
 		
 		then:
-		result.hasMissingValues == false
-		result.hasMissingExpression == false
-		result.value == value
-		
-		where:
-		organisationName	| value
-		BUTARO				| v("2")
-		KIVUYE				| v("1")
-		BURERA				| v("1.5")
-		NORTH				| v("1.5")
-		RWANDA				| v("1.5")
-	}
-		
-	def "test average with missing values"() {
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def dataElement = newDataElement(CODE(4), Type.TYPE_NUMBER())
-		newDataValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
-		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-		refreshExpression()
+		data.size() == 2
 		
 		when:
-		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
-		def result = expressionService.calculate(average, OrganisationUnit.findByName(organisationName), period)
+		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, DataElement.class)
 		
 		then:
-		result.hasMissingValues == missingValues
-		result.hasMissingExpression == false
-		result.value == value
-		
-		where:
-		organisationName	| value		| missingValues
-		BUTARO				| Value.NULL| true
-		KIVUYE				| v("1")	| false
-		BURERA				| v("1")	| true
-		NORTH				| v("1")	| true
-		RWANDA				| v("1")	| true
+		data.size() == 1
+		data.values().iterator().next().equals(rawDataElement)
 	}
 	
 	def "data element in expression when wrong format"() {
 		when:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
-		def dataElements = expressionService.getDataInExpression("\$"+dataElement.id)
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElements = expressionService.getDataInExpression("\$"+dataElement.id, RawDataElement.class)
 		
 		then:
 		dataElements.size() == 1
 		dataElements.getAt("\$"+dataElement.id).equals(dataElement)
 		
 		when:
-		dataElements = expressionService.getDataInExpression("\$0")
+		dataElements = expressionService.getDataInExpression("\$0", RawDataElement.class)
 		
 		then:
 		dataElements.size() == 1
 		dataElements.get("\$0") == null
 		
 		when:
-		dataElements = expressionService.getDataInExpression("\$test")
+		dataElements = expressionService.getDataInExpression("\$test", RawDataElement.class)
 		
 		then:
 		dataElements.size() == 0
 	}
 	
-	def "data elements in expression"() {
-		when:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
-		def dataElements = expressionService.getDataInExpression("\$"+dataElement.id)
-		
-		then:
-		dataElements.size() == 1
-		dataElements.values().iterator().next().equals(dataElement)		
-	}
-	
+
 	def "test expression validation"() {
 
 		setup:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def formula = null
 				
 		when:
@@ -505,7 +524,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		expressionService.expressionIsValid(formula)
 		
 		when:
-		def dataElement2 = newDataElement(CODE(2), Type.TYPE_STRING())
+		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_STRING())
 		formula = "convert(\$"+dataElement2.id+", schema double)"
 		
 		then:

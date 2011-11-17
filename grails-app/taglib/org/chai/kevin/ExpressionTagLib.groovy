@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 
 public class ExpressionTagLib {
 

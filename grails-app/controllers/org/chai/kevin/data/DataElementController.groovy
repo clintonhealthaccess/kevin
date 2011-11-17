@@ -47,11 +47,11 @@ class DataElementController extends AbstractEntityController {
 	SurveyService surveyService;
 
 	def getEntity(def id) {
-		return DataElement.get(id)
+		return RawDataElement.get(id)
 	}
 
 	def createEntity() {
-		def entity = new DataElement();
+		def entity = new RawDataElement();
 		entity.type = new Type();
 		return entity;
 	}
@@ -114,13 +114,13 @@ class DataElementController extends AbstractEntityController {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		
-		List<DataElement> dataElements = dataService.searchData(DataElement.class, params['q'], [], params);
+		List<RawDataElement> dataElements = dataService.searchData(RawDataElement.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: dataElements,
 			template: "data/dataElementList",
 			code: getLabel(),
-			entityCount: dataService.countData(DataElement.class, params['q'], []),
+			entityCount: dataService.countData(RawDataElement.class, params['q'], []),
 			search: true
 		])
 	}
@@ -129,18 +129,18 @@ class DataElementController extends AbstractEntityController {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		
-		List<DataElement> dataElements = DataElement.list(params);
+		List<RawDataElement> dataElements = RawDataElement.list(params);
 		
 		render (view: '/entity/list', model:[
 			entities: dataElements,
 			template: "data/dataElementList",
 			code: getLabel(),
-			entityCount: DataElement.count()
+			entityCount: RawDataElement.count()
 		])
 	}
 
 	def getExplainer = {
-		def dataElement = DataElement.get(params.int('dataElement'))
+		def dataElement = RawDataElement.get(params.int('dataElement'))
 
 		if (dataElement != null) {
 			List<Period> iterations = Period.list();
@@ -164,7 +164,7 @@ class DataElementController extends AbstractEntityController {
 
 	def getData = {
 		def includeTypes = params.list('include')
-		def dataElements = dataService.searchData(DataElement.class, params['searchText'], includeTypes, [:]);
+		def dataElements = dataService.searchData(RawDataElement.class, params['searchText'], includeTypes, [:]);
 		
 		render(contentType:"text/json") {
 			result = 'success'
@@ -173,7 +173,7 @@ class DataElementController extends AbstractEntityController {
 	}
 
 	def getDescription = {
-		def dataElement = DataElement.get(params.int('dataElement'))
+		def dataElement = RawDataElement.get(params.int('dataElement'))
 
 		if (dataElement == null) {
 			render(contentType:"text/json") { result = 'error' }

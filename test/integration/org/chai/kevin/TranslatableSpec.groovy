@@ -31,17 +31,18 @@ package org.chai.kevin
 import grails.validation.ValidationException;
 
 import java.util.List;
+
+import net.sf.json.JSONObject;
+
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.Initializer;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.Survey
@@ -55,7 +56,6 @@ import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
-import org.json.JSONObject;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
@@ -68,7 +68,7 @@ class TranslatableSpec extends IntegrationTests {
 
 	def "empty name transfers properly to json"() {
 		when:
-		def dataElement = newDataElement(new Translation(), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(new Translation(), CODE(1), Type.TYPE_NUMBER())
 
 		then:
 		dataElement.names["en"] == null
@@ -78,7 +78,7 @@ class TranslatableSpec extends IntegrationTests {
 
 	def "translatable set map sets json"() {
 		when:
-		def dataElement = newDataElement(j(["en":ENGLISH, "fr":FRANCAIS]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(j(["en":ENGLISH, "fr":FRANCAIS]), CODE(1), Type.TYPE_NUMBER())
 
 		then:
 		(new HashMap(["en":ENGLISH, "fr":FRANCAIS])).equals(dataElement.names)
@@ -89,11 +89,11 @@ class TranslatableSpec extends IntegrationTests {
 
 	def "translatable set json sets map"() {
 		when:
-		def dataElement = newDataElement(j("en":"test"), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(j("en":"test"), CODE(1), Type.TYPE_NUMBER())
 		
 		dataElement.names.putAll([en: ENGLISH, fr: FRANCAIS]);
 		dataElement.save(failOnError:true);
-		dataElement = DataElement.findByCode(CODE(1))
+		dataElement = RawDataElement.findByCode(CODE(1))
 
 		then:
 		dataElement.names["en"] == ENGLISH
@@ -103,7 +103,7 @@ class TranslatableSpec extends IntegrationTests {
 
 	def "translatable set map modifies json"() {
 		when:
-		def dataElement = newDataElement(new Translation(), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(new Translation(), CODE(1), Type.TYPE_NUMBER())
 
 		dataElement.names = new Translation(jsonText: JSONUtils.getJSONFromMap([en: ENGLISH, fr: "Anglais"]));
 		dataElement.save(failOnError:true)

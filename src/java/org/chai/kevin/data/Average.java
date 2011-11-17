@@ -28,17 +28,58 @@ package org.chai.kevin.data;
   * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
   
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.chai.kevin.AverageValue;
+import org.chai.kevin.ExpressionService.StatusValuePair;
+import org.chai.kevin.Organisation;
+import org.chai.kevin.value.AveragePartialValue;
+import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hisp.dhis.period.Period;
 
 @Entity(name="Average")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="dhsst_calculation_average")
-public class Average extends Calculation {
+public class Average extends Calculation<AveragePartialValue> {
 
-	private static final long serialVersionUID = -633638638981261851L;
+	@Override
+	public AverageValue getCalculationValue(List<AveragePartialValue> partialValues) {
+		return new AverageValue(partialValues, this);
+	}
+
+	@Override
+	public Class<AveragePartialValue> getValueClass() {
+		return AveragePartialValue.class;
+	}
+
+	@Override
+	public AveragePartialValue getCalculationPartialValue(String expression, Map<Organisation, StatusValuePair> values, Organisation organisation, Period period, String groupUuid) {
+		Value value = getValue(values.values());
+		Integer numberOfFacilities = getNumberOfFacilities(values);
+		return new AveragePartialValue(this, organisation.getOrganisationUnit(), period, groupUuid, numberOfFacilities, value);
+	}
+
+	private Integer getNumberOfFacilities(Map<Organisation, StatusValuePair> values) {
+		Integer result = 0;
+		for (Entry<Organisation, StatusValuePair> entry : values.entrySet()) {
+			if (!entry.getValue().value.isNull()) result++;
+		}
+		return result;
+	}
+
+	@Override
+	public List<String> getPartialExpressions() {
+		List<String> result = new ArrayList<String>();
+		result.add(getExpression());
+		return result;
+	}
 
 }

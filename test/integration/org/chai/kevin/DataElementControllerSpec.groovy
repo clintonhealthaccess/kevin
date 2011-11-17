@@ -1,9 +1,9 @@
 package org.chai.kevin;
 
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.DataElementController;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 
 class DataElementControllerSpec extends IntegrationTests {
@@ -42,12 +42,12 @@ class DataElementControllerSpec extends IntegrationTests {
 		def dataElement = null
 		
 		when:
-		dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		dataElementController.params.id = dataElement.id
 		dataElementController.delete()
 		
 		then:
-		DataElement.count() == 0
+		RawDataElement.count() == 0
 	}
 		
 	def "cannot delete data element when it still has values"() {
@@ -58,15 +58,15 @@ class DataElementControllerSpec extends IntegrationTests {
 		def dataElement = null
 		
 		when:
-		dataElement = newDataElement(CODE(2), Type.TYPE_NUMBER())
-		newDataValue(dataElement, period, organisation, Value.NULL)
+		dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		newRawDataElementValue(dataElement, period, organisation, Value.NULL)
 		dataElementController.params.id = dataElement.id
 		dataElementController.delete()
 		
 		then:
 //		dataElementController.response.contentAsString.contains("success")
-		DataElement.count() == 1
-		DataValue.count() == 1
+		RawDataElement.count() == 1
+		RawDataElementValue.count() == 1
 	}
 	
 	def "cannot edit data element type if it still has values" () {
@@ -74,7 +74,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController = new DataElementController()
 		def organisation = newOrganisationUnit(BUTARO)
 		def period = newPeriod()
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 	
 		when:
 		dataElementController.params.id = dataElement.id
@@ -86,7 +86,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElement.type.equals(Type.TYPE_BOOL())
 		
 		when:
-		newDataValue(dataElement, period, organisation, Value.NULL)
+		newRawDataElementValue(dataElement, period, organisation, Value.NULL)
 		dataElementController.params.id = dataElement.id
 		dataElementController.params['type.jsonValue'] = Type.TYPE_STRING().getJsonValue()
 		dataElementController.saveWithoutTokenCheck()
@@ -101,7 +101,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController = new DataElementController()
 		
 		when:
-		newDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		
 		dataElementController.params.searchText = 'ele'
 		def model = dataElementController.getData()
@@ -117,7 +117,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController = new DataElementController()
 		
 		when:
-		def dataElement = newDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		dataElementController.params.dataElement = dataElement.id+""
 		def model = dataElementController.getDescription()
 		
@@ -132,7 +132,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		dataElementController = new DataElementController()
 		
 		when:
-		def dataElement = newDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		dataElementController.params.q = "ele"
 		dataElementController.search()
 		

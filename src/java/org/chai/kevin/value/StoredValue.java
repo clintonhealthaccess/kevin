@@ -71,6 +71,10 @@ public abstract class StoredValue {
 	public OrganisationUnit getOrganisationUnit() {
 		return organisationUnit;
 	}
+	
+	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
+		this.organisationUnit = organisationUnit;
+	}
 
 	@NaturalId
 	@ManyToOne(targetEntity=Period.class, fetch=FetchType.LAZY)
@@ -78,13 +82,21 @@ public abstract class StoredValue {
 	public Period getPeriod() {
 		return period;
 	}
+	
+	public void setPeriod(Period period) {
+		this.period = period;
+	}
 
 	@Column(nullable=false)
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	public Date getTimestamp() {
 		return timestamp;
 	}
-
+	
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+	
 	@Embedded
 	@AttributeOverrides({
         @AttributeOverride(name="jsonValue", column=@Column(name="value", nullable=false))
@@ -95,18 +107,6 @@ public abstract class StoredValue {
 	
 	public void setValue(Value value) {
 		this.value = value;
-	}
-	
-	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
-		this.organisationUnit = organisationUnit;
-	}
-
-	public void setPeriod(Period period) {
-		this.period = period;
-	}
-
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
 	}
 
 	@Transient

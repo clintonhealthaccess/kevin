@@ -33,5 +33,6 @@ constraints = {
 	type(nullable: false, validator: {val, obj -> 
 		return val.getType() != null && val.getType().name().toLowerCase().equals("number");
 	})
+	code(nullable: false, blank: false, unique: true)
 	
 }

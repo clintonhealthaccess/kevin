@@ -28,34 +28,53 @@ package org.chai.kevin.data;
   * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
   
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.Transient;
 
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.ValueCalculator;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.chai.kevin.CalculationValue;
+import org.chai.kevin.ExpressionService.StatusValuePair;
+import org.chai.kevin.Organisation;
+import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.Value;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="Calculation")
 @Table(name="dhsst_calculation")
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Calculation extends Data<CalculationValue> {
+public abstract class Calculation<T extends CalculationPartialValue> extends Data<T> {
 
-	private static final long serialVersionUID = -633638638981261851L;
+	public static Type TYPE = Type.TYPE_NUMBER();
 	
 	private String expression;
-
+	private Date calculated;
+	
+	// extract partial expressions from the calculation
+	public abstract List<String> getPartialExpressions();
+	
+	public abstract T getCalculationPartialValue(String expression, Map<Organisation, StatusValuePair> values, 
+			Organisation organisation, Period period, String groupUuid);
+	
+	public abstract CalculationValue<T> getCalculationValue(List<T> partialValues);
+	
+	protected Value getValue(Collection<StatusValuePair> statusValuePairs) {
+		Double value = 0d;
+		for (StatusValuePair statusValuePair : statusValuePairs) {
+			if (!statusValuePair.value.isNull()) value += statusValuePair.value.getNumberValue().doubleValue();
+		}
+		return getType().getValue(value);
+	}
+	
 	@Lob
 	@Column(nullable=false)
 	public String getExpression() {
@@ -66,6 +85,22 @@ public abstract class Calculation extends Data<CalculationValue> {
 		this.expression = expression;
 	}
 
+	@Column(nullable=true)
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	public Date getCalculated() {
+		return calculated;
+	}
+	
+	public void setCalculated(Date calculated) {
+		this.calculated = calculated;
+	}
+	
+	@Transient
+	@Override
+	public Type getType() {
+		return Calculation.TYPE;
+	}
+	
 	@Override
 	public String toString() {
 		return "Calculation [expression=" + expression + "]";

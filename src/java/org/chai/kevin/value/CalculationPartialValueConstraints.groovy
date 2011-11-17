@@ -29,10 +29,13 @@ package org.chai.kevin.value
 */
 
 constraints = {
-//	expression(nullable: false)
+
+	calculation(nullable: false)
 	organisationUnit(nullable: false)
 	period(nullable: false)
+	groupUuid(nullable: false)
 	value(nullable: false, validator: {val, obj ->
 		return true;
 	})
+	
 }

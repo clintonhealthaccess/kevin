@@ -38,9 +38,9 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.NormalizedDataElementValue.Status;
+import org.chai.kevin.value.Status;
 import org.hisp.dhis.period.Period;
 
 public class PercentageCalculator {
@@ -63,7 +63,7 @@ public class PercentageCalculator {
 	public DashboardPercentage getPercentageForNonLeafTarget(DashboardTarget target, Organisation organisation, Period period) {
 		if (log.isDebugEnabled()) log.debug("getPercentageForNonLeafTarget(target: "+target+", organisation: "+organisation+")");
 		
-		CalculationValue calculationValue = valueService.getValue(target.getCalculation(), organisation.getOrganisationUnit(), period);
+		CalculationPartialValue calculationValue = valueService.getValue(target.getCalculation(), organisation.getOrganisationUnit(), period);
 		if (calculationValue == null) return null;
 		DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), calculationValue.getHasMissingValues(), calculationValue.getHasMissingExpression());
 

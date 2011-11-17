@@ -6,7 +6,7 @@ import org.chai.kevin.util.JSONUtils;
 
 import grails.plugin.spock.UnitSpec;
 
-class OrderableSpec extends UnitSpec {
+class OrderableUnitSpec extends UnitSpec {
 
 	static class TestOrderable extends Orderable<Ordering> {
 		Long id;

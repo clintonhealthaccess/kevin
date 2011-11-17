@@ -1,10 +1,10 @@
 package org.chai.kevin.data
 
-import org.chai.kevin.JSONMap;
+import org.chai.kevin.json.JSONMap;
 
 import grails.plugin.spock.UnitSpec;
 
-class ExpressionMapTest extends UnitSpec {
+class ExpressionMapUnitSpec extends UnitSpec {
 
 	def "test simple map"() {
 		

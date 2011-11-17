@@ -32,7 +32,7 @@ package org.chai.kevin.fct;
  */
 
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.dsr.DsrTarget

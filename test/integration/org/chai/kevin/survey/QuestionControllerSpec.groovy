@@ -14,7 +14,7 @@ class QuestionControllerSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [])
 		def section = newSurveySection(objective, 1, [])
 		def question = newSimpleQuestion(j(['en':'element']), section, 1, [])
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		questionController = new QuestionController()
 		

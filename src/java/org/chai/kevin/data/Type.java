@@ -28,8 +28,8 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.JSONValue;
 import org.chai.kevin.value.Value;
 
 @Embeddable
@@ -202,6 +202,7 @@ public class Type extends JSONValue {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static List<Integer> getIndexList(Map<String, Object> map, String key) {
 		List<String> stringIndexList = new ArrayList<String>();
 		if (map.get(key) instanceof String[]) stringIndexList.addAll(Arrays.asList((String[])map.get(key)));
@@ -216,7 +217,6 @@ public class Type extends JSONValue {
 		return filteredIndexList;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Transient
 	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String suffix, Set<String> attributes) {
 		try {
@@ -356,7 +356,7 @@ public class Type extends JSONValue {
 	}
 	
 	public Value getValueFromJaql(String jaqlString) {
-		if (jaqlString.equals("null")) return Value.NULL;
+		if (jaqlString == null || jaqlString.equals("null")) return Value.NULL;
 		try {
 			JSONObject object = new JSONObject();
 			switch (getType()) {

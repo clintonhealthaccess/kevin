@@ -46,7 +46,7 @@
             timeToLiveSeconds="86400"
     />
     
-    <cache name="org.chai.kevin.data.DataElement"
+    <cache name="org.chai.kevin.data.RawDataElement"
            maxElementsInMemory="4000"
             timeToIdleSeconds="60"
     />

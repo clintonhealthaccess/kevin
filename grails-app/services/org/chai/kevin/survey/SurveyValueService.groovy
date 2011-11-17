@@ -2,6 +2,7 @@ package org.chai.kevin.survey;
 
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.OrganisationService
+import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.persistence.Embeddable;
 
-import org.chai.kevin.JSONMap;
+import org.chai.kevin.json.JSONMap;
 
 @Embeddable
 public class ExpressionMap extends JSONMap<Map<String, String>> {

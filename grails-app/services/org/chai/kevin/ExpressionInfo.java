@@ -31,9 +31,9 @@ package org.chai.kevin;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Expression;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -42,9 +42,9 @@ public class ExpressionInfo extends Info {
 
 	private Double maxValue;
 	private NormalizedDataElementValue expressionValue;
-	private Map<Organisation, Map<DataElement, DataValue>> values;
+	private Map<Organisation, Map<RawDataElement, RawDataElementValue>> values;
 	
-	public ExpressionInfo(NormalizedDataElementValue expressionValue, Map<Organisation, Map<DataElement, DataValue>> values, Double maxValue) {
+	public ExpressionInfo(NormalizedDataElementValue expressionValue, Map<Organisation, Map<RawDataElement, RawDataElementValue>> values, Double maxValue) {
 		this.maxValue = maxValue;
 		this.expressionValue = expressionValue;
 		this.values = values;
@@ -62,12 +62,12 @@ public class ExpressionInfo extends Info {
 		return expressionValue.getOrganisationUnit();
 	}
 	
-	public Map<Organisation, Map<DataElement, DataValue>> getValues() {
+	public Map<Organisation, Map<RawDataElement, RawDataElementValue>> getValues() {
 		return values;
 	}
 	
-	public Map<DataElement, DataValue> getValuesForOrganisation() {
-		for (Entry<Organisation, Map<DataElement, DataValue>> entry : values.entrySet()) {
+	public Map<RawDataElement, RawDataElementValue> getValuesForOrganisation() {
+		for (Entry<Organisation, Map<RawDataElement, RawDataElementValue>> entry : values.entrySet()) {
 			if (entry.getKey().getOrganisationUnit().equals(expressionValue.getOrganisationUnit())) return entry.getValue();
 		}
 		return null;

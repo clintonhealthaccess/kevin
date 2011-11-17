@@ -17,7 +17,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		surveyValidationRuleController = new SurveyValidationRuleController()
 		
@@ -47,7 +47,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		def validationRule = newSurveyValidationRule(element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0")
 		surveyValidationRuleController = new SurveyValidationRuleController()

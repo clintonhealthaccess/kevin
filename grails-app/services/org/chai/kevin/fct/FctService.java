@@ -51,7 +51,7 @@ import org.chai.kevin.OrganisationService;
 import org.chai.kevin.OrganisationSorter;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.CalculationPartialValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
@@ -117,7 +117,7 @@ public class FctService {
 				
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
 				
-				CalculationValue calculationValue = valueService.getValue(target.getSum(), child.getOrganisationUnit(), period);
+				CalculationPartialValue calculationValue = valueService.getValue(target.getSum(), child.getOrganisationUnit(), period);
 				if (calculationValue != null) 
 					value = calculationValue.getValue().getStringValue();				
 				orgFct.put(target, new Fct(child, period, target, value));

@@ -1,8 +1,10 @@
 package org.chai.kevin
 
+import org.chai.kevin.json.JSONMap;
+
 import grails.plugin.spock.UnitSpec;
 
-class JSONMapSpec extends UnitSpec {
+class JSONMapUnitSpec extends UnitSpec {
 
 	
 	def "test json output with string"() {

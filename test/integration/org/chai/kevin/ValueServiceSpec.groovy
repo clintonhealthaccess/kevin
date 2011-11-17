@@ -30,14 +30,13 @@ package org.chai.kevin
 
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.AveragePartialValue;
+import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.ExpressionValue.Status;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -45,29 +44,157 @@ class ValueServiceSpec extends IntegrationTests {
 
 	def valueService;
 	
+	def "test get raw data element value"() {
+		setup:
+		def period = newPeriod()
+		def organisationUnit = newOrganisationUnit(BUTARO)
+		
+		when: "empty value list"
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		
+		then:
+		valueService.getDataElementValue(rawDataElement, organisationUnit, period) == null
+		
+		when:
+		def dataValue = newRawDataElementValue(rawDataElement, period, organisationUnit, v("1"))
+		
+		then:
+		valueService.getDataElementValue(rawDataElement, organisationUnit, period).equals(dataValue)
+	}
+	
+	def "test get raw data element value at non-facility level"() {
+		setup:
+		def period = newPeriod()
+		setupOrganisationUnitTree()
+		
+		when:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		
+		then:
+		valueService.getDataElementValue(rawDataElement, OrganisationUnit.findByName(RWANDA), period) == null
+	}
+	
+	def "test get normalized data element value"() {
+		setup:
+		def period = newPeriod()
+		setupOrganisationUnitTree()
+		
+		when:
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		
+		then: "empty value list"
+		valueService.getDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period) == null
+		
+		when:
+		def dataValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), Status.VALID, v("1"))
+		
+		then:
+		valueService.getDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period).equals(dataVaue)
+	}
+	
+	def "test get average value"() {
+		setup:
+		def period = newPeriod()
+		setupOrganisationUnitTree()
+		
+		when:
+		def average = newAverage("1", CODE(1))
+		def expectedValue = new AverageValue([], average, [DISTRICT_HOSPITAL_GROUP])
+		def value = valueService.getCalculationValue(average, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+		 
+		then:
+		value.equals(expectedValue)
+		
+		when:
+		def partialValue = newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
+		expectedValue = new AverageValue([partialValue], average, [DISTRICT_HOSPITAL_GROUP])
+		value = valueService.getCalculationValue(average, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+
+		then:
+		value.equals(expectedValue)
+	}
+	
+	def "test get sum value"() {
+		setup:
+		def period = newPeriod()
+		setupOrganisationUnitTree()
+		
+		when:
+		def sum = newSum("1", CODE(1))
+		def expectedValue = new SumValue([], sum, [DISTRICT_HOSPITAL_GROUP])
+		def value = valueService.getCalculationValue(sum, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+		 
+		then:
+		value.equals(expectedValue)
+		
+		when:
+		def partialValue = newSumPartialValue(sum, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
+		expectedValue = new SumValue([partialValue], sum, [DISTRICT_HOSPITAL_GROUP])
+		value = valueService.getCalculationValue(sum, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+
+		then:
+		value.equals(expectedValue)
+	}
+	
+	def "test get aggregation value"() {
+		setup:
+		def period = newPeriod()
+		setupOrganisationUnitTree()
+		
+		when:
+		def aggregation = newAggregation("1", CODE(1))
+		def expectedValue = new AggregationValue([], aggregation, [DISTRICT_HOSPITAL_GROUP])
+		def value = valueService.getCalculationValue(aggregation, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+		 
+		then:
+		value.equals(expectedValue)
+		
+		when:
+		def partialValue = newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, null, 1, false, false, v("1"))
+		expectedValue = new SumValue([partialValue], aggregation, [DISTRICT_HOSPITAL_GROUP])
+		value = valueService.getCalculationValue(aggregation, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+
+		then:
+		value.equals(expectedValue)
+	}
+	
 	def "test number of values"() {
 		setup:
 		def period = newPeriod()
 		def organisationUnit = newOrganisationUnit(BUTARO)
 		
 		when: 
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
-		newDataValue(dataElement, period, organisationUnit, v("40"))
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		newRawDataElementValue(rawDataElement, period, organisationUnit, v("40"))
 		
 		then:
-		valueService.getNumberOfValues(dataElement, period) == 1
+		valueService.getNumberOfValues(rawDataElement, period) == 1
 		
 		when:
 		def newPeriod = newPeriod()
 		
 		then:
-		valueService.getNumberOfValues(dataElement, newPeriod) == 0
+		valueService.getNumberOfValues(rawDataElement, newPeriod) == 0
 				
 		when:
-		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER())
+		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		
 		then:
-		valueService.getNumberOfValues(dataElement2, period) == 0
+		valueService.getNumberOfValues(rawDataElement2, period) == 0
+	}
+	
+	def "test number of values does not count other value types"() {
+		setup:
+		def period = newPeriod()
+		def organisationUnit = newOrganisationUnit(BUTARO)
+		
+		when:
+		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		newRawDataElementValue(rawDataElement1, period, organisationUnit, v("40"))
+		
+		then:
+		valueService.getNumberOfValues(rawDataElement1, period) == 1
 	}
 	
 	def "test value list"() {
@@ -77,69 +204,77 @@ class ValueServiceSpec extends IntegrationTests {
 		def organisationUnit = newOrganisationUnit(BUTARO)
 		
 		when:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
-		def dataValue = newDataValue(dataElement, period, organisationUnit, v("40"))
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, organisationUnit, v("40"))
 		
 		then:
-		valueService.getValues(dataElement, period).equals([dataValue])
+		valueService.getValues(rawDataElement, period).equals([rawDataElementValue])
 		
 	}
 
-	def "test delete expression values"() {
+	def "test delete data element values"() {
 		setup:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
-		newExpressionValue(expression, period, organisation)
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, OrganisationUnit.findByName(BUTARO), v("40"))
 		
 		then:
 		NormalizedDataElementValue.count() == 1
 		
 		when:
-		valueService.deleteValues(expression)
+		valueService.deleteValues(rawDataElement)
 		
 		then:
 		NormalizedDataElementValue.count() == 0
 		
-		when:
-		def expression2 = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
-		newExpressionValue(expression, period, organisation)
-		newExpressionValue(expression2, period, organisation)
+		when: "only deletes right values"
+		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		newRawDataElementValue(rawDataElement, period, OrganisationUnit.findByName(BUTARO), v("40"))
+		newRawDataElementValue(rawDataElement2, period, OrganisationUnit.findByName(BUTARO), v("40"))
 		valueService.deleteValues(expression)
 		
 		then:
 		NormalizedDataElementValue.count() == 1
 	}
 	
+//	def "test delete normalized data element values"() {
+//		setup:
+//		
+//		when:
+//		
+//		then:
+//		
+//	}
 	
 	def "test delete calculation values"() {
 		setup:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def calculation = newAverage([:], CODE(1), Type.TYPE_NUMBER())
+		def average = newAverage("1", CODE(1))
 		
 		when:
-		newCalculationValue(calculation, period, organisation, false, false, v("1"))
+		newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
 		
 		then:
-		CalculationValue.count() == 1
+		AveragePartialValue.count() == 1
 		
 		when:
-		valueService.deleteValues(calculation)
+		valueService.deleteValues(average)
 		
 		then:
-		CalculationValue.count() == 0
+		AveragePartialValue.count() == 0
 		
 		when:
-		def calculation2 = newAverage([:], CODE(2), Type.TYPE_NUMBER())
-		newCalculationValue(calculation, period, organisation, false, false, v("1"))
-		newCalculationValue(calculation2, period, organisation, false, false, v("1"))
-		valueService.deleteValues(calculation)
+		def average2 = newAverage("2", CODE(2))
+		newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
+		newAveragePartialValue(average2, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
+		valueService.deleteValues(average)
 		
 		then:
-		CalculationValue.count() == 1
+		CalculationPartialValue.count() == 1
 	}
 	
 }

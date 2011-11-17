@@ -121,8 +121,8 @@ class PercentageCalculatorSpec extends UnitSpec {
 //	
 //	def "test absent value on target"() {
 //		setup:
-//		def dataElement = new DataElement(names:j(["en":"Element 1"]), code: "CODE", type: Type.TYPE_NUMBER())
-//		mockDomain(DataElement, [dataElement])
+//		def dataElement = new RawDataElement(names:j(["en":"Element 1"]), code: "CODE", type: Type.TYPE_NUMBER())
+//		mockDomain(RawDataElement, [dataElement])
 //		def expression = new Expression(names:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: Type.TYPE_NUMBER())
 //		mockDomain(Expression, [expression])
 //		

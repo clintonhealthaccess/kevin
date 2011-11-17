@@ -3,7 +3,7 @@ package org.chai.kevin.survey
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.chai.kevin.IntegrationTests
-import org.chai.kevin.data.DataElement
+import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Type;
@@ -24,7 +24,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [])
 		def section = newSurveySection(objective, 1, [])
 		def question = newTableQuestion(section, 1, [])
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		def column = newTableColumn(question, 1, [])
 		def row = newTableRow(question, 1, [], [(column): element])
@@ -44,7 +44,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [])
 		def section = newSurveySection(objective, 1, [])
 		def question = newSimpleQuestion(section, 1, [])
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		
 		when:
@@ -96,7 +96,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		def column = newTableColumn(question, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def row = newTableRow(question, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): element])
@@ -115,7 +115,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		
 		when:

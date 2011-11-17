@@ -28,8 +28,6 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -37,106 +35,64 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Data;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.chai.kevin.data.RawDataElement;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
-@Entity(name="CalculationValue")
-@Table(name="dhsst_calculation_value",
-	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"calculation", "organisationUnit", "period"})
-	}
+@Entity(name="RawDataElementValue")
+@Table(name="dhsst_data_value",
+		uniqueConstraints=@UniqueConstraint(columnNames={"data", "period", "organisationUnit"})
 )
-//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CalculationValue extends StoredValue {
-
+//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+public class RawDataElementValue extends StoredValue {
+	
 	private Long id;
-	private Calculation calculation;
+	private RawDataElement data;
 	
-	private Boolean hasMissingValues;
-	private Boolean hasMissingExpression;
-	
-	public CalculationValue() {}
-	
-	public CalculationValue(Calculation calculation, OrganisationUnit organisationUnit, Period period, Value value, boolean hasMissingValues, boolean hasMissingExpression) {
+	public RawDataElementValue() {}
+
+	public RawDataElementValue(RawDataElement data, OrganisationUnit organisationUnit, Period period, Value value) {
 		super(organisationUnit, period, value);
 		
-		this.calculation = calculation;
-
-		this.hasMissingExpression = hasMissingExpression;
-		this.hasMissingValues = hasMissingValues;
+		this.data = data;
 	}
-	
-	public CalculationValue(Calculation calculation, OrganisationUnit organisationUnit, Period period) {
-		super();
-		
-		this.calculation = calculation;
-		this.organisationUnit = organisationUnit;
-		this.period = period;
-	}
-	
 	
 	@Id
 	@GeneratedValue
 	public Long getId() {
 		return id;
 	}
-
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	@Override
 	@NaturalId
-	@ManyToOne(targetEntity=Calculation.class, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=RawDataElement.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
-	public Calculation getCalculation() {
-		return calculation;
+	public RawDataElement getData() {
+		return data;
 	}
 	
-	public void setCalculation(Calculation calculation) {
-		this.calculation = calculation;
-	}
-
-	@Basic
-	@Column(nullable=false)
-	public Boolean getHasMissingExpression() {
-		return hasMissingExpression;
-	}
-	
-	public void setHasMissingExpression(Boolean hasMissingExpression) {
-		this.hasMissingExpression = hasMissingExpression;
-	}
-	
-	@Basic
-	@Column(nullable=false)
-	public Boolean getHasMissingValues() {
-		return hasMissingValues;
-	}
-	
-	public void setHasMissingValues(Boolean hasMissingValues) {
-		this.hasMissingValues = hasMissingValues;
+	public void setData(RawDataElement data) {
+		this.data = data;
 	}
 	
 	@Override
-	@Transient
-	public Data<?> getData() {
-		return calculation;
-	}	
-	
-	
+	public String toString() {
+		return "RawDataElementValue [value=" + value + "]";
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((getCalculation() == null) ? 0 : getCalculation().hashCode());
+				+ ((data == null) ? 0 : data.hashCode());
 		return result;
 	}
 
@@ -146,22 +102,16 @@ public class CalculationValue extends StoredValue {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (!(obj instanceof CalculationValue))
+		if (!(obj instanceof RawDataElementValue))
 			return false;
-		CalculationValue other = (CalculationValue) obj;
-		if (getCalculation() == null) {
-			if (other.getCalculation() != null)
+		RawDataElementValue other = (RawDataElementValue) obj;
+		if (data == null) {
+			if (other.data != null)
 				return false;
-		} else if (!getCalculation().equals(other.getCalculation()))
+		} else if (!data.equals(other.data))
 			return false;
 		return true;
 	}
-
-	@Override
-	public String toString() {
-		return "CalculationValue [value=" + value + "]";
-	}
-
-
-
+	
+	
 }

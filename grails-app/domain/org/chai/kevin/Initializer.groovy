@@ -41,14 +41,14 @@ import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.maps.MapsTarget;
 import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Sum
@@ -229,26 +229,26 @@ class Initializer {
 			enumOption03.save(failOnError: true)
 		}
 
-		if (!DataElement.count()) {
+		if (!RawDataElement.count()) {
 			// Data Elements
-			def dataElement10 = new DataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
-			def dataElement1 = new DataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: Type.TYPE_NUMBER())
-			def dataElement2 = new DataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: Type.TYPE_NUMBER())
-			def dataElement3 = new DataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: Type.TYPE_ENUM (Enum.findByCode('ENUM1').code))
-			def dataElement4 = new DataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: Type.TYPE_BOOL())
-			def dataElement5 = new DataElement(names:j(["en":"Element 5"]), descriptions:j([:]), code:"CODE5", type: Type.TYPE_BOOL())
-			def dataElement6 = new DataElement(names:j(["en":"Element 6"]), descriptions:j([:]), code:"CODE6", type: Type.TYPE_BOOL())
-			def dataElement7 = new DataElement(names:j(["en":"Element 7"]), descriptions:j([:]), code:"CODE7", type: Type.TYPE_BOOL())
-			def dataElement8 = new DataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: Type.TYPE_NUMBER())
-			def dataElement9 = new DataElement(names:j(["en":"Element 9"]), descriptions:j([:]), code:"CODE9", type: Type.TYPE_NUMBER())
-			def dataElement11 = new DataElement(names:j(["en":"Element 11"]), descriptions:j([:]), code:"CODE11", type: Type.TYPE_DATE())
-			def dataElement12 = new DataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: Type.TYPE_TEXT())
-			def dataElement81 = new DataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: Type.TYPE_NUMBER())
-			def dataElement91 = new DataElement(names:j(["en":"Element 91"]), descriptions:j([:]), code:"CODE91", type: Type.TYPE_NUMBER())
-			def dataElement101 = new DataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
-			def dataElement111 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"CODE111", type: Type.TYPE_DATE())
+			def dataElement10 = new RawDataElement(names:j(["en":"Element 10"]), descriptions:j([:]), code:"CODE10", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
+			def dataElement1 = new RawDataElement(names:j(["en":"Element 1"]), descriptions:j([:]), code:"CODE1", type: Type.TYPE_NUMBER())
+			def dataElement2 = new RawDataElement(names:j(["en":"Element 2"]), descriptions:j([:]), code:"CODE2", type: Type.TYPE_NUMBER())
+			def dataElement3 = new RawDataElement(names:j(["en":"Element 3"]), descriptions:j([:]), code:"CODE3", type: Type.TYPE_ENUM (Enum.findByCode('ENUM1').code))
+			def dataElement4 = new RawDataElement(names:j(["en":"Element 4"]), descriptions:j([:]), code:"CODE4", type: Type.TYPE_BOOL())
+			def dataElement5 = new RawDataElement(names:j(["en":"Element 5"]), descriptions:j([:]), code:"CODE5", type: Type.TYPE_BOOL())
+			def dataElement6 = new RawDataElement(names:j(["en":"Element 6"]), descriptions:j([:]), code:"CODE6", type: Type.TYPE_BOOL())
+			def dataElement7 = new RawDataElement(names:j(["en":"Element 7"]), descriptions:j([:]), code:"CODE7", type: Type.TYPE_BOOL())
+			def dataElement8 = new RawDataElement(names:j(["en":"Element 8"]), descriptions:j([:]), code:"CODE8", type: Type.TYPE_NUMBER())
+			def dataElement9 = new RawDataElement(names:j(["en":"Element 9"]), descriptions:j([:]), code:"CODE9", type: Type.TYPE_NUMBER())
+			def dataElement11 = new RawDataElement(names:j(["en":"Element 11"]), descriptions:j([:]), code:"CODE11", type: Type.TYPE_DATE())
+			def dataElement12 = new RawDataElement(names:j(["en":"Element 12"]), descriptions:j([:]), code:"CODE12", type: Type.TYPE_TEXT())
+			def dataElement81 = new RawDataElement(names:j(["en":"Element 81"]), descriptions:j([:]), code:"CODE81", type: Type.TYPE_NUMBER())
+			def dataElement91 = new RawDataElement(names:j(["en":"Element 91"]), descriptions:j([:]), code:"CODE91", type: Type.TYPE_NUMBER())
+			def dataElement101 = new RawDataElement(names:j(["en":"Element 101"]), descriptions:j([:]), code:"CODE101", type: Type.TYPE_ENUM (Enum.findByCode('ENUM2').code))
+			def dataElement111 = new RawDataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"CODE111", type: Type.TYPE_DATE())
 			
-			def dataElementList = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LIST1", type: 
+			def dataElementList = new RawDataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LIST1", type: 
 				Type.TYPE_LIST(
 					Type.TYPE_MAP([
 						"key0": Type.TYPE_STRING(),
@@ -260,7 +260,7 @@ class Initializer {
 					])
 				)
 			)
-			def dataElementMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"MAP1", 
+			def dataElementMap = new RawDataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"MAP1", 
 				type: Type.TYPE_MAP([
 					"key1": Type.TYPE_MAP([
 						"key11": Type.TYPE_MAP([
@@ -270,7 +270,7 @@ class Initializer {
 				])
 			)
 			
-			def siyelo2 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP2",
+			def siyelo2 = new RawDataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP2",
 				type: Type.TYPE_LIST(
 					Type.TYPE_MAP([
 						"key0": Type.TYPE_MAP([
@@ -311,7 +311,7 @@ class Initializer {
 				)	
 			)
 
-			def siyelo1 = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
+			def siyelo1 = new RawDataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP1",
 					type: Type.TYPE_LIST(
 					Type.TYPE_MAP([
 						"key1": Type.TYPE_STRING(),
@@ -438,102 +438,102 @@ class Initializer {
 			siyelo2.save(failOnError: true, flush:true)
 			
 			// data value
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE1"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Butaro DH"),
 					value: v("30"),
 					timestamp: new Date(),
 					).save(failOnError: true)
 			// data value
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE1"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("40"),
 					timestamp: new Date(),
 					).save(failOnError: true)
 			// data value
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE3"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE3"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"value1\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE4"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE4"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("true"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE6"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE6"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("false"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE8"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE8"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("10"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE9"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE9"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("31"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE10"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE10"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"NGO or Partner\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE11"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE11"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"2011-06-29\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE81"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE81"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("44"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE91"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE91"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("33"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE101"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE101"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"Ministry of Health\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE111"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE111"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"2011-06-30\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 
-			new DataValue(
-					dataElement: DataElement.findByCode("CODE12"),
+			new RawDataElementValue(
+					dataElement: RawDataElement.findByCode("CODE12"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
@@ -547,9 +547,9 @@ class Initializer {
 			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
 			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
 			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "\$"+DataElement.findByCode("CODE1").id+"+\$"+DataElement.findByCode("CODE1").id, type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "\$"+DataElement.findByCode("CODE2").id, type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\$"+DataElement.findByCode("CODE3").id, type: Type.TYPE_STRING(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id, type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "\$"+RawDataElement.findByCode("CODE2").id, type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\$"+RawDataElement.findByCode("CODE3").id, type: Type.TYPE_STRING(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
 		}
 
 	}
@@ -562,7 +562,7 @@ class Initializer {
 					descriptions:j([:]),
 					code:"Map Expression 2",
 					type: Type.TYPE_NUMBER(),
-					expression: "\$"+DataElement.findByCode("CODE1").id+" / 100",
+					expression: "\$"+RawDataElement.findByCode("CODE1").id+" / 100",
 					timestamp:new Date()
 					).save(failOnError: true, validate: false)
 			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2"), type: MapsTargetType.AGGREGATION).save(failOnError: true)
@@ -1118,7 +1118,7 @@ class Initializer {
 			patientReg.addQuestion(patientQ1)
 			patientReg.save(failOnError: true)
 
-			def surveyElementPatientQ1 = new SurveyElement(dataElement: DataElement.findByCode("CODE1"), surveyQuestion: patientQ1).save(failOnError: true)
+			def surveyElementPatientQ1 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE1"), surveyQuestion: patientQ1).save(failOnError: true)
 			patientQ1.surveyElement = surveyElementPatientQ1
 			patientQ1.save(failOnError: true)
 
@@ -1214,7 +1214,7 @@ class Initializer {
 			services.addQuestion(serviceQ1)
 			services.save(failOnError:true, flush:true)
 
-			def surveyElementServiceQ1 = new SurveyElement(dataElement: DataElement.findByCode("CODE1"), surveyQuestion: serviceQ1).save(failOnError: true)
+			def surveyElementServiceQ1 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE1"), surveyQuestion: serviceQ1).save(failOnError: true)
 			serviceQ1.surveyElement = surveyElementServiceQ1
 			serviceQ1.save(failOnError: true)
 
@@ -1228,7 +1228,7 @@ class Initializer {
 			services.addQuestion(serviceQ2)
 			services.save(failOnError:true, flush:true)
 
-			def surveyElementServiceQ2 = new SurveyElement(dataElement: DataElement.findByCode("CODE7"), surveyQuestion: serviceQ2).save(failOnError: true)
+			def surveyElementServiceQ2 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE7"), surveyQuestion: serviceQ2).save(failOnError: true)
 			serviceQ2.surveyElement = surveyElementServiceQ2
 			serviceQ2.save(failOnError: true)
 
@@ -1242,7 +1242,7 @@ class Initializer {
 			services.addQuestion(serviceQ3)
 			services.save(failOnError:true, flush:true)
 
-			def surveyElementServiceQ3 = new SurveyElement(dataElement: DataElement.findByCode("CODE3"), surveyQuestion: serviceQ3).save(failOnError: true)
+			def surveyElementServiceQ3 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE3"), surveyQuestion: serviceQ3).save(failOnError: true)
 			serviceQ3.surveyElement = surveyElementServiceQ3
 			serviceQ3.save(failOnError: true)
 
@@ -1270,7 +1270,7 @@ class Initializer {
 			services.save(failOnError:true, flush:true)
 
 			def surveyElementServiceQ5 = new SurveyElement(
-					dataElement: DataElement.findByCode("MAP1"),
+					dataElement: RawDataElement.findByCode("MAP1"),
 					surveyQuestion: serviceQ5,
 					headers: [
 						".key1.key11.key111":j(["en": "Header 1"])
@@ -1289,7 +1289,7 @@ class Initializer {
 			services.save(failOnError:true, flush:true)
 
 			def surveyElementServiceQ6 = new SurveyElement(
-					dataElement: DataElement.findByCode("LISTMAP2"),
+					dataElement: RawDataElement.findByCode("LISTMAP2"),
 					surveyQuestion: serviceQ6,
 					headers: [
 						"[_].key0": j(["en":"Name"]),
@@ -1375,7 +1375,7 @@ class Initializer {
 			openResponse.addQuestion(openQ)
 			openResponse.save(failOnError:true, flush: true)
 
-			def surveyElementOpenQ = new SurveyElement(dataElement: DataElement.findByCode("CODE12"), surveyQuestion: openQ).save(failOnError: true)
+			def surveyElementOpenQ = new SurveyElement(dataElement: RawDataElement.findByCode("CODE12"), surveyQuestion: openQ).save(failOnError: true)
 			openQ.surveyElement = surveyElementOpenQ
 			openQ.save(failOnError: true)
 
@@ -1389,9 +1389,9 @@ class Initializer {
 			staffing.addQuestion(checkBoxQ)
 			staffing.save(failOnError:true, flush: true)
 
-			def surveyElementChecboxQ1 = new SurveyElement(dataElement: DataElement.findByCode("CODE4"), surveyQuestion: checkBoxQ).save(failOnError: true)
-			def surveyElementChecboxQ2 = new SurveyElement(dataElement: DataElement.findByCode("CODE5"), surveyQuestion: checkBoxQ).save(failOnError: true)
-			def surveyElementChecboxQ3 = new SurveyElement(dataElement: DataElement.findByCode("CODE6"), surveyQuestion: checkBoxQ).save(failOnError: true)
+			def surveyElementChecboxQ1 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE4"), surveyQuestion: checkBoxQ).save(failOnError: true)
+			def surveyElementChecboxQ2 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE5"), surveyQuestion: checkBoxQ).save(failOnError: true)
+			def surveyElementChecboxQ3 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE6"), surveyQuestion: checkBoxQ).save(failOnError: true)
 
 			//Checkbox Option
 			def option1 = new SurveyCheckboxOption(
@@ -1432,7 +1432,7 @@ class Initializer {
 			staffing.save(failOnError:true, flush:true)
 
 			def staffingElementQ1 = new SurveyElement(
-					dataElement: DataElement.findByCode("LISTMAP1"),
+					dataElement: RawDataElement.findByCode("LISTMAP1"),
 					surveyQuestion: staffingQ1,
 					headers: [
 						"[_].key1":j(["en": "Family Name"]),
@@ -1577,10 +1577,10 @@ class Initializer {
 
 			Map<SurveyTableColumn,SurveyElement> dataElmntsLine1= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
-			def surveyElementTable1 = new SurveyElement(dataElement: DataElement.findByCode("CODE8"), surveyQuestion: tableQ).save(failOnError: true)
-			def surveyElementTable2 = new SurveyElement(dataElement: DataElement.findByCode("CODE9"), surveyQuestion: tableQ).save(failOnError: true)
-			def surveyElementTable3 = new SurveyElement(dataElement: DataElement.findByCode("CODE10"), surveyQuestion: tableQ).save(failOnError: true)
-			def surveyElementTable4 = new SurveyElement(dataElement: DataElement.findByCode("CODE11"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable1 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE8"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable2 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE9"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable3 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE10"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable4 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE11"), surveyQuestion: tableQ).save(failOnError: true)
 			dataElmntsLine1.put(tabColumnOne, surveyElementTable1)
 			dataElmntsLine1.put(tabColumnTwo, surveyElementTable2)
 			dataElmntsLine1.put(tabColumnThree, surveyElementTable3)
@@ -1599,10 +1599,10 @@ class Initializer {
 			
 			Map<SurveyTableColumn,SurveyElement> dataElmntsLine2= new LinkedHashMap<SurveyTableColumn,SurveyElement>();
 
-			def surveyElementTable21 = new SurveyElement(dataElement: DataElement.findByCode("CODE81"), surveyQuestion: tableQ).save(failOnError: true)
-			def surveyElementTable22 = new SurveyElement(dataElement: DataElement.findByCode("CODE91"), surveyQuestion: tableQ).save(failOnError: true)
-			def surveyElementTable23 = new SurveyElement(dataElement: DataElement.findByCode("CODE101"), surveyQuestion: tableQ).save(failOnError: true)
-			def surveyElementTable24 = new SurveyElement(dataElement: DataElement.findByCode("CODE111"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable21 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE81"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable22 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE91"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable23 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE101"), surveyQuestion: tableQ).save(failOnError: true)
+			def surveyElementTable24 = new SurveyElement(dataElement: RawDataElement.findByCode("CODE111"), surveyQuestion: tableQ).save(failOnError: true)
 
 			dataElmntsLine2.put(tabColumnOne, surveyElementTable21)
 			dataElmntsLine2.put(tabColumnTwo, surveyElementTable22)

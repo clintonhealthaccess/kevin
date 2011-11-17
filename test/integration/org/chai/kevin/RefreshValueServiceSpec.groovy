@@ -30,159 +30,112 @@ package org.chai.kevin
 
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.AveragePartialValue;
+import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.ExpressionValue.Status;
+import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
 class RefreshValueServiceSpec extends IntegrationTests {
 
 	def refreshValueService;
 	
-	def "test get non calculated expressions"() {
+	def "test refresh normalized elements"() {
 		when:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		
 		then:
 		NormalizedDataElementValue.count() == 0
+		normalizedDataElement.calculated == null
 		
 		when:
-		refreshValueService.refreshNonCalculatedExpressions(expression);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
 		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.list()[0].timestamp != null
+		normalizedDataElement.calculated != null
 	}
 	
-	def "test get non calculated expressions when already one expression value"() {
+	def "test refresh normalized elements updates timestamps"() {
 		when:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-		def expressionValue = newExpressionValue(expression, period, organisation, Status.VALID, Value.NULL)
-		def timestamp = expressionValue.timestamp
+		def calculated = new Date()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
+		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, period, organisation, Status.VALID, Value.NULL)
+		def timestamp = normalizedDataElementValue.timestamp
 		
 		then:
 		NormalizedDataElementValue.count() == 1
 		
 		when:
-		refreshValueService.refreshNonCalculatedExpressions(expression);
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 
 		then:
 		NormalizedDataElementValue.count() == 1
-		NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)	
+		!NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)	
+		!normalizedDataElement.calculated.equals(calculated)
 	}
 	
-	
-	def "test outdated expressions"() {
-		setup:
+	def "test normalized data elements not calculated at non-facility level"() {
+		when:
+		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-		def expressionValue = newExpressionValue(expression, period, organisation, Status.VALID, Value.NULL)
-		def values = null
-		
-		when:
-		expression.timestamp = new Date()
-		expression.save(flush: true)	
-		
-		expressionValue.timestamp = new Date()
-		expressionValue.save(flush: true)
-		
-		def timestamp = expressionValue.timestamp
-		refreshValueService.refreshOutdatedExpressions(expression);
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
-		NormalizedDataElementValue.count() == 1
-		NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)
-		
-		when:
-		def newDate = new Date()
-		newDate.setSeconds(newDate.getSeconds() + 1)
-		expression.timestamp = newDate
-		expression.save(flush: true)
-		refreshValueService.refreshOutdatedExpressions(expression);
-		
-		then:
-		NormalizedDataElementValue.count() == 1
-		!NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)
+		NormalizedDataElementValue.count() == 2
 	}
 	
-	def "test get non calculated calculations"() {
+	def "test refresh calculations"() {
 		when:
+		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-		def average = newAverage([DISTRICT_HOSPITAL_GROUP:expression], CODE(2), Type.TYPE_NUMBER())
+		def average = newAverage("1", CODE(2), Type.TYPE_NUMBER())
 		
-		refreshValueService.refreshNonCalculatedCalculations(average);
+		then:
+		AveragePartialValue.count() == 0
+		average.calculated == null
+		
+		when:
+		refreshValueService.refreshCalculation(average);
 
 		then:
-		CalculationValue.count() == 1
+		AveragePartialValue.count() == OrganisationUnit.count() * OrganisationUnitGroup.count()
+		AveragePartialValue.list()[0].timestamp != null
+		average.calculated != null
 	}
 	
-	def "test outdated calculations"() {
-		setup:
-		def period = newPeriod()
-		def organisation = newOrganisationUnit(BUTARO)
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-		def average = newAverage([(DISTRICT_HOSPITAL_GROUP):expression], CODE(2), Type.TYPE_NUMBER())
-		def calculationValue = newCalculationValue(average, period, organisation, false, false, Value.NULL)
-		def values = null
-		
+	def "test refresh calculations updates timestamps"() {
 		when:
-		average.timestamp = new Date()
-		average.save()
-		
-		calculationValue.timestamp = new Date()
-		calculationValue.save(flush: true)
-		
-		def timestamp = calculationValue.timestamp
-		refreshValueService.refreshOutdatedCalculations(average);
+		def period = newPeriod()
+		def calculated = new Date()
+		def average = newAverage("1", CODE(2), Type.TYPE_NUMBER(), calculated: calculated)
+		def partialValue = newAveragePartialValue(average, period, OrganisationUnit.findByName(BURERA), DISTRICT_HOSPITAL_GROUP, v("1"))
+		def timestamp = partialValue.timestamp
 		
 		then:
-		CalculationValue.count() == 1
-		CalculationValue.list()[0].timestamp.equals(timestamp)
+		AveragePartialValue.count() == 1
 		
 		when:
-		def newDate = new Date()
-		newDate.setSeconds(newDate.getSeconds() + 1)
-		average.timestamp = newDate
-		average.save(flush: true)
-		refreshValueService.refreshOutdatedCalculations(average);
+		refreshValueService.refreshCalculation(average);
 
 		then:
-		CalculationValue.count() == 1
-		!CalculationValue.list()[0].timestamp.equals(timestamp)
-		
-//		when:
-//		newDate.setSeconds(newDate.getSeconds() + 1)
-//		calculationValue.timestamp = newDate
-//		calculationValue.save(flush: true)
-//		timestamp = calculationValue.timestamp	
-//		refreshValueService.refreshOutdatedCalculations(average);
-//
-//		then:
-//		CalculationValue.count() == 1
-//		CalculationValue.list()[0].timestamp.equals(timestamp)
-		
-		when:
-		newDate.setSeconds(newDate.getSeconds() + 1)
-		expression.timestamp = newDate
-		expression.save(flush: true)
-		refreshValueService.refreshOutdatedCalculations(average);
-		
-		then:
-		CalculationValue.count() == 1
-		!CalculationValue.list()[0].timestamp.equals(timestamp)
+		AveragePartialValue.count() == OrganisationUnit.count() * OrganisationUnitGroup.count()
+		!AveragePartialValue.list()[0].timestamp.equals(timestamp)	
+		!average.calculated.equals(calculated)
 	}
 	
 	

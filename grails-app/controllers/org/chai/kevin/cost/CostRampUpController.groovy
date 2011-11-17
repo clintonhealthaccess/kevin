@@ -32,7 +32,7 @@ import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Expression;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;

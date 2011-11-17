@@ -28,41 +28,43 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataElement;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
-@Entity(name="DataValue")
-@Table(name="dhsst_data_value",
-		uniqueConstraints=@UniqueConstraint(columnNames={"dataElement", "period", "organisationUnit"})
-)
-//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DataValue extends StoredValue {
-	
-	private Long id;
-	private DataElement dataElement;
-	
-	public DataValue() {}
+@Entity(name="CalculationPartialValue")
+@Table(name="dhsst_calculation_value")
+@Inheritance(strategy=InheritanceType.JOINED)
+public abstract class CalculationPartialValue extends StoredValue {
 
-	public DataValue(DataElement dataElement, OrganisationUnit organisationUnit, Period period, Value value) {
+	private Long id;
+	private String groupUuid;
+
+	public CalculationPartialValue() {}
+	
+	public CalculationPartialValue(OrganisationUnit organisationUnit, Period period, String groupUuid, Value value) {
 		super(organisationUnit, period, value);
 		
-		this.dataElement = dataElement;
+		this.groupUuid = groupUuid;
+	}
+	
+	public CalculationPartialValue(OrganisationUnit organisationUnit, Period period, String groupUuid) {
+		super();
+		
+		this.groupUuid = groupUuid;
+		this.organisationUnit = organisationUnit;
+		this.period = period;
 	}
 	
 	@Id
@@ -70,39 +72,29 @@ public class DataValue extends StoredValue {
 	public Long getId() {
 		return id;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	@Basic
+	@Column(nullable=false)
 	@NaturalId
-	@ManyToOne(targetEntity=DataElement.class, fetch=FetchType.LAZY)
-	@JoinColumn(nullable=false)
-	public DataElement getDataElement() {
-		return dataElement;
+	public String getGroupUuid() {
+		return groupUuid;
 	}
 	
-	public void setDataElement(DataElement dataElement) {
-		this.dataElement = dataElement;
+	public void setGroupUuid(String groupUuid) {
+		this.groupUuid = groupUuid;
 	}
 	
-	@Override
-	@Transient
-	public Data<?> getData() {
-		return dataElement;
-	}
 	
-	@Override
-	public String toString() {
-		return "DataValue [value=" + value + "]";
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((dataElement == null) ? 0 : dataElement.hashCode());
+				+ ((groupUuid == null) ? 0 : groupUuid.hashCode());
 		return result;
 	}
 
@@ -112,16 +104,20 @@ public class DataValue extends StoredValue {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (!(obj instanceof DataValue))
+		if (!(obj instanceof CalculationPartialValue))
 			return false;
-		DataValue other = (DataValue) obj;
-		if (dataElement == null) {
-			if (other.dataElement != null)
+		CalculationPartialValue other = (CalculationPartialValue) obj;
+		if (groupUuid == null) {
+			if (other.groupUuid != null)
 				return false;
-		} else if (!dataElement.equals(other.dataElement))
+		} else if (!groupUuid.equals(other.groupUuid))
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "CalculationValue [value=" + value + "]";
+	}
+
 }

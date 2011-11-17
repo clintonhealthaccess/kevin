@@ -65,7 +65,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
-		element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		then:
 		element.getOrganisationUnitGroupApplicable().equals(new HashSet([(HEALTH_CENTER_GROUP)]))
@@ -87,7 +87,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		section = newSurveySection(objective, 1, [])
 		question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
-		element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 	
 		then:
 		element.getOrganisationUnitGroupApplicable().equals(new HashSet([]))
@@ -103,7 +103,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 
 		def list = null
 		
@@ -123,7 +123,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 
 		def list = null
 		
@@ -144,7 +144,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 
 		def list = null
 		
@@ -165,7 +165,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 	
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 	
 		def list = null
 	
@@ -191,7 +191,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 
 		def list = null
 		
@@ -228,7 +228,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 	
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 	
 		def list = null
 	
@@ -250,7 +250,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 
 		when:
@@ -270,7 +270,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement = newDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 
 		def surveyElements = null
@@ -327,7 +327,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def prefixes = null
 		
 		when:
-		dataElement = newDataElement(CODE(1), Type.TYPE_MAP(["key1": Type.TYPE_MAP(["key11": Type.TYPE_NUMBER()])]))
+		dataElement = newRawDataElement(CODE(1), Type.TYPE_MAP(["key1": Type.TYPE_MAP(["key11": Type.TYPE_NUMBER()])]))
 		element = newSurveyElement(question, dataElement)
 		prefixes = surveyService.getHeaderPrefixes(element)
 		
@@ -335,7 +335,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		prefixes.equals([".key1", ".key1.key11"])
 		
 		when:
-		dataElement = newDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_MAP(["key11": Type.TYPE_NUMBER()])])))
+		dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_MAP(["key11": Type.TYPE_NUMBER()])])))
 		element = newSurveyElement(question, dataElement)
 		prefixes = surveyService.getHeaderPrefixes(element)
 		

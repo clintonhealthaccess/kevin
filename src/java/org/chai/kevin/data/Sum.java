@@ -28,17 +28,49 @@ package org.chai.kevin.data;
   * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
   
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.chai.kevin.ExpressionService.StatusValuePair;
+import org.chai.kevin.Organisation;
+import org.chai.kevin.SumValue;
+import org.chai.kevin.value.SumPartialValue;
+import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hisp.dhis.period.Period;
 
 @Entity(name="Summ")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="dhsst_calculation_sum")
-public class Sum extends Calculation {
+public class Sum extends Calculation<SumPartialValue> {
 
-	private static final long serialVersionUID = -633638638981261851L;
 	
+	@Override
+	public SumValue getCalculationValue(List<SumPartialValue> partialValues) {
+		return new SumValue(partialValues, this);
+	}
+
+	@Override
+	public Class<SumPartialValue> getValueClass() {
+		return SumPartialValue.class;
+	}
+
+	@Override
+	public SumPartialValue getCalculationPartialValue(String expression, Map<Organisation, StatusValuePair> values, Organisation organisation, Period period, String groupUuid) {
+		Value value = getValue(values.values());
+		return new SumPartialValue(this, organisation.getOrganisationUnit(), period, groupUuid, value);
+	}
+
+	@Override
+	public List<String> getPartialExpressions() {
+		List<String> result = new ArrayList<String>();
+		result.add(getExpression());
+		return result;
+	}
+
 }

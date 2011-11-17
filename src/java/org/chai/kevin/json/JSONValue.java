@@ -1,4 +1,4 @@
-package org.chai.kevin.value;
+package org.chai.kevin.json;
 
 import java.util.Arrays;
 

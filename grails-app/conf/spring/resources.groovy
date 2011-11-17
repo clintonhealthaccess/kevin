@@ -70,6 +70,7 @@ beans = {
 	refreshValueService(RefreshValueService) {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
+		organisationService = ref("organisationService")
 		sessionFactory = ref("sessionFactory")
 		grailsApplication = ref("grailsApplication")
 	}

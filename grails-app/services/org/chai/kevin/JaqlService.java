@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.Value;
+import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 
 import com.ibm.jaql.json.type.JsonValue;
@@ -22,32 +23,26 @@ public class JaqlService {
 	
 	public GrailsApplication grailsApplication;
 	
+	public static JsonValue jsonValue(String expression, Map<String, String> variables) {
+		Map<String, JsonValue> valueMap = new HashMap<String, JsonValue>();
+		for (Entry<String, String> variable : variables.entrySet()) {
+			JsonValue variableValue = jsonValue(variable.getValue(), new HashMap<String, String>());
+			valueMap.put(variable.getKey(), variableValue);
+		}
+
+		return executeQuery(expression, valueMap);
+	}
+
 	@Cacheable("jsonValueCache")
 	public JsonValue getJsonValue(String expression, Map<String, String> variables) {
-		JsonValue value = null;
-		
-		JaqlQuery query = new JaqlQuery();
 		Map<String, JsonValue> valueMap = new HashMap<String, JsonValue>();
 		for (Entry<String, String> variable : variables.entrySet()) {
 			JsonValue variableValue = getMe().getJsonValue(variable.getValue(), new HashMap<String, String>());
 			valueMap.put(variable.getKey(), variableValue);
 		}
 
-		query.setQueryString(expression);
-		for (Entry<String, JsonValue> entry : valueMap.entrySet()) {
-			query.setVar(entry.getKey(), entry.getValue());
-		}
-		try {
-			value = query.evaluate();
-		} catch (Exception e) {
-			log.warn("error evaluating: "+expression, e);
-			throw new IllegalArgumentException("error evaluating: "+expression, e);
-		} finally {
-			try {query.close();} catch (IOException e) {}
-		}
-		return value;
+		return executeQuery(expression, valueMap);
 	}
-	
 	
 	/**
 	 * Return null if the expression is not correctly typed or returns null
@@ -70,6 +65,25 @@ public class JaqlService {
 		JsonValue jsonValue = getMe().getJsonValue(expression, jaqlVariables);
 		if (jsonValue == null) return Value.NULL;
 		return type.getValueFromJaql(jsonValue.toString());
+	}
+	
+
+	private static JsonValue executeQuery(String expression, Map<String, JsonValue> valueMap) {
+		JsonValue value = null;
+		JaqlQuery query = new JaqlQuery();
+		query.setQueryString(expression);
+		for (Entry<String, JsonValue> entry : valueMap.entrySet()) {
+			query.setVar(entry.getKey(), entry.getValue());
+		}
+		try {
+			value = query.evaluate();
+		} catch (Exception e) {
+			log.warn("error evaluating: "+expression, e);
+			throw new IllegalArgumentException("error evaluating: "+expression, e);
+		} finally {
+			try {query.close();} catch (IOException e) {}
+		}
+		return value;
 	}
 	
 	public void setGrailsApplication(GrailsApplication grailsApplication) {

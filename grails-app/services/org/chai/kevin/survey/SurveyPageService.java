@@ -55,7 +55,7 @@ import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveyLog;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.FlushMode;
@@ -311,11 +311,11 @@ public class SurveyPageService {
 		Survey survey = element.getSurvey();
 		
 		SurveyEnteredValue enteredValue = getSurveyEnteredValue(facility, element);
-		DataValue dataValue = valueService.getValue(element.getDataElement(), facility.getOrganisationUnit(), survey.getPeriod());
-		if (dataValue != null) enteredValue.setValue(dataValue.getValue());
+		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), facility.getOrganisationUnit(), survey.getPeriod());
+		if (rawDataElementValue != null) enteredValue.setValue(rawDataElementValue.getValue());
 		else enteredValue.setValue(Value.NULL);
 		if (survey.getLastPeriod() != null) {
-			DataValue lastDataValue = valueService.getValue(element.getDataElement(), facility.getOrganisationUnit(), survey.getLastPeriod());
+			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), facility.getOrganisationUnit(), survey.getLastPeriod());
 			if (lastDataValue != null) enteredValue.setLastValue(lastDataValue.getValue());
 			else enteredValue.setLastValue(Value.NULL);
 		}
@@ -600,14 +600,14 @@ public class SurveyPageService {
 					});
 				}
 				
-				DataValue dataValue = valueService.getValue(element.getDataElement(), organisation.getOrganisationUnit(), objective.getSurvey().getPeriod());
-				if (dataValue == null) {
-					dataValue = new DataValue(element.getDataElement(), organisation.getOrganisationUnit(), objective.getSurvey().getPeriod(), null);
+				RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), organisation.getOrganisationUnit(), objective.getSurvey().getPeriod());
+				if (rawDataElementValue == null) {
+					rawDataElementValue = new RawDataElementValue(element.getDataElement(), organisation.getOrganisationUnit(), objective.getSurvey().getPeriod(), null);
 				}
-				dataValue.setValue(valueToSave);
+				rawDataElementValue.setValue(valueToSave);
 				
-				dataValue.setTimestamp(new Date());
-				valueService.save(dataValue);
+				rawDataElementValue.setTimestamp(new Date());
+				valueService.save(rawDataElementValue);
 			}
 			
 			// close the objective
@@ -671,7 +671,7 @@ public class SurveyPageService {
 		if (enteredValue == null) {
 //			Value lastValue = null;
 //			if (element.getSurvey().getLastPeriod() != null) {
-//				DataValue lastDataValue = valueService.getValue(element.getDataElement(), organisation.getOrganisationUnit(), element.getSurvey().getLastPeriod());
+//				RawDataElementValue lastDataValue = valueService.getValue(element.getDataElement(), organisation.getOrganisationUnit(), element.getSurvey().getLastPeriod());
 //				if (lastDataValue != null) lastValue = lastDataValue.getValue();
 //			}
 			enteredValue = new SurveyEnteredValue(element, organisation.getOrganisationUnit(), Value.NULL, null);

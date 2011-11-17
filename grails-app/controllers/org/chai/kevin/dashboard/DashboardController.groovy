@@ -37,7 +37,7 @@ import org.chai.kevin.dashboard.DashboardService;
 import org.chai.kevin.dashboard.DashboardPercentage;
 import org.chai.kevin.dashboard.PercentageCalculator;
 import org.chai.kevin.dashboard.DashboardTarget;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.reports.ReportEntity;
 import org.hibernate.cache.ReadWriteCache.Item;
 import org.hisp.dhis.aggregation.AggregationService;

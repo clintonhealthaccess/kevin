@@ -28,7 +28,7 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 
 import grails.plugin.spock.UnitSpec;
 

@@ -29,14 +29,13 @@ package org.chai.kevin
 */
 
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.NormalizedDataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.ExpressionValue.Status;
 import org.chai.kevin.value.Value;
 
 import grails.plugin.spock.UnitSpec;
@@ -45,32 +44,87 @@ class DataServiceSpec extends IntegrationTests {
 
 	def dataService;
 	
-//	def "search for constant works"() {
-//		expect:
-//		def constants = dataService.searchConstants("con")
-//		constants == [Constant.findByCode("CONST1")]
-//	}
+	def "get data element"() {
+		setup:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def average = newAverage("1", CODE(3))
+		def sum = newSum("1", CODE(4))
+		def aggregation = newAggregation("1", CODE(5))
+		def result = null
+		
+		when:
+		result = dataService.getData(rawDataElement.id, RawDataElement.class)
+		
+		then:
+		result.equals(rawDataElement)
+		
+		when:
+		result = dataService.getData(normalizedDataElement.id, NormalizedDataElement.class)
+		
+		then:
+		result.equals(normalizedDataElement)
+
+		when:
+		result = dataService.getData(average.id, Average.class)
+		
+		then:
+		result.equals(average)
+
+		when:
+		result = dataService.getData(sum.id, Sum.class)
+		
+		then:
+		result.equals(sum)
+	
+		expect:
+		dataService.getData(element.id, clazz) == null
+		
+		where:
+		element			| clazz
+		average			| Sum.class
+		average			| NormalizedDataElement.class
+		average			| RawDataElement.class
+		sum				| Average.class
+		sum				| NormalizedDataElement.class
+		sum				| RawDataElement.class
+		rawDataElement	| Sum.class
+		rawDataElement	| Average.class
+		rawDataElement	| NormalizedDataElement.class
+	}
+	
+	def "get data element using super type"() {
+		setup:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def average = newAverage("1", CODE(3)) 
+		
+		expect:
+		dataService.getData(rowDataElement.id, DataElement.class).equals(rawDataElement)
+		dataService.getData(rowDataElement.id, Data.class).equals(rawDataElement)
+		dataService.getData(average.id, Calculation.class).equals(average)
+		dataService.getData(average.id, Data.class).equals(average)
+	}
 	
 	def "search for null"() {
 		expect:
-		dataService.searchData(DataElement.class, null, [], [:]).equals([])
+		dataService.searchData(RawDataElement.class, null, [], [:]).equals([])
 	}
 	
 	def "search for data element works"() {
 		setup:
-		def dataElement1 = newDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
-		def dataElement2 = newDataElement(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER())
-		def dataElement3 = newDataElement(j(["en": ""]), CODE(3), Type.TYPE_NUMBER(), "info")
+		def dataElement1 = newRawDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER())
+		def dataElement3 = newRawDataElement(j(["en": ""]), CODE(3), Type.TYPE_NUMBER(), "info")
 		
 		expect:
-		dataService.searchData(DataElement.class, "ele", [], [:]).equals([dataElement1])
-		dataService.countData(DataElement.class, "ele", []) == 1
-		dataService.searchData(DataElement.class, "some", [], [:]).equals([dataElement2])
-		dataService.countData(DataElement.class, "some", []) == 1
-		dataService.searchData(DataElement.class, "ele some", [], [:]).equals([])
-		dataService.countData(DataElement.class, "ele some", []) == 0
-		dataService.searchData(DataElement.class, "info", [], [:]).equals([dataElement3])
-		dataService.countData(DataElement.class, "info", []) == 1
+		dataService.searchData(RawDataElement.class, "ele", [], [:]).equals([dataElement1])
+		dataService.countData(RawDataElement.class, "ele", []) == 1
+		dataService.searchData(RawDataElement.class, "some", [], [:]).equals([dataElement2])
+		dataService.countData(RawDataElement.class, "some", []) == 1
+		dataService.searchData(RawDataElement.class, "ele some", [], [:]).equals([])
+		dataService.countData(RawDataElement.class, "ele some", []) == 0
+		dataService.searchData(RawDataElement.class, "info", [], [:]).equals([dataElement3])
+		dataService.countData(RawDataElement.class, "info", []) == 1
 				
 	}
 	
@@ -91,17 +145,17 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "delete data element with associated values throws exception"() {
 		when:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(KIVUYE)
-		newDataValue(dataElement, period, organisation, Value.NULL)
+		newRawDataElementValue(dataElement, period, organisation, Value.NULL)
 		
 		dataService.delete(dataElement)
 		
 		then:
 		thrown IllegalArgumentException
-		DataElement.count() == 1
-		DataValue.count() == 1
+		RawDataElement.count() == 1
+		RawDataElementValue.count() == 1
 	}
 	
 	def "delete expressions with associated values throws exception"() {
@@ -131,7 +185,7 @@ class DataServiceSpec extends IntegrationTests {
 		then:
 		thrown IllegalArgumentException
 		Sum.count() == 1
-		CalculationValue.count() == 1
+		CalculationPartialValue.count() == 1
 		
 	}
 	

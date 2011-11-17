@@ -18,6 +18,7 @@ import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 
+import org.chai.kevin.json.JSONValue;
 import org.chai.kevin.util.Utils;
 
 @Embeddable

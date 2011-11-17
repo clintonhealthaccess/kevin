@@ -2,6 +2,8 @@ package org.chai.kevin;
 
 import javax.persistence.Embeddable;
 
+import org.chai.kevin.json.JSONMap;
+
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *

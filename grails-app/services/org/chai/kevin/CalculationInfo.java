@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
@@ -41,17 +41,17 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 public class CalculationInfo extends Info {
 
-	private CalculationValue calculationValue;
+	private CalculationPartialValue calculationValue;
 	private List<Organisation> groups;
 	private Map<Organisation, NormalizedDataElementValue> expressionValues;
 	
-	public CalculationInfo(CalculationValue calculationValue,
+	public CalculationInfo(CalculationPartialValue calculationValue,
 			Map<Organisation, NormalizedDataElementValue> expressionValues) {
 		this.calculationValue = calculationValue;
 		this.expressionValues = expressionValues;
 	}
 
-	public CalculationInfo(CalculationValue calculationValue, List<Organisation> groups,
+	public CalculationInfo(CalculationPartialValue calculationValue, List<Organisation> groups,
 			Map<Organisation, NormalizedDataElementValue> expressionValues) {
 		this.calculationValue = calculationValue;
 		this.groups = groups;

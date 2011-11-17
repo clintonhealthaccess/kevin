@@ -1,4 +1,6 @@
-/**
+package org.chai.kevin.data;
+
+/** 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,56 +27,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.DataService;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup
-import org.chai.kevin.util.Utils
-import org.chai.kevin.data.RawDataElement
-import org.apache.commons.lang.math.NumberUtils;
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-/**
- * @author Jean Kahigiso M.
- *
- */
-class CheckboxOptionController extends AbstractEntityController {
+import org.chai.kevin.value.RawDataElementValue;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
-	def organisationService
+@Entity(name="RawDataElement")
+@Table(name="dhsst_raw_data_element")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+public class RawDataElement extends DataElement<RawDataElementValue> {
+
+	private String info;
 	
-	def getEntity(def id) {
-		return SurveyCheckboxOption.get(id)
-	}
-	
-	def createEntity() {
-		def entity = new SurveyCheckboxOption();
-		//FIXME find a better to do this
-		if (!params['question']) entity.question = SurveyCheckboxQuestion.get(params.questionId)
-		return entity
+	@Basic
+	public String getInfo() {
+		return info;
 	}
 	
-	def getLabel() {
-		return "survey.checkboxquestion.checkboxoption.label"
+	public void setInfo(String info) {
+		this.info = info;
 	}
 
-	def getTemplate() {
-		return "/survey/admin/createCheckboxOption"
-	}
-
-	def getModel(def entity) {
-		[
-			option: entity,
-			groups: organisationService.getGroupsForExpression()
-		]
+	@Override
+	public Class<RawDataElementValue> getValueClass() {
+		return RawDataElementValue.class;
 	}
 	
-	def bindParams(def entity) {
-		entity.properties = params
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-//		entity.groupUuids = params['groupUuids']
-		if (params.names!=null) entity.names = params.names
-		
-		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity.question
-	}
 }

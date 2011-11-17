@@ -38,10 +38,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.data.Data;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -57,25 +55,16 @@ import org.hisp.dhis.period.Period;
 public class NormalizedDataElementValue extends StoredValue {
 	
 	private Integer id;
-
 	private Status status;
-	private NormalizedDataElement normalizedDataElement;
-	
-	public enum Status {
-		VALID,
-		MISSING_VALUE,
-		DOES_NOT_APPLY,
-		MISSING_DATA_ELEMENT,
-		ERROR 
-	}
+	private NormalizedDataElement data;
 	
 	public NormalizedDataElementValue() {}
 	
-	public NormalizedDataElementValue(Value value, Status status, OrganisationUnit organisationUnit, NormalizedDataElement normalizedDataElement, Period period) {
+	public NormalizedDataElementValue(Value value, Status status, OrganisationUnit organisationUnit, NormalizedDataElement data, Period period) {
 		super(organisationUnit, period, value);
 
 		this.status = status;
-		this.normalizedDataElement = normalizedDataElement;
+		this.data = data;
 	}
 	
 
@@ -84,16 +73,21 @@ public class NormalizedDataElementValue extends StoredValue {
 	public Integer getId() {
 		return id;
 	}
+	
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
+	@Override
 	@NaturalId
 	@ManyToOne(targetEntity=NormalizedDataElement.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
-	public NormalizedDataElement getExpression() {
-		return normalizedDataElement;
+	public NormalizedDataElement getData() {
+		return data;
 	}
 	
-	public void setNormalizedDataElement(NormalizedDataElement normalizedDataElement) {
-		this.normalizedDataElement = normalizedDataElement;
+	public void setData(NormalizedDataElement data) {
+		this.data = data;
 	}
 	
 	@Enumerated(EnumType.STRING)
@@ -102,26 +96,18 @@ public class NormalizedDataElementValue extends StoredValue {
 		return status;
 	}
 	
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	
-	@Override
-	@Transient
-	public Data<?> getData() {
-		return normalizedDataElement;
-	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((getExpression() == null) ? 0 : getExpression().hashCode());
+		result = prime
+				* result
+				+ ((data == null) ? 0 : data
+						.hashCode());
 		return result;
 	}
 
@@ -134,10 +120,10 @@ public class NormalizedDataElementValue extends StoredValue {
 		if (!(obj instanceof NormalizedDataElementValue))
 			return false;
 		NormalizedDataElementValue other = (NormalizedDataElementValue) obj;
-		if (getExpression() == null) {
-			if (other.getExpression() != null)
+		if (data == null) {
+			if (other.data != null)
 				return false;
-		} else if (!getExpression().equals(other.getExpression()))
+		} else if (!data.equals(other.data))
 			return false;
 		return true;
 	}
@@ -146,5 +132,5 @@ public class NormalizedDataElementValue extends StoredValue {
 	public String toString() {
 		return "ExpressionValue [value=" + value + "]";
 	}
-	
+
 }

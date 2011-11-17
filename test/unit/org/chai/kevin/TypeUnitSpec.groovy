@@ -12,7 +12,7 @@ import org.chai.kevin.value.Value;
 import grails.plugin.spock.IntegrationSpec;
 import grails.plugin.spock.UnitSpec;
 
-public class TypeSpec extends UnitSpec {
+public class TypeUnitSpec extends UnitSpec {
 
 	def "test type"() {
 		setup:

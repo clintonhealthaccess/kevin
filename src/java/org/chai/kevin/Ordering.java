@@ -4,6 +4,8 @@ import java.util.Comparator;
 
 import javax.persistence.Embeddable;
 
+import org.chai.kevin.json.JSONMap;
+
 
 @Embeddable
 public class Ordering extends JSONMap<Integer> implements Comparable<Ordering> {

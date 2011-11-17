@@ -8,6 +8,7 @@ import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.value.RawDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SurveyPageServiceSpec extends SurveyIntegrationTests {
@@ -32,7 +33,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(KIVUYE), v("1"))
@@ -78,7 +79,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
 		surveyPageService.modify(getOrganisation(KIVUYE), objective, [element], [("surveyElements["+element.id+"].value"): "10"])
@@ -126,7 +127,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(KIVUYE), v("1"))
@@ -138,8 +139,8 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		then:
 		submitted == true
 		SurveyEnteredObjective.list()[0].closed == true
-		DataValue.count() == 1
-		DataValue.list()[0].value.equals(v("1"))
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.equals(v("1"))
 	}
 	
 	def "test warning"() {
@@ -153,7 +154,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		def rule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
 		
 		when:
@@ -193,7 +194,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		def rule1 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
 		def rule2 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")
 		
@@ -218,7 +219,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER())))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER())))
 		
 		when:
 		surveyPageService.modify(getOrganisation(KIVUYE), objective, [element], [("surveyElements["+element.id+"].value"): ["0", "1"]])
@@ -359,7 +360,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def enume = newEnume(CODE(2))
 		def option1 = newEnumOption(enume, v("1"), o(['en':2, 'fr':1]))
 		def option2 = newEnumOption(enume, v("2"), o(['en':1, 'fr':2]))
-		def dataElement = newDataElement(CODE(1), Type.TYPE_ENUM(CODE(2)))
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_ENUM(CODE(2)))
 		def surveyElement = newSurveyElement(question, dataElement)
 		
 		when:

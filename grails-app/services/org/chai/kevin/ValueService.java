@@ -28,24 +28,29 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Entity;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Sum;
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.StoredValue;
-import org.chai.kevin.value.ValueCalculator;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -59,152 +64,77 @@ public class ValueService {
 	
 	private SessionFactory sessionFactory;
 	
-	private Map<Class<?>, ValueCalculator<?>> calculatorMap = new HashMap<Class<?>, ValueCalculator<?>>();
+	@Transactional(readOnly=false)
+	public <T extends StoredValue> T save(T value) {
+		log.debug("save(value="+value+")");
+		value.setTimestamp(new Date());
+		sessionFactory.getCurrentSession().saveOrUpdate(value);
+		return value;
+	}
 	
-	public ValueService() {
-		calculatorMap.put(Expression.class, new ExpressionValueCalculator());
-		calculatorMap.put(DataElement.class, new DataValueCalculator());
-		calculatorMap.put(Sum.class, new CalculationValueCalculator());
-		calculatorMap.put(Average.class, new CalculationValueCalculator());
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
+	public <T extends StoredValue> T getDataElementValue(DataElement<T> data, OrganisationUnit organisationUnit, Period period) {
+		if (log.isDebugEnabled()) log.debug("getValue(data="+data+", period="+period+", organisationUnit="+organisationUnit+")");
+		T result = (T)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
+		.add(Restrictions.eq("period", period))
+		.add(Restrictions.eq("organisationUnit", organisationUnit))
+		.add(Restrictions.eq("data", data)).uniqueResult();
+		if (log.isDebugEnabled()) log.debug("getaValue(...)="+result);
+		return result;
 	}
 	
 	@Transactional(readOnly=true)
-	public <T extends StoredValue> T getValue(Data<T> data, OrganisationUnit organisationUnit, Period period) {
-		// TODO make a registry class with this code
-		Class<?> clazz = data.getClass();
-		while (!calculatorMap.containsKey(clazz)) {
-			clazz = clazz.getSuperclass();
-		}
-		ValueCalculator<T> calculator = (ValueCalculator<T>)calculatorMap.get(clazz);
-		return data.getValue(calculator, organisationUnit, period);
+	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, OrganisationUnit organisationUnit, Period period, List<String> groupUuids) {
+		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", organisationUnit="+organisationUnit+", groupUuids="+groupUuids+")");
+		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, organisationUnit, period, groupUuids));
+		if (log.isDebugEnabled()) log.debug("getCalculationValue(...)="+result);
+		return result;
 	}
 	
-	@Transactional(readOnly=false)
-	public void deleteValues(Expression expression) {
-		sessionFactory.getCurrentSession()
-		.createQuery("delete from ExpressionValue where expression = :expression")
-		.setParameter("expression", expression)
-//		.setFlushMode(FlushMode.COMMIT)
-		.executeUpdate();
+	@SuppressWarnings("unchecked")
+	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, OrganisationUnit organisationUnit, Period period, List<String> groupUuids) {
+		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
+		.add(Restrictions.eq("period", period))
+		.add(Restrictions.eq("organisationUnit", organisationUnit))
+		.add(Restrictions.eq("data", calculation))
+		.add(Restrictions.in("groupUuid", groupUuids)).list();
 	}
 	
-	@Transactional(readOnly=false)
-	public void deleteValues(Calculation calculation) {
-		sessionFactory.getCurrentSession()
-		.createQuery("delete from CalculationValue where calculation = :calculation")
-		.setParameter("calculation", calculation)
-//		.setFlushMode(FlushMode.COMMIT)
-		.executeUpdate();
+	@Transactional(readOnly=true)
+	public Long getNumberOfValues(Data<?> data, Period period) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
+		.add(Restrictions.eq("data", data))
+		.add(Restrictions.eq("period", period))
+		.setProjection(Projections.count("id"))
+		.uniqueResult();
 	}
 	
 	// if this is set readonly, it triggers an error when deleting a
 	// data element through DataElementController.deleteEntity
-	@Transactional
-	public Long getNumberOfValues(DataElement dataElement) {
-		return (Long)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
-		.add(Restrictions.eq("dataElement", dataElement))
-		.setProjection(Projections.count("id"))
-//		.setFlushMode(FlushMode.COMMIT)
-		.uniqueResult();
-	}
-	
 	@Transactional(readOnly=true)
-	public Long getNumberOfValues(Expression expression) {
-		return (Long)sessionFactory.getCurrentSession().createCriteria(NormalizedDataElementValue.class)
-		.add(Restrictions.eq("expression", expression))
+	public Long getNumberOfValues(Data<?> data) {
+		return (Long)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
+		.add(Restrictions.eq("data", data))
 		.setProjection(Projections.count("id"))
-//		.setFlushMode(FlushMode.COMMIT)
-		.uniqueResult();
-	}
-	
-	@Transactional(readOnly=true)
-	public Long getNumberOfValues(Calculation calculation) {
-		return (Long)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class)
-		.add(Restrictions.eq("calculation", calculation))
-		.setProjection(Projections.count("id"))
-//		.setFlushMode(FlushMode.COMMIT)
-		.uniqueResult();
-	}
-	
-	@Transactional(readOnly=true)
-	public Long getNumberOfValues(DataElement dataElement, Period period) {
-		return (Long)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
-		.add(Restrictions.eq("dataElement", dataElement))
-		.add(Restrictions.eq("period", period))
-		.setProjection(Projections.count("id"))
-//		.setFlushMode(FlushMode.COMMIT)
 		.uniqueResult();
 	}
 	
 	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
-	public List<DataValue> getValues(DataElement dataElement, Period period) {
-		return (List<DataValue>)sessionFactory.getCurrentSession().createCriteria(DataValue.class)
-		.add(Restrictions.eq("dataElement", dataElement))
+	public <T extends StoredValue> List<T> getValues(Data<T> data, Period period) {
+		return (List<T>)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
+		.add(Restrictions.eq("data", data))
 		.add(Restrictions.eq("period", period))
-//		.setFlushMode(FlushMode.COMMIT)
 		.list();
 	}
 	
-	private class ExpressionValueCalculator implements ValueCalculator<NormalizedDataElementValue> {
-		
-		@Transactional(readOnly=true)
-		public NormalizedDataElementValue getValue(Data<NormalizedDataElementValue> expression, OrganisationUnit organisationUnit, Period period) {
-			return (NormalizedDataElementValue)sessionFactory.getCurrentSession().createCriteria(NormalizedDataElementValue.class)
-				.add(Restrictions.naturalId()
-					.set("period", period)
-					.set("organisationUnit", organisationUnit)
-					.set("expression", expression)
-				)
-//				.setFlushMode(FlushMode.COMMIT)
-				.uniqueResult();
-		}
-
-	}
-		
-	private class CalculationValueCalculator implements ValueCalculator<CalculationValue> {
-	
-		@Transactional(readOnly=true)
-		public CalculationValue getValue(Data<CalculationValue> calculation, OrganisationUnit organisationUnit, Period period) {
-			return (CalculationValue)sessionFactory.getCurrentSession().createCriteria(CalculationValue.class)
-				.add(Restrictions.naturalId()
-					.set("period", period)
-					.set("organisationUnit", organisationUnit)
-					.set("calculation", calculation)
-				)
-//				.setFlushMode(FlushMode.COMMIT)
-				.uniqueResult();
-		}
-		
-	}
-	
-	private class DataValueCalculator implements ValueCalculator<DataValue> {
-		
-		@Transactional(readOnly=true)
-		public DataValue getValue(Data<DataValue> dataElement, OrganisationUnit organisation, Period period) {
-			if (log.isDebugEnabled()) log.debug("getDataValue(dataElement="+dataElement+", period="+period+", organisation="+organisation+")");
-			
-			 Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataValue.class)
-	         .add(Restrictions.naturalId()
-	        		 .set("dataElement", dataElement)
-	        		 .set("period", period)
-	        		 .set("organisationUnit", organisation)
-	         );
-			 
-			 DataValue value = (DataValue)criteria
-//			 .setFlushMode(FlushMode.COMMIT)
-			 .uniqueResult();
-			 if (log.isDebugEnabled()) log.debug("getDataValue = "+value);
-			 return value;
-		}
-	}
-
 	@Transactional(readOnly=false)
-	public <T extends StoredValue> T save(T value) {
-		log.debug("save(value="+value+")");
-//		value.setTimestamp(new Date());
-		sessionFactory.getCurrentSession().saveOrUpdate(value);
-		return value;
+	public void deleteValues(Data<?> data) {
+		sessionFactory.getCurrentSession()
+		.createQuery("delete from "+data.getValueClass().getAnnotation(Entity.class).name()+" where data = :data")
+		.setParameter("data", data)
+		.executeUpdate();
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {

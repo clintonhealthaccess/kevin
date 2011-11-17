@@ -31,7 +31,7 @@ package org.chai.kevin
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.hisp.dhis.dataset.DataSet;
 
 abstract class AbstractEntityController {

@@ -21,8 +21,8 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement1 = newDataElement(CODE(1), Type.TYPE_NUMBER())
-		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER())
+		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def element1 = newSurveyElement(question1, dataElement1)
 		def element2 = newSurveyElement(question2, dataElement2)
 		
@@ -51,8 +51,8 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement1 = newDataElement(CODE(1), Type.TYPE_NUMBER())
-		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER())
+		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def element1 = newSurveyElement(question1, dataElement1)
 		def element2 = newSurveyElement(question2, dataElement2)
 		
@@ -82,8 +82,8 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement1 = newDataElement(CODE(1), Type.TYPE_NUMBER())
-		def dataElement2 = newDataElement(CODE(2), Type.TYPE_NUMBER())
+		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def element1 = newSurveyElement(question1, dataElement1)
 		def element2 = newSurveyElement(question2, dataElement2)
 		
@@ -112,7 +112,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
 		
-		def dataElement1 = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element1 = newSurveyElement(question1, dataElement1)
 		
 		def validationRule = newSurveyValidationRule(element1, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > 0")

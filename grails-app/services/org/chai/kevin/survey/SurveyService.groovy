@@ -42,6 +42,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.ValueType;
@@ -151,7 +152,7 @@ class SurveyService {
 //		return c.setFlushMode(FlushMode.COMMIT).list()
 //	}
 	
-	Set<SurveyElement> getSurveyElements(DataElement dataElement, Survey survey) {
+	Set<SurveyElement> getSurveyElements(RawDataElement dataElement, Survey survey) {
 		def c = SurveyElement.createCriteria()
 		if (survey != null) {
 			c.createAlias("surveyQuestion", "sq")
