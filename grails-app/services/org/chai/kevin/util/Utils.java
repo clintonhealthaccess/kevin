@@ -49,6 +49,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 /**
  * @author Jean Kahigiso M.
@@ -85,6 +86,14 @@ public class Utils {
 		return value.matches("(?i).*"+text+".*");
 	}
 
+	public static Set<String> getUuids(Set<OrganisationUnitGroup> groups) {
+		Set<String> result = new HashSet<String>();
+		for (OrganisationUnitGroup group : groups) {
+			result.add(group.getUuid());
+		}
+		return result;
+	}
+	
 	public static String formatDate(Date date) {
 		if (date == null) return null;
 		return DATE_FORMAT.format(date);

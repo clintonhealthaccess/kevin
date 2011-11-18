@@ -14,6 +14,7 @@ import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
 /*
@@ -142,7 +143,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 	}
 	
-	def "test sum with valid calculation"() {
+	def "test sum calculation"() {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
@@ -164,72 +165,110 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		then:
 		result.size() == 2
 		result*.value.equals(new HashSet([v("1"), v("1")]))
+		
+		when:
+		result = expressionService.calculatePartialValues(sum, getOrganisation(NORTH), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals(new HashSet([v("1"), v("1")]))
+		
+		when:
+		def burera = OrganisationUnit.findByName(BURERA)
+		def dh = OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)
+		newOrganisationUnit("dummy", burera, dh)
+		result = expressionService.calculatePartialValues(sum, getOrganisation(BURERA), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals(new HashSet([v("2"), v("1")]))
+	}
+	
+	def "test sum with missing facility type"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id):[(DISTRICT_HOSPITAL_GROUP):"1"]])
+		def sum = newSum("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def result = null
+		refreshNormalizedDataElement()
+		
+		when:
+		result = expressionService.calculatePartialValues(sum, getOrganisation(BUTARO), period)
+		
+		then:
+		result.size() == 1
+		result*.value.equals(new HashSet([v("1")]))
+
+		when:
+		result = expressionService.calculatePartialValues(sum, getOrganisation(KIVUYE), period)
+		
+		then:
+		result.size() == 0
+		result*.value.equals(new HashSet())
+		
+		when:
+		result = expressionService.calculatePartialValues(sum, getOrganisation(BURERA), period)
+		
+		then:
+		result.size() == 1
+		result*.value.equals(new HashSet([Value.NULL]))
+		
+		when:
+		def burera = OrganisationUnit.findByName(BURERA)
+		def dh = OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)
+		newOrganisationUnit("dummy", burera, dh)
+		result = expressionService.calculatePartialValues(sum, getOrganisation(BURERA), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals(new HashSet([v("1"), v("1")]))
+	}
+	
+	def "test average with valid calculation"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
+		def average = newAverage("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def result = null
+		refreshNormalizedDataElement()
+		
+		when:
+		result = expressionService.calculatePartialValues(average, getOrganisation(BUTARO), period)
+		
+		then:
+		result.size() == 1
+		result*.value.equals(new HashSet([v("1")]))
+
+		when:
+		result = expressionService.calculatePartialValues(average, getOrganisation(BURERA), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals(new HashSet([v("1"), v("1")]))
+		
+		when:
+		result = expressionService.calculatePartialValues(average, getOrganisation(NORTH), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals(new HashSet([v("1"), v("1")]))
+		
+		when:
+		def burera = OrganisationUnit.findByName(BURERA)
+		def dh = OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)
+		newOrganisationUnit("dummy", burera, dh)
+		result = expressionService.calculatePartialValues(average, getOrganisation(BURERA), period)
+		
+		then:
+		result.size() == 2
+		result*.value.equals(new HashSet([v("1"), v("1")]))
 
 	}
-	
-	
-	def "test expressions at different levels"() {
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def kivuye = OrganisationUnit.findByName(KIVUYE)
-		def butaro = OrganisationUnit.findByName(BUTARO)
-		def expression = null
-		def result = null
-		
-		when:
-		def enume = newEnume(CODE(1))
-		newEnumOption(enume, v("\"test\""))
-		newEnumOption(enume, v("\"absent\""))
-		
-		def dataElement = newRawDataElement(CODE(4), Type.TYPE_ENUM (enume.code))
-		newRawDataElementValue(dataElement, period, kivuye, v("\"absent\""))
-		newRawDataElementValue(dataElement, period, butaro, v("\"test\""))
-		
-		expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "if(\$"+dataElement.id+"==\"test\") 20 else 10")
-		result = expressionService.calculate(expression, OrganisationUnit.findByName(organisationName), period)
-		
-		then:
-		result.value == value
-		result.status == status
-		
-		where:
-		organisationName	| value		| status
-		BUTARO				| v("20")	| Status.VALID
-		KIVUYE				| v("10")	| Status.VALID
-		BURERA				| Value.NULL| Status.NOT_AGGREGATABLE
-		NORTH				| Value.NULL| Status.NOT_AGGREGATABLE
-		RWANDA				| Value.NULL| Status.NOT_AGGREGATABLE
-	}
+
 	
 		
-	def "test valid expression at different levels"() {
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def kivuye = OrganisationUnit.findByName(KIVUYE)
-		def butaro = OrganisationUnit.findByName(BUTARO)
-	
-		when:
-		def dataElement = newRawDataElement(CODE(6), Type.TYPE_NUMBER())
-		newRawDataElementValue(dataElement, period, kivuye, v("10"))
-		newRawDataElementValue(dataElement, period, butaro, v("20"))
-		def expression = newExpression(CODE(7), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-		def result = expressionService.calculate(expression, OrganisationUnit.findByName(organisationName), period)
-		
-		then:
-		result.value == value
-		result.status == status
-		
-		where:
-		organisationName	| value		| status
-		BUTARO				| v("20")	| Status.VALID
-		KIVUYE				| v("10")	| Status.VALID
-		BURERA				| v("30")	| Status.VALID
-		NORTH				| v("30")	| Status.VALID
-		RWANDA				| v("30")	| Status.VALID
-	}
-	
 	
 //	def "test sum with missing expression"() {
 //		setup:

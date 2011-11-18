@@ -46,6 +46,7 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.CalculationValue;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.OrganisationSorter;
@@ -117,9 +118,8 @@ public class FctService {
 				
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
 				
-				CalculationPartialValue calculationValue = valueService.getValue(target.getSum(), child.getOrganisationUnit(), period);
-				if (calculationValue != null) 
-					value = calculationValue.getValue().getStringValue();				
+				CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), child.getOrganisationUnit(), period, Utils.getUuids(organisationService.getGroupsForExpression()));
+				if (calculationValue != null) value = calculationValue.getValue().getStringValue();				
 				orgFct.put(target, new Fct(child, period, target, value));
 			}											
 			fctMap.put(child, orgFct);

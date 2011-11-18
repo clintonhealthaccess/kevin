@@ -28,8 +28,6 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.NoSuchElementException;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -158,7 +156,6 @@ public abstract class DashboardEntry {
 	@Transient
 	public abstract boolean isTarget();
 	
-	public abstract DashboardPercentage getValue(PercentageCalculator calculator, Organisation organisation, Period period, boolean isFacility);
-	public abstract DashboardExplanation getExplanation(ExplanationCalculator calculator, Organisation organisation, Period period, boolean isFacility) throws NoSuchElementException;
+	public abstract <T> T visit(DashboardVisitor<T> visitor, Organisation organisation, Period period);
 
 }

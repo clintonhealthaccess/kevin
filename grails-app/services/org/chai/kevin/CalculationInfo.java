@@ -39,14 +39,13 @@ import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
-public class CalculationInfo extends Info {
+public class CalculationInfo extends Info<CalculationValue<?>> {
 
 	private CalculationPartialValue calculationValue;
 	private List<Organisation> groups;
 	private Map<Organisation, NormalizedDataElementValue> expressionValues;
 	
-	public CalculationInfo(CalculationPartialValue calculationValue,
-			Map<Organisation, NormalizedDataElementValue> expressionValues) {
+	public CalculationInfo(CalculationValue<?> calculationValue, Map<Organisation, NormalizedDataElementValue> expressionValues) {
 		this.calculationValue = calculationValue;
 		this.expressionValues = expressionValues;
 	}
@@ -82,10 +81,7 @@ public class CalculationInfo extends Info {
 		return calculationValue;
 	}
 	
-	public String getTemplate() {
-		return "/info/calculationInfo";
-	}
-	
+
 	public Map<Organisation, NormalizedDataElementValue> getExpressionValues() {
 		return expressionValues;
 	}
@@ -94,5 +90,8 @@ public class CalculationInfo extends Info {
 		return calculationValue.getValue();
 	}
 
+	public String getTemplate() {
+		return "/info/calculationInfo";
+	}
 	
 }

@@ -7,7 +7,7 @@ import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
 
-class DataElementSpec extends IntegrationTests {
+class RawDataElementSpec extends IntegrationTests {
 
 	def "data element type is not blank"() {
 		when:

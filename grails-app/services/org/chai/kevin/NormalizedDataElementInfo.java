@@ -28,64 +28,43 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.chai.kevin.value.RawDataElementValue;
 
-public class ExpressionInfo extends Info {
+public class NormalizedDataElementInfo extends Info<NormalizedDataElementValue> {
 
-	private Double maxValue;
-	private NormalizedDataElementValue expressionValue;
+	private List<Organisation> organisations;
+	private List<RawDataElement> rawDataElements;
 	private Map<Organisation, Map<RawDataElement, RawDataElementValue>> values;
 	
-	public ExpressionInfo(NormalizedDataElementValue expressionValue, Map<Organisation, Map<RawDataElement, RawDataElementValue>> values, Double maxValue) {
-		this.maxValue = maxValue;
-		this.expressionValue = expressionValue;
+	public NormalizedDataElementInfo(NormalizedDataElementValue normalizedDataElementValue, List<Organisation> organisations, List<RawDataElement> rawDataElements, 
+			Map<Organisation, Map<RawDataElement, RawDataElementValue>> values) {
+		super(normalizedDataElementValue);
+		
+		this.organisations = organisations;
+		this.rawDataElements = rawDataElements;
 		this.values = values;
 	}
 
-	public NormalizedDataElementValue getExpressionValue() {
-		return expressionValue;
+	public List<Organisation> getOrganisations() {
+		return organisations;
 	}
 	
-	public Expression getExpression() {
-		return expressionValue.getExpression();
+	public List<RawDataElement> getRawDataElements() {
+		return rawDataElements;
 	}
 	
-	public OrganisationUnit getOrganisation() {
-		return expressionValue.getOrganisationUnit();
+	public RawDataElementValue getRawDataElementValue(Organisation organisation, RawDataElement rawDataElement) {
+		return values.get(organisation).get(rawDataElement);
 	}
-	
-	public Map<Organisation, Map<RawDataElement, RawDataElementValue>> getValues() {
-		return values;
-	}
-	
-	public Map<RawDataElement, RawDataElementValue> getValuesForOrganisation() {
-		for (Entry<Organisation, Map<RawDataElement, RawDataElementValue>> entry : values.entrySet()) {
-			if (entry.getKey().getOrganisationUnit().equals(expressionValue.getOrganisationUnit())) return entry.getValue();
-		}
-		return null;
-	}
-	
-	public Value getValue() {
-		return expressionValue.getValue();
-	}
-	
-	public Double getMaxValue() {
-		return maxValue;
-	}
-	
 	
 	@Override
 	public String getTemplate() {
 		return "/info/expressionInfo";
 	}
-
 	
 }

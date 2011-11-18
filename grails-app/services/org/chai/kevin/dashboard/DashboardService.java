@@ -38,11 +38,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.CalculationValue;
 import org.chai.kevin.ExpressionService;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
+import org.chai.kevin.util.Utils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,36 +97,87 @@ public class DashboardService {
 		organisationService.loadGroup(organisation);
 		organisationService.loadLevel(organisation);
 		
-		ExplanationCalculator calculator = createExplanationCalculator();
-		return entry.getExplanation(calculator, organisation, period, organisationService.getFacilityLevel() == organisationService.loadLevel(organisation));
-	}
-	
-	private ExplanationCalculator createExplanationCalculator() {
-		ExplanationCalculator calculator = new ExplanationCalculator();
-		calculator.setOrganisationService(organisationService);
-		calculator.setInfoService(infoService);
-		calculator.setExpressionService(expressionService);
-		calculator.setValueService(valueService);
-		return calculator;
+		return entry.visit(explanationVisitor, organisation, period);
 	}
 
-	
-	private PercentageCalculator createCalculator() {
-		PercentageCalculator calculator = new PercentageCalculator();
-		calculator.setOrganisationService(organisationService);
-		calculator.setExpressionService(expressionService);
-		calculator.setValueService(valueService);
-		return calculator;
+	private class ExplanationVisitor implements DashboardVisitor<DashboardExplanation> {
+
+		private final Log log = LogFactory.getLog(ExplanationVisitor.class);
+		
+		@Override
+		public DashboardExplanation visitObjective(DashboardObjective objective, Organisation organisation, Period period) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public DashboardExplanation visitTarget(DashboardTarget target, Organisation organisation, Period period) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
 	}
+	
+	private ExplanationVisitor explanationVisitor = new ExplanationVisitor();
+	
+	private class PercentageVisitor implements DashboardVisitor<DashboardPercentage> {
+
+		private final Log log = LogFactory.getLog(PercentageVisitor.class);
+		
+		@Override
+		public DashboardPercentage visitObjective(DashboardObjective objective, Organisation organisation, Period period) {
+			if (log.isDebugEnabled()) log.debug("visitObjective(objective="+objective+",organisation="+organisation+",period="+period+")");
+			
+			Integer totalWeight = 0;
+			Double sum = 0.0d;
+
+			for (DashboardObjectiveEntry child : objective.getObjectiveEntries()) {
+				DashboardPercentage childPercentage = child.getEntry().visit(this, organisation, period);
+				if (childPercentage == null) {
+					if (log.isErrorEnabled()) log.error("found null percentage, objective: "+child.getEntry()+", organisation: "+organisation.getOrganisationUnit()+", period: "+period);
+					return null;
+				}
+				Integer weight = child.getWeight();
+				if (childPercentage.isValid()) {
+					sum += childPercentage.getValue() * weight;
+					totalWeight += weight;
+				}
+				else {
+					// MISSING_EXPRESSION - we skip it
+					// MISSING_NUMBER - should we count it in as zero ?
+				}
+
+			}
+			// TODO what if sum = 0 and totalWeight = 0 ?
+			DashboardPercentage percentage = new DashboardPercentage(sum / totalWeight);
+			
+			if (log.isDebugEnabled()) log.debug("visitObjective()="+percentage);
+			return percentage;
+		}
+
+		@Override
+		public DashboardPercentage visitTarget(DashboardTarget target, Organisation organisation, Period period) {
+			if (log.isDebugEnabled()) log.debug("visitTarget(target="+target+",organisation="+organisation+",period="+period+")");
+			
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), organisation.getOrganisationUnit(), period, Utils.getUuids(organisationService.getGroupsForExpression()));
+			if (calculationValue == null) return null;
+			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue());
+
+			if (log.isDebugEnabled()) log.debug("visitTarget(...)="+percentage);
+			return percentage;
+		}
+		
+	}
+	
+	private PercentageVisitor percentageVisitor = new PercentageVisitor();
 	
 	private Map<Organisation, Map<DashboardEntry, DashboardPercentage>> getValues(List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries, Period period) {
 		Map<Organisation, Map<DashboardEntry, DashboardPercentage>> values = new HashMap<Organisation, Map<DashboardEntry, DashboardPercentage>>();
-		PercentageCalculator calculator = createCalculator();
 
 		for (Organisation organisation : organisations) {
 			Map<DashboardEntry, DashboardPercentage> organisationMap = new HashMap<DashboardEntry, DashboardPercentage>();
 			for (DashboardObjectiveEntry objectiveEntry : objectiveEntries) {
-				DashboardPercentage percentage = objectiveEntry.getEntry().getValue(calculator, organisation, period, organisationService.getFacilityLevel() == organisationService.loadLevel(organisation));
+				DashboardPercentage percentage = objectiveEntry.getEntry().visit(percentageVisitor, organisation, period);
 				organisationMap.put(objectiveEntry.getEntry(), percentage);
 			}
 			values.put(organisation, organisationMap);

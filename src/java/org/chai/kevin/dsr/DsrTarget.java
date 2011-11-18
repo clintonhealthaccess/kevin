@@ -42,9 +42,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.StoredValue;
 
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target")
@@ -52,7 +53,7 @@ public class DsrTarget extends ReportEntity {
 	
 	private Long id;
 	private DsrObjective objective;
-	private Expression expression;
+	private DataElement<StoredValue> dataElement;
 	private DsrTargetCategory category;
 	private String format;
 	private String groupUuidString;  //comma-separated list of organisation ids
@@ -67,15 +68,15 @@ public class DsrTarget extends ReportEntity {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=Expression.class, optional=false)
-	public Expression getExpression() {
-		return expression;
+	@ManyToOne(targetEntity=DataElement.class, optional=false)
+	public DataElement<StoredValue> getDataElement() {
+		return dataElement;
 	}
 
-	public void setExpression(Expression expression) {
-		this.expression = expression;
+	public void setDataElement(DataElement<StoredValue> dataElement) {
+		this.dataElement = dataElement;
 	}
-
+	
 	@ManyToOne(targetEntity=DsrObjective.class)
 	public DsrObjective getObjective() {
 		return objective;

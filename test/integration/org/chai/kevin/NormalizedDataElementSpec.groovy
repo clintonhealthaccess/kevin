@@ -8,7 +8,7 @@ import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
-class ExpressionSpec extends IntegrationTests {
+class NormalizedDataElementSpec extends IntegrationTests {
 
 	def "expression type is valid"() {
 		when:

@@ -33,7 +33,6 @@ package org.chai.kevin.fct;
 import java.util.Set;
 
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -42,14 +41,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.Expression;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@SuppressWarnings("serial")
 @Entity(name = "FctTarget")
 @Table(name = "dhsst_fct_target")
 public class FctTarget extends ReportEntity {

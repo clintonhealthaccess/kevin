@@ -35,36 +35,18 @@ public class DashboardPercentage extends Gradient {
 
 	private Double value;
 
-	private Boolean hasMissingValue;
-	private Boolean hasMissingExpression;
-	
 	public DashboardPercentage() {}
 	
-	public DashboardPercentage(Value value, Boolean hasMissingValueStatus, Boolean hasMissingExpressionStatus) {
+	public DashboardPercentage(Value value) {
 		this.value = value.getNumberValue()!=null?value.getNumberValue().doubleValue():null;
-
-		this.hasMissingValue = hasMissingValueStatus;
-		this.hasMissingExpression = hasMissingExpressionStatus;
 	}
 	
-	public DashboardPercentage(Double value, Boolean hasMissingValueStatus, Boolean hasMissingExpressionStatus) {
+	public DashboardPercentage(Double value) {
 		this.value = value;
-
-		this.hasMissingValue = hasMissingValueStatus;
-		this.hasMissingExpression = hasMissingExpressionStatus;
 	}
-	
 	
 	public Double getValue() {
 		return value;
 	}
 	
-	public Boolean isHasMissingExpression() {
-		return hasMissingExpression;
-	}
-	
-	public Boolean isHasMissingValue() {
-		return hasMissingValue;
-	}
-
 }

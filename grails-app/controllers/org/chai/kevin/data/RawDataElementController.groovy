@@ -39,7 +39,8 @@ import org.chai.kevin.survey.SurveyService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 
-class DataElementController extends AbstractEntityController {
+
+class RawDataElementController extends AbstractEntityController {
 
 	DataService dataService;
 	ValueService valueService;
@@ -57,16 +58,16 @@ class DataElementController extends AbstractEntityController {
 	}
 
 	def getLabel() {
-		return 'dataelement.label'
+		return 'rawdataelement.label'
 	}
 	
 	def getTemplate() {
-		return "/entity/data/createDataElement";
+		return "/entity/data/createRawDataElement";
 	}
 
 	def getModel(def entity) {
 		return [
-			dataElement: entity,
+			rawDataElement: entity,
 			hasValues: entity.id != null && valueService.getNumberOfValues(entity) != 0,
 			enumes: Enum.list(),
 			code: getLabel()
@@ -78,7 +79,7 @@ class DataElementController extends AbstractEntityController {
 		
 		if (entity.id != null && !entity.getType().equals(new Type(params['type.jsonValue'])) && valueService.getNumberOfValues(entity) != 0) {
 			// error if types are different
-			entity.errors.rejectValue('type', 'dataElement.type.cannotChange', 'Cannot change type because the element has associated values.')
+			entity.errors.rejectValue('type', 'rawDataElement.type.cannotChange', 'Cannot change type because the element has associated values.')
 			valid = false
 		}
 		return valid;
@@ -91,7 +92,7 @@ class DataElementController extends AbstractEntityController {
 		// TODO a data element can have associated survey elements
 		if (valueService.getNumberOfValues(entity) == 0) entity.delete(flush: true)
 		else {
-			flash.message = message(code: "dataelement.delete.hasvalues", default: "Could not delete element, it still has values");
+			flash.message = message(code: "rawdataelement.delete.hasvalues", default: "Could not delete element, it still has values");
 		}
 	}
 
@@ -114,11 +115,11 @@ class DataElementController extends AbstractEntityController {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		
-		List<RawDataElement> dataElements = dataService.searchData(RawDataElement.class, params['q'], [], params);
+		List<RawDataElement> rawDataElements = dataService.searchData(RawDataElement.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
-			entities: dataElements,
-			template: "data/dataElementList",
+			entities: rawDataElements,
+			template: "data/rawDataElementList",
 			code: getLabel(),
 			entityCount: dataService.countData(RawDataElement.class, params['q'], []),
 			search: true
@@ -129,26 +130,26 @@ class DataElementController extends AbstractEntityController {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		
-		List<RawDataElement> dataElements = RawDataElement.list(params);
+		List<RawDataElement> rawDataElements = RawDataElement.list(params);
 		
 		render (view: '/entity/list', model:[
-			entities: dataElements,
-			template: "data/dataElementList",
+			entities: rawDataElements,
+			template: "data/rawDataElementList",
 			code: getLabel(),
 			entityCount: RawDataElement.count()
 		])
 	}
 
 	def getExplainer = {
-		def dataElement = RawDataElement.get(params.int('dataElement'))
+		def rawDataElement = RawDataElement.get(params.int('id'))
 
-		if (dataElement != null) {
+		if (rawDataElement != null) {
 			List<Period> iterations = Period.list();
-			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(dataElement, null);
+			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(rawDataElement, null);
 
 			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
 			for(Period iteration : iterations) {
-				periodValues.put(iteration, valueService.getNumberOfValues(dataElement, iteration));
+				periodValues.put(iteration, valueService.getNumberOfValues(rawDataElement, iteration));
 			}
 
 			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();
@@ -157,31 +158,31 @@ class DataElementController extends AbstractEntityController {
 			}
 
 			render (view: '/entity/data/explain',  model: [
-				dataElement: dataElement, surveyElements: surveyElementMap, periodValues: periodValues
+				rawDataElement: rawDataElement, surveyElements: surveyElementMap, periodValues: periodValues
 			])
 		}
 	}
 
 	def getData = {
 		def includeTypes = params.list('include')
-		def dataElements = dataService.searchData(RawDataElement.class, params['searchText'], includeTypes, [:]);
+		def rawDataElements = dataService.searchData(RawDataElement.class, params['searchText'], includeTypes, [:]);
 		
 		render(contentType:"text/json") {
 			result = 'success'
-			html = g.render(template:'/entity/data/dataElements', model:[dataElements: dataElements])
+			html = g.render(template:'/entity/data/rawDataElements', model:[rawDataElements: rawDataElements])
 		}
 	}
 
 	def getDescription = {
-		def dataElement = RawDataElement.get(params.int('dataElement'))
+		def rawDataElement = RawDataElement.get(params.int('id'))
 
-		if (dataElement == null) {
+		if (rawDataElement == null) {
 			render(contentType:"text/json") { result = 'error' }
 		}
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/entity/data/dataElementDescription', model: [dataElement: dataElement])
+				html = g.render (template: '/entity/data/rawDataElementDescription', model: [rawDataElement: rawDataElement])
 			}
 		}
 	}

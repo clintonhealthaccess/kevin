@@ -1,18 +1,18 @@
 package org.chai.kevin;
 
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.DataElementController;
+import org.chai.kevin.data.RawDataElementController;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 
-class DataElementControllerSpec extends IntegrationTests {
+class RawDataElementControllerSpec extends IntegrationTests {
 
 	def dataElementController
 
 	def "create new data element"() {
 		setup:
-		dataElementController = new DataElementController()
+		dataElementController = new RawDataElementController()
 		
 		when:
 		dataElementController.create()
@@ -23,7 +23,7 @@ class DataElementControllerSpec extends IntegrationTests {
 	
 	def "save new data element"() {
 		setup:
-		dataElementController = new DataElementController()
+		dataElementController = new RawDataElementController()
 		
 		when:
 		dataElementController.params.code = CODE(1)
@@ -36,7 +36,7 @@ class DataElementControllerSpec extends IntegrationTests {
 	
 	def "can delete data element"() {
 		setup:
-		dataElementController = new DataElementController()
+		dataElementController = new RawDataElementController()
 		def organisation = newOrganisationUnit(BUTARO)
 		def period = newPeriod()
 		def dataElement = null
@@ -52,7 +52,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		
 	def "cannot delete data element when it still has values"() {
 		setup:
-		dataElementController = new DataElementController()
+		dataElementController = new RawDataElementController()
 		def organisation = newOrganisationUnit(BUTARO)
 		def period = newPeriod()
 		def dataElement = null
@@ -71,7 +71,7 @@ class DataElementControllerSpec extends IntegrationTests {
 	
 	def "cannot edit data element type if it still has values" () {
 		setup:
-		dataElementController = new DataElementController()
+		dataElementController = new RawDataElementController()
 		def organisation = newOrganisationUnit(BUTARO)
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -98,7 +98,7 @@ class DataElementControllerSpec extends IntegrationTests {
 	
 	def "get data elements"() {
 		setup:
-		dataElementController = new DataElementController()
+		dataElementController = new RawDataElementController()
 		
 		when:
 		newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
@@ -114,7 +114,7 @@ class DataElementControllerSpec extends IntegrationTests {
 		
 	def "get data element description"() {
 		setup:
-		dataElementController = new DataElementController()
+		dataElementController = new RawDataElementController()
 		
 		when:
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
@@ -129,7 +129,7 @@ class DataElementControllerSpec extends IntegrationTests {
 	
 	def "search data element"() {
 		setup:
-		dataElementController = new DataElementController()
+		dataElementController = new RawDataElementController()
 		
 		when:
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())

@@ -31,7 +31,7 @@ package org.chai.kevin.dashboard;
 import java.util.Map;
 
 import org.chai.kevin.CalculationInfo;
-import org.chai.kevin.ExpressionInfo;
+import org.chai.kevin.NormalizedDataElementInfo;
 import org.chai.kevin.Info;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
@@ -58,7 +58,7 @@ public class ExplanationCalculator extends PercentageCalculator {
 	
 	public DashboardExplanation explainLeafTarget(DashboardTarget target, Organisation organisation, Period period) {
 		Expression expression = expressionService.getMatchingExpression(target.getCalculation().getExpressions(), organisation);
-		ExpressionInfo info = null;
+		NormalizedDataElementInfo info = null;
 		if (expression != null) {
 			info = infoService.getInfo(expression, organisation, period, null);
 			if (info == null) return null;

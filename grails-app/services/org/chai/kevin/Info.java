@@ -1,5 +1,10 @@
 package org.chai.kevin;
 
+import org.chai.kevin.value.StoredValue;
+import org.chai.kevin.value.Value;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
+
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
@@ -29,8 +34,25 @@ package org.chai.kevin;
  */
 
 
-public abstract class Info {
+public abstract class Info<T extends StoredValue> {
+	
+	private T value;
+	
+	public Info(T value) {
+		this.value = value;
+	}
 	
 	public abstract String getTemplate();
 	
+	public Value getValue() {
+		return value.getValue();
+	}
+	
+	public OrganisationUnit getOrganisationUnit() {
+		return value.getOrganisationUnit();
+	}
+	
+	public Period getPeriod() {
+		return value.getPeriod();
+	}
 }

@@ -29,40 +29,21 @@ package org.chai.kevin.maps;
  */
 
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.Expression;
 import org.chai.kevin.reports.ReportEntity;
 
-@SuppressWarnings("serial")
 @Entity(name="MapsTarget")
 @Table(name="dhsst_maps_target")
 public class MapsTarget extends ReportEntity {
 
-	public static enum MapsTargetType {AGGREGATION("AGGREGATION", "Aggregation"), AVERAGE("AVERAGE", "Average");
-		final String value;
-		final String name;
-		
-		MapsTargetType(String value, String name) { this.value = value; this.name = name;}
-	
-	    public String getName() { return name; }
-	    public String toString() { return value; } 
-	    String getKey() { return name(); }
-	}
-	
 	private Long id;
-	private MapsTargetType type;
-	private Calculation calculation;
-
-	private Expression expression;
+	private Calculation<?> calculation;
 	private Double maxValue;
 	
 	@Id
@@ -74,32 +55,13 @@ public class MapsTarget extends ReportEntity {
 		this.id = id;
 	}
 	
-	@Enumerated(EnumType.STRING)
-	@Column(nullable=false)
-	public MapsTargetType getType() {
-		return type;
-	}
-	
-	public void setType(MapsTargetType type) {
-		this.type = type;
-	}
-	
 	@ManyToOne(targetEntity=Calculation.class)
-	public Calculation getCalculation() {
+	public Calculation<?> getCalculation() {
 		return calculation;
 	}
 	
-	public void setCalculation(Calculation calculation) {
+	public void setCalculation(Calculation<?> calculation) {
 		this.calculation = calculation;
-	}
-	
-	@ManyToOne(targetEntity=Expression.class)
-	public Expression getExpression() {
-		return expression;
-	}
-	
-	public void setExpression(Expression expression) {
-		this.expression = expression;
 	}
 	
 	@Basic(optional=true)

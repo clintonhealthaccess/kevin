@@ -39,8 +39,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Organisation;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="StrategicObjective")
@@ -67,16 +65,6 @@ public class DashboardObjective extends DashboardEntry {
 	}
 	
 	@Override
-	public DashboardPercentage getValue(PercentageCalculator calculator, Organisation organisation, Period period, boolean isFacility) {
-		return calculator.getPercentageForObjective(this, organisation, period);
-	}
-	
-	@Override
-	public DashboardExplanation getExplanation(ExplanationCalculator calculator, Organisation organisation, Period period, boolean isFacility) {
-		return calculator.explainObjective(this, organisation, period);
-	}
-	
-	@Override
 	public boolean hasChildren() {
 		return objectiveEntries.size() > 0;
 	}
@@ -85,6 +73,11 @@ public class DashboardObjective extends DashboardEntry {
 	@Transient
 	public boolean isTarget() {
 		return false;
+	}
+
+	@Override
+	public <T> T visit(DashboardVisitor<T> visitor, Organisation organisation, Period period) {
+		return visitor.visitObjective(this, organisation, period);
 	}
 	
 }

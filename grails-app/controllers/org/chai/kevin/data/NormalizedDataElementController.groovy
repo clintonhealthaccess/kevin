@@ -33,31 +33,31 @@ import org.chai.kevin.DataService
 import org.chai.kevin.ValueService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
-class ExpressionController extends AbstractEntityController {
+class NormalizedDataElementController extends AbstractEntityController {
 
 	DataService dataService
 	ValueService valueService
 	
 	def getEntity(def id) {
-		return Expression.get(id)
+		return NormalizedDataElement.get(id)
 	}
 	
 	def createEntity() {
-		def expression = new Expression()
-		expression.type = new Type()
-		return expression
+		def normalizedDataElement = new NormalizedDataElement()
+		normalizedDataElement.type = new Type()
+		return normalizedDataElement
 	}
 
 	def getLabel() {
-		return "expression.label";
+		return "normalizeddataelement.label";
 	}
 		
 	def getTemplate() {
-		return "/entity/expression/createExpression";
+		return "/entity/normalizedDataElement/createNormalizedDataElement";
 	}
 	
 	def getModel(def entity) {
-		return [expression: entity]
+		return [normalizedDataElement: entity]
 	}
 
 	def saveEntity(def entity) {
@@ -67,13 +67,15 @@ class ExpressionController extends AbstractEntityController {
 	
 	def deleteEntity(def entity) {
 		// we check if there are calculations
+		
+		// TODO check this
 		if (dataService.getCalculations(entity).isEmpty()) { 
 			// we delete all the values
 			valueService.deleteValues(entity)
 			entity.delete()
 		}
 		else {
-			flash.message = message(code: "expression.delete.hasvalues", default: "Could not delete expression, it still has associated calculations");
+			flash.message = message(code: "normalizeddataelement.delete.hasvalues", default: "Could not delete normalized data element, it still has associated calculations");
 		}
 	}
 	
@@ -84,18 +86,20 @@ class ExpressionController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
+		
+		// TODO bind expressions
 	}
 	
 	def search = {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		
-		List<Expression> expressions = dataService.searchData(Expression.class, params['q'], [], params);
+		List<NormalizedDataElement> normalizedDataElements = dataService.searchData(NormalizedDataElement.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
-			entities: expressions,
-			entityCount: dataService.countData(Expression.class, params['q'], []),
-			template: "expression/expressionList",
+			entities: normalizedDataElements,
+			entityCount: dataService.countData(NormalizedDataElement.class, params['q'], []),
+			template: "normalizedDataElement/normalizedDataElementList",
 			code: getLabel(),
 			search: true
 		])
@@ -104,20 +108,20 @@ class ExpressionController extends AbstractEntityController {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 		
-		List<Expression> expressions = Expression.list(params);
+		List<NormalizedDataElement> normalizedDataElements = NormalizedDataElement.list(params);
 		
 		render (view: '/entity/list' , model:[
-			entities: expressions, 
-			entityCount: Expression.count(),
-			template: 'expression/expressionList',
+			entities: normalizedDataElements, 
+			entityCount: NormalizedDataElement.count(),
+			template: 'normalizedDataElement/normalizedDataElementList',
 			code: getLabel()
 		])
 	}
 	
 	def getDescription = {
-		def expression = Expression.get(params.int('expression'))
+		def normalizedDataElement = NormalizedDataElement.get(params.int('id'))
 		
-		if (expression == null) {
+		if (normalizedDataElement == null) {
 			render(contentType:"text/json") {
 				result = 'error'
 			}
@@ -125,7 +129,7 @@ class ExpressionController extends AbstractEntityController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: '/entity/expression/expressionDescription', model: [expression: expression])
+				html = g.render (template: '/entity/normalizedDataElement/normalizedDataElementDescription', model: [normalizedDataElement: normalizedDataElement])
 			}
 		}
 	}

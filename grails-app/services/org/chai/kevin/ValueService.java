@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Entity;
 
@@ -55,6 +56,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,8 +86,9 @@ public class ValueService {
 		return result;
 	}
 	
+	
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, OrganisationUnit organisationUnit, Period period, List<String> groupUuids) {
+	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, OrganisationUnit organisationUnit, Period period, Set<String> groupUuids) {
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", organisationUnit="+organisationUnit+", groupUuids="+groupUuids+")");
 		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, organisationUnit, period, groupUuids));
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(...)="+result);
@@ -93,7 +96,7 @@ public class ValueService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, OrganisationUnit organisationUnit, Period period, List<String> groupUuids) {
+	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, OrganisationUnit organisationUnit, Period period, Set<String> groupUuids) {
 		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
 		.add(Restrictions.eq("period", period))
 		.add(Restrictions.eq("organisationUnit", organisationUnit))

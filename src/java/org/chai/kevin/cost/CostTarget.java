@@ -41,7 +41,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.data.Expression;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
 
@@ -65,8 +65,8 @@ public class CostTarget extends ReportEntity {
 	};
 	
 	private Long id;
-	private Expression expression;
-	private Expression expressionEnd;
+	private DataElement<?> dataElement;
+	private DataElement<?> dataElementEnd;
 	
 	private CostObjective parent;
 	private CostRampUp costRampUp;
@@ -82,20 +82,22 @@ public class CostTarget extends ReportEntity {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=Expression.class, optional=false)
-	public Expression getExpression() {
-		return expression;
-	}
-	public void setExpression(Expression expression) {
-		this.expression = expression;
+	@ManyToOne(targetEntity=DataElement.class, optional=false)
+	public DataElement<?> getDataElement() {
+		return dataElement;
 	}
 	
-	@ManyToOne(targetEntity=Expression.class)
-	public Expression getExpressionEnd() {
-		return expressionEnd;
+	public void setDataElement(DataElement<?> dataElement) {
+		this.dataElement = dataElement;
 	}
-	public void setExpressionEnd(Expression expressionEnd) {
-		this.expressionEnd = expressionEnd;
+	
+	@ManyToOne(targetEntity=DataElement.class)
+	public DataElement<?> getDataElementEnd() {
+		return dataElementEnd;
+	}
+
+	public void setDataElementEnd(DataElement<?> dataElementEnd) {
+		this.dataElementEnd = dataElementEnd;
 	}
 	
 	@ManyToOne(targetEntity=CostObjective.class)
@@ -141,7 +143,7 @@ public class CostTarget extends ReportEntity {
 	
 	@Transient
 	public boolean isAverage() {
-		return expressionEnd != null;
+		return dataElementEnd != null;
 	}
 	
 }

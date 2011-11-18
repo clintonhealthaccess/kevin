@@ -36,38 +36,25 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Calculation;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="StrategicTarget")
 @Table(name="dhsst_dashboard_target")
 public class DashboardTarget extends DashboardEntry {
 
-	private Calculation calculation;
+	private Calculation<?> calculation;
 	
 //	@Cascade(value={CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@ManyToOne(targetEntity=Calculation.class, optional=false)
 	@JoinColumn(nullable=false)
-	public Calculation getCalculation() {
+	public Calculation<?> getCalculation() {
 		return calculation;
 	}
 	
-	public void setCalculation(Calculation calculation) {
+	public void setCalculation(Calculation<?> calculation) {
 		this.calculation = calculation;
 	}
 	
-	@Override
-	public DashboardExplanation getExplanation(ExplanationCalculator calculator, Organisation organisation, Period period, boolean isFacility) {
-		if (isFacility) return calculator.explainLeafTarget(this, organisation, period);
-		else return calculator.explainNonLeafTarget(this, organisation, period);
-	}	
-
-	@Override
-	public DashboardPercentage getValue(PercentageCalculator calculator, Organisation organisation, Period period, boolean isFacility) {
-		if (isFacility) return calculator.getPercentageForLeafTarget(this, organisation, period);
-		else return calculator.getPercentageForNonLeafTarget(this, organisation, period);
-	}
 	
 	@Override
 	public boolean hasChildren() {
@@ -83,6 +70,11 @@ public class DashboardTarget extends DashboardEntry {
 	@Transient
 	public boolean isTarget() {
 		return true;
+	}
+
+	@Override
+	public <T> T visit(DashboardVisitor<T> visitor, Organisation organisation, Period period) {
+		return visitor.visitTarget(this, organisation, period);
 	}
 
 }
