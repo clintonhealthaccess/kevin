@@ -54,7 +54,7 @@ grails.project.dependency.resolution = {
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         mavenLocal()
-//	    mavenCentral()	
+	    mavenCentral()	
 //		mavenRepo "http://m2repo.spockframework.org/snapshots"
 //		mavenRepo "http://snapshots.repository.codehaus.org"
 //		mavenRepo "http://repository.codehaus.org"
@@ -64,7 +64,7 @@ grails.project.dependency.resolution = {
 //		mavenRepo "https://maven.nuxeo.org/nexus/"
 //		mavenRepo "http://www.intalio.org/public/maven2/"
 //		mavenRepo "http://repo.opennms.org/maven2/"
-		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
+//		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 				
 		/**
 		 * Configure our resolver.

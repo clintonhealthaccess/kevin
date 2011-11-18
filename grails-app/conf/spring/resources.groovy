@@ -18,6 +18,8 @@ import org.chai.kevin.dsr.DsrService;
 import org.chai.kevin.fct.FctService;
 import org.chai.kevin.maps.MapsService;
 import org.chai.kevin.survey.SurveyPageService;
+import org.chai.kevin.survey.SurveyValueService;
+import org.chai.kevin.survey.SurveyExportService;
 import org.chai.kevin.survey.SurveyCopyService;
 import org.chai.kevin.survey.ValidationService;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -61,6 +63,7 @@ Set<Integer> costSkipLevels = config.dashboard.skip.levels
 int organisationLevel = config.facility.level
 int infoGroupLevel = config.info.group.level
 int dsrGroupLevel= config.dsr.group.level
+Set<Integer> exportSkipLevels = config.export.skip.levels
 
 beans = {
 	
@@ -95,6 +98,12 @@ beans = {
 		validationService = ref("validationService")
 		sessionFactory = ref("sessionFactory")
 		grailsApplication = ref("grailsApplication")
+	}
+	
+	surveyExportService(SurveyExportService){
+		organisationService = ref("organisationService")
+		surveyValueService = ref("surveyValueService")
+		skipLevels = exportSkipLevels
 	}
 	
 	chartService(ChartService){

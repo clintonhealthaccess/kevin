@@ -7,17 +7,22 @@
 			<th><g:message code="survey.summary.objectivesubmitted.label" default="Objectives Submitted" /></th>
 			<th><g:message code="survey.summary.progress" default="Overall progress" /></th>
 			<th></th>
+			<th><shiro:hasPermission permission="editSurvey:export">
+					<a href="${createLink(controller: 'editSurvey', action: 'export', params: [survey: survey.id, organisation: organisation.id])}">
+						<g:message code="survey.summary.exportall.label" default="Export All" /></a>
+				</shiro:hasPermission>
+			</th>
 		</thead>
 		<tbody>
 			<g:each in="${summaryPage.facilities}" var="facility">
-				<g:set var="organisationSummary" value="${summaryPage.getOrganisationSummary(facility)}" />
+				<g:set var="surveySummary" value="${summaryPage.getSurveySummary(facility)}" />
 				<tr>
 					<td class="objective-table-link" data-facility="${facility.id}">
 						<a
 						href="${createLink(controller: 'editSurvey', action: 'objectiveTable', params: [survey: survey.id, organisation: facility.id])}">${facility.name}</a>
 					</td>
-					<td>${organisationSummary.submittedObjectives}/${organisationSummary.objectives}</td>
-					<td><span class="progress-bar">${organisationSummary.completedQuestions}/${organisationSummary.questions}</span></td>
+					<td>${surveySummary.submittedObjectives}/${surveySummary.objectives}</td>
+					<td><span class="progress-bar">${surveySummary.completedQuestions}/${surveySummary.questions}</span></td>
 					<td>
 						<ul class="horizontal">
 							<li><a
@@ -42,9 +47,10 @@
 							</shiro:hasPermission>
 						</ul>
 					</td>
+					<td></td>
 				</tr>			
 				<tr class="explanation-row">
-					<td colspan="6">
+					<td colspan="5">
 						<div class="explanation-cell" id="explanation-${facility.id}"></div>
 					</td>
 				</tr>

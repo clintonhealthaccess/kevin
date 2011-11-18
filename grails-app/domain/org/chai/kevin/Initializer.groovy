@@ -251,14 +251,15 @@ class Initializer {
 			
 			def dataElementList = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LIST1", type: 
 				Type.TYPE_LIST(
-				Type.TYPE_MAP([
-					"key0": Type.TYPE_STRING(),
-					"key1": Type.TYPE_MAP([
-						"key11": Type.TYPE_MAP([
-							"key111": Type.TYPE_NUMBER()
+					Type.TYPE_MAP([
+						"key0": Type.TYPE_STRING(),
+						"key1": Type.TYPE_MAP([
+							"key11": Type.TYPE_MAP([
+								"key111": Type.TYPE_NUMBER()
+							])	
 						])	
-					])	
-				]))
+					])
+				)
 			)
 			def dataElementMap = new DataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"MAP1", 
 				type: Type.TYPE_MAP([

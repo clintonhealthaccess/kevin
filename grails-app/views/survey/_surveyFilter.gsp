@@ -1,22 +1,35 @@
+<r:require module="foldable"/>
+
+<g:if test="${section != null}">
+	<g:set var="currentSelection" value="${section}" />	
+	<g:set var="currentSurveySection" value="${section}" />
+	<g:set var="currentSurveyObjective" value="${section.objective}" />
+	<g:set var="currentSurvey" value="${section.objective.survey}" />
+</g:if>
+<g:elseif test="${objective != null}">
+	<g:set var="currentSelection" value="${objective}" />	
+	<g:set var="currentSurveyObjective" value="${objective}" />
+	<g:set var="currentSurvey" value="${objective.survey}" />
+</g:elseif>
+<g:elseif test="${survey != null}">
+	<g:set var="currentSelection" value="${survey}" />
+	<g:set var="currentSurvey" value="${survey}" />
+</g:elseif>
+
 <div class="filter">
 	<span class="bold"><g:message code="survey.label"
-			default="Survey" />:</span> <span class="dropdown subnav-dropdown">
+			default="Survey" />:</span> 
+	<span class="dropdown subnav-dropdown">
 		<a class="selected" href="#"> 
-			<g:if test="${section != null}">
-				<g:i18n field="${section.names}" />
-			</g:if> 
-			<g:elseif test="${objective != null}">
-				<g:i18n field="${objective.names}" />
-			</g:elseif> 
-			<g:elseif test="${survey != null}">
-				<g:i18n field="${survey.names}" />
-			</g:elseif> 
+			<g:if test="${currentSelection != null}">
+				<g:i18n field="${currentSelection.names}" />
+			</g:if> 			 
 			<g:else>
 				<g:message code="default.select.label"
 					args="[message(code:'survey.label')]" default="Select a survey" />
 			</g:else>
 	</a>
-		<div id="survey-menu" class="hidden dropdown-list">
+		<div id="survey-menu" class="hidden dropdown-list">		
 			<ul>
 				<g:each in="${surveys}" var="survey">
 					<li id="survey-${survey.id}"
@@ -26,7 +39,7 @@
 						href="${createLink(controller: 'editSurvey', action:'summaryPage', params:[organisation: organisation?.id, survey: survey.id])}">
 							<g:i18n field="${survey.names}" />
 					</a>
-						<ul>
+						<ul class="survey-objective">
 							<g:each in="${survey.getObjectives()}" var="objective">
 
 								<li id="objective-${objective.id}"
@@ -52,6 +65,5 @@
 				</g:each>
 			</ul>
 		</div>
-
 	</span>
 </div>

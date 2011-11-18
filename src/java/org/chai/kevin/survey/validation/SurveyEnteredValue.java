@@ -49,7 +49,7 @@ public class SurveyEnteredValue implements Serializable {
 	private Long id;
 	private SurveyElement surveyElement;
 	private Value value;
-	private Value lastValue;
+	private Value lastValue; //last year's value
 	private OrganisationUnit organisationUnit;
 	
 	public SurveyEnteredValue() {}

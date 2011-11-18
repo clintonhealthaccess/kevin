@@ -29,6 +29,11 @@ package org.chai.kevin;
  */
 
 import org.chai.kevin.fct.FctObjective
+import org.chai.kevin.survey.SummaryPage
+import org.chai.kevin.survey.Survey
+import org.chai.kevin.survey.SurveyObjective
+import org.chai.kevin.survey.SurveyPageService
+import org.chai.kevin.survey.SurveySection
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.period.Period
@@ -38,7 +43,7 @@ abstract class AbstractController {
 	OrganisationService organisationService;
 
 	protected def getObjective(){		
-		FctObjective objective = FctObjective.get(params.int('objective'));	
+		FctObjective objective = FctObjective.get(params.int('objective'));
 		return objective;
 	}
 	
@@ -71,6 +76,6 @@ abstract class AbstractController {
 			level = OrganisationUnitLevel.get(params.int('level'));
 		}
 		return level;
-	}
+	}	
 
 }

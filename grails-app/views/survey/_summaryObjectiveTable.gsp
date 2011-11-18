@@ -7,6 +7,11 @@
 			<th><g:message code="survey.summary.submitted" default="Submitted" /></th>
 			<th><g:message code="survey.summary.progress" default="Overall Progress" /></th>
 			<th></th>
+			<th><shiro:hasPermission permission="editSurvey:export">
+					<a href="${createLink(controller: 'editSurvey', action: 'export', params: [objective: objective.id, organisation: organisation.id])}">
+						<g:message code="survey.summary.exportall.label" default="Export All" /></a>
+				</shiro:hasPermission>
+			</th>
 		</thead>
 		<tbody>
 			<g:each in="${summaryPage.getObjectiveFacilities()}" var="facility">
@@ -24,10 +29,11 @@
 						<shiro:hasPermission permission="editSurvey:export"> 
 						<a href="${createLink(controller: 'editSurvey', action: 'export', params: [objective: objective.id, organisation: facility.id])}">
 						<g:message code="survey.summary.exportobjective.label" default="Export Survey Objective" /></a>
-						</shiro:hasPermission></td>					
+						</shiro:hasPermission></td>
+					<td></td>
 				</tr>
 				<tr class="explanation-row">
-					<td colspan="4">
+					<td colspan="5">
 						<div class="explanation-cell" id="explanation-objective-${facility.id}-${objective.id}"></div>
 					</td>
 				</tr>

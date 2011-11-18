@@ -6,6 +6,10 @@
 			<th><g:message code="survey.section.label" default="Section" /></th>
 			<th><g:message code="survey.summary.progress" default="Overall Progress" /></th>
 			<th></th>
+			<th><shiro:hasPermission permission="editSurvey:export">
+					<a href="${createLink(controller: 'editSurvey', action: 'export', params: [section: section.id, organisation: organisation.id])}">
+						<g:message code="survey.summary.exportall.label" default="Export All" /></a>
+				</shiro:hasPermission></th>						
 		</thead>
 		<tbody>
 			<g:each in="${summaryPage.getSectionFacilities()}" var="facility">
@@ -20,6 +24,7 @@
 						<a href="${createLink(controller: 'editSurvey', action: 'export', params: [section: section.id, organisation: facility.id])}">
 						<g:message code="survey.summary.exportsection.label" default="Export Survey Section" /></a>
 						</shiro:hasPermission></td>
+					<td></td>
 				</tr>
 			</g:each>
 		</tbody>

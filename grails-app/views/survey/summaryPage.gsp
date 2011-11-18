@@ -16,8 +16,8 @@
 			</g:if>
 
 			<div id="survey-header" class="subnav">
-				<g:render template="/survey/surveyFilter"/>
-				<g:render template="/templates/organisationFilter" model="[currentOrganisation: organisation, linkParams:[survey: survey?.id, objective: objective?.id, section: section?.id]]"/>
+			<g:render template="/survey/surveyFilter" />
+			<g:render template="/templates/organisationFilter" model="[currentOrganisation: organisation, linkParams:[survey: survey?.id, objective: objective?.id, section: section?.id]]"/>
 				<div class="clear"></div>
 			</div>
 						

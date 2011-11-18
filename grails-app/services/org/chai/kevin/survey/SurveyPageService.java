@@ -96,7 +96,7 @@ public class SurveyPageService {
 			
 			sectionSummaryMap.put(section, new SectionSummary(section, questions.size(), completedQuestions));
 		}
-		return new SummaryPage(objective, organisation, sections, sectionSummaryMap);
+		return new SummaryPage(objective, organisation, sectionSummaryMap, false);
 	}	
 	
 	@Transactional(readOnly = true)
@@ -114,19 +114,19 @@ public class SurveyPageService {
 			objectiveSummaryMap.put(objective, new ObjectiveSummary(objective, enteredObjective, questions.size(), completedQuestions));
 		}
 		
-		return new SummaryPage(survey, organisation, objectives, objectiveSummaryMap, false);
+		return new SummaryPage(survey, organisation, objectiveSummaryMap, false);
 	}	
 	
 	@Transactional(readOnly = true)
 	public SummaryPage getSurveySummaryPage(Organisation organisation, Survey survey) {
 		if (organisation == null || survey == null) 
-				return new SummaryPage(survey, organisation, null, null);
+				return new SummaryPage(survey, organisation, null);
 		
 		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 		Map<OrganisationUnitGroup, List<SurveyObjective>> objectiveMap = new HashMap<OrganisationUnitGroup, List<SurveyObjective>>();
 		Map<OrganisationUnitGroup, List<SurveyQuestion>> questionMap = new HashMap<OrganisationUnitGroup, List<SurveyQuestion>>();
 
-		Map<Organisation, OrganisationSummary> summaryMap = new HashMap<Organisation, OrganisationSummary>();
+		Map<Organisation, SurveySummary> summaryMap = new HashMap<Organisation, SurveySummary>();
 		for (Organisation facility : facilities) {
 			organisationService.loadGroup(facility);
 
@@ -144,13 +144,13 @@ public class SurveyPageService {
 			}
 			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, facility.getOrganisationUnit(), null, null, true, false);
 			
-			OrganisationSummary summary = new OrganisationSummary(facility,  
+			SurveySummary summary = new SurveySummary(facility,  
 					submittedObjectives, objectiveMap.get(facility.getOrganisationUnitGroup()).size(), 
 					completedQuestions, questionMap.get(facility.getOrganisationUnitGroup()).size());
 			
 			summaryMap.put(facility, summary);
 		}
-		return new SummaryPage(survey, organisation, facilities, summaryMap);
+		return new SummaryPage(survey, organisation, summaryMap);
 	}
 	
 	@Transactional(readOnly = true)

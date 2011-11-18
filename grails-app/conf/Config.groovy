@@ -60,6 +60,8 @@ grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
 
 // What URL patterns should be processed by the resources plugin
 grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
+//workaround for problem with CSS bundles after upgrading to Grails 2.0.0.RC1/Resources 1.1.1
+grails.resources.debug = true
 
 // The default codec used to encode data with ${}
 grails.views.default.codec = "none" // none, html, base64
@@ -223,6 +225,7 @@ fct.facility.checked=["District Hospital","Health Center"]
 
 period.type = "Monthly"
 
+export.skip.levels=[1]
 
 /**
  * Configuration file override
