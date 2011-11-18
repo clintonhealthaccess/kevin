@@ -28,15 +28,20 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.value.CalculationPartialValue;
-import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.hisp.dhis.period.Period;
 
 public class InfoService {
@@ -44,28 +49,54 @@ public class InfoService {
 	private ValueService valueService;
 	private ExpressionService expressionService;
 	private OrganisationService organisationService;
-	private int groupLevel;
 	
-	public NormalizedDataElementInfo getInfo(Expression expression, Organisation organisation, Period period, Double maxValue) {
-		NormalizedDataElementValue expressionValue = valueService.getValue(expression, organisation.getOrganisationUnit(), period);
-		if (expressionValue == null) return null;
-		Map<Organisation, Map<RawDataElement, RawDataElementValue>> calculateDataValues = expressionService.calculateDataValues(expression, period, organisation);
-		return new NormalizedDataElementInfo(expressionValue, calculateDataValues, maxValue);
+	public NormalizedDataElementInfo getNormalizedDataElementInfo(NormalizedDataElement normalizedDataElement, Organisation facility, Period period) {
+		if (organisationService.loadLevel(facility) != organisationService.getFacilityLevel()) {
+			throw new IllegalArgumentException("getting the info of a NormalizedDateElement for non-facility organisation is not possible");
+		}
+		NormalizedDataElementInfo info = null;
+		NormalizedDataElementValue expressionValue = valueService.getDataElementValue(normalizedDataElement, facility.getOrganisationUnit(), period);
+		if (expressionValue != null) {
+			organisationService.loadGroup(facility);
+			Map<RawDataElement, RawDataElementValue> dataValues = new HashMap<RawDataElement, RawDataElementValue>();
+			List<RawDataElement> dataElements = new ArrayList<RawDataElement>();
+			for (Entry<String, RawDataElement> entry : expressionService.getDataInExpression(normalizedDataElement.getExpression(period, facility.getOrganisationUnitGroup().getUuid()), RawDataElement.class).entrySet()) {
+				if (entry.getValue() != null) {
+					dataValues.put(entry.getValue(), valueService.getDataElementValue(entry.getValue(), facility.getOrganisationUnit(), period));
+				}
+			}
+			info = new NormalizedDataElementInfo(expressionValue, dataElements, dataValues);
+		}
+		return info;
 	}
 	
-	public CalculationInfo getInfo(Calculation calculation, Organisation organisation, Period period) {
-		CalculationPartialValue calculationValue = valueService.getValue(calculation, organisation.getOrganisationUnit(), period);
-		if (calculationValue == null) return null;
-		
-		List<Organisation> groupOrganisations = null;
-		if (groupLevel != 0 && organisation.getLevel() < groupLevel) {
-			groupOrganisations = organisationService.getOrganisationsOfLevel(groupLevel);
-			for (Organisation groupOrganisation : groupOrganisations) {
-				organisationService.loadUntilLevel(groupOrganisation, organisationService.getFacilityLevel());
+	public CalculationInfo getCalculationInfo(Calculation<?> calculation, Organisation organisation, Period period, Set<String> groupUuids) {
+		CalculationInfo info = null;
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, organisation.getOrganisationUnit(), period, groupUuids);
+		if (calculationValue != null) {
+			List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+			Map<String, DataElement> dataMap = expressionService.getDataInExpression(calculation.getExpression(), DataElement.class);
+			List<DataElement<?>> dataElements = new ArrayList<DataElement<?>>();
+			for (DataElement<?> value : dataMap.values()) {
+				dataElements.add(value);
 			}
+			
+			Map<Organisation, CalculationValue<?>> calculationValues = new HashMap<Organisation, CalculationValue<?>>();
+			Map<Organisation, Map<DataElement<?>, DataValue>> values = new HashMap<Organisation, Map<DataElement<?>,DataValue>>();
+			for (Organisation facility : facilities) {
+				organisationService.loadGroup(facility);
+				if (groupUuids.contains(facility.getOrganisationUnitGroup().getUuid())) {
+					calculationValues.put(facility, valueService.getCalculationValue(calculation, facility.getOrganisationUnit(), period, groupUuids));
+					Map<DataElement<?>, DataValue> data = new HashMap<DataElement<?>, DataValue>();
+					for (DataElement<?> dataElement : dataElements) {
+						
+					}
+					values.put(facility, data);
+				}
+			}
+			info = new CalculationInfo(calculationValue, facilities, dataElements, values, calculationValues);
 		}
-		Map<Organisation, NormalizedDataElementValue> expressionValues = expressionService.calculateExpressionValues(calculation.getExpressions(), period, organisation);
-		CalculationInfo info = new CalculationInfo(calculationValue, groupOrganisations, expressionValues);
+		
 		return info;
 	}
 	
@@ -81,7 +112,4 @@ public class InfoService {
 		this.organisationService = organisationService;
 	}
 	
-	public void setGroupLevel(int groupLevel) {
-		this.groupLevel = groupLevel;
-	}
 }

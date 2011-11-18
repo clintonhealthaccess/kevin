@@ -14,43 +14,43 @@ import grails.plugin.spock.UnitSpec;
 
 public class TypeUnitSpec extends UnitSpec {
 
-	def "test transform value"() {
-		
-		when:
-		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_NUMBER(), "key2": Type.TYPE_MAP(["key1.key1": Type.TYPE_STRING(), "key1.key2": Type.TYPE_NUMBER()])]))
-		def jaqlValue = '[{"key1":10,"key2":{"key1.key1":"value", "key1.key2":10}},{"key1":10,"key2":null}]'
-		def value = type.getValueFromJaql(jaqlValue)
-
-		def values = new HashSet([])		
-		type.transformValue(value, new ValuePredicate() {
-			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
-				values << currentType.getJaqlValue(currentValue)
-			}
-		});
-		def expectedJaqlValues = new HashSet([
-			'[{"key1":10.0,"key2":{"key1.key1":"value","key1.key2":10.0}},{"key1":10.0,"key2":null}]',
-			'{"key1":10.0,"key2":{"key1.key1":"value","key1.key2":10.0}}', // first line
-			'10.0', // value
-			'{"key1.key1":"value","key1.key2":10.0}',  
-			'"value"', // value
-			'10.0', // value
-			'{"key1":10.0,"key2":null}', // second line
-			'10.0',
-			'null'
-		])
-		
-		then:
-		expectedJaqlValues.equals(values)
-		
-		when:
-		values = new HashSet([])
-		type.transformValue(value, new ValuePredicate() {
-			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
-				if (!currentType.isComplexType()) values << currentType.getJaqlValue(currentValue)
-			}
-		});
-		
-	}
+//	def "test transform value"() {
+//		
+//		when:
+//		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_NUMBER(), "key2": Type.TYPE_MAP(["key1.key1": Type.TYPE_STRING(), "key1.key2": Type.TYPE_NUMBER()])]))
+//		def jaqlValue = '[{"key1":10,"key2":{"key1.key1":"value", "key1.key2":10}},{"key1":10,"key2":null}]'
+//		def value = type.getValueFromJaql(jaqlValue)
+//
+//		def values = new HashSet([])		
+//		type.transformValue(value, new ValuePredicate() {
+//			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+//				values << currentType.getJaqlValue(currentValue)
+//			}
+//		});
+//		def expectedJaqlValues = new HashSet([
+//			'[{"key1":10.0,"key2":{"key1.key1":"value","key1.key2":10.0}},{"key1":10.0,"key2":null}]',
+//			'{"key1":10.0,"key2":{"key1.key1":"value","key1.key2":10.0}}', // first line
+//			'10.0', // value
+//			'{"key1.key1":"value","key1.key2":10.0}',  
+//			'"value"', // value
+//			'10.0', // value
+//			'{"key1":10.0,"key2":null}', // second line
+//			'10.0',
+//			'null'
+//		])
+//		
+//		then:
+//		expectedJaqlValues.equals(values)
+//		
+//		when:
+//		values = new HashSet([])
+//		type.transformValue(value, new ValuePredicate() {
+//			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+//				if (!currentType.isComplexType()) values << currentType.getJaqlValue(currentValue)
+//			}
+//		});
+//		
+//	}
 	
 	def "test type"() {
 		setup:

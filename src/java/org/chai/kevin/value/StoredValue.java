@@ -47,7 +47,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
-public abstract class StoredValue {
+public abstract class StoredValue implements DataValue {
 
 	protected OrganisationUnit organisationUnit;
 	protected Period period;
@@ -65,6 +65,10 @@ public abstract class StoredValue {
 		this.value = value;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.chai.kevin.value.DataValue#getOrganisationUnit()
+	 */
+	@Override
 	@NaturalId
 	@ManyToOne(targetEntity=OrganisationUnit.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
@@ -76,6 +80,10 @@ public abstract class StoredValue {
 		this.organisationUnit = organisationUnit;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.chai.kevin.value.DataValue#getPeriod()
+	 */
+	@Override
 	@NaturalId
 	@ManyToOne(targetEntity=Period.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
@@ -87,6 +95,9 @@ public abstract class StoredValue {
 		this.period = period;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.chai.kevin.value.DataValue#getTimestamp()
+	 */
 	@Column(nullable=false)
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	public Date getTimestamp() {
@@ -97,6 +108,10 @@ public abstract class StoredValue {
 		this.timestamp = timestamp;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.chai.kevin.value.DataValue#getValue()
+	 */
+	@Override
 	@Embedded
 	@AttributeOverrides({
         @AttributeOverride(name="jsonValue", column=@Column(name="value", nullable=false))
@@ -109,6 +124,9 @@ public abstract class StoredValue {
 		this.value = value;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.chai.kevin.value.DataValue#getData()
+	 */
 	@Transient
 	public abstract Data<?> getData();
 	
@@ -131,7 +149,7 @@ public abstract class StoredValue {
 			return false;
 		if (!(obj instanceof StoredValue))
 			return false;
-		StoredValue other = (StoredValue) obj;
+		DataValue other = (DataValue) obj;
 		if (getOrganisationUnit() == null) {
 			if (other.getOrganisationUnit() != null)
 				return false;

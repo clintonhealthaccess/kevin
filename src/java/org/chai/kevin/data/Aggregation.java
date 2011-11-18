@@ -15,6 +15,7 @@ import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="Aggregation")
@@ -23,8 +24,8 @@ import org.hisp.dhis.period.Period;
 public class Aggregation extends Calculation<AggregationPartialValue> {
 
 	@Override
-	public AggregationValue getCalculationValue(List<AggregationPartialValue> partialValues) {
-		return new AggregationValue(partialValues, this);
+	public AggregationValue getCalculationValue(List<AggregationPartialValue> partialValues, Period period, OrganisationUnit organisationUnit) {
+		return new AggregationValue(partialValues, this, period, organisationUnit);
 	}
 
 	@Override

@@ -27,8 +27,8 @@
  */
 package org.chai.kevin.survey
 
-import org.chai.kevin.util.Utils;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.util.Utils
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
  * @author Jean Kahigiso M.

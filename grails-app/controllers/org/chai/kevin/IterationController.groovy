@@ -1,11 +1,7 @@
 package org.chai.kevin
 
-import java.text.DateFormat
-import java.text.SimpleDateFormat
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
-import org.hisp.dhis.period.PeriodType;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.chai.kevin.PeriodSorter;
 
 class IterationController extends AbstractEntityController  {
 

@@ -9,12 +9,12 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
-import org.chai.kevin.value.StoredValue;
+import org.chai.kevin.value.DataValue;
 
 @Entity(name="DataElement")
 @Table(name="dhsst_data_element")
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class DataElement<T extends StoredValue> extends Data<T> {
+public abstract class DataElement<T extends DataValue> extends Data<T> {
 
 	private Type type;
 

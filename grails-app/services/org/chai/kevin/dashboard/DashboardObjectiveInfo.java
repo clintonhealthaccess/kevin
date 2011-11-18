@@ -31,39 +31,26 @@ package org.chai.kevin.dashboard;
 import java.util.Map;
 
 import org.chai.kevin.Info;
-import org.chai.kevin.Organisation;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
-public class DashboardObjectiveInfo extends Info {
+public class DashboardObjectiveInfo extends Info<DashboardPercentage> {
 
 	private DashboardPercentage percentage;
-	private Organisation organisation;
-	@SuppressWarnings("unused")
 	private Map<DashboardObjectiveEntry, DashboardPercentage> values;
 	
-	public DashboardObjectiveInfo(DashboardPercentage percentage, Organisation organisation, Map<DashboardObjectiveEntry, DashboardPercentage> values) {
+	public DashboardObjectiveInfo(DashboardPercentage percentage, Map<DashboardObjectiveEntry, DashboardPercentage> values) {
+		super(percentage);
+		
 		this.percentage = percentage;
 		this.values = values;
-		this.organisation = organisation;
-	}
-	
-	@Override
-	public String getTemplate() {
-		return "/dashboard/objectiveInfo";
-	}
-
-	public Double getValue() {
-		if (percentage.getValue() == null) return null;
-		return percentage.getValue();
 	}
 	
 	public Double getNumberValue() {
-		if (percentage.getValue() == null) return null;
-		return percentage.getValue();
+		if (percentage.getValue().isNull()) return null;
+		return percentage.getValue().getNumberValue().doubleValue();
 	}
-
-	public OrganisationUnit getOrganisation() {
-		return organisation.getOrganisationUnit();
+	
+	public String getTemplate() {
+		return "/dashboard/objectiveInfo";
 	}
 
 }

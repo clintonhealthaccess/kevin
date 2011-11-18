@@ -1,13 +1,10 @@
 package org.chai.kevin.fct
 
-import java.util.Collections;
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.Organisation;
+import org.chai.kevin.AbstractController
+import org.chai.kevin.Organisation
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.dsr.DsrObjective;
-import org.chai.kevin.fct.FctService;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.hisp.dhis.period.Period
 
 class FctController extends AbstractController {
 

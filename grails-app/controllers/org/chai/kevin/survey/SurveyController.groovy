@@ -27,14 +27,10 @@
  */
 package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.Organisation
-import org.chai.kevin.OrganisationService
+import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.PeriodSorter
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.period.Period;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.hisp.dhis.period.Period
 /**
  * @author Jean Kahigiso M.
  *

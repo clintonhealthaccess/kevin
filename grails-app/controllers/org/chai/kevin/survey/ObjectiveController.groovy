@@ -27,11 +27,8 @@
  */
 package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.Ordering;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup
-import org.chai.kevin.util.Utils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.AbstractEntityController
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
  * @author Jean Kahigiso M.

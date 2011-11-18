@@ -28,14 +28,8 @@ package org.chai.kevin.cost
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.dashboard.DashboardTarget;
-import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.util.Utils;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.AbstractEntityController
 
 class CostTargetController extends AbstractEntityController {
 	
@@ -66,7 +60,7 @@ class CostTargetController extends AbstractEntityController {
 		[
 			target: entity, 
 			currentObjective: currentObjective, 
-			expressions: Expression.list(), 
+			dataElements: DataElement.list(), 
 			costRampUps: CostRampUp.list(), 
 			groups: organisationService.getGroupsForExpression(),
 		]

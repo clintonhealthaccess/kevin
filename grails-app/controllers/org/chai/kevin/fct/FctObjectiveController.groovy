@@ -31,12 +31,7 @@ package org.chai.kevin.fct
 * @author Jean Kahigiso M.
 *
 */
-import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.dsr.DsrObjective
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.AbstractEntityController
 
 class FctObjectiveController extends AbstractEntityController {
 	

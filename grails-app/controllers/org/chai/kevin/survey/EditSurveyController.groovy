@@ -32,17 +32,14 @@ import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.Organisation
 import org.chai.kevin.OrganisationService
-import org.chai.kevin.ValueService
 import org.chai.kevin.security.User
-import org.chai.kevin.util.Utils
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.util.Utils;
 
 class EditSurveyController extends AbstractController {
 
 	SurveyPageService surveyPageService;
 	SurveyExportService surveyExportService;
 	ValidationService validationService;
-	ValueService valueService;
 
 	def index = {
 		redirect (action: 'view', params: params)

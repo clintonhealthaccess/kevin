@@ -5,7 +5,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;

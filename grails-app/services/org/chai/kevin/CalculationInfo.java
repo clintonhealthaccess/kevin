@@ -28,68 +28,55 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.value.CalculationPartialValue;
-import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.StoredValue;
-import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.value.DataValue;
 
 public class CalculationInfo extends Info<CalculationValue<?>> {
 
-	private CalculationPartialValue calculationValue;
-	private List<Organisation> groups;
-	private Map<Organisation, NormalizedDataElementValue> expressionValues;
+	private List<Organisation> organisations;
+	private List<DataElement<?>> dataElements;
+	private Map<Organisation, Map<DataElement<?>, DataValue>> values;
+	private Map<Organisation, CalculationValue<?>> calculationValues;
 	
-	public CalculationInfo(CalculationValue<?> calculationValue, Map<Organisation, NormalizedDataElementValue> expressionValues) {
-		this.calculationValue = calculationValue;
-		this.expressionValues = expressionValues;
+	public CalculationInfo(CalculationValue<?> calculationValue, List<Organisation> organisations, List<DataElement<?>> dataElements, 
+			Map<Organisation, Map<DataElement<?>, DataValue>> values, Map<Organisation, CalculationValue<?>> calculationValues) {
+		super(calculationValue);
+
+		this.organisations = organisations;
+		this.dataElements = dataElements;
+		this.values = values;
+		this.calculationValues = calculationValues;
 	}
 
-	public CalculationInfo(CalculationPartialValue calculationValue, List<Organisation> groups,
-			Map<Organisation, NormalizedDataElementValue> expressionValues) {
-		this.calculationValue = calculationValue;
-		this.groups = groups;
-		this.expressionValues = expressionValues;
+	public List<Organisation> getOrganisations() {
+		return organisations;
 	}
 	
-	public List<Organisation> getGroups() {
-		return groups;
+	public List<DataElement<?>> getDataElements() {
+		return dataElements;
 	}
 	
-	public Map<Organisation, NormalizedDataElementValue> getExpressionValuesForGroup(Organisation organisation) {
-		Map<Organisation, NormalizedDataElementValue> result = new HashMap<Organisation, NormalizedDataElementValue>();
-		for (Organisation child : expressionValues.keySet()) {
-			if (organisation.hasChild(child)) result.put(child, expressionValues.get(child));
+	public Set<Organisation> getOrganisationsOfGroup(Organisation organisation) {
+		Set<Organisation> result = new HashSet<Organisation>();
+		for (Organisation child : values.keySet()) {
+			if (organisation.hasChild(child)) result.add(child);
 		}
 		return result;
 	}
 	
-	public Calculation getCalculation() {
-		return calculationValue.getCalculation();
+	public CalculationValue<?> getValue(Organisation organisation) {
+		return calculationValues.get(organisation);
 	}
 	
-	public OrganisationUnit getOrganisation() {
-		return calculationValue.getOrganisationUnit();
+	public DataValue getValue(Organisation organisation, DataElement<?> dataElement) {
+		return values.get(organisation).get(dataElement);
 	}
 	
-	public StoredValue getCalculationValue() {
-		return calculationValue;
-	}
-	
-
-	public Map<Organisation, NormalizedDataElementValue> getExpressionValues() {
-		return expressionValues;
-	}
-	
-	public Value getValue() {
-		return calculationValue.getValue();
-	}
-
 	public String getTemplate() {
 		return "/info/calculationInfo";
 	}

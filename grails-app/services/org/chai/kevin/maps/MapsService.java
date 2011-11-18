@@ -33,11 +33,14 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.CalculationInfo;
+import org.chai.kevin.CalculationValue;
 import org.chai.kevin.Info;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
@@ -85,31 +88,13 @@ public class MapsService {
 			organisationService.loadLevel(child);
 			
 			Double value = null;
-			if (target.getType() == MapsTargetType.AGGREGATION) {
-				if (log.isDebugEnabled()) log.debug("getting values for AGGREGATION map with expression: "+target.getExpression());
-				NormalizedDataElementValue expressionValue = valueService.getValue(target.getExpression(), child.getOrganisationUnit(), period);
-				if (expressionValue != null) {
-					if (!expressionValue.getValue().isNull()) {
-						value = expressionValue.getValue().getNumberValue().doubleValue();
-					}
-				}
-
-				if (value != null) {
-					if (target.getMaxValue() != null) {
-						value = value / target.getMaxValue(); 
-					}
+			// TODO groups
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child.getOrganisationUnit(), period, Utils.getUuids(organisationService.getGroupsForExpression()));
+			if (calculationValue != null) {
+				if (!calculationValue.getValue().isNull()) {
+					value = calculationValue.getValue().getNumberValue().doubleValue();
 				}
 			}
-			else if (target.getType() == MapsTargetType.AVERAGE) {
-				if (log.isDebugEnabled()) log.debug("getting values for AVERAGE map with calculation: "+target.getCalculation());
-				CalculationPartialValue calculationValue = valueService.getValue(target.getCalculation(), child.getOrganisationUnit(), period);
-				if (calculationValue != null) {
-					if (!calculationValue.getValue().isNull()) {
-						value = calculationValue.getValue().getNumberValue().doubleValue();
-					}
-				}
-			}
-			
 			
 			polygons.add(new Polygon(child, value));
 		}
@@ -118,15 +103,10 @@ public class MapsService {
 	}
 
 	public MapsExplanation getExplanation(Period period, Organisation organisation, MapsTarget target) {
-		Info info = null;
-		if (target.getType() == MapsTargetType.AGGREGATION) {
-			info = infoService.getInfo(target.getExpression(), organisation, period, target.getMaxValue()); 
-		}
-		else if (target.getType() == MapsTargetType.AVERAGE) {
-			info = infoService.getInfo(target.getCalculation(), organisation, period);
-		}
-		
-		return new MapsExplanation(organisation, target, period, info);
+		// TODO groups
+		CalculationInfo info = infoService.getCalculationInfo(target.getCalculation(), organisation, period, Utils.getUuids(organisationService.getGroupsForExpression()));
+		if (info == null) return null;
+		return new MapsExplanation(target, info);
 	}
 	
 	public void setValueService(ValueService valueService) {

@@ -40,12 +40,14 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.CalculationInfo;
 import org.chai.kevin.CalculationValue;
-import org.chai.kevin.ExpressionService;
+import org.chai.kevin.Info;
 import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.util.Utils;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
@@ -58,7 +60,6 @@ public class DashboardService {
 	private OrganisationService organisationService;
 	private InfoService infoService;
 	private ValueService valueService;
-	private ExpressionService expressionService;
 	
 	private Set<Integer> skipLevels;
 	
@@ -97,31 +98,35 @@ public class DashboardService {
 		organisationService.loadGroup(organisation);
 		organisationService.loadLevel(organisation);
 		
-		return entry.visit(explanationVisitor, organisation, period);
+		return entry.visit(new ExplanationVisitor(), organisation, period);
 	}
 
 	private class ExplanationVisitor implements DashboardVisitor<DashboardExplanation> {
 
-		private final Log log = LogFactory.getLog(ExplanationVisitor.class);
-		
 		@Override
 		public DashboardExplanation visitObjective(DashboardObjective objective, Organisation organisation, Period period) {
-			// TODO Auto-generated method stub
-			return null;
+			DashboardPercentage percentage = objective.visit(new PercentageVisitor(), organisation, period);
+			if (percentage == null) return null;
+			Map<DashboardObjectiveEntry, DashboardPercentage> values = getValues(objective.getObjectiveEntries(), period, organisation);
+			Info<DashboardPercentage> info = new DashboardObjectiveInfo(percentage, values);
+			
+			return new DashboardExplanation(info, objective);
 		}
 
 		@Override
 		public DashboardExplanation visitTarget(DashboardTarget target, Organisation organisation, Period period) {
-			// TODO Auto-generated method stub
-			return null;
+			// TODO groups
+			CalculationInfo calculationInfo = infoService.getCalculationInfo(target.getCalculation(), organisation, period, Utils.getUuids(organisationService.getGroupsForExpression()));
+			if (calculationInfo == null) return null;
+			return new DashboardExplanation(calculationInfo, target);
 		}
 		
 	}
 	
-	private ExplanationVisitor explanationVisitor = new ExplanationVisitor();
+	private static Type type = Type.TYPE_NUMBER();
 	
 	private class PercentageVisitor implements DashboardVisitor<DashboardPercentage> {
-
+		
 		private final Log log = LogFactory.getLog(PercentageVisitor.class);
 		
 		@Override
@@ -139,7 +144,7 @@ public class DashboardService {
 				}
 				Integer weight = child.getWeight();
 				if (childPercentage.isValid()) {
-					sum += childPercentage.getValue() * weight;
+					sum += childPercentage.getGradientValue() * weight;
 					totalWeight += weight;
 				}
 				else {
@@ -149,7 +154,7 @@ public class DashboardService {
 
 			}
 			// TODO what if sum = 0 and totalWeight = 0 ?
-			DashboardPercentage percentage = new DashboardPercentage(sum / totalWeight);
+			DashboardPercentage percentage = new DashboardPercentage(type.getValue(sum/totalWeight), organisation.getOrganisationUnit(), period);
 			
 			if (log.isDebugEnabled()) log.debug("visitObjective()="+percentage);
 			return percentage;
@@ -161,31 +166,33 @@ public class DashboardService {
 			
 			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), organisation.getOrganisationUnit(), period, Utils.getUuids(organisationService.getGroupsForExpression()));
 			if (calculationValue == null) return null;
-			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue());
+			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), organisation.getOrganisationUnit(), period);
 
 			if (log.isDebugEnabled()) log.debug("visitTarget(...)="+percentage);
 			return percentage;
 		}
-		
 	}
 	
-	private PercentageVisitor percentageVisitor = new PercentageVisitor();
-	
-	private Map<Organisation, Map<DashboardEntry, DashboardPercentage>> getValues(List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries, Period period) {
-		Map<Organisation, Map<DashboardEntry, DashboardPercentage>> values = new HashMap<Organisation, Map<DashboardEntry, DashboardPercentage>>();
+	private Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> getValues(List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries, Period period) {
+		Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> values = new HashMap<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>>();
 
 		for (Organisation organisation : organisations) {
-			Map<DashboardEntry, DashboardPercentage> organisationMap = new HashMap<DashboardEntry, DashboardPercentage>();
-			for (DashboardObjectiveEntry objectiveEntry : objectiveEntries) {
-				DashboardPercentage percentage = objectiveEntry.getEntry().visit(percentageVisitor, organisation, period);
-				organisationMap.put(objectiveEntry.getEntry(), percentage);
-			}
+			Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = getValues(objectiveEntries, period, organisation);
 			values.put(organisation, organisationMap);
 		}
 		return values;
 	}
+
+	private Map<DashboardObjectiveEntry, DashboardPercentage> getValues(List<DashboardObjectiveEntry> objectiveEntries, Period period, Organisation organisation) {
+		Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = new HashMap<DashboardObjectiveEntry, DashboardPercentage>();
+		for (DashboardObjectiveEntry objectiveEntry : objectiveEntries) {
+			DashboardPercentage percentage = objectiveEntry.getEntry().visit(new PercentageVisitor(), organisation, period);
+			organisationMap.put(objectiveEntry, percentage);
+		}
+		return organisationMap;
+	}
 	
-	public List<Organisation> calculateOrganisationPath(Organisation organisation) {
+	private List<Organisation> calculateOrganisationPath(Organisation organisation) {
 		List<Organisation> organisationPath = new ArrayList<Organisation>();
 		Organisation parent = organisation;
 		while ((parent = parent.getParent()) != null) {
@@ -211,17 +218,12 @@ public class DashboardService {
 		this.organisationService = organisationService;
 	}
 	
-	
 	public void setInfoService(InfoService infoService) {
 		this.infoService = infoService;
 	}
 	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
-	}
-	
-	public void setExpressionService(ExpressionService expressionService) {
-		this.expressionService = expressionService;
 	}
 	
 	public void setSkipLevels(Set<Integer> skipLevels) {

@@ -50,8 +50,8 @@ import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.StoredValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,11 +92,11 @@ public class DsrService {
 				String value = null;
 				
 				if (applies) {
-					StoredValue expressionValue = valueService.getDataElementValue( target.getDataElement(), child.getOrganisationUnit(), period);
+					DataValue expressionValue = valueService.getDataElementValue( target.getDataElement(), child.getOrganisationUnit(), period);
 					
 					if (expressionValue != null && !expressionValue.getValue().isNull()) {
 						// TODO put this in templates ?
-						switch (expressionValue.getData().getType().getType()) {
+						switch (target.getDataElement().getType().getType()) {
 						case BOOL:
 							if (expressionValue.getValue().getBooleanValue()) value = "&#10003;";
 							else value = "";
@@ -108,7 +108,7 @@ public class DsrService {
 							value = getFormat(target, expressionValue.getValue().getNumberValue().doubleValue());
 							break;
 						case ENUM:
-							String code = expressionValue.getData().getType().getEnumCode();
+							String code = target.getDataElement().getType().getEnumCode();
 							Enum enume = dataService.findEnumByCode(code);
 							if (enume != null) {
 								EnumOption option = enume.getOptionForValue(expressionValue.getValue().getEnumValue());

@@ -43,6 +43,7 @@ import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="Average")
@@ -51,8 +52,8 @@ import org.hisp.dhis.period.Period;
 public class Average extends Calculation<AveragePartialValue> {
 
 	@Override
-	public AverageValue getCalculationValue(List<AveragePartialValue> partialValues) {
-		return new AverageValue(partialValues, this);
+	public AverageValue getCalculationValue(List<AveragePartialValue> partialValues, Period period, OrganisationUnit organisationUnit) {
+		return new AverageValue(partialValues, this, period, organisationUnit);
 	}
 
 	@Override

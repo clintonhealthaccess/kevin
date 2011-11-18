@@ -1,14 +1,12 @@
 package org.chai.kevin.security
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.RandomStringUtils
 import org.apache.shiro.SecurityUtils
 import org.apache.shiro.authc.AuthenticationException
 import org.apache.shiro.authc.UsernamePasswordToken
-import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.shiro.web.util.SavedRequest
+import org.apache.shiro.crypto.hash.Sha256Hash
 import org.apache.shiro.web.util.WebUtils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.springframework.web.servlet.FlashMap;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class AuthController {
 	

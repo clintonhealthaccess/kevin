@@ -28,15 +28,9 @@ package org.chai.kevin.maps
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.dashboard.DashboardTarget;
-import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.util.JSONUtils;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.data.Type
+import org.chai.kevin.data.Calculation;
 
 class MapsTargetController extends AbstractEntityController {
 	
@@ -59,7 +53,7 @@ class MapsTargetController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		[ target: entity, expressions: Expression.list(), groups: organisationService.getGroupsForExpression()]
+		[ target: entity, calculations: Calculation.list(), groups: organisationService.getGroupsForExpression()]
 	}
 	
 	def saveEntity(def entity) {

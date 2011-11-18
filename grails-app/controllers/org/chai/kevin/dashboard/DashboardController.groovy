@@ -28,25 +28,12 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.Organisation;
-import org.chai.kevin.dashboard.Dashboard;
-import org.chai.kevin.dashboard.DashboardService;
-import org.chai.kevin.dashboard.DashboardPercentage;
-import org.chai.kevin.dashboard.PercentageCalculator;
-import org.chai.kevin.dashboard.DashboardTarget;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.reports.ReportEntity;
-import org.hibernate.cache.ReadWriteCache.Item;
-import org.hisp.dhis.aggregation.AggregationService;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.hisp.dhis.dataset.DataSet;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.period.Period;
+import org.apache.commons.lang.math.NumberUtils
+import org.chai.kevin.AbstractController
+import org.chai.kevin.Organisation
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.hisp.dhis.aggregation.AggregationService
+import org.hisp.dhis.period.Period
 
 class DashboardController extends AbstractController {
 

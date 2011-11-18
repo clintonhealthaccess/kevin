@@ -46,12 +46,12 @@ public class Dashboard {
 	
 	private List<OrganisationUnitGroup> facilityTypes;
 	
-	private Map<Organisation, Map<DashboardEntry, DashboardPercentage>> values;
+	private Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> values;
 	
 	public Dashboard(List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries,
 			List<Organisation> organisationPath, List<DashboardObjective> objectivePath,
 			List<OrganisationUnitGroup> facilityTypes,
-			Map<Organisation, Map<DashboardEntry, DashboardPercentage>> values
+			Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> values
 	) {
 		this.organisations = organisations;
 		this.objectiveEntries = objectiveEntries;
@@ -89,9 +89,9 @@ public class Dashboard {
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		for (Entry<Organisation, Map<DashboardEntry, DashboardPercentage>> organisationEntry : this.values.entrySet()) {
+		for (Entry<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> organisationEntry : this.values.entrySet()) {
 			buffer.append(organisationEntry.getKey());
-			for (Entry<DashboardEntry, DashboardPercentage> objectiveEntry : organisationEntry.getValue().entrySet()) {
+			for (Entry<DashboardObjectiveEntry, DashboardPercentage> objectiveEntry : organisationEntry.getValue().entrySet()) {
 				buffer.append(objectiveEntry.getKey());
 				buffer.append(":");
 				buffer.append(objectiveEntry.getValue());

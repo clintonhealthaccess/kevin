@@ -28,38 +28,24 @@ package org.chai.kevin.maps;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.chai.kevin.CalculationInfo;
 import org.chai.kevin.Info;
 import org.chai.kevin.Organisation;
 import org.hisp.dhis.period.Period;
 
 public class MapsExplanation {
 
-	private Organisation organisation;
 	private MapsTarget mapsTarget;
-	private Period period;
-	private Info info;
+	private CalculationInfo info;
 	
-	
-	public MapsExplanation(Organisation organisation, MapsTarget mapsTarget,
-			Period period, Info info) {
+	public MapsExplanation(MapsTarget mapsTarget, CalculationInfo info) {
 		super();
-		this.organisation = organisation;
 		this.mapsTarget = mapsTarget;
-		this.period = period;
 		this.info = info;
-	}
-
-	
-	public Organisation getOrganisation() {
-		return organisation;
 	}
 	
 	public MapsTarget getMapsTarget() {
 		return mapsTarget;
-	}
-	
-	public Period getPeriod() {
-		return period;
 	}
 	
 	public Info getInfo() {

@@ -3,6 +3,7 @@ package org.chai.kevin
 import grails.validation.ValidationException;
 
 import org.chai.kevin.data.Average;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -12,17 +13,17 @@ class NormalizedDataElementSpec extends IntegrationTests {
 
 	def "expression type is valid"() {
 		when:
-		new Expression(code: CODE(1), type: Type.TYPE_NUMBER(), expression:"1").save(failOnError: true)
+		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
 		
 		then:
-		Expression.count() == 1
-		Expression.list()[0].type.jsonValue == "{\"type\":\"number\"}";
+		NormalizedDataElement.count() == 1
+		NormalizedDataElement.list()[0].type.jsonValue == "{\"type\":\"number\"}";
 	}
 
 	
 	def "expression type cannot be invalid"() {
 		when:
-		new Expression(code: CODE(1), type: INVALID_TYPE, expression:"1").save(failOnError: true)
+		new NormalizedDataElement(code: CODE(1), type: INVALID_TYPE, expressionMap:e([:])).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -30,7 +31,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 
 	def "expression type cannot be null"() {
 		when:
-		def expression = new Expression(code: CODE(1), expression: "1").save(failOnError: true)
+		def normalizedDataElement = new NormalizedDataElement(code: CODE(1), expressionMap:e([:])).save(failOnError: true)
 
 		then:
 		thrown ValidationException
@@ -39,13 +40,13 @@ class NormalizedDataElementSpec extends IntegrationTests {
 
 	def "expression code is unique"() {
 		when:
-		new Expression(code: CODE(1), type: Type.TYPE_NUMBER(), expression: "1").save(failOnError: true)
+		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
 
 		then:
-		Expression.count();
+		NormalizedDataElement.count();
 
 		when:
-		new Expression(code: CODE(1), type: Type.TYPE_NUMBER(), expression: "1").save(failOnError: true)
+		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
 
 		then:
 		thrown ValidationException
@@ -56,11 +57,11 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		setup:
 		def organisationUnit = newOrganisationUnit(name: BUTARO)
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+		def expression = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 
 		when:
-		def expr1 = new NormalizedDataElementValue(expression: expression, period: period, organisationUnit: organisationUnit);
-		def expr2 = new NormalizedDataElementValue(expression: expression, period: period, organisationUnit: organisationUnit);
+		def expr1 = new NormalizedDataElementValue(normalizedDataElement: normalizedDataElement, period: period, organisationUnit: organisationUnit);
+		def expr2 = new NormalizedDataElementValue(normalizedDataElement: normalizedDataElement, period: period, organisationUnit: organisationUnit);
 
 		then:
 		expr1.hashCode() == expr2.hashCode();
@@ -77,7 +78,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 
 	def "invalid expression"() {
 		when:
-		new Expression(code: CODE(1), type: Type.TYPE_NUMBER(), expression: formula).save(failOnError: true)
+		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e(["1":["DH":formula]])).save(failOnError: true)
 
 		then:
 		thrown ValidationException

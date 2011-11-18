@@ -51,8 +51,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class EnumOption extends Orderable<Ordering> {
 
-	private static final long serialVersionUID = -7093395116301416126L;
-	
 	private Long id;
 	private String value;
 	private Ordering order = new Ordering();

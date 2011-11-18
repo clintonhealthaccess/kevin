@@ -5,11 +5,13 @@ import java.util.List;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.Value;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
 public class AverageValue extends CalculationValue<AveragePartialValue> {
 
-	public AverageValue(List<AveragePartialValue> calculationPartialValues, Average calculation) {
-		super(calculationPartialValues, calculation);
+	public AverageValue(List<AveragePartialValue> calculationPartialValues, Average calculation, Period period, OrganisationUnit organisationUnit) {
+		super(calculationPartialValues, calculation, period, organisationUnit);
 	}
 
 	@Override
@@ -25,7 +27,7 @@ public class AverageValue extends CalculationValue<AveragePartialValue> {
 		Double average = sum / num;
 		if (average.isNaN() || average.isInfinite()) average = null;
 		
-		return getCalculation().getType().getValue(average); 
+		return getData().getType().getValue(average); 
 	}
 	
 }

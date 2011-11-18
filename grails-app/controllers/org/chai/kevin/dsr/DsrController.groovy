@@ -28,13 +28,10 @@ package org.chai.kevin.dsr
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.util.Collections;
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.Organisation;
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.dsr.DsrObjective;
-import org.chai.kevin.dsr.DsrService;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.AbstractController
+import org.chai.kevin.Organisation
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.hisp.dhis.period.Period
 
 class DsrController extends AbstractController {
 	

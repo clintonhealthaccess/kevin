@@ -45,7 +45,7 @@ public class Polygon extends Gradient {
 		return organisation;
 	}
 	
-	public Double getValue() {
+	public Double getGradientValue() {
 		return value;
 	}
 	

@@ -9,13 +9,15 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.Value;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
 import com.ibm.jaql.json.type.JsonValue;
 
 public class AggregationValue extends CalculationValue<AggregationPartialValue> {
 
-	public AggregationValue(List<AggregationPartialValue> calculationPartialValues, Aggregation calculation) {
-		super(calculationPartialValues, calculation);
+	public AggregationValue(List<AggregationPartialValue> calculationPartialValues, Aggregation calculation, Period period, OrganisationUnit organisationUnit) {
+		super(calculationPartialValues, calculation, period, organisationUnit);
 	}
 
 	@Override
@@ -35,11 +37,11 @@ public class AggregationValue extends CalculationValue<AggregationPartialValue> 
 		for (Entry<String, Double> entry : values.entrySet()) {
 			stringValues.put(entry.getKey(), entry.getValue().toString());
 		}
-		JsonValue value = JaqlService.jsonValue(getCalculation().getExpression(), stringValues);
+		JsonValue value = JaqlService.jsonValue(getData().getExpression(), stringValues);
 		
 		String stringValue = null;
 		if (NumberUtils.isNumber(value.toString())) stringValue = value.toString();
-		return getCalculation().getType().getValueFromJaql(stringValue);
+		return getData().getType().getValueFromJaql(stringValue);
 	}
 	
 }

@@ -47,6 +47,7 @@ import org.chai.kevin.ExpressionService.StatusValuePair;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.Value;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="Calculation")
@@ -65,7 +66,7 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	public abstract T getCalculationPartialValue(String expression, Map<Organisation, StatusValuePair> values, 
 			Organisation organisation, Period period, String groupUuid);
 	
-	public abstract CalculationValue<T> getCalculationValue(List<T> partialValues);
+	public abstract CalculationValue<T> getCalculationValue(List<T> partialValues, Period period, OrganisationUnit organisationUnit);
 	
 	protected Value getValue(Collection<StatusValuePair> statusValuePairs) {
 		Double value = 0d;

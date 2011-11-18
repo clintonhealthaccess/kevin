@@ -11,7 +11,6 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.StoredValue;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="NormalizedDataElement")

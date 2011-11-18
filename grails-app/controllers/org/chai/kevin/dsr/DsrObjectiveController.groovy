@@ -31,14 +31,9 @@ package org.chai.kevin.dsr
 * @author Jean Kahigiso M.
 *
 */
-import grails.plugin.springcache.annotations.CacheFlush;
+import grails.plugin.springcache.annotations.CacheFlush
 
-import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Expression;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-
+import org.chai.kevin.AbstractEntityController
 
 class DsrObjectiveController extends AbstractEntityController{
 	

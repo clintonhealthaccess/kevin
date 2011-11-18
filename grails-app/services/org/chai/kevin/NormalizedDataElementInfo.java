@@ -37,29 +37,23 @@ import org.chai.kevin.value.RawDataElementValue;
 
 public class NormalizedDataElementInfo extends Info<NormalizedDataElementValue> {
 
-	private List<Organisation> organisations;
 	private List<RawDataElement> rawDataElements;
-	private Map<Organisation, Map<RawDataElement, RawDataElementValue>> values;
+	private Map<RawDataElement, RawDataElementValue> values;
 	
-	public NormalizedDataElementInfo(NormalizedDataElementValue normalizedDataElementValue, List<Organisation> organisations, List<RawDataElement> rawDataElements, 
-			Map<Organisation, Map<RawDataElement, RawDataElementValue>> values) {
+	public NormalizedDataElementInfo(NormalizedDataElementValue normalizedDataElementValue, List<RawDataElement> rawDataElements, 
+			Map<RawDataElement, RawDataElementValue> values) {
 		super(normalizedDataElementValue);
 		
-		this.organisations = organisations;
 		this.rawDataElements = rawDataElements;
 		this.values = values;
 	}
 
-	public List<Organisation> getOrganisations() {
-		return organisations;
-	}
-	
 	public List<RawDataElement> getRawDataElements() {
 		return rawDataElements;
 	}
 	
-	public RawDataElementValue getRawDataElementValue(Organisation organisation, RawDataElement rawDataElement) {
-		return values.get(organisation).get(rawDataElement);
+	public RawDataElementValue getRawDataElementValue(RawDataElement rawDataElement) {
+		return values.get(rawDataElement);
 	}
 	
 	@Override

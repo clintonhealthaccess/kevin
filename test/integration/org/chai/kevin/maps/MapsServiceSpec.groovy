@@ -28,7 +28,6 @@
 package org.chai.kevin.maps
 
 import org.chai.kevin.data.Type
-import org.chai.kevin.maps.MapsTarget.MapsTargetType
 import org.hisp.dhis.period.Period
 
 class MapsServiceSpec extends MapsIntegrationTests {
@@ -41,7 +40,7 @@ class MapsServiceSpec extends MapsIntegrationTests {
 		def period = newPeriod()
 		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
 		def calculation = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
-		def mapsTarget = newMapsTarget(CODE(3), MapsTargetType.AVERAGE, calculation)
+		def mapsTarget = newMapsTarget(CODE(3), calculation)
 		refresh()
 		
 		when:

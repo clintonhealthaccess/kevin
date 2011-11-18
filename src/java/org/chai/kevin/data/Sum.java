@@ -42,6 +42,7 @@ import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="Summ")
@@ -51,8 +52,8 @@ public class Sum extends Calculation<SumPartialValue> {
 
 	
 	@Override
-	public SumValue getCalculationValue(List<SumPartialValue> partialValues) {
-		return new SumValue(partialValues, this);
+	public SumValue getCalculationValue(List<SumPartialValue> partialValues, Period period, OrganisationUnit organisationUnit) {
+		return new SumValue(partialValues, this, period, organisationUnit);
 	}
 
 	@Override

@@ -18,13 +18,12 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Translation;
-import org.chai.kevin.value.StoredValue;
-import org.springframework.transaction.annotation.Transactional;
+import org.chai.kevin.value.DataValue;
 
 @Entity(name="Data")
 @Table(name="dhsst_data", uniqueConstraints={@UniqueConstraint(columnNames="code")})
 @Inheritance(strategy=InheritanceType.JOINED)
-abstract public class Data<T extends StoredValue> {
+abstract public class Data<T extends DataValue> {
 	
 	private Long id;
 	private Date timestamp = new Date();
@@ -113,7 +112,7 @@ abstract public class Data<T extends StoredValue> {
 			return false;
 		if (!(obj instanceof Data))
 			return false;
-		Data other = (Data) obj;
+		Data<?> other = (Data<?>) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;

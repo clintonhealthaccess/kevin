@@ -27,12 +27,11 @@
  */
 package org.chai.kevin.survey.validation
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.survey.Survey;
-import org.chai.kevin.survey.SurveyElement;
-import org.chai.kevin.survey.SurveyValidationRule;
-import org.chai.kevin.util.Utils;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.survey.Survey
+import org.chai.kevin.survey.SurveyElement
+import org.chai.kevin.survey.SurveyValidationRule
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
  * @author Jean Kahigiso M.

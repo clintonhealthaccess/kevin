@@ -31,13 +31,9 @@ package org.chai.kevin.fct;
  *
  */
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Expression;
-import org.chai.kevin.data.Sum;
-import org.chai.kevin.dsr.DsrTarget
-import org.chai.kevin.util.Utils;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.data.Sum
+import org.chai.kevin.util.Utils
 
 class FctTargetController extends AbstractEntityController {
 

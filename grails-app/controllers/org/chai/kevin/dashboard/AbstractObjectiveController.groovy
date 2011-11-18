@@ -28,14 +28,7 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.dashboard.DashboardTarget;
-import org.chai.kevin.dashboard.DashboardObjective;
-import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Expression;
-import org.hisp.dhis.dataset.DataSet;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.AbstractEntityController
 
 abstract class AbstractObjectiveController extends AbstractEntityController {
 

@@ -1,7 +1,7 @@
 package org.chai.kevin.security
 
-import org.chai.kevin.AbstractEntityController;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.AbstractEntityController
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class UserController extends AbstractEntityController {
 

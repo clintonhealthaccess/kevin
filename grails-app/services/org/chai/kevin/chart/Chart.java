@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Data;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.StoredValue;
 import org.hisp.dhis.period.Period;
 
@@ -16,9 +17,9 @@ public class Chart {
 	private Organisation organisation;
 	private Data<?> data;
 	private List<Period> periods;
-	private Map<Period, StoredValue> values;
+	private Map<Period, DataValue> values;
 	
-	public Chart(Organisation organisation, Data<?> data, List<Period> periods, Map<Period, StoredValue> values) {
+	public Chart(Organisation organisation, Data<?> data, List<Period> periods, Map<Period, DataValue> values) {
 		this.organisation = organisation;
 		this.data = data;
 		this.periods = periods;
@@ -29,7 +30,7 @@ public class Chart {
 		return periods;
 	}
 	
-	public StoredValue getValue(Period period) {
+	public DataValue getValue(Period period) {
 		return values.get(period);
 	}
 	
@@ -49,7 +50,7 @@ public class Chart {
 		result.append("\"organisation\":");
 		result.append("\""+organisation.getName()+"\"");
 		result.append(",\"values\":{");
-		for (Entry<Period, StoredValue> entry : values.entrySet()) {
+		for (Entry<Period, DataValue> entry : values.entrySet()) {
 			result.append("\""+format.format(entry.getKey().getStartDate())+"\"");
 			result.append(":");
 			Double value = entry.getValue().getValue().getNumberValue()!=null?entry.getValue().getValue().getNumberValue().doubleValue():null;

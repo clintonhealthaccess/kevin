@@ -1,6 +1,6 @@
 package org.chai.kevin;
 
-import org.chai.kevin.value.StoredValue;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -34,7 +34,7 @@ import org.hisp.dhis.period.Period;
  */
 
 
-public abstract class Info<T extends StoredValue> {
+public abstract class Info<T extends DataValue> {
 	
 	private T value;
 	

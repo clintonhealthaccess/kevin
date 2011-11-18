@@ -39,7 +39,6 @@ import org.chai.kevin.cost.CostRampUpYear;
 import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.maps.MapsTarget;
-import org.chai.kevin.maps.MapsTarget.MapsTargetType;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
@@ -71,7 +70,6 @@ import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodType;
 import org.hisp.dhis.indicator.IndicatorType;
 import org.hisp.dhis.indicator.Indicator;
-
 
 class Initializer {
 

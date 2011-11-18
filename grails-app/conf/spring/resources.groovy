@@ -3,7 +3,17 @@ import org.chai.kevin.InfoService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.RefreshValueService
-import org.chai.kevin.ValueService
+import org.chai.kevin.chart.ChartService
+import org.chai.kevin.cost.CostTableService
+import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.dsr.DsrService
+import org.chai.kevin.fct.FctService
+import org.chai.kevin.maps.MapsService
+import org.chai.kevin.ExpressionService
+import org.chai.kevin.InfoService
+import org.chai.kevin.JaqlService
+import org.chai.kevin.OrganisationService
+import org.chai.kevin.RefreshValueService
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
@@ -51,7 +61,6 @@ String facilityTypeGroup = config.facility.type.group
 Set<Integer> dashboardSkipLevels = config.dashboard.skip.levels
 Set<Integer> costSkipLevels = config.dashboard.skip.levels
 int organisationLevel = config.facility.level
-int infoGroupLevel = config.info.group.level
 int dsrGroupLevel= config.dsr.group.level
 Set<Integer> exportSkipLevels = config.export.skip.levels
 
@@ -153,13 +162,11 @@ beans = {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
 		organisationService = ref("organisationService")
-		groupLevel = infoGroupLevel
 	}
 
 	dashboardService(DashboardService) {
 		organisationService = ref("organisationService")
 		infoService = ref("infoService")
-		expressionService = ref("expressionService")
 		valueService = ref("valueService")
 		skipLevels = dashboardSkipLevels
 	}

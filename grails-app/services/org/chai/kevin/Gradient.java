@@ -30,14 +30,14 @@ package org.chai.kevin;
 
 public abstract class Gradient {
 
-	public abstract Double getValue();
+	public abstract Double getGradientValue();
 	
 	public boolean isValid() {
-		return getValue() != null && !getValue().isNaN() && !getValue().isInfinite() && getValue() != -1;
+		return getGradientValue() != null && !getGradientValue().isNaN() && !getGradientValue().isInfinite() && getGradientValue() != -1;
 	}
 	
 	public Integer getRoundedValue() {
-		return new Double(getValue() * 100).intValue();
+		return new Double(getGradientValue() * 100).intValue();
 	}
 	
 	public String getColor() {
@@ -81,7 +81,7 @@ public abstract class Gradient {
 //		  background-color: #0af626
 		if (!isValid()) return "#F6FDEB";
 		
-		switch (new Double(getValue() / 0.2d).intValue()) {
+		switch (new Double(getGradientValue() / 0.2d).intValue()) {
 		case 0:
 			return "#fd7272";
 		case 1:

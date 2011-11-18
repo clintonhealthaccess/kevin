@@ -42,11 +42,6 @@ abstract class AbstractController {
 
 	OrganisationService organisationService;
 
-	protected def getObjective(){		
-		FctObjective objective = FctObjective.get(params.int('objective'));
-		return objective;
-	}
-	
 	protected def getOrganisation(def defaultIfNull) {
 		
 		Organisation organisation = null;		

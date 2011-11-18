@@ -30,9 +30,7 @@ package org.chai.kevin.maps;
 
 import grails.validation.ValidationException
 
-import org.chai.kevin.data.Expression
 import org.chai.kevin.data.Type
-import org.chai.kevin.maps.MapsTarget.MapsTargetType
 
 public class MapsDomainSpec extends MapsIntegrationTests {
 
@@ -47,13 +45,13 @@ public class MapsDomainSpec extends MapsIntegrationTests {
 	def "target constraint: code cannot be null"() {
 		when:
 		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-		new MapsTarget(code:CODE(1), expression: expression, type: MapsTargetType.AGGREGATION).save(failOnError:true)
+		new MapsTarget(code:CODE(1), expression: expression).save(failOnError:true)
 		
 		then:
 		MapsTarget.count() == 1
 		
 		when:
-		new MapsTarget(expression: expression, type: MapsTargetType.AGGREGATION).save(failOnError:true)
+		new MapsTarget(expression: expression).save(failOnError:true)
 		
 		then:
 		thrown ValidationException
@@ -61,13 +59,13 @@ public class MapsDomainSpec extends MapsIntegrationTests {
 	
 	def "target constraint: expression cannot be null"() {
 		when:
-		new MapsTarget(code:CODE(1), expression: newExpression(CODE(1), Type.TYPE_NUMBER(), "1"), type: MapsTargetType.AGGREGATION).save(failOnError:true)
+		new MapsTarget(code:CODE(1), expression: newExpression(CODE(1), Type.TYPE_NUMBER(), "1")).save(failOnError:true)
 		
 		then:
 		MapsTarget.count() == 1
 		
 		when:
-		new MapsTarget(code:CODE(1), type: MapsTargetType.AGGREGATION).save(failOnError:true)
+		new MapsTarget(code:CODE(1)).save(failOnError:true)
 		
 		then:
 		thrown ValidationException
@@ -76,13 +74,13 @@ public class MapsDomainSpec extends MapsIntegrationTests {
 	def "target constraint: calculation cannot be null"() {
 		when:
 		def calculation = newAverage([:], CODE(1), Type.TYPE_NUMBER())
-		new MapsTarget(code:CODE(1) , calculation: calculation, type: MapsTargetType.AVERAGE).save(failOnError:true)
+		new MapsTarget(code:CODE(1) , calculation: calculation).save(failOnError:true)
 		
 		then:
 		MapsTarget.count() == 1
 		
 		when:
-		new MapsTarget(code:CODE(1), type: MapsTargetType.AVERAGE).save(failOnError:true)
+		new MapsTarget(code:CODE(1)).save(failOnError:true)
 		
 		then:
 		thrown ValidationException

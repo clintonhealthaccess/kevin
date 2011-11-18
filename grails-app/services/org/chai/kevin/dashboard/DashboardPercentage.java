@@ -29,24 +29,41 @@ package org.chai.kevin.dashboard;
  */
 
 import org.chai.kevin.Gradient;
+import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
-public class DashboardPercentage extends Gradient {
+public class DashboardPercentage extends Gradient implements DataValue {
 
-	private Double value;
-
-	public DashboardPercentage() {}
+	private OrganisationUnit organisationUnit;
+	private Period period;
+	private Value value;
 	
-	public DashboardPercentage(Value value) {
-		this.value = value.getNumberValue()!=null?value.getNumberValue().doubleValue():null;
-	}
-	
-	public DashboardPercentage(Double value) {
+	public DashboardPercentage(Value value, OrganisationUnit organisationUnit, Period period) {
 		this.value = value;
+		this.period = period;
+		this.organisationUnit = organisationUnit;
 	}
 	
-	public Double getValue() {
+	@Override
+	public Value getValue() {
 		return value;
+	}
+
+	@Override
+	public OrganisationUnit getOrganisationUnit() {
+		return organisationUnit;
+	}
+
+	@Override
+	public Period getPeriod() {
+		return period;
+	}
+
+	@Override
+	public Double getGradientValue() {
+		return value.getNumberValue().doubleValue();
 	}
 	
 }
