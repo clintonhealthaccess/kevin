@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
@@ -26,6 +29,7 @@ import org.chai.kevin.value.Value;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.context.annotation.DependsOn;
 
 @Embeddable
 public class Type extends JSONValue {
@@ -634,15 +638,29 @@ public class Type extends JSONValue {
 		}
 	}
 
-	public Map<String, Value> getPrefixes(Value value, PrefixPredicate predicate) {
-		Map<String, Value> result = new LinkedHashMap<String, Value>();
-		getPrefixes(value, "", result, predicate);
-		return result;
+	public static abstract class Visitor {
+		
+		private SortedMap<String, Type> types = new TreeMap<String, Type>();
+		
+		public Type getParent() {
+			if (types.size() >= 2) return types.get(types.size() - 2);
+			return null;
+		}
+		
+		public SortedMap<String, Type> getTypes() {
+			return types;
+		}
+		
+		public abstract void handle(Type type, Value value, String prefix);
 	}
 	
-	private void getPrefixes(Value value, String prefix, Map<String, Value> prefixes, PrefixPredicate predicate) {
-		predicate.types.push(this);
-		if (predicate.holds(this, value, prefix)) prefixes.put(prefix, value);
+	public void visit(Value value, Visitor visitor) {
+		visit(value, "", visitor);
+	}
+	
+	private void visit(Value value, String prefix, Visitor visitor) {
+		visitor.types.put(prefix, this);
+		visitor.handle(this, value, prefix);
 		if (value != null && !value.isNull()) {
 			switch (getType()) {
 				case NUMBER:
@@ -655,31 +673,37 @@ public class Type extends JSONValue {
 				case LIST:
 					Type listType = getListType();
 					for (int i = 0; i < value.getListValue().size(); i++) {
-						listType.getPrefixes(value.getListValue().get(i), prefix+"["+i+"]", prefixes, predicate);
+						listType.visit(value.getListValue().get(i), prefix+"["+i+"]", visitor);
 					}
 					break;
 				case MAP:
 					for (Entry<String, Type> entry : getElementMap().entrySet()) {
-						entry.getValue().getPrefixes(value.getMapValue().get(entry.getKey()), prefix+"."+entry.getKey(), prefixes, predicate);
+						entry.getValue().visit(value.getMapValue().get(entry.getKey()), prefix+"."+entry.getKey(), visitor);
 					}
 					break;
 				default:
 					throw new NotImplementedException();
 			}
 		}
-		predicate.types.pop();
+		visitor.types.remove(prefix);
 	}
-
-	public static abstract class PrefixPredicate {
+	
+	@Deprecated
+	public Map<String, Value> getPrefixes(Value value, PrefixPredicate predicate) {
+		visit(value, predicate);
+		return predicate.prefixes;
+	}
+	
+	@Deprecated
+	public static abstract class PrefixPredicate extends Visitor {
 		
-		Stack<Type> types = new Stack<Type>();
-		
-		public Type getParent() {
-			if (types.size() >= 2) return types.get(types.size() - 2);
-			return null;
-		}
+		Map<String, Value> prefixes = new HashMap<String, Value>();
 		
 		public abstract boolean holds(Type type, Value value, String prefix);
+		
+		public void handle(Type type, Value value, String prefix) {
+			if (holds(type, value, prefix)) prefixes.put(prefix, value);
+		}
 	}
 	
 	public String getDisplayValue(Value value) {

@@ -4,6 +4,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.data.Type.Visitor;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
@@ -366,6 +367,47 @@ public class TypeSpec extends UnitSpec {
 		list.containsAll([[""]])
 	}
 	
+	def "visit"() {
+		setup:
+		def type = null
+		def value = null
+		
+		when:
+		type = Type.TYPE_NUMBER()
+		value = new Value("{\"value\":10}");
+		
+		then:
+		type.visit(value, new Visitor() {
+			public void handle(Type currentType, Value currentValue, String prefix) {
+				assert value.equals(currentValue)
+				assert getTypes().equals(["":type])	
+			}
+		})
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}")
+		def expectedVisitedValues = [new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}"), new Value("{\"value\":null}"), new Value("{\"value\":11}]}")]
+		def expectedVisitedTypes = [
+			["":Type.TYPE_LIST(Type.TYPE_NUMBER())],
+			["":Type.TYPE_LIST(Type.TYPE_NUMBER()), "[0]":Type.TYPE_NUMBER()],
+			["":Type.TYPE_LIST(Type.TYPE_NUMBER()), "[1]":Type.TYPE_NUMBER()],
+		]
+		def visitedValues = []
+		def visitedTypeMap = []
+		type.visit(value, new Visitor() {
+			public void handle(Type currentType, Value currentValue, String prefix) {
+				visitedValues << currentValue
+				visitedTypeMap << new TreeMap(getTypes())
+			}
+		})
+		
+		then:
+		expectedVisitedValues.equals(visitedValues)
+		expectedVisitedTypes.equals(visitedTypeMap)
+	}
+	
+	
 	public static class NullPrefixPredicate extends PrefixPredicate {
 		public boolean holds(Type type, Value value, String prefix) {
 			return value.isNull();
@@ -377,13 +419,11 @@ public class TypeSpec extends UnitSpec {
 		def type = null
 		def value = null
 		def list = null
-		def prefixPredicate = new NullPrefixPredicate();
 		
 		when:
 		type = Type.TYPE_NUMBER()
 		value = Value.NULL
-		list = new HashMap();
-		type.getPrefixes(value, "", list, prefixPredicate)
+		list = type.getPrefixes(value, new NullPrefixPredicate())
 		
 		then:
 		list.equals(["": Value.NULL])
@@ -391,8 +431,7 @@ public class TypeSpec extends UnitSpec {
 		when:
 		type = Type.TYPE_NUMBER()
 		value = new Value("{\"value\":10}");
-		list = new HashMap();
-		type.getPrefixes(value, "", list, prefixPredicate)
+		list = type.getPrefixes(value, new NullPrefixPredicate())
 		
 		then:
 		list.size() == 0
@@ -400,8 +439,7 @@ public class TypeSpec extends UnitSpec {
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}")
-		list = new HashMap();
-		type.getPrefixes(value, "", list, prefixPredicate)
+		list = type.getPrefixes(value, new NullPrefixPredicate())
 		
 		then:
 		list.equals(["[0]": Value.NULL]);
@@ -409,8 +447,7 @@ public class TypeSpec extends UnitSpec {
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		value = Value.NULL
-		list = new HashMap();
-		type.getPrefixes(value, "", list, prefixPredicate)
+		list = type.getPrefixes(value, new NullPrefixPredicate())
 		
 		then:
 		list.equals("": Value.NULL)
