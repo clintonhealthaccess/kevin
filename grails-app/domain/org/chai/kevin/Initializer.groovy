@@ -45,6 +45,7 @@ import org.chai.kevin.value.Value;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
@@ -540,48 +541,27 @@ class Initializer {
 		}
 
 
-		if (!Expression.count()) {
+		if (!NormalizedDataElement.count()) {
+			def period1 = Period.list()[0]
+			def dh = OrganisationUnitGroup.findByUuid('District Hospital')
+			def hc = OrganisationUnitGroup.findByUuid('Health Center')
+			
 			// indicators
 			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
-			new Expression(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expression: "10", type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expression: "20", type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Element 1"]), descriptions:j([:]), code:"Element 1", expression: "\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id, type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Element 2"]), descriptions:j([:]), code:"Element 2", expression: "\$"+RawDataElement.findByCode("CODE2").id, type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new Expression(names:j(["en":"Element 3"]), descriptions:j([:]), code:"Element 3", expression: "\$"+RawDataElement.findByCode("CODE3").id, type: Type.TYPE_STRING(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expressionMap: e([(period1.id):[(hc.uuid):"10", (dh.uuid):"10"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expressionMap: e([(period1.id):[(hc.uuid):"20", (dh.uuid):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 1", expressionMap: e([(period1.id):[(hc.uuid):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1"), (dh.uuid):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1")]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 2", expressionMap: e([(period1.id):[(hc.uuid):"\$"+RawDataElement.findByCode("CODE2").id, (dh.uuid):"\$"+RawDataElement.findByCode("CODE2").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 3", expressionMap: e([(period1.id):[(hc.uuid):"\$"+RawDataElement.findByCode("CODE3").id, (dh.uuid):"\$"+RawDataElement.findByCode("CODE3").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
 		}
 
 	}
 
 	static def createMaps() {
 		if (!MapsTarget.count()) {
-
-			new Expression(
-					names:j(["en":"Map Expression 2"]),
-					descriptions:j([:]),
-					code:"Map Expression 2",
-					type: Type.TYPE_NUMBER(),
-					expression: "\$"+RawDataElement.findByCode("CODE1").id+" / 100",
-					timestamp:new Date()
-					).save(failOnError: true, validate: false)
-			new MapsTarget(names:j(["en":"Map Target 2"]), descriptions:j([:]), code:"TARGET2", expression: Expression.findByCode("Map Expression 2"), type: MapsTargetType.AGGREGATION).save(failOnError: true)
-
-
-			new Expression(
-				names:j(["en":"Map Expression"]),
-				descriptions:j([:]),
-				code:"Map Expression", 
-				type: Type.TYPE_NUMBER(),
-				expression: "10 / 100",
-				timestamp:new Date()
-			).save(failOnError: true, validate: false)
-			new MapsTarget(names:j(["en":"Map Target 1"]), descriptions:j([:]), code:"TARGET1", expression: Expression.findByCode("Map Expression"), type: MapsTargetType.AGGREGATION, maxValue: 20d).save(failOnError: true, flush:true)
-
-			def calculation1 = new Average(expressions: [
-						"District Hospital": Expression.findByCode("Constant 10"),
-						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER())
+			def calculation1 = new Average(expression: "\$"+NormalizedDataElement.findByCode("Element 1"), timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation1.save()
-			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1, type: MapsTargetType.AVERAGE).save(failOnError: true, flush:true)
+			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1).save(failOnError: true, flush:true)
 		}
 	}
 
@@ -600,7 +580,7 @@ class Initializer {
 		if (!CostObjective.count()) {
 			new CostTarget(
 					names:j(["en":"Annual Internet Access Cost"]), code:"Internet Cost", descriptions:j(["en":"Annual Internet Access Cost"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.OPERATION,
 					costRampUp: CostRampUp.findByCode("CONST"),
 					groupUuidString: "District Hospital,Health Center"
@@ -608,7 +588,7 @@ class Initializer {
 
 			new CostTarget(
 					names:j(["en":"Connecting Facilities to the Internet"]), code:"Connecting Facilities", descriptions:j(["en":"Connecting Facilities to the Internet"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST"),
 					groupUuidString: "District Hospital,Health Center"
@@ -616,7 +596,7 @@ class Initializer {
 
 			new CostTarget(
 					names:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]), code:"New Phones CHW", descriptions:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST"),
 					groupUuidString: "District Hospital,Health Center"
@@ -631,7 +611,7 @@ class Initializer {
 
 			new CostTarget(
 					names:j(["en":"Facility Staff Training"]), code:"Facility Staff Training", descriptions:j(["en":"Facility Staff Training"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST")
 					).save(failOnError: true)
@@ -656,10 +636,7 @@ class Initializer {
 			staffing.save(failOnError: true)
 			hrh.save(failOnError: true)
 
-			def calculation1 = new Average(expressions: [
-						"District Hospital": Expression.findByCode("Constant 10"),
-						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER())
+			def calculation1 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10"), timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation1.save()
 
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -667,10 +644,7 @@ class Initializer {
 					calculation: calculation1
 					), weight: 1, order: 1)
 
-			def calculation2 = new Average(expressions: [
-						"District Hospital": Expression.findByCode("Constant 20"),
-						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER())
+			def calculation2 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 20"), timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation2.save()
 
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -678,10 +652,7 @@ class Initializer {
 					calculation: calculation2
 					), weight: 1, order: 2)
 
-			def calculation3 = new Average(expressions: [
-						"District Hospital": Expression.findByCode("Element 1"),
-						"Health Center": Expression.findByCode("Element 1")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER())
+			def calculation3 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 1"), timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation3.save()
 
 			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -689,9 +660,7 @@ class Initializer {
 					calculation: calculation3
 					), weight: 1, order: 3)
 
-			def calculation4 = new Average(expressions: [
-						"District Hospital": Expression.findByCode("Element 1"),
-					], timestamp:new Date(), type: Type.TYPE_NUMBER())
+			def calculation4 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 2"), timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation4.save()
 
 			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -699,10 +668,7 @@ class Initializer {
 					calculation: calculation4
 					), weight: 1, order: 4)
 
-			def calculation5 = new Average(expressions: [
-						"District Hospital": Expression.findByCode("Element 2"),
-						"Health Center": Expression.findByCode("Element 2")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER())
+			def calculation5 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3"), timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation5.save()
 
 			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -710,10 +676,7 @@ class Initializer {
 					calculation: calculation5
 					), weight: 1, order: 5)
 
-			def calculation6 = new Average(expressions: [
-						"District Hospital": Expression.findByCode("Element 3"),
-						"Health Center": Expression.findByCode("Element 3")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER())
+			def calculation6 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3"), timestamp:new Date(), type: Type.TYPE_NUMBER())
 			calculation6.save()
 
 			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(
@@ -784,7 +747,7 @@ class Initializer {
 
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"Accountant"]), descriptions:j(["en":"Accountant"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 8,
 					groupUuidString: "Health Center",
 					code: "Accountant"
@@ -792,7 +755,7 @@ class Initializer {
 
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"Days Of Nurse Training"]), descriptions:j(["en":"Days Of Nurse Training"]),
-					expression: Expression.findByCode("Constant 20"),
+					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 1,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Days Of Nurse Training"
@@ -800,7 +763,7 @@ class Initializer {
 
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"A1"]), descriptions:j(["en":"A1"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
 					groupUuidString: "Health Center",
 					code: "A1"
@@ -808,7 +771,7 @@ class Initializer {
 
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"A2"]), descriptions:j(["en":"A2"]),
-					expression: Expression.findByCode("Constant 20"),
+					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 5,
 					groupUuidString: "District Hospital,Health Center",
 					code:"A2"
@@ -816,7 +779,7 @@ class Initializer {
 
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
 					groupUuidString: "District Hospital,Health Center",
 					code: "A3"
@@ -824,7 +787,7 @@ class Initializer {
 
 			hmr.addTarget(new DsrTarget(
 					names:j(["en":"Testing Category Human Resource"]), descriptions:j(["en":"Testing Category Human Resource"]),
-					expression: Expression.findByCode("Constant 20"),
+					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 4,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Testing Category Human Resource"
@@ -834,7 +797,7 @@ class Initializer {
 
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"In-Facility Birth Ratio"]), descriptions:j(["en":"In-Facility Birth Ratio"]),
-					expression: Expression.findByCode("Constant 20"),
+					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 6,
 					groupUuidString: "District Hospital,Health Center",
 					code: "In-Facility Birth Ratio"
@@ -842,7 +805,7 @@ class Initializer {
 
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"Mental Health Service"]), descriptions:j(["en":"Mental Health Service"]),
-					expression: Expression.findByCode("Constant 20"),
+					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Mental Health Service"
@@ -850,7 +813,7 @@ class Initializer {
 
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"Malaria Rapid Test"]), descriptions:j(["en":"Malaria Rapid Test"]),
-					expression: Expression.findByCode("Constant 20"),
+					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
 					groupUuidString: "Health Center",
 					code: "Malaria Rapid Test"
@@ -858,7 +821,7 @@ class Initializer {
 
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"HIV Rapid Test"]), descriptions:j(["en":"HIV Rapid Test"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
 					groupUuidString: "District Hospital,Health Center",
 					code: "HIV Rapid Test"
@@ -866,7 +829,7 @@ class Initializer {
 
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"TB Stain Test"]), descriptions:j(["en":"TB Stain Test"]),
-					expression: Expression.findByCode("Constant 20"),
+					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
 					groupUuidString: "Health Center",
 					code: "TB Stain Test"
@@ -874,7 +837,7 @@ class Initializer {
 
 			finacss.addTarget(new DsrTarget(
 					names:j(["en":"Catchment Population per CHW"]), descriptions:j(["en":"Catchment Population per CHW"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 12,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Catchment Population per CHW"
@@ -884,7 +847,7 @@ class Initializer {
 
 			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Consultation Room"]), descriptions:j(["en":"Consultation Room"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 1,
 					groupUuidString: "Health Center",
 					code: "Consultation Room"
@@ -892,7 +855,7 @@ class Initializer {
 
 			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Facility Water Status"]), descriptions:j(["en":"Facility Water Status"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Facility Water Status"
@@ -900,7 +863,7 @@ class Initializer {
 
 			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Incinerator Availability"]), descriptions:j(["en":"Incinerator Availability"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Incinerator Availability"
@@ -908,7 +871,7 @@ class Initializer {
 
 			instCap.addTarget(new DsrTarget(
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
-					expression: Expression.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					groupUuidString: "District Hospital,Health Center",
 					code: "Facility Power Status"
 					));
@@ -957,10 +920,7 @@ class Initializer {
 					code:"Geographical Access",
 					)			
 			
-			def sum1 = new Sum(expressions: [
-						"District Hospital": Expression.findByCode("Constant 10"),
-						"Health Center": Expression.findByCode("Constant 20")
-					], timestamp:new Date(), type: Type.TYPE_NUMBER());
+			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10"), timestamp:new Date(), type: Type.TYPE_NUMBER());
 			sum1.save();
 						
 			FctTarget fctTarget1 = new FctTarget(
@@ -973,10 +933,7 @@ class Initializer {
 			hmr.addTarget(fctTarget1);
 			hmr.save(failOnError:true)
 			
-			def sum2 = new Sum(expressions: [
-				"District Hospital": Expression.findByCode("Constant 10"),
-				"Health Center": Expression.findByCode("Constant 20")
-			], timestamp:new Date(), type: Type.TYPE_NUMBER());
+			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20"), timestamp:new Date(), type: Type.TYPE_NUMBER());
 			sum2.save();
 			
 			FctTarget fctTarget2 = new FctTarget(
