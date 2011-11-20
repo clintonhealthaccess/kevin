@@ -24,7 +24,7 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		
 		when:
 		surveySkipRuleController.params['survey.id'] = survey.id
-		surveySkipRuleController.params.skippedSurveyQuestions = "12"
+		surveySkipRuleController.params.skippedSurveyQuestions = SurveySimpleQuestion.findByOrder(12).id+''
 		surveySkipRuleController.params.expression = '1'
 		surveySkipRuleController.saveWithoutTokenCheck()
 		
