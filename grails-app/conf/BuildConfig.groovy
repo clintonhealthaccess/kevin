@@ -59,7 +59,7 @@ grails.project.dependency.resolution = {
 //		mavenRepo "http://snapshots.repository.codehaus.org"
 //		mavenRepo "http://repository.codehaus.org"
 //		mavenRepo "http://www.intalio.org/public/maven2/"
-//		mavenRepo "http://repo.opennms.org/maven2/"
+		mavenRepo "http://repo.opennms.org/maven2/"
 //		mavenRepo "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 				
 		/**
