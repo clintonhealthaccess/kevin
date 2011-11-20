@@ -1,27 +1,16 @@
 package org.chai.kevin.survey;
 
-import org.apache.shiro.SecurityUtils;
-import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.value.Value;
-import org.chai.kevin.DataService
-import org.chai.kevin.LanguageService;
+import org.apache.shiro.SecurityUtils
 import org.chai.kevin.OrganisationService
-import org.chai.kevin.data.DataElement
-import org.chai.kevin.data.Type.PrefixPredicate;
-import org.chai.kevin.security.User;
-import org.chai.kevin.survey.validation.SurveyEnteredEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
 import org.chai.kevin.survey.validation.SurveyEnteredValue
 import org.hibernate.Criteria
 import org.hibernate.FlushMode
-import org.hibernate.criterion.MatchMode
 import org.hibernate.criterion.Projections
 import org.hibernate.criterion.Restrictions
 import org.hisp.dhis.organisationunit.OrganisationUnit
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 
 
 class SurveyValueService {
@@ -29,6 +18,8 @@ class SurveyValueService {
 	static transactional = true
 	
 	def sessionFactory;
+	
+	private OrganisationService organisationService;
 	
 	void save(SurveyEnteredObjective surveyEnteredObjective) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredObjective=${surveyEnteredObjective}})")

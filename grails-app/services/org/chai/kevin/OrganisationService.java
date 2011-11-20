@@ -113,7 +113,7 @@ public class OrganisationService {
 			}
 		}
 		return result;
-	}
+	}	
 	
 	public int loadLevel(Organisation organisation) {
 		if (organisation.getLevel() != 0) return organisation.getLevel();

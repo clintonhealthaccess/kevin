@@ -50,7 +50,7 @@ public class SummaryPage {
 		this.facilities = facilities;
 		this.questionSummaryMap = questionSummaryMap;
 	}
-
+	
 	// for objective table page
 	public SummaryPage(Map<SurveyObjective, SurveyEnteredObjective> enteredObjectiveTableMap, Map<SurveyObjective, QuestionSummary> objectiveQuestionTableMap) {
 		this.enteredObjectiveTableMap = enteredObjectiveTableMap;

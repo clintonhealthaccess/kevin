@@ -1,6 +1,15 @@
 <%@ page import="org.chai.kevin.survey.SummaryPage" %>
 
 <r:require modules="progressbar,dropdown,explanation,survey" />
+
+<div class="right">
+	<shiro:hasPermission permission="editSurvey:export">
+		<a href="${createLink(controller: 'editSurvey', action: 'export', params: [objective: currentObjective.id, organisation: organisation.id])}">
+			<g:message code="survey.summary.exportall.label" default="Export All" />
+		</a>
+	</shiro:hasPermission>
+</div>
+				
 <div id="survey-summary">
 	<table class="listing">
 		<thead>

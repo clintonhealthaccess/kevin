@@ -6,6 +6,7 @@ import org.chai.kevin.survey.validation.SurveySkipRuleController;
 class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 
 	def surveySkipRuleController
+	def sessionFactory
 	
 	def "save skip rule"() {
 		setup:

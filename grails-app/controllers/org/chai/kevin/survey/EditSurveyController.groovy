@@ -27,6 +27,7 @@ package org.chai.kevin.survey;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.zip.ZipOutputStream
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.Organisation
@@ -39,6 +40,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 class EditSurveyController extends AbstractController {
 
 	SurveyPageService surveyPageService;
+	SurveyExportService surveyExportService;
 	ValidationService validationService;
 	ValueService valueService;
 
@@ -314,18 +316,27 @@ class EditSurveyController extends AbstractController {
 	}
 
 	def export = {
-		//Survey survey = Survey.get(params.int('survey'));
-		//Organisation organisation = getOrganisation(false)
+		Organisation organisation = getOrganisation(false)
+		SurveySection section = SurveySection.get(params.int('section'))
+		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
+		Survey survey = Survey.get(params.int('survey'))	
 
-		//SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
-
-		StringWriter sw = new StringWriter();
+		File zipFile = null;
+		if(section != null)
+			zipFile = surveyExportService.getSurveyExportZipFile(organisation, section, null, null);
+		else if(objective != null)
+			zipFile = surveyExportService.getSurveyExportZipFile(organisation, null, objective, null);
+		else if(survey != null)
+			zipFile = surveyExportService.getSurveyExportZipFile(organisation, null, null, survey);						
+			
+		if(zipFile.exists()){
+			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
+			render(contentType: "application/zip");						
+		}
 		
-		def filename = "SummaryPageTest";		
-		response.setHeader("Content-disposition", "attachment; filename=" + filename + ".csv");
-		render(contentType: "text/csv", text: sw.toString());
+		redirect(action: 'summaryPage', params: params);
 	}
-
+	
 	private def getSurveyElements() {
 		def result = []
 		// TODO test this

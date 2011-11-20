@@ -25,12 +25,14 @@
   						</td>
   						<td>${summaryPage.getSurveyEnteredObjective(objective)?.closed?'\u2713':''}</td>
   						<td><span class="progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
-  						<td><a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: organisation.id])}"><g:message code="survey.summary.viewsurvey.label" default="View Survey"/></a>
-  						<shiro:hasPermission permission="editSurvey:export"> 
-							<a href="${createLink(controller: 'editSurvey', action: 'export', params: [objective: objective.id, organisation: organisation.id])}">
-								<g:message code="survey.summary.exportobjective.label" default="Export Survey Objective" />
-							</a>
-						</shiro:hasPermission></td>
+  						<td>
+  							<a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: objective.id, organisation: organisation.id])}"><g:message code="survey.summary.viewsurvey.label" default="View Survey"/></a>
+  							<shiro:hasPermission permission="editSurvey:export"> 
+								<a href="${createLink(controller: 'editSurvey', action: 'export', params: [objective: objective.id, organisation: organisation.id])}">
+									<g:message code="survey.summary.exportobjective.label" default="Export Survey Objective" />
+								</a>
+							</shiro:hasPermission>
+						</td>
   					</tr>
   					<tr class="explanation-row">
   						<td colspan="4">

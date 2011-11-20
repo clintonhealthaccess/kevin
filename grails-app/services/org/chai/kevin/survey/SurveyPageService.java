@@ -30,7 +30,6 @@ package org.chai.kevin.survey;
  * @author Jean Kahigiso M.
  *
  */
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,11 +41,9 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
-import org.chai.kevin.Ordering.OrderingComparator;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;

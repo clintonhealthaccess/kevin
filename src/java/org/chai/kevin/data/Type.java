@@ -10,14 +10,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.Stack;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Stack;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Lob;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -641,10 +641,21 @@ public class Type extends JSONValue {
 	public static abstract class Visitor {
 		
 		private SortedMap<String, Type> types = new TreeMap<String, Type>();
+		private Stack<Type> typeStack = new Stack<Type>();
 		
 		public Type getParent() {
-			if (types.size() >= 2) return types.get(types.size() - 2);
+			if (typeStack.size() >= 2) return typeStack.get(typeStack.size() - 2);
 			return null;
+		}
+		
+		protected void addType(String prefix, Type type) {
+			types.put(prefix, type);
+			typeStack.add(type);
+		}
+		
+		protected void removeType(String prefix) {
+			types.remove(prefix);
+			typeStack.pop();
 		}
 		
 		public SortedMap<String, Type> getTypes() {
@@ -659,7 +670,7 @@ public class Type extends JSONValue {
 	}
 	
 	private void visit(Value value, String prefix, Visitor visitor) {
-		visitor.types.put(prefix, this);
+		visitor.addType(prefix, this);
 		visitor.handle(this, value, prefix);
 		if (value != null && !value.isNull()) {
 			switch (getType()) {
@@ -685,7 +696,7 @@ public class Type extends JSONValue {
 					throw new NotImplementedException();
 			}
 		}
-		visitor.types.remove(prefix);
+		visitor.removeType(prefix);
 	}
 	
 	@Deprecated

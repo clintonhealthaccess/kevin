@@ -1,30 +1,22 @@
-import grails.util.GrailsUtil;
-
-import org.chai.kevin.DataService;
-import org.chai.kevin.JaqlService;
-import org.chai.kevin.RefreshValueService;
-import org.chai.kevin.ValueService;
-import org.chai.kevin.ExpressionService;
-import org.chai.kevin.InfoService;
-import org.chai.kevin.OrganisationService;
-import org.chai.kevin.chart.ChartService;
-import org.chai.kevin.cost.CostTableService;
-import org.chai.kevin.dashboard.DashboardController;
-import org.chai.kevin.dashboard.DashboardService;
-import org.chai.kevin.dashboard.ExplanationCalculator;
-import org.chai.kevin.dashboard.PercentageCalculator;
-import org.chai.kevin.dsr.DsrService;
-import org.chai.kevin.fct.FctService;
-import org.chai.kevin.maps.MapsService;
-import org.chai.kevin.survey.SummaryService;
-import org.chai.kevin.survey.SurveyPageService;
-import org.chai.kevin.survey.SurveyCopyService;
-import org.chai.kevin.survey.ValidationService;
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
-import org.springframework.format.number.PercentFormatter;
-
+import org.chai.kevin.ExpressionService
+import org.chai.kevin.InfoService
+import org.chai.kevin.JaqlService
+import org.chai.kevin.OrganisationService
+import org.chai.kevin.RefreshValueService
+import org.chai.kevin.ValueService
+import org.chai.kevin.chart.ChartService
+import org.chai.kevin.cost.CostTableService
+import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.dsr.DsrService
+import org.chai.kevin.fct.FctService
+import org.chai.kevin.maps.MapsService
+import org.chai.kevin.survey.SummaryService
+import org.chai.kevin.survey.SurveyCopyService
+import org.chai.kevin.survey.SurveyExportService
+import org.chai.kevin.survey.SurveyPageService
+import org.chai.kevin.survey.ValidationService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
-import org.codehaus.groovy.grails.orm.hibernate.HibernateEventListeners;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -61,6 +53,7 @@ Set<Integer> costSkipLevels = config.dashboard.skip.levels
 int organisationLevel = config.facility.level
 int infoGroupLevel = config.info.group.level
 int dsrGroupLevel= config.dsr.group.level
+Set<Integer> exportSkipLevels = config.export.skip.levels
 
 beans = {
 	
@@ -102,6 +95,13 @@ beans = {
 	summaryService(SummaryService){
 		organisationService = ref("organisationService")
 		surveyValueService = ref("surveyValueService")
+	}
+
+	surveyExportService(SurveyExportService){
+		organisationService = ref("organisationService")
+		surveyValueService = ref("surveyValueService")
+		languageService = ref("languageService")
+		skipLevels = exportSkipLevels
 	}
 	
 	chartService(ChartService){
