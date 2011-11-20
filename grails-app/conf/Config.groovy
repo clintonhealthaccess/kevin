@@ -149,13 +149,12 @@ security.shiro.authc.required = false
 				   'org.hibernate',
 				   'net.sf.ehcache.hibernate',
 				   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
-				   'org.chai.kevin.JaqlService'
-				   
-			debug  'grails.app',
-				   'org.chai.kevin',
+				   'org.chai.kevin.JaqlService',
 				   'grails.app.services.grails.plugin.springcache',
 				   'grails.plugin.springcache'
 				   
+			debug  'grails.app',
+				   'org.chai.kevin'
 				   
 		}
 //	}
