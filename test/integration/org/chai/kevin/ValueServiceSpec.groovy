@@ -37,6 +37,7 @@ import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
+import org.chai.kevin.value.Status;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
@@ -86,10 +87,10 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.getDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period) == null
 		
 		when:
-		def dataValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), Status.VALID, v("1"))
+		def dataValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period, Status.VALID, v("1"))
 		
 		then:
-		valueService.getDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period).equals(dataVaue)
+		valueService.getDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period).equals(dataValue)
 	}
 	
 	def "test get average value"() {
@@ -99,16 +100,16 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		def average = newAverage("1", CODE(1))
-		def expectedValue = new AverageValue([], average, [DISTRICT_HOSPITAL_GROUP])
-		def value = valueService.getCalculationValue(average, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+		def expectedValue = new AverageValue([], average, period, OrganisationUnit.findByName(BUTARO))
+		def value = valueService.getCalculationValue(average, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 		 
 		then:
 		value.equals(expectedValue)
 		
 		when:
 		def partialValue = newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
-		expectedValue = new AverageValue([partialValue], average, [DISTRICT_HOSPITAL_GROUP])
-		value = valueService.getCalculationValue(average, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+		expectedValue = new AverageValue([partialValue], average, period, OrganisationUnit.findByName(BUTARO))
+		value = valueService.getCalculationValue(average, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 
 		then:
 		value.equals(expectedValue)
@@ -121,16 +122,16 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		def sum = newSum("1", CODE(1))
-		def expectedValue = new SumValue([], sum, [DISTRICT_HOSPITAL_GROUP])
-		def value = valueService.getCalculationValue(sum, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+		def expectedValue = new SumValue([], sum, period, OrganisationUnit.findByName(BUTARO))
+		def value = valueService.getCalculationValue(sum, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 		 
 		then:
 		value.equals(expectedValue)
 		
 		when:
 		def partialValue = newSumPartialValue(sum, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
-		expectedValue = new SumValue([partialValue], sum, [DISTRICT_HOSPITAL_GROUP])
-		value = valueService.getCalculationValue(sum, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+		expectedValue = new SumValue([partialValue], sum, period, OrganisationUnit.findByName(BUTARO))
+		value = valueService.getCalculationValue(sum, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 
 		then:
 		value.equals(expectedValue)
@@ -143,16 +144,16 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		def aggregation = newAggregation("1", CODE(1))
-		def expectedValue = new AggregationValue([], aggregation, [DISTRICT_HOSPITAL_GROUP])
-		def value = valueService.getCalculationValue(aggregation, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+		def expectedValue = new AggregationValue([], aggregation, period, OrganisationUnit.findByName(BUTARO))
+		def value = valueService.getCalculationValue(aggregation, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 		 
 		then:
 		value.equals(expectedValue)
 		
 		when:
 		def partialValue = newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, null, 1, false, false, v("1"))
-		expectedValue = new SumValue([partialValue], aggregation, [DISTRICT_HOSPITAL_GROUP])
-		value = valueService.getCalculationValue(aggregation, OrganisationUnit.findByName(BUTARO), period, [DISTRICT_HOSPITAL_GROUP])
+		expectedValue = new SumValue([partialValue], aggregation, period, OrganisationUnit.findByName(BUTARO))
+		value = valueService.getCalculationValue(aggregation, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 
 		then:
 		value.equals(expectedValue)

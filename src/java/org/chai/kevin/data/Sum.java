@@ -34,6 +34,7 @@ import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.ExpressionService.StatusValuePair;
 import org.chai.kevin.Organisation;
@@ -49,7 +50,6 @@ import org.hisp.dhis.period.Period;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="dhsst_calculation_sum")
 public class Sum extends Calculation<SumPartialValue> {
-
 	
 	@Override
 	public SumValue getCalculationValue(List<SumPartialValue> partialValues, Period period, OrganisationUnit organisationUnit) {
@@ -57,6 +57,7 @@ public class Sum extends Calculation<SumPartialValue> {
 	}
 
 	@Override
+	@Transient
 	public Class<SumPartialValue> getValueClass() {
 		return SumPartialValue.class;
 	}
@@ -68,6 +69,7 @@ public class Sum extends Calculation<SumPartialValue> {
 	}
 
 	@Override
+	@Transient
 	public List<String> getPartialExpressions() {
 		List<String> result = new ArrayList<String>();
 		result.add(getExpression());

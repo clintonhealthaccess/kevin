@@ -59,23 +59,23 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def result = null
 		
 		when: "data element is missing"
-		normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$0"]]))
-		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
+		normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$0"]]))
+		result = expressionService.calculateValue(normalizedDataElement, getOrganisation(BUTARO), period)
 		
 		then:
 		result.value == Value.NULL
 		result.status == Status.MISSING_DATA_ELEMENT
 		
 		when: "value is missing for facility"
-		normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
-		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
+		normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
+		result = expressionService.calculateValue(normalizedDataElement, getOrganisation(BUTARO), period)
 		
 		then:
 		result.value == Value.NULL
 		result.status == Status.MISSING_VALUE
 
 		when: "expression is missing for facility type"
-		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(KIVUYE), period)
+		result = expressionService.calculateValue(normalizedDataElement, getOrganisation(KIVUYE), period)
 				
 		then:
 		result.value == Value.NULL
@@ -83,8 +83,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		when: "everything is fine"
 		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("40"))
-		normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id+" * 2"]]))
-		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period)
+		normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id+" * 2"]]))
+		result = expressionService.calculateValue(normalizedDataElement, getOrganisation(BUTARO), period)
 		
 		then:
 		result.value.numberValue == 80d
@@ -92,8 +92,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 			
 		when: "null value"
 		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), Value.NULL)
-		normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
-		result = expressionService.calculateValue(expression, OrganisationUnit.findByName(KIVUYE), period)
+		normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id+''):[(HEALTH_CENTER_GROUP):"\$"+dataElement.id]]))
+		result = expressionService.calculateValue(normalizedDataElement, getOrganisation(KIVUYE), period)
 		
 		then:
 		result.value == Value.NULL
@@ -110,7 +110,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		when: 
 		normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		result = expressionService.calculateValue(normalizedDataElement, OrganisationUnit.findByName(organisation), period)
+		result = expressionService.calculateValue(normalizedDataElement, getOrganisation(organisation), period)
 		
 		then:
 		thrown IllegalArgumentException
@@ -124,13 +124,12 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def organisationUnit = OrganisationUnit.findByName(BUTARO)
 		def normalizedDataElement = null
 		def result = null
 		
 		when:
-		normalizedDataElement = newNormalizedDataElement(CODE(2), type, [(period.id):[(DISTRICT_HOSPITAL_GROUP):formula]])
-		result = expressionService.calculateValue(normalizedDataElement, organisationUnit, period)
+		normalizedDataElement = newNormalizedDataElement(CODE(2), type, [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):formula]])
+		result = expressionService.calculateValue(normalizedDataElement, getOrganisation(BUTARO), period)
 		
 		then:
 		result.status == Status.ERROR
@@ -147,8 +146,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
-		def sum = newSum("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
+		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def result = null
 		refreshNormalizedDataElement()
 		
@@ -188,8 +187,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id):[(DISTRICT_HOSPITAL_GROUP):"1"]])
-		def sum = newSum("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
+		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def result = null
 		refreshNormalizedDataElement()
 		
@@ -229,8 +228,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
-		def average = newAverage("\$"+normalizedDataElement.id, CODE(2), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
+		def average = newAverage("\$"+normalizedDataElement.id, CODE(2))
 		def result = null
 		refreshNormalizedDataElement()
 		
@@ -296,7 +295,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
 //		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("2"))
 //		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-//		refreshExpression()
+//		refreshNormalizedDataElement()
 //		
 //		when:
 //		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
@@ -323,7 +322,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		def dataElement = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
 //		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
 //		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-//		refreshExpression()
+//		refreshNormalizedDataElement()
 //		
 //		when:
 //		def sum = newSum([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
@@ -351,7 +350,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		def kivuye = OrganisationUnit.findByName(KIVUYE)
 //		def butaro = OrganisationUnit.findByName(BUTARO)
 //		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-//		refreshExpression()
+//		refreshNormalizedDataElement()
 //		
 //		when:
 //		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
@@ -397,7 +396,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
 //		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("2"))
 //		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-//		refreshExpression()
+//		refreshNormalizedDataElement()
 //		
 //		when:
 //		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
@@ -424,7 +423,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		def dataElement = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
 //		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(KIVUYE), v("1"))
 //		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
-//		refreshExpression()
+//		refreshNormalizedDataElement()
 //		
 //		when:
 //		def average = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(1), Type.TYPE_NUMBER())
@@ -447,7 +446,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	def "data elements in expression"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def average = newAverage("1", CODE(1))
+		def average = newAverage("1", CODE(2))
 		def data = null
 		
 		when:

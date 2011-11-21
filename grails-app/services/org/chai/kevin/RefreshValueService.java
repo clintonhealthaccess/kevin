@@ -51,7 +51,7 @@ public class RefreshValueService {
 			Organisation organisation = organisationService.getOrganisation(((OrganisationUnit)row[0]).getId());
 			if (organisationService.loadLevel(organisation) == organisationService.getFacilityLevel()) {
 				Period period = (Period)row[1];
-				NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, period, organisation);				
+				NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, organisation, period);				
 				valueService.save(value);
 			}
 		}
@@ -121,6 +121,10 @@ public class RefreshValueService {
 		return query.iterate();
 	}
 	
+	public void setOrganisationService(OrganisationService organisationService) {
+		this.organisationService = organisationService;
+	}
+	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -141,6 +145,5 @@ public class RefreshValueService {
 	public RefreshValueService getMe() {
 		return grailsApplication.getMainContext().getBean(RefreshValueService.class);
 	}
-	
 	
 }

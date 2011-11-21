@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.AverageValue;
 import org.chai.kevin.ExpressionService.StatusValuePair;
@@ -57,6 +58,7 @@ public class Average extends Calculation<AveragePartialValue> {
 	}
 
 	@Override
+	@Transient
 	public Class<AveragePartialValue> getValueClass() {
 		return AveragePartialValue.class;
 	}
@@ -77,6 +79,7 @@ public class Average extends Calculation<AveragePartialValue> {
 	}
 
 	@Override
+	@Transient
 	public List<String> getPartialExpressions() {
 		List<String> result = new ArrayList<String>();
 		result.add(getExpression());

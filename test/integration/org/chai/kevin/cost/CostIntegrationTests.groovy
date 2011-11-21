@@ -26,16 +26,16 @@ abstract class CostIntegrationTests extends IntegrationTests {
 		return new CostObjective(names: names, code: code).save(failOnError: true)
 	}
 	
-	def newCostTarget(def code, def expression, def costRampUp, def type, def groups, def objective) {
-		return newCostTarget([:], code, expression, null, costRampUp, type, groups, objective)
+	def newCostTarget(def code, def dataElement, def costRampUp, def type, def groups, def objective) {
+		return newCostTarget([:], code, dataElement, null, costRampUp, type, groups, objective)
 	}
 	
-	def newCostTarget(def code, def expression, def expressionEnd, def costRampUp, def type, def groups, def objective) {
-		return newCostTarget([:], code, expression, expressionEnd, costRampUp, type, groups, objective)
+	def newCostTarget(def code, def dataElement, def dataElementEnd, def costRampUp, def type, def groups, def objective) {
+		return newCostTarget([:], code, dataElement, dataElementEnd, costRampUp, type, groups, objective)
 	}
 	
-	def newCostTarget(def names, def code, def expression, def expressionEnd, def costRampUp, def type, def groups, def objective) {
-		def target = new CostTarget(names: names, code: code, expression: expression, expressionEnd: expressionEnd, costRampUp: costRampUp, costType: type, groupUuidString: Utils.unsplit(groups), parent: objective).save(failOnError: true)
+	def newCostTarget(def names, def code, def dataElement, def dataElementEnd, def costRampUp, def type, def groups, def objective) {
+		def target = new CostTarget(names: names, code: code, dataElement: dataElement, dataElementEnd: dataElementEnd, costRampUp: costRampUp, costType: type, groupUuidString: Utils.unsplit(groups), parent: objective).save(failOnError: true)
 		objective.targets << target
 		objective.save(failOnError: true)
 		return target

@@ -176,15 +176,15 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	AggregationPartialValue newAggregationPartialValue(def aggregation, def period, def organisationUnit, def groupUuid, def expressionData, def hasMissingValues, def hasMissingExpression, def value) {
-		return new AggregationPartialValue(aggregation: aggregation, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, expressionData: expressionData, hasMissingValues: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
+		return new AggregationPartialValue(data: aggregation, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, expressionData: expressionData, hasMissingValues: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
 	}
 	
 	SumPartialValue newSumPartialValue(def sum, def period, def organisationUnit, def groupUuid, def hasMissingValues, def hasMissingExpression, def value) {
-		return new SumPartialValue(sum: sum, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, hasMissingValue: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
+		return new SumPartialValue(data: sum, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, hasMissingValue: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
 	}
 	
 	AveragePartialValue newAveragePartialValue(def average, def period, def organisationUnit, def groupUuid, def numberOfFacilities, def hasMissingValues, def hasMissingExpression, def value) {
-		return new AveragePartialValue(average: average, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, numberOfFacilities: numberOfFacilities, hasMissingValue: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
+		return new AveragePartialValue(data: average, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, numberOfFacilities: numberOfFacilities, hasMissingValue: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
 	}
 	
 	RawDataElement newRawDataElement(def code, def type) {
@@ -198,13 +198,17 @@ abstract class IntegrationTests extends IntegrationSpec {
 	RawDataElement newRawDataElement(def names, def code, def type, def info) {
 		return new RawDataElement(names: names, code: code, type: type, info: info).save(failOnError: true)
 	}
-	
+
+	NormalizedDataElement newNormalizedDataElement(def names, def code, def type, def expressionMap) {
+		return new NormalizedDataElement(names: names, code: code, type: type, expressionMap: expressionMap).save(failOnError:true)
+	}
+
 	NormalizedDataElement newNormalizedDataElement(def code, def type, def expressionMap) {
-		return new NormalizedDataElement(names: names, code: code, type: type, expressionMap: expressionMap)
+		return newNormalizedDataElement([:], code, type, expressionMap)
 	}
 	
-	NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def organisationUnit, def status, def value) {
-		return new NormalizedDataElementValue(normalizedDataElement: normalizedDataElement, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
+	NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def organisationUnit, def period, def status, def value) {
+		return new NormalizedDataElementValue(data: normalizedDataElement, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
 	}
 	
 //	NormalizedDataElementValue newExpressionValue(def expression, def period, def organisationUnit, def status, def value) {
@@ -225,16 +229,28 @@ abstract class IntegrationTests extends IntegrationSpec {
 //		return new Expression(names: names, code: code, type: type, expression: formula).save(arguments)
 //	}
 	
-	Aggregation newAggregation(def expression, def code) {
-		return new Aggregation(expression: expression, code: code).save(failOnError: true)
+	Aggregation newAggregation(def names, def expression, def code) {
+		return new Aggregation(names: names, expression: expression, code: code).save(failOnError: true)
 	}
-	
+
+	Aggregation newAggregation(def expression, def code) {
+		return newAggregation([:], expression, code)
+	}
+
+	Average newAverage(def names, def expression, def code) {
+		return new Average(names: names, expression: expression, code: code).save(failOnError: true)
+	}
+
 	Average newAverage(def expression, def code) {
-		return new Average(expression: expression, code: code).save(failOnError: true)
+		return newAverage([:], expression, code)
+	}
+
+	Sum newSum(def names, def expression, def code) {
+		return new Sum(names: names, expression: expression, code: code).save(failOnError: true, flush: true)
 	}
 	
 	Sum newSum(def expression, def code) {
-		return new Sum(expression: expression, code: code).save(failOnError: true, flush: true)
+		return newSum([:], expression, code)
 	}
 	
 	Enum newEnume(def code) {
@@ -297,6 +313,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 			result.add(getOrganisation(name))
 		}
 		return result
+	}
+	
+	static s(def list) {
+		return new HashSet(list)
 	}
 	
 	static e(def map) {

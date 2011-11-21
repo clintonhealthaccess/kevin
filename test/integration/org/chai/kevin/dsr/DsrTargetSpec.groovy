@@ -9,16 +9,16 @@ class DsrTargetSpec extends DsrIntegrationTests {
 	def "can save target"() {
 		setup:
 		def objective = newDsrObjective(CODE(1))
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
-		new DsrTarget(objective: objective, groupUuids: [DISTRICT_HOSPITAL_GROUP], code: CODE(1), expression: expression).save(failOnError: true)
+		new DsrTarget(objective: objective, groupUuids: [DISTRICT_HOSPITAL_GROUP], code: CODE(1), dataElement: dataElement).save(failOnError: true)
 		
 		then:
 		DsrTarget.count() == 1
 	}
 	
-	def "cannot save target with null expression"() {
+	def "cannot save target with null data element"() {
 		setup:
 		def objective = newDsrObjective(CODE(1))
 		
@@ -32,10 +32,10 @@ class DsrTargetSpec extends DsrIntegrationTests {
 	def "cannot save target with null code"() {
 		setup:
 		def objective = newDsrObjective(CODE(1))
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
-		new DsrTarget(objective: objective, groupUuids: [DISTRICT_HOSPITAL_GROUP], expression: expression).save(failOnError: true)
+		new DsrTarget(objective: objective, groupUuids: [DISTRICT_HOSPITAL_GROUP], dataElement: dataElement).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

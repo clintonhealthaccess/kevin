@@ -35,15 +35,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
-@Entity(name="CalculationPartialValue")
-@Table(name="dhsst_calculation_value")
-@Inheritance(strategy=InheritanceType.JOINED)
+@MappedSuperclass
 public abstract class CalculationPartialValue extends StoredValue {
 
 	private Long id;

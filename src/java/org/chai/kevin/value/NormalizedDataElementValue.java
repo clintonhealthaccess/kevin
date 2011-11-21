@@ -48,7 +48,7 @@ import org.hisp.dhis.period.Period;
 @Entity(name="NormalizedDataElementValue")
 @Table(name="dhsst_normalized_data_element_value",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"organisationUnit", "normalizedDataElement", "period"})
+		@UniqueConstraint(columnNames={"data", "organisationUnit", "period"})
 	}
 )
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

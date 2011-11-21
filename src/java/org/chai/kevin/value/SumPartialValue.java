@@ -16,7 +16,7 @@ import org.hisp.dhis.period.Period;
 @Entity(name="SumValue")
 @Table(name="dhsst_sum_value",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"sum", "organisationUnit", "period", "groupUuid"})
+		@UniqueConstraint(columnNames={"data", "organisationUnit", "period", "groupUuid"})
 	}
 )
 public class SumPartialValue extends CalculationPartialValue {

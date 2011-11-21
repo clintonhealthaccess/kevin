@@ -17,7 +17,7 @@ import org.hisp.dhis.period.Period;
 @Entity(name="AggregationPartialValue")
 @Table(name="dhsst_aggregation_value",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"aggregation", "organisationUnit", "period", "groupUuid", "expressionData"})
+		@UniqueConstraint(columnNames={"data", "organisationUnit", "period", "groupUuid", "expressionData"})
 	}
 )
 public class AggregationPartialValue extends CalculationPartialValue {

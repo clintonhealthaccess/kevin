@@ -18,7 +18,7 @@ import org.hisp.dhis.period.Period;
 @Entity(name="AveragePartialValue")
 @Table(name="dhsst_average_value",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"average", "organisationUnit", "period", "groupUuid"})
+		@UniqueConstraint(columnNames={"data", "organisationUnit", "period", "groupUuid"})
 	}
 )
 public class AveragePartialValue extends CalculationPartialValue {

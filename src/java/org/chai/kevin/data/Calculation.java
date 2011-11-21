@@ -61,6 +61,7 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	private Date calculated;
 	
 	// extract partial expressions from the calculation
+	@Transient
 	public abstract List<String> getPartialExpressions();
 	
 	public abstract T getCalculationPartialValue(String expression, Map<Organisation, StatusValuePair> values, 

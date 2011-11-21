@@ -31,6 +31,7 @@ package org.chai.kevin.data;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.value.RawDataElementValue;
 import org.hibernate.annotations.Cache;
@@ -53,6 +54,7 @@ public class RawDataElement extends DataElement<RawDataElementValue> {
 	}
 
 	@Override
+	@Transient
 	public Class<RawDataElementValue> getValueClass() {
 		return RawDataElementValue.class;
 	}

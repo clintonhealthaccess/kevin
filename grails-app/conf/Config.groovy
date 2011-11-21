@@ -144,9 +144,6 @@ security.shiro.authc.required = false
 				   'org.codehaus.groovy.grails.web.mapping', // URL mapping
 				   'org.codehaus.groovy.grails.commons', // core / classloading
 				   'org.codehaus.groovy.grails.plugins', // plugins
-				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-				   'org.springframework',
-				   'org.hibernate',
 				   'net.sf.ehcache.hibernate',
 				   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
 				   'org.chai.kevin.JaqlService',
@@ -154,8 +151,11 @@ security.shiro.authc.required = false
 				   'grails.plugin.springcache'
 				   
 			debug  'grails.app',
-				   'org.chai.kevin'
-				   
+				   'org.chai.kevin',
+				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+				   'org.springframework',
+				   'org.hibernate'
+
 		}
 //	}
 //	production {

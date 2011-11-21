@@ -22,25 +22,25 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def value = null
 		
 		when:
-		value = new SumValue([partialValue1], sum)
+		value = new SumValue([partialValue1], sum, null, null)
 		
 		then:
 		value.getValue().equals(v("1"))
 		
 		when:
-		value = new SumValue([partialValue1, partialValue2], sum)
+		value = new SumValue([partialValue1, partialValue2], sum, null, null)
 		
 		then:
 		value.getValue().equals(v("3"))
 		
 		when:
-		value = new SumValue([partialValue1, partialValue3], sum)
+		value = new SumValue([partialValue1, partialValue3], sum, null, null)
 		
 		then:
 		value.getValue().equals(v("4"))
 		
 		when:
-		value = new SumValue([partialValue1, partialValue2, partialValue3], sum)
+		value = new SumValue([partialValue1, partialValue2, partialValue3], sum, null, null)
 		
 		then:
 		value.getValue().equals(v("6"))
@@ -56,25 +56,25 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def value = null
 		
 		when:
-		value = new AverageValue([partialValue1], average)
+		value = new AverageValue([partialValue1], average, null, null)
 		
 		then:
 		value.getValue().equals(v("1"))
 		
 		when:
-		value = new AverageValue([partialValue1, partialValue2], average)
+		value = new AverageValue([partialValue1, partialValue2], average, null, null)
 		
 		then:
 		value.getValue().equals(v("5"))
 		
 		when:
-		value = new AverageValue([partialValue1, partialValue3], average)
+		value = new AverageValue([partialValue1, partialValue3], average, null, null)
 		
 		then:
 		value.getValue().equals(v("7"))
 		
 		when:
-		value = new AverageValue([partialValue1, partialValue2, partialValue3], average)
+		value = new AverageValue([partialValue1, partialValue2, partialValue3], average, null, null)
 		
 		then:
 		value.getValue().equals(v("7"))
@@ -93,25 +93,25 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def value = null
 		
 		when:
-		value = new AggregationValue([partialValue11, partialValue12], aggregation)
+		value = new AggregationValue([partialValue11, partialValue12], aggregation, null, null)
 		
 		then:
 		value.getValue().equals(v("1"))
 		
 		when:
-		value = new AggregationValue([partialValue11, partialValue12, partialValue21, partialValue22], aggregation)
+		value = new AggregationValue([partialValue11, partialValue12, partialValue21, partialValue22], aggregation, null, null)
 		
 		then:
 		value.getValue().equals(v("2"))
 		
 		when:
-		value = new AggregationValue([partialValue11, partialValue12, partialValue31, partialValue32], aggregation)
+		value = new AggregationValue([partialValue11, partialValue12, partialValue31, partialValue32], aggregation, null, null)
 		
 		then:
 		value.getValue().equals(v("3"))
 		
 		when:
-		value = new AggregationValue([partialValue11, partialValue12, partialValue21, partialValue22, partialValue31, partialValue32], aggregation)
+		value = new AggregationValue([partialValue11, partialValue12, partialValue21, partialValue22, partialValue31, partialValue32], aggregation, null, null)
 		
 		then:
 		value.getValue().equals(v("3"))
@@ -126,14 +126,14 @@ class CalculationValueUnitSpec extends UnitSpec {
 		
 		when:
 		partialValue = new AveragePartialValue(value: v("1"), numberOfFacilities: 0)
-		value = new AverageValue([partialValue], average)
+		value = new AverageValue([partialValue], average, null, null)
 		
 		then:
 		value.getValue().equals(Value.NULL)
 		
 		when:
 		partialValue = new AveragePartialValue(value: v("0"), numberOfFacilities: 0)
-		value = new AverageValue([partialValue], average)
+		value = new AverageValue([partialValue], average, null, null)
 
 		then:
 		value.getValue().equals(Value.NULL)
@@ -147,17 +147,17 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def aggregation = new Aggregation(expression: '\$1/\$2')
 		
 		when:
-		partialValue1 = new AggregationPartialValue(value: v("1"), expressionData: '\$1')
-		partialValue2 = new AggregationPartialValue(value: v("0"), expressionData: '\$2')
-		value = new AggregationValue([partialValue1, partialValue2], aggregation)
+		partialValue1 = new AggregationPartialValue(value: v("1"), expressionData: '\$1', null, null)
+		partialValue2 = new AggregationPartialValue(value: v("0"), expressionData: '\$2', null, null)
+		value = new AggregationValue([partialValue1, partialValue2], aggregation, null, null)
 		
 		then:
 		value.getValue().equals(Value.NULL)
 		
 		when:
-		partialValue1 = new AggregationPartialValue(value: v("0"), expressionData: '\$1')
-		partialValue2 = new AggregationPartialValue(value: v("0"), expressionData: '\$2')
-		value = new AggregationValue([partialValue1, partialValue2], aggregation)
+		partialValue1 = new AggregationPartialValue(value: v("0"), expressionData: '\$1', null, null)
+		partialValue2 = new AggregationPartialValue(value: v("0"), expressionData: '\$2', null, null)
+		value = new AggregationValue([partialValue1, partialValue2], aggregation, null, null)
 
 		then:
 		value.getValue().equals(Value.NULL)

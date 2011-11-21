@@ -44,10 +44,10 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
 		def costObjective = newCostObjective(CODE(2))
-		def training = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
-		refreshExpression()
+		def training = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		refreshNormalizedDataElement()
 		
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 
@@ -69,11 +69,11 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
-		def expressionEnd = newExpression(CODE(4), Type.TYPE_NUMBER(), "40")
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
+		def dataElementEnd = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"40",(HEALTH_CENTER_GROUP):"40"]]))
 		def costObjective = newCostObjective(CODE(2))
-		def training = newCostTarget(CODE(3), expression, expressionEnd, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
-		refreshExpression()
+		def training = newCostTarget(CODE(3), dataElement, dataElementEnd, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		refreshNormalizedDataElement()
 		
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 
@@ -95,12 +95,12 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
 		def costObjective = newCostObjective(CODE(2))
 		def rampUp = CONSTANT_RAMP_UP()
-		def training = newCostTarget(TRAINING, expression, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
-		def average = newCostTarget(AVERAGE, expression, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
-		refreshExpression()
+		def training = newCostTarget(TRAINING, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		def average = newCostTarget(AVERAGE, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		refreshNormalizedDataElement()
 		
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 		
@@ -121,10 +121,9 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		when:
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 		def costObjective = newCostObjective(CODE(2))
-		def target = newCostTarget(CODE(4), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
-		refreshExpression()
+		def target = newCostTarget(CODE(4), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		refreshNormalizedDataElement()
 		
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 		
@@ -146,10 +145,10 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
 		def costObjective = newCostObjective(CODE(2))
-		def training = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
-		refreshExpression()
+		def training = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		refreshNormalizedDataElement()
 		
 		def costTable = costTableService.getCostTable(period, costObjective, getOrganisation(RWANDA))
 
@@ -172,10 +171,10 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
 		def costObjective = newCostObjective(CODE(2))
-		def costTarget = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [(DISTRICT_HOSPITAL_GROUP), (HEALTH_CENTER_GROUP)], costObjective)
-		refreshExpression()
+		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [(DISTRICT_HOSPITAL_GROUP), (HEALTH_CENTER_GROUP)], costObjective)
+		refreshNormalizedDataElement()
 		
 		def explanation = costTableService.getExplanation(period, costTarget, getOrganisation(organisationName))
 		def cost = explanation.getCost(getOrganisation(expectedOrganisationName), year)
@@ -214,10 +213,10 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 		when:
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "20")
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
 		def costObjective = newCostObjective(CODE(2))
-		def costTarget = newCostTarget(CODE(3), expression, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
-		refreshExpression()
+		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		refreshNormalizedDataElement()
 		
 		def explanation = costTableService.getExplanation(period, costTarget, getOrganisation(BURERA))
 		

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.AggregationValue;
 import org.chai.kevin.ExpressionService;
@@ -29,6 +30,7 @@ public class Aggregation extends Calculation<AggregationPartialValue> {
 	}
 
 	@Override
+	@Transient
 	public Class<AggregationPartialValue> getValueClass() {
 		return AggregationPartialValue.class;
 	}
@@ -40,6 +42,7 @@ public class Aggregation extends Calculation<AggregationPartialValue> {
 	}
 
 	@Override
+	@Transient
 	public List<String> getPartialExpressions() {
 		List<String> result = new ArrayList<String>();
 		result.addAll(ExpressionService.getVariables(getExpression()));

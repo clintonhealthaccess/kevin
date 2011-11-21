@@ -52,7 +52,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		
 		then:
 		NormalizedDataElementValue.count() == 0
@@ -72,7 +72,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(BUTARO)
 		def calculated = new Date()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
 		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, period, organisation, Status.VALID, Value.NULL)
 		def timestamp = normalizedDataElementValue.timestamp
 		
@@ -92,7 +92,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:

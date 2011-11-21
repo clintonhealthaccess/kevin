@@ -28,7 +28,10 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.Data;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Sum;
@@ -99,8 +102,8 @@ class DataServiceSpec extends IntegrationTests {
 		def average = newAverage("1", CODE(3)) 
 		
 		expect:
-		dataService.getData(rowDataElement.id, DataElement.class).equals(rawDataElement)
-		dataService.getData(rowDataElement.id, Data.class).equals(rawDataElement)
+		dataService.getData(rawDataElement.id, DataElement.class).equals(rawDataElement)
+		dataService.getData(rawDataElement.id, Data.class).equals(rawDataElement)
 		dataService.getData(average.id, Calculation.class).equals(average)
 		dataService.getData(average.id, Data.class).equals(average)
 	}
@@ -128,18 +131,29 @@ class DataServiceSpec extends IntegrationTests {
 				
 	}
 	
-	def "search for expression works"() {
+	def "search for normalized data element works"() {
 		setup:
-		def expression1 = newExpression(j(["en": "expression"]), CODE(1), Type.TYPE_NUMBER(), "1")
-		def expression2 = newExpression(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER(), "1")
+		def dataElement1 = newNormalizedDataElement(j(["en": "expression"]), CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def dataElement2 = newNormalizedDataElement(j(["en": "something"]), CODE(2), Type.TYPE_NUMBER(), e([:]))
 		
 		expect:
-		dataService.searchData(Expression.class, "expr", [], [:]).equals([expression1])
-		dataService.countData(Expression.class, "expr", []) == 1
-		dataService.searchData(Expression.class, "some", [], [:]).equals([expression2])
-		dataService.countData(Expression.class, "some", []) == 1
-		dataService.searchData(Expression.class, "expr some", [], [:]).equals([])
-		dataService.countData(Expression.class, "expr some", []) == 0
+		dataService.searchData(NormalizedDataElement.class, "expr", [], [:]).equals([dataElement1])
+		dataService.countData(NormalizedDataElement.class, "expr", []) == 1
+		dataService.searchData(NormalizedDataElement.class, "some", [], [:]).equals([dataElement2])
+		dataService.countData(NormalizedDataElement.class, "some", []) == 1
+		dataService.searchData(NormalizedDataElement.class, "expr some", [], [:]).equals([])
+		dataService.countData(NormalizedDataElement.class, "expr some", []) == 0
+		
+	}
+	
+	def "search for calculations work"() {
+		setup:
+		def average1 = newAverage(j(["en": "average"]), "1", CODE(1));
+		
+		expect:
+		dataService.searchData(Average.class, "aver", [], [:]).equals([average1])
+		dataService.searchData(Data.class, "aver", [], [:]).equals([average1])
+		dataService.searchData(Sum.class, "aver", [], [:]).isEmpty()
 		
 	}
 	

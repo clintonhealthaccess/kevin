@@ -14,7 +14,7 @@ class InfoServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, OrganisationUnit.findByName(BUTARO), v("1"))
-		def normalizedDataEement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def normalizedDataEement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
 		
 		when:
 		def normalizedDataElementInfo = infoService.getNormalizedDataElementInfo(normalizedDataEement, getOrganiation(BUTARO), period)
@@ -28,7 +28,7 @@ class InfoServiceSpec extends IntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), Status.VALID, v("1"))
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def sumPartialValue = newSumPartialValue(sum, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, v("1"))

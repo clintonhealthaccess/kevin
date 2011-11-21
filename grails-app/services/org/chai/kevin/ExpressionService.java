@@ -117,15 +117,15 @@ public class ExpressionService {
 	
 	/**
 	 * The expression has to be aggregatable for this to work
-	 * 
-	 * @param expression
-	 * @param period
 	 * @param facility
+	 * @param period
+	 * @param expression
 	 * @param valuesForOrganisation
+	 * 
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, Period period, Organisation facility) {
+	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, Organisation facility, Period period) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",organisation="+facility+")");
 		
 		NormalizedDataElementValue expressionValue;
@@ -147,33 +147,39 @@ public class ExpressionService {
 	// organisation has to be a facility
 	private StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, Organisation facility) {
 		StatusValuePair statusValuePair = new StatusValuePair();
-		Map<String, RawDataElement> datas = getDataInExpression(expression, RawDataElement.class);
-		if (hasNullValues(datas.values())) {
+		if (expression == null) {
+			statusValuePair.status = Status.DOES_NOT_APPLY;
 			statusValuePair.value = Value.NULL;
-			statusValuePair.status = Status.MISSING_DATA_ELEMENT;
 		}
 		else {
-			Map<String, Value> valueMap = new HashMap<String, Value>();
-			Map<String, Type> typeMap = new HashMap<String, Type>();
-			
-			for (Entry<String, RawDataElement> entry : datas.entrySet()) {
-				RawDataElementValue dataValue = valueService.getDataElementValue(entry.getValue(), facility.getOrganisationUnit(), period);
-				valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
-				typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
-			}
-			
-			if (hasNullValues(valueMap.values())) {
+			Map<String, RawDataElement> datas = getDataInExpression(expression, RawDataElement.class);
+			if (hasNullValues(datas.values())) {
 				statusValuePair.value = Value.NULL;
-				statusValuePair.status = Status.MISSING_VALUE;
+				statusValuePair.status = Status.MISSING_DATA_ELEMENT;
 			}
 			else {
-				try {
-					statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
-					statusValuePair.status = Status.VALID;
-				} catch (IllegalArgumentException e) {
-					log.error("there was an error evaluating expression: "+expression, e);
+				Map<String, Value> valueMap = new HashMap<String, Value>();
+				Map<String, Type> typeMap = new HashMap<String, Type>();
+				
+				for (Entry<String, RawDataElement> entry : datas.entrySet()) {
+					RawDataElementValue dataValue = valueService.getDataElementValue(entry.getValue(), facility.getOrganisationUnit(), period);
+					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
+					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
+				}
+				
+				if (hasNullValues(valueMap.values())) {
 					statusValuePair.value = Value.NULL;
-					statusValuePair.status = Status.ERROR;
+					statusValuePair.status = Status.MISSING_VALUE;
+				}
+				else {
+					try {
+						statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
+						statusValuePair.status = Status.VALID;
+					} catch (IllegalArgumentException e) {
+						log.error("there was an error evaluating expression: "+expression, e);
+						statusValuePair.value = Value.NULL;
+						statusValuePair.status = Status.ERROR;
+					}
 				}
 			}
 		}

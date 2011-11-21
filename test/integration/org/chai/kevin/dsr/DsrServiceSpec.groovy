@@ -13,7 +13,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
 		def objective = newDsrObjective(CODE(2))
 		def target = newDsrTarget(CODE(3), expression, format, [(DISTRICT_HOSPITAL_GROUP), (HEALTH_CENTER_GROUP)], objective)
-		refreshExpression()
+		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
 		def dsrTable = dsrService.getDsr(organisation, objective, period)
@@ -37,7 +37,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
 		def objective = newDsrObjective(CODE(2))
 		def target = newDsrTarget(CODE(3), expression, [], objective)
-		refreshExpression()
+		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
 		def dsrTable = dsrService.getDsr(organisation, objective, period)
@@ -58,7 +58,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
 		def objective = newDsrObjective(CODE(2))
 		def target = newDsrTarget(CODE(3), expression, [(DISTRICT_HOSPITAL_GROUP)], objective)
-		refreshExpression()
+		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
 		def dsrTable = dsrService.getDsr(organisation, objective, period)
