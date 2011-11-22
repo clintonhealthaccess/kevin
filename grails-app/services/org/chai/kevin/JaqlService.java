@@ -40,7 +40,7 @@ public class JaqlService {
 		try {
 			value = query.evaluate();
 		} catch (Exception e) {
-			log.error("error evaluating: "+expression, e);
+			log.warn("error evaluating: "+expression, e);
 			throw new IllegalArgumentException("error evaluating: "+expression, e);
 		} finally {
 			try {query.close();} catch (IOException e) {}

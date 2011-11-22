@@ -589,7 +589,7 @@ public class SurveyPageService {
 						@Override
 						public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
 							// if it is skipped we return NULL
-							if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL.getStringValue());
+							if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL.getJsonValue());
 							// we remove the attributes
 							currentValue.setAttribute("skipped", null);
 							currentValue.setAttribute("invalid", null);

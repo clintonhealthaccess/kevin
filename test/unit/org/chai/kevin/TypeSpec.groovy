@@ -80,6 +80,24 @@ public class TypeSpec extends UnitSpec {
 		value.getNumberValue() == 10
 		value.getStringValue() == "10"
 		
+		when: "value with attribute"
+		value = new Value("{\"value\":10, \"skipped\":\"33\"}")
+
+		then:
+		value.getNumberValue() == 10
+
+		when: "null value with attribute"
+		value = new Value("{\"value\":null, \"skipped\":\"33\"}")
+
+		then:
+		value.isNull()
+		
+		when:
+		value = new Value("{\"value\":[{\"map_value\":{\"skipped\":\"33\",\"value\":null},\"map_key\":\"key\"}]}")
+		
+		then:
+		value.getMapValue().get("key").isNull()
+		
 		when:
 		value = new Value("{\"value\": true}")
 		
@@ -122,6 +140,7 @@ public class TypeSpec extends UnitSpec {
 		value.getMapValue().equals(["key1": new Value("{\"value\":[{\"map_value\":{\"value\":[{\"map_value\":{\"value\":123},\"map_key\":\"key111\"}]},\"map_key\":\"key11\"}]}")])
 		value.getMapValue().get('key1').getMapValue().equals(["key11": new Value("{\"value\":[{\"map_value\":{\"value\":123},\"map_key\":\"key111\"}]}")]);
 		value.getMapValue().get('key1').getMapValue().get('key11').getMapValue().equals(["key111": new Value("{\"value\":123}")])
+		
 	}
 	
 	def "get value from object"() {
@@ -664,7 +683,15 @@ public class TypeSpec extends UnitSpec {
 		type.getValue(value, "[1]").getAttribute("attribute") == "test"
 		type.getValue(value, "").getAttribute("attribute") == "test"
 		
+	}
+	
+	def "test setjsonvalue"() {
+		when:
+		def value = new Value("{\"value\":10}")
+		value.setJsonValue(Value.NULL.toString())
 		
+		then:
+		value.equals(Value.NULL)
 	}
 	
 	def "is valid"() {

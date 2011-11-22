@@ -461,6 +461,12 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		!expressionService.expressionIsValid(formula)
 		
 		when:
+		formula = "1\n+1"
+		
+		then:
+		!expressionService.expressionIsValid(formula)
+		
+		when:
 		formula = "\$0"
 		
 		then:

@@ -44,6 +44,29 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		surveyPageService.submit(getOrganisation(KIVUYE), objective) == true
 	}
 	
+	def "test submit objective with skipped elemment"() {
+		setup:
+		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(),"key2":Type.TYPE_NUMBER()])))
+		
+		when:
+		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(KIVUYE), new Value("{\"value\":[{\"map_value\":{\"skipped\":\"33\",\"value\":null},\"map_key\":\"key1\"},{\"map_value\":{\"value\":10},\"map_key\":\"key2\"}]}"))
+		newSurveyEnteredQuestion(question, period, OrganisationUnit.findByName(KIVUYE), false, true)
+		newSurveyEnteredSection(section, period, OrganisationUnit.findByName(KIVUYE), false, true)
+		newSurveyEnteredObjective(objective, period, OrganisationUnit.findByName(KIVUYE), false, true, false)
+				
+		then:
+		surveyPageService.submit(getOrganisation(KIVUYE), objective) == true
+		DataValue.count() == 1
+	}
+	
 	def "test modify"() {
 		setup:
 		setupOrganisationUnitTree()

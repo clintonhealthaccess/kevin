@@ -381,6 +381,8 @@ public class ExpressionService {
 
 	// TODO do this for validation rules
 	public synchronized boolean expressionIsValid(String formula) {
+		if (formula.contains("\n")) return false;
+		
 		Map<String, Data<?>> variables = getDataInExpression(formula);
 		if (hasNullValues(variables.values())) return false;
 		
