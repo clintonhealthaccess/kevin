@@ -57,11 +57,11 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		setup:
 		def organisationUnit = newOrganisationUnit(name: BUTARO)
 		def period = newPeriod()
-		def expression = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 
 		when:
-		def expr1 = new NormalizedDataElementValue(normalizedDataElement: normalizedDataElement, period: period, organisationUnit: organisationUnit);
-		def expr2 = new NormalizedDataElementValue(normalizedDataElement: normalizedDataElement, period: period, organisationUnit: organisationUnit);
+		def expr1 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, organisationUnit: organisationUnit);
+		def expr2 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, organisationUnit: organisationUnit);
 
 		then:
 		expr1.hashCode() == expr2.hashCode();
@@ -90,7 +90,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 			"if(\$328==1 || \$286==1 || \$277==1 || \$215==1) \"&#10003;\" else \"NEGS\""
 		]
 	}
-
+	
 	
 	//	def "expression can be a constant"() {
 	//		setup:

@@ -58,7 +58,7 @@ public class SurveyValidationRule {
 		this.surveyElement = surveyElement;
 	}
 	
-	@Basic
+	@Lob
 	@Column(nullable=false)
 	public String getExpression() {
 		return expression;

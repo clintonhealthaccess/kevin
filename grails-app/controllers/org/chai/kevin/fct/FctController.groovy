@@ -23,7 +23,7 @@ class FctController extends AbstractController {
 		OrganisationUnitLevel level = getLevel();
 
 		FctTable fctTable = null;
-		if((period != null && objective != null && organisation != null && level != null)) {
+		if (period != null && objective != null && organisation != null && level != null) {
 			fctTable = fctService.getFct(organisation, objective, period, level);
 		}
 		

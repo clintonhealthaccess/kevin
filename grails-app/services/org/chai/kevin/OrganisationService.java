@@ -143,15 +143,6 @@ public class OrganisationService {
 		return getOrganisationsOfLevel(level).size();
 	}
 	
-	public List<Organisation> getFacilitiesOfGroup(OrganisationUnitGroup group) {
-		Collection<OrganisationUnit> organisationUnits = organisationUnitService.getOrganisationUnitsAtLevel(getFacilityLevel());
-		List<Organisation> result = new ArrayList<Organisation>();
-		for (OrganisationUnit organisationUnit : organisationUnits) {
-			if (organisationUnit.getGroupInGroupSet(getOrganisationUnitGroupSet()).equals(group)) result.add(createOrganisation(organisationUnit));
-		}
-		return result;
-	}
-	
 	public Organisation getOrganisation(int id) {
 		OrganisationUnit organisationUnit = organisationUnitService.getOrganisationUnit(id);
 		return createOrganisation(organisationUnit);
@@ -244,18 +235,30 @@ public class OrganisationService {
 		return null;
 	}
 
-	public List<Organisation> getChildrenOfLevel(Organisation organisation, int level) {
-		List<OrganisationUnit> children = getChildrenOfLevel(organisation.getOrganisationUnit(), level);
+	public List<Organisation> getFacilitiesOfGroup(Organisation organisation, OrganisationUnitGroup group) {
+		List<Organisation> facilities = getChildrenOfLevel(organisation, getFacilityLevel());
 		List<Organisation> result = new ArrayList<Organisation>();
-		for (OrganisationUnit child : children) {
-			result.add(createOrganisation(child));
+		for (Organisation facility: facilities) {
+			loadGroup(facility);
+			if (facility.getOrganisationUnitGroup().equals(group)) result.add(facility);
 		}
 		return result;
 	}
 	
-	private List<OrganisationUnit> getChildrenOfLevel(OrganisationUnit organisation, final int level) {
-		List<OrganisationUnit> result = new ArrayList<OrganisationUnit>(organisationUnitService.getOrganisationUnitsAtLevel(level, organisation));
+	public List<Organisation> getChildrenOfLevel(Organisation organisation, int level) {
+		List<Organisation> result = new ArrayList<Organisation>();
+		collectChildrenOfLevel(organisation, level, result);
 		return result;
+	}
+	
+	private void collectChildrenOfLevel(Organisation organisation, int level, List<Organisation> organisations) {
+		if (loadLevel(organisation) == level) organisations.add(organisation);
+		else {
+			loadChildren(organisation);
+			for (Organisation child : organisation.getChildren()) {
+				collectChildrenOfLevel(child, level, organisations);
+			}
+		}
 	}
 	
 	private List<OrganisationUnit> getChildren(OrganisationUnit organisation, Integer... skipLevels) {

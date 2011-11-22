@@ -40,7 +40,7 @@ public class SumPartialValue extends CalculationPartialValue {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=Aggregation.class, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=Sum.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public Sum getData() {
 		return data;

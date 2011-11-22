@@ -63,7 +63,8 @@ public class DashboardPercentage extends Gradient implements DataValue {
 
 	@Override
 	public Double getGradientValue() {
-		return value.getNumberValue().doubleValue();
+		if (value.isNull()) return null;
+		else return value.getNumberValue().doubleValue();
 	}
 	
 }

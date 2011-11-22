@@ -36,51 +36,26 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 
 	def dsrTargetController 
 	def dsrService
-	
-	def "delete target refreshes cache"() {
-		setup:
-		dsrTargetController = new DsrTargetController()
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def objective = newDsrObjective(CODE(1))
-		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "1")
-		def target = newDsrTarget(CODE(2), expression, [], objective)
-		def organisation = getOrganisation(BURERA)
-		refresh()
-		
-		when:
-		def dsrTable = dsrService.getDsr(organisation, objective, period)
-		
-		then:
-		dsrTable.getDsr(getOrganisation(BUTARO), target) != null
-		
-		// TODO can't work because controller class is not instrumented 
-//		when:
-//		dsrTargetController.params.id = target.id
-//		dsrTargetController.delete()
-//		dsrTable = dsrService.getDsr(organisation, objective, period)
-//		
-//		then:
-//		dsrTable.getDsr(getOrganisation(BUTARO), target) == null
-	}
-	
+	def dataService
 	
 	def "save target saves target"() {
 		setup:
 		setupOrganisationUnitTree()
 		def objective = newDsrObjective(CODE(1))
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		dsrTargetController = new DsrTargetController()
+		dsrTargetController.dataService = dataService
 		
 		when:
 		dsrTargetController.params.code = CODE(2)
-		dsrTargetController.params['expression.id'] = expression.id
-		dsrTargetController.params['objective.id'] = objective.id
+		dsrTargetController.params['dataElement.id'] = dataElement.id+""
+		dsrTargetController.params['objective.id'] = objective.id+""
 		dsrTargetController.params.groupUuids = [DISTRICT_HOSPITAL_GROUP]
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:
 		DsrTarget.count() == 1
+		DsrTarget.list()[0].dataElement.equals(dataElement)
 	}
 	
 }

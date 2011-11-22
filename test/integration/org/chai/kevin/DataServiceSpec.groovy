@@ -39,6 +39,8 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
+import org.chai.kevin.value.Status;
+import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
 
 import grails.plugin.spock.UnitSpec;
@@ -81,19 +83,16 @@ class DataServiceSpec extends IntegrationTests {
 		result.equals(sum)
 	
 		expect:
-		dataService.getData(element.id, clazz) == null
+		dataService.getData(average.id, Sum.class) == null
+		dataService.getData(average.id, NormalizedDataElement.class) == null
+		dataService.getData(average.id, RawDataElement.class) == null
+		dataService.getData(sum.id, Average.class) == null
+		dataService.getData(sum.id, NormalizedDataElement.class) == null
+		dataService.getData(sum.id, RawDataElement.class) == null
+		dataService.getData(rawDataElement.id, Average.class) == null
+		dataService.getData(rawDataElement.id, NormalizedDataElement.class) == null
+		dataService.getData(rawDataElement.id, Sum.class) == null
 		
-		where:
-		element			| clazz
-		average			| Sum.class
-		average			| NormalizedDataElement.class
-		average			| RawDataElement.class
-		sum				| Average.class
-		sum				| NormalizedDataElement.class
-		sum				| RawDataElement.class
-		rawDataElement	| Sum.class
-		rawDataElement	| Average.class
-		rawDataElement	| NormalizedDataElement.class
 	}
 	
 	def "get data element using super type"() {
@@ -106,6 +105,21 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(rawDataElement.id, Data.class).equals(rawDataElement)
 		dataService.getData(average.id, Calculation.class).equals(average)
 		dataService.getData(average.id, Data.class).equals(average)
+	}
+	
+	def "list data element"() {
+		setup:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def average = newAverage("1", CODE(3))
+		def sum = newSum("1", CODE(4))
+		def aggregation = newAggregation("1", CODE(5))
+		
+		expect:
+		dataService.list(Average.class).equals([average])
+		dataService.list(DataElement.class).equals([rawDataElement, normalizedDataElement])
+		dataService.list(NormalizedDataElement.class).equals([normalizedDataElement])
+		dataService.list(Data.class).equals([rawDataElement, normalizedDataElement, average, sum, aggregation])
 	}
 	
 	def "search for null"() {
@@ -172,44 +186,44 @@ class DataServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 1
 	}
 	
-	def "delete expressions with associated values throws exception"() {
+	def "delete normalized data elements with associated values throws exception"() {
 		when:
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(KIVUYE)
-		newExpressionValue(expression, period, organisation, Status.VALID, Value.NULL)
+		newNormalizedDataElementValue(dataElement, organisation, period, Status.VALID, Value.NULL)
 		
-		dataService.delete(expression)
+		dataService.delete(dataElement)
 		
 		then:
 		thrown IllegalArgumentException
-		Expression.count() == 1
+		NormalizedDataElement.count() == 1
 		NormalizedDataElementValue.count() == 1
 	}
 	
 	def "delete calculation with associated values throws exception"() {
 		when:
-		def calculation = newSum([:], CODE(1), Type.TYPE_NUMBER())
+		def calculation = newSum("1", CODE(1))
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(KIVUYE)
-		newCalculationValue(calculation, period, organisation, false, false, Value.NULL)
+		newSumPartialValue(calculation, period, organisation, HEALTH_CENTER_GROUP, Value.NULL)
 		
 		dataService.delete(calculation)
 		
 		then:
 		thrown IllegalArgumentException
 		Sum.count() == 1
-		CalculationPartialValue.count() == 1
+		SumPartialValue.count() == 1
 		
 	}
 	
-	def "get calculations for expression"() {
-		when:
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-		def calculation = newSum([(DISTRICT_HOSPITAL_GROUP):expression], CODE(2), Type.TYPE_NUMBER())
-		
-		then:
-		dataService.getCalculations(expression).equals([calculation])
-	}
+//	def "get calculations for expression"() {
+//		when:
+//		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
+//		def calculation = newSum([(DISTRICT_HOSPITAL_GROUP):expression], CODE(2), Type.TYPE_NUMBER())
+//		
+//		then:
+//		dataService.getCalculations(expression).equals([calculation])
+//	}
 	
 }

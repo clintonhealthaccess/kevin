@@ -109,9 +109,11 @@ class TranslatableSpec extends IntegrationTests {
 		dataElement.save(failOnError:true)
 		dataElement.names = new Translation(jsonText: JSONUtils.getJSONFromMap([en: ENGLISH]));
 		dataElement.save(failOnError: true)
+		def expectedObject = new JSONObject()
+		expectedObject.put("en", ENGLISH)
 
 		then:
-		dataElement.names.getJsonText() == new JSONObject().put("en", ENGLISH).toString()
+		dataElement.names.getJsonText() == expectedObject.toString()
 		dataElement.names["en"] == ENGLISH
 		dataElement.names["fr"] == null
 	}

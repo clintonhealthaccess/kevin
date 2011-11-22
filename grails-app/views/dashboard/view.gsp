@@ -145,13 +145,6 @@
 												    	</a>
 												    </span>
 												</div>
-												<g:if test="${percentage.isHasMissingValue()}">
-													<span><!-- missing value --></span>
-												</g:if>
-												<g:if test="${percentage.isHasMissingExpression()}">
-													<span><!-- missing expression --></span>
-												</g:if>
-												</div>
 											</g:if>
 											<g:else>
 												<div class="">&nbsp;</div>

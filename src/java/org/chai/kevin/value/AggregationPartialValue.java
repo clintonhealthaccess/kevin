@@ -44,7 +44,7 @@ public class AggregationPartialValue extends CalculationPartialValue {
 	}
 
 	@Basic
-	@Column(nullable=false)
+	@Column(nullable=true)
 	@NaturalId
 	public String getExpressionData() {
 		return expressionData;

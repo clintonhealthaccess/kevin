@@ -360,7 +360,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def enume = newEnume(CODE(2))
 		def option1 = newEnumOption(enume, v("1"), o(['en':2, 'fr':1]))
 		def option2 = newEnumOption(enume, v("2"), o(['en':1, 'fr':2]))
-		def dataElement = newRawDataElement(CODE(1), Type.TYPE_ENUM(CODE(2)))
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_ENUM(enume.code))
 		def surveyElement = newSurveyElement(question, dataElement)
 		
 		when:

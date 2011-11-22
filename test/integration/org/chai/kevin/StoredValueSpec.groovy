@@ -2,6 +2,7 @@ package org.chai.kevin
 
 import grails.validation.ValidationException;
 
+import org.chai.kevin.data.Type;
 import org.chai.kevin.value.RawDataElementValue;
 
 class StoredValueSpec extends IntegrationTests {
@@ -18,7 +19,7 @@ class StoredValueSpec extends IntegrationTests {
 		thrown ValidationException
 		
 		when:
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		new RawDataElementValue(data: dataElement, organisationUnit: organisationUnit, period: period, value: v("1")).save(failOnError: true)
 		
 		then:

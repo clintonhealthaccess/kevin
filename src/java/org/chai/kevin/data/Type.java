@@ -857,7 +857,7 @@ public class Type extends JSONValue {
 	}
 
 	public static Type TYPE_ENUM (String enumCode) {
-		return new Type("{\""+TYPE_STRING+"\":\"enum\", \""+ENUM_CODE+"\":"+enumCode+"}");
+		return new Type("{\""+TYPE_STRING+"\":\"enum\", \""+ENUM_CODE+"\":\""+enumCode+"\"}");
 	}
 
 }

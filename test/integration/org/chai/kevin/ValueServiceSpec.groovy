@@ -107,7 +107,7 @@ class ValueServiceSpec extends IntegrationTests {
 		value.equals(expectedValue)
 		
 		when:
-		def partialValue = newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
+		def partialValue = newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, v("1"))
 		expectedValue = new AverageValue([partialValue], average, period, OrganisationUnit.findByName(BUTARO))
 		value = valueService.getCalculationValue(average, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 
@@ -129,7 +129,7 @@ class ValueServiceSpec extends IntegrationTests {
 		value.equals(expectedValue)
 		
 		when:
-		def partialValue = newSumPartialValue(sum, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
+		def partialValue = newSumPartialValue(sum, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, v("1"))
 		expectedValue = new SumValue([partialValue], sum, period, OrganisationUnit.findByName(BUTARO))
 		value = valueService.getCalculationValue(sum, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 
@@ -151,8 +151,8 @@ class ValueServiceSpec extends IntegrationTests {
 		value.equals(expectedValue)
 		
 		when:
-		def partialValue = newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, null, 1, false, false, v("1"))
-		expectedValue = new SumValue([partialValue], aggregation, period, OrganisationUnit.findByName(BUTARO))
+		def partialValue = newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, null, v("1"))
+		expectedValue = new AggregationValue([partialValue], aggregation, period, OrganisationUnit.findByName(BUTARO))
 		value = valueService.getCalculationValue(aggregation, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 
 		then:
@@ -223,22 +223,22 @@ class ValueServiceSpec extends IntegrationTests {
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, OrganisationUnit.findByName(BUTARO), v("40"))
 		
 		then:
-		NormalizedDataElementValue.count() == 1
+		RawDataElementValue.count() == 1
 		
 		when:
 		valueService.deleteValues(rawDataElement)
 		
 		then:
-		NormalizedDataElementValue.count() == 0
+		RawDataElementValue.count() == 0
 		
 		when: "only deletes right values"
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		newRawDataElementValue(rawDataElement, period, OrganisationUnit.findByName(BUTARO), v("40"))
 		newRawDataElementValue(rawDataElement2, period, OrganisationUnit.findByName(BUTARO), v("40"))
-		valueService.deleteValues(expression)
+		valueService.deleteValues(rawDataElement)
 		
 		then:
-		NormalizedDataElementValue.count() == 1
+		RawDataElementValue.count() == 1
 	}
 	
 //	def "test delete normalized data element values"() {
@@ -257,7 +257,7 @@ class ValueServiceSpec extends IntegrationTests {
 		def average = newAverage("1", CODE(1))
 		
 		when:
-		newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
+		newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, v("1"))
 		
 		then:
 		AveragePartialValue.count() == 1
@@ -270,12 +270,12 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		def average2 = newAverage("2", CODE(2))
-		newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
-		newAveragePartialValue(average2, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, false, false, v("1"))
+		newAveragePartialValue(average, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, v("1"))
+		newAveragePartialValue(average2, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, 1, v("1"))
 		valueService.deleteValues(average)
 		
 		then:
-		CalculationPartialValue.count() == 1
+		AveragePartialValue.count() == 1
 	}
 	
 }

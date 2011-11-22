@@ -42,11 +42,29 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 	def dashboardService
 
+	def "dashboard service works"() {
+		setup:
+		def period = newPeriod()
+		setupOrganisationUnitTree()
+		def root = newDashboardObjective(CODE(1))
+		def calculation = newAverage("1", CODE(2))
+		def target = newDashboardTarget(TARGET1, calculation, root, 1)
+		def organisation = getOrganisation(RWANDA)
+		refresh()
+		
+		when:
+		def dashboard = dashboardService.getDashboard(organisation, root, period)
+		
+		then:
+		dashboard.getPercentage(getOrganisation(NORTH), target) != null
+		
+	}
+	
 	def "test dashboard with correct values"() {
 		setup:
+		def period = newPeriod()
 		setupOrganisationUnitTree()
 		setupDashboard()
-		def period = newPeriod()
 		refresh()
 
 		when:
@@ -72,9 +90,9 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 	def "dashboard test objective path"() {
 		setup:
+		def period = newPeriod()
 		setupOrganisationUnitTree()
 		setupDashboard()
-		def period = newPeriod()
 		refresh()
 
 		when:

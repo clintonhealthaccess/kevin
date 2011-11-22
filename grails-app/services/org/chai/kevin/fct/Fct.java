@@ -78,5 +78,9 @@ public class Fct {
 		return target;
 	}
 
+	@Override
+	public String toString() {
+		return "Fct [value=" + value + "]";
+	}
 
 }

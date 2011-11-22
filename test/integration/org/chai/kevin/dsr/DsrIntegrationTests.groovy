@@ -11,12 +11,11 @@ abstract class DsrIntegrationTests extends IntegrationTests {
 		return new DsrObjective(code: code, names: [:]).save(failOnError: true);
 	}
 	
-	def newDsrTarget(def code, def expression, def format, def groups, def objective) {
-		
+	def newDsrTarget(def code, def dataElement, def format, def groups, def objective) {
 		def target = new DsrTarget(names: [:], 
 			code: code, 
 			format: format, 
-			expression: expression, 
+			dataElement: dataElement, 
 			objective: objective, 
 			groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
 			

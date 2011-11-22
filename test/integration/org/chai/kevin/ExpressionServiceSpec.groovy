@@ -1,5 +1,6 @@
 package org.chai.kevin;
 
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Average;
@@ -59,7 +60,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def result = null
 		
 		when: "data element is missing"
-		normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$0"]]))
+		normalizedDataElement = new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$0"]])).save(validate: false)
 		result = expressionService.calculateValue(normalizedDataElement, getOrganisation(BUTARO), period)
 		
 		then:
@@ -119,7 +120,6 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		organisation << [RWANDA, NORTH, BURERA]
 	}
 	
-	
 	def "test normalized data element with typing errors"() {
 		setup:
 		setupOrganisationUnitTree()
@@ -156,31 +156,32 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		then:
 		result.size() == 1
-		result*.value.equals(new HashSet([v("1")]))
+		result*.value.equals([v("1")])
 
 		when:
 		result = expressionService.calculatePartialValues(sum, getOrganisation(BURERA), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals(new HashSet([v("1"), v("1")]))
+		result*.value.equals([v("1"), v("1")])
 		
 		when:
 		result = expressionService.calculatePartialValues(sum, getOrganisation(NORTH), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals(new HashSet([v("1"), v("1")]))
+		result*.value.equals([v("1"), v("1")])
 		
 		when:
 		def burera = OrganisationUnit.findByName(BURERA)
 		def dh = OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)
 		newOrganisationUnit("dummy", burera, dh)
+		refreshNormalizedDataElement()
 		result = expressionService.calculatePartialValues(sum, getOrganisation(BURERA), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals(new HashSet([v("2"), v("1")]))
+		s(result*.value).equals(s([v("2"), v("1")]))
 	}
 	
 	def "test sum with missing facility type"() {
@@ -197,31 +198,32 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		then:
 		result.size() == 1
-		result*.value.equals(new HashSet([v("1")]))
+		result*.value.equals([v("1")])
 
 		when:
 		result = expressionService.calculatePartialValues(sum, getOrganisation(KIVUYE), period)
 		
 		then:
-		result.size() == 0
-		result*.value.equals(new HashSet())
+		result.size() == 1
+		result*.value.equals([v("0")])
 		
 		when:
 		result = expressionService.calculatePartialValues(sum, getOrganisation(BURERA), period)
 		
 		then:
-		result.size() == 1
-		result*.value.equals(new HashSet([Value.NULL]))
+		result.size() == 2
+		s(result*.value).equals(s([v("0"), v("1")]))
 		
 		when:
 		def burera = OrganisationUnit.findByName(BURERA)
 		def dh = OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)
 		newOrganisationUnit("dummy", burera, dh)
+		refreshNormalizedDataElement()
 		result = expressionService.calculatePartialValues(sum, getOrganisation(BURERA), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals(new HashSet([v("1"), v("1")]))
+		s(result*.value).equals(s([v("0"), v("2")]))
 	}
 	
 	def "test average with valid calculation"() {
@@ -238,37 +240,35 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		then:
 		result.size() == 1
-		result*.value.equals(new HashSet([v("1")]))
+		result*.value.equals([v("1")])
 
 		when:
 		result = expressionService.calculatePartialValues(average, getOrganisation(BURERA), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals(new HashSet([v("1"), v("1")]))
+		result*.value.equals([v("1"), v("1")])
 		
 		when:
 		result = expressionService.calculatePartialValues(average, getOrganisation(NORTH), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals(new HashSet([v("1"), v("1")]))
+		result*.value.equals([v("1"), v("1")])
 		
 		when:
 		def burera = OrganisationUnit.findByName(BURERA)
 		def dh = OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)
 		newOrganisationUnit("dummy", burera, dh)
+		refreshNormalizedDataElement()
 		result = expressionService.calculatePartialValues(average, getOrganisation(BURERA), period)
 		
 		then:
 		result.size() == 2
-		result*.value.equals(new HashSet([v("1"), v("1")]))
+		s(result*.value).equals(s([v("2"), v("1")]))
 
 	}
 
-	
-		
-	
 //	def "test sum with missing expression"() {
 //		setup:
 //		setupOrganisationUnitTree()
@@ -453,34 +453,36 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, RawDataElement.class)
 		
 		then:
-		data.size() == 1
-		data.values().iterator().next().equals(rawDataElement)
+		data.size() == 2
+		s(data.values()).equals(s([null, rawDataElement]))
 		
 		when:
 		data = expressionService.getDataInExpression("\$"+rawDataElement.id, Average.class)
 		
 		then:
-		data.size() == 0
+		data.size() == 1
+		s(data.values()).equals(s([null]))
 		
 		when:
 		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, Average.class)
 		
 		then:
-		data.size() == 1
-		data.values().iterator().next().equals(average)
+		data.size() == 2
+		s(data.values()).equals(s([null, average]))
 		
 		when:
 		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, Data.class)
 		
 		then:
 		data.size() == 2
+		s(data.values()).equals(s([average, rawDataElement]))
 		
 		when:
 		data = expressionService.getDataInExpression("\$"+average.id+"+"+"\$"+rawDataElement.id, DataElement.class)
 		
 		then:
-		data.size() == 1
-		data.values().iterator().next().equals(rawDataElement)
+		data.size() == 2
+		s(data.values()).equals(s([null, rawDataElement]))
 	}
 	
 	def "data element in expression when wrong format"() {

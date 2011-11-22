@@ -29,12 +29,14 @@ package org.chai.kevin.maps
 */
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Type
 import org.chai.kevin.data.Calculation;
 
 class MapsTargetController extends AbstractEntityController {
 	
 	def organisationService
+	def dataService
 	
 	def getEntity(def id) {
 		return MapsTarget.get(id)
@@ -53,22 +55,13 @@ class MapsTargetController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		[ target: entity, calculations: Calculation.list(), groups: organisationService.getGroupsForExpression()]
-	}
-	
-	def saveEntity(def entity) {
-		if (entity.calculation != null) {
-			// FIXME change this to infer the correct type
-			entity.calculation.type = Type.TYPE_NUMBER()
-			if (entity.calculation.id == null) entity.calculation.code = UUID.randomUUID().toString();
-			entity.calculation.save();
-		}
-		entity.save();
+		[ target: entity, calculations: dataService.list(Calculation.class), groups: organisationService.getGroupsForExpression()]
 	}
 	
 	def bindParams(def entity) {
-		entity.properties = params
-		
+		bindData(entity, params, [exclude:'calculation.id'])
+		entity.calculation = dataService.getData(params.int('calculation.id'), Calculation.class)
+
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names

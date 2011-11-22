@@ -18,7 +18,6 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 	private Period period;
 	private List<T> calculationPartialValues;
 	private Calculation<T> calculation;
-	private List<String> groupUuids;
 	
 	public CalculationValue(List<T> calculationPartialValues, Calculation<T> calculation, Period period, OrganisationUnit organisationUnit) {
 		this.calculationPartialValues = calculationPartialValues;
@@ -41,7 +40,7 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 	}
 	
 	public boolean isComplete() {
-		return groupUuids.size() == calculationPartialValues.size();
+		return getGroupUuids().size() == calculationPartialValues.size();
 	}
 	
 	public Calculation<T> getData() {
@@ -59,5 +58,34 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 	public List<T> getCalculationPartialValues() {
 		return calculationPartialValues;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((calculationPartialValues == null) ? 0
+						: calculationPartialValues.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof CalculationValue))
+			return false;
+		CalculationValue other = (CalculationValue) obj;
+		if (calculationPartialValues == null) {
+			if (other.calculationPartialValues != null)
+				return false;
+		} else if (!calculationPartialValues
+				.equals(other.calculationPartialValues))
+			return false;
+		return true;
+	}
+
 }

@@ -49,6 +49,7 @@ import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -154,7 +155,11 @@ public class DashboardService {
 
 			}
 			// TODO what if sum = 0 and totalWeight = 0 ?
-			DashboardPercentage percentage = new DashboardPercentage(type.getValue(sum/totalWeight), organisation.getOrganisationUnit(), period);
+			Double average = sum/totalWeight;
+			Value value = null;
+			if (average.isNaN() || average.isInfinite()) value = Value.NULL;
+			else value = type.getValue(average);
+			DashboardPercentage percentage = new DashboardPercentage(value, organisation.getOrganisationUnit(), period);
 			
 			if (log.isDebugEnabled()) log.debug("visitObjective()="+percentage);
 			return percentage;

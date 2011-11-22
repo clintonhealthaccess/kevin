@@ -109,5 +109,10 @@ public class FctTarget extends ReportEntity {
 	public void setGroupUuids(Set<String> groupUuids) {
 		this.groupUuidString = Utils.unsplit(groupUuids);
 	}
-	
+
+	@Override
+	public String toString() {
+		return "FctTarget [sum=" + sum + "]";
+	}
+
 }

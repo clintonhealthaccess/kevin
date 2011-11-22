@@ -50,8 +50,8 @@ class RefreshValueServiceSpec extends IntegrationTests {
 	
 	def "test refresh normalized elements"() {
 		when:
+		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def organisation = newOrganisationUnit(BUTARO)
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		
 		then:
@@ -62,7 +62,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
-		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.count() == 2
 		NormalizedDataElementValue.list()[0].timestamp != null
 		normalizedDataElement.calculated != null
 	}
@@ -70,10 +70,10 @@ class RefreshValueServiceSpec extends IntegrationTests {
 	def "test refresh normalized elements updates timestamps"() {
 		when:
 		def period = newPeriod()
-		def organisation = newOrganisationUnit(BUTARO)
+		setupOrganisationUnitTree()
 		def calculated = new Date()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
-		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, period, organisation, Status.VALID, Value.NULL)
+		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period, Status.VALID, Value.NULL)
 		def timestamp = normalizedDataElementValue.timestamp
 		
 		then:
@@ -83,7 +83,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 
 		then:
-		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.count() == 2
 		!NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)	
 		!normalizedDataElement.calculated.equals(calculated)
 	}
@@ -103,7 +103,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def average = newAverage("1", CODE(2), Type.TYPE_NUMBER())
+		def average = newAverage("1", CODE(2))
 		
 		then:
 		AveragePartialValue.count() == 0
@@ -113,17 +113,18 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		refreshValueService.refreshCalculation(average);
 
 		then:
-		AveragePartialValue.count() == OrganisationUnit.count() * OrganisationUnitGroup.count()
+		AveragePartialValue.count() == 8
 		AveragePartialValue.list()[0].timestamp != null
 		average.calculated != null
 	}
 	
 	def "test refresh calculations updates timestamps"() {
 		when:
+		setupOrganisationUnitTree()
 		def period = newPeriod()
 		def calculated = new Date()
-		def average = newAverage("1", CODE(2), Type.TYPE_NUMBER(), calculated: calculated)
-		def partialValue = newAveragePartialValue(average, period, OrganisationUnit.findByName(BURERA), DISTRICT_HOSPITAL_GROUP, v("1"))
+		def average = newAverage("1", CODE(2), calculated)
+		def partialValue = newAveragePartialValue(average, period, OrganisationUnit.findByName(BURERA), DISTRICT_HOSPITAL_GROUP, 1, v("1"))
 		def timestamp = partialValue.timestamp
 		
 		then:
@@ -133,7 +134,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		refreshValueService.refreshCalculation(average);
 
 		then:
-		AveragePartialValue.count() == OrganisationUnit.count() * OrganisationUnitGroup.count()
+		AveragePartialValue.count() == 8
 		!AveragePartialValue.list()[0].timestamp.equals(timestamp)	
 		!average.calculated.equals(calculated)
 	}

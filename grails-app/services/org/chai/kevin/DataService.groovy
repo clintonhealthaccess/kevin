@@ -64,6 +64,10 @@ class DataService {
 		return Enum.findByCode(code)
 	}
 	
+	public <T extends Data<?>> List<T> list(Class<T> clazz) {
+		return (List<T>)sessionFactory.getCurrentSession().createCriteria(clazz).list()
+	}
+	
 	public <T extends Data<?>> T getData(Long id, Class<T> clazz) {
 		return (Data)sessionFactory.getCurrentSession().get(clazz, id);
 	}

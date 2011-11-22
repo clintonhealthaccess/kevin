@@ -32,7 +32,7 @@ package org.chai.kevin.data
  *
  */
 constraints ={
-	expressionMap(nullable: false)
+	expressionMap(nullable: false, expressionMapValid: true)
 	type(nullable: false, validator: {val, obj ->
 		return val.isValid();
 	})

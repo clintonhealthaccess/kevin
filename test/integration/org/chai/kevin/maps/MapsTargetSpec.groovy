@@ -1,5 +1,7 @@
 package org.chai.kevin.maps;
 
+import grails.validation.ValidationException;
+
 public class MapsTargetSpec extends MapsIntegrationTests {
 
 	def "target calculation cannot be null"() {

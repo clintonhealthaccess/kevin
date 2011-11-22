@@ -52,13 +52,11 @@ class FilterTagLib {
 		String filter = (String) params.get("filter");
 
 		Organisation organisation = null;
-		if (params.containsKey("organisation")
-		&& params.get("organisation") != null)
-			organisation = organisationService.getOrganisation((Integer) params
-					.get("organisation"));
+		if (params.get("organisation") != null)
+			organisation = organisationService.getOrganisation((Integer) params.get("organisation"));
 
 		OrganisationUnitLevel orgUnitLevel = null;
-		if (params.containsKey("level") && params.get("level") != null)
+		if (params.get("level") != null)
 			orgUnitLevel = organisationUnitService
 					.getOrganisationUnitLevel((Integer) params.get("level"));
 
@@ -83,11 +81,11 @@ class FilterTagLib {
 						orgUnitLevel = organisationUnitService
 								.getOrganisationUnitLevelByLevel(organisation
 								.getLevel() + 1);
-						params.put("level", orgUnitLevel.getId());
+						params.put("level", orgUnitLevel.getLevel());
 					}
 				}
 				else {
-					params.put("level", orgUnitLevel.getId());
+					params.put("level", orgUnitLevel.getLevel());
 				}
 			}
 			// conflict
@@ -96,7 +94,7 @@ class FilterTagLib {
 				orgUnitLevel = organisationUnitService
 						.getOrganisationUnitLevelByLevel(organisation
 						.getLevel() + 1);
-				params.put("level", orgUnitLevel.getId());
+				params.put("level", orgUnitLevel.getLevel());
 			}
 		}
 		return params;

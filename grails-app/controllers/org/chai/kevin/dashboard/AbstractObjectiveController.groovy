@@ -29,10 +29,12 @@ package org.chai.kevin.dashboard
 */
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.data.Calculation;
 
 abstract class AbstractObjectiveController extends AbstractEntityController {
 
 	def organisationService
+	def dataService
 	
 	def validateEntity(def entity) {
 		return entity.entry.validate()&entity.validate()
@@ -69,6 +71,7 @@ abstract class AbstractObjectiveController extends AbstractEntityController {
 		}
 		
 		def groups = organisationService.getGroupsForExpression()
-		return [objectiveEntry: entity, groups: groups, expressions: Expression.list(), currentObjective: currentObjective]
+		return [objectiveEntry: entity, groups: groups, calculation: dataService.list(Calculation.class), currentObjective: currentObjective]
 	}
+	
 }

@@ -14,14 +14,16 @@ class InfoServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, OrganisationUnit.findByName(BUTARO), v("1"))
-		def normalizedDataEement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
-		
+		def normalizedDataEement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		refreshNormalizedDataElement()
+				
 		when:
-		def normalizedDataElementInfo = infoService.getNormalizedDataElementInfo(normalizedDataEement, getOrganiation(BUTARO), period)
+		def normalizedDataElementInfo = infoService.getNormalizedDataElementInfo(normalizedDataEement, getOrganisation(BUTARO), period)
 		
 		then:
+		normalizedDataElementInfo != null
 		normalizedDataElementInfo.getRawDataElements().equals([rawDataElement])
-		normalizedDataElementInfo.getRawDataElementValue(getOrganiation(BUTARO), rawDataElement).equals(rawDataElementValue)
+		normalizedDataElementInfo.getRawDataElementValue(rawDataElement).equals(rawDataElementValue)
 	}
 	
 	def "get info for calculation"() {
@@ -29,15 +31,16 @@ class InfoServiceSpec extends IntegrationTests {
 		setupOrganisationUnitTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
-		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), Status.VALID, v("1"))
+		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period, Status.VALID, v("1"))
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def sumPartialValue = newSumPartialValue(sum, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, v("1"))
 		
 		when:
-		def calculationInfo = infoService.getCalculationInfo(sum, getOrganisation(BURERA), period)
+		def calculationInfo = infoService.getCalculationInfo(sum, getOrganisation(BURERA), period, s([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		calculationInfo.getOrganisations().equals([getOrganisation(BUTARO), getOrganisation(KIVUYE)])
+		calculationInfo != null
+		calculationInfo.getOrganisations().equals([getOrganisation(KIVUYE), getOrganisation(BUTARO)])
 		calculationInfo.getDataElements().equals([normalizedDataElement])
 		calculationInfo.getValue(getOrganisation(BUTARO)).equals(new SumValue([sumPartialValue], sum, period, OrganisationUnit.findByName(BUTARO)))
 		calculationInfo.getValue(getOrganisation(BUTARO), normalizedDataElement).equals(normalizedDataElementValue)

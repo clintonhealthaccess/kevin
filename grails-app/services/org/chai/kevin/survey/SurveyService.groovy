@@ -241,7 +241,7 @@ class SurveyService {
 		int number = 0;
 		for (String groupUuid : groupUuids) {
 			OrganisationUnitGroup group = organisationService.getOrganisationUnitGroup(groupUuid);
-			if (group != null) number += organisationService.getNumberOfOrganisationForGroup(group)
+			if (group != null) number += organisationService.getNumberOfOrganisationOfGroup(group)
 		}
 		return number;
 	}

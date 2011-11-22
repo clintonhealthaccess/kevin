@@ -11,7 +11,7 @@ class JSONUtilsSpec extends UnitSpec {
 		def map = [1:'test']
 		
 		then:
-		map == null
+		JSONUtils.getJSONFromMap(map) == null
 //		JSONUtils.getJSONFromMap(map) == '{"1":"test"}'
 		
 	}

@@ -39,7 +39,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 
 	def "save target does not resave calculation"() {
 		when:
-		def calculation = newAverage([:], CODE(3), Type.TYPE_NUMBER())
+		def calculation = newAverage("1", CODE(3))
 		def objective = newDashboardObjective(CODE(2))
 		def target = newDashboardTarget(CODE(1), calculation, objective, 1)
 		
@@ -55,7 +55,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "call twice in a row"() {
 		when:
-		def calculation = newAverage([:], CODE(3), Type.TYPE_NUMBER())
+		def calculation = newAverage("1", CODE(3))
 		def objective = newDashboardObjective(OBJECTIVE)
 		def target1 = newDashboardTarget(TARGET1, calculation, objective, 1)
 		def target2 = newDashboardTarget(TARGET2, calculation, objective, 2 )
@@ -127,7 +127,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	def "remove target deletes parent objective entry"() {
 		when:
 		def root = new DashboardObjective(root: true, names:[:], code: ROOT).save(failOnError: true)
-		def target = new DashboardTarget(names:[:], code: OBJECTIVE, calculation: newAverage([:], CODE(1), Type.TYPE_NUMBER())).save(failOnError: true)
+		def target = new DashboardTarget(names:[:], code: OBJECTIVE, calculation: newAverage("1", CODE(1))).save(failOnError: true)
 		def objectiveEntry = new DashboardObjectiveEntry(entry:target, weight: 1, order: 5);
 		root.addObjectiveEntry objectiveEntry
 		root.save(failOnError: true)
@@ -144,7 +144,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	def "get parent"() {
 		when:
 		def objective = newDashboardObjective(OBJECTIVE)
-		def calculation = newAverage([:], CODE(3), Type.TYPE_NUMBER())
+		def calculation = newAverage("1", CODE(3))
 		def target1 = newDashboardTarget(TARGET1, calculation, objective, 1)
 		
 		then:

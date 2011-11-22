@@ -103,9 +103,4 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 		return Calculation.TYPE;
 	}
 	
-	@Override
-	public String toString() {
-		return "Calculation [expression=" + expression + "]";
-	}
-
 }

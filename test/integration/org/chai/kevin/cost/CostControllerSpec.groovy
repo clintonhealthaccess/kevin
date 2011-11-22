@@ -43,7 +43,8 @@ class CostControllerSpec extends CostIntegrationTests {
 		setupOrganisationUnitTree()
 		def period = newPeriod()
 		def costObjective = newCostObjective(CODE(2))
-		def costTarget = newCostTarget(CODE(3), newExpression(CODE(4), Type.TYPE_NUMBER(), "1"), CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
 		
 		costController.params.period = period.id+''
 		costController.params.objective = costObjective.id+''

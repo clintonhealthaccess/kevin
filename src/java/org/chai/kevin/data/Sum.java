@@ -76,4 +76,10 @@ public class Sum extends Calculation<SumPartialValue> {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "Sum [getExpression()=" + getExpression() + ", getId()="
+				+ getId() + ", getCode()=" + getCode() + "]";
+	}
+
 }

@@ -46,7 +46,7 @@ public class AveragePartialValue extends CalculationPartialValue {
 
 	@Override
 	@NaturalId
-	@ManyToOne(targetEntity=Aggregation.class, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=Average.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	public Average getData() {
 		return data;

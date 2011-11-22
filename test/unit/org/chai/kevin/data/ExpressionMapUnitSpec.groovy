@@ -12,7 +12,7 @@ class ExpressionMapUnitSpec extends UnitSpec {
 		def map = new ExpressionMap([('1'): new JSONMap([('HC'): '$1 + $2'])])
 		
 		then:
-		map[('1')] == [('HC'): '$1 + $2']
+		map[('1')].equals(['HC':'$1 + $2'])
 		map[('1')]['HC'] == '$1 + $2'
 		
 	}

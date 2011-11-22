@@ -49,4 +49,10 @@ public class Aggregation extends Calculation<AggregationPartialValue> {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "Aggregation [getExpression()=" + getExpression() + ", getId()="
+				+ getId() + ", getCode()=" + getCode() + "]";
+	}
+
 }

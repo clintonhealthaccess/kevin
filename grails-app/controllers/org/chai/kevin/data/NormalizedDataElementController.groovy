@@ -69,14 +69,16 @@ class NormalizedDataElementController extends AbstractEntityController {
 		// we check if there are calculations
 		
 		// TODO check this
-		if (dataService.getCalculations(entity).isEmpty()) { 
-			// we delete all the values
-			valueService.deleteValues(entity)
-			entity.delete()
-		}
-		else {
-			flash.message = message(code: "normalizeddataelement.delete.hasvalues", default: "Could not delete normalized data element, it still has associated calculations");
-		}
+		valueService.deleteValues(entity)
+		entity.delete()
+//		if (dataService.getCalculations(entity).isEmpty()) { 
+//			// we delete all the values
+//			valueService.deleteValues(entity)
+//			entity.delete()
+//		}
+//		else {
+//			flash.message = message(code: "normalizeddataelement.delete.hasvalues", default: "Could not delete normalized data element, it still has associated calculations");
+//		}
 	}
 	
 	def bindParams(def entity) {

@@ -34,10 +34,12 @@ import grails.plugin.springcache.annotations.CacheFlush;
 import java.util.Date
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Average
+import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
@@ -172,19 +174,19 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	RawDataElementValue newRawDataElementValue(def rawDataElement, def period, def organisationUnit, def value) {
-		return new RawDataElementValue(data: rawDataElement, period: period, organisationUnit: organisationUnit, value: value).save(failOnError: true)
+		return new RawDataElementValue(data: rawDataElement, period: period, organisationUnit: organisationUnit, value: value).save(failOnError: true, flush: true)
 	}
 	
-	AggregationPartialValue newAggregationPartialValue(def aggregation, def period, def organisationUnit, def groupUuid, def expressionData, def hasMissingValues, def hasMissingExpression, def value) {
-		return new AggregationPartialValue(data: aggregation, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, expressionData: expressionData, hasMissingValues: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
+	AggregationPartialValue newAggregationPartialValue(def aggregation, def period, def organisationUnit, def groupUuid, def expressionData, def value) {
+		return new AggregationPartialValue(data: aggregation, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, expressionData: expressionData, value: value).save(failOnError: true)
 	}
 	
-	SumPartialValue newSumPartialValue(def sum, def period, def organisationUnit, def groupUuid, def hasMissingValues, def hasMissingExpression, def value) {
-		return new SumPartialValue(data: sum, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, hasMissingValue: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
+	SumPartialValue newSumPartialValue(def sum, def period, def organisationUnit, def groupUuid, def value) {
+		return new SumPartialValue(data: sum, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, value: value).save(failOnError: true)
 	}
 	
-	AveragePartialValue newAveragePartialValue(def average, def period, def organisationUnit, def groupUuid, def numberOfFacilities, def hasMissingValues, def hasMissingExpression, def value) {
-		return new AveragePartialValue(data: average, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, numberOfFacilities: numberOfFacilities, hasMissingValue: hasMissingValues, hasMissingExpression: hasMissingExpression, value: value).save(failOnError: true)
+	AveragePartialValue newAveragePartialValue(def average, def period, def organisationUnit, def groupUuid, def numberOfFacilities, def value) {
+		return new AveragePartialValue(data: average, period: period, organisationUnit: organisationUnit, groupUuid: groupUuid, numberOfFacilities: numberOfFacilities, value: value).save(failOnError: true)
 	}
 	
 	RawDataElement newRawDataElement(def code, def type) {
@@ -237,12 +239,20 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newAggregation([:], expression, code)
 	}
 
-	Average newAverage(def names, def expression, def code) {
-		return new Average(names: names, expression: expression, code: code).save(failOnError: true)
+	Average newAverage(def names, String expression, def code, def calculated) {
+		return new Average(names: names, expression: expression, code: code, calculated: calculated).save(failOnError: true)
 	}
 
-	Average newAverage(def expression, def code) {
-		return newAverage([:], expression, code)
+	Average newAverage(def names, String expression, String code) {
+		return newAverage(names, expression, code, null)
+	}
+
+	Average newAverage(String expression, def code) {
+		return newAverage([:], expression, code, null)
+	}
+	
+	Average newAverage(String expression, def code, Date calculated) {
+		return newAverage([:], expression, code, calculated)
 	}
 
 	Sum newSum(def names, def expression, def code) {
@@ -254,7 +264,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	Enum newEnume(def code) {
-		return new Enum(code: code).save(failOnError: true)
+		return new Enum(code: code).save(failOnError: true, flush: true)
 	}
 	
 	EnumOption newEnumOption(def enume, def value) {
@@ -280,7 +290,13 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def refreshCalculation() {
-		Calculation.list().each {
+		Average.list().each {
+			refreshValueService.refreshCalculation(it)
+		}
+		Sum.list().each {
+			refreshValueService.refreshCalculation(it)
+		}
+		Aggregation.list().each {
 			refreshValueService.refreshCalculation(it)
 		}
 	}

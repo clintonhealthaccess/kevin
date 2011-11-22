@@ -42,13 +42,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Status;
+import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
@@ -62,7 +61,6 @@ public class ExpressionService {
 	
 	private DataService dataService;
 	private OrganisationService organisationService;
-	private ValueService valueService;
 	private JaqlService jaqlService;
 
 	public static class StatusValuePair {
@@ -102,14 +100,16 @@ public class ExpressionService {
 		Set<T> result = new HashSet<T>();
 		Set<OrganisationUnitGroup> organisationUnitGroups = organisationService.getGroupsForExpression();
 		for (OrganisationUnitGroup organisationUnitGroup : organisationUnitGroups) {
-			List<Organisation> facilities = organisationService.getFacilitiesOfGroup(organisationUnitGroup);
+			List<Organisation> facilities = organisationService.getFacilitiesOfGroup(organisation, organisationUnitGroup);
 			
-			Map<Organisation, StatusValuePair> values = new HashMap<Organisation, ExpressionService.StatusValuePair>();
-			for (Organisation facility : facilities) {
-				StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, facility);
-				values.put(facility, statusValuePair);
+			if (!facilities.isEmpty()) {
+				Map<Organisation, StatusValuePair> values = new HashMap<Organisation, ExpressionService.StatusValuePair>();
+				for (Organisation facility : facilities) {
+					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, facility, DataElement.class);
+					values.put(facility, statusValuePair);
+				}
+				result.add(calculation.getCalculationPartialValue(expression, values, organisation, period, organisationUnitGroup.getUuid()));
 			}
-			result.add(calculation.getCalculationPartialValue(expression, values, organisation, period, organisationUnitGroup.getUuid()));
 		}
 		return result;
 	}
@@ -136,7 +136,7 @@ public class ExpressionService {
 			organisationService.loadGroup(facility);
 			String expression = normalizedDataElement.getExpression(period, facility.getOrganisationUnitGroup().getUuid());
 			
-			StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, facility);
+			StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, facility, RawDataElement.class);
 			expressionValue = new NormalizedDataElementValue(statusValuePair.value, statusValuePair.status, facility.getOrganisationUnit(), normalizedDataElement, period);
 		}
 		
@@ -145,14 +145,14 @@ public class ExpressionService {
 	}
 
 	// organisation has to be a facility
-	private StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, Organisation facility) {
+	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, Organisation facility, Class<T> clazz) {
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null) {
 			statusValuePair.status = Status.DOES_NOT_APPLY;
 			statusValuePair.value = Value.NULL;
 		}
 		else {
-			Map<String, RawDataElement> datas = getDataInExpression(expression, RawDataElement.class);
+			Map<String, T> datas = getDataInExpression(expression, clazz);
 			if (hasNullValues(datas.values())) {
 				statusValuePair.value = Value.NULL;
 				statusValuePair.status = Status.MISSING_DATA_ELEMENT;
@@ -161,8 +161,8 @@ public class ExpressionService {
 				Map<String, Value> valueMap = new HashMap<String, Value>();
 				Map<String, Type> typeMap = new HashMap<String, Type>();
 				
-				for (Entry<String, RawDataElement> entry : datas.entrySet()) {
-					RawDataElementValue dataValue = valueService.getDataElementValue(entry.getValue(), facility.getOrganisationUnit(), period);
+				for (Entry<String, T> entry : datas.entrySet()) {
+					DataValue dataValue = valueService.getDataElementValue(entry.getValue(), facility.getOrganisationUnit(), period);
 					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
 				}
@@ -195,7 +195,8 @@ public class ExpressionService {
 
 	// TODO do this for validation rules
 	@SuppressWarnings("rawtypes")
-	public synchronized boolean expressionIsValid(String formula) {
+	@Transactional(readOnly=true)
+	public boolean expressionIsValid(String formula) {
 		if (formula.contains("\n")) return false;
 		
 		Map<String, Data> variables = getDataInExpression(formula, Data.class);
@@ -216,7 +217,10 @@ public class ExpressionService {
 		return value != null;
     }
 	
+	@Transactional(readOnly=true)
     public <T extends Data<?>> Map<String, T> getDataInExpression(String expression, Class<T> clazz) {
+    	if (log.isDebugEnabled()) log.debug("getDataInExpression(expression="+expression+", clazz="+clazz+")");
+    	
         Map<String, T> dataInExpression = new HashMap<String, T>();
     	Set<String> placeholders = getVariables(expression);
 
@@ -232,6 +236,7 @@ public class ExpressionService {
             dataInExpression.put(placeholder, data);
         }
     	
+    	if (log.isDebugEnabled()) log.debug("getDataInExpression()="+dataInExpression);
         return dataInExpression;
     }
 
@@ -274,10 +279,6 @@ public class ExpressionService {
 		this.organisationService = organisationService;
 	}
 
-	public void setValueService(ValueService valueService) {
-		this.valueService = valueService;
-	}
-	
 	public void setJaqlService(JaqlService jaqlService) {
 		this.jaqlService = jaqlService;
 	}

@@ -28,37 +28,30 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.hisp.dhis.period.Period;
-import org.quartz.InterruptableJob;
+import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.quartz.JobExecutionContext;
+import org.quartz.InterruptableJob;
 
-class DashboardJob implements InterruptableJob {
-	static triggers = {}
+class RefreshJob implements InterruptableJob {
+
+	static triggers = {
+		cron name: 'trigger', startDelay: 10000, cronExpression: "0 0 0 * * ?"
+	}
 	
 	def sessionRequired = true
-	
-	def dashboardService
-	def organisationService
-	def progress
+	def concurrent = false
+
+	def refreshValueService
 	
 	void execute(JobExecutionContext context) {
-		if (log.isInfoEnabled()) log.info('executing DashboardJob, jobmap: '+context.mergedJobDataMap);
-				
-		def organisation = organisationService.getOrganisation(context.mergedJobDataMap.get('organisation'));
-		def objective = DashboardObjective.get(context.mergedJobDataMap.get('objective'));
-		def period = Period.get(context.mergedJobDataMap.get('period'));
-		progress = context.mergedJobDataMap.get('progress');
+//		if (expressionService == null) expressionService = ApplicationHolder.application.mainContext.getBean('expressionService')
 		
-		if (log.isInfoEnabled()) log.info('about to refresh dashboard, period: '+period+', objective: '+objective+', organisation: '+organisation)
-		dashboardService.refreshDashboard(
-			organisation,
-			objective,
-			period,
-			progress
-		)
+		if (log.isInfoEnabled()) log.info('executing RefreshJob');
+	
+		refreshValueService.refreshNormalizedDataElements()
+		refreshValueService.refreshCalculations()
+		
 	}
 	
-	void interrupt() {
-		progress.stop();
-	}
+	void interrupt() {}
 }

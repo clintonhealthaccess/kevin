@@ -66,12 +66,12 @@ public class ValueService {
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
 	public <T extends DataValue> T getDataElementValue(DataElement<T> data, OrganisationUnit organisationUnit, Period period) {
-		if (log.isDebugEnabled()) log.debug("getValue(data="+data+", period="+period+", organisationUnit="+organisationUnit+")");
+		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", organisationUnit="+organisationUnit+")");
 		T result = (T)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
 		.add(Restrictions.eq("period", period))
 		.add(Restrictions.eq("organisationUnit", organisationUnit))
 		.add(Restrictions.eq("data", data)).uniqueResult();
-		if (log.isDebugEnabled()) log.debug("getaValue(...)="+result);
+		if (log.isDebugEnabled()) log.debug("getDataElementValue(...)="+result);
 		return result;
 	}
 	

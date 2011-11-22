@@ -146,15 +146,15 @@ security.shiro.authc.required = false
 				   'org.codehaus.groovy.grails.plugins', // plugins
 				   'net.sf.ehcache.hibernate',
 				   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
-				   'org.chai.kevin.JaqlService',
+				   // 'org.chai.kevin.JaqlService',
 				   'grails.app.services.grails.plugin.springcache',
-				   'grails.plugin.springcache'
-				   
-			debug  'grails.app',
-				   'org.chai.kevin',
-				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+				   'grails.plugin.springcache',
 				   'org.springframework',
+				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.hibernate'
+
+			debug  'grails.app',
+				   'org.chai.kevin'
 
 		}
 //	}
@@ -202,7 +202,7 @@ site.languages=["en","fr","rw"]
 site.fallback.language="en"
 site.admin=true
 site.entity.list.max=40
-site.period=1
+site.period=0
 
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"

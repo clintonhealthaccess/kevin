@@ -69,12 +69,6 @@ public class FctService {
 		if (log.isDebugEnabled()) 
 			log.debug("getFct(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
 
-		List<FctTarget> targets = null;
-		Map<Organisation, List<Organisation>> orgParentMap = null;
-		Map<FctTarget, Fct> orgFct = null;
-		Map<Organisation, Map<FctTarget, Fct>> fctMap = null;
-		Set<OrganisationUnitGroup> facilityTypes = null;
-		
 		List<OrganisationUnitLevel> levels = organisationService.getAllLevels();
 		levels.remove(0);		
 		if (levels.isEmpty()) {
@@ -86,27 +80,26 @@ public class FctService {
 		
 		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());				
 		
-		orgParentMap = this.getParents(organisation, organisations);
-		targets = objective.getTargets();
+		Map<Organisation, List<Organisation>> orgParentMap = getParents(organisation, organisations);
+		List<FctTarget> targets = objective.getTargets();
 		
-		orgFct = new HashMap<FctTarget, Fct>();
-		fctMap = new HashMap<Organisation, Map<FctTarget, Fct>>();
-		facilityTypes = new LinkedHashSet<OrganisationUnitGroup>();
+		Map<FctTarget, Map<Organisation, Fct>> fctMap = new HashMap<FctTarget, Map<Organisation, Fct>>();
+		Map<FctTarget, Fct> totalMap = new HashMap<FctTarget, Fct>();
+		Set<OrganisationUnitGroup> facilityTypes = new LinkedHashSet<OrganisationUnitGroup>();
 		
-		for (Organisation child : organisations) {
+		for(FctTarget target: targets) {
+			Map<Organisation, Fct> orgFct = new HashMap<Organisation, Fct>();
+			totalMap.put(target, getFctValue(target, organisation, period));
 			
-			organisationService.loadLevel(child);
-			organisationService.loadGroup(child);
-			
-			OrganisationUnitGroup orgFacilityType = child.getOrganisationUnitGroup();
-			if (orgFacilityType != null) {
-				facilityTypes.add(orgFacilityType);
-			}
-			
-			String value = null;
-			
-			for(FctTarget target: targets) {
-												
+			for (Organisation child : organisations) {
+				organisationService.loadLevel(child);
+				organisationService.loadGroup(child);
+				
+				OrganisationUnitGroup orgFacilityType = child.getOrganisationUnitGroup();
+				if (orgFacilityType != null) {
+					facilityTypes.add(orgFacilityType);
+				}	
+				
 				if (orgFacilityType != null) {
 					
 					Set<String> targetFacilityTypes = Utils.split(target.getGroupUuidString());
@@ -118,14 +111,21 @@ public class FctService {
 				
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
 				
-				CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), child.getOrganisationUnit(), period, Utils.getUuids(organisationService.getGroupsForExpression()));
-				if (calculationValue != null) value = calculationValue.getValue().getStringValue();				
-				orgFct.put(target, new Fct(child, period, target, value));
+				orgFct.put(child, getFctValue(target, child, period));
 			}											
-			fctMap.put(child, orgFct);
+			fctMap.put(target, orgFct);
 		}
 
-		return new FctTable(organisations, targets, facilityTypes, fctMap, orgParentMap);
+		FctTable fctTable = new FctTable(organisations, targets, facilityTypes, fctMap, orgParentMap, totalMap);
+		if (log.isDebugEnabled()) log.debug("getFct(...)="+fctTable);
+		return fctTable;
+	}
+	
+	private Fct getFctValue(FctTarget target, Organisation organisation, Period period) {
+		String value = null;
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), organisation.getOrganisationUnit(), period, Utils.getUuids(organisationService.getGroupsForExpression()));
+		if (calculationValue != null) value = calculationValue.getValue().getNumberValue().toString();
+		return new Fct(organisation, period, target, value);
 	}
 	
 	private Map<Organisation, List<Organisation>> getParents(
@@ -133,26 +133,10 @@ public class FctService {
 		
 		Map<Organisation, List<Organisation>> organisationMap = new HashMap<Organisation, List<Organisation>>();										
 		
-		//add "total" organisation
-		organisations.add(0, organisation);
-		organisationService.loadParent(organisation);
-		organisationService.loadLevel(organisation);
-		Organisation parentOrg = organisationService.getParentOfLevel(organisation, organisation.getLevel()-1);
-		if(parentOrg == null){
-			Organisation rootOrg = organisationService.getRootOrganisation();
-			if(organisation.equals(rootOrg))
-				parentOrg = rootOrg;
-		}
-		organisationMap.put(parentOrg, new ArrayList<Organisation>());
-		organisationMap.get(parentOrg).add(organisation);
-		
 		for (Organisation org : organisations) {
-			//skip "total" organisation
-			if(org == organisation) continue;
-			
 			organisationService.loadParent(org);
 			organisationService.loadLevel(org);
-			parentOrg = organisationService.getParentOfLevel(org, org.getLevel()-1);			
+			Organisation parentOrg = organisationService.getParentOfLevel(org, org.getLevel()-1);			
 			
 			if(!organisationMap.containsKey(parentOrg))
 				organisationMap.put(parentOrg, new ArrayList<Organisation>());

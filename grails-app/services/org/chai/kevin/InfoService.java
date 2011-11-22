@@ -63,6 +63,7 @@ public class InfoService {
 			for (Entry<String, RawDataElement> entry : expressionService.getDataInExpression(normalizedDataElement.getExpression(period, facility.getOrganisationUnitGroup().getUuid()), RawDataElement.class).entrySet()) {
 				if (entry.getValue() != null) {
 					dataValues.put(entry.getValue(), valueService.getDataElementValue(entry.getValue(), facility.getOrganisationUnit(), period));
+					dataElements.add(entry.getValue());
 				}
 			}
 			info = new NormalizedDataElementInfo(expressionValue, dataElements, dataValues);
@@ -89,7 +90,7 @@ public class InfoService {
 					calculationValues.put(facility, valueService.getCalculationValue(calculation, facility.getOrganisationUnit(), period, groupUuids));
 					Map<DataElement<?>, DataValue> data = new HashMap<DataElement<?>, DataValue>();
 					for (DataElement<?> dataElement : dataElements) {
-						
+						data.put(dataElement, valueService.getDataElementValue(dataElement, facility.getOrganisationUnit(), period));
 					}
 					values.put(facility, data);
 				}

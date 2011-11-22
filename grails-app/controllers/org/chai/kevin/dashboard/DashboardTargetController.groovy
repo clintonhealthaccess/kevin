@@ -29,16 +29,14 @@ package org.chai.kevin.dashboard
 */
 
 import grails.plugin.springcache.annotations.CacheFlush
+import org.chai.kevin.data.Calculation;
 
-import org.chai.kevin.data.Average
-import org.chai.kevin.data.Type
 
 class DashboardTargetController extends AbstractObjectiveController {
 
 	def createEntity() {
 		def entity = new DashboardObjectiveEntry()
 		entity.entry = new DashboardTarget()
-		entity.entry.calculation = new Average()
 		return entity
 	}
 	
@@ -50,30 +48,14 @@ class DashboardTargetController extends AbstractObjectiveController {
 		return '/dashboard/createTarget'
 	}
 	
-	def saveEntity(def entity) {
-		entity.entry.calculation.timestamp = new Date()
-		// FIXME change this to infer the correct type
-		entity.entry.calculation.type = Type.TYPE_NUMBER()
-		if (entity.entry.calculation.id == null) entity.entry.calculation.code = UUID.randomUUID().toString();
-		entity.entry.calculation.save()
-		super.saveEntity(entity)
-	}
-	
 	def bindParams(def objectiveEntry) {
-		
-		// FIXME GRAILS-6388 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6388
-//		objectiveEntry.entry.calculation.expressions.each() { key, value ->
-//			value.expression = params['entry.calculation.expressions['+key+'].expression.id'] != 'null'?new Expression():null
-//		}
+		bindData(objectiveEntry, params, [exclude:'entry.calculation.id'])
+		objectiveEntry.entry.calculation = dataService.getData(params.int('entry.calculation.id'), Calculation.class)
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.entry?.names!=null) objectiveEntry.entry.names = params.entry?.names
 		if (params.entry?.descriptions!=null) objectiveEntry.entry.descriptions = params.entry?.descriptions
-		
-		objectiveEntry.properties = params;
-		
 	}
 
 	@CacheFlush("dashboardCache")

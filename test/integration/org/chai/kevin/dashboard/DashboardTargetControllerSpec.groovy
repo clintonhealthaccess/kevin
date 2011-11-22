@@ -35,42 +35,17 @@ import org.chai.kevin.data.Type
 class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 
 	def dashboardTargetController
-	def dashboardService
 	
-	def "delete target flushes cache"() {
-		setup:
-		dashboardTargetController = new DashboardTargetController()
-		def period = newPeriod()
-		setupOrganisationUnitTree()
-		def root = newDashboardObjective(CODE(1))
-		def calculation = newAverage([:], CODE(2), Type.TYPE_NUMBER())
-		def target = newDashboardTarget(TARGET1, calculation, root, "1")
-		def organisation = getOrganisation(RWANDA)
-		refresh()
-		
-		when:
-		def dashboard = dashboardService.getDashboard(organisation, root, period)
-		
-		then:
-		dashboard.getPercentage(getOrganisation(NORTH), target) != null
-		
-		// TODO can't work because controller class is not instrumented
-//		when:
-//		dashboardTargetController.params.id = target.parent.id
-//		dashboardTargetController.delete()
-//		
-//		then:
-//		dashboard.getPercentage(getOrganisation(NORTH), target) == null
-		
-	}
+	def dashboardService
+	def dataService
 	
 	def "delete target deletes entry and target"() {
 		setup:
 		def root = newDashboardObjective(CODE(1))
-		def calculation = newAverage([:], CODE(2), Type.TYPE_NUMBER())
+		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
-	
 		dashboardTargetController = new DashboardTargetController();
+		dashboardTargetController.dataService = dataService
 		
 		when:
 		dashboardTargetController.params.id = target.parent.id
@@ -84,48 +59,27 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		DashboardObjective.count() == 1
 	}
 	
-	def "save new target"() {
-		setup:
-		def root = newDashboardObjective(CODE(1))
-		dashboardTargetController = new DashboardTargetController()
-		
-		when:
-		dashboardTargetController.params['currentObjective'] = root.id
-		dashboardTargetController.params['weight'] = 1
-		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculation.expressions['+HEALTH_CENTER_GROUP+'].id'] = "null"
-		dashboardTargetController.saveWithoutTokenCheck()
-		def newTarget = DashboardTarget.findByCode("NEW")
-		
-		then:
-		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
-		newTarget != null
-		newTarget.parent.weight == 1
-		DashboardObjectiveEntry.count() == 1
-		DashboardTarget.count() == 1 
-		DashboardObjective.count() == 1 
-	}
 	
 	def "save target with calculations"() {
 		setup:
-		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
+		setupOrganisationUnitTree()
+		def average = newAverage("1", CODE(2))
 		def root = newDashboardObjective(CODE(1))
 		dashboardTargetController = new DashboardTargetController()
+		dashboardTargetController.dataService = dataService
 		
 		when:
 		dashboardTargetController.params['currentObjective'] = root.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculation.expressions['+HEALTH_CENTER_GROUP+'].id'] = expression.id+""
-		dashboardTargetController.params['entry.calculation.epxressions['+DISTRICT_HOSPITAL_GROUP+'].id'] = "null"
+		dashboardTargetController.params['entry.calculation.id'] = average.id+""
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
 		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 		newTarget != null
-		newTarget.calculation.expressions['Health Center'] == expression
-		newTarget.calculation.expressions['District Hospital'] == null
+		newTarget.calculation.equals(average)
 		newTarget.parent.weight == 1
 		
 		DashboardObjectiveEntry.count() == 1
@@ -136,26 +90,25 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 	
 	def "edit target with calculations"() {
 		setup:
+		setupOrganisationUnitTree()
 		def root = newDashboardObjective(CODE(1))
-		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
-		def caculation = newAverage([:], CODE(3), Type.TYPE_NUMBER())
-		def target = newDashboardTarget(TARGET1, caculation, root, 1)
+		def average = newAverage("1", CODE(3))
+		def target = newDashboardTarget(TARGET1, average, root, 1)
 		dashboardTargetController = new DashboardTargetController()
+		dashboardTargetController.dataService = dataService
 		
 		when:
 		dashboardTargetController.params['id'] = target.parent.id
 		dashboardTargetController.params['weight'] = 1
 		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculation.expressions['+HEALTH_CENTER_GROUP+'].id'] = expression.id+""
-		dashboardTargetController.params['entry.calculation.expressions['+DISTRICT_HOSPITAL_GROUP+'].id'] = "null"
+		dashboardTargetController.params['entry.calculation.id'] = average.id+""
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
 		then:
 		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 		newTarget != null
-		newTarget.calculation.expressions['Health Center'] == expression
-		newTarget.calculation.expressions['District Hospital'] == null
+		newTarget.calculation.equals(average)
 		newTarget.parent.weight == 1
 
 		DashboardObjectiveEntry.count() == 1

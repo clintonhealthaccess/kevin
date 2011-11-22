@@ -1,11 +1,11 @@
 package org.chai.kevin;
 
-import org.chai.kevin.dashboard.ExpressionJob;
+import org.chai.kevin.dashboard.RefreshJob;
 
 class RefreshController {
 	
 	def index = {
-		ExpressionJob.triggerNow()
+		RefreshJob.triggerNow()
 		
 		render ("launched refresh job")
 	}

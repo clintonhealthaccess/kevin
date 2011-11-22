@@ -65,7 +65,7 @@ public class SurveySkipRule {
 		this.survey = survey;
 	}
 	
-	@Basic
+	@Lob
 	@Column(nullable=false)
 	public String getExpression() {
 		return expression;

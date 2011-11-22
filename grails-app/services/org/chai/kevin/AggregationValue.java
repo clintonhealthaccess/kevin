@@ -43,5 +43,10 @@ public class AggregationValue extends CalculationValue<AggregationPartialValue> 
 		if (NumberUtils.isNumber(value.toString())) stringValue = value.toString();
 		return getData().getType().getValueFromJaql(stringValue);
 	}
+
+	@Override
+	public String toString() {
+		return "AggregationValue [getValue()=" + getValue() + "]";
+	}
 	
 }

@@ -83,7 +83,7 @@ public class Dashboard {
 	}
 	
 	public DashboardPercentage getPercentage(Organisation organisation, DashboardEntry objective) {
-		return values.get(organisation).get(objective);
+		return values.get(organisation).get(objective.getParent());
 	}
 	
 	@Override

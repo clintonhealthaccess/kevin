@@ -9,7 +9,7 @@ class FctTargetSpec extends FctIntegrationTests {
 	def "can save target"() {
 		setup:
 		def objective = newFctObjective(CODE(1))
-		def sum = newSum([:], CODE(1), Type.TYPE_NUMBER())
+		def sum = newSum("1", CODE(1))
 		
 		when:
 		new FctTarget(objective: objective, groupUuids: [DISTRICT_HOSPITAL_GROUP], code: CODE(1), sum: sum).save(failOnError: true)
@@ -32,7 +32,7 @@ class FctTargetSpec extends FctIntegrationTests {
 	def "cannot save target with null code"() {
 		setup:
 		def objective = newFctObjective(CODE(1))
-		def sum = newSum([:], CODE(1), Type.TYPE_NUMBER())
+		def sum = newSum("1", CODE(1))
 		
 		when:
 		new FctTarget(objective: objective, groupUuids: [DISTRICT_HOSPITAL_GROUP], sum: sum).save(failOnError: true)

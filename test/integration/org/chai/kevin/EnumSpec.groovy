@@ -1,5 +1,7 @@
 package org.chai.kevin
 
+import org.chai.kevin.data.Enum;
+
 class EnumSpec extends IntegrationTests {
 
 	def "get active options work"() {

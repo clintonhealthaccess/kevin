@@ -86,4 +86,10 @@ public class Average extends Calculation<AveragePartialValue> {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "Average [getExpression()=" + getExpression() + ", getId()="
+				+ getId() + ", getCode()=" + getCode() + "]";
+	}
+
 }

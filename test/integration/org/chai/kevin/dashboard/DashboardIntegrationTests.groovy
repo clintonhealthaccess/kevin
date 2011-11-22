@@ -2,6 +2,7 @@ package org.chai.kevin.dashboard
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
+import org.hisp.dhis.period.Period;
 
 abstract class DashboardIntegrationTests extends IntegrationTests {
 
@@ -35,19 +36,17 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 	}
 	
 	def setupDashboard() {
+		def period = Period.list()[0]
 		def root = newDashboardObjective(ROOT)
 		def objective = newDashboardObjective(OBJECTIVE, root, 1)
 
-		def average1 = newAverage([
-				(DISTRICT_HOSPITAL_GROUP):newExpression(CODE(2), Type.TYPE_NUMBER(), "40"),
-				(HEALTH_CENTER_GROUP):newExpression(CODE(3), Type.TYPE_NUMBER(), "40")
-			], CODE(1), Type.TYPE_NUMBER())
+		def dataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"40",(HEALTH_CENTER_GROUP):"40"]]))
+		def average1 = newAverage("\$"+dataElement1.id, CODE(2))
 		def target1 = newDashboardTarget(TARGET1, average1, objective, 1)
 		
-		def average2 = newAverage([
-			(DISTRICT_HOSPITAL_GROUP):newExpression(CODE(4), Type.TYPE_NUMBER(), "20")
-		], CODE(5), Type.TYPE_NUMBER())
-		def target2 = newDashboardTarget(TARGET2, average1, objective, 1)
+		def dataElement2 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20"]]))
+		def average2 = newAverage("\$"+dataElement2.id, CODE(4))
+		def target2 = newDashboardTarget(TARGET2, average2, objective, 1)
 	}
 	
 }

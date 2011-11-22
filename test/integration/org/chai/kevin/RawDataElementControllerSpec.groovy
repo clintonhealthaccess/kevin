@@ -18,7 +18,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		dataElementController.create()
 		
 		then:
-		dataElementController.modelAndView.model.dataElement.id == null
+		dataElementController.modelAndView.model.rawDataElement.id == null
 	}
 	
 	def "save new data element"() {
@@ -118,7 +118,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		
 		when:
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
-		dataElementController.params.dataElement = dataElement.id+""
+		dataElementController.params.id = dataElement.id+""
 		def model = dataElementController.getDescription()
 		
 		then:

@@ -34,7 +34,7 @@ class RawDataElementSpec extends IntegrationTests {
 		thrown ValidationException
 		
 		when:
-		def enume = newEnume(code: CODE(1))
+		def enume = newEnume(CODE(1))
 		new RawDataElement(code: CODE(2), type: Type.TYPE_ENUM (enume.code)).save(failOnError: true)
 		
 		then:

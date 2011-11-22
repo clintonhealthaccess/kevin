@@ -9,7 +9,7 @@ class DsrTargetSpec extends DsrIntegrationTests {
 	def "can save target"() {
 		setup:
 		def objective = newDsrObjective(CODE(1))
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
 		new DsrTarget(objective: objective, groupUuids: [DISTRICT_HOSPITAL_GROUP], code: CODE(1), dataElement: dataElement).save(failOnError: true)
@@ -32,7 +32,7 @@ class DsrTargetSpec extends DsrIntegrationTests {
 	def "cannot save target with null code"() {
 		setup:
 		def objective = newDsrObjective(CODE(1))
-		def dataElement = newDataElement(CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
 		new DsrTarget(objective: objective, groupUuids: [DISTRICT_HOSPITAL_GROUP], dataElement: dataElement).save(failOnError: true)

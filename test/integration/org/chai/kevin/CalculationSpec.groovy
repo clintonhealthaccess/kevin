@@ -3,55 +3,106 @@ package org.chai.kevin;
 import static org.junit.Assert.*;
 import grails.validation.ValidationException;
 
+import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 
 class CalculationSpec extends IntegrationTests {
 	
-	def "calculation type cannot be invalid"() {
+	def "sum expression must be valid"() {
 		when:
-		new Sum(expressions:[:], code:CODE(1), type: INVALID_TYPE).save(failOnError: true)
+		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
-		thrown ValidationException
+		Sum.count() == 1
 		
 		when:
-		new Average(expressions:[:], code:CODE(2), type: INVALID_TYPE).save(failOnError: true)
+		new Sum(code:CODE(2), expression: "1(").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 	}
 	
-	def "sum type cannot be of non-number"() {
+	def "average expression must be valid"() {
 		when:
-		new Sum(expressions:[:], code:CODE(1), type:type).save(failOnError: true)
+		new Average(code:CODE(1), expression: "1").save(failOnError: true)
+		
+		then:
+		Average.count() == 1
+		
+		when:
+		new Average(code:CODE(2), expression: "1(").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
-		
-		where:
-		type << [Type.TYPE_BOOL(), Type.TYPE_DATE(), Type.TYPE_STRING(), Type.TYPE_ENUM(CODE(3))]
-	}	
+	}
 	
-	def "average type cannot be of non-number"() {	
+	def "aggregation expression must be valid"() {
 		when:
-		new Average(expressions:[:], code:CODE(2), type:type).save(failOnError: true)
+		new Aggregation(code:CODE(1), expression: "1").save(failOnError: true)
+		
+		then:
+		Aggregation.count() == 1
+		
+		when:
+		new Aggregation(code:CODE(2), expression: "1(").save(failOnError: true)
 		
 		then:
 		thrown ValidationException
-
-		where:
-		type << [Type.TYPE_BOOL(), Type.TYPE_DATE(), Type.TYPE_STRING(), Type.TYPE_ENUM(CODE(3))]
 	}
 	
-	def "cannot delete expression with associated calculation"() {
+	def "sum code must not be null"() {
 		when:
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
-		def average = new Average(expressions: [HEALTH_CENTER_GROUP: expression], type:Type.TYPE_NUMBER()).save(failOnError: true)
-		expression.delete(flush: true)
+		new Sum(code:CODE(1), expression: "1").save(failOnError: true)
 		
 		then:
-		thrown Exception
+		Sum.count() == 1
+		
+		when:
+		new Sum(expression: "1").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
 	}
+	
+	def "average code must not be null"() {
+		when:
+		new Average(code:CODE(1), expression: "1").save(failOnError: true)
+		
+		then:
+		Average.count() == 1
+		
+		when:
+		new Average(expression: "1").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "aggregation code must not be null"() {
+		when:
+		new Aggregation(code:CODE(1), expression: "1").save(failOnError: true)
+		
+		then:
+		Aggregation.count() == 1
+		
+		when:
+		new Aggregation(expression: "1").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+//	def "cannot delete expression with associated calculation"() {
+//		when:
+//		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+//		def average = new Average(expressions: [HEALTH_CENTER_GROUP: expression], type:Type.TYPE_NUMBER()).save(failOnError: true)
+//		expression.delete(flush: true)
+//		
+//		then:
+//		thrown Exception
+//	}
+	
+	
 }

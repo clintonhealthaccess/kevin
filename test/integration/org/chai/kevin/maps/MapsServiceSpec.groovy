@@ -38,8 +38,7 @@ class MapsServiceSpec extends MapsIntegrationTests {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
-		def calculation = newAverage([(DISTRICT_HOSPITAL_GROUP): expression, (HEALTH_CENTER_GROUP): expression], CODE(2), Type.TYPE_NUMBER())
+		def calculation = newAverage("1", CODE(2))
 		def mapsTarget = newMapsTarget(CODE(3), calculation)
 		refresh()
 		

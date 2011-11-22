@@ -16,7 +16,7 @@ class CostTargetSpec extends CostIntegrationTests {
 		thrown ValidationException
 		
 		when:
-		def dataElement = newDataElement(CODE(3), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		new CostTarget(costRampUp: rampUp, costType: CostType.INVESTMENT, code: CODE(4), dataElement: dataElement).save(failOnError: true)
 		
 		then:
@@ -26,7 +26,7 @@ class CostTargetSpec extends CostIntegrationTests {
 	def "cannot save target with null type"() {
 		when:
 		def rampUp = newCostRampUp(CODE(1), [:])
-		def dataElement = newDataElement(CODE(3), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		new CostTarget(costRampUp: rampUp, code: CODE(2), dataElement: dataElement).save(failOnError: true)
 		
 		then:
@@ -41,7 +41,7 @@ class CostTargetSpec extends CostIntegrationTests {
 	
 	def "cannot save target with null ramp up"() {
 		when:
-		def dataElement = newDataElement(CODE(3), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		new CostTarget(code: CODE(2), costType: CostType.INVESTMENT, dataElement: dataElement).save(failOnError: true)
 		
 		then:

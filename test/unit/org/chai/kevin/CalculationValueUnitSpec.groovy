@@ -147,16 +147,16 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def aggregation = new Aggregation(expression: '\$1/\$2')
 		
 		when:
-		partialValue1 = new AggregationPartialValue(value: v("1"), expressionData: '\$1', null, null)
-		partialValue2 = new AggregationPartialValue(value: v("0"), expressionData: '\$2', null, null)
+		partialValue1 = new AggregationPartialValue(value: v("1"), expressionData: '\$1')
+		partialValue2 = new AggregationPartialValue(value: v("0"), expressionData: '\$2')
 		value = new AggregationValue([partialValue1, partialValue2], aggregation, null, null)
 		
 		then:
 		value.getValue().equals(Value.NULL)
 		
 		when:
-		partialValue1 = new AggregationPartialValue(value: v("0"), expressionData: '\$1', null, null)
-		partialValue2 = new AggregationPartialValue(value: v("0"), expressionData: '\$2', null, null)
+		partialValue1 = new AggregationPartialValue(value: v("0"), expressionData: '\$1')
+		partialValue2 = new AggregationPartialValue(value: v("0"), expressionData: '\$2')
 		value = new AggregationValue([partialValue1, partialValue2], aggregation, null, null)
 
 		then:

@@ -6,13 +6,31 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 	def dsrService
 	
+	def "test normal dsr service"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def objective = newDsrObjective(CODE(1))
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
+		def target = newDsrTarget(CODE(2), dataElement, [], objective)
+		def organisation = getOrganisation(BURERA)
+		refresh()
+		
+		when:
+		def dsrTable = dsrService.getDsr(organisation, objective, period)
+		
+		then:
+		dsrTable.getDsr(getOrganisation(BUTARO), target) != null
+		
+	}
+	
 	def "test dsr formatting"() {
 		when:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def objective = newDsrObjective(CODE(2))
-		def target = newDsrTarget(CODE(3), expression, format, [(DISTRICT_HOSPITAL_GROUP), (HEALTH_CENTER_GROUP)], objective)
+		def target = newDsrTarget(CODE(3), normalizedDataElement, format, [(DISTRICT_HOSPITAL_GROUP), (HEALTH_CENTER_GROUP)], objective)
 		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
@@ -34,9 +52,9 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		when:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def objective = newDsrObjective(CODE(2))
-		def target = newDsrTarget(CODE(3), expression, [], objective)
+		def target = newDsrTarget(CODE(3), normalizedDataElement, [], objective)
 		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
@@ -55,9 +73,9 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		when:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
-		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "10")
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def objective = newDsrObjective(CODE(2))
-		def target = newDsrTarget(CODE(3), expression, [(DISTRICT_HOSPITAL_GROUP)], objective)
+		def target = newDsrTarget(CODE(3), normalizedDataElement, [(DISTRICT_HOSPITAL_GROUP)], objective)
 		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		

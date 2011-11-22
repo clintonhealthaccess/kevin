@@ -45,6 +45,7 @@ import org.chai.kevin.value.Value;
 import org.chai.kevin.dashboard.DashboardObjective;
 import org.chai.kevin.dashboard.DashboardObjectiveEntry;
 import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
@@ -438,7 +439,7 @@ class Initializer {
 			
 			// data value
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE1"),
+					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Butaro DH"),
 					value: v("30"),
@@ -446,7 +447,7 @@ class Initializer {
 					).save(failOnError: true)
 			// data value
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE1"),
+					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("40"),
@@ -454,77 +455,77 @@ class Initializer {
 					).save(failOnError: true)
 			// data value
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE3"),
+					data: RawDataElement.findByCode("CODE3"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"value1\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE4"),
+					data: RawDataElement.findByCode("CODE4"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("true"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE6"),
+					data: RawDataElement.findByCode("CODE6"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("false"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE8"),
+					data: RawDataElement.findByCode("CODE8"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("10"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE9"),
+					data: RawDataElement.findByCode("CODE9"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("31"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE10"),
+					data: RawDataElement.findByCode("CODE10"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"NGO or Partner\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE11"),
+					data: RawDataElement.findByCode("CODE11"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"2011-06-29\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE81"),
+					data: RawDataElement.findByCode("CODE81"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("44"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE91"),
+					data: RawDataElement.findByCode("CODE91"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("33"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE101"),
+					data: RawDataElement.findByCode("CODE101"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"Ministry of Health\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE111"),
+					data: RawDataElement.findByCode("CODE111"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"2011-06-30\""),
@@ -532,7 +533,7 @@ class Initializer {
 					).save(failOnError: true, flush:true)
 
 			new RawDataElementValue(
-					dataElement: RawDataElement.findByCode("CODE12"),
+					data: RawDataElement.findByCode("CODE12"),
 					period: Period.list()[0],
 					organisationUnit: OrganisationUnit.findByName("Kivuye HC"),
 					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
@@ -548,19 +549,19 @@ class Initializer {
 			
 			// indicators
 			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expressionMap: e([(period1.id):[(hc.uuid):"10", (dh.uuid):"10"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expressionMap: e([(period1.id):[(hc.uuid):"20", (dh.uuid):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 1", expressionMap: e([(period1.id):[(hc.uuid):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1"), (dh.uuid):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1")]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 2", expressionMap: e([(period1.id):[(hc.uuid):"\$"+RawDataElement.findByCode("CODE2").id, (dh.uuid):"\$"+RawDataElement.findByCode("CODE2").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 3", expressionMap: e([(period1.id):[(hc.uuid):"\$"+RawDataElement.findByCode("CODE3").id, (dh.uuid):"\$"+RawDataElement.findByCode("CODE3").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true, validate: false)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expressionMap: e([(period1.id+''):[(hc.uuid):"10", (dh.uuid):"10"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 20", expressionMap: e([(period1.id+''):[(hc.uuid):"20", (dh.uuid):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 1", expressionMap: e([(period1.id+''):[(hc.uuid):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id, (dh.uuid):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 2", expressionMap: e([(period1.id+''):[(hc.uuid):"\$"+RawDataElement.findByCode("CODE2").id, (dh.uuid):"\$"+RawDataElement.findByCode("CODE2").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 3", expressionMap: e([(period1.id+''):[(hc.uuid):"\$"+RawDataElement.findByCode("CODE3").id, (dh.uuid):"\$"+RawDataElement.findByCode("CODE3").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 		}
 
 	}
 
 	static def createMaps() {
 		if (!MapsTarget.count()) {
-			def calculation1 = new Average(expression: "\$"+NormalizedDataElement.findByCode("Element 1"), timestamp:new Date(), type: Type.TYPE_NUMBER())
-			calculation1.save()
+			def calculation1 = new Average(expression: "\$"+NormalizedDataElement.findByCode("Element 1").id, code: "Maps average 1", timestamp:new Date())
+			calculation1.save(failOnError:true)
 			new MapsTarget(names:j(["en":"Map Target 3"]), descriptions:j([:]), code:"TARGET3", calculation: calculation1).save(failOnError: true, flush:true)
 		}
 	}
@@ -636,48 +637,48 @@ class Initializer {
 			staffing.save(failOnError: true)
 			hrh.save(failOnError: true)
 
-			def calculation1 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10"), timestamp:new Date(), type: Type.TYPE_NUMBER())
-			calculation1.save()
+			def calculation1 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Average constant 10", timestamp:new Date())
+			calculation1.save(failOnError: true)
 
 			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
 					calculation: calculation1
 					), weight: 1, order: 1)
 
-			def calculation2 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 20"), timestamp:new Date(), type: Type.TYPE_NUMBER())
-			calculation2.save()
+			def calculation2 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Average constant 20", timestamp:new Date())
+			calculation2.save(failOnError: true)
 
 			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
 					calculation: calculation2
 					), weight: 1, order: 2)
 
-			def calculation3 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 1"), timestamp:new Date(), type: Type.TYPE_NUMBER())
-			calculation3.save()
+			def calculation3 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Average 1", timestamp:new Date())
+			calculation3.save(failOnError: true)
 
 			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
 					calculation: calculation3
 					), weight: 1, order: 3)
 
-			def calculation4 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 2"), timestamp:new Date(), type: Type.TYPE_NUMBER())
-			calculation4.save()
+			def calculation4 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Average 2", timestamp:new Date())
+			calculation4.save(failOnError: true)
 
 			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
 					calculation: calculation4
 					), weight: 1, order: 4)
 
-			def calculation5 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3"), timestamp:new Date(), type: Type.TYPE_NUMBER())
-			calculation5.save()
+			def calculation5 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 3", timestamp:new Date())
+			calculation5.save(failOnError: true)
 
 			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
 					calculation: calculation5
 					), weight: 1, order: 5)
 
-			def calculation6 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3"), timestamp:new Date(), type: Type.TYPE_NUMBER())
-			calculation6.save()
+			def calculation6 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 4", timestamp:new Date())
+			calculation6.save(failOnError: true)
 
 			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
@@ -914,14 +915,14 @@ class Initializer {
 				)
 			
 			def geoacss= new FctObjective(
-					names:j(["en":"Geographical Access"]),
-					order: 3,
-					descriptions:j(["en":"Geographical Access"]),
-					code:"Geographical Access",
-					)			
+				names:j(["en":"Geographical Access"]),
+				order: 3,
+				descriptions:j(["en":"Geographical Access"]),
+				code:"Geographical Access"
+				)
 			
-			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10"), timestamp:new Date(), type: Type.TYPE_NUMBER());
-			sum1.save();
+			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Sum 1", timestamp:new Date());
+			sum1.save(failOnError: true);
 						
 			FctTarget fctTarget1 = new FctTarget(
 				names:j(["en":"Fct Target 1"]), 
@@ -933,8 +934,8 @@ class Initializer {
 			hmr.addTarget(fctTarget1);
 			hmr.save(failOnError:true)
 			
-			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20"), timestamp:new Date(), type: Type.TYPE_NUMBER());
-			sum2.save();
+			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
+			sum2.save(failOnError: true);
 			
 			FctTarget fctTarget2 = new FctTarget(
 				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
@@ -1627,6 +1628,12 @@ class Initializer {
 		return calendar.getTime();
 	}
 
+	
+	public static ExpressionMap e(def map) {
+		return new ExpressionMap(jsonText: JSONUtils.getJSONFromMap(map))
+	}
+	
+	
 	public static Value v(def value) {
 		return new Value("{\"value\":"+value+"}");
 	}

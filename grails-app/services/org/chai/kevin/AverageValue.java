@@ -29,5 +29,10 @@ public class AverageValue extends CalculationValue<AveragePartialValue> {
 		
 		return getData().getType().getValue(average); 
 	}
-	
+
+	@Override
+	public String toString() {
+		return "AverageValue [getValue()=" + getValue() + "]";
+	}
+
 }

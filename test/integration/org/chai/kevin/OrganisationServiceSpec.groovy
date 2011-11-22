@@ -102,9 +102,12 @@ class OrganisationServiceSpec extends IntegrationTests {
 		
 		where:
 		organisationName	| level	| expectedOrganisations
-		"Rwanda"			| 2		| [NORTH]
-		"Rwanda"			| 3		| [BURERA]
-		"Rwanda"			| 4		| [BUTARO, KIVUYE]
+		RWANDA				| 2		| [NORTH]
+		RWANDA				| 3		| [BURERA]
+		RWANDA				| 4		| [BUTARO, KIVUYE]
+		BUTARO				| 4		| [BUTARO]
+		KIVUYE				| 4		| [KIVUYE]
+		BURERA				| 1		| []
 		
 	}
 	
@@ -150,6 +153,16 @@ class OrganisationServiceSpec extends IntegrationTests {
 		
 		expect:
 		organisationService.getGroupsForExpression().equals(new HashSet([OrganisationUnitGroup.findByUuid(HEALTH_CENTER_GROUP), OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)])) 
+	}
+	
+	def "get children of group and level"() {
+		setup:
+		setupOrganisationUnitTree()
+		
+		expect:
+		organisationService.getFacilitiesOfGroup(getOrganisation(BUTARO), OrganisationUnitGroup.findByName(DISTRICT_HOSPITAL_GROUP)).equals([getOrganisation(BUTARO)])
+		organisationService.getFacilitiesOfGroup(getOrganisation(BURERA), OrganisationUnitGroup.findByName(DISTRICT_HOSPITAL_GROUP)).equals([getOrganisation(BUTARO)])
+		organisationService.getFacilitiesOfGroup(getOrganisation(BURERA), OrganisationUnitGroup.findByName(HEALTH_CENTER_GROUP)).equals([getOrganisation(KIVUYE)])
 	}
 	
 	def assertIsLoaded(def organisation, def level) {

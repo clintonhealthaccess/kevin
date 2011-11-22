@@ -23,7 +23,7 @@ abstract class FctIntegrationTests extends IntegrationTests {
 		return target
 	}
 		
-	def newFctTarget(def code, def expression, def groups, def objective) {
-		return newFctTarget(code, expression, null, groups, objective)
+	def newFctTarget(def code, def sum, def groups, def objective) {
+		return newFctTarget(code, sum, null, groups, objective)
 	}
 }

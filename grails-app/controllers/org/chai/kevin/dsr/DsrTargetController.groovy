@@ -43,6 +43,7 @@ import org.hisp.dhis.dataelement.DataElementService;
 class DsrTargetController extends AbstractEntityController {
 
 	def organisationService
+	def dataService
 
 	def getEntity(def id) {
 		return DsrTarget.get(id)
@@ -65,7 +66,7 @@ class DsrTargetController extends AbstractEntityController {
 			target: entity,
 			objectives: DsrObjective.list(),
 			groups: organisationService.getGroupsForExpression(),
-			dataElements: DataElement.list(),
+			dataElements: dataService.list(DataElement.class),
 			categories: DsrTargetCategory.list()
 		]
 	}
@@ -81,7 +82,8 @@ class DsrTargetController extends AbstractEntityController {
 	}
 
 	def bindParams(def entity) {
-		entity.properties = params
+		bindData(entity, params, [exclude:'dataElement.id'])
+		entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
 
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
