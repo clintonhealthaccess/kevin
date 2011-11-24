@@ -74,9 +74,8 @@ class ObjectiveController extends AbstractEntityController {
 	}
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
-		
+		adaptParamsForList()
+
 		Survey survey = Survey.get(params.surveyId);
 		List<SurveyObjective> objectives = survey.objectives;
 		Collections.sort(objectives)

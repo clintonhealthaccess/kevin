@@ -93,7 +93,7 @@ public class DashboardService {
 	}
 
 	@Transactional(readOnly = true)
-	public DashboardExplanation getExplanation(Organisation organisation, DashboardEntry entry, Period period) {
+	public Info<?> getExplanation(Organisation organisation, DashboardEntry entry, Period period) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		organisationService.loadParent(organisation, getSkipLevelArray());
 		organisationService.loadGroup(organisation);
@@ -102,24 +102,20 @@ public class DashboardService {
 		return entry.visit(new ExplanationVisitor(), organisation, period);
 	}
 
-	private class ExplanationVisitor implements DashboardVisitor<DashboardExplanation> {
+	private class ExplanationVisitor implements DashboardVisitor<Info> {
 
 		@Override
-		public DashboardExplanation visitObjective(DashboardObjective objective, Organisation organisation, Period period) {
+		public Info visitObjective(DashboardObjective objective, Organisation organisation, Period period) {
 			DashboardPercentage percentage = objective.visit(new PercentageVisitor(), organisation, period);
 			if (percentage == null) return null;
 			Map<DashboardObjectiveEntry, DashboardPercentage> values = getValues(objective.getObjectiveEntries(), period, organisation);
-			Info<DashboardPercentage> info = new DashboardObjectiveInfo(percentage, values);
-			
-			return new DashboardExplanation(info, objective);
+			return new DashboardObjectiveInfo(percentage, values);
 		}
 
 		@Override
-		public DashboardExplanation visitTarget(DashboardTarget target, Organisation organisation, Period period) {
+		public Info visitTarget(DashboardTarget target, Organisation organisation, Period period) {
 			// TODO groups
-			CalculationInfo calculationInfo = infoService.getCalculationInfo(target.getCalculation(), organisation, period, Utils.getUuids(organisationService.getGroupsForExpression()));
-			if (calculationInfo == null) return null;
-			return new DashboardExplanation(calculationInfo, target);
+			return infoService.getCalculationInfo(target.getCalculation(), organisation, period, Utils.getUuids(organisationService.getGroupsForExpression()));
 		}
 		
 	}

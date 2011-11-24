@@ -89,14 +89,17 @@ class EnumOptionController extends AbstractEntityController {
 	}
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		adaptParamsForList();
+		
 		Enum enume = Enum.get(params.int('enumId'));
 		
 		List<EnumOption> options = enume.enumOptions;
 		Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
 		
+		def max = Math.min(params['offset']+params['max'], questions.size())
+		
 		render (view: '/entity/list', model:[
-			entities: options,
+			entities: options.subList(params['offset'], max),
 			template: "data/enumOptionList",
 			entityCount: options.size(),
 			code: getLabel(),

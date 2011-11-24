@@ -90,9 +90,10 @@
 			  			<shiro:hasPermission permission="menu:admin">
 			  				<li><a class="${controllerName!=null && org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"  onclick="return false;"><g:message code="header.navigation.administration" default="Administration"/></a>
 			  					<ul class="submenu">
-			  						<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'list')}"><g:message code="expression.label" default="Expressions"/></a></li>
 			  <!-- 								<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li> -->
-			  						<li><a class="${controllerName=='dataElement'?'active':''}" href="${createLink(controller: 'dataElement', action:'list')}"><g:message code="dataelement.label" default="Data Element"/></a></li>
+			  						<li><a class="${controllerName=='rawDataElement'?'active':''}" href="${createLink(controller: 'rawDataElement', action:'list')}"><g:message code="rawdataelement.label" default="Raw data Element"/></a></li>
+			  						<li><a class="${controllerName=='normalizedDataElement'?'active':''}" href="${createLink(controller: 'normalizedDataElement', action:'list')}"><g:message code="normalizedDataElement.label" default="Normalized data element"/></a></li>
+			  						<li><a class="${controllerName=='calculation'?'active':''}" href="${createLink(controller: 'calculation', action:'list')}"><g:message code="calculation.label" default="Calculation"/></a></li>
 			  						<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="enum.label" default="Enum"/></a></li>
 			  						<li><a class="${controllerName=='iteration'?'active':''}" href="${createLink(controller: 'iteration', action:'list')}"><g:message code="period.label" default="Iterations"/></a></li>
 			  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a></li>

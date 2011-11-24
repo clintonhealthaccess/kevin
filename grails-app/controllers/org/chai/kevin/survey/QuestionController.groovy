@@ -27,6 +27,7 @@
  */
 package org.chai.kevin.survey
 
+import org.chai.kevin.AbstractController;
 import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
@@ -35,7 +36,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
  *
  */
 
-class QuestionController {
+class QuestionController extends AbstractController {
 
 	def surveyService
 	
@@ -44,8 +45,7 @@ class QuestionController {
 	}
 	
 	def search = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		adaptParamsForList()
 		
 		Survey survey = Survey.get(params.int('surveyId'))
 		List<SurveyQuestion> questions = surveyService.searchSurveyQuestions(params['q'], survey, params);
@@ -61,8 +61,7 @@ class QuestionController {
 	}
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		adaptParamsForList()
 		
 		SurveySection section = SurveySection.get(params.int('sectionId'))
 		List<SurveyQuestion> questions = section.questions;
@@ -78,7 +77,7 @@ class QuestionController {
 			entities: questions.subList(params['offset'], max),
 			entityCount: questions.size(),
 			code: 'survey.question.label',
-			addTemplate: 'addQuestion'
+			addTemplate: '/survey/admin/addQuestion'
 		])
 	}
 	

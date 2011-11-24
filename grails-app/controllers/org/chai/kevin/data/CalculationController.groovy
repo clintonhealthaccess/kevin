@@ -1,6 +1,4 @@
-package org.chai.kevin.dashboard;
-
-/* 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,25 +25,46 @@ package org.chai.kevin.dashboard;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.data
 
-import org.chai.kevin.Info;
+import org.chai.kevin.AbstractController;
+import org.chai.kevin.util.Utils
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.hisp.dhis.dataelement.DataElement;
 
-public class DashboardExplanation {
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
 
-	private Info info;
-	private DashboardEntry entry;
+class CalculationController extends AbstractController {
+
+	def dataService
 	
-	public DashboardExplanation(Info info, DashboardEntry entry) {
-		this.info = info;
-		this.entry = entry;
+	def index = {
+		redirect (action: "list", params: params)
 	}
 	
-	public DashboardEntry getEntry() {
-		return entry;
-	}
+	def list = {
+		adaptParamsForList()
 
-	public Info getInfo() {
-		return info;
+		List<Calculation<?>> calculations = dataService.list(Calculation.class, params)
+		
+		render (view: '/entity/list', model:[
+			entities: calculations,
+			template: "data/calculationList",
+			entityCount: dataService.count(Calculation.class),
+			code: 'calculation.label',
+			addTemplate: '/entity/data/addCalculation'
+		])
 	}
 	
+	def getData = {
+		def rawDataElements = dataService.searchData(DataElement.class, params['searchText'], [], [:]);
+		
+		render(contentType:"text/json") {
+			result = 'success'
+			html = g.render(template:'/entity/data/dataList', model:[data: rawDataElements])
+		}
+	}
 }

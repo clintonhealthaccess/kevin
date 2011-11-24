@@ -76,8 +76,7 @@ class SectionController extends AbstractEntityController {
 	
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		adaptParamsForList()
 		
 		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
 		List<SurveySection> sections = objective.sections;

@@ -44,6 +44,10 @@ public class DashboardObjectiveInfo extends Info<DashboardPercentage> {
 		this.values = values;
 	}
 	
+	public Map<DashboardObjectiveEntry, DashboardPercentage> getValues() {
+		return values;
+	}
+	
 	public Double getNumberValue() {
 		if (percentage.getValue().isNull()) return null;
 		return percentage.getValue().getNumberValue().doubleValue();

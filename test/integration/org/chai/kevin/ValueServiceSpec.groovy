@@ -151,7 +151,9 @@ class ValueServiceSpec extends IntegrationTests {
 		value.equals(expectedValue)
 		
 		when:
-		def partialValue = newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, null, v("1"))
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER());
+		aggregation = newAggregation("\$"+dataElement.id, CODE(2))
+		def partialValue = newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(BUTARO), DISTRICT_HOSPITAL_GROUP, "\$"+dataElement.id, v("1"))
 		expectedValue = new AggregationValue([partialValue], aggregation, period, OrganisationUnit.findByName(BUTARO))
 		value = valueService.getCalculationValue(aggregation, OrganisationUnit.findByName(BUTARO), period, s([DISTRICT_HOSPITAL_GROUP]))
 

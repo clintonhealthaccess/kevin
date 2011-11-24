@@ -38,8 +38,9 @@ class IterationController extends AbstractEntityController  {
 	}
 
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		def iterations=Period.list(params)
+		adaptParamsForList()
+		
+		def iterations = Period.list(params)
 		Collections.sort(iterations,new PeriodSorter())
 		
 		render(view:'/entity/list', model: [

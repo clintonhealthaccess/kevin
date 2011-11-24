@@ -77,9 +77,11 @@ class CostRampUpController extends AbstractEntityController {
 	}
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		adaptParamsForList()
+		def entities = CostRampUp.list(params)
+		
 		render (view: '/entity/list', model: [
-			entities: CostRampUp.list(params), 
+			entities: entities, 
 			entityCount: CostRampUp.count(), 
 			years: costService.getYears(),
 			code: 'costrampup.label',

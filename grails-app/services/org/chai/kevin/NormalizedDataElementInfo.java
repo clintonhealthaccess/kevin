@@ -58,7 +58,7 @@ public class NormalizedDataElementInfo extends Info<NormalizedDataElementValue> 
 	
 	@Override
 	public String getTemplate() {
-		return "/info/expressionInfo";
+		return "/info/normalizedDataElementInfo";
 	}
 	
 }

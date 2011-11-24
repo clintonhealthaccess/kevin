@@ -1,7 +1,8 @@
-package org.chai.kevin
+package org.chai.kevin.data
 
 import grails.validation.ValidationException;
 
+import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;

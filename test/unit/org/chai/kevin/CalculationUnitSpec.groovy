@@ -3,6 +3,7 @@ package org.chai.kevin
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Sum;
+import org.chai.kevin.value.AggregationPartialValue;
 
 import grails.plugin.spock.UnitSpec;
 
@@ -37,9 +38,5 @@ class CalculationUnitSpec extends UnitSpec {
 		calculation.getPartialExpressions().equals(["\$1", "\$2"])
 	}
 	
-//	def "get partial value works"() {
-//		when:
-//		def calculation = new Average()
-//	}
 	
 }

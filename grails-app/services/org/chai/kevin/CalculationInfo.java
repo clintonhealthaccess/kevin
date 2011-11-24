@@ -33,26 +33,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.DataValue;
 
 public class CalculationInfo extends Info<CalculationValue<?>> {
 
+	private Calculation<?> calculation;
 	private List<Organisation> organisations;
 	private List<DataElement<?>> dataElements;
 	private Map<Organisation, Map<DataElement<?>, DataValue>> values;
 	private Map<Organisation, CalculationValue<?>> calculationValues;
 	
-	public CalculationInfo(CalculationValue<?> calculationValue, List<Organisation> organisations, List<DataElement<?>> dataElements, 
+	public CalculationInfo(Calculation<?> calculation, CalculationValue<?> calculationValue, List<Organisation> organisations, List<DataElement<?>> dataElements, 
 			Map<Organisation, Map<DataElement<?>, DataValue>> values, Map<Organisation, CalculationValue<?>> calculationValues) {
 		super(calculationValue);
 
+		this.calculation = calculation;
 		this.organisations = organisations;
 		this.dataElements = dataElements;
 		this.values = values;
 		this.calculationValues = calculationValues;
 	}
 
+	public Calculation<?> getCalculation() {
+		return calculation;
+	}
+	
 	public List<Organisation> getOrganisations() {
 		return organisations;
 	}

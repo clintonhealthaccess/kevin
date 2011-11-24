@@ -1,7 +1,8 @@
-package org.chai.kevin
+package org.chai.kevin.data
 
 import grails.validation.ValidationException;
 
+import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
@@ -11,7 +12,7 @@ import org.hisp.dhis.period.Period;
 
 class NormalizedDataElementSpec extends IntegrationTests {
 
-	def "expression type is valid"() {
+	def "normalized data element type is valid"() {
 		when:
 		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
 		
@@ -21,7 +22,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 	}
 
 	
-	def "expression type cannot be invalid"() {
+	def "normalized data element type cannot be invalid"() {
 		when:
 		new NormalizedDataElement(code: CODE(1), type: INVALID_TYPE, expressionMap:e([:])).save(failOnError: true)
 		
@@ -29,7 +30,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 
-	def "expression type cannot be null"() {
+	def "normalized data element type cannot be null"() {
 		when:
 		def normalizedDataElement = new NormalizedDataElement(code: CODE(1), expressionMap:e([:])).save(failOnError: true)
 
@@ -38,7 +39,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 
 	}
 
-	def "expression code is unique"() {
+	def "normalized data element code is unique"() {
 		when:
 		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
 
@@ -53,7 +54,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 
 	}
 	
-	def "expression value hashcode and equals"() {
+	def "normalized data element value hashcode and equals"() {
 		setup:
 		def organisationUnit = newOrganisationUnit(name: BUTARO)
 		def period = newPeriod()
@@ -76,7 +77,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		set.contains(expr2)
 	}
 
-	def "invalid expression"() {
+	def "invalid expressions in map"() {
 		when:
 		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e(["1":["DH":formula]])).save(failOnError: true)
 
@@ -91,6 +92,23 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		]
 	}
 	
+	def "expressions in map only contain data elements"() {
+		when:
+		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e(["1":["DH":"\$"+dataElement.id]])).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "expressions can be empty"() {
+		when:
+		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e(["1":["DH":""]])).save(failOnError: true)
+		
+		then:
+		NormalizedDataElement.count() == 1
+		
+	}	
 	
 	//	def "expression can be a constant"() {
 	//		setup:

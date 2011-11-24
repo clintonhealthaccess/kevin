@@ -64,8 +64,17 @@ class DataService {
 		return Enum.findByCode(code)
 	}
 	
-	public <T extends Data<?>> List<T> list(Class<T> clazz) {
-		return (List<T>)sessionFactory.getCurrentSession().createCriteria(clazz).list()
+	// this exists because Groovy Calculation.list() doesn't return anything
+	public <T extends Data<?>> List<T> list(Class<T> clazz, Map<String, String> params) {
+		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz)
+		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+		if (params['max'] != null) criteria.setMaxResults(params['max'])
+		return (List<T>)criteria.addOrder(Order.asc("id")).list()
+	}
+	
+	// this exists because Groovy Calculation.list() doesn't return anything
+	public <T extends Data<?>> Integer count(Class<T> clazz) {
+		return (Integer)sessionFactory.getCurrentSession().createCriteria(clazz).setProjection(Projections.count("id")).uniqueResult()
 	}
 	
 	public <T extends Data<?>> T getData(Long id, Class<T> clazz) {

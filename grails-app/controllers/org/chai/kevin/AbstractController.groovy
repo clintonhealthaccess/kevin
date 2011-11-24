@@ -40,9 +40,9 @@ import org.hisp.dhis.period.Period
 
 abstract class AbstractController {
 
-	OrganisationService organisationService;
+	def organisationService;
 
-	protected def getOrganisation(def defaultIfNull) {
+	def getOrganisation(def defaultIfNull) {
 		
 		Organisation organisation = null;		
 		if (params.int('organisation')){
@@ -57,7 +57,7 @@ abstract class AbstractController {
 		return organisation
 	}
 
-	protected def getPeriod() {
+	def getPeriod() {
 		Period period = Period.get(params.int('period'))
 		if (period == null) {
 			period = Period.findAll()[ConfigurationHolder.config.site.period]
@@ -65,12 +65,17 @@ abstract class AbstractController {
 		return period
 	}
 	
-	protected def getLevel(){
+	def getLevel(){
 		OrganisationUnitLevel level = null;
 		if(params.int('level')){
-			level = OrganisationUnitLevel.get(params.int('level'));
+			level = OrganisationUnitLevel.findByLevel(params.int('level'));
 		}
 		return level;
-	}	
+	}
+	
+	def adaptParamsForList() {
+		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		params.offset = params.offset ? params.int('offset'): 0
+	}
 
 }

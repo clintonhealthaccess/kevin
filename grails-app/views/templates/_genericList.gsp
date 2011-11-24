@@ -10,7 +10,7 @@
 		  				</a>
 		  			</g:if>
 		  			<g:else>
-		  				<g:render template="/survey/admin/${addTemplate}"/>
+		  				<g:render template="${addTemplate}"/>
 		  			</g:else>
 		     	</span>
 	     	</g:if>

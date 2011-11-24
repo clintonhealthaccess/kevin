@@ -1,5 +1,6 @@
-package org.chai.kevin
+package org.chai.kevin.data
 
+import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Enum;
 
 class EnumSpec extends IntegrationTests {

@@ -1,8 +1,9 @@
-package org.chai.kevin;
+package org.chai.kevin.data;
 
 import static org.junit.Assert.*;
 import grails.validation.ValidationException;
 
+import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Sum;
@@ -24,6 +25,15 @@ class CalculationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
+	def "sum expression does not accept calculations"() {
+		when:
+		def sum = newSum("1", CODE(1))
+		new Sum(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
 	def "average expression must be valid"() {
 		when:
 		new Average(code:CODE(1), expression: "1").save(failOnError: true)
@@ -38,6 +48,15 @@ class CalculationSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
+	def "average expression does not accept calculations"() {
+		when:
+		def sum = newSum("1", CODE(1))
+		new Average(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
 	def "aggregation expression must be valid"() {
 		when:
 		new Aggregation(code:CODE(1), expression: "1").save(failOnError: true)
@@ -47,6 +66,15 @@ class CalculationSpec extends IntegrationTests {
 		
 		when:
 		new Aggregation(code:CODE(2), expression: "1(").save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "aggregation expression does not accept calculations"() {
+		when:
+		def sum = newSum("1", CODE(1))
+		new Aggregation(code:CODE(1), expression: "\$"+sum.id).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

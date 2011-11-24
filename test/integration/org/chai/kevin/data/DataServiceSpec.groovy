@@ -1,4 +1,4 @@
-package org.chai.kevin
+package org.chai.kevin.data
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,6 +28,7 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
@@ -116,10 +117,29 @@ class DataServiceSpec extends IntegrationTests {
 		def aggregation = newAggregation("1", CODE(5))
 		
 		expect:
-		dataService.list(Average.class).equals([average])
-		dataService.list(DataElement.class).equals([rawDataElement, normalizedDataElement])
-		dataService.list(NormalizedDataElement.class).equals([normalizedDataElement])
-		dataService.list(Data.class).equals([rawDataElement, normalizedDataElement, average, sum, aggregation])
+		dataService.list(Average.class, [:]).equals([average])
+		dataService.count(Average.class) == 1
+		dataService.list(DataElement.class, [:]).equals([rawDataElement, normalizedDataElement])
+		dataService.count(DataElement.class) == 2
+		dataService.list(NormalizedDataElement.class, [:]).equals([normalizedDataElement])
+		dataService.count(NormalizedDataElement.class) == 1
+		dataService.list(Data.class, [:]).equals([rawDataElement, normalizedDataElement, average, sum, aggregation])
+		dataService.count(Data.class) == 5
+	}
+	
+	def "list data element with params"() {
+		setup:
+		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def rawDataElement3 = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
+		def rawDataElement4 = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
+		
+		expect:
+		dataService.list(DataElement.class, [max:1]).equals([rawDataElement1])
+		dataService.list(DataElement.class, [max:1, offset:1]).equals([rawDataElement2])
+		dataService.list(DataElement.class, [max:2]).equals([rawDataElement1, rawDataElement2])
+		dataService.list(DataElement.class, [max:2, offset:2]).equals([rawDataElement3, rawDataElement4])
+		
 	}
 	
 	def "search for null"() {

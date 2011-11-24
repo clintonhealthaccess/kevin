@@ -67,8 +67,10 @@ class EnumController extends AbstractEntityController {
 	}
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
+		adaptParamsForList()
+		
 		List<Enum> enums = Enum.list(params);
+		
 		render (view: '/entity/list', model:[
 			entities: enums,
 			template: "data/enumList",

@@ -1,12 +1,11 @@
-<ul><g:each in="${expressionValues}" var="entry">
-	<g:set var="organisation" value="${entry.key}"/>
-	<g:set var="expressionValue" value="${entry.value}"/>
-	<g:if test="${expressionValue != null}">
+<ul><g:each in="${organisations}" var="organisation">
+	<g:set var="calculationValue" value="${info.getValue(organisation)}"/>
+	<g:if test="${calculationValue != null}">
 		<li>
 			<span>${organisation.name}</span>
 			<span class="bold">
-				<g:if test="${expressionValue.value?.numberValue != null}">
-					<g:formatNumber number="${expressionValue.value?.numberValue * 100}" format="#0.0"/>%
+				<g:if test="${calculationValue.value?.numberValue != null}">
+					<g:formatNumber number="${calculationValue.value?.numberValue * 100}" format="#0.0"/>%
 				</g:if>
 				<g:else>
 					N/A

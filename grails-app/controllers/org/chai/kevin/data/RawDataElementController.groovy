@@ -79,7 +79,7 @@ class RawDataElementController extends AbstractEntityController {
 		
 		if (entity.id != null && !entity.getType().equals(new Type(params['type.jsonValue'])) && valueService.getNumberOfValues(entity) != 0) {
 			// error if types are different
-			entity.errors.rejectValue('type', 'rawDataElement.type.cannotChange', 'Cannot change type because the element has associated values.')
+			entity.errors.rejectValue('type', 'rawdataelement.type.cannotChange', 'Cannot change type because the element has associated values.')
 			valid = false
 		}
 		return valid;
@@ -112,8 +112,7 @@ class RawDataElementController extends AbstractEntityController {
 	}
 	
 	def search = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		adaptParamsForList()
 		
 		List<RawDataElement> rawDataElements = dataService.searchData(RawDataElement.class, params['q'], [], params);
 		
@@ -127,8 +126,7 @@ class RawDataElementController extends AbstractEntityController {
 	}
 
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		adaptParamsForList()
 		
 		List<RawDataElement> rawDataElements = RawDataElement.list(params);
 		
@@ -157,33 +155,10 @@ class RawDataElementController extends AbstractEntityController {
 				surveyElementMap.put(surveyElement, surveyService.getNumberOfOrganisationUnitApplicable(surveyElement));
 			}
 
-			render (view: '/entity/data/explain',  model: [
+			render (view: '/entity/data/explainRawDataElement',  model: [
 				rawDataElement: rawDataElement, surveyElements: surveyElementMap, periodValues: periodValues
 			])
 		}
 	}
 
-	def getData = {
-		def includeTypes = params.list('include')
-		def rawDataElements = dataService.searchData(RawDataElement.class, params['searchText'], includeTypes, [:]);
-		
-		render(contentType:"text/json") {
-			result = 'success'
-			html = g.render(template:'/entity/data/rawDataElements', model:[rawDataElements: rawDataElements])
-		}
-	}
-
-	def getDescription = {
-		def rawDataElement = RawDataElement.get(params.int('id'))
-
-		if (rawDataElement == null) {
-			render(contentType:"text/json") { result = 'error' }
-		}
-		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/entity/data/rawDataElementDescription', model: [rawDataElement: rawDataElement])
-			}
-		}
-	}
 }

@@ -9,9 +9,9 @@
     <body>
 
 		<div class="box">
-			<div><g:i18n field="${dataElement.names}"/></div>
-			<div class="row">Type: <span class="type"><g:toHtml value="${dataElement.type.getDisplayedValue(2, null)}"/></span></div>
-			<div><g:i18n field="${dataElement.descriptions}"/></div>
+			<div><g:i18n field="${rawDataElement.names}"/></div>
+			<div class="row">Type: <span class="type"><g:toHtml value="${rawDataElement.type.getDisplayedValue(2, null)}"/></span></div>
+			<div><g:i18n field="${rawDataElement.descriptions}"/></div>
 			<div class="clear"></div>
 		</div>
 		

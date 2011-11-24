@@ -15,8 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
-import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -25,7 +23,6 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
 
 @Entity(name = "SurveyElement")
 @Table(name = "dhsst_survey_element")

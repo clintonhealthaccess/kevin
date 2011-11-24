@@ -8,15 +8,6 @@ class FctControllerSpec extends FctIntegrationTests {
 
 	def fctController
 	
-	def "do not return default root organisation"() {						
-		when:
-		fctController = new FctController()
-		def organisation = fctController.getOrganisation(false)
-		
-		then:
-		organisation == null
-	}
-	
 	def "test view action"() {
 		setup:
 		setupOrganisationUnitTree()
@@ -80,7 +71,8 @@ class FctControllerSpec extends FctIntegrationTests {
 		def model = fctController.view()
 		
 		then:
-		model.fctTable == null
+		model.fctTable != null
+		model.fctTable.organisations.isEmpty()
 		
 	}
 	

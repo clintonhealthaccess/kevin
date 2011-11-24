@@ -95,7 +95,7 @@ public class InfoService {
 					values.put(facility, data);
 				}
 			}
-			info = new CalculationInfo(calculationValue, facilities, dataElements, values, calculationValues);
+			info = new CalculationInfo(calculation, calculationValue, facilities, dataElements, values, calculationValues);
 		}
 		
 		return info;

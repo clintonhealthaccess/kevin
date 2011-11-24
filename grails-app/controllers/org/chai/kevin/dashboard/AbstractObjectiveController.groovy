@@ -71,7 +71,7 @@ abstract class AbstractObjectiveController extends AbstractEntityController {
 		}
 		
 		def groups = organisationService.getGroupsForExpression()
-		return [objectiveEntry: entity, groups: groups, calculation: dataService.list(Calculation.class), currentObjective: currentObjective]
+		return [objectiveEntry: entity, groups: groups, calculation: dataService.list(Calculation.class, [:]), currentObjective: currentObjective]
 	}
 	
 }

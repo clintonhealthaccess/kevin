@@ -50,9 +50,9 @@ class DashboardController extends AbstractController {
 		DashboardEntry entry = getDashboardEntry()
 		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
 
-		def explanation = dashboardService.getExplanation(organisation, entry, period)
+		def info = dashboardService.getExplanation(organisation, entry, period)
 		def groups = organisationService.getGroupsForExpression()
-		[explanation: explanation, groups: groups]
+		[info: info, groups: groups, entry: entry]
 	}
 	
 	protected def redirectIfDifferent(def period, def objective, def organisation) {

@@ -32,11 +32,13 @@ import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.DataService
 import org.chai.kevin.ValueService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.hisp.dhis.period.Period;
 
 class NormalizedDataElementController extends AbstractEntityController {
 
-	DataService dataService
-	ValueService valueService
+	def dataService
+	def valueService
+	def organisationService
 	
 	def getEntity(def id) {
 		return NormalizedDataElement.get(id)
@@ -53,11 +55,15 @@ class NormalizedDataElementController extends AbstractEntityController {
 	}
 		
 	def getTemplate() {
-		return "/entity/normalizedDataElement/createNormalizedDataElement";
+		return "/entity/data/createNormalizedDataElement";
 	}
 	
 	def getModel(def entity) {
-		return [normalizedDataElement: entity]
+		return [
+			normalizedDataElement: entity,
+			periods: Period.list(),
+			groups: organisationService.getGroupsForExpression()
+		]
 	}
 
 	def saveEntity(def entity) {
@@ -90,50 +96,42 @@ class NormalizedDataElementController extends AbstractEntityController {
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		
 		// TODO bind expressions
+		entity.expressionMap = [:]
+		Period.list().each { period ->
+			entity.expressionMap[period.id+''] = [:]
+			organisationService.getGroupsForExpression().each { group ->
+				entity.expressionMap[period.id+''][group.uuid] = params['expressionMap['+period.id+']['+group.uuid+']']
+			}
+		}
+		
+		log.debug(entity.expressionMap)
 	}
 	
 	def search = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		adaptParamsForList()
 		
 		List<NormalizedDataElement> normalizedDataElements = dataService.searchData(NormalizedDataElement.class, params['q'], [], params);
 		
 		render (view: '/entity/list', model:[
 			entities: normalizedDataElements,
 			entityCount: dataService.countData(NormalizedDataElement.class, params['q'], []),
-			template: "normalizedDataElement/normalizedDataElementList",
+			template: "data/normalizedDataElementList",
 			code: getLabel(),
 			search: true
 		])
 	}
+	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		adaptParamsForList()
 		
 		List<NormalizedDataElement> normalizedDataElements = NormalizedDataElement.list(params);
 		
 		render (view: '/entity/list' , model:[
 			entities: normalizedDataElements, 
 			entityCount: NormalizedDataElement.count(),
-			template: 'normalizedDataElement/normalizedDataElementList',
+			template: 'data/normalizedDataElementList',
 			code: getLabel()
 		])
-	}
-	
-	def getDescription = {
-		def normalizedDataElement = NormalizedDataElement.get(params.int('id'))
-		
-		if (normalizedDataElement == null) {
-			render(contentType:"text/json") {
-				result = 'error'
-			}
-		}
-		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/entity/normalizedDataElement/normalizedDataElementDescription', model: [normalizedDataElement: normalizedDataElement])
-			}
-		}
 	}
 	
 }

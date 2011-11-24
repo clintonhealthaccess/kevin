@@ -3,11 +3,11 @@
 
 <div class="row">
 	<span class="type"><g:message code="type.label" default="Type"/>:</span>
-	<g:toHtml value="${rawDataElement.type.getDisplayedValue(2, null)}"/>
+	<g:toHtml value="${data.type.getDisplayedValue(2, null)}"/>
 </div>
 
-<g:if test="${rawDataElement.type.type == ValueType.ENUM}">
-	<g:set var="enume" value="${Enum.findByCode(rawDataElement.type.enumCode)}"/>
+<g:if test="${data.type.type == ValueType.ENUM}">
+	<g:set var="enume" value="${Enum.findByCode(data.type.enumCode)}"/>
 	<div class="row enum box">
 		<h5><g:i18n field="${enume.names}"/></h5>
 		<ul>
@@ -23,4 +23,4 @@
 	</div>
 </g:if>
 
-<div class="row"><g:i18n field="${rawDataElement.descriptions}"/></div>
+<div class="row"><g:i18n field="${data.descriptions}"/></div>

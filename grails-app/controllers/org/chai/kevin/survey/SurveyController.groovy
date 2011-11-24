@@ -74,12 +74,11 @@ class SurveyController extends AbstractEntityController {
 	}
 
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
+		adaptParamsForList()
+		
 		List<Survey> surveys = Survey.list(params);
 
-		if(surveys.size()>0)
-			Collections.sort(surveys,new SurveySorter())
+		if(surveys.size()>0) Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/survey/admin/list', model:[
 			template:"surveyList",

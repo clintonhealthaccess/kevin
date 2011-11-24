@@ -91,9 +91,8 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	}
 	
 	def list = {
-		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
-		params.offset = params.offset ? params.int('offset'): 0
-
+		adaptParamsForList()
+		
 		List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
 		SurveyElement surveyElement = null
 		if (params.int('elementId')) {		
