@@ -46,8 +46,8 @@
 				</div>
 				
 				<g:textarea name="expression" label="Expression" bean="${validation}" field="expression" rows="5"/>
-				<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${validation}" field="groupUuidString" 
-					from="${groups}" value="${validation.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+				<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${validation}" field="groupUuidString" 
+					from="${groups}" value="${validation.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
 			
 				<g:if test="${validation.id != null}">
 					<input type="hidden" name="id" value="${validation.id}" />

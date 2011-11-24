@@ -35,7 +35,7 @@ import org.chai.kevin.data.Type
 class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 
 	def dashboardTargetController
-	
+	def organisationService
 	def dashboardService
 	def dataService
 	
@@ -115,6 +115,21 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		DashboardTarget.count() == 1
 		DashboardObjective.count() == 1
 		Average.count() == 1
+	}
+	
+	def "create target does not show sums"() {
+		setup:
+		setupOrganisationUnitTree()
+		def sum = newSum("1", CODE(1))
+		def average = newAverage("1", CODE(2))
+		dashboardTargetController = new DashboardTargetController()
+		dashboardTargetController.organisationService = organisationService
+		
+		when:
+		dashboardTargetController.create()
+		
+		then:
+		dashboardTargetController.modelAndView.model.calculations.equals([average])
 	}
 	
 }

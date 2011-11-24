@@ -1,4 +1,4 @@
-<%@page import="org.chai.kevin.Utils"%>
+<%@page import="org.chai.kevin.util.Utils"%>
 
 <div id="add-normalized-data-element" class="entity-form-container togglable">
 	<div class="entity-form-header">
@@ -15,14 +15,18 @@
 				
 				<g:textarea name="type.jsonValue" label="Type" bean="${normalizedDataElement}" field="type"/>
 				
-				<div class="row">
-					<g:each in="${periods}" var="period">
-						<span>
-							<a class="" href="#" onclick="$('.expression-period').hide();$('#expression-period-${period.id}').show();return false;">
-								${period.startDate.year} - ${period.endDate.year}
-							</a>
-						</span>
-					</g:each>
+				<div class="row ${hasErrors(bean:normalizedDataElement, field:'expressionMap', 'errors')}">
+					<label>Expression map:</label>
+					<div>
+						<g:each in="${periods}" var="period" status="i">
+							<div>
+								<a class="${i==0?'no-link':''} expression-period-link" href="#" 
+									onclick="$('.expression-period').hide();$('#expression-period-${period.id}').show();$('.expression-period-link').removeClass('no-link');$(this).addClass('no-link');return false;">
+									${Utils.formatDate(period.startDate)} to ${Utils.formatDate(period.endDate)}
+								</a>
+							</div>
+						</g:each>
+					</div>
 					<g:each in="${periods}" var="period" status="i">
 						<div class="expression-period ${i!=0?'hidden':''}" id="expression-period-${period.id}">
 							<g:each in="${groups}" var="group">

@@ -29,6 +29,8 @@ package org.chai.kevin.maps
 */
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.data.Aggregation;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Type
 import org.chai.kevin.data.Calculation;
@@ -55,12 +57,16 @@ class MapsTargetController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		[ target: entity, calculations: dataService.list(Calculation.class, [:]), groups: organisationService.getGroupsForExpression()]
+		def calculations = []
+		calculations.addAll(dataService.list(Average.class, [:]))
+		calculations.addAll(dataService.list(Aggregation.class, [:]))
+		
+		[ target: entity, calculations: calculations, groups: organisationService.getGroupsForExpression()]
 	}
 	
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'calculation.id'])
-		entity.calculation = dataService.getData(params.int('calculation.id'), Calculation.class)
+		if (params.int('calculation.id')) entity.calculation = dataService.getData(params.int('calculation.id'), Calculation.class)
 
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967

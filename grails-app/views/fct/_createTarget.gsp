@@ -12,41 +12,16 @@
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${target}" field="code"/>
 		<g:input name="format" label="Format" bean="${target}" field="format"/>
-	    <div class="row ${hasErrors(bean:target, field:'groupUuidString', 'errors')}">
-			<label for="groups">Organisation Unit Group:</label>
-			<select class="group-list" name="groupUuids" multiple="multiple" size="5" >
-				<g:each in="${groups}" var="group">
-					<option value="${group.uuid}" ${groupUuids.contains(group.uuid)?'selected="selected"':''}>
-			           ${group.name}
-		            </option>
-				</g:each>
-			</select>
-			<div class="error-list"><g:renderErrors bean="${target}" field="groupUuidString" /></div>
-		</div>
-		<div class="row ${hasErrors(bean:target, field:'objective', 'errors')}">
-			<label for="objective">Objective:</label>
-			<select class="objective-list" name="objective.id">
-				<option value="null">-- Select an Objective --</option>
-				<g:each in="${objectives}" var="objective">
-					<option value="${objective.id}" ${objective.id==target.objective?.id?'selected="selected"':''}>
-						<g:i18n field="${objective.names}"/>
-					</option>
-				</g:each>
-			</select>
-			<div class="error-list"><g:renderErrors bean="${target}" field="objective" /></div>
-		</div>
-		<div class="row ${hasErrors(bean:target, field:'expression', 'errors')}">
-			<label for="sum.id">Expression:</label>
-			<select name="sum.id">
-				<option value="null">-- Select an Expression --</option>
-				<g:each in="${sums}" var="sum">
-					<option value="${sum.id}" ${sum.id==target.sum?.id?'selected="selected"':''}>
-						<g:i18n field="${sum.names}"/>
-					</option>
-				</g:each>
-			</select>
-			<div class="error-list"><g:renderErrors bean="${target}" field="expression" /></div>
-		</div>
+		
+   		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
+				from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
+	
+		<g:selectFromList name="objective.id" label="Objective" bean="${target}" field="objective" optionKey="id" multiple="false"
+			from="${objectives}" value="${target.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
+		
+		<g:selectFromList name="sum.id" label="Sum" bean="${target}" field="sum" optionKey="id" multiple="false"
+			from="${sums}" value="${target.sum?.id}" values="${sums.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+	
 		<g:input name="order" label="Order" bean="${target}" field="order"/>
 		<div class="row">
 			<button type="submit">Save Target</button>

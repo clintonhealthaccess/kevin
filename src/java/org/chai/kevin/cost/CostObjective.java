@@ -63,7 +63,7 @@ public class CostObjective extends ReportEntity {
 		this.id = id;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="parent", targetEntity=CostTarget.class)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="objective", targetEntity=CostTarget.class)
 	@OrderBy(value="order")
 	public List<CostTarget> getTargets() {
 		return targets;
@@ -73,7 +73,7 @@ public class CostObjective extends ReportEntity {
 	}
 
 	public void addTarget(CostTarget target) {
-		target.setParent(this);
+		target.setObjective(this);
 		targets.add(target);
 		Collections.sort(targets);
 	}

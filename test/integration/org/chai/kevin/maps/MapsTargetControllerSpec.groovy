@@ -22,4 +22,20 @@ class MapsTargetControllerSpec extends MapsIntegrationTests {
 		MapsTarget.list()[0].calculation.equals(average)
 	}
 	
+	def "create target does not show sums"() {
+		setup:
+		setupOrganisationUnitTree()
+		def sum = newSum("1", CODE(1))
+		def average = newAverage("1", CODE(2))
+		mapsTargetController = new MapsTargetController()
+		mapsTargetController.organisationService = organisationService
+		
+		when:
+		mapsTargetController.create()
+		
+		then:
+		mapsTargetController.modelAndView.model.calculations.equals([average])
+		
+	}
+	
 }

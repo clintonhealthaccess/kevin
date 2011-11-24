@@ -1,5 +1,7 @@
 package org.chai.kevin.maps
 
+import org.chai.kevin.data.Sum;
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -31,6 +33,8 @@ package org.chai.kevin.maps
 constraints = {
 	
 	code (nullable: false, blank: false, unique: true)
-	calculation (nullable: false)
+	calculation (nullable: false, validator: { val, obj ->
+		return !(val instanceof Sum)
+	})
 	
 }

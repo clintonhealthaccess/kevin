@@ -11,28 +11,8 @@
 		<g:i18nTextarea name="entry.descriptions" label="Description" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.descriptions}" field="descriptions"/>
 		<g:input name="entry.code" label="Code" bean="${objectiveEntry?.entry}" field="code"/>
 		
-		<div class="row">
-			<h5>Expressions</h5>
-
-			<ul id="expressions-block" class="horizontal">
-				<g:each status="i" in="${groups}" var="group">
-					<li id="group-${group.id}" class="group-list">
-						<label for="entry.calculation.expressions[${group.uuid}].id">Expression for ${group.name}:</label>
-						<select class="expression-list" name="entry.calculation.expressions[${group.uuid}].id">
-							<option value="null">-- disabled --</option>
-							<g:each in="${expressions}" var="expression">
-								<option value="${expression.id}" ${objectiveEntry.entry.calculation?.expressions==null?'':objectiveEntry.entry.calculation?.expressions[group.uuid]?.id==expression.id?'selected="selected"':''}>
-									<g:i18n field="${expression.names}"/>
-								</option>
-							</g:each>
-						</select>
-					</li>
-				</g:each>
-				<g:if test="${currentObjective == null}">
-					<input type="hidden" name="entry.calculation.id" value="${objectiveEntry?.entry?.calculation.id}"></input>
-				</g:if>
-			</ul>
-		</div>
+		<g:selectFromList name="entry.calculation.id" label="Calculation" bean="${objectiveEntry?.entry}" field="calculation" optionKey="id" multiple="false"
+			from="${calculations}" value="${objectiveEntry?.entry?.calculation?.id}" values="${calculations.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 		
 		<g:input name="weight" label="Weight" bean="${objectiveEntry}" field="weight"/>
 		<g:input name="order" label="Order" bean="${objectiveEntry}" field="order"/>

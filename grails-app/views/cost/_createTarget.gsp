@@ -13,53 +13,21 @@
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${target}" field="code"/>
 
-		<div class="row">
-			<h5>Expressions</h5>
-
-			<ul id="expressions-block" class="horizontal">
-				<g:each status="i" in="${['','End']}" var="suffix">
-					<li class="${hasErrors(bean:target, field:'expression'+suffix, 'errors')}">
-						<label for="expression${suffix}.id">${suffix} Expression:</label>
-						<select class="expression-list" name="expression${suffix}.id">
-							<option value="null">-- select an expression --</option>
-							<g:each in="${expressions}" var="expression">
-								<g:if test="${suffix == 'End'}">
-									<option value="${expression.id}" ${expression.id==target.expressionEnd?.id?'selected="selected"':''}>
-								</g:if>
-								<g:else>
-									<option value="${expression.id}" ${expression.id==target.expression?.id?'selected="selected"':''}>
-								</g:else>
-									<g:i18n field="${expression.names}"/>
-								</option>
-							</g:each>
-						</select>
-						<div class="error-list"><g:renderErrors bean="${target}" field="expression${suffix}" /></div>
-					</li>
-				</g:each>
-			</ul>
-		</div>
-
-		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
-					from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
-
-		<div class="row ${hasErrors(bean:target,field:'costRampUp','errors')}">
-			<label for="costRampUp.id">Ramp up</label>
-
-			<div class="float-right">
-				<a href="${createLinkWithTargetURI(controller:'costRampUp', action:'create')}">new ramp-up</a>
-			</div>
+		<g:selectFromList name="dataElement.id" label="Data element" bean="${target}" field="dataElement" optionKey="id" multiple="false"
+			from="${dataElements}" value="${target.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.class.simpleName+']'}}" />
 	
-			<select name="costRampUp.id" class="ramp-up-list">
-				<g:each in="${costRampUps}" var="costRampUp">
-					<option value="${costRampUp.id}" ${costRampUp.id==target.costRampUp?.id?'selected="selected"':''}>
-						<g:i18n field="${costRampUp.names}"/>
-					</option>
-				</g:each>
-			</select>
-			<div class="error-list"><g:renderErrors bean="${target}" field="costRampUp" /></div>
-			
-		</div>		
-		
+		<g:selectFromList name="dataElementEnd.id" label="Data element end" bean="${target}" field="dataElementEnd" optionKey="id" multiple="false"
+			from="${dataElements}" value="${target.dataElementEnd?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.class.simpleName+']'}}" />
+	
+		<g:selectFromList name="objective.id" label="Objective" bean="${target}" field="objective" optionKey="id" multiple="false"
+			from="${objectives}" value="${target.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
+	
+		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
+			from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
+
+		<g:selectFromList name="costRampUp.id" label="Cost Ramp Up" bean="${target}" field="costRampUp" optionKey="id" multiple="false"
+			from="${costRampUps}" value="${target.costRampUp?.id}" values="${costRampUps.collect{i18n(field:it.names)}}" />
+	
 		<g:selectFromEnum name="costType" bean="${target}" values="${CostType.values()}" field="costType" label="Type"/>
 		<g:input name="order" label="Order" bean="${target}" field="order"/>
 		

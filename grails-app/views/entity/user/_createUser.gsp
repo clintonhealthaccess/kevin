@@ -24,8 +24,8 @@
 				<g:checkBox name="active" value="${user.active}" />
 			</div>
 			
-			<g:multipleSelect name="roles" label="${message(code:'user.roles.label', default: 'Roles')}" bean="${user}" field="roles" 
-				from="${roles}" value="${user.roles*.id}" optionValue="name" optionKey="id"/>
+			<g:selectFromList name="roles" label="${message(code:'user.roles.label', default: 'Roles')}" bean="${user}" field="roles" 
+				from="${roles}" value="${user.roles*.id}" optionValue="name" optionKey="id" multiple="true"/>
 			
 			<g:if test="${user.id != null}">
 				<input type="hidden" name="id" value="${user.id}"></input>

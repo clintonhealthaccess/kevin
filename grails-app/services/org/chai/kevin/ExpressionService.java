@@ -42,6 +42,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.NormalizedDataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -49,6 +52,7 @@ import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Status;
 import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.Value;
+import org.hisp.dhis.datavalue.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +65,7 @@ public class ExpressionService {
 	
 	private DataService dataService;
 	private OrganisationService organisationService;
+	private ValueService valueService;
 	private JaqlService jaqlService;
 
 	public static class StatusValuePair {
@@ -186,24 +191,17 @@ public class ExpressionService {
 		return statusValuePair;
 	}
 
-//	private static boolean isAggregatable(Collection<Data<?>> elements) {
-//		for (Data<?> data : elements) {
-//			if (data.getType().getType() != ValueType.NUMBER) return false;
-//		}
-//		return true;
-//	}
 
 	// TODO do this for validation rules
-	@SuppressWarnings("rawtypes")
 	@Transactional(readOnly=true)
-	public boolean expressionIsValid(String formula) {
+	public <T extends Data<?>> boolean expressionIsValid(String formula, Class<T> allowedClazz) {
 		if (formula.contains("\n")) return false;
+		Map<String, T> variables = getDataInExpression(formula, allowedClazz);
 		
-		Map<String, Data> variables = getDataInExpression(formula, Data.class);
 		if (hasNullValues(variables.values())) return false;
 		
 		Map<String, String> jaqlVariables = new HashMap<String, String>();
-		for (Entry<String, Data> variable : variables.entrySet()) {
+		for (Entry<String, T> variable : variables.entrySet()) {
 			Type type = variable.getValue().getType();
 			jaqlVariables.put(variable.getKey(), type.getJaqlValue(type.getPlaceHolderValue()));
 		}
@@ -273,6 +271,10 @@ public class ExpressionService {
 	
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;
+	}
+	
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
 	}
 	
 	public void setOrganisationService(OrganisationService organisationService) {

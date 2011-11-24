@@ -34,6 +34,7 @@ import org.chai.kevin.AbstractEntityController
 class CostTargetController extends AbstractEntityController {
 	
 	def organisationService
+	def dataService
 	
 	def getEntity(def id) {
 		return CostTarget.get(id)
@@ -52,33 +53,19 @@ class CostTargetController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		def currentObjective = null;
-		if (params['currentObjective']) {
-			currentObjective = CostObjective.get(params['currentObjective']);
-			if (log.isInfoEnabled()) log.info('fetched current objective: '+currentObjective);
-		}
 		[
-			target: entity, 
-			currentObjective: currentObjective, 
-			dataElements: DataElement.list(), 
+			target: entity,
+			objectives: CostObjective.list(),
+			dataElements: dataService.list(DataElement.class, [:]), 
 			costRampUps: CostRampUp.list(), 
 			groups: organisationService.getGroupsForExpression(),
 		]
 	}
 	
-	def saveEntity(def entity) {
-		if (entity.id == null) {
-			def currentObjective = CostObjective.get(params['currentObjective']);
-			currentObjective.addTarget entity
-			currentObjective.save();
-		}
-		else {
-			entity.save();
-		}
-	}
-	
 	def bindParams(def entity) {
 		entity.properties = params
+		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
+		if (params.int('dataElementEnd.id')) entity.dataElementEnd = dataService.getData(params.int('dataElementEnd.id'), DataElement.class)
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967

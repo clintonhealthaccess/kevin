@@ -24,8 +24,8 @@
 				<div class="error-list"><g:renderErrors bean="${section}" field="objective" /></div>
 			</div>
 		</div>
-		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${section}" field="groupUuidString" 
-			from="${groups}" value="${section.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${section}" field="groupUuidString" 
+			from="${groups}" value="${section.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
 
 		<g:input name="order" label="Order" bean="${section}" field="order"/>
 		<g:if test="${section.id != null}">

@@ -19,8 +19,8 @@
 		
 		<g:input name="order" label="Order" bean="${column}" field="order"/>
 		
-		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${column}" field="groupUuidString" 
-			from="${groups}" value="${column.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${column}" field="groupUuidString" 
+			from="${groups}" value="${column.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
 
 		<g:if test="${column.id != null}">
 			<input type="hidden" name="id" value="${column.id}"></input>

@@ -101,8 +101,8 @@ class UtilTagLib {
 		out << render(template:"/tags/selectFromEnum", model: attrs)
 	}
 	
-	def multipleSelect = { attrs, body ->
-		out << render(template:"/tags/multipleSelect", model: attrs)	
+	def selectFromList = { attrs, body ->
+		out << render(template:"/tags/select", model: attrs)	
 	}		
 	
 	def locales = { attrs, body ->

@@ -78,7 +78,7 @@ public class CostTableService {
 		for (String groupUuid : Utils.split(target.getGroupUuidString())) {
 			groups.add(organisationService.getOrganisationUnitGroup(groupUuid));
 		}
-		return new Explanation(target, groups, target.getParent(), period, new ArrayList<Organisation>(explanationMap.keySet()), costService.getYears(), explanationMap);
+		return new Explanation(target, groups, target.getObjective(), period, new ArrayList<Organisation>(explanationMap.keySet()), costService.getYears(), explanationMap);
 	}
 	
 	private boolean appliesToOrganisation(CostTarget target, Organisation organisation) {

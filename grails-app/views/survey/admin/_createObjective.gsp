@@ -16,8 +16,8 @@
 			<label><g:message code="survey.label" default="Survey"/>:</label> <g:i18n field="${objective.survey.names}"/>
 		</div>
 		
-		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${objective}" field="groupUuidString" 
-			from="${groups}" value="${objective.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${objective}" field="groupUuidString" 
+			from="${groups}" value="${objective.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
 
 		<g:if test="${objective.id != null}">
 			<input type="hidden" name="id" value="${objective.id}"></input>

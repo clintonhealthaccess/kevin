@@ -68,8 +68,8 @@
 			<div class="error-list"><g:renderErrors bean="${question}" field="section" /></div>
 		</div>
 		
-		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${question}" field="groupUuidString" 
-			from="${groups}" value="${question.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
+		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${question}" field="groupUuidString" 
+			from="${groups}" value="${question.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
 
 		<div class="row">
 			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>

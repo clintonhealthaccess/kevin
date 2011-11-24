@@ -5,58 +5,28 @@
 		<div class="clear"></div>
 	</div>
 	<g:form url="[controller:'dsrTarget', action:'save', params:[targetURI:targetURI]]" useToken="true">
-	    <g:if test="${target != null}">
-			<input type="hidden" name="id" value="${target.id}"/>
-		</g:if>
 		<g:i18nInput name="names" bean="${target}" value="${target.names}" label="Name" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${target}" field="code"/>
 		<g:input name="format" label="Format" bean="${target}" field="format"/>
 		
-   		<g:multipleSelect name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
-				from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid"/>
-
-		<div class="row ${hasErrors(bean:target, field:'objective', 'errors')}">
-			<label for="objective.id">Objective:</label>
-			<select class="objective-list" name="objective.id">
-				<option value="null">-- Select an Objective --</option>
-				<g:each in="${objectives}" var="objective">
-					<option value="${objective.id}" ${objective.id==target.objective?.id?'selected="selected"':''}>
-						<g:i18n field="${objective.names}"/>
-					</option>
-				</g:each>
-			</select>
-			<div class="error-list"><g:renderErrors bean="${target}" field="objective" /></div>
-		</div>
-		<div class="row ${hasErrors(bean:target, field:'category', 'errors')}">
-			<label for="category.id">Category:</label>
-			<select class="category-list" name="category.id">
-				<option value="null">-- Select a Category --</option>
-				<g:each in="${categories}" var="category">
-					<option value="${category.id}" ${category.id==target.category?.id?'selected="selected"':''}>
-						<g:i18n field="${category.names}"/>
-					</option>
-				</g:each>
-			</select>
-			<div class="error-list"><g:renderErrors bean="${target}" field="category" /></div>
-		</div>
-		<div class="row">
-			<ul id="expressions-block" class="horizontal">
-				<li class="${hasErrors(bean:target, field:'expression', 'errors')}">
-					<label for="expression.id">Expression:</label>
-					<select class="expression-list" name="expression.id">
-						<option value="null">-- Select an Expression --</option>
-						<g:each in="${expressions}" var="expression">
-							<option value="${expression.id}"  ${expression.id==target.expression?.id?'selected="selected"':''}>
-								<g:i18n field="${expression.names}"/>
-							</option>
-						</g:each>
-					</select>
-					<div class="error-list"><g:renderErrors bean="${target}" field="expression" /></div>
-				</li>
-			</ul>
-		</div>
+   		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
+				from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
+	
+		<g:selectFromList name="objective.id" label="Objective" bean="${target}" field="objective" optionKey="id" multiple="false"
+			from="${objectives}" value="${target.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
+	
+		<g:selectFromList name="category.id" label="Category" bean="${target}" field="category" optionKey="id" multiple="false"
+			from="${categories}" value="${target.category?.id}" values="${categories.collect{i18n(field:it.names)}}" />
+	
+		<g:selectFromList name="dataElement.id" label="Data element" bean="${target}" field="dataElement" optionKey="id" multiple="false"
+			from="${dataElements}" value="${target.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.class.simpleName+']'}}" />
+	
 		<g:input name="order" label="Order" bean="${target}" field="order"/>
+		
+		<g:if test="${target != null}">
+			<input type="hidden" name="id" value="${target.id}"/>
+		</g:if>
 		<div class="row">
 			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
 			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>

@@ -50,12 +50,12 @@ class DashboardTargetController extends AbstractObjectiveController {
 	
 	def bindParams(def objectiveEntry) {
 		bindData(objectiveEntry, params, [exclude:'entry.calculation.id'])
-		objectiveEntry.entry.calculation = dataService.getData(params.int('entry.calculation.id'), Calculation.class)
+		if (params.int('entry.calculation.id') != null) objectiveEntry.entry.calculation = dataService.getData(params.int('entry.calculation.id'), Calculation.class)
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.entry?.names!=null) objectiveEntry.entry.names = params.entry?.names
-		if (params.entry?.descriptions!=null) objectiveEntry.entry.descriptions = params.entry?.descriptions
+		if (params.entry?.names != null) objectiveEntry.entry.names = params.entry?.names
+		if (params.entry?.descriptions != null) objectiveEntry.entry.descriptions = params.entry?.descriptions
 	}
 
 	@CacheFlush("dashboardCache")

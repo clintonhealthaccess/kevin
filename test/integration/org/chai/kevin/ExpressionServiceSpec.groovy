@@ -519,31 +519,31 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		formula = "(1"
 		
 		then:
-		!expressionService.expressionIsValid(formula)
+		!expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		formula = "if((10,1,0)"
 		
 		then:
-		!expressionService.expressionIsValid(formula)
+		!expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		formula = "123"
 		
 		then:
-		expressionService.expressionIsValid(formula)
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		formula = "\$"+dataElement.id+" == 1"
 		
 		then:
-		expressionService.expressionIsValid(formula)
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		formula = "\$"+dataElement.id+" == \"a\""
 		
 		then:
-		!expressionService.expressionIsValid(formula)
+		!expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		formula = "1\n+1"
@@ -555,21 +555,27 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		formula = "\$0"
 		
 		then:
-		!expressionService.expressionIsValid(formula)
+		!expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		formula = "if (\$"+dataElement.id+" == null) true else false"
 		
 		then:
-		expressionService.expressionIsValid(formula)
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_STRING())
 		formula = "convert(\$"+dataElement2.id+", schema double)"
 		
 		then:
-		expressionService.expressionIsValid(formula)
+		expressionService.expressionIsValid(formula, Data.class)
 		
+		when:
+		def dataElement3 = newRawDataElement(CODE(3), Type.TYPE_STRING())
+		formula = "convert(\$"+dataElement3.id+", schema double)"
+		
+		then:
+		!expressionService.expressionIsValid(formula, Sum.class)
 	}
 	
 }

@@ -35,7 +35,7 @@ abstract class CostIntegrationTests extends IntegrationTests {
 	}
 	
 	def newCostTarget(def names, def code, def dataElement, def dataElementEnd, def costRampUp, def type, def groups, def objective) {
-		def target = new CostTarget(names: names, code: code, dataElement: dataElement, dataElementEnd: dataElementEnd, costRampUp: costRampUp, costType: type, groupUuidString: Utils.unsplit(groups), parent: objective).save(failOnError: true)
+		def target = new CostTarget(names: names, code: code, dataElement: dataElement, dataElementEnd: dataElementEnd, costRampUp: costRampUp, costType: type, groupUuidString: Utils.unsplit(groups), objective: objective).save(failOnError: true)
 		objective.targets << target
 		objective.save(failOnError: true)
 		return target

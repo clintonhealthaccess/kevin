@@ -28,6 +28,8 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import grails.validation.ValidationException;
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.chai.kevin.data.Average
@@ -158,6 +160,14 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 		
 		then:
 		root.parent == null
+	}
+	
+	def "target calculation cannot be a sum"() {
+		when:
+		new DashboardTarget(names:[:], code: OBJECTIVE, calculation: newSum("1", CODE(1))).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
 	}
 	
 }

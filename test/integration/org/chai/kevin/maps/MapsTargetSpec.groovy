@@ -19,4 +19,14 @@ public class MapsTargetSpec extends MapsIntegrationTests {
 		MapsTarget.count() == 1
 	}
 	
+	
+	def "maps target does not allow sum"() {
+		when:
+		def calculation = newSum("1", CODE(1))
+		new MapsTarget(code: CODE(2), calculation: calculation).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
 }

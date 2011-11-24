@@ -36,6 +36,7 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -68,7 +69,7 @@ public class CostTarget extends ReportEntity {
 	private DataElement<?> dataElement;
 	private DataElement<?> dataElementEnd;
 	
-	private CostObjective parent;
+	private CostObjective objective;
 	private CostRampUp costRampUp;
 	private CostType costType;
 	private String groupUuidString = "";
@@ -101,11 +102,13 @@ public class CostTarget extends ReportEntity {
 	}
 	
 	@ManyToOne(targetEntity=CostObjective.class)
-	public CostObjective getParent() {
-		return parent;
+	// TODO change the name of the column
+	@JoinColumn(name="parent")
+	public CostObjective getObjective() {
+		return objective;
 	}
-	public void setParent(CostObjective parent) {
-		this.parent = parent;
+	public void setObjective(CostObjective objective) {
+		this.objective = objective;
 	}
 	
 	@ManyToOne(targetEntity=CostRampUp.class, optional=false)

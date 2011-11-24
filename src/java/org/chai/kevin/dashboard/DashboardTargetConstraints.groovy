@@ -1,5 +1,7 @@
 package org.chai.kevin.dashboard
 
+import org.chai.kevin.data.Sum;
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
@@ -30,6 +32,8 @@ package org.chai.kevin.dashboard
 
 constraints = {
 	code (nullable: false, blank: false, unique: true)
-	calculation (nullable: false)
-//	expression (nullable: false)
+	calculation (nullable: false, validator: { val, obj ->
+		return !(val instanceof Sum)
+	})
+	
 }

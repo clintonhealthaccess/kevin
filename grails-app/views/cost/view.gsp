@@ -24,6 +24,9 @@
 					<span>
 						<a href="${createLinkWithTargetURI(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
 					</span>
+					<span>
+						<a href="${createLinkWithTargetURI(controller:'costTarget', action:'create')}">Add target</a>
+					</span>
 				</shiro:hasPermission>
 			</div>
     		<div id="center" class="main">
@@ -88,13 +91,6 @@
 							</tbody>
 						</table>
 					
-						<!-- ADMIN SECTION -->
-						<shiro:hasPermission permission="admin:cost">							
-							<div>
-								<a class="add-row" href="${createLinkWithTargetURI(controller:'costTarget', action:'create', params:[currentObjective: currentObjective?.id])}">add target</a>
-							</div>
-						</shiro:hasPermission>
-						<!-- ADMIN SECTION END -->
 					</g:if>
 					<g:else>
 						<p class="help">Please select an organisation / objective</p>

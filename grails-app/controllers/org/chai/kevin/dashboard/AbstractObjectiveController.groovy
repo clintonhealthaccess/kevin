@@ -29,6 +29,8 @@ package org.chai.kevin.dashboard
 */
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.data.Aggregation;
+import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 
 abstract class AbstractObjectiveController extends AbstractEntityController {
@@ -71,7 +73,12 @@ abstract class AbstractObjectiveController extends AbstractEntityController {
 		}
 		
 		def groups = organisationService.getGroupsForExpression()
-		return [objectiveEntry: entity, groups: groups, calculation: dataService.list(Calculation.class, [:]), currentObjective: currentObjective]
+		
+		def calculations = []
+		calculations.addAll(dataService.list(Average.class, [:]))
+		calculations.addAll(dataService.list(Aggregation.class, [:]))
+		
+		return [objectiveEntry: entity, groups: groups, calculations: calculations, currentObjective: currentObjective]
 	}
 	
 }
