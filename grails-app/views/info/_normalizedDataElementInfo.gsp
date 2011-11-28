@@ -1,4 +1,5 @@
-<%@ page import="org.chai.kevin.value.ExpressionValue.Status" %>
+<%@ page import="org.chai.kevin.value.Status" %>
+
 <div class="info">
 	<g:if test="${info.expressionValue.status == Status.MISSING_NUMBER}">
 		<div class="red bold">Some values are missing.</div>
