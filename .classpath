@@ -58,7 +58,6 @@
 	<classpathentry kind="src" path="grails-app/realms"/>
 	<classpathentry kind="src" path="grails-app/utils"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.codehaus.groovy/groovy-all/jars/groovy-all-1.8.3.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/commons-beanutils/commons-beanutils/jars/commons-beanutils-1.8.3.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/commons-el/commons-el/jars/commons-el-1.0.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/commons-validator/commons-validator/jars/commons-validator-1.3.1.jar"/>
@@ -223,6 +222,7 @@
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.amplecode/quick/jars/quick-1.5.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.apache.hadoop/hadoop-core/jars/hadoop-core-0.20.203.0.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/net.sf.ezmorph/ezmorph/jars/ezmorph-1.0.6.jar"/>
+	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.supercsv/SuperCSV/jars/SuperCSV-1.52.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/net.bull.javamelody/javamelody-core/jars/javamelody-core-1.32.1.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.jrobin/jrobin/jars/jrobin-1.5.9.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/com.lowagie/itext/jars/itext-2.1.7.jar"/>
@@ -275,6 +275,7 @@
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.spockframework/spock-grails-support/jars/spock-grails-support-0.6-groovy-1.8-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.spockframework/spock-core/jars/spock-core-0.6-groovy-1.8-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/junit/junit-dep/jars/junit-dep-4.9.jar"/>
+	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.codehaus.groovy/groovy-all/jars/groovy-all-1.8.4.jar"/>
 	<classpathentry kind="var" path="GRAILS_IVYCACHE/org.hamcrest/hamcrest-core/jars/hamcrest-core-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/jaql.jar"/>
 	<classpathentry kind="lib" path="lib/json-lib-2.4-jdk15.jar"/>
