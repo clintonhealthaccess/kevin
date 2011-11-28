@@ -48,7 +48,7 @@ import org.hisp.dhis.period.Period;
 
 @Entity(name="Summ")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name="dhsst_calculation_sum")
+@Table(name="dhsst_data_calculation_sum")
 public class Sum extends Calculation<SumPartialValue> {
 	
 	@Override

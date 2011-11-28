@@ -66,7 +66,6 @@ class DsrTargetController extends AbstractEntityController {
 			target: entity,
 			objectives: DsrObjective.list(),
 			groups: organisationService.getGroupsForExpression(),
-			dataElements: dataService.list(DataElement.class, [:]),
 			categories: DsrTargetCategory.list()
 		]
 	}

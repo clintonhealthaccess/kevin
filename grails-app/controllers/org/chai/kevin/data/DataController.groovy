@@ -31,5 +31,22 @@ class DataController extends AbstractController {
 			html = g.render(template:'/entity/data/dataList', model:[data: dataList])
 		}
 	}
+	
+	def getAjaxData = {
+		def clazz = Class.forName('org.chai.kevin.data.'+params['class'], true, Thread.currentThread().contextClassLoader)
+		def includeTypes = params.list('include')
+		def dataList = dataService.searchData(clazz, params['searchText'], includeTypes, [:]);
+		
+		render(contentType:"text/json") {
+			elements = array {
+				dataList.each { item ->
+					elem (
+						key: item.id,
+						value: i18n(field:item.names)+' ['+item.class.simpleName+']'
+					)
+				}
+			}
+		}
+	}
 
 }

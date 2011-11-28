@@ -81,6 +81,7 @@ beans = {
 		valueService = ref("valueService")
 		organisationService = ref("organisationService")
 		sessionFactory = ref("sessionFactory")
+		dataService = ref("dataService")
 		grailsApplication = ref("grailsApplication")
 	}
 	

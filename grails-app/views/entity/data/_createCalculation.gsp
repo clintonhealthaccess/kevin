@@ -11,7 +11,7 @@
 				<g:i18nTextarea name="descriptions" bean="${calculation}" value="${calculation.descriptions}" label="Descriptions" field="descriptions" height="150" width="300" maxHeight="150" />
 				
 				<g:input name="code" label="Code" bean="${calculation}" field="code" />
-				<g:textarea name="expression" label="Expression" bean="${calculation}" field="expression" rows="5"/>
+				<g:textarea name="expression" label="Expression" bean="${calculation}" field="expression" value="${calculation.expression}" rows="5"/>
 				
 				<g:if test="${calculation.id != null}">
 					<input type="hidden" name="id" value="${calculation.id}"/>

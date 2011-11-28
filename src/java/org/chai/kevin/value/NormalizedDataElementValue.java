@@ -46,7 +46,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="NormalizedDataElementValue")
-@Table(name="dhsst_normalized_data_element_value",
+@Table(name="dhsst_value_normalized_data_element",
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames={"data", "organisationUnit", "period"})
 	}
@@ -130,7 +130,7 @@ public class NormalizedDataElementValue extends StoredValue {
 
 	@Override
 	public String toString() {
-		return "ExpressionValue [value=" + value + "]";
+		return "NormalizedDataElementValue [value=" + value + "]";
 	}
 
 }

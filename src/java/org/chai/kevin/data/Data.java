@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -76,7 +77,7 @@ abstract public class Data<T extends DataValue> {
 		this.descriptions = descriptions;
 	}
 
-	@Lob
+	@Basic
 	public String getCode() {
 		return code;
 	}

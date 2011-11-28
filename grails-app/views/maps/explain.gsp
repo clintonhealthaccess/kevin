@@ -7,9 +7,9 @@
     </head>
     <body>
 		<div class="explanation">
-			<h3><g:i18n field="${explanation.mapsTarget.names}"/> in ${explanation.organisation.name}</h3>
-			<g:if test="${explanation.info != null}">
-				<g:render template="${explanation.info.template}" model="[info: explanation.info, groups: groups]"/>
+			<h3><g:i18n field="${target.names}"/> in ${info.organisationUnit.name}</h3>
+			<g:if test="${info != null}">
+				<g:render template="${info.template}" model="[info: info, groups: groups]"/>
 			</g:if>
 			<g:else>
 				<div class="red bold">No expression available for this facility type.</div>

@@ -21,7 +21,7 @@ import org.hisp.dhis.period.Period;
 
 @Entity(name="Aggregation")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name="dhsst_calculation_aggregation")
+@Table(name="dhsst_data_calculation_aggregation")
 public class Aggregation extends Calculation<AggregationPartialValue> {
 
 	@Override

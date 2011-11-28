@@ -67,9 +67,9 @@ class MapsController extends AbstractController {
 		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
 		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
-		MapsExplanation explanation = mapsService.getExplanation(period, organisation, target);
+		def info = mapsService.getExplanation(period, organisation, target);
 		
-		[explanation: explanation, groups: organisationService.getGroupsForExpression(),]
+		[info: info, target: target, groups: organisationService.getGroupsForExpression()]
 	}
 	
 	def map = {
@@ -81,7 +81,7 @@ class MapsController extends AbstractController {
 		
 		Integer level = params.int('level')
 		
-		Maps map = mapsService.getMap(period, organisation, level, target);
+		def map = mapsService.getMap(period, organisation, level, target);
 		
 		if (log.isDebugEnabled()) log.debug("displaying map: "+map)		
 		render(contentType:"text/json", text:'{"result":"success","map":'+map.toJson()+'}');

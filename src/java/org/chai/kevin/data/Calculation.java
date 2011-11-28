@@ -51,7 +51,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="Calculation")
-@Table(name="dhsst_calculation")
+@Table(name="dhsst_data_calculation")
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Calculation<T extends CalculationPartialValue> extends Data<T> {
 
@@ -87,7 +87,7 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 		this.expression = expression;
 	}
 
-	@Column(nullable=true)
+	@Column(nullable=true, columnDefinition="datetime")
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	public Date getCalculated() {
 		return calculated;

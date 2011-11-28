@@ -98,7 +98,7 @@ public abstract class StoredValue implements DataValue {
 	/* (non-Javadoc)
 	 * @see org.chai.kevin.value.DataValue#getTimestamp()
 	 */
-	@Column(nullable=false)
+	@Column(nullable=false, columnDefinition="datetime")
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	public Date getTimestamp() {
 		return timestamp;

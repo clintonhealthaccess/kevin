@@ -80,6 +80,10 @@ class DataService {
 	public <T extends Data<?>> T getData(Long id, Class<T> clazz) {
 		return (Data)sessionFactory.getCurrentSession().get(clazz, id);
 	}
+	
+	public <T extends Data<?>> T save(T data) {
+		sessionFactory.getCurrentSession().save(data);
+	}
 		
 	/**
 	 * 

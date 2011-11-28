@@ -54,5 +54,4 @@ class MapsServiceSpec extends MapsIntegrationTests {
 		hasValues
 	}
 	
-	
 }

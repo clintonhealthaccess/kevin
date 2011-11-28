@@ -43,7 +43,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="RawDataElementValue")
-@Table(name="dhsst_data_value",
+@Table(name="dhsst_value_raw_data_element",
 		uniqueConstraints=@UniqueConstraint(columnNames={"data", "period", "organisationUnit"})
 )
 //@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)

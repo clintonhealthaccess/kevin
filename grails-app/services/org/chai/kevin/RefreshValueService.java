@@ -29,6 +29,7 @@ public class RefreshValueService {
 
 	private final static Log log = LogFactory.getLog(RefreshValueService.class);
 	
+	private DataService dataService;
 	private SessionFactory sessionFactory;
 	private ExpressionService expressionService;
 	private ValueService valueService;
@@ -56,6 +57,7 @@ public class RefreshValueService {
 			}
 		}
 		normalizedDataElement.setCalculated(new Date());
+		dataService.save(normalizedDataElement);
 	}
 	
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
@@ -78,6 +80,7 @@ public class RefreshValueService {
 			}
 		}
 		calculation.setCalculated(new Date());
+		dataService.save(calculation);
 	}
 	
 	
@@ -135,6 +138,10 @@ public class RefreshValueService {
 	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
+	}
+	
+	public void setDataService(DataService dataService) {
+		this.dataService = dataService;
 	}
 	
 	public void setGrailsApplication(GrailsApplication grailsApplication) {

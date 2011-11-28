@@ -65,7 +65,6 @@ class SurveyElementController {
 		}
 	}
 
-
 	def getDescription = {
 		def surveyElement = null;
 		if (NumberUtils.isNumber(params['surveyElement'])) {

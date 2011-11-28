@@ -14,7 +14,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="SumValue")
-@Table(name="dhsst_sum_value",
+@Table(name="dhsst_value_partial_sum",
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames={"data", "organisationUnit", "period", "groupUuid"})
 	}

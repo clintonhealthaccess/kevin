@@ -62,7 +62,7 @@ public class Utils {
 
 	public static Set<String> split(String string) {
 		Set<String> result = new HashSet<String>();
-		if (string != null) result.addAll(Arrays.asList(StringUtils.split(string.trim(), ',')));
+		if (string != null) result.addAll(Arrays.asList(StringUtils.split(string, ',')));
 		return result;
 	}
 
@@ -74,7 +74,7 @@ public class Utils {
 		else result.addAll(Arrays.asList((String[]) list));
 		
 		for (String string : new ArrayList<String>(result)) {
-			if (string.trim().isEmpty()) result.remove(string);
+			if (string.isEmpty()) result.remove(string);
 		}
 		
 		return StringUtils.join(result, ',');

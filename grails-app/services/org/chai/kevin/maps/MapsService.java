@@ -102,11 +102,9 @@ public class MapsService {
 		return new Maps(period, target, organisation, level, polygons, levels);
 	}
 
-	public MapsExplanation getExplanation(Period period, Organisation organisation, MapsTarget target) {
+	public Info<?> getExplanation(Period period, Organisation organisation, MapsTarget target) {
 		// TODO groups
-		CalculationInfo info = infoService.getCalculationInfo(target.getCalculation(), organisation, period, Utils.getUuids(organisationService.getGroupsForExpression()));
-		if (info == null) return null;
-		return new MapsExplanation(target, info);
+		return infoService.getCalculationInfo(target.getCalculation(), organisation, period, Utils.getUuids(organisationService.getGroupsForExpression()));
 	}
 	
 	public void setValueService(ValueService valueService) {

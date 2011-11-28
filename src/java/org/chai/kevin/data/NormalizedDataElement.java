@@ -14,7 +14,7 @@ import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="NormalizedDataElement")
-@Table(name="dhsst_normalized_data_element")
+@Table(name="dhsst_data_normalized_element")
 public class NormalizedDataElement extends DataElement<NormalizedDataElementValue> {
 
 	// json text example : {"1":{"DH":"$1 + $2"}, "2":{"HC":"$1 + $2 + $3"}}

@@ -49,7 +49,7 @@ import org.hisp.dhis.period.Period;
 
 @Entity(name="Average")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name="dhsst_calculation_average")
+@Table(name="dhsst_data_calculation_average")
 public class Average extends Calculation<AveragePartialValue> {
 
 	@Override

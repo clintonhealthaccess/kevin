@@ -102,7 +102,7 @@ class UtilTagLib {
 	}
 	
 	def selectFromList = { attrs, body ->
-		out << render(template:"/tags/select", model: attrs)	
+		out << render(template:"/tags/selectFromList", model: attrs)	
 	}		
 	
 	def locales = { attrs, body ->

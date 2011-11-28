@@ -32,9 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.chai.kevin.Organisation;
 import org.chai.kevin.cost.CostTarget.CostType;
-import org.hisp.dhis.period.Period;
 
 public class CostTable {
 

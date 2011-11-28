@@ -38,7 +38,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="RawDataElement")
-@Table(name="dhsst_raw_data_element")
+@Table(name="dhsst_data_raw_element")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class RawDataElement extends DataElement<RawDataElementValue> {
 
