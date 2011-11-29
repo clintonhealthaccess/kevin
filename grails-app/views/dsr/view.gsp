@@ -132,27 +132,25 @@
 									</tr>
 								</thead>
 								<tbody>
-									<g:each in="${dsrTable.organisations}" var="organisation" status="i">
-										<g:if test="${dsrTable.organisationMap.get(organisation)!=currentParent}">
-											<g:set var="currentParent" value="${dsrTable.organisationMap.get(organisation)}" />
-											<tr>
-												<th colspan="${dsrTable.targets.size()+1}" class="parent-row">${currentParent.name}</th>
+									<g:each in="${dsrTable.parents}" var="parent">
+									<tr>
+										<th colspan="${dsrTable.targets.size()+1}" class="parent-row">${parent.name}</th>
+									</tr>
+									<g:each in="${dsrTable.parents.get(parent)}" var="children">
+										<g:each in="${children}" var="child">										
+											<tr class="row organisation" data-group="${child.organisationUnitGroup?.uuid ?: 'Total'}">
+												<th class="box-report-organisation">${child.organisationUnitGroup? child.name : 'Total'}</th>
+												<g:each in="${dsrTable.targets}" var="target">
+													<td class="box-report-value">
+														<g:if test="${!dsrTable.getFct(child, target) != null}">
+															${dsrTable.getDsr(child, target).value}
+														</g:if>
+													</td>
+												</g:each>
 											</tr>
-										</g:if>
-										<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
-											<th class="box-report-organisation">${organisation.name}</th>
-											<g:each in="${dsrTable.targets}" var="target">
-												<td class="box-report-value">
-													<g:if test="${!dsrTable.getDsr(organisation, target).applies}">
-	
-													</g:if>
-													<g:else>
-														${dsrTable.getDsr(organisation, target).stringValue}
-													</g:else>
-												</td>
-											</g:each>
-										</tr>
+										</g:each>
 									</g:each>
+								</g:each>
 								</tbody>
 							</table>
 						</g:if>

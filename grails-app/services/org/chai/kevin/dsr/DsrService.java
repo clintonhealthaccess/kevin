@@ -36,11 +36,18 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+<<<<<<< HEAD
+=======
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.DataService;
+>>>>>>> dsr_refactor
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
@@ -58,13 +65,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 import grails.plugin.springcache.annotations.Cacheable;
 
-public class DsrService {
+public class DsrService {	
+	private static final Log log = LogFactory.getLog(DsrService.class);
 	
 	private OrganisationService organisationService;
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
 	private int groupLevel;
+	
+	public void setOrganisationService(OrganisationService organisationService) {
+		this.organisationService = organisationService;
+	}
+
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
+	}
+	
+	public void setDataService(DataService dataService) {
+		this.dataService = dataService;
+	}
+	
+	public void setGroupLevel(int groupLevel) {
+		this.groupLevel = groupLevel;
+	}
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
@@ -75,28 +99,39 @@ public class DsrService {
 			organisations.addAll(organisationService.getFacilitiesOfGroup(organisation, organisationService.getOrganisationUnitGroup(groupUuid)));
 		}
 		
+<<<<<<< HEAD
 		Map<Organisation, Organisation> orgParentMap = this.getParentOfLevel(organisations,groupLevel);
 		OrganisationSorter organisationSorter = new OrganisationSorter(orgParentMap,organisationService);
 		Collections.sort(organisations, organisationSorter.BY_FACILITY_TYPE);
+=======
+		if (log.isDebugEnabled()) 
+			log.debug("getDsr(period="+period+",organisation="+organisation+",objective="+objective+")");
+>>>>>>> dsr_refactor
 		
-		List<DsrTarget> targets = objective.getTargets();
-		Collections.sort(targets, new DsrTargetSorter());
+		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());		
 		
-		Map<Organisation, Map<DsrTarget, Dsr>>  dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
+		Map<Organisation, List<Organisation>> orgParentMap = getParents(facilities, groupLevel);		
+		List<DsrTarget> targets = objective.getTargets();		
+		
+		Map<Organisation, Map<DsrTarget, Dsr>> dsrMap = new HashMap<Organisation, Map<DsrTarget, Dsr>>();
 		Set<OrganisationUnitGroup> facilityTypes = new LinkedHashSet<OrganisationUnitGroup>();
 		
-		for (Organisation child : organisations) {
-			organisationService.loadGroup(child);
-			if (child.getOrganisationUnitGroup() != null) {
-				facilityTypes.add(child.getOrganisationUnitGroup());
+		for (Organisation facility : facilities) {
+			organisationService.loadGroup(facility);
+			if (facility.getOrganisationUnitGroup() != null) {
+				facilityTypes.add(facility.getOrganisationUnitGroup());
 			}
 			Map<DsrTarget, Dsr> orgDsr = new HashMap<DsrTarget, Dsr>();
 			for (DsrTarget target : targets) {
-				boolean applies = Utils.split(target.getGroupUuidString()).contains(child.getOrganisationUnitGroup().getUuid());
+				boolean applies = Utils.split(target.getGroupUuidString()).contains(facility.getOrganisationUnitGroup().getUuid());
 				String value = null;
 				
 				if (applies) {
+<<<<<<< HEAD
 					DataValue expressionValue = valueService.getDataElementValue( target.getDataElement(), child.getOrganisationUnit(), period);
+=======
+					ExpressionValue expressionValue = valueService.getValue(target.getExpression(), facility.getOrganisationUnit(), period);
+>>>>>>> dsr_refactor
 					
 					if (expressionValue != null && !expressionValue.getValue().isNull()) {
 						// TODO put this in templates ?
@@ -127,12 +162,12 @@ public class DsrService {
 					}
 					
 				}
-				orgDsr.put(target, new Dsr(value, applies));
+				orgDsr.put(target, new Dsr(value));
 			}
-			dsrMap.put(child, orgDsr);
+			dsrMap.put(facility, orgDsr);
 		}
 
-		return new DsrTable(organisations, targets, facilityTypes, dsrMap,orgParentMap);
+		return new DsrTable(facilities, targets, dsrMap, orgParentMap);
 	}
 
 	private static String getFormat(DsrTarget target, Double value) {
@@ -143,33 +178,32 @@ public class DsrService {
 		return frmt.format(value).toString();
 	}
 	
-	public Map<Organisation,Organisation> getParentOfLevel(List<Organisation> organisations,Integer level){
-		Map<Organisation,Organisation> organisationMap = new HashMap<Organisation, Organisation>();
-		for(Organisation organisation : organisations){
-			organisationMap.put(organisation, organisationService.getParentOfLevel(organisation, level));
+	public Map<Organisation, List<Organisation>> getParents(List<Organisation> organisations, Integer level){
+		
+		Map<Organisation, List<Organisation>> organisationMap = new HashMap<Organisation, List<Organisation>>();
+		
+		for (Organisation org : organisations){
+			organisationService.loadLevel(org);
+			organisationService.loadGroup(org);
+			Organisation parentOrg = organisationService.getParentOfLevel(org, level);			
+			if(!organisationMap.containsKey(parentOrg))
+				organisationMap.put(parentOrg, new ArrayList<Organisation>());
+			organisationMap.get(parentOrg).add(org);
 		}
-		return organisationMap;
-	}
-	
-	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
-	}
-
-	public void setValueService(ValueService valueService) {
-		this.valueService = valueService;
-	}
-	
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
-	}
-	
-	public void setGroupLevel(int groupLevel) {
-		this.groupLevel = groupLevel;
+				
+		//sort organisation map keys
+		List<Organisation> sortedOrganisations = new ArrayList<Organisation>(organisationMap.keySet());
+		Collections.sort(sortedOrganisations, OrganisationSorter.BY_LEVEL);
+		
+		//sort organisation map values
+		LinkedHashMap<Organisation, List<Organisation>> sortedOrganisationMap = new LinkedHashMap<Organisation, List<Organisation>>();		
+		for (Organisation org : sortedOrganisations){
+			List<Organisation> sortedList = organisationMap.get(org);
+			Collections.sort(sortedList, OrganisationSorter.BY_FACILITY_TYPE);
+			sortedOrganisationMap.put(org, sortedList);
+		}
+		
+		return sortedOrganisationMap;
 	}
 
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
-	}
-	
 }

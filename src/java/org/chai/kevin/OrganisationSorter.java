@@ -28,45 +28,21 @@
 package org.chai.kevin;
 
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Jean Kahigiso M.
  * 
  */
-
-// TODO fix this and move to the service layer
 public class OrganisationSorter {
 
-	private static Map<Organisation, Organisation> organisations;
-	private static OrganisationService organisationService;
-
-	public OrganisationSorter(Map<Organisation, Organisation> organisations, OrganisationService organisationService) {
-		this.organisations = organisations;
-		this.organisationService = organisationService;
-	}
-
 	public static final Comparator<Organisation> BY_FACILITY_TYPE = new Comparator<Organisation>() {
-
 		public int compare(Organisation org1, Organisation org2) {			
 			if(org1 == null || org2 == null) return 0;
 			
-			if (organisations.get(org1).equals(organisations.get(org2))) {
-				organisationService.loadGroup(org1);
-				organisationService.loadGroup(org2);
-				if (org1.getOrganisationUnitGroup().equals(
-						org2.getOrganisationUnitGroup()))
-					return org1.getName().compareTo(org2.getName());
-				else
-					return org1
-							.getOrganisationUnitGroup()
-							.getName()
-							.compareTo(
-									org2.getOrganisationUnitGroup().getName());
-			}
-			return organisations.get(org1).getName()
-					.compareTo(organisations.get(org2).getName());
+			if (org1.getOrganisationUnitGroup().getName().equals(org2.getOrganisationUnitGroup().getName()))
+				return org1.getName().compareTo(org2.getName());
+			else
+				return org1.getOrganisationUnitGroup().getName().compareTo(org2.getOrganisationUnitGroup().getName());
 		}
 	};
 

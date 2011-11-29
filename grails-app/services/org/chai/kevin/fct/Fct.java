@@ -28,38 +28,11 @@ package org.chai.kevin.fct;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.Organisation;
-import org.chai.kevin.dsr.DsrTarget;
-import org.hisp.dhis.period.Period;
-
 public class Fct {
-	private Organisation organisation;
-	private Period period;
-	private FctTarget target;
-	private String value;
-	
+	private String value;	
 
-	public Fct(Organisation organisation, Period period, FctTarget target, String value) {
-		this.organisation = organisation;
-		this.period = period;
-		this.setTarget(target);
+	public Fct(String value) {
 		this.setValue(value);
-	}
-	
-	public Organisation getOrganisation() {
-		return organisation;
-	}
-
-	public void setOrganisation(Organisation organisation) {
-		this.organisation = organisation;
-	}
-
-	public Period getPeriod() {
-		return period;
-	}
-
-	public void setPeriod(Period period) {
-		this.period = period;
 	}
 
 	public void setValue(String value) {
@@ -82,5 +55,4 @@ public class Fct {
 	public String toString() {
 		return "Fct [value=" + value + "]";
 	}
-
 }

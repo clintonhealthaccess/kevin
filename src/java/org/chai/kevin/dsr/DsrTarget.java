@@ -33,7 +33,6 @@ package org.chai.kevin.dsr;
 import java.util.Set;
 
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

@@ -32,7 +32,6 @@ package org.chai.kevin.fct;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -42,22 +41,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.reports.ReportEntity;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
+import org.chai.kevin.Translation;
 
 @Entity(name = "FctObjective")
 @Table(name = "dhsst_fct_objective")
-public class FctObjective extends ReportEntity {
+public class FctObjective extends Translation {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5921900390935911828L;
 	
 	private Long id;
+	private Integer order;
 	private List<FctTarget> targets = new ArrayList<FctTarget>();
 	
 	@Id
@@ -69,21 +68,29 @@ public class FctObjective extends ReportEntity {
 		this.id = id;
 	}
 	
-	@OneToMany(cascade=CascadeType.ALL,targetEntity=FctTarget.class, mappedBy="objective")
-	@OrderBy("order")
-	public List<FctTarget> getTargets() {
-		return targets;
-	}
-	
 	public void setTargets(List<FctTarget> targets) {
 		this.targets = targets;
 	}
+	
+	@OneToMany(cascade=CascadeType.ALL,targetEntity=FctTarget.class, mappedBy="objective")
+	public List<FctTarget> getTargets() {	
+		return targets;
+	}
 
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+	
+	@Basic
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
+	}
+	
 	@Transient
 	public void addTarget(FctTarget target) {
 		target.setObjective(this);
 		targets.add(target);
-		Collections.sort(targets);
 	}
 
 }

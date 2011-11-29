@@ -29,22 +29,17 @@ package org.chai.kevin.fct;
  */
 
 import java.io.Serializable;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.Organisation;
-import org.chai.kevin.dsr.DsrObjective;
-import org.chai.kevin.dsr.DsrTarget;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.period.Period;
 
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class FctTable implements Serializable {
-
 	
 	/**
 	 * 
@@ -57,7 +52,6 @@ public class FctTable implements Serializable {
 	private Set<OrganisationUnitGroup> facilityTypes;
 	private Map<FctTarget, Map<Organisation, Fct>> values;
 	private Map<Organisation, List<Organisation>> organisationMap;
-
 
 	public FctTable(List<Organisation> organisations, List<FctTarget> targets, Set<OrganisationUnitGroup> facilityTypes,
 			Map<FctTarget, Map<Organisation, Fct>> values, Map<Organisation,List<Organisation>> organisationMap, Map<FctTarget, Fct> totalMap) {

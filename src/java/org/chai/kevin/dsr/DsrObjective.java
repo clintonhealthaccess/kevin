@@ -32,12 +32,9 @@ package org.chai.kevin.dsr;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -52,8 +49,6 @@ import org.hibernate.annotations.SortType;
 @Entity(name = "DsrObjective")
 @Table(name = "dhsst_dsr_objective")
 public class DsrObjective extends ReportEntity {
-	
-	private static final long serialVersionUID = 5921900390935911828L;
 	
 	private Long id;
 	private List<DsrTarget> targets = new ArrayList<DsrTarget>();
@@ -70,6 +65,8 @@ public class DsrObjective extends ReportEntity {
 	@OneToMany(cascade=CascadeType.ALL,targetEntity=DsrTarget.class, mappedBy="objective")
 	@Sort(type=SortType.COMPARATOR, comparator=DsrTargetSorter.class)
 	public List<DsrTarget> getTargets() {
+//		if(targets.size() > 1)
+//			Collections.sort(targets, new DsrTargetSorter());
 		return targets;
 	}
 
@@ -81,7 +78,8 @@ public class DsrObjective extends ReportEntity {
 	public void addTarget(DsrTarget target) {
 		target.setObjective(this);
 		targets.add(target);
-		Collections.sort(targets, new DsrTargetSorter());
+//		if(targets.size() > 1)
+//			Collections.sort(targets, new DsrTargetSorter());
 	}
 
 }

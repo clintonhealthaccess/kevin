@@ -28,6 +28,7 @@ package org.chai.kevin.dsr;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,17 +40,15 @@ public class DsrTable {
 
 	private List<Organisation> organisations;
 	private List<DsrTarget> targets;
-	private Set<OrganisationUnitGroup> facilityTypes;
 	private Map<Organisation, Map<DsrTarget, Dsr>> values;
-	private Map<Organisation, Organisation> organisationMap;
+	private Map<Organisation, List<Organisation>> organisationMap;
 
-	public DsrTable(List<Organisation> organisations, List<DsrTarget> targets, Set<OrganisationUnitGroup> facilityTypes,
-			Map<Organisation, Map<DsrTarget, Dsr>> values, Map<Organisation,Organisation> organisationMap) {
+	public DsrTable(List<Organisation> organisations, List<DsrTarget> targets,
+			Map<Organisation, Map<DsrTarget, Dsr>> values, Map<Organisation, List<Organisation>> organisationMap) {
 		this.organisations = organisations;
-		this.facilityTypes = facilityTypes;
 		this.targets = targets;
 		this.values = values;
-		this.organisationMap=organisationMap;
+		this.organisationMap = organisationMap;
 	}
 
 	public List<Organisation> getOrganisations() {
@@ -65,14 +64,14 @@ public class DsrTable {
 	}
 
 	public Set<OrganisationUnitGroup> getFacilityTypes() {
+		Set<OrganisationUnitGroup> facilityTypes = new HashSet<OrganisationUnitGroup>();
+		for (Organisation organisation : organisations) {
+			facilityTypes.add(organisation.getOrganisationUnitGroup());
+		}
 		return facilityTypes;
 	}
 
-	public void setOrganisationMap(Map<Organisation,Organisation> organisationMap) {
-		this.organisationMap = organisationMap;
-	}
-
-	public Map<Organisation,Organisation> getOrganisationMap() {
+	public Map<Organisation, List<Organisation>> getOrganisationMap() {
 		return organisationMap;
 	}
 
