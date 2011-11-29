@@ -78,8 +78,6 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	static final String RWANDA = "Rwanda"
 	static final String KIGALI_CITY = "Kigali City"
-	static final String GASABO = "Gasabo"
-	static final String KIBAGABAGA = "Kibagabaga DH"
 	static final String NORTH = "North"
 	static final String BURERA = "Burera"
 	static final String BUTARO = "Butaro DH"
@@ -112,11 +110,6 @@ abstract class IntegrationTests extends IntegrationSpec {
 		
 		newOrganisationUnit(BUTARO, burera, dh)
 		newOrganisationUnit(KIVUYE, burera, hc)
-		
-		def kigaliCity = newOrganisationUnit(KIGALI_CITY, rwanda)
-		def gasabo = newOrganisationUnit(GASABO, kigaliCity);
-		
-		newOrganisationUnit(KIBAGABAGA, gasabo, dh)
 	}
 	
 	Period newPeriod() {

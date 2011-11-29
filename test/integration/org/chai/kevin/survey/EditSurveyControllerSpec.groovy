@@ -54,7 +54,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		setupOrganisationUnitTree()
 		setupSecurityManager(newSurveyUser('test', 'uuid', getOrganisation(BUTARO)))
 		def period = newPeriod()
-		def survey = newSurvey(period, true)
+		def survey = newSurvey([:], period, true)
 		editSurveyController = new EditSurveyController()
 		
 		when:
