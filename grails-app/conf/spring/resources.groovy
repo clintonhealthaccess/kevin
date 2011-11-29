@@ -14,6 +14,7 @@ import org.chai.kevin.InfoService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.RefreshValueService
+import org.chai.kevin.ValueService;
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService

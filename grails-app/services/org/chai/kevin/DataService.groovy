@@ -82,7 +82,7 @@ class DataService {
 	}
 	
 	public <T extends Data<?>> T save(T data) {
-		sessionFactory.getCurrentSession().save(data);
+		sessionFactory.currentSession.saveOrUpdate(data);
 	}
 		
 	/**

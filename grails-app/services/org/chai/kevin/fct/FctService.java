@@ -64,20 +64,13 @@ public class FctService {
 	private ValueService valueService;
 	private int groupLevel;
 	
-	public FctTable getFct(Organisation organisation, FctObjective objective, Period period, OrganisationUnitLevel orgUnitLevel) {
-		
-		if (log.isDebugEnabled()) 
-			log.debug("getFct(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
+	public FctTable getFct(Organisation organisation, FctObjective objective, Period period, OrganisationUnitLevel orgUnitLevel, Set<String> groupUuids) {
+		if (log.isDebugEnabled())  log.debug("getFct(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
 
-		List<OrganisationUnitLevel> levels = organisationService.getAllLevels();
-		levels.remove(0);		
-		if (levels.isEmpty()) {
-			// TODO throw exception 
-		}
-		
 		organisationService.loadParent(organisation);
 		organisationService.loadLevel(organisation);
 		
+		// TODO get organisations from group only
 		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());				
 		
 		Map<Organisation, List<Organisation>> orgParentMap = getParents(organisation, organisations);
@@ -89,7 +82,7 @@ public class FctService {
 		
 		for(FctTarget target: targets) {
 			Map<Organisation, Fct> orgFct = new HashMap<Organisation, Fct>();
-			totalMap.put(target, getFctValue(target, organisation, period));
+			totalMap.put(target, getFctValue(target, organisation, period, groupUuids));
 			
 			for (Organisation child : organisations) {
 				organisationService.loadLevel(child);
@@ -111,7 +104,7 @@ public class FctService {
 				
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
 				
-				orgFct.put(child, getFctValue(target, child, period));
+				orgFct.put(child, getFctValue(target, child, period, groupUuids));
 			}											
 			fctMap.put(target, orgFct);
 		}
@@ -121,9 +114,9 @@ public class FctService {
 		return fctTable;
 	}
 	
-	private Fct getFctValue(FctTarget target, Organisation organisation, Period period) {
+	private Fct getFctValue(FctTarget target, Organisation organisation, Period period, Set<String> groupUuids) {
 		String value = null;
-		CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), organisation.getOrganisationUnit(), period, Utils.getUuids(organisationService.getGroupsForExpression()));
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), organisation.getOrganisationUnit(), period, groupUuids);
 		if (calculationValue != null) value = calculationValue.getValue().getNumberValue().toString();
 		return new Fct(organisation, period, target, value);
 	}

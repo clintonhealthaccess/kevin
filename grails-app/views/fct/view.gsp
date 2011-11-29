@@ -77,6 +77,16 @@
 								</tr>
 							</thead>
 							<tbody>
+								<tr>
+									<th colspan="${fctTable.targets.size()+1}" class="parent-row">${currentOrganisation.name} - Total</th>
+								</tr>
+								<g:each in="${fctTable.targets}" var="target">
+									<td class="box-report-value">
+										<g:if test="${!fctTable.getTotal(target) != null}">
+											${fctTable.getTotal(target).value}
+										</g:if>
+									</td>
+								</g:each>
 								<g:each in="${fctTable.organisationMap.keySet()}" var="orgMapParent">
 									<tr>
 										<th colspan="${fctTable.targets.size()+1}" class="parent-row">${orgMapParent.name}</th>

@@ -32,7 +32,7 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 		this.expressionMap = expressionMap;
 	}
 	
-	@Column(nullable=true)
+	@Column(nullable=true, columnDefinition="datetime")
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	public Date getCalculated() {
 		return calculated;
