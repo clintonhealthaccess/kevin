@@ -13,7 +13,7 @@
 				<g:i18nTextarea name="descriptions" bean="${normalizedDataElement}" value="${normalizedDataElement.descriptions}" label="Description" field="descriptions"/>
 				<g:input name="code" label="Code" bean="${normalizedDataElement}" field="code"/>
 				
-				<g:textarea name="type.jsonValue" label="Type" bean="${normalizedDataElement}" field="type"/>
+				<g:textarea name="type.jsonValue" label="Type" bean="${normalizedDataElement}" field="type" value="${normalizedDataElement.type.jsonValue}"/>
 				
 				<div class="row ${hasErrors(bean:normalizedDataElement, field:'expressionMap', 'errors')}">
 					<label>Expression map:</label>

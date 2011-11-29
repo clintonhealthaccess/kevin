@@ -82,7 +82,8 @@ class DataService {
 	}
 	
 	public <T extends Data<?>> T save(T data) {
-		sessionFactory.currentSession.saveOrUpdate(data);
+		// we bypass validation in case there's something
+		data.save(validate: false)
 	}
 		
 	/**

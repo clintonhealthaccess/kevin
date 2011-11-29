@@ -73,20 +73,6 @@ public class ExpressionService {
 		public Value value = null;
 	}
 	
-//	private boolean calculateHasMissingValues(Map<Organisation, NormalizedDataElementValue> values) {
-//		for (NormalizedDataElementValue expressionValue : values.values()) {
-//			if (expressionValue != null && expressionValue.getStatus() == Status.MISSING_NUMBER) return true;
-//		}
-//		return false;
-//	}
-//	
-//	private boolean calculateHasMissingExpression(Map<Organisation, NormalizedDataElementValue> values) {
-//		for (NormalizedDataElementValue expressionValue : values.values()) {
-//			if (expressionValue == null) return true;
-//		}
-//		return false;
-//	}
-
 	@Transactional(readOnly=true)
 	public <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, Organisation organisation, Period period) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",organisation="+organisation+")");
