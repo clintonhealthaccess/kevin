@@ -156,5 +156,24 @@ class SurveyValueService {
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
 		return result
 	}
+	
+	List<SurveyEnteredValue> getSurveyEnteredValues(OrganisationUnit organisationUnit, SurveySection section, SurveyObjective objective, Survey survey) {
+		
+		def c = SurveyEnteredValue.createCriteria()
+		c.add(Restrictions.eq("organisationUnit", organisationUnit))
+		
+		if (survey != null || objective != null || section != null) c.createAlias("surveyElement", "se")
+		if (survey != null || objective != null || section != null) c.createAlias("se.surveyQuestion", "sq")
+		if (survey != null || objective != null) c.createAlias("sq.section", "ss")
+		if (survey != null) c.createAlias("ss.objective", "so")
+
+		if (section != null) c.add(Restrictions.eq("sq.section", section))
+		if (objective != null) c.add(Restrictions.eq("ss.objective", objective))
+		if (survey != null) c.add(Restrictions.eq("so.survey", survey))
+		
+		def result = c.setFlushMode(FlushMode.COMMIT).list();
+		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
+		return result				
+	}
 
 }

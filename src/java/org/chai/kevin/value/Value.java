@@ -142,6 +142,7 @@ public class Value extends JSONValue {
 			} catch (JSONException e) {
 				dateValue = null;
 			} catch (ParseException e) {
+				//TODO this should never be null!
 				dateValue = null;
 			}
 		}

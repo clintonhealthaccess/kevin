@@ -397,7 +397,7 @@ public class TypeSpec extends UnitSpec {
 		
 		then:
 		type.visit(value, new Visitor() {
-			public void handle(Type currentType, Value currentValue, String prefix) {
+			public void handle(Type currentType, Value currentValue, String prefix, String genericPrefix) {
 				assert value.equals(currentValue)
 				assert getTypes().equals(["":type])	
 			}
@@ -415,7 +415,7 @@ public class TypeSpec extends UnitSpec {
 		def visitedValues = []
 		def visitedTypeMap = []
 		type.visit(value, new Visitor() {
-			public void handle(Type currentType, Value currentValue, String prefix) {
+			public void handle(Type currentType, Value currentValue, String prefix, String genericPrefix) {
 				visitedValues << currentValue
 				visitedTypeMap << new TreeMap(getTypes())
 			}

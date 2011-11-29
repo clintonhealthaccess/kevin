@@ -321,20 +321,22 @@ class EditSurveyController extends AbstractController {
 		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
 		Survey survey = Survey.get(params.int('survey'))	
 
-		File zipFile = null;
+		File csvFile = null;
 		if(section != null)
-			zipFile = surveyExportService.getSurveyExportZipFile(organisation, section, null, null);
+			csvFile = surveyExportService.getSurveyExportFile(organisation, section, null, null);
 		else if(objective != null)
-			zipFile = surveyExportService.getSurveyExportZipFile(organisation, null, objective, null);
+			csvFile = surveyExportService.getSurveyExportFile(organisation, null, objective, null);
 		else if(survey != null)
-			zipFile = surveyExportService.getSurveyExportZipFile(organisation, null, null, survey);						
+			csvFile = surveyExportService.getSurveyExportFile(organisation, null, null, survey);						
+			
+		def zipFile = Utils.getZipFile(csvFile, Utils.CSV_FILE_EXTENSION)
 			
 		if(zipFile.exists()){
 			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
-			render(contentType: "application/zip");						
+			response.setContentType("application/zip");
+			response.setHeader("Content-length", zipFile.length().toString());
+			response.outputStream << zipFile.newInputStream()
 		}
-		
-		redirect(action: 'summaryPage', params: params);
 	}
 	
 	private def getSurveyElements() {

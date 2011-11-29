@@ -69,12 +69,15 @@ public class OrganisationService {
     // optimization, we cache all the groups
     private GroupCollection groupCollection = null;
     
+    // cache all of the levels
+    private List<OrganisationUnitLevel> organisationUnitLevels;
+    
     private GroupCollection getGroupCollection() {
     	if (groupCollection == null) {
     		groupCollection = new GroupCollection(getGroupsForExpression());
     	}
     	return groupCollection;
-    }
+    }        
     
 	public Set<OrganisationUnitGroup> getGroupsForExpression() {
 		Set<OrganisationUnitGroup> result = new HashSet<OrganisationUnitGroup>();
@@ -105,9 +108,10 @@ public class OrganisationService {
 	
 	public List<OrganisationUnitLevel> getAllLevels(Integer... skipLevels) {
 		List<Integer> skipLevelList = Arrays.asList(skipLevels);
+		if (organisationUnitLevels == null) organisationUnitLevels = organisationUnitService.getOrganisationUnitLevels();
+
 		List<OrganisationUnitLevel> result = new ArrayList<OrganisationUnitLevel>();
-		
-		for (OrganisationUnitLevel organisationUnitLevel : organisationUnitService.getOrganisationUnitLevels()) {
+		for (OrganisationUnitLevel organisationUnitLevel : organisationUnitLevels) {
 			if (!skipLevelList.contains(organisationUnitLevel.getLevel())) {
 				result.add(organisationUnitLevel);
 			}

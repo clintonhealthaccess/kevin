@@ -71,11 +71,15 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static final String DISTRICT_HOSPITAL_GROUP = "District Hospital"
 	
 	static final String COUNTRY = "Country"
-	static final String DISTRICT = "District"
 	static final String PROVINCE = "Province"
+	static final String DISTRICT = "District"
+	static final String SECTOR = "Sector"
 	static final String FACILITY = "Facility"
 	
 	static final String RWANDA = "Rwanda"
+	static final String KIGALI_CITY = "Kigali City"
+	static final String GASABO = "Gasabo"
+	static final String KIBAGABAGA = "Kibagabaga DH"
 	static final String NORTH = "North"
 	static final String BURERA = "Burera"
 	static final String BUTARO = "Butaro DH"
@@ -105,8 +109,14 @@ abstract class IntegrationTests extends IntegrationSpec {
 		def rwanda = newOrganisationUnit(RWANDA)
 		def north = newOrganisationUnit(NORTH, rwanda)
 		def burera = newOrganisationUnit(BURERA, north)
+		
 		newOrganisationUnit(BUTARO, burera, dh)
 		newOrganisationUnit(KIVUYE, burera, hc)
+		
+		def kigaliCity = newOrganisationUnit(KIGALI_CITY, rwanda)
+		def gasabo = newOrganisationUnit(GASABO, kigaliCity);
+		
+		newOrganisationUnit(KIBAGABAGA, gasabo, dh)
 	}
 	
 	Period newPeriod() {

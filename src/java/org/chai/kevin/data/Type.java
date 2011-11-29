@@ -641,6 +641,7 @@ public class Type extends JSONValue {
 	public static abstract class Visitor {
 		
 		private SortedMap<String, Type> types = new TreeMap<String, Type>();
+		private SortedMap<String, Type> genericTypes = new TreeMap<String, Type>();
 		private Stack<Type> typeStack = new Stack<Type>();
 		
 		public Type getParent() {
@@ -648,13 +649,15 @@ public class Type extends JSONValue {
 			return null;
 		}
 		
-		protected void addType(String prefix, Type type) {
+		protected void addType(String prefix, String genericPrefix, Type type) {
 			types.put(prefix, type);
-			typeStack.add(type);
+			genericTypes.put(genericPrefix, type);
+			typeStack.add(type);	
 		}
 		
-		protected void removeType(String prefix) {
+		protected void removeType(String prefix, String genericPrefix) {
 			types.remove(prefix);
+			genericTypes.remove(genericPrefix);
 			typeStack.pop();
 		}
 		
@@ -662,16 +665,20 @@ public class Type extends JSONValue {
 			return types;
 		}
 		
-		public abstract void handle(Type type, Value value, String prefix);
+		public SortedMap<String, Type> getGenericTypes(){
+			return genericTypes;
+		}
+		
+		public abstract void handle(Type type, Value value, String prefix, String genericPrefix);
 	}
 	
 	public void visit(Value value, Visitor visitor) {
-		visit(value, "", visitor);
+		visit(value, "", "", visitor);
 	}
 	
-	private void visit(Value value, String prefix, Visitor visitor) {
-		visitor.addType(prefix, this);
-		visitor.handle(this, value, prefix);
+	private void visit(Value value, String prefix, String genericPrefix, Visitor visitor) {
+		visitor.addType(prefix, genericPrefix, this);
+		visitor.handle(this, value, prefix, genericPrefix);
 		if (value != null && !value.isNull()) {
 			switch (getType()) {
 				case NUMBER:
@@ -684,19 +691,19 @@ public class Type extends JSONValue {
 				case LIST:
 					Type listType = getListType();
 					for (int i = 0; i < value.getListValue().size(); i++) {
-						listType.visit(value.getListValue().get(i), prefix+"["+i+"]", visitor);
+						listType.visit(value.getListValue().get(i), prefix+"["+i+"]", genericPrefix+"[_]", visitor);
 					}
 					break;
 				case MAP:
 					for (Entry<String, Type> entry : getElementMap().entrySet()) {
-						entry.getValue().visit(value.getMapValue().get(entry.getKey()), prefix+"."+entry.getKey(), visitor);
+						entry.getValue().visit(value.getMapValue().get(entry.getKey()), prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey(), visitor);
 					}
 					break;
 				default:
 					throw new NotImplementedException();
 			}
 		}
-		visitor.removeType(prefix);
+		visitor.removeType(prefix, genericPrefix);
 	}
 	
 	@Deprecated
@@ -712,7 +719,7 @@ public class Type extends JSONValue {
 		
 		public abstract boolean holds(Type type, Value value, String prefix);
 		
-		public void handle(Type type, Value value, String prefix) {
+		public void handle(Type type, Value value, String prefix, String genericPrefix) {
 			if (holds(type, value, prefix)) prefixes.put(prefix, value);
 		}
 	}

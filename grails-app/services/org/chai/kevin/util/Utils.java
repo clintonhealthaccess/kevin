@@ -27,6 +27,12 @@
  */
 package org.chai.kevin.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,7 +43,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -45,6 +55,9 @@ import org.apache.commons.lang.StringUtils;
  * 
  */
 public class Utils {
+	
+	private final static String CSV_FILE_EXTENSION = ".csv";
+	private final static String ZIP_FILE_EXTENSION = ".zip";
 
 	public static Set<String> split(String string) {
 		Set<String> result = new HashSet<String>();
@@ -87,11 +100,39 @@ public class Utils {
 		String noHtmlString;
 		Integer length = num;
 	
-		if (htmlString != null) noHtmlString = htmlString.replaceAll("\\<.*?\\>", "");
+		if (htmlString != null){
+			noHtmlString = htmlString.replace("&nbsp;", " ");
+			noHtmlString = noHtmlString.replaceAll("<.*?>", " ");
+			noHtmlString = StringEscapeUtils.unescapeHtml(noHtmlString);
+			noHtmlString = noHtmlString.trim();
+		}
 		else noHtmlString = htmlString;
 	
 		if (num == null || noHtmlString.length() <= num) return noHtmlString;
 		return noHtmlString.substring(0, length);
+	}
+	
+	public static File getZipFile(File file) throws IOException {		
+		
+		String fileName = file.getName().endsWith(CSV_FILE_EXTENSION) ? file.getName().replace(CSV_FILE_EXTENSION, "") : file.getName();		
+		File zipFile = File.createTempFile(fileName, ZIP_FILE_EXTENSION);
+
+		ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
+		FileInputStream fileInputStream = new FileInputStream(file);
+		try {						
+		    ZipEntry zipEntry = new ZipEntry(file.getName());
+		    zipOutputStream.putNextEntry(zipEntry);
+		    
+		    IOUtils.copy(fileInputStream, zipOutputStream);
+		    zipOutputStream.closeEntry();
+		} catch (IOException e) {
+			throw e;
+		} finally {
+		    IOUtils.closeQuietly(zipOutputStream);
+		    IOUtils.closeQuietly(zipOutputStream);
+		}
+			
+		return zipFile;
 	}
 	
 }

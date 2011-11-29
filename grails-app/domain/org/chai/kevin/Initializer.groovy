@@ -179,7 +179,7 @@ class Initializer {
 
 			def butaro = new OrganisationUnit(name:"Butaro DH", shortName:"RW,N,BU,BUDH", parent: burera)
 			def kivuye = new OrganisationUnit(name:"Kivuye HC", shortName:"RW,N,BU,KIHC", parent: burera)
-			//			def chk = new OrganisationUnit(name:"CHK HC", shortName:"RW,N,BU,CHUK", parent: burera)
+			//def chk = new OrganisationUnit(name:"CHK HC", shortName:"RW,N,BU,CHUK", parent: burera)
 			burera.children = [butaro, kivuye /* ,chk */]
 
 			rwanda.save(failOnError: true, flush: true)

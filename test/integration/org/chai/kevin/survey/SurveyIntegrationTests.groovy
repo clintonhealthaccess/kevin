@@ -15,29 +15,45 @@ import org.chai.kevin.util.Utils;
 abstract class SurveyIntegrationTests extends IntegrationTests {
 
 	def newSurvey(def period) {
-		return newSurvey(period, false)
+		return newSurvey([:], period, false)
 	}
 	
-	def newSurvey(def period, def active) {
-		return new Survey(period: period, active: active).save(failOnError: true);
+	def newSurvey(def names, def period) {
+		return newSurvey(names, period, false)
+	}
+	
+	def newSurvey(def names, def period, def active) {
+		return new Survey(names: names, period: period, active: active).save(failOnError: true);
 	}
 	
 	def newSurveyObjective(def survey, def order, def groups) {
-		def objective = new SurveyObjective(survey: survey, order: order, groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
+		return newSurveyObjective([:], survey, order, groups)
+	}
+	
+	def newSurveyObjective(def names, def survey, def order, def groups) {
+		def objective = new SurveyObjective(names: names, survey: survey, order: order, groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
 		survey.addObjective(objective)
 		survey.save(failOnError: true)
 		return objective
 	}
 	
 	def newSurveySection(def objective, def order, def groups) {
-		def section = new SurveySection(objective: objective, order: order, groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
+		def section = newSurveySection([:], objective, order, groups)
+	}
+	
+	def newSurveySection(def names, def objective, def order, def groups) {
+		def section = new SurveySection(names: names, objective: objective, order: order, groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
 		objective.addSection(section)
 		objective.save(failOnError: true)
 		return section
 	}
 	
 	def newSurveyElement(def question, def dataElement) {
-		def element = new SurveyElement(surveyQuestion: question, dataElement: dataElement).save(failOnError: true)
+		def element = newSurveyElement(question, dataElement, [:])
+	}
+	
+	def newSurveyElement(def question, def dataElement, def headers) {
+		def element = new SurveyElement(surveyQuestion: question, dataElement: dataElement, headers: headers).save(failOnError: true)
 		if (question instanceof SurveySimpleQuestion) {
 			question.surveyElement = element
 			question.save(failOnError: true)

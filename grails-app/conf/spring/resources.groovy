@@ -101,6 +101,8 @@ beans = {
 		organisationService = ref("organisationService")
 		surveyValueService = ref("surveyValueService")
 		languageService = ref("languageService")
+		sessionFactory = ref("sessionFactory")
+//		grailsApplication = ref("grailsApplication")
 		skipLevels = exportSkipLevels
 	}
 	
