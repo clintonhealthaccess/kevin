@@ -49,22 +49,12 @@ import org.supercsv.prefs.CsvPreference;
 public class SurveyExportService {
 	private static final Log log = LogFactory.getLog(SurveyExportService.class);
 	
-//	private GrailsApplication grailsApplication;
 	private SessionFactory sessionFactory;
 	private LanguageService languageService;
 	private OrganisationService organisationService;
 	private SurveyValueService surveyValueService;
 	
 	private Set<Integer> skipLevels;
-	
-//	// for internal call through transactional proxy
-//	public SurveyExportService getMe() {
-//		return grailsApplication.getMainContext().getBean(SurveyExportService.class);
-//	}
-//	
-//	public void setGrailsApplication(GrailsApplication grailsApplication) {
-//		this.grailsApplication = grailsApplication;
-//	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -92,6 +82,7 @@ public class SurveyExportService {
 		return skipLevels.toArray(new Integer[skipLevels.size()]);
 	}		
 	
+	// TODO refactor this to use messages.properties files
 	private final static String ORGANISATION_UNIT_GROUP_HEADER = "Facility Type";
 	private final static String SURVEY_HEADER = "Survey";
 	private final static String OBJECTIVE_HEADER = "Objective";
@@ -120,24 +111,23 @@ public class SurveyExportService {
 		return headers.toArray(new String[0]);
 	}	
 	
-	private String getExportFilename(Organisation organisation, SurveySection section, SurveyObjective objective, Survey survey){
+	public String getExportFilename(Organisation organisation, SurveySection section, SurveyObjective objective, Survey survey){
 		Translation translation = null;
-		if(survey != null) translation = survey.getNames();
-		if(objective != null) translation = objective.getNames();
-		if(section != null) translation = section.getNames();
+		if (survey != null) translation = survey.getNames();
+		if (objective != null) translation = objective.getNames();
+		if (section != null) translation = section.getNames();
 		String exportFilename = languageService.getText(translation).replaceAll("[^a-zA-Z0-9]", "") + "_" + 
 								organisation.getName().replaceAll("[^a-zA-Z0-9]", "") + "_";
 		return exportFilename;
 	}
 	
 	@Transactional(readOnly=true)
-	public File getSurveyExportFile(Organisation organisation, SurveySection section, SurveyObjective objective, Survey survey) throws IOException { 
+	public File getSurveyExportFile(String filename, Organisation organisation, SurveySection section, SurveyObjective objective, Survey survey) throws IOException { 
 		
 		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 		Collections.sort(facilities, OrganisationSorter.BY_LEVEL);
 		
-		String csvFilename = getExportFilename(organisation, section, objective, survey);		
-		File csvFile = File.createTempFile(csvFilename, CSV_FILE_EXTENSION);
+		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
 		
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
@@ -151,14 +141,8 @@ public class SurveyExportService {
 			}
 			
 			for(Organisation facility : facilities){	
-//				facility = organisationService.getOrganisation(facility.getId());
-//				if(survey != null) survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
-//				if(objective != null) objective = (SurveyObjective)sessionFactory.getCurrentSession().load(SurveyObjective.class, objective.getId());
-//				if(section != null) section = (SurveySection)sessionFactory.getCurrentSession().load(SurveySection.class, section.getId());
-//				
 				if (log.isDebugEnabled()) log.debug("getSurveyExportFile(facility="+facility.getName()+")");
 				
-//				SurveyExportData surveyExportData = getMe().getSurveyExportDataInTransaction(facility, section, objective, survey);
 				SurveyExportData surveyExportData = getSurveyExportData(facility, section, objective, survey);
 				List<SurveyExportDataPoint> dataPoints = surveyExportData.getDataPoints();						
 					
@@ -166,7 +150,6 @@ public class SurveyExportService {
 				for (SurveyExportDataPoint dataPoint : dataPoints){
 					writer.write(dataPoint);
 				}
-//				sessionFactory.getCurrentSession().clear();
 			}
 		} catch (IOException ioe){
 			// TODO is this good ?
@@ -178,14 +161,7 @@ public class SurveyExportService {
 		return csvFile;
 	}	
 	
-//	@Transactional(readOnly=true, propagation=Propagation.REQUIRES_NEW)
-//	public SurveyExportData getSurveyExportDataInTransaction(Organisation facility, SurveySection section, SurveyObjective objective, Survey survey) {	
-//		return getSurveyExportData(facility, section, objective, survey);
-//	}
-	
 	public SurveyExportData getSurveyExportData(Organisation facility, SurveySection section, SurveyObjective objective, Survey survey) {	
-//		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-//		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		if(objective != null){
 			survey = objective.getSurvey();
@@ -281,11 +257,8 @@ public class SurveyExportService {
 
 	private void addDataPoints(Organisation facility, Survey survey, SurveyObjective surveyObjective, SurveySection surveySection, SurveyQuestion surveyQuestion,
 			List<SurveyExportDataPoint> surveyExportDataPoints, SurveyElement surveyElement, List<String> surveyQuestionItems, Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap) {
-		if(surveyElement == null)
-			surveyExportDataPoints.add(getBasicInfoDataPoint(facility, survey, surveyObjective, surveySection, surveyQuestion, null));
+		if(surveyElement == null) surveyExportDataPoints.add(getBasicInfoDataPoint(facility, survey, surveyObjective, surveySection, surveyQuestion, null));
 		else{
-			if (log.isDebugEnabled()) log.debug("getSurveyExportDataPoints(type="+surveyElement.getDataElement().getType().getType()+")");
-			
 			SurveyExportDataPoint dataPoint = getBasicInfoDataPoint(facility, survey, surveyObjective, surveySection, surveyQuestion, surveyElement);
 			List<SurveyExportDataPoint> dataPoints = new ArrayList<SurveyExportDataPoint>();
 						

@@ -1,5 +1,6 @@
 package org.chai.kevin.survey
 
+import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.export.SurveyExportData
 import org.chai.kevin.survey.export.SurveyExportDataPoint
@@ -150,8 +151,8 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
 		
 		when:
-		def file = surveyExportService.getSurveyExportFile(getOrganisation(BUTARO), section, objective, survey)
-		def zipFile = Utils.getZipFile(file)
+		def file = surveyExportService.getSurveyExportFile("file", getOrganisation(BUTARO), section, objective, survey)
+		def zipFile = Utils.getZipFile(file, "file")
 		
 		then:
 		zipFile.exists() == true
@@ -171,12 +172,10 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
 		
 		when:
-		def file = surveyExportService.getSurveyExportFile(getOrganisation(BUTARO), section, objective, survey)
-		def zipFile = Utils.getZipFile(file)
-		def zipFileName = zipFile.getName()
+		def file = surveyExportService.getExportFilename(getOrganisation(BUTARO), section, objective, survey)
 		
 		then:
-		zipFileName.startsWith("section_ButaroDH_")
+		file.startsWith("section_ButaroDH_")
 	}
 		
 }

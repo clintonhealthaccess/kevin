@@ -112,10 +112,9 @@ public class Utils {
 		return noHtmlString.substring(0, length);
 	}
 	
-	public static File getZipFile(File file) throws IOException {		
+	public static File getZipFile(File file, String filename) throws IOException {		
 		
-		String fileName = file.getName().endsWith(CSV_FILE_EXTENSION) ? file.getName().replace(CSV_FILE_EXTENSION, "") : file.getName();		
-		File zipFile = File.createTempFile(fileName, ZIP_FILE_EXTENSION);
+		File zipFile = File.createTempFile(filename, ZIP_FILE_EXTENSION);
 
 		ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
 		FileInputStream fileInputStream = new FileInputStream(file);

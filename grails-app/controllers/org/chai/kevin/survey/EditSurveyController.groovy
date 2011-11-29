@@ -245,21 +245,21 @@ class EditSurveyController extends AbstractController {
 				elements = array {
 					surveyPage.elements.each { surveyElement, enteredValue ->
 						elem (
-								id: surveyElement.id,
-								questionId: surveyElement.surveyQuestion.id,
-								skipped: array {
-									enteredValue.skippedPrefixes.each { prefix -> element prefix }
-								},
-								invalid: array {
-									enteredValue.invalidPrefixes.each { invalidPrefix ->
-										pre (
-												prefix: invalidPrefix,
-												valid: enteredValue.isValid(invalidPrefix),
-												errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
-												)
-									}
+							id: surveyElement.id,
+							questionId: surveyElement.surveyQuestion.id,
+							skipped: array {
+								enteredValue.skippedPrefixes.each { prefix -> element prefix }
+							},
+							invalid: array {
+								enteredValue.invalidPrefixes.each { invalidPrefix ->
+									pre (
+											prefix: invalidPrefix,
+											valid: enteredValue.isValid(invalidPrefix),
+											errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
+											)
 								}
-								)
+							}
+						)
 					}
 				}
 
@@ -310,9 +310,7 @@ class EditSurveyController extends AbstractController {
 
 		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
 
-		render (view: '/survey/print/surveyPrint', model:[
-					surveyPage: surveyPage
-				])
+		render (view: '/survey/print/surveyPrint', model:[surveyPage: surveyPage])
 	}
 
 	def export = {
@@ -321,15 +319,9 @@ class EditSurveyController extends AbstractController {
 		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
 		Survey survey = Survey.get(params.int('survey'))	
 
-		File csvFile = null;
-		if(section != null)
-			csvFile = surveyExportService.getSurveyExportFile(organisation, section, null, null);
-		else if(objective != null)
-			csvFile = surveyExportService.getSurveyExportFile(organisation, null, objective, null);
-		else if(survey != null)
-			csvFile = surveyExportService.getSurveyExportFile(organisation, null, null, survey);						
-			
-		def zipFile = Utils.getZipFile(csvFile, Utils.CSV_FILE_EXTENSION)
+		String filename = surveyExportService.getExportFilename(organisation, section, objective, survey);
+		File csvFile = surveyExportService.getSurveyExportFile(filename, organisation, section, objective, survey);
+		def zipFile = Utils.getZipFile(csvFile, filename)
 			
 		if(zipFile.exists()){
 			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());

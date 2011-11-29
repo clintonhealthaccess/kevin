@@ -59,6 +59,7 @@ class LanguageService {
 		if (text != null) text = text.toString()
 		if (text == null || text.trim().equals("") || Utils.stripHtml(text, null).trim().equals("")) text = translation?.get(getFallbackLanguage())
 		if (text != null) text = text.toString()
+		if (text == null) return "";
 		return text;
 	}
 	

@@ -94,4 +94,23 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController.response.redirectedUrl == '/summary/summaryPage'
 	}
 	
+	def "export survey works"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		editSurveyController = new EditSurveyController()
+		
+		when:
+		editSurveyController.params.organisation = getOrganisation(RWANDA).id
+		editSurveyController.params.survey = survey.id
+		editSurveyController.export()
+		
+		then:
+		editSurveyController.response.getContentType() == "application/zip"
+	}
+	
 }
