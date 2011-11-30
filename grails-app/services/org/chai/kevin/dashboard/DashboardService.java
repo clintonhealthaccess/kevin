@@ -33,14 +33,12 @@ import grails.plugin.springcache.annotations.Cacheable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.CalculationInfo;
 import org.chai.kevin.CalculationValue;
 import org.chai.kevin.Info;
 import org.chai.kevin.InfoService;
@@ -48,9 +46,7 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,17 +64,23 @@ public class DashboardService {
 	@Cacheable("dashboardCache")
 	public Dashboard getDashboard(Organisation organisation, DashboardObjective objective, Period period, Set<String> groupUuids) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
+		
+		List<Organisation> organisations = new ArrayList<Organisation>();
 		for (Organisation child : organisation.getChildren()) {
-			organisationService.loadChildren(child, getSkipLevelArray());
 			organisationService.loadGroup(child);
+						
+			if (organisationService.loadLevel(child) != organisationService.getFacilityLevel()
+				|| 
+				groupUuids.contains(child.getOrganisationUnitGroup().getUuid())) {
+				organisations.add(child);
+				organisationService.loadChildren(child, getSkipLevelArray());
+			}
 		}
 		Organisation parent = organisation;
 		while (organisationService.loadParent(parent, getSkipLevelArray())) {
 			parent = parent.getParent();
 		}
 		
-		// TODO get organisations from group only
-		List<Organisation> organisations = organisation.getChildren();
 		List<DashboardObjectiveEntry> weightedObjectives = objective.getObjectiveEntries();
 		List<Organisation> organisationPath = calculateOrganisationPath(organisation);
 		List<DashboardObjective> objectivePath = calculateObjectivePath(objective);

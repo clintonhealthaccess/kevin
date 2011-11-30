@@ -15,10 +15,11 @@
 			<g:if test="${!objectives.empty}">
 				<ul>
 					<g:each in="${objectives}" var="objective">
-						<% linkParams << [objective: objective.id] %>
+						<% def newLinkParams = new HashMap(linkParams) %>
+						<% newLinkParams << [objective: objective.id] %>
 						<li>
 							<span>
-								<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:linkParams)}">
+								<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:newLinkParams)}">
 									<g:i18n field="${objective.names}"/>
 								</a>
 							</span>

@@ -15,9 +15,9 @@
 	<body>
 		<div id="report">
 			<div class="subnav">
-				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation:currentOrganisation?.id, objective:currentObjective?.id, level:currentLevel?.id]]"/>
+				<g:render template="/templates/iterationFilter" model="[linkParams:params]"/>
 				<g:render template="/templates/organisationFilter" model="[linkParams:[period:currentPeriod.id, objective:currentObjective?.id, level:currentLevel?.id, filter:'organisation']]"/>
-				<g:render template="/templates/objectiveFilter" model="[linkParams:[period:currentPeriod.id, organisation:currentOrganisation?.id, level:currentLevel?.id]]"/>
+				<g:render template="/templates/objectiveFilter" model="[linkParams:params]"/>
 				<g:render template="/templates/levelFilter" model="[linkParams:[period:currentPeriod.id, organisation:currentOrganisation?.id, objective:currentObjective?.id, filter:'level']]"/>												
 				
 				<div class="right">
@@ -28,10 +28,9 @@
 				</shiro:hasPermission>
 				<!-- ADMIN SECTION END -->
 			</div>
-		</div>						
-		<g:if test="${fctTable != null}">
-			<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: fctTable.facilityTypes]"/>
-		</g:if>
+		</div>
+		
+		<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
 		<div id="center" class="main">
 			<div id="values">
 				<g:if test="${fctTable != null}">
@@ -78,15 +77,15 @@
 							</thead>
 							<tbody>
 								<tr>
-									<th colspan="${fctTable.targets.size()+1}" class="parent-row">${currentOrganisation.name} - Total</th>
+									<th class="box-report-organisation">${currentOrganisation.name} - Total</th>
+									<g:each in="${fctTable.targets}" var="target">
+										<td class="box-report-value">
+											<g:if test="${!fctTable.getTotal(target) != null}">
+												${fctTable.getTotal(target).value}
+											</g:if>
+										</td>
+									</g:each>
 								</tr>
-								<g:each in="${fctTable.targets}" var="target">
-									<td class="box-report-value">
-										<g:if test="${!fctTable.getTotal(target) != null}">
-											${fctTable.getTotal(target).value}
-										</g:if>
-									</td>
-								</g:each>
 								<g:each in="${fctTable.organisationMap.keySet()}" var="orgMapParent">
 									<tr>
 										<th colspan="${fctTable.targets.size()+1}" class="parent-row">${orgMapParent.name}</th>

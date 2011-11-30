@@ -48,6 +48,16 @@ class DashboardTargetController extends AbstractObjectiveController {
 		return '/dashboard/createTarget'
 	}
 	
+	def getModel(def entity) {
+		def model = super.getModel(entity)
+		
+		def calculations = []
+		if (entity.entry.calculation != null) calculations.add(entity.entry.calculation)
+		
+		model << [calculations: calculations]
+		return model;
+	}
+	
 	def bindParams(def objectiveEntry) {
 		bindData(objectiveEntry, params, [exclude:'entry.calculation.id'])
 		if (params.int('entry.calculation.id') != null) objectiveEntry.entry.calculation = dataService.getData(params.int('entry.calculation.id'), Calculation.class)

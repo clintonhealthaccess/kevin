@@ -31,6 +31,7 @@ package org.chai.kevin.dsr
 import org.chai.kevin.AbstractController
 import org.chai.kevin.Organisation
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period
 
 class DsrController extends AbstractController {
@@ -46,26 +47,27 @@ class DsrController extends AbstractController {
 		Period period = getPeriod()
 		DsrObjective objective = DsrObjective.get(params.int('objective'));
 		Organisation organisation = getOrganisation(false)
+		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
 		
 		def dsrTable = null
 		if (period != null && objective != null && organisation != null) {
-			 dsrTable = dsrService.getDsr(organisation, objective, period);
+			 dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet(facilityTypes*.uuid));
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
 		
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
-		Set<String> defaultChecked = ConfigurationHolder.config.dsr.facility.checked;
 		
 		[
 			dsrTable: dsrTable, 
 			currentPeriod: period,
 			currentObjective: objective,
 			currentOrganisation: organisation,
+			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
+			facilityTypes: organisationService.getGroupsForExpression(),
 			objectives: DsrObjective.list(),
-		    organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
-			checkedFacilities: defaultChecked
+		    organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1)
 		]
 	}
 	

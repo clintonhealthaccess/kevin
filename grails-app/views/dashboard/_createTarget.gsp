@@ -12,8 +12,9 @@
 		<g:input name="entry.code" label="Code" bean="${objectiveEntry?.entry}" field="code"/>
 		
 		<g:selectFromList name="entry.calculation.id" label="Calculation" bean="${objectiveEntry?.entry}" field="calculation" optionKey="id" multiple="false"
+			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[classes:['Average', 'Aggregation']])}"
 			from="${calculations}" value="${objectiveEntry?.entry?.calculation?.id}" values="${calculations.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
-		
+				
 		<g:input name="weight" label="Weight" bean="${objectiveEntry}" field="weight"/>
 		<g:input name="order" label="Order" bean="${objectiveEntry}" field="order"/>
 		

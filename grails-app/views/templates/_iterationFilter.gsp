@@ -7,9 +7,10 @@
 		<div class="hidden dropdown-list">
 			<ul>
 				<g:each in="${periods}" var="period">
-					<% linkParams << [period:period.id] %>
+					<% def newLinkParams = new HashMap(linkParams) %>
+					<% newLinkParams << [period:period.id] %>
 					<li>
-						<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:linkParams)}">
+						<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:newLinkParams)}">
 							<span><g:dateFormat format="yyyy" date="${period.startDate}" /></span> 
 						</a>
 					</li>

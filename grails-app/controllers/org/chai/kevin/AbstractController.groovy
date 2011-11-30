@@ -35,6 +35,7 @@ import org.chai.kevin.survey.SurveyObjective
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.period.Period
 
@@ -42,6 +43,20 @@ abstract class AbstractController {
 
 	def organisationService;
 
+	def getOrganisationUnitGroups(def defaultIfNull) {
+		List<OrganisationUnitGroup> groups = []
+		def groupUuids = null
+		if (params['groupUuids'] != null) {
+			groupUuids = params.list('groupUuids')
+		}
+		else {
+			groupUuids = ConfigurationHolder.config.dashboard.facility.checked
+			ConfigurationHolder.config.dashboard.facility.checked;
+		}
+		groupUuids.each {groups.add(OrganisationUnitGroup.findByUuid(it))}
+		return groups;
+	}
+	
 	def getOrganisation(def defaultIfNull) {
 		
 		Organisation organisation = null;		

@@ -9,8 +9,9 @@
 		<span>${organisation.name}</span>
 	</g:if>
 	<g:else>
-		<% linkParams['organisation'] = organisation.id %>	
-		<a class="dropdown-link parameter" data-type="organisation" data-organisation="${organisation.id}" href="${createLinkByFilter(controller:controller, action:action, params:linkParams)}">
+		<% def newLinkParams = new HashMap(linkParams) %>
+		<% newLinkParams['organisation'] = organisation.id %>	
+		<a class="dropdown-link parameter" data-type="organisation" data-organisation="${organisation.id}" href="${createLinkByFilter(controller:controller, action:action, params:newLinkParams)}">
 			${organisation.name}
 		</a>
 	</g:else>

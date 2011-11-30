@@ -34,7 +34,6 @@ package org.chai.kevin.fct;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -42,8 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.CalculationValue;
@@ -52,7 +49,6 @@ import org.chai.kevin.OrganisationService;
 import org.chai.kevin.OrganisationSorter;
 import org.chai.kevin.ValueService;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.CalculationPartialValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
@@ -62,7 +58,6 @@ public class FctService {
 	
 	private OrganisationService organisationService;
 	private ValueService valueService;
-	private int groupLevel;
 	
 	public FctTable getFct(Organisation organisation, FctObjective objective, Period period, OrganisationUnitLevel orgUnitLevel, Set<String> groupUuids) {
 		if (log.isDebugEnabled())  log.debug("getFct(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
@@ -159,9 +154,5 @@ public class FctService {
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}		
-
-	public void setGroupLevel(int groupLevel) {
-		this.groupLevel = groupLevel;
-	}
 
 }

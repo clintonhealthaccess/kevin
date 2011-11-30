@@ -121,12 +121,6 @@ modules = {
 		resource url: '/js/explanation_init.js', bundle: 'core'
 	}
 
-	report {
-		dependsOn 'jquery'
-
-		resource url: '/js/report_init.js', bundle: 'core'
-	}
-	
 	questionhelp {
 		dependsOn 'jquery'
 
@@ -160,31 +154,31 @@ modules = {
 	}
 
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,report,spinner'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen'
 
 		//resource url: '/css/dsr.css'
 	}
 
 	fct {
-		dependsOn 'core,cluetip,dropdown,nicetable,report,spinner'
+		dependsOn 'core,cluetip,dropdown,nicetable,spinner,chosen'
 
 		//resource url: '/css/dsr.css'
 	}
 	
 	dashboard {
-		dependsOn 'core,cluetip,dropdown,nicetable,explanation,report,spinner'
+		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen'
 
 		//resource url: '/css/dashboard.css'
 	}
 
 	maps {
-		dependsOn 'core,url,dropdown,explanation,spinner'
+		dependsOn 'core,url,dropdown,explanation,spinner,chosen'
 
 		//resource url: '/css/maps.css'
 	}
 
 	cost {
-		dependsOn 'core,dropdown,nicetable,explanation,spinner'
+		dependsOn 'core,dropdown,nicetable,explanation,spinner,chosen'
 
 		//resource url: '/css/cost.css'
 	}

@@ -68,9 +68,13 @@ public class DsrService {
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public DsrTable getDsr(Organisation organisation, DsrObjective objective, Period period) {
+	public DsrTable getDsr(Organisation organisation, DsrObjective objective, Period period, Set<String> groupUuids) {
 		
-		List<Organisation>  organisations = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		List<Organisation>  organisations = new ArrayList<Organisation>();
+		for (String groupUuid : groupUuids) {
+			organisations.addAll(organisationService.getFacilitiesOfGroup(organisation, organisationService.getOrganisationUnitGroup(groupUuid)));
+		}
+		
 		Map<Organisation, Organisation> orgParentMap = this.getParentOfLevel(organisations,groupLevel);
 		OrganisationSorter organisationSorter = new OrganisationSorter(orgParentMap,organisationService);
 		Collections.sort(organisations, organisationSorter.BY_FACILITY_TYPE);

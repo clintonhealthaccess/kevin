@@ -56,7 +56,8 @@ class CostTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			objectives: CostObjective.list(),
-			dataElements: dataService.list(DataElement.class, [:]), 
+			dataElements: entity.dataElement!=null?[entity.dataElement]:[],
+			dataElementsEnd:  entity.dataElementEnd!=null?[entity.dataElementEnd]:[],
 			costRampUps: CostRampUp.list(), 
 			groups: organisationService.getGroupsForExpression(),
 		]

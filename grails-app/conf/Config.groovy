@@ -153,7 +153,7 @@ security.shiro.authc.required = false
 				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.hibernate'
 
-			info  'grails.app',
+			debug  'grails.app',
 				   'org.chai.kevin'
 
 		}

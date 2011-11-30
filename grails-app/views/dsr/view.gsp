@@ -14,9 +14,9 @@
 	<body>
 		<div id="report">
 			<div class="subnav">
-				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation: currentOrganisation?.id, objective: currentObjective?.id]]"/>
-				<g:render template="/templates/organisationFilter" model="[linkParams:[period: currentPeriod.id, objective: currentObjective?.id]]"/>
-				<g:render template="/templates/objectiveFilter" model="[linkParams:[period: currentPeriod.id, organisation: currentOrganisation?.id]]"/>
+				<g:render template="/templates/iterationFilter" model="[linkParams:params]"/>
+				<g:render template="/templates/organisationFilter" model="[linkParams:params]"/>
+				<g:render template="/templates/objectiveFilter" model="[linkParams:params]"/>
 								
 				<div class="right">
 					<!-- ADMIN SECTION -->
@@ -28,9 +28,8 @@
 					<!-- ADMIN SECTION END -->
 				</div>
 			</div>
-			<g:if test="${dsrTable != null}">
-				<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: dsrTable.facilityTypes]"/>
-			</g:if>
+			
+		    <g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
 			<div id="center" class="main">
 				<div id="values">
 					<g:if test="${dsrTable != null}">

@@ -33,16 +33,20 @@ class DataController extends AbstractController {
 	}
 	
 	def getAjaxData = {
-		def clazz = Class.forName('org.chai.kevin.data.'+params['class'], true, Thread.currentThread().contextClassLoader)
+		def clazzes = []
+		if (params['class'] != null) clazzes.add Class.forName('org.chai.kevin.data.'+params['class'], true, Thread.currentThread().contextClassLoader)
+		if (params['classes'] != null) clazzes.addAll params.list('classes').collect {Class.forName('org.chai.kevin.data.'+it, true, Thread.currentThread().contextClassLoader)}
 		def includeTypes = params.list('include')
-		def dataList = dataService.searchData(clazz, params['searchText'], includeTypes, [:]);
+		
+		def dataList = []
+		clazzes.each {dataList.addAll dataService.searchData(it, params['term'], includeTypes, [:])};
 		
 		render(contentType:"text/json") {
 			elements = array {
 				dataList.each { item ->
 					elem (
 						key: item.id,
-						value: i18n(field:item.names)+' ['+item.class.simpleName+']'
+						value: i18n(field:item.names)+' ['+item.code+'] ['+item.class.simpleName+']'
 					)
 				}
 			}

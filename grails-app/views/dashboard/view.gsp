@@ -17,7 +17,7 @@
     <body>
 		<div id="dashboard">
 			<div id="corner" class="subnav">
-				<g:render template="/templates/iterationFilter" model="[linkParams:[organisation: currentOrganisation?.id, objective: currentObjective?.id]]"/>
+				<g:render template="/templates/iterationFilter" model="[linkParams:params]"/>
 			</div>
 		
 			<div id="top" class="main">
@@ -50,9 +50,7 @@
 				    	</ul>
 			    	</div>
 			    	
-			    	<g:if test="${dashboard.facilityTypes != null}">
-			    		<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: dashboard.facilityTypes]"/>
-			    	</g:if>
+		    		<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
 		    	</div>
 		    
 		    	<div class="box">

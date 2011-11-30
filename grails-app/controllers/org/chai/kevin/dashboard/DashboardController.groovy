@@ -33,6 +33,7 @@ import org.chai.kevin.AbstractController
 import org.chai.kevin.Organisation
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.aggregation.AggregationService
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period
 
 class DashboardController extends AbstractController {
@@ -50,7 +51,9 @@ class DashboardController extends AbstractController {
 		DashboardEntry entry = getDashboardEntry()
 		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
 
-		def info = dashboardService.getExplanation(organisation, entry, period)
+		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
+		
+		def info = dashboardService.getExplanation(organisation, entry, period, facilityTypes)
 		def groups = organisationService.getGroupsForExpression()
 		[info: info, groups: groups, entry: entry]
 	}
@@ -83,18 +86,19 @@ class DashboardController extends AbstractController {
 		if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", objective: "+entry.id+", organisation:"+ organisation.id);
 		redirectIfDifferent(period, entry, organisation)
 		
-		def dashboard = dashboardService.getDashboard(organisation, entry, period);
-		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
-		Set<String> defaultChecked = ConfigurationHolder.config.dashboard.facility.checked;
+		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
 		
-		if (log.isDebugEnabled()) log.debug("checked by default: "+defaultChecked)
+		def dashboard = dashboardService.getDashboard(organisation, entry, period, new HashSet(facilityTypes*.uuid));
+		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
+		
 		[ 
 			dashboard: dashboard,
 			currentPeriod: period,
 			currentObjective: entry,
 			currentOrganisation: organisation,
-			periods: Period.list(), 
-			checkedFacilities: defaultChecked 
+			currentFacilityTypes: facilityTypes,
+			periods: Period.list(),
+			facilityTypes: organisationService.getGroupsForExpression()
 		]
 	}
 	

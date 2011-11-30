@@ -21,7 +21,7 @@
 	
 		<g:selectFromList name="dataElement.id" label="Data element" bean="${target}" field="dataElement" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"
-			from="${[target.dataElement]}" value="${target.dataElement?.id}" values="${[target.dataElement].collect{i18n(field:it.names)+' ['+it.class.simpleName+']'}}" />
+			from="${dataElements}" value="${target.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 	
 		<g:input name="order" label="Order" bean="${target}" field="order"/>
 		
