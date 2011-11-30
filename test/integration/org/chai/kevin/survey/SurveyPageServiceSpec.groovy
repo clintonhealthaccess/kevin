@@ -88,6 +88,33 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredValue.list()[0].value.numberValue == 10
 	}
 	
+	def "test modify with skipped question"() {
+		setup:
+		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
+		
+		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element2 = newSurveyElement(question2, newDataElement(CODE(2), Type.TYPE_NUMBER()))
+		def skipRule = newSkipRule(survey, "\$"+element1.id+" == 1", [:], [question2])
+		
+		when:
+		surveyPageService.modify(getOrganisation(KIVUYE), objective, [element1], [("surveyElements["+element1.id+"].value"): "1"])
+		
+		then:
+		SurveyEnteredValue.count() == 2
+		SurveyEnteredValue.list()[0].value.numberValue == 1
+		SurveyEnteredQuestion.count() == 2
+		SurveyEnteredQuestion.list()[0].getSkippedRules().equals(new HashSet([skipRule]))
+	}
+	
+	
 	def "test submit"() {
 		setup:
 		setupOrganisationUnitTree()
