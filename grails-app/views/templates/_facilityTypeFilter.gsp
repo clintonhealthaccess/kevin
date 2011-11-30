@@ -1,6 +1,6 @@
 <g:form class="filter facility-type" method="get" url="[controller:controllerName, action:actionName]">
 	<g:each in="${linkParams}" var="param">
-		<g:if test="${param.key != 'action' && param.key != 'controller'}">
+		<g:if test="${param.key != 'action' && param.key != 'controller' && param.key != 'groupUuids'}">
 			<input type="hidden" name="${param.key}" value="${param.value}"/>
 		</g:if>
 	</g:each>

@@ -21,7 +21,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
 		def surveyEnteredValue = newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(KIVUYE), v("1"))
@@ -61,7 +61,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
 		def surveyEnteredValue = newSurveyEnteredQuestion(question1, period, OrganisationUnit.findByName(BUTARO), false, true)
@@ -80,11 +80,11 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		
 		def section1 = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(section1, 1, [(HEALTH_CENTER_GROUP)])
-		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		def section2 = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section2, 1, [(HEALTH_CENTER_GROUP)])
-		def element2 = newSurveyElement(question2, newDataElement(CODE(2), Type.TYPE_NUMBER()))
+		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
 
 		expect:
 		surveyValueService.getSurveyEnteredValues(OrganisationUnit.findByName(KIVUYE), null, null, null).isEmpty()
@@ -117,12 +117,12 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		def objective1 = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])		
 		def section1 = newSurveySection(objective1, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(section1, 1, [(HEALTH_CENTER_GROUP)])
-		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		def objective2 = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section2 = newSurveySection(objective2, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section2, 1, [(HEALTH_CENTER_GROUP)])
-		def element2 = newSurveyElement(question2, newDataElement(CODE(2), Type.TYPE_NUMBER()))
+		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
 
 		expect:
 		surveyValueService.getSurveyEnteredValues(OrganisationUnit.findByName(KIVUYE), null, null, null).isEmpty()
@@ -155,13 +155,13 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		def objective1 = newSurveyObjective(survey1, 1, [(HEALTH_CENTER_GROUP)])
 		def section1 = newSurveySection(objective1, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(section1, 1, [(HEALTH_CENTER_GROUP)])
-		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))		
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))		
 		
 		def survey2 = newSurvey(period2)
 		def objective2 = newSurveyObjective(survey2, 1, [(HEALTH_CENTER_GROUP)])
 		def section2 = newSurveySection(objective2, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section2, 1, [(HEALTH_CENTER_GROUP)])
-		def element2 = newSurveyElement(question2, newDataElement(CODE(2), Type.TYPE_NUMBER()))
+		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
 
 		expect:
 		surveyValueService.getSurveyEnteredValues(OrganisationUnit.findByName(KIVUYE), null, null, null).isEmpty()

@@ -117,19 +117,19 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		Average.count() == 1
 	}
 	
-	def "create target does not show sums"() {
-		setup:
-		setupOrganisationUnitTree()
-		def sum = newSum("1", CODE(1))
-		def average = newAverage("1", CODE(2))
-		dashboardTargetController = new DashboardTargetController()
-		dashboardTargetController.organisationService = organisationService
-		
-		when:
-		dashboardTargetController.create()
-		
-		then:
-		dashboardTargetController.modelAndView.model.calculations.equals([average])
-	}
+//	def "create target does not show sums"() {
+//		setup:
+//		setupOrganisationUnitTree()
+//		def sum = newSum("1", CODE(1))
+//		def average = newAverage("1", CODE(2))
+//		dashboardTargetController = new DashboardTargetController()
+//		dashboardTargetController.organisationService = organisationService
+//		
+//		when:
+//		dashboardTargetController.create()
+//		
+//		then:
+//		dashboardTargetController.modelAndView.model.calculations.equals([average])
+//	}
 	
 }

@@ -549,7 +549,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		formula = "1\n+1"
 		
 		then:
-		!expressionService.expressionIsValid(formula)
+		!expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		formula = "\$0"

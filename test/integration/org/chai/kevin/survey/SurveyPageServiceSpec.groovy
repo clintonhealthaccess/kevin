@@ -55,7 +55,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def element = newSurveyElement(question, newDataElement(CODE(1), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(),"key2":Type.TYPE_NUMBER()])))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(),"key2":Type.TYPE_NUMBER()])))
 		
 		when:
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(KIVUYE), new Value("{\"value\":[{\"map_value\":{\"skipped\":\"33\",\"value\":null},\"map_key\":\"key1\"},{\"map_value\":{\"value\":10},\"map_key\":\"key2\"}]}"))
@@ -65,7 +65,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 				
 		then:
 		surveyPageService.submit(getOrganisation(KIVUYE), objective) == true
-		DataValue.count() == 1
+		RawDataElementValue.count() == 1
 	}
 	
 	def "test modify"() {
@@ -101,8 +101,8 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
 		
-		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
-		def element2 = newSurveyElement(question2, newDataElement(CODE(2), Type.TYPE_NUMBER()))
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
 		def skipRule = newSkipRule(survey, "\$"+element1.id+" == 1", [:], [question2])
 		
 		when:
@@ -277,7 +277,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
 		newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(KIVUYE), v("1"))
@@ -295,7 +295,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def element1 = newSurveyElement(question1, newDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
 		newSurveyEnteredQuestion(question1, period, OrganisationUnit.findByName(BUTARO), false, true)

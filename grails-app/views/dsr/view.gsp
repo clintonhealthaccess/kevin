@@ -29,7 +29,9 @@
 				</div>
 			</div>
 			
-		    <g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
+			<g:if test="${dsrTable != null}">
+		    	<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
+		    </g:if>
 			<div id="center" class="main">
 				<div id="values">
 					<g:if test="${dsrTable != null}">

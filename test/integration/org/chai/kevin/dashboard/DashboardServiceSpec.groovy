@@ -49,14 +49,26 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def root = newDashboardObjective(CODE(1))
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
-		def organisation = getOrganisation(RWANDA)
+		def dashboard = null
 		refresh()
 		
 		when:
-		def dashboard = dashboardService.getDashboard(organisation, root, period)
+		dashboard = dashboardService.getDashboard(getOrganisation(RWANDA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dashboard.getPercentage(getOrganisation(NORTH), target) != null
+		dashboard.organisations.equals([getOrganisation(NORTH)])
+		
+		when:
+		dashboard = dashboardService.getDashboard(getOrganisation(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		
+		then:
+		dashboard.organisations.equals([getOrganisation(KIVUYE), getOrganisation(BUTARO)])
+		
+		when:
+		dashboard = dashboardService.getDashboard(getOrganisation(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP]))
+		
+		then:
+		dashboard.organisations.equals([getOrganisation(BUTARO)])
 		
 	}
 	
@@ -71,7 +83,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def currentOrganisation = new Organisation(OrganisationUnit.findByName(currentOrganisationName));
 		def currentObjective = DashboardObjective.findByCode(currentObjectiveName);
 
-		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period);
+		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period, new HashSet(groups));
 		def percentage = dashboard.getPercentage(getOrganisation(organisationName), getObjective(objectiveName))
 
 		then:
@@ -80,12 +92,14 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		else percentage.value == value
 
 		where:
-		currentOrganisationName	| currentObjectiveName	| organisationName	| objectiveName | value
-		BURERA					| OBJECTIVE				| BUTARO			| TARGET1		| 40.0d
-		BURERA					| OBJECTIVE				| BUTARO			| TARGET2		| 20.0d
-		BURERA					| OBJECTIVE				| KIVUYE			| TARGET1		| 40.0d
-		BURERA					| OBJECTIVE				| KIVUYE			| TARGET2		| null
-		RWANDA					| ROOT					| NORTH				| OBJECTIVE		| 30.0d
+		currentOrganisationName	| currentObjectiveName	| organisationName	| objectiveName | groups										| value
+		BURERA					| OBJECTIVE				| BUTARO			| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA					| OBJECTIVE				| BUTARO			| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
+		BURERA					| OBJECTIVE				| KIVUYE			| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA					| OBJECTIVE				| KIVUYE			| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
+		RWANDA					| ROOT					| NORTH				| OBJECTIVE		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
+		BURERA					| OBJECTIVE				| BUTARO			| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		RWANDA					| ROOT					| NORTH				| OBJECTIVE		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
 	}
 
 	def "dashboard test objective path"() {
@@ -97,7 +111,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		when:
 		def objective = DashboardObjective.findByCode(objectiveCode);
-		def dashboard = dashboardService.getDashboard(getOrganisation(organisationName), objective, period);
+		def dashboard = dashboardService.getDashboard(getOrganisation(organisationName), objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]));
 
 		then:
 		dashboard.objectiveEntries == getWeightedObjectives(expectedObjectives)

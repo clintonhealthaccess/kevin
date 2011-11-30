@@ -14,14 +14,22 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(2), dataElement, [], objective)
 		def organisation = getOrganisation(BURERA)
+		def dsrTable = null
 		refresh()
 		
 		when:
-		def dsrTable = dsrService.getDsr(organisation, objective, period)
+		dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		dsrTable.getDsr(getOrganisation(BUTARO), target) != null
+		dsrTable.organisations.equals([getOrganisation(BUTARO), getOrganisation(KIVUYE)])
+
+		when:
+		dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP]))
 		
+		then:
+		dsrTable.organisations.equals([getOrganisation(BUTARO)])
+
 	}
 	
 	def "test dsr formatting"() {
@@ -34,7 +42,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
-		def dsrTable = dsrService.getDsr(organisation, objective, period)
+		def dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		dsrTable.getDsr(getOrganisation(BUTARO), target).stringValue == value
@@ -58,7 +66,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
-		def dsrTable = dsrService.getDsr(organisation, objective, period)
+		def dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		dsrTable.getDsr(getOrganisation(organisationName), target).stringValue == null
@@ -79,7 +87,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
-		def dsrTable = dsrService.getDsr(organisation, objective, period)
+		def dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		dsrTable.getDsr(getOrganisation(BUTARO), target).stringValue == "10"

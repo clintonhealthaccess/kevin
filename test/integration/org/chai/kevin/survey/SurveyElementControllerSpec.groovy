@@ -15,7 +15,7 @@ class SurveyElementControllerSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement = newDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		
 		surveyElementController = new SurveyElementController()
@@ -38,7 +38,7 @@ class SurveyElementControllerSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement = newDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
+		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
 		
 		surveyElementController = new SurveyElementController()

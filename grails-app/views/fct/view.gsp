@@ -16,9 +16,9 @@
 		<div id="report">
 			<div class="subnav">
 				<g:render template="/templates/iterationFilter" model="[linkParams:params]"/>
-				<g:render template="/templates/organisationFilter" model="[linkParams:[period:currentPeriod.id, objective:currentObjective?.id, level:currentLevel?.id, filter:'organisation']]"/>
+				<g:render template="/templates/organisationFilter" model="[linkParams:params << [filter:'organisation']]"/>
 				<g:render template="/templates/objectiveFilter" model="[linkParams:params]"/>
-				<g:render template="/templates/levelFilter" model="[linkParams:[period:currentPeriod.id, organisation:currentOrganisation?.id, objective:currentObjective?.id, filter:'level']]"/>												
+				<g:render template="/templates/levelFilter" model="[linkParams:params << [filter:'level']]"/>												
 				
 				<div class="right">
 				<!-- ADMIN SECTION -->
@@ -30,7 +30,9 @@
 			</div>
 		</div>
 		
-		<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
+		<g:if test="${fctTable != null}">
+			<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
+		</g:if>
 		<div id="center" class="main">
 			<div id="values">
 				<g:if test="${fctTable != null}">
@@ -115,26 +117,9 @@
 					</g:else>
 				</g:if>
 				<g:else>
-					<div>Please select an Organisation / Objective</div>
+					<div class="help">Please select an Organisation / Objective</div>
 				</g:else>
 			</div>
-			<!-- ADMIN SECTION -->
-			<shiro:hasPermission permission="admin:fct">
-				<div class="hidden flow-container"></div>
-				<r:script>
-					$(document).ready(function() {
-						$('#values').flow({
-							onSuccess: function(data) {
-								if (data.result == 'success') {
-									location.reload();
-								}
-							}
-						});
-					});
-				</r:script>
-			</shiro:hasPermission>
-			<!-- ADMIN SECTION END -->
-			<div class="clear"></div>
 		</div>
 	</div>
 

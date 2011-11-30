@@ -20,7 +20,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(j(["en":"section"]), objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
-		def element = newSurveyElement(question, newDataElement(CODE(1), type))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
 		
 		when:
@@ -41,7 +41,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(j(["en":"section"]), objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
-		def element = newSurveyElement(question, newDataElement(CODE(1), type))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
 		
 		when:
@@ -62,7 +62,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(j(["en":"section"]), objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
-		def element = newSurveyElement(question, newDataElement(CODE(1), type))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
 		
 		when:
@@ -83,7 +83,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(j(["en":"section"]), objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
-		def element = newSurveyElement(question, newDataElement(CODE(1), type))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
 		
 		when:
@@ -105,7 +105,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(j(["en":"section"]), objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
-		def element = newSurveyElement(question, newDataElement(CODE(1), type), ['[_].key1':j(['en':'header1'])])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type), ['[_].key1':j(['en':'header1'])])
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), type.getValue([['key1':10]]))
 		
 		when:
@@ -127,7 +127,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(j(["en":"section"]), objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(HEALTH_CENTER_GROUP)])
 		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
-		def element = newSurveyElement(question, newDataElement(CODE(1), type), ['[_].key1':j(['en':'header1'])])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type), ['[_].key1':j(['en':'header1'])])
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), type.getValue([['key1':10]]))
 
 		when:
@@ -147,7 +147,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(j(["en":"section"]), objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
-		def element = newSurveyElement(question, newDataElement(CODE(1), type))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
 		
 		when:
@@ -168,7 +168,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(j(["en":"section"]), objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
-		def element = newSurveyElement(question, newDataElement(CODE(1), type))
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
 		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
 		
 		when:

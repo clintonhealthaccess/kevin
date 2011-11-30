@@ -10,7 +10,7 @@ class FctServiceSpec extends FctIntegrationTests {
 
 	def fctService
 	
-	def "test happy flow"() {
+	def "test fct service works"() {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
@@ -18,10 +18,11 @@ class FctServiceSpec extends FctIntegrationTests {
 		def objective = newFctObjective(CODE(2))
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
+		def fctTable = null
 		refresh()
 		
 		when:
-		def fctTable = fctService.getFct(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3))
+		fctTable = fctService.getFct(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3), new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		fctTable.organisations.equals([getOrganisation(BURERA)])
@@ -29,7 +30,15 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable.getTotal(target).value == "2.0"
 		
 		when:
-		fctTable = fctService.getFct(getOrganisation(BURERA), objective, period, OrganisationUnitLevel.findByLevel(1))
+		fctTable = fctService.getFct(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3), new HashSet([DISTRICT_HOSPITAL_GROUP]))
+		
+		then:
+		fctTable.organisations.equals([getOrganisation(BURERA)])
+		fctTable.getFct(getOrganisation(BURERA), target).value == "1.0"
+		fctTable.getTotal(target).value == "1.0"
+		
+		when:
+		fctTable = fctService.getFct(getOrganisation(BURERA), objective, period, OrganisationUnitLevel.findByLevel(1), new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		fctTable.organisations.isEmpty()
@@ -37,7 +46,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		when:
 		def dummy = newOrganisationUnit("dummy", OrganisationUnit.findByName(NORTH))
 		refresh()
-		fctTable = fctService.getFct(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3))
+		fctTable = fctService.getFct(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3), new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		fctTable.organisations.equals([getOrganisation(BURERA), getOrganisation("dummy")])

@@ -20,6 +20,8 @@
 				<g:render template="/templates/iterationFilter" model="[linkParams:params]"/>
 			</div>
 		
+			<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
+			
 			<div id="top" class="main">
 	    		<h3 class="form-heading"><g:message code="dashboard.labels.objectives" default="Objectives"/></h3>
 		    	<ul class="form-heading-list horizontal inline-list">
@@ -49,8 +51,6 @@
 				    		</li>
 				    	</ul>
 			    	</div>
-			    	
-		    		<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
 		    	</div>
 		    
 		    	<div class="box">
