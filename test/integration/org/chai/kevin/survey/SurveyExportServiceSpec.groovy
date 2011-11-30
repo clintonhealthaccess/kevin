@@ -29,7 +29,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		dataPoints.size() == 1
-		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0"])
+		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0", ""])
 	}
 
 	def "test for export objective"(){
@@ -50,7 +50,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		dataPoints.size() == 1
-		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0"])
+		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0", ""])
 	}
 
 	def "test for export survey"(){
@@ -71,7 +71,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		dataPoints.size() == 1
-		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0"])
+		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0", ""])
 	}
 	
 	def "test for skip levels"(){
@@ -92,8 +92,8 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		dataPoints.size() == 1		
-		!dataPoints.get(0).equals(["survey",COUNTRY,NORTH,BURERA,SECTOR,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0"])
-		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0"])
+		!dataPoints.get(0).equals(["survey",COUNTRY,NORTH,BURERA,SECTOR,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0", ""])
+		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0", ""])
 	}
 	
 	def "test for simple question with multiple list headers"() {
@@ -115,7 +115,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		then:
 		dataPoints.size() == 1
 		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","LIST","question",
-			"10.0","header1"])
+			"10.0", "", "header1"])
 	}
 	
 	def "test for when no questions are active for a facility type"(){
