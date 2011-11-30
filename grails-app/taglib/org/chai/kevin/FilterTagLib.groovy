@@ -46,19 +46,22 @@ class FilterTagLib {
 	}
 
 	public Map updateParamsByFilter(Map params) {
-
-		if (!params.containsKey("filter"))
-			return params;
+		if (!params.containsKey("filter")) return params;
 		String filter = (String) params.get("filter");
 
 		Organisation organisation = null;
-		if (params.get("organisation") != null)
-			organisation = organisationService.getOrganisation((Integer) params.get("organisation"));
+		if (params.get("organisation") != null) {
+			Object id = params.get("organisation") 
+			if (id instanceof Integer) organisation = organisationService.getOrganisation((Integer) params.get("organisation"));
+			else organisation = organisationService.getOrganisation(Integer.parseInt(params.get("organisation")));
+		}
 
 		OrganisationUnitLevel orgUnitLevel = null;
-		if (params.get("level") != null)
-			orgUnitLevel = organisationUnitService
-					.getOrganisationUnitLevel((Integer) params.get("level"));
+		if (params.get("level") != null) {
+			Object id = params.get("level")
+			if (id instanceof Integer) orgUnitLevel = organisationUnitService.getOrganisationUnitLevel((Integer) params.get("level"));
+			else orgUnitLevel = organisationUnitService.getOrganisationUnitLevel(Integer.parseInt(params.get("level")));
+		}
 
 		if (organisation != null) {
 			organisationService.loadLevel(organisation);

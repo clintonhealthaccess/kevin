@@ -18,10 +18,11 @@
 	
 		<g:selectFromList name="objective.id" label="Objective" bean="${target}" field="objective" optionKey="id" multiple="false"
 			from="${objectives}" value="${target.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
-		
+
 		<g:selectFromList name="sum.id" label="Sum" bean="${target}" field="sum" optionKey="id" multiple="false"
+			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Sum'])}"
 			from="${sums}" value="${target.sum?.id}" values="${sums.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
-	
+		
 		<g:input name="order" label="Order" bean="${target}" field="order"/>
 		<div class="row">
 			<button type="submit">Save Target</button>

@@ -57,11 +57,7 @@ class MapsTargetController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		def calculations = []
-		calculations.addAll(dataService.list(Average.class, [:]))
-		calculations.addAll(dataService.list(Aggregation.class, [:]))
-		
-		[ target: entity, calculations: calculations, groups: organisationService.getGroupsForExpression()]
+		[ target: entity, calculations: entity.calculation!=null?[entity.calculation]:[], groups: organisationService.getGroupsForExpression()]
 	}
 	
 	def bindParams(def entity) {

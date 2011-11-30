@@ -60,7 +60,7 @@ class FctTargetController extends AbstractEntityController {
 			target: entity,
 			objectives: FctObjective.list(),
 			groups: organisationService.getGroupsForExpression(),
-			sums: Sum.list(),
+			sums: entity.sum!=null?[entity.sum]:[],
 			groupUuids: Utils.split(entity.groupUuidString)
 		]
 	}

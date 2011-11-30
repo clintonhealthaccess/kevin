@@ -11,14 +11,11 @@
 		<g:i18nTextarea name="descriptions" bean="${target}" value="${target.descriptions}" label="Description" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${target}" field="code"/>
 	
-		<g:selectFromList name="calculation.id" label="${message(code:'maps.target.calculation.label', default:'Calculation')}" bean="${target}" field="calculation" optionKey="id" multiple="false"
-			from="${calculations}" value="${target.calculation?.id}" values="${calculations.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+		<g:selectFromList name="calculation.id" label="Calculation" bean="${target?.calculation}" field="calculation" optionKey="id" multiple="false"
+			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[classes:['Average', 'Aggregation']])}"
+			from="${calculations}" value="${target?.calculation?.id}" values="${calculations.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 	
-		<div class="row ${hasErrors(bean:target,field:'order','errors')}">
-			<label for="order">Order</label>
-			<input type="text" name="order" value="${fieldValue(bean:target,field:'order')}"></input>
-			<div class="error-list"><g:renderErrors bean="${target}" field="order" /></div>
-		</div>
+		<g:input name="order" label="Order" bean="${target}" field="order"/>
 		
 		<g:if test="${target?.id != null}">
 			<input type="hidden" name="id" value="${target.id}"></input>
@@ -30,19 +27,3 @@
 		</div>
     </g:form>
 </div>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		selectMapsType();
-		$('#add-maps-target select[name=type]').bind('change', function(){
-			selectMapsType();
-		});
-	});
-	function selectMapsType() {
-		var value = $('#add-maps-target select[name=type]').val();
-		$('#add-maps-target .selectable').each(function(index, element){
-			if ($(element).data('type') != value) $(element).hide();
-			else $(element).show();
-		});
-	}
-</script>

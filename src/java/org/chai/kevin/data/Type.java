@@ -761,7 +761,7 @@ public class Type extends JSONValue {
 					try {
 						result = Utils.formatDate(Utils.parseDate(string));
 					} catch (ParseException e) {
-						result = JSONObject.NULL;
+						result = JSONNull.getInstance();
 					}
 				}
 				break;
