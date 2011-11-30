@@ -215,31 +215,31 @@ class EditSurveyController extends AbstractController {
 				objectives = array {  
 					surveyPage.enteredObjectives.each { objective, enteredObjective -> 
 						obj (
-								id: objective.id,
-								status: enteredObjective.displayedStatus
-								)
+							id: objective.id,
+							status: enteredObjective.displayedStatus
+						)
 					}
 				}
 				sections = array {
 					surveyPage.enteredSections.each { section, enteredSection ->
 						sec (
-								id: section.id,
-								objectiveId: section.objective.id,
-								invalid: enteredSection.invalid,
-								complete: enteredSection.complete,
-								status: enteredSection.displayedStatus
-								)
+							id: section.id,
+							objectiveId: section.objective.id,
+							invalid: enteredSection.invalid,
+							complete: enteredSection.complete,
+							status: enteredSection.displayedStatus
+						)
 					}
 				}
 				questions = array { 
 					surveyPage.enteredQuestions.each { question, enteredQuestion ->
 						ques (
-								id: question.id,
-								sectionId: question.section.id,
-								complete: enteredQuestion.complete,
-								invalid: enteredQuestion.invalid,
-								skipped: enteredQuestion.skipped,
-								)
+							id: question.id,
+							sectionId: question.section.id,
+							complete: enteredQuestion.complete,
+							invalid: enteredQuestion.invalid,
+							skipped: enteredQuestion.skipped,
+						)
 					}
 				}
 				elements = array {
@@ -253,11 +253,14 @@ class EditSurveyController extends AbstractController {
 							invalid: array {
 								enteredValue.invalidPrefixes.each { invalidPrefix ->
 									pre (
-											prefix: invalidPrefix,
-											valid: enteredValue.isValid(invalidPrefix),
-											errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
-											)
+										prefix: invalidPrefix,
+										valid: enteredValue.isValid(invalidPrefix),
+										errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
+									)
 								}
+							},
+							nullPrefixes: array {
+								enteredValue.nullPrefixes.each { prefix -> element prefix }
 							}
 						)
 					}

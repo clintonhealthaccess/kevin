@@ -208,16 +208,26 @@ public class SurveyEnteredValue extends SurveyEnteredEntity {
 	}
 	
 	@Transient
-	public Boolean isComplete() {
-		// element is complete if all the non-skipped values are not-null
-		// regardless of whether they are valid or not
-		Set<String> skippedPrefixes = getSkippedPrefixes();
-		Map<String, Value> nullPrefixes = surveyElement.getDataElement().getType().getPrefixes(value, new PrefixPredicate() {
+	public Set<String> getNullPrefixes() {
+		return getNullPrefixesMap().keySet();
+	}
+	
+	@Transient
+	private Map<String, Value> getNullPrefixesMap() {
+		return surveyElement.getDataElement().getType().getPrefixes(value, new PrefixPredicate() {
 			@Override
 			public boolean holds(Type type, Value value, String prefix) {
 				return value.isNull();
 			}
 		});
+	}
+	
+	@Transient
+	public Boolean isComplete() {
+		// element is complete if all the non-skipped values are not-null
+		// regardless of whether they are valid or not
+		Set<String> skippedPrefixes = getSkippedPrefixes();
+		Map<String, Value> nullPrefixes = getNullPrefixesMap();
 		
 		return CollectionUtils.subtract(nullPrefixes.keySet(), skippedPrefixes).isEmpty();
 	}

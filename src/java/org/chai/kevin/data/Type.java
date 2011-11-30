@@ -226,8 +226,8 @@ public class Type extends JSONValue {
 				case BOOL:
 				case STRING:
 				case TEXT:
-				case DATE:
 				case ENUM:
+				case DATE:
 					if (!map.containsKey(suffix)) {
 						if (oldValue.isNull()) object.put(Value.VALUE_STRING, JSONObject.NULL);
 						else object.put(Value.VALUE_STRING, oldValue.getJsonObject().get(Value.VALUE_STRING));
@@ -755,7 +755,13 @@ public class Type extends JSONValue {
 				break;
 			case DATE:
 				if (value == null || string.equals("")) result = JSONObject.NULL;
-				else result = string;
+				else {
+					try {
+						result = Utils.formatDate(Utils.parseDate(string));
+					} catch (ParseException e) {
+						result = JSONObject.NULL;
+					}
+				}
 				break;
 			case ENUM:
 				if (value == null || string.equals("")) result = JSONObject.NULL;
