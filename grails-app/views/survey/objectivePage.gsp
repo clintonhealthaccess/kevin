@@ -4,7 +4,7 @@
 		<meta name="layout" content="main" />
 		<title><g:message code="survey.objectivePage.label" default="District Health System Portal" /></title>
 		
-		<r:require modules="survey,datepicker"/>
+		<r:require modules="survey"/>
 	</head>
 	<body>
 		<div id="survey">

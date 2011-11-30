@@ -109,7 +109,7 @@
 				if(!s.showAlways)
 				{
 					// Hide the calendar and remove class from target
-					$("#"+s.calId).slideUp(200);
+					$(escape("#"+s.calId)).slideUp(200);
 					$(this).removeClass("_gldp");
 				}
 			}
@@ -284,7 +284,7 @@
 			html = (html.replace(/\*{2}/gi, "gldp-"+settings.cssName)).replace(/\{MY\}/gi, titleMonthYear);
 
 			// If calendar doesn't exist, make one
-			if($("#"+calId).length == 0)
+			if($(escape("#"+calId)).length == 0)
 			{
 				target.after
 				(
@@ -298,7 +298,7 @@
 			}
 
 			// Show calendar
-			var calendar = $("#"+calId);
+			var calendar = $(escape("#"+calId));
 			calendar.html(html).slideDown(200);
 
 			// Add a class to make it easier to find when hiding
@@ -371,3 +371,7 @@
 		else { $.error("Method "+ method + " does not exist on jQuery.glDatePicker"); }
 	};
 })(jQuery);
+
+function escape(myid) { 
+	return myid.replace(/(:|\.|\[|\])/g,'\\$1');
+}

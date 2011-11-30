@@ -305,6 +305,20 @@ public class TypeUnitSpec extends UnitSpec {
 		value.getBooleanValue() == true
 		
 		when:
+		type = new Type("{\"type\":\"date\"}");
+		value = type.mergeValueFromMap(Value.NULL, ['value':"123"], 'value', new HashSet([]))
+		
+		then:
+		value.isNull()
+		
+		when:
+		type = new Type("{\"type\":\"date\"}");
+		value = type.mergeValueFromMap(Value.NULL, ['value':"12-12-2012"], 'value', new HashSet([]))
+		
+		then:
+		value.getDateValue() != null
+		
+		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		value = type.mergeValueFromMap(Value.NULL, ['value[0]':'10', 'value[_]':'2', 'value':['[0]', '[_]']], 'value', new HashSet([]))
 		

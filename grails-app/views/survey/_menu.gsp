@@ -165,6 +165,13 @@
 						$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
 					});
 					
+					// we reset null elements
+					$.each(data.elements, function(elementIndex, element) {
+						$.each(element.nullPrefixes, function(prefixIndex, prefix) {
+							$(escape('#element-'+element.id+'-'+prefix)).find('textarea, input, select').attr('value', '');
+						});
+					});
+					
 					callback(data, element);
 				}
 				else {

@@ -148,7 +148,7 @@ modules = {
 	}
 
 	survey {
-		dependsOn 'core,ajaxmanager'
+		dependsOn 'core,ajaxmanager,questionhelp,datepicker'
 
 		//resource url: '/css/survey.css'
 	}
