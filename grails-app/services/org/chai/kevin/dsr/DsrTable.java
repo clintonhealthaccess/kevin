@@ -1,5 +1,12 @@
 package org.chai.kevin.dsr;
 
+import java.util.List;
+import java.util.Map;
+
+import org.chai.kevin.Organisation;
+import org.chai.kevin.reports.Report;
+import org.chai.kevin.reports.ReportTable;
+
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
@@ -28,51 +35,17 @@ package org.chai.kevin.dsr;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+public class DsrTable extends ReportTable<DsrTarget> {
 
-import org.chai.kevin.Organisation;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-
-public class DsrTable {
-
-	private List<Organisation> organisations;
-	private List<DsrTarget> targets;
-	private Map<Organisation, Map<DsrTarget, Dsr>> values;
-	private Map<Organisation, List<Organisation>> organisationMap;
-
-	public DsrTable(List<Organisation> organisations, List<DsrTarget> targets,
-			Map<Organisation, Map<DsrTarget, Dsr>> values, Map<Organisation, List<Organisation>> organisationMap) {
-		this.organisations = organisations;
+	public DsrTable(List<DsrTarget> targets, Map<Organisation, Map<DsrTarget, Report>> values, 
+			Map<Organisation, List<Organisation>> organisationMap) {
 		this.targets = targets;
 		this.values = values;
 		this.organisationMap = organisationMap;
 	}
-
-	public List<Organisation> getOrganisations() {
-		return organisations;
-	}
-
-	public List<DsrTarget> getTargets() {
-		return targets;
-	}
-
-	public Dsr getDsr(Organisation organisation, DsrTarget target) {
-		return values.get(organisation).get(target);
-	}
-
-	public Set<OrganisationUnitGroup> getFacilityTypes() {
-		Set<OrganisationUnitGroup> facilityTypes = new HashSet<OrganisationUnitGroup>();
-		for (Organisation organisation : organisations) {
-			facilityTypes.add(organisation.getOrganisationUnitGroup());
-		}
-		return facilityTypes;
-	}
-
-	public Map<Organisation, List<Organisation>> getOrganisationMap() {
-		return organisationMap;
+	
+	public Report getDsrReport(Organisation organisation, DsrTarget target){
+		return getReport(organisation, target);
 	}
 
 }

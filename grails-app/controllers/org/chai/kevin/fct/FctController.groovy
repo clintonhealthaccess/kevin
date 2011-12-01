@@ -6,10 +6,13 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.period.Period
+import org.hisp.dhis.period.Period;
+import org.chai.kevin.reports.ReportService;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class FctController extends AbstractController {
 
-	FctService fctService;
+	ReportService reportService;
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -25,8 +28,10 @@ class FctController extends AbstractController {
 		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
 		
 		FctTable fctTable = null;
+
 		if (period != null && objective != null && organisation != null && level != null) {
-			fctTable = fctService.getFct(organisation, objective, period, level, new HashSet(facilityTypes*.uuid));
+//			fctTable = fctService.getFct(organisation, objective, period, level, new HashSet(facilityTypes*.uuid));
+		fctTable = reportService.getFctTable(organisation, objective, period, level);
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root objective: "+objective)				

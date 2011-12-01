@@ -1,23 +1,15 @@
 package org.chai.kevin.survey;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.channels.Channel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,12 +27,8 @@ import org.chai.kevin.survey.export.SurveyExportDataPoint;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.hibernate.CacheMode;
-import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
@@ -382,7 +370,7 @@ public class SurveyExportService {
 				for(String genericTypeKey : this.getGenericTypes().keySet()){
 					if(!this.getGenericTypes().get(genericTypeKey).getType().equals(ValueType.LIST)){
 						String surveyQuestionItem = languageService.getText(headers.get(genericTypeKey));
-						if(surveyQuestionItem != null) dataPoint.add(formatExportDataItem(surveyQuestionItem));
+						if(surveyQuestionItem != null && !surveyQuestionItem.isEmpty()) dataPoint.add(formatExportDataItem(surveyQuestionItem));
 					}
 				}
 				dataPoints.add(dataPoint);

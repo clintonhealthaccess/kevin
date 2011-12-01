@@ -6,7 +6,6 @@ import org.chai.kevin.util.Utils;
 
 abstract class DsrIntegrationTests extends IntegrationTests {
 
-
 	def newDsrObjective(def code) {
 		return new DsrObjective(code: code, names: [:]).save(failOnError: true);
 	}

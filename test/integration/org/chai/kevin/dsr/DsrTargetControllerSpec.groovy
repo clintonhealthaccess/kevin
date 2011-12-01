@@ -35,8 +35,36 @@ import org.chai.kevin.data.Type
 class DsrTargetControllerSpec extends DsrIntegrationTests {
 
 	def dsrTargetController 
-	def dsrService
+//	def dsrService
 	def dataService
+	def reportService
+	
+	def "delete target refreshes cache"() {
+		setup:
+		dsrTargetController = new DsrTargetController()
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def objective = newDsrObjective(CODE(1))
+		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "1")
+		def target = newDsrTarget(CODE(2), expression, [], objective)
+		def organisation = getOrganisation(BURERA)
+		refresh()
+		
+		when:
+		def dsrTable = reportService.getDsrTable(organisation, objective, period)
+		
+		then:
+		dsrTable.getDsrReport(getOrganisation(BUTARO), target) != null
+		
+		// TODO can't work because controller class is not instrumented 
+//		when:
+//		dsrTargetController.params.id = target.id
+//		dsrTargetController.delete()
+//		dsrTable = dsrService.getDsr(organisation, objective, period)
+//		
+//		then:
+//		dsrTable.getDsr(getOrganisation(BUTARO), target) == null
+	}
 	
 	def "save target saves target"() {
 		setup:

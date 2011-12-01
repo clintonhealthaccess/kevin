@@ -15,8 +15,7 @@ import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.InfoService;
-import org.chai.kevin.dsr.DsrService
-import org.chai.kevin.fct.FctService
+import org.chai.kevin.reports.ReportService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.survey.SummaryService
 import org.chai.kevin.survey.SurveyCopyService
@@ -123,17 +122,12 @@ beans = {
 		periodService = ref("periodService")
 	}
 
-	dsrService(DsrService){
+	reportService(ReportService){
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		languageService = ref("languageService")
 		groupLevel = dsrGroupLevel
-	}
-
-	fctService(FctService){
-		organisationService = ref("organisationService")
-		valueService = ref("valueService")
 	}
 	
 	mapsService(MapsService) {

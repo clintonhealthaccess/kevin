@@ -31,61 +31,72 @@ package org.chai.kevin.fct;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.chai.kevin.Organisation;
+import org.chai.kevin.reports.Report;
+import org.chai.kevin.reports.ReportTable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class FctTable implements Serializable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private Map<FctTarget, Fct> totalMap;
-	private List<Organisation> organisations;
-	private List<FctTarget> targets;
-	private Set<OrganisationUnitGroup> facilityTypes;
-	private Map<FctTarget, Map<Organisation, Fct>> values;
-	private Map<Organisation, List<Organisation>> organisationMap;
+//public class FctTable implements Serializable {
+//	
+//	/**
+//	 * 
+//	 */
+//	private static final long serialVersionUID = 1L;
+//	
+//	private Map<FctTarget, Fct> totalMap;
+//	private List<Organisation> organisations;
+//	private List<FctTarget> targets;
+//	private Set<OrganisationUnitGroup> facilityTypes;
+//	private Map<FctTarget, Map<Organisation, Fct>> values;
+//	private Map<Organisation, List<Organisation>> organisationMap;
+//
+//	public FctTable(List<Organisation> organisations, List<FctTarget> targets, Set<OrganisationUnitGroup> facilityTypes,
+//			Map<FctTarget, Map<Organisation, Fct>> values, Map<Organisation,List<Organisation>> organisationMap, Map<FctTarget, Fct> totalMap) {
+//		super();
+//		this.organisations = organisations;
+//		this.facilityTypes = facilityTypes;
+//		this.targets = targets;
+//		this.values = values;
+//		this.organisationMap = organisationMap;
+//		this.totalMap = totalMap;
 
-	public FctTable(List<Organisation> organisations, List<FctTarget> targets, Set<OrganisationUnitGroup> facilityTypes,
-			Map<FctTarget, Map<Organisation, Fct>> values, Map<Organisation,List<Organisation>> organisationMap, Map<FctTarget, Fct> totalMap) {
-		super();
-		this.organisations = organisations;
-		this.facilityTypes = facilityTypes;
+public class FctTable extends ReportTable<FctTarget> implements Serializable {
+
+	private Organisation total;
+	
+	public FctTable(Organisation total, List<FctTarget> targets, Map<Organisation, Map<FctTarget, Report>> values, 
+			Map<Organisation, List<Organisation>> organisationMap) {
+		this.total = total;
 		this.targets = targets;
 		this.values = values;
 		this.organisationMap = organisationMap;
-		this.totalMap = totalMap;
 	}
 
-	public List<Organisation> getOrganisations() {
-		return organisations;
-	}
-
-	public List<FctTarget> getTargets() {
-		return targets;
+	public Report getFctReport(Organisation organisation, FctTarget target){
+		return getReport(organisation, target);
 	}
 	
-	public Fct getTotal(FctTarget target) {
-		return totalMap.get(target);
-	}
-	
-	public Fct getFct(Organisation organisation, FctTarget target) {
-		return values.get(target).get(organisation);
+//	public Fct getTotal(FctTarget target) {
+//		return totalMap.get(target);
+//	}
+//	
+//	public Fct getFct(Organisation organisation, FctTarget target) {
+//		return values.get(target).get(organisation);
+//	}
+//
+//	public Set<OrganisationUnitGroup> getFacilityTypes() {
+//		return facilityTypes;
+
+	public Organisation getTotal() {
+		return total;
+
 	}
 
-	public Set<OrganisationUnitGroup> getFacilityTypes() {
-		return facilityTypes;
-	}
-
-	public Map<Organisation, List<Organisation>> getOrganisationMap() {
-		return organisationMap;
+	public void setTotal(Organisation total) {
+		this.total = total;
 	}
 
 }

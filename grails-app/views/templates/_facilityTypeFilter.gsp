@@ -6,7 +6,7 @@
 	</g:each>
 	<h4 class="bold"><g:message code="filter.facility.type.label"/></h4>
 	<div id="facility-type-filter">
-		<g:if test="${!facilityTypes.isEmpty()}">
+		<g:if test="${facilityTypes != null && !facilityTypes.isEmpty()}">
 			<ul class="horizontal">
 				<g:each in="${facilityTypes}" var="group">
 					<li><input type="checkbox" name="groupUuids" value="${group.uuid}" ${currentFacilityTypes.contains(group)?'checked="checked"':'""'}/>${group.name}</li>

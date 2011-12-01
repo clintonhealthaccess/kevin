@@ -88,18 +88,18 @@
 										</td>
 									</g:each>
 								</tr>
-								<g:each in="${fctTable.parents}" var="parent">
+								<g:each in="${fctTable.organisations}" var="parent">
 									<tr>
 										<th colspan="${fctTable.targets.size()+1}" class="parent-row">${parent.name}</th>
 									</tr>
-									<g:each in="${fctTable.parents.get(parent)}" var="children">
+									<g:each in="${fctTable.getOrganisationMap().get(parent)}" var="children">
 										<g:each in="${children}" var="child">										
-											<tr class="row organisation" data-group="${child.organisationUnitGroup?.uuid ?: 'Total'}">
-												<th class="box-report-organisation">${child.organisationUnitGroup? child.name : 'Total'}</th>
+											<tr class="row organisation" data-group="${fctTable.total == child ? 'Total' : child.organisationUnitGroup?.uuid}">
+												<th class="box-report-organisation">${fctTable.total == child ? 'Total' : child.name}</th>
 												<g:each in="${fctTable.targets}" var="target">
 													<td class="box-report-value">
-														<g:if test="${!fctTable.getFct(child, target) != null}">
-															${fctTable.getFct(child, target).value}
+														<g:if test="${!fctTable.getFctReport(child, target) != null}">
+															${fctTable.getFctReport(child, target).value}
 														</g:if>
 													</td>
 												</g:each>

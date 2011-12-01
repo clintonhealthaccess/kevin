@@ -26,71 +26,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.chai.kevin.fct;
+
 /**
  * @author Jean Kahigiso M.
  *
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Translation;
+import org.chai.kevin.reports.ReportEntity;
 
 @Entity(name = "FctObjective")
 @Table(name = "dhsst_fct_objective")
-public class FctObjective extends Translation {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5921900390935911828L;
-	
+public class FctObjective extends ReportEntity {
+
 	private Long id;
-	private Integer order;
 	private List<FctTarget> targets = new ArrayList<FctTarget>();
-	
+
 	@Id
 	@GeneratedValue
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public void setTargets(List<FctTarget> targets) {
-		this.targets = targets;
-	}
-	
-	@OneToMany(cascade=CascadeType.ALL,targetEntity=FctTarget.class, mappedBy="objective")
-	public List<FctTarget> getTargets() {	
+
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = FctTarget.class, mappedBy = "objective")
+	@OrderBy("order")
+	public List<FctTarget> getTargets() {
 		return targets;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setTargets(List<FctTarget> targets) {
+		this.targets = targets;
 	}
-	
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	
+
 	@Transient
 	public void addTarget(FctTarget target) {
 		target.setObjective(this);
 		targets.add(target);
+		Collections.sort(targets);
 	}
 
 }

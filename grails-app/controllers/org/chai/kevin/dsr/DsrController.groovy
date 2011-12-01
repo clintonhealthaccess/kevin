@@ -28,16 +28,26 @@ package org.chai.kevin.dsr
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+<<<<<<< HEAD
 import org.chai.kevin.AbstractController
 import org.chai.kevin.Organisation
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period
+=======
+import java.util.Collections;
+import org.chai.kevin.AbstractController;
+import org.chai.kevin.Organisation;
+import org.hisp.dhis.period.Period;
+import org.chai.kevin.dsr.DsrObjective;
+import org.chai.kevin.reports.ReportService;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+>>>>>>> dsr fct refactor
 
 class DsrController extends AbstractController {
-	
-	DsrService dsrService;
 
+	ReportService reportService;
+	
 	def index = {
 		redirect (action: 'view', params: params)
 	}
@@ -51,7 +61,8 @@ class DsrController extends AbstractController {
 		
 		def dsrTable = null
 		if (period != null && objective != null && organisation != null) {
-			 dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet(facilityTypes*.uuid));
+//			 dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet(facilityTypes*.uuid));
+			 dsrTable = reportService.getDsrTable(organisation, objective, period);
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
