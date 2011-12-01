@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.ExpressionService;
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.value.ExpressionService;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 

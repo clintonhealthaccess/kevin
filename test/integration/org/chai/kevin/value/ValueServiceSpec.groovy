@@ -1,4 +1,4 @@
-package org.chai.kevin
+package org.chai.kevin.value
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,12 +28,16 @@ package org.chai.kevin
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.SumValue;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
+import org.chai.kevin.value.AggregationValue;
 import org.chai.kevin.value.AveragePartialValue;
+import org.chai.kevin.value.AverageValue;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;

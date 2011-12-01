@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.data;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,75 +28,37 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public abstract class Gradient {
+import java.util.List;
+import java.util.Map;
 
-	public abstract Double getGradientValue();
+import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.value.NormalizedDataElementValue;
+import org.chai.kevin.value.RawDataElementValue;
+
+public class NormalizedDataElementInfo extends Info<NormalizedDataElementValue> {
+
+	private List<RawDataElement> rawDataElements;
+	private Map<RawDataElement, RawDataElementValue> values;
 	
-	public boolean isValid() {
-		return getGradientValue() != null && !getGradientValue().isNaN() && !getGradientValue().isInfinite() && getGradientValue() != -1;
-	}
-	
-	public Integer getRoundedValue() {
-		return new Double(getGradientValue() * 100).intValue();
-	}
-	
-	public String getColor() {
-//		.targetna
-//		  background-color: #AAA
-//
-//		.target0
-//		  background-color: #fd7272
-//
-//		.target0:hover
-//		  background-color: #fc0404
-//
-//		.target1
-//		  background-color: #fd8472
-//
-//		.target1:hover
-//		  background-color: #fc2704
-//
-//		.target2
-//		  background-color: #fd9772
-//
-//		.target2:hover
-//		  background-color: #fc4404
-//
-//		.target3
-//		  background-color: #fdaa72
-//
-//		.target3:hover
-//		  background-color: #fc6704
-//
-//		.target4
-//		  background-color: #9afba5
-//
-//		.target4:hover
-//		  background-color: #0af626
-//
-//		.target5
-//		  background-color: #79fa88
-//
-//		.target5:hover
-//		  background-color: #0af626
-		if (!isValid()) return "#F6FDEB";
+	public NormalizedDataElementInfo(NormalizedDataElementValue normalizedDataElementValue, List<RawDataElement> rawDataElements, 
+			Map<RawDataElement, RawDataElementValue> values) {
+		super(normalizedDataElementValue);
 		
-		switch (new Double(getGradientValue() / 0.2d).intValue()) {
-		case 0:
-			return "#fd7272";
-		case 1:
-			return "#fd8472";
-		case 2:
-			return "#fd9772";
-		case 3:
-			return "#fdaa72";
-		case 4:
-			return "#9afba5";
-		case 5:
-			return "#79fa88";
-		default:
-			return "#BBB";
-		}
+		this.rawDataElements = rawDataElements;
+		this.values = values;
+	}
+
+	public List<RawDataElement> getRawDataElements() {
+		return rawDataElements;
+	}
+	
+	public RawDataElementValue getRawDataElementValue(RawDataElement rawDataElement) {
+		return values.get(rawDataElement);
+	}
+	
+	@Override
+	public String getTemplate() {
+		return "/info/normalizedDataElementInfo";
 	}
 	
 }

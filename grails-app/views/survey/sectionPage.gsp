@@ -23,46 +23,44 @@
 						</p>
 					</div>
 				</g:if>
-				<g:else>
-					<div>
-						<h3 class="form-heading">
-							<g:i18n field="${surveyPage.section.names}" />
-						</h3>
-					</div>
-					
-					<div>
-						<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
-							<ol id="questions">
-								<g:each in="${surveyPage.getQuestions(surveyPage.section)}" var="question" status="i">
-									<li class="question-container ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}">
-										<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1]" />
-									</li> 
-								</g:each>
-							</ol>
-							
-							<ul class="form-actions">
-								<g:if test="${!readonly}">
-									<li>
-										<button type="submit" class="loading-disabled">
-											<g:if test="${surveyPage.isLastSection(surveyPage.section)}">
-												<g:message code="survey.section.finish.label" default="Finish"/>
-											</g:if>
-											<g:else>
-												<g:message code="survey.section.next.label" default="Next"/>
-											</g:else>
-										</button>
-									</li>
-									<li>
-										<button type="cancel" class="hidden">
-											<g:message code="survey.section.cancel.label" default="Cancel"/>
-										</button>
-									</li>
-								</g:if>
-		  						<li><a href="${createLink(controller:'editSurvey', action:'objectivePage', params:[objective: surveyPage.objective.id, organisation: surveyPage.organisation.id])}" class="go-back"><g:message code="survey.section.back.label"/></a></li>
-		  					</ul>
-						</g:form>
-					</div>
-				</g:else>
+				<div>
+					<h3 class="form-heading">
+						<g:i18n field="${surveyPage.section.names}" />
+					</h3>
+				</div>
+				
+				<div>
+					<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
+						<ol id="questions">
+							<g:each in="${surveyPage.getQuestions(surveyPage.section)}" var="question" status="i">
+								<li class="question-container ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}">
+									<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1]" />
+								</li> 
+							</g:each>
+						</ol>
+						
+						<ul class="form-actions">
+							<g:if test="${!readonly}">
+								<li>
+									<button type="submit" class="loading-disabled">
+										<g:if test="${surveyPage.isLastSection(surveyPage.section)}">
+											<g:message code="survey.section.finish.label" default="Finish"/>
+										</g:if>
+										<g:else>
+											<g:message code="survey.section.next.label" default="Next"/>
+										</g:else>
+									</button>
+								</li>
+								<li>
+									<button type="cancel" class="hidden">
+										<g:message code="survey.section.cancel.label" default="Cancel"/>
+									</button>
+								</li>
+							</g:if>
+	  						<li><a href="${createLink(controller:'editSurvey', action:'objectivePage', params:[objective: surveyPage.objective.id, organisation: surveyPage.organisation.id])}" class="go-back"><g:message code="survey.section.back.label"/></a></li>
+	  					</ul>
+					</g:form>
+				</div>
 			</div>
 		</div>
 		<g:if test="${!readonly}">

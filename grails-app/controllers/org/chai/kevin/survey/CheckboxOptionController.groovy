@@ -28,9 +28,9 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.DataService;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.chai.kevin.util.Utils
+import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement
 import org.apache.commons.lang.math.NumberUtils;
 

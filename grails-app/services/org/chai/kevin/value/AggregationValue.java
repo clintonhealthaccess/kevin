@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.value;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.chai.kevin.JaqlService;
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.Value;

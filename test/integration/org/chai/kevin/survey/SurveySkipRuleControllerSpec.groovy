@@ -17,7 +17,7 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		(0..12).each{order -> newSimpleQuestion(section, order, [(HEALTH_CENTER_GROUP)]) }
 		
-		def surveySkipRuleController = new SurveySkipRuleController()
+		surveySkipRuleController = new SurveySkipRuleController()
 		
 		expect:
 		SurveySimpleQuestion.count() == 13
@@ -31,6 +31,23 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		then:
 		SurveySkipRule.count() == 1
 		SurveySkipRule.list()[0].skippedSurveyQuestions.size() == 1
+	}
+	
+	def "list skip rules"() {
+		setup:
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def skipRule = newSkipRule(survey, "1 == 1", [:], [])
+		surveySkipRuleController = new SurveySkipRuleController()
+		
+		when:
+		surveySkipRuleController.params.surveyId = survey.id
+		surveySkipRuleController.list()
+		
+		then:
+		surveySkipRuleController.modelAndView.model.entities.equals([skipRule])
 		
 	}
 	

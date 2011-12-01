@@ -3,6 +3,7 @@ package org.chai.kevin;
 import java.util.List;
 
 import org.chai.kevin.data.Sum;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;

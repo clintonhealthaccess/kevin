@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.value;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -40,9 +40,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.JaqlService;
+import org.chai.kevin.Organisation;
+import org.chai.kevin.OrganisationService;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;

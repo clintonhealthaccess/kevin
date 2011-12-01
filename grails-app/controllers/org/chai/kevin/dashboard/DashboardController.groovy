@@ -53,7 +53,7 @@ class DashboardController extends AbstractController {
 
 		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
 		
-		def info = dashboardService.getExplanation(organisation, entry, period, facilityTypes)
+		def info = dashboardService.getExplanation(organisation, entry, period, new HashSet(facilityTypes*.uuid))
 		def groups = organisationService.getGroupsForExpression()
 		[info: info, groups: groups, entry: entry]
 	}

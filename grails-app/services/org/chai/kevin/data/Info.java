@@ -1,4 +1,9 @@
-package org.chai.kevin;
+package org.chai.kevin.data;
+
+import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.Value;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.period.Period;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,37 +33,26 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.List;
-import java.util.Map;
 
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.RawDataElementValue;
-
-public class NormalizedDataElementInfo extends Info<NormalizedDataElementValue> {
-
-	private List<RawDataElement> rawDataElements;
-	private Map<RawDataElement, RawDataElementValue> values;
+public abstract class Info<T extends DataValue> {
 	
-	public NormalizedDataElementInfo(NormalizedDataElementValue normalizedDataElementValue, List<RawDataElement> rawDataElements, 
-			Map<RawDataElement, RawDataElementValue> values) {
-		super(normalizedDataElementValue);
-		
-		this.rawDataElements = rawDataElements;
-		this.values = values;
-	}
-
-	public List<RawDataElement> getRawDataElements() {
-		return rawDataElements;
+	private T value;
+	
+	public Info(T value) {
+		this.value = value;
 	}
 	
-	public RawDataElementValue getRawDataElementValue(RawDataElement rawDataElement) {
-		return values.get(rawDataElement);
+	public abstract String getTemplate();
+	
+	public Value getValue() {
+		return value.getValue();
 	}
 	
-	@Override
-	public String getTemplate() {
-		return "/info/normalizedDataElementInfo";
+	public OrganisationUnit getOrganisationUnit() {
+		return value.getOrganisationUnit();
 	}
 	
+	public Period getPeriod() {
+		return value.getPeriod();
+	}
 }

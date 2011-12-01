@@ -137,20 +137,11 @@ class SurveyService {
 		return filter(rules, surveyElement.id);
 	}
 	
-	
 	static def filter(def rules, Long id) {
 		return rules.findAll { rule ->
-			return rule.expression.matches(".*\\\$"+id+"(\\z|\\D|\$).*")
+			return Utils.containsId(rule.expression, id)
 		}
 	}
-	
-//	Set<SurveyElement> getSurveyElements(SurveyQuestion question, OrganisationUnitGroup group) {
-//		def c = SurveyElement.createCriteria()
-//		c.add(Restrictions.eq("surveyQuestion", question))
-//		c.add(Restrictions.like("groupUuidString", group.uuid, MatchMode.ANYWHERE))
-//
-//		return c.setFlushMode(FlushMode.COMMIT).list()
-//	}
 	
 	Set<SurveyElement> getSurveyElements(RawDataElement dataElement, Survey survey) {
 		def c = SurveyElement.createCriteria()

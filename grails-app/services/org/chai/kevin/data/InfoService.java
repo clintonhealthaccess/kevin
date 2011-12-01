@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.data;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -35,13 +35,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.chai.kevin.Organisation;
+import org.chai.kevin.OrganisationService;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.ValueService;
 import org.hisp.dhis.period.Period;
 
 public class InfoService {

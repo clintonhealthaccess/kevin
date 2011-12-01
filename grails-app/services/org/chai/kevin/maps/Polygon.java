@@ -28,8 +28,8 @@ package org.chai.kevin.maps;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.Gradient;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.data.Gradient;
 
 public class Polygon extends Gradient {
 

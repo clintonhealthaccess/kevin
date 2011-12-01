@@ -227,7 +227,7 @@ class DataServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def organisation = newOrganisationUnit(KIVUYE)
 		newSumPartialValue(calculation, period, organisation, HEALTH_CENTER_GROUP, Value.NULL)
-		
+
 		dataService.delete(calculation)
 		
 		then:
@@ -237,13 +237,65 @@ class DataServiceSpec extends IntegrationTests {
 		
 	}
 	
-//	def "get calculations for expression"() {
-//		when:
-//		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
-//		def calculation = newSum([(DISTRICT_HOSPITAL_GROUP):expression], CODE(2), Type.TYPE_NUMBER())
-//		
-//		then:
-//		dataService.getCalculations(expression).equals([calculation])
-//	}
+	def "delete normalized data element with associated expression throws exception"() {
+		when:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		
+		dataService.delete(rawDataElement)
+		
+		then:
+		thrown IllegalArgumentException
+		NormalizedDataElement.count() == 1
+	}
+	
+	def "delete calculation with associated expression throws exception"() {
+		when:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def sum = newSum("\$"+rawDataElement.id, CODE(2))
+		
+		dataService.delete(rawDataElement)
+		
+		then:
+		thrown IllegalArgumentException
+		Sum.count() == 1
+	}
+	
+	def "get referencing normalized data element"() {
+		when:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		
+		then:
+		dataService.getReferencingNormalizedDataElements(rawDataElement).equals([normalizedDataElement])
+		
+		when:
+		newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id+"0"]], [validate: false])
+		
+		then:
+		dataService.getReferencingNormalizedDataElements(rawDataElement).equals([normalizedDataElement])
+		
+		when:
+		newSum("\$"+rawDataElement.id, CODE(4))
+		
+		then:
+		dataService.getReferencingNormalizedDataElements(rawDataElement).equals([normalizedDataElement])
+	}
+	
+	def "get referencing calculations"() {
+		when:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def sum = newSum("\$"+rawDataElement.id, CODE(2))
+		
+		then:
+		dataService.getReferencingCalculations(rawDataElement).equals([sum])
+		
+		when:
+		newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), [(1):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]])
+		
+		then:
+		dataService.getReferencingCalculations(rawDataElement).equals([sum])
+	}
+
 	
 }

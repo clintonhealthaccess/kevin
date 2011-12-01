@@ -28,7 +28,7 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.Gradient;
+import org.chai.kevin.data.Gradient;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;

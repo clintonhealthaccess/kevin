@@ -1,5 +1,6 @@
-package org.chai.kevin;
+package org.chai.kevin.value;
 
+import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;

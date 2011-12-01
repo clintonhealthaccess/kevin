@@ -9,15 +9,12 @@ import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.dsr.DsrService
 import org.chai.kevin.fct.FctService
 import org.chai.kevin.maps.MapsService
-import org.chai.kevin.ExpressionService
-import org.chai.kevin.InfoService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.OrganisationService
-import org.chai.kevin.RefreshValueService
-import org.chai.kevin.ValueService;
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.data.InfoService;
 import org.chai.kevin.dsr.DsrService
 import org.chai.kevin.fct.FctService
 import org.chai.kevin.maps.MapsService
@@ -26,6 +23,9 @@ import org.chai.kevin.survey.SurveyCopyService
 import org.chai.kevin.survey.SurveyExportService
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.ValidationService
+import org.chai.kevin.value.ExpressionService;
+import org.chai.kevin.value.RefreshValueService;
+import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 /*

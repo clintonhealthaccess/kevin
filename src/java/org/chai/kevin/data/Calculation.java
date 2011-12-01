@@ -42,11 +42,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
-import org.chai.kevin.CalculationValue;
-import org.chai.kevin.ExpressionService.StatusValuePair;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.value.CalculationPartialValue;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 

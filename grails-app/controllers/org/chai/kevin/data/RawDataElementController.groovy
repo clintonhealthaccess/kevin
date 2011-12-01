@@ -31,11 +31,10 @@ package org.chai.kevin.data
  *
  */
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.DataService
 import org.chai.kevin.OrganisationService
-import org.chai.kevin.ValueService
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyService
+import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 

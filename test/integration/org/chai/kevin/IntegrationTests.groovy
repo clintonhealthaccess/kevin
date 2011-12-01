@@ -198,15 +198,25 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	RawDataElement newRawDataElement(def names, def code, def type, def info) {
-		return new RawDataElement(names: names, code: code, type: type, info: info).save(failOnError: true)
+		return new RawDataElement(names: names, code: code, type: type, info: info).save(failOnError: true, flush:true)
 	}
 
-	NormalizedDataElement newNormalizedDataElement(def names, def code, def type, def expressionMap) {
-		return new NormalizedDataElement(names: names, code: code, type: type, expressionMap: expressionMap).save(failOnError:true)
+	NormalizedDataElement newNormalizedDataElement(def names, def code, def type, def expressionMap, Map params) {
+		params << [failOnError: true]
+		params << [flush: true]
+		return new NormalizedDataElement(names: names, code: code, type: type, expressionMap: expressionMap).save(params)
 	}
 
-	NormalizedDataElement newNormalizedDataElement(def code, def type, def expressionMap) {
-		return newNormalizedDataElement([:], code, type, expressionMap)
+	NormalizedDataElement newNormalizedDataElement(def names, String code, def type, def expressionMap) {
+		return newNormalizedDataElement(names, code, type, expressionMap, [:])
+	}
+	
+	NormalizedDataElement newNormalizedDataElement(def code, Type type, def expressionMap) {
+		return newNormalizedDataElement([:], code, type, expressionMap, [:])
+	}
+	
+	NormalizedDataElement newNormalizedDataElement(def code, Type type, def expressionMap, Map params) {
+		return newNormalizedDataElement([:], code, type, expressionMap, params)
 	}
 	
 	NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def organisationUnit, def period, def status, def value) {

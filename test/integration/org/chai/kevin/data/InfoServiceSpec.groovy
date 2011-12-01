@@ -1,5 +1,7 @@
-package org.chai.kevin
+package org.chai.kevin.data
 
+import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.SumValue;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.Status;
 import org.hisp.dhis.organisationunit.OrganisationUnit;

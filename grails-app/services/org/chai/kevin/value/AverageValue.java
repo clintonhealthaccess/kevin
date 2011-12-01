@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.value;
 
 import java.util.List;
 

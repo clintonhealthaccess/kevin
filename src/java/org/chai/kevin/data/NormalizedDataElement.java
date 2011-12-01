@@ -1,6 +1,9 @@
 package org.chai.kevin.data;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -46,6 +49,17 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 	public String getExpression(Period period, String groupUuid) {
 		if (!expressionMap.containsKey(Integer.toString(period.getId()))) return null;
 		return expressionMap.get(Integer.toString(period.getId())).get(groupUuid);
+	}
+	
+	@Transient
+	public Set<String> getExpressions() {
+		Set<String> expressions = new HashSet<String>();
+		for (Map<String, String> groupMap : expressionMap.values()) {
+			for (String expression : groupMap.values()) {
+				expressions.add(expression);
+			}
+		}
+		return expressions;
 	}
 
 	@Override

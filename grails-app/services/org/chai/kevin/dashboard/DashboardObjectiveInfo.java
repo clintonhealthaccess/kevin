@@ -30,7 +30,7 @@ package org.chai.kevin.dashboard;
 
 import java.util.Map;
 
-import org.chai.kevin.Info;
+import org.chai.kevin.data.Info;
 
 public class DashboardObjectiveInfo extends Info<DashboardPercentage> {
 

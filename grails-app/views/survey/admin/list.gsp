@@ -6,7 +6,7 @@
 	<title><g:message code="default.list.label" args="[entityName]" /></title>
 	
 	<!-- for admin forms -->
-	<r:require modules="chosen,richeditor,fieldselection,cluetip,form,dropdown,datepicker,list"/>
+	<r:require modules="richeditor,datepicker,list"/>
 	
 </head>
 <body>

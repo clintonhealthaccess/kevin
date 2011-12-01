@@ -39,14 +39,14 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.CalculationValue;
-import org.chai.kevin.Info;
-import org.chai.kevin.InfoService;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
-import org.chai.kevin.ValueService;
+import org.chai.kevin.data.Info;
+import org.chai.kevin.data.InfoService;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ValueService;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -8,12 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.AggregationValue;
-import org.chai.kevin.ExpressionService;
-import org.chai.kevin.ExpressionService.StatusValuePair;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.value.AggregationPartialValue;
+import org.chai.kevin.value.AggregationValue;
+import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hisp.dhis.organisationunit.OrganisationUnit;

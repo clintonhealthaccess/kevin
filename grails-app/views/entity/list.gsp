@@ -5,7 +5,7 @@
 	<g:set var="entityName" value="${message(code: code, default: 'Entity')}" />
 	<title><g:message code="default.list.label" args="[entityName]" /></title>
 	
-	<r:require modules="form,fieldselection,cluetip,dropdown,list"/>
+	<r:require modules="list"/>
 </head>
 <body>
 	<g:render template="/templates/genericList" model="[entityName: entityName, template: '/entity/'+template]"/>

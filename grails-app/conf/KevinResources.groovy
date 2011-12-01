@@ -142,7 +142,7 @@ modules = {
 
 	// Start resources for pages
 	list {
-		dependsOn 'core,spinner'
+		dependsOn 'core,spinner,form,fieldselection,cluetip,dropdown,explanation,chosen'
 
 		//resource url: '/css/list.css'
 	}

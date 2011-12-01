@@ -105,6 +105,10 @@ public class Utils {
 	
 	private static DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
+	public static boolean containsId(String string, Long id) {
+		return string.matches(".*\\$"+id+"(\\z|\\D|$).*");
+	}
+	
 	public static String stripHtml(String htmlString, Integer num) {
 		String noHtmlString;
 		Integer length = num;

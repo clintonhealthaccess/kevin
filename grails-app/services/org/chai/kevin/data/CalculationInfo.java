@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.data;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -33,8 +33,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 
 public class CalculationInfo extends Info<CalculationValue<?>> {

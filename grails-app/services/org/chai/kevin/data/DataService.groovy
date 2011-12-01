@@ -1,4 +1,4 @@
-package org.chai.kevin;
+package org.chai.kevin.data;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -83,6 +83,7 @@ class DataService {
 	
 	public <T extends Data<?>> T save(T data) {
 		// we bypass validation in case there's something
+		// it should be saved anyway
 		data.save(validate: false)
 	}
 		
@@ -92,10 +93,35 @@ class DataService {
 	 * @param element
 	 */
 	public void delete(Data<?> data) {
+		if (!getReferencingData(data).isEmpty()) throw new IllegalArgumentException("other data are still referencing the element being deleted")
 		if (valueService.getNumberOfValues(data) != 0) throw new IllegalArgumentException("there are still values associated to the element being deleted");
-		else element.delete();
+		else data.delete();
 	}
 	
+	public List<Data<?>> getReferencingData(Data<?> data) {
+		def result = []
+		result.addAll(getReferencingNormalizedDataElements(data))
+		result.addAll(getReferencingCalculations(data))
+		return result
+	}
+	
+	public List<NormalizedDataElement> getReferencingNormalizedDataElements(Data<?> data) {
+		def criteria = sessionFactory.currentSession.createCriteria(NormalizedDataElement.class);
+		def list = criteria.add(Restrictions.like("expressionMap.jsonText", "\$"+data.id, MatchMode.ANYWHERE)).list()
+		return list.findAll { result ->
+			return !result.expressions.findAll { expression ->
+				return Utils.containsId(expression, data.id)
+			}.isEmpty()
+		}
+	}
+	
+	public List<Calculation> getReferencingCalculations(Data<?> data) {
+		def criteria = sessionFactory.currentSession.createCriteria(Calculation.class);
+		def list = criteria.add(Restrictions.like("expression", "\$"+data.id, MatchMode.ANYWHERE)).list()
+		return list.findAll { result ->
+			return Utils.containsId(result.expression, data.id)
+		}
+	}
 	
 	public Integer countData(Class<Data> clazz, String text, List<String> allowedTypes) {
 		return getSearchCriteria(clazz, text, allowedTypes).setProjection(Projections.count("id")).uniqueResult()

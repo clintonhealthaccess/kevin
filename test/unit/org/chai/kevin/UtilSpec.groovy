@@ -54,4 +54,16 @@ public class UtilSpec extends UnitSpec {
 		then:
 		htmlString.equals(noHtmlString);
 	}
+	
+	def "test contains id"() {
+		expect:
+		Utils.containsId("\$123", 123)
+		!Utils.containsId("\$1234", 123)
+		Utils.containsId("\$1 + \$2", 1)
+		Utils.containsId("\$1 + \$2", 2)
+		Utils.containsId("\$1+\$2", 1)
+		Utils.containsId("\$1+\$2", 2)
+		!Utils.containsId("1+2", 2)
+		!Utils.containsId("1+2", 2)
+	}
 }

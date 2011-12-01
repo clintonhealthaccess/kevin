@@ -28,9 +28,9 @@ package org.chai.kevin.maps;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.CalculationInfo;
-import org.chai.kevin.Info;
 import org.chai.kevin.Organisation;
+import org.chai.kevin.data.CalculationInfo;
+import org.chai.kevin.data.Info;
 import org.hisp.dhis.period.Period;
 
 public class MapsExplanation {

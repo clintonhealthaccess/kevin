@@ -43,12 +43,12 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.CalculationValue;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.OrganisationSorter;
-import org.chai.kevin.ValueService;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.ValueService;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;

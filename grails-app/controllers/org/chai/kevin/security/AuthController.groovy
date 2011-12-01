@@ -140,7 +140,7 @@ class AuthController {
 	}
 	
 	def login = {
-		return [ username: params.username, rememberMe: (params.rememberMe != null), targetURI: params.targetURI ]
+		return [ username: params.username, rememberMe: (params.rememberMe != null), targetURI: getTargetURI() ]
 	}
 
     def signIn = {
