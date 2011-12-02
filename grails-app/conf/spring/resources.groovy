@@ -64,6 +64,14 @@ Set<String> exportSkipLevels = config.export.skip.levels
 
 beans = {
 	
+	exportDataElementService(ExportDataElementService){
+		dataElementService=ref("dataElementService")
+		organisationService = ref("organisationService")
+		valueService = ref("valueService")
+		infoService = ref("infoService")
+		facilityLevel = organisationLevel
+	}
+	
 	surveyCopyService(SurveyCopyService) {
 		sessionFactory = ref("sessionFactory")
 		languageService = ref("languageService")
