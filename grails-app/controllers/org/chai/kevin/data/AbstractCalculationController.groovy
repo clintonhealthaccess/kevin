@@ -5,15 +5,28 @@ import org.chai.kevin.AbstractEntityController;
 abstract class AbstractCalculationController extends AbstractEntityController {
 
 	def dataService
+	def valueService
 	
 	def getTemplate() {
 		return "/entity/data/createCalculation"
+	}
+	
+	def deleteEntity(def entity) {
+		valueService.deleteValues(entity)
+		dataService.delete(entity)
 	}
 	
 	def getModel(def entity) {
 		[calculation: entity]
 	}
 
+	def saveEntity(def entity) {
+		if (entity.id != null) valueService.deleteValues(entity)
+		
+		entity.setTimestamp(new Date());
+		entity.save()
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 		

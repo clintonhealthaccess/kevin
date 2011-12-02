@@ -144,6 +144,7 @@ class SurveyService {
 	}
 	
 	Set<SurveyElement> getSurveyElements(RawDataElement dataElement, Survey survey) {
+		if (log.isDebugEnabled()) log.debug("getSurveyElements(dataElement=${dataElement}, survey=${survey})")
 		def c = SurveyElement.createCriteria()
 		if (survey != null) {
 			c.createAlias("surveyQuestion", "sq")
@@ -155,7 +156,9 @@ class SurveyService {
 			c.add(Restrictions.eq("dataElement", dataElement))
 		}
 		
-		return c.setFlushMode(FlushMode.COMMIT).list()
+		def result = c.setFlushMode(FlushMode.COMMIT).list()
+		if (log.isDebugEnabled()) log.debug("getSurveyElements(...)=${result}")
+		return result
 	}
 
 	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes, Map<String, String> params) {

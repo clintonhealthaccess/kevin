@@ -1,5 +1,7 @@
 package org.chai.kevin.survey;
 
+import javax.persistence.Entity;
+
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.data.RawDataElement
@@ -42,6 +44,13 @@ class SurveyValueService {
 	
 	void delete(SurveyEnteredValue surveyEnteredValue) {
 		surveyEnteredValue.delete()
+	}
+	
+	void deleteEnteredValues(SurveyElement element) {
+		sessionFactory.getCurrentSession()
+		.createQuery("delete from SurveyEnteredValue where surveyElement = :surveyElement")
+		.setParameter("surveyElement", element)
+		.executeUpdate();
 	}
 	
 	void save(SurveyEnteredQuestion surveyEnteredQuestion) {
@@ -159,7 +168,6 @@ class SurveyValueService {
 	}
 	
 	List<SurveyEnteredValue> getSurveyEnteredValues(OrganisationUnit organisationUnit, SurveySection section, SurveyObjective objective, Survey survey) {
-		
 		def c = SurveyEnteredValue.createCriteria()
 		c.add(Restrictions.eq("organisationUnit", organisationUnit))
 		

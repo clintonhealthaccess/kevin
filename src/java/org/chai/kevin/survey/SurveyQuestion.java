@@ -158,6 +158,9 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 	public abstract List<SurveyElement> getSurveyElements(OrganisationUnitGroup group);
 	
 	@Transient
+	public abstract void removeSurveyElement(SurveyElement surveyElement);
+	
+	@Transient
 	public abstract List<SurveyElement> getSurveyElements();
 	
 	@Transient

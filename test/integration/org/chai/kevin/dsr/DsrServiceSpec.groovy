@@ -1,6 +1,7 @@
 package org.chai.kevin.dsr
 
 import org.chai.kevin.data.Type
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class DsrServiceSpec extends DsrIntegrationTests {
 
@@ -15,7 +16,6 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def target = newDsrTarget(CODE(2), dataElement, [], objective)
 		def organisation = getOrganisation(BURERA)
 		def dsrTable = null
-		refresh()
 		
 		when:
 		dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
@@ -30,6 +30,24 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		then:
 		dsrTable.getOrganisationMap().get(getOrganisation(BURERA)).equals([getOrganisation(BUTARO)])
 
+	}
+	
+	def "test dsr with non-existing enum option"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def objective = newDsrObjective(CODE(1))
+		def enume = newEnume("enum")
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_ENUM("enum"))
+		def target = newDsrTarget(CODE(2), dataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
+		def dsrTable = null
+		
+		when:
+		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("\"option\""))
+		dsrTable = dsrService.getDsr(getOrganisation(BURERA), objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		
+		then:
+		dsrTable.getDsr(getOrganisation(BUTARO), target).stringValue == "option"
 	}
 	
 	def "test dsr formatting"() {

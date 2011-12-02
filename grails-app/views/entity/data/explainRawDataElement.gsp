@@ -59,13 +59,10 @@
 			</tbody>
 		</table>
 		
-		<table class="listing">
-			<thead>
-				<tr>
-				
-				</tr>
-			</thead>
-		</table>
+		<g:if test="${!referencingData.isEmpty()}">
+			<g:render template="/entity/data/referencingDataList" model="[referencingData: referencingData]"/>
+		</g:if>
+		
 	</body>
 </html>
 

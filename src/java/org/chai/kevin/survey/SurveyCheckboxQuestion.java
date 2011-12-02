@@ -103,6 +103,14 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	}
 
 	@Transient
+	@Override
+	public void removeSurveyElement(SurveyElement surveyElement) {
+		for (SurveyCheckboxOption option : getOptions()) {
+			if (option.getSurveyElement().equals(surveyElement)) option.setSurveyElement(null);
+		}
+	}
+
+	@Transient
 	public List<SurveyCheckboxOption> getOptions(OrganisationUnitGroup group) {
 		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
 		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {

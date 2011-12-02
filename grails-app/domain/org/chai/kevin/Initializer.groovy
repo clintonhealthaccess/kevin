@@ -92,6 +92,7 @@ class Initializer {
 		
 		def surveyAllReadonly = new Role(name: "survey-all-readonly")
 		surveyAllReadonly.addToPermissions("menu:survey")
+		surveyAllReadonly.addToPermissions("summary:*")
 		surveyAllReadonly.addToPermissions("editSurvey:view")
 		surveyAllReadonly.addToPermissions("editSurvey:summaryPage")
 		surveyAllReadonly.addToPermissions("editSurvey:sectionTable")

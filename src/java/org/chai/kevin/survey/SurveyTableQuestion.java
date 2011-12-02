@@ -140,6 +140,18 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		return dataElements;
 	}
 
+	@Override
+	@Transient
+	public void removeSurveyElement(SurveyElement surveyElement) {
+		for (SurveyTableRow row : getRows()) {
+			for (SurveyTableColumn column : getColumns()) {
+				if (row.getSurveyElements().get(column).equals(surveyElement)) {
+					row.getSurveyElements().remove(column);
+				}
+			}
+		}
+	}
+	
 	@Transient
 	public List<SurveyTableRow> getRows(OrganisationUnitGroup group) {
 		List<SurveyTableRow> result = new ArrayList<SurveyTableRow>();
@@ -224,5 +236,5 @@ public class SurveyTableQuestion extends SurveyQuestion {
 			copy.getRows().add(tableRow.deepCopy(cloner, columns));
 		}
 	}
-	
+
 }

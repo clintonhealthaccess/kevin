@@ -45,22 +45,20 @@
 				</g:if>
 			</div>
 		</div>
-		<g:if test="${!readonly}">
-			<r:script>
-				$(document).ready(function() {
-					initializeSurvey(valueChangedInObjective);
-				});
-			
-				function valueChangedInObjective(data, element) {
-					$('#incomplete-sections-container').html(data.incompleteSections);
-					$('#invalid-questions-container').html(data.invalidQuestions);
-					
-					if ($.trim(data.invalidQuestions) == '' && $.trim(data.incompleteSections) == '') $('#submit-objective').removeClass('hidden');
-					else $('#submit-objective').addClass('hidden');
-					
-					enableAfterLoading();
-				}
-			</r:script>
-		</g:if>
+		<r:script>
+			$(document).ready(function() {
+				initializeSurvey(valueChangedInObjective);
+			});
+		
+			function valueChangedInObjective(data, element) {
+				$('#incomplete-sections-container').html(data.incompleteSections);
+				$('#invalid-questions-container').html(data.invalidQuestions);
+				
+				if ($.trim(data.invalidQuestions) == '' && $.trim(data.incompleteSections) == '') $('#submit-objective').removeClass('hidden');
+				else $('#submit-objective').addClass('hidden');
+				
+				enableAfterLoading();
+			}
+		</r:script>
 	</body>
 </html>

@@ -36,7 +36,6 @@ import org.hisp.dhis.dataelement.DataElement;
  * @author Jean Kahigiso M.
  *
  */
-
 class CalculationController extends AbstractController {
 
 	def dataService
@@ -59,12 +58,4 @@ class CalculationController extends AbstractController {
 		])
 	}
 	
-	def getData = {
-		def rawDataElements = dataService.searchData(DataElement.class, params['searchText'], [], [:]);
-		
-		render(contentType:"text/json") {
-			result = 'success'
-			html = g.render(template:'/entity/data/dataList', model:[data: rawDataElements])
-		}
-	}
 }

@@ -1,6 +1,10 @@
 package org.chai.kevin.data
 
-class AverageControllerSpec {
+import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.value.AveragePartialValue;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
+
+class AverageControllerSpec extends IntegrationTests {
 
 	def averageController
 	
@@ -32,4 +36,54 @@ class AverageControllerSpec {
 		Average.count() == 0
 	}
 		
+	def "delete validation deletes values"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def average = newAverage("1", CODE(1))
+		newAveragePartialValue(average, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, 1, v("1"))
+		averageController = new AverageController()
+		
+		when:
+		averageController.params.id = average.id
+		averageController.delete()
+		
+		then:
+		Average.count() == 0
+		AveragePartialValue.count() == 0
+	}
+	
+	def "save average deletes values"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def average = newAverage("1", CODE(1))
+		newAveragePartialValue(average, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, "1", v("1"))
+		averageController = new AverageController()
+		
+		when:
+		averageController.params.id = average.id
+		averageController.save()
+		
+		then:
+		Average.count() == 1
+		AveragePartialValue.count() == 0
+	}
+	
+	def "save average updates timestamp"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def average = newAverage("1", CODE(1))
+		averageController = new AverageController()
+		def time1 = average.timestamp
+		
+		when:
+		averageController.params.id = average.id
+		averageController.save()
+		
+		then:
+		Average.count() == 1
+		!Average.list()[0].timestamp.equals(time1)
+	}
 }

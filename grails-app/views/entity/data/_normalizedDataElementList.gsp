@@ -23,11 +23,28 @@
   		           	</ul>
   				</td>
   				<td>${normalizedDataElement.id}</td>
-  				<td><g:i18n field="${normalizedDataElement.names}"/></td>
+  				<td class="data-element-explainer" data-data="${normalizedDataElement.id}">
+  					<a href="${createLink(controller:'normalizedDataElement', action:'getExplainer', params:[id: normalizedDataElement.id])}"><g:i18n field="${normalizedDataElement.names}"/></a>
+  				</td>
   				<td><g:toHtml value="${normalizedDataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td>${normalizedDataElement.code}</td>
+  			</tr>
+  			<tr>
+  				<td colspan="5" class="explanation-row">
+  					<div class="explanation-cell" id="explanation-${normalizedDataElement.id}"></div>
+  				</td>
   			</tr>
   		</g:each>
   	</tbody>
   </table>
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.data-element-explainer').bind('click', function() {
+			var normalizedDataElement = $(this).data('data');
+			explanationClick(this, normalizedDataElement, function(){});
+			return false;
+		});
+	});
+</script>

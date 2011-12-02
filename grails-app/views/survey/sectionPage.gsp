@@ -63,51 +63,49 @@
 				</div>
 			</div>
 		</div>
-		<g:if test="${!readonly}">
-			<r:script>
-				$(document).ready(function() {
-					initializeSurvey(valueChangedInSection);
+		<r:script>
+			$(document).ready(function() {
+				initializeSurvey(valueChangedInSection);
+			});
+		
+			function valueChangedInSection(data, element) {
+				
+				// we go through all changed elements
+				$.each(data.elements, function(index, element) {
+					
+					// we remove all the skips
+					$('#element-'+element.id).find('.element').removeClass('skipped').find('.input').removeAttr('disabled');
+					
+					// we add them again
+					$.each(element.skipped, function(index, skipped) {
+						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(skipped))
+						.addClass('skipped').find('.input').attr('disabled', 'disabled');
+					});
+					
+					// we remove all the errors
+					$('#element-'+element.id).find('.element').removeClass('errors');
+					$('#element-'+element.id).find('.element').children('.error-list').html('');
+					
+					// we add them again
+					$.each(element.invalid, function(index, invalid) {
+						if (!invalid.valid) $('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).addClass('errors');
+						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).children('.error-list').html(invalid.errors);
+					});
+					
 				});
-			
-				function valueChangedInSection(data, element) {
+				
+				// we go through all the questions
+				$.each(data.questions, function(index, value) {
+					if (value.skipped == true) $('#question-'+value.id).parents('.question-container').addClass('hidden')
+					else $('#question-'+value.id).parents('.question-container').removeClass('hidden')
 					
-					// we go through all changed elements
-					$.each(data.elements, function(index, element) {
-						
-						// we remove all the skips
-						$('#element-'+element.id).find('.element').removeClass('skipped').find('.input').removeAttr('disabled');
-						
-						// we add them again
-						$.each(element.skipped, function(index, skipped) {
-							$('#element-'+element.id).find('#element-'+element.id+'-'+escape(skipped))
-							.addClass('skipped').find('.input').attr('disabled', 'disabled');
-						});
-						
-						// we remove all the errors
-						$('#element-'+element.id).find('.element').removeClass('errors');
-						$('#element-'+element.id).find('.element').children('.error-list').html('');
-						
-						// we add them again
-						$.each(element.invalid, function(index, invalid) {
-							if (!invalid.valid) $('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).addClass('errors');
-							$('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).children('.error-list').html(invalid.errors);
-						});
-						
-					});
+					if (value.complete == true) $('#question-'+value.id).parents('.question-container').removeClass('incomplete')
+					else $('#question-'+value.id).parents('.question-container').addClass('incomplete')
 					
-					// we go through all the questions
-					$.each(data.questions, function(index, value) {
-						if (value.skipped == true) $('#question-'+value.id).parents('.question-container').addClass('hidden')
-						else $('#question-'+value.id).parents('.question-container').removeClass('hidden')
-						
-						if (value.complete == true) $('#question-'+value.id).parents('.question-container').removeClass('incomplete')
-						else $('#question-'+value.id).parents('.question-container').addClass('incomplete')
-						
-						if (value.invalid == false) $('#question-'+value.id).parents('.question-container').removeClass('invalid')
-						else $('#question-'+value.id).parents('.question-container').addClass('invalid')
-					});
-				}
-			</r:script>
-		</g:if>
+					if (value.invalid == false) $('#question-'+value.id).parents('.question-container').removeClass('invalid')
+					else $('#question-'+value.id).parents('.question-container').addClass('invalid')
+				});
+			}
+		</r:script>
 	</body>
 </html>

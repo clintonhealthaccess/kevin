@@ -5,6 +5,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.security.User;
+import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
@@ -68,6 +69,28 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		
 		then:
 		surveyValueService.getNumberOfSurveyEnteredQuestions(survey, OrganisationUnit.findByName(BUTARO), objective, null, true, false) == 1
+	}
+	
+	def "delete survey entered values for survey element"() {
+		setup:
+		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def surveyEnteredValue = newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(KIVUYE), v("1"))
+		
+		expect:
+		SurveyEnteredValue.count() == 1
+		
+		when:
+		surveyValueService.deleteEnteredValues(element1)
+		
+		then:
+		SurveyEnteredValue.count() == 0
 	}
 	
 	def "get survey entered values for organisation - by section"() {

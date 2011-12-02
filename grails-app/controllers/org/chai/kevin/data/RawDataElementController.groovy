@@ -34,6 +34,8 @@ import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyService
+import org.chai.kevin.survey.SurveyValueService;
+import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
@@ -45,7 +47,8 @@ class RawDataElementController extends AbstractEntityController {
 	ValueService valueService;
 	OrganisationService organisationService;
 	SurveyService surveyService;
-
+	SurveyValueService surveyValueService;
+	
 	def getEntity(def id) {
 		return RawDataElement.get(id)
 	}
@@ -72,6 +75,18 @@ class RawDataElementController extends AbstractEntityController {
 			code: getLabel()
 		]
 	}
+	
+	def saveEntity(def entity) {
+		if (entity.id != null && !entity.getType().equals(new Type(params['type.jsonValue']))) {
+			def surveyElements = surveyService.getSurveyElements(entity, null);
+			if (log.isDebugEnabled()) log.debug("deleting SurveyEnteredValues for "+surveyElements);
+			surveyElements.each { element ->
+				surveyValueService.deleteEnteredValues(element)
+			}
+		}
+		
+		entity.save()
+	}
 
 	def validateEntity(def entity) {
 		boolean valid = entity.validate()
@@ -83,15 +98,26 @@ class RawDataElementController extends AbstractEntityController {
 		}
 		return valid;
 	}
-
+	
 	def deleteEntity(def entity) {
+		// delete all survey elements and survey entered values
+		surveyService.getSurveyElements(entity, null).each { 
+			surveyValueService.deleteEnteredValues(it)
+			it.surveyQuestion.removeSurveyElement(it)
+			it.surveyQuestion.save()
+			it.delete() 
+		}
+		
 		// we delete the entity only if there are no associated values
 		// should we throw an exception in case we can't delete ?
-		
-		// TODO a data element can have associated survey elements
-		if (valueService.getNumberOfValues(entity) == 0) entity.delete(flush: true)
-		else {
+		if (valueService.getNumberOfValues(entity) != 0) {
 			flash.message = message(code: "rawdataelement.delete.hasvalues", default: "Could not delete element, it still has values");
+		}
+		else if (!dataService.getReferencingData(entity).isEmpty()) {
+			flash.message = message(code: "rawdataelement.delete.hasreferencingdata", default: "Could not delete element, some other data still reference this element.")
+		}
+		else {
+			entity.delete(flush: true)
 		}
 	}
 
@@ -153,9 +179,11 @@ class RawDataElementController extends AbstractEntityController {
 			for(SurveyElement surveyElement: surveyElements) {
 				surveyElementMap.put(surveyElement, surveyService.getNumberOfOrganisationUnitApplicable(surveyElement));
 			}
+			
+			List<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)
 
 			render (view: '/entity/data/explainRawDataElement',  model: [
-				rawDataElement: rawDataElement, surveyElements: surveyElementMap, periodValues: periodValues
+				rawDataElement: rawDataElement, surveyElements: surveyElementMap, periodValues: periodValues, referencingData: referencingData
 			])
 		}
 	}

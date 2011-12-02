@@ -81,10 +81,7 @@ public class SurveyElement {
 	}
 	
 	@ElementCollection(targetClass=Translation.class)
-//	@AttributeOverrides({
-//		@AttributeOverride(name="value.jsonText", column=@Column(name="headers"))
-//	})
-//	@MapKey(name="prefix")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	@JoinTable(name="dhsst_survey_element_headers")
 	public Map<String, Translation> getHeaders() {
 		return headers;

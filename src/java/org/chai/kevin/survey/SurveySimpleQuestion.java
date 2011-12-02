@@ -88,6 +88,12 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 		if (surveyElement != null) elements.add(surveyElement);
 		return elements;
 	}
+	
+	@Override
+	@Transient
+	public void removeSurveyElement(SurveyElement surveyElement) {
+		this.surveyElement = null;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Transient
@@ -112,5 +118,6 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 		super.deepCopy(copy, surveyCloner);
 		copy.setSurveyElement(surveyCloner.getElement(getSurveyElement()));
 	}
+
 
 }

@@ -66,24 +66,21 @@ class NormalizedDataElementController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
+		if (entity.id != null) valueService.deleteValues(entity)
+		
 		entity.setTimestamp(new Date());
 		entity.save()
 	}
 	
 	def deleteEntity(def entity) {
-		// we check if there are calculations
-		
-		// TODO check this
-		valueService.deleteValues(entity)
-		entity.delete()
-//		if (dataService.getCalculations(entity).isEmpty()) { 
-//			// we delete all the values
-//			valueService.deleteValues(entity)
-//			entity.delete()
-//		}
-//		else {
-//			flash.message = message(code: "normalizeddataelement.delete.hasvalues", default: "Could not delete normalized data element, it still has associated calculations");
-//		}
+		// we check if there are associated date
+		if (!dataService.getReferencingData(entity).isEmpty()) {
+			flash.message = message(code: "normalizeddataelement.delete.hasreferencingdata", default: "Could not delete element, some other data still reference this element.")
+		}
+		else {
+			valueService.deleteValues(entity)
+			entity.delete()
+		}
 	}
 	
 	def bindParams(def entity) {
@@ -133,4 +130,17 @@ class NormalizedDataElementController extends AbstractEntityController {
 		])
 	}
 	
+	def getExplainer = {
+		def normalizedDataElement = NormalizedDataElement.get(params.int('id'))
+
+		if (normalizedDataElement != null) {
+			
+			List<Data<?>> referencingData = dataService.getReferencingData(normalizedDataElement)
+
+			render (view: '/entity/data/explainNormalizedDataElement',  model: [
+				normalizedDataElement: normalizedDataElement, referencingData: referencingData
+			])
+		}
+	}
+
 }

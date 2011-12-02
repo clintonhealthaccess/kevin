@@ -73,6 +73,7 @@ public class Type extends JSONValue {
 	}
 	
 	@Transient
+	@Deprecated
 	public boolean isComplexType() {
 		return getType() == ValueType.LIST || getType() == ValueType.MAP;
 	}

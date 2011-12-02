@@ -90,6 +90,7 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
+		// TODO get only those who need to be refreshed
 		List<NormalizedDataElement> normalizedDataElements = sessionFactory.getCurrentSession().createCriteria(NormalizedDataElement.class).list();
 		
 		for (NormalizedDataElement normalizedDataElement : normalizedDataElements) {
@@ -106,6 +107,7 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
+		// TODO get only those who need to be refreshed
 		List<Calculation<?>> calculations = sessionFactory.getCurrentSession().createCriteria(Calculation.class).list();
 		
 		for (Calculation<?> calculation : calculations) {
