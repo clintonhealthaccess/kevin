@@ -4,13 +4,15 @@ import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.export.SurveyExportData
 import org.chai.kevin.survey.export.SurveyExportDataPoint
+import org.chai.kevin.survey.validation.SurveyEnteredValue
 import org.chai.kevin.util.Utils;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SurveyExportServiceSpec extends SurveyIntegrationTests {
 
 	def surveyExportService
-	
+//	def surveyValueService
+		
 	def "test for export section"(){
 		setup:
 		setupOrganisationUnitTree()
@@ -21,11 +23,12 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
-		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
+		SurveyEnteredValue surveyEnteredValue = newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))		
+		Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>()
+		surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue)
 		
 		when:
-		def surveyExportData = surveyExportService.getSurveyExportData(getOrganisation(BUTARO), section, objective, survey)
-		List<SurveyExportDataPoint> dataPoints = surveyExportData.getDataPoints();
+		List<SurveyExportDataPoint> dataPoints = surveyExportService.getSurveyExportDataPoints(getOrganisation(BUTARO), survey, objective, section, question, surveyElementValueMap)
 	
 		then:
 		dataPoints.size() == 1
@@ -42,11 +45,12 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
-		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
+		SurveyEnteredValue surveyEnteredValue = newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))		
+		Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>()
+		surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue)
 		
 		when:
-		def surveyExportData = surveyExportService.getSurveyExportData(getOrganisation(BUTARO), section, objective, survey)
-		List<SurveyExportDataPoint> dataPoints = surveyExportData.getDataPoints();
+		List<SurveyExportDataPoint> dataPoints = surveyExportService.getSurveyExportDataPoints(getOrganisation(BUTARO), survey, objective, section, question, surveyElementValueMap)
 	
 		then:
 		dataPoints.size() == 1
@@ -63,11 +67,12 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
-		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
+		SurveyEnteredValue surveyEnteredValue = newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))		
+		Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>()
+		surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue)
 		
 		when:
-		def surveyExportData = surveyExportService.getSurveyExportData(getOrganisation(BUTARO), section, objective, survey)
-		List<SurveyExportDataPoint> dataPoints = surveyExportData.getDataPoints();
+		List<SurveyExportDataPoint> dataPoints = surveyExportService.getSurveyExportDataPoints(getOrganisation(BUTARO), survey, objective, section, question, surveyElementValueMap)
 	
 		then:
 		dataPoints.size() == 1
@@ -84,11 +89,12 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
-		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
+		SurveyEnteredValue surveyEnteredValue = newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))		
+		Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>()
+		surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue)
 		
 		when:
-		def surveyExportData = surveyExportService.getSurveyExportData(getOrganisation(BUTARO), section, objective, survey)
-		List<SurveyExportDataPoint> dataPoints = surveyExportData.getDataPoints();
+		List<SurveyExportDataPoint> dataPoints = surveyExportService.getSurveyExportDataPoints(getOrganisation(BUTARO), survey, objective, section, question, surveyElementValueMap)
 	
 		then:
 		dataPoints.size() == 1		
@@ -106,36 +112,17 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type), ['[_].key1':j(['en':'header1'])])
-		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), type.getValue([['key1':10]]))
+		SurveyEnteredValue surveyEnteredValue = newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), type.getValue([['key1':10]]))
+		Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>()
+		surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue)
 		
 		when:
-		def surveyExportData = surveyExportService.getSurveyExportData(getOrganisation(BUTARO), section, objective, survey)
-		List<SurveyExportDataPoint> dataPoints = surveyExportData.getDataPoints();
-	
+		List<SurveyExportDataPoint> dataPoints = surveyExportService.getSurveyExportDataPoints(getOrganisation(BUTARO), survey, objective, section, question, surveyElementValueMap)
+		
 		then:
 		dataPoints.size() == 1
 		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","LIST","question",
 			"10.0", "", "header1"])
-	}
-	
-	def "test for when no questions are active for a facility type"(){
-		setup:
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def survey = newSurvey(j(["en":"survey"]), period)
-		def objective = newSurveyObjective(j(["en":"objective"]), survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(j(["en":"section"]), objective, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(HEALTH_CENTER_GROUP)])
-		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
-		def element = newSurveyElement(question, newRawDataElement(CODE(1), type), ['[_].key1':j(['en':'header1'])])
-		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), type.getValue([['key1':10]]))
-
-		when:
-		def surveyExportData = surveyExportService.getSurveyExportData(getOrganisation(BUTARO), section, objective, survey)
-		List<SurveyExportDataPoint> dataPoints = surveyExportData.getDataPoints();
-	
-		then:
-		dataPoints.size() == 0
 	}
 	
 	def "test for get zip file"(){
@@ -148,7 +135,9 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
-		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
+		SurveyEnteredValue surveyEnteredValue = newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))		
+		Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>()
+		surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue)
 		
 		when:
 		def file = surveyExportService.getSurveyExportFile("file", getOrganisation(BUTARO), section, objective, survey)
@@ -169,7 +158,9 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = Type.TYPE_NUMBER()
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
-		newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))
+		SurveyEnteredValue surveyEnteredValue = newSurveyEnteredValue(element, period, OrganisationUnit.findByName(BUTARO), v("10"))		
+		Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>()
+		surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue)
 		
 		when:
 		def file = surveyExportService.getExportFilename(getOrganisation(BUTARO), section, objective, survey)

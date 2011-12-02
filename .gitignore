@@ -11,3 +11,5 @@ classes
 eclipse_workspace_settings.epf
 userScripts/**
 bin/
+*.hprof
+*.hprof.index

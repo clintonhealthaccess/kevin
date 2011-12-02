@@ -95,8 +95,7 @@ public class SurveyExportService {
 	private String[] getExportDataHeaders() {
 		List<String> headers = new ArrayList<String>();
 		
-		headers.add(SURVEY_HEADER);
-		
+		headers.add(SURVEY_HEADER);		
 		List<OrganisationUnitLevel> organisationUnitLevels = organisationService.getAllLevels(getSkipLevelArray());					
 		for(OrganisationUnitLevel organisationUnitLevel : organisationUnitLevels){
 			headers.add(organisationUnitLevel.getName());
@@ -143,13 +142,51 @@ public class SurveyExportService {
 			for(Organisation facility : facilities){	
 				if (log.isDebugEnabled()) log.debug("getSurveyExportFile(facility="+facility.getName()+")");
 				
-				SurveyExportData surveyExportData = getSurveyExportData(facility, section, objective, survey);
-				List<SurveyExportDataPoint> dataPoints = surveyExportData.getDataPoints();						
-					
-				// data
-				for (SurveyExportDataPoint dataPoint : dataPoints){
-					writer.write(dataPoint);
+				if(objective != null){
+					survey = objective.getSurvey();
 				}
+				if(section != null){
+					objective = section.getObjective();
+					survey = section.getSurvey();
+				}
+				
+				organisationService.loadGroup(facility);
+				
+				List<SurveyObjective> surveyObjectives = survey.getObjectives(facility.getOrganisationUnitGroup());
+				Collections.sort(surveyObjectives);
+				for (SurveyObjective surveyObjective : surveyObjectives) {
+					if (objective != null && objective != surveyObjective) continue;						
+					List<SurveySection> surveySections = surveyObjective.getSections(facility.getOrganisationUnitGroup());
+					Collections.sort(surveySections);
+					for (SurveySection surveySection : surveySections) {
+						if (section != null && section != surveySection) continue;
+						
+						List<SurveyEnteredValue> surveyEnteredValues = surveyValueService.getSurveyEnteredValues(facility.getOrganisationUnit(), surveySection, surveyObjective, survey);					
+						Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>();
+						for(SurveyEnteredValue surveyEnteredValue : surveyEnteredValues){
+							surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue);
+						}
+						
+						List<SurveyQuestion> surveyQuestions = surveySection.getQuestions(facility.getOrganisationUnitGroup());				
+						Collections.sort(surveyQuestions);
+						for (SurveyQuestion surveyQuestion : surveyQuestions) {
+							if (log.isDebugEnabled()){
+								log.debug("getSurveyExportData(" + 
+											" question="+languageService.getText(surveyQuestion.getNames()) +
+											" section="+languageService.getText(surveySection.getNames()) +
+											" objective="+languageService.getText(surveyObjective.getNames()) + 
+											" facility="+facility.getName() + ")");
+							}
+							List<SurveyExportDataPoint> surveyExportDataPoints = 
+									getSurveyExportDataPoints(facility, survey, surveyObjective, surveySection, surveyQuestion, surveyElementValueMap);
+							
+							// data points
+							for (SurveyExportDataPoint dataPoint : surveyExportDataPoints){
+								writer.write(dataPoint);
+							}
+						}
+					}
+				}									
 			}
 		} catch (IOException ioe){
 			// TODO is this good ?
@@ -159,57 +196,9 @@ public class SurveyExportService {
 		}
 		
 		return csvFile;
-	}	
-	
-	public SurveyExportData getSurveyExportData(Organisation facility, SurveySection section, SurveyObjective objective, Survey survey) {	
-		
-		if(objective != null){
-			survey = objective.getSurvey();
-		}
-		if(section != null){
-			objective = section.getObjective();
-			survey = section.getSurvey();
-		}
-			
-		List<SurveyExportDataPoint> dataPoints = new ArrayList<SurveyExportDataPoint>();
-		
-		organisationService.loadGroup(facility);
-		
-		List<SurveyObjective> surveyObjectives = survey.getObjectives(facility.getOrganisationUnitGroup());
-		Collections.sort(surveyObjectives);
-		for (SurveyObjective surveyObjective : surveyObjectives) {
-			if (objective != null && objective != surveyObjective) continue;						
-			List<SurveySection> surveySections = surveyObjective.getSections(facility.getOrganisationUnitGroup());
-			Collections.sort(surveySections);
-			for (SurveySection surveySection : surveySections) {
-				if (section != null && section != surveySection) continue;
-				
-				List<SurveyEnteredValue> surveyEnteredValues = surveyValueService.getSurveyEnteredValues(facility.getOrganisationUnit(), section, objective, survey);					
-				Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>();
-				for(SurveyEnteredValue surveyEnteredValue : surveyEnteredValues){
-					surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue);
-				}
-				
-				List<SurveyQuestion> surveyQuestions = surveySection.getQuestions(facility.getOrganisationUnitGroup());				
-				Collections.sort(surveyQuestions);
-				for (SurveyQuestion surveyQuestion : surveyQuestions) {
-					if (log.isDebugEnabled()){
-						log.debug("getSurveyExportData(" + 
-									" question="+languageService.getText(surveyQuestion.getNames()) +
-									" section="+languageService.getText(surveySection.getNames()) +
-									" objective="+languageService.getText(surveyObjective.getNames()) + 
-									" facility="+facility.getName() + ")");
-					}
-					List<SurveyExportDataPoint> surveyExportDataPoints = 
-							getSurveyExportDataPoints(facility, survey, surveyObjective, surveySection, surveyQuestion, surveyElementValueMap);
-					dataPoints.addAll(surveyExportDataPoints);
-				}
-			}
-		}
-		return new SurveyExportData(dataPoints);
 	}
 
-	private List<SurveyExportDataPoint> getSurveyExportDataPoints(Organisation facility, Survey survey, SurveyObjective surveyObjective, 
+	public List<SurveyExportDataPoint> getSurveyExportDataPoints(Organisation facility, Survey survey, SurveyObjective surveyObjective, 
 			SurveySection surveySection, SurveyQuestion surveyQuestion, Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap){				
 		
 		List<SurveyExportDataPoint> surveyExportDataPoints = new ArrayList<SurveyExportDataPoint>();						
@@ -362,8 +351,7 @@ public class SurveyExportService {
 		if (value == null) value = "null";
 		return value;
 	}
-	
-	
+		
 	private class DataPointVisitor extends Visitor{
 
 		private Map<String, Translation> headers;
