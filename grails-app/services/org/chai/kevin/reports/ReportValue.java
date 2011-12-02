@@ -1,10 +1,10 @@
 package org.chai.kevin.reports;
 
-public class Report {
-	
+public class ReportValue {
+
 	private String value;	
 
-	public Report(String value) {
+	public ReportValue(String value) {
 		this.setValue(value);
 	}
 

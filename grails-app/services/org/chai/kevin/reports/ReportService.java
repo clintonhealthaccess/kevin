@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.CalculationValue;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
 import org.chai.kevin.OrganisationSorter;
@@ -22,8 +24,7 @@ import org.chai.kevin.fct.FctObjective;
 import org.chai.kevin.fct.FctTable;
 import org.chai.kevin.fct.FctTarget;
 import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.CalculationValue;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
 
@@ -31,9 +32,8 @@ import org.chai.kevin.DataService;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.reports.Report;
+import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.reports.ReportService;
-import org.chai.kevin.value.ExpressionValue;
 import org.springframework.transaction.annotation.Transactional;
 import grails.plugin.springcache.annotations.Cacheable;
 
@@ -62,129 +62,114 @@ public class ReportService {
 		this.languageService = languageService;
 	}
 	
-	public void setGroupLevel(int froupLevel) {
-		this.groupLevel = froupLevel;
+	public void setGroupLevel(int groupLevel) {
+		this.groupLevel = groupLevel;
 	}
 
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public DsrTable getDsrTable(Organisation organisation, DsrObjective objective, Period period) {
+	public DsrTable getDsrTable(Organisation organisation, DsrObjective objective, Period period, Set<String> groupUuids) {
 		
 		if (log.isDebugEnabled()) 
-			log.debug("getDsr(period="+period+",organisation="+organisation+",objective="+objective+")");
+			log.debug("getDsrTable(period="+period+",organisation="+organisation+",objective="+objective+")");
 		
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());		
+		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		Map<Organisation, List<Organisation>> organisationMap = getParents(facilities, groupLevel);
 		
-		Map<Organisation, List<Organisation>> orgParentMap = getParents(facilities, groupLevel);
-		List<DsrTarget> targets = objective.getTargets();		
-		
-		Map<Organisation, Map<DsrTarget, Report>> dsrMap = new HashMap<Organisation, Map<DsrTarget, Report>>();
+		List<DsrTarget> targets = objective.getTargets();
+		Map<Organisation, Map<DsrTarget, ReportValue>> valueMap = new HashMap<Organisation, Map<DsrTarget, ReportValue>>();
 		
 		for (Organisation facility : facilities) {
 			organisationService.loadGroup(facility);
-			
-			Map<DsrTarget, Report> orgDsr = new HashMap<DsrTarget, Report>();
+			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
 			for (DsrTarget target : targets) {
-				boolean applies = Utils.split(target.getGroupUuidString()).contains(facility.getOrganisationUnitGroup().getUuid());
-				String value = null;
-				
-				if (applies) {
-					ExpressionValue expressionValue = valueService.getValue(target.getExpression(), facility.getOrganisationUnit(), period);
-					
-					if (expressionValue != null && !expressionValue.getValue().isNull()) {
-						// TODO put this in templates ?
-						switch (expressionValue.getData().getType().getType()) {
-						case BOOL:
-							if (expressionValue.getValue().getBooleanValue()) value = "&#10003;";
-							else value = "";
-							break;
-						case STRING:
-							value = expressionValue.getValue().getStringValue();
-							break;
-						case NUMBER:
-							value = getFormat(target, expressionValue.getValue().getNumberValue().doubleValue());
-							break;
-						case ENUM:
-							String code = expressionValue.getData().getType().getEnumCode();
-							Enum enume = dataService.findEnumByCode(code);
-							if (enume != null) {
-								EnumOption option = enume.getOptionForValue(expressionValue.getValue().getEnumValue());
-								value = languageService.getText(option.getNames());
-							}
-							else value = "";
-							break;
-						default:
-							value = "";
-							break;
-						}
-					}
-					
-				}
-				orgDsr.put(target, new Report(value));
+				Set<String> targetUuids = Utils.split(target.getGroupUuidString());
+				String facilityUuid = facility.getOrganisationUnitGroup().getUuid();
+				boolean belongsToTarget = targetUuids.contains(facilityUuid);								
+				targetMap.put(target, getDsrValue(belongsToTarget, target, facility, period));
 			}
-			dsrMap.put(facility, orgDsr);
+			valueMap.put(facility, targetMap);
 		}
-
-		return new DsrTable(targets, dsrMap, orgParentMap);
+		
+		DsrTable dsrTable = new DsrTable(valueMap, targets, organisationMap);
+		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
+		return dsrTable;
 	}
 	
-	public FctTable getFctTable(Organisation organisation, FctObjective objective, Period period, OrganisationUnitLevel orgUnitLevel) {		
+	private ReportValue getDsrValue(boolean belongsToTarget, DsrTarget target, Organisation facility, Period period){
+		
+		String value = null;
+		
+		if(!belongsToTarget)
+			return new ReportValue(value);
+					
+		DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), facility.getOrganisationUnit(), period);
+		
+		if (dataValue != null && !dataValue.getValue().isNull()) {
+			// TODO put this in templates ?
+			switch (target.getDataElement().getType().getType()) {
+			case BOOL:
+				if (dataValue.getValue().getBooleanValue()) value = "&#10003;";
+				else value = "";
+				break;
+			case STRING:
+				value = dataValue.getValue().getStringValue();
+				break;
+			case NUMBER:
+				value = getFormat(target, dataValue.getValue().getNumberValue().doubleValue());
+				break;
+			case ENUM:
+				String code = target.getDataElement().getType().getEnumCode();
+				Enum enume = dataService.findEnumByCode(code);
+				if (enume != null) {
+					EnumOption option = enume.getOptionForValue(dataValue.getValue().getEnumValue());
+					value = languageService.getText(option.getNames());
+				}
+				else value = "";
+				break;
+			default:
+				value = "";
+				break;
+			}
+		}		
+		return new ReportValue(value);
+	}
+	
+	public FctTable getFctTable(Organisation organisation, FctObjective objective, Period period, OrganisationUnitLevel orgUnitLevel, Set<String> groupUuids) {		
 		if (log.isDebugEnabled()) 
-			log.debug("getFct(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
+			log.debug("getFctTable(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
 		
 		List<Organisation> children = organisationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());				
+		Map<Organisation, List<Organisation>> organisationMap = getParents(children, orgUnitLevel.getLevel()-1);
 		
-		Map<Organisation, List<Organisation>> orgParentMap = new LinkedHashMap<Organisation, List<Organisation>>();
-		
-		//"total" organisation	
-		organisationService.loadParent(organisation);
-		organisationService.loadLevel(organisation);		
-		Organisation parentOrganisation = organisationService.getParentOfLevel(organisation, organisation.getLevel()-1);
-		if(parentOrganisation == null){
-			Organisation rootOrganisation = organisationService.getRootOrganisation();
-			if(organisation.equals(rootOrganisation))
-				parentOrganisation = rootOrganisation;			
+		Map<FctTarget, ReportValue> totalMap = new HashMap<FctTarget, ReportValue>();				
+		List<FctTarget> targets = objective.getTargets();
+		for(FctTarget target : targets){			
+			totalMap.put(target, getFctValue(target, organisation, period, groupUuids));
 		}
-		orgParentMap.put(parentOrganisation, new ArrayList<Organisation>());
-		orgParentMap.get(parentOrganisation).add(organisation);
 		
-		orgParentMap.putAll(getParents(children, orgUnitLevel.getLevel()-1));		
-		children.add(0, organisation);
-		
-		List<FctTarget> targets = objective.getTargets();		
-		Map<FctTarget, Report> orgFct = new HashMap<FctTarget, Report>();
-		Map<Organisation, Map<FctTarget, Report>> fctMap = new HashMap<Organisation, Map<FctTarget, Report>>();		
+		Map<Organisation, Map<FctTarget, ReportValue>> valueMap = new HashMap<Organisation, Map<FctTarget, ReportValue>>();
 		for (Organisation child : children) {
-			
-			organisationService.loadLevel(child);
-			organisationService.loadGroup(child);
-			OrganisationUnitGroup facilityType = child.getOrganisationUnitGroup();
-			
-			String value = null;
-			
-			for(FctTarget target: targets) {
-							
-				if (facilityType != null) {					
-					Set<String> targetFacilityTypes = Utils.split(target.getGroupUuidString());
-					String orgFacilityTypeUuid = facilityType.getUuid();										
-					if(!targetFacilityTypes.contains(orgFacilityTypeUuid))
-						continue;
-				}					
-				
+			Map<FctTarget, ReportValue> targetMap = new HashMap<FctTarget, ReportValue>();
+			for(FctTarget target : targets){
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
-				
-				CalculationValue calculationValue = valueService.getValue(target.getSum(), child.getOrganisationUnit(), period);
-				if (calculationValue != null) 
-					value = calculationValue.getValue().getStringValue();
-				
-				orgFct.put(target, new Report(value));
-			}											
-			fctMap.put(child, orgFct);
+				targetMap.put(target, getFctValue(target, child, period, groupUuids));
+			}
+			valueMap.put(child, targetMap);
 		}
-
-		return new FctTable(organisation, targets, fctMap, orgParentMap);
+		
+		FctTable fctTable = new FctTable(totalMap, valueMap, targets, organisationMap);
+		if (log.isDebugEnabled()) log.debug("getFctTable(...)="+fctTable);
+		return fctTable;
 	}
-
+	
+	private ReportValue getFctValue(FctTarget target, Organisation organisation, Period period, Set<String> groupUuids) {
+		String value = null;
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), organisation.getOrganisationUnit(), period, groupUuids);
+		if (calculationValue != null) value = calculationValue.getValue().getNumberValue().toString();
+		return new ReportValue(value);
+	}
+	
 	private Map<Organisation, List<Organisation>> getParents(List<Organisation> organisations, Integer level) {									
 		
 		Map<Organisation, List<Organisation>> organisationMap = new HashMap<Organisation, List<Organisation>>();

@@ -6,8 +6,6 @@ import org.chai.kevin.RefreshValueService
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
-import org.chai.kevin.dsr.DsrService
-import org.chai.kevin.fct.FctService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.OrganisationService

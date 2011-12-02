@@ -77,29 +77,19 @@
 									</g:each>
 								</tr>
 							</thead>
-							<tbody>
-								<tr>
-									<th class="box-report-organisation">${currentOrganisation.name} - Total</th>
-									<g:each in="${fctTable.targets}" var="target">
-										<td class="box-report-value">
-											<g:if test="${!fctTable.getTotal(target) != null}">
-												${fctTable.getTotal(target).value}
-											</g:if>
-										</td>
-									</g:each>
-								</tr>
+							<tbody>								
 								<g:each in="${fctTable.organisations}" var="parent">
 									<tr>
 										<th colspan="${fctTable.targets.size()+1}" class="parent-row">${parent.name}</th>
 									</tr>
 									<g:each in="${fctTable.getOrganisationMap().get(parent)}" var="children">
 										<g:each in="${children}" var="child">										
-											<tr class="row organisation" data-group="${fctTable.total == child ? 'Total' : child.organisationUnitGroup?.uuid}">
-												<th class="box-report-organisation">${fctTable.total == child ? 'Total' : child.name}</th>
+											<tr class="row organisation" data-group="${child.organisationUnitGroup?.uuid}">
+												<th class="box-report-organisation">${child.name}</th>
 												<g:each in="${fctTable.targets}" var="target">
 													<td class="box-report-value">
-														<g:if test="${!fctTable.getFctReport(child, target) != null}">
-															${fctTable.getFctReport(child, target).value}
+														<g:if test="${!fctTable.getFctValue(child, target) != null}">
+															${fctTable.getFctValue(child, target).value}
 														</g:if>
 													</td>
 												</g:each>
@@ -107,6 +97,19 @@
 										</g:each>
 									</g:each>
 								</g:each>
+								<tr>
+									<th colspan="${fctTable.targets.size()+1}" class="parent-row">Total</th>
+								</tr>
+								<tr>
+									<th class="box-report-organisation">${currentOrganisation.name}</th>
+									<g:each in="${fctTable.targets}" var="target">
+										<td class="box-report-value">
+											<g:if test="${!fctTable.getTotalValue(target) != null}">
+												${fctTable.getTotalValue(target).value}
+											</g:if>
+										</td>
+									</g:each>
+								</tr>
 							</tbody>
 						</table>
 					</g:if>

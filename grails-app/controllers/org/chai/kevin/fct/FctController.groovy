@@ -30,8 +30,7 @@ class FctController extends AbstractController {
 		FctTable fctTable = null;
 
 		if (period != null && objective != null && organisation != null && level != null) {
-//			fctTable = fctService.getFct(organisation, objective, period, level, new HashSet(facilityTypes*.uuid));
-		fctTable = reportService.getFctTable(organisation, objective, period, level);
+			fctTable = reportService.getFctTable(organisation, objective, period, level, new HashSet(facilityTypes*.uuid));
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root objective: "+objective)				

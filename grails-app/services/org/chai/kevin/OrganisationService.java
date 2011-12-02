@@ -176,8 +176,7 @@ public class OrganisationService {
 		}
 		return unitGroupSetCache;
 	}
-	
-	
+		
 	public void loadGroup(Organisation organisation) {
 		organisation.setOrganisationUnitGroup(organisation.getOrganisationUnit().getGroupInGroupSet(getOrganisationUnitGroupSet()));
 	}
@@ -198,7 +197,6 @@ public class OrganisationService {
 			}
 		}
 	}
-
 	
 	public void loadChildren(Organisation organisation, Integer... skipLevels) {
 		if (organisation.getChildren() != null) return;

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.Organisation;
-import org.chai.kevin.reports.Report;
+import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.reports.ReportTable;
 
 /* 
@@ -37,15 +37,15 @@ import org.chai.kevin.reports.ReportTable;
 
 public class DsrTable extends ReportTable<DsrTarget> {
 
-	public DsrTable(List<DsrTarget> targets, Map<Organisation, Map<DsrTarget, Report>> values, 
+	public DsrTable(Map<Organisation, Map<DsrTarget, ReportValue>> valueMap, List<DsrTarget> targets, 
 			Map<Organisation, List<Organisation>> organisationMap) {
+		this.valueMap = valueMap;
 		this.targets = targets;
-		this.values = values;
 		this.organisationMap = organisationMap;
 	}
 	
-	public Report getDsrReport(Organisation organisation, DsrTarget target){
-		return getReport(organisation, target);
+	public ReportValue getDsrValue(Organisation organisation, DsrTarget target){
+		return getReportValue(organisation, target);
 	}
 
 }

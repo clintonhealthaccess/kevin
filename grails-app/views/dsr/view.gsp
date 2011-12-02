@@ -142,8 +142,8 @@
 												<th class="box-report-organisation">${child.name}</th>
 												<g:each in="${dsrTable.targets}" var="target">
 													<td class="box-report-value">
-														<g:if test="${!dsrTable.getDsrReport(child, target) != null}">
-															${dsrTable.getDsrReport(child, target).value}
+														<g:if test="${!dsrTable.getDsrValue(child, target) != null}">
+															${dsrTable.getDsrValue(child, target).value}
 														</g:if>
 													</td>
 												</g:each>
