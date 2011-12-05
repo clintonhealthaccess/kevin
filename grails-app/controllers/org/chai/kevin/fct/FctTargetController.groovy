@@ -31,6 +31,8 @@ package org.chai.kevin.fct;
  *
  */
 
+import grails.plugin.springcache.annotations.CacheFlush;
+
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.data.Sum
 import org.chai.kevin.util.Utils
@@ -88,4 +90,20 @@ class FctTargetController extends AbstractEntityController {
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
+	
+	@CacheFlush("fctCache")
+	def save = {
+		super.save()
+	}
+	
+	@CacheFlush("fctCache")
+	def delete = {
+		super.delete()
+	}
+	
+	@CacheFlush("fctCache")
+	def edit = {
+		super.edit()
+	}
+	
 }

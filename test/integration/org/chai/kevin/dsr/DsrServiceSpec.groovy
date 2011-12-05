@@ -21,7 +21,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dsrTable.getDsrValue(getOrganisation(BUTARO), target) != null
+		dsrTable.getReportValue(getOrganisation(BUTARO), target) != null
 		dsrTable.getOrganisationMap().get(getOrganisation(BURERA)).equals([getOrganisation(BUTARO), getOrganisation(KIVUYE)])
 
 		when:
@@ -44,10 +44,10 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		
 		when:
 		newRawDataElementValue(dataElement, period, OrganisationUnit.findByName(BUTARO), v("\"option\""))
-		dsrTable = dsrService.getDsr(getOrganisation(BURERA), objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		dsrTable = reportService.getDsrTable(getOrganisation(BURERA), objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dsrTable.getDsr(getOrganisation(BUTARO), target).stringValue == "option"
+		dsrTable.getReportValue(getOrganisation(BUTARO), target).value == "option"
 	}
 	
 	def "test dsr formatting"() {
@@ -63,7 +63,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dsrTable.getDsrValue(getOrganisation(BUTARO), target).value == value
+		dsrTable.getReportValue(getOrganisation(BUTARO), target).value == value
 		
 		where:
 		format	| value
@@ -86,7 +86,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dsrTable.getDsrValue(getOrganisation(organisationName), target).value == null
+		dsrTable.getReportValue(getOrganisation(organisationName), target).value == null
 		
 		where:
 		organisationName << [BUTARO, KIVUYE]
@@ -106,8 +106,8 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dsrTable.getDsrValue(getOrganisation(BUTARO), target).value == "10"		
-		dsrTable.getDsrValue(getOrganisation(KIVUYE), target).value == null
+		dsrTable.getReportValue(getOrganisation(BUTARO), target).value == "10"		
+		dsrTable.getReportValue(getOrganisation(KIVUYE), target).value == null
 		
 	}
 	

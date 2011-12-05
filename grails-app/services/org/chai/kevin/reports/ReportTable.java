@@ -12,6 +12,13 @@ public abstract class ReportTable<T> {
 	protected List<T> targets;
 	protected Map<Organisation, List<Organisation>> organisationMap;
 	
+	public ReportTable(Map<Organisation, Map<T, ReportValue>> valueMap, List<T> targets,
+			Map<Organisation, List<Organisation>> organisationMap) {
+		this.valueMap = valueMap;
+		this.targets = targets;
+		this.organisationMap = organisationMap;
+	}
+
 	public List<Organisation> getOrganisations() {
 		return new ArrayList<Organisation>(organisationMap.keySet());
 	}

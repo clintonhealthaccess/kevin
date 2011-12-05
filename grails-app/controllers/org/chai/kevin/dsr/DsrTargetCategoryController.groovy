@@ -66,6 +66,11 @@ class DsrTargetCategoryController extends AbstractEntityController {
 	}
 	
 	@CacheFlush("dsrCache")
+	def edit = {
+		super.edit()	
+	}
+	
+	@CacheFlush("dsrCache")
 	def save = {
 		super.save()
 	}

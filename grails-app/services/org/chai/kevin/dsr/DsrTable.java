@@ -6,6 +6,8 @@ import java.util.Map;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.reports.ReportTable;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -39,13 +41,7 @@ public class DsrTable extends ReportTable<DsrTarget> {
 
 	public DsrTable(Map<Organisation, Map<DsrTarget, ReportValue>> valueMap, List<DsrTarget> targets, 
 			Map<Organisation, List<Organisation>> organisationMap) {
-		this.valueMap = valueMap;
-		this.targets = targets;
-		this.organisationMap = organisationMap;
+		super(valueMap, targets, organisationMap);
 	}
 	
-	public ReportValue getDsrValue(Organisation organisation, DsrTarget target){
-		return getReportValue(organisation, target);
-	}
-
 }

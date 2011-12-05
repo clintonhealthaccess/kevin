@@ -28,33 +28,23 @@ package org.chai.kevin.fct;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.Organisation;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.reports.ReportValue;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class FctTable extends ReportTable<FctTarget> implements Serializable {
+public class FctTable extends ReportTable<FctTarget> {
 
 	private Map<FctTarget, ReportValue> totalMap;
 	
 	public FctTable(Map<FctTarget, ReportValue> totalMap, Map<Organisation, Map<FctTarget, ReportValue>> valueMap, List<FctTarget> targets, 
 			Map<Organisation, List<Organisation>> organisationMap) {
+		super(valueMap, targets, organisationMap);
 		this.totalMap = totalMap;
-		this.valueMap = valueMap;		
-		this.targets = targets;
-		this.organisationMap = organisationMap;
 	}
 
-	public ReportValue getFctValue(Organisation organisation, FctTarget target){
-		return getReportValue(organisation, target);
-	}
-	
 	public ReportValue getTotalValue(FctTarget target) {
 		return totalMap.get(target);
 	}

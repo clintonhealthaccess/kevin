@@ -26,7 +26,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		then:
 		fctTable.getOrganisationMap().get(getOrganisation(NORTH)).equals([getOrganisation(BURERA)])
-		fctTable.getFctValue(getOrganisation(BURERA), target).value == "2.0"
+		fctTable.getReportValue(getOrganisation(BURERA), target).value == "2.0"
 		fctTable.getTotalValue(target).value == "2.0"
 		
 		when:
@@ -34,7 +34,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		then:
 		fctTable.getOrganisationMap().get(getOrganisation(NORTH)).equals([getOrganisation(BURERA)])
-		fctTable.getFctValue(getOrganisation(BURERA), target).value == "1.0"
+		fctTable.getReportValue(getOrganisation(BURERA), target).value == "1.0"
 		fctTable.getTotalValue(target).value == "1.0"
 		
 		when:
@@ -42,6 +42,17 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		then:
 		fctTable.organisations.isEmpty()
+	}
+		
+	def "test normal fct service with dummy organisation"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
+		def objective = newFctObjective(CODE(2))
+		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
+		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
+		def fctTable = null
 		
 		when:
 		def dummy = newOrganisationUnit("dummy", OrganisationUnit.findByName(NORTH))
@@ -51,8 +62,8 @@ class FctServiceSpec extends FctIntegrationTests {
 		then:
 		fctTable.getOrganisationMap().get(getOrganisation(NORTH)).equals([getOrganisation(BURERA), getOrganisation("dummy")])
 		fctTable.getTotalValue(target).value == "2.0"
-		fctTable.getFctValue(getOrganisation("dummy"), target).value == "0.0"
-		fctTable.getFctValue(getOrganisation(BURERA), target).value == "2.0"
+		fctTable.getReportValue(getOrganisation("dummy"), target).value == "0.0"
+		fctTable.getReportValue(getOrganisation(BURERA), target).value == "2.0"
 				
 	}
 	

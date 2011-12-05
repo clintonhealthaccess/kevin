@@ -96,6 +96,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static Date mar31 = getDate( 2005, 3, 31 );
 	
 	def setup() {
+		// using cache.use_second_level_cache = false in test mode doesn't work so
+		// we flush the cache after each test
 		springcacheService.flushAll()
 	}
 	

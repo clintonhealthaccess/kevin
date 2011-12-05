@@ -88,8 +88,8 @@
 												<th class="box-report-organisation">${child.name}</th>
 												<g:each in="${fctTable.targets}" var="target">
 													<td class="box-report-value">
-														<g:if test="${!fctTable.getFctValue(child, target) != null}">
-															${fctTable.getFctValue(child, target).value}
+														<g:if test="${!fctTable.getReportValue(child, target) != null}">
+															${fctTable.getReportValue(child, target).value}
 														</g:if>
 													</td>
 												</g:each>

@@ -101,4 +101,9 @@ class DsrTargetController extends AbstractEntityController {
 	def delete = {
 		super.delete()
 	}
+	
+	@CacheFlush("dsrCache")
+	def edit = {
+		super.edit()	
+	}
 }

@@ -38,32 +38,32 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 	def dataService
 	def reportService
 	
-	def "delete target refreshes cache"() {
-		setup:
-		dsrTargetController = new DsrTargetController()
-		setupOrganisationUnitTree()
-		def period = newPeriod()
-		def objective = newDsrObjective(CODE(1))
-		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "1")
-		def target = newDsrTarget(CODE(2), expression, [], objective)
-		def organisation = getOrganisation(BURERA)
-		refresh()
-		
-		when:
-		def dsrTable = reportService.getDsrTable(organisation, objective, period)
-		
-		then:
-		dsrTable.getDsrValue(getOrganisation(BUTARO), target) != null
-		
-		// TODO can't work because controller class is not instrumented 
+//	def "delete target refreshes cache"() {
+//		setup:
+//		dsrTargetController = new DsrTargetController()
+//		setupOrganisationUnitTree()
+//		def period = newPeriod()
+//		def objective = newDsrObjective(CODE(1))
+//		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "1")
+//		def target = newDsrTarget(CODE(2), expression, [], objective)
+//		def organisation = getOrganisation(BURERA)
+//		refresh()
+//		
 //		when:
-//		dsrTargetController.params.id = target.id
-//		dsrTargetController.delete()
-//		dsrTable = dsrService.getDsr(organisation, objective, period)
+//		def dsrTable = reportService.getDsrTable(organisation, objective, period)
 //		
 //		then:
-//		dsrTable.getDsr(getOrganisation(BUTARO), target) == null
-	}
+//		dsrTable.getDsrValue(getOrganisation(BUTARO), target) != null
+//		
+//		// TODO can't work because controller class is not instrumented 
+////		when:
+////		dsrTargetController.params.id = target.id
+////		dsrTargetController.delete()
+////		dsrTable = dsrService.getDsr(organisation, objective, period)
+////		
+////		then:
+////		dsrTable.getDsr(getOrganisation(BUTARO), target) == null
+//	}
 	
 	def "save target saves target"() {
 		setup:
