@@ -27,17 +27,5 @@ public abstract class ReportTable<T> {
 	public Map<Organisation, List<Organisation>> getOrganisationMap() {
 		return organisationMap;
 	}
-	
-//	public Set<OrganisationUnitGroup> getFacilityTypes() {
-//		Set<OrganisationUnitGroup> facilityTypes = new HashSet<OrganisationUnitGroup>();
-//		for (List<Organisation> organisations : getOrganisationMap().values()) {
-//			for(Organisation organisation : organisations){
-//				OrganisationUnitGroup facilityType = organisation.getOrganisationUnitGroup();
-//				if(facilityType != null) facilityTypes.add(facilityType);	
-//			}
-//		}
-//		return facilityTypes;
-//	}
-
 
 }

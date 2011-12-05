@@ -8,9 +8,9 @@ import org.hisp.dhis.period.Period;
 
 class FctServiceSpec extends FctIntegrationTests { 
 
-	def fctService
+	def reportService
 	
-	def "test fct service works"() {
+	def "test normal fct service"() {
 		setup:
 		setupOrganisationUnitTree()
 		def period = newPeriod()
@@ -22,23 +22,23 @@ class FctServiceSpec extends FctIntegrationTests {
 		refresh()
 		
 		when:
-		fctTable = fctService.getFct(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3), new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		fctTable = reportService.getFctTable(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3), new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		fctTable.organisations.equals([getOrganisation(BURERA)])
-		fctTable.getFct(getOrganisation(BURERA), target).value == "2.0"
-		fctTable.getTotal(target).value == "2.0"
+		fctTable.getOrganisationMap().get(getOrganisation(NORTH)).equals([getOrganisation(BURERA)])
+		fctTable.getFctValue(getOrganisation(BURERA), target).value == "2.0"
+		fctTable.getTotalValue(target).value == "2.0"
 		
 		when:
-		fctTable = fctService.getFct(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3), new HashSet([DISTRICT_HOSPITAL_GROUP]))
+		fctTable = reportService.getFctTable(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3), new HashSet([DISTRICT_HOSPITAL_GROUP]))
 		
 		then:
-		fctTable.organisations.equals([getOrganisation(BURERA)])
-		fctTable.getFct(getOrganisation(BURERA), target).value == "1.0"
-		fctTable.getTotal(target).value == "1.0"
+		fctTable.getOrganisationMap().get(getOrganisation(NORTH)).equals([getOrganisation(BURERA)])
+		fctTable.getFctValue(getOrganisation(BURERA), target).value == "1.0"
+		fctTable.getTotalValue(target).value == "1.0"
 		
 		when:
-		fctTable = fctService.getFct(getOrganisation(BURERA), objective, period, OrganisationUnitLevel.findByLevel(1), new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		fctTable = reportService.getFctTable(getOrganisation(BURERA), objective, period, OrganisationUnitLevel.findByLevel(1), new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		fctTable.organisations.isEmpty()
@@ -46,13 +46,13 @@ class FctServiceSpec extends FctIntegrationTests {
 		when:
 		def dummy = newOrganisationUnit("dummy", OrganisationUnit.findByName(NORTH))
 		refresh()
-		fctTable = fctService.getFct(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3), new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		fctTable = reportService.getFctTable(getOrganisation(RWANDA), objective, period, OrganisationUnitLevel.findByLevel(3), new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		fctTable.organisations.equals([getOrganisation(BURERA), getOrganisation("dummy")])
-		fctTable.getTotal(target).value == "2.0"
-		fctTable.getFct(getOrganisation("dummy"), target).value == "0.0"
-		fctTable.getFct(getOrganisation(BURERA), target).value == "2.0"
+		fctTable.getOrganisationMap().get(getOrganisation(NORTH)).equals([getOrganisation(BURERA), getOrganisation("dummy")])
+		fctTable.getTotalValue(target).value == "2.0"
+		fctTable.getFctValue(getOrganisation("dummy"), target).value == "0.0"
+		fctTable.getFctValue(getOrganisation(BURERA), target).value == "2.0"
 				
 	}
 	

@@ -231,7 +231,6 @@ abstract class IntegrationTests extends IntegrationSpec {
 //		return newExpressionValue(expression, period, organisationUnit, Status.VALID, Value.NULL)
 //	}
 
-
 //	Expression newExpression(def code, def type, String formula, def arguments = [:]) {
 //		return newExpression([:], code, type, formula, arguments)
 //	}

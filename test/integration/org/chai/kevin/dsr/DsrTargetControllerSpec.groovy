@@ -34,8 +34,7 @@ import org.chai.kevin.data.Type
 
 class DsrTargetControllerSpec extends DsrIntegrationTests {
 
-	def dsrTargetController 
-//	def dsrService
+	def dsrTargetController
 	def dataService
 	def reportService
 	
@@ -54,7 +53,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		def dsrTable = reportService.getDsrTable(organisation, objective, period)
 		
 		then:
-		dsrTable.getDsrReport(getOrganisation(BUTARO), target) != null
+		dsrTable.getDsrValue(getOrganisation(BUTARO), target) != null
 		
 		// TODO can't work because controller class is not instrumented 
 //		when:

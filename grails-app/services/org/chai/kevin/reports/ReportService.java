@@ -72,8 +72,12 @@ public class ReportService {
 		
 		if (log.isDebugEnabled()) 
 			log.debug("getDsrTable(period="+period+",organisation="+organisation+",objective="+objective+")");
+						
+		List<Organisation> facilities = new ArrayList<Organisation>();
+		for (String groupUuid : groupUuids) {
+			facilities.addAll(organisationService.getFacilitiesOfGroup(organisation, organisationService.getOrganisationUnitGroup(groupUuid)));
+		}
 		
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
 		Map<Organisation, List<Organisation>> organisationMap = getParents(facilities, groupLevel);
 		
 		List<DsrTarget> targets = objective.getTargets();
@@ -139,7 +143,9 @@ public class ReportService {
 		if (log.isDebugEnabled()) 
 			log.debug("getFctTable(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
 		
-		List<Organisation> children = organisationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());				
+		// TODO get organisations from group uuids only
+		List<Organisation> children = organisationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());
+		
 		Map<Organisation, List<Organisation>> organisationMap = getParents(children, orgUnitLevel.getLevel()-1);
 		
 		Map<FctTarget, ReportValue> totalMap = new HashMap<FctTarget, ReportValue>();				

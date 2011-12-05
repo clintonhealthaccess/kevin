@@ -4,7 +4,7 @@ import org.chai.kevin.data.Type
 
 class DsrServiceSpec extends DsrIntegrationTests {
 
-	def dsrService
+	def reportService
 	
 	def "test normal dsr service"() {
 		setup:
@@ -18,17 +18,17 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refresh()
 		
 		when:
-		dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dsrTable.getDsr(getOrganisation(BUTARO), target) != null
-		dsrTable.organisations.equals([getOrganisation(BUTARO), getOrganisation(KIVUYE)])
+		dsrTable.getDsrValue(getOrganisation(BUTARO), target) != null
+		dsrTable.getOrganisationMap().get(getOrganisation(BURERA)).equals([getOrganisation(BUTARO), getOrganisation(KIVUYE)])
 
 		when:
-		dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP]))
+		dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP]))
 		
 		then:
-		dsrTable.organisations.equals([getOrganisation(BUTARO)])
+		dsrTable.getOrganisationMap().get(getOrganisation(BURERA)).equals([getOrganisation(BUTARO)])
 
 	}
 	
@@ -42,11 +42,10 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
-		def dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		def dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dsrTable.getDsr(getOrganisation(BUTARO), target).stringValue == value
-		dsrTable.getDsr(getOrganisation(BUTARO), target).applies == true
+		dsrTable.getDsrValue(getOrganisation(BUTARO), target).value == value
 		
 		where:
 		format	| value
@@ -66,11 +65,10 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
-		def dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		def dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dsrTable.getDsr(getOrganisation(organisationName), target).stringValue == null
-		dsrTable.getDsr(getOrganisation(organisationName), target).applies == false
+		dsrTable.getDsrValue(getOrganisation(organisationName), target).value == null
 		
 		where:
 		organisationName << [BUTARO, KIVUYE]
@@ -87,14 +85,11 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		refreshNormalizedDataElement()
 		def organisation = getOrganisation(BURERA)
 		
-		def dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		def dsrTable = reportService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dsrTable.getDsr(getOrganisation(BUTARO), target).stringValue == "10"
-		dsrTable.getDsr(getOrganisation(BUTARO), target).applies == true
-		
-		dsrTable.getDsr(getOrganisation(KIVUYE), target).stringValue == null
-		dsrTable.getDsr(getOrganisation(KIVUYE), target).applies == false
+		dsrTable.getDsrValue(getOrganisation(BUTARO), target).value == "10"		
+		dsrTable.getDsrValue(getOrganisation(KIVUYE), target).value == null
 		
 	}
 	
