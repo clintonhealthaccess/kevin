@@ -59,6 +59,7 @@ public class ValueService {
 	public <T extends StoredValue> T save(T value) {
 		log.debug("save(value="+value+")");
 		// TODO set timestamp of all referencing data
+		// not here though because this is used when saving values during refresh and could cause a loop
 		
 		value.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().saveOrUpdate(value);
