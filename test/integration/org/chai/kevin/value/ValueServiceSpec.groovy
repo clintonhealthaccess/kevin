@@ -32,6 +32,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.SumValue;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.util.JSONUtils;
@@ -247,15 +248,22 @@ class ValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 1
 	}
 	
-//	def "test delete normalized data element values"() {
-//		setup:
-//		
-//		when:
-//		
-//		then:
-//		
-//	}
-	
+	def "save raw data element value sets date"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+rawDataElement.id]]))
+		
+		when:
+		def date = normalizedDataElement.timestamp
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, OrganisationUnit.findByName(BUTARO), v("40"))
+		valueService.save(rawDataElementValue);
+		
+		then:
+		NormalizedDataElement.list()[0].timestamp.after(date)
+	}
+		
 	def "test delete calculation values"() {
 		setup:
 		def period = newPeriod()

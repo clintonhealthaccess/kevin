@@ -39,6 +39,8 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.StoredValue;
@@ -53,13 +55,26 @@ public class ValueService {
 
 	private static final Log log = LogFactory.getLog(ValueService.class);
 	
+	private DataService dataService;
 	private SessionFactory sessionFactory;
 	
 	@Transactional(readOnly=false)
 	public <T extends StoredValue> T save(T value) {
 		log.debug("save(value="+value+")");
-		// TODO set timestamp of all referencing data
-		// not here though because this is used when saving values during refresh and could cause a loop
+		
+		// set timestamp of all referencing data
+		// if saving value of RawDataElement
+		// TODO replace by a messaging system i.e. RabbitMQ
+		if (value instanceof RawDataElementValue) {
+			for (NormalizedDataElement normalizedDataElement : dataService.getReferencingNormalizedDataElements(value.getData())) {
+				normalizedDataElement.setTimestamp(new Date());
+				dataService.save(normalizedDataElement);
+			}
+			for (Calculation<?> calculation : dataService.getReferencingCalculations(value.getData())) {
+				calculation.setTimestamp(new Date());
+				dataService.save(calculation);
+			}
+		}
 		
 		value.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().saveOrUpdate(value);
@@ -134,5 +149,9 @@ public class ValueService {
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+	
+	public void setDataService(DataService dataService) {
+		this.dataService = dataService;
 	}
 }

@@ -143,6 +143,7 @@ beans = {
 	
 	valueService(ValueService) {
 		sessionFactory = ref("sessionFactory")
+		dataService = ref("dataService")
 	}
 	
 	expressionService(ExpressionService) {
