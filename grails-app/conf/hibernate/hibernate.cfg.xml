@@ -6,8 +6,6 @@
 <hibernate-configuration>
 
 	<session-factory>
-<!-- 	    <mapping class="org.chai.kevin.Translation" /> -->
-	    
 	    <mapping class="org.chai.kevin.data.NormalizedDataElement" />
 	    <mapping class="org.chai.kevin.data.Calculation" />
 	    <mapping class="org.chai.kevin.data.Average" />
@@ -16,7 +14,6 @@
 	    <mapping class="org.chai.kevin.data.RawDataElement" />
 	    <mapping class="org.chai.kevin.data.Enum" />
 	    <mapping class="org.chai.kevin.data.EnumOption" />
-<!-- 		<mapping class="org.chai.kevin.data.Constant" /> -->
 		
 	    <mapping class="org.chai.kevin.value.RawDataElementValue" />
 	    <mapping class="org.chai.kevin.value.NormalizedDataElementValue" />

@@ -65,10 +65,39 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		def surveyEnteredValue = newSurveyEnteredQuestion(question1, period, OrganisationUnit.findByName(BUTARO), false, true)
+		def surveyEnteredQuestion = newSurveyEnteredQuestion(question1, period, OrganisationUnit.findByName(BUTARO), false, true)
 		
 		then:
-		surveyValueService.getNumberOfSurveyEnteredQuestions(survey, OrganisationUnit.findByName(BUTARO), objective, null, true, false) == 1
+		surveyValueService.getNumberOfSurveyEnteredQuestions(survey, OrganisationUnit.findByName(BUTARO), objective, null, true, false, false) == 1
+	}
+	
+	def "get number of survey entered questions with skip"() {
+		setup:
+		setupOrganisationUnitTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		when:
+		def surveyEnteredQuestion = newSurveyEnteredQuestion(question1, period, OrganisationUnit.findByName(BUTARO), false, true)
+		
+		then:
+		surveyValueService.getNumberOfSurveyEnteredQuestions(survey, OrganisationUnit.findByName(BUTARO), objective, null, true, false, false) == 1
+		surveyValueService.getNumberOfSurveyEnteredQuestions(survey, OrganisationUnit.findByName(BUTARO), objective, null, true, false, true) == 1
+		
+		when:
+		def skipRule = newSkipRule(survey, "1", [:], [])
+		surveyEnteredQuestion.complete = false
+		surveyEnteredQuestion.skippedRules = new HashSet([skipRule])
+		surveyEnteredQuestion.save(failOnError: true, flush: true)
+		
+		then:
+		surveyValueService.getNumberOfSurveyEnteredQuestions(survey, OrganisationUnit.findByName(BUTARO), objective, null, true, false, false) == 0
+		surveyValueService.getNumberOfSurveyEnteredQuestions(survey, OrganisationUnit.findByName(BUTARO), objective, null, true, false, true) == 1
 	}
 	
 	def "delete survey entered values for survey element"() {

@@ -32,9 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -47,8 +45,6 @@ import org.chai.kevin.reports.ReportEntity;
 @Entity(name="CostObjective")
 @Table(name="dhsst_cost_objective")
 public class CostObjective extends ReportEntity {
-
-	private static final long serialVersionUID = 6797783931128622696L;
 
 	private Long id;
 	private List<CostTarget> targets = new ArrayList<CostTarget>();

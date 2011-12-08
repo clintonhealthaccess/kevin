@@ -1,14 +1,11 @@
 package org.chai.kevin.survey.export;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.supercsv.cellprocessor.ConvertNullTo;
-import org.supercsv.cellprocessor.ift.CellProcessor;
 
 public class SurveyExportDataPoint extends ArrayList<String> {
 	
+	private static final long serialVersionUID = -8812306436104509210L;
+
 	public SurveyExportDataPoint(){
 		super();
 	}

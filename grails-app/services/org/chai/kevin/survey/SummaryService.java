@@ -25,7 +25,7 @@ public class SummaryService {
 		
 		for (SurveySection section : sections) {
 			List<SurveyQuestion> questions = section.getQuestions(organisation.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), organisation.getOrganisationUnit(), null, section, true, false);
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), organisation.getOrganisationUnit(), null, section, true, false, true);
 			
 			questionSummaryMap.put(section, new QuestionSummary(questions.size(), completedQuestions));
 		}
@@ -43,7 +43,7 @@ public class SummaryService {
 		for (SurveyObjective objective : objectives) {
 			SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, organisation.getOrganisationUnit());
 			List<SurveyQuestion> questions = objective.getQuestions(organisation.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, organisation.getOrganisationUnit(), objective, null, true, false);
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, organisation.getOrganisationUnit(), objective, null, true, false, true);
 			
 			questionSummaryMap.put(objective, new QuestionSummary(questions.size(), completedQuestions));
 			enteredObjectiveMap.put(objective, enteredObjective);
@@ -75,7 +75,7 @@ public class SummaryService {
 				}
 				questionMap.put(facility.getOrganisationUnitGroup(), questions);
 			}
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, facility.getOrganisationUnit(), null, null, true, false);
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, facility.getOrganisationUnit(), null, null, true, false, true);
 			
 			QuestionSummary questionSummary = new QuestionSummary(questionMap.get(facility.getOrganisationUnitGroup()).size(), completedQuestions);
 			ObjectiveSummary objectiveSummary = new ObjectiveSummary(objectiveMap.get(facility.getOrganisationUnitGroup()).size(), submittedObjectives);
@@ -97,7 +97,7 @@ public class SummaryService {
 			
 			SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, facility.getOrganisationUnit());
 			List<SurveyQuestion> questions = objective.getQuestions(facility.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), facility.getOrganisationUnit(), objective, null, true, false);
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(objective.getSurvey(), facility.getOrganisationUnit(), objective, null, true, false, true);
 			
 			QuestionSummary questionSummary = new QuestionSummary(questions.size(), completedQuestions);
 			
@@ -117,7 +117,7 @@ public class SummaryService {
 			organisationService.loadGroup(facility);						
 			
 			List<SurveyQuestion> questions = section.getQuestions(facility.getOrganisationUnitGroup());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(section.getSurvey(), facility.getOrganisationUnit(), null, section, true, false);
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(section.getSurvey(), facility.getOrganisationUnit(), null, section, true, false, true);
 			
 			QuestionSummary questionSummary = new QuestionSummary(questions.size(), completedQuestions);
 			questionSummaryMap.put(facility, questionSummary);

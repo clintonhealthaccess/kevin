@@ -91,12 +91,24 @@ class SurveyValueService {
 	}
 	
 	Integer getNumberOfSurveyEnteredQuestions(Survey survey, OrganisationUnit organisationUnit, 
-		SurveyObjective objective, SurveySection section, Boolean complete, Boolean invalid) {
+		SurveyObjective objective, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
 		def c = SurveyEnteredQuestion.createCriteria()
 		c.add(Restrictions.eq("organisationUnit", organisationUnit))
 		
-		if (complete!=null) c.add(Restrictions.eq("complete", complete))
+		if (complete!=null) {
+			if (skippedAsComplete!=null) {
+				def or = Restrictions.disjunction();
+				or.add(Restrictions.eq("complete", complete))
+				if (!skippedAsComplete) or.add(Restrictions.isEmpty("skippedRules"))
+				else or.add(Restrictions.isNotEmpty("skippedRules"))
+				c.add(or)
+			}
+			else {
+				c.add(Restrictions.eq("complete", complete))
+			}
+		}
 		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
+		
 		
 		c.createAlias("question", "sq")
 		.createAlias("sq.section", "ss")

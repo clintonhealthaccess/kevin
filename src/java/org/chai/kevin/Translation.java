@@ -32,7 +32,6 @@ import org.chai.kevin.json.JSONMap;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 @Embeddable
 public class Translation extends JSONMap<String> {
 
@@ -42,7 +41,7 @@ public class Translation extends JSONMap<String> {
 		super();
 	}
 
-	public Translation(JSONMap jsonMap) {
+	public Translation(JSONMap<String> jsonMap) {
 		super(jsonMap);
 	}
 	

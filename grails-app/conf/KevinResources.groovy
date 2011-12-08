@@ -27,71 +27,71 @@ modules = {
 	spinner {
 		dependsOn 'jquery'
 
-		resource url: '/js/spinner.js'
+		resource url: '/js/spinner.js', bundle: 'core'
 		//resource url: '/css/spinner.css', bundle: 'core'
 	}
 
 	fliptext {
 		dependsOn 'jquery'
 
-		resource url: '/js/jquery/fliptext/jquery.mb.flipText.js'
-		resource url: '/js/fliptext_init.js'
+		resource url: '/js/jquery/fliptext/jquery.mb.flipText.js', bundle: 'core'
+		resource url: '/js/fliptext_init.js', bundle: 'core'
 	}
 
 	fieldselection {
 		dependsOn 'jquery'
 
-		resource url: '/js/jquery/fieldselection/jquery.fieldselection.js'
+		resource url: '/js/jquery/fieldselection/jquery.fieldselection.js', bundle: 'admin'
 	}
 
 	cluetip {
 		dependsOn 'jquery'
 
-		resource url: '/js/jquery/cluetip/jquery.cluetip.js'
-		resource url: '/js/jquery/cluetip/lib/jquery.hoverIntent.js'
-		resource url: '/js/jquery/cluetip/jquery.cluetip.css'
-		resource url: '/js/cluetip_init.js'
+		resource url: '/js/jquery/cluetip/jquery.cluetip.js', bundle: 'core'
+		resource url: '/js/jquery/cluetip/lib/jquery.hoverIntent.js', bundle: 'core'
+		resource url: '/js/jquery/cluetip/jquery.cluetip.css', bundle: 'core'
+		resource url: '/js/cluetip_init.js', bundle: 'core'
 		//resource url: '/css/cluetip.css'
 	}
 
 	form {
 		dependsOn 'jquery,cluetip'
 
-		resource url: '/js/jquery/form/jquery.form.js'
-		resource url: '/js/form-util.js'
-		resource url: '/js/form_init.js'
+		resource url: '/js/jquery/form/jquery.form.js', bundle: 'core'
+		resource url: '/js/form-util.js', bundle: 'core'
+		resource url: '/js/form_init.js', bundle: 'core'
 		//resource url: '/css/form.css'
 	}
 
 	url {
 		dependsOn 'jquery'
 
-		resource url: '/js/jquery/url/jquery.url.js'
+		resource url: '/js/jquery/url/jquery.url.js', bundle: 'core'
 	}
 
 	progressbar {
 		dependsOn 'jquery'
 
-		resource url: '/js/jquery/progressbar/jquery.progressbar.js'
+		resource url: '/js/jquery/progressbar/jquery.progressbar.js', bundle: 'core'
 	}
 
 	chosen {
 		dependsOn 'jquery'
 
-		resource url: '/js/jquery/chosen/chosen.jquery.js'
-		resource url: '/js/jquery/chosen/ajax-chosen.js'
-		resource url: '/js/jquery/chosen/chosen.css'
+		resource url: '/js/jquery/chosen/chosen.jquery.js', bundle: 'admin'
+		resource url: '/js/jquery/chosen/ajax-chosen.js', bundle: 'admin'
+		resource url: '/js/jquery/chosen/chosen.css', bundle: 'admin'
 	}
 
 	datepicker {
 		dependsOn 'jquery'
 
-		resource url: '/js/jquery/datepicker/glDatePicker.js'
-		resource url: '/js/jquery/datepicker/datepicker.css'
+		resource url: '/js/jquery/datepicker/glDatePicker.js', bundle: 'core'
+		resource url: '/js/jquery/datepicker/datepicker.css', bundle: 'core'
 	}
 
 	richeditor {
-		resource url: '/js/richeditor/nicEdit.js'
+		resource url: '/js/richeditor/nicEdit.js', bundle: 'admin'
 	}
 
 	foldable {
@@ -137,7 +137,7 @@ modules = {
 	ajaxmanager {
 		dependsOn 'jquery'
 
-		resource url: 'js/jquery/ajaxmanager/jquery.ajaxmanager.js'
+		resource url: 'js/jquery/ajaxmanager/jquery.ajaxmanager.js', bundle: 'core'
 	}
 
 	// Start resources for pages

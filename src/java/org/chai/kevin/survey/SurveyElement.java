@@ -141,5 +141,10 @@ public class SurveyElement {
 			copy.getHeaders().put(entry.getKey(), entry.getValue());
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "SurveyElement [id=" + id + "]";
+	}
 	
 }

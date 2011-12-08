@@ -128,6 +128,7 @@ public class SurveyEnteredValue extends SurveyEnteredEntity {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Set<String> getUnacceptedErrors(String prefix) {
 		try {
 			Set<String> invalidRules = Utils.split(getType().getAttribute(value, prefix, "invalid"));

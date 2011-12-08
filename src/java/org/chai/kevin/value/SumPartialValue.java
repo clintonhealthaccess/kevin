@@ -7,7 +7,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Sum;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;

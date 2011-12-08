@@ -168,7 +168,10 @@
 					// we reset null elements
 					$.each(data.elements, function(elementIndex, element) {
 						$.each(element.nullPrefixes, function(prefixIndex, prefix) {
-							$(escape('#element-'+element.id+'-'+prefix)).find('textarea, input, select').attr('value', '');
+							var elementToCheck = escape('#element-'+element.id+'-'+prefix);
+							if (!$(elementToCheck).hasClass('ajax-in-process') && !$(elementToCheck).hasClass('ajax-error')) {
+								$(elementToCheck).find('textarea, input, select').attr('value', '');
+							}
 						});
 					});
 					
@@ -184,6 +187,9 @@
 				
 				$(element).addClass('ajax-error');
 				toggleControls($.queue(document, 'surveyQueue').length > 0);
+			},
+			complete: function() {
+				_gaq.push(['_trackEvent', 'survey', 'save']);
 			}
 		});
 		

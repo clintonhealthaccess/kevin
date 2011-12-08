@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -53,7 +52,7 @@ public class JSONMap<T> implements Map<String, T>, Serializable {
 		// default hibernate constructor
 	}
 	
-	public JSONMap(JSONMap jsonMap) {
+	public JSONMap(JSONMap<T> jsonMap) {
 		this.jsonText = jsonMap.jsonText;
 	}
 	
@@ -72,6 +71,7 @@ public class JSONMap<T> implements Map<String, T>, Serializable {
 	
 	private Map<String, T> embeddedMap = new HashMap<String, T>();
 	
+	@SuppressWarnings("unchecked")
 	private void reloadMap() {
 		embeddedMap.clear();
 		embeddedMap.putAll((Map<String,T>)JSONUtils.getMapFromJSON(getJsonText()));

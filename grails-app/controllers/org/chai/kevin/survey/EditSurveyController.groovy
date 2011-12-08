@@ -185,9 +185,7 @@ class EditSurveyController extends AbstractController {
 
 		def currentSection = SurveySection.get(params.int('section'))
 		def currentObjective = SurveyObjective.get(params.int('objective'))
-		def surveyElements = [
-			SurveyElement.get(params.int('element'))
-		]
+		def surveyElements = [SurveyElement.get(params.int('element'))]
 
 		def surveyPage = surveyPageService.modify(currentOrganisation, currentObjective, surveyElements, params);
 

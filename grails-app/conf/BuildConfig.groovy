@@ -120,20 +120,19 @@ grails.project.dependency.resolution = {
 
 	plugins {
 		compile ":hibernate:$grailsVersion"
-		compile ":jquery:1.6.1.1"
-		
-		// GPRESOURCES-102 forces us to go back to resources 1.0.2
-		compile ":resources:1.0.2"
+		compile ":jquery:1.7.1"
+		compile ":resources:1.1.4"
 		compile ":shiro:1.1.5"
 		compile ":springcache:1.3.1"
 		compile ":compass-sass:0.5.5"
 		compile ":google-analytics:1.0"
-		compile ":grails-melody:1.9"
+		compile ":grails-melody:1.10"
 		compile ":quartz:0.4.2"
 		compile ":constraints:0.6.0"
 		compile ":cached-resources:1.0"
 		compile ":cache-headers:1.1.5"
-		compile ":svn:1.0.0.M1"
+		compile ":svn:1.0.0"
+		compile ":cdn-resources:0.2"
 		
 		compile (":mail:1.0-SNAPSHOT") {changing = false}
 		

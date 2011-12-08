@@ -16,7 +16,7 @@ public class Ordering extends JSONMap<Integer> implements Comparable<Ordering> {
 		super();
 	}
 	
-	public Ordering(JSONMap jsonMap) {
+	public Ordering(JSONMap<Integer> jsonMap) {
 		super(jsonMap);
 	}
 	

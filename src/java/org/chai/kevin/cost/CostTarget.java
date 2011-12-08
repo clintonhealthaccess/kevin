@@ -30,7 +30,6 @@ package org.chai.kevin.cost;
 
 import java.util.Set;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -49,8 +48,6 @@ import org.chai.kevin.util.Utils;
 @Entity(name="CostTarget")
 @Table(name="dhsst_cost_target")
 public class CostTarget extends ReportEntity {
-
-	private static final long serialVersionUID = 2450846525775669571L;
 
 	public static enum CostType {
 		INVESTMENT("INVESTMENT", "Investment"), OPERATION("OPERATION", "Operation");
