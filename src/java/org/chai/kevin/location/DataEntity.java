@@ -9,6 +9,7 @@ import javax.persistence.Table;
 public class DataEntity extends CalculationEntity {
 
 	private LocationEntity location;
+	private DataEntityType dataEntityType;
 	
 	@ManyToOne(targetEntity=LocationEntity.class)
 	public LocationEntity getLocation() {
@@ -17,6 +18,20 @@ public class DataEntity extends CalculationEntity {
 	
 	public void setLocation(LocationEntity location) {
 		this.location = location;
+	}
+
+	@ManyToOne(targetEntity=DataEntityType.class)
+	public DataEntityType getDataEntityType() {
+		return dataEntityType;
+	}
+	
+	public void setDataEntityType(DataEntityType dataEntityType) {
+		this.dataEntityType = dataEntityType;
+	}
+	
+	@Override
+	public boolean collectsData() {
+		return true;
 	}
 	
 }

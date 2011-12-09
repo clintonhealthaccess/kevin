@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SummaryService {
 
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private SurveyValueService surveyValueService;
 	
 	@Transactional(readOnly = true)
 	public SummaryPage getSectionTable(Organisation organisation, SurveyObjective objective) {
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		
 		List<SurveySection> sections = objective.getSections(organisation.getOrganisationUnitGroup());
 		Map<SurveySection, QuestionSummary> questionSummaryMap = new HashMap<SurveySection, QuestionSummary>();
@@ -34,7 +34,7 @@ public class SummaryService {
 	
 	@Transactional(readOnly = true)
 	public SummaryPage getObjectiveTable(Organisation organisation, Survey survey) {
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		
 		List<SurveyObjective> objectives = survey.getObjectives(organisation.getOrganisationUnitGroup());
 		Map<SurveyObjective, QuestionSummary> questionSummaryMap = new HashMap<SurveyObjective, QuestionSummary>();
@@ -54,14 +54,14 @@ public class SummaryService {
 	
 	@Transactional(readOnly = true)
 	public SummaryPage getSurveySummaryPage(Organisation organisation, Survey survey) {
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		List<Organisation> facilities = locationService.getChildrenOfLevel(organisation, locationService.getFacilityLevel());
 		Map<OrganisationUnitGroup, List<SurveyObjective>> objectiveMap = new HashMap<OrganisationUnitGroup, List<SurveyObjective>>();
 		Map<OrganisationUnitGroup, List<SurveyQuestion>> questionMap = new HashMap<OrganisationUnitGroup, List<SurveyQuestion>>();
 
 		Map<Organisation, QuestionSummary> questionSummaryMap = new HashMap<Organisation, QuestionSummary>();
 		Map<Organisation, ObjectiveSummary> objectiveSummaryMap = new HashMap<Organisation, ObjectiveSummary>();
 		for (Organisation facility : facilities) {
-			organisationService.loadGroup(facility);
+			locationService.loadGroup(facility);
 
 			if (!objectiveMap.containsKey(facility.getOrganisationUnitGroup())) {
 				objectiveMap.put(facility.getOrganisationUnitGroup(), survey.getObjectives(facility.getOrganisationUnitGroup()));
@@ -88,12 +88,12 @@ public class SummaryService {
 	
 	@Transactional(readOnly = true)
 	public SummaryPage getObjectiveSummaryPage(Organisation organisation, SurveyObjective objective) {
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		List<Organisation> facilities = locationService.getChildrenOfLevel(organisation, locationService.getFacilityLevel());
 
 		Map<Organisation, SurveyEnteredObjective> enteredObjectiveMap = new HashMap<Organisation, SurveyEnteredObjective>();
 		Map<Organisation, QuestionSummary> questionSummaryMap = new HashMap<Organisation, QuestionSummary>();
 		for (Organisation facility : facilities) {
-			organisationService.loadGroup(facility);						
+			locationService.loadGroup(facility);						
 			
 			SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, facility.getOrganisationUnit());
 			List<SurveyQuestion> questions = objective.getQuestions(facility.getOrganisationUnitGroup());
@@ -109,12 +109,12 @@ public class SummaryService {
 	
 	@Transactional(readOnly = true)
 	public SummaryPage getSectionSummaryPage(Organisation organisation, SurveySection section) {
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		List<Organisation> facilities = locationService.getChildrenOfLevel(organisation, locationService.getFacilityLevel());
 
 		Map<Organisation, QuestionSummary> questionSummaryMap = new HashMap<Organisation, QuestionSummary>();
 		
 		for (Organisation facility : facilities) {
-			organisationService.loadGroup(facility);						
+			locationService.loadGroup(facility);						
 			
 			List<SurveyQuestion> questions = section.getQuestions(facility.getOrganisationUnitGroup());
 			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(section.getSurvey(), facility.getOrganisationUnit(), null, section, true, false, true);
@@ -125,8 +125,8 @@ public class SummaryService {
 		return new SummaryPage(facilities, questionSummaryMap);		
 	}
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 	public void setSurveyValueService(SurveyValueService surveyValueService) {

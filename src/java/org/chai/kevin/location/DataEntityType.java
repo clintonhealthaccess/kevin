@@ -1,5 +1,9 @@
 package org.chai.kevin.location;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,6 +28,10 @@ public class DataEntityType {
 		this.id = id;
 	}
 	
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonValue", column=@Column(name="names", nullable=false))
+	})
 	public Translation getNames() {
 		return names;
 	}

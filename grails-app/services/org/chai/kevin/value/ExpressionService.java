@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
@@ -68,7 +68,7 @@ public class ExpressionService {
 	private static final Log log = LogFactory.getLog(ExpressionService.class);
 	
 	private DataService dataService;
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private ValueService valueService;
 	private JaqlService jaqlService;
 
@@ -93,9 +93,9 @@ public class ExpressionService {
 		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",organisation="+organisation+")");
 		
 		Set<T> result = new HashSet<T>();
-		Set<OrganisationUnitGroup> organisationUnitGroups = organisationService.getGroupsForExpression();
+		Set<OrganisationUnitGroup> organisationUnitGroups = locationService.getDataEntityTypes();
 		for (OrganisationUnitGroup organisationUnitGroup : organisationUnitGroups) {
-			List<Organisation> facilities = organisationService.getFacilitiesOfGroup(organisation, organisationUnitGroup);
+			List<Organisation> facilities = locationService.getFacilitiesOfGroup(organisation, organisationUnitGroup);
 			
 			if (!facilities.isEmpty()) {
 				Map<Organisation, StatusValuePair> values = new HashMap<Organisation, ExpressionService.StatusValuePair>();
@@ -124,11 +124,11 @@ public class ExpressionService {
 		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",organisation="+facility+")");
 		
 		NormalizedDataElementValue expressionValue;
-		if (organisationService.loadLevel(facility) != organisationService.getFacilityLevel()) {
+		if (locationService.loadLevel(facility) != locationService.getFacilityLevel()) {
 			throw new IllegalArgumentException("calculating the value of a NormalizedDateElement for non-facility organisation is not possible");
 		}
 		else {
-			organisationService.loadGroup(facility);
+			locationService.loadGroup(facility);
 			String expression = normalizedDataElement.getExpression(period, facility.getOrganisationUnitGroup().getUuid());
 			
 			StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, facility, RawDataElement.class);
@@ -267,8 +267,8 @@ public class ExpressionService {
 		this.valueService = valueService;
 	}
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 
 	public void setJaqlService(JaqlService jaqlService) {

@@ -44,10 +44,9 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
-import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
@@ -60,7 +59,6 @@ import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveyLog;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
-import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
@@ -79,7 +77,7 @@ public class SurveyPageService {
 	private LanguageService languageService;
 	private SurveyService surveyService;
 	private SurveyValueService surveyValueService;
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private ValueService valueService;
 	private DataService dataService;
 	private ValidationService validationService;
@@ -136,7 +134,7 @@ public class SurveyPageService {
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+organisation+", currentSection="+currentSection+")");
 		
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		
 		SurveyObjective currentObjective = currentSection.getObjective();
 		Survey survey = currentObjective.getSurvey();
@@ -177,7 +175,7 @@ public class SurveyPageService {
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+organisation+", currentObjective="+currentObjective+")");
 		
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		
 		Survey survey = currentObjective.getSurvey();
 		
@@ -219,7 +217,7 @@ public class SurveyPageService {
 	public SurveyPage getSurveyPagePrint(Organisation organisation,Survey survey) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		OrganisationUnitGroup organisationUnitGroup = organisation.getOrganisationUnitGroup();
 		
 		Map<SurveyElement, SurveyEnteredValue> elements = new LinkedHashMap<SurveyElement, SurveyEnteredValue>();
@@ -245,7 +243,7 @@ public class SurveyPageService {
 	public SurveyPage getSurveyPage(Organisation organisation, Survey survey) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		
 		Map<SurveyObjective, SurveyEnteredObjective> objectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
 		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
@@ -263,7 +261,7 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public void refresh(Organisation organisation, Survey survey, boolean closeIfComplete) {
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		List<Organisation> facilities = locationService.getChildrenOfLevel(organisation, locationService.getFacilityLevel());
 	
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -284,7 +282,7 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public void refreshSurveyForFacility(Organisation facility, Survey survey, boolean closeIfComplete) {
-		organisationService.loadGroup(facility);
+		locationService.loadGroup(facility);
 
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -319,7 +317,7 @@ public class SurveyPageService {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		organisationService.loadGroup(facility);
+		locationService.loadGroup(facility);
 		
 		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(facility.getOrganisationUnitGroup()));
 		for (SurveyQuestion question : section.getQuestions()) {
@@ -365,7 +363,7 @@ public class SurveyPageService {
 	@Transactional(readOnly = false)
 	public SurveyPage modify(Organisation organisation, SurveyObjective objective, List<SurveyElement> elements, Map<String, Object> params) {
 		if (log.isDebugEnabled()) log.debug("modify(organisation="+organisation+", elements="+elements+")");
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		
 		// we acquire a write lock on the objective
 		// this won't change anything for MyISAM tables
@@ -600,7 +598,7 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public boolean submit(Organisation organisation, SurveyObjective objective) {
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		
 		// first we make sure that the objective is valid and complete, so we revalidate it
 		List<SurveyElement> elements = objective.getElements(organisation.getOrganisationUnitGroup());
@@ -748,8 +746,8 @@ public class SurveyPageService {
 		if (enteredValue != null) surveyValueService.delete(enteredValue);
 	}
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 	public void setSurveyValueService(SurveyValueService surveyValueService) {

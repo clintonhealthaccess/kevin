@@ -13,7 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.OrganisationSorter;
 import org.chai.kevin.value.ValueService;
 import org.chai.kevin.dsr.DsrObjective;
@@ -40,14 +40,14 @@ public class ReportService {
 	
 	private static final Log log = LogFactory.getLog(ReportService.class);
 	
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
 	private int groupLevel;
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 
 	public void setValueService(ValueService valueService) {
@@ -73,14 +73,14 @@ public class ReportService {
 						
 		List<Organisation> facilities = new ArrayList<Organisation>();
 		for (String groupUuid : groupUuids) {
-			facilities.addAll(organisationService.getFacilitiesOfGroup(organisation, organisationService.getOrganisationUnitGroup(groupUuid)));
+			facilities.addAll(locationService.getFacilitiesOfGroup(organisation, locationService.getOrganisationUnitGroup(groupUuid)));
 		}
 		Map<Organisation, List<Organisation>> organisationMap = getParents(facilities, groupLevel);
 		
 		Map<Organisation, Map<DsrTarget, ReportValue>> valueMap = new HashMap<Organisation, Map<DsrTarget, ReportValue>>();
 		List<DsrTarget> targets = objective.getTargets();
 		for (Organisation facility : facilities) {
-			organisationService.loadGroup(facility);
+			locationService.loadGroup(facility);
 			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
 			for (DsrTarget target : targets) {
 				targetMap.put(target, getDsrValue(target, facility, period));
@@ -98,7 +98,7 @@ public class ReportService {
 	public FctTable getFctTable(Organisation organisation, FctObjective objective, Period period, OrganisationUnitLevel orgUnitLevel, Set<String> groupUuids) {		
 		if (log.isDebugEnabled()) log.debug("getFctTable(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
 		
-		List<Organisation> organisations = organisationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());
+		List<Organisation> organisations = locationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());
 		Map<Organisation, List<Organisation>> organisationMap = getParents(organisations, orgUnitLevel.getLevel()-1);
 		
 		List<FctTarget> targets = objective.getTargets();
@@ -172,7 +172,7 @@ public class ReportService {
 		Map<Organisation, List<Organisation>> organisationMap = new HashMap<Organisation, List<Organisation>>();
 		
 		for (Organisation organisation : organisations){			
-			Organisation parentOrganisation = organisationService.getParentOfLevel(organisation, level);			
+			Organisation parentOrganisation = locationService.getParentOfLevel(organisation, level);			
 			if(!organisationMap.containsKey(parentOrganisation))
 				organisationMap.put(parentOrganisation, new ArrayList<Organisation>());
 			organisationMap.get(parentOrganisation).add(organisation);

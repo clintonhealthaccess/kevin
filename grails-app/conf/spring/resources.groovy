@@ -1,14 +1,13 @@
 import org.chai.kevin.ExpressionService
 import org.chai.kevin.InfoService
 import org.chai.kevin.JaqlService
-import org.chai.kevin.OrganisationService
 import org.chai.kevin.RefreshValueService
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
-import org.chai.kevin.OrganisationService
+import org.chai.kevin.LocationService
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
@@ -77,14 +76,14 @@ beans = {
 	refreshValueService(RefreshValueService) {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		sessionFactory = ref("sessionFactory")
 		dataService = ref("dataService")
 		grailsApplication = ref("grailsApplication")
 	}
 	
 	validationService(ValidationService){
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		surveyValueService = ref("surveyValueService")
 		surveyService = ref("surveyService")
 		jaqlService = ref("jaqlService")
@@ -94,7 +93,7 @@ beans = {
 		languageService = ref("languageService")
 		surveyValueService = ref("surveyValueService")
 		surveyService = ref("surveyService")
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		validationService = ref("validationService")
@@ -103,12 +102,12 @@ beans = {
 	}
 	
 	summaryService(SummaryService){
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		surveyValueService = ref("surveyValueService")
 	}
 
 	surveyExportService(SurveyExportService){
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		surveyValueService = ref("surveyValueService")
 		languageService = ref("languageService")
 		sessionFactory = ref("sessionFactory")
@@ -122,7 +121,7 @@ beans = {
 	}
 
 	reportService(ReportService){
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		languageService = ref("languageService")
@@ -130,14 +129,14 @@ beans = {
 	}
 	
 	mapsService(MapsService) {
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		valueService = ref("valueService")
 		infoService = ref("infoService")
 	}
 
 	costTableService(CostTableService) {
 		costService = ref("costService")
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		valueService = ref("valueService")
 		skipLevels = costSkipLevels
 	}
@@ -149,7 +148,7 @@ beans = {
 	
 	expressionService(ExpressionService) {
 		dataService = ref("dataService")
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		valueService = ref("valueService")
 		jaqlService = ref("jaqlService")
 	}
@@ -157,21 +156,19 @@ beans = {
 	infoService(InfoService) {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 	}
 
 	dashboardService(DashboardService) {
-		organisationService = ref("organisationService")
+		locationService = ref("locationService")
 		infoService = ref("infoService")
 		valueService = ref("valueService")
 		skipLevels = dashboardSkipLevels
 	}
 
-	organisationService(OrganisationService) {
-		group = facilityTypeGroup
+	locationService(LocationService) {
 		organisationUnitService = ref("organisationUnitService")
 		organisationUnitGroupService = ref("organisationUnitGroupService")
-		facilityLevel = organisationLevel
 	}
 	
 	// override the spring cache manager to use the same as hibernate

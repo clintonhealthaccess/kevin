@@ -59,10 +59,12 @@
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredObjective" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyLog" />
 		
-		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnit.hbm.xml" />
-		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitGroup.hbm.xml" />
-		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitGroupSet.hbm.xml" />
-		<mapping resource="org/hisp/dhis/organisationunit/hibernate/OrganisationUnitLevel.hbm.xml" />
+		<mapping class="org.chai.kevin.survey.location.CalculationEntity" />
+		<mapping class="org.chai.kevin.survey.location.DataEntity" />
+		<mapping class="org.chai.kevin.survey.location.DataEntityType" />
+		<mapping class="org.chai.kevin.survey.location.LocationEntity" />
+		<mapping class="org.chai.kevin.survey.location.LocationLevel" />
+		
 		<mapping resource="org/hisp/dhis/period/hibernate/Period.hbm.xml" />
 		<mapping resource="org/hisp/dhis/period/hibernate/PeriodType.hbm.xml" />
 

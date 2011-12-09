@@ -1,6 +1,6 @@
 package org.chai.kevin
 
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.organisationunit.OrganisationUnitService
 /*
@@ -33,7 +33,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitService
 
 class FilterTagLib {
 
-	OrganisationService organisationService;
+	LocationService locationService;
 	OrganisationUnitService organisationUnitService;
 
 	def createLinkByFilter = {attrs, body ->
@@ -52,8 +52,8 @@ class FilterTagLib {
 		Organisation organisation = null;
 		if (params.get("organisation") != null) {
 			Object id = params.get("organisation") 
-			if (id instanceof Integer) organisation = organisationService.getOrganisation((Integer) params.get("organisation"));
-			else organisation = organisationService.getOrganisation(Integer.parseInt(params.get("organisation")));
+			if (id instanceof Integer) organisation = locationService.getOrganisation((Integer) params.get("organisation"));
+			else organisation = locationService.getOrganisation(Integer.parseInt(params.get("organisation")));
 		}
 
 		OrganisationUnitLevel orgUnitLevel = null;
@@ -64,7 +64,7 @@ class FilterTagLib {
 		}
 
 		if (organisation != null) {
-			organisationService.loadLevel(organisation);
+			locationService.loadLevel(organisation);
 
 			if (orgUnitLevel != null) {
 
@@ -73,9 +73,9 @@ class FilterTagLib {
 					if (filter == "level") {
 						// adjust organisation to level
 						if (orgUnitLevel.getLevel() == 1)
-							organisation = organisationService.getRootOrganisation();
+							organisation = locationService.getRootOrganisation();
 						else
-							organisation = organisationService.getParentOfLevel(organisation, orgUnitLevel.getLevel() - 1);
+							organisation = locationService.getParentOfLevel(organisation, orgUnitLevel.getLevel() - 1);
 						params.put("organisation", organisation.getId());
 					}
 					// conflict

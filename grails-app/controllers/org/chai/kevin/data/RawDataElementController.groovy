@@ -32,7 +32,7 @@ package org.chai.kevin.data
  */
 import org.apache.commons.logging.Log;
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.OrganisationService
+import org.chai.kevin.LocationService
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyService
 import org.chai.kevin.survey.SurveyValueService;
@@ -46,7 +46,7 @@ class RawDataElementController extends AbstractEntityController {
 
 	DataService dataService;
 	ValueService valueService;
-	OrganisationService organisationService;
+	LocationService locationService;
 	SurveyService surveyService;
 	SurveyValueService surveyValueService;
 	

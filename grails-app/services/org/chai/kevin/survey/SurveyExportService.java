@@ -15,7 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.OrganisationSorter;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.DataElement;
@@ -39,7 +39,7 @@ public class SurveyExportService {
 	
 	private SessionFactory sessionFactory;
 	private LanguageService languageService;
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private SurveyValueService surveyValueService;
 	
 	private Set<Integer> skipLevels;
@@ -48,8 +48,8 @@ public class SurveyExportService {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 	public void setLanguageService(LanguageService languageService) {
@@ -84,7 +84,7 @@ public class SurveyExportService {
 		List<String> headers = new ArrayList<String>();
 		
 		headers.add(SURVEY_HEADER);		
-		List<OrganisationUnitLevel> organisationUnitLevels = organisationService.getAllLevels(getSkipLevelArray());					
+		List<OrganisationUnitLevel> organisationUnitLevels = locationService.getAllLevels(getSkipLevelArray());					
 		for(OrganisationUnitLevel organisationUnitLevel : organisationUnitLevels){
 			headers.add(organisationUnitLevel.getName());
 		}
@@ -111,7 +111,7 @@ public class SurveyExportService {
 	@Transactional(readOnly=true)
 	public File getSurveyExportFile(String filename, Organisation organisation, SurveySection section, SurveyObjective objective, Survey survey) throws IOException { 
 		
-		List<Organisation> facilities = organisationService.getChildrenOfLevel(organisation, organisationService.getFacilityLevel());
+		List<Organisation> facilities = locationService.getChildrenOfLevel(organisation, locationService.getFacilityLevel());
 		Collections.sort(facilities, OrganisationSorter.BY_LEVEL);
 		
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
@@ -138,7 +138,7 @@ public class SurveyExportService {
 					survey = section.getSurvey();
 				}
 				
-				organisationService.loadGroup(facility);
+				locationService.loadGroup(facility);
 				
 				List<SurveyObjective> surveyObjectives = survey.getObjectives(facility.getOrganisationUnitGroup());
 				Collections.sort(surveyObjectives);
@@ -267,18 +267,18 @@ public class SurveyExportService {
 		SurveyExportDataPoint dataPoint = new SurveyExportDataPoint();
 		dataPoint.add(formatExportDataItem(languageService.getText(survey.getNames())));
 		
-		int facilityLevel = organisationService.loadLevel(facility);
-		List<OrganisationUnitLevel> organisationUnitLevels = organisationService.getAllLevels(getSkipLevelArray());					
+		int facilityLevel = locationService.loadLevel(facility);
+		List<OrganisationUnitLevel> organisationUnitLevels = locationService.getAllLevels(getSkipLevelArray());					
 		for(OrganisationUnitLevel organisationUnitLevel : organisationUnitLevels){			
 			if(facilityLevel == organisationUnitLevel.getLevel())
 				dataPoint.add(formatExportDataItem(facility.getOrganisationUnit().getName()));
 			else{
-				Organisation parent = organisationService.getParentOfLevel(facility, new Integer(organisationUnitLevel.getLevel()));
+				Organisation parent = locationService.getParentOfLevel(facility, new Integer(organisationUnitLevel.getLevel()));
 				dataPoint.add(formatExportDataItem(parent.getOrganisationUnit().getName()));
 			}
 		}
 		
-		organisationService.loadGroup(facility);
+		locationService.loadGroup(facility);
 		dataPoint.add(formatExportDataItem(facility.getOrganisationUnitGroup().getName()));			
 		dataPoint.add(formatExportDataItem(languageService.getText(surveyObjective.getNames())));
 		dataPoint.add(formatExportDataItem(languageService.getText(surveySection.getNames())));		

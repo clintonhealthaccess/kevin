@@ -3,7 +3,7 @@ package org.chai.kevin.survey;
 import javax.persistence.Entity;
 
 import org.apache.shiro.SecurityUtils
-import org.chai.kevin.OrganisationService
+import org.chai.kevin.LocationService
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
@@ -22,7 +22,7 @@ class SurveyValueService {
 	
 	def sessionFactory;
 	
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	
 	void save(SurveyEnteredObjective surveyEnteredObjective) {
 		if (log.isDebugEnabled()) log.debug("save(surveyEnteredObjective=${surveyEnteredObjective}})")

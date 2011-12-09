@@ -11,7 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.util.Utils;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ValidationService {
 	private static final Log log = LogFactory.getLog(ValidationService.class);
 	
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private SurveyService surveyService;
 	private SurveyValueService surveyValueService;
 	private JaqlService jaqlService;
@@ -65,7 +65,7 @@ public class ValidationService {
 		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(validationRule="+validationRule+", organisation="+organisation+")");
 
 		Set<String> result = new HashSet<String>();
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		if (Utils.split(validationRule.getGroupUuidString()).contains(organisation.getOrganisationUnitGroup().getUuid())) {
 			// we validate only if that rule applies to the group
 			SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(validationRule.getSurveyElement(), organisation.getOrganisationUnit());
@@ -177,8 +177,8 @@ public class ValidationService {
 		this.surveyValueService = surveyValueService;
 	}
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 }

@@ -1,6 +1,6 @@
 package org.chai.kevin.fct
 
-import org.chai.kevin.OrganisationService
+import org.chai.kevin.LocationService
 import org.chai.kevin.IntegrationTests
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 

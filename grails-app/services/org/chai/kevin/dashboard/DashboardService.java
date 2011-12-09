@@ -40,7 +40,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.data.Type;
@@ -54,7 +54,7 @@ public class DashboardService {
 
 //	private Log log = LogFactory.getLog(DashboardService.class);
 	
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private InfoService infoService;
 	private ValueService valueService;
 	
@@ -63,21 +63,21 @@ public class DashboardService {
 	@Transactional(readOnly = true)
 	@Cacheable("dashboardCache")
 	public Dashboard getDashboard(Organisation organisation, DashboardObjective objective, Period period, Set<String> groupUuids) {
-		organisationService.loadChildren(organisation, getSkipLevelArray());
+		locationService.loadChildren(organisation, getSkipLevelArray());
 		
 		List<Organisation> organisations = new ArrayList<Organisation>();
 		for (Organisation child : organisation.getChildren()) {
-			organisationService.loadGroup(child);
+			locationService.loadGroup(child);
 						
-			if (organisationService.loadLevel(child) != organisationService.getFacilityLevel()
+			if (locationService.loadLevel(child) != locationService.getFacilityLevel()
 				|| 
 				groupUuids.contains(child.getOrganisationUnitGroup().getUuid())) {
 				organisations.add(child);
-				organisationService.loadChildren(child, getSkipLevelArray());
+				locationService.loadChildren(child, getSkipLevelArray());
 			}
 		}
 		Organisation parent = organisation;
-		while (organisationService.loadParent(parent, getSkipLevelArray())) {
+		while (locationService.loadParent(parent, getSkipLevelArray())) {
 			parent = parent.getParent();
 		}
 		
@@ -91,10 +91,10 @@ public class DashboardService {
 
 	@Transactional(readOnly = true)
 	public Info<?> getExplanation(Organisation organisation, DashboardEntry entry, Period period, Set<String> groupUuids) {
-		organisationService.loadChildren(organisation, getSkipLevelArray());
-		organisationService.loadParent(organisation, getSkipLevelArray());
-		organisationService.loadGroup(organisation);
-		organisationService.loadLevel(organisation);
+		locationService.loadChildren(organisation, getSkipLevelArray());
+		locationService.loadParent(organisation, getSkipLevelArray());
+		locationService.loadGroup(organisation);
+		locationService.loadLevel(organisation);
 		
 		return entry.visit(new ExplanationVisitor(groupUuids), organisation, period);
 	}
@@ -223,8 +223,8 @@ public class DashboardService {
 		return objectivePath;
 	}
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 	public void setInfoService(InfoService infoService) {

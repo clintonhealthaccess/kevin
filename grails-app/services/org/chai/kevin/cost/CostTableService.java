@@ -37,7 +37,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ValueService;
@@ -51,7 +51,7 @@ public class CostTableService {
 	private final static Log log = LogFactory.getLog(CostTableService.class);
 	
 	private CostService costService;
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private ValueService valueService;
 	private Set<Integer> skipLevels;
 	
@@ -63,10 +63,10 @@ public class CostTableService {
 	public Explanation getExplanation(Period period, CostTarget target, Organisation organisation) {
 		
 		Map<Organisation, Map<Integer, Cost>> explanationMap = new HashMap<Organisation, Map<Integer,Cost>>();
-		organisationService.loadChildren(organisation, getSkipLevelArray());
+		locationService.loadChildren(organisation, getSkipLevelArray());
 		
 		for (Organisation child : organisation.getChildren()) {
-			if (	organisationService.loadLevel(child) != organisationService.getFacilityLevel()
+			if (	locationService.loadLevel(child) != locationService.getFacilityLevel()
 					|| 
 					appliesToOrganisation(target, child)
 			) {
@@ -76,20 +76,20 @@ public class CostTableService {
 		
 		List<OrganisationUnitGroup> groups = new ArrayList<OrganisationUnitGroup>();
 		for (String groupUuid : Utils.split(target.getGroupUuidString())) {
-			groups.add(organisationService.getOrganisationUnitGroup(groupUuid));
+			groups.add(locationService.getOrganisationUnitGroup(groupUuid));
 		}
 		return new Explanation(target, groups, target.getObjective(), period, new ArrayList<Organisation>(explanationMap.keySet()), costService.getYears(), explanationMap);
 	}
 	
 	private boolean appliesToOrganisation(CostTarget target, Organisation organisation) {
-		organisationService.loadGroup(organisation);
+		locationService.loadGroup(organisation);
 		return Utils.split(target.getGroupUuidString()).contains(organisation.getOrganisationUnitGroup().getUuid());
 	}
 	
 	private Map<Integer, Cost> getCost(CostTarget target, Organisation organisation, Period period) {
-		organisationService.loadChildren(organisation, getSkipLevelArray());
+		locationService.loadChildren(organisation, getSkipLevelArray());
 		
-		if (organisationService.loadLevel(organisation) == organisationService.getFacilityLevel()) {
+		if (locationService.loadLevel(organisation) == locationService.getFacilityLevel()) {
 			return getCostForLeafOrganisation(target, organisation, period);
 		}
 		else {
@@ -179,8 +179,8 @@ public class CostTableService {
 		this.valueService = valueService;
 	}
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 	public void setSkipLevels(Set<Integer> skipLevels) {

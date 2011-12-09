@@ -31,7 +31,7 @@ import java.util.zip.ZipOutputStream
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.Organisation
-import org.chai.kevin.OrganisationService
+import org.chai.kevin.LocationService
 import org.chai.kevin.security.User
 import org.chai.kevin.util.Utils;
 import org.hibernate.SessionFactory;

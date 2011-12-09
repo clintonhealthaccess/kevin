@@ -34,7 +34,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.util.Utils;
@@ -49,7 +49,7 @@ public class MapsService {
 
 	private static final Log log = LogFactory.getLog(MapsService.class);
 	
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private ValueService valueService;
 	private InfoService infoService;
 	
@@ -57,10 +57,10 @@ public class MapsService {
 		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",organisation="+organisation+",target="+target+")");
 
 		List<Polygon> polygons = new ArrayList<Polygon>();
-		organisationService.loadParent(organisation);
-		organisationService.loadLevel(organisation);
+		locationService.loadParent(organisation);
+		locationService.loadLevel(organisation);
 		
-		List<OrganisationUnitLevel> levels = organisationService.getAllLevels();
+		List<OrganisationUnitLevel> levels = locationService.getAllLevels();
 		levels.remove(0);
 		
 		if (levels.isEmpty()) {
@@ -68,7 +68,7 @@ public class MapsService {
 		}
 		
 		if (level == null) {
-			List<OrganisationUnitLevel> childLevels = organisationService.getChildren(organisationService.loadLevel(organisation));
+			List<OrganisationUnitLevel> childLevels = locationService.getChildren(locationService.loadLevel(organisation));
 			if (levels.size() > 0) level = childLevels.get(0).getLevel();
 			else level = levels.get(0).getLevel();
 		}
@@ -76,17 +76,17 @@ public class MapsService {
 		// if we ask for an organisation level bigger than the organisation's, we go back to the right level
 		while (level <= organisation.getLevel()) {
 			organisation = organisation.getParent();
-			organisationService.loadParent(organisation);
+			locationService.loadParent(organisation);
 		}
 		
 		if (target == null) return new Maps(period, target, organisation, level, polygons, levels);
 		
-		for (Organisation child : organisationService.getChildrenOfLevel(organisation, level)) {
-			organisationService.loadLevel(child);
+		for (Organisation child : locationService.getChildrenOfLevel(organisation, level)) {
+			locationService.loadLevel(child);
 			
 			Double value = null;
 			// TODO groups
-			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child.getOrganisationUnit(), period, Utils.getUuids(organisationService.getGroupsForExpression()));
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child.getOrganisationUnit(), period, Utils.getUuids(locationService.getDataEntityTypes()));
 			if (calculationValue != null) {
 				if (!calculationValue.getValue().isNull()) {
 					value = calculationValue.getValue().getNumberValue().doubleValue();
@@ -101,15 +101,15 @@ public class MapsService {
 
 	public Info<?> getExplanation(Period period, Organisation organisation, MapsTarget target) {
 		// TODO groups
-		return infoService.getCalculationInfo(target.getCalculation(), organisation, period, Utils.getUuids(organisationService.getGroupsForExpression()));
+		return infoService.getCalculationInfo(target.getCalculation(), organisation, period, Utils.getUuids(locationService.getDataEntityTypes()));
 	}
 	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 	public void setInfoService(InfoService infoService) {

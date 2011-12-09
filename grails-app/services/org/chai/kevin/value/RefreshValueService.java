@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
@@ -33,7 +33,7 @@ public class RefreshValueService {
 	private SessionFactory sessionFactory;
 	private ExpressionService expressionService;
 	private ValueService valueService;
-	private OrganisationService organisationService;
+	private LocationService locationService;
 	private GrailsApplication grailsApplication;
 	
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
@@ -49,8 +49,8 @@ public class RefreshValueService {
 		valueService.deleteValues(normalizedDataElement);
 		for (Iterator<Object[]> iterator = getCombinations(); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
-			Organisation organisation = organisationService.getOrganisation(((OrganisationUnit)row[0]).getId());
-			if (organisationService.loadLevel(organisation) == organisationService.getFacilityLevel()) {
+			Organisation organisation = locationService.getOrganisation(((OrganisationUnit)row[0]).getId());
+			if (locationService.loadLevel(organisation) == locationService.getFacilityLevel()) {
 				Period period = (Period)row[1];
 				NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, organisation, period);				
 				valueService.save(value);
@@ -73,7 +73,7 @@ public class RefreshValueService {
 		valueService.deleteValues(calculation);
 		for (Iterator<Object[]> iterator = getCombinations(); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
-			Organisation organisation = organisationService.getOrganisation(((OrganisationUnit)row[0]).getId());
+			Organisation organisation = locationService.getOrganisation(((OrganisationUnit)row[0]).getId());
 			Period period = (Period)row[1];
 			for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, organisation, period)) {
 				valueService.save(partialValue);
@@ -126,8 +126,8 @@ public class RefreshValueService {
 		return query.iterate();
 	}
 	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
+	public void setOrganisationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {

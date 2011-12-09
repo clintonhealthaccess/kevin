@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
 
@@ -60,4 +61,8 @@ public abstract class CalculationEntity {
 	public void setCoordinates(String coordinates) {
 		this.coordinates = coordinates;
 	}
+	
+	@Transient
+	public abstract boolean collectsData();
+	
 }
