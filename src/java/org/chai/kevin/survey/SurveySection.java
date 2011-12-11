@@ -32,7 +32,6 @@ package org.chai.kevin.survey;
  *
  */
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,19 +49,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Orderable;
-import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
-
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.apache.commons.collections.*;
 
 @Entity(name = "SurveySection")
 @Table(name = "dhsst_survey_section")
@@ -124,6 +122,7 @@ public class SurveySection extends Orderable<Integer> {
 
 	@OneToMany(targetEntity=SurveyQuestion.class, mappedBy="section")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@Fetch(FetchMode.SELECT)
 	public List<SurveyQuestion> getQuestions() {
 		return questions;
 	}
@@ -173,9 +172,9 @@ public class SurveySection extends Orderable<Integer> {
 	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveyQuestion surveyQuestion : getQuestions()) {
-			if (Utils.split(surveyQuestion.getGroupUuidString())
-					.contains(group.getUuid()))
+			if (Utils.split(surveyQuestion.getGroupUuidString()).contains(group.getUuid())) {
 				result.add(surveyQuestion);
+			}
 		}
 		return result;
 	}

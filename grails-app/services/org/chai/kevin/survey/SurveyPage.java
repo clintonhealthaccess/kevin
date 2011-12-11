@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
@@ -21,6 +23,8 @@ import org.hisp.dhis.period.Period;
 
 public class SurveyPage {
 
+	private final static Log log = LogFactory.getLog(SurveyPage.class);
+	
 	private Organisation organisation;
 	private Survey survey;
 	private SurveyObjective objective;
@@ -30,6 +34,7 @@ public class SurveyPage {
 	private Map<SurveyQuestion, SurveyEnteredQuestion> questions;
 	private Map<SurveyElement, SurveyEnteredValue> elements;
 	private Comparator<Orderable<Ordering>> comparator;
+	private Map<String, Enum> enums;
 	
 	public SurveyPage(Organisation organisation, Survey survey, 
 			SurveyObjective objective, SurveySection section,
@@ -37,6 +42,7 @@ public class SurveyPage {
 			Map<SurveySection, SurveyEnteredSection> sections,
 			Map<SurveyQuestion, SurveyEnteredQuestion> questions,
 			Map<SurveyElement, SurveyEnteredValue> elements,
+			Map<String, Enum> enums,
 			Comparator<Orderable<Ordering>> comparator) {
 		super();
 		this.organisation = organisation;
@@ -47,6 +53,7 @@ public class SurveyPage {
 		this.sections = sections;
 		this.questions = questions;
 		this.elements = elements;
+		this.enums = enums;
 		this.comparator = comparator;
 		
 	}
@@ -69,6 +76,10 @@ public class SurveyPage {
 	
 	public SurveySection getSection() {
 		return section;
+	}
+	
+	public Enum getEnum(String code) {
+		return enums.get(code);
 	}
 	
 	public Map<SurveyObjective, SurveyEnteredObjective> getEnteredObjectives() {
@@ -135,22 +146,26 @@ public class SurveyPage {
 	}
 
 	public List<SurveySection> getIncompleteSections(SurveyObjective objective) {
+		if (log.isDebugEnabled()) log.debug("getIncompleteSections(objective="+objective+")");
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
 			if (!sections.get(section).isComplete()) result.add(section);
 		}
+		if (log.isDebugEnabled()) log.debug("getIncompleteSections(...)="+result);
 		return result;
 	}
 	
 	public List<SurveyQuestion> getInvalidQuestions(SurveyObjective objective) {
+		if (log.isDebugEnabled()) log.debug("getInvalidQuestions(objective="+objective+")");
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
 			for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
-				if (questions.get(question).isInvalid()
-					&& 
-					!questions.get(question).isSkipped()) result.add(question);
+				if (questions.get(question).isInvalid() && !questions.get(question).isSkipped()) {
+					result.add(question);
+				}
 			}
 		}
+		if (log.isDebugEnabled()) log.debug("getInvalidQuestions(...)="+result);
 		return result;
 	}
 	

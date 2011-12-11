@@ -75,9 +75,9 @@
 		</g:if>
 	</g:else>
 
-	<shiro:hasPermission permission="admin">
+	<g:if test="${showHints}">
 		<div class="admin-hint">Element: ${surveyElement.id} - Prefix: ${suffix}</div>
-	</shiro:hasPermission>
+	</g:if>
 
 	<!-- TODO last value -->
 </ul>

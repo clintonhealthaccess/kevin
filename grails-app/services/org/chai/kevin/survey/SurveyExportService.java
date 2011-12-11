@@ -21,7 +21,7 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.data.Type.Visitor;
+import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.survey.export.SurveyExportData;
 import org.chai.kevin.survey.export.SurveyExportDataPoint;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
@@ -340,7 +340,7 @@ public class SurveyExportService {
 		return value;
 	}
 		
-	private class DataPointVisitor extends Visitor{
+	private class DataPointVisitor extends ValueVisitor{
 
 		private Map<String, Translation> headers;
 		private List<String> surveyQuestionItems;

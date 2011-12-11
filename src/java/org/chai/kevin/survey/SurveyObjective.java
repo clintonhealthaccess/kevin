@@ -56,6 +56,8 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @Entity(name = "SurveyObjective")
@@ -91,6 +93,7 @@ public class SurveyObjective extends Orderable<Integer> {
 	
 	@OneToMany(targetEntity=SurveySection.class, mappedBy="objective")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@Fetch(FetchMode.SELECT)
 	public List<SurveySection> getSections() {
 		return sections;
 	}

@@ -1,6 +1,5 @@
-<%@ page import="org.chai.kevin.data.Enum" %>
 <g:if test="${type.enumCode != null}">
-	<g:set var="enume" value="${Enum.findByCode(type.enumCode)}"/>
+	<g:set var="enume" value="${surveyPage.getEnum(type.enumCode)}"/>
 </g:if>
 
 <!-- Enum type question -->
@@ -35,9 +34,9 @@
 		</g:each>
 	</g:else>
 	
-	<shiro:hasPermission permission="admin">
+	<g:if test="${showHints}">
 		<div class="admin-hint">Element: ${surveyElement.id} - Prefix: ${suffix}</div>
-	</shiro:hasPermission>
+	</g:if>
 	
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>

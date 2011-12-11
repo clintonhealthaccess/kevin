@@ -1,10 +1,8 @@
-<%@ page import="org.chai.kevin.data.Enum" %>
-
 <% if (levels == null) levels = new java.util.Stack() %>
 
-<shiro:hasPermission permission="admin">
+<g:if test="${showHints}">
 	<div class="admin-hint">Element: ${surveyElement.id} - Prefix: ${suffix}</div>
-</shiro:hasPermission>	
+</g:if>
 
 <!-- Value type question -->
 <ul id="element-${surveyElement.id}-${suffix}" class="horizontal element element-map-level-${levels.size()} element-map ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">

@@ -10,9 +10,9 @@
 		onkeydown="return (event.ctrlKey || event.altKey || (47<event.keyCode && event.keyCode<58 && event.shiftKey==false) || (95<event.keyCode && event.keyCode<106) || (event.keyCode==8) || (event.keyCode==9) || (event.keyCode>34 && event.keyCode<40) || (event.keyCode==46) )"
 		value="${formatNumber(number: value?.numberValue, format:'#')}" name="surveyElements[${surveyElement.id}].value${suffix}" class="${tooltipValue!=null?'tooltip':''} idle-field input ${!readonly?'loading-disabled':''}" disabled="disabled"/>
 
-	<shiro:hasPermission permission="admin">
+	<g:if test="${showHints}">
 		<div class="admin-hint">Element: ${surveyElement.id} - Prefix: ${suffix}</div>
-	</shiro:hasPermission>
+	</g:if>
 
 	<div class="error-list">
 		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>

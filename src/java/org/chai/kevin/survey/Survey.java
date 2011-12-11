@@ -51,6 +51,8 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
@@ -128,6 +130,7 @@ public class Survey {
 	
 	@OneToMany(targetEntity = SurveyObjective.class, mappedBy="survey")
 	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	@Fetch(FetchMode.SELECT)
 	public List<SurveyObjective> getObjectives() {
 		return objectives;
 	}

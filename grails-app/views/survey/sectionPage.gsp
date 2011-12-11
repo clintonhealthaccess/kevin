@@ -34,7 +34,7 @@
 						<ol id="questions">
 							<g:each in="${surveyPage.getQuestions(surveyPage.section)}" var="question" status="i">
 								<li class="question-container ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}">
-									<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1]" />
+									<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, questionNumber: i+1, showHints: SecurityUtils.subject.isPermitted('admin')]" />
 								</li> 
 							</g:each>
 						</ol>

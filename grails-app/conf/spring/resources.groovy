@@ -96,6 +96,7 @@ beans = {
 		surveyService = ref("surveyService")
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
+		dataService = ref("dataService")
 		validationService = ref("validationService")
 		sessionFactory = ref("sessionFactory")
 		grailsApplication = ref("grailsApplication")

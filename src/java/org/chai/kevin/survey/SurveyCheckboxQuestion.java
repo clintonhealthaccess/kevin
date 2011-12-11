@@ -158,4 +158,9 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "SurveyCheckboxQuestion [getNames()=" + getNames() + "]";
+	}
+
 }

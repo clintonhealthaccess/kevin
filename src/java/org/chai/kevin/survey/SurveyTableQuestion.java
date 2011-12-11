@@ -173,11 +173,6 @@ public class SurveyTableQuestion extends SurveyQuestion {
 		return result;
 	}
 
-	@Override
-	public String toString() {
-		return "SurveyTableQuestion [tableNames=" + tableNames + "]";
-	}
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Transient
 	public Set<String> getOrganisationUnitGroupApplicable(
@@ -236,5 +231,11 @@ public class SurveyTableQuestion extends SurveyQuestion {
 			copy.getRows().add(tableRow.deepCopy(cloner, columns));
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "SurveyTableQuestion [getNames()=" + getNames() + "]";
+	}
+
 
 }

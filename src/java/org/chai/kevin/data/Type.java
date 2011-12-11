@@ -604,7 +604,9 @@ public class Type extends JSONValue {
 		}
 		return changed | predicate.transformValue(currentValue, this, currentPrefix);
 	}
-	
+
+	// use visit() instead
+	@Deprecated
 	public void getCombinations(Value value, List<String> strings, Set<List<String>> combinations, String prefix) {
 		switch (getType()) {
 			case NUMBER:
@@ -639,7 +641,7 @@ public class Type extends JSONValue {
 		}
 	}
 
-	public static abstract class Visitor {
+	public static abstract class ValueVisitor {
 		
 		private SortedMap<String, Type> types = new TreeMap<String, Type>();
 		private SortedMap<String, Type> genericTypes = new TreeMap<String, Type>();
@@ -673,13 +675,13 @@ public class Type extends JSONValue {
 		public abstract void handle(Type type, Value value, String prefix, String genericPrefix);
 	}
 	
-	public void visit(Value value, Visitor visitor) {
-		visit(value, "", "", visitor);
+	public void visit(Value value, ValueVisitor valueVisitor) {
+		visit(value, "", "", valueVisitor);
 	}
 	
-	private void visit(Value value, String prefix, String genericPrefix, Visitor visitor) {
-		visitor.addType(prefix, genericPrefix, this);
-		visitor.handle(this, value, prefix, genericPrefix);
+	private void visit(Value value, String prefix, String genericPrefix, ValueVisitor valueVisitor) {
+		valueVisitor.addType(prefix, genericPrefix, this);
+		valueVisitor.handle(this, value, prefix, genericPrefix);
 		if (value != null && !value.isNull()) {
 			switch (getType()) {
 				case NUMBER:
@@ -692,19 +694,50 @@ public class Type extends JSONValue {
 				case LIST:
 					Type listType = getListType();
 					for (int i = 0; i < value.getListValue().size(); i++) {
-						listType.visit(value.getListValue().get(i), prefix+"["+i+"]", genericPrefix+"[_]", visitor);
+						listType.visit(value.getListValue().get(i), prefix+"["+i+"]", genericPrefix+"[_]", valueVisitor);
 					}
 					break;
 				case MAP:
 					for (Entry<String, Type> entry : getElementMap().entrySet()) {
-						entry.getValue().visit(value.getMapValue().get(entry.getKey()), prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey(), visitor);
+						entry.getValue().visit(value.getMapValue().get(entry.getKey()), prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey(), valueVisitor);
 					}
 					break;
 				default:
 					throw new NotImplementedException();
 			}
 		}
-		visitor.removeType(prefix, genericPrefix);
+		valueVisitor.removeType(prefix, genericPrefix);
+	}
+	
+	public static abstract class TypeVisitor {
+		public abstract void handle(Type type, String prefix);
+	}
+	
+	public void visit(TypeVisitor typeVisitor) {
+		visit("", typeVisitor);
+	}
+	
+	private void visit(String prefix, TypeVisitor typeVisitor) {
+		typeVisitor.handle(this, prefix);
+		switch (getType()) {
+			case NUMBER:
+			case BOOL:
+			case STRING:
+			case TEXT:
+			case DATE:
+			case ENUM:
+				break;
+			case LIST:
+				getListType().visit(prefix+"[_]", typeVisitor);
+				break;
+			case MAP:
+				for (Entry<String, Type> entry : getElementMap().entrySet()) {
+					entry.getValue().visit(prefix+"."+entry.getKey(), typeVisitor);
+				}
+				break;
+			default:
+				throw new NotImplementedException();
+		}
 	}
 	
 	@Deprecated
@@ -714,7 +747,7 @@ public class Type extends JSONValue {
 	}
 	
 	@Deprecated
-	public static abstract class PrefixPredicate extends Visitor {
+	public static abstract class PrefixPredicate extends ValueVisitor {
 		
 		Map<String, Value> prefixes = new HashMap<String, Value>();
 		

@@ -2,9 +2,10 @@ package org.chai.kevin;
 
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
+import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.data.Type.Visitor;
+import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
@@ -438,6 +439,24 @@ public class TypeUnitSpec extends UnitSpec {
 		list.containsAll([[""]])
 	}
 	
+	def "test type visit"() {
+		setup:
+		def type = null
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
+		def expectedVisitedTypes = [Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()])), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]), Type.TYPE_NUMBER()]
+		def visitedTypes = []
+		type.visit(new TypeVisitor() {
+			public void handle(Type currentType, String prefix) {
+				visitedTypes << currentType
+			}	
+		})
+		
+		then:
+		expectedVisitedTypes.equals(visitedTypes)
+	}
+	
 	def "visit"() {
 		setup:
 		def type = null
@@ -448,7 +467,7 @@ public class TypeUnitSpec extends UnitSpec {
 		value = new Value("{\"value\":10}");
 		
 		then:
-		type.visit(value, new Visitor() {
+		type.visit(value, new ValueVisitor() {
 			public void handle(Type currentType, Value currentValue, String prefix, String genericPrefix) {
 				assert value.equals(currentValue)
 				assert getTypes().equals(["":type])	
@@ -466,7 +485,7 @@ public class TypeUnitSpec extends UnitSpec {
 		]
 		def visitedValues = []
 		def visitedTypeMap = []
-		type.visit(value, new Visitor() {
+		type.visit(value, new ValueVisitor() {
 			public void handle(Type currentType, Value currentValue, String prefix, String genericPrefix) {
 				visitedValues << currentValue
 				visitedTypeMap << new TreeMap(getTypes())
@@ -477,6 +496,7 @@ public class TypeUnitSpec extends UnitSpec {
 		expectedVisitedValues.equals(visitedValues)
 		expectedVisitedTypes.equals(visitedTypeMap)
 	}
+	
 	
 	
 	public static class NullPrefixPredicate extends PrefixPredicate {

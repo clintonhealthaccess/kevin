@@ -40,6 +40,8 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 class LanguageService {
 	
+	static transactional = false
+	
 	List<String> getAvailableLanguages() {
 		List<String> languages = ConfigurationHolder.config.site.languages;
 		return languages;

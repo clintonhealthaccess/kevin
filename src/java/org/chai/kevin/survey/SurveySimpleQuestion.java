@@ -119,5 +119,9 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 		copy.setSurveyElement(surveyCloner.getElement(getSurveyElement()));
 	}
 
+	@Override
+	public String toString() {
+		return "SurveySimpleQuestion [getNames()=" + getNames() + "]";
+	}
 
 }

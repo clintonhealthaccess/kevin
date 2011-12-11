@@ -46,8 +46,12 @@ import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
@@ -77,6 +81,7 @@ public class SurveyPageService {
 	private SurveyValueService surveyValueService;
 	private OrganisationService organisationService;
 	private ValueService valueService;
+	private DataService dataService;
 	private ValidationService validationService;
 	private SessionFactory sessionFactory;
 	private GrailsApplication grailsApplication;
@@ -91,27 +96,46 @@ public class SurveyPageService {
 			.createCriteria(Survey.class).add(Restrictions.eq("active", true)).uniqueResult();
 	}
 	
+	private void collectEnums(SurveyElement element, final Map<String, Enum> enums) {
+		element.getDataElement().getType().visit(new TypeVisitor() {
+			@Override
+			public void handle(Type type, String prefix) {
+				if (type.getType() == ValueType.ENUM) {
+					if (!enums.containsKey(type.getEnumCode())) {
+						enums.put(type.getEnumCode(), dataService.findEnumByCode(type.getEnumCode()));
+					}
+				}
+			}
+		});
+	}
+	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(Organisation organisation, SurveyQuestion currentQuestion) {
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+organisation+", currentQuestion="+currentQuestion+")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
+		Map<String, Enum> enums = new HashMap<String, Enum>();
 		
 		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, currentQuestion);
 		questions.put(currentQuestion, enteredQuestion);
 		for (SurveyElement element : currentQuestion.getSurveyElements(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
 			elements.put(element, enteredValue);
+			collectEnums(element, enums);
 		}
 		
-		return new SurveyPage(organisation, currentQuestion.getSurvey(), null, null, null, null, questions, elements, getOrderingComparator());
+		SurveyPage page = new SurveyPage(organisation, currentQuestion.getSurvey(), null, null, null, null, questions, elements, enums, getOrderingComparator());
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
+		return page;
 	}
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(Organisation organisation, SurveySection currentSection) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+organisation+", currentSection="+currentSection+")");
 		
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		organisationService.loadGroup(organisation);
 		
 		SurveyObjective currentObjective = currentSection.getObjective();
@@ -131,6 +155,7 @@ public class SurveyPageService {
 		
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
+		Map<String, Enum> enums = new HashMap<String, Enum>();
 		for (SurveyQuestion question : currentSection.getQuestions(organisation.getOrganisationUnitGroup())) {
 			SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
 			questions.put(question, enteredQuestion);
@@ -138,16 +163,20 @@ public class SurveyPageService {
 			for (SurveyElement element : question.getSurveyElements(organisation.getOrganisationUnitGroup())) {
 				SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
 				elements.put(element, enteredValue);
+				collectEnums(element, enums);
 			}
 		}
 		
-		return new SurveyPage(organisation, survey, currentObjective, currentSection, objectives, sections, questions, elements, getOrderingComparator());
+		SurveyPage page = new SurveyPage(organisation, survey, currentObjective, currentSection, objectives, sections, questions, elements, enums, getOrderingComparator());
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
+		return page;
 	}
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPage(Organisation organisation, SurveyObjective currentObjective) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+organisation+", currentObjective="+currentObjective+")");
 		
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		organisationService.loadGroup(organisation);
 		
 		Survey survey = currentObjective.getSurvey();
@@ -166,7 +195,9 @@ public class SurveyPageService {
 
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
+		Map<String, Enum> enums = new HashMap<String, Enum>();
 		for (SurveySection section : currentObjective.getSections(organisation.getOrganisationUnitGroup())) {
+			section = (SurveySection)sessionFactory.getCurrentSession().get(SurveySection.class, section.getId());
 			for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
 				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
 				questions.put(question, enteredQuestion);
@@ -174,11 +205,14 @@ public class SurveyPageService {
 				for (SurveyElement element : question.getSurveyElements(organisation.getOrganisationUnitGroup())) {
 					SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
 					elements.put(element, enteredValue);
+					collectEnums(element, enums);
 				}
 			}
 		}
 		
-		return new SurveyPage(organisation, survey, currentObjective, null, objectives, sections, questions, elements, getOrderingComparator());
+		SurveyPage page = new SurveyPage(organisation, survey, currentObjective, null, objectives, sections, questions, elements, enums, getOrderingComparator());
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
+		return page;
 	}
 	
 	@Transactional(readOnly = false)
@@ -189,6 +223,7 @@ public class SurveyPageService {
 		OrganisationUnitGroup organisationUnitGroup = organisation.getOrganisationUnitGroup();
 		
 		Map<SurveyElement, SurveyEnteredValue> elements = new LinkedHashMap<SurveyElement, SurveyEnteredValue>();
+		Map<String, Enum> enums = new HashMap<String, Enum>();
 		
 		for (SurveyObjective objective : survey.getObjectives(organisationUnitGroup)) {
 			for (SurveySection section : objective.getSections(organisationUnitGroup)) {
@@ -196,12 +231,13 @@ public class SurveyPageService {
 					for (SurveyElement element : question.getSurveyElements(organisationUnitGroup)) {
 						SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
 						elements.put(element, enteredValue);
+						collectEnums(element, enums);
 					}
 				}
 			}
 
 		}
-		return new SurveyPage(organisation, survey, null, null, null, null,null, elements, getOrderingComparator());
+		return new SurveyPage(organisation, survey, null, null, null, null,null, elements, enums, getOrderingComparator());
 	}
 	
 
@@ -222,7 +258,7 @@ public class SurveyPageService {
 				sections.put(section, enteredSection);
 			}
 		}
-		return new SurveyPage(organisation, survey, null, null, objectives, sections, null, null, getOrderingComparator());
+		return new SurveyPage(organisation, survey, null, null, objectives, sections, null, null, null, getOrderingComparator());
 	}
 	
 	@Transactional(readOnly = false)
@@ -495,7 +531,7 @@ public class SurveyPageService {
 			surveyValueService.save(surveyEnteredObjective);
 		}
 		
-		return new SurveyPage(organisation, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements, getOrderingComparator());
+		return new SurveyPage(organisation, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements, null, getOrderingComparator());
 	}
 
 	// FIXME HACK 
@@ -736,6 +772,10 @@ public class SurveyPageService {
 		this.surveyService = surveyService;
 	}
 
+	public void setDataService(DataService dataService) {
+		this.dataService = dataService;
+	}
+	
 	public void setLanguageService(LanguageService languageService) {
 		this.languageService = languageService;
 	}

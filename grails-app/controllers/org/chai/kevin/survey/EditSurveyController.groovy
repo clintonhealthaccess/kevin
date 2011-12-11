@@ -34,13 +34,15 @@ import org.chai.kevin.Organisation
 import org.chai.kevin.OrganisationService
 import org.chai.kevin.security.User
 import org.chai.kevin.util.Utils;
+import org.hibernate.SessionFactory;
 
 class EditSurveyController extends AbstractController {
 
 	SurveyPageService surveyPageService;
 	SurveyExportService surveyExportService;
 	ValidationService validationService;
-
+	SessionFactory sessionFactory;
+	
 	def index = {
 		redirect (action: 'view', params: params)
 	}
@@ -197,6 +199,10 @@ class EditSurveyController extends AbstractController {
 			def incompleteSectionsHtml = ''
 
 			if (currentSection == null) {
+				sessionFactory.currentSession.clear()
+				currentOrganisation = getOrganisation(false)
+				currentObjective = SurveyObjective.get(params.int('objective'))
+				
 				def completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective)
 				invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
 				incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
