@@ -10,7 +10,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 	def "get dashboard"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def root = newDashboardObjective(CODE(1))
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
@@ -35,7 +35,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 	def "get explainer"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def root = newDashboardObjective(CODE(1))
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)

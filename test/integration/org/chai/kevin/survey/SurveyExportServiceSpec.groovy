@@ -15,7 +15,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		
 	def "test for export section"(){
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(j(["en":"survey"]), period)
 		def objective = newSurveyObjective(j(["en":"objective"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
@@ -37,7 +37,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 
 	def "test for export objective"(){
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(j(["en":"survey"]), period)
 		def objective = newSurveyObjective(j(["en":"objective"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
@@ -59,7 +59,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 
 	def "test for export survey"(){
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(j(["en":"survey"]), period)
 		def objective = newSurveyObjective(j(["en":"objective"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
@@ -81,7 +81,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 	def "test for skip levels"(){
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(j(["en":"survey"]), period)
 		def objective = newSurveyObjective(j(["en":"objective"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
@@ -104,7 +104,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 	def "test for simple question with multiple list headers"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(j(["en":"survey"]), period)
 		def objective = newSurveyObjective(j(["en":"objective"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
@@ -127,7 +127,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 	def "test for get zip file"(){
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(j(["en":"survey"]), period)
 		def objective = newSurveyObjective(j(["en":"objective"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
@@ -150,7 +150,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 	def "test for valid export filename"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(j(["en":"survey"]), period)
 		def objective = newSurveyObjective(j(["en":"objective"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])

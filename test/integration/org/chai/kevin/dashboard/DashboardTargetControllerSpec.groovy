@@ -62,7 +62,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 	
 	def "save target with calculations"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def average = newAverage("1", CODE(2))
 		def root = newDashboardObjective(CODE(1))
 		dashboardTargetController = new DashboardTargetController()
@@ -90,7 +90,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 	
 	def "edit target with calculations"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def root = newDashboardObjective(CODE(1))
 		def average = newAverage("1", CODE(3))
 		def target = newDashboardTarget(TARGET1, average, root, 1)

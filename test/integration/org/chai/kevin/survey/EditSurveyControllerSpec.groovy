@@ -6,7 +6,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 	
 	def "get survey page with null survey elements"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -35,7 +35,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 	
 	def "get survey page with valid parameters"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		editSurveyController = new EditSurveyController()
@@ -52,7 +52,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 	
 	def "access to view action redirects to active survey if SurveyUser"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newSurveyUser('test', 'uuid', getOrganisation(BUTARO)))
 		def period = newPeriod()
 		def survey = newSurvey([:], period, true)
@@ -67,7 +67,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 	
 	def "access to view action redirects to 404 if no active survey with SurveyUser"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newSurveyUser('test', 'uuid', getOrganisation(BUTARO)))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -82,7 +82,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 	
 	def "access to view action redirects to summary page if normal User"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -97,7 +97,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 	
 	def "export survey works"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])

@@ -11,7 +11,7 @@ class FctServiceSpec extends FctIntegrationTests {
 	
 	def "test normal fct service"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
 		def objective = newFctObjective(CODE(2))
@@ -45,7 +45,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 	def "test normal fct service with dummy organisation"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
 		def objective = newFctObjective(CODE(2))

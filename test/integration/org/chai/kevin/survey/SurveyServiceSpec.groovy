@@ -52,7 +52,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 
 	def "test number of organisation applicable with all groups"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = null
@@ -74,7 +74,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	
 	def "test number of organisation applicable with empty group"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = null

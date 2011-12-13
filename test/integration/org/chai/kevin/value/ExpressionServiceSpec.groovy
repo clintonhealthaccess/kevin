@@ -54,7 +54,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "test normalized data elements at facility level"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(10), Type.TYPE_NUMBER())
 		def normalizedDataElement = null
@@ -104,7 +104,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "test normalized data element at different levels"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(10), Type.TYPE_NUMBER())
 		def normalizedDataElement = null
@@ -123,7 +123,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "test normalized data element with typing errors"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = null
 		def result = null
@@ -145,7 +145,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "test sum calculation"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
@@ -187,7 +187,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "test sum with missing facility type"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]])
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
@@ -229,7 +229,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	
 	def "test average with valid calculation"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1",(HEALTH_CENTER_GROUP):"1"]])
 		def average = newAverage("\$"+normalizedDataElement.id, CODE(2))

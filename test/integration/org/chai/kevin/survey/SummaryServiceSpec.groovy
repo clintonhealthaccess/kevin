@@ -9,7 +9,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 	
 	def "test summary page order"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
@@ -80,7 +80,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 	
 	def "test counted questions does not apply to group"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])

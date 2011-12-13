@@ -10,7 +10,7 @@ class FctControllerSpec extends FctIntegrationTests {
 	
 	def "test view action"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def objective = newFctObjective(CODE(2))
 		def sum = newSum("1", CODE(2))
@@ -35,7 +35,7 @@ class FctControllerSpec extends FctIntegrationTests {
 	
 	def "test view action with no objective"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def objective = newFctObjective(CODE(2))
 		def sum = newSum("1", CODE(2))
@@ -55,7 +55,7 @@ class FctControllerSpec extends FctIntegrationTests {
 	
 	def "test view action with invalid paramters"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def objective = newFctObjective(CODE(2))
 		def sum = newSum("1", CODE(2))

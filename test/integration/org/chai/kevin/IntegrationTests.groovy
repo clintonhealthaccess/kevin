@@ -56,6 +56,10 @@ import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.hisp.dhis.organisationunit.OrganisationUnit
@@ -90,8 +94,6 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static final String BUTARO = "Butaro DH"
 	static final String KIVUYE = "Kivuye HC"
 	
-	static final String GROUP_SET_TYPE = "Type"
-	
 	static Date mar01 = getDate( 2005, 3, 1 );
 	static Date mar31 = getDate( 2005, 3, 31 );
 	
@@ -101,24 +103,22 @@ abstract class IntegrationTests extends IntegrationSpec {
 		springcacheService.flushAll()
 	}
 	
-	def setupOrganisationUnitTree() {
+	def setupLocationTree() {
 		// for the test environment, the facility level is set to 4
 		// so we create a tree accordingly
-		def set = newOrganisationUnitGroupSet(GROUP_SET_TYPE);
-		def hc = newOrganisationUnitGroup(HEALTH_CENTER_GROUP, set);
-		def dh = newOrganisationUnitGroup(DISTRICT_HOSPITAL_GROUP, set);
+		def hc = newDataEntityType(HEALTH_CENTER_GROUP);
+		def dh = newDataEntityType(DISTRICT_HOSPITAL_GROUP);
 		
-		newOrganisationUnitLevel(COUNTRY, 1)
-		newOrganisationUnitLevel(PROVINCE, 2)
-		newOrganisationUnitLevel(DISTRICT, 3)
-		newOrganisationUnitLevel(FACILITY, 4)
+		def country = newLocationLevel(COUNTRY, 1)
+		def province = newLocationLevel(PROVINCE, 2)
+		def district = newLocationLevel(DISTRICT, 3)
 		
-		def rwanda = newOrganisationUnit(RWANDA)
-		def north = newOrganisationUnit(NORTH, rwanda)
-		def burera = newOrganisationUnit(BURERA, north)
+		def rwanda = newOrganisationUnit(RWANDA, country)
+		def north = newOrganisationUnit(NORTH, rwanda, province)
+		def burera = newOrganisationUnit(BURERA, north, district)
 		
-		newOrganisationUnit(BUTARO, burera, dh)
-		newOrganisationUnit(KIVUYE, burera, hc)
+		newDataEntity(BUTARO, burera, dh)
+		newDataEntity(KIVUYE, burera, hc)
 	}
 	
 	Period newPeriod() {
@@ -128,16 +128,20 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return period.save(failOnError: true)
 	} 
 	
-	private OrganisationUnitLevel newOrganisationUnitLevel(def name, def level) {
-		return new OrganisationUnitLevel(level: level, name: name).save(failOnError: true)
+	private DataEntity newDataEntity(def name, def parent, def type) {
+		return new DataEntity(code: name, parent: parent, type: type).save(failOnError: true)
 	}
 	
-	private OrganisationUnit newOrganisationUnit(def name) {
-		return newOrganisationUnit(name, null, null)
+	private LocationLevel newLocationLevel(def name, def order) {
+		return new LocationLevel(code: name, order: order).save(failOnError: true)
 	}
 	
-	private OrganisationUnit newOrganisationUnit(def name, def parent) {
-		return newOrganisationUnit(name, parent, null)
+	private LocationEntity newLocationEntity(def name, def parent, def level) {
+		return new LocationEntity(code: name, parent: parent, level: level).save(failOnError: true)
+	}
+	
+	private LocationEntity newOrganisationUnit(def name, def level) {
+		return newLocationEntity(name, null, level)
 	}
 	
 	private OrganisationUnit newOrganisationUnit(def name, def parent, def group) {
@@ -156,15 +160,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return organisation
 	}
 	
-	private OrganisationUnitGroupSet newOrganisationUnitGroupSet(def name) {
-		return new OrganisationUnitGroupSet(name: name).save(failOnError: true)
-	} 
-	
-	private OrganisationUnitGroup newOrganisationUnitGroup(def name, def set) {
-		def group = new OrganisationUnitGroup(name: name, uuid: name, groupSet: set).save(failOnError: true)
-		set.organisationUnitGroups << group
-		set.save(failOnError: true)
-		return group
+	private DataEntityType newDataEntityType(def name) {
+		return new DataEntityType(code: name).save(failOnError: true)
 	}
 	
 	def newUser(def username, def uuid) {
@@ -322,25 +319,25 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return Utils.unsplit(groups)
 	}
 	
-	static def getOrganisationUnitLevels(def levels) {
-		def result = []
-		for (def level : levels) {
-			result.add OrganisationUnitLevel.findByLevel(new Integer(level).intValue())
-		}
-		return result;
-	}
+//	static def getLocationLevels(def levels) {
+//		def result = []
+//		for (def level : levels) {
+//			result.add LocationLevel.findByCode(level)
+//		}
+//		return result;
+//	}
 	
-	static def getOrganisation(def name) {
-		return new Organisation(OrganisationUnit.findByName(name))
-	}
+//	static def getOrganisation(def name) {
+//		return new Organisation(OrganisationUnit.findByName(name))
+//	}
 	
-	static def getOrganisations(def names) {
-		def result = []
-		for (String name : names) {
-			result.add(getOrganisation(name))
-		}
-		return result
-	}
+//	static def getOrganisations(def names) {
+//		def result = []
+//		for (String name : names) {
+//			result.add(getOrganisation(name))
+//		}
+//		return result
+//	}
 	
 	static s(def list) {
 		return new HashSet(list)

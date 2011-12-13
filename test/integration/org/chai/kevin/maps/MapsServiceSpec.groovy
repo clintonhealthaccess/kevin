@@ -36,7 +36,7 @@ class MapsServiceSpec extends MapsIntegrationTests {
 	
 	def "calculation gives correct values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def calculation = newAverage("1", CODE(2))
 		def mapsTarget = newMapsTarget(CODE(3), calculation)

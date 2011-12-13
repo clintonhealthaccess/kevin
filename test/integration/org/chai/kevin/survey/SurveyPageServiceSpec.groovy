@@ -25,7 +25,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test submit objective"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -47,7 +47,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test submit objective with skipped elemment"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -70,7 +70,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test modify"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -91,7 +91,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test modify with skipped question"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -118,7 +118,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test submit"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -145,7 +145,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test warning"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -185,7 +185,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test warning and invalid values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -210,7 +210,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test modify does not touch unmodified values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -251,7 +251,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 
 	def "test refresh without surveyelement"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -271,7 +271,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test refresh erases old values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
@@ -289,7 +289,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test refresh erases unused entered values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
@@ -315,7 +315,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		
 	def "test objective order"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -331,7 +331,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test checkbox option order"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -350,7 +350,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 	
 	def "test enum option order"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)

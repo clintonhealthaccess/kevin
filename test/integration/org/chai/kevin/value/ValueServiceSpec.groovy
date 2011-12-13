@@ -71,7 +71,7 @@ class ValueServiceSpec extends IntegrationTests {
 	def "test get raw data element value at non-facility level"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -83,7 +83,7 @@ class ValueServiceSpec extends IntegrationTests {
 	def "test get normalized data element value"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
@@ -101,7 +101,7 @@ class ValueServiceSpec extends IntegrationTests {
 	def "test get average value"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def average = newAverage("1", CODE(1))
@@ -123,7 +123,7 @@ class ValueServiceSpec extends IntegrationTests {
 	def "test get sum value"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def sum = newSum("1", CODE(1))
@@ -145,7 +145,7 @@ class ValueServiceSpec extends IntegrationTests {
 	def "test get aggregation value"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def aggregation = newAggregation("1", CODE(1))
@@ -250,7 +250,7 @@ class ValueServiceSpec extends IntegrationTests {
 	
 	def "save raw data element value sets date"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+rawDataElement.id]]))

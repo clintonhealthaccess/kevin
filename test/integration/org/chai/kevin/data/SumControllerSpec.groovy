@@ -38,7 +38,7 @@ class SumControllerSpec extends IntegrationTests {
 	
 	def "delete sum deletes values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def sum = newSum("1", CODE(1))
 		newSumPartialValue(sum, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, v("1")) 
@@ -55,7 +55,7 @@ class SumControllerSpec extends IntegrationTests {
 
 	def "save sum deletes values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def sum = newSum("1", CODE(1))
 		newSumPartialValue(sum, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, v("1"))
@@ -72,7 +72,7 @@ class SumControllerSpec extends IntegrationTests {
 	
 	def "save sum updates timestamp"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def sum = newSum("1", CODE(1))
 		sumController = new SumController()

@@ -38,7 +38,7 @@ class AverageControllerSpec extends IntegrationTests {
 		
 	def "delete validation deletes values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def average = newAverage("1", CODE(1))
 		newAveragePartialValue(average, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, 1, v("1"))
@@ -55,7 +55,7 @@ class AverageControllerSpec extends IntegrationTests {
 	
 	def "save average deletes values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def average = newAverage("1", CODE(1))
 		newAveragePartialValue(average, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, "1", v("1"))
@@ -72,7 +72,7 @@ class AverageControllerSpec extends IntegrationTests {
 	
 	def "save average updates timestamp"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def average = newAverage("1", CODE(1))
 		averageController = new AverageController()

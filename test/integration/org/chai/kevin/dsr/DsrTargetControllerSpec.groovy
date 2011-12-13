@@ -67,7 +67,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 	
 	def "save target saves target"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def objective = newDsrObjective(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		dsrTargetController = new DsrTargetController()

@@ -10,7 +10,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 	
 	def "test group uuids are correctly saved"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
@@ -40,7 +40,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 	
 	def "test list"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)

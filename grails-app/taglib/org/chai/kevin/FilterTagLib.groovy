@@ -1,6 +1,7 @@
 package org.chai.kevin
 
 import org.chai.kevin.LocationService;
+import org.chai.kevin.location.LocationEntity;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.organisationunit.OrganisationUnitService
 /*
@@ -49,11 +50,10 @@ class FilterTagLib {
 		if (!params.containsKey("filter")) return params;
 		String filter = (String) params.get("filter");
 
-		Organisation organisation = null;
-		if (params.get("organisation") != null) {
-			Object id = params.get("organisation") 
-			if (id instanceof Integer) organisation = locationService.getOrganisation((Integer) params.get("organisation"));
-			else organisation = locationService.getOrganisation(Integer.parseInt(params.get("organisation")));
+		LocationEntity entity = null;
+		if (params.get("entity") != null) {
+			Object id = params.get("entity") 
+			organisation = LocationEntity.get(Integer.parseInt(params.get("entity")));
 		}
 
 		OrganisationUnitLevel orgUnitLevel = null;
@@ -76,7 +76,7 @@ class FilterTagLib {
 							organisation = locationService.getRootLocation();
 						else
 							organisation = locationService.getParentOfLevel(organisation, orgUnitLevel.getLevel() - 1);
-						params.put("organisation", organisation.getId());
+						params.put("entity", organisation.getId());
 					}
 					// conflict
 					else {

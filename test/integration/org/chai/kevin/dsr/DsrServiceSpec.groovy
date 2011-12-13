@@ -9,7 +9,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 	
 	def "test normal dsr service"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def objective = newDsrObjective(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
@@ -34,7 +34,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 	
 	def "test dsr with non-existing enum option"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def objective = newDsrObjective(CODE(1))
 		def enume = newEnume("enum")
@@ -52,7 +52,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 	
 	def "test dsr formatting"() {
 		when:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def objective = newDsrObjective(CODE(2))
@@ -75,7 +75,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 	def "test dsr with no groups should return no value"() {
 		when:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def objective = newDsrObjective(CODE(2))
@@ -95,7 +95,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 	
 	def "test dsr with groups"() {
 		when:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def objective = newDsrObjective(CODE(2))

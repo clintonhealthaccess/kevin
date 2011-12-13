@@ -33,7 +33,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 	
 	def "false validation based on other elements"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 
 		def survey = newSurvey(period)
@@ -63,7 +63,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 	
 	def "no validation errors"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 
 		def survey = newSurvey(period)
@@ -94,7 +94,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 	def "validation with null elements"() {
 		
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 
 		def survey = newSurvey(period)
@@ -124,7 +124,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 
 	def "validation on certain unit groups only"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 
 		def survey = newSurvey(period)

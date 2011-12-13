@@ -38,7 +38,7 @@ class AggregationControllerSpec extends IntegrationTests {
 	
 	def "delete validation deletes values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def aggregation = newAggregation("1", CODE(1))
 		newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, "", v("1"))
@@ -55,7 +55,7 @@ class AggregationControllerSpec extends IntegrationTests {
 		
 	def "save aggregation deletes values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def aggregation = newAggregation("1", CODE(1))
 		newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, "", v("1"))
@@ -72,7 +72,7 @@ class AggregationControllerSpec extends IntegrationTests {
 	
 	def "save aggregation updates timestamp"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def aggregation = newAggregation("1", CODE(1))
 		aggregationController = new AggregationController()

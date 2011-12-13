@@ -40,7 +40,7 @@ class OrganisationServiceSpec extends IntegrationTests {
 	
 	def "get organisations of level"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		expect:
 		organisationService.getOrganisationsOfLevel(level).containsAll (getOrganisations(expectedOrganisations))
@@ -55,7 +55,7 @@ class OrganisationServiceSpec extends IntegrationTests {
 	
 	def "get organisation tree until level"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def organisationTree = organisationService.getOrganisationTreeUntilLevel(level)
@@ -71,7 +71,7 @@ class OrganisationServiceSpec extends IntegrationTests {
 	
 	def "get children level for level"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def children = organisationService.getChildren(level);
@@ -90,7 +90,7 @@ class OrganisationServiceSpec extends IntegrationTests {
 	
 	def "get children of level for organisation"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def organisation = getOrganisation(organisationName)
@@ -113,7 +113,7 @@ class OrganisationServiceSpec extends IntegrationTests {
 	
 	def "get parent of level for organisation" (){
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		Organisation parentOrgBefore = getOrganisation(RWANDA);
 		Organisation childOrg = getOrganisation(NORTH);
 		organisationService.loadLevel(childOrg);
@@ -129,7 +129,7 @@ class OrganisationServiceSpec extends IntegrationTests {
 	
 	def "get level for organisation"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def organisation = getOrganisation(organisationName)
@@ -149,7 +149,7 @@ class OrganisationServiceSpec extends IntegrationTests {
 	
 	def "get groups for expression"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		expect:
 		organisationService.getGroupsForExpression().equals(new HashSet([OrganisationUnitGroup.findByUuid(HEALTH_CENTER_GROUP), OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)])) 
@@ -157,7 +157,7 @@ class OrganisationServiceSpec extends IntegrationTests {
 	
 	def "get children of group and level"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		expect:
 		organisationService.getFacilitiesOfGroup(getOrganisation(BUTARO), OrganisationUnitGroup.findByName(DISTRICT_HOSPITAL_GROUP)).equals([getOrganisation(BUTARO)])

@@ -40,7 +40,7 @@ class CostControllerSpec extends CostIntegrationTests {
 		costController = new CostController()
 		
 		when:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def costObjective = newCostObjective(CODE(2))
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())

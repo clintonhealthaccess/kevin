@@ -64,7 +64,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 	
 	def "test get sruvey elements on questions without elements"() {
 		when:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])

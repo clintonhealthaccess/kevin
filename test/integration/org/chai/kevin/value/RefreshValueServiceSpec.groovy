@@ -51,7 +51,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 	
 	def "test refresh normalized elements"() {
 		when:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		
@@ -71,7 +71,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 	def "test refresh normalized elements updates timestamps"() {
 		when:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def calculated = new Date()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
 		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period, Status.VALID, Value.NULL)
@@ -91,7 +91,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 	
 	def "test normalized data elements not calculated at non-facility level"() {
 		when:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
@@ -102,7 +102,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 	
 	def "test refresh calculations"() {
 		when:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def average = newAverage("1", CODE(2))
 		
@@ -121,7 +121,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 	
 	def "test refresh calculations updates timestamps"() {
 		when:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def calculated = new Date()
 		def average = newAverage("1", CODE(2), calculated)

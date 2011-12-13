@@ -106,7 +106,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 	
 	def "not changing data element type does not delete survey entered values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		def survey = SurveyIntegrationTests.newSurvey(period)
@@ -136,7 +136,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		
 	def "changing data element type deletes survey entered values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(27), Type.TYPE_NUMBER())
 		def survey = SurveyIntegrationTests.newSurvey(period)
@@ -166,7 +166,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 	
 	def "cannot delete data element if referencing data"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e(["1":[DISTRICT_HOSPITAL_GROUP:"\$"+dataElement.id]]))
@@ -183,7 +183,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 
 	def "delete data element deletes survey element and survey entered values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		def survey = SurveyIntegrationTests.newSurvey(period)

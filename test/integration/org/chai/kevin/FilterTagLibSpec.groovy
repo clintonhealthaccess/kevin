@@ -7,7 +7,7 @@ class FilterTagLibSpec extends IntegrationTests {
 	def "organisation sets missing level"() {
 		
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		filterTagLib = new FilterTagLib()
 		
 		expect:

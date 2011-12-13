@@ -32,7 +32,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 	
 	def "saving normalized data element sets timestamp"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		normalizedDataElementController = new NormalizedDataElementController()
@@ -50,7 +50,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 	
 	def "saving normalized data element deletes values"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period, Status.VALID, v("1"))

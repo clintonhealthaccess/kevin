@@ -33,8 +33,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 import java.util.List
 
 import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.value.RawDataElementValue
-import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.period.Period
 
 class DashboardServiceSpec extends DashboardIntegrationTests {
@@ -44,7 +45,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 	def "dashboard service works"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def root = newDashboardObjective(CODE(1))
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
@@ -52,38 +53,38 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboard = dashboardService.getDashboard(getOrganisation(RWANDA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(RWANDA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dashboard.organisations.equals([getOrganisation(NORTH)])
+		dashboard.organisations.equals([LocationEntity.findByCode(NORTH)])
 		
 		when:
-		dashboard = dashboardService.getDashboard(getOrganisation(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
-		dashboard.organisations.equals([getOrganisation(KIVUYE), getOrganisation(BUTARO)])
+		dashboard.organisations.equals([DataEntity.findByCode(KIVUYE), DataEntity.findByCode(BUTARO)])
 		
 		when:
-		dashboard = dashboardService.getDashboard(getOrganisation(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP]))
+		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP]))
 		
 		then:
-		dashboard.organisations.equals([getOrganisation(BUTARO)])
+		dashboard.organisations.equals([DataEntity.findByCode(BUTARO)])
 		
 	}
 	
 	def "test dashboard with correct values"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupDashboard()
 		refresh()
 
 		when:
-		def currentOrganisation = new Organisation(OrganisationUnit.findByName(currentOrganisationName));
+		def currentOrganisation = LocationEntity.findByCode(currentOrganisationName);
 		def currentObjective = DashboardObjective.findByCode(currentObjectiveName);
 
 		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period, new HashSet(groups));
-		def percentage = dashboard.getPercentage(getOrganisation(organisationName), getObjective(objectiveName))
+		def percentage = dashboard.getPercentage(DataEntity.findByCode(organisationName), getObjective(objectiveName))
 
 		then:
 		//		percentage.status == status;
@@ -104,13 +105,13 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 	def "dashboard test objective path"() {
 		setup:
 		def period = newPeriod()
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupDashboard()
 		refresh()
 
 		when:
 		def objective = DashboardObjective.findByCode(objectiveCode);
-		def dashboard = dashboardService.getDashboard(getOrganisation(organisationName), objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]));
+		def dashboard = dashboardService.getDashboard(LocationEntity.findByCode(organisationName), objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]));
 
 		then:
 		dashboard.objectiveEntries == getWeightedObjectives(expectedObjectives)

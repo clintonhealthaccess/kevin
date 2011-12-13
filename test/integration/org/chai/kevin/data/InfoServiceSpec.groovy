@@ -12,7 +12,7 @@ class InfoServiceSpec extends IntegrationTests {
 	
 	def "get info for normalized data element"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, OrganisationUnit.findByName(BUTARO), v("1"))
@@ -30,7 +30,7 @@ class InfoServiceSpec extends IntegrationTests {
 	
 	def "get info for calculation"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period, Status.VALID, v("1"))

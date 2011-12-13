@@ -1,7 +1,8 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractController;
-import org.chai.kevin.Organisation;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class SummaryController extends AbstractController {
@@ -14,7 +15,7 @@ class SummaryController extends AbstractController {
 	
 	// TODO refactor into several actions for survey/objective/section
 	def summaryPage = {
-		Organisation organisation = getOrganisation(false)
+		LocationEntity entity = LocationEntity.get(params.int('entity'))
 
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
@@ -25,22 +26,21 @@ class SummaryController extends AbstractController {
 		
 		// TODO build different classes for this and refactor into several actions
 		if (section != null && organisation != null) {
-			summaryPage = summaryService.getSectionSummaryPage(organisation, section)
+			summaryPage = summaryService.getSectionSummaryPage(entity, section)
 			template = '/survey/summary/summarySectionTable'
 		}
 		else if (objective != null && organisation != null) {
-			summaryPage = summaryService.getObjectiveSummaryPage(organisation, objective)
+			summaryPage = summaryService.getObjectiveSummaryPage(entity, objective)
 			template = '/survey/summary/summaryObjectiveTable'
 		}
 		else if (survey != null && organisation != null) {
-			summaryPage = summaryService.getSurveySummaryPage(organisation, survey);
+			summaryPage = summaryService.getSurveySummaryPage(entity, survey);
 			template = '/survey/summary/summarySurveyTable'
 		}
 
 		if (summaryPage != null) summaryPage.sort(params.sort, params.order)
 			
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
-		def organisationTree = organisationService.getOrganisationTreeUntilLevel(organisationLevel)
 
 		render (view: '/survey/summary/summaryPage', model: [
 			currentSurvey: survey,
@@ -49,31 +49,31 @@ class SummaryController extends AbstractController {
 			organisation: organisation,
 			summaryPage: summaryPage,
 			surveys: Survey.list(),
-			organisationTree: organisationTree,
+			organisationTree: locationService.getRootLocation(),
 			template: template
 		])
 	}
 
 	def objectiveTable = {
-		Organisation currentOrganisation = getOrganisation(false)
+		DataEntity entity = DataEntity.get(params.int('entity'))
 		Survey currentSurvey = Survey.get(params.int('survey'))
 
-		SummaryPage summaryPage = summaryService.getObjectiveTable(currentOrganisation, currentSurvey)
+		SummaryPage summaryPage = summaryService.getObjectiveTable(entity, currentSurvey)
 
 		render (view: '/survey/summary/objectiveTable', model: [
-			organisation: currentOrganisation,
+			organisation: entity,
 			summaryPage: summaryPage
 		])
 	}
 
 	def sectionTable = {
-		Organisation currentOrganisation = getOrganisation(false)
+		DataEntity entity = DataEntity.get(params.int('entity'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'))
 
-		SummaryPage summaryPage = summaryService.getSectionTable(currentOrganisation, currentObjective)
+		SummaryPage summaryPage = summaryService.getSectionTable(entity, currentObjective)
 
 		render (view: '/survey/summary/sectionTable', model: [
-			organisation: currentOrganisation,
+			organisation: entity,
 			summaryPage: summaryPage
 		])
 	}

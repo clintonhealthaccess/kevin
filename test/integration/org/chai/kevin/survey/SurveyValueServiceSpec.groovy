@@ -15,7 +15,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 	
 	def "saving entered entities saves user and timestamp"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -55,7 +55,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 	
 	def "get number of survey entered value does not take into account organisation unit group"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -73,7 +73,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 	
 	def "get number of survey entered questions with skip"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -102,7 +102,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 	
 	def "delete survey entered values for survey element"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -124,7 +124,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 	
 	def "get survey entered values for organisation - by section"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -161,7 +161,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 	
 	def "get survey entered values for organisation - by objective"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
@@ -198,7 +198,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 	
 	def "get survey entered values for organisation - by survey"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period1 = newPeriod()
 		def period2 = newPeriod()

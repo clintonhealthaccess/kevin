@@ -40,7 +40,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 	
 	def "cost service returns expected values with no end"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def period = newPeriod()
@@ -65,7 +65,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 	
 	def "cost service returns expected values with end expression"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def period = newPeriod()
@@ -91,7 +91,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 	
 	def "cost service returns expected years and targets"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def period = newPeriod()
@@ -116,7 +116,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 	
 	def "missing values displayed correctly"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def period = newPeriod()
@@ -141,7 +141,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 	
 	def "cost service takes into account only selected groups"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def period = newPeriod()
@@ -167,7 +167,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 
 	def "cost service returns correct explanation"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def period = newPeriod()
@@ -209,7 +209,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 	
 	def "explanation applies to correct organisation"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		
 		when:
 		def period = newPeriod()
