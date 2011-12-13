@@ -68,13 +68,8 @@ public class LocationService {
 //	private int facilityLevel;
 //	private String group;
 	
-    public Organisation getRootOrganisation() {
-		Collection<OrganisationUnit> organisations = organisationUnitService.getRootOrganisationUnits();
-		if (organisations.size() != 1) {
-			if (log.isErrorEnabled()) log.error("there is no root objective in the system, please create one");
-			throw new IllegalStateException("there is no root objective in the system, please create one");
-		}
-		return createOrganisation(organisations.iterator().next());
+    public LocationEntity getRootLocation() {
+    	return (LocationEntity)sessionFactory.getCurrentSession().createCriteria(LocationEntity.class).add(Restrictions.isNull("parent")).uniqueResult();
     }
     
 //    // optimization, we cache all the groups
@@ -94,9 +89,12 @@ public class LocationService {
 		return sessionFactory.getCurrentSession().createCriteria(DataEntityType.class).list();
 	}
     
-	
     public DataEntityType findDataEntityTypeByCode(String code) {
     	return (DataEntityType)sessionFactory.getCurrentSession().createCriteria(DataEntityType.class).add(Restrictions.eq("code", code)).uniqueResult();
+    }
+    
+    public LocationLevel findLocationLevelByCode(String code) {
+    	return (LocationLevel)sessionFactory.getCurrentSession().createCriteria(LocationLevel.class).add(Restrictions.eq("code", code)).uniqueResult();
     }
 	
 //	public List<OrganisationUnitLevel> getChildren(LocationLevel level, LocationLevel... skipLevels) {
@@ -111,11 +109,16 @@ public class LocationService {
 //		return result;
 //	}
 	
-	public List<LocationLevel> getAllLevels(LocationLevel... skipLevels) {
+	public List<LocationLevel> listLevels(LocationLevel... skipLevels) {
 		List<LocationLevel> levels = sessionFactory.getCurrentSession().createCriteria(LocationLevel.class).list();
 		levels.removeAll(Arrays.asList(skipLevels));
+		Collections.sort(levels);
 		return levels;
 	}	
+	
+	public List<DataEntityType> listTypes() {
+		return sessionFactory.getCurrentSession().createCriteria(DataEntityType.class).list();
+	}
 	
 //	public int loadLevel(Organisation organisation) {
 //		if (organisation.getLevel() != 0) return organisation.getLevel();
@@ -124,7 +127,7 @@ public class LocationService {
 //		return level;
 //	}
 	
-	public Integer getNumberOfEntitiesForType(DataEntityType dataEntityType){
+	public Integer getNumberOfDataEntitiesForType(DataEntityType dataEntityType){
 		return (Integer)sessionFactory.getCurrentSession().createCriteria(DataEntity.class)
 		.add(Restrictions.eq("dataEntityType", dataEntityType))
 		.setProjection(Projections.rowCount()).uniqueResult();
@@ -219,61 +222,70 @@ public class LocationService {
 //		return organisationUnit.getParent();
 //	}
 	
-	public Organisation getParentOfLevel(Organisation organisation, Integer level) {
-		Organisation tmp = organisation;
-		this.loadParent(tmp);
-		while (tmp.getParent() != null) {
-			this.loadLevel(tmp.getParent());
-			if (tmp.getParent().getLevel().intValue() == level.intValue())
-				return tmp.getParent();
+	public LocationEntity getParentOfLevel(CalculationEntity entity, LocationLevel level) {
+		LocationEntity tmp = entity.getParent();
+		while (tmp != null) {
+			if (tmp.getLevel().equals(level)) return tmp;
 			tmp = tmp.getParent();
-			this.loadParent(tmp);
 		}
 		return null;
 	}
-
-	public List<Organisation> getFacilitiesOfGroup(Organisation organisation, OrganisationUnitGroup group) {
-		List<Organisation> facilities = getChildrenOfLevel(organisation, getFacilityLevel());
-		List<Organisation> result = new ArrayList<Organisation>();
-		for (Organisation facility: facilities) {
-			loadGroup(facility);
-			if (facility.getOrganisationUnitGroup().equals(group)) result.add(facility);
-		}
+	
+	public List<LocationEntity> getChildrenOfLevel(LocationEntity location, LocationLevel level) {
+		List<LocationEntity> result = new ArrayList<LocationEntity>();
+		collectChildrenOfLevel(location, level, result);
 		return result;
 	}
 	
-	public List<Organisation> getChildrenOfLevel(LocationEntity locationEntity, LocationLevel level) {
-		List<Organisation> result = new ArrayList<Organisation>();
-		collectChildrenOfLevel(organisation, level, result);
-		return result;
-	}
-	
-	private void collectChildrenOfLevel(Organisation organisation, int level, List<Organisation> organisations) {
-		if (loadLevel(organisation) == level) organisations.add(organisation);
+	private void collectChildrenOfLevel(LocationEntity location, LocationLevel level, List<LocationEntity> locations) {
+		if (location.getLevel().equals(level)) locations.add(location);
 		else {
-			loadChildren(organisation);
-			for (Organisation child : organisation.getChildren()) {
-				collectChildrenOfLevel(child, level, organisations);
+			for (LocationEntity child : location.getChildren()) {
+				collectChildrenOfLevel(child, level, locations);
 			}
 		}
 	}
+
+	public List<DataEntity> getDataEntities(CalculationEntity calculationEntity, DataEntityType... types) {
+		List<DataEntity> result = new ArrayList<DataEntity>();
+		collectDataEntitiesForLocation(calculationEntity, result, new HashSet<DataEntityType>(Arrays.asList(types)));
+		return result;
+	}
 	
-	private List<OrganisationUnit> getChildren(OrganisationUnit organisation, Integer... skipLevels) {
-		List<Integer> skipLevelList = Arrays.asList(skipLevels);
-		List<OrganisationUnit> result = new ArrayList<OrganisationUnit>();
-		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation);
-		for (OrganisationUnit child : organisation.getChildren()) {
-			// we optimize by assuming that the level of the children is <level of parent> + 1
-			if (skipLevelList.contains(level+1)) {
-				if (log.isInfoEnabled()) log.info("skipping child: "+child+" of level: "+level);
-				result.addAll(getChildren(child, skipLevels));
-			}
-			else {
-				result.add(child);
+	private void collectDataEntitiesForLocation(CalculationEntity calculationEntity, List<DataEntity> dataEntities, Set<DataEntityType> types) {
+		dataEntities.addAll(getDataEntitiesForLocation(calculationEntity, types));
+		for (CalculationEntity child : calculationEntity.getChildren()) {
+			collectDataEntitiesForLocation(child, dataEntities, types);
+		}
+	}
+	
+	private List<DataEntity> getDataEntitiesForLocation(CalculationEntity calculationEntity, Set<DataEntityType> types) {
+		List<DataEntity> result = new ArrayList(calculationEntity.getDataEntities());
+		if (!types.isEmpty()) {
+			for (DataEntity dataEntity : calculationEntity.getDataEntities()) {
+				if (!types.contains(dataEntity.getType())) result.remove(dataEntity);
 			}
 		}
 		return result;
 	}
+	
+	
+//	private List<OrganisationUnit> getChildren(OrganisationUnit organisation, Integer... skipLevels) {
+//		List<Integer> skipLevelList = Arrays.asList(skipLevels);
+//		List<OrganisationUnit> result = new ArrayList<OrganisationUnit>();
+//		int level = organisationUnitService.getLevelOfOrganisationUnit(organisation);
+//		for (OrganisationUnit child : organisation.getChildren()) {
+//			// we optimize by assuming that the level of the children is <level of parent> + 1
+//			if (skipLevelList.contains(level+1)) {
+//				if (log.isInfoEnabled()) log.info("skipping child: "+child+" of level: "+level);
+//				result.addAll(getChildren(child, skipLevels));
+//			}
+//			else {
+//				result.add(child);
+//			}
+//		}
+//		return result;
+//	}
 	
 //	public int getFacilityLevel() {
 //		return facilityLevel;
@@ -297,24 +309,24 @@ public class LocationService {
 //		this.organisationUnitService = organisationUnitService;
 //	}
 
-	private static class GroupCollection extends ArrayList<OrganisationUnitGroup> {
-
-		private static final long serialVersionUID = -3757208121878793028L;
-		
-		private Map<String, OrganisationUnitGroup> groupsByUuid;
-
-		public GroupCollection(Collection<OrganisationUnitGroup> groups) {
-			super(groups);
-			this.groupsByUuid = new HashMap<String, OrganisationUnitGroup>();
-			for (OrganisationUnitGroup group : groups) {
-				this.groupsByUuid.put(group.getUuid(), group);
-			}
-		}
-		
-		public OrganisationUnitGroup getGroupByUuid(String uuid) {
-			return groupsByUuid.get(uuid);
-		}
-		
-	}
+//	private static class GroupCollection extends ArrayList<OrganisationUnitGroup> {
+//
+//		private static final long serialVersionUID = -3757208121878793028L;
+//		
+//		private Map<String, OrganisationUnitGroup> groupsByUuid;
+//
+//		public GroupCollection(Collection<OrganisationUnitGroup> groups) {
+//			super(groups);
+//			this.groupsByUuid = new HashMap<String, OrganisationUnitGroup>();
+//			for (OrganisationUnitGroup group : groups) {
+//				this.groupsByUuid.put(group.getUuid(), group);
+//			}
+//		}
+//		
+//		public OrganisationUnitGroup getGroupByUuid(String uuid) {
+//			return groupsByUuid.get(uuid);
+//		}
+//		
+//	}
 
 }

@@ -1,8 +1,8 @@
 package org.chai.kevin.chart
 
 import org.chai.kevin.AbstractController;
-import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Data;
+import org.chai.kevin.location.DataEntity;
 
 class ChartController extends AbstractController {
 
@@ -12,8 +12,8 @@ class ChartController extends AbstractController {
 	def chart = {
 		if (log.isDebugEnabled()) log.debug("chart.chart, params:"+params)
 	
-		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
-		Data data = dataService.getData(Long.parseLong(params['data']))
+		DataEntity entity = DataEntity.int('entity')
+		Data data = dataService.getData(params.long('data'))
 		
 		Chart chart = chartService.getChart(data, organisation)
 		

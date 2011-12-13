@@ -2,6 +2,7 @@ package org.chai.kevin.location;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import org.chai.kevin.Translation;
 public class DataEntityType {
 
 	private Long id;
+	private String code;
 	private Translation names;
 	
 	@Id
@@ -26,6 +28,15 @@ public class DataEntityType {
 	
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@Basic
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	@Embedded

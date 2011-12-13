@@ -49,6 +49,8 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 /**
@@ -86,10 +88,10 @@ public class Utils {
 		return value.matches("(?i).*"+text+".*");
 	}
 
-	public static Set<String> getUuids(Set<OrganisationUnitGroup> groups) {
+	public static Set<String> getUuids(List<DataEntityType> groups) {
 		Set<String> result = new HashSet<String>();
-		for (OrganisationUnitGroup group : groups) {
-			result.add(group.getUuid());
+		for (DataEntityType group : groups) {
+			result.add(group.getCode());
 		}
 		return result;
 	}

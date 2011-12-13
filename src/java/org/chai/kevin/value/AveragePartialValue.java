@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Average;
+import org.chai.kevin.location.CalculationEntity;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -29,15 +30,15 @@ public class AveragePartialValue extends CalculationPartialValue {
 		super();
 	}
 
-	public AveragePartialValue(Average data, OrganisationUnit organisationUnit, Period period, String groupUuid, Integer numberOfFacilities, Value value) {
-		super(organisationUnit, period, groupUuid, value);
+	public AveragePartialValue(Average data, CalculationEntity entity, Period period, String groupUuid, Integer numberOfFacilities, Value value) {
+		super(entity, period, groupUuid, value);
 		
 		this.data = data;
 		this.numberOfFacilities = numberOfFacilities;
 	}
 
-	public AveragePartialValue(Average data, OrganisationUnit organisationUnit, Period period, String groupUuid, Integer numberOfFacilities) {
-		super(organisationUnit, period, groupUuid);
+	public AveragePartialValue(Average data, CalculationEntity entity, Period period, String groupUuid, Integer numberOfFacilities) {
+		super(entity, period, groupUuid);
 		
 		this.data = data;
 		this.numberOfFacilities = numberOfFacilities;

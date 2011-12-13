@@ -37,14 +37,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Organisation;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.AverageValue;
-import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
+import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="Average")
@@ -53,8 +53,8 @@ import org.hisp.dhis.period.Period;
 public class Average extends Calculation<AveragePartialValue> {
 
 	@Override
-	public AverageValue getCalculationValue(List<AveragePartialValue> partialValues, Period period, OrganisationUnit organisationUnit) {
-		return new AverageValue(partialValues, this, period, organisationUnit);
+	public AverageValue getCalculationValue(List<AveragePartialValue> partialValues, Period period, CalculationEntity entity) {
+		return new AverageValue(partialValues, this, period, entity);
 	}
 
 	@Override
@@ -64,15 +64,15 @@ public class Average extends Calculation<AveragePartialValue> {
 	}
 
 	@Override
-	public AveragePartialValue getCalculationPartialValue(String expression, Map<Organisation, StatusValuePair> values, Organisation organisation, Period period, String groupUuid) {
+	public AveragePartialValue getCalculationPartialValue(String expression, Map<DataEntity, StatusValuePair> values, CalculationEntity entity, Period period, String groupUuid) {
 		Value value = getValue(values.values());
 		Integer numberOfFacilities = getNumberOfFacilities(values);
-		return new AveragePartialValue(this, organisation.getOrganisationUnit(), period, groupUuid, numberOfFacilities, value);
+		return new AveragePartialValue(this, entity, period, groupUuid, numberOfFacilities, value);
 	}
 
-	private Integer getNumberOfFacilities(Map<Organisation, StatusValuePair> values) {
+	private Integer getNumberOfFacilities(Map<DataEntity, StatusValuePair> values) {
 		Integer result = 0;
-		for (Entry<Organisation, StatusValuePair> entry : values.entrySet()) {
+		for (Entry<DataEntity, StatusValuePair> entry : values.entrySet()) {
 			if (!entry.getValue().value.isNull()) result++;
 		}
 		return result;

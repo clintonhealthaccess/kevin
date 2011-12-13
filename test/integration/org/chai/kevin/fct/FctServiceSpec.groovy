@@ -1,6 +1,5 @@
 package org.chai.kevin.fct
 
-import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Type;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;

@@ -53,8 +53,8 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @Entity(name = "SurveyQuestion")
 @Table(name = "dhsst_survey_question")
@@ -153,7 +153,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 	public abstract QuestionType getType();
 
 	@Transient
-	public abstract List<SurveyElement> getSurveyElements(OrganisationUnitGroup group);
+	public abstract List<SurveyElement> getSurveyElements(DataEntityType type);
 	
 	@Transient
 	public abstract void removeSurveyElement(SurveyElement surveyElement);

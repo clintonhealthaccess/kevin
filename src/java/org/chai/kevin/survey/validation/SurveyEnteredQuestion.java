@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.SurveyQuestion;
 import org.chai.kevin.survey.SurveySkipRule;
 import org.hibernate.annotations.NaturalId;
@@ -28,7 +29,7 @@ public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 	
 	private Long id;
 	private SurveyQuestion question;
-	private OrganisationUnit organisationUnit;
+	private DataEntity entity;
 	
 	private Boolean complete;
 	private Boolean invalid;
@@ -36,10 +37,10 @@ public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 	
 	public SurveyEnteredQuestion() {}
 	
-	public SurveyEnteredQuestion(SurveyQuestion question, OrganisationUnit organisationUnit, Boolean invalid, Boolean complete) {
+	public SurveyEnteredQuestion(SurveyQuestion question, DataEntity entity, Boolean invalid, Boolean complete) {
 		super();
 		this.question = question;
-		this.organisationUnit = organisationUnit;
+		this.entity = entity;
 		this.complete = complete;
 		this.invalid = invalid;
 	}
@@ -65,13 +66,13 @@ public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, fetch=FetchType.LAZY)
-	public OrganisationUnit getOrganisationUnit() {
-		return organisationUnit;
+	@ManyToOne(targetEntity=DataEntity.class, fetch=FetchType.LAZY)
+	public DataEntity getEntity() {
+		return entity;
 	}
 	
-	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
-		this.organisationUnit = organisationUnit;
+	public void setEntity(DataEntity entity) {
+		this.entity = entity;
 	}
 	
 	@OneToMany(targetEntity=SurveySkipRule.class)
@@ -113,7 +114,7 @@ public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 		int result = 1;
 		result = prime
 				* result
-				+ ((organisationUnit == null) ? 0 : organisationUnit.hashCode());
+				+ ((entity == null) ? 0 : entity.hashCode());
 		result = prime * result
 				+ ((question == null) ? 0 : question.hashCode());
 		return result;
@@ -128,10 +129,10 @@ public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 		if (!(obj instanceof SurveyEnteredQuestion))
 			return false;
 		SurveyEnteredQuestion other = (SurveyEnteredQuestion) obj;
-		if (organisationUnit == null) {
-			if (other.organisationUnit != null)
+		if (entity == null) {
+			if (other.entity != null)
 				return false;
-		} else if (!organisationUnit.equals(other.organisationUnit))
+		} else if (!entity.equals(other.entity))
 			return false;
 		if (question == null) {
 			if (other.question != null)

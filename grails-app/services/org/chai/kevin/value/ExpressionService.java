@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
-import org.chai.kevin.Organisation;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
@@ -50,14 +49,9 @@ import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.value.CalculationPartialValue;
-import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.RawDataElementValue;
-import org.chai.kevin.value.Status;
-import org.chai.kevin.value.StoredValue;
-import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,69 +72,52 @@ public class ExpressionService {
 	}
 	
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, Organisation organisation, Period period) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",organisation="+organisation+")");
+	public <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",entity="+entity+")");
 		
 		Set<T> result = new HashSet<T>();
 		List<String> expressions = calculation.getPartialExpressions();
 		for (String expression : expressions) {
-			result.addAll(calculatePartialValues(calculation, expression, organisation, period));
+			result.addAll(calculatePartialValues(calculation, expression, entity, period));
 		}
 		return result;
 	}
 	
-	private <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, String expression, Organisation organisation, Period period) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",organisation="+organisation+")");
+	private <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, String expression, CalculationEntity entity, Period period) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",entity="+entity+")");
 		
 		Set<T> result = new HashSet<T>();
-		Set<OrganisationUnitGroup> organisationUnitGroups = locationService.getDataEntityTypes();
-		for (OrganisationUnitGroup organisationUnitGroup : organisationUnitGroups) {
-			List<Organisation> facilities = locationService.getFacilitiesOfGroup(organisation, organisationUnitGroup);
+		List<DataEntityType> dataEntityTypes = locationService.getDataEntityTypes();
+		for (DataEntityType dataEntityType : dataEntityTypes) {
+			List<DataEntity> facilities = locationService.getDataEntities(entity, dataEntityType);
 			
 			if (!facilities.isEmpty()) {
-				Map<Organisation, StatusValuePair> values = new HashMap<Organisation, ExpressionService.StatusValuePair>();
-				for (Organisation facility : facilities) {
+				Map<DataEntity, StatusValuePair> values = new HashMap<DataEntity, StatusValuePair>();
+				for (DataEntity facility : facilities) {
 					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, facility, DataElement.class);
 					values.put(facility, statusValuePair);
 				}
-				result.add(calculation.getCalculationPartialValue(expression, values, organisation, period, organisationUnitGroup.getUuid()));
+				result.add(calculation.getCalculationPartialValue(expression, values, entity, period, dataEntityType.getCode()));
 			}
 		}
 		return result;
 	}
 	
-	
-	/**
-	 * The expression has to be aggregatable for this to work
-	 * @param facility
-	 * @param period
-	 * @param expression
-	 * @param valuesForOrganisation
-	 * 
-	 * @return
-	 */
 	@Transactional(readOnly=true)
-	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, Organisation facility, Period period) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",organisation="+facility+")");
+	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, DataEntity facility, Period period) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",facility="+facility+")");
 		
-		NormalizedDataElementValue expressionValue;
-		if (locationService.loadLevel(facility) != locationService.getFacilityLevel()) {
-			throw new IllegalArgumentException("calculating the value of a NormalizedDateElement for non-facility organisation is not possible");
-		}
-		else {
-			locationService.loadGroup(facility);
-			String expression = normalizedDataElement.getExpression(period, facility.getOrganisationUnitGroup().getUuid());
-			
-			StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, facility, RawDataElement.class);
-			expressionValue = new NormalizedDataElementValue(statusValuePair.value, statusValuePair.status, facility.getOrganisationUnit(), normalizedDataElement, period);
-		}
+		String expression = normalizedDataElement.getExpression(period, facility.getType().getCode());
+		
+		StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, facility, RawDataElement.class);
+		NormalizedDataElementValue expressionValue = new NormalizedDataElementValue(statusValuePair.value, statusValuePair.status, facility, normalizedDataElement, period);
 		
 		if (log.isDebugEnabled()) log.debug("getValue()="+expressionValue);
 		return expressionValue;
 	}
 
 	// organisation has to be a facility
-	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, Organisation facility, Class<T> clazz) {
+	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataEntity facility, Class<T> clazz) {
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null) {
 			statusValuePair.status = Status.DOES_NOT_APPLY;
@@ -157,7 +134,7 @@ public class ExpressionService {
 				Map<String, Type> typeMap = new HashMap<String, Type>();
 				
 				for (Entry<String, T> entry : datas.entrySet()) {
-					DataValue dataValue = valueService.getDataElementValue(entry.getValue(), facility.getOrganisationUnit(), period);
+					DataValue dataValue = valueService.getDataElementValue(entry.getValue(), facility, period);
 					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
 				}
@@ -267,10 +244,10 @@ public class ExpressionService {
 		this.valueService = valueService;
 	}
 	
-	public void setOrganisationService(LocationService locationService) {
+	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
-
+	
 	public void setJaqlService(JaqlService jaqlService) {
 		this.jaqlService = jaqlService;
 	}

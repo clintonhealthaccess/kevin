@@ -30,25 +30,26 @@ package org.chai.kevin.maps;
 
 import java.util.List;
 
-import org.chai.kevin.Organisation;
+import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
 
 public class Maps {
 
-	private Organisation organisation;
-	private Integer level;
+	private LocationEntity entity;
+	private LocationLevel level;
 	private Period period;
 	private MapsTarget target;
 	
 	private List<Polygon> polygons;
-	private List<OrganisationUnitLevel> levels;
+	private List<LocationLevel> levels;
 	
-	public Maps(Period period, MapsTarget target, Organisation organisation, Integer level, List<Polygon> polygons, List<OrganisationUnitLevel> levels) {
+	public Maps(Period period, MapsTarget target, LocationEntity entity, LocationLevel level, List<Polygon> polygons, List<LocationLevel> levels) {
 		this.period = period;
 		this.target = target;
 		this.polygons = polygons;
-		this.organisation = organisation;
+		this.entity = entity;
 		this.levels = levels;
 		this.level = level;
 	}
@@ -61,11 +62,11 @@ public class Maps {
 		return target;
 	}
 	
-	public Organisation getOrganisation() {
-		return organisation;
+	public LocationEntity getOrganisation() {
+		return entity;
 	}
 	
-	public Integer getLevel() {
+	public LocationLevel getLevel() {
 		return level;
 	}
 	
@@ -86,21 +87,21 @@ public class Maps {
 		builder.append("]");
 		builder.append(",\n");
 		builder.append("\"levels\":[");
-		for (OrganisationUnitLevel level : levels) {
+		for (LocationLevel level : levels) {
 			builder.append("{");
-			builder.append("\"level\":"+level.getLevel());
+			builder.append("\"level\":"+level.getCode());
 			builder.append(",");
-			builder.append("\"name\":\""+level.getName()+"\"");
+			builder.append("\"name\":\""+level+"\"");
 			builder.append("}");
 			builder.append(",");
 		}
 		if (levels.size() != 0) builder.deleteCharAt(builder.length()-1);
 		builder.append("]");
 		builder.append(",");
-		builder.append("\"selectedOrganisation\":"+organisation.getId());
+		builder.append("\"selectedOrganisation\":"+entity.getId());
 		builder.append(",");
-		if (organisation.getOrganisationUnit().getCoordinates() != null) {
-			builder.append("\"selectedCoordinates\":"+organisation.getOrganisationUnit().getCoordinates());
+		if (entity.getCoordinates() != null) {
+			builder.append("\"selectedCoordinates\":"+entity.getCoordinates());
 			builder.append(",");
 		}
 		builder.append("\"selectedLevel\":"+level);

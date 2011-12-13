@@ -1,11 +1,13 @@
 package org.chai.kevin.location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity(name="StructuralEntity")
 @Table(name="dhsst_entity_location")
@@ -13,6 +15,7 @@ public class LocationEntity extends CalculationEntity {
 
 	private LocationEntity parent;
 	private List<LocationEntity> children;
+	private List<DataEntity> dataEntities;
 	private LocationLevel level;
 
 	@ManyToOne(targetEntity=LocationEntity.class)
@@ -40,6 +43,29 @@ public class LocationEntity extends CalculationEntity {
 	
 	public void setLevel(LocationLevel level) {
 		this.level = level;
+	}
+	
+	@Override
+	@OneToMany(targetEntity=DataEntity.class, mappedBy="location")
+	public List<DataEntity> getDataEntities() {
+		return dataEntities;
+	}
+	
+	public void setDataEntities(List<DataEntity> dataEntities) {
+		this.dataEntities = dataEntities;
+	}
+
+	@Transient
+	public List<CalculationEntity> getChildrenEntities() {
+		List<CalculationEntity> result = new ArrayList<CalculationEntity>();
+		result.addAll(getDataEntities());
+		result.addAll(getChildren());
+		return result;
+	}
+	
+	@Override
+	public boolean collectsData() {
+		return false;
 	}
 	
 }

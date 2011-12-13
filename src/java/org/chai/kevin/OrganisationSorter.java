@@ -29,39 +29,49 @@ package org.chai.kevin;
 
 import java.util.Comparator;
 
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.LocationEntity;
+
 /**
  * @author Jean Kahigiso M.
  * 
  */
 public class OrganisationSorter {
 
-	public static final Comparator<Organisation> BY_FACILITY_TYPE = new Comparator<Organisation>() {
-		public int compare(Organisation org1, Organisation org2) {			
-			if(org1 == null || org2 == null) return 0;
-			
-			if (org1.getOrganisationUnitGroup().getName().equals(org2.getOrganisationUnitGroup().getName()))
-				return org1.getName().compareTo(org2.getName());
-			else
-				return org1.getOrganisationUnitGroup().getName().compareTo(org2.getOrganisationUnitGroup().getName());
-		}
-	};
+	public static final Comparator<DataEntity> BY_FACILITY_TYPE(final String language) {
+		return new Comparator<DataEntity>() {
+			public int compare(DataEntity org1, DataEntity org2) {			
+				if(org1 == null || org2 == null) return 0;
+				
+				if (org1.getType().getNames().get(language).equals(org2.getType().getNames().get(language)))
+					return org1.getNames().get(language).compareTo(org2.getNames().get(language));
+				else
+					return org1.getType().getNames().get(language).compareTo(org2.getType().getNames().get(language));
+			}
+		};
+	}
 
-	public static final Comparator<Organisation> BY_LEVEL = new Comparator<Organisation>() {
-		public int compare(Organisation org1, Organisation org2) {			
-			if(org1 == null || org2 == null) return 0;
-			
-			if (org1.getLevel().equals(org2.getLevel()))
-				return org1.getName().compareTo(org2.getName());
-			else
-				return org1.getLevel().compareTo(org2.getLevel());
-		}
-	};
+	public static final Comparator<LocationEntity> BY_LEVEL(final String language) {
+		return new Comparator<LocationEntity>() {
+			public int compare(LocationEntity org1, LocationEntity org2) {			
+				if(org1 == null || org2 == null) return 0;
+				
+				if (org1.getLevel().equals(org2.getLevel()))
+					return org1.getNames().get(language).compareTo(org2.getNames().get(language));
+				else
+					return org1.getLevel().compareTo(org2.getLevel());
+			}
+		};
+	}
 
-	public static final Comparator<Organisation> BY_NAME = new Comparator<Organisation>() {
-		public int compare(Organisation org1, Organisation org2) {
-			if(org1 == null || org2 == null) return 0;
-			
-			return org1.getName().compareTo(org2.getName());
-		}
-	};
+	public static final Comparator<CalculationEntity> BY_NAME(final String language) {
+		return new Comparator<CalculationEntity>() {
+			public int compare(CalculationEntity org1, CalculationEntity org2) {
+				if(org1 == null || org2 == null) return 0;
+				
+				return org1.getNames().get(language).compareTo(org2.getNames().get(language));
+			}
+		};
+	}
 }

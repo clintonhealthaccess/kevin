@@ -3,12 +3,10 @@ package org.chai.kevin.chart;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.chai.kevin.Organisation;
 import org.chai.kevin.PeriodService;
-import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.StoredValue;
 import org.chai.kevin.value.ValueService;
 import org.hisp.dhis.period.Period;
 
@@ -17,13 +15,13 @@ public class ChartService {
 	public PeriodService periodService;
 	public ValueService	valueService;
 
-	public <T extends DataValue> Chart getChart(DataElement<T> element, Organisation organisation) {
+	public <T extends DataValue> Chart getChart(DataElement<T> element, DataEntity entity) {
 		Map<Period, DataValue> values = new HashMap<Period, DataValue>();
 		for (Period period : periodService.getPeriods()) {
-			DataValue value = valueService.getDataElementValue(element, organisation.getOrganisationUnit(), period);
+			DataValue value = valueService.getDataElementValue(element, entity, period);
 			values.put(period, value);
 		}
-		return new Chart(organisation, element, periodService.getPeriods(), values);
+		return new Chart(entity, element, periodService.getPeriods(), values);
 	}
 	
 	public void setValueService(ValueService valueService) {

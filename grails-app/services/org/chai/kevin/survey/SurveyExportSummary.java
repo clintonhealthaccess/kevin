@@ -3,32 +3,33 @@ package org.chai.kevin.survey;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.Organisation;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.export.SurveyExportData;
 
 public class SurveyExportSummary {
 
-	private Organisation organisation;
-	private Map<Organisation, SurveyExportData> facilityDataPoints;	
+	private CalculationEntity entity;
+	private Map<DataEntity, SurveyExportData> facilityDataPoints;	
 	
-	public SurveyExportSummary(Organisation organisation, Map<Organisation, SurveyExportData> facilityDataPoints){
-		this.organisation = organisation;
+	public SurveyExportSummary(CalculationEntity entity, Map<DataEntity, SurveyExportData> facilityDataPoints){
+		this.entity = entity;
 		this.facilityDataPoints = facilityDataPoints;
 	}
 
-	public Organisation getOrganisation() {
-		return organisation;
+	public CalculationEntity getOrganisation() {
+		return entity;
 	}
 
-	public Map<Organisation, SurveyExportData> getFacilityDataPoints() {
+	public Map<DataEntity, SurveyExportData> getFacilityDataPoints() {
 		return facilityDataPoints;
 	}
 	
-	public Set<Organisation> getFacilities(){
+	public Set<DataEntity> getFacilities(){
 		return facilityDataPoints.keySet();
 	}
 	
-	public SurveyExportData getSurveyTypeData(Organisation facility){
+	public SurveyExportData getSurveyTypeData(DataEntity facility){
 		return facilityDataPoints.get(facility);
 	}
 

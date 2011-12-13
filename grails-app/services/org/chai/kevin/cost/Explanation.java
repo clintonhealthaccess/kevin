@@ -31,22 +31,23 @@ package org.chai.kevin.cost;
 import java.util.List;
 import java.util.Map;
 
-import org.chai.kevin.Organisation;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
 public class Explanation {
 
 	// if this is null, it means no expression is defined for the specified objective and organisation
-	private Map<Organisation, Map<Integer, Cost>> costs;
-	private List<Organisation> organisations;
+	private Map<CalculationEntity, Map<Integer, Cost>> costs;
+	private List<CalculationEntity> organisations;
 	private List<Integer> years;
 	private CostTarget currentTarget;
 	private CostObjective currentObjective;
 	private Period currentPeriod;
-	private List<OrganisationUnitGroup> groups;
+	private List<DataEntityType> groups;
 	
-	public Explanation(CostTarget currentTarget, List<OrganisationUnitGroup> groups, CostObjective currentObjective, Period currentPeriod, List<Organisation> organisations, List<Integer> years, Map<Organisation, Map<Integer, Cost>> costs) {
+	public Explanation(CostTarget currentTarget, List<DataEntityType> groups, CostObjective currentObjective, Period currentPeriod, List<CalculationEntity> organisations, List<Integer> years, Map<CalculationEntity, Map<Integer, Cost>> costs) {
 		this.costs = costs;
 		this.organisations = organisations;
 		this.years = years;
@@ -68,15 +69,15 @@ public class Explanation {
 		return currentPeriod;
 	}
 	
-	public List<Organisation> getOrganisations() {
+	public List<CalculationEntity> getOrganisations() {
 		return organisations;
 	}
 	
-	public Cost getCost(Organisation organisation, Integer year) {
+	public Cost getCost(CalculationEntity organisation, Integer year) {
 		return costs.get(organisation).get(year);
 	}
 	
-	public List<OrganisationUnitGroup> getGroups() {
+	public List<DataEntityType> getGroups() {
 		return groups;
 	}
 	

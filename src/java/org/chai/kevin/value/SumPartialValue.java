@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Sum;
+import org.chai.kevin.location.CalculationEntity;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -26,14 +27,14 @@ public class SumPartialValue extends CalculationPartialValue {
 		super();
 	}
 
-	public SumPartialValue(Sum data, OrganisationUnit organisationUnit, Period period, String groupUuid, Value value) {
-		super(organisationUnit, period, groupUuid, value);
+	public SumPartialValue(Sum data, CalculationEntity entity, Period period, String groupUuid, Value value) {
+		super(entity, period, groupUuid, value);
 		
 		this.data = data;
 	}
 
-	public SumPartialValue(Sum data, OrganisationUnit organisationUnit, Period period, String groupUuid) {
-		super(organisationUnit, period, groupUuid);
+	public SumPartialValue(Sum data, CalculationEntity entity, Period period, String groupUuid) {
+		super(entity, period, groupUuid);
 		
 		this.data = data;
 	}

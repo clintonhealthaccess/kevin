@@ -42,14 +42,14 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.Data;
+import org.chai.kevin.location.CalculationEntity;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
 public abstract class StoredValue implements DataValue {
 
-	protected OrganisationUnit organisationUnit;
+	protected CalculationEntity entity;
 	protected Period period;
 	protected Value value;
 
@@ -59,8 +59,8 @@ public abstract class StoredValue implements DataValue {
 		// default constructor for hibernate
 	}
 	
-	public StoredValue(OrganisationUnit organisationUnit, Period period, Value value) {
-		this.organisationUnit = organisationUnit;
+	public StoredValue(CalculationEntity entity, Period period, Value value) {
+		this.entity = entity;
 		this.period = period;
 		this.value = value;
 	}
@@ -70,16 +70,16 @@ public abstract class StoredValue implements DataValue {
 	 */
 	@Override
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=CalculationEntity.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
-	public OrganisationUnit getOrganisationUnit() {
-		return organisationUnit;
+	public CalculationEntity getEntity() {
+		return entity;
 	}
 	
-	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
-		this.organisationUnit = organisationUnit;
+	public void setEntity(CalculationEntity entity) {
+		this.entity = entity;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.chai.kevin.value.DataValue#getPeriod()
 	 */
@@ -136,7 +136,7 @@ public abstract class StoredValue implements DataValue {
 		int result = 1;
 		result = prime
 				* result
-				+ ((getOrganisationUnit() == null) ? 0 : getOrganisationUnit().hashCode());
+				+ ((getEntity() == null) ? 0 : getEntity().hashCode());
 		result = prime * result + ((getPeriod() == null) ? 0 : getPeriod().getId());
 		return result;
 	}
@@ -150,10 +150,10 @@ public abstract class StoredValue implements DataValue {
 		if (!(obj instanceof StoredValue))
 			return false;
 		DataValue other = (DataValue) obj;
-		if (getOrganisationUnit() == null) {
-			if (other.getOrganisationUnit() != null)
+		if (getEntity() == null) {
+			if (other.getEntity() != null)
 				return false;
-		} else if (!getOrganisationUnit().equals(other.getOrganisationUnit()))
+		} else if (!getEntity().equals(other.getEntity()))
 			return false;
 		if (getPeriod() == null) {
 			if (other.getPeriod() != null)

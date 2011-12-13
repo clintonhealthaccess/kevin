@@ -1,5 +1,7 @@
 package org.chai.kevin.reports;
 
+import grails.plugin.springcache.annotations.Cacheable;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,30 +13,29 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.value.CalculationValue;
-import org.chai.kevin.Organisation;
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.OrganisationSorter;
-import org.chai.kevin.value.ValueService;
+import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTable;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.fct.FctObjective;
 import org.chai.kevin.fct.FctTable;
 import org.chai.kevin.fct.FctTarget;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.ValueService;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
-
-import org.chai.kevin.data.DataService;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.reports.ReportValue;
-import org.chai.kevin.reports.ReportService;
 import org.springframework.transaction.annotation.Transactional;
-import grails.plugin.springcache.annotations.Cacheable;
 
 public class ReportService {
 	
@@ -44,7 +45,7 @@ public class ReportService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
-	private int groupLevel;
+	private String groupLevel;
 	
 	public void setOrganisationService(LocationService locationService) {
 		this.locationService = locationService;
@@ -62,25 +63,24 @@ public class ReportService {
 		this.languageService = languageService;
 	}
 	
-	public void setGroupLevel(int groupLevel) {
+	public void setGroupLevel(String groupLevel) {
 		this.groupLevel = groupLevel;
 	}
 
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public DsrTable getDsrTable(Organisation organisation, DsrObjective objective, Period period, Set<String> groupUuids) {
-		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",organisation="+organisation+",objective="+objective+")");
+	public DsrTable getDsrTable(LocationEntity entity, DsrObjective objective, Period period, Set<String> groupUuids) {
+		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+entity+",objective="+objective+")");
 						
-		List<Organisation> facilities = new ArrayList<Organisation>();
+		List<DataEntity> facilities = new ArrayList<DataEntity>();
 		for (String groupUuid : groupUuids) {
-			facilities.addAll(locationService.getFacilitiesOfGroup(organisation, locationService.getOrganisationUnitGroup(groupUuid)));
+			facilities.addAll(locationService.getDataEntities(entity, locationService.findDataEntityTypeByCode(groupUuid)));
 		}
-		Map<Organisation, List<Organisation>> organisationMap = getParents(facilities, groupLevel);
+		Map<LocationEntity, List<DataEntity>> organisationMap = getParents(facilities, locationService.findLocationLevelByCode(groupLevel));
 		
-		Map<Organisation, Map<DsrTarget, ReportValue>> valueMap = new HashMap<Organisation, Map<DsrTarget, ReportValue>>();
+		Map<DataEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataEntity, Map<DsrTarget, ReportValue>>();
 		List<DsrTarget> targets = objective.getTargets();
-		for (Organisation facility : facilities) {
-			locationService.loadGroup(facility);
+		for (DataEntity facility : facilities) {
 			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
 			for (DsrTarget target : targets) {
 				targetMap.put(target, getDsrValue(target, facility, period));
@@ -95,19 +95,19 @@ public class ReportService {
 
 	@Cacheable("fctCache")
 	@Transactional(readOnly = true)
-	public FctTable getFctTable(Organisation organisation, FctObjective objective, Period period, OrganisationUnitLevel orgUnitLevel, Set<String> groupUuids) {		
-		if (log.isDebugEnabled()) log.debug("getFctTable(period="+period+",organisation="+organisation+",objective="+objective+",orgUnitlevel="+orgUnitLevel.getLevel()+")");		
+	public FctTable getFctTable(LocationEntity entity, FctObjective objective, Period period, LocationLevel level, Set<String> groupUuids) {		
+		if (log.isDebugEnabled()) log.debug("getFctTable(period="+period+",entity="+entity+",objective="+objective+",level="+level+")");		
 		
-		List<Organisation> organisations = locationService.getChildrenOfLevel(organisation, orgUnitLevel.getLevel());
-		Map<Organisation, List<Organisation>> organisationMap = getParents(organisations, orgUnitLevel.getLevel()-1);
+		List<LocationEntity> organisations = locationService.getChildrenOfLevel(entity, level);
+		Map<LocationEntity, List<LocationEntity>> organisationMap = getParents(organisations, level);
 		
 		List<FctTarget> targets = objective.getTargets();
 		Map<FctTarget, ReportValue> totalMap = new HashMap<FctTarget, ReportValue>();				
 		for(FctTarget target : targets){			
-			totalMap.put(target, getFctValue(target, organisation, period, groupUuids));
+			totalMap.put(target, getFctValue(target, entity, period, groupUuids));
 		}
-		Map<Organisation, Map<FctTarget, ReportValue>> valueMap = new HashMap<Organisation, Map<FctTarget, ReportValue>>();
-		for (Organisation child : organisations) {
+		Map<LocationEntity, Map<FctTarget, ReportValue>> valueMap = new HashMap<LocationEntity, Map<FctTarget, ReportValue>>();
+		for (LocationEntity child : organisations) {
 			Map<FctTarget, ReportValue> targetMap = new HashMap<FctTarget, ReportValue>();
 			for(FctTarget target : targets){
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
@@ -121,12 +121,12 @@ public class ReportService {
 		return fctTable;
 	}
 	
-	private ReportValue getDsrValue(DsrTarget target, Organisation facility, Period period){
+	private ReportValue getDsrValue(DsrTarget target, DataEntity facility, Period period){
 		String value = null;
 		
 		Set<String> targetUuids = Utils.split(target.getGroupUuidString());
-		if (targetUuids.contains(facility.getOrganisationUnitGroup().getUuid())) {
-			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), facility.getOrganisationUnit(), period);
+		if (targetUuids.contains(facility.getType().getCode())) {
+			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), facility, period);
 			
 			if (dataValue != null && !dataValue.getValue().isNull()) {
 				// TODO put this in templates ?
@@ -160,37 +160,36 @@ public class ReportService {
 		return new ReportValue(value);
 	}
 	
-	private ReportValue getFctValue(FctTarget target, Organisation organisation, Period period, Set<String> groupUuids) {
+	private ReportValue getFctValue(FctTarget target, CalculationEntity entity, Period period, Set<String> groupUuids) {
 		String value = null;
-		CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), organisation.getOrganisationUnit(), period, groupUuids);
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), entity, period, groupUuids);
 		if (calculationValue != null) value = calculationValue.getValue().getNumberValue().toString();
 		return new ReportValue(value);
 	}
 	
-	private Map<Organisation, List<Organisation>> getParents(List<Organisation> organisations, Integer level) {									
+	private <T extends CalculationEntity> Map<LocationEntity, List<T>> getParents(List<T> entities, LocationLevel level) {									
 		
-		Map<Organisation, List<Organisation>> organisationMap = new HashMap<Organisation, List<Organisation>>();
+		Map<LocationEntity, List<T>> organisationMap = new HashMap<LocationEntity, List<T>>();
 		
-		for (Organisation organisation : organisations){			
-			Organisation parentOrganisation = locationService.getParentOfLevel(organisation, level);			
-			if(!organisationMap.containsKey(parentOrganisation))
-				organisationMap.put(parentOrganisation, new ArrayList<Organisation>());
-			organisationMap.get(parentOrganisation).add(organisation);
+		for (T entity : entities){			
+			LocationEntity parentOrganisation = locationService.getParentOfLevel(entity, level);			
+			if(!organisationMap.containsKey(parentOrganisation)) organisationMap.put(parentOrganisation, new ArrayList<T>());
+			organisationMap.get(parentOrganisation).add(entity);
 		}
 				
 		//sort organisation map keys
-		List<Organisation> sortedOrganisations = new ArrayList<Organisation>(organisationMap.keySet());
-		Collections.sort(sortedOrganisations, OrganisationSorter.BY_LEVEL);
+		List<LocationEntity> sortedEntities = new ArrayList<LocationEntity>(organisationMap.keySet());
+		Collections.sort(sortedEntities, OrganisationSorter.BY_NAME(languageService.getCurrentLanguage()));
 		
 		//sort organisation map values
-		LinkedHashMap<Organisation, List<Organisation>> sortedOrganisationMap = new LinkedHashMap<Organisation, List<Organisation>>();		
-		for (Organisation org : sortedOrganisations){
-			List<Organisation> sortedList = organisationMap.get(org);
-			Collections.sort(sortedList, OrganisationSorter.BY_LEVEL);
-			sortedOrganisationMap.put(org, sortedList);
+		Map<LocationEntity, List<T>> sortedEntitiesMap = new LinkedHashMap<LocationEntity, List<T>>();		
+		for (LocationEntity entity : sortedEntities){
+			List<T> sortedList = organisationMap.get(entity);
+			Collections.sort(sortedList, OrganisationSorter.BY_NAME(languageService.getCurrentLanguage()));
+			sortedEntitiesMap.put(entity, sortedList);
 		}
 		
-		return sortedOrganisationMap;
+		return sortedEntitiesMap;
 	}
 	
 	private static String getFormat(DsrTarget target, Double value) {

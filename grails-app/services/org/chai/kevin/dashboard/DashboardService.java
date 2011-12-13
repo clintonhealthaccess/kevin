@@ -39,11 +39,13 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.Organisation;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -62,27 +64,15 @@ public class DashboardService {
 	
 	@Transactional(readOnly = true)
 	@Cacheable("dashboardCache")
-	public Dashboard getDashboard(Organisation organisation, DashboardObjective objective, Period period, Set<String> groupUuids) {
-		locationService.loadChildren(organisation, getSkipLevelArray());
-		
-		List<Organisation> organisations = new ArrayList<Organisation>();
-		for (Organisation child : organisation.getChildren()) {
-			locationService.loadGroup(child);
-						
-			if (locationService.loadLevel(child) != locationService.getFacilityLevel()
-				|| 
-				groupUuids.contains(child.getOrganisationUnitGroup().getUuid())) {
-				organisations.add(child);
-				locationService.loadChildren(child, getSkipLevelArray());
-			}
-		}
-		Organisation parent = organisation;
-		while (locationService.loadParent(parent, getSkipLevelArray())) {
-			parent = parent.getParent();
+	public Dashboard getDashboard(LocationEntity entity, DashboardObjective objective, Period period, Set<String> groupUuids) {
+		List<CalculationEntity> organisations = new ArrayList<CalculationEntity>();
+		organisations.addAll(entity.getChildren());
+		for (DataEntity dataEntity : entity.getDataEntities()) {
+			if (groupUuids.contains(dataEntity.getType().getCode())) organisations.add(dataEntity);
 		}
 		
 		List<DashboardObjectiveEntry> weightedObjectives = objective.getObjectiveEntries();
-		List<Organisation> organisationPath = calculateOrganisationPath(organisation);
+		List<LocationEntity> organisationPath = calculateOrganisationPath(entity);
 		List<DashboardObjective> objectivePath = calculateObjectivePath(objective);
 		return new Dashboard(organisations, weightedObjectives, 
 				organisationPath, objectivePath,
@@ -90,13 +80,8 @@ public class DashboardService {
 	}
 
 	@Transactional(readOnly = true)
-	public Info<?> getExplanation(Organisation organisation, DashboardEntry entry, Period period, Set<String> groupUuids) {
-		locationService.loadChildren(organisation, getSkipLevelArray());
-		locationService.loadParent(organisation, getSkipLevelArray());
-		locationService.loadGroup(organisation);
-		locationService.loadLevel(organisation);
-		
-		return entry.visit(new ExplanationVisitor(groupUuids), organisation, period);
+	public Info<?> getExplanation(CalculationEntity entity, DashboardEntry entry, Period period, Set<String> groupUuids) {
+		return entry.visit(new ExplanationVisitor(groupUuids), entity, period);
 	}
 
 	private class ExplanationVisitor implements DashboardVisitor<Info> {
@@ -108,16 +93,16 @@ public class DashboardService {
 		}
 		
 		@Override
-		public Info visitObjective(DashboardObjective objective, Organisation organisation, Period period) {
-			DashboardPercentage percentage = objective.visit(new PercentageVisitor(groupUuids), organisation, period);
+		public Info visitObjective(DashboardObjective objective, CalculationEntity entity, Period period) {
+			DashboardPercentage percentage = objective.visit(new PercentageVisitor(groupUuids), entity, period);
 			if (percentage == null) return null;
-			Map<DashboardObjectiveEntry, DashboardPercentage> values = getValues(objective.getObjectiveEntries(), period, organisation, groupUuids);
+			Map<DashboardObjectiveEntry, DashboardPercentage> values = getValues(objective.getObjectiveEntries(), period, entity, groupUuids);
 			return new DashboardObjectiveInfo(percentage, values);
 		}
 
 		@Override
-		public Info visitTarget(DashboardTarget target, Organisation organisation, Period period) {
-			return infoService.getCalculationInfo(target.getCalculation(), organisation, period, groupUuids);
+		public Info visitTarget(DashboardTarget target, CalculationEntity entity, Period period) {
+			return infoService.getCalculationInfo(target.getCalculation(), entity, period, groupUuids);
 		}
 		
 	}
@@ -135,16 +120,16 @@ public class DashboardService {
 		private final Log log = LogFactory.getLog(PercentageVisitor.class);
 		
 		@Override
-		public DashboardPercentage visitObjective(DashboardObjective objective, Organisation organisation, Period period) {
-			if (log.isDebugEnabled()) log.debug("visitObjective(objective="+objective+",organisation="+organisation+",period="+period+")");
+		public DashboardPercentage visitObjective(DashboardObjective objective, CalculationEntity entity, Period period) {
+			if (log.isDebugEnabled()) log.debug("visitObjective(objective="+objective+",entity="+entity+",period="+period+")");
 			
 			Integer totalWeight = 0;
 			Double sum = 0.0d;
 
 			for (DashboardObjectiveEntry child : objective.getObjectiveEntries()) {
-				DashboardPercentage childPercentage = child.getEntry().visit(this, organisation, period);
+				DashboardPercentage childPercentage = child.getEntry().visit(this, entity, period);
 				if (childPercentage == null) {
-					if (log.isErrorEnabled()) log.error("found null percentage, objective: "+child.getEntry()+", organisation: "+organisation.getOrganisationUnit()+", period: "+period);
+					if (log.isErrorEnabled()) log.error("found null percentage, objective: "+child.getEntry()+", entity: "+entity+", period: "+period);
 					return null;
 				}
 				Integer weight = child.getWeight();
@@ -163,47 +148,47 @@ public class DashboardService {
 			Value value = null;
 			if (average.isNaN() || average.isInfinite()) value = Value.NULL;
 			else value = type.getValue(average);
-			DashboardPercentage percentage = new DashboardPercentage(value, organisation.getOrganisationUnit(), period);
+			DashboardPercentage percentage = new DashboardPercentage(value, entity, period);
 			
 			if (log.isDebugEnabled()) log.debug("visitObjective()="+percentage);
 			return percentage;
 		}
 
 		@Override
-		public DashboardPercentage visitTarget(DashboardTarget target, Organisation organisation, Period period) {
-			if (log.isDebugEnabled()) log.debug("visitTarget(target="+target+",organisation="+organisation+",period="+period+")");
+		public DashboardPercentage visitTarget(DashboardTarget target, CalculationEntity entity, Period period) {
+			if (log.isDebugEnabled()) log.debug("visitTarget(target="+target+",entity="+entity+",period="+period+")");
 			
-			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), organisation.getOrganisationUnit(), period, groupUuids);
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), entity, period, groupUuids);
 			if (calculationValue == null) return null;
-			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), organisation.getOrganisationUnit(), period);
+			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), entity, period);
 
 			if (log.isDebugEnabled()) log.debug("visitTarget(...)="+percentage);
 			return percentage;
 		}
 	}
 	
-	private Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> getValues(List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries, Period period, Set<String> groupUuids) {
-		Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> values = new HashMap<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>>();
+	private Map<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>> getValues(List<CalculationEntity> organisations, List<DashboardObjectiveEntry> objectiveEntries, Period period, Set<String> groupUuids) {
+		Map<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>> values = new HashMap<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>>();
 
-		for (Organisation organisation : organisations) {
-			Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = getValues(objectiveEntries, period, organisation, groupUuids);
-			values.put(organisation, organisationMap);
+		for (CalculationEntity entity : organisations) {
+			Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = getValues(objectiveEntries, period, entity, groupUuids);
+			values.put(entity, organisationMap);
 		}
 		return values;
 	}
 
-	private Map<DashboardObjectiveEntry, DashboardPercentage> getValues(List<DashboardObjectiveEntry> objectiveEntries, Period period, Organisation organisation, Set<String> groupUuids) {
+	private Map<DashboardObjectiveEntry, DashboardPercentage> getValues(List<DashboardObjectiveEntry> objectiveEntries, Period period, CalculationEntity entity, Set<String> groupUuids) {
 		Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = new HashMap<DashboardObjectiveEntry, DashboardPercentage>();
 		for (DashboardObjectiveEntry objectiveEntry : objectiveEntries) {
-			DashboardPercentage percentage = objectiveEntry.getEntry().visit(new PercentageVisitor(groupUuids), organisation, period);
+			DashboardPercentage percentage = objectiveEntry.getEntry().visit(new PercentageVisitor(groupUuids), entity, period);
 			organisationMap.put(objectiveEntry, percentage);
 		}
 		return organisationMap;
 	}
 	
-	private List<Organisation> calculateOrganisationPath(Organisation organisation) {
-		List<Organisation> organisationPath = new ArrayList<Organisation>();
-		Organisation parent = organisation;
+	private List<LocationEntity> calculateOrganisationPath(LocationEntity entity) {
+		List<LocationEntity> organisationPath = new ArrayList<LocationEntity>();
+		LocationEntity parent = entity;
 		while ((parent = parent.getParent()) != null) {
 			organisationPath.add(parent);
 		}

@@ -6,8 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationSorter;
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 
 public class SummaryPage {
@@ -15,16 +15,16 @@ public class SummaryPage {
 	private static final String PROGRESS_SORT = "progress";
 	private static final String FACILITY_SORT = "facility";
 	
-	private List<Organisation> facilities;
+	private List<DataEntity> facilities;
 	
 	// for survey summary page
-	private Map<Organisation, ObjectiveSummary> objectiveSummaryMap;
+	private Map<DataEntity, ObjectiveSummary> objectiveSummaryMap;
 	
 	// for objective summary page
-	private Map<Organisation, SurveyEnteredObjective> enteredObjectiveSummaryMap;
+	private Map<DataEntity, SurveyEnteredObjective> enteredObjectiveSummaryMap;
 	
 	// for survey + objective + section summary page
-	private Map<Organisation, QuestionSummary> questionSummaryMap;
+	private Map<DataEntity, QuestionSummary> questionSummaryMap;
 	
 	// for smaller information tables
 	private Map<SurveyObjective, SurveyEnteredObjective> enteredObjectiveTableMap;
@@ -32,21 +32,21 @@ public class SummaryPage {
 	private Map<SurveySection, QuestionSummary> sectionQuestionTableMap;
 
 	// for survey summary page
-	public SummaryPage(List<Organisation> facilities, Map<Organisation, QuestionSummary> questionSummaryMap, Map<Organisation, ObjectiveSummary> objectiveSummaryMap) {
+	public SummaryPage(List<DataEntity> facilities, Map<DataEntity, QuestionSummary> questionSummaryMap, Map<DataEntity, ObjectiveSummary> objectiveSummaryMap) {
 		this.facilities = facilities;
 		this.questionSummaryMap = questionSummaryMap;
 		this.objectiveSummaryMap = objectiveSummaryMap;
 	}
 	
 	// for objective summary page
-	public SummaryPage(List<Organisation> facilities, Map<Organisation, QuestionSummary> questionSummaryMap, Map<Organisation, SurveyEnteredObjective> enteredObjectiveMap, boolean test) {
+	public SummaryPage(List<DataEntity> facilities, Map<DataEntity, QuestionSummary> questionSummaryMap, Map<DataEntity, SurveyEnteredObjective> enteredObjectiveMap, boolean test) {
 		this.facilities = facilities;
 		this.enteredObjectiveSummaryMap = enteredObjectiveMap;
 		this.questionSummaryMap = questionSummaryMap;
 	}
 
 	// for section summary page
-	public SummaryPage(List<Organisation> facilities, Map<Organisation, QuestionSummary> questionSummaryMap) {
+	public SummaryPage(List<DataEntity> facilities, Map<DataEntity, QuestionSummary> questionSummaryMap) {
 		this.facilities = facilities;
 		this.questionSummaryMap = questionSummaryMap;
 	}
@@ -63,16 +63,16 @@ public class SummaryPage {
 	}
 	
 	
-	public void sort(String parameter, String order) {
+	public void sort(String parameter, String order, String language) {
 		if (facilities == null || parameter == null || order == null) return;
 		if (parameter.equals(FACILITY_SORT)) {
-			Collections.sort(facilities, OrganisationSorter.BY_LEVEL);
+			Collections.sort(facilities, OrganisationSorter.BY_NAME(language));
 			if (order.equals("desc")) Collections.reverse(facilities); 
 		}
 		else if (parameter.equals(PROGRESS_SORT)) {
-			Collections.sort(facilities, new Comparator<Organisation>() {
+			Collections.sort(facilities, new Comparator<DataEntity>() {
 				@Override
-				public int compare(Organisation arg0, Organisation arg1) {
+				public int compare(DataEntity arg0, DataEntity arg1) {
 					QuestionSummary summary0 = questionSummaryMap.get(arg0);
 					QuestionSummary summary1 = questionSummaryMap.get(arg1);
 					return summary0.compareTo(summary1);
@@ -110,19 +110,19 @@ public class SummaryPage {
 		return sortedSections;
 	}
 	
-	public List<Organisation> getFacilities() {
+	public List<DataEntity> getFacilities() {
 		return facilities;
 	}
 
-	public QuestionSummary getQuestionSummary(Organisation organisation) {
+	public QuestionSummary getQuestionSummary(DataEntity organisation) {
 		return questionSummaryMap.get(organisation);
 	}
 
-	public ObjectiveSummary getObjectiveSummary(Organisation organisation) {
+	public ObjectiveSummary getObjectiveSummary(DataEntity organisation) {
 		return objectiveSummaryMap.get(organisation);
 	}
 
-	public SurveyEnteredObjective getSurveyEnteredObjective(Organisation organisation) {
+	public SurveyEnteredObjective getSurveyEnteredObjective(DataEntity organisation) {
 		return enteredObjectiveSummaryMap.get(organisation);
 	}
 	

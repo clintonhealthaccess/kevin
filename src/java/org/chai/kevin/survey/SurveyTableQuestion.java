@@ -49,6 +49,7 @@ import javax.persistence.Transient;
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Translation;
 
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -130,10 +131,10 @@ public class SurveyTableQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
-	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
+	public List<SurveyElement> getSurveyElements(DataEntityType type) {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
-		for (SurveyTableRow row : getRows(group)) {
-			for (SurveyTableColumn column : getColumns(group)) {
+		for (SurveyTableRow row : getRows(type)) {
+			for (SurveyTableColumn column : getColumns(type)) {
 				if (row.getSurveyElements().get(column) != null) dataElements.add(row.getSurveyElements().get(column));
 			}
 		}
@@ -153,21 +154,20 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	}
 	
 	@Transient
-	public List<SurveyTableRow> getRows(OrganisationUnitGroup group) {
+	public List<SurveyTableRow> getRows(DataEntityType type) {
 		List<SurveyTableRow> result = new ArrayList<SurveyTableRow>();
 		for (SurveyTableRow surveyTableRow : getRows()) {
-			if (Utils.split(surveyTableRow.getGroupUuidString())
-					.contains(group.getUuid()))
+			if (Utils.split(surveyTableRow.getGroupUuidString()).contains(type.getCode()))
 				result.add(surveyTableRow);
 		}
 		return result;
 	}
 
 	@Transient
-	public List<SurveyTableColumn> getColumns(OrganisationUnitGroup group) {
+	public List<SurveyTableColumn> getColumns(DataEntityType type) {
 		List<SurveyTableColumn> result = new ArrayList<SurveyTableColumn>();
 		for (SurveyTableColumn surveyTableColumn : getColumns()) {
-			if (Utils.split(surveyTableColumn.getGroupUuidString()).contains(group.getUuid()))
+			if (Utils.split(surveyTableColumn.getGroupUuidString()).contains(type.getCode()))
 				result.add(surveyTableColumn);
 		}
 		return result;

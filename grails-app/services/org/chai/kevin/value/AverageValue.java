@@ -3,6 +3,7 @@ package org.chai.kevin.value;
 import java.util.List;
 
 import org.chai.kevin.data.Average;
+import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -10,8 +11,8 @@ import org.hisp.dhis.period.Period;
 
 public class AverageValue extends CalculationValue<AveragePartialValue> {
 
-	public AverageValue(List<AveragePartialValue> calculationPartialValues, Average calculation, Period period, OrganisationUnit organisationUnit) {
-		super(calculationPartialValues, calculation, period, organisationUnit);
+	public AverageValue(List<AveragePartialValue> calculationPartialValues, Average calculation, Period period, CalculationEntity entity) {
+		super(calculationPartialValues, calculation, period, entity);
 	}
 
 	@Override

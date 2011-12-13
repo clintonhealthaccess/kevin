@@ -48,6 +48,8 @@ import org.hibernate.annotations.FetchMode;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.apache.commons.collections.CollectionUtils;
 
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "SurveySimpleQuestion")
@@ -75,7 +77,7 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
-	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
+	public List<SurveyElement> getSurveyElements(DataEntityType type) {
 		List<SurveyElement> elements = new ArrayList<SurveyElement>();
 		if (surveyElement != null) elements.add(surveyElement);
 		return elements;

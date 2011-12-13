@@ -42,15 +42,18 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
@@ -59,14 +62,13 @@ import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveyLog;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,45 +110,42 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPage(Organisation organisation, SurveyQuestion currentQuestion) {
-		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+organisation+", currentQuestion="+currentQuestion+")");
+	public SurveyPage getSurveyPage(DataEntity entity, SurveyQuestion currentQuestion) {
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(entity="+entity+", currentQuestion="+currentQuestion+")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		Map<String, Enum> enums = new HashMap<String, Enum>();
 		
-		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, currentQuestion);
+		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, currentQuestion);
 		questions.put(currentQuestion, enteredQuestion);
-		for (SurveyElement element : currentQuestion.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+		for (SurveyElement element : currentQuestion.getSurveyElements(entity.getType())) {
+			SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
 			elements.put(element, enteredValue);
 			collectEnums(element, enums);
 		}
 		
-		SurveyPage page = new SurveyPage(organisation, currentQuestion.getSurvey(), null, null, null, null, questions, elements, enums, getOrderingComparator());
+		SurveyPage page = new SurveyPage(entity, currentQuestion.getSurvey(), null, null, null, null, questions, elements, enums, getOrderingComparator());
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
 	}
 	
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPage(Organisation organisation, SurveySection currentSection) {
-		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+organisation+", currentSection="+currentSection+")");
-		
+	public SurveyPage getSurveyPage(DataEntity entity, SurveySection currentSection) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		locationService.loadGroup(organisation);
 		
 		SurveyObjective currentObjective = currentSection.getObjective();
 		Survey survey = currentObjective.getSurvey();
 		
 		Map<SurveyObjective, SurveyEnteredObjective> objectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
 		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
-		for (SurveyObjective objective : survey.getObjectives(organisation.getOrganisationUnitGroup())) {
-			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
+		for (SurveyObjective objective : survey.getObjectives(entity.getType())) {
+			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(entity, objective);
 			objectives.put(objective, enteredObjective);
 			
-			for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
-				SurveyEnteredSection enteredSection = getSurveyEnteredSection(organisation, section);
+			for (SurveySection section : objective.getSections(entity.getType())) {
+				SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
 				sections.put(section, enteredSection);
 			}
 		}
@@ -154,39 +153,37 @@ public class SurveyPageService {
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
 		Map<String, Enum> enums = new HashMap<String, Enum>();
-		for (SurveyQuestion question : currentSection.getQuestions(organisation.getOrganisationUnitGroup())) {
-			SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
+		for (SurveyQuestion question : currentSection.getQuestions(entity.getType())) {
+			SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
 			questions.put(question, enteredQuestion);
 			
-			for (SurveyElement element : question.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-				SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+			for (SurveyElement element : question.getSurveyElements(entity.getType())) {
+				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
 				elements.put(element, enteredValue);
 				collectEnums(element, enums);
 			}
 		}
 		
-		SurveyPage page = new SurveyPage(organisation, survey, currentObjective, currentSection, objectives, sections, questions, elements, enums, getOrderingComparator());
+		SurveyPage page = new SurveyPage(entity, survey, currentObjective, currentSection, objectives, sections, questions, elements, enums, getOrderingComparator());
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
 	}
 	
+	
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPage(Organisation organisation, SurveyObjective currentObjective) {
-		if (log.isDebugEnabled()) log.debug("getSurveyPage(organisation="+organisation+", currentObjective="+currentObjective+")");
-		
+	public SurveyPage getSurveyPage(DataEntity entity, SurveyObjective currentObjective) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		locationService.loadGroup(organisation);
 		
 		Survey survey = currentObjective.getSurvey();
 		
 		Map<SurveyObjective, SurveyEnteredObjective> objectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
 		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
-		for (SurveyObjective objective : survey.getObjectives(organisation.getOrganisationUnitGroup())) {
-			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
+		for (SurveyObjective objective : survey.getObjectives(entity.getType())) {
+			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(entity, objective);
 			objectives.put(objective, enteredObjective);
 			
-			for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
-				SurveyEnteredSection enteredSection = getSurveyEnteredSection(organisation, section);
+			for (SurveySection section : objective.getSections(entity.getType())) {
+				SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
 				sections.put(section, enteredSection);
 			}
 		}
@@ -194,40 +191,39 @@ public class SurveyPageService {
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
 		Map<String, Enum> enums = new HashMap<String, Enum>();
-		for (SurveySection section : currentObjective.getSections(organisation.getOrganisationUnitGroup())) {
+		for (SurveySection section : currentObjective.getSections(entity.getType())) {
 			section = (SurveySection)sessionFactory.getCurrentSession().get(SurveySection.class, section.getId());
-			for (SurveyQuestion question : section.getQuestions(organisation.getOrganisationUnitGroup())) {
-				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
+			for (SurveyQuestion question : section.getQuestions(entity.getType())) {
+				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
 				questions.put(question, enteredQuestion);
 				
-				for (SurveyElement element : question.getSurveyElements(organisation.getOrganisationUnitGroup())) {
-					SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+				for (SurveyElement element : question.getSurveyElements(entity.getType())) {
+					SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
 					elements.put(element, enteredValue);
 					collectEnums(element, enums);
 				}
 			}
 		}
 		
-		SurveyPage page = new SurveyPage(organisation, survey, currentObjective, null, objectives, sections, questions, elements, enums, getOrderingComparator());
+		SurveyPage page = new SurveyPage(entity, survey, currentObjective, null, objectives, sections, questions, elements, enums, getOrderingComparator());
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
 	}
 	
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPagePrint(Organisation organisation,Survey survey) {
+	public SurveyPage getSurveyPagePrint(DataEntity entity,Survey survey) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
-		locationService.loadGroup(organisation);
-		OrganisationUnitGroup organisationUnitGroup = organisation.getOrganisationUnitGroup();
+		DataEntityType entityUnitGroup = entity.getType();
 		
 		Map<SurveyElement, SurveyEnteredValue> elements = new LinkedHashMap<SurveyElement, SurveyEnteredValue>();
 		Map<String, Enum> enums = new HashMap<String, Enum>();
 		
-		for (SurveyObjective objective : survey.getObjectives(organisationUnitGroup)) {
-			for (SurveySection section : objective.getSections(organisationUnitGroup)) {
-				for (SurveyQuestion question : section.getQuestions(organisationUnitGroup)) {
-					for (SurveyElement element : question.getSurveyElements(organisationUnitGroup)) {
-						SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+		for (SurveyObjective objective : survey.getObjectives(entityUnitGroup)) {
+			for (SurveySection section : objective.getSections(entityUnitGroup)) {
+				for (SurveyQuestion question : section.getQuestions(entityUnitGroup)) {
+					for (SurveyElement element : question.getSurveyElements(entityUnitGroup)) {
+						SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
 						elements.put(element, enteredValue);
 						collectEnums(element, enums);
 					}
@@ -235,40 +231,38 @@ public class SurveyPageService {
 			}
 
 		}
-		return new SurveyPage(organisation, survey, null, null, null, null,null, elements, enums, getOrderingComparator());
+		return new SurveyPage(entity, survey, null, null, null, null,null, elements, enums, getOrderingComparator());
 	}
 	
 
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPage(Organisation organisation, Survey survey) {
+	public SurveyPage getSurveyPage(DataEntity entity, Survey survey) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		
-		locationService.loadGroup(organisation);
 		
 		Map<SurveyObjective, SurveyEnteredObjective> objectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
 		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
-		for (SurveyObjective objective : survey.getObjectives(organisation.getOrganisationUnitGroup())) {
-			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
+		for (SurveyObjective objective : survey.getObjectives(entity.getType())) {
+			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(entity, objective);
 			objectives.put(objective, enteredObjective);
 			
-			for (SurveySection section : objective.getSections(organisation.getOrganisationUnitGroup())) {
-				SurveyEnteredSection enteredSection = getSurveyEnteredSection(organisation, section);
+			for (SurveySection section : objective.getSections(entity.getType())) {
+				SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
 				sections.put(section, enteredSection);
 			}
 		}
-		return new SurveyPage(organisation, survey, null, null, objectives, sections, null, null, null, getOrderingComparator());
+		return new SurveyPage(entity, survey, null, null, objectives, sections, null, null, null, getOrderingComparator());
 	}
 	
 	@Transactional(readOnly = false)
-	public void refresh(Organisation organisation, Survey survey, boolean closeIfComplete) {
-		List<Organisation> facilities = locationService.getChildrenOfLevel(organisation, locationService.getFacilityLevel());
+	public void refresh(LocationEntity entity, Survey survey, boolean closeIfComplete) {
+		List<DataEntity> facilities = locationService.getDataEntities(entity);
 	
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		for (Organisation facility : facilities) {
+		for (DataEntity facility : facilities) {
 			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
-			facility.setOrganisationUnit((OrganisationUnit)sessionFactory.getCurrentSession().get(OrganisationUnit.class, facility.getOrganisationUnit().getId()));
+			facility = (DataEntity)sessionFactory.getCurrentSession().get(DataEntity.class, facility.getId());
 
 			getMe().refreshSurveyForFacilityWithNewTransaction(facility, survey, closeIfComplete);
 			sessionFactory.getCurrentSession().clear();
@@ -276,26 +270,24 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshSurveyForFacilityWithNewTransaction(Organisation facility, Survey survey, boolean closeIfComplete) {
+	public void refreshSurveyForFacilityWithNewTransaction(DataEntity facility, Survey survey, boolean closeIfComplete) {
 		refreshSurveyForFacility(facility, survey, closeIfComplete);
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshSurveyForFacility(Organisation facility, Survey survey, boolean closeIfComplete) {
-		locationService.loadGroup(facility);
-
+	public void refreshSurveyForFacility(DataEntity facility, Survey survey, boolean closeIfComplete) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		Set<SurveyObjective> validObjectives = new HashSet<SurveyObjective>(survey.getObjectives(facility.getOrganisationUnitGroup()));
+		Set<SurveyObjective> validObjectives = new HashSet<SurveyObjective>(survey.getObjectives(facility.getType()));
 		for (SurveyObjective objective : survey.getObjectives()) {
 			if (validObjectives.contains(objective)) refreshObjectiveForFacility(facility, objective, closeIfComplete);
 			else deleteSurveyEnteredObjective(objective, facility);
 		}
 	}
 	
-	private void refreshObjectiveForFacility(Organisation facility, SurveyObjective objective, boolean closeIfComplete) {
-		Set<SurveySection> validSections = new HashSet<SurveySection>(objective.getSections(facility.getOrganisationUnitGroup()));
+	private void refreshObjectiveForFacility(DataEntity facility, SurveyObjective objective, boolean closeIfComplete) {
+		Set<SurveySection> validSections = new HashSet<SurveySection>(objective.getSections(facility.getType()));
 		for (SurveySection section : objective.getSections()) {
 			if (validSections.contains(section)) refreshSectionForFacility(facility, section);
 			else deleteSurveyEnteredSection(section, facility);
@@ -308,18 +300,16 @@ public class SurveyPageService {
 	}
 	
 //	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
-//	public void refreshSectionForFacilityWithNewTransaction(Organisation facility, SurveySection section) {
+//	public void refreshSectionForFacilityWithNewTransaction(DataEntity facility, SurveySection section) {
 //		refreshSectionForFacility(facility, section);
 //	}
 	
 	@Transactional(readOnly = false)
-	public void refreshSectionForFacility(Organisation facility, SurveySection section) {
+	public void refreshSectionForFacility(DataEntity facility, SurveySection section) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		locationService.loadGroup(facility);
-		
-		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(facility.getOrganisationUnitGroup()));
+		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(facility.getType()));
 		for (SurveyQuestion question : section.getQuestions()) {
 			if (validQuestions.contains(question)) refreshQuestionForFacility(facility, question);
 			else deleteSurveyEnteredQuestion(question, facility);
@@ -329,8 +319,8 @@ public class SurveyPageService {
 		surveyValueService.save(enteredSection);
 	}
 	
-	private void refreshQuestionForFacility(Organisation facility, SurveyQuestion question) {
-		Set<SurveyElement> validElements = new HashSet<SurveyElement>(question.getSurveyElements(facility.getOrganisationUnitGroup()));
+	private void refreshQuestionForFacility(DataEntity facility, SurveyQuestion question) {
+		Set<SurveyElement> validElements = new HashSet<SurveyElement>(question.getSurveyElements(facility.getType()));
 		for (SurveyElement element : question.getSurveyElements()) {
 			if (validElements.contains(element)) refreshElementForFacility(facility, element);
 			else deleteSurveyEnteredValue(element, facility);
@@ -341,15 +331,15 @@ public class SurveyPageService {
 		surveyValueService.save(enteredQuestion);
 	}
 	
-	private void refreshElementForFacility(Organisation facility, SurveyElement element) {
+	private void refreshElementForFacility(DataEntity facility, SurveyElement element) {
 		Survey survey = element.getSurvey();
 		
 		SurveyEnteredValue enteredValue = getSurveyEnteredValue(facility, element);
-		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), facility.getOrganisationUnit(), survey.getPeriod());
+		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), facility, survey.getPeriod());
 		if (rawDataElementValue != null) enteredValue.setValue(rawDataElementValue.getValue());
 		else enteredValue.setValue(Value.NULL);
 		if (survey.getLastPeriod() != null) {
-			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), facility.getOrganisationUnit(), survey.getLastPeriod());
+			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), facility, survey.getLastPeriod());
 			if (lastDataValue != null) enteredValue.setLastValue(lastDataValue.getValue());
 			else enteredValue.setLastValue(Value.NULL);
 		}
@@ -361,13 +351,12 @@ public class SurveyPageService {
 	// mode, a write lock is acquired at the beginning and never released till this method terminates
 	// which causes other sessions calling this method to timeout
 	@Transactional(readOnly = false)
-	public SurveyPage modify(Organisation organisation, SurveyObjective objective, List<SurveyElement> elements, Map<String, Object> params) {
-		if (log.isDebugEnabled()) log.debug("modify(organisation="+organisation+", elements="+elements+")");
-		locationService.loadGroup(organisation);
+	public SurveyPage modify(DataEntity entity, SurveyObjective objective, List<SurveyElement> elements, Map<String, Object> params) {
+		if (log.isDebugEnabled()) log.debug("modify(entity="+entity+", elements="+elements+")");
 		
 		// we acquire a write lock on the objective
 		// this won't change anything for MyISAM tables
-		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
+		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(entity, objective);
 		sessionFactory.getCurrentSession().buildLockRequest(LockOptions.NONE).setLockMode(LockMode.PESSIMISTIC_WRITE).lock(enteredObjective);
 		
 		SurveyPage surveyPage = null;
@@ -381,7 +370,7 @@ public class SurveyPageService {
 			for (SurveyElement element : elements) {
 				if (log.isDebugEnabled()) log.debug("setting new value for element: "+element);
 				
-				SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
 				
 				final Type valueType = element.getDataElement().getType();
 				final Value oldValue = enteredValue.getValue();
@@ -414,10 +403,10 @@ public class SurveyPageService {
 				
 				// if it is a checkbox question, we need to reset the values to null
 				// FIXME THIS IS A HACK
-				resetCheckboxQuestion(organisation, element, affectedElements);
+				resetCheckboxQuestion(entity, element, affectedElements);
 			}
 			// we evaluate the rules
-			surveyPage = evaluateRulesAndSave(organisation, elements, affectedElements);
+			surveyPage = evaluateRulesAndSave(entity, elements, affectedElements);
 		}
 
 		if (log.isDebugEnabled()) log.debug("modify(...)="+surveyPage);
@@ -425,8 +414,8 @@ public class SurveyPageService {
 	}
 		
 		
-	private SurveyPage evaluateRulesAndSave(Organisation organisation, List<SurveyElement> elements, Map<SurveyElement, SurveyEnteredValue> affectedElements) {  
-		if (log.isDebugEnabled()) log.debug("evaluateRulesAndSave(organisation="+organisation+", elements="+elements+")");
+	private SurveyPage evaluateRulesAndSave(DataEntity entity, List<SurveyElement> elements, Map<SurveyElement, SurveyEnteredValue> affectedElements) {  
+		if (log.isDebugEnabled()) log.debug("evaluateRulesAndSave(entity="+entity+", elements="+elements+")");
 		
 		// second we get the rules that could be affected by the changes
 		Set<SurveyValidationRule> validationRules = new HashSet<SurveyValidationRule>();
@@ -434,7 +423,7 @@ public class SurveyPageService {
 		for (SurveyElement element : elements) {
 			if (log.isDebugEnabled()) log.debug("getting skip and validation rules for element: "+element);
 
-			validationRules.addAll(surveyService.searchValidationRules(element, organisation.getOrganisationUnitGroup()));
+			validationRules.addAll(surveyService.searchValidationRules(element, entity.getType()));
 			skipRules.addAll(surveyService.searchSkipRules(element));
 		}
 		
@@ -443,9 +432,9 @@ public class SurveyPageService {
 		for (SurveyValidationRule validationRule : validationRules) {
 			if (log.isDebugEnabled()) log.debug("getting invalid prefixes for validation rule: "+validationRule);
 			
-			Set<String> prefixes = validationService.getInvalidPrefix(validationRule, organisation);
+			Set<String> prefixes = validationService.getInvalidPrefix(validationRule, entity);
 
-			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, validationRule.getSurveyElement());
+			SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, validationRule.getSurveyElement());
 			enteredValue.setInvalid(validationRule, prefixes);
 			
 			affectedElements.put(validationRule.getSurveyElement(), enteredValue);
@@ -455,18 +444,18 @@ public class SurveyPageService {
 			for (SurveyElement element : surveySkipRule.getSkippedSurveyElements().keySet()) {
 				if (log.isDebugEnabled()) log.debug("getting skipped prefixes for skip rule: "+surveySkipRule+", element: "+element);
 				
-				Set<String> prefixes = validationService.getSkippedPrefix(element, surveySkipRule, organisation);
+				Set<String> prefixes = validationService.getSkippedPrefix(element, surveySkipRule, entity);
 
-				SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
 				enteredValue.setSkipped(surveySkipRule, prefixes);
 				
 				affectedElements.put(element, enteredValue);
 			}
 
-			boolean skipped = validationService.isSkipped(surveySkipRule, organisation);
+			boolean skipped = validationService.isSkipped(surveySkipRule, entity);
 			for (SurveyQuestion question : surveySkipRule.getSkippedSurveyQuestions()) {
 				
-				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
+				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
 				if (skipped) enteredQuestion.getSkippedRules().add(surveySkipRule);
 				else enteredQuestion.getSkippedRules().remove(surveySkipRule);
 				
@@ -479,7 +468,7 @@ public class SurveyPageService {
 		for (SurveyEnteredValue element : affectedElements.values()) {
 			SurveyQuestion question = element.getSurveyElement().getSurveyQuestion();
 			if (!affectedQuestions.containsKey(question)) {
-				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
+				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
 				affectedQuestions.put(question, enteredQuestion);
 			}
 		}
@@ -487,11 +476,11 @@ public class SurveyPageService {
 		Map<SurveySection, SurveyEnteredSection> affectedSections = new HashMap<SurveySection, SurveyEnteredSection>();
 		for (SurveyEnteredQuestion question : affectedQuestions.values()) {
 			// we set the question status correctly and save
-			setQuestionStatus(question, organisation);
+			setQuestionStatus(question, entity);
 			
 			SurveySection section = question.getQuestion().getSection();
 			if (!affectedSections.containsKey(section)) {
-				SurveyEnteredSection enteredSection = getSurveyEnteredSection(organisation, section);
+				SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
 				affectedSections.put(section, enteredSection);
 			}
 			
@@ -500,11 +489,11 @@ public class SurveyPageService {
 		Map<SurveyObjective, SurveyEnteredObjective> affectedObjectives = new HashMap<SurveyObjective, SurveyEnteredObjective>();
 		for (SurveyEnteredSection section : affectedSections.values()) {
 			// we set the section status correctly and save
-			setSectionStatus(section, organisation);
+			setSectionStatus(section, entity);
 			
 			SurveyObjective objective = section.getSection().getObjective();
 			if (!affectedObjectives.containsKey(objective)) {
-				SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
+				SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(entity, objective);
 				affectedObjectives.put(objective, enteredObjective);
 			}
 		}
@@ -512,7 +501,7 @@ public class SurveyPageService {
 		for (SurveyEnteredObjective objective : affectedObjectives.values()) {
 			// if the objective is not closed and available
 			// we set the objective status correctly and save
-			setObjectiveStatus(objective, organisation);
+			setObjectiveStatus(objective, entity);
 		}
 		
 		// fifth we save all the values
@@ -529,24 +518,24 @@ public class SurveyPageService {
 			surveyValueService.save(surveyEnteredObjective);
 		}
 		
-		return new SurveyPage(organisation, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements, null, getOrderingComparator());
+		return new SurveyPage(entity, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements, null, getOrderingComparator());
 	}
 
 	// FIXME HACK 
 	// TODO get rid of this
-	private void resetCheckboxQuestion(Organisation organisation, SurveyElement element, Map<SurveyElement, SurveyEnteredValue> affectedElements) {
+	private void resetCheckboxQuestion(DataEntity entity, SurveyElement element, Map<SurveyElement, SurveyEnteredValue> affectedElements) {
 		if (log.isDebugEnabled()) log.debug("question is of type: "+element.getSurveyQuestion().getType());
 		if (element.getSurveyQuestion().getType() == QuestionType.CHECKBOX) {
 			if (log.isDebugEnabled()) log.debug("checking if checkbox question needs to be reset");
 			boolean reset = true;
-			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(organisation.getOrganisationUnitGroup())) {
-				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(organisation, elementInQuestion);
+			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(entity.getType())) {
+				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(entity, elementInQuestion);
 
 				if (enteredValueForElementInQuestion.getValue().getBooleanValue() == Boolean.TRUE) reset = false;
 			}
 			if (log.isDebugEnabled()) log.debug("resetting checkbox question: "+reset);
-			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(organisation.getOrganisationUnitGroup())) {
-				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(organisation, elementInQuestion);
+			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(entity.getType())) {
+				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(entity, elementInQuestion);
 
 				if (reset) enteredValueForElementInQuestion.getValue().setJsonObject(Value.NULL.getJsonObject());
 				else if (enteredValueForElementInQuestion.getValue().isNull()) {
@@ -558,11 +547,11 @@ public class SurveyPageService {
 		}
 	}
 	
-	private void setObjectiveStatus(SurveyEnteredObjective objective, Organisation organisation) {
+	private void setObjectiveStatus(SurveyEnteredObjective objective, DataEntity entity) {
 		Boolean complete = true;
 		Boolean invalid = false;
-		for (SurveySection section : objective.getObjective().getSections(organisation.getOrganisationUnitGroup())) {
-			SurveyEnteredSection enteredSection = getSurveyEnteredSection(organisation, section);
+		for (SurveySection section : objective.getObjective().getSections(entity.getType())) {
+			SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
 			if (!enteredSection.isComplete()) complete = false;
 			if (enteredSection.isInvalid()) invalid = true;
 		}
@@ -570,11 +559,11 @@ public class SurveyPageService {
 		objective.setInvalid(invalid);
 	}
 	
-	private void setSectionStatus(SurveyEnteredSection section, Organisation organisation) {
+	private void setSectionStatus(SurveyEnteredSection section, DataEntity entity) {
 		Boolean complete = true;
 		Boolean invalid = false;
-		for (SurveyQuestion question : section.getSection().getQuestions(organisation.getOrganisationUnitGroup())) {
-			SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, question);
+		for (SurveyQuestion question : section.getSection().getQuestions(entity.getType())) {
+			SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
 			if (!enteredQuestion.isComplete() && !enteredQuestion.isSkipped()) complete = false;
 			if (enteredQuestion.isInvalid() && !enteredQuestion.isSkipped()) invalid = true;
 		}
@@ -582,13 +571,13 @@ public class SurveyPageService {
 		section.setComplete(complete);
 	}
 	
-	private void setQuestionStatus(SurveyEnteredQuestion question, Organisation organisation) {
+	private void setQuestionStatus(SurveyEnteredQuestion question, DataEntity entity) {
 		Boolean complete = true;
 		Boolean invalid = false;
 		
 		// TODO replace this method by a call to the survey element service
-		for (SurveyElement element : question.getQuestion().getSurveyElements(organisation.getOrganisationUnitGroup())) {
-			SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+		for (SurveyElement element : question.getQuestion().getSurveyElements(entity.getType())) {
+			SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
 			if (!enteredValue.isComplete()) complete = false;
 			if (enteredValue.isInvalid()) invalid = true;
 		}
@@ -597,22 +586,21 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public boolean submit(Organisation organisation, SurveyObjective objective) {
-		locationService.loadGroup(organisation);
+	public boolean submit(DataEntity entity, SurveyObjective objective) {
 		
 		// first we make sure that the objective is valid and complete, so we revalidate it
-		List<SurveyElement> elements = objective.getElements(organisation.getOrganisationUnitGroup());
-		evaluateRulesAndSave(organisation, elements, new HashMap<SurveyElement, SurveyEnteredValue>());
+		List<SurveyElement> elements = objective.getElements(entity.getType());
+		evaluateRulesAndSave(entity, elements, new HashMap<SurveyElement, SurveyEnteredValue>());
 		
 		// we get the updated survey and work from that
-		SurveyPage surveyPage = getSurveyPage(organisation, objective);
+		SurveyPage surveyPage = getSurveyPage(entity, objective);
 		if (surveyPage.canSubmit(objective)) {
 			// save all the values to data values
 			for (SurveyElement element : elements) {
-				SurveyEnteredValue enteredValue = getSurveyEnteredValue(organisation, element);
+				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
 				Value valueToSave = null;
 				// if the question is skipped we save NULL
-				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(organisation, element.getSurveyQuestion());
+				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, element.getSurveyQuestion());
 				if (enteredQuestion.isSkipped()) {
 					valueToSave = Value.NULL;
 				}
@@ -634,9 +622,9 @@ public class SurveyPageService {
 					});
 				}
 				
-				RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), organisation.getOrganisationUnit(), objective.getSurvey().getPeriod());
+				RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), entity, objective.getSurvey().getPeriod());
 				if (rawDataElementValue == null) {
-					rawDataElementValue = new RawDataElementValue(element.getDataElement(), organisation.getOrganisationUnit(), objective.getSurvey().getPeriod(), null);
+					rawDataElementValue = new RawDataElementValue(element.getDataElement(), entity, objective.getSurvey().getPeriod(), null);
 				}
 				rawDataElementValue.setValue(valueToSave);
 				
@@ -645,108 +633,108 @@ public class SurveyPageService {
 			}
 			
 			// close the objective
-			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective);
+			SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(entity, objective);
 			enteredObjective.setClosed(true);
 			surveyValueService.save(enteredObjective);
 	
 			// log the event
-			logSurveyEvent(organisation, objective, "submit");
+			logSurveyEvent(entity, objective, "submit");
 			
 			return true;
 		}
 		else return false;
 	}
 
-	private void logSurveyEvent(Organisation organisation, SurveyObjective objective, String event) {
-		SurveyLog surveyLog = new SurveyLog(objective.getSurvey(), objective, organisation.getOrganisationUnit());
+	private void logSurveyEvent(DataEntity entity, SurveyObjective objective, String event) {
+		SurveyLog surveyLog = new SurveyLog(objective.getSurvey(), objective, entity);
 		surveyLog.setEvent(event);
 		surveyLog.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().save(surveyLog);
 	}
 	
-	public void reopen(Organisation organisation, SurveyObjective objective) {
-		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(organisation, objective); 
+	public void reopen(DataEntity entity, SurveyObjective objective) {
+		SurveyEnteredObjective enteredObjective = getSurveyEnteredObjective(entity, objective); 
 		enteredObjective.setClosed(false);
 		surveyValueService.save(enteredObjective);
 	}
 	
-	private SurveyEnteredObjective getSurveyEnteredObjective(Organisation organisation, SurveyObjective surveyObjective) {
-		SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit());
+	private SurveyEnteredObjective getSurveyEnteredObjective(DataEntity entity, SurveyObjective surveyObjective) {
+		SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(surveyObjective, entity);
 		if (enteredObjective == null) {
-			enteredObjective = new SurveyEnteredObjective(surveyObjective, organisation.getOrganisationUnit(), false, false, false);
-//			setObjectiveStatus(enteredObjective, organisation);
+			enteredObjective = new SurveyEnteredObjective(surveyObjective, entity, false, false, false);
+//			setObjectiveStatus(enteredObjective, entity);
 			surveyValueService.save(enteredObjective);
 		}
 		return enteredObjective;
 	}
 	
-	private SurveyEnteredSection getSurveyEnteredSection(Organisation organisation, SurveySection surveySection) {
-		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(surveySection, organisation.getOrganisationUnit());
+	private SurveyEnteredSection getSurveyEnteredSection(DataEntity entity, SurveySection surveySection) {
+		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(surveySection, entity);
 		if (enteredSection == null) {
-			enteredSection = new SurveyEnteredSection(surveySection, organisation.getOrganisationUnit(), false, false);
-//			setSectionStatus(enteredSection, organisation);
+			enteredSection = new SurveyEnteredSection(surveySection, entity, false, false);
+//			setSectionStatus(enteredSection, entity);
 			surveyValueService.save(enteredSection);
 		}
 		return enteredSection;
 	}
 	
-	private SurveyEnteredQuestion getSurveyEnteredQuestion(Organisation organisation, SurveyQuestion surveyQuestion) {
-		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(surveyQuestion, organisation.getOrganisationUnit());
+	private SurveyEnteredQuestion getSurveyEnteredQuestion(DataEntity entity, SurveyQuestion surveyQuestion) {
+		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(surveyQuestion, entity);
 		if (enteredQuestion == null) {
-			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, organisation.getOrganisationUnit(), false, false);
-//			setQuestionStatus(enteredQuestion, organisation);
+			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, entity, false, false);
+//			setQuestionStatus(enteredQuestion, entity);
 			surveyValueService.save(enteredQuestion);
 		}
 		return enteredQuestion;
 	}
 	
-	private SurveyEnteredValue getSurveyEnteredValue(Organisation organisation, SurveyElement element) {
-		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
+	private SurveyEnteredValue getSurveyEnteredValue(DataEntity entity, SurveyElement element) {
+		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, entity);
 		if (enteredValue == null) {
 //			Value lastValue = null;
 //			if (element.getSurvey().getLastPeriod() != null) {
-//				RawDataElementValue lastDataValue = valueService.getValue(element.getDataElement(), organisation.getOrganisationUnit(), element.getSurvey().getLastPeriod());
+//				RawDataElementValue lastDataValue = valueService.getValue(element.getDataElement(), entity(), element.getSurvey().getLastPeriod());
 //				if (lastDataValue != null) lastValue = lastDataValue.getValue();
 //			}
-			enteredValue = new SurveyEnteredValue(element, organisation.getOrganisationUnit(), Value.NULL, null);
+			enteredValue = new SurveyEnteredValue(element, entity, Value.NULL, null);
 			surveyValueService.save(enteredValue);
 		}
 		return enteredValue;
 	}
 
-	private void deleteSurveyEnteredObjective(SurveyObjective objective, Organisation facility) {
-		SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, facility.getOrganisationUnit());
+	private void deleteSurveyEnteredObjective(SurveyObjective objective, DataEntity entity) {
+		SurveyEnteredObjective enteredObjective = surveyValueService.getSurveyEnteredObjective(objective, entity);
 		if (enteredObjective != null) surveyValueService.delete(enteredObjective); 
 		
 		for (SurveySection section : objective.getSections()) {
-			deleteSurveyEnteredSection(section, facility);
+			deleteSurveyEnteredSection(section, entity);
 		}
 	}
 
-	private void deleteSurveyEnteredSection(SurveySection section, Organisation facility) {
-		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(section, facility.getOrganisationUnit());
+	private void deleteSurveyEnteredSection(SurveySection section, DataEntity entity) {
+		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(section, entity);
 		if (enteredSection != null) surveyValueService.delete(enteredSection);
 		
 		for (SurveyQuestion question : section.getQuestions()) {
-			deleteSurveyEnteredQuestion(question, facility);
+			deleteSurveyEnteredQuestion(question, entity);
 		}
 	}
 
-	private void deleteSurveyEnteredQuestion(SurveyQuestion question, Organisation facility) {
-		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(question, facility.getOrganisationUnit());
+	private void deleteSurveyEnteredQuestion(SurveyQuestion question, DataEntity entity) {
+		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(question, entity);
 		if (enteredQuestion != null) surveyValueService.delete(enteredQuestion);
 		
 		for (SurveyElement element : question.getSurveyElements()) {
-			deleteSurveyEnteredValue(element, facility);
+			deleteSurveyEnteredValue(element, entity);
 		}
 	}
 
-	private void deleteSurveyEnteredValue(SurveyElement element, Organisation facility) {
-		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, facility.getOrganisationUnit());
+	private void deleteSurveyEnteredValue(SurveyElement element, DataEntity entity) {
+		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, entity);
 		if (enteredValue != null) surveyValueService.delete(enteredValue);
 	}
 	
-	public void setOrganisationService(LocationService locationService) {
+	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
 	

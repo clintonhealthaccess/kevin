@@ -4,34 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.chai.kevin.Organisation;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.LocationEntity;
 
-public abstract class ReportTable<T> {
+public abstract class ReportTable<T, S extends CalculationEntity> {
 
-	protected Map<Organisation, Map<T, ReportValue>> valueMap;
+	protected Map<S, Map<T, ReportValue>> valueMap;
 	protected List<T> targets;
-	protected Map<Organisation, List<Organisation>> organisationMap;
+	protected Map<LocationEntity, List<S>> organisationMap;
 	
-	public ReportTable(Map<Organisation, Map<T, ReportValue>> valueMap, List<T> targets,
-			Map<Organisation, List<Organisation>> organisationMap) {
+	public ReportTable(Map<S, Map<T, ReportValue>> valueMap, List<T> targets,
+			Map<LocationEntity, List<S>> organisationMap) {
 		this.valueMap = valueMap;
 		this.targets = targets;
 		this.organisationMap = organisationMap;
 	}
 
-	public List<Organisation> getOrganisations() {
-		return new ArrayList<Organisation>(organisationMap.keySet());
+	public List<CalculationEntity> getOrganisations() {
+		return new ArrayList<CalculationEntity>(organisationMap.keySet());
 	}
 	
 	public List<T> getTargets(){
 		return targets;
 	}
 	
-	public ReportValue getReportValue(Organisation organisation, T target){
+	public ReportValue getReportValue(CalculationEntity organisation, T target){
 		return valueMap.get(organisation).get(target);
 	}
 	
-	public Map<Organisation, List<Organisation>> getOrganisationMap() {
+	public Map<LocationEntity, List<S>> getOrganisationMap() {
 		return organisationMap;
 	}
 

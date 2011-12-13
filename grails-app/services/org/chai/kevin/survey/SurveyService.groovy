@@ -46,6 +46,7 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 
@@ -116,12 +117,12 @@ class SurveyService {
 		return criteria
 	}
 	
-	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement, OrganisationUnitGroup group) {
-		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", group="+group+")");
+	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement, DataEntityType type) {
+		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", type="+type+")");
 		
 		def c = SurveyValidationRule.createCriteria()
 		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		c.add(Restrictions.like("groupUuidString", group.uuid, MatchMode.ANYWHERE))
+		c.add(Restrictions.like("groupUuidString", type.code, MatchMode.ANYWHERE))
 		
 		List<SurveyValidationRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
 		return filter(rules, surveyElement.id);

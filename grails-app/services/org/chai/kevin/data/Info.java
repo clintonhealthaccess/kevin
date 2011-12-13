@@ -1,8 +1,8 @@
 package org.chai.kevin.data;
 
+import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 /* 
@@ -48,8 +48,13 @@ public abstract class Info<T extends DataValue> {
 		return value.getValue();
 	}
 	
-	public OrganisationUnit getOrganisationUnit() {
-		return value.getOrganisationUnit();
+	public CalculationEntity getEntity() {
+		return value.getEntity();
+	}
+	
+	@Deprecated
+	public CalculationEntity getOrganisationUnit() {
+		return value.getEntity();
 	}
 	
 	public Period getPeriod() {

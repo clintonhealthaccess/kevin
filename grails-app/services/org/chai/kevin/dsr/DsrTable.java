@@ -3,11 +3,11 @@ package org.chai.kevin.dsr;
 import java.util.List;
 import java.util.Map;
 
-import org.chai.kevin.Organisation;
-import org.chai.kevin.reports.ReportValue;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportTable;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.chai.kevin.reports.ReportValue;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -37,10 +37,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class DsrTable extends ReportTable<DsrTarget> {
+public class DsrTable extends ReportTable<DsrTarget, DataEntity> {
 
-	public DsrTable(Map<Organisation, Map<DsrTarget, ReportValue>> valueMap, List<DsrTarget> targets, 
-			Map<Organisation, List<Organisation>> organisationMap) {
+	public DsrTable(Map<DataEntity, Map<DsrTarget, ReportValue>> valueMap, List<DsrTarget> targets, 
+			Map<LocationEntity, List<DataEntity>> organisationMap) {
 		super(valueMap, targets, organisationMap);
 	}
 	

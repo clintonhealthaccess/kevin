@@ -1,5 +1,7 @@
 package org.chai.kevin.location;
 
+import java.util.List;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -13,7 +15,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
 
-@Entity(name="DataDisplayEntity")
+@Entity(name="CalculationEntity")
 @Table(name="dhsst_entity_calculation")
 public abstract class CalculationEntity {
 
@@ -63,6 +65,20 @@ public abstract class CalculationEntity {
 	}
 	
 	@Transient
+	public abstract LocationEntity getParent();
+	
+	@Transient
+	public abstract List<DataEntity> getDataEntities();
+	
+	@Transient
+	public abstract List<LocationEntity> getChildren();
+	
+	@Transient
 	public abstract boolean collectsData();
+	
+	public String toJson() {
+		// TODO 
+		return "";
+	}
 	
 }

@@ -43,8 +43,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Organisation;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.CalculationEntity;
 import org.hibernate.annotations.Cascade;
 import org.hisp.dhis.period.Period;
 
@@ -129,6 +129,7 @@ public abstract class DashboardEntry {
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		return result;
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -153,9 +154,10 @@ public abstract class DashboardEntry {
 	
 	@Transient
 	public abstract boolean hasChildren();
+	
 	@Transient
 	public abstract boolean isTarget();
 	
-	public abstract <T> T visit(DashboardVisitor<T> visitor, Organisation organisation, Period period);
+	public abstract <T> T visit(DashboardVisitor<T> visitor, CalculationEntity entity, Period period);
 
 }

@@ -53,6 +53,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -161,30 +162,29 @@ public class SurveyObjective extends Orderable<Integer> {
 	}
 
 	@Transient
-	public List<SurveySection> getSections(OrganisationUnitGroup group) {
+	public List<SurveySection> getSections(DataEntityType type) {
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection surveySection : getSections()) {
-			if (Utils.split(surveySection.getGroupUuidString())
-					.contains(group.getUuid()))
+			if (Utils.split(surveySection.getGroupUuidString()).contains(type.getCode()))
 				result.add(surveySection);
 		}
 		return result;
 	}
 	
 	@Transient
-	public List<SurveyElement> getElements(OrganisationUnitGroup group) {
+	public List<SurveyElement> getElements(DataEntityType type) {
 		List<SurveyElement> result = new ArrayList<SurveyElement>();
-		for (SurveySection surveySection : getSections(group)) {
-			result.addAll(surveySection.getSurveyElements(group));
+		for (SurveySection surveySection : getSections(type)) {
+			result.addAll(surveySection.getSurveyElements(type));
 		}
 		return result;
 	}
 	
 	@Transient
-	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
+	public List<SurveyQuestion> getQuestions(DataEntityType type) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
-		for (SurveySection surveySection : getSections(group)) {
-			result.addAll(surveySection.getQuestions(group));
+		for (SurveySection surveySection : getSections(type)) {
+			result.addAll(surveySection.getQuestions(type));
 		}
 		return result;
 	}

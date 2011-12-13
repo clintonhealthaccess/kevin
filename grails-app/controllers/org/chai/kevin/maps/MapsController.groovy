@@ -29,7 +29,8 @@ package org.chai.kevin.maps
 */
 
 import org.chai.kevin.AbstractController
-import org.chai.kevin.Organisation
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 
@@ -46,17 +47,17 @@ class MapsController extends AbstractController {
 		
 		Period period = getPeriod()
 		MapsTarget target = MapsTarget.get(params.int('target'));
-		Organisation organisation = getOrganisation(true)
+		LocationEntity entity = LocationEntity.get(params.int('entity'));
 		
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		
 		[
 			periods: Period.list(), 
 			targets: MapsTarget.list(),
-			organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
+			organisationTree: locationService.getRootOrganisation(),
 			currentPeriod: period, 
 			currentTarget: target,
-			currentOrganisation: organisation
+			currentOrganisation: entity
 		]
 	}
 	
@@ -64,7 +65,7 @@ class MapsController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("maps.infos, params:"+params)
 		
 		Period period = Period.get(params.int('period'))
-		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		CalculationEntity entity = locationService.getCalculationEntity(params.int('entity'), CalculationEntity.class);
 		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
 		def info = mapsService.getExplanation(period, organisation, target);
@@ -76,12 +77,12 @@ class MapsController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("maps.map, params:"+params)
 		
 		Period period = Period.get(params.int('period'))
-		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		LocationEntity entity = LocationEntity.get(params.int('entity'));
 		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
 		Integer level = params.int('level')
 		
-		def map = mapsService.getMap(period, organisation, level, target);
+		def map = mapsService.getMap(period, entity, level, target);
 		
 		if (log.isDebugEnabled()) log.debug("displaying map: "+map)		
 		render(contentType:"text/json", text:'{"result":"success","map":'+map.toJson()+'}');

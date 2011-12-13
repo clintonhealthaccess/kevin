@@ -1,37 +1,57 @@
 package org.chai.kevin.location;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity(name="DataCollectingSite")
 @Table(name="dhsst_entity_data")
 public class DataEntity extends CalculationEntity {
 
-	private LocationEntity location;
-	private DataEntityType dataEntityType;
+	private LocationEntity parent;
+	private DataEntityType type;
 	
 	@ManyToOne(targetEntity=LocationEntity.class)
-	public LocationEntity getLocation() {
-		return location;
+	@Override
+	public LocationEntity getParent() {
+		return parent;
 	}
 	
-	public void setLocation(LocationEntity location) {
-		this.location = location;
+	public void setLocation(LocationEntity parent) {
+		this.parent = parent;
 	}
 
 	@ManyToOne(targetEntity=DataEntityType.class)
-	public DataEntityType getDataEntityType() {
-		return dataEntityType;
+	public DataEntityType getType() {
+		return type;
 	}
 	
-	public void setDataEntityType(DataEntityType dataEntityType) {
-		this.dataEntityType = dataEntityType;
+	public void setType(DataEntityType type) {
+		this.type = type;
 	}
 	
 	@Override
+	@Transient
 	public boolean collectsData() {
 		return true;
+	}
+
+	@Override
+	@Transient
+	public List<DataEntity> getDataEntities() {
+		List<DataEntity> result = new ArrayList<DataEntity>();
+		result.add(this);
+		return result;
+	}
+
+	@Override
+	@Transient
+	public List<LocationEntity> getChildren() {
+		return new ArrayList<LocationEntity>();
 	}
 	
 }

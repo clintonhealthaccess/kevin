@@ -33,10 +33,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.Organisation;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ValueService;
@@ -53,40 +56,34 @@ public class MapsService {
 	private ValueService valueService;
 	private InfoService infoService;
 	
-	public Maps getMap(Period period, Organisation organisation, Integer level, MapsTarget target) {
-		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",organisation="+organisation+",target="+target+")");
+	public Maps getMap(Period period, LocationEntity entity, LocationLevel level, MapsTarget target) {
+		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",entity="+entity+",target="+target+")");
 
 		List<Polygon> polygons = new ArrayList<Polygon>();
-		locationService.loadParent(organisation);
-		locationService.loadLevel(organisation);
 		
-		List<OrganisationUnitLevel> levels = locationService.getAllLevels();
-		levels.remove(0);
+		List<LocationLevel> levels = locationService.listLevels();
 		
-		if (levels.isEmpty()) {
-			// TODO throw exception
-		}
+//		if (levels.isEmpty()) {
+//			// TODO throw exception
+//		}
 		
-		if (level == null) {
-			List<OrganisationUnitLevel> childLevels = locationService.getChildren(locationService.loadLevel(organisation));
-			if (levels.size() > 0) level = childLevels.get(0).getLevel();
-			else level = levels.get(0).getLevel();
-		}
+//		if (entity == null) {
+//			List<LocationLevel> childLevels = locationService.getChildrenOfLevel(entity, level);
+//			if (levels.size() > 0) level = childLevels.get(0).getLevel();
+//			else level = levels.get(0).getLevel();
+//		}
 		
 		// if we ask for an organisation level bigger than the organisation's, we go back to the right level
-		while (level <= organisation.getLevel()) {
-			organisation = organisation.getParent();
-			locationService.loadParent(organisation);
+		while (level.getOrder() < entity.getLevel().getOrder()) {
+			entity = entity.getParent();
 		}
 		
-		if (target == null) return new Maps(period, target, organisation, level, polygons, levels);
+		if (target == null) return new Maps(period, target, entity, level, polygons, levels);
 		
-		for (Organisation child : locationService.getChildrenOfLevel(organisation, level)) {
-			locationService.loadLevel(child);
-			
+		for (CalculationEntity child : entity.getChildrenEntities()) {
 			Double value = null;
 			// TODO groups
-			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child.getOrganisationUnit(), period, Utils.getUuids(locationService.getDataEntityTypes()));
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child, period, Utils.getUuids(locationService.getDataEntityTypes()));
 			if (calculationValue != null) {
 				if (!calculationValue.getValue().isNull()) {
 					value = calculationValue.getValue().getNumberValue().doubleValue();
@@ -96,19 +93,19 @@ public class MapsService {
 			polygons.add(new Polygon(child, value));
 		}
 
-		return new Maps(period, target, organisation, level, polygons, levels);
+		return new Maps(period, target, entity, level, polygons, levels);
 	}
 
-	public Info<?> getExplanation(Period period, Organisation organisation, MapsTarget target) {
+	public Info<?> getExplanation(Period period, CalculationEntity entity, MapsTarget target) {
 		// TODO groups
-		return infoService.getCalculationInfo(target.getCalculation(), organisation, period, Utils.getUuids(locationService.getDataEntityTypes()));
+		return infoService.getCalculationInfo(target.getCalculation(), entity, period, Utils.getUuids(locationService.getDataEntityTypes()));
 	}
 	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}
 	
-	public void setOrganisationService(LocationService locationService) {
+	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
 	

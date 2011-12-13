@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.data.Aggregation;
+import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -17,8 +18,8 @@ import com.ibm.jaql.json.type.JsonValue;
 
 public class AggregationValue extends CalculationValue<AggregationPartialValue> {
 
-	public AggregationValue(List<AggregationPartialValue> calculationPartialValues, Aggregation calculation, Period period, OrganisationUnit organisationUnit) {
-		super(calculationPartialValues, calculation, period, organisationUnit);
+	public AggregationValue(List<AggregationPartialValue> calculationPartialValues, Aggregation calculation, Period period, CalculationEntity entity) {
+		super(calculationPartialValues, calculation, period, entity);
 	}
 
 	@Override

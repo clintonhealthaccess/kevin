@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Aggregation;
+import org.chai.kevin.location.CalculationEntity;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -29,15 +30,15 @@ public class AggregationPartialValue extends CalculationPartialValue {
 		super();
 	}
 
-	public AggregationPartialValue(Aggregation data, OrganisationUnit organisationUnit, Period period, String groupUuid, String expressionData, Value value) {
-		super(organisationUnit, period, groupUuid, value);
+	public AggregationPartialValue(Aggregation data, CalculationEntity entity, Period period, String groupUuid, String expressionData, Value value) {
+		super(entity, period, groupUuid, value);
 
 		this.expressionData = expressionData;
 		this.data = data;
 	}
 
-	public AggregationPartialValue(Aggregation data, OrganisationUnit organisationUnit, Period period, String groupUuid, String expressionData) {
-		super(organisationUnit, period, groupUuid);
+	public AggregationPartialValue(Aggregation data, CalculationEntity entity, Period period, String groupUuid, String expressionData) {
+		super(entity, period, groupUuid);
 		
 		this.expressionData = expressionData;
 		this.data = data;

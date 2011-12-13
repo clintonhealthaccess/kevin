@@ -13,14 +13,16 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 
 @Entity(name="DataCollectingEntity")
 @Table(name="dhsst_location_level")
-public class LocationLevel {
+public class LocationLevel extends Orderable<Integer> {
 
 	private Long id;
 	private String code;
+	private Integer order;
 	private Translation names;
 	private List<LocationEntity> locations;
 	
@@ -62,6 +64,17 @@ public class LocationLevel {
 	
 	public void setLocations(List<LocationEntity> locations) {
 		this.locations = locations;
+	}
+
+	@Basic
+	@Override
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
+	}
+	
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 	
 }

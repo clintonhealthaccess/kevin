@@ -28,20 +28,14 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.fct.FctObjective
-import org.chai.kevin.survey.SummaryPage
-import org.chai.kevin.survey.Survey
-import org.chai.kevin.survey.SurveyObjective
-import org.chai.kevin.survey.SurveyPageService
-import org.chai.kevin.survey.SurveySection
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.organisationunit.OrganisationUnitLevel
+import org.chai.kevin.location.LocationEntity
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.period.Period
 
 abstract class AbstractController {
 
-	def organisationService;
+	def locationService;
 
 	def getOrganisationUnitGroups(def defaultIfNull) {
 		List<OrganisationUnitGroup> groups = []
@@ -53,24 +47,26 @@ abstract class AbstractController {
 			groupUuids = ConfigurationHolder.config.dashboard.facility.checked
 			ConfigurationHolder.config.dashboard.facility.checked;
 		}
-		groupUuids.each {groups.add(OrganisationUnitGroup.findByUuid(it))}
+		groupUuids.each {groups.add(locationService.findDataEntityTypeByCode(it))}
 		return groups;
 	}
 	
-	def getOrganisation(def defaultIfNull) {
-		
-		Organisation organisation = null;		
-		if (params.int('organisation')){
-			 organisation = organisationService.getOrganisation(params.int('organisation'));			 
-		}
-		
-		//if true, return the root organisation
-		//if false, don't return the root organisation
-		if (organisation == null && defaultIfNull) {
-			organisation = organisationService.getRootOrganisation();
-		}		
-		return organisation
-	}
+//	def getLocation(def defaultIfNull) {
+//		LocationEntity location = LocationEntity.get(params.int('location'));		
+//		//if true, return the root organisation
+//		//if false, don't return the root organisation
+//		if (location == null && defaultIfNull) {
+//			location = locationService.getRootLocation();
+//		}		
+//		return location
+//	}
+	
+//	def getDataEntity() {
+//		DataEntity dataEntity = DataEntity.get(params.int('entity'))
+//		if (dataEntity == null) {
+//			 organisation = organisationService.getOrganisation(params.int('organisation'));
+//		}
+//	}
 
 	def getPeriod() {
 		Period period = Period.get(params.int('period'))
@@ -80,13 +76,13 @@ abstract class AbstractController {
 		return period
 	}
 	
-	def getLevel(){
-		OrganisationUnitLevel level = null;
-		if(params.int('level')){
-			level = OrganisationUnitLevel.findByLevel(params.int('level'));
-		}
-		return level;
-	}
+//	def getLevel(){
+//		OrganisationUnitLevel level = null;
+//		if(params.int('level')){
+//			level = OrganisationUnitLevel.findByLevel(params.int('level'));
+//		}
+//		return level;
+//	}
 	
 	def adaptParamsForList() {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)

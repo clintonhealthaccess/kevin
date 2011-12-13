@@ -32,6 +32,7 @@ package org.chai.kevin.dsr;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -65,8 +66,6 @@ public class DsrObjective extends ReportEntity {
 	@OneToMany(cascade=CascadeType.ALL,targetEntity=DsrTarget.class, mappedBy="objective")
 	@Sort(type=SortType.COMPARATOR, comparator=DsrTargetSorter.class)
 	public List<DsrTarget> getTargets() {
-//		if(targets.size() > 1)
-//			Collections.sort(targets, new DsrTargetSorter());
 		return targets;
 	}
 
@@ -78,8 +77,7 @@ public class DsrObjective extends ReportEntity {
 	public void addTarget(DsrTarget target) {
 		target.setObjective(this);
 		targets.add(target);
-//		if(targets.size() > 1)
-//			Collections.sort(targets, new DsrTargetSorter());
+		Collections.sort(targets, DsrTargetSorter.getInstance());
 	}
 
 }

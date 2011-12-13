@@ -41,13 +41,11 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.value.CalculationPartialValue;
-import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.StoredValue;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,11 +81,11 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends DataValue> T getDataElementValue(DataElement<T> data, OrganisationUnit organisationUnit, Period period) {
-		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", organisationUnit="+organisationUnit+")");
+	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataEntity entity, Period period) {
+		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", entity="+entity+")");
 		T result = (T)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
 		.add(Restrictions.eq("period", period))
-		.add(Restrictions.eq("organisationUnit", organisationUnit))
+		.add(Restrictions.eq("entity", entity))
 		.add(Restrictions.eq("data", data)).uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(...)="+result);
 		return result;
@@ -95,18 +93,18 @@ public class ValueService {
 	
 	
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, OrganisationUnit organisationUnit, Period period, Set<String> groupUuids) {
-		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", organisationUnit="+organisationUnit+", groupUuids="+groupUuids+")");
-		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, organisationUnit, period, groupUuids), period, organisationUnit);
+	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, CalculationEntity entity, Period period, Set<String> groupUuids) {
+		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", entity="+entity+", groupUuids="+groupUuids+")");
+		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, entity, period, groupUuids), period, entity);
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(...)="+result);
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, OrganisationUnit organisationUnit, Period period, Set<String> groupUuids) {
+	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period, Set<String> groupUuids) {
 		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
 		.add(Restrictions.eq("period", period))
-		.add(Restrictions.eq("organisationUnit", organisationUnit))
+		.add(Restrictions.eq("entity", entity))
 		.add(Restrictions.eq("data", calculation))
 		.add(Restrictions.in("groupUuid", groupUuids)).list();
 	}

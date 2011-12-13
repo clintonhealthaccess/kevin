@@ -32,7 +32,6 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 import java.util.List
 
-import org.chai.kevin.Organisation
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.value.RawDataElementValue
 import org.hisp.dhis.organisationunit.OrganisationUnit

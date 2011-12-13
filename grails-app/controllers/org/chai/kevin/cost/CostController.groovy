@@ -29,7 +29,7 @@ package org.chai.kevin.cost
 */
 
 import org.chai.kevin.AbstractController
-import org.chai.kevin.Organisation
+import org.chai.kevin.location.LocationEntity
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 
@@ -45,10 +45,10 @@ class CostController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("cost.explain, params:"+params)
 		
 		Period period = Period.get(params.int('period'))
-		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
+		LocationEntity location = LocationEntity.get(params.int('entity'))
 		CostTarget target = CostTarget.get(params.int('objective'));
 		
-		def explanation = costTableService.getExplanation(period, target, organisation);
+		def explanation = costTableService.getExplanation(period, target, location);
 		[ explanation: explanation ]
 	}
 	
@@ -56,14 +56,14 @@ class CostController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("cost.view, params:"+params)
 		
 		Period period = getPeriod()
-		Organisation organisation = getOrganisation(false)
+		LocationEntity location = LocationEntity.get(params.int('entity'))
 		CostObjective objective = CostObjective.get(params.int('objective'));
 		
 		if (log.isInfoEnabled()) log.info("view cost for period: "+period.id);
 		
 		def costTable = null
-		if (period != null && objective != null && organisation != null) {
-			costTable = costTableService.getCostTable(period, objective, organisation);
+		if (period != null && objective != null && location != null) {
+			costTable = costTableService.getCostTable(period, objective, location);
 		}
 		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		
@@ -72,10 +72,10 @@ class CostController extends AbstractController {
 			costTable: costTable,
 			currentPeriod: period,
 			currentObjective: objective,
-			currentOrganisation: organisation,
+			currentOrganisation: location,
 			objectives: CostObjective.list(), 
 			periods: Period.list(),
-			organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
+			organisationTree: locationService.getRootLocation()
 		]
 	}
 	

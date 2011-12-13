@@ -33,22 +33,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.Organisation;
-import org.chai.kevin.data.Calculation;
-import org.chai.kevin.data.DataElement;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 
 public class CalculationInfo extends Info<CalculationValue<?>> {
 
 	private Calculation<?> calculation;
-	private List<Organisation> organisations;
+	private List<DataEntity> organisations;
 	private List<DataElement<?>> dataElements;
-	private Map<Organisation, Map<DataElement<?>, DataValue>> values;
-	private Map<Organisation, CalculationValue<?>> calculationValues;
+	private Map<DataEntity, Map<DataElement<?>, DataValue>> values;
+	private Map<CalculationEntity, CalculationValue<?>> calculationValues;
 	
-	public CalculationInfo(Calculation<?> calculation, CalculationValue<?> calculationValue, List<Organisation> organisations, List<DataElement<?>> dataElements, 
-			Map<Organisation, Map<DataElement<?>, DataValue>> values, Map<Organisation, CalculationValue<?>> calculationValues) {
+	public CalculationInfo(Calculation<?> calculation, CalculationValue<?> calculationValue, List<DataEntity> organisations, List<DataElement<?>> dataElements, 
+			Map<DataEntity, Map<DataElement<?>, DataValue>> values, Map<CalculationEntity, CalculationValue<?>> calculationValues) {
 		super(calculationValue);
 
 		this.calculation = calculation;
@@ -62,7 +62,7 @@ public class CalculationInfo extends Info<CalculationValue<?>> {
 		return calculation;
 	}
 	
-	public List<Organisation> getOrganisations() {
+	public List<DataEntity> getOrganisations() {
 		return organisations;
 	}
 	
@@ -70,19 +70,19 @@ public class CalculationInfo extends Info<CalculationValue<?>> {
 		return dataElements;
 	}
 	
-	public Set<Organisation> getOrganisationsOfGroup(Organisation organisation) {
-		Set<Organisation> result = new HashSet<Organisation>();
-		for (Organisation child : values.keySet()) {
-			if (organisation.hasChild(child)) result.add(child);
+	public Set<DataEntity> getOrganisationsOfGroup(LocationEntity organisation) {
+		Set<DataEntity> result = new HashSet<DataEntity>();
+		for (DataEntity child : values.keySet()) {
+			if (organisation.getDataEntities().contains(child)) result.add(child);
 		}
 		return result;
 	}
 	
-	public CalculationValue<?> getValue(Organisation organisation) {
+	public CalculationValue<?> getValue(CalculationEntity organisation) {
 		return calculationValues.get(organisation);
 	}
 	
-	public DataValue getValue(Organisation organisation, DataElement<?> dataElement) {
+	public DataValue getValue(CalculationEntity organisation, DataElement<?> dataElement) {
 		return values.get(organisation).get(dataElement);
 	}
 	

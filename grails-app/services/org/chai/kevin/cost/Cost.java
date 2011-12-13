@@ -28,42 +28,23 @@ package org.chai.kevin.cost;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.Organisation;
+import org.chai.kevin.location.DataEntity;
 import org.hisp.dhis.period.Period;
 
 public class Cost {
 
 	private Double value;
-	@SuppressWarnings("unused")
-	private CostTarget target;
-	@SuppressWarnings("unused")
-	private Integer year;
-	@SuppressWarnings("unused")
-	private Period period;
-	@SuppressWarnings("unused")
-	private Organisation organisation;
-	
 	private boolean hasMissingValue;
 
-	public Cost(Double value, CostTarget target, Integer year, Period period,
-			Organisation organisation, boolean hasMissingValue) {
+	public Cost(Double value, boolean hasMissingValue) {
 		super();
 		this.value = value;
-		this.target = target;
-		this.year = year;
-		this.period = period;
-		this.organisation = organisation;
 		this.hasMissingValue = hasMissingValue;
 	}
 	
-	protected Cost(CostTarget target, Integer year, Period period,
-			Organisation organisation) {
+	protected Cost() {
 		super();
 		this.value = 0d;
-		this.target = target;
-		this.year = year;
-		this.period = period;
-		this.organisation = organisation;
 		this.hasMissingValue = false;
 	}
 

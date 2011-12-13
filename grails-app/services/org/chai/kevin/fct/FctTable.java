@@ -31,16 +31,16 @@ package org.chai.kevin.fct;
 import java.util.List;
 import java.util.Map;
 
-import org.chai.kevin.Organisation;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.reports.ReportValue;
 
-public class FctTable extends ReportTable<FctTarget> {
+public class FctTable extends ReportTable<FctTarget, LocationEntity> {
 
 	private Map<FctTarget, ReportValue> totalMap;
 	
-	public FctTable(Map<FctTarget, ReportValue> totalMap, Map<Organisation, Map<FctTarget, ReportValue>> valueMap, List<FctTarget> targets, 
-			Map<Organisation, List<Organisation>> organisationMap) {
+	public FctTable(Map<FctTarget, ReportValue> totalMap, Map<LocationEntity, Map<FctTarget, ReportValue>> valueMap, List<FctTarget> targets, 
+			Map<LocationEntity, List<LocationEntity>> organisationMap) {
 		super(valueMap, targets, organisationMap);
 		this.totalMap = totalMap;
 	}

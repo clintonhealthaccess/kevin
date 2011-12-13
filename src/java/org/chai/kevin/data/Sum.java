@@ -36,14 +36,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Organisation;
 import org.chai.kevin.SumValue;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
-import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="Summ")
@@ -52,8 +52,8 @@ import org.hisp.dhis.period.Period;
 public class Sum extends Calculation<SumPartialValue> {
 	
 	@Override
-	public SumValue getCalculationValue(List<SumPartialValue> partialValues, Period period, OrganisationUnit organisationUnit) {
-		return new SumValue(partialValues, this, period, organisationUnit);
+	public SumValue getCalculationValue(List<SumPartialValue> partialValues, Period period, CalculationEntity entity) {
+		return new SumValue(partialValues, this, period, entity);
 	}
 
 	@Override
@@ -63,9 +63,9 @@ public class Sum extends Calculation<SumPartialValue> {
 	}
 
 	@Override
-	public SumPartialValue getCalculationPartialValue(String expression, Map<Organisation, StatusValuePair> values, Organisation organisation, Period period, String groupUuid) {
+	public SumPartialValue getCalculationPartialValue(String expression, Map<DataEntity, StatusValuePair> values, CalculationEntity entity, Period period, String groupUuid) {
 		Value value = getValue(values.values());
-		return new SumPartialValue(this, organisation.getOrganisationUnit(), period, groupUuid, value);
+		return new SumPartialValue(this, entity, period, groupUuid, value);
 	}
 
 	@Override

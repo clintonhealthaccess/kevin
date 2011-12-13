@@ -28,21 +28,21 @@ package org.chai.kevin.maps;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Gradient;
+import org.chai.kevin.location.CalculationEntity;
 
 public class Polygon extends Gradient {
 
-	private Organisation organisation;
+	private CalculationEntity entity;
 	private Double value;
 	
-	public Polygon(Organisation organisation, Double value) {
-		this.organisation = organisation;
+	public Polygon(CalculationEntity entity, Double value) {
+		this.entity = entity;
 		this.value = value;
 	}
 	
-	public Organisation getOrganisation() {
-		return organisation;
+	public CalculationEntity getOrganisation() {
+		return entity;
 	}
 	
 	public Double getGradientValue() {
@@ -52,14 +52,14 @@ public class Polygon extends Gradient {
 	public String toJson() {
 		return 
 			"{" +
-				"\"organisation\":"+organisation.toJson()+",\n"+
+				"\"organisation\":"+entity.toJson()+",\n"+
 				"\"color\":\""+getColor()+"\""+
 			"}";
 	}
 
 	@Override
 	public String toString() {
-		return "Polygon [organisation=" + organisation + ", value=" + value
+		return "Polygon [organisation=" + entity + ", value=" + value
 				+ "]";
 	}
 	

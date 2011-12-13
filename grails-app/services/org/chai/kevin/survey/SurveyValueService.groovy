@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.LocationService
 import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
@@ -75,9 +76,9 @@ class SurveyValueService {
 		surveyEnteredSection.delete()
 	}
 	
-	Integer getNumberOfSurveyEnteredObjectives(Survey survey, OrganisationUnit organisationUnit, Boolean closed, Boolean complete, Boolean invalid) {
+	Integer getNumberOfSurveyEnteredObjectives(Survey survey, DataEntity dataEntity, Boolean closed, Boolean complete, Boolean invalid) {
 		def c = SurveyEnteredObjective.createCriteria()
-		c.add(Restrictions.eq("organisationUnit", organisationUnit))
+		c.add(Restrictions.eq("dataEntity", dataEntity))
 		
 		if (complete!=null) c.add(Restrictions.eq("complete", complete))
 		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
@@ -90,10 +91,10 @@ class SurveyValueService {
 		c.uniqueResult();
 	}
 	
-	Integer getNumberOfSurveyEnteredQuestions(Survey survey, OrganisationUnit organisationUnit, 
+	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataEntity dataEntity, 
 		SurveyObjective objective, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
 		def c = SurveyEnteredQuestion.createCriteria()
-		c.add(Restrictions.eq("organisationUnit", organisationUnit))
+		c.add(Restrictions.eq("dataEntity", dataEntity))
 		
 		if (complete!=null) {
 			if (skippedAsComplete!=null) {
@@ -125,10 +126,10 @@ class SurveyValueService {
 		c.uniqueResult();
 	}
 	
-	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, OrganisationUnit organisationUnit) {
+	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, DataEntity dataEntity) {
 		def c = SurveyEnteredSection.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("organisationUnit", organisationUnit)
+			.set("dataEntity", dataEntity)
 			.set("section", surveySection)
 		)
 		
@@ -138,10 +139,10 @@ class SurveyValueService {
 		return result
 	}
 	
-	SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective surveyObjective, OrganisationUnit organisationUnit) {
+	SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective surveyObjective, DataEntity dataEntity) {
 		def c = SurveyEnteredObjective.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("organisationUnit", organisationUnit)
+			.set("dataEntity", dataEntity)
 			.set("objective", surveyObjective)
 		)
 		c.setFlushMode(FlushMode.COMMIT)
@@ -151,10 +152,10 @@ class SurveyValueService {
 		return result
 	}
 
-	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, OrganisationUnit organisationUnit) {
+	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, DataEntity dataEntity) {
 		def c = SurveyEnteredQuestion.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("organisationUnit", organisationUnit)
+			.set("dataEntity", dataEntity)
 			.set("question", surveyQuestion)
 		)
 		
@@ -164,10 +165,10 @@ class SurveyValueService {
 		return result
 	}
 	
-	SurveyEnteredValue getSurveyEnteredValue(SurveyElement surveyElement, OrganisationUnit organisationUnit) {
+	SurveyEnteredValue getSurveyEnteredValue(SurveyElement surveyElement, DataEntity dataEntity) {
 		def c = SurveyEnteredValue.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("organisationUnit", organisationUnit)
+			.set("dataEntity", dataEntity)
 			.set("surveyElement", surveyElement)
 		)
 		c.setCacheable(true)
@@ -179,9 +180,9 @@ class SurveyValueService {
 		return result
 	}
 	
-	List<SurveyEnteredValue> getSurveyEnteredValues(OrganisationUnit organisationUnit, SurveySection section, SurveyObjective objective, Survey survey) {
+	List<SurveyEnteredValue> getSurveyEnteredValues(DataEntity dataEntity, SurveySection section, SurveyObjective objective, Survey survey) {
 		def c = SurveyEnteredValue.createCriteria()
-		c.add(Restrictions.eq("organisationUnit", organisationUnit))
+		c.add(Restrictions.eq("dataEntity", dataEntity))
 		
 		if (survey != null || objective != null || section != null) c.createAlias("surveyElement", "se")
 		if (survey != null || objective != null || section != null) c.createAlias("se.surveyQuestion", "sq")

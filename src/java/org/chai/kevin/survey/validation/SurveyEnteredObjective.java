@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.SurveyObjective;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -22,7 +23,7 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 
 	private Long id;
 	private SurveyObjective objective;
-	private OrganisationUnit organisationUnit;
+	private DataEntity entity;
 	
 	private Boolean complete;
 	private Boolean invalid;
@@ -30,10 +31,10 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 	
 	public SurveyEnteredObjective() {}
 	
-	public SurveyEnteredObjective(SurveyObjective objective, OrganisationUnit organisationUnit, Boolean invalid, Boolean complete, Boolean closed) {
+	public SurveyEnteredObjective(SurveyObjective objective, DataEntity entity, Boolean invalid, Boolean complete, Boolean closed) {
 		super();
 		this.objective = objective;
-		this.organisationUnit = organisationUnit;
+		this.entity = entity;
 		this.complete = complete;
 		this.invalid = invalid;
 		this.closed = closed;
@@ -60,13 +61,13 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, fetch=FetchType.LAZY)
-	public OrganisationUnit getOrganisationUnit() {
-		return organisationUnit;
+	@ManyToOne(targetEntity=DataEntity.class, fetch=FetchType.LAZY)
+	public DataEntity getDataEntity() {
+		return entity;
 	}
 	
-	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
-		this.organisationUnit = organisationUnit;
+	public void setOrganisationUnit(DataEntity entity) {
+		this.entity = entity;
 	}
 	
 	@Basic
@@ -114,7 +115,7 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 				+ ((objective == null) ? 0 : objective.hashCode());
 		result = prime
 				* result
-				+ ((organisationUnit == null) ? 0 : organisationUnit.hashCode());
+				+ ((entity == null) ? 0 : entity.hashCode());
 		return result;
 	}
 
@@ -132,10 +133,10 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 				return false;
 		} else if (!objective.equals(other.objective))
 			return false;
-		if (organisationUnit == null) {
-			if (other.organisationUnit != null)
+		if (entity == null) {
+			if (other.entity != null)
 				return false;
-		} else if (!organisationUnit.equals(other.organisationUnit))
+		} else if (!entity.equals(other.entity))
 			return false;
 		return true;
 	}

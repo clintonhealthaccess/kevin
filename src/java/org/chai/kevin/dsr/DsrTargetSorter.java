@@ -35,6 +35,12 @@ import java.util.Comparator;
 
 public class DsrTargetSorter implements Comparator<DsrTarget> {
 	
+	private static final DsrTargetSorter instance = new DsrTargetSorter();
+	
+	public static DsrTargetSorter getInstance() {
+		return instance;
+	}
+	
 	@Override
 	public int compare(DsrTarget targetOne, DsrTarget targetTwo) {
 		if (targetOne.getCategory() == null) {

@@ -73,7 +73,7 @@ class FilterTagLib {
 					if (filter == "level") {
 						// adjust organisation to level
 						if (orgUnitLevel.getLevel() == 1)
-							organisation = locationService.getRootOrganisation();
+							organisation = locationService.getRootLocation();
 						else
 							organisation = locationService.getParentOfLevel(organisation, orgUnitLevel.getLevel() - 1);
 						params.put("organisation", organisation.getId());

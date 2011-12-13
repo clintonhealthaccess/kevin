@@ -48,6 +48,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -170,10 +172,10 @@ public class Survey {
 	}
 	
 	@Transient
-	public List<SurveyObjective> getObjectives(OrganisationUnitGroup group) {
+	public List<SurveyObjective> getObjectives(DataEntityType type) {
 		List<SurveyObjective> result = new ArrayList<SurveyObjective>();
 		for (SurveyObjective surveyObjective : getObjectives()) {
-			if (Utils.split(surveyObjective.getGroupUuidString()).contains(group.getUuid())) result.add(surveyObjective);
+			if (Utils.split(surveyObjective.getGroupUuidString()).contains(type.getCode())) result.add(surveyObjective);
 		}
 		return result;
 	}

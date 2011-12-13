@@ -38,7 +38,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Organisation;
+import org.chai.kevin.location.CalculationEntity;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="StrategicObjective")
@@ -76,8 +76,8 @@ public class DashboardObjective extends DashboardEntry {
 	}
 
 	@Override
-	public <T> T visit(DashboardVisitor<T> visitor, Organisation organisation, Period period) {
-		return visitor.visitObjective(this, organisation, period);
+	public <T> T visit(DashboardVisitor<T> visitor, CalculationEntity entity, Period period) {
+		return visitor.visitObjective(this, entity, period);
 	}
 	
 }

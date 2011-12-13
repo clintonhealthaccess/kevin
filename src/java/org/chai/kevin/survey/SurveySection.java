@@ -55,12 +55,12 @@ import javax.persistence.Transient;
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @Entity(name = "SurveySection")
 @Table(name = "dhsst_survey_section")
@@ -160,19 +160,19 @@ public class SurveySection extends Orderable<Integer> {
 	}
 
 	@Transient
-	public List<SurveyElement> getSurveyElements(OrganisationUnitGroup group) {
+	public List<SurveyElement> getSurveyElements(DataEntityType type) {
 		List<SurveyElement> result = new ArrayList<SurveyElement>();
-		for (SurveyQuestion question : getQuestions(group)) {
-			result.addAll(question.getSurveyElements(group));
+		for (SurveyQuestion question : getQuestions(type)) {
+			result.addAll(question.getSurveyElements(type));
 		}
 		return result;
 	}
 
 	@Transient
-	public List<SurveyQuestion> getQuestions(OrganisationUnitGroup group) {
+	public List<SurveyQuestion> getQuestions(DataEntityType type) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveyQuestion surveyQuestion : getQuestions()) {
-			if (Utils.split(surveyQuestion.getGroupUuidString()).contains(group.getUuid())) {
+			if (Utils.split(surveyQuestion.getGroupUuidString()).contains(type.getCode())) {
 				result.add(surveyQuestion);
 			}
 		}

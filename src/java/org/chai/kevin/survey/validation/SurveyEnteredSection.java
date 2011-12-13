@@ -10,9 +10,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.SurveySection;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyValidSection")
 @Table(name="dhsst_survey_entered_section", uniqueConstraints=@UniqueConstraint(
@@ -22,16 +22,16 @@ public class SurveyEnteredSection extends SurveyEnteredEntity {
 	
 	private Long id;
 	private SurveySection section;
-	private OrganisationUnit organisationUnit;
+	private DataEntity entity;
 	private Boolean invalid;
 	private Boolean complete;
 	
 	public SurveyEnteredSection() {}
 	
-	public SurveyEnteredSection(SurveySection section, OrganisationUnit organisationUnit, Boolean invalid, Boolean complete) {
+	public SurveyEnteredSection(SurveySection section, DataEntity entity, Boolean invalid, Boolean complete) {
 		super();
 		this.section = section;
-		this.organisationUnit = organisationUnit;
+		this.entity = entity;
 		this.invalid = invalid;
 		this.complete = complete;
 	}
@@ -57,13 +57,13 @@ public class SurveyEnteredSection extends SurveyEnteredEntity {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, fetch=FetchType.LAZY)
-	public OrganisationUnit getOrganisationUnit() {
-		return organisationUnit;
+	@ManyToOne(targetEntity=DataEntity.class, fetch=FetchType.LAZY)
+	public DataEntity getEntity() {
+		return entity;
 	}
 	
-	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
-		this.organisationUnit = organisationUnit;
+	public void setEntity(DataEntity entity) {
+		this.entity = entity;
 	}
 	
 	@Basic
@@ -101,7 +101,7 @@ public class SurveyEnteredSection extends SurveyEnteredEntity {
 				+ ((section == null) ? 0 : section.hashCode());
 		result = prime
 				* result
-				+ ((organisationUnit == null) ? 0 : organisationUnit.hashCode());
+				+ ((entity == null) ? 0 : entity.hashCode());
 		return result;
 	}
 
@@ -119,10 +119,10 @@ public class SurveyEnteredSection extends SurveyEnteredEntity {
 				return false;
 		} else if (!section.equals(other.section))
 			return false;
-		if (organisationUnit == null) {
-			if (other.organisationUnit != null)
+		if (entity == null) {
+			if (other.entity != null)
 				return false;
-		} else if (!organisationUnit.equals(other.organisationUnit))
+		} else if (!entity.equals(other.entity))
 			return false;
 		return true;
 	}

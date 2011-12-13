@@ -34,8 +34,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.Organisation;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.location.CalculationEntity;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="StrategicTarget")
@@ -73,8 +73,8 @@ public class DashboardTarget extends DashboardEntry {
 	}
 
 	@Override
-	public <T> T visit(DashboardVisitor<T> visitor, Organisation organisation, Period period) {
-		return visitor.visitTarget(this, organisation, period);
+	public <T> T visit(DashboardVisitor<T> visitor, CalculationEntity entity, Period period) {
+		return visitor.visitTarget(this, entity, period);
 	}
 
 }

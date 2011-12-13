@@ -6,24 +6,21 @@ import java.util.List;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.value.CalculationPartialValue;
-import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.chai.kevin.location.CalculationEntity;
 import org.hisp.dhis.period.Period;
 
 public abstract class CalculationValue<T extends CalculationPartialValue> implements DataValue {
 
-	private OrganisationUnit organisationUnit;
+	private CalculationEntity entity;
 	private Period period;
 	private List<T> calculationPartialValues;
 	private Calculation<T> calculation;
 	
-	public CalculationValue(List<T> calculationPartialValues, Calculation<T> calculation, Period period, OrganisationUnit organisationUnit) {
+	public CalculationValue(List<T> calculationPartialValues, Calculation<T> calculation, Period period, CalculationEntity entity) {
 		this.calculationPartialValues = calculationPartialValues;
 		this.calculation = calculation;
 		this.period = period;
-		this.organisationUnit = organisationUnit;
+		this.entity = entity;
 	}
 	
 	@Transient
@@ -35,8 +32,8 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 	}
 	
 	@Override
-	public OrganisationUnit getOrganisationUnit() {
-		return organisationUnit;
+	public CalculationEntity getEntity() {
+		return entity;
 	}
 	
 	public boolean isComplete() {

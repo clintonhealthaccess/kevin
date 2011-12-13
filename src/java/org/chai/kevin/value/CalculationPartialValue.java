@@ -34,8 +34,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.chai.kevin.location.CalculationEntity;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
@@ -46,17 +46,17 @@ public abstract class CalculationPartialValue extends StoredValue {
 
 	public CalculationPartialValue() {}
 	
-	public CalculationPartialValue(OrganisationUnit organisationUnit, Period period, String groupUuid, Value value) {
-		super(organisationUnit, period, value);
+	public CalculationPartialValue(CalculationEntity entity, Period period, String groupUuid, Value value) {
+		super(entity, period, value);
 		
 		this.groupUuid = groupUuid;
 	}
 	
-	public CalculationPartialValue(OrganisationUnit organisationUnit, Period period, String groupUuid) {
+	public CalculationPartialValue(CalculationEntity entity, Period period, String groupUuid) {
 		super();
 		
 		this.groupUuid = groupUuid;
-		this.organisationUnit = organisationUnit;
+		this.entity = entity;
 		this.period = period;
 	}
 	

@@ -30,8 +30,8 @@ package org.chai.kevin.survey;
 import java.util.zip.ZipOutputStream
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
-import org.chai.kevin.Organisation
 import org.chai.kevin.LocationService
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.security.User
 import org.chai.kevin.util.Utils;
 import org.hibernate.SessionFactory;
@@ -64,7 +64,7 @@ class EditSurveyController extends AbstractController {
 				response.sendError(404)
 			}
 			else {
-				Organisation organisation = organisationService.getOrganisation(user.organisationUnitId)
+				DataEntity organisation = DataEntity.get(user.organisationUnitId)
 	
 				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: survey?.id, organisation: organisation.id])
 			}
@@ -79,11 +79,7 @@ class EditSurveyController extends AbstractController {
 
 		if (organisation == null) valid = false
 		else {
-			int level = organisationService.loadLevel(organisation);
-			if (level != organisationService.getFacilityLevel()) valid = false
-
-			organisationService.loadGroup(organisation)
-			if (groups != null && !groups.contains(organisation.organisationUnitGroup.uuid)) valid = false
+			if (groups != null && !groups.contains(organisation.type.code)) valid = false
 		}
 
 		if (!valid) {
@@ -96,11 +92,11 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
 
 		// TODO make sure this is a facility
-		Organisation currentOrganisation = getOrganisation(false)
+		DataEntity entity = DataEntity.get(params.int('entity'))
 		SurveySection currentSection =  SurveySection.get(params.int('section'));
 
-		if (validateParameters(currentOrganisation, Utils.split(currentSection?.groupUuidString))) {
-			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentSection)
+		if (validateParameters(entity, Utils.split(currentSection?.groupUuidString))) {
+			def surveyPage = surveyPageService.getSurveyPage(entity,currentSection)
 
 			render (view: '/survey/sectionPage', model: [surveyPage: surveyPage])
 		}
@@ -110,11 +106,11 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.objective, params:"+params)
 
 		// TODO make sure this is a facility
-		Organisation currentOrganisation = getOrganisation(false)
+		DataEntity entity = DataEntity.get(params.int('entity'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 
-		if (validateParameters(currentOrganisation, Utils.split(currentObjective?.groupUuidString))) {
-			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation,currentObjective)
+		if (validateParameters(entity, Utils.split(currentObjective?.groupUuidString))) {
+			def surveyPage = surveyPageService.getSurveyPage(entity, currentObjective)
 
 			render (view: '/survey/objectivePage', model: [surveyPage: surveyPage])
 		}
@@ -124,12 +120,12 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
 
 		// TODO make sure this is a facility
-		Organisation currentOrganisation = getOrganisation(false)
+		DataEntity entity = DataEntity.get(params.int('entity'))
 
-		if (validateParameters(currentOrganisation, null)) {
+		if (validateParameters(entity, null)) {
 			Survey survey = Survey.get(params.int('survey'))
 
-			def surveyPage = surveyPageService.getSurveyPage(currentOrganisation, survey)
+			def surveyPage = surveyPageService.getSurveyPage(entity, survey)
 
 			render (view: '/survey/surveyPage', model: [surveyPage: surveyPage])
 		}
@@ -139,35 +135,35 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
 
 		// TODO make sure this is a facility
-		Organisation currentOrganisation = getOrganisation(false)
+		DataEntity entity = DataEntity.get(params.int('entity'))
 
 		Survey survey = Survey.get(params.int('survey'))
-		surveyPageService.refresh(currentOrganisation, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
+		surveyPageService.refresh(entity, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
 
-		redirect (action: "surveyPage", params: [organisation: currentOrganisation.id, survey: survey.id])
+		redirect (action: "surveyPage", params: [organisation: entity.id, survey: survey.id])
 	}
 
 	def reopen = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
-		Organisation currentOrganisation = getOrganisation(false)
+		DataEntity entity = DataEntity.get(params.int('entity'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 
-		if (validateParameters(currentOrganisation, Utils.split(currentObjective?.groupUuidString))) {
-			surveyPageService.reopen(currentOrganisation, currentObjective);
+		if (validateParameters(entity, Utils.split(currentObjective?.groupUuidString))) {
+			surveyPageService.reopen(entity, currentObjective);
 
-			redirect (action: "objectivePage", params: [organisation: currentOrganisation.id, objective: currentObjective.id])
+			redirect (action: "objectivePage", params: [organisation: entity.id, objective: currentObjective.id])
 		}
 	}
 
 	def submit = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
-		Organisation currentOrganisation = getOrganisation(false)
+		DataEntity entity = DataEntity.get(params.int('entity'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 
-		if (validateParameters(currentOrganisation, Utils.split(currentObjective?.groupUuidString))) {
-			boolean success = surveyPageService.submit(currentOrganisation, currentObjective);
+		if (validateParameters(entity, Utils.split(currentObjective?.groupUuidString))) {
+			boolean success = surveyPageService.submit(entity, currentObjective);
 
 			if (success) {
 				flash.message = message(code: "survey.objective.submitted", default: "Thanks for submitting.");
@@ -176,20 +172,20 @@ class EditSurveyController extends AbstractController {
 				flash.message = message(code: "survey.objective.review", default: "The survey could not be submitted, please review the sections.");
 			}
 
-			redirect (action: "objectivePage", params: [organisation: currentOrganisation.id, objective: currentObjective.id])
+			redirect (action: "objectivePage", params: [organisation: entity.id, objective: currentObjective.id])
 		}
 	}
 
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 
-		Organisation currentOrganisation = getOrganisation(false)
+		def entity = DataEntity.get(params.int('entity'))
 
 		def currentSection = SurveySection.get(params.int('section'))
 		def currentObjective = SurveyObjective.get(params.int('objective'))
 		def surveyElements = [SurveyElement.get(params.int('element'))]
 
-		def surveyPage = surveyPageService.modify(currentOrganisation, currentObjective, surveyElements, params);
+		def surveyPage = surveyPageService.modify(entity, currentObjective, surveyElements, params);
 
 		if (surveyPage == null) {
 			render(contentType:"text/json") { status = 'error' }
@@ -200,10 +196,10 @@ class EditSurveyController extends AbstractController {
 
 			if (currentSection == null) {
 				sessionFactory.currentSession.clear()
-				currentOrganisation = getOrganisation(false)
+				entity = DataEntity.get(params.int('entity'))
 				currentObjective = SurveyObjective.get(params.int('objective'))
 				
-				def completeSurveyPage = surveyPageService.getSurveyPage(currentOrganisation, currentObjective)
+				def completeSurveyPage = surveyPageService.getSurveyPage(entity, currentObjective)
 				invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
 				incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
 			}

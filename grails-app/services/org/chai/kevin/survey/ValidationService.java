@@ -10,14 +10,13 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
-import org.chai.kevin.Organisation;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ValidationService {
@@ -29,10 +28,10 @@ public class ValidationService {
 	private JaqlService jaqlService;
 	
 	@Transactional(readOnly=true)
-	public Set<String> getSkippedPrefix(SurveyElement element, SurveySkipRule rule, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("getSkippedPrefix(surveyElement="+element+", rule="+rule+", organisation="+organisation+")");
+	public Set<String> getSkippedPrefix(SurveyElement element, SurveySkipRule rule, DataEntity entity) {
+		if (log.isDebugEnabled()) log.debug("getSkippedPrefix(surveyElement="+element+", rule="+rule+", entity="+entity+")");
 		
-		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, organisation.getOrganisationUnit());
+		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, entity);
 
 		Set<String> prefixes = rule.getSkippedPrefixes(element);
 		String expression = rule.getExpression();
@@ -47,12 +46,12 @@ public class ValidationService {
 	}
 	
 	@Transactional(readOnly=true)
-	public boolean isSkipped(SurveySkipRule skipRule, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("isSkipped(surveyQuestion="+skipRule+", organisation="+organisation+")");
+	public boolean isSkipped(SurveySkipRule skipRule, DataEntity entity) {
+		if (log.isDebugEnabled()) log.debug("isSkipped(surveyQuestion="+skipRule+", entity="+entity+")");
 		
 		boolean result = false;
 		if (!isWildcard(skipRule.getExpression())) {
-			Boolean eval = evaluate(skipRule.getExpression(), organisation.getOrganisationUnit());
+			Boolean eval = evaluate(skipRule.getExpression(), entity);
 			if (eval != null) result = eval;
 		}
 		
@@ -61,14 +60,13 @@ public class ValidationService {
 	}
 	
 	@Transactional(readOnly=true)
-	public Set<String> getInvalidPrefix(SurveyValidationRule validationRule, Organisation organisation) {
-		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(validationRule="+validationRule+", organisation="+organisation+")");
+	public Set<String> getInvalidPrefix(SurveyValidationRule validationRule, DataEntity entity) {
+		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(validationRule="+validationRule+", entity="+entity+")");
 
 		Set<String> result = new HashSet<String>();
-		locationService.loadGroup(organisation);
-		if (Utils.split(validationRule.getGroupUuidString()).contains(organisation.getOrganisationUnitGroup().getUuid())) {
+		if (Utils.split(validationRule.getGroupUuidString()).contains(entity.getType().getCode())) {
 			// we validate only if that rule applies to the group
-			SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(validationRule.getSurveyElement(), organisation.getOrganisationUnit());
+			SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(validationRule.getSurveyElement(), entity);
 	
 			String prefix = validationRule.getPrefix();
 			String expression = validationRule.getExpression();
@@ -98,7 +96,7 @@ public class ValidationService {
 		
 		for (List<String> list : combinations) {
 			if (!isWildcard(list)) {
-				if (evaluateTo.equals(evaluate(list.get(0), enteredValue.getOrganisationUnit()))) result.addAll(list.subList(1, list.size()));
+				if (evaluateTo.equals(evaluate(list.get(0), enteredValue.getEntity()))) result.addAll(list.subList(1, list.size()));
 			}
 		}
 		return result;
@@ -115,7 +113,7 @@ public class ValidationService {
 		return string.contains("[_]");
 	}
 	
-	private Boolean evaluate(String expression, OrganisationUnit organisationUnit) {
+	private Boolean evaluate(String expression, DataEntity entity) {
 		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+")");
 		
 		Map<String, Value> valueMap = new HashMap<String, Value>();
@@ -125,7 +123,7 @@ public class ValidationService {
 		for (SurveyElement element : elements.values()) {
 			Value value = null;
 			if (element != null) {
-				SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, organisationUnit);
+				SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, entity);
 				if (enteredValue != null) value = enteredValue.getValue();
 			}
 			else if (log.isErrorEnabled()) log.error("expression "+expression+" refers to unknown survey element");
@@ -177,7 +175,7 @@ public class ValidationService {
 		this.surveyValueService = surveyValueService;
 	}
 	
-	public void setOrganisationService(LocationService locationService) {
+	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
 	

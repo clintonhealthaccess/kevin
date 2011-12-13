@@ -38,6 +38,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.location.DataEntity;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -54,8 +55,8 @@ public class RawDataElementValue extends StoredValue {
 	
 	public RawDataElementValue() {}
 
-	public RawDataElementValue(RawDataElement data, OrganisationUnit organisationUnit, Period period, Value value) {
-		super(organisationUnit, period, value);
+	public RawDataElementValue(RawDataElement data, DataEntity entity, Period period, Value value) {
+		super(entity, period, value);
 		
 		this.data = data;
 	}

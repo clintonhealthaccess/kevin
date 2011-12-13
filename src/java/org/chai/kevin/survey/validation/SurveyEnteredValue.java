@@ -23,6 +23,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.ValuePredicate;
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveySkipRule;
@@ -45,13 +46,13 @@ public class SurveyEnteredValue extends SurveyEnteredEntity {
 	private SurveyElement surveyElement;
 	private Value value;
 	private Value lastValue; //last year's value
-	private OrganisationUnit organisationUnit;
+	private DataEntity entity;
 	
 	public SurveyEnteredValue() {}
 	
-	public SurveyEnteredValue(SurveyElement surveyElement, OrganisationUnit organisationUnit, Value value, Value lastValue) {
+	public SurveyEnteredValue(SurveyElement surveyElement, DataEntity entity, Value value, Value lastValue) {
 		this.surveyElement = surveyElement;
-		this.organisationUnit = organisationUnit;
+		this.entity = entity;
 		this.value = value;
 		this.lastValue = lastValue;
 	}
@@ -101,13 +102,13 @@ public class SurveyEnteredValue extends SurveyEnteredEntity {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=OrganisationUnit.class, fetch=FetchType.LAZY)
-	public OrganisationUnit getOrganisationUnit() {
-		return organisationUnit;
+	@ManyToOne(targetEntity=DataEntity.class, fetch=FetchType.LAZY)
+	public DataEntity getEntity() {
+		return entity;
 	}
 	
-	public void setOrganisationUnit(OrganisationUnit organisationUnit) {
-		this.organisationUnit = organisationUnit;
+	public void setEntity(DataEntity entity) {
+		this.entity = entity;
 	}
 	
 	@Transient
