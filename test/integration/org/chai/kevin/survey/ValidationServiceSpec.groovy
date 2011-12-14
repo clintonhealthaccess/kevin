@@ -8,6 +8,28 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 
 	def validationService;
 	
+	def "skip elemnts"() {
+		setup:
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(['key1':Type.TYPE_NUMBER(),'key2':Type.TYPE_NUMBER()])))
+		def element1 = newSurveyElement(question1, dataElement1)
+		
+		def rule = newSkipRule(survey, "\$"+element1.id+"[_].key1 == 1", [(element1): "[_].key1,[_].key2"], [])
+		
+		when:
+		newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(KIVUYE), new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]},{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
+		def skipped = validationService.getSkippedPrefix(element1, rule, getOrganisation(KIVUYE))
+		
+		then:
+		skipped.equals(s(["[0].key1","[0].key2","[1].key1","[1].key2"]))
+		
+	}
 	
 	def "false validation based on other elements"() {
 		setup:

@@ -2,6 +2,7 @@
  * nice table functionality
  */
 var selected = false;
+
 function addClass(column, row, className) {
 	if (column != null) {
 		addClassByType('col', column, className);
@@ -12,7 +13,7 @@ function addClass(column, row, className) {
 }
 
 function addClassByType(type, id, className) {
-		$('.'+type+'-'+id).addClass(className);
+	$('.'+type+'-'+id).addClass(className);
 }    
 
 $(document).ready(function(){
@@ -55,4 +56,5 @@ $(document).ready(function(){
 			}
 		}
 	});
+	
 })

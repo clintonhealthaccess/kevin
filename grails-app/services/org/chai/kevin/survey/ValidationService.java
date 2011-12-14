@@ -39,9 +39,7 @@ public class ValidationService {
 		
 		Set<String> result = new HashSet<String>();
 		if (enteredValue!= null) {
-			for (String prefix : prefixes) {
-				result.addAll(getPrefixes(expression, prefix, enteredValue, true));
-			}
+			result.addAll(getPrefixes(expression, prefixes, enteredValue, true));
 		}
 		
 		if (log.isDebugEnabled()) log.debug("getSkippedPrefix(...)="+result);
@@ -75,19 +73,21 @@ public class ValidationService {
 			String prefix = validationRule.getPrefix();
 			String expression = validationRule.getExpression();
 			
-			if (enteredValue != null) result.addAll(getPrefixes(expression, prefix, enteredValue, false));
+			Set<String> prefixes = new HashSet<String>();
+			prefixes.add(prefix);
+			if (enteredValue != null) result.addAll(getPrefixes(expression, prefixes, enteredValue, false));
 		}
 		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(...)="+result);
 		return result;
 	}
 
-	private Set<String> getPrefixes(String expression, String prefix, SurveyEnteredValue enteredValue, Boolean evaluateTo) {
+	private Set<String> getPrefixes(String expression, Set<String> prefixes, SurveyEnteredValue enteredValue, Boolean evaluateTo) {
 		Set<String> result = new HashSet<String>();
 		Set<List<String>> combinations = new HashSet<List<String>>();
 		
 		List<String> toCombine = new ArrayList<String>();
-		toCombine.add(prefix);
 		toCombine.add(expression);
+		toCombine.addAll(prefixes);
 		
 		enteredValue.getSurveyElement().getDataElement().getType().getCombinations(
 			enteredValue.getValue(), 
@@ -97,11 +97,18 @@ public class ValidationService {
 		);
 		
 		for (List<String> list : combinations) {
-			if (!isWildcard(list.get(0)) && !isWildcard(list.get(1))) {
-				if (evaluateTo.equals(evaluate(list.get(1), enteredValue.getOrganisationUnit()))) result.add(list.get(0));
+			if (!isWildcard(list)) {
+				if (evaluateTo.equals(evaluate(list.get(0), enteredValue.getOrganisationUnit()))) result.addAll(list.subList(1, list.size()));
 			}
 		}
 		return result;
+	}
+	
+	private boolean isWildcard(List<String> strings) {
+		for (String string : strings) {
+			if (isWildcard(string)) return true;
+		}
+		return false;
 	}
 	
 	private boolean isWildcard(String string) {

@@ -66,7 +66,6 @@ public class JaqlService {
 		return type.getValueFromJaql(jsonValue.toString());
 	}
 	
-
 	private static JsonValue executeQuery(String expression, Map<String, JsonValue> valueMap) {
 		JsonValue value = null;
 		JaqlQuery query = new JaqlQuery();

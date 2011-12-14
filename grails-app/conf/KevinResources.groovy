@@ -27,7 +27,7 @@ modules = {
 	spinner {
 		dependsOn 'jquery'
 
-		resource url: '/js/spinner.js', bundle: 'core'
+		resource url: '/js/spinner.js'
 		//resource url: '/css/spinner.css', bundle: 'core'
 	}
 
@@ -111,7 +111,7 @@ modules = {
 	nicetable {
 		dependsOn 'jquery'
 
-		resource url: '/js/nicetable_init.js', bundle: 'core'
+		resource url: '/js/nicetable_init.js'
 		//resource url: '/css/nicetable.css', bundle: 'core'
 	}
 

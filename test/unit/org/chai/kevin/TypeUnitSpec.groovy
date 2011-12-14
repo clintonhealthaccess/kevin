@@ -292,6 +292,13 @@ public class TypeUnitSpec extends UnitSpec {
 		value.isNull() == true
 		
 		when:
+		type = new Type("{\"type\":\"string\"}");
+		value = type.mergeValueFromMap(Value.NULL, ['value': 'test\\'], 'value', new HashSet([]))
+		
+		then:
+		value.getStringValue() == 'test'
+		
+		when:
 		type = new Type("{\"type\":\"bool\"}");
 		value = type.mergeValueFromMap(Value.NULL, ['value': '0'], 'value', new HashSet([]))
 		

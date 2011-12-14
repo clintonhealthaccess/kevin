@@ -22,6 +22,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
+import net.sf.json.util.JSONUtils;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
@@ -785,7 +786,7 @@ public class Type extends JSONValue {
 			case STRING:
 			case TEXT:
 				if (value == null || string.equals("")) result = JSONNull.getInstance();
-				else result = string;
+				else result = escape(string);
 				break;
 			case DATE:
 				if (value == null || string.equals("")) result = JSONNull.getInstance();
@@ -808,6 +809,10 @@ public class Type extends JSONValue {
 		return result;
 	}
 	
+	private Object escape(String string) {
+		return string.replace("\\", "").replace("\"", "");
+	}
+
 	private List<String> replace(List<String> strings, String toReplace, String replaceWith) {
 		List<String> result = new ArrayList<String>();
 		for (String string : strings) {
