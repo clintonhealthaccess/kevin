@@ -16,9 +16,12 @@ import javax.persistence.Table;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="LocationLevel")
 @Table(name="dhsst_entity_location_level")
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 public class LocationLevel extends Orderable<Integer> {
 
 	private Long id;

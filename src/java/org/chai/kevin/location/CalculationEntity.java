@@ -10,13 +10,19 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="CalculationEntity")
 @Table(name="dhsst_entity_calculation")
+@Inheritance(strategy=InheritanceType.JOINED)
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 public abstract class CalculationEntity {
 
 	private Long id;

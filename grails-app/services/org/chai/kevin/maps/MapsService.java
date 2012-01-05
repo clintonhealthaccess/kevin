@@ -67,7 +67,7 @@ public class MapsService {
 		for (CalculationEntity child : organisations) {
 			Double value = null;
 			// TODO groups
-			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child, period, new HashSet<DataEntityType>(locationService.getDataEntityTypes()));
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child, period, new HashSet<DataEntityType>(locationService.listTypes()));
 			if (calculationValue != null) {
 				if (!calculationValue.getValue().isNull()) {
 					value = calculationValue.getValue().getNumberValue().doubleValue();
@@ -82,7 +82,7 @@ public class MapsService {
 
 	public Info<?> getExplanation(Period period, CalculationEntity entity, MapsTarget target) {
 		// TODO groups
-		return infoService.getCalculationInfo(target.getCalculation(), entity, period, new HashSet<DataEntityType>(locationService.getDataEntityTypes()));
+		return infoService.getCalculationInfo(target.getCalculation(), entity, period, new HashSet<DataEntityType>(locationService.listTypes()));
 	}
 	
 	public void setValueService(ValueService valueService) {

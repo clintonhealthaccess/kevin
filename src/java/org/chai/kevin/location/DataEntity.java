@@ -8,8 +8,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity(name="DataEntity")
 @Table(name="dhsst_entity_data")
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 public class DataEntity extends CalculationEntity {
 
 	private LocationEntity location;

@@ -87,7 +87,7 @@ public class ExpressionService {
 		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",entity="+entity+")");
 		
 		Set<T> result = new HashSet<T>();
-		List<DataEntityType> dataEntityTypes = locationService.getDataEntityTypes();
+		List<DataEntityType> dataEntityTypes = locationService.listTypes();
 		for (DataEntityType dataEntityType : dataEntityTypes) {
 			List<DataEntity> facilities = locationService.getDataEntities(entity, dataEntityType);
 			

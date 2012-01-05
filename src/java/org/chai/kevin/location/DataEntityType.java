@@ -11,9 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.chai.kevin.Translation;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DataEntityType")
 @Table(name="dhsst_entity_data_type")
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 public class DataEntityType {
 
 	private Long id;

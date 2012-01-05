@@ -9,8 +9,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity(name="LocationEntity")
 @Table(name="dhsst_entity_location")
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 public class LocationEntity extends CalculationEntity {
 
 	private LocationEntity parent;
@@ -28,6 +32,7 @@ public class LocationEntity extends CalculationEntity {
 	}
 	
 	@OneToMany(targetEntity=LocationEntity.class, mappedBy="parent")
+	@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 	public List<LocationEntity> getChildren() {
 		return children;
 	}
@@ -47,6 +52,7 @@ public class LocationEntity extends CalculationEntity {
 	
 	@Override
 	@OneToMany(targetEntity=DataEntity.class, mappedBy="location")
+	@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 	public List<DataEntity> getDataEntities() {
 		return dataEntities;
 	}
