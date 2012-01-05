@@ -134,12 +134,12 @@
 								<tbody>
 									<g:each in="${dsrTable.organisations}" var="parent">
 									<tr>
-										<th colspan="${dsrTable.targets.size()+1}" class="parent-row">${parent.name}</th>
+										<th colspan="${dsrTable.targets.size()+1}" class="parent-row"><g:i18n field="${parent.names}"/></th>
 									</tr>
 									<g:each in="${dsrTable.getOrganisationMap().get(parent)}" var="children">
 										<g:each in="${children}" var="child">										
-											<tr class="row organisation" data-group="${child.organisationUnitGroup?.uuid}">
-												<th class="box-report-organisation">${child.name}</th>
+											<tr class="row organisation">
+												<th class="box-report-organisation"><g:i18n field="${child.names}"/></th>
 												<g:each in="${dsrTable.targets}" var="target">
 													<td class="box-report-value">
 														<g:if test="${!dsrTable.getReportValue(child, target) != null}">

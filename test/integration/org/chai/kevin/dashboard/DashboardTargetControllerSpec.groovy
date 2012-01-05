@@ -35,7 +35,7 @@ import org.chai.kevin.data.Type
 class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 
 	def dashboardTargetController
-	def organisationService
+	def locationService
 	def dashboardService
 	def dataService
 	
@@ -123,7 +123,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 //		def sum = newSum("1", CODE(1))
 //		def average = newAverage("1", CODE(2))
 //		dashboardTargetController = new DashboardTargetController()
-//		dashboardTargetController.organisationService = organisationService
+//		dashboardTargetController.locationService = locationService
 //		
 //		when:
 //		dashboardTargetController.create()

@@ -39,7 +39,7 @@ import org.chai.kevin.util.Utils
 
 class FctTargetController extends AbstractEntityController {
 
-	def organisationService
+	def locationService
 
 	def getEntity(def id) {
 		return FctTarget.get(id)
@@ -61,7 +61,7 @@ class FctTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			objectives: FctObjective.list(),
-			groups: organisationService.getGroupsForExpression(),
+			groups: DataEntityType.list(),
 			sums: entity.sum!=null?[entity.sum]:[],
 			groupUuids: Utils.split(entity.groupUuidString)
 		]

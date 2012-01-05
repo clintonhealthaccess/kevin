@@ -88,10 +88,10 @@ public class Utils {
 		return value.matches("(?i).*"+text+".*");
 	}
 
-	public static Set<String> getUuids(List<DataEntityType> groups) {
+	public static Set<String> getUuids(List<DataEntityType> types) {
 		Set<String> result = new HashSet<String>();
-		for (DataEntityType group : groups) {
-			result.add(group.getCode());
+		for (DataEntityType type : types) {
+			result.add(type.getCode());
 		}
 		return result;
 	}

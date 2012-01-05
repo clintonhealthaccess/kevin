@@ -2,7 +2,7 @@
 	<span class="bold"><g:message code="filter.organisation.label"/></span>
 	<span class="dropdown dropdown-organisation subnav-dropdown">
 		<g:if test="${currentOrganisation != null}">
-			<a class="selected" href="#" data-type="organisation" data-organisation="${currentOrganisation.id}">${currentOrganisation.name}</a>
+			<a class="selected" href="#" data-type="organisation" data-organisation="${currentOrganisation.id}"><g:i18n field="${currentOrganisation.names}"/></a>
 		</g:if>
 		<g:else>
 			<a class="selected" href="#" data-type="organisation">

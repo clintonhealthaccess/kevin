@@ -37,7 +37,7 @@ import org.chai.kevin.data.Calculation;
 
 class MapsTargetController extends AbstractEntityController {
 	
-	def organisationService
+	def locationService
 	def dataService
 	
 	def getEntity(def id) {
@@ -57,7 +57,7 @@ class MapsTargetController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		[ target: entity, calculations: entity.calculation!=null?[entity.calculation]:[], groups: organisationService.getGroupsForExpression()]
+		[ target: entity, calculations: entity.calculation!=null?[entity.calculation]:[], groups: DataEntityType.list()]
 	}
 	
 	def bindParams(def entity) {

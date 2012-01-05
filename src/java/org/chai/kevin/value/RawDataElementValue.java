@@ -40,12 +40,11 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.location.DataEntity;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="RawDataElementValue")
 @Table(name="dhsst_value_raw_data_element",
-		uniqueConstraints=@UniqueConstraint(columnNames={"data", "period", "organisationUnit"})
+		uniqueConstraints=@UniqueConstraint(columnNames={"data", "period", "entity"})
 )
 //@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class RawDataElementValue extends StoredValue {

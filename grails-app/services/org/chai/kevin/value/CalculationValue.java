@@ -7,6 +7,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.hisp.dhis.period.Period;
 
 public abstract class CalculationValue<T extends CalculationPartialValue> implements DataValue {
@@ -44,12 +45,12 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 		return calculation;
 	}
 	
-	public List<String> getGroupUuids() {
-		List<String> groupUuids = new ArrayList<String>();
+	public List<DataEntityType> getGroupUuids() {
+		List<DataEntityType> result = new ArrayList<DataEntityType>();
 		for (T calculationPartialValue : calculationPartialValues) {
-			groupUuids.add(calculationPartialValue.getGroupUuid());
+			result.add(calculationPartialValue.getType());
 		}
-		return groupUuids;
+		return result;
 	}
 	
 	public List<T> getCalculationPartialValues() {

@@ -34,7 +34,7 @@ import org.chai.kevin.AbstractEntityController;
 
 class DsrTargetCategoryController extends AbstractEntityController {
 	
-	def organisationService
+	def locationService
 	
 	def getEntity(def id) {
 		return DsrTargetCategory.get(id);

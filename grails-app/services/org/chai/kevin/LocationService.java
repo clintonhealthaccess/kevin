@@ -127,9 +127,9 @@ public class LocationService {
 //		return level;
 //	}
 	
-	public Integer getNumberOfDataEntitiesForType(DataEntityType dataEntityType){
-		return (Integer)sessionFactory.getCurrentSession().createCriteria(DataEntity.class)
-		.add(Restrictions.eq("dataEntityType", dataEntityType))
+	public Long getNumberOfDataEntitiesForType(DataEntityType dataEntityType){
+		return (Long)sessionFactory.getCurrentSession().createCriteria(DataEntity.class)
+		.add(Restrictions.eq("type", dataEntityType))
 		.setProjection(Projections.rowCount()).uniqueResult();
 	}
 		
@@ -149,6 +149,23 @@ public class LocationService {
 	public <T extends CalculationEntity> T getCalculationEntity(Long id, Class<T> clazz) {
 		return (T)sessionFactory.getCurrentSession().get(clazz, id);
 	}
+	
+	// TODO property of level?
+	public LocationLevel getLevelBefore(LocationLevel level) {
+		List<LocationLevel> levels = listLevels();
+		Integer intLevel = levels.indexOf(level);
+		if (intLevel-1 >= 0) return levels.get(levels.indexOf(level)-1);
+		else return null;
+	}
+	
+	// TODO property of level?	
+	public LocationLevel getLevelAfter(LocationLevel level) {
+		List<LocationLevel> levels = listLevels();
+		Integer intLevel = levels.indexOf(level);
+		if (intLevel+1 < levels.size()) return levels.get(levels.indexOf(level)+1);
+		else return null;
+	}
+	
 	
 //	private Organisation createOrganisation(OrganisationUnit organisationUnit) {
 //		if (organisationUnit == null) return null;
@@ -269,6 +286,9 @@ public class LocationService {
 		return result;
 	}
 	
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 	
 //	private List<OrganisationUnit> getChildren(OrganisationUnit organisation, Integer... skipLevels) {
 //		List<Integer> skipLevelList = Arrays.asList(skipLevels);

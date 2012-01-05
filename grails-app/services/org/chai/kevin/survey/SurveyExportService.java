@@ -49,7 +49,7 @@ public class SurveyExportService {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public void setOrganisationService(LocationService locationService) {
+	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
 	
@@ -60,8 +60,6 @@ public class SurveyExportService {
 	public void setSurveyValueService(SurveyValueService surveyValueService) {
 		this.surveyValueService = surveyValueService;
 	}
-
-	private final static String CSV_FILE_EXTENSION = ".csv";
 	
 	public void setSkipLevels(Set<String> skipLevels) {
 		this.skipLevels = skipLevels;
@@ -75,6 +73,8 @@ public class SurveyExportService {
 		return result;
 	}		
 	
+	private final static String CSV_FILE_EXTENSION = ".csv";
+
 	// TODO refactor this to use messages.properties files
 	private final static String ORGANISATION_UNIT_GROUP_HEADER = "Facility Type";
 	private final static String SURVEY_HEADER = "Survey";
@@ -275,7 +275,7 @@ public class SurveyExportService {
 			LocationEntity parent = locationService.getParentOfLevel(facility, level);
 			dataPoint.add(formatExportDataItem(languageService.getText(parent.getNames())));
 		}
-		
+		dataPoint.add(formatExportDataItem(languageService.getText(facility.getNames())));
 		dataPoint.add(formatExportDataItem(languageService.getText(facility.getType().getNames())));			
 		dataPoint.add(formatExportDataItem(languageService.getText(surveyObjective.getNames())));
 		dataPoint.add(formatExportDataItem(languageService.getText(surveySection.getNames())));		

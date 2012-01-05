@@ -1,5 +1,6 @@
 package org.chai.kevin.location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
@@ -16,15 +17,15 @@ import javax.persistence.Table;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 
-@Entity(name="DataCollectingEntity")
-@Table(name="dhsst_location_level")
+@Entity(name="LocationLevel")
+@Table(name="dhsst_entity_location_level")
 public class LocationLevel extends Orderable<Integer> {
 
 	private Long id;
 	private String code;
 	private Integer order;
-	private Translation names;
-	private List<LocationEntity> locations;
+	private Translation names = new Translation();
+	private List<LocationEntity> locations = new ArrayList<LocationEntity>();
 	
 	@Id
 	@GeneratedValue

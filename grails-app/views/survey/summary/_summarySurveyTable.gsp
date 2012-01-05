@@ -16,7 +16,7 @@
 				<g:set var="objectiveSummary" value="${summaryPage.getObjectiveSummary(facility)}" />
 				<tr>
 					<td class="objective-table-link" data-facility="${facility.id}">
-						<a href="${createLink(controller: 'summary', action: 'objectiveTable', params: [survey: currentSurvey.id, organisation: facility.id])}">${facility.name}</a>
+						<a href="${createLink(controller: 'summary', action: 'objectiveTable', params: [survey: currentSurvey.id, organisation: facility.id])}"><g:i18n field="${facility.names}"/></a>
 					</td>
 					<td>${objectiveSummary.submittedObjectives}/${objectiveSummary.objectives}</td>
 					<td><span class="progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>

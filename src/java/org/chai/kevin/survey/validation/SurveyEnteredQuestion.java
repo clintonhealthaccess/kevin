@@ -23,7 +23,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyValidQuestion")
 @Table(name="dhsst_survey_entered_question", uniqueConstraints=@UniqueConstraint(
-		columnNames={"question", "organisationUnit"})
+		columnNames={"question", "entity"})
 )
 public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 	

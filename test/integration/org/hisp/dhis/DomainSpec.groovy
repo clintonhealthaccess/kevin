@@ -42,7 +42,7 @@ class DomainSpec extends GroovyTestCase {
   	def "test organisation"() {
 		expect:
 		1 == OrganisationUnit.findByName("Butaro DH").getGroups().size()
-		1 == OrganisationUnitGroup.findByName("District Hospital").getMembers().size()
+		1 == DataEntityType.findByCode("District Hospital").getMembers().size()
 	}
 
 	  

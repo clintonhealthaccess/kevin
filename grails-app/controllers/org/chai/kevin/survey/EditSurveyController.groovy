@@ -31,6 +31,7 @@ import java.util.zip.ZipOutputStream
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService
+import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.security.User
 import org.chai.kevin.util.Utils;
@@ -53,7 +54,7 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
 		User user = User.findByUuid(SecurityUtils.subject.principal)
 
-		if (user.hasProperty('organisationUnitId') != null) {
+		if (user.hasProperty('entityId') != null) {
 			Survey survey = Survey.get(params.int('survey'))
 
 			if (survey == null) {
@@ -64,9 +65,9 @@ class EditSurveyController extends AbstractController {
 				response.sendError(404)
 			}
 			else {
-				DataEntity organisation = DataEntity.get(user.organisationUnitId)
+				DataEntity entity = DataEntity.get(user.entityId)
 	
-				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: survey?.id, organisation: organisation.id])
+				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: survey?.id, organisation: entity.id])
 			}
 		}
 		else {
@@ -92,7 +93,7 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
 
 		// TODO make sure this is a facility
-		DataEntity entity = DataEntity.get(params.int('entity'))
+		DataEntity entity = DataEntity.get(params.int('organisation'))
 		SurveySection currentSection =  SurveySection.get(params.int('section'));
 
 		if (validateParameters(entity, Utils.split(currentSection?.groupUuidString))) {
@@ -106,7 +107,7 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.objective, params:"+params)
 
 		// TODO make sure this is a facility
-		DataEntity entity = DataEntity.get(params.int('entity'))
+		DataEntity entity = DataEntity.get(params.int('organisation'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 
 		if (validateParameters(entity, Utils.split(currentObjective?.groupUuidString))) {
@@ -120,7 +121,7 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
 
 		// TODO make sure this is a facility
-		DataEntity entity = DataEntity.get(params.int('entity'))
+		DataEntity entity = DataEntity.get(params.int('organisation'))
 
 		if (validateParameters(entity, null)) {
 			Survey survey = Survey.get(params.int('survey'))
@@ -135,7 +136,7 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
 
 		// TODO make sure this is a facility
-		DataEntity entity = DataEntity.get(params.int('entity'))
+		DataEntity entity = DataEntity.get(params.int('organisation'))
 
 		Survey survey = Survey.get(params.int('survey'))
 		surveyPageService.refresh(entity, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
@@ -146,7 +147,7 @@ class EditSurveyController extends AbstractController {
 	def reopen = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
-		DataEntity entity = DataEntity.get(params.int('entity'))
+		DataEntity entity = DataEntity.get(params.int('organisation'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 
 		if (validateParameters(entity, Utils.split(currentObjective?.groupUuidString))) {
@@ -159,7 +160,7 @@ class EditSurveyController extends AbstractController {
 	def submit = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
-		DataEntity entity = DataEntity.get(params.int('entity'))
+		DataEntity entity = DataEntity.get(params.int('organisation'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 
 		if (validateParameters(entity, Utils.split(currentObjective?.groupUuidString))) {
@@ -179,7 +180,7 @@ class EditSurveyController extends AbstractController {
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 
-		def entity = DataEntity.get(params.int('entity'))
+		def entity = DataEntity.get(params.int('organisation'))
 
 		def currentSection = SurveySection.get(params.int('section'))
 		def currentObjective = SurveyObjective.get(params.int('objective'))
@@ -270,7 +271,7 @@ class EditSurveyController extends AbstractController {
 	def save = {
 		if (log.isDebugEnabled()) log.debug("survey.save, params:"+params)
 
-		Organisation currentOrganisation = getOrganisation(false)
+		DataEntity currentOrganisation = DataEntity.get(params.int('organisation'))
 		def currentSection = SurveySection.get(params.int('section'));
 
 		if (validateParameters(currentOrganisation, Utils.split(currentSection?.groupUuidString))) {
@@ -306,21 +307,21 @@ class EditSurveyController extends AbstractController {
 
 	def print = {
 		Survey survey = Survey.get(params.int('survey'));
-		Organisation organisation = getOrganisation(false)
+		DataEntity entity = DataEntity.get(params.int('organisation'))
 
-		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(organisation,survey);
+		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(entity,survey);
 
 		render (view: '/survey/print/surveyPrint', model:[surveyPage: surveyPage])
 	}
 
 	def export = {
-		Organisation organisation = getOrganisation(false)
+		CalculationEntity entity = locationService.getCalculationEntity(params.int('organisation'), CalculationEntity.class)
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
 		Survey survey = Survey.get(params.int('survey'))	
 
-		String filename = surveyExportService.getExportFilename(organisation, section, objective, survey);
-		File csvFile = surveyExportService.getSurveyExportFile(filename, organisation, section, objective, survey);
+		String filename = surveyExportService.getExportFilename(entity, section, objective, survey);
+		File csvFile = surveyExportService.getSurveyExportFile(filename, entity, section, objective, survey);
 		def zipFile = Utils.getZipFile(csvFile, filename)
 			
 		if(zipFile.exists()){

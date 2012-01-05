@@ -37,7 +37,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyEnteredValue")
 @Table(name="dhsst_survey_entered_value", 
-		uniqueConstraints=@UniqueConstraint(columnNames={"surveyElement", "organisationUnit"}
+		uniqueConstraints=@UniqueConstraint(columnNames={"surveyElement", "entity"}
 ))
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class SurveyEnteredValue extends SurveyEnteredEntity {

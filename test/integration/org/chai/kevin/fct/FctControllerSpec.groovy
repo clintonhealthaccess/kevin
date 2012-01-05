@@ -2,6 +2,9 @@ package org.chai.kevin.fct
 
 import org.chai.kevin.LocationService
 import org.chai.kevin.IntegrationTests
+import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 
 class FctControllerSpec extends FctIntegrationTests {
@@ -19,16 +22,16 @@ class FctControllerSpec extends FctIntegrationTests {
 		when: "valid table"
 		fctController = new FctController()
 		fctController.params.period = period.id
-		fctController.params.organisation = getOrganisation(RWANDA).id
+		fctController.params.organisation = LocationEntity.findByCode(RWANDA).id
 		fctController.params.objective = objective.id
-		fctController.params.level = 3
+		fctController.params.level = LocationLevel.findByCode(DISTRICT).id
 		def model = fctController.view()
 		
 		then:
 		model.currentPeriod.equals(period)
-		model.currentOrganisation.equals(getOrganisation(RWANDA))
+		model.currentOrganisation.equals(LocationEntity.findByCode(RWANDA))
 		model.currentObjective.equals(objective)
-		model.currentLevel.equals(OrganisationUnitLevel.findByLevel(3))
+		model.currentLevel.equals(LocationLevel.findByCode(DISTRICT))
 		model.fctTable != null
 	}
 	
@@ -44,7 +47,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		when: "no objective"
 		fctController = new FctController()
 		fctController.params.period = period.id
-		fctController.params.organisation = getOrganisation(RWANDA).id
+		fctController.params.organisation = LocationEntity.findByCode(RWANDA).id
 		fctController.params.level = 3
 		def model = fctController.view()
 		
@@ -64,9 +67,9 @@ class FctControllerSpec extends FctIntegrationTests {
 		when: "invalid parameters"
 		fctController = new FctController()
 		fctController.params.currentPeriod = period.id
-		fctController.params.organisation = getOrganisation(BURERA).id
+		fctController.params.organisation = LocationEntity.findByCode(BURERA).id
 		fctController.params.objective = objective.id
-		fctController.params.level = 1
+		fctController.params.level = LocationLevel.findByCode(COUNTRY).id
 		fctController.params.filter = "organisation"
 		def model = fctController.view()
 		

@@ -28,7 +28,9 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity
+
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.period.Period
@@ -38,36 +40,16 @@ abstract class AbstractController {
 	def locationService;
 
 	def getOrganisationUnitGroups(def defaultIfNull) {
-		List<OrganisationUnitGroup> groups = []
-		def groupUuids = null
+		List<OrganisationUnitGroup> groups
 		if (params['groupUuids'] != null) {
-			groupUuids = params.list('groupUuids')
+			groups = params.list('groupUuids').collect {DataEntityType.get(it)}
 		}
 		else {
-			groupUuids = ConfigurationHolder.config.dashboard.facility.checked
-			ConfigurationHolder.config.dashboard.facility.checked;
+			groups = new ArrayList(ConfigurationHolder.config.facility.checked).collect {DataEntityType.findByCode(it)}
 		}
-		groupUuids.each {groups.add(locationService.findDataEntityTypeByCode(it))}
 		return groups;
 	}
 	
-//	def getLocation(def defaultIfNull) {
-//		LocationEntity location = LocationEntity.get(params.int('location'));		
-//		//if true, return the root organisation
-//		//if false, don't return the root organisation
-//		if (location == null && defaultIfNull) {
-//			location = locationService.getRootLocation();
-//		}		
-//		return location
-//	}
-	
-//	def getDataEntity() {
-//		DataEntity dataEntity = DataEntity.get(params.int('entity'))
-//		if (dataEntity == null) {
-//			 organisation = organisationService.getOrganisation(params.int('organisation'));
-//		}
-//	}
-
 	def getPeriod() {
 		Period period = Period.get(params.int('period'))
 		if (period == null) {
@@ -75,14 +57,6 @@ abstract class AbstractController {
 		}
 		return period
 	}
-	
-//	def getLevel(){
-//		OrganisationUnitLevel level = null;
-//		if(params.int('level')){
-//			level = OrganisationUnitLevel.findByLevel(params.int('level'));
-//		}
-//		return level;
-//	}
 	
 	def adaptParamsForList() {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)

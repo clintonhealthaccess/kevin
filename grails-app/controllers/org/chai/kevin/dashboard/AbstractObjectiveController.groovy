@@ -35,7 +35,7 @@ import org.chai.kevin.data.Calculation;
 
 abstract class AbstractObjectiveController extends AbstractEntityController {
 
-	def organisationService
+	def locationService
 	def dataService
 	
 	def validateEntity(def entity) {
@@ -72,7 +72,7 @@ abstract class AbstractObjectiveController extends AbstractEntityController {
 			if (log.isInfoEnabled()) log.info('fetched current objective: '+currentObjective);
 		}
 		
-		def groups = organisationService.getGroupsForExpression()
+		def groups = DataEntityType.list()
 		return [objectiveEntry: entity, groups: groups, currentObjective: currentObjective]
 	}
 	

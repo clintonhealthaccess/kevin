@@ -39,12 +39,12 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.Value;
@@ -56,7 +56,6 @@ public class DashboardService {
 
 //	private Log log = LogFactory.getLog(DashboardService.class);
 	
-	private LocationService locationService;
 	private InfoService infoService;
 	private ValueService valueService;
 	
@@ -64,11 +63,11 @@ public class DashboardService {
 	
 	@Transactional(readOnly = true)
 	@Cacheable("dashboardCache")
-	public Dashboard getDashboard(LocationEntity entity, DashboardObjective objective, Period period, Set<String> groupUuids) {
+	public Dashboard getDashboard(LocationEntity entity, DashboardObjective objective, Period period, Set<DataEntityType> groups) {
 		List<CalculationEntity> organisations = new ArrayList<CalculationEntity>();
 		organisations.addAll(entity.getChildren());
 		for (DataEntity dataEntity : entity.getDataEntities()) {
-			if (groupUuids.contains(dataEntity.getType().getCode())) organisations.add(dataEntity);
+			if (groups.contains(dataEntity.getType())) organisations.add(dataEntity);
 		}
 		
 		List<DashboardObjectiveEntry> weightedObjectives = objective.getObjectiveEntries();
@@ -76,33 +75,33 @@ public class DashboardService {
 		List<DashboardObjective> objectivePath = calculateObjectivePath(objective);
 		return new Dashboard(organisations, weightedObjectives, 
 				organisationPath, objectivePath,
-				getValues(organisations, weightedObjectives, period, groupUuids));
+				getValues(organisations, weightedObjectives, period, groups));
 	}
 
 	@Transactional(readOnly = true)
-	public Info<?> getExplanation(CalculationEntity entity, DashboardEntry entry, Period period, Set<String> groupUuids) {
-		return entry.visit(new ExplanationVisitor(groupUuids), entity, period);
+	public Info<?> getExplanation(CalculationEntity entity, DashboardEntry entry, Period period, Set<DataEntityType> groups) {
+		return entry.visit(new ExplanationVisitor(groups), entity, period);
 	}
 
 	private class ExplanationVisitor implements DashboardVisitor<Info> {
 
-		private Set<String> groupUuids;
+		private Set<DataEntityType> groups;
 		
-		public ExplanationVisitor(Set<String> groupUuids) {
-			this.groupUuids = groupUuids;
+		public ExplanationVisitor(Set<DataEntityType> groups) {
+			this.groups = groups;
 		}
 		
 		@Override
 		public Info visitObjective(DashboardObjective objective, CalculationEntity entity, Period period) {
-			DashboardPercentage percentage = objective.visit(new PercentageVisitor(groupUuids), entity, period);
+			DashboardPercentage percentage = objective.visit(new PercentageVisitor(groups), entity, period);
 			if (percentage == null) return null;
-			Map<DashboardObjectiveEntry, DashboardPercentage> values = getValues(objective.getObjectiveEntries(), period, entity, groupUuids);
+			Map<DashboardObjectiveEntry, DashboardPercentage> values = getValues(objective.getObjectiveEntries(), period, entity, groups);
 			return new DashboardObjectiveInfo(percentage, values);
 		}
 
 		@Override
 		public Info visitTarget(DashboardTarget target, CalculationEntity entity, Period period) {
-			return infoService.getCalculationInfo(target.getCalculation(), entity, period, groupUuids);
+			return infoService.getCalculationInfo(target.getCalculation(), entity, period, groups);
 		}
 		
 	}
@@ -111,10 +110,10 @@ public class DashboardService {
 	
 	private class PercentageVisitor implements DashboardVisitor<DashboardPercentage> {
 		
-		private Set<String> groupUuids;
+		private Set<DataEntityType> groups;
 		
-		public PercentageVisitor(Set<String> groupUuids) {
-			this.groupUuids = groupUuids;
+		public PercentageVisitor(Set<DataEntityType> groups) {
+			this.groups = groups;
 		}
 
 		private final Log log = LogFactory.getLog(PercentageVisitor.class);
@@ -158,7 +157,7 @@ public class DashboardService {
 		public DashboardPercentage visitTarget(DashboardTarget target, CalculationEntity entity, Period period) {
 			if (log.isDebugEnabled()) log.debug("visitTarget(target="+target+",entity="+entity+",period="+period+")");
 			
-			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), entity, period, groupUuids);
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), entity, period, groups);
 			if (calculationValue == null) return null;
 			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), entity, period);
 
@@ -167,20 +166,20 @@ public class DashboardService {
 		}
 	}
 	
-	private Map<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>> getValues(List<CalculationEntity> organisations, List<DashboardObjectiveEntry> objectiveEntries, Period period, Set<String> groupUuids) {
+	private Map<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>> getValues(List<CalculationEntity> organisations, List<DashboardObjectiveEntry> objectiveEntries, Period period, Set<DataEntityType> groups) {
 		Map<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>> values = new HashMap<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>>();
 
 		for (CalculationEntity entity : organisations) {
-			Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = getValues(objectiveEntries, period, entity, groupUuids);
+			Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = getValues(objectiveEntries, period, entity, groups);
 			values.put(entity, organisationMap);
 		}
 		return values;
 	}
 
-	private Map<DashboardObjectiveEntry, DashboardPercentage> getValues(List<DashboardObjectiveEntry> objectiveEntries, Period period, CalculationEntity entity, Set<String> groupUuids) {
+	private Map<DashboardObjectiveEntry, DashboardPercentage> getValues(List<DashboardObjectiveEntry> objectiveEntries, Period period, CalculationEntity entity, Set<DataEntityType> groups) {
 		Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = new HashMap<DashboardObjectiveEntry, DashboardPercentage>();
 		for (DashboardObjectiveEntry objectiveEntry : objectiveEntries) {
-			DashboardPercentage percentage = objectiveEntry.getEntry().visit(new PercentageVisitor(groupUuids), entity, period);
+			DashboardPercentage percentage = objectiveEntry.getEntry().visit(new PercentageVisitor(groups), entity, period);
 			organisationMap.put(objectiveEntry, percentage);
 		}
 		return organisationMap;
@@ -206,10 +205,6 @@ public class DashboardService {
 		}
 		Collections.reverse(objectivePath);
 		return objectivePath;
-	}
-	
-	public void setOrganisationService(LocationService locationService) {
-		this.locationService = locationService;
 	}
 	
 	public void setInfoService(InfoService infoService) {

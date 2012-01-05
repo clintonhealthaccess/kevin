@@ -80,12 +80,12 @@
 							<tbody>								
 								<g:each in="${fctTable.organisations}" var="parent">
 									<tr>
-										<th colspan="${fctTable.targets.size()+1}" class="parent-row">${parent.name}</th>
+										<th colspan="${fctTable.targets.size()+1}" class="parent-row"><g:i18n field="${parent.names}"/></th>
 									</tr>
 									<g:each in="${fctTable.getOrganisationMap().get(parent)}" var="children">
 										<g:each in="${children}" var="child">										
-											<tr class="row organisation" data-group="${child.organisationUnitGroup?.uuid}">
-												<th class="box-report-organisation">${child.name}</th>
+											<tr class="row organisation">
+												<th class="box-report-organisation"><g:i18n field="${child.names}"/></th>
 												<g:each in="${fctTable.targets}" var="target">
 													<td class="box-report-value">
 														<g:if test="${!fctTable.getReportValue(child, target) != null}">
@@ -101,7 +101,7 @@
 									<th colspan="${fctTable.targets.size()+1}" class="parent-row">Total</th>
 								</tr>
 								<tr>
-									<th class="box-report-organisation">${currentOrganisation.name}</th>
+									<th class="box-report-organisation"><g:i18n field="${currentOrganisation.names}"/></th>
 									<g:each in="${fctTable.targets}" var="target">
 										<td class="box-report-value">
 											<g:if test="${!fctTable.getTotalValue(target) != null}">

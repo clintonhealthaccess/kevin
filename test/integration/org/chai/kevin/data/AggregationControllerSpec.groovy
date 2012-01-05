@@ -1,6 +1,8 @@
 package org.chai.kevin.data
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
@@ -41,7 +43,7 @@ class AggregationControllerSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def aggregation = newAggregation("1", CODE(1))
-		newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, "", v("1"))
+		newAggregationPartialValue(aggregation, period, LocationEntity.findByCode(RWANDA), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), "", v("1"))
 		aggregationController = new AggregationController()
 		
 		when:
@@ -58,7 +60,7 @@ class AggregationControllerSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def aggregation = newAggregation("1", CODE(1))
-		newAggregationPartialValue(aggregation, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, "", v("1"))
+		newAggregationPartialValue(aggregation, period, LocationEntity.findByCode(RWANDA), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), "", v("1"))
 		aggregationController = new AggregationController()
 		
 		when:

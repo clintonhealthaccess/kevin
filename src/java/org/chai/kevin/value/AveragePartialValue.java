@@ -11,6 +11,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Average;
 import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -18,7 +19,7 @@ import org.hisp.dhis.period.Period;
 @Entity(name="AveragePartialValue")
 @Table(name="dhsst_value_partial_average",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"data", "organisationUnit", "period", "groupUuid"})
+		@UniqueConstraint(columnNames={"data", "entity", "period", "type"})
 	}
 )
 public class AveragePartialValue extends CalculationPartialValue {
@@ -30,15 +31,15 @@ public class AveragePartialValue extends CalculationPartialValue {
 		super();
 	}
 
-	public AveragePartialValue(Average data, CalculationEntity entity, Period period, String groupUuid, Integer numberOfFacilities, Value value) {
-		super(entity, period, groupUuid, value);
+	public AveragePartialValue(Average data, CalculationEntity entity, Period period, DataEntityType type, Integer numberOfFacilities, Value value) {
+		super(entity, period, type, value);
 		
 		this.data = data;
 		this.numberOfFacilities = numberOfFacilities;
 	}
 
-	public AveragePartialValue(Average data, CalculationEntity entity, Period period, String groupUuid, Integer numberOfFacilities) {
-		super(entity, period, groupUuid);
+	public AveragePartialValue(Average data, CalculationEntity entity, Period period, DataEntityType type, Integer numberOfFacilities) {
+		super(entity, period, type);
 		
 		this.data = data;
 		this.numberOfFacilities = numberOfFacilities;

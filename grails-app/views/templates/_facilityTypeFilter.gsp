@@ -8,8 +8,8 @@
 	<div id="facility-type-filter">
 		<g:if test="${facilityTypes != null && !facilityTypes.isEmpty()}">
 			<ul class="horizontal">
-				<g:each in="${facilityTypes}" var="group">
-					<li><input type="checkbox" name="groupUuids" value="${group.uuid}" ${currentFacilityTypes.contains(group)?'checked="checked"':'""'}/>${group.name}</li>
+				<g:each in="${facilityTypes}" var="type">
+					<li><input type="checkbox" name="groupUuids" value="${type.id}" ${currentFacilityTypes.contains(type)?'checked="checked"':'""'}/><g:i18n field="${type.names}"/></li>
 				</g:each>
 			</ul>
 		</g:if>

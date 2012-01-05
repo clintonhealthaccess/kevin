@@ -9,6 +9,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
@@ -16,7 +17,7 @@ import org.hisp.dhis.period.Period;
 @Entity(name="SumValue")
 @Table(name="dhsst_value_partial_sum",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"data", "organisationUnit", "period", "groupUuid"})
+		@UniqueConstraint(columnNames={"data", "entity", "period", "type"})
 	}
 )
 public class SumPartialValue extends CalculationPartialValue {
@@ -27,14 +28,14 @@ public class SumPartialValue extends CalculationPartialValue {
 		super();
 	}
 
-	public SumPartialValue(Sum data, CalculationEntity entity, Period period, String groupUuid, Value value) {
-		super(entity, period, groupUuid, value);
+	public SumPartialValue(Sum data, CalculationEntity entity, Period period, DataEntityType type, Value value) {
+		super(entity, period, type, value);
 		
 		this.data = data;
 	}
 
-	public SumPartialValue(Sum data, CalculationEntity entity, Period period, String groupUuid) {
-		super(entity, period, groupUuid);
+	public SumPartialValue(Sum data, CalculationEntity entity, Period period, DataEntityType type) {
+		super(entity, period, type);
 		
 		this.data = data;
 	}

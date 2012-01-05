@@ -1,6 +1,7 @@
 package org.chai.kevin
 
 import org.chai.kevin.survey.SurveyElement;
+import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
 import org.chai.kevin.survey.SurveyValidationRule;
@@ -23,7 +24,7 @@ class SurveyTagLib {
 			rules.each { rule ->
 				def error = [:]
 				error.displayed = (hasErrors && !rule.allowOutlier) || (!hasErrors && rule.allowOutlier)
-				if (error.displayed) error.message = replacePlaceHolders(g.i18n(field: rule.messages).toString(), rule.dependencies, enteredValue.organisationUnit)
+				if (error.displayed) error.message = replacePlaceHolders(g.i18n(field: rule.messages).toString(), rule.dependencies, enteredValue.entity)
 				error.rule = rule
 				error.suffix = prefix
 				error.accepted = enteredValue.isAcceptedWarning(rule, prefix)
@@ -48,7 +49,7 @@ class SurveyTagLib {
 		return false
 	}
 	
-	def replacePlaceHolders(String message, List<SurveyElement> elements, OrganisationUnit organisationUnit) {
+	def replacePlaceHolders(String message, List<SurveyElement> elements, DataEntity entity) {
 		String[] placeholders = StringUtils.substringsBetween(message, "{", "}")
 		String result = message;
 		for (String placeholder : placeholders) {
@@ -68,7 +69,7 @@ class SurveyTagLib {
 				SurveySection section = surveyElement.surveyQuestion.section
 				Survey survey = section.objective.survey 
 				String replacement = 
-					'<a href="'+createLink(controller: "editSurvey", action: "sectionPage", params: [section: section.id, organisation: organisationUnit.id], fragment: 'element-'+surveyElement.id)+'">'+
+					'<a href="'+createLink(controller: "editSurvey", action: "sectionPage", params: [section: section.id, organisation: entity.id], fragment: 'element-'+surveyElement.id)+'">'+
 					(text!=null?text:surveyElement.id)+'</a>'
 				result = StringUtils.replace(result, "{"+placeholder+"}", replacement);
 			}

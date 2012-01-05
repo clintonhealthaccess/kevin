@@ -40,7 +40,7 @@ import org.apache.commons.lang.math.NumberUtils;
  */
 class CheckboxOptionController extends AbstractEntityController {
 
-	def organisationService
+	def locationService
 	
 	def getEntity(def id) {
 		return SurveyCheckboxOption.get(id)
@@ -64,7 +64,7 @@ class CheckboxOptionController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			option: entity,
-			groups: organisationService.getGroupsForExpression()
+			groups: DataEntityType.list()
 		]
 	}
 	

@@ -54,12 +54,10 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 
 def config = CH.config
 
-String facilityTypeGroup = config.facility.type.group
-Set<Integer> dashboardSkipLevels = config.dashboard.skip.levels
-Set<Integer> costSkipLevels = config.dashboard.skip.levels
-int organisationLevel = config.facility.level
-int dsrGroupLevel= config.dsr.group.level
-Set<Integer> exportSkipLevels = config.export.skip.levels
+Set<String> dashboardSkipLevels = config.dashboard.skip.levels
+Set<String> costSkipLevels = config.dashboard.skip.levels
+String dsrGroupLevel= config.dsr.group.level
+Set<String> exportSkipLevels = config.export.skip.levels
 
 beans = {
 	
@@ -76,7 +74,6 @@ beans = {
 	refreshValueService(RefreshValueService) {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
-		locationService = ref("locationService")
 		sessionFactory = ref("sessionFactory")
 		dataService = ref("dataService")
 		grailsApplication = ref("grailsApplication")
@@ -160,15 +157,13 @@ beans = {
 	}
 
 	dashboardService(DashboardService) {
-		locationService = ref("locationService")
 		infoService = ref("infoService")
 		valueService = ref("valueService")
 		skipLevels = dashboardSkipLevels
 	}
 
 	locationService(LocationService) {
-		organisationUnitService = ref("organisationUnitService")
-		organisationUnitGroupService = ref("organisationUnitGroupService")
+		sessionFactory = ref("sessionFactory")
 	}
 	
 	// override the spring cache manager to use the same as hibernate

@@ -34,6 +34,7 @@ import java.util.List
 
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.value.RawDataElementValue
 import org.hisp.dhis.period.Period
@@ -53,19 +54,19 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(RWANDA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(RWANDA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
 		dashboard.organisations.equals([LocationEntity.findByCode(NORTH)])
 		
 		when:
-		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		dashboard.organisations.equals([DataEntity.findByCode(KIVUYE), DataEntity.findByCode(BUTARO)])
+		s(dashboard.organisations).equals(s([DataEntity.findByCode(KIVUYE), DataEntity.findByCode(BUTARO)]))
 		
 		when:
-		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP]))
+		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		
 		then:
 		dashboard.organisations.equals([DataEntity.findByCode(BUTARO)])
@@ -83,8 +84,8 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def currentOrganisation = LocationEntity.findByCode(currentOrganisationName);
 		def currentObjective = DashboardObjective.findByCode(currentObjectiveName);
 
-		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period, new HashSet(groups));
-		def percentage = dashboard.getPercentage(DataEntity.findByCode(organisationName), getObjective(objectiveName))
+		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period, new HashSet(groups.collect {DataEntityType.findByCode(it)}));
+		def percentage = dashboard.getPercentage(getCalculationEntity(organisationName), getObjective(objectiveName))
 
 		then:
 		//		percentage.status == status;
@@ -92,7 +93,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		else percentage.value == value
 
 		where:
-		currentOrganisationName	| currentObjectiveName	| organisationName	| objectiveName | groups										| value
+		currentOrganisationName	| currentObjectiveName	| organisationName	| objectiveName | groups																							  | value
 		BURERA					| OBJECTIVE				| BUTARO			| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
 		BURERA					| OBJECTIVE				| BUTARO			| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
 		BURERA					| OBJECTIVE				| KIVUYE			| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
@@ -111,13 +112,13 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		when:
 		def objective = DashboardObjective.findByCode(objectiveCode);
-		def dashboard = dashboardService.getDashboard(LocationEntity.findByCode(organisationName), objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]));
+		def dashboard = dashboardService.getDashboard(LocationEntity.findByCode(organisationName), objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]));
 
 		then:
 		dashboard.objectiveEntries == getWeightedObjectives(expectedObjectives)
 		// TODO order organisations
-		dashboard.organisations.containsAll getOrganisations(expectedOrganisations)
-		dashboard.organisationPath == getOrganisations(expectedOrganisationPath)
+		dashboard.organisations.containsAll expectedOrganisations.collect {DataEntity.findByCode(it)}
+		dashboard.organisationPath == expectedOrganisationPath.collect {LocationEntity.findByCode(it)}
 		dashboard.objectivePath == getObjectives(expectedObjectivePath)
 
 		where:

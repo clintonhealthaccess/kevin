@@ -31,6 +31,7 @@ package org.chai.kevin.maps
 import org.chai.kevin.AbstractController
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 
@@ -47,14 +48,12 @@ class MapsController extends AbstractController {
 		
 		Period period = getPeriod()
 		MapsTarget target = MapsTarget.get(params.int('target'));
-		LocationEntity entity = LocationEntity.get(params.int('entity'));
-		
-		Integer organisationLevel = ConfigurationHolder.config.facility.level;
+		LocationEntity entity = LocationEntity.get(params.int('organisation'));
 		
 		[
 			periods: Period.list(), 
 			targets: MapsTarget.list(),
-			organisationTree: locationService.getRootOrganisation(),
+			organisationTree: locationService.getRootLocation(),
 			currentPeriod: period, 
 			currentTarget: target,
 			currentOrganisation: entity
@@ -65,22 +64,24 @@ class MapsController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("maps.infos, params:"+params)
 		
 		Period period = Period.get(params.int('period'))
-		CalculationEntity entity = locationService.getCalculationEntity(params.int('entity'), CalculationEntity.class);
+		CalculationEntity entity = locationService.getCalculationEntity(params.int('organisation'), CalculationEntity.class);
 		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
 		def info = mapsService.getExplanation(period, organisation, target);
 		
-		[info: info, target: target, groups: organisationService.getGroupsForExpression()]
+		[info: info, target: target, groups: DataEntityType.list()]
 	}
 	
 	def map = {
 		if (log.isDebugEnabled()) log.debug("maps.map, params:"+params)
 		
-		Period period = Period.get(params.int('period'))
-		LocationEntity entity = LocationEntity.get(params.int('entity'));
-		MapsTarget target =  MapsTarget.get(params.int('target'));
+		Period period = getPeriod()
+		LocationEntity entity = LocationEntity.get(params.int('organisation'));
+		if (entity == null) entity = locationService.getRootLocation();
+		LocationLevel level = LocationLevel.get(params.int('level'))
+		if (level == null) level = entity.getLevel()
 		
-		Integer level = params.int('level')
+		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
 		def map = mapsService.getMap(period, entity, level, target);
 		

@@ -35,7 +35,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
  */
 class SectionController extends AbstractEntityController {
 
-	def organisationService
+	def locationService
 	
 	def getEntity(def id) {
 		return SurveySection.get(id)
@@ -60,7 +60,7 @@ class SectionController extends AbstractEntityController {
 		[
 			section: entity,
 			objectives: entity.objective.survey.objectives,
-			groups: organisationService.getGroupsForExpression()
+			groups: DataEntityType.list()
 		]
 	}
 

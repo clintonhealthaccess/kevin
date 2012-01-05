@@ -42,7 +42,7 @@ import org.hisp.dhis.dataelement.DataElementService;
 
 class DsrTargetController extends AbstractEntityController {
 
-	def organisationService
+	def locationService
 	def dataService
 
 	def getEntity(def id) {
@@ -65,7 +65,7 @@ class DsrTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			objectives: DsrObjective.list(),
-			groups: organisationService.getGroupsForExpression(),
+			groups: DataEntityType.list(),
 			categories: DsrTargetCategory.list(),
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[]
 		]

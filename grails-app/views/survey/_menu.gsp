@@ -189,7 +189,7 @@
 				toggleControls($.queue(document, 'surveyQueue').length > 0);
 			},
 			complete: function() {
-				_gaq.push(['_trackEvent', 'survey', 'save']);
+				${grails.util.Environment.current==grails.util.Environment.PRODUCTION?"_gaq.push(['_trackEvent', 'survey', 'save']);":""}
 			}
 		});
 		

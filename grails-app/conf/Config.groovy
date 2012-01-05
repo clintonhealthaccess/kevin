@@ -215,28 +215,19 @@ site.fallback.language="en"
 site.admin=true
 site.entity.list.max=40
 site.period=0
-
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 
-facility.level=4
-facility.type.group="Type"
+facility.checked=["District Hospital","Health Center"]
 
-info.group.level=3
-
-dashboard.facility.checked=["District Hospital","Health Center"]
 dashboard.skip.levels=[]
-
 cost.skip.levels=[]
+export.skip.levels=["Country"]
 
-dsr.facility.checked=["District Hospital","Health Center"]
-dsr.group.level=3
-
-fct.facility.checked=["District Hospital","Health Center"]
+info.group.level="District"
+dsr.group.level="District"
 
 period.type = "Monthly"
-
-export.skip.levels=[1]
 
 /**
  * Configuration file override

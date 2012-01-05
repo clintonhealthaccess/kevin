@@ -29,11 +29,12 @@ package org.chai.kevin.cost
 */
 
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.AbstractEntityController
 
 class CostTargetController extends AbstractEntityController {
 	
-	def organisationService
+	def locationService
 	def dataService
 	
 	def getEntity(def id) {
@@ -59,7 +60,7 @@ class CostTargetController extends AbstractEntityController {
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[],
 			dataElementsEnd:  entity.dataElementEnd!=null?[entity.dataElementEnd]:[],
 			costRampUps: CostRampUp.list(), 
-			groups: organisationService.getGroupsForExpression(),
+			groups: DataEntityType.list()
 		]
 	}
 	

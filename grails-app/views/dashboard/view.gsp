@@ -43,11 +43,11 @@
 				    	<ul class="horizontal">
 				    		<g:each in="${dashboard.organisationPath}" var="organisation">
 					    		<li>
-					    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
+					    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]"><g:i18n field="${organisation.names}"/></g:link>
 					    		</li>
 				    		</g:each>
 				    		<li>
-				    			${currentOrganisation.name}
+				    			<g:i18n field="${currentOrganisation.names}"/>
 				    		</li>
 				    	</ul>
 			    	</div>
@@ -115,14 +115,14 @@
 							</thead>
 							<tbody class="body">
 								<g:each in="${dashboard.organisations}" var="organisation">
-								<tr class="row organisation" data-group="${organisation.organisationUnitGroup?.uuid}">
+								<tr class="row organisation">
 									<td class="cell label row-${organisation.id}" data-row="${organisation.id}">
 										<div><span>
-										<g:if test="${organisation.getChildren().size() > 0}">
-											<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]">${organisation.name}</g:link>
+										<g:if test="${!organisation.collectsData()}">
+											<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]"><g:i18n field="${organisation.names}"/></g:link>
 										</g:if>
 										<g:else>
-											${organisation.name}
+											<g:i18n field="${organisation.names}"/>
 										</g:else>
 										</span></div>
 									</td>

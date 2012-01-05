@@ -1,6 +1,8 @@
 package org.chai.kevin.data
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.AveragePartialValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
@@ -41,7 +43,7 @@ class AverageControllerSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def average = newAverage("1", CODE(1))
-		newAveragePartialValue(average, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, 1, v("1"))
+		newAveragePartialValue(average, period, LocationEntity.findByCode(RWANDA), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		averageController = new AverageController()
 		
 		when:
@@ -58,7 +60,7 @@ class AverageControllerSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def average = newAverage("1", CODE(1))
-		newAveragePartialValue(average, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, "1", v("1"))
+		newAveragePartialValue(average, period, LocationEntity.findByCode(RWANDA), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), "1", v("1"))
 		averageController = new AverageController()
 		
 		when:

@@ -3,13 +3,13 @@ package org.chai.kevin.maps
 class MapsTargetControllerSpec extends MapsIntegrationTests {
 
 	def mapsTargetController
-	def organisationService
+	def locationService
 	
 	def "save target"() {
 		setup:
 		def average = newAverage("1", CODE(3))
 		mapsTargetController = new MapsTargetController()
-		mapsTargetController.organisationService = organisationService
+		mapsTargetController.locationService = locationService
 		
 		when:
 		mapsTargetController.params.code = CODE(2)
@@ -28,7 +28,7 @@ class MapsTargetControllerSpec extends MapsIntegrationTests {
 //		def sum = newSum("1", CODE(1))
 //		def average = newAverage("1", CODE(2))
 //		mapsTargetController = new MapsTargetController()
-//		mapsTargetController.organisationService = organisationService
+//		mapsTargetController.locationService = locationService
 //		
 //		when:
 //		mapsTargetController.create()

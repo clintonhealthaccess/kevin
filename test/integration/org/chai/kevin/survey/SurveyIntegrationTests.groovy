@@ -60,20 +60,20 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return element;
 	}
 	
-	def static newSurveyEnteredValue(def element, def period, def organisationUnit, def value) {
-		return new SurveyEnteredValue(surveyElement: element, value: value, organisationUnit: organisationUnit).save(failOnError: true, flush: true)
+	def static newSurveyEnteredValue(def element, def period, def entity, def value) {
+		return new SurveyEnteredValue(surveyElement: element, value: value, entity: entity).save(failOnError: true, flush: true)
 	}
 
-	def static newSurveyEnteredQuestion(def question, def period, def organisationUnit, def invalid, def complete) {
-		return new SurveyEnteredQuestion(question: question, organisationUnit: organisationUnit, invalid: invalid, complete: complete).save(failOnError: true, flush: true)
+	def static newSurveyEnteredQuestion(def question, def period, def entity, def invalid, def complete) {
+		return new SurveyEnteredQuestion(question: question, entity: entity, invalid: invalid, complete: complete).save(failOnError: true, flush: true)
 	}
 		
-	def static newSurveyEnteredSection(def section, def period, def organisationUnit, def invalid, def complete) {
-		return new SurveyEnteredSection(section: section, organisationUnit: organisationUnit, invalid: invalid, complete: complete).save(failOnError: true)
+	def static newSurveyEnteredSection(def section, def period, def entity, def invalid, def complete) {
+		return new SurveyEnteredSection(section: section, entity: entity, invalid: invalid, complete: complete).save(failOnError: true)
 	}
 
-	def static newSurveyEnteredObjective(def objective, def period, def organisationUnit, def invalid, def complete, def closed) {
-		return new SurveyEnteredObjective(objective: objective, organisationUnit: organisationUnit, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
+	def static newSurveyEnteredObjective(def objective, def period, def entity, def invalid, def complete, def closed) {
+		return new SurveyEnteredObjective(objective: objective, entity: entity, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
 	}
 	
 	def static newSurveyValidationRule(def element, def prefix, def groups, def expression, boolean allowOutlier, def dependencies = []) {

@@ -2,6 +2,7 @@ package org.chai.kevin
 
 import org.chai.kevin.LocationService;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.organisationunit.OrganisationUnitService
 /*
@@ -34,8 +35,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitService
 
 class FilterTagLib {
 
-	LocationService locationService;
-	OrganisationUnitService organisationUnitService;
+	def locationService;
 
 	def createLinkByFilter = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]
@@ -51,55 +51,41 @@ class FilterTagLib {
 		String filter = (String) params.get("filter");
 
 		LocationEntity entity = null;
-		if (params.get("entity") != null) {
-			Object id = params.get("entity") 
-			organisation = LocationEntity.get(Integer.parseInt(params.get("entity")));
+		if (params.get("organisation") != null) {
+			entity = LocationEntity.get(Integer.parseInt(params.get("organisation")))
 		}
 
-		OrganisationUnitLevel orgUnitLevel = null;
+		LocationLevel level = null;
 		if (params.get("level") != null) {
-			Object id = params.get("level")
-			if (id instanceof Integer) orgUnitLevel = organisationUnitService.getOrganisationUnitLevel((Integer) params.get("level"));
-			else orgUnitLevel = organisationUnitService.getOrganisationUnitLevel(Integer.parseInt(params.get("level")));
+			level = LocationLevel.get(Integer.parseInt(params.get('level')))
 		}
 
-		if (organisation != null) {
-			locationService.loadLevel(organisation);
-
-			if (orgUnitLevel != null) {
-
-				if (organisation.getLevel() >= orgUnitLevel.getLevel()) {
+		if (entity != null) {
+			if (level != null) {
+				// TODO use isAfter()
+				if (entity.getLevel().getOrder() >= level.getOrder()) {
 					// conflict
 					if (filter == "level") {
 						// adjust organisation to level
-						if (orgUnitLevel.getLevel() == 1)
-							organisation = locationService.getRootLocation();
-						else
-							organisation = locationService.getParentOfLevel(organisation, orgUnitLevel.getLevel() - 1);
-						params.put("entity", organisation.getId());
+						LocationLevel levelBefore = locationService.getLevelBefore(entity.getLevel())
+						if (levelBefore == null) entity = locationService.getRootLocation();
+						else entity = locationService.getParentOfLevel(entity, levelBefore);
 					}
 					// conflict
 					else {
 						// adjust level to organisation
-						orgUnitLevel = organisationUnitService
-								.getOrganisationUnitLevelByLevel(organisation
-								.getLevel() + 1);
-						params.put("level", orgUnitLevel.getLevel());
+						level = locationService.getLevelAfter(entity.getLevel())
 					}
-				}
-				else {
-					params.put("level", orgUnitLevel.getLevel());
 				}
 			}
 			// conflict
 			else {
 				// adjust level to organisation
-				orgUnitLevel = organisationUnitService
-						.getOrganisationUnitLevelByLevel(organisation
-						.getLevel() + 1);
-				params.put("level", orgUnitLevel.getLevel());
+				level = locationService.getLevelAfter(entity.getLevel())
 			}
 		}
+		if (entity != null) params.put("organisation", entity.id);
+		if (level != null) params.put("level", level.id);
 		return params;
 	}
 

@@ -6,10 +6,10 @@ class SurveyUser extends User {
 
 	// TODO assign several surveys to a user
 	// instead of an organisation unit
-	int organisationUnitId;
+	int entityId;
 
 	static constraints = {
-		organisationUnitId (nullable: false)	
+		entityId (nullable: false)	
 	}
 	
 }

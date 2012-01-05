@@ -7,7 +7,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class SummaryController extends AbstractController {
 
-	SummaryService summaryService
+	def summaryService
+	def languageService
 	
 	def index = {
 		redirect (action: 'summaryPage', params: params)
@@ -15,7 +16,7 @@ class SummaryController extends AbstractController {
 	
 	// TODO refactor into several actions for survey/objective/section
 	def summaryPage = {
-		LocationEntity entity = LocationEntity.get(params.int('entity'))
+		LocationEntity entity = LocationEntity.get(params.int('organisation'))
 
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
@@ -25,28 +26,26 @@ class SummaryController extends AbstractController {
 		SummaryPage summaryPage = null;
 		
 		// TODO build different classes for this and refactor into several actions
-		if (section != null && organisation != null) {
+		if (section != null && entity != null) {
 			summaryPage = summaryService.getSectionSummaryPage(entity, section)
 			template = '/survey/summary/summarySectionTable'
 		}
-		else if (objective != null && organisation != null) {
+		else if (objective != null && entity != null) {
 			summaryPage = summaryService.getObjectiveSummaryPage(entity, objective)
 			template = '/survey/summary/summaryObjectiveTable'
 		}
-		else if (survey != null && organisation != null) {
+		else if (survey != null && entity != null) {
 			summaryPage = summaryService.getSurveySummaryPage(entity, survey);
 			template = '/survey/summary/summarySurveyTable'
 		}
 
-		if (summaryPage != null) summaryPage.sort(params.sort, params.order)
+		if (summaryPage != null) summaryPage.sort(params.sort, params.order, languageService.currentLanguage)
 			
-		Integer organisationLevel = ConfigurationHolder.config.facility.level;
-
 		render (view: '/survey/summary/summaryPage', model: [
 			currentSurvey: survey,
 			currentObjective: objective,
 			currentSection: section,
-			organisation: organisation,
+			organisation: entity,
 			summaryPage: summaryPage,
 			surveys: Survey.list(),
 			organisationTree: locationService.getRootLocation(),
@@ -55,7 +54,7 @@ class SummaryController extends AbstractController {
 	}
 
 	def objectiveTable = {
-		DataEntity entity = DataEntity.get(params.int('entity'))
+		DataEntity entity = DataEntity.get(params.int('organisation'))
 		Survey currentSurvey = Survey.get(params.int('survey'))
 
 		SummaryPage summaryPage = summaryService.getObjectiveTable(entity, currentSurvey)
@@ -67,7 +66,7 @@ class SummaryController extends AbstractController {
 	}
 
 	def sectionTable = {
-		DataEntity entity = DataEntity.get(params.int('entity'))
+		DataEntity entity = DataEntity.get(params.int('organisation'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'))
 
 		SummaryPage summaryPage = summaryService.getSectionTable(entity, currentObjective)

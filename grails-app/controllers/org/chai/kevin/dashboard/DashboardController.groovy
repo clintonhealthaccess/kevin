@@ -31,6 +31,8 @@ package org.chai.kevin.dashboard
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.aggregation.AggregationService
@@ -50,19 +52,19 @@ class DashboardController extends AbstractController {
 	def explain = {
 		Period period = Period.get(params.int('period'))
 		DashboardEntry entry = getDashboardEntry()
-		CalculationEntity entity = locationService.getCalculationEntity(params.int('entity'), CalculationEntity.class)
+		CalculationEntity entity = locationService.getCalculationEntity(params.int('organisation'), CalculationEntity.class)
 
 		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
 		
-		def info = dashboardService.getExplanation(entity, entry, period, new HashSet(facilityTypes*.uuid))
-		def groups = organisationService.getGroupsForExpression()
+		def info = dashboardService.getExplanation(entity, entry, period, new HashSet(facilityTypes))
+		def groups = DataEntityType.list()
 		[info: info, groups: groups, entry: entry]
 	}
 	
-	protected def redirectIfDifferent(def period, def objective, def location) {
-		if (period.id+'' != params['period'] || objective.id+'' != params['objective'] || organisation.id+'' != params['entity'] ) {
-			if (log.isInfoEnabled()) log.info ("redirecting to action: "+params['action']+",	 period: "+period.id+", objective: "+objective.id+", location: "+location.id)
-			redirect (controller: 'dashboard', action: params['action'], params: [period: period.id, objective: objective.id, location: location.id]);
+	protected def redirectIfDifferent(def period, def objective, def entity) {
+		if (period.id+'' != params['period'] || objective.id+'' != params['objective'] || entity.id+'' != params['organisation'] ) {
+			if (log.isInfoEnabled()) log.info ("redirecting to action: "+params['action']+", period: "+period.id+", objective: "+objective.id+", entity: "+entity.id)
+			redirect (controller: 'dashboard', action: params['action'], params: [period: period.id, objective: objective.id, organisation: entity.id]);
 		}
 	}
 	
@@ -82,24 +84,25 @@ class DashboardController extends AbstractController {
 		
 		Period period = getPeriod()
 		DashboardEntry entry = getDashboardEntry()
-		LocationEntity location = LocationEntity.get(params.int('entity'))
+		LocationEntity entity = LocationEntity.get(params.int('organisation'))
+		if (entity == null) entity = locationService.getRootLocation()
 		
-		if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", objective: "+entry.id+", entity:"+ location.id);
-		redirectIfDifferent(period, entry, location)
+		redirectIfDifferent(period, entry, entity)
+		if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", objective: "+entry.id+", entity:"+ entity.id);
 		
-		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
+		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
 		
-		def dashboard = dashboardService.getDashboard(location, entry, period, new HashSet(facilityTypes*.uuid));
+		def dashboard = dashboardService.getDashboard(entity, entry, period, new HashSet(facilityTypes));
 		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
 		
 		[ 
 			dashboard: dashboard,
 			currentPeriod: period,
 			currentObjective: entry,
-			currentOrganisation: organisation,
+			currentOrganisation: entity,
 			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
-			facilityTypes: organisationService.getGroupsForExpression()
+			facilityTypes: DataEntityType.list()
 		]
 	}
 	

@@ -31,7 +31,6 @@ public class RefreshValueService {
 	private SessionFactory sessionFactory;
 	private ExpressionService expressionService;
 	private ValueService valueService;
-	private LocationService locationService;
 	private GrailsApplication grailsApplication;
 	
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
@@ -45,7 +44,7 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		valueService.deleteValues(normalizedDataElement);
-		for (Iterator<Object[]> iterator = getCombinations(); iterator.hasNext();) {
+		for (Iterator<Object[]> iterator = getCombinations(DataEntity.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
 			DataEntity dataEntity = (DataEntity)row[0];
 			Period period = (Period)row[1];
@@ -67,7 +66,7 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		valueService.deleteValues(calculation);
-		for (Iterator<Object[]> iterator = getCombinations(); iterator.hasNext();) {
+		for (Iterator<Object[]> iterator = getCombinations(CalculationEntity.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
 			CalculationEntity entity = (CalculationEntity)row[0];
 			Period period = (Period)row[1];
@@ -114,16 +113,12 @@ public class RefreshValueService {
 		}
 	}
 
-	private Iterator<Object[]> getCombinations() {
+	private <T extends CalculationEntity> Iterator<Object[]> getCombinations(Class<T> clazz) {
 		Query query = sessionFactory.getCurrentSession().createQuery(
-				"select organisationUnit, period " +
-				"from OrganisationUnit organisationUnit, Period period"
+				"select entity, period " +
+				"from "+clazz.getSimpleName()+" entity, Period period"
 		).setCacheable(false);
 		return query.iterate();
-	}
-	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {

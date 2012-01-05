@@ -17,7 +17,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyValidObjective")
 @Table(name="dhsst_survey_entered_objective", uniqueConstraints=@UniqueConstraint(
-		columnNames={"objective", "organisationUnit"})
+		columnNames={"objective", "entity"})
 )
 public class SurveyEnteredObjective extends SurveyEnteredEntity {
 
@@ -62,11 +62,11 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 
 	@NaturalId
 	@ManyToOne(targetEntity=DataEntity.class, fetch=FetchType.LAZY)
-	public DataEntity getDataEntity() {
+	public DataEntity getEntity() {
 		return entity;
 	}
 	
-	public void setOrganisationUnit(DataEntity entity) {
+	public void setEntity(DataEntity entity) {
 		this.entity = entity;
 	}
 	

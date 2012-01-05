@@ -41,6 +41,7 @@ import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ValueService;
@@ -55,7 +56,7 @@ public class CostTableService {
 	private CostService costService;
 	private LocationService locationService;
 	private ValueService valueService;
-	private Set<Integer> skipLevels;
+	private Set<String> skipLevels;
 	
 	public CostTable getCostTable(Period period, CostObjective objective, CalculationEntity entity) {
 		List<CostTarget> targets = objective.getTargets();
@@ -183,16 +184,20 @@ public class CostTableService {
 		this.valueService = valueService;
 	}
 	
-	public void setOrganisationService(LocationService locationService) {
+	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
 	
-	public void setSkipLevels(Set<Integer> skipLevels) {
+	public void setSkipLevels(Set<String> skipLevels) {
 		this.skipLevels = skipLevels;
 	}
 	
-	public Integer[] getSkipLevelArray() {
-		return skipLevels.toArray(new Integer[skipLevels.size()]);
+	public List<LocationLevel> getSkipLevelList() {
+		List<LocationLevel> result = new ArrayList<LocationLevel>();
+		for (String code : skipLevels) {
+			result.add(locationService.findLocationLevelByCode(code));
+		}
+		return result;
 	}
 	
 }

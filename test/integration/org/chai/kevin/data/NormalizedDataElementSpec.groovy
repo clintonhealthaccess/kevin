@@ -56,13 +56,14 @@ class NormalizedDataElementSpec extends IntegrationTests {
 	
 	def "normalized data element value hashcode and equals"() {
 		setup:
-		def organisationUnit = newOrganisationUnit(name: BUTARO)
+		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
+		def organisation = newDataEntity(BUTARO, type)
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 
 		when:
-		def expr1 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, organisationUnit: organisationUnit);
-		def expr2 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, organisationUnit: organisationUnit);
+		def expr1 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, entity: organisation);
+		def expr2 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, entity: organisation);
 
 		then:
 		expr1.hashCode() == expr2.hashCode();

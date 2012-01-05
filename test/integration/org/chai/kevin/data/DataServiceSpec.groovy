@@ -37,6 +37,7 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -195,7 +196,8 @@ class DataServiceSpec extends IntegrationTests {
 		when:
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def period = newPeriod()
-		def organisation = newOrganisationUnit(KIVUYE)
+		def type = newDataEntityType(HEALTH_CENTER_GROUP)
+		def organisation = newDataEntity(KIVUYE, type)
 		newRawDataElementValue(dataElement, period, organisation, Value.NULL)
 		
 		dataService.delete(dataElement)
@@ -210,7 +212,8 @@ class DataServiceSpec extends IntegrationTests {
 		when:
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		def period = newPeriod()
-		def organisation = newOrganisationUnit(KIVUYE)
+		def type = newDataEntityType(HEALTH_CENTER_GROUP)
+		def organisation = newDataEntity(KIVUYE, type)
 		newNormalizedDataElementValue(dataElement, organisation, period, Status.VALID, Value.NULL)
 		
 		dataService.delete(dataElement)
@@ -225,8 +228,9 @@ class DataServiceSpec extends IntegrationTests {
 		when:
 		def calculation = newSum("1", CODE(1))
 		def period = newPeriod()
-		def organisation = newOrganisationUnit(KIVUYE)
-		newSumPartialValue(calculation, period, organisation, HEALTH_CENTER_GROUP, Value.NULL)
+		def type = newDataEntityType(HEALTH_CENTER_GROUP)
+		def organisation = newDataEntity(KIVUYE, type)
+		newSumPartialValue(calculation, period, organisation, DataEntityType.findByCode(HEALTH_CENTER_GROUP), Value.NULL)
 
 		dataService.delete(calculation)
 		

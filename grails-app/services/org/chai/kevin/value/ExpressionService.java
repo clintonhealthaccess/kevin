@@ -97,7 +97,7 @@ public class ExpressionService {
 					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, facility, DataElement.class);
 					values.put(facility, statusValuePair);
 				}
-				result.add(calculation.getCalculationPartialValue(expression, values, entity, period, dataEntityType.getCode()));
+				result.add(calculation.getCalculationPartialValue(expression, values, entity, period, dataEntityType));
 			}
 		}
 		return result;

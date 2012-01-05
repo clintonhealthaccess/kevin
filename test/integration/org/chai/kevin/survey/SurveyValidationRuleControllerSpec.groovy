@@ -24,7 +24,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		when:
 		surveyValidationRuleController.params['surveyElement.id'] = element.id
 		surveyValidationRuleController.params['prefix'] = ""
-		surveyValidationRuleController.params['groupUuids'] = [(HEALTH_CENTER_GROUP)]
+		surveyValidationRuleController.params['groupUuids'] = [HEALTH_CENTER_GROUP]
 		surveyValidationRuleController.params['expression'] = "true"
 		surveyValidationRuleController.params['allowOutlier'] = false
 		surveyValidationRuleController.params.messages = [:]

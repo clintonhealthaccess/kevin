@@ -1,6 +1,8 @@
 package org.chai.kevin.data
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.SumPartialValue;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 
@@ -41,7 +43,7 @@ class SumControllerSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def sum = newSum("1", CODE(1))
-		newSumPartialValue(sum, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, v("1")) 
+		newSumPartialValue(sum, period, LocationEntity.findByCode(RWANDA), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1")) 
 		sumController = new SumController()
 		
 		when:
@@ -58,7 +60,7 @@ class SumControllerSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def sum = newSum("1", CODE(1))
-		newSumPartialValue(sum, period, OrganisationUnit.findByName(RWANDA), DISTRICT_HOSPITAL_GROUP, v("1"))
+		newSumPartialValue(sum, period, LocationEntity.findByCode(RWANDA), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
 		sumController = new SumController()
 		
 		when:

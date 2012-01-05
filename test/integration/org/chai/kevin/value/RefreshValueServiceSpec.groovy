@@ -34,6 +34,9 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.CalculationPartialValue;
@@ -74,7 +77,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def calculated = new Date()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
-		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, OrganisationUnit.findByName(BUTARO), period, Status.VALID, Value.NULL)
+		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, DataEntity.findByCode(BUTARO), period, Status.VALID, Value.NULL)
 		def timestamp = normalizedDataElementValue.timestamp
 		
 		then:
@@ -125,7 +128,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def calculated = new Date()
 		def average = newAverage("1", CODE(2), calculated)
-		def partialValue = newAveragePartialValue(average, period, OrganisationUnit.findByName(BURERA), DISTRICT_HOSPITAL_GROUP, 1, v("1"))
+		def partialValue = newAveragePartialValue(average, period, LocationEntity.findByCode(BURERA), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		def timestamp = partialValue.timestamp
 		
 		then:

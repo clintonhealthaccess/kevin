@@ -37,7 +37,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 class ObjectiveController extends AbstractEntityController {
 
 	def languageService
-	def organisationService
+	def locationService
 	
 	def getEntity(def id) {
 		return SurveyObjective.get(id)
@@ -60,7 +60,7 @@ class ObjectiveController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			objective: entity,
-			groups: organisationService.getGroupsForExpression(),
+			groups: DataEntityType.list(),
 		]
 	}
 

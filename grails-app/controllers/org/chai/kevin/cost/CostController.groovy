@@ -45,7 +45,7 @@ class CostController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("cost.explain, params:"+params)
 		
 		Period period = Period.get(params.int('period'))
-		LocationEntity location = LocationEntity.get(params.int('entity'))
+		LocationEntity location = LocationEntity.get(params.int('organisation'))
 		CostTarget target = CostTarget.get(params.int('objective'));
 		
 		def explanation = costTableService.getExplanation(period, target, location);
@@ -56,7 +56,7 @@ class CostController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("cost.view, params:"+params)
 		
 		Period period = getPeriod()
-		LocationEntity location = LocationEntity.get(params.int('entity'))
+		LocationEntity location = LocationEntity.get(params.int('organisation'))
 		CostObjective objective = CostObjective.get(params.int('objective'));
 		
 		if (log.isInfoEnabled()) log.info("view cost for period: "+period.id);
@@ -65,7 +65,6 @@ class CostController extends AbstractController {
 		if (period != null && objective != null && location != null) {
 			costTable = costTableService.getCostTable(period, objective, location);
 		}
-		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		
 		if (log.isDebugEnabled()) log.debug('costTable: '+costTable)
 		[

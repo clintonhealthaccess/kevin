@@ -3,14 +3,14 @@ package org.chai.kevin.fct
 class FctTargetControllerSpec extends FctIntegrationTests {
 
 	def fctTargetController
-	def organisationService
+	def locationService
 	
 	def "save target"() {
 		setup:
 		def objective = newFctObjective(CODE(1))
 		def sum = newSum("1", CODE(3))
 		fctTargetController = new FctTargetController()
-		fctTargetController.organisationService = organisationService
+		fctTargetController.locationService = locationService
 		
 		when:
 		fctTargetController.params.code = CODE(2)

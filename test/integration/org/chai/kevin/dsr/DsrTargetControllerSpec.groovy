@@ -46,14 +46,14 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 //		def objective = newDsrObjective(CODE(1))
 //		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "1")
 //		def target = newDsrTarget(CODE(2), expression, [], objective)
-//		def organisation = getOrganisation(BURERA)
+//		def organisation = LocationEntity.findByCode(BURERA)
 //		refresh()
 //		
 //		when:
 //		def dsrTable = reportService.getDsrTable(organisation, objective, period)
 //		
 //		then:
-//		dsrTable.getDsrValue(getOrganisation(BUTARO), target) != null
+//		dsrTable.getDsrValue(DataEntity.findByCode(BUTARO), target) != null
 //		
 //		// TODO can't work because controller class is not instrumented 
 ////		when:
@@ -62,7 +62,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 ////		dsrTable = dsrService.getDsr(organisation, objective, period)
 ////		
 ////		then:
-////		dsrTable.getDsr(getOrganisation(BUTARO), target) == null
+////		dsrTable.getDsr(DataEntity.findByCode(BUTARO), target) == null
 //	}
 	
 	def "save target saves target"() {

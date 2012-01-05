@@ -45,9 +45,9 @@ public class OrganisationSorter {
 				if(org1 == null || org2 == null) return 0;
 				
 				if (org1.getType().getNames().get(language).equals(org2.getType().getNames().get(language)))
-					return org1.getNames().get(language).compareTo(org2.getNames().get(language));
+					return compareTranslations(org1.getNames(), org2.getNames(), language);
 				else
-					return org1.getType().getNames().get(language).compareTo(org2.getType().getNames().get(language));
+					return compareTranslations(org1.getType().getNames(), org2.getType().getNames(), language);
 			}
 		};
 	}
@@ -58,7 +58,7 @@ public class OrganisationSorter {
 				if(org1 == null || org2 == null) return 0;
 				
 				if (org1.getLevel().equals(org2.getLevel()))
-					return org1.getNames().get(language).compareTo(org2.getNames().get(language));
+					return compareTranslations(org1.getNames(), org2.getNames(), language);
 				else
 					return org1.getLevel().compareTo(org2.getLevel());
 			}
@@ -70,8 +70,13 @@ public class OrganisationSorter {
 			public int compare(CalculationEntity org1, CalculationEntity org2) {
 				if(org1 == null || org2 == null) return 0;
 				
-				return org1.getNames().get(language).compareTo(org2.getNames().get(language));
+				return compareTranslations(org1.getNames(), org2.getNames(), language);
 			}
 		};
+	}
+	
+	private static int compareTranslations(Translation t1, Translation t2, String language) {
+		if (t1.get(language) != null && t2.get(language) != null) return t1.get(language).compareTo(t2.get(language));
+		return 0;
 	}
 }

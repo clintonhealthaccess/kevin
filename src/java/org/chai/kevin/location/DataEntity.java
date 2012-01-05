@@ -8,23 +8,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-@Entity(name="DataCollectingSite")
+@Entity(name="DataEntity")
 @Table(name="dhsst_entity_data")
 public class DataEntity extends CalculationEntity {
 
-	private LocationEntity parent;
+	private LocationEntity location;
 	private DataEntityType type;
 	
 	@ManyToOne(targetEntity=LocationEntity.class)
-	@Override
-	public LocationEntity getParent() {
-		return parent;
+	public LocationEntity getLocation() {
+		return location;
 	}
 	
-	public void setLocation(LocationEntity parent) {
-		this.parent = parent;
+	public void setLocation(LocationEntity location) {
+		this.location = location;
 	}
-
+	
 	@ManyToOne(targetEntity=DataEntityType.class)
 	public DataEntityType getType() {
 		return type;
@@ -52,6 +51,17 @@ public class DataEntity extends CalculationEntity {
 	@Transient
 	public List<LocationEntity> getChildren() {
 		return new ArrayList<LocationEntity>();
+	}
+
+	@Override
+	public String toString() {
+		return "DataEntity [getCode()=" + getCode() + "]";
+	}
+
+	@Override
+	@Transient
+	public LocationEntity getParent() {
+		return location;
 	}
 	
 }

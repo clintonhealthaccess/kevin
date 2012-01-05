@@ -121,7 +121,7 @@ grails.project.dependency.resolution = {
 	plugins {
 		compile ":hibernate:$grailsVersion"
 		compile ":jquery:1.7.1"
-		compile ":resources:1.1.4"
+		compile ":resources:1.1.6"
 		compile ":shiro:1.1.5"
 		compile ":springcache:1.3.1"
 		compile ":compass-sass:0.5.5"

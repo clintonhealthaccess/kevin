@@ -36,6 +36,7 @@ import java.util.Collections;
 import org.chai.kevin.AbstractController;
 import org.hisp.dhis.period.Period;
 import org.chai.kevin.dsr.DsrObjective;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
@@ -52,18 +53,15 @@ class DsrController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
 		Period period = getPeriod()
 		DsrObjective objective = DsrObjective.get(params.int('objective'));
-		LocationEntity entity = LocationEntity.get(params.int('entity'));
-		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
+		LocationEntity entity = LocationEntity.get(params.int('organisation'));
+		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
 		
 		def dsrTable = null
 		if (period != null && objective != null && entity != null) {
-//			 dsrTable = dsrService.getDsr(organisation, objective, period, new HashSet(facilityTypes*.uuid));
-			 dsrTable = reportService.getDsrTable(entity, objective, period, new HashSet(facilityTypes*.uuid));
+			 dsrTable = reportService.getDsrTable(entity, objective, period, new HashSet(facilityTypes));
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
-		
-		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		
 		[
 			dsrTable: dsrTable, 

@@ -37,7 +37,7 @@ import org.chai.kevin.util.Utils
  */
 class TableColumnController extends AbstractEntityController {
 
-	def organisationService
+	def locationService
 	
 	def getEntity(def id) {
 		return SurveyTableColumn.get(id)
@@ -60,7 +60,7 @@ class TableColumnController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			column: entity,
-			groups: organisationService.getGroupsForExpression()
+			groups: DataEntityType.list()
 		]
 	}
 

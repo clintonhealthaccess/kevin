@@ -9,13 +9,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-@Entity(name="StructuralEntity")
+@Entity(name="LocationEntity")
 @Table(name="dhsst_entity_location")
 public class LocationEntity extends CalculationEntity {
 
 	private LocationEntity parent;
-	private List<LocationEntity> children;
-	private List<DataEntity> dataEntities;
+	private List<LocationEntity> children = new ArrayList<LocationEntity>();
+	private List<DataEntity> dataEntities = new ArrayList<DataEntity>();
 	private LocationLevel level;
 
 	@ManyToOne(targetEntity=LocationEntity.class)
@@ -66,6 +66,11 @@ public class LocationEntity extends CalculationEntity {
 	@Override
 	public boolean collectsData() {
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "LocationEntity [getCode()=" + getCode() + "]";
 	}
 	
 }

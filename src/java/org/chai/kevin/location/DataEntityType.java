@@ -12,13 +12,13 @@ import javax.persistence.Table;
 
 import org.chai.kevin.Translation;
 
-@Entity(name="EntityType")
-@Table(name="dhsst_site_type")
+@Entity(name="DataEntityType")
+@Table(name="dhsst_entity_data_type")
 public class DataEntityType {
 
 	private Long id;
 	private String code;
-	private Translation names;
+	private Translation names = new Translation();
 	
 	@Id
 	@GeneratedValue
@@ -49,6 +49,36 @@ public class DataEntityType {
 	
 	public void setNames(Translation names) {
 		this.names = names;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof DataEntityType))
+			return false;
+		DataEntityType other = (DataEntityType) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "DataEntityType [code=" + code + "]";
 	}
 	
 }

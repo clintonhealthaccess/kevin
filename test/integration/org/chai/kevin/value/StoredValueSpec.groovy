@@ -11,17 +11,19 @@ class StoredValueSpec extends IntegrationTests {
 	def "raw data element value: data cannot be null"() {
 		setup:
 		def period = newPeriod()
-		def organisationUnit = newOrganisationUnit(BUTARO)
+		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
+		def entity = newDataEntity(BUTARO, type)
+		
 		
 		when:
-		new RawDataElementValue(organisationUnit: organisationUnit, period: period, value: v("1")).save(failOnError: true)
+		new RawDataElementValue(entity: entity, period: period, value: v("1")).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		new RawDataElementValue(data: dataElement, organisationUnit: organisationUnit, period: period, value: v("1")).save(failOnError: true)
+		new RawDataElementValue(data: dataElement, entity: entity, period: period, value: v("1")).save(failOnError: true)
 		
 		then:
 		RawDataElementValue.count() == 1

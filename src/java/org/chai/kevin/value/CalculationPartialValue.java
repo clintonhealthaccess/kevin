@@ -29,12 +29,15 @@ package org.chai.kevin.value;
  */
 
 import javax.persistence.Basic;
-import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.period.Period;
 
@@ -42,20 +45,20 @@ import org.hisp.dhis.period.Period;
 public abstract class CalculationPartialValue extends StoredValue {
 
 	private Long id;
-	private String groupUuid;
+	private DataEntityType type;
 
 	public CalculationPartialValue() {}
 	
-	public CalculationPartialValue(CalculationEntity entity, Period period, String groupUuid, Value value) {
+	public CalculationPartialValue(CalculationEntity entity, Period period, DataEntityType type, Value value) {
 		super(entity, period, value);
 		
-		this.groupUuid = groupUuid;
+		this.type = type;
 	}
 	
-	public CalculationPartialValue(CalculationEntity entity, Period period, String groupUuid) {
+	public CalculationPartialValue(CalculationEntity entity, Period period, DataEntityType type) {
 		super();
 		
-		this.groupUuid = groupUuid;
+		this.type = type;
 		this.entity = entity;
 		this.period = period;
 	}
@@ -71,23 +74,23 @@ public abstract class CalculationPartialValue extends StoredValue {
 	}
 
 	@Basic
-	@Column(nullable=false)
 	@NaturalId
-	public String getGroupUuid() {
-		return groupUuid;
+	@JoinColumn(nullable=false)
+	@ManyToOne(targetEntity=DataEntityType.class, optional=false, fetch=FetchType.LAZY)
+	public DataEntityType getType() {
+		return type;
 	}
 	
-	public void setGroupUuid(String groupUuid) {
-		this.groupUuid = groupUuid;
+	public void setType(DataEntityType type) {
+		this.type = type;
 	}
-	
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((groupUuid == null) ? 0 : groupUuid.hashCode());
+				+ ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -100,10 +103,10 @@ public abstract class CalculationPartialValue extends StoredValue {
 		if (!(obj instanceof CalculationPartialValue))
 			return false;
 		CalculationPartialValue other = (CalculationPartialValue) obj;
-		if (groupUuid == null) {
-			if (other.groupUuid != null)
+		if (type == null) {
+			if (other.type != null)
 				return false;
-		} else if (!groupUuid.equals(other.groupUuid))
+		} else if (!type.equals(other.type))
 			return false;
 		return true;
 	}

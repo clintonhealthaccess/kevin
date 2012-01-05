@@ -29,6 +29,7 @@ package org.chai.kevin.maps;
  */
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -37,13 +38,11 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,30 +59,15 @@ public class MapsService {
 		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",entity="+entity+",target="+target+")");
 
 		List<Polygon> polygons = new ArrayList<Polygon>();
-		
 		List<LocationLevel> levels = locationService.listLevels();
 		
-//		if (levels.isEmpty()) {
-//			// TODO throw exception
-//		}
-		
-//		if (entity == null) {
-//			List<LocationLevel> childLevels = locationService.getChildrenOfLevel(entity, level);
-//			if (levels.size() > 0) level = childLevels.get(0).getLevel();
-//			else level = levels.get(0).getLevel();
-//		}
-		
-		// if we ask for an organisation level bigger than the organisation's, we go back to the right level
-		while (level.getOrder() < entity.getLevel().getOrder()) {
-			entity = entity.getParent();
-		}
-		
 		if (target == null) return new Maps(period, target, entity, level, polygons, levels);
-		
-		for (CalculationEntity child : entity.getChildrenEntities()) {
+		List<LocationEntity> organisations = locationService.getChildrenOfLevel(entity, level);
+
+		for (CalculationEntity child : organisations) {
 			Double value = null;
 			// TODO groups
-			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child, period, Utils.getUuids(locationService.getDataEntityTypes()));
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child, period, new HashSet<DataEntityType>(locationService.getDataEntityTypes()));
 			if (calculationValue != null) {
 				if (!calculationValue.getValue().isNull()) {
 					value = calculationValue.getValue().getNumberValue().doubleValue();
@@ -98,7 +82,7 @@ public class MapsService {
 
 	public Info<?> getExplanation(Period period, CalculationEntity entity, MapsTarget target) {
 		// TODO groups
-		return infoService.getCalculationInfo(target.getCalculation(), entity, period, Utils.getUuids(locationService.getDataEntityTypes()));
+		return infoService.getCalculationInfo(target.getCalculation(), entity, period, new HashSet<DataEntityType>(locationService.getDataEntityTypes()));
 	}
 	
 	public void setValueService(ValueService valueService) {

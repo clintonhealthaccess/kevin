@@ -43,6 +43,7 @@ import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -93,20 +94,20 @@ public class ValueService {
 	
 	
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, CalculationEntity entity, Period period, Set<String> groupUuids) {
-		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", entity="+entity+", groupUuids="+groupUuids+")");
-		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, entity, period, groupUuids), period, entity);
+	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
+		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", entity="+entity+", types="+types+")");
+		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, entity, period, types), period, entity);
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(...)="+result);
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period, Set<String> groupUuids) {
+	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
 		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
 		.add(Restrictions.eq("period", period))
 		.add(Restrictions.eq("entity", entity))
 		.add(Restrictions.eq("data", calculation))
-		.add(Restrictions.in("groupUuid", groupUuids)).list();
+		.add(Restrictions.in("type", types)).list();
 	}
 	
 	@Transactional(readOnly=true)

@@ -38,6 +38,7 @@ import java.util.Set;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ExpressionService;
@@ -69,9 +70,9 @@ public class InfoService {
 		return info;
 	}
 	
-	public CalculationInfo getCalculationInfo(Calculation<?> calculation, CalculationEntity entity, Period period, Set<String> groupUuids) {
+	public CalculationInfo getCalculationInfo(Calculation<?> calculation, CalculationEntity entity, Period period, Set<DataEntityType> groups) {
 		CalculationInfo info = null;
-		CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, entity, period, groupUuids);
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, entity, period, groups);
 		if (calculationValue != null) {
 			List<DataEntity> facilities = locationService.getDataEntities(entity);
 			Map<String, DataElement> dataMap = expressionService.getDataInExpression(calculation.getExpression(), DataElement.class);
@@ -83,8 +84,8 @@ public class InfoService {
 			Map<CalculationEntity, CalculationValue<?>> calculationValues = new HashMap<CalculationEntity, CalculationValue<?>>();
 			Map<DataEntity, Map<DataElement<?>, DataValue>> values = new HashMap<DataEntity, Map<DataElement<?>,DataValue>>();
 			for (DataEntity facility : facilities) {
-				if (groupUuids.contains(facility.getType().getCode())) {
-					calculationValues.put(facility, valueService.getCalculationValue(calculation, facility, period, groupUuids));
+				if (groups.contains(facility.getType())) {
+					calculationValues.put(facility, valueService.getCalculationValue(calculation, facility, period, groups));
 					Map<DataElement<?>, DataValue> data = new HashMap<DataElement<?>, DataValue>();
 					for (DataElement<?> dataElement : dataElements) {
 						data.put(dataElement, valueService.getDataElementValue(dataElement, facility, period));
@@ -106,7 +107,7 @@ public class InfoService {
 		this.expressionService = expressionService;
 	}
 	
-	public void setOrganisationService(LocationService locationService) {
+	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
 	

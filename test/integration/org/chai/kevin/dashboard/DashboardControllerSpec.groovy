@@ -1,5 +1,7 @@
 package org.chai.kevin.dashboard
 
+import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.LocationEntity;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 
@@ -17,17 +19,17 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		dashboardController = new DashboardController()
 		
 		when:
-		dashboardController.params.organisation = getOrganisation(RWANDA).id
+		dashboardController.params.organisation = LocationEntity.findByCode(RWANDA).id
 		dashboardController.params.objective = root.id
 		dashboardController.params.period = period.id
-		dashboardController.params.groupUuids = [DISTRICT_HOSPITAL_GROUP]
+		dashboardController.params.groupUuids = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
 		then:
 		model.currentObjective.equals(root)
 		model.currentPeriod.equals(period)
-		model.currentOrganisation.equals(getOrganisation(RWANDA))
-		model.currentFacilityTypes.equals([OrganisationUnitGroup.findByUuid(DISTRICT_HOSPITAL_GROUP)])
+		model.currentOrganisation.equals(LocationEntity.findByCode(RWANDA))
+		model.currentFacilityTypes.equals([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)])
 		model.dashboard != null
 	}
 	
@@ -42,10 +44,10 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		dashboardController = new DashboardController()
 		
 		when:
-		dashboardController.params.organisation = getOrganisation(RWANDA).id
+		dashboardController.params.organisation = LocationEntity.findByCode(RWANDA).id
 		dashboardController.params.objective = root.id
 		dashboardController.params.period = period.id
-		dashboardController.params.groupUuids = [DISTRICT_HOSPITAL_GROUP]
+		dashboardController.params.groupUuids = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.explain()
 		
 		then:

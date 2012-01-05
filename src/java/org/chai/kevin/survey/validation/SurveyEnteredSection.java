@@ -16,7 +16,7 @@ import org.hibernate.annotations.NaturalId;
 
 @Entity(name="SurveyValidSection")
 @Table(name="dhsst_survey_entered_section", uniqueConstraints=@UniqueConstraint(
-		columnNames={"section", "organisationUnit"})
+		columnNames={"section", "entity"})
 )
 public class SurveyEnteredSection extends SurveyEnteredEntity {
 	

@@ -60,7 +60,7 @@ class SurveyService {
 	
 	def languageService
 	def dataService
-	def organisationService
+	def locationService
 	def sessionFactory
 
 	SurveyElement getSurveyElement(Long id) {
@@ -231,12 +231,12 @@ class SurveyService {
 		return criteria
 	}
 	
-	Integer getNumberOfOrganisationUnitApplicable(SurveyElement surveyElement) {
+	Integer getNumberOfApplicableDataEntityTypes(SurveyElement surveyElement) {
 		Set<String> groupUuids = surveyElement.getOrganisationUnitGroupApplicable();
 		int number = 0;
 		for (String groupUuid : groupUuids) {
-			OrganisationUnitGroup group = organisationService.getOrganisationUnitGroup(groupUuid);
-			if (group != null) number += organisationService.getNumberOfOrganisationOfGroup(group)
+			DataEntityType type = locationService.findDataEntityTypeByCode(groupUuid);
+			if (type != null) number += locationService.getNumberOfDataEntitiesForType(type)
 		}
 		return number;
 	}

@@ -6,7 +6,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.period.Period
 import org.hisp.dhis.period.Period;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
@@ -22,31 +24,29 @@ class FctController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("fct.view, params:"+params)
 
 		Period period = getPeriod();
-		LocationEntity entity = LocationEntity.get(params.int('entity'));
+		LocationEntity entity = LocationEntity.get(params.int('organisation'));
 		FctObjective objective = FctObjective.get(params.int('objective'));
-		OrganisationUnitLevel level = getLevel();
-		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
+		LocationLevel level = LocationLevel.get(params.int('level'));
+		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
 		
 		FctTable fctTable = null;
 
 		if (period != null && objective != null && entity != null && level != null) {
-			fctTable = reportService.getFctTable(entity, objective, period, level, new HashSet(facilityTypes*.uuid));
+			fctTable = reportService.getFctTable(entity, objective, period, level, new HashSet(facilityTypes));
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root objective: "+objective)				
-		
-		Integer organisationLevel = ConfigurationHolder.config.facility.level;
 		
 		[
 			fctTable: fctTable,
 			currentPeriod: period,
 			currentObjective: objective,
-			currentOrganisation: organisation,
+			currentOrganisation: entity,
 			currentLevel: level,
 			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
 			objectives: FctObjective.list(),
-			levels: organisationService.getAllLevels(new Integer(organisationService.getRootOrganisation().getLevel()+1)),
+			levels: locationService.listLevels(),
 			facilityTypes: locationService.listTypes(),
 		    organisationTree: locationService.getRootLocation()
 		]

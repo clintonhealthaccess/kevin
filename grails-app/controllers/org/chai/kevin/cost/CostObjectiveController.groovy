@@ -32,7 +32,7 @@ import org.chai.kevin.AbstractEntityController
 
 class CostObjectiveController extends AbstractEntityController {
 	
-	def organisationService
+	def locationService
 	
 	def getEntity(def id) {
 		return CostObjective.get(id)

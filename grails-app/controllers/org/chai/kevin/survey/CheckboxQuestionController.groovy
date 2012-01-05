@@ -43,7 +43,7 @@ import org.apache.commons.lang.math.NumberUtils;
 class CheckboxQuestionController extends AbstractEntityController {
 
 	def languageService
-	def organisationService
+	def locationService
 	
 	def getEntity(def id) {
 		return SurveyCheckboxQuestion.get(id)
@@ -69,7 +69,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 		[
 			question: entity,
 			options: options,
-			groups: organisationService.getGroupsForExpression(),
+			groups: DataEntityType.list(),
 			sections: (entity.section)!=null?entity.survey.sections:null
 		]
 	}

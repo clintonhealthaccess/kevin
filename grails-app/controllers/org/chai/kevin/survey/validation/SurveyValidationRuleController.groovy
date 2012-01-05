@@ -39,7 +39,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
  */
 class SurveyValidationRuleController extends AbstractEntityController {
 
-	def organisationService
+	def locationService
 	def surveyService
 	def surveyCopyService
 	
@@ -65,7 +65,7 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			validation: entity,
-			groups: organisationService.getGroupsForExpression()
+			groups: DataEntityType.list()
 		]
 	}
 

@@ -39,6 +39,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.AverageValue;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
@@ -64,10 +65,10 @@ public class Average extends Calculation<AveragePartialValue> {
 	}
 
 	@Override
-	public AveragePartialValue getCalculationPartialValue(String expression, Map<DataEntity, StatusValuePair> values, CalculationEntity entity, Period period, String groupUuid) {
+	public AveragePartialValue getCalculationPartialValue(String expression, Map<DataEntity, StatusValuePair> values, CalculationEntity entity, Period period, DataEntityType type) {
 		Value value = getValue(values.values());
 		Integer numberOfFacilities = getNumberOfFacilities(values);
-		return new AveragePartialValue(this, entity, period, groupUuid, numberOfFacilities, value);
+		return new AveragePartialValue(this, entity, period, type, numberOfFacilities, value);
 	}
 
 	private Integer getNumberOfFacilities(Map<DataEntity, StatusValuePair> values) {

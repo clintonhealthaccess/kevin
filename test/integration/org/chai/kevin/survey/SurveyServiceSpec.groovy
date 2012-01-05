@@ -1,6 +1,7 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataEntityType;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 class SurveyServiceSpec extends SurveyIntegrationTests {
@@ -69,7 +70,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		
 		then:
 		element.getOrganisationUnitGroupApplicable().equals(new HashSet([(HEALTH_CENTER_GROUP)]))
-		surveyService.getNumberOfOrganisationUnitApplicable(element) == 1
+		surveyService.getNumberOfApplicableDataEntityTypes(element) == 1
 	}
 	
 	def "test number of organisation applicable with empty group"() {
@@ -91,7 +92,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		element.getOrganisationUnitGroupApplicable().equals(new HashSet([]))
-		surveyService.getNumberOfOrganisationUnitApplicable(element) == 0
+		surveyService.getNumberOfApplicableDataEntityTypes(element) == 0
 	}
 	
 	def "test retrieve skip rule - no rule"() {
@@ -180,9 +181,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	
 	def "test retrieve validation rules"() {
 		setup:
-		def set = newOrganisationUnitGroupSet(GROUP_SET_TYPE);
-		def hc = newOrganisationUnitGroup(HEALTH_CENTER_GROUP, set);
-		def dh = newOrganisationUnitGroup(DISTRICT_HOSPITAL_GROUP, set);
+		def hc = newDataEntityType(HEALTH_CENTER_GROUP);
+		def dh = newDataEntityType(DISTRICT_HOSPITAL_GROUP);
 		
 		def period = newPeriod()
 		
@@ -196,20 +196,20 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def list = null
 		
 		when:
-		list = surveyService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
+		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.isEmpty()
 		
 		when:
 		def rule1 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
-		list = surveyService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
+		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.equals(new HashSet([rule1]))
 		
 		when:
-		list = surveyService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (DISTRICT_HOSPITAL_GROUP) ))
+		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (DISTRICT_HOSPITAL_GROUP) ))
 		
 		then:
 		list.isEmpty()
@@ -217,9 +217,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	
 	def "test retrieve validation rule - several rules"() {
 		setup:
-		def set = newOrganisationUnitGroupSet(GROUP_SET_TYPE);
-		def hc = newOrganisationUnitGroup(HEALTH_CENTER_GROUP, set);
-		def dh = newOrganisationUnitGroup(DISTRICT_HOSPITAL_GROUP, set);
+		def hc = newDataEntityType(HEALTH_CENTER_GROUP);
+		def dh = newDataEntityType(DISTRICT_HOSPITAL_GROUP);
 		
 		def period = newPeriod()
 		
@@ -235,7 +234,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		when:
 		def rule3 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
 		def rule4 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
-		list = surveyService.searchValidationRules(element, OrganisationUnitGroup.findByUuid( (HEALTH_CENTER_GROUP) ))
+		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.equals(new HashSet([rule4]))
