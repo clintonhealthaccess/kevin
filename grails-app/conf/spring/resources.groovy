@@ -159,6 +159,7 @@ beans = {
 	dashboardService(DashboardService) {
 		infoService = ref("infoService")
 		valueService = ref("valueService")
+		locationService = ref("locationService")
 		skipLevels = dashboardSkipLevels
 	}
 

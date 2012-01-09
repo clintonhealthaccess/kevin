@@ -32,6 +32,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitService
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import org.hisp.dhis.period.Period;
 
 class FilterTagLib {
 
@@ -43,9 +44,27 @@ class FilterTagLib {
 			Map params = new HashMap(attrs['params'])
 			attrs['params'] = updateParamsByFilter(params);
 		}
-		out << g.createLink(attrs, body)
+		out << createLink(attrs, body)
 	}
 
+	def iterationFilter = {attrs, body ->
+		Period.withTransaction {
+			out << render(template:'/templates/iterationFilter', model:attrs)
+		}
+	}
+	
+	def organisationFilter = {attrs, body ->
+		LocationEntity.withTransaction {
+			out << render(template:'/templates/organisationFilter', model:attrs)
+		}
+	}
+	
+	def levelFilter = {attrs, body ->
+		LocationLevel.withTransaction {
+			out << render(template:'/templates/levelFilter', model:attrs)
+		}
+	}
+	
 	public Map updateParamsByFilter(Map params) {
 		if (!params.containsKey("filter")) return params;
 		String filter = (String) params.get("filter");

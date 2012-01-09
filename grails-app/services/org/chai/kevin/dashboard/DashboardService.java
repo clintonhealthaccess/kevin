@@ -33,12 +33,14 @@ import grails.plugin.springcache.annotations.Cacheable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.data.Type;
@@ -46,6 +48,7 @@ import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -58,15 +61,24 @@ public class DashboardService {
 	
 	private InfoService infoService;
 	private ValueService valueService;
+	private LocationService locationService;
 	
-	private Set<Integer> skipLevels;
+	private Set<String> skipLevels;
+	
+	private Set<LocationLevel> getSkipLocationLevels() {
+		Set<LocationLevel> levels = new HashSet<LocationLevel>();
+		for (String skipLevel : skipLevels) {
+			levels.add(locationService.findLocationLevelByCode(skipLevel));
+		}
+		return levels;
+	}
 	
 	@Transactional(readOnly = true)
 	@Cacheable("dashboardCache")
 	public Dashboard getDashboard(LocationEntity entity, DashboardObjective objective, Period period, Set<DataEntityType> groups) {
 		List<CalculationEntity> organisations = new ArrayList<CalculationEntity>();
-		organisations.addAll(entity.getChildren());
-		for (DataEntity dataEntity : entity.getDataEntities()) {
+		organisations.addAll(entity.getChildren(getSkipLocationLevels()));
+		for (DataEntity dataEntity : entity.getDataEntities(getSkipLocationLevels())) {
 			if (groups.contains(dataEntity.getType())) organisations.add(dataEntity);
 		}
 		
@@ -215,7 +227,11 @@ public class DashboardService {
 		this.valueService = valueService;
 	}
 	
-	public void setSkipLevels(Set<Integer> skipLevels) {
+	public void setLocationService(LocationService locationService) {
+		this.locationService = locationService;
+	}
+	
+	public void setSkipLevels(Set<String> skipLevels) {
 		this.skipLevels = skipLevels;
 	}
 	

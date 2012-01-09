@@ -30,6 +30,7 @@ package org.chai.kevin.maps;
 
 import java.util.List;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.hisp.dhis.period.Period;
@@ -74,7 +75,7 @@ public class Maps {
 	}
 	
 	
-	public String toJson() {
+	public String toJson(LanguageService languageService) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
 		builder.append("\"polygons\":[");
@@ -88,9 +89,9 @@ public class Maps {
 		builder.append("\"levels\":[");
 		for (LocationLevel level : levels) {
 			builder.append("{");
-			builder.append("\"level\":"+level.getCode());
+			builder.append("\"level\":"+level.getId());
 			builder.append(",");
-			builder.append("\"name\":\""+level+"\"");
+			builder.append("\"name\":\""+languageService.getText(level.getNames())+"\"");
 			builder.append("}");
 			builder.append(",");
 		}
@@ -103,7 +104,7 @@ public class Maps {
 			builder.append("\"selectedCoordinates\":"+entity.getCoordinates());
 			builder.append(",");
 		}
-		builder.append("\"selectedLevel\":"+level);
+		builder.append("\"selectedLevel\":"+level.getId());
 		builder.append(",");
 		builder.append("\"selectedPeriod\":"+period.getId());
 		if (target != null) {

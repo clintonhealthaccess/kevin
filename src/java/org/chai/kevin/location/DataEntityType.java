@@ -16,7 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DataEntityType")
 @Table(name="dhsst_entity_data_type")
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DataEntityType {
 
 	private Long id;

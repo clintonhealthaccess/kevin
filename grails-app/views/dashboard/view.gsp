@@ -17,7 +17,7 @@
     <body>
 		<div id="dashboard">
 			<div id="corner" class="subnav">
-				<g:render template="/templates/iterationFilter" model="[linkParams:params]"/>
+				<g:iterationFilter linkParams="${params}"/>
 			</div>
 		
 			<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>

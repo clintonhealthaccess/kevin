@@ -2,6 +2,7 @@ package org.chai.kevin.location;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -13,7 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DataEntity")
 @Table(name="dhsst_entity_data")
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DataEntity extends CalculationEntity {
 
 	private LocationEntity location;
@@ -56,6 +57,16 @@ public class DataEntity extends CalculationEntity {
 	public List<LocationEntity> getChildren() {
 		return new ArrayList<LocationEntity>();
 	}
+	
+	@Override
+	public List<DataEntity> getDataEntities(Set<LocationLevel> skipLevels) {
+		return getDataEntities();
+	}
+
+	@Override
+	public List<LocationEntity> getChildren(Set<LocationLevel> skipLevels) {
+		return getChildren();
+	}
 
 	@Override
 	public String toString() {
@@ -67,5 +78,5 @@ public class DataEntity extends CalculationEntity {
 	public LocationEntity getParent() {
 		return location;
 	}
-	
+
 }

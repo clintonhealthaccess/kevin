@@ -38,6 +38,7 @@ import org.hisp.dhis.period.Period
 class MapsController extends AbstractController {
 
 	def mapsService
+	def languageService
 	
     def index = {
 		redirect (action: 'view', params: params)
@@ -86,7 +87,7 @@ class MapsController extends AbstractController {
 		def map = mapsService.getMap(period, entity, level, target);
 		
 		if (log.isDebugEnabled()) log.debug("displaying map: "+map)		
-		render(contentType:"text/json", text:'{"result":"success","map":'+map.toJson()+'}');
+		render(contentType:"text/json", text:'{"result":"success","map":'+map.toJson(languageService)+'}');
 	}
 
 }

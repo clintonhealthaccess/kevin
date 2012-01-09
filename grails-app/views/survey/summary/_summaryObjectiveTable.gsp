@@ -16,7 +16,7 @@
 				<tr>
 					<td class="section-table-link" data-objective="${currentObjective.id}" data-organisation="${facility.id}">
 						<a href="${createLink(controller: 'summary', action: 'sectionTable', params: [objective: currentObjective.id, organisation: facility.id])}">
-							${facility.name}
+							<g:i18n field="${facility.names}"/>
 						</a>
 					</td>
 					<td>${summaryPage.getSurveyEnteredObjective(facility)?.closed?'\u2713':''}</td>

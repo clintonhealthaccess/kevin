@@ -14,8 +14,8 @@
 	<body>
 		<div id="report">
 			<div class="subnav">
-				<g:render template="/templates/iterationFilter" model="[linkParams:params]"/>
-				<g:render template="/templates/organisationFilter" model="[linkParams:params]"/>
+				<g:iterationFilter linkParams="${params}"/>
+				<g:organisationFilter linkParams="${params}"/>
 				<g:render template="/templates/objectiveFilter" model="[linkParams:params]"/>
 								
 				<div class="right">

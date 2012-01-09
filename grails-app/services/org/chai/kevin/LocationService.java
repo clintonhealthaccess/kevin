@@ -67,14 +67,22 @@ public class LocationService {
     }
 	
 	public List<LocationLevel> listLevels(LocationLevel... skipLevels) {
-		List<LocationLevel> levels = sessionFactory.getCurrentSession().createCriteria(LocationLevel.class).list();
+		List<LocationLevel> levels = sessionFactory.getCurrentSession()
+			.createCriteria(LocationLevel.class)
+			.setCacheable(true)
+			.setCacheRegion("locationLevelListQueryCache")
+			.list();
 		levels.removeAll(Arrays.asList(skipLevels));
 		Collections.sort(levels);
 		return levels;
 	}	
 	
 	public List<DataEntityType> listTypes() {
-		return sessionFactory.getCurrentSession().createCriteria(DataEntityType.class).list();
+		return sessionFactory.getCurrentSession()
+			.createCriteria(DataEntityType.class)
+			.setCacheable(true)
+			.setCacheRegion("dataEntityTypeListQueryCache")
+			.list();
 	}
 	
 	public Long getNumberOfDataEntitiesForType(DataEntityType dataEntityType){
@@ -112,6 +120,7 @@ public class LocationService {
 		return null;
 	}
 	
+	// TODO move to LocationEntity
 	public List<LocationEntity> getChildrenOfLevel(LocationEntity location, LocationLevel level) {
 		List<LocationEntity> result = new ArrayList<LocationEntity>();
 		collectChildrenOfLevel(location, level, result);

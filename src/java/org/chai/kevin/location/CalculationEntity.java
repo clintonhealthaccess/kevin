@@ -1,6 +1,7 @@
 package org.chai.kevin.location;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -22,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity(name="CalculationEntity")
 @Table(name="dhsst_entity_calculation")
 @Inheritance(strategy=InheritanceType.JOINED)
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public abstract class CalculationEntity {
 
 	private Long id;
@@ -77,7 +78,13 @@ public abstract class CalculationEntity {
 	public abstract List<DataEntity> getDataEntities();
 	
 	@Transient
+	public abstract List<DataEntity> getDataEntities(Set<LocationLevel> skipLevels);
+	
+	@Transient
 	public abstract List<LocationEntity> getChildren();
+	
+	@Transient
+	public abstract List<LocationEntity> getChildren(Set<LocationLevel> skipLevels);
 	
 	@Transient
 	public abstract boolean collectsData();

@@ -13,7 +13,7 @@
 			<g:each in="${summaryPage.facilities}" var="facility">
 				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(facility)}" />
 				<tr>
-					<td>${facility.name}</td>
+					<td><g:i18n field="${facility.names}"/></td>
 					<td><span class="progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
 						<a href="${createLink(controller: 'editSurvey', action: 'sectionPage', params: [section: currentSection.id, organisation: facility.id])}">

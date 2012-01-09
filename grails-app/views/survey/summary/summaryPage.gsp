@@ -13,8 +13,7 @@
 		
 			<div id="survey-header" class="subnav">
 				<g:render template="/survey/summary/surveyFilter"/>
-				<g:render template="/templates/organisationFilter" model="[currentOrganisation: organisation, linkParams:[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']]"/>
-				<div class="clear"></div>
+				<g:organisationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']}"/>
 			</div>
 						
 			<div class="main">			

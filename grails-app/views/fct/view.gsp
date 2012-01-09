@@ -15,10 +15,12 @@
 	<body>
 		<div id="report">
 			<div class="subnav">
-				<g:render template="/templates/iterationFilter" model="[linkParams:params]"/>
-				<g:render template="/templates/organisationFilter" model="[linkParams:params << [filter:'organisation']]"/>
+				<g:iterationFilter linkParams="${params}"/>
+				<g:organisationFilter linkParams="${params << [filter:'organisation']}"/>
+				
 				<g:render template="/templates/objectiveFilter" model="[linkParams:params]"/>
-				<g:render template="/templates/levelFilter" model="[linkParams:params << [filter:'level']]"/>												
+				
+				<g:levelFilter linkParams="${params << [filter:'level']}"/>												
 				
 				<div class="right">
 				<!-- ADMIN SECTION -->

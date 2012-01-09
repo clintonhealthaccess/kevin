@@ -2,6 +2,7 @@ package org.chai.kevin.location;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -14,7 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="LocationEntity")
 @Table(name="dhsst_entity_location")
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class LocationEntity extends CalculationEntity {
 
 	private LocationEntity parent;
@@ -32,7 +33,7 @@ public class LocationEntity extends CalculationEntity {
 	}
 	
 	@OneToMany(targetEntity=LocationEntity.class, mappedBy="parent")
-	@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+	@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 	public List<LocationEntity> getChildren() {
 		return children;
 	}
@@ -52,7 +53,7 @@ public class LocationEntity extends CalculationEntity {
 	
 	@Override
 	@OneToMany(targetEntity=DataEntity.class, mappedBy="location")
-	@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+	@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 	public List<DataEntity> getDataEntities() {
 		return dataEntities;
 	}
@@ -61,6 +62,30 @@ public class LocationEntity extends CalculationEntity {
 		this.dataEntities = dataEntities;
 	}
 
+	@Override
+	public List<DataEntity> getDataEntities(Set<LocationLevel>  skipLevels) {
+		List<DataEntity> result = new ArrayList<DataEntity>();
+		result.addAll(getDataEntities());
+		for (LocationEntity child : children) {
+			if (skipLevels.contains(child.getLevel())) {
+				result.addAll(child.getDataEntities(skipLevels));
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<LocationEntity> getChildren(Set<LocationLevel> skipLevels) {
+		List<LocationEntity> result = new ArrayList<LocationEntity>();
+		for (LocationEntity child : children) {
+			if (skipLevels.contains(child.getLevel())) {
+				result.addAll(child.getChildren(skipLevels));
+			}
+			else result.add(child);
+		}
+		return result;
+	}
+	
 	@Transient
 	public List<CalculationEntity> getChildrenEntities() {
 		List<CalculationEntity> result = new ArrayList<CalculationEntity>();
@@ -78,6 +103,6 @@ public class LocationEntity extends CalculationEntity {
 	public String toString() {
 		return "LocationEntity [getCode()=" + getCode() + "]";
 	}
-	
+
 }
 

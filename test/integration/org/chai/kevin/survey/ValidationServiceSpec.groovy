@@ -11,7 +11,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 	
 	def "skip elemnts"() {
 		setup:
-		setupOrganisationUnitTree()
+		setupLocationTree()
 		def period = newPeriod()
 
 		def survey = newSurvey(period)
@@ -24,8 +24,8 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def rule = newSkipRule(survey, "\$"+element1.id+"[_].key1 == 1", [(element1): "[_].key1,[_].key2"], [])
 		
 		when:
-		newSurveyEnteredValue(element1, period, OrganisationUnit.findByName(KIVUYE), new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]},{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
-		def skipped = validationService.getSkippedPrefix(element1, rule, getOrganisation(KIVUYE))
+		newSurveyEnteredValue(element1, period, DataEntity.findByCode(KIVUYE), new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]},{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
+		def skipped = validationService.getSkippedPrefix(element1, rule, DataEntity.findByCode(KIVUYE))
 		
 		then:
 		skipped.equals(s(["[0].key1","[0].key2","[1].key1","[1].key2"]))

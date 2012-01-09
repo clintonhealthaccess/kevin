@@ -21,7 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="LocationLevel")
 @Table(name="dhsst_entity_location_level")
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class LocationLevel extends Orderable<Integer> {
 
 	private Long id;
