@@ -32,48 +32,43 @@ import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.reports.ReportObjective
 
 abstract class AbstractObjectiveController extends AbstractEntityController {
 
+	def reportService
 	def organisationService
 	def dataService
 	
 	def validateEntity(def entity) {
-		return entity.entry.validate()&entity.validate()
+		return entity.validate()
 	}
 
-	def getEntity(def id) {
-		return DashboardObjectiveEntry.get(id);
-	}
-	
 	def saveEntity(def entity) {
-		if (entity.id == null) {
-			def currentObjective = DashboardObjective.get(params['currentObjective']);
-			currentObjective.addObjectiveEntry entity
-			entity.save()
-			currentObjective.save()
-		}
-		else {
-			entity.save()
-		}
+		entity.save()
 	}
 	
-	def deleteEntity(def entity) {
-		if (!entity.entry.hasChildren()) {
-			entity.parent.objectiveEntries.remove(entity)
-			entity.delete()
-		}
+	def deleteEntity(def entity) {	
+//		if (log.isInfoEnabled()) log.info("delete entity: "+entity)
+		List<DashboardEntity> dashboardEntities = reportService.getDashboardEntities(entity.getReportObjective());
+//		//objective
+		//this might work, check with db objectives
+//		if(dashboardEntities.size() == 0){
+//			if (log.isInfoEnabled()) log.info("deleting objective entity: "+entity)
+//			entity.delete()
+//		}
+//		//target
+		//FIX this doesn't work
+//		if(dashboardEntities.size() == 1 && dashboardEntities.get(0).equals(entity)){
+//			if (log.isInfoEnabled()) log.info("deleting target entity: "+entity)
+//			entity.delete(flush: true)
+//		}
+		entity.delete()
 	}
 	
 	def getModel(def entity) {
-		def currentObjective = null;
-		if (params['currentObjective']) {
-			currentObjective = DashboardObjective.get(params['currentObjective']);
-			if (log.isInfoEnabled()) log.info('fetched current objective: '+currentObjective);
-		}
-		
 		def groups = organisationService.getGroupsForExpression()
-		return [objectiveEntry: entity, groups: groups, currentObjective: currentObjective]
+		return [entity: entity, groups: groups]
 	}
 	
 }

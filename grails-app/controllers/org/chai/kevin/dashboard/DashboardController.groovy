@@ -31,16 +31,21 @@ package org.chai.kevin.dashboard
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.Organisation
+import org.chai.kevin.Translation
+import org.chai.kevin.util.JSONUtils;
+import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.aggregation.AggregationService
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period
 
 class DashboardController extends AbstractController {
-
+	
 	AggregationService aggregationService;
 	DashboardService dashboardService;
 	DashboardObjectiveService dashboardObjectiveService;
+	ReportService reportService;
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -48,53 +53,69 @@ class DashboardController extends AbstractController {
 	
 	def explain = {
 		Period period = Period.get(params.int('period'))
-		DashboardEntry entry = getDashboardEntry()
+		DashboardObjective entity = getReportObjective()
 		Organisation organisation = organisationService.getOrganisation(params.int('organisation'))
 
 		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
 		
-		def info = dashboardService.getExplanation(organisation, entry, period, new HashSet(facilityTypes*.uuid))
+		def info = dashboardService.getExplanation(organisation, entity, period, new HashSet(facilityTypes*.uuid))
 		def groups = organisationService.getGroupsForExpression()
-		[info: info, groups: groups, entry: entry]
+		[
+			info: info, 
+			groups: groups, 
+			entity: entity
+		]
 	}
 	
-	protected def redirectIfDifferent(def period, def objective, def organisation) {
-		if (period.id+'' != params['period'] || objective.id+'' != params['objective'] || organisation.id+'' != params['organisation'] ) {
-			if (log.isInfoEnabled()) log.info ("redirecting to action: "+params['action']+",	 period: "+period.id+", objective: "+objective.id+", organisation: "+organisation.id)
-			redirect (controller: 'dashboard', action: params['action'], params: [period: period.id, objective: objective.id, organisation: organisation.id]);
+	protected def redirectIfDifferent(def period, def entity, def organisation) {
+		if (period.id+'' != params['period'] || entity.id+'' != params['entity'] || organisation.id+'' != params['organisation'] ) {
+			if (log.isInfoEnabled()) log.info ("redirecting to action: "+params['action']+",	 period: "+period.id+", entity: "+entity.id+", organisation: "+organisation.id)
+			redirect (controller: 'dashboard', action: params['action'], params: [period: period.id, entity: entity.id, organisation: organisation.id]);
 		}
 	}
 	
-	private def getDashboardEntry() {
-		DashboardEntry entry = DashboardObjective.get(params.int('objective'));
-		if (entry == null) {
-			entry = DashboardTarget.get(params.int('objective'));
+//	private def getReportObjective() {
+//		def entity = DashboardObjective.get(params.int('entity'));
+//		if (entity == null) {
+//			entity = DashboardTarget.get(params.int('entity'));
+//			if(entity == null){
+//				entity = dashboardObjectiveService.getDashboardRootObjective()
+//			}
+//		}
+//		return entity.getObjective()
+//	}
+	
+	private def getDashboardEntity() {
+		DashboardEntity entity = DashboardObjective.get(params.int('entity'));
+		if (entity == null) {
+			entity = DashboardTarget.get(params.int('entity'));
+			if(entity == null){
+				entity = dashboardObjectiveService.getDashboardRootObjective()
+			}
 		}
-		if (entry == null) {
-			entry = dashboardObjectiveService.getRootObjective()
-		}
-		return entry
+		return entity
 	}
 	
     def view = {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)
 		
 		Period period = getPeriod()
-		DashboardEntry entry = getDashboardEntry()
+		DashboardEntity dashboardEntity = getDashboardEntity()
+		ReportObjective reportObjective = dashboardEntity.getReportObjective()
 		Organisation organisation = getOrganisation(true)
 		
-		if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", objective: "+entry.id+", organisation:"+ organisation.id);
-		redirectIfDifferent(period, entry, organisation)
+		if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", entity: "+dashboardEntity.id+", organisation:"+ organisation.id);
+		redirectIfDifferent(period, dashboardEntity, organisation)
 		
 		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
 		
-		def dashboard = dashboardService.getDashboard(organisation, entry, period, new HashSet(facilityTypes*.uuid));
+		def dashboard = dashboardService.getDashboard(organisation, reportObjective, period, new HashSet(facilityTypes*.uuid));
 		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
 		
 		[ 
 			dashboard: dashboard,
 			currentPeriod: period,
-			currentObjective: entry,
+			entity: dashboardEntity,			
 			currentOrganisation: organisation,
 			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
@@ -103,13 +124,13 @@ class DashboardController extends AbstractController {
 	}
 	
 	def getDescription = {
-		def objective = null;
+		def entity = null;
 		if (NumberUtils.isNumber(params['id'])) {
-			objective = DashboardObjective.get(params['id'])
-			if (objective == null) DashboardObjective.get(params['id'])
+			entity = DashboardObjective.get(params['id'])
+			if (entity == null) DashboardTarget.get(params['id'])
 		}
 		
-		if (objective == null) {
+		if (entity == null) {
 			render(contentType:"text/json") {
 				result = 'error'
 			}
@@ -117,7 +138,7 @@ class DashboardController extends AbstractController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: 'description', model: [objective: objective])
+				html = g.render (template: 'description', model: [objective: entity])
 			}
 		}
 	}

@@ -35,16 +35,16 @@ import org.chai.kevin.data.Info;
 public class DashboardObjectiveInfo extends Info<DashboardPercentage> {
 
 	private DashboardPercentage percentage;
-	private Map<DashboardObjectiveEntry, DashboardPercentage> values;
+	private Map<DashboardEntity, DashboardPercentage> values;
 	
-	public DashboardObjectiveInfo(DashboardPercentage percentage, Map<DashboardObjectiveEntry, DashboardPercentage> values) {
+	public DashboardObjectiveInfo(DashboardPercentage percentage, Map<DashboardEntity, DashboardPercentage> values) {
 		super(percentage);
 		
 		this.percentage = percentage;
 		this.values = values;
 	}
 	
-	public Map<DashboardObjectiveEntry, DashboardPercentage> getValues() {
+	public Map<DashboardEntity, DashboardPercentage> getValues() {
 		return values;
 	}
 	

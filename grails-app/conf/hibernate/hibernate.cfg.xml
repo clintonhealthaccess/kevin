@@ -20,24 +20,17 @@
 	    <mapping class="org.chai.kevin.value.AggregationPartialValue" />
 	    <mapping class="org.chai.kevin.value.SumPartialValue" />
 	    <mapping class="org.chai.kevin.value.AveragePartialValue" />
-
-	    <mapping class="org.chai.kevin.dashboard.DashboardTarget" />
-	    <mapping class="org.chai.kevin.dashboard.DashboardObjective" />
-	    <mapping class="org.chai.kevin.dashboard.DashboardObjectiveEntry" />
 	    
-	    <mapping class="org.chai.kevin.cost.CostObjective" />	
+	    <mapping class="org.chai.kevin.reports.ReportObjective" />	
+	    <mapping class="org.chai.kevin.dsr.DsrTarget"/>	
+		<mapping class="org.chai.kevin.dsr.DsrTargetCategory"/>	
+	    <mapping class="org.chai.kevin.fct.FctTarget"/>
+	    <mapping class="org.chai.kevin.maps.MapsTarget" />
 	    <mapping class="org.chai.kevin.cost.CostRampUp" />	
 	    <mapping class="org.chai.kevin.cost.CostRampUpYear" />	
 	    <mapping class="org.chai.kevin.cost.CostTarget" />	
-	
-	    <mapping class="org.chai.kevin.dsr.DsrTarget"/>
-		<mapping class="org.chai.kevin.dsr.DsrObjective"/>	
-		<mapping class="org.chai.kevin.dsr.DsrTargetCategory"/>	
-	
-	    <mapping class="org.chai.kevin.fct.FctTarget"/>
-		<mapping class="org.chai.kevin.fct.FctObjective"/>	
-	
-	    <mapping class="org.chai.kevin.maps.MapsTarget" />	
+	    <mapping class="org.chai.kevin.dashboard.DashboardTarget" />
+	    <mapping class="org.chai.kevin.dashboard.DashboardObjective" />
 	
         <mapping class="org.chai.kevin.survey.Survey" />
 		<mapping class="org.chai.kevin.survey.SurveyObjective" />

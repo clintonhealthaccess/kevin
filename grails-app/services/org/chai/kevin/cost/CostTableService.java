@@ -38,6 +38,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Organisation;
 import org.chai.kevin.OrganisationService;
+import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ValueService;
@@ -50,13 +52,38 @@ public class CostTableService {
 
 	private final static Log log = LogFactory.getLog(CostTableService.class);
 	
+	private ReportService reportService;
 	private CostService costService;
 	private OrganisationService organisationService;
 	private ValueService valueService;
 	private Set<Integer> skipLevels;
 	
-	public CostTable getCostTable(Period period, CostObjective objective, Organisation organisation) {
-		List<CostTarget> targets = objective.getTargets();
+	public void setReportService(ReportService reportService) {
+		this.reportService = reportService;
+	}
+	
+	public void setCostService(CostService costService) {
+		this.costService = costService;
+	}
+	
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
+	}
+	
+	public void setOrganisationService(OrganisationService organisationService) {
+		this.organisationService = organisationService;
+	}
+	
+	public void setSkipLevels(Set<Integer> skipLevels) {
+		this.skipLevels = skipLevels;
+	}
+	
+	public Integer[] getSkipLevelArray() {
+		return skipLevels.toArray(new Integer[skipLevels.size()]);
+	}
+	
+	public CostTable getCostTable(Period period, ReportObjective objective, Organisation organisation) {
+		List<CostTarget> targets = reportService.getReportTargets(CostTarget.class, objective);
 		return new CostTable(targets, costService.getYears(), getValues(period, targets, organisation));
 	}
 
@@ -170,25 +197,6 @@ public class CostTableService {
 		}
 		return result;
 	}
-	
-	public void setCostService(CostService costService) {
-		this.costService = costService;
-	}
-	
-	public void setValueService(ValueService valueService) {
-		this.valueService = valueService;
-	}
-	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
-	}
-	
-	public void setSkipLevels(Set<Integer> skipLevels) {
-		this.skipLevels = skipLevels;
-	}
-	
-	public Integer[] getSkipLevelArray() {
-		return skipLevels.toArray(new Integer[skipLevels.size()]);
-	}
+
 	
 }

@@ -224,6 +224,7 @@ facility.type.group="Type"
 
 info.group.level=3
 
+dashboard.objective.root="Strategic Objectives"
 dashboard.facility.checked=["District Hospital","Health Center"]
 dashboard.skip.levels=[]
 

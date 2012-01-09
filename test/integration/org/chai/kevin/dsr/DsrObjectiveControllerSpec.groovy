@@ -1,5 +1,7 @@
 package org.chai.kevin.dsr
 
+import org.chai.kevin.reports.ReportObjective;
+
 class DsrObjectiveControllerSpec extends DsrIntegrationTests {
 
 	def dsrObjectiveController
@@ -13,7 +15,7 @@ class DsrObjectiveControllerSpec extends DsrIntegrationTests {
 		dsrObjectiveController.saveWithoutTokenCheck()
 		
 		then:
-		DsrObjective.count() == 1
+		ReportObjective.count() == 1
 	}
 	
 }

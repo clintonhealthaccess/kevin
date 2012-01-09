@@ -1,4 +1,4 @@
-package org.chai.kevin.dashboard
+package org.chai.kevin.reports
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -29,8 +29,6 @@ package org.chai.kevin.dashboard
 */
 
 constraints = {
-	weight(nullable: false)
-	entry(nullable: false)
-//	order(nullable: false)
-	// shortName(blank: false, unique: true)
+	code (nullable: false, blank: false, unique: true)
+	
 }

@@ -42,15 +42,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.Sum;
-import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "FctTarget")
 @Table(name = "dhsst_fct_target")
-public class FctTarget extends ReportEntity {
+public class FctTarget extends ReportTarget {
 	
 	private Long id;
-	private FctObjective objective;
 	private Sum sum;
 	private String format;
 	private String groupUuidString; //comma-separated list of organisation ids
@@ -59,20 +58,10 @@ public class FctTarget extends ReportEntity {
 	@GeneratedValue
 	public Long getId() {
 		return id;
-	}
-
+	}	
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	@ManyToOne(targetEntity = FctObjective.class)
-	public FctObjective getObjective() {
-		return objective;
-	}
-	
-	public void setObjective(FctObjective objective) {
-		this.objective = objective;
-	}	
 	
 	@ManyToOne(targetEntity=Sum.class)
 	public Sum getSum() {

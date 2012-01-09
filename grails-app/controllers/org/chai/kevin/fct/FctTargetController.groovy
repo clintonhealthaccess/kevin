@@ -60,7 +60,7 @@ class FctTargetController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			target: entity,
-			objectives: FctObjective.list(),
+			objectives: ReportObjective.list(),
 			groups: organisationService.getGroupsForExpression(),
 			sums: entity.sum!=null?[entity.sum]:[],
 			groupUuids: Utils.split(entity.groupUuidString)

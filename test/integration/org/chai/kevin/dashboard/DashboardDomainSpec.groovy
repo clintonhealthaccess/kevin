@@ -39,10 +39,12 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 
 	private static final Log log = LogFactory.getLog(DashboardDomainSpec.class)
 
+	def reportService
+	
 	def "save target does not resave calculation"() {
 		when:
 		def calculation = newAverage("1", CODE(3))
-		def objective = newDashboardObjective(CODE(2))
+		def objective = newReportObjective(CODE(2))
 		def target = newDashboardTarget(CODE(1), calculation, objective, 1)
 		
 		then:
@@ -58,105 +60,32 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	def "call twice in a row"() {
 		when:
 		def calculation = newAverage("1", CODE(3))
-		def objective = newDashboardObjective(OBJECTIVE)
+		def objective = newReportObjective(OBJECTIVE)
 		def target1 = newDashboardTarget(TARGET1, calculation, objective, 1)
 		def target2 = newDashboardTarget(TARGET2, calculation, objective, 2 )
 		
 		then:
-		DashboardObjective.findByCode(objectiveCode).objectiveEntries.size() == expectedSize
+		reportService.getReportTargets(DashboardTarget.class, objective).size() == expectedSize
 		
 		where:
 		objectiveCode	| expectedSize
 		OBJECTIVE		| 2
 		OBJECTIVE		| 2
 	}
-	
-	def "objective entry order can be null"() {
-		when:
-		def objective = new DashboardObjective(root: true, names:[:], code: CODE(1)).save(failOnError: true)
-		def entry = new DashboardObjectiveEntry(entry: objective, weight: 1).save(failOnError: true)
 		
-		then:
-		DashboardObjective.count() == 1
-		DashboardObjectiveEntry.count() == 1
-	}
-	
-	def "objective save preserves order"() {
-		when:
-		def objective = new DashboardObjective(root: true, names:[:], code: OBJECTIVE).save(failOnError: true)
-		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:[:], code: CODE(2)), weight: 1, order: 5);
-		objective.addObjectiveEntry new DashboardObjectiveEntry(entry: new DashboardObjective(names:[:], code: CODE(3)), weight: 1, order: 4);
-		objective.save(flush: true)
-		
-		then:
-		def newObjective = DashboardObjective.findByCode(OBJECTIVE);
-		newObjective.objectiveEntries.size() == 2
-		newObjective.objectiveEntries[1].order == 5
-		newObjective.objectiveEntries[0].order == 4
-	}
-	
-	def "objective delete cascade deletes objective entry"() {
-		when:
-		def root = new DashboardObjective(root: true, names:[:], code: ROOT).save(failOnError: true)
-		def objective = new DashboardObjective(names:[:], code: OBJECTIVE).save(failOnError: true)
-		def objectiveEntry = new DashboardObjectiveEntry(entry:objective, weight: 1, order: 5);
-		root.addObjectiveEntry objectiveEntry
-		root.save(failOnError: true)
-		
-		root.objectiveEntries.remove(objectiveEntry)
-		new ArrayList(root.objectiveEntries).each { 
-			it.parent = null
-		}
-		objective.delete(flush: true)
-		
-		then:
-		DashboardObjectiveEntry.count() == 0
-		DashboardObjective.count() == 1
-	}
-
-	def "objective save does not cascade objective entries"() {
-		when:
-		def root = new DashboardObjective(root: true, names:[:], code: ROOT).save(failOnError: true)
-		def objective = new DashboardObjective(names:[:], code: OBJECTIVE)
-		root.addObjectiveEntry new DashboardObjectiveEntry(entry:objective, weight: 1, order: 5);
-		root.save(failOnError: true)
-		
-		then:
-		DashboardObjectiveEntry.count() == 0
-		DashboardObjective.count() == 1
-	}
-	
-	def "remove target deletes parent objective entry"() {
-		when:
-		def root = new DashboardObjective(root: true, names:[:], code: ROOT).save(failOnError: true)
-		def target = new DashboardTarget(names:[:], code: OBJECTIVE, calculation: newAverage("1", CODE(1))).save(failOnError: true)
-		def objectiveEntry = new DashboardObjectiveEntry(entry:target, weight: 1, order: 5);
-		root.addObjectiveEntry objectiveEntry
-		root.save(failOnError: true)
-		
-		root.objectiveEntries.remove(target)
-		target.delete(flush: true)
-		
-		then:
-		DashboardObjectiveEntry.count() == 0
-		DashboardTarget.count() == 0
-	}
-	
-	
 	def "get parent"() {
 		when:
-		def objective = newDashboardObjective(OBJECTIVE)
+		def objective = newReportObjective(OBJECTIVE)
 		def calculation = newAverage("1", CODE(3))
 		def target1 = newDashboardTarget(TARGET1, calculation, objective, 1)
 		
 		then:
-		target1.parent != null
-//		target1.parent.parent != null
+		target1.objective != null
 	}
 	
 	def "get parent of root"() {
 		when:
-		def root = newDashboardObjective(ROOT)
+		def root = newReportObjective(ROOT)
 		
 		then:
 		root.parent == null
@@ -164,7 +93,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "target calculation cannot be a sum"() {
 		when:
-		new DashboardTarget(names:[:], code: OBJECTIVE, calculation: newSum("1", CODE(1))).save(failOnError: true)
+		new DashboardTarget(code: OBJECTIVE, calculation: newSum("1", CODE(1))).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

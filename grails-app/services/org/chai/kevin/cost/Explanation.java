@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.Organisation;
+import org.chai.kevin.reports.ReportObjective;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period;
 
@@ -42,11 +43,11 @@ public class Explanation {
 	private List<Organisation> organisations;
 	private List<Integer> years;
 	private CostTarget currentTarget;
-	private CostObjective currentObjective;
+	private ReportObjective currentObjective;
 	private Period currentPeriod;
 	private List<OrganisationUnitGroup> groups;
 	
-	public Explanation(CostTarget currentTarget, List<OrganisationUnitGroup> groups, CostObjective currentObjective, Period currentPeriod, List<Organisation> organisations, List<Integer> years, Map<Organisation, Map<Integer, Cost>> costs) {
+	public Explanation(CostTarget currentTarget, List<OrganisationUnitGroup> groups, ReportObjective currentObjective, Period currentPeriod, List<Organisation> organisations, List<Integer> years, Map<Organisation, Map<Integer, Cost>> costs) {
 		this.costs = costs;
 		this.organisations = organisations;
 		this.years = years;
@@ -60,7 +61,7 @@ public class Explanation {
 		return currentTarget;
 	}
 	
-	public CostObjective getCurrentObjective() {
+	public ReportObjective getCurrentObjective() {
 		return currentObjective;
 	}
 	

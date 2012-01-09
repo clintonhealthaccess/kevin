@@ -36,19 +36,27 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 
 	def dsrTargetController
 	def dataService
-	def reportService
+	def dsrService
 	
-//	def "delete target refreshes cache"() {
-//		setup:
-//		dsrTargetController = new DsrTargetController()
-//		setupOrganisationUnitTree()
-//		def period = newPeriod()
-//		def objective = newDsrObjective(CODE(1))
-//		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "1")
-//		def target = newDsrTarget(CODE(2), expression, [], objective)
-//		def organisation = getOrganisation(BURERA)
-//		refresh()
-//		
+	def "delete target refreshes cache"() {
+		setup:
+		dsrTargetController = new DsrTargetController()
+		setupOrganisationUnitTree()
+		def period = newPeriod()
+		def objective = newReportObjective(CODE(1))
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def target = newDsrTarget(CODE(3), dataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
+		def organisation = getOrganisation(BURERA)
+		refresh()
+		
+		when:
+		def dsrTable = dsrService.getDsrTable(organisation, objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		
+		then:
+		dsrTable.getDsrValue(getOrganisation(BUTARO), target) != null
+	}
+		
+		// TODO can't work because controller class is not instrumented 
 //		when:
 //		def dsrTable = reportService.getDsrTable(organisation, objective, period)
 //		
@@ -68,7 +76,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 	def "save target saves target"() {
 		setup:
 		setupOrganisationUnitTree()
-		def objective = newDsrObjective(CODE(1))
+		def objective = newReportObjective(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService

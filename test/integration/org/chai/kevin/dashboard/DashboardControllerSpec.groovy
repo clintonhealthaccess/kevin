@@ -11,14 +11,14 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupOrganisationUnitTree()
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		dashboardController = new DashboardController()
 		
 		when:
 		dashboardController.params.organisation = getOrganisation(RWANDA).id
-		dashboardController.params.objective = root.id
+		dashboardController.params.objective = target.id
 		dashboardController.params.period = period.id
 		dashboardController.params.groupUuids = [DISTRICT_HOSPITAL_GROUP]
 		def model = dashboardController.view()
@@ -36,20 +36,20 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupOrganisationUnitTree()
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		dashboardController = new DashboardController()
 		
 		when:
 		dashboardController.params.organisation = getOrganisation(RWANDA).id
-		dashboardController.params.objective = root.id
+		dashboardController.params.objective = target.id
 		dashboardController.params.period = period.id
 		dashboardController.params.groupUuids = [DISTRICT_HOSPITAL_GROUP]
 		def model = dashboardController.explain()
 		
 		then:
-		model.entry.equals(root)
+		model.entity.equals(root)
 		model.info != null
 	}
 	

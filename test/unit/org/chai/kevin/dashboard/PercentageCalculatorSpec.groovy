@@ -1,39 +1,44 @@
-package org.chai.kevin.dashboard;
-
-/*
-* Copyright (c) 2011, Clinton Health Access Initiative.
-*
-* All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
-*     * Redistributions of source code must retain the above copyright
-*       notice, this list of conditions and the following disclaimer.
-*     * Redistributions in binary form must reproduce the above copyright
-*       notice, this list of conditions and the following disclaimer in the
-*       documentation and/or other materials provided with the distribution.
-*     * Neither the name of the <organization> nor the
-*       names of its contributors may be used to endorse or promote products
-*       derived from this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-import grails.plugin.spock.UnitSpec;
-
-//@WithGMock
-class PercentageCalculatorSpec extends UnitSpec {
-
-//	PercentageCalculator percentageCalculator;
+//package org.chai.kevin.dashboard;
+//
+///*
+//* Copyright (c) 2011, Clinton Health Access Initiative.
+//*
+//* All rights reserved.
+//*
+//* Redistribution and use in source and binary forms, with or without
+//* modification, are permitted provided that the following conditions are met:
+//*     * Redistributions of source code must retain the above copyright
+//*       notice, this list of conditions and the following disclaimer.
+//*     * Redistributions in binary form must reproduce the above copyright
+//*       notice, this list of conditions and the following disclaimer in the
+//*       documentation and/or other materials provided with the distribution.
+//*     * Neither the name of the <organization> nor the
+//*       names of its contributors may be used to endorse or promote products
+//*       derived from this software without specific prior written permission.
+//*
+//* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+//* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+//* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+//* DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+//* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+//* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+//* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+//* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+//* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//*/
+//
+//import grails.plugin.spock.UnitSpec;
+//import org.chai.kevin.Organisation
+//import org.chai.kevin.data.Average
+//import org.chai.kevin.data.RawDataElement
+//import org.hisp.dhis.period.MonthlyPeriodType
+//import org.hisp.dhis.period.Period
+//
+////@WithGMock
+//class PercentageCalculatorSpec extends UnitSpec {
+//
+////	PercentageCalculator percentageCalculator;
 //
 //	def setup() {
 //		addBasicData()
@@ -43,8 +48,8 @@ class PercentageCalculatorSpec extends UnitSpec {
 ////		mockDomain(IndicatorType, [one])
 ////		def const10 = new Indicator(names:j(["en":"Constant 10"]), shortName: "Constant 10", code: "CONST10", numerator: "10", denominator: "1", indicatorType: IndicatorType.findByName("one"))
 ////		def const20 = new Indicator(names:j(["en":"Constant 20"]), shortName: "Constant 20", code: "CONST20", numerator: "20", denominator: "1", indicatorType: IndicatorType.findByName("one"))
-//		def const10 = new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: Type.TYPE_NUMBER())
-//		def const20 = new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: Type.TYPE_NUMBER())
+////		def const10 = new Expression(names:j(["en":"Constant 10"]), code:"CONST10", expression: "10", type: Type.TYPE_NUMBER())
+////		def const20 = new Expression(names:j(["en":"Constant 20"]), code:"CONST20", expression: "20", type: Type.TYPE_NUMBER())
 //		mockDomain(Expression, [const10, const20])
 //		
 //		// objectives and targets for dashboard
@@ -67,8 +72,8 @@ class PercentageCalculatorSpec extends UnitSpec {
 //		)
 //		mockDomain(DashboardTarget, [nursea1, nursea2])
 //		def staffing = new DashboardObjective(root: false, names:j(["en":"Staffing"]), code:"STAFFING", descriptions:j(["en":"Staffing"]), objectiveEntries: [])
-//		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A1"), weight: 1, order: 1)
-//		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A2"), weight: 1, order: 2)
+////		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A1"), weight: 1, order: 1)
+////		staffing.addObjectiveEntry new DashboardObjectiveEntry(entry: DashboardTarget.findByCode("A2"), weight: 1, order: 2)
 //		mockDomain(DashboardObjective, [staffing])
 //		
 //		
@@ -84,7 +89,7 @@ class PercentageCalculatorSpec extends UnitSpec {
 //		setup:
 //		def expressionService = mock(ExpressionService)
 //		expressionService.getValue(match {true}, match {true}, match {true}, match {true}).returns(10.0d);
-//		def percentageCalculator = new PercentageCalculator();
+////		def percentageCalculator = new PercentageCalculator();
 //		percentageCalculator.expressionService = expressionService;
 //		
 //		when:
@@ -104,7 +109,7 @@ class PercentageCalculatorSpec extends UnitSpec {
 //		def percentageService = mock(PercentageService);
 //		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(10.0d, null, null, null));
 //		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(20.0d, null, null, null));
-//		def percentageCalculator = new PercentageCalculator();
+////		def percentageCalculator = new PercentageCalculator();
 //		percentageCalculator.percentageService = percentageService;
 //		
 //		when:
@@ -123,7 +128,7 @@ class PercentageCalculatorSpec extends UnitSpec {
 //		setup:
 //		def dataElement = new RawDataElement(names:j(["en":"Element 1"]), code: "CODE", type: Type.TYPE_NUMBER())
 //		mockDomain(RawDataElement, [dataElement])
-//		def expression = new Expression(names:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: Type.TYPE_NUMBER())
+////		def expression = new Expression(names:j(["en":"Expression Element 1"]), code:"ELEM1", expression: "["+dataElement.id+"]", denominator: "1", type: Type.TYPE_NUMBER())
 //		mockDomain(Expression, [expression])
 //		
 //		def target = new DashboardTarget(
@@ -136,7 +141,7 @@ class PercentageCalculatorSpec extends UnitSpec {
 //		
 //		def expressionService = mock(ExpressionService);
 //		expressionService.getValue(match {true}, match {true}, match {true}, match {it[dataElement] = null; true}).returns(null);
-//		def percentageCalculator = new PercentageCalculator();
+////		def percentageCalculator = new PercentageCalculator();
 //		percentageCalculator.expressionService = expressionService
 //		def organisation = new Organisation(OrganisationUnit.findByName('Butaro DH'))
 //		organisation.children = []
@@ -154,7 +159,7 @@ class PercentageCalculatorSpec extends UnitSpec {
 //	
 //	def "test absent orgunit group on target"() {
 //		setup:
-//		def percentageCalculator = new PercentageCalculator();
+////		def percentageCalculator = new PercentageCalculator();
 //		def organisation = new Organisation(OrganisationUnit.findByName('Kivuye HC'));
 //		organisation.children = new ArrayList();
 //		
@@ -167,7 +172,7 @@ class PercentageCalculatorSpec extends UnitSpec {
 //	
 //	def "test absent orgunit group on objective"() {
 //		setup:
-//		def percentageCalculator = new PercentageCalculator();
+////		def percentageCalculator = new PercentageCalculator();
 //		def percentageService = mock(PercentageService);
 //		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(Status.MISSING_EXPRESSION, null, null, null));
 //		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(Status.MISSING_EXPRESSION, null, null, null));
@@ -189,7 +194,7 @@ class PercentageCalculatorSpec extends UnitSpec {
 //		def percentageService = mock(PercentageService);
 //		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(10.0d, null, null, null));
 //		percentageService.getPercentage(match {true}, match {true}, match {true}).returns(new DashboardPercentage(20.0d, null, null, null));
-//		def percentageCalculator = new PercentageCalculator();
+////		def percentageCalculator = new PercentageCalculator();
 //		percentageCalculator.percentageService = percentageService;
 //		
 //		when:
@@ -202,6 +207,6 @@ class PercentageCalculatorSpec extends UnitSpec {
 //		percentage.valid == true
 //		percentage.value == 15
 //	}
-
-	
-}
+//
+//	
+//}

@@ -30,6 +30,7 @@ package org.chai.kevin.cost
 
 import org.chai.kevin.AbstractController
 import org.chai.kevin.Organisation
+import org.chai.kevin.reports.ReportObjective
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 
@@ -57,7 +58,7 @@ class CostController extends AbstractController {
 		
 		Period period = getPeriod()
 		Organisation organisation = getOrganisation(false)
-		CostObjective objective = CostObjective.get(params.int('objective'));
+		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		
 		if (log.isInfoEnabled()) log.info("view cost for period: "+period.id);
 		
@@ -73,7 +74,7 @@ class CostController extends AbstractController {
 			currentPeriod: period,
 			currentObjective: objective,
 			currentOrganisation: organisation,
-			objectives: CostObjective.list(), 
+			objectives: ReportObjective.list(), 
 			periods: Period.list(),
 			organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
 		]

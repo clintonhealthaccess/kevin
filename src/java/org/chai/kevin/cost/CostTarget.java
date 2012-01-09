@@ -35,20 +35,32 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="CostTarget")
 @Table(name="dhsst_cost_target")
-public class CostTarget extends ReportEntity {
+public class CostTarget extends ReportTarget {
 
+	private static final long serialVersionUID = 2450846525775669571L;
+
+	private Long id;
+	
+	@Id
+	@GeneratedValue
+	public Long getId() {
+		return id;
+	}	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
 	public static enum CostType {
 		INVESTMENT("INVESTMENT", "Investment"), OPERATION("OPERATION", "Operation");
 		
@@ -62,23 +74,12 @@ public class CostTarget extends ReportEntity {
 	    String getKey() { return name(); }
 	};
 	
-	private Long id;
 	private DataElement<?> dataElement;
 	private DataElement<?> dataElementEnd;
 	
-	private CostObjective objective;
 	private CostRampUp costRampUp;
 	private CostType costType;
 	private String groupUuidString = "";
-	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
 	
 	@ManyToOne(targetEntity=DataElement.class, optional=false)
 	public DataElement<?> getDataElement() {
@@ -97,16 +98,7 @@ public class CostTarget extends ReportEntity {
 	public void setDataElementEnd(DataElement<?> dataElementEnd) {
 		this.dataElementEnd = dataElementEnd;
 	}
-	
-	@ManyToOne(targetEntity=CostObjective.class)
-	// TODO change the name of the column
-	@JoinColumn(name="parent")
-	public CostObjective getObjective() {
-		return objective;
-	}
-	public void setObjective(CostObjective objective) {
-		this.objective = objective;
-	}
+
 	
 	@ManyToOne(targetEntity=CostRampUp.class, optional=false)
 	public CostRampUp getCostRampUp() {

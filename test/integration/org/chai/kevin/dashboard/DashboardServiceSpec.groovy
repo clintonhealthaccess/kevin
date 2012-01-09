@@ -37,35 +37,37 @@ import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.value.RawDataElementValue
 import org.hisp.dhis.organisationunit.OrganisationUnit
 import org.hisp.dhis.period.Period
+import org.chai.kevin.reports.ReportObjective
 
 class DashboardServiceSpec extends DashboardIntegrationTests {
 
 	def dashboardService
-
+	def reportService
+	
 	def "dashboard service works"() {
 		setup:
 		def period = newPeriod()
 		setupOrganisationUnitTree()
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		def dashboard = null
 		refresh()
 		
 		when:
-		dashboard = dashboardService.getDashboard(getOrganisation(RWANDA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		dashboard = dashboardService.getDashboard(getOrganisation(RWANDA), target.getObjective(), period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		dashboard.organisations.equals([getOrganisation(NORTH)])
 		
 		when:
-		dashboard = dashboardService.getDashboard(getOrganisation(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
+		dashboard = dashboardService.getDashboard(getOrganisation(BURERA), target.getObjective(), period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]))
 		
 		then:
 		dashboard.organisations.equals([getOrganisation(KIVUYE), getOrganisation(BUTARO)])
 		
 		when:
-		dashboard = dashboardService.getDashboard(getOrganisation(BURERA), root, period, new HashSet([DISTRICT_HOSPITAL_GROUP]))
+		dashboard = dashboardService.getDashboard(getOrganisation(BURERA), target.getObjective(), period, new HashSet([DISTRICT_HOSPITAL_GROUP]))
 		
 		then:
 		dashboard.organisations.equals([getOrganisation(BUTARO)])
@@ -83,11 +85,10 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def currentOrganisation = new Organisation(OrganisationUnit.findByName(currentOrganisationName));
 		def currentObjective = DashboardObjective.findByCode(currentObjectiveName);
 
-		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period, new HashSet(groups));
-		def percentage = dashboard.getPercentage(getOrganisation(organisationName), getObjective(objectiveName))
+		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective.getObjective(), period, new HashSet(groups));
+		def percentage = dashboard.getPercentage(getOrganisation(organisationName), currentObjective)
 
 		then:
-		//		percentage.status == status;
 		if (percentage.value == null) value == null
 		else percentage.value == value
 
@@ -111,43 +112,46 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		when:
 		def objective = DashboardObjective.findByCode(objectiveCode);
-		def dashboard = dashboardService.getDashboard(getOrganisation(organisationName), objective, period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]));
-
+		def dashboard = dashboardService.getDashboard(getOrganisation(organisationName), objective.getObjective(), period, new HashSet([DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]));
+		def dashboardEntities = [];
+		for(def dashboardEntity : reportService.getDashboardEntities(objective.getObjective()))
+			 dashboardEntities.add(dashboardEntity.code);
+		def dashboardObjectivePath = [];
+		for(def objectivePathItem : dashboard.objectivePath)
+			dashboardObjectivePath.add(objectivePathItem.code);
+		
 		then:
-		dashboard.objectiveEntries == getWeightedObjectives(expectedObjectives)
+		dashboardEntities == expectedEntities
+		dashboardObjectivePath == expectedObjectivePath
 		// TODO order organisations
 		dashboard.organisations.containsAll getOrganisations(expectedOrganisations)
 		dashboard.organisationPath == getOrganisations(expectedOrganisationPath)
-		dashboard.objectivePath == getObjectives(expectedObjectivePath)
 
 		where:
-		organisationName| objectiveCode	| expectedOrganisations	| expectedObjectives| expectedOrganisationPath	| expectedObjectivePath
+		organisationName| objectiveCode	| expectedOrganisations	| expectedEntities  | expectedOrganisationPath	| expectedObjectivePath
 		BURERA			| OBJECTIVE		| [BUTARO, KIVUYE]		| [TARGET1, TARGET2]| [RWANDA, NORTH]			| [ROOT]
 		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [OBJECTIVE]		| [RWANDA, NORTH]			| []
-
 	}
 
-	def getObjectives(List<String> codes) {
-		def objectives = []
+	def getDashboardEntities(List<String> codes) {
+		def entities = []
 		for (String code : codes) {
-			objectives.add(getObjective(code))
+			def entity = DashboardObjective.findByCode(code);
+			if(entity == null) DashboardTarget.findByCode(code);
+			if(entity != null) 
+				entities.add(entity)
 		}
-		return objectives;
+		return entities;
 	}
 
-	def getObjective(String code) {
-		def objective = DashboardTarget.findByCode(code);
-		if (objective == null) objective = DashboardObjective.findByCode(code);
-		return objective
-	}
-
-	def getWeightedObjectives(List<String> codes) {
-		def objectives = []
+	def getReportObjectives(List<String> codes) {
+		def reportObjectives = []
 		for (String code : codes) {
-			def objective = DashboardTarget.findByCode(code);
-			if (objective == null) objective = DashboardObjective.findByCode(code);
-			objectives.add(objective.getParent());
+			def entity = DashboardObjective.findByCode(code);
+			if(entity == null) DashboardTarget.findByCode(code);
+			if(entity != null && entity.getObjective() != null) 
+				reportObjectives.add(entity.getObjective());
 		}
-		return objectives;
+		return reportObjectives;
 	}
 }

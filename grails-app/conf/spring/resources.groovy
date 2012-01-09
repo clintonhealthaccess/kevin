@@ -14,6 +14,8 @@ import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.reports.ReportService
+import org.chai.kevin.dsr.DsrService
+import org.chai.kevin.fct.FctService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.survey.SummaryService
 import org.chai.kevin.survey.SurveyCopyService
@@ -56,6 +58,7 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 def config = CH.config
 
 String facilityTypeGroup = config.facility.type.group
+//String dashboardRoot = config.dashboard.objective.root
 Set<Integer> dashboardSkipLevels = config.dashboard.skip.levels
 Set<Integer> costSkipLevels = config.dashboard.skip.levels
 int organisationLevel = config.facility.level
@@ -112,7 +115,6 @@ beans = {
 		surveyValueService = ref("surveyValueService")
 		languageService = ref("languageService")
 		sessionFactory = ref("sessionFactory")
-//		grailsApplication = ref("grailsApplication")
 		skipLevels = exportSkipLevels
 	}
 	
@@ -122,11 +124,23 @@ beans = {
 	}
 
 	reportService(ReportService){
+		sessionFactory = ref("sessionFactory")
+		organisationService = ref("organisationService")
+	}
+	
+	dsrService(DsrService){
+		reportService = ref("reportService")
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		languageService = ref("languageService")
 		groupLevel = dsrGroupLevel
+	}
+	
+	fctService(FctService){
+		reportService = ref("reportService")
+		organisationService = ref("organisationService")
+		valueService = ref("valueService")
 	}
 	
 	mapsService(MapsService) {
@@ -136,6 +150,7 @@ beans = {
 	}
 
 	costTableService(CostTableService) {
+		reportService = ref("reportService")
 		costService = ref("costService")
 		organisationService = ref("organisationService")
 		valueService = ref("valueService")
@@ -161,6 +176,7 @@ beans = {
 	}
 
 	dashboardService(DashboardService) {
+		reportService = ref("reportService")
 		organisationService = ref("organisationService")
 		infoService = ref("infoService")
 		valueService = ref("valueService")

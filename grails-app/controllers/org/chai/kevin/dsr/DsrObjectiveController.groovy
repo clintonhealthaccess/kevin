@@ -34,17 +34,18 @@ package org.chai.kevin.dsr
 import grails.plugin.springcache.annotations.CacheFlush
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.reports.ReportObjective
 
 class DsrObjectiveController extends AbstractEntityController{
 	
 	def organisationService
 	
 	def getEntity(def id) {
-		return DsrObjective.get(id)
+		return ReportObjective.get(id)
 	}
 	
 	def createEntity() {
-		return new DsrObjective()
+		return new ReportObjective()
 	}
 	
 	def getLabel() {
@@ -75,8 +76,7 @@ class DsrObjectiveController extends AbstractEntityController{
 	}
 	
 	def bindParams(def entity) {
-		entity.properties = params
-	
+		entity.properties = params	
 	
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967

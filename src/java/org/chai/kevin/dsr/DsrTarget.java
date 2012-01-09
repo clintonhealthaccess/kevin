@@ -42,27 +42,25 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.StoredValue;
 
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target")
-public class DsrTarget extends ReportEntity {
+public class DsrTarget extends ReportTarget {
 	
 	private Long id;
-	private DsrObjective objective;
 	private DataElement<StoredValue> dataElement;
 	private DsrTargetCategory category;
 	private String format;
 	private String groupUuidString;  //comma-separated list of organisation ids
-
+	
 	@Id
 	@GeneratedValue
 	public Long getId() {
 		return id;
-	}
-
+	}	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -74,15 +72,6 @@ public class DsrTarget extends ReportEntity {
 
 	public void setDataElement(DataElement<StoredValue> dataElement) {
 		this.dataElement = dataElement;
-	}
-	
-	@ManyToOne(targetEntity=DsrObjective.class)
-	public DsrObjective getObjective() {
-		return objective;
-	}
-
-	public void setObjective(DsrObjective objective) {
-		this.objective = objective;
 	}
 
 	@ManyToOne(targetEntity=DsrTargetCategory.class)

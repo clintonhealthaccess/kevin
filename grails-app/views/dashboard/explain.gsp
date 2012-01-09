@@ -7,7 +7,7 @@
     </head>
     <body>
 		<div class="explanation">
-			<h3><g:i18n field="${entry.names}"/> in ${info.organisationUnit.name}</h3>
+			<h3><g:i18n field="${entity.names}"/> in ${info.organisationUnit.name}</h3>
 			<g:if test="${info != null}">
 				<g:render template="${info.template}" model="[info: info, groups: groups]"/>
 			</g:if>

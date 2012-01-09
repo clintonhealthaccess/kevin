@@ -28,6 +28,7 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.chai.kevin.reports.ReportObjective
 
 class DashboardObjectiveControllerSpec extends DashboardIntegrationTests {
 
@@ -35,37 +36,39 @@ class DashboardObjectiveControllerSpec extends DashboardIntegrationTests {
 	
 	def "delete objective with children"() {
 		setup:
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
 		def objective = newDashboardObjective(CODE(2), root, 1)
+		def child = newReportObjective(CODE(3), root)
+		def childObjective = newDashboardObjective(CODE(4), child, 1)
 		dashboardObjectiveController = new DashboardObjectiveController()
 		
 		when:
-		dashboardObjectiveController.params.id = root.id
+		dashboardObjectiveController.params.id = objective.id
 		dashboardObjectiveController.delete()
 		
 		then:
-		DashboardObjective.count() == 2
-		//		dashboardObjectiveController.response.contentAsString.contains "error";
+		ReportObjective.count() == 2
+		DashboardObjective.count() == 0
 	}
 
 	def "save new objective"() {
 		setup:
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
+		def objective = newDashboardObjective(CODE(2), root, 1)
 		dashboardObjectiveController = new DashboardObjectiveController()
 		
 		when:
-		dashboardObjectiveController.params['currentObjective'] = root.id
+		dashboardObjectiveController.params['id'] = objective.id
 		dashboardObjectiveController.params['weight'] = 1
-		dashboardObjectiveController.params['entry.code'] = "NEW"
+		dashboardObjectiveController.params['code'] = "NEW"
 		dashboardObjectiveController.saveWithoutTokenCheck()
 		def newObjective = DashboardObjective.findByCode("NEW")
 		
 		then:
 		dashboardObjectiveController.response.redirectedUrl.equals(dashboardObjectiveController.getTargetURI())
 		newObjective != null
-		newObjective.parent.weight == 1
-		DashboardObjectiveEntry.count() == 1
-		DashboardObjective.count() == 2
+		newObjective.weight == 1
+		DashboardObjective.count() == 1
 	}
 	
 }

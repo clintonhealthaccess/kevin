@@ -43,6 +43,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.reports.ReportEntity;
+import org.chai.kevin.reports.ReportObjective;
 
 @Entity(name = "DsrTargetCategory")
 @Table(name = "dhsst_dsr_target_category")
@@ -70,7 +71,7 @@ public class DsrTargetCategory extends ReportEntity {
 		this.targets = targets;
 	}
 
-	public List<DsrTarget> getTargetsForObjective(DsrObjective objective) {
+	public List<DsrTarget> getTargetsForObjective(ReportObjective objective) {
 		List<DsrTarget> result = new ArrayList<DsrTarget>();
 		for (DsrTarget dsrTarget : getTargets()) {
 			if (dsrTarget.getObjective().equals(objective)) result.add(dsrTarget);

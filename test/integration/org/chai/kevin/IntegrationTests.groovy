@@ -56,6 +56,7 @@ import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.hisp.dhis.organisationunit.OrganisationUnit
@@ -225,23 +226,6 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new NormalizedDataElementValue(data: normalizedDataElement, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
 	}
 	
-//	NormalizedDataElementValue newExpressionValue(def expression, def period, def organisationUnit, def status, def value) {
-//		return new NormalizedDataElementValue(expression: expression, period: period, organisationUnit: organisationUnit, status: status, value: value).save(failOnError: true)
-//	}
-	
-//	NormalizedDataElementValue newExpressionValue(def expression, def period, def organisationUnit) {
-//		return newExpressionValue(expression, period, organisationUnit, Status.VALID, Value.NULL)
-//	}
-
-//	Expression newExpression(def code, def type, String formula, def arguments = [:]) {
-//		return newExpression([:], code, type, formula, arguments)
-//	}
-		
-//	Expression newExpression(def names, def code, def type, String formula, def arguments = [:]) {
-//		arguments.failOnError = true
-//		return new Expression(names: names, code: code, type: type, expression: formula).save(arguments)
-//	}
-	
 	Aggregation newAggregation(def names, def expression, def code) {
 		return new Aggregation(names: names, expression: expression, code: code).save(failOnError: true)
 	}
@@ -287,6 +271,18 @@ abstract class IntegrationTests extends IntegrationSpec {
 		enume.addEnumOption(enumOption)
 		enume.save(failOnError: true)
 		return enumOption
+	}
+	
+	def newReportObjective(def code) {
+		return new ReportObjective(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
+	}
+	
+	def newReportObjective(def code, def parent) {
+		return new ReportObjective(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
+	}
+	
+	def newReportObjective(def code, def parent, def children){
+		return new ReportObjective(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
 	}
 	
 	def refresh() {

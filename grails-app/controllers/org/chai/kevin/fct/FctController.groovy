@@ -7,12 +7,13 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.period.Period
 import org.hisp.dhis.period.Period;
+import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.reports.ReportService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class FctController extends AbstractController {
 
-	ReportService reportService;
+	FctService fctService;
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -23,14 +24,14 @@ class FctController extends AbstractController {
 
 		Period period = getPeriod();
 		Organisation organisation = getOrganisation(false);
-		FctObjective objective = FctObjective.get(params.int('objective'));
+		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		OrganisationUnitLevel level = getLevel();
 		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
 		
 		FctTable fctTable = null;
 
 		if (period != null && objective != null && organisation != null && level != null) {
-			fctTable = reportService.getFctTable(organisation, objective, period, level, new HashSet(facilityTypes*.uuid));
+			fctTable = fctService.getFctTable(organisation, objective, period, level, new HashSet(facilityTypes*.uuid));
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root objective: "+objective)				
@@ -46,7 +47,7 @@ class FctController extends AbstractController {
 			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
 			facilityTypes: organisationService.getGroupsForExpression(),
-			objectives: FctObjective.list(),
+			objectives: ReportObjective.list(),
 			organisationTree: organisationService.getOrganisationTreeUntilLevel(organisationLevel.intValue()-1),
 			levels: organisationService.getAllLevels(new Integer(organisationService.getRootOrganisation().getLevel()+1))
 		]

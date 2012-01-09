@@ -53,7 +53,7 @@ hibernate {
 	// performance improvement, but keep in mind that it might 
 	// affect data consistency
 	flush.mode = 'commit'
-//	show_sql = true
+	show_sql = true
 }
 naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
 

@@ -31,6 +31,7 @@ package org.chai.kevin.dashboard;
 import grails.plugin.springcache.annotations.Cacheable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,8 @@ import org.chai.kevin.OrganisationService;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -54,15 +57,39 @@ public class DashboardService {
 
 //	private Log log = LogFactory.getLog(DashboardService.class);
 	
+	private ReportService reportService;
 	private OrganisationService organisationService;
 	private InfoService infoService;
-	private ValueService valueService;
-	
+	private ValueService valueService;	
 	private Set<Integer> skipLevels;
+	
+	public void setReportService(ReportService reportService) {
+		this.reportService = reportService;
+	}
+	
+	public void setOrganisationService(OrganisationService organisationService) {
+		this.organisationService = organisationService;
+	}
+	
+	public void setInfoService(InfoService infoService) {
+		this.infoService = infoService;
+	}
+	
+	public void setValueService(ValueService valueService) {
+		this.valueService = valueService;
+	}
+	
+	public void setSkipLevels(Set<Integer> skipLevels) {
+		this.skipLevels = skipLevels;
+	}
+	
+	public Integer[] getSkipLevelArray() {
+		return skipLevels.toArray(new Integer[skipLevels.size()]);
+	}
 	
 	@Transactional(readOnly = true)
 	@Cacheable("dashboardCache")
-	public Dashboard getDashboard(Organisation organisation, DashboardObjective objective, Period period, Set<String> groupUuids) {
+	public Dashboard getDashboard(Organisation organisation, ReportObjective objective, Period period, Set<String> groupUuids) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		
 		List<Organisation> organisations = new ArrayList<Organisation>();
@@ -70,8 +97,7 @@ public class DashboardService {
 			organisationService.loadGroup(child);
 						
 			if (organisationService.loadLevel(child) != organisationService.getFacilityLevel()
-				|| 
-				groupUuids.contains(child.getOrganisationUnitGroup().getUuid())) {
+				||  groupUuids.contains(child.getOrganisationUnitGroup().getUuid())) {
 				organisations.add(child);
 				organisationService.loadChildren(child, getSkipLevelArray());
 			}
@@ -81,22 +107,23 @@ public class DashboardService {
 			parent = parent.getParent();
 		}
 		
-		List<DashboardObjectiveEntry> weightedObjectives = objective.getObjectiveEntries();
+		List<DashboardEntity> dashboardEntities = reportService.getDashboardEntities(objective);
+		
 		List<Organisation> organisationPath = calculateOrganisationPath(organisation);
-		List<DashboardObjective> objectivePath = calculateObjectivePath(objective);
-		return new Dashboard(organisations, weightedObjectives, 
+		List<DashboardObjective> objectivePath = getBreadcrumb(objective);
+		return new Dashboard(organisations, dashboardEntities, 
 				organisationPath, objectivePath,
-				getValues(organisations, weightedObjectives, period, groupUuids));
+				getValues(organisations, dashboardEntities, period, groupUuids));
 	}
 
 	@Transactional(readOnly = true)
-	public Info<?> getExplanation(Organisation organisation, DashboardEntry entry, Period period, Set<String> groupUuids) {
+	public Info<?> getExplanation(Organisation organisation, DashboardObjective objective, Period period, Set<String> groupUuids) {
 		organisationService.loadChildren(organisation, getSkipLevelArray());
 		organisationService.loadParent(organisation, getSkipLevelArray());
 		organisationService.loadGroup(organisation);
 		organisationService.loadLevel(organisation);
-		
-		return entry.visit(new ExplanationVisitor(groupUuids), organisation, period);
+				
+		return objective.visit(new ExplanationVisitor(groupUuids), organisation, period);
 	}
 
 	private class ExplanationVisitor implements DashboardVisitor<Info> {
@@ -111,7 +138,8 @@ public class DashboardService {
 		public Info visitObjective(DashboardObjective objective, Organisation organisation, Period period) {
 			DashboardPercentage percentage = objective.visit(new PercentageVisitor(groupUuids), organisation, period);
 			if (percentage == null) return null;
-			Map<DashboardObjectiveEntry, DashboardPercentage> values = getValues(objective.getObjectiveEntries(), period, organisation, groupUuids);
+			List<DashboardEntity> dashboardEntities = reportService.getDashboardEntities(objective.getObjective());
+			Map<DashboardEntity, DashboardPercentage> values = getValues(dashboardEntities, period, organisation, groupUuids);
 			return new DashboardObjectiveInfo(percentage, values);
 		}
 
@@ -141,10 +169,12 @@ public class DashboardService {
 			Integer totalWeight = 0;
 			Double sum = 0.0d;
 
-			for (DashboardObjectiveEntry child : objective.getObjectiveEntries()) {
-				DashboardPercentage childPercentage = child.getEntry().visit(this, organisation, period);
+			List<DashboardEntity> dashboardEntities = reportService.getDashboardEntities(objective.getObjective());
+			
+			for (DashboardEntity child : dashboardEntities) {
+				DashboardPercentage childPercentage = child.visit(this, organisation, period);
 				if (childPercentage == null) {
-					if (log.isErrorEnabled()) log.error("found null percentage, objective: "+child.getEntry()+", organisation: "+organisation.getOrganisationUnit()+", period: "+period);
+					if (log.isErrorEnabled()) log.error("found null percentage, objective: "+child+", organisation: "+organisation.getOrganisationUnit()+", period: "+period);
 					return null;
 				}
 				Integer weight = child.getWeight();
@@ -182,21 +212,21 @@ public class DashboardService {
 		}
 	}
 	
-	private Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> getValues(List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries, Period period, Set<String> groupUuids) {
-		Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> values = new HashMap<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>>();
+	private Map<Organisation, Map<DashboardEntity, DashboardPercentage>> getValues(List<Organisation> organisations, List<DashboardEntity> dashboardEntities, Period period, Set<String> groupUuids) {
+		Map<Organisation, Map<DashboardEntity, DashboardPercentage>> values = new HashMap<Organisation, Map<DashboardEntity, DashboardPercentage>>();
 
 		for (Organisation organisation : organisations) {
-			Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = getValues(objectiveEntries, period, organisation, groupUuids);
+			Map<DashboardEntity, DashboardPercentage> organisationMap = getValues(dashboardEntities, period, organisation, groupUuids);
 			values.put(organisation, organisationMap);
 		}
 		return values;
 	}
 
-	private Map<DashboardObjectiveEntry, DashboardPercentage> getValues(List<DashboardObjectiveEntry> objectiveEntries, Period period, Organisation organisation, Set<String> groupUuids) {
-		Map<DashboardObjectiveEntry, DashboardPercentage> organisationMap = new HashMap<DashboardObjectiveEntry, DashboardPercentage>();
-		for (DashboardObjectiveEntry objectiveEntry : objectiveEntries) {
-			DashboardPercentage percentage = objectiveEntry.getEntry().visit(new PercentageVisitor(groupUuids), organisation, period);
-			organisationMap.put(objectiveEntry, percentage);
+	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> entities, Period period, Organisation organisation, Set<String> groupUuids) {
+		Map<DashboardEntity, DashboardPercentage> organisationMap = new HashMap<DashboardEntity, DashboardPercentage>();
+		for (DashboardEntity entity : entities) {
+			DashboardPercentage percentage = entity.visit(new PercentageVisitor(groupUuids), organisation, period);
+			organisationMap.put(entity, percentage);
 		}
 		return organisationMap;
 	}
@@ -211,35 +241,18 @@ public class DashboardService {
 		return organisationPath;
 	}
 	
-	private List<DashboardObjective> calculateObjectivePath(DashboardObjective objective) {
+	private List<DashboardObjective> getBreadcrumb(ReportObjective objective) {
 		List<DashboardObjective> objectivePath = new ArrayList<DashboardObjective>();
-		DashboardObjectiveEntry parent = objective.getParent();
-		while (parent != null) {
-			objective = parent.getParent();
-			objectivePath.add(objective);
-			parent = objective.getParent();
+		while (objective != null) {
+			ReportObjective parent = objective.getParent();
+			if(parent != null) {
+				DashboardObjective dashboardParent = (DashboardObjective) reportService.getDashboardEntity(parent);
+				if(dashboardParent != null)	objectivePath.add(dashboardParent);
+			}
+			objective = parent;
 		}
 		Collections.reverse(objectivePath);
 		return objectivePath;
 	}
-	
-	public void setOrganisationService(OrganisationService organisationService) {
-		this.organisationService = organisationService;
-	}
-	
-	public void setInfoService(InfoService infoService) {
-		this.infoService = infoService;
-	}
-	
-	public void setValueService(ValueService valueService) {
-		this.valueService = valueService;
-	}
-	
-	public void setSkipLevels(Set<Integer> skipLevels) {
-		this.skipLevels = skipLevels;
-	}
-	
-	public Integer[] getSkipLevelArray() {
-		return skipLevels.toArray(new Integer[skipLevels.size()]);
-	}
+
 }

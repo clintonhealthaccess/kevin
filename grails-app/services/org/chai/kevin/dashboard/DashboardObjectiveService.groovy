@@ -32,17 +32,20 @@ import java.util.List;
 
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dashboard.DashboardObjective;
-import org.chai.kevin.dashboard.DashboardObjectiveEntry;
+import org.chai.kevin.reports.ReportObjective
 import org.springframework.transaction.annotation.Transactional;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DashboardObjectiveService {
 
 	static transactional = true
 
-	DashboardObjective getRootObjective() throws IllegalStateException {
-		List<DashboardObjective> objectives = DashboardObjective.findAllByRoot(true);
+	DashboardObjective getDashboardRootObjective() throws IllegalStateException {
+		
+		String dashboardRoot = ConfigurationHolder.config.dashboard.objective.root;
+		List<DashboardObjective> objectives = DashboardObjective.findAllByCode(dashboardRoot);
 		if (objectives.size() != 1) {
-			throw new IllegalStateException("there is no root objective in the system, please create one")
+			throw new IllegalStateException("there is no root dashboard objective in the system, please create one")
 		}
 		return objectives.get(0);
 	}

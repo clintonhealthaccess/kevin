@@ -33,61 +33,24 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Organisation;
 import org.chai.kevin.Translation;
-import org.hibernate.annotations.Cascade;
+import org.chai.kevin.reports.ReportObjective;
 import org.hisp.dhis.period.Period;
 
-@Entity(name="DashboardEntry")
-@Table(name="dhsst_dashboard_entry")
-@Inheritance(strategy=InheritanceType.JOINED)
-public abstract class DashboardEntry {
-
-	private Long id;
-	private DashboardObjectiveEntry parent;
-	private Boolean root = false;
+@MappedSuperclass
+public abstract class DashboardEntity {
 	
-	private Translation names = new Translation();
-	private Translation descriptions = new Translation();
-	private String code;
-
-	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	@OneToOne(targetEntity=DashboardObjectiveEntry.class, mappedBy="entry")
-	@Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-	public DashboardObjectiveEntry getParent() {
-		return parent;
-	}
-	public void setParent(DashboardObjectiveEntry parent) {
-		this.parent = parent;
-	}
-	
-	@Basic
-	public Boolean getRoot() {
-		return root;
-	}
-	public void setRoot(Boolean root) {
-		this.root = root;
-	}
-	
+	protected Translation names = new Translation();
+	protected Translation descriptions = new Translation();
+	protected Integer weight;
+	protected String code;
+	protected Integer order;
 	
 	@Embedded
 	@AttributeOverrides({
@@ -112,7 +75,24 @@ public abstract class DashboardEntry {
 	public void setDescriptions(Translation descriptions) {
 		this.descriptions = descriptions;
 	}
-
+	
+	@Basic
+	public Integer getWeight() {
+		return weight;
+	}
+	
+	public void setWeight(Integer weight) {
+		this.weight = weight;
+	}
+	
+	public abstract <T> T visit(DashboardVisitor<T> visitor, Organisation organisation, Period period);
+	
+	@Transient
+	public abstract boolean hasChildren();
+	
+	@Transient
+	public abstract boolean isTarget();
+	
 	@Basic(fetch=FetchType.EAGER)
 	public String getCode() {
 		return code;
@@ -120,6 +100,16 @@ public abstract class DashboardEntry {
 	
 	public void setCode(String code) {
 		this.code = code;
+	}
+	
+	@Basic
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
+	}
+	
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 
 	@Override
@@ -129,15 +119,16 @@ public abstract class DashboardEntry {
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof DashboardEntry))
+		if (!(obj instanceof DashboardEntity))
 			return false;
-		DashboardEntry other = (DashboardEntry) obj;
+		DashboardEntity other = (DashboardEntity) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;
@@ -146,16 +137,6 @@ public abstract class DashboardEntry {
 		return true;
 	}
 	
-	@Override
-	public String toString() {
-		return "DashboardEntry [code=" + code + "]";
-	}
-	
 	@Transient
-	public abstract boolean hasChildren();
-	@Transient
-	public abstract boolean isTarget();
-	
-	public abstract <T> T visit(DashboardVisitor<T> visitor, Organisation organisation, Period period);
-
+	public abstract ReportObjective getReportObjective();
 }

@@ -33,28 +33,27 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.chai.kevin.Organisation;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.period.Period;
+import org.chai.kevin.reports.ReportObjective;
 
 public class Dashboard {
 	
 	private List<Organisation> organisations;
-	private List<DashboardObjectiveEntry> objectiveEntries;
+	private List<DashboardEntity> dashboardEntities;
 	
 	private List<Organisation> organisationPath;
 	private List<DashboardObjective> objectivePath;
 	
-	private Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> values;
+	private Map<Organisation, Map<DashboardEntity, DashboardPercentage>> values;
 	
-	public Dashboard(List<Organisation> organisations, List<DashboardObjectiveEntry> objectiveEntries,
+	public Dashboard(List<Organisation> organisations, List<DashboardEntity> dashboardEntities,
 			List<Organisation> organisationPath, List<DashboardObjective> objectivePath,
-			Map<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> values
+			Map<Organisation, Map<DashboardEntity, DashboardPercentage>> map
 	) {
 		this.organisations = organisations;
-		this.objectiveEntries = objectiveEntries;
+		this.dashboardEntities = dashboardEntities;
 		this.organisationPath = organisationPath;
 		this.objectivePath = objectivePath;
-		this.values = values;
+		this.values = map;
 	}
 	
 
@@ -62,8 +61,8 @@ public class Dashboard {
 		return organisations;
 	}
 	
-	public List<DashboardObjectiveEntry> getObjectiveEntries() {
-		return objectiveEntries;
+	public List<DashboardEntity> getObjectiveEntities() {
+		return dashboardEntities;
 	}
 	
 	public List<DashboardObjective> getObjectivePath() {
@@ -74,20 +73,19 @@ public class Dashboard {
 		return organisationPath;
 	}
 	
-	
-	public DashboardPercentage getPercentage(Organisation organisation, DashboardEntry objective) {
-		return values.get(organisation).get(objective.getParent());
+	public DashboardPercentage getPercentage(Organisation organisation, DashboardEntity entity) {
+		return values.get(organisation).get(entity);
 	}
 	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		for (Entry<Organisation, Map<DashboardObjectiveEntry, DashboardPercentage>> organisationEntry : this.values.entrySet()) {
-			buffer.append(organisationEntry.getKey());
-			for (Entry<DashboardObjectiveEntry, DashboardPercentage> objectiveEntry : organisationEntry.getValue().entrySet()) {
-				buffer.append(objectiveEntry.getKey());
+		for (Entry<Organisation, Map<DashboardEntity, DashboardPercentage>> organisationDashboardEntities : this.values.entrySet()) {
+			buffer.append(organisationDashboardEntities.getKey());
+			for (Entry<DashboardEntity, DashboardPercentage> organisationDashboardEntity : organisationDashboardEntities.getValue().entrySet()) {
+				buffer.append(organisationDashboardEntity.getKey());
 				buffer.append(":");
-				buffer.append(objectiveEntry.getValue());
+				buffer.append(organisationDashboardEntity.getValue());
 				buffer.append(",");
 			}
 			buffer.append("\n");
