@@ -75,10 +75,6 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-		compile ('org.amplecode:quick:1.5') {
-			transitive = false
-		}
-		
 		// JAQL dependencies - jaql itself is in the lib/ folder
 		compile ("org.apache.hadoop:hadoop-core:0.20.203.0") {
 			transitive = false
