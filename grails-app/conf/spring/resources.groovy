@@ -13,6 +13,8 @@ import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.reports.ReportService
+import org.chai.kevin.dsr.DsrService
+import org.chai.kevin.fct.FctService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.survey.SummaryService
 import org.chai.kevin.survey.SurveyCopyService
@@ -55,7 +57,7 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 def config = CH.config
 
 Set<String> dashboardSkipLevels = config.dashboard.skip.levels
-Set<String> costSkipLevels = config.dashboard.skip.levels
+Set<String> costSkipLevels = config.cost.skip.levels
 String dsrGroupLevel= config.dsr.group.level
 Set<String> exportSkipLevels = config.export.skip.levels
 
@@ -108,7 +110,6 @@ beans = {
 		surveyValueService = ref("surveyValueService")
 		languageService = ref("languageService")
 		sessionFactory = ref("sessionFactory")
-//		grailsApplication = ref("grailsApplication")
 		skipLevels = exportSkipLevels
 	}
 	
@@ -118,11 +119,24 @@ beans = {
 	}
 
 	reportService(ReportService){
+		languageService = ref("languageService")
+		locationService = ref("locationService")
+		sessionFactory = ref("sessionFactory")
+	}
+	
+	dsrService(DsrService){
+		reportService = ref("reportService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		languageService = ref("languageService")
 		groupLevel = dsrGroupLevel
+	}
+	
+	fctService(FctService){
+		reportService = ref("reportService")
+		locationService = ref("locationService")
+		valueService = ref("valueService")
 	}
 	
 	mapsService(MapsService) {
@@ -132,6 +146,7 @@ beans = {
 	}
 
 	costTableService(CostTableService) {
+		reportService = ref("reportService")
 		costService = ref("costService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")
@@ -157,9 +172,11 @@ beans = {
 	}
 
 	dashboardService(DashboardService) {
+		reportService = ref("reportService")
 		infoService = ref("infoService")
 		valueService = ref("valueService")
 		locationService = ref("locationService")
+		sessionFactory = ref("sessionFactory")
 		skipLevels = dashboardSkipLevels
 	}
 

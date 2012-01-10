@@ -9,12 +9,13 @@ import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.reports.ReportService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class FctController extends AbstractController {
 
-	ReportService reportService;
+	FctService fctService;
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -25,14 +26,14 @@ class FctController extends AbstractController {
 
 		Period period = getPeriod();
 		LocationEntity entity = LocationEntity.get(params.int('organisation'));
-		FctObjective objective = FctObjective.get(params.int('objective'));
+		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		LocationLevel level = LocationLevel.get(params.int('level'));
 		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
 		
 		FctTable fctTable = null;
 
 		if (period != null && objective != null && entity != null && level != null) {
-			fctTable = reportService.getFctTable(entity, objective, period, level, new HashSet(facilityTypes));
+			fctTable = fctService.getFctTable(entity, objective, period, level, new HashSet(facilityTypes));
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root objective: "+objective)				
@@ -45,10 +46,10 @@ class FctController extends AbstractController {
 			currentLevel: level,
 			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
-			objectives: FctObjective.list(),
-			levels: locationService.listLevels(),
 			facilityTypes: locationService.listTypes(),
-		    organisationTree: locationService.getRootLocation()
+			objectives: ReportObjective.list(),
+			organisationTree: locationService.getRootLocation(),
+			levels: locationService.listLevels()
 		]
 	}
 }

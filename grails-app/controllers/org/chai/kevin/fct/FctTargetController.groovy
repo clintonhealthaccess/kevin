@@ -35,6 +35,8 @@ import grails.plugin.springcache.annotations.CacheFlush;
 
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.data.Sum
+import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.reports.ReportObjective;
 import org.chai.kevin.util.Utils
 
 class FctTargetController extends AbstractEntityController {
@@ -60,8 +62,9 @@ class FctTargetController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			target: entity,
-			objectives: FctObjective.list(),
+			objectives: ReportObjective.list(),
 			groups: DataEntityType.list(),
+			objectives: ReportObjective.list(),
 			sums: entity.sum!=null?[entity.sum]:[],
 			groupUuids: Utils.split(entity.groupUuidString)
 		]

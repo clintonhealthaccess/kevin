@@ -34,17 +34,18 @@ package org.chai.kevin.fct
 import grails.plugin.springcache.annotations.CacheFlush;
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.reports.ReportObjective
 
 class FctObjectiveController extends AbstractEntityController {
 	
 	def locationService
 	
 	def getEntity(def id) {
-		return FctObjective.get(id)
+		return ReportObjective.get(id)
 	}
 	
 	def createEntity() {
-		return new FctObjective()
+		return new ReportObjective()
 	}
 	
 	def getLabel() {

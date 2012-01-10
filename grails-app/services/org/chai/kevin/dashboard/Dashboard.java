@@ -38,31 +38,30 @@ import org.chai.kevin.location.LocationEntity;
 public class Dashboard {
 	
 	private List<CalculationEntity> organisations;
-	private List<DashboardObjectiveEntry> objectiveEntries;
+	private List<DashboardEntity> dashboardEntities;
 	
 	private List<LocationEntity> organisationPath;
 	private List<DashboardObjective> objectivePath;
 	
-	private Map<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>> values;
+	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values;
 	
-	public Dashboard(List<CalculationEntity> organisations, List<DashboardObjectiveEntry> objectiveEntries,
+	public Dashboard(List<CalculationEntity> organisations, List<DashboardEntity> dashboardEntities,
 			List<LocationEntity> organisationPath, List<DashboardObjective> objectivePath,
-			Map<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>> values
+			Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values
 	) {
 		this.organisations = organisations;
-		this.objectiveEntries = objectiveEntries;
+		this.dashboardEntities = dashboardEntities;
 		this.organisationPath = organisationPath;
 		this.objectivePath = objectivePath;
 		this.values = values;
 	}
 	
-
 	public List<CalculationEntity> getOrganisations() {
 		return organisations;
 	}
 	
-	public List<DashboardObjectiveEntry> getObjectiveEntries() {
-		return objectiveEntries;
+	public List<DashboardEntity> getObjectiveEntities() {
+		return dashboardEntities;
 	}
 	
 	public List<DashboardObjective> getObjectivePath() {
@@ -73,20 +72,19 @@ public class Dashboard {
 		return organisationPath;
 	}
 	
-	
-	public DashboardPercentage getPercentage(CalculationEntity organisation, DashboardEntry objective) {
-		return values.get(organisation).get(objective.getParent());
+	public DashboardPercentage getPercentage(CalculationEntity organisation, DashboardEntity dashboardEntity) {
+		return values.get(organisation).get(dashboardEntity);
 	}
 	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		for (Entry<CalculationEntity, Map<DashboardObjectiveEntry, DashboardPercentage>> organisationEntry : this.values.entrySet()) {
+		for (Entry<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> organisationEntry : this.values.entrySet()) {
 			buffer.append(organisationEntry.getKey());
-			for (Entry<DashboardObjectiveEntry, DashboardPercentage> objectiveEntry : organisationEntry.getValue().entrySet()) {
+			for (Entry<DashboardEntity, DashboardPercentage> objectiveEntry : organisationEntry.getValue().entrySet()) {
 				buffer.append(objectiveEntry.getKey());
 				buffer.append(":");
-				buffer.append(objectiveEntry.getValue());
+				buffer.append(organisationEntry.getValue());
 				buffer.append(",");
 			}
 			buffer.append("\n");

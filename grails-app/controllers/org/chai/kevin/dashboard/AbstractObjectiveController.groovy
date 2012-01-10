@@ -32,48 +32,25 @@ import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.reports.ReportObjective
 
 abstract class AbstractObjectiveController extends AbstractEntityController {
 
 	def locationService
 	def dataService
+	def dashboardService
 	
 	def validateEntity(def entity) {
-		return entity.entry.validate()&entity.validate()
+		return entity.validate()
 	}
 
-	def getEntity(def id) {
-		return DashboardObjectiveEntry.get(id);
-	}
-	
 	def saveEntity(def entity) {
-		if (entity.id == null) {
-			def currentObjective = DashboardObjective.get(params['currentObjective']);
-			currentObjective.addObjectiveEntry entity
-			entity.save()
-			currentObjective.save()
-		}
-		else {
-			entity.save()
-		}
-	}
-	
-	def deleteEntity(def entity) {
-		if (!entity.entry.hasChildren()) {
-			entity.parent.objectiveEntries.remove(entity)
-			entity.delete()
-		}
+		entity.save()
 	}
 	
 	def getModel(def entity) {
-		def currentObjective = null;
-		if (params['currentObjective']) {
-			currentObjective = DashboardObjective.get(params['currentObjective']);
-			if (log.isInfoEnabled()) log.info('fetched current objective: '+currentObjective);
-		}
-		
 		def groups = DataEntityType.list()
-		return [objectiveEntry: entity, groups: groups, currentObjective: currentObjective]
+		return [entity: entity, groups: groups]
 	}
 	
 }

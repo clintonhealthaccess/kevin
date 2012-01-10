@@ -29,12 +29,16 @@ package org.chai.kevin.dashboard
 */
 
 import grails.plugin.springcache.annotations.CacheFlush
+import org.chai.kevin.reports.ReportObjective
 
 class DashboardObjectiveController extends AbstractObjectiveController {
 
+	def getEntity(def id) {
+		return DashboardObjective.get(id)
+	}
+	
 	def createEntity() {
-		def entity = new DashboardObjectiveEntry()
-		entity.entry = new DashboardObjective()
+		def entity = new DashboardObjective()
 		return entity
 	}
 	
@@ -46,13 +50,41 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 		return '/dashboard/createObjective';
 	}
 	
-	def bindParams(def objectiveEntry) {
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.entry?.names!=null) objectiveEntry.entry.names = params.entry?.names
-		if (params.entry?.descriptions!=null) objectiveEntry.entry.descriptions = params.entry?.descriptions
+	def deleteEntity(def entity) {
+		List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntities(entity.getReportObjective());
+		if(dashboardEntities.size() == 0){
+			if (log.isInfoEnabled()) log.info("deleting objective entity: "+entity)
+			entity.delete()
+		}
+		else {
+			flash.message = message(code: 'dashboard.objective.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Dashboard obejctive {0} still has associated children.')
+		}
+	}
+	
+	def getModel(def entity) {
+		def model = super.getModel(entity)
 		
-		objectiveEntry.properties = params;
+		def reportObjectives = ReportObjective.list()
+		def dashboardObjectives = DashboardObjective.list()
+		for(objective in dashboardObjectives)
+			reportObjectives.remove(objective.getObjective())
+		
+		model << [entity: entity, objectives: reportObjectives]
+		return model;
+	}
+	
+	def bindParams(def entity) {		
+		entity.properties = params
+//		if(params != null) {
+			if(params.objective != null){					
+				 def reportObjective = ReportObjective.get(params.objective.id)
+				 entity.objective = params.objective
+				 
+				 entity.names = reportObjective.names
+				 entity.descriptions = reportObjective.descriptions
+				 entity.code = reportObjective.code
+			}
+//		}
 	}
 	
 	@CacheFlush("dashboardCache")

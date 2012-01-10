@@ -31,10 +31,10 @@ package org.chai.kevin.data
  * @author Jean Kahigiso M.
  *
  */
-constraints ={
+constraints = {
+	code(nullable: false, blank: false, unique: true)
 	expressionMap(nullable: false, expressionMapValid: true)
 	type(nullable: false, validator: {val, obj ->
 		return val.isValid();
 	})
-	code(nullable: false, blank: false, unique: true)
 }

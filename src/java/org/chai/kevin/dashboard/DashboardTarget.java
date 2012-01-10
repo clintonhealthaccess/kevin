@@ -29,6 +29,8 @@ package org.chai.kevin.dashboard;
  */
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -36,13 +38,25 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.reports.ReportObjective;
 import org.hisp.dhis.period.Period;
 
-@Entity(name="StrategicTarget")
+@Entity(name="DashboardTarget")
 @Table(name="dhsst_dashboard_target")
-public class DashboardTarget extends DashboardEntry {
+public class DashboardTarget extends DashboardEntity {
 
+	private Long id;
 	private Calculation<?> calculation;
+	private ReportObjective objective;
+	
+	@Id
+	@GeneratedValue
+	public Long getId() {
+		return id;
+	}	
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 //	@Cascade(value={CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@ManyToOne(targetEntity=Calculation.class, optional=false)
@@ -54,27 +68,38 @@ public class DashboardTarget extends DashboardEntry {
 	public void setCalculation(Calculation<?> calculation) {
 		this.calculation = calculation;
 	}
+
+	@ManyToOne(targetEntity=ReportObjective.class)
+	public ReportObjective getObjective() {
+		return objective;
+	}
 	
+	public void setObjective(ReportObjective objective) {
+		this.objective = objective;
+	}
 	
 	@Override
-	public boolean hasChildren() {
+	public <T> T visit(DashboardVisitor<T> visitor, CalculationEntity organisation, Period period) {
+		return visitor.visitTarget(this, organisation, period);
+	}
+	
+	@Override
+	@Transient
+	public boolean hasChildren() {	
 		return false;
 	}
-
-	@Override
-	public String toString() {
-		return "StrategicTarget [code=" + getCode() + ", calculation=" + calculation + "]";
-	}
-
+	
 	@Override
 	@Transient
 	public boolean isTarget() {
 		return true;
 	}
-
+	
 	@Override
-	public <T> T visit(DashboardVisitor<T> visitor, CalculationEntity entity, Period period) {
-		return visitor.visitTarget(this, entity, period);
+	@Transient
+	public ReportObjective getReportObjective() {
+		ReportObjective reportObjective = getObjective();
+		return reportObjective;
 	}
 
 }

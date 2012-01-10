@@ -38,16 +38,17 @@ import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.value.RawDataElementValue
 import org.hisp.dhis.period.Period
+import org.chai.kevin.reports.ReportObjective
 
 class DashboardServiceSpec extends DashboardIntegrationTests {
 
 	def dashboardService
-
+	
 	def "dashboard service works"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		def dashboard = null
@@ -81,14 +82,10 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 
 		when:
-		def currentOrganisation = LocationEntity.findByCode(currentOrganisationName);
-		def currentObjective = DashboardObjective.findByCode(currentObjectiveName);
-
-		def dashboard = dashboardService.getDashboard(currentOrganisation, currentObjective, period, new HashSet(groups.collect {DataEntityType.findByCode(it)}));
-		def percentage = dashboard.getPercentage(getCalculationEntity(organisationName), getObjective(objectiveName))
+		def dashboard = dashboardService.getDashboard(LocationEntity.findByCode(currentOrganisationName), ReportObjective.findByCode(currentObjectiveName), period, new HashSet(groups.collect {DataEntityType.findByCode(it)}));
+		def percentage = dashboard.getPercentage(getCalculationEntity(organisationName), getDashboardEntity(objectiveName))
 
 		then:
-		//		percentage.status == status;
 		if (percentage.value == null) value == null
 		else percentage.value == value
 
@@ -111,44 +108,36 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 
 		when:
-		def objective = DashboardObjective.findByCode(objectiveCode);
-		def dashboard = dashboardService.getDashboard(LocationEntity.findByCode(organisationName), objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]));
+		def dashboard = dashboardService.getDashboard(LocationEntity.findByCode(organisationName), ReportObjective.findByCode(objectiveCode), period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]));
 
 		then:
-		dashboard.objectiveEntries == getWeightedObjectives(expectedObjectives)
+		dashboard.objectiveEntities.containsAll expectedEntities.collect {getDashboardEntity(it)}
+		dashboard.objectivePath.containsAll expectedObjectivePath.collect {DashboardObjective.findByCode(it)}
 		// TODO order organisations
 		dashboard.organisations.containsAll expectedOrganisations.collect {DataEntity.findByCode(it)}
-		dashboard.organisationPath == expectedOrganisationPath.collect {LocationEntity.findByCode(it)}
-		dashboard.objectivePath == getObjectives(expectedObjectivePath)
+		dashboard.organisationPath.containsAll expectedOrganisationPath.collect {LocationEntity.findByCode(it)}
 
 		where:
-		organisationName| objectiveCode	| expectedOrganisations	| expectedObjectives| expectedOrganisationPath	| expectedObjectivePath
+		organisationName| objectiveCode	| expectedOrganisations	| expectedEntities  | expectedOrganisationPath	| expectedObjectivePath
 		BURERA			| OBJECTIVE		| [BUTARO, KIVUYE]		| [TARGET1, TARGET2]| [RWANDA, NORTH]			| [ROOT]
 		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [OBJECTIVE]		| [RWANDA, NORTH]			| []
-
 	}
 
-	def getObjectives(List<String> codes) {
-		def objectives = []
+	
+	def getDashboardEntity(String code) {
+		def entity = DashboardObjective.findByCode(code);
+		if(entity == null) entity = DashboardTarget.findByCode(code);
+		return entity
+	}
+
+	def getReportObjectives(List<String> codes) {
+		def reportObjectives = []
 		for (String code : codes) {
-			objectives.add(getObjective(code))
+			def entity = DashboardObjective.findByCode(code);
+			if(entity == null) DashboardTarget.findByCode(code);
+			if(entity != null && entity.getObjective() != null) 
+				reportObjectives.add(entity.getObjective());
 		}
-		return objectives;
-	}
-
-	def getObjective(String code) {
-		def objective = DashboardTarget.findByCode(code);
-		if (objective == null) objective = DashboardObjective.findByCode(code);
-		return objective
-	}
-
-	def getWeightedObjectives(List<String> codes) {
-		def objectives = []
-		for (String code : codes) {
-			def objective = DashboardTarget.findByCode(code);
-			if (objective == null) objective = DashboardObjective.findByCode(code);
-			objectives.add(objective.getParent());
-		}
-		return objectives;
+		return reportObjectives;
 	}
 }

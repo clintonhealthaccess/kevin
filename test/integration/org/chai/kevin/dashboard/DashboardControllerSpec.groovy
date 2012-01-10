@@ -13,20 +13,21 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
+		def dashboardRoot = newDashboardObjective(CODE(3), root)
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		dashboardController = new DashboardController()
 		
 		when:
 		dashboardController.params.organisation = LocationEntity.findByCode(RWANDA).id
-		dashboardController.params.objective = root.id
+		dashboardController.params.dashboardEntity = dashboardRoot.id
 		dashboardController.params.period = period.id
 		dashboardController.params.groupUuids = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
 		then:
-		model.currentObjective.equals(root)
+		model.dashboardEntity.equals(dashboardRoot)
 		model.currentPeriod.equals(period)
 		model.currentOrganisation.equals(LocationEntity.findByCode(RWANDA))
 		model.currentFacilityTypes.equals([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)])
@@ -38,20 +39,21 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
+		def dashboardRoot = newDashboardObjective(CODE(3), root)
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		dashboardController = new DashboardController()
 		
 		when:
 		dashboardController.params.organisation = LocationEntity.findByCode(RWANDA).id
-		dashboardController.params.objective = root.id
+		dashboardController.params.dashboardEntity = dashboardRoot.id
 		dashboardController.params.period = period.id
 		dashboardController.params.groupUuids = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.explain()
 		
 		then:
-		model.entry.equals(root)
+		model.dashboardEntity.equals(dashboardRoot)
 		model.info != null
 	}
 	

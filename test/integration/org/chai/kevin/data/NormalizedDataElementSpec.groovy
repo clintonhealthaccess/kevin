@@ -36,7 +36,6 @@ class NormalizedDataElementSpec extends IntegrationTests {
 
 		then:
 		thrown ValidationException
-
 	}
 
 	def "normalized data element code is unique"() {
@@ -51,7 +50,6 @@ class NormalizedDataElementSpec extends IntegrationTests {
 
 		then:
 		thrown ValidationException
-
 	}
 	
 	def "normalized data element value hashcode and equals"() {

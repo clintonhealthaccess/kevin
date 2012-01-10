@@ -30,14 +30,17 @@ package org.chai.kevin.dashboard
 
 import grails.plugin.springcache.annotations.CacheFlush
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.reports.ReportObjective;
 
 
 class DashboardTargetController extends AbstractObjectiveController {
 
+	def getEntity(def id) {
+		return DashboardTarget.get(id)
+	}
+	
 	def createEntity() {
-		def entity = new DashboardObjectiveEntry()
-		entity.entry = new DashboardTarget()
-		return entity
+		return new DashboardTarget()
 	}
 	
 	def getLabel() {
@@ -48,24 +51,33 @@ class DashboardTargetController extends AbstractObjectiveController {
 		return '/dashboard/createTarget'
 	}
 	
+	def deleteEntity(def entity) {
+		entity.delete()
+	}
+	
 	def getModel(def entity) {
 		def model = super.getModel(entity)
 		
 		def calculations = []
-		if (entity.entry.calculation != null) calculations.add(entity.entry.calculation)
+		if (entity.calculation != null) calculations.add(entity.calculation)
 		
-		model << [calculations: calculations]
+		def dashboardObjectives = DashboardObjective.list()
+		def reportObjectives = []
+		for(objective in dashboardObjectives)
+			reportObjectives.add(objective.getObjective())
+		
+		model << [entity: entity, objectives: reportObjectives, calculations: calculations]
 		return model;
 	}
 	
-	def bindParams(def objectiveEntry) {
-		bindData(objectiveEntry, params, [exclude:'entry.calculation.id'])
-		if (params.int('entry.calculation.id') != null) objectiveEntry.entry.calculation = dataService.getData(params.int('entry.calculation.id'), Calculation.class)
+	def bindParams(def entity) {
+		bindData(entity, params, [exclude:'calculation.id'])
+		if (params.int('calculation.id') != null) entity.calculation = dataService.getData(params.int('calculation.id'), Calculation.class)
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.entry?.names != null) objectiveEntry.entry.names = params.entry?.names
-		if (params.entry?.descriptions != null) objectiveEntry.entry.descriptions = params.entry?.descriptions
+		if (params.names!=null) entity.names = params.names
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 
 	@CacheFlush("dashboardCache")
@@ -79,7 +91,7 @@ class DashboardTargetController extends AbstractObjectiveController {
 	}
 	
 	@CacheFlush("dashboardCache")
-	def delete = {
+	def delete = {		
 		super.delete()
 	}
 }

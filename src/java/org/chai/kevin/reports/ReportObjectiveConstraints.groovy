@@ -1,4 +1,4 @@
-package org.chai.kevin.cost
+package org.chai.kevin.reports
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -29,5 +29,6 @@ package org.chai.kevin.cost
 */
 
 constraints = {
-	code(nullable: false, blank: false, unique: true)
+	code (nullable: false, blank: false, unique: true)
+	
 }

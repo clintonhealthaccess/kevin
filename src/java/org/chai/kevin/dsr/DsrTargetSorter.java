@@ -42,24 +42,8 @@ public class DsrTargetSorter implements Comparator<DsrTarget> {
 	}
 	
 	@Override
-	public int compare(DsrTarget targetOne, DsrTarget targetTwo) {
-		if (targetOne.getCategory() == null) {
-			if (targetTwo.getCategory() == null) {
-				return targetOne.compareTo(targetTwo);
-			}
-			else return -1;
-		}
-		else if (targetTwo.getCategory() == null) {
-			return 1;
-		}
-		else {
-			if (targetOne.getCategory().equals(targetTwo.getCategory())) {
-				return targetOne.compareTo(targetTwo);
-			}
-			else {
-				return targetOne.getCategory().compareTo(targetTwo.getCategory());
-			}
-		}
+	public int compare(DsrTarget dsrTarget0, DsrTarget dsrTarget1) {
+		return dsrTarget0.compareTo(dsrTarget1);
 	}
 	
 }

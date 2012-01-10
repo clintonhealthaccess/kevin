@@ -32,7 +32,12 @@ import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup
+import org.chai.kevin.survey.SummaryPage
+import org.chai.kevin.survey.Survey
+import org.chai.kevin.survey.SurveyObjective
+import org.chai.kevin.survey.SurveyPageService
+import org.chai.kevin.survey.SurveySection
+import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.period.Period
 
 abstract class AbstractController {
@@ -40,7 +45,7 @@ abstract class AbstractController {
 	def locationService;
 
 	def getOrganisationUnitGroups(def defaultIfNull) {
-		List<OrganisationUnitGroup> groups
+		List<DataEntityType> groups = null
 		if (params['groupUuids'] != null) {
 			groups = params.list('groupUuids').collect {DataEntityType.get(it)}
 		}

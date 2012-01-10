@@ -7,24 +7,22 @@
 	</div>
 
 	<g:form url="[controller:'dashboardTarget', action:'save', params:[targetURI:targetURI]]" useToken="true">
-		<g:i18nInput name="entry.names" label="Name" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.names}" field="names"/>
-		<g:i18nTextarea name="entry.descriptions" label="Description" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.descriptions}" field="descriptions"/>
-		<g:input name="entry.code" label="Code" bean="${objectiveEntry?.entry}" field="code"/>
+		<g:i18nInput name="names" label="Name" bean="${entity}" value="${entity.names}" field="names"/>
+		<g:i18nTextarea name="descriptions" label="Description" bean="${entity}" value="${entity.descriptions}" field="descriptions"/>
+		<g:input name="code" label="Code" bean="${entity}" field="code"/>
 		
-		<g:selectFromList name="entry.calculation.id" label="Calculation" bean="${objectiveEntry?.entry}" field="calculation" optionKey="id" multiple="false"
+		<g:selectFromList name="objective.id" label="Objective" bean="${entity}" field="objective" optionKey="id" multiple="false"
+			from="${objectives}" value="${entity.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
+		
+		<g:selectFromList name="calculation.id" label="Calculation" bean="${entity}" field="calculation" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[classes:['Average', 'Aggregation']])}"
-			from="${calculations}" value="${objectiveEntry?.entry?.calculation?.id}" values="${calculations.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+			from="${calculations}" value="${entity?.calculation?.id}" values="${calculations.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 				
-		<g:input name="weight" label="Weight" bean="${objectiveEntry}" field="weight"/>
-		<g:input name="order" label="Order" bean="${objectiveEntry}" field="order"/>
+		<g:input name="weight" label="Weight" bean="${entity}" field="weight"/>
+		<g:input name="order" label="Order" bean="${entity}" field="order"/>
 		
-		<g:if test="${currentObjective != null}">
-			<input type="hidden" name="currentObjective" value="${currentObjective.id}"></input>
-		</g:if>
-		<g:else>
-			<input type="hidden" name="entry.id" value="${objectiveEntry.entry.id}"></input>
-			<input type="hidden" name="id" value="${objectiveEntry.id}"></input>
-		</g:else>
+		<input type="hidden" name="id" value="${entity.id}"></input>
+			
 		<div class="row">
 			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
 			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>

@@ -27,11 +27,11 @@
 		    	<ul class="form-heading-list horizontal inline-list">
 		    		<g:each in="${dashboard.objectivePath}" var="objective">
 			    		<li>
-			    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: objective.id, organisation: currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
+			    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, dashboardEntity: objective.id, organisation: currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
 			    		</li>
 		    		</g:each>
 		    		<li>
-		    			<g:i18n field="${currentObjective.names}"/>
+		    			<g:i18n field="${dashboardEntity.names}"/>
 		    		</li>
 		    	</ul>
 	    	</div>
@@ -43,7 +43,7 @@
 				    	<ul class="horizontal">
 				    		<g:each in="${dashboard.organisationPath}" var="organisation">
 					    		<li>
-					    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]"><g:i18n field="${organisation.names}"/></g:link>
+					    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, dashboardEntity: dashboardEntity.id, organisation: organisation.id]"><g:i18n field="${organisation.names}"/></g:link>
 					    		</li>
 				    		</g:each>
 				    		<li>
@@ -59,48 +59,47 @@
 				    		<thead class="header">
 					    		<tr class="row">
 					    			<th class="cell label">&nbsp;</th>
-					    			<g:each in="${dashboard.objectiveEntries}" var="objectiveEntry">
-						    			<g:set var="objective" value="${objectiveEntry.entry}"/>
-						    			<th class="cell label top col-${objective.id}" data-col="${objective.id}">
+					    			<g:each in="${dashboard.dashboardEntities}" var="dashboardEntity">
+						    			<th class="cell label top col-${dashboardEntity.id}" data-col="${dashboardEntity.id}">
 						    				<div><span>
-						    				<g:if test="${!objective.isTarget()}">
+						    				<g:if test="${!dashboardEntity.isTarget()}">
 												<a class="cluetip" 
-													title="${i18n(field:objective.names)}"
-													href="${createLink(controller:'dashboard', action:'view', params:[period: currentPeriod.id, objective: objective.id, organisation: currentOrganisation.id])}"
-												   	rel="${createLink(controller:'dashboard', action:'getDescription', id:objective.id)}">
-													<g:i18n field="${objective.names}"/>
+													title="${i18n(field:dashboardEntity.names)}"
+													href="${createLink(controller:'dashboard', action:'view', params:[period: currentPeriod.id, dashboardEntity: dashboardEntity.id, organisation: currentOrganisation.id])}"
+												   	rel="${createLink(controller:'dashboard', action:'getDescription', id:dashboardEntity.id)}">
+													<g:i18n field="${dashboardEntity.names}"/>
 												</a>
 											</g:if>
 											<g:else>
 												<a 	class="no-link cluetip" href="#" onclick="return false;" 
-													title="${i18n(field:objective.names)}"
-													rel="${createLink(controller:'dashboard', action:'getDescription', id:objective.id)}">
-													<g:i18n field="${objective.names}"/>
+													title="${i18n(field:dashboardEntity.names)}"
+													rel="${createLink(controller:'dashboard', action:'getDescription', id:dashboardEntity.id)}">
+													<g:i18n field="${dashboardEntity.names}"/>
 												</a>
 											</g:else>
 			
 								    		<shiro:hasPermission permission="admin:dashboard">
-							    				<g:if test="${!objective.isTarget()}">
+							    				<g:if test="${!dashboardEntity.isTarget()}">
 													<span>
-														<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'edit', id:objectiveEntry.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
+														<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'edit', id:dashboardEntity.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
 													</span>
 												</g:if>
 												<g:else>
 													<span>
-														<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'edit', id:objectiveEntry.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
+														<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'edit', id:dashboardEntity.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
 													</span>
 												</g:else>
-												<g:if test="${!objective.hasChildren()}">
-													<g:if test="${!objective.isTarget()}">
+												<g:if test="${!dashboardEntity.hasChildren()}">
+													<g:if test="${!dashboardEntity.isTarget()}">
 														<span>
-															<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'delete', id:objectiveEntry.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+															<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'delete', id:dashboardEntity.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
 																<g:message code="default.link.delete.label" default="Delete" />
 															</a>
 														</span>
 													</g:if>
 													<g:else>
 														<span>
-															<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'delete', id:objectiveEntry.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+															<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'delete', id:dashboardEntity.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
 																<g:message code="default.link.delete.label" default="Delete" />
 															</a>
 														</span>
@@ -119,21 +118,20 @@
 									<td class="cell label row-${organisation.id}" data-row="${organisation.id}">
 										<div><span>
 										<g:if test="${!organisation.collectsData()}">
-											<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, objective: currentObjective.id, organisation: organisation.id]"><g:i18n field="${organisation.names}"/></g:link>
+											<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, dashboardEntity: dashboardEntity.id, organisation: organisation.id]"><g:i18n field="${organisation.names}"/></g:link>
 										</g:if>
 										<g:else>
 											<g:i18n field="${organisation.names}"/>
 										</g:else>
 										</span></div>
 									</td>
-									<g:each in="${dashboard.objectiveEntries}" var="objectiveEntry">
-										<g:set var="objective" value="${objectiveEntry.entry}"/>
-										<g:set var="percentage" value="${dashboard.getPercentage(organisation, objective)}"/>
-										<td class="highlighted value cell row-${organisation.id} col-${objective.id}" data-row="${organisation.id}" data-col="${objective.id}">
+									<g:each in="${dashboard.dashboardEntities}" var="dashboardEntity">
+										<g:set var="percentage" value="${dashboard.getPercentage(organisation, dashboardEntity)}"/>
+										<td class="highlighted value cell row-${organisation.id} col-${dashboardEntity.id}" data-row="${organisation.id}" data-col="${dashboardEntity.id}">
 											<g:if test="${percentage!=null}">
 												<div style="background-color: ${percentage.color};">
 												    <span>
-												    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[objective: objective.id, organisation: organisation.id, period: currentPeriod.id])}">
+												    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[dashboardEntity: dashboardEntity.id, organisation: organisation.id, period: currentPeriod.id])}">
 													    	<g:if test="${percentage.valid}">
 																${percentage.roundedValue}%
 															</g:if>
@@ -150,9 +148,8 @@
 										</td>
 									</g:each></tr>
 									<tr class="explanation-row">
-										<g:each in="${dashboard.objectiveEntries}" var="objectiveEntry">
-											<g:set var="objective" value="${objectiveEntry.entry}"/>
-											<td class="explanation-cell" id="explanation-${organisation.id}-${objective.id}"></td>
+										<g:each in="${dashboard.dashboardEntities}" var="dashboardEntity">
+											<td class="explanation-cell" id="explanation-${organisation.id}-${dashboardEntity.id}"></td>
 										</g:each>
 									</tr>
 								</g:each>
@@ -163,8 +160,8 @@
 				    	<!-- ADMIN SECTION -->
 			    		<shiro:hasPermission permission="admin:dashboard">
 			    			<div class="float-right">
-								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="default.add.label" args="[message(code:'dashboard.target.label')]" default="Add target"/></a></div>
-								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardObjective', action:'create', params:[currentObjective: currentObjective.id])}"><g:message code="default.add.label" args="[message(code:'dashboard.objective.label')]" default="Add objective"/></a></div>
+								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'create', params:[dashboardEntity: dashboardEntity.id])}"><g:message code="default.add.label" args="[message(code:'dashboard.target.label')]" default="Add target"/></a></div>
+								<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardObjective', action:'create', params:[dashboardEntity: dashboardEntity.id])}"><g:message code="default.add.label" args="[message(code:'dashboard.objective.label')]" default="Add objective"/></a></div>
 							</div>
 						</shiro:hasPermission>
 				    	<!-- ADMIN SECTION END -->
@@ -184,8 +181,8 @@
     			 **/
     			$('.cell.value').bind('click', function() {
     				var organisation = $(this).data('row');
-    				var objective = $(this).data('col');
-    				explanationClick(this, organisation+'-'+objective, function(){});
+    				var dashboardEntity = $(this).data('col');
+    				explanationClick(this, organisation+'-'+dashboardEntity, function(){});
     				return false;
     			});
     			

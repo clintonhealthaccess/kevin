@@ -15,7 +15,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def objective = newFctObjective(CODE(2))
+		def objective = newReportObjective(CODE(2))
 		def sum = newSum("1", CODE(2))
 		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
 		
@@ -40,7 +40,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def objective = newFctObjective(CODE(2))
+		def objective = newReportObjective(CODE(2))
 		def sum = newSum("1", CODE(2))
 		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
 		
@@ -60,7 +60,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def objective = newFctObjective(CODE(2))
+		def objective = newReportObjective(CODE(2))
 		def sum = newSum("1", CODE(2))
 		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
 		

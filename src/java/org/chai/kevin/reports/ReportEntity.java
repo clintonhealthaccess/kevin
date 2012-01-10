@@ -39,7 +39,6 @@ import javax.persistence.MappedSuperclass;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 
-// TODO get rid of this class
 @MappedSuperclass
 public abstract class ReportEntity extends Orderable<Integer> {
 

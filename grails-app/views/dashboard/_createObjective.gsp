@@ -6,21 +6,15 @@
 		<div class="clear"></div>
 	</div>
 
-	<g:form url="[controller:'dashboardObjective', action:'save', params:[targetURI:targetURI]]" useToken="true">
-		<g:i18nInput name="entry.names" label="Name" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.names}" field="names"/>
-		<g:i18nTextarea name="entry.descriptions" label="Description" bean="${objectiveEntry?.entry}" value="${objectiveEntry?.entry.descriptions}" field="descriptions"/>
-		<g:input name="entry.code" label="Code" bean="${objectiveEntry?.entry}" field="code"/>
+	<g:form url="[controller:'dashboardObjective', action:'save', params:[targetURI:targetURI]]" useToken="true">		
 
-		<g:if test="${currentObjective != null}">
-			<input type="hidden" name="currentObjective" value="${currentObjective.id}"></input>
-		</g:if>
-		<g:else>
-			<input type="hidden" name="entry.id" value="${objectiveEntry.entry.id}"></input>
-			<input type="hidden" name="id" value="${objectiveEntry.id}"></input>
-		</g:else>
+		<g:selectFromList name="objective.id" label="Objective" bean="${entity}" field="objective" optionKey="id" multiple="false"
+			from="${objectives}" value="${entity.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
 		
-		<g:input name="weight" label="Weight" bean="${objectiveEntry}" field="weight"/>
-		<g:input name="order" label="Order" bean="${objectiveEntry}" field="order"/>
+		<g:input name="weight" label="Weight" bean="${entity}" field="weight"/>
+		<g:input name="order" label="Order" bean="${entity}" field="order"/>
+		
+		<input type="hidden" name="id" value="${entity.id}"></input>
 		
 		<div class="row">
 			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;

@@ -7,7 +7,7 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 	
 	def "save target"() {
 		setup:
-		def objective = newFctObjective(CODE(1))
+		def objective = newReportObjective(CODE(1))
 		def sum = newSum("1", CODE(3))
 		fctTargetController = new FctTargetController()
 		fctTargetController.locationService = locationService

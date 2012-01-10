@@ -32,8 +32,9 @@ import org.chai.kevin.data.Sum;
 
 constraints = {
 	code (nullable: false, blank: false, unique: true)
+	objective (blank: false)
 	calculation (nullable: false, validator: { val, obj ->
 		return !(val instanceof Sum)
 	})
-	
+	weight (nullable: false)
 }

@@ -38,13 +38,13 @@ abstract class CostDomainSpec extends CostIntegrationTests {
 
 	def "objective constraint: code cannot be null"() {
 		when:
-		newCostObjective(CODE(1))
+		newReportObjective(CODE(1))
 		
 		then:
-		CostObjective.count() == 1
+		ReportObjective.count() == 1
 		
 		when:
-		newCostObjective(null)
+		newReportObjective(null)
 		
 		then:
 		thrown ValidationException
@@ -111,38 +111,38 @@ abstract class CostDomainSpec extends CostIntegrationTests {
 	
 	def "delete objective cascade deletes target"() {
 		when:
-		def costObjective = newCostObjective(CODE(1))
+		def costObjective = newReportObjective(CODE(1))
 		newCostTarget(CODE(1), newExpression(CODE(2), Type.TYPE_NUMBER(), "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, costObjective)
 		costObjective.delete();
 		
 		then:
-		CostObjective.count() == 0
+		ReportObjective.count() == 0
 		CostTarget.count() == 0
 	}
 	
 	def "save objective saves target"() {
 		when:
 		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
-		def costObjective = newCostObjective(CODE(1))
+		def costObjective = newReportObjective(CODE(1))
 		costObjective.addTarget new CostTarget(names:j(["en":"Test Target"]), code:CODE(1), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT)
 		costObjective.save();
 		
 		then:
-		CostObjective.count() == 1
+		ReportObjective.count() == 1
 		CostTarget.count() == 1
 	}
 	
 	
 	def "save target preserves order"() {
 		when:
-		def costObjective = newCostObjective(CODE(1))
+		def costObjective = newReportObjective(CODE(1))
 		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
 		costObjective.addTarget new CostTarget(names:j(["en":"Test 4"]), code:CODE(1), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT, order: 4)
 		costObjective.addTarget new CostTarget(names:j(["en":"Test 3"]), code:CODE(2), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT, order: 3)
 		costObjective.save();
 		
 		then:
-		def expectedObjective = CostObjective.findByCode("TEST");
+		def expectedObjective = ReportObjective.findByCode("TEST");
 		expectedObjective.targets[0].order == 3
 		expectedObjective.targets[1].order == 4
 

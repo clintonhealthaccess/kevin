@@ -29,17 +29,18 @@ package org.chai.kevin.cost
 */
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.reports.ReportObjective
 
 class CostObjectiveController extends AbstractEntityController {
 	
 	def locationService
 	
 	def getEntity(def id) {
-		return CostObjective.get(id)
+		return ReportObjective.get(id)
 	}
 	
 	def createEntity() {
-		return new CostObjective()
+		return new ReportObjective()
 	}
 	
 	def getLabel() {

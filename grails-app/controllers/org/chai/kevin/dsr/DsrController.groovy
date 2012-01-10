@@ -35,15 +35,15 @@ import org.hisp.dhis.period.Period
 import java.util.Collections;
 import org.chai.kevin.AbstractController;
 import org.hisp.dhis.period.Period;
-import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.reports.ReportService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DsrController extends AbstractController {
 
-	ReportService reportService;
+	DsrService dsrService;
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -52,13 +52,13 @@ class DsrController extends AbstractController {
 	def view = {
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
 		Period period = getPeriod()
-		DsrObjective objective = DsrObjective.get(params.int('objective'));
+		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		LocationEntity entity = LocationEntity.get(params.int('organisation'));
-		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
+		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
 		
 		def dsrTable = null
 		if (period != null && objective != null && entity != null) {
-			 dsrTable = reportService.getDsrTable(entity, objective, period, new HashSet(facilityTypes));
+			 dsrTable = dsrService.getDsrTable(entity, objective, period, new HashSet(facilityTypes));
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
@@ -70,8 +70,8 @@ class DsrController extends AbstractController {
 			currentOrganisation: entity,
 			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
-			objectives: DsrObjective.list(),
 			facilityTypes: locationService.listTypes(),
+			objectives: ReportObjective.list(),
 		    organisationTree: locationService.getRootLocation()
 		]
 	}

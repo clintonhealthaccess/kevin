@@ -28,55 +28,80 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.Embedded;
+import javax.persistence.FetchType;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
-import org.chai.kevin.Orderable;
-import org.hibernate.annotations.Cascade;
+import org.chai.kevin.Translation;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.reports.ReportObjective;
+import org.hisp.dhis.period.Period;
 
-@Entity(name="WeightedObjective")
-@Table(name="dhsst_dashboard_objective_entry", 
-		uniqueConstraints=@UniqueConstraint(columnNames={"entry"}))
-public class DashboardObjectiveEntry extends Orderable<Integer> {
-
-	private Long id;
-	private DashboardObjective parent;
-	private DashboardEntry entry;
-	private Integer weight;
-	private Integer order;
+@MappedSuperclass
+public abstract class DashboardEntity {
 	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
+	protected Translation names = new Translation();
+	protected Translation descriptions = new Translation();
+	protected Integer weight;
+	protected String code;
+	protected Integer order;
+	
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
+	})
+	public Translation getNames() {
+		return names;
 	}
-	public void setId(Long id) {
-		this.id = id;
+
+	public void setNames(Translation names) {
+		this.names = names;
 	}
 	
-	@OneToOne(targetEntity=DashboardEntry.class)
-	@Cascade(value={org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-	public DashboardEntry getEntry() {
-		return entry;
+	@Embedded
+	@AttributeOverrides({
+        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
+	})
+	public Translation getDescriptions() {
+		return descriptions;
 	}
-	public void setEntry(DashboardEntry entry) {
-		this.entry = entry;
+
+	public void setDescriptions(Translation descriptions) {
+		this.descriptions = descriptions;
 	}
 	
 	@Basic
 	public Integer getWeight() {
 		return weight;
 	}
+	
 	public void setWeight(Integer weight) {
 		this.weight = weight;
+	}
+	
+	public abstract <T> T visit(DashboardVisitor<T> visitor, CalculationEntity entity, Period period);
+	
+	@Transient
+	public abstract boolean hasChildren();
+	
+	@Transient
+	public abstract boolean isTarget();
+	
+	@Transient
+	public abstract ReportObjective getReportObjective();
+	
+	@Basic(fetch=FetchType.EAGER)
+	public String getCode() {
+		return code;
+	}
+	
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	@Basic
@@ -84,54 +109,39 @@ public class DashboardObjectiveEntry extends Orderable<Integer> {
 	public Integer getOrder() {
 		return order;
 	}
+	
 	public void setOrder(Integer order) {
 		this.order = order;
-	}
-	
-	@ManyToOne
-	@JoinColumn
-	public DashboardObjective getParent() {
-		return parent;
-	}
-	public void setParent(DashboardObjective parent) {
-		this.parent = parent;
-	}	
-	
-	@Override
-	public String toString() {
-		return "DashboardObjectiveEntry [id=" + id + ", parent=" + parent
-				+ ", entry=" + entry + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((entry == null) ? 0 : entry.hashCode());
-		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof DashboardEntity))
 			return false;
-		DashboardObjectiveEntry other = (DashboardObjectiveEntry) obj;
-		if (entry == null) {
-			if (other.entry != null)
+		DashboardEntity other = (DashboardEntity) obj;
+		if (code == null) {
+			if (other.code != null)
 				return false;
-		} else if (!entry.equals(other.entry))
-			return false;
-		if (parent == null) {
-			if (other.parent != null)
-				return false;
-		} else if (!parent.equals(other.parent))
+		} else if (!code.equals(other.code))
 			return false;
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return "DashboardEntry [code=" + code + "]";
+	}
 
 }

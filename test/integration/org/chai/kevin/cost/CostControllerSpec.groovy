@@ -43,7 +43,7 @@ class CostControllerSpec extends CostIntegrationTests {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
-		def costObjective = newCostObjective(CODE(2))
+		def costObjective = newReportObjective(CODE(2))
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
 		

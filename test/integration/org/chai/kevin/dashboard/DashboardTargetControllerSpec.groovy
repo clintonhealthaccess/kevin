@@ -31,6 +31,7 @@ package org.chai.kevin.dashboard
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation
 import org.chai.kevin.data.Type
+import org.chai.kevin.reports.ReportObjective
 
 class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 
@@ -39,24 +40,22 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 	def dashboardService
 	def dataService
 	
-	def "delete target deletes entry and target"() {
+	def "delete target"() {
 		setup:
-		def root = newDashboardObjective(CODE(1))
-		def calculation = newAverage("1", CODE(2))
-		def target = newDashboardTarget(TARGET1, calculation, root, 1)
+		def root = newReportObjective(CODE(1))
+		def average = newAverage("1", CODE(2))
+		def target = newDashboardTarget(TARGET1, average, root, 1)
 		dashboardTargetController = new DashboardTargetController();
 		dashboardTargetController.dataService = dataService
 		
 		when:
-		dashboardTargetController.params.id = target.parent.id
+		dashboardTargetController.params.id = target.id
 		dashboardTargetController.delete()
 		
 		then:
 		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
-
+		ReportObjective.count() == 1
 		DashboardTarget.count() == 0
-		DashboardObjectiveEntry.count() == 0
-		DashboardObjective.count() == 1
 	}
 	
 	
@@ -64,15 +63,16 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		setup:
 		setupLocationTree()
 		def average = newAverage("1", CODE(2))
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
+		def target = newDashboardTarget(TARGET1, average, root, 1)
 		dashboardTargetController = new DashboardTargetController()
 		dashboardTargetController.dataService = dataService
 		
 		when:
-		dashboardTargetController.params['currentObjective'] = root.id
+		dashboardTargetController.params['id'] = target.id
 		dashboardTargetController.params['weight'] = 1
-		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculation.id'] = average.id+""
+		dashboardTargetController.params['code'] = "NEW"
+		dashboardTargetController.params['calculation.id'] = average.id+""
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
@@ -80,28 +80,25 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 		newTarget != null
 		newTarget.calculation.equals(average)
-		newTarget.parent.weight == 1
-		
-		DashboardObjectiveEntry.count() == 1
+		newTarget.weight == 1
 		DashboardTarget.count() == 1
-		DashboardObjective.count() == 1
 		Average.count() == 1
 	}
 	
 	def "edit target with calculations"() {
 		setup:
 		setupLocationTree()
-		def root = newDashboardObjective(CODE(1))
+		def root = newReportObjective(CODE(1))
 		def average = newAverage("1", CODE(3))
 		def target = newDashboardTarget(TARGET1, average, root, 1)
 		dashboardTargetController = new DashboardTargetController()
 		dashboardTargetController.dataService = dataService
 		
 		when:
-		dashboardTargetController.params['id'] = target.parent.id
+		dashboardTargetController.params['id'] = target.id
 		dashboardTargetController.params['weight'] = 1
-		dashboardTargetController.params['entry.code'] = "NEW"
-		dashboardTargetController.params['entry.calculation.id'] = average.id+""
+		dashboardTargetController.params['code'] = "NEW"
+		dashboardTargetController.params['calculation.id'] = average.id+""
 		dashboardTargetController.saveWithoutTokenCheck()
 		def newTarget = DashboardTarget.findByCode("NEW")
 		
@@ -109,11 +106,8 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
 		newTarget != null
 		newTarget.calculation.equals(average)
-		newTarget.parent.weight == 1
-
-		DashboardObjectiveEntry.count() == 1
+		newTarget.weight == 1
 		DashboardTarget.count() == 1
-		DashboardObjective.count() == 1
 		Average.count() == 1
 	}
 	

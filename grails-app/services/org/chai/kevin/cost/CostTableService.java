@@ -42,6 +42,8 @@ import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ValueService;
@@ -53,13 +55,14 @@ public class CostTableService {
 
 	private final static Log log = LogFactory.getLog(CostTableService.class);
 	
+	private ReportService reportService;
 	private CostService costService;
 	private LocationService locationService;
 	private ValueService valueService;
 	private Set<String> skipLevels;
 	
-	public CostTable getCostTable(Period period, CostObjective objective, CalculationEntity entity) {
-		List<CostTarget> targets = objective.getTargets();
+	public CostTable getCostTable(Period period, ReportObjective objective, CalculationEntity entity) {
+		List<CostTarget> targets = reportService.getReportTargets(CostTarget.class, objective);
 		return new CostTable(targets, costService.getYears(), getValues(period, targets, entity));
 	}
 
@@ -190,6 +193,10 @@ public class CostTableService {
 	
 	public void setSkipLevels(Set<String> skipLevels) {
 		this.skipLevels = skipLevels;
+	}
+	
+	public void setReportService(ReportService reportService) {
+		this.reportService = reportService;
 	}
 	
 	public List<LocationLevel> getSkipLevelList() {

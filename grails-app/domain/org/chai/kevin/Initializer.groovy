@@ -33,7 +33,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.chai.kevin.cost.CostObjective;
 import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostRampUpYear;
 import org.chai.kevin.cost.CostTarget;
@@ -46,9 +45,8 @@ import org.chai.kevin.maps.MapsTarget;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
-import org.chai.kevin.dashboard.DashboardObjective;
-import org.chai.kevin.dashboard.DashboardObjectiveEntry;
-import org.chai.kevin.dashboard.DashboardTarget;
+import org.chai.kevin.dashboard.DashboardObjective
+import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Average;
@@ -58,14 +56,13 @@ import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
+import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
-import org.chai.kevin.dsr.DsrObjective;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
-import org.chai.kevin.fct.FctObjective
 import org.chai.kevin.fct.FctTarget
 import org.hisp.dhis.period.MonthlyPeriodType;
 import org.hisp.dhis.period.Period;
@@ -163,7 +160,28 @@ class Initializer {
 			burera.save(failOnError: true)
 			
 		}
+		
+		if (!ReportObjective.count()) {
+			def root = new ReportObjective(names:j(["en":"Strategic Objectives"]), code:"Strategic Objectives", descriptions:j(["en":"Strategic Objectives"]))
+			root.save(failOnError: true)
 
+			def ga = new ReportObjective(names:j(["en":"Geographical Access"]), code:"Geographical Access", descriptions:j(["en":"Geographical Access"]), parent: root).save(failOnError: true)
+			def hrh = new ReportObjective(names:j(["en":"Human Resources for Health"]), code:"Human Resources for Health", descriptions:j(["en":"Human Resources for Health"]), parent: root).save(failOnError: true)
+			def sd = new ReportObjective(names:j(["en":"Service Delivery"]), descriptions:j(["en":"Service Delivery"]), code: "Service Delivery", parent: root).save(failOnError:true)
+			def ic= new ReportObjective(names:j(["en":"Institutional Capacity"]), descriptions:j(["en":"Institutional Capacity"]), code:"Institutional Capacity", parent: root).save(failOnError:true)
+			root.children << hrh			
+			root.children << ga
+			root.children << sd
+			root.children << ic
+			root.save(failOnError: true)
+			
+			def staffing = new ReportObjective(names:j(["en":"Staffing"]), code:"Staffing", descriptions:j(["en":"Staffing"]), parent: hrh).save(failOnError: true, flush: true)
+			hrh.children << staffing
+			
+			hrh.save(failOnError: true)	
+				
+		}
+	
 	}
 
 	static def createDataElementsAndExpressions() {
@@ -542,9 +560,12 @@ class Initializer {
 					]).save(failOnError: true);
 		}
 
-		if (!CostObjective.count()) {
+		if (!ReportObjective.count()) {
+			def ga = ReportObjective.findByCode("Geographical Access")
+			
 			new CostTarget(
 					names:j(["en":"Annual Internet Access Cost"]), code:"Internet Cost", descriptions:j(["en":"Annual Internet Access Cost"]),
+					objective: ga,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.OPERATION,
 					costRampUp: CostRampUp.findByCode("CONST"),
@@ -553,6 +574,7 @@ class Initializer {
 
 			new CostTarget(
 					names:j(["en":"Connecting Facilities to the Internet"]), code:"Connecting Facilities", descriptions:j(["en":"Connecting Facilities to the Internet"]),
+					objective: ga,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST"),
@@ -561,101 +583,93 @@ class Initializer {
 
 			new CostTarget(
 					names:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]), code:"New Phones CHW", descriptions:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]),
+					objective: ga,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST"),
 					groupUuidString: "District Hospital,Health Center"
 					).save(failOnError: true)
 
-			def ga = new CostObjective(names:j(["en":"Geographical Access"]), code:"Geographical Access", descriptions:j(["en":"Geographical Access"]),)
-			ga.addTarget(CostTarget.findByCode("Internet Cost"));
-			ga.addTarget(CostTarget.findByCode("Connecting Facilities"));
-			ga.addTarget(CostTarget.findByCode("New Phones CHW"));
-			ga.save(failOnError: true)
-
-
+			def hrh = ReportObjective.findByCode("Human Resources for Health")
+					
 			new CostTarget(
 					names:j(["en":"Facility Staff Training"]), code:"Facility Staff Training", descriptions:j(["en":"Facility Staff Training"]),
+					objective: hrh,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST")
 					).save(failOnError: true)
-
-			def hrh = new CostObjective(names:j(["en":"Human Resources for Health"]), code:"HRH", descriptions:j(["en":"Human Resources for Health"]),)
-			hrh.addTarget(CostTarget.findByCode("Facility Staff Training"));
-			hrh.save(failOnError: true, flush:true)
 		}
 	}
 
 	static def createDashboard() {
 		if (!DashboardObjective.count()) {
-			// objectives and targets for dashboard
-			def root = new DashboardObjective(root: true, names:j(["en":"Strategic Objectives"]), code:"OBJ", descriptions:j(["en":"Strategic Objectives"]), objectiveEntries: []).save(failOnError:true)
-			def hrh = new DashboardObjectiveEntry(entry: new DashboardObjective(root: false, names:j(["en":"Human Resources for Health"]), code:"HRH", descriptions:j(["en":"Human Resources for Health"]), objectiveEntries: []), weight: 1, order: 1)
-			root.addObjectiveEntry(hrh)
-			hrh.save(failOnError: true)
-			root.save(failOnError: true)
-
-			def staffing = new DashboardObjectiveEntry(entry: new DashboardObjective(root: false, names:j(["en":"Staffing"]), code:"STAFFING", descriptions:j(["en":"Staffing"]), objectiveEntries: []), weight: 1, order: 1)
-			hrh.entry.addObjectiveEntry(staffing)
-			staffing.save(failOnError: true)
-			hrh.save(failOnError: true)
-
+			def root = ReportObjective.findByCode("Strategic Objectives")
+			def hrh = ReportObjective.findByCode("Human Resources for Health")
+			def staffing = ReportObjective.findByCode("Staffing")
+			
+			def dashboardRoot = new DashboardObjective(names:j(["en":"Strategic Objectives"]), weight: 0, code:"Strategic Objectives", objective: root)
+			dashboardRoot.save(failOnError:true, flush: true)
+			def dashboardHrh = new DashboardObjective(names:j(["en":"Human Resources for Health"]), weight: 1, order: 1, code:"Human Resources for Health", objective: hrh)
+			dashboardHrh.save(failOnError: true, flush: true)
+			def dashboardStaffing = new DashboardObjective(names:j(["en":"Staffing"]), weight: 1, order: 1, code: "Staffing", objective: staffing)
+			dashboardStaffing.save(failOnError: true, flush: true)
+			
 			def calculation1 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Average constant 10", timestamp:new Date())
 			calculation1.save(failOnError: true)
 
-			def nursea1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
+			def nursea1 = new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
-					calculation: calculation1
-					), weight: 1, order: 1)
+					calculation: calculation1, 
+					weight: 1, order: 1).save(failOnError: true, flush:true)
 
 			def calculation2 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Average constant 20", timestamp:new Date())
 			calculation2.save(failOnError: true)
 
-			def nursea2 = new DashboardObjectiveEntry(entry: new DashboardTarget(
+			def nursea2 = new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
-					calculation: calculation2
-					), weight: 1, order: 2)
+					calculation: calculation2, 
+					weight: 1, order: 2).save(failOnError: true, flush:true)
 
 			def calculation3 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Average 1", timestamp:new Date())
 			calculation3.save(failOnError: true)
 
-			def target1 = new DashboardObjectiveEntry(entry: new DashboardTarget(
+			def target1 = new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
-					calculation: calculation3
-					), weight: 1, order: 3)
+					calculation: calculation3, 
+					weight: 1, order: 3).save(failOnError: true, flush:true)
 
 			def calculation4 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Average 2", timestamp:new Date())
 			calculation4.save(failOnError: true)
 
-			def missexpr = new DashboardObjectiveEntry(entry: new DashboardTarget(
+			def missexpr = new DashboardTarget(
 					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
-					calculation: calculation4
-					), weight: 1, order: 4)
+					calculation: calculation4, 
+					weight: 1, order: 4).save(failOnError: true, flush:true)
 
 			def calculation5 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 3", timestamp:new Date())
 			calculation5.save(failOnError: true)
 
-			def missdata = new DashboardObjectiveEntry(entry: new DashboardTarget(
+			def missdata = new DashboardTarget(
 					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
-					calculation: calculation5
-					), weight: 1, order: 5)
+					calculation: calculation5, 
+					weight: 1, order: 5).save(failOnError: true, flush:true)
 
 			def calculation6 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 4", timestamp:new Date())
 			calculation6.save(failOnError: true)
 
-			def enume = new DashboardObjectiveEntry(entry: new DashboardTarget(
+			def enume = new DashboardTarget(
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
-					calculation: calculation6
-					), weight: 1, order: 6)
+					calculation: calculation6,
+					weight: 1, order: 6).save(failOnError: true, flush:true)
 
-			staffing.entry.addObjectiveEntry(nursea1)
-			staffing.entry.addObjectiveEntry(nursea2)
-			staffing.entry.addObjectiveEntry(target1)
-			staffing.entry.addObjectiveEntry(missexpr)
-			staffing.entry.addObjectiveEntry(missdata)
-			staffing.entry.addObjectiveEntry(enume)
-
+			nursea1.setObjective(staffing)
+			nursea2.setObjective(staffing)
+			target1.setObjective(staffing)
+			missexpr.setObjective(staffing)
+			missdata.setObjective(staffing)
+			enume.setObjective(staffing)
+			
 			nursea1.save(failOnError: true)
 			nursea2.save(failOnError: true)
 			target1.save(failOnError: true)
@@ -672,24 +686,11 @@ class Initializer {
 			def dh = DataEntityType.findByCode("District Hospital")
 			def hc = DataEntityType.findByCode("Health Center")
 
-			def finacss = new DsrObjective(
-					names:j(["en":"Service Delivery"]),
-					descriptions:j(["en":"Service Delivery"]),
-					code: "Service Delivery"
-					)
-			def instCap= new DsrObjective(
-					names:j(["en":"Geographical Access"]),
-					order: 3,
-					descriptions:j(["en":"Geographical Access"]),
-					code:"Geographical Access",
-					)
-			def hmr = new DsrObjective(
-					names:j(["en":"Human Resources"]),
-					descriptions:j(["en":"Human Resources"]),
-					order: 1,
-					code: "Human Resources"
-					)
-
+			def finacss = ReportObjective.findByCode("Service Delivery")
+			def instCap = ReportObjective.findByCode("Institutional Capacity")				
+			def hmr = ReportObjective.findByCode("Human Resources for Health")
+			def root = ReportObjective.findByCode("Strategic Objectives")
+			
 			def firstCat = new DsrTargetCategory(
 					names:j(["en":"Infectious Disease Testing Offered"]),
 					order: 1,
@@ -710,137 +711,148 @@ class Initializer {
 					)
 
 
-			hmr.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Accountant"]), descriptions:j(["en":"Accountant"]),
+					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 8,
 					groupUuidString: "Health Center",
 					code: "Accountant"
-					));
+					).save(failOnError:true)
 
-			hmr.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Days Of Nurse Training"]), descriptions:j(["en":"Days Of Nurse Training"]),
+					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 1,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Days Of Nurse Training"
-					));
+					).save(failOnError:true)
 
-			hmr.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"A1"]), descriptions:j(["en":"A1"]),
+					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
 					groupUuidString: "Health Center",
 					code: "A1"
-					));
+					).save(failOnError:true)
 
-			hmr.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"A2"]), descriptions:j(["en":"A2"]),
+					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 5,
 					groupUuidString: "District Hospital,Health Center",
 					code:"A2"
-					));
+					).save(failOnError:true)
 
-			hmr.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
+					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
 					groupUuidString: "District Hospital,Health Center",
 					code: "A3"
-					));
+					).save(failOnError:true)
 
-			hmr.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Testing Category Human Resource"]), descriptions:j(["en":"Testing Category Human Resource"]),
+					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 4,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Testing Category Human Resource"
-					));
-			hmr.save(failOnError:true)
+					).save(failOnError:true)
 
-
-			finacss.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"In-Facility Birth Ratio"]), descriptions:j(["en":"In-Facility Birth Ratio"]),
+					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 6,
 					groupUuidString: "District Hospital,Health Center",
 					code: "In-Facility Birth Ratio"
-					));
+					).save(failOnError:true)
 
-			finacss.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Mental Health Service"]), descriptions:j(["en":"Mental Health Service"]),
+					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Mental Health Service"
-					));
+					).save(failOnError:true)
 
-			finacss.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Malaria Rapid Test"]), descriptions:j(["en":"Malaria Rapid Test"]),
+					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
 					groupUuidString: "Health Center",
 					code: "Malaria Rapid Test"
-					));
+					).save(failOnError:true)
 
-			finacss.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"HIV Rapid Test"]), descriptions:j(["en":"HIV Rapid Test"]),
+					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
 					groupUuidString: "District Hospital,Health Center",
 					code: "HIV Rapid Test"
-					));
+					).save(failOnError:true)
 
-			finacss.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"TB Stain Test"]), descriptions:j(["en":"TB Stain Test"]),
+					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
 					groupUuidString: "Health Center",
 					code: "TB Stain Test"
-					));
+					).save(failOnError:true)
 
-			finacss.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Catchment Population per CHW"]), descriptions:j(["en":"Catchment Population per CHW"]),
+					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 12,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Catchment Population per CHW"
-					));
-			finacss.save(failOnError:true)
+					).save(failOnError:true)
 
-
-			instCap.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Consultation Room"]), descriptions:j(["en":"Consultation Room"]),
+					objective: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 1,
 					groupUuidString: "Health Center",
 					code: "Consultation Room"
-					));
+					).save(failOnError:true)
 
-			instCap.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Facility Water Status"]), descriptions:j(["en":"Facility Water Status"]),
+					objective: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Facility Water Status"
-					));
+					).save(failOnError:true)
 
-			instCap.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Incinerator Availability"]), descriptions:j(["en":"Incinerator Availability"]),
+					objective: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
 					groupUuidString: "District Hospital,Health Center",
 					code: "Incinerator Availability"
-					));
+					).save(failOnError:true)
 
-			instCap.addTarget(new DsrTarget(
+			new DsrTarget(
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
+					objective: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					groupUuidString: "District Hospital,Health Center",
 					code: "Facility Power Status"
-					));
-			instCap.save(failOnError:true);
+					).save(failOnError:true)
 
 			firstCat.addTarget(DsrTarget.findByCode("Malaria Rapid Test"));
 			firstCat.addTarget(DsrTarget.findByCode("HIV Rapid Test"));
@@ -864,50 +876,29 @@ class Initializer {
 		if (!FctTarget.count()) {
 			def dh = DataEntityType.findByCode("District Hospital")
 			def hc = DataEntityType.findByCode("Health Center")
-			
-			def hmr = new FctObjective(
-				names:j(["en":"Human Resources"]),
-				descriptions:j(["en":"Human Resources"]),
-				order: 1,
-				code: "Human Resources"
-				)
-			
-			def servdeliv = new FctObjective(
-				names:j(["en":"Service Delivery"]),
-				descriptions:j(["en":"Service Delivery"]),
-				code: "Service Delivery"
-				)
-			
-			def geoacss= new FctObjective(
-				names:j(["en":"Geographical Access"]),
-				order: 3,
-				descriptions:j(["en":"Geographical Access"]),
-				code:"Geographical Access"
-				)
+			def hmr = ReportObjective.findByCode("Human Resources for Health")
 			
 			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Sum 1", timestamp:new Date());
 			sum1.save(failOnError: true);
 						
 			FctTarget fctTarget1 = new FctTarget(
 				names:j(["en":"Fct Target 1"]), 
+				objective: hmr,
 				descriptions:j([:]), 
 				code:"TARGET 1",
 				sum: sum1,
-				groupUuidString: "District Hospital,Health Center")
-			
-			hmr.addTarget(fctTarget1);
-			hmr.save(failOnError:true)
+				groupUuidString: "District Hospital,Health Center").save(failOnError:true)
 			
 			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
 			sum2.save(failOnError: true);
 			
 			FctTarget fctTarget2 = new FctTarget(
 				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
+				objective: hmr,
 				code:"TARGET 2",
 				sum: sum2,
-				groupUuidString: "District Hospital,Health Center")
-			
-			hmr.addTarget(fctTarget2);
+				groupUuidString: "District Hospital,Health Center").save(failOnError:true)
+				
 			hmr.save(failOnError:true)
 		}
 	}	
@@ -1592,11 +1583,9 @@ class Initializer {
 		return calendar.getTime();
 	}
 
-	
 	public static ExpressionMap e(def map) {
 		return new ExpressionMap(jsonText: JSONUtils.getJSONFromMap(map))
 	}
-	
 	
 	public static Value v(def value) {
 		return new Value("{\"value\":"+value+"}");

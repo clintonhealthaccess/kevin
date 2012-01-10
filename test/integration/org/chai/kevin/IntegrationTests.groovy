@@ -60,6 +60,7 @@ import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.hisp.dhis.period.MonthlyPeriodType
@@ -280,6 +281,21 @@ abstract class IntegrationTests extends IntegrationSpec {
 		enume.save(failOnError: true)
 		return enumOption
 	}
+	
+	def newReportObjective(def code) {
+		return new ReportObjective(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
+	}
+	
+	def newReportObjective(def code, def parent) {
+		def reportObjective = new ReportObjective(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
+		parent.children << reportObjective
+		parent.save(failOnError: true)
+		return reportObjective
+	}
+	
+//	def newReportObjective(def code, def parent, def children){
+//		return new ReportObjective(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
+//	}
 	
 	def refresh() {
 		refreshNormalizedDataElement()

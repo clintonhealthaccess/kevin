@@ -36,7 +36,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 
 	def dsrTargetController
 	def dataService
-	def reportService
+	def dsrService
 	
 //	def "delete target refreshes cache"() {
 //		setup:
@@ -68,7 +68,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 	def "save target saves target"() {
 		setup:
 		setupLocationTree()
-		def objective = newDsrObjective(CODE(1))
+		def objective = newReportObjective(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
