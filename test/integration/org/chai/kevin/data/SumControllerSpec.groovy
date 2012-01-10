@@ -4,7 +4,6 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.SumPartialValue;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SumControllerSpec extends IntegrationTests {
 

@@ -51,7 +51,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.location.DataEntityType;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 /**
  * @author Jean Kahigiso M.

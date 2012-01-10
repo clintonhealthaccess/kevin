@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyObjective;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyLog")
 @Table(name="dhsst_survey_log")

@@ -21,6 +21,11 @@ class RawDataElementSpec extends IntegrationTests {
 	def "data element code is unique"() {
 		when:
 		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
+		
+		then:
+		RawDataElement.count() == 1;
+		
+		when:
 		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
 		
 		then:

@@ -5,7 +5,6 @@ import org.chai.kevin.IntegrationTests
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
-import org.hisp.dhis.organisationunit.OrganisationUnitLevel;
 
 class FctControllerSpec extends FctIntegrationTests {
 

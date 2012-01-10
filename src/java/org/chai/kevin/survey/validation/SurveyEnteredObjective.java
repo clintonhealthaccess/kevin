@@ -13,7 +13,6 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.SurveyObjective;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyValidObjective")
 @Table(name="dhsst_survey_entered_objective", uniqueConstraints=@UniqueConstraint(

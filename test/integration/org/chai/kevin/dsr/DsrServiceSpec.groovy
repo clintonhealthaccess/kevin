@@ -4,7 +4,6 @@ import org.chai.kevin.data.Type
 import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class DsrServiceSpec extends DsrIntegrationTests {
 

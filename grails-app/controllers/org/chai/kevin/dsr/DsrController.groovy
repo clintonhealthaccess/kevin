@@ -30,7 +30,6 @@ package org.chai.kevin.dsr
 
 import org.chai.kevin.AbstractController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period
 import java.util.Collections;
 import org.chai.kevin.AbstractController;
@@ -54,7 +53,7 @@ class DsrController extends AbstractController {
 		Period period = getPeriod()
 		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		LocationEntity entity = LocationEntity.get(params.int('organisation'));
-		List<OrganisationUnitGroup> facilityTypes = getOrganisationUnitGroups(true);
+		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
 		
 		def dsrTable = null
 		if (period != null && objective != null && entity != null) {

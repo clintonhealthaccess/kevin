@@ -13,10 +13,10 @@ class PeriodService {
 		}
 	}
 	
-	def getDefaultPeriodType() {
-		return sessionFactory.currentSession.createQuery(
-			"from PeriodType"	
-		).setMaxResults(1).uniqueResult()
-	}
+//	def getDefaultPeriodType() {
+//		return sessionFactory.currentSession.createQuery(
+//			"from PeriodType"	
+//		).setMaxResults(1).uniqueResult()
+//	}
 	
 }

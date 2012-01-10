@@ -2,7 +2,6 @@ package org.chai.kevin.survey
 
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataEntityType;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 class SurveyServiceSpec extends SurveyIntegrationTests {
 

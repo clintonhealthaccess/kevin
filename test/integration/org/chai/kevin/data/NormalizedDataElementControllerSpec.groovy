@@ -7,7 +7,6 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class NormalizedDataElementControllerSpec extends IntegrationTests {
 

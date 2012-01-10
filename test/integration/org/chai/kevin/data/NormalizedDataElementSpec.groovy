@@ -7,7 +7,6 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 class NormalizedDataElementSpec extends IntegrationTests {
@@ -20,7 +19,6 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		NormalizedDataElement.count() == 1
 		NormalizedDataElement.list()[0].type.jsonValue == "{\"type\":\"number\"}";
 	}
-
 	
 	def "normalized data element type cannot be invalid"() {
 		when:
@@ -43,7 +41,7 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
 
 		then:
-		NormalizedDataElement.count();
+		NormalizedDataElement.count() == 1;
 
 		when:
 		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)

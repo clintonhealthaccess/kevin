@@ -30,7 +30,6 @@ package org.chai.kevin.data
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.dataelement.DataElement;
 
 /**
  * @author Jean Kahigiso M.

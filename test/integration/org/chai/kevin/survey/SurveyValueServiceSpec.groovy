@@ -8,7 +8,6 @@ import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.security.User;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SurveyValueServiceSpec extends SurveyIntegrationTests {
 

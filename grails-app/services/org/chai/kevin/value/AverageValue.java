@@ -6,7 +6,6 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 public class AverageValue extends CalculationValue<AveragePartialValue> {

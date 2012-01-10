@@ -3,7 +3,6 @@ package org.chai.kevin.survey;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.location.LocationEntity;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SummaryServiceSpec extends SurveyIntegrationTests {
 	

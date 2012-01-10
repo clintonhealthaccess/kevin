@@ -13,7 +13,6 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="AveragePartialValue")

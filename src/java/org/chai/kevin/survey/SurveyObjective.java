@@ -59,7 +59,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 @Entity(name = "SurveyObjective")
 @Table(name = "dhsst_survey_objective")

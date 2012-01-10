@@ -64,9 +64,7 @@ import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
-import org.hisp.dhis.period.MonthlyPeriodType;
 import org.hisp.dhis.period.Period;
-import org.hisp.dhis.period.PeriodType;
 
 class Initializer {
 
@@ -119,12 +117,10 @@ class Initializer {
 
 		if (!Period.count()) {
 			// periods
-			def monthly = new MonthlyPeriodType();
-			monthly.save(failOnError: true)
-			def period = new Period(periodType: monthly, startDate: mar01, endDate: mar31)
+			def period = new Period(startDate: mar01, endDate: mar31)
 			period.save(failOnError: true)
 
-			def period2 = new Period(periodType: monthly, startDate: mar011, endDate: mar311)
+			def period2 = new Period(startDate: mar011, endDate: mar311)
 			period2.save(failOnError: true, flush: true)
 		}
 

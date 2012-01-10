@@ -8,7 +8,6 @@ import org.chai.kevin.survey.SurveyValidationRule;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.survey.SurveyElement;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SurveyTagLib {
 

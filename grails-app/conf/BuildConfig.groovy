@@ -74,20 +74,7 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-		
-		// DHIS2 dependencies
-		compile ('org.hisp.dhis:dhis-api:2.3')  {
-			transitive = false
-		} 
-		compile ('org.hisp.dhis:dhis-service-core:2.3') {
-			transitive = false
-		} 
-		compile ('org.hisp.dhis:dhis-support-hibernate:2.3') {
-			transitive = false
-		}
-		compile ('org.hisp.dhis:dhis-support-system:2.3') {
-			transitive = false
-		}
+
 		compile ('org.amplecode:quick:1.5') {
 			transitive = false
 		}

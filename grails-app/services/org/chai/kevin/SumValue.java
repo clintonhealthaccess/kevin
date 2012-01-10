@@ -7,7 +7,6 @@ import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 public class SumValue extends CalculationValue<SumPartialValue> {

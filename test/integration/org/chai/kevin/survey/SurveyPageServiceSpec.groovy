@@ -10,7 +10,6 @@ import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.RawDataElementValue;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SurveyPageServiceSpec extends SurveyIntegrationTests {
 

@@ -2,8 +2,6 @@ package org.chai.kevin.fct
 
 import org.chai.kevin.AbstractController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.period.Period
 import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataEntityType;

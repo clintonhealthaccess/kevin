@@ -34,7 +34,6 @@ import org.chai.kevin.location.DataEntity
 import org.chai.kevin.location.DataEntityType
 import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.location.LocationLevel;
-import org.hisp.dhis.organisationunit.OrganisationUnitLevel
 
 class LocationServiceSpec extends IntegrationTests {
 

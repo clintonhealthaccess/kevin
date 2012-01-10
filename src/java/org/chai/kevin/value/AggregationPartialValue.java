@@ -11,10 +11,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="AggregationPartialValue")

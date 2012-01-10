@@ -19,7 +19,6 @@ import org.chai.kevin.location.DataEntity;
 import org.chai.kevin.survey.SurveyQuestion;
 import org.chai.kevin.survey.SurveySkipRule;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyValidQuestion")
 @Table(name="dhsst_survey_entered_question", uniqueConstraints=@UniqueConstraint(

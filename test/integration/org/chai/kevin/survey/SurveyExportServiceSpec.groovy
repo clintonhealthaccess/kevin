@@ -6,7 +6,6 @@ import org.chai.kevin.survey.export.SurveyExportData
 import org.chai.kevin.survey.export.SurveyExportDataPoint
 import org.chai.kevin.survey.validation.SurveyEnteredValue
 import org.chai.kevin.util.Utils;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 class SurveyExportServiceSpec extends SurveyIntegrationTests {
 

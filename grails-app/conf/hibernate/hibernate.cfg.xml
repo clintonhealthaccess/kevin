@@ -58,8 +58,10 @@
 		<mapping class="org.chai.kevin.location.LocationEntity" />
 		<mapping class="org.chai.kevin.location.LocationLevel" />
 		
-		<mapping resource="org/hisp/dhis/period/hibernate/Period.hbm.xml" />
-		<mapping resource="org/hisp/dhis/period/hibernate/PeriodType.hbm.xml" />
+		<mapping class="org.hisp.dhis.period.Period" />
+		
+		<!-- mapping resource="org/hisp/dhis/period/hibernate/Period.hbm.xml" / -->
+		<!-- mapping resource="org/hisp/dhis/period/hibernate/PeriodType.hbm.xml" / -->
 
 	</session-factory>
 

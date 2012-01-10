@@ -14,7 +14,6 @@ import org.hibernate.Criteria
 import org.hibernate.FlushMode
 import org.hibernate.criterion.Projections
 import org.hibernate.criterion.Restrictions
-import org.hisp.dhis.organisationunit.OrganisationUnit
 
 
 class SurveyValueService {

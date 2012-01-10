@@ -19,7 +19,6 @@ class IterationController extends AbstractEntityController  {
 		def entity = new Period()
 		entity.setStartDate(new Date())
 		entity.setEndDate(new Date())
-		entity.setPeriodType(periodService.getDefaultPeriodType())
 		return entity;
 	}
 
@@ -33,8 +32,6 @@ class IterationController extends AbstractEntityController  {
 
 	def bindParams(def entity) {
 		entity.properties = params
-		// TODO FIXME assumption : one and only one period type in database
-		if (entity.periodType==null) entity.periodType = periodService.getDefaultPeriodType()
 	}
 
 	def list = {

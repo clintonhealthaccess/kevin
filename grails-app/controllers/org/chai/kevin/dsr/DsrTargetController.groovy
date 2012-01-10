@@ -37,8 +37,6 @@ import grails.plugin.springcache.annotations.CacheFlush
 import org.chai.kevin.data.DataElement;
 
 import org.chai.kevin.AbstractEntityController
-import org.hisp.dhis.dataelement.DataElementService;
-
 
 class DsrTargetController extends AbstractEntityController {
 

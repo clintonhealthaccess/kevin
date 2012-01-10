@@ -54,10 +54,8 @@ import org.chai.kevin.survey.SurveyTableQuestion
 import org.chai.kevin.survey.SurveyTableRow
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 class TranslatableSpec extends IntegrationTests {
 

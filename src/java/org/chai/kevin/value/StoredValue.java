@@ -137,7 +137,7 @@ public abstract class StoredValue implements DataValue {
 		result = prime
 				* result
 				+ ((getEntity() == null) ? 0 : getEntity().hashCode());
-		result = prime * result + ((getPeriod() == null) ? 0 : getPeriod().getId());
+		result = prime * result + ((getPeriod() == null) ? 0 : getPeriod().getId().intValue());
 		return result;
 	}
 

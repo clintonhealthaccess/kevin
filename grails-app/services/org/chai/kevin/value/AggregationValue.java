@@ -11,7 +11,6 @@ import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 import com.ibm.jaql.json.type.JsonValue;

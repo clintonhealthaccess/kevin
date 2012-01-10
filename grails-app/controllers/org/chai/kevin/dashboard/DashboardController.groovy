@@ -39,13 +39,10 @@ import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.reports.ReportService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.aggregation.AggregationService
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.period.Period
 
 class DashboardController extends AbstractController {
 	
-	AggregationService aggregationService;
 	DashboardService dashboardService;
 	ReportService reportService;
 	

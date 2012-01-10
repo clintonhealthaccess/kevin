@@ -3,8 +3,6 @@ package org.chai.kevin
 import org.chai.kevin.LocationService;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
-import org.hisp.dhis.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.organisationunit.OrganisationUnitService
 /*
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *

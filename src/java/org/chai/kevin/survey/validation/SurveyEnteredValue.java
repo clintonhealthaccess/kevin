@@ -33,7 +33,6 @@ import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 
 @Entity(name="SurveyEnteredValue")
 @Table(name="dhsst_survey_entered_value", 

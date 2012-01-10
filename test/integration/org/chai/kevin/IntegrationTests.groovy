@@ -63,7 +63,6 @@ import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
-import org.hisp.dhis.period.MonthlyPeriodType
 import org.hisp.dhis.period.Period
 
 abstract class IntegrationTests extends IntegrationSpec {
@@ -119,9 +118,9 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	Period newPeriod() {
-		def monthly = new MonthlyPeriodType();
-		monthly.save(failOnError: true)
-		def period = new Period(periodType: monthly, startDate: mar01, endDate: mar31)
+//		def monthly = new MonthlyPeriodType();
+//		monthly.save(failOnError: true)
+		def period = new Period(startDate: mar01, endDate: mar31)
 		return period.save(failOnError: true)
 	} 
 	

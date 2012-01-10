@@ -9,7 +9,6 @@ import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.survey.validation.SurveyLog;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.period.Period
 
 

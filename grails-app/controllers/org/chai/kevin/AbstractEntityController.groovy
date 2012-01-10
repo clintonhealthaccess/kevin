@@ -33,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.chai.kevin.data.RawDataElement;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.hisp.dhis.dataset.DataSet;
 
 abstract class AbstractEntityController extends AbstractController {
 	

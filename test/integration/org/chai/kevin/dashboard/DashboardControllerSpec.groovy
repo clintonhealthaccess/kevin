@@ -2,7 +2,6 @@ package org.chai.kevin.dashboard
 
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 
 
 class DashboardControllerSpec extends DashboardIntegrationTests {

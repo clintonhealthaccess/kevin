@@ -43,7 +43,6 @@ import javax.persistence.UniqueConstraint;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.DataEntity;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="NormalizedDataElementValue")

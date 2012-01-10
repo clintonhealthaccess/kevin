@@ -31,8 +31,6 @@ import org.chai.kevin.security.Role;
 import org.chai.kevin.Initializer;
 import org.chai.kevin.cost.CostRampUpYear;
 
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-
 import java.util.Date;
 
 import grails.util.GrailsUtil;
