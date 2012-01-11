@@ -55,10 +55,6 @@ class BootStrap {
 
 		switch (GrailsUtil.environment) {
 		case "production":
-			if (!DashboardObjective.count()) {
-				def root = new DashboardObjective(root: true, names:Initializer.j(["en":"Strategic Objectives"]), code:"Strategic Objectives", descriptions:Initializer.j(["en":"Strategic Objectives"]), objectiveEntries: [])
-				root.save(failOnError: true, flush:true)
-			}
 			
 			if (Role.findByName('reports-all-readonly') == null) {
 				def reportAllReadonly = new Role(name: "report-all-readonly")
