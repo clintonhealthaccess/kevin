@@ -69,7 +69,7 @@
 		</div>
 		
 		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${question}" field="groupUuidString" 
-			from="${groups}" value="${question.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
+			from="${groups}" value="${question.groupUuids*.toString()}" values="${groups.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<div class="row">
 			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>

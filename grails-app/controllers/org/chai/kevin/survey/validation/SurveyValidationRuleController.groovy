@@ -28,6 +28,7 @@
 package org.chai.kevin.survey.validation
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyValidationRule

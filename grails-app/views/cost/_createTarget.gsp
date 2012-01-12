@@ -25,7 +25,7 @@
 			from="${objectives}" value="${target.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
 	
 		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
-			from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
+			from="${groups}" value="${target.groupUuids*.toString()}" values="${groups.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<g:selectFromList name="costRampUp.id" label="Cost Ramp Up" bean="${target}" field="costRampUp" optionKey="id" multiple="false"
 			from="${costRampUps}" value="${target.costRampUp?.id}" values="${costRampUps.collect{i18n(field:it.names)}}" />

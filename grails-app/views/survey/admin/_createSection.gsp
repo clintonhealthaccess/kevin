@@ -25,7 +25,7 @@
 			</div>
 		</div>
 		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${section}" field="groupUuidString" 
-			from="${groups}" value="${section.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
+			from="${groups}" value="${section.groupUuids*.toString()}" values="${groups.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<g:input name="order" label="Order" bean="${section}" field="order"/>
 		<g:if test="${section.id != null}">

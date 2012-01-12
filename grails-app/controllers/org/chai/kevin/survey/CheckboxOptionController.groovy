@@ -31,6 +31,7 @@ import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.location.DataEntityType;
 import org.apache.commons.lang.math.NumberUtils;
 
 /**

@@ -30,6 +30,7 @@ package org.chai.kevin.survey
 import org.chai.kevin.AbstractEntityController;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils
 
 /**

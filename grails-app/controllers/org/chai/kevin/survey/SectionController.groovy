@@ -27,6 +27,7 @@
  */
 package org.chai.kevin.survey
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.location.DataEntityType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**

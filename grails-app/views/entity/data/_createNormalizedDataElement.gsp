@@ -30,8 +30,8 @@
 					<g:each in="${periods}" var="period" status="i">
 						<div class="expression-period ${i!=0?'hidden':''}" id="expression-period-${period.id}">
 							<g:each in="${groups}" var="group">
-								<label for="expressionMap[${period.id}][${group.uuid}]">${group.uuid}</label> 
-								<textarea name="expressionMap[${period.id}][${group.uuid}]" rows="4">${normalizedDataElement.getExpression(period, group.uuid)}</textarea>
+								<label for="expressionMap[${period.id}][${group.code}]">${group.code}</label> 
+								<textarea name="expressionMap[${period.id}][${group.code}]" rows="4">${normalizedDataElement.getExpression(period, group.code)}</textarea>
 							</g:each>
 						</div>
 					</g:each>

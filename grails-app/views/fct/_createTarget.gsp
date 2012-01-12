@@ -14,7 +14,7 @@
 		<g:input name="format" label="Format" bean="${target}" field="format"/>
 		
    		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${target}" field="groupUuidString" 
-				from="${groups}" value="${target.groupUuids*.toString()}" optionValue="name" optionKey="uuid" multiple="true"/>
+				from="${groups}" value="${target.groupUuids*.toString()}" values="${groups.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 	
 		<g:selectFromList name="objective.id" label="Objective" bean="${target}" field="objective" optionKey="id" multiple="false"
 			from="${objectives}" value="${target.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
