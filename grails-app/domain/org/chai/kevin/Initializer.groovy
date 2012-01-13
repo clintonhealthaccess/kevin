@@ -134,16 +134,22 @@ class Initializer {
 			def district = new LocationLevel(names: j(["en":"District"]), code: "District", order: 3).save(failOnError: true)
 			
 			def rwanda = new LocationEntity(names: j(["en":"Rwanda"]), code: "Rwanda", level: country).save(failOnError: true)
+
+			def kigali = new LocationEntity(names: j(["en":"Kigali City"]), code: "Kigali City", parent: rwanda, level: province).save(failOnError: true)
 			def north = new LocationEntity(names: j(["en":"North"]), code: "North", parent: rwanda, level: province).save(failOnError: true)
+			def south = new LocationEntity(names: j(["en":"South"]), code: "South", parent: rwanda, level: province).save(failOnError: true)
+			def east = new LocationEntity(names: j(["en":"East"]), code: "East", parent: rwanda, level: province).save(failOnError: true)
+			def west = new LocationEntity(names: j(["en":"West"]), code: "West", parent: rwanda, level: province).save(failOnError: true)			
+
 			def burera = new LocationEntity(names: j(["en":"Burera"]), code: "Burera", parent: north, level: district).save(failOnError: true)
 			
-			rwanda.children = [north]
+			rwanda.children = [kigali, north, south, east, west]
 			north.children = [burera]
 			rwanda.save(failOnError: true)
 			north.save(failOnError: true)
 			
 			country.locations = [rwanda]
-			province.locations = [north]
+			province.locations = [kigali, north, south, east, west]
 			district.locations = [burera]
 			country.save(failOnError: true)
 			province.save(failOnError: true)
@@ -158,13 +164,14 @@ class Initializer {
 		}
 		
 		if (!ReportObjective.count()) {
-			def root = new ReportObjective(names:j(["en":"Strategic Objectives"]), code:"Strategic Objectives", descriptions:j(["en":"Strategic Objectives"]))
+			def root = new ReportObjective(names:j(["en":"Strategic Programs"]), code:"Strategic Programs", descriptions:j(["en":"Strategic Programs"]))
 			root.save(failOnError: true)
 
 			def ga = new ReportObjective(names:j(["en":"Geographical Access"]), code:"Geographical Access", descriptions:j(["en":"Geographical Access"]), parent: root).save(failOnError: true)
 			def hrh = new ReportObjective(names:j(["en":"Human Resources for Health"]), code:"Human Resources for Health", descriptions:j(["en":"Human Resources for Health"]), parent: root).save(failOnError: true)
 			def sd = new ReportObjective(names:j(["en":"Service Delivery"]), descriptions:j(["en":"Service Delivery"]), code: "Service Delivery", parent: root).save(failOnError:true)
 			def ic= new ReportObjective(names:j(["en":"Institutional Capacity"]), descriptions:j(["en":"Institutional Capacity"]), code:"Institutional Capacity", parent: root).save(failOnError:true)
+			
 			root.children << hrh			
 			root.children << ga
 			root.children << sd
@@ -600,11 +607,12 @@ class Initializer {
 
 	static def createDashboard() {
 		if (!DashboardObjective.count()) {
-			def root = ReportObjective.findByCode("Strategic Objectives")
-			def hrh = ReportObjective.findByCode("Human Resources for Health")
-			def staffing = ReportObjective.findByCode("Staffing")
 			
-			def dashboardRoot = new DashboardObjective(names:j(["en":"Strategic Objectives"]), weight: 0, code:"Strategic Objectives", objective: root)
+			def root = ReportObjective.findByCode('Strategic Programs');
+			def hrh = ReportObjective.findByCode('Human Resources for Health');
+			def staffing = ReportObjective.findByCode('Staffing');
+			
+			def dashboardRoot = new DashboardObjective(names:j(["en":"Strategic Programs"]), weight: 0, code:"Strategic Programs", objective: root)
 			dashboardRoot.save(failOnError:true, flush: true)
 			def dashboardHrh = new DashboardObjective(names:j(["en":"Human Resources for Health"]), weight: 1, order: 1, code:"Human Resources for Health", objective: hrh)
 			dashboardHrh.save(failOnError: true, flush: true)
@@ -685,7 +693,12 @@ class Initializer {
 			def finacss = ReportObjective.findByCode("Service Delivery")
 			def instCap = ReportObjective.findByCode("Institutional Capacity")				
 			def hmr = ReportObjective.findByCode("Human Resources for Health")
-			def root = ReportObjective.findByCode("Strategic Objectives")
+
+			def root = ReportObjective.findByCode("Strategic Programs")
+			root.addChild(finacss)
+			root.addChild(instCap)
+			root.addChild(hmr)
+			root.save(failOnError: true, flush: true)
 			
 			def firstCat = new DsrTargetCategory(
 					names:j(["en":"Infectious Disease Testing Offered"]),

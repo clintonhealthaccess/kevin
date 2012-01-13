@@ -141,7 +141,7 @@ public abstract class DashboardEntity {
 	
 	@Override
 	public String toString() {
-		return "DashboardEntry [code=" + code + "]";
+		return "DashboardEntity [code=" + code + "]";
 	}
 
 }

@@ -75,8 +75,7 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 	
 	def bindParams(def entity) {		
 		entity.properties = params
-//		if(params != null) {
-			if(params.objective != null){					
+			if(params.objective){					
 				 def reportObjective = ReportObjective.get(params.objective.id)
 				 entity.objective = params.objective
 				 
@@ -84,7 +83,6 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 				 entity.descriptions = reportObjective.descriptions
 				 entity.code = reportObjective.code
 			}
-//		}
 	}
 	
 	@CacheFlush("dashboardCache")

@@ -15,167 +15,126 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     </head>
     <body>
-    	<g:if test="${dashboard != null}">
-			<div id="dashboard">
-				<div id="corner" class="subnav">
-					<g:iterationFilter linkParams="${params}"/>
-				</div>
+		<div id="report">
+			<div class="subnav">			
+				<g:render template="/templates/topLevelReportFilters" model="[reportTab:'dashboard', linkParams:params]"/>
+			</div>
+			<div class="main">
+				<g:render template="/templates/topLevelReportTabs" model="[reportTab:'dashboard', linkParams:params]"/>
+			</div>
 			
-				<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
-				
-				<div id="top" class="main">
-		    		<h3 class="form-heading"><g:message code="dashboard.labels.objectives" default="Objectives"/></h3>
-			    	<ul class="form-heading-list horizontal inline-list">
+			<div class="main">
+	    		<h3 class="form-heading"><g:message code="dashboard.labels.objectives" default="Objectives"/></h3>		    	
+		    	<ul class="form-heading-list horizontal inline-list">
+		    		<g:if test="${!dashboard.objectivePath.isEmpty()}">
 			    		<g:each in="${dashboard.objectivePath}" var="objective">
 				    		<li>
-				    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, dashboardEntity: objective.id, organisation: currentOrganisation.id]"><g:i18n field="${objective.names}"/></g:link>
+				    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, dashboardEntity: objective.id, organisation: currentOrganisation.id]">
+				    			<g:i18n field="${objective.names}"/></g:link>
 				    		</li>
 			    		</g:each>
-			    		<li>
-			    			<g:i18n field="${dashboardEntity.names}"/>
-			    		</li>
-			    	</ul>
-		    	</div>
-		    	
-		    	<div id="bottom" class="main">
-		    		<div class="no-margin">
-				    	<div class="left">
-				    		<div class="italic"><g:message code="dashboard.labels.organisations" default="Organisations"/></div>
-					    	<ul class="horizontal">
-					    		<g:each in="${dashboard.organisationPath}" var="organisation">
-						    		<li>
-						    			<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, dashboardEntity: dashboardEntity.id, organisation: organisation.id]"><g:i18n field="${organisation.names}"/></g:link>
-						    		</li>
-					    		</g:each>
+		    		</g:if>
+		    		<li>
+		    			<g:i18n field="${dashboardEntity.names}"/>
+		    		</li>
+		    	</ul>
+	    	</div>
+	    	
+	    	<div id="bottom" class="main">
+	    		<div class="no-margin">
+			    	<div class="left">
+			    		<div class="italic"><g:message code="dashboard.labels.organisations" default="Organisations"/></div>
+				    	<ul class="horizontal">
+				    		<g:each in="${dashboard.organisationPath}" var="organisation">
 					    		<li>
 					    			<g:i18n field="${currentOrganisation.names}"/>
 					    		</li>
+					    	</g:each>
 					    	</ul>
 				    	</div>
 			    	</div>
-			    
-			    	<div class="box">
-			    		<div id="values">
-					    	<table class="listing">	
-					    		<thead class="header">
-						    		<tr class="row">
-						    			<th class="cell label">&nbsp;</th>
-						    			<g:each in="${dashboard.dashboardEntities}" var="dashboardEntity">
-							    			<th class="cell label top col-${dashboardEntity.id}" data-col="${dashboardEntity.id}">
-							    				<div><span>
-							    				<g:if test="${!dashboardEntity.isTarget()}">
-													<a class="cluetip" 
-														title="${i18n(field:dashboardEntity.objective.names)}"
-														href="${createLink(controller:'dashboard', action:'view', params:[period: currentPeriod.id, dashboardEntity: dashboardEntity.id, organisation: currentOrganisation.id])}"
-													   	rel="${createLink(controller:'dashboard', action:'getDescription', id:dashboardEntity.id)}">
-														<g:i18n field="${dashboardEntity.objective.names}"/>
-													</a>
-												</g:if>
-												<g:else>
-													<a 	class="no-link cluetip" href="#" onclick="return false;" 
-														title="${i18n(field:dashboardEntity.names)}"
-														rel="${createLink(controller:'dashboard', action:'getDescription', id:dashboardEntity.id)}">
-														<g:i18n field="${dashboardEntity.names}"/>
-													</a>
-												</g:else>
-				
-									    		<shiro:hasPermission permission="admin:dashboard">
-								    				<g:if test="${!dashboardEntity.isTarget()}">
-														<span>
-															<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'edit', id:dashboardEntity.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
-														</span>
-													</g:if>
-													<g:else>
-														<span>
-															<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'edit', id:dashboardEntity.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
-														</span>
-													</g:else>
-													<g:if test="${!dashboardEntity.hasChildren()}">
-														<g:if test="${!dashboardEntity.isTarget()}">
-															<span>
-																<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardObjective',action:'delete', id:dashboardEntity.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-																	<g:message code="default.link.delete.label" default="Delete" />
-																</a>
-															</span>
-														</g:if>
-														<g:else>
-															<span>
-																<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardTarget',action:'delete', id:dashboardEntity.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-																	<g:message code="default.link.delete.label" default="Delete" />
-																</a>
-															</span>
-														</g:else>
-													</g:if>
-												</shiro:hasPermission>
-													
-												</span></div>
-											</th>
-										</g:each>
-									</tr>
-								</thead>
-								<tbody class="body">
-									<g:each in="${dashboard.organisations}" var="organisation">
-									<tr class="row organisation">
-										<td class="cell label row-${organisation.id}" data-row="${organisation.id}">
-											<div><span>
-											<g:if test="${!organisation.collectsData()}">
-												<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, dashboardEntity: dashboardEntity.id, organisation: organisation.id]"><g:i18n field="${organisation.names}"/></g:link>
+		    	</div>
+		    
+		    	<div class="box">
+		    		<div id="values">
+				    	<table class="listing">	
+				    		<thead class="header">
+					    		<tr class="row">
+					    			<th class="cell label">&nbsp;</th>
+					    			<g:each in="${dashboard.dashboardEntities}" var="entity">
+						    			<th class="cell label top col-${entity.id}" data-col="${entity.id}">
+						    				<div><span>
+						    				<g:if test="${!entity.isTarget()}">
+												<a class="cluetip" 
+													title="${i18n(field:entity.names)}"
+													href="${createLink(controller:'dashboard', action:'view', params:[period: currentPeriod.id, dashboardEntity: entity.id, organisation: currentOrganisation.id])}"
+												   	rel="${createLink(controller:'dashboard', action:'getDescription', id:entity.id)}">
+													<g:i18n field="${entity.names}"/>
+												</a>
+											</g:if>
+											<g:else>
+												<a 	class="no-link cluetip" href="#" onclick="return false;" 
+													title="${i18n(field:entity.names)}"
+													rel="${createLink(controller:'dashboard', action:'getDescription', id:entity.id)}">
+													<g:i18n field="${entity.names}"/>
+												</a>
+											</g:else>												
+											</span></div>
+										</th>
+									</g:each>
+								</tr>
+							</thead>
+							<tbody class="body">
+								<g:each in="${dashboard.organisations}" var="organisation">
+								<tr class="row organisation">
+									<td class="cell label row-${organisation.id}" data-row="${organisation.id}">
+										<div><span>
+										<g:if test="${!organisation.collectsData()}">
+											<g:link controller="dashboard" action="view" params="[period: currentPeriod.id, dashboardEntity: dashboardEntity.id, organisation: organisation.id]"><g:i18n field="${organisation.names}"/></g:link>
+										</g:if>
+										<g:else>
+											<g:i18n field="${organisation.names}"/>
+										</g:else>
+										</span></div>
+									</td>
+									<g:each in="${dashboard.dashboardEntities}" var="entity">
+										<g:set var="percentage" value="${dashboard.getPercentage(organisation, entity)}"/>
+										<td class="highlighted value cell row-${organisation.id} col-${entity.id}" data-row="${organisation.id}" data-col="${entity.id}">
+											<g:if test="${percentage!=null}">
+												<div style="background-color: ${percentage.color};">
+												    <span>
+												    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[dashboardEntity: entity.id, organisation: organisation.id, period: currentPeriod.id])}">
+													    	<g:if test="${percentage.valid}">
+																${percentage.roundedValue}%
+															</g:if>
+															<g:else>
+																N/A
+															</g:else>
+												    	</a>
+												    </span>
+												</div>
 											</g:if>
 											<g:else>
 												<g:i18n field="${organisation.names}"/>
 											</g:else>
 											</span></div>
 										</td>
-										<g:each in="${dashboard.dashboardEntities}" var="dashboardEntity">
-											<g:set var="percentage" value="${dashboard.getPercentage(organisation, dashboardEntity)}"/>
-											<td class="highlighted value cell row-${organisation.id} col-${dashboardEntity.id}" data-row="${organisation.id}" data-col="${dashboardEntity.id}">
-												<g:if test="${percentage!=null}">
-													<div style="background-color: ${percentage.color};">
-													    <span>
-													    	<a class="no-link" href="${createLink(controller:'dashboard', action:'explain', params:[dashboardEntity: dashboardEntity.id, organisation: organisation.id, period: currentPeriod.id])}">
-														    	<g:if test="${percentage.valid}">
-																	${percentage.roundedValue}%
-																</g:if>
-																<g:else>
-																	N/A
-																</g:else>
-													    	</a>
-													    </span>
-													</div>
-												</g:if>
-												<g:else>
-													<div class="">&nbsp;</div>
-												</g:else>
-											</td>
-										</g:each></tr>
-										<tr class="explanation-row">
-											<g:each in="${dashboard.dashboardEntities}" var="dashboardEntity">
-												<td class="explanation-cell" id="explanation-${organisation.id}-${dashboardEntity.id}"></td>
-											</g:each>
-										</tr>
-									</g:each>
-								</tbody>
-								<!-- body -->
-					    	</table>
-					    	
-					    	<!-- ADMIN SECTION -->
-				    		<shiro:hasPermission permission="admin:dashboard">
-				    			<div class="float-right">
-									<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'create', params:[dashboardEntity: dashboardEntity.id])}"><g:message code="default.add.label" args="[message(code:'dashboard.target.label')]" default="Add target"/></a></div>
-									<div><a class="add-row" href="${createLinkWithTargetURI(controller:'dashboardObjective', action:'create', params:[dashboardEntity: dashboardEntity.id])}"><g:message code="default.add.label" args="[message(code:'dashboard.objective.label')]" default="Add objective"/></a></div>
-								</div>
-							</shiro:hasPermission>
-					    	<!-- ADMIN SECTION END -->
-					    	
-				    	</div>
-				    </div>
-				    <!-- center -->
-		    	</div>
-		    </div>
-		</g:if>
-		<g:else>
-			No dashboard objective found.
-		</g:else>
+									</g:each></tr>
+									<tr class="explanation-row">
+										<g:each in="${dashboard.dashboardEntities}" var="entity">
+											<td class="explanation-cell" id="explanation-${organisation.id}-${entity.id}"></td>
+										</g:each>
+									</tr>
+								</g:each>
+							</tbody>
+							<!-- body -->
+				    	</table>				
+				    	
+			    	</div>
+			    </div>
+			    <!-- center -->
+	    	</div>
+	    </div>
 	
     	<!-- dashboard specific functionality -->
     	<r:script>

@@ -48,8 +48,6 @@ import org.chai.kevin.util.Utils;
 @Table(name="dhsst_cost_target")
 public class CostTarget extends ReportTarget {
 
-	private static final long serialVersionUID = 2450846525775669571L;
-
 	private Long id;
 	
 	@Id

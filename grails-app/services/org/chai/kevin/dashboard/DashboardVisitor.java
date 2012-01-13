@@ -1,6 +1,7 @@
 package org.chai.kevin.dashboard;
 
 import org.chai.kevin.location.CalculationEntity;
+
 import org.hisp.dhis.period.Period;
 
 public interface DashboardVisitor<T> {

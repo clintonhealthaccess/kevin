@@ -65,10 +65,10 @@ class DashboardController extends AbstractController {
 		]
 	}
 	
-	protected def redirectIfDifferent(def period, def objective, def dashboardEntity) {
-		if (period.id+'' != params['period'] || objective.id+'' != params['dashboardEntity'] || dashboardEntity.id+'' != params['organisation'] ) {
-			if (log.isInfoEnabled()) log.info ("redirecting to action: "+params['action']+", period: "+period.id+", objective: "+objective.id+", entity: "+dashboardEntity.id)
-			redirect (controller: 'dashboard', action: params['action'], params: [period: period.id, dashboardEntity: objective.id, organisation: dashboardEntity.id]);
+	protected def redirectIfDifferent(def period, def objective, def locationEntity) {
+		if (period.id+'' != params['period'] || objective.id+'' != params['dashboardEntity'] || locationEntity.id+'' != params['organisation'] ) {
+			if (log.isInfoEnabled()) log.info ("redirecting to action: "+params['action']+", period: "+period.id+", objective: "+objective.id+", entity: "+locationEntity.id)
+			redirect (controller: 'dashboard', action: params['action'], params: [period: period.id, dashboardEntity: objective.id, organisation: locationEntity.id]);
 		}
 	}
 	
@@ -86,42 +86,48 @@ class DashboardController extends AbstractController {
     def view = {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)
 		
-		def dashboard = null
+		def reportObjective = null
+		def dashboard = null		
+		
 		Period period = getPeriod()
-		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
+		List<DataEntityType> facilityTypes = getOrganisationUnitGroups()
 		DashboardEntity dashboardEntity = getDashboardEntity()
-		LocationEntity entity = LocationEntity.get(params.int('organisation'))
-		if (entity == null) entity = locationService.getRootLocation()
+		
+		LocationEntity locationEntity = LocationEntity.get(params.int('organisation'))
+		if (locationEntity == null) locationEntity = locationService.getRootLocation()
 		
 		if (dashboardEntity != null) {
-			ReportObjective reportObjective = dashboardEntity.getReportObjective()
+			reportObjective = dashboardEntity.getReportObjective()
 			
-			if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", entity: "+entity.id+", dashboardEntity:"+ dashboardEntity.id);
-			redirectIfDifferent(period, dashboardEntity, entity)
+			if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", entity: "+locationEntity.id+", dashboardEntity:"+ dashboardEntity.id);
+			redirectIfDifferent(period, dashboardEntity, locationEntity)
 			
-			dashboard = dashboardService.getDashboard(entity, reportObjective, period, new HashSet(facilityTypes));
+			dashboard = dashboardService.getDashboard(locationEntity, reportObjective, period, new HashSet(facilityTypes));
 		}
 		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
 		
 		[ 
 			dashboard: dashboard,
 			currentPeriod: period,
-			dashboardEntity: dashboardEntity,			
-			currentOrganisation: entity,
-			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
+			dashboardEntity: dashboardEntity,
+			currentObjective: reportObjective,
+			objectiveRoot: reportService.getRootObjective(),
+			currentOrganisation: locationEntity,
+			organisationRoot: locationService.getRootLocation(),
+			currentFacilityTypes: facilityTypes,
 			facilityTypes: DataEntityType.list()
 		]
 	}
 	
 	def getDescription = {
-		def entity = null;
+		def dashboardEntity = null;
 		if (NumberUtils.isNumber(params['id'])) {
-			entity = DashboardObjective.get(params['id'])
-			if (entity == null) DashboardTarget.get(params['id'])
+			dashboardEntity = DashboardObjective.get(params['id'])
+			if (dashboardEntity == null) DashboardTarget.get(params['id'])
 		}
 		
-		if (entity == null) {
+		if (dashboardEntity == null) {
 			render(contentType:"text/json") {
 				result = 'error'
 			}
@@ -129,7 +135,7 @@ class DashboardController extends AbstractController {
 		else {
 			render(contentType:"text/json") {
 				result = 'success'
-				html = g.render (template: 'description', model: [objective: entity])
+				html = g.render (template: 'description', model: [objective: dashboardEntity])
 			}
 		}
 	}

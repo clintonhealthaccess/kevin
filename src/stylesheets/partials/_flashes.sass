@@ -44,10 +44,16 @@
   display: none
   a
     font-size: 11px
-    opacity: 0.5
+    opacity: 0.6
+    +text-shadow(#fff 0 1px 0)
     &:hover, &:focus
       color: $primary
       opacity: 1
+  &.moved
+    float: right
+    margin-top: -42px
+    position: relative
+    z-index: 11
   
 .hide-question-help
   background: url('../images/icons/icon_close_flash.png') no-repeat center

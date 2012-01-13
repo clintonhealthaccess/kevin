@@ -1,16 +1,16 @@
 <div class="filter">
 	<span class="bold"><g:message code="filter.period.label"/></span>
-	<span class="dropdown dropdown-period subnav-dropdown">
-		<a class="selected" href="#" data-period="${currentPeriod.id}" data-type="period">
+	<span class="dropdown subnav-dropdown">
+		<a class="time selected" href="#" data-period="${currentPeriod.id}" data-type="period">
 			<g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/>
 		</a>
 		<div class="hidden dropdown-list">
 			<ul>
 				<g:each in="${periods}" var="period">
-					<% def newLinkParams = new HashMap(linkParams) %>
-					<% newLinkParams << [period:period.id] %>
+					<% def periodLinkParams = new HashMap(linkParams) %>
+					<% periodLinkParams << [period:period.id] %>
 					<li>
-						<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:newLinkParams)}">
+						<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:periodLinkParams)}">
 							<span><g:dateFormat format="yyyy" date="${period.startDate}" /></span> 
 						</a>
 					</li>

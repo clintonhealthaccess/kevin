@@ -44,7 +44,7 @@ abstract class AbstractController {
 
 	def locationService;
 
-	def getOrganisationUnitGroups(def defaultIfNull) {
+	public List<DataEntityType> getOrganisationUnitGroups() {
 		List<DataEntityType> groups = null
 		if (params['groupUuids'] != null) {
 			groups = params.list('groupUuids').collect {DataEntityType.get(it)}
@@ -54,7 +54,7 @@ abstract class AbstractController {
 		}
 		return groups;
 	}
-	
+
 	def getPeriod() {
 		Period period = Period.get(params.int('period'))
 		if (period == null) {

@@ -17,7 +17,7 @@ public class DashboardObjective extends DashboardEntity {
 
 	private Long id;
 	private ReportObjective objective;
-	
+
 	@Override
 	@Transient
 	public ReportObjective getReportObjective() {
@@ -59,5 +59,5 @@ public class DashboardObjective extends DashboardEntity {
 	public boolean isTarget() {
 		return false;
 	}
-	
+
 }

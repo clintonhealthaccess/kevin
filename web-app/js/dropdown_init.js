@@ -15,7 +15,7 @@ $(document).bind('click', function(e) {
 	var clicked = e.target;
 	$(".dropdown a.selected").each(function(){
 		if (clicked != this) {
-			$(this).parent(".dropdown").find("div.dropdown-list").hide();	
+			$(this).parent(".dropdown").find("div.dropdown-list").hide();
 		}
 	});
 //	return false;

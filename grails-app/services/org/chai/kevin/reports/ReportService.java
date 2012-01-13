@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true)
 public class ReportService {
 	
-	private static final Log log = LogFactory.getLog(ReportService.class);
+//	private static final Log log = LogFactory.getLog(ReportService.class);
 	
 	private LocationService locationService;
 	private ValueService valueService;

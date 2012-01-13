@@ -17,11 +17,15 @@
   
 #content
   background: url('../images/bg/content_bg.png') repeat-x top center
-  
-  .wrapper
+
+  .main
     background: #fff
     +border-bottom-radius
-    +box-shadow(#ccc, 0, 1px, 3px)
+    +box-shadow(#ccc, 0, 0, 2px)
     
 .main
-  margin: 15px
+  padding: 15px
+
+.clearfix
+  clear: both
+  +pie-clearfix

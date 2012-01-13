@@ -56,6 +56,7 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 
 def config = CH.config
 
+String facilityTypeGroup = config.facility.type.group
 Set<String> dashboardSkipLevels = config.dashboard.skip.levels
 Set<String> costSkipLevels = config.cost.skip.levels
 String dsrGroupLevel= config.dsr.group.level

@@ -1,8 +1,5 @@
 package org.chai.kevin
 
-import org.chai.kevin.LocationService;
-import org.chai.kevin.location.LocationEntity;
-import org.chai.kevin.location.LocationLevel;
 /*
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
@@ -30,6 +27,10 @@ import org.chai.kevin.location.LocationLevel;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import org.chai.kevin.LocationService;
+import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.hisp.dhis.period.Period;
 
 class FilterTagLib {

@@ -26,8 +26,6 @@ a
   margin-bottom: 10px
   padding-left: 10px
 
-a
-
 .question h4
   background: $filler
   color: $primary
@@ -58,7 +56,7 @@ a
     +border-radius(50px)
     +text-shadow($yes - #222, 0, 1px, 0)
       
-#questions .incomplete h4 span, #questions .invalid h4 span
+#questions .incomplete h4 span, #questions .invalid h4 span, #questions span.question-default
   background: $primary
   color: $filler
   +text-shadow($primary - #222, 0, 1px, 0)
@@ -72,10 +70,12 @@ a
     
 .push-10
   margin-bottom: 10px
+.push-top-10
+  margin-top: 10px
 .push-15
   margin-bottom: 15px
 .push-20
-  margin-bottom: 20px
+  margin-bottom: 20px !important
   
 .third
   float: left

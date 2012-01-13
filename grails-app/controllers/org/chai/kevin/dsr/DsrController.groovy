@@ -42,6 +42,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DsrController extends AbstractController {
 
+	ReportService reportService;
 	DsrService dsrService;
 	
 	def index = {
@@ -53,7 +54,7 @@ class DsrController extends AbstractController {
 		Period period = getPeriod()
 		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		LocationEntity entity = LocationEntity.get(params.int('organisation'));
-		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
+		List<DataEntityType> facilityTypes = getOrganisationUnitGroups();
 		
 		def dsrTable = null
 		if (period != null && objective != null && entity != null) {
@@ -66,12 +67,13 @@ class DsrController extends AbstractController {
 			dsrTable: dsrTable, 
 			currentPeriod: period,
 			currentObjective: objective,
+			objectiveRoot: reportService.getRootObjective(),
 			currentOrganisation: entity,
 			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
 			facilityTypes: locationService.listTypes(),
 			objectives: ReportObjective.list(),
-		    organisationTree: locationService.getRootLocation()
+		    organisationRoot: locationService.getRootLocation()
 		]
 	}
 	

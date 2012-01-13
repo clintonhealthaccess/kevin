@@ -12,21 +12,12 @@
 		<r:require modules="dsr"/>
 	</head>
 	<body>
-		<div id="report">
-			<div class="subnav">
-				<g:iterationFilter linkParams="${params}"/>
-				<g:organisationFilter linkParams="${params}"/>
-				<g:render template="/templates/objectiveFilter" model="[linkParams:params]"/>
-								
-				<div class="right">
-					<!-- ADMIN SECTION -->
-					<shiro:hasPermission permission="admin:dsr">
-						<span><a href="${createLinkWithTargetURI(controller:'dsrObjective', action:'create')}">Add Objective</a> </span>|
-						<span><a href="${createLinkWithTargetURI(controller:'dsrTarget', action:'create')}">Add Target</a> </span>|
-						<span><a href="${createLinkWithTargetURI(controller:'dsrTargetCategory', action:'create')}">Add Target Category</a> </span>
-					</shiro:hasPermission>
-					<!-- ADMIN SECTION END -->
-				</div>
+		<div id="report">			
+			<div class="subnav">			
+				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
+			</div>
+			<div class="main">
+				<g:render template="/templates/topLevelReportTabs" model="[reportTab:'dsr', linkParams:params]"/>			
 			</div>
 			
 			<g:if test="${dsrTable != null}">

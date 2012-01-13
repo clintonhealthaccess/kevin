@@ -228,6 +228,17 @@ public class DashboardService {
 		return objectivePath;
 	}
 	
+	public DashboardEntity getDashboardEntity(ReportObjective objective) {
+		DashboardEntity dashboardEntity = null;
+		
+		DashboardObjective dashboardObjective = (DashboardObjective) sessionFactory.getCurrentSession().createCriteria(DashboardObjective.class)
+				.add(Restrictions.eq("objective", objective)).uniqueResult();
+		if(dashboardObjective != null) 
+			dashboardEntity = dashboardObjective;
+		
+		return dashboardEntity;
+	}
+	
 	public List<DashboardEntity> getDashboardEntities(ReportObjective objective) {
 		List<DashboardEntity> entities = new ArrayList<DashboardEntity>();
 		if(objective.getChildren() != null) {
