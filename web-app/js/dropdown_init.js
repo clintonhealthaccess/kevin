@@ -3,6 +3,7 @@
  * TODO transform in jQuery Plugin style
  **/
 $(document).delegate('.dropdown .selected', 'click', function(e) {
+  $("div.dropdown-list").hide();
 	$(this).parent(".dropdown").find("div.dropdown-list").toggle();
 	e.stopPropagation();
 	return false;
