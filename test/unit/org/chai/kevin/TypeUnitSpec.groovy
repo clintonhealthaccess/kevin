@@ -723,6 +723,48 @@ public class TypeUnitSpec extends UnitSpec {
 		type.getValue(value, ".key") == null
 	}
 	
+	def "test get type with prefix"() {
+		setup:
+		def type = null
+		def value = null
+		
+		when:
+		type = Type.TYPE_NUMBER()
+
+		then:
+		type.getType('').equals(type)
+		
+		when:
+		type = Type.TYPE_NUMBER()
+		type.getType('[_]')
+		
+		then:
+		thrown IllegalArgumentException
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		
+		then:
+		type.getType('').equals(type)
+		type.getType('[_]').equals(Type.TYPE_NUMBER())
+	
+		when:
+		type = Type.TYPE_MAP(["key1": Type.TYPE_NUMBER()])
+		
+		then:
+		type.getType('').equals(type)
+		type.getType('.key1').equals(Type.TYPE_NUMBER())
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_NUMBER(), 'key2': Type.TYPE_NUMBER()]))
+		
+		then:
+		type.getType('').equals(type)
+		type.getType('[_].key1').equals(Type.TYPE_NUMBER())
+		type.getType('[_].key2').equals(Type.TYPE_NUMBER())
+		
+	}
+	
 	def "get displayed value"() {
 		setup:
 		def type = null

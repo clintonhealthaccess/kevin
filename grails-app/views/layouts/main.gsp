@@ -69,8 +69,8 @@
 			
 		<div class="clear"></div>
 		</div>			
-			<!--<h1>Welcome to Kevin</h1>-->
-	<div id="navigation">
+			
+		<div id="navigation">
 		<div class="wrapper">
 	  		<ul id="main-menu" class="menu">
 	  		    <shiro:hasPermission permission="menu:survey">
@@ -98,6 +98,8 @@
 	  						<li><a class="${controllerName=='iteration'?'active':''}" href="${createLink(controller: 'iteration', action:'list')}"><g:message code="period.label" default="Iterations"/></a></li>
 	  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a></li>
 	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'user', action:'list')}"><g:message code="user.label" default="User"/></a></li>
+							<li><a class="${controllerName=='importerEntity'?'active':''}" href="${createLink(controller: 'importerEntity', action:'importer')}"><g:message code="import.label" default="Import"/></a></li>
+	  					
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>

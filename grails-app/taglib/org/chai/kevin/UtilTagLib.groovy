@@ -57,6 +57,11 @@ class UtilTagLib {
 		out << render(template:"/tags/input", model: attrs)
 	}
 	
+	def file = { attrs, body ->
+		if (attrs["type"] == null) attrs["type"] = 'file'
+		out << render(template:"/tags/file", model: attrs)
+	}
+	
 	def i18nInput = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'text'
 		attrs["locales"] = languageService.getAvailableLanguages();

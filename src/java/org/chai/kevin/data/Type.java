@@ -202,6 +202,37 @@ public class Type extends JSONValue {
 		}
 	}
 	
+	// example
+	// getType("[_].personal_information.id_number")
+	// getType(".personal_information.id_number")
+	// getType(".id_number")
+	public Type getType(String prefix) {
+		if (prefix.equals("")) return this;
+		switch (getType()) {
+		case NUMBER:
+		case BOOL:
+		case STRING:
+		case TEXT:
+		case ENUM:
+		case DATE:
+			throw new IllegalArgumentException();
+		case LIST:
+			if (!prefix.startsWith("[_]")) throw new IllegalArgumentException();
+			return getListType().getType(prefix.substring(3));
+		case MAP:
+			boolean found = false;
+			for (Entry<String, Type> entry : getElementMap().entrySet()) {
+				if (prefix.startsWith("."+entry.getKey())) {
+					found = true;
+					return entry.getValue().getType(prefix.substring(entry.getKey().length()+1));
+				}
+			}
+			if (!found) throw new IllegalArgumentException();
+		default:
+			throw new NotImplementedException();
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	private static List<Integer> getIndexList(Map<String, Object> map, String key) {
 		List<String> stringIndexList = new ArrayList<String>();
@@ -477,7 +508,7 @@ public class Type extends JSONValue {
 		});
 	}
 	
-	public void setValue(Value value, final String prefix, final JSONValue toSet) {
+	public void setValue(Value value, final String prefix, final Value toSet) {
 		// TODO throw exception if prefix does not exist
 		transformValue(value, "", new ValuePredicate() {
 			@Override

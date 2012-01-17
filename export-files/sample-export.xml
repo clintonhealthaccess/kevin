@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataValueSets>
+
+	<dataValueSet code="" period="">
+		<dataValue organisation="">
+			<number>
+				<value>
+					10
+				</value>
+			</number>
+		</dataValue>
+	</dataValueSet>
+	
+	<dataValueSet code="" period="">
+		<dataValue organisation="">
+			<string>
+				<value>
+					Some text
+				</value>
+			</string>
+		</dataValue>
+	</dataValueSet>
+	
+	<dataValueSet code="" period="">
+		<dataValue organisation="">
+			<date>
+				<value>
+					2011-09-03
+				</value>
+			</date>
+		</dataValue>
+	</dataValueSet>
+	
+	<dataValueSet code="" period="">
+		<dataValue organisation="">
+			<enum>
+				<value>
+					1
+				</value>
+			</enum>
+		</dataValue>
+	</dataValueSet>
+	
+	<dataValueSet code="" period="">
+		<dataValue organisation="">
+			<list>
+				<value>
+					String
+				</value>
+				<value>
+					0
+				</value>
+				<value>
+					22
+				</value>
+			</list>
+		</dataValue>
+	</dataValueSet>
+	
+	<dataValueSet code="" period="">
+		<dataValue organisation="">
+			<map>
+				<value>
+					1
+				</value>
+			</map>
+		</dataValue>
+	</dataValueSet>
+	
+</dataValueSets>

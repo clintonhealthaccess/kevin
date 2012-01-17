@@ -14,7 +14,9 @@ import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.dsr.DsrService
+import org.chai.kevin.export.ExportDataElementService;
 import org.chai.kevin.fct.FctService
+import org.chai.kevin.importer.ImporterService;
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.survey.SummaryService
 import org.chai.kevin.survey.SurveyCopyService
@@ -64,13 +66,18 @@ Set<String> exportSkipLevels = config.export.skip.levels
 
 beans = {
 	
-	exportDataElementService(ExportDataElementService){
-		dataElementService=ref("dataElementService")
+//	exportDataElementService(ExportDataElementService){
+//		dataElementService=ref("dataElementService")
+//		organisationService = ref("organisationService")
+//		valueService = ref("valueService")
+//		infoService = ref("infoService")
+//		facilityLevel = organisationLevel
+//	}
+	
+	importerService(ImporterService){
 		organisationService = ref("organisationService")
-		valueService = ref("valueService")
-		infoService = ref("infoService")
-		facilityLevel = organisationLevel
 	}
+
 	
 	surveyCopyService(SurveyCopyService) {
 		sessionFactory = ref("sessionFactory")
