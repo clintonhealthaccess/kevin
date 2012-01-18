@@ -52,6 +52,9 @@
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredObjective" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyLog" />
 		
+		<mapping class="org.chai.kevin.survey.workflow.Workflow" />
+		<mapping class="org.chai.kevin.survey.workflow.WorkflowStep" />
+		
 		<mapping class="org.chai.kevin.location.CalculationEntity" />
 		<mapping class="org.chai.kevin.location.DataEntity" />
 		<mapping class="org.chai.kevin.location.DataEntityType" />
@@ -60,9 +63,6 @@
 		
 		<mapping class="org.hisp.dhis.period.Period" />
 		
-		<!-- mapping resource="org/hisp/dhis/period/hibernate/Period.hbm.xml" / -->
-		<!-- mapping resource="org/hisp/dhis/period/hibernate/PeriodType.hbm.xml" / -->
-
 	</session-factory>
 
 </hibernate-configuration>

@@ -27,12 +27,6 @@
  */
 package org.chai.kevin.export;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.chai.kevin.value.DataValue;
-import org.chai.kevin.Organisation;
-import org.chai.kevin.OrganisationService;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.ValueService;
 import org.hisp.dhis.period.Period;
@@ -44,20 +38,21 @@ import org.hisp.dhis.period.Period;
 public class ExportDataElementService {
 
 	private ValueService dataValueService;
-	private OrganisationService organisationService;
+//	private OrganisationService organisationService;
 	int facilityLevel;
 	
 	public ExportDataElement getDataElementExport(Period period,DataElement<?> dataElement){
-		List<Organisation> organisations = organisationService.getOrganisationsOfLevel(facilityLevel);
-		
-		Map<Organisation, DataValue> values = new HashMap<Organisation,DataValue>();
-		for(Organisation organisation: organisations){
-			Map<Organisation, DataValue> dataValue =new HashMap<Organisation,DataValue>();
-			dataValue.put(organisation, dataValueService.getDataElementValue(dataElement, organisation.getOrganisationUnit(), period));
-			
-		}
-		
-		return new ExportDataElement(period, dataElement, organisations,values);	
+//		List<Organisation> organisations = organisationService.getOrganisationsOfLevel(facilityLevel);
+//		
+//		Map<Organisation, DataValue> values = new HashMap<Organisation,DataValue>();
+//		for(Organisation organisation: organisations){
+//			Map<Organisation, DataValue> dataValue =new HashMap<Organisation,DataValue>();
+//			dataValue.put(organisation, dataValueService.getDataElementValue(dataElement, organisation.getOrganisationUnit(), period));
+//			
+//		}
+//		
+//		return new ExportDataElement(period, dataElement, organisations,values);
+		return null;
 	}
 
 }

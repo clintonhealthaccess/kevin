@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
-import javax.persistence.Basic;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -27,10 +26,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
-import org.chai.kevin.survey.Survey;
-import org.chai.kevin.survey.SurveyElement;
-import org.chai.kevin.survey.SurveyQuestion;
-
 import org.chai.kevin.util.Utils;
 
 @Entity(name="SurveySkipRule")

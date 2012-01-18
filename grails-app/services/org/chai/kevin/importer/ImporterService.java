@@ -28,13 +28,11 @@
 package org.chai.kevin.importer;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.OrganisationService;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.period.Period;
 import org.supercsv.io.CsvMapReader;
@@ -48,7 +46,7 @@ import org.supercsv.prefs.CsvPreference;
 public class ImporterService {
 	
 	private static final Log log = LogFactory.getLog(ImporterService.class);
-	private OrganisationService organisationService;
+//	private OrganisationService organisationService;
 	
 	public void getFileImport(Reader reader,Period period) throws IOException{
 		

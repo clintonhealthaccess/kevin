@@ -27,12 +27,7 @@
  */
 package org.chai.kevin.export;
 
-import java.util.List;
-import java.util.Map;
-import org.chai.kevin.Organisation;
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.value.DataValue;
-import org.hisp.dhis.period.Period;
 
 /**
  * @author Jean Kahigiso M.
@@ -41,27 +36,27 @@ import org.hisp.dhis.period.Period;
 public class ExportDataElement extends ExportEntity {
 
 	private DataElement<?> dataElement;
-	private List<Organisation> organisations;
-	private Map<Organisation, DataValue> values;
+//	private List<Organisation> organisations;
+//	private Map<Organisation, DataValue> values;
 
-	public ExportDataElement(Period period, DataElement<?> dataElement,List<Organisation> organisations, Map<Organisation, DataValue> values) {
-		super();
-		this.period = period;
-		this.dataElement = dataElement;
-		this.organisations = organisations;
-		this.values= values;
-	}
+//	public ExportDataElement(Period period, DataElement<?> dataElement,List<Organisation> organisations, Map<Organisation, DataValue> values) {
+//		super();
+//		this.period = period;
+//		this.dataElement = dataElement;
+//		this.organisations = organisations;
+//		this.values= values;
+//	}
 
 	public DataElement<?> getDataElement() {
 		return dataElement;
 	}
 
-	public List<Organisation> getOrganisations() {
-		return organisations;
-	}
+//	public List<Organisation> getOrganisations() {
+//		return organisations;
+//	}
 
-	public Map<Organisation, DataValue> getValues() {
-		return values;
-	}
+//	public Map<Organisation, DataValue> getValues() {
+//		return values;
+//	}
 
 }

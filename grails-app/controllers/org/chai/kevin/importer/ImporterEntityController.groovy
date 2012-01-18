@@ -27,20 +27,12 @@
  */
 package org.chai.kevin.importer
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStreamReader
 
-import org.apache.commons.logging.Log;
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.Organisation;
-import org.hisp.dhis.period.Period;
+import org.chai.kevin.AbstractController
+import org.hisp.dhis.period.Period
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
-import org.supercsv.io.CsvMapReader
-import org.supercsv.io.ICsvMapReader
-import org.supercsv.prefs.CsvPreference;
 
 /**
  * @author Jean Kahigiso M.

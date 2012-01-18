@@ -61,6 +61,7 @@ import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
+import org.chai.kevin.survey.workflow.Workflow;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
@@ -108,7 +109,7 @@ class Initializer {
 
 		def kivuye = new SurveyUser(username: "kivuye", entityId: DataEntity.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
 		kivuye.addToPermissions("editSurvey:view")
-		kivuye.addToPermissions("editSurvey:*:"+kivuye.id)
+		kivuye.addToPermissions("editSurvey:*:"+DataEntity.findByCode("Kivuye HC").id)
 		kivuye.addToPermissions("menu:survey")
 		kivuye.save(failOnError: true)
 	}
@@ -542,7 +543,8 @@ class Initializer {
 		}
 
 	}
-
+	
+	
 	static def createMaps() {
 		if (!MapsTarget.count()) {
 			def calculation1 = new Average(expression: "\$"+NormalizedDataElement.findByCode("Element 1").id, code: "Maps average 1", timestamp:new Date())
@@ -920,67 +922,59 @@ class Initializer {
 
 			//Creating Survey
 			def surveyOne = new Survey(
-					names: j(["en":"Survey Number 1"]),
-					descriptions: j(["en":"Survey Number 1 Description"]),
-					period: Period.list()[1],
-					lastPeriod: Period.list()[0],
-					active: true,
-					)
+				names: j(["en":"Survey Number 1"]),
+				descriptions: j(["en":"Survey Number 1 Description"]),
+				period: Period.list()[1],
+				lastPeriod: Period.list()[0],
+				active: true,
+			)
 			def surveyTwo = new Survey(
-					names: j(["en":"Survey Number 2"]),
-					descriptions: j(["en":"Survey Number 2 Description"]),
-					period: Period.list()[1],
-					)
+				names: j(["en":"Survey Number 2"]),
+				descriptions: j(["en":"Survey Number 2 Description"]),
+				period: Period.list()[1],
+			)
 
 			//Creating Objective
 			def serviceDev = new SurveyObjective(
-					names: j(["en":"Service Delivery"]),
-					order: 2,
-//					order: o(["en":2]),
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Service Delivery"]),
+				order: 2,
+				groupUuidString: "District Hospital,Health Center"
+			)
 			def hResourceHealth = new SurveyObjective(
-					names: j(["en":"Human Resources for Health"]),
-					order: 4,
-//					order: o(["en":4]),
-					groupUuidString: "District Hospital,Health Center",
-					)
+				names: j(["en":"Human Resources for Health"]),
+				order: 4,
+				groupUuidString: "District Hospital,Health Center",
+			)
 
 			def geoAccess = new SurveyObjective(
-					names: j(["en":"Geographic Access"]),
-					order: 5,
-//					order: o(["en":5]),
-					groupUuidString: "District Hospital,Health Center",
-					)
+				names: j(["en":"Geographic Access"]),
+				order: 5,
+				groupUuidString: "District Hospital,Health Center",
+			)
 
 			def institutCap = new SurveyObjective(
-					names: j(["en":"Institutional Capacity"]),
-					order: 3,
-//					order: o(["en":3]),
-					groupUuidString: "Health Center",
-					)
+				names: j(["en":"Institutional Capacity"]),
+				order: 3,
+				groupUuidString: "Health Center",
+			)
 
 			def coreFacId = new SurveyObjective(
-					names: j(["en":"Core Facility Identify"]),
-					order: 1,
-//					order: o(["en":1]),
-					//				dependency: serviceDev,
-					groupUuidString: "District Hospital,Health Center",
-					)
+				names: j(["en":"Core Facility Identify"]),
+				order: 1,
+				groupUuidString: "District Hospital,Health Center",
+			)
 
 			def finance = new SurveyObjective(
-					names: j(["en":"Finance"]),
-					order: 6,
-//					order: o(["en":6]),
-					groupUuidString: "District Hospital,Health Center",
-					)
+				names: j(["en":"Finance"]),
+				order: 6,
+				groupUuidString: "District Hospital,Health Center",
+			)
 
 			def dvandC = new SurveyObjective(
-					names: j(["en":"Drugs, Vaccines, and Consumables"]),
-					order: 7,
-//					order: o(["en":7]),
-					groupUuidString: "District Hospital,Health Center",
-					)
+				names: j(["en":"Drugs, Vaccines, and Consumables"]),
+				order: 7,
+				groupUuidString: "District Hospital,Health Center",
+			)
 
 			surveyOne.addObjective(serviceDev)
 			surveyOne.addObjective(coreFacId)
@@ -995,46 +989,41 @@ class Initializer {
 
 			//Adding section to objective
 			def facilityId = new SurveySection(
-					names: j(["en":"Facility Identifier"]),
-					order: 1,
-//					order: o(["en":1]),
-					objective: coreFacId,
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Facility Identifier"]),
+				order: 1,
+				objective: coreFacId,
+				groupUuidString: "District Hospital,Health Center"
+			)
 
 			coreFacId.addSection(facilityId)
 			coreFacId.save(failOnError:true);
 
 			def services=new SurveySection(
-					names: j(["en":"Services"]),
-					order: 2,
-//					order: o(["en":2]),
-					objective: serviceDev,
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Services"]),
+				order: 2,
+				objective: serviceDev,
+				groupUuidString: "District Hospital,Health Center"
+			)
 			def labTests= new SurveySection(
-					names: j(["en":"Lab Tests"]),
-					order: 1,
-//					order: o(["en":1]),
-					objective: serviceDev,
-					groupUuidString: "District Hospital"
-					)
+				names: j(["en":"Lab Tests"]),
+				order: 1,
+				objective: serviceDev,
+				groupUuidString: "District Hospital"
+			)
 
 			def patientReg=new SurveySection(
-					names: j(["en":"Patient Registration"]),
-					order: 3,
-//					order: o(["en":3]),
-					objective: serviceDev,
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Patient Registration"]),
+				order: 3,
+				objective: serviceDev,
+				groupUuidString: "District Hospital,Health Center"
+			)
 
 			def patientQ1 = new SurveySimpleQuestion(
-					names: j(["en":"Patient Section Simple Question NUMBER"]),
-					descriptions: j([:]),
-					order: 3,
-//					order: o(["en":3]),
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Patient Section Simple Question NUMBER"]),
+				descriptions: j([:]),
+				order: 3,
+				groupUuidString: "District Hospital,Health Center"
+			)
 			patientReg.addQuestion(patientQ1)
 			patientReg.save(failOnError: true)
 
@@ -1068,28 +1057,25 @@ class Initializer {
 			surveyElementPatientQ1.save(failOnError: true)
 			
 			def staffing=new SurveySection(
-					names: j(["en":"Staffing"]),
-					order: 1,
-//					order: o(["en":1]),
-					objective: hResourceHealth,
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Staffing"]),
+				order: 1,
+				objective: hResourceHealth,
+				groupUuidString: "District Hospital,Health Center"	
+			)
 
 			def continuingEd = new SurveySection(
-					names: j(["en":"Continuing Education"]),
-					order: 2,
-//					order: o(["en":2]),
-					objective: hResourceHealth,
-					groupUuidString: "Health Center"
-					)
+				names: j(["en":"Continuing Education"]),
+				order: 2,
+				objective: hResourceHealth,
+				groupUuidString: "Health Center"
+			)
 
 			def openResponse = new SurveySection(
-					names: j(["en":"Open Response"]),
-					order: 3,
-//					order: o(["en":3]),
-					objective: hResourceHealth,
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Open Response"]),
+				order: 3,
+				objective: hResourceHealth,
+				groupUuidString: "District Hospital,Health Center"
+			)
 
 			hResourceHealth.addSection(staffing)
 			hResourceHealth.addSection(continuingEd)
@@ -1097,26 +1083,23 @@ class Initializer {
 			hResourceHealth.save(failOnError:true);
 
 			def infrastructure = new SurveySection(
-					names: j(["en":"Infrastructure"]),
-					order: 3,
-//					order: o(["en":3]),
-					objective: geoAccess,
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Infrastructure"]),
+				order: 3,
+				objective: geoAccess,
+				groupUuidString: "District Hospital,Health Center"
+			)
 			def medicalEq=new SurveySection(
-					names: j(["en":"Medical Equipment"]),
-					order: 2,
-//					order: o(["en":2]),
-					objective: geoAccess,
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Medical Equipment"]),
+				order: 2,
+				objective: geoAccess,
+				groupUuidString: "District Hospital,Health Center"	
+			)
 			def wasteMgmnt=new SurveySection(
-					names: j(["en":"Waste Management"]),
-					order: 1,
-//					order: o(["en":1]),
-					objective: geoAccess,
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Waste Management"]),
+				order: 1,
+				objective: geoAccess,
+				groupUuidString: "District Hospital,Health Center"
+			)
 
 			geoAccess.addSection(infrastructure)
 			geoAccess.addSection(medicalEq)
@@ -1125,12 +1108,11 @@ class Initializer {
 
 			//Adding questions to sections
 			def serviceQ1 = new SurveySimpleQuestion(
-					names: j(["en":"Service Section Simple Question NUMBER"]),
-					descriptions: j(["en":"<br/>"]),
-					order: 3,
-//					order: o(["en":3]),
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Service Section Simple Question NUMBER"]),
+				descriptions: j(["en":"<br/>"]),
+				order: 3,
+				groupUuidString: "District Hospital,Health Center"
+			)
 			services.addQuestion(serviceQ1)
 			services.save(failOnError:true, flush:true)
 
@@ -1139,12 +1121,11 @@ class Initializer {
 			serviceQ1.save(failOnError: true)
 
 			def serviceQ2 = new SurveySimpleQuestion(
-					names: j(["en":"Service Section Simple Question BOOL"]),
-					descriptions: j(["en":""]),
-					order: 0,
-//					order: o(["en":0]),
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Service Section Simple Question BOOL"]),
+				descriptions: j(["en":""]),
+				order: 0,
+				groupUuidString: "District Hospital,Health Center"
+			)
 			services.addQuestion(serviceQ2)
 			services.save(failOnError:true, flush:true)
 
@@ -1153,12 +1134,11 @@ class Initializer {
 			serviceQ2.save(failOnError: true)
 
 			def serviceQ3 = new SurveySimpleQuestion(
-					names: j(["en":"Service Section Simple Question ENUM "]),
-					descriptions: j([:]),
-					order: 0,
-//					order: o(["en":0]),
-					groupUuidString: "District Hospital,Health Center"
-					)
+				names: j(["en":"Service Section Simple Question ENUM "]),
+				descriptions: j([:]),
+				order: 0,
+				groupUuidString: "District Hospital,Health Center"
+			)
 			services.addQuestion(serviceQ3)
 			services.save(failOnError:true, flush:true)
 
@@ -1244,6 +1224,55 @@ class Initializer {
 			serviceQ6.surveyElement = surveyElementServiceQ6
 			serviceQ6.save(failOnError: true, flush: true)
 
+			/* START WORKFLOW */
+			def workflow = new Workflow(
+				names: j(["en":"Workflow question"]),
+				descriptions: j(["en":"Help text"]),
+				order: 6,
+				groupUuidString: "District Hospital,Health Center"
+			)
+			services.addQuestion(workflow)
+			services.save(failOnError:true, flush:true)
+	
+			def workflowElement = new SurveyElement(
+					dataElement: RawDataElement.findByCode("LISTMAP2"),
+					surveyQuestion: workflow,
+					headers: [
+						"[_].key0": j(["en":"Name"]),
+						"[_].key0.key01": j(["en":"Select from list"]),
+						"[_].key0.key02": j(["en":"If other"]),
+						"[_].key1": j(["en":"Identifiers"]),
+						"[_].key1.key11": j(["en":"Type of equipment"]),
+						"[_].key1.key11.key111": j(["en":"Select from list"]),
+						"[_].key1.key11.key112": j(["en":"If other, specify:"]),
+						"[_].key1.key12": j(["en":"Description"]),
+						"[_].key1.key13": j(["en":"Serial"]),
+						"[_].key1.key13.key131": j(["en":"Select from list"]),
+						"[_].key1.key13.key132": j(["en":"If other, please specify"]),
+						"[_].key1.key14": j(["en":"Model"]),
+						"[_].key1.key15": j(["en":"Manufacturer"]),
+						"[_].key1.key16": j(["en":"Status"]),
+						"[_].key1.key16.key161": j(["en":"Please select from list:"]),
+						"[_].key1.key16.key162": j(["en":"If not fully functional:"]),
+						"[_].key1.key17": j(["en":"Primary location"]),
+						"[_].key1.key18": j(["en":"Avg. daily hours of use"]),
+						"[_].key2": j(["en":"Supply and Maintenance"]),
+						"[_].key2.key21": j(["en":"Supplier Name"]),
+						"[_].key2.key22": j(["en":"Supplier Type"]),
+						"[_].key2.key23": j(["en":"Supplier Mobile"]),
+						"[_].key2.key24": j(["en":"Date Acquired"]),
+						"[_].key2.key25": j(["en":"Service Provider Name"]),
+						"[_].key2.key26": j(["en":"Service Provider Type"]),
+						"[_].key2.key27": j(["en":"Service Provider Mobile"]),
+						"[_].key2.key28": j(["en":"Date of last repair"]),
+						"[_].key2.key29": j(["en":"Date of last service"])
+					]).save(failOnError: true)
+			workflow.surveyElement = workflowElement
+			workflow.save(failOnError: true, flush: true)
+			
+			services.addQuestion(workflow)
+			/* END WORKFLOW */
+			
 			services.addQuestion(serviceQ2)
 			services.addQuestion(serviceQ1)
 			services.addQuestion(serviceQ3)

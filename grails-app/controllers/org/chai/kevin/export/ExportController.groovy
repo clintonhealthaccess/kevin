@@ -28,10 +28,8 @@
 package org.chai.kevin.export
 
 import org.chai.kevin.AbstractController
-import org.chai.kevin.Organisation
 import org.chai.kevin.PeriodSorter
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.chai.kevin.OrganisationService;
 import org.hisp.dhis.period.Period
 /**
  * @author Jean Kahigiso M.
@@ -39,16 +37,16 @@ import org.hisp.dhis.period.Period
  */
 class ExportController extends AbstractController {
 	
-	OrganisationService organisationService;
+//	OrganisationService organisationService;
 	
 	def export ={
 		List<Period> periods = Period.list()
-		List<Organisation> organisations = organisationService.getOrganisationsOfLevel(ConfigurationHolder.config.facility.level)
+//		List<Organisation> organisations = organisationService.getOrganisationsOfLevel(ConfigurationHolder.config.facility.level)
 		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		
 		render (view: '/export/export', model:[
 			periods: periods,
-			organisations: organisations
+//			organisations: organisations
 		])
 		
 	}

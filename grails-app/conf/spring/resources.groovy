@@ -75,7 +75,7 @@ beans = {
 //	}
 	
 	importerService(ImporterService){
-		organisationService = ref("organisationService")
+//		organisationService = ref("organisationService")
 	}
 
 	

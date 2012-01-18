@@ -45,10 +45,10 @@ class SummaryController extends AbstractController {
 			currentSurvey: survey,
 			currentObjective: objective,
 			currentSection: section,
-			organisation: entity,
+			currentOrganisation: entity,
 			summaryPage: summaryPage,
 			surveys: Survey.list(),
-			organisationTree: locationService.getRootLocation(),
+			organisationRoot: locationService.getRootLocation(),
 			template: template
 		])
 	}

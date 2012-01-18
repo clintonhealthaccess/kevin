@@ -61,7 +61,8 @@ import org.chai.kevin.util.Utils;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class SurveyQuestion extends Orderable<Integer> {
 
-	public enum QuestionType {CHECKBOX("checkboxQuestion"), TABLE("tableQuestion"), SIMPLE("simpleQuestion");
+	// TODO might be a good idea to get rid of this
+	public enum QuestionType {CHECKBOX("checkboxQuestion"), TABLE("tableQuestion"), SIMPLE("simpleQuestion"), WORKFLOW("workflowQuestion");
 		private String template;
 	
 		private QuestionType(String template) {
