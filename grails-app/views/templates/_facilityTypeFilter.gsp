@@ -1,6 +1,6 @@
 <div class="filter">
 	<g:each in="${linkParams}" var="param">
-		<g:if test="${param.key != 'action' && param.key != 'controller' && param.key != 'groupUuids'}">
+		<g:if test="${param.key != 'action' && param.key != 'controller' && param.key != 'facilityTypes'}">
 			<input type="hidden" name="${param.key}" value="${param.value}"/>
 		</g:if>
 	</g:each>
@@ -14,7 +14,8 @@
 		      <ul class="horizontal">
 		      	<g:each in="${facilityTypes}" var="type">
 						<li class="check_filter">
-						<input name="groupUuids" type="checkbox" id="${type.id}" value="${type.id}" ${currentFacilityTypes.contains(type)?'checked="checked"':''}/>
+						<input name="facilityTypes" type="checkbox" id="${type.id}" value="${type.id}" 
+						${currentFacilityTypes.contains(type)?'checked="checked"':''}/>
 						<label for="${type.id}"><g:i18n field="${type.names}"/></label>
 						</li>
 				</g:each>	        

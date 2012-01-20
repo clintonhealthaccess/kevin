@@ -75,7 +75,7 @@ class CostController extends AbstractController {
 			currentOrganisation: location,
 			objectives: ReportObjective.list(), 
 			periods: Period.list(),
-			organisationTree: locationService.getRootLocation()
+			organisationRoot: locationService.getRootLocation()
 		]
 	}
 	

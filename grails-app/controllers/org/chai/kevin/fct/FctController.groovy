@@ -26,7 +26,7 @@ class FctController extends AbstractController {
 		LocationEntity entity = LocationEntity.get(params.int('organisation'));
 		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		LocationLevel level = LocationLevel.get(params.int('level'));
-		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
+		List<DataEntityType> facilityTypes = getFacilityTypes();
 		
 		FctTable fctTable = null;
 
@@ -46,7 +46,7 @@ class FctController extends AbstractController {
 			periods: Period.list(),
 			facilityTypes: locationService.listTypes(),
 			objectives: ReportObjective.list(),
-			organisationTree: locationService.getRootLocation(),
+			organisationRoot: locationService.getRootLocation(),
 			levels: locationService.listLevels()
 		]
 	}

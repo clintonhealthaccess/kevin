@@ -54,7 +54,7 @@ class DsrController extends AbstractController {
 		Period period = getPeriod()
 		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		LocationEntity entity = LocationEntity.get(params.int('organisation'));
-		List<DataEntityType> facilityTypes = getOrganisationUnitGroups();
+		List<DataEntityType> facilityTypes = getFacilityTypes();
 		
 		def dsrTable = null
 		if (period != null && objective != null && entity != null) {

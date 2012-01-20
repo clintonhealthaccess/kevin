@@ -1,7 +1,6 @@
 <r:require module="foldable" />
 
 <li class="${current?.id == organisation?.id ?'current':''} foldable ${organisation?.level==1 ?'opened':''}">
-
 	<g:if test="${organisation.children != null && !organisation.children.isEmpty()}">
 		<a class="foldable-toggle" href="#">(toggle)</a>
 	</g:if>

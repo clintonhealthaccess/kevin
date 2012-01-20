@@ -81,20 +81,40 @@ public class DashboardService {
 	
 	@Transactional(readOnly = true)
 	@Cacheable("dashboardCache")
-	public Dashboard getDashboard(LocationEntity entity, ReportObjective objective, Period period, Set<DataEntityType> groups) {
+	public Dashboard getDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> groups) {
+		
 		List<CalculationEntity> organisations = new ArrayList<CalculationEntity>();
-		organisations.addAll(entity.getChildren(getSkipLocationLevels()));
-		for (DataEntity dataEntity : entity.getDataEntities(getSkipLocationLevels())) {
+		
+		organisations.add(location);		
+		organisations.addAll(location.getChildren(getSkipLocationLevels()));
+		for (DataEntity dataEntity : location.getDataEntities(getSkipLocationLevels())) {
 			if (groups.contains(dataEntity.getType())) organisations.add(dataEntity);
 		}
 		
-		List<DashboardEntity> dashboardEntities = getDashboardEntities(objective);
-		List<LocationEntity> organisationPath = calculateOrganisationPath(entity);
+		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();
+		
+		dashboardEntities.add(getDashboardObjective(objective));		
+		dashboardEntities.addAll(getDashboardEntities(objective));
+		
+		List<LocationEntity> organisationPath = calculateOrganisationPath(location);
 		List<DashboardObjective> objectivePath = getBreadcrumb(objective);
 		return new Dashboard(organisations, dashboardEntities, organisationPath, objectivePath,
 				getValues(organisations, dashboardEntities, period, groups));
 	}
 
+	@Transactional(readOnly = true)
+	@Cacheable("dashboardCache")
+	public Dashboard getCompareDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> groups) {		
+		List<CalculationEntity> organisations = new ArrayList<CalculationEntity>();
+		organisations.add(location);
+		
+		List<DashboardEntity> dashboardEntities = getDashboardEntities(objective);
+		dashboardEntities.add(getDashboardObjective(objective));
+		
+		return new Dashboard(organisations, dashboardEntities, null, null,
+				getValues(organisations, dashboardEntities, period, groups));
+	}
+	
 	@Transactional(readOnly = true)
 	public Info<?> getExplanation(CalculationEntity entity, DashboardEntity dashboardEntity, Period period, Set<DataEntityType> groups) {
 		return dashboardEntity.visit(new ExplanationVisitor(groups), entity, period);
@@ -195,11 +215,11 @@ public class DashboardService {
 		return values;
 	}
 
-	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> objectiveEntries, Period period, CalculationEntity entity, Set<DataEntityType> groups) {
+	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationEntity entity, Set<DataEntityType> groups) {
 		Map<DashboardEntity, DashboardPercentage> organisationMap = new HashMap<DashboardEntity, DashboardPercentage>();
-		for (DashboardEntity objectiveEntry : objectiveEntries) {
-			DashboardPercentage percentage = objectiveEntry.visit(new PercentageVisitor(groups), entity, period);
-			organisationMap.put(objectiveEntry, percentage);
+		for (DashboardEntity dashboardEntity : dashboardEntities) {
+			DashboardPercentage percentage = dashboardEntity.visit(new PercentageVisitor(groups), entity, period);
+			organisationMap.put(dashboardEntity, percentage);
 		}
 		return organisationMap;
 	}
@@ -226,17 +246,6 @@ public class DashboardService {
 		}
 		Collections.reverse(objectivePath);
 		return objectivePath;
-	}
-	
-	public DashboardEntity getDashboardEntity(ReportObjective objective) {
-		DashboardEntity dashboardEntity = null;
-		
-		DashboardObjective dashboardObjective = (DashboardObjective) sessionFactory.getCurrentSession().createCriteria(DashboardObjective.class)
-				.add(Restrictions.eq("objective", objective)).uniqueResult();
-		if(dashboardObjective != null) 
-			dashboardEntity = dashboardObjective;
-		
-		return dashboardEntity;
 	}
 	
 	public List<DashboardEntity> getDashboardEntities(ReportObjective objective) {

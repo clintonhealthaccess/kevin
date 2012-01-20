@@ -54,7 +54,7 @@ class MapsController extends AbstractController {
 		[
 			periods: Period.list(), 
 			targets: MapsTarget.list(),
-			organisationTree: locationService.getRootLocation(),
+			organisationRoot: locationService.getRootLocation(),
 			currentPeriod: period, 
 			currentTarget: target,
 			currentOrganisation: entity

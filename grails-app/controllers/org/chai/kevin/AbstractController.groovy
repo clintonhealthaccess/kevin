@@ -44,10 +44,10 @@ abstract class AbstractController {
 
 	def locationService;
 
-	public List<DataEntityType> getOrganisationUnitGroups() {
+	public List<DataEntityType> getFacilityTypes() {
 		List<DataEntityType> groups = null
-		if (params['groupUuids'] != null) {
-			groups = params.list('groupUuids').collect {DataEntityType.get(it)}
+		if (params['facilityTypes'] != null) {
+			groups = params.list('facilityTypes').collect {DataEntityType.get(it)}
 		}
 		else {
 			groups = new ArrayList(ConfigurationHolder.config.facility.checked).collect {DataEntityType.findByCode(it)}

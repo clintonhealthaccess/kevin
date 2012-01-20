@@ -72,8 +72,13 @@ public class Dashboard {
 		return organisationPath;
 	}
 	
-	public DashboardPercentage getPercentage(CalculationEntity organisation, DashboardEntity dashboardEntity) {
-		return values.get(organisation).get(dashboardEntity);
+	public Integer getPercentage(CalculationEntity organisation, DashboardEntity dashboardEntity) {		
+		DashboardPercentage percentage = null;
+		percentage = values.get(organisation).get(dashboardEntity);
+		if(percentage != null && percentage.isValid())
+			return percentage.getRoundedValue();
+		else
+			return null;
 	}
 	
 	@Override

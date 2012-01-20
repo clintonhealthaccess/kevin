@@ -1,11 +1,12 @@
 <r:require module="foldable" />
 
-<li class="${current?.id == objective?.id ? 'current':''} foldable"><g:if
-		test="${objective.children != null && !objective.children.isEmpty()}">
+<li class="${current?.id == objective?.id ? 'current':''} foldable">
+	<g:if test="${objective.children != null && !objective.children.isEmpty()}">
 		<a class="foldable-toggle" href="#">(toggle)</a>
 	</g:if>
 		<% def programLinkParams = new HashMap(linkParams) %>
-		<% programLinkParams['dashboardEntity'] = objective.id+"" %>	
+		<% programLinkParams.remove("dashboardEntity") %>
+		<% programLinkParams['objective'] = objective.id+"" %>	
 		<a class="dropdown-link parameter" data-type="objective"
 			data-organisation="${objective.id}"
 			href="${createLinkByFilter(controller:controller, action:action, params:programLinkParams)}">

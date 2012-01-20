@@ -84,7 +84,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def percentage = dashboard.getPercentage(getCalculationEntity(organisationName), getDashboardEntity(objectiveName))
 
 		then:
-		if (percentage.value == null) value == null
+		if (percentage == null) value == null
 		else percentage.value == value
 
 		where:
