@@ -8,7 +8,7 @@
 </div>
 <div>
 	<span class="bold"><g:message code="facility.type.label" default="Facility Groups"/>:</span>
-	<span> ${row.groupUuidString}</span>
+	<span> ${row.typeCodeString}</span>
 </div>
 <div>
 	<span class="bold"><g:message code="survey.tablequestion.tablerow.order.label" default="Order"/>:</span>

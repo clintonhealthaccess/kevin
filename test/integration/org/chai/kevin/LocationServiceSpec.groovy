@@ -30,7 +30,7 @@ package org.chai.kevin
 
 import java.sql.Types;
 
-import org.chai.kevin.location.DataEntity
+import org.chai.kevin.location.DataLocationEntity
 import org.chai.kevin.location.DataEntityType
 import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.location.LocationLevel;
@@ -39,7 +39,7 @@ class LocationServiceSpec extends IntegrationTests {
 
 	def locationService;
 	
-	def "get organisations of level"() {
+	def "get locations of level"() {
 		setup:
 		setupLocationTree()
 		
@@ -62,7 +62,7 @@ class LocationServiceSpec extends IntegrationTests {
 		
 		expect:
 		def typeList = types.collect{DataEntityType.findByCode(it)}
-		locationService.getDataEntities(LocationEntity.findByCode(location), typeList.toArray(new DataEntityType[typeList.size()])).containsAll(expectedEntities.collect{DataEntity.findByCode(it)})
+		locationService.getDataEntities(LocationEntity.findByCode(location), typeList.toArray(new DataEntityType[typeList.size()])).containsAll(expectedEntities.collect{DataLocationEntity.findByCode(it)})
 		
 		where:
 		location	| types												| expectedEntities
@@ -76,7 +76,7 @@ class LocationServiceSpec extends IntegrationTests {
 		
 	}
 	
-	def "get parent of level for organisation for location"() {
+	def "get parent of level for location for location"() {
 		setup:
 		setupLocationTree()
 		
@@ -90,7 +90,7 @@ class LocationServiceSpec extends IntegrationTests {
 		
 	}
 	
-	def "get parent of level for organisation for data entity"() {
+	def "get parent of level for location for data entity"() {
 		
 	}
 

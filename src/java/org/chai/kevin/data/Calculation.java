@@ -43,7 +43,7 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.CalculationValue;
@@ -65,8 +65,8 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	@Transient
 	public abstract List<String> getPartialExpressions();
 	
-	public abstract T getCalculationPartialValue(String expression, Map<DataEntity, StatusValuePair> values, 
-			CalculationEntity organisation, Period period, DataEntityType type);
+	public abstract T getCalculationPartialValue(String expression, Map<DataLocationEntity, StatusValuePair> values, 
+			CalculationEntity location, Period period, DataEntityType type);
 	
 	public abstract CalculationValue<T> getCalculationValue(List<T> partialValues, Period period, CalculationEntity entity);
 	

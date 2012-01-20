@@ -31,7 +31,7 @@ package org.chai.kevin.dashboard
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.Translation;
@@ -50,9 +50,24 @@ class DashboardController extends AbstractController {
 		redirect (action: 'view', params: params)
 	}
 	
+	def explain = {
+		Period period = Period.get(params.int('period'))
+		DashboardEntity dashboardEntity = getDashboardEntity()
+		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
+
+		List<DataEntityType> facilityTypes = getTypes();
+		def info = dashboardService.getExplanation(entity, dashboardEntity, period, new HashSet(facilityTypes))
+		def types = DataEntityType.list()
+		[
+			info: info, 
+			types: types, 
+			dashboardEntity: dashboardEntity
+		]
+	}
+	
 	protected def redirectIfDifferent(def period, def objective, def dashboardEntity, def location) {
 		if (period.id+'' != params['period'] || objective.id+'' != params['objective'] ||
-			dashboardEntity.id+'' != params['dashboardEntity'] || location.id+'' != params['organisation'] ) {
+			dashboardEntity.id+'' != params['dashboardEntity'] || location.id+'' != params['location'] ) {
 			
 			if (log.isInfoEnabled()) {
 				log.info ("redirecting to action: "+params['action']+
@@ -62,8 +77,9 @@ class DashboardController extends AbstractController {
 					", location: "+location.id);
 			}
 			
-			redirect (controller: 'dashboard', action: params['action'], 
-				params: [period: period.id, objective: objective.id, dashboardEntity: dashboardEntity.id, organisation: location.id]);
+			redirect (controller: 'dashboard', action: params['action'],
+				params: [period: period.id, objective: objective.id, dashboardEntity: dashboardEntity.id, location: location.id]);
+	
 		}
 	}
 	
@@ -88,11 +104,11 @@ class DashboardController extends AbstractController {
 		def dashboard = null		
 		
 		Period period = getPeriod()
-		List<DataEntityType> facilityTypes = getFacilityTypes()
+		List<DataEntityType> facilityTypes = getTypes()
 		ReportObjective reportObjective = ReportObjective.get(params.int('objective'))
 		if(reportObjective == null) reportObjective = reportService.getRootObjective()		
 		DashboardEntity dashboardEntity = getDashboardEntity(reportObjective)		
-		LocationEntity location = LocationEntity.get(params.int('organisation'))
+		LocationEntity location = LocationEntity.get(params.int('location'))
 		if (location == null) location = locationService.getRootLocation()
 		
 		if (dashboardEntity != null) {
@@ -117,8 +133,8 @@ class DashboardController extends AbstractController {
 			dashboardEntity: dashboardEntity,
 			currentObjective: reportObjective,
 			objectiveRoot: reportService.getRootObjective(),
-			currentOrganisation: location,
-			organisationRoot: locationService.getRootLocation(),
+			currentLocation: location,
+			locationRoot: locationService.getRootLocation(),
 			currentFacilityTypes: facilityTypes,
 			facilityTypes: DataEntityType.list()
 		]

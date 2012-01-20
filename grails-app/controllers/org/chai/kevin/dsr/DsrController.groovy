@@ -53,12 +53,12 @@ class DsrController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
 		Period period = getPeriod()
 		ReportObjective objective = ReportObjective.get(params.int('objective'));
-		LocationEntity entity = LocationEntity.get(params.int('organisation'));
-		List<DataEntityType> facilityTypes = getFacilityTypes();
+		LocationEntity location = LocationEntity.get(params.int('location'));
+		List<DataEntityType> facilityTypes = getTypes();
 		
 		def dsrTable = null
-		if (period != null && objective != null && entity != null) {
-			 dsrTable = dsrService.getDsrTable(entity, objective, period, new HashSet(facilityTypes));
+		if (period != null && objective != null && location != null) {
+			 dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet(facilityTypes));
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
@@ -68,12 +68,12 @@ class DsrController extends AbstractController {
 			currentPeriod: period,
 			currentObjective: objective,
 			objectiveRoot: reportService.getRootObjective(),
-			currentOrganisation: entity,
+			currentLocation: location,
 			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
 			facilityTypes: locationService.listTypes(),
 			objectives: ReportObjective.list(),
-		    organisationRoot: locationService.getRootLocation()
+		    locationRoot: locationService.getRootLocation()
 		]
 	}
 	

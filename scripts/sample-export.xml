@@ -2,9 +2,9 @@
 <dataValueSets>
 
 	<dataValueSet code="" period="">
-	<dataValue organisation=""></dataValue>
-	<dataValue organisation="" type=""></dataValue>
-	<dataValue organisation="" type=""></dataValue>
+	<dataValue location=""></dataValue>
+	<dataValue location="" type=""></dataValue>
+	<dataValue location="" type=""></dataValue>
 	</dataValueSet>
 	
 	

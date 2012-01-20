@@ -38,7 +38,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
@@ -86,7 +86,7 @@ public class LocationService {
 	}
 	
 	public Long getNumberOfDataEntitiesForType(DataEntityType dataEntityType){
-		return (Long)sessionFactory.getCurrentSession().createCriteria(DataEntity.class)
+		return (Long)sessionFactory.getCurrentSession().createCriteria(DataLocationEntity.class)
 		.add(Restrictions.eq("type", dataEntityType))
 		.setProjection(Projections.rowCount()).uniqueResult();
 	}
@@ -136,24 +136,24 @@ public class LocationService {
 		}
 	}
 
-	public List<DataEntity> getDataEntities(CalculationEntity calculationEntity, DataEntityType... types) {
-		List<DataEntity> result = new ArrayList<DataEntity>();
+	public List<DataLocationEntity> getDataEntities(CalculationEntity calculationEntity, DataEntityType... types) {
+		List<DataLocationEntity> result = new ArrayList<DataLocationEntity>();
 		collectDataEntitiesForLocation(calculationEntity, result, new HashSet<DataEntityType>(Arrays.asList(types)));
 		return result;
 	}
 	
-	private void collectDataEntitiesForLocation(CalculationEntity calculationEntity, List<DataEntity> dataEntities, Set<DataEntityType> types) {
-		dataEntities.addAll(getDataEntitiesForLocation(calculationEntity, types));
+	private void collectDataEntitiesForLocation(CalculationEntity calculationEntity, List<DataLocationEntity> dataLocationEntities, Set<DataEntityType> types) {
+		dataLocationEntities.addAll(getDataEntitiesForLocation(calculationEntity, types));
 		for (CalculationEntity child : calculationEntity.getChildren()) {
-			collectDataEntitiesForLocation(child, dataEntities, types);
+			collectDataEntitiesForLocation(child, dataLocationEntities, types);
 		}
 	}
 	
-	private List<DataEntity> getDataEntitiesForLocation(CalculationEntity calculationEntity, Set<DataEntityType> types) {
-		List<DataEntity> result = new ArrayList(calculationEntity.getDataEntities());
+	private List<DataLocationEntity> getDataEntitiesForLocation(CalculationEntity calculationEntity, Set<DataEntityType> types) {
+		List<DataLocationEntity> result = new ArrayList(calculationEntity.getDataEntities());
 		if (!types.isEmpty()) {
-			for (DataEntity dataEntity : calculationEntity.getDataEntities()) {
-				if (!types.contains(dataEntity.getType())) result.remove(dataEntity);
+			for (DataLocationEntity dataLocationEntity : calculationEntity.getDataEntities()) {
+				if (!types.contains(dataLocationEntity.getType())) result.remove(dataLocationEntity);
 			}
 		}
 		return result;

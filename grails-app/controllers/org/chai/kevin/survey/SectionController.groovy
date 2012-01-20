@@ -61,7 +61,7 @@ class SectionController extends AbstractEntityController {
 		[
 			section: entity,
 			objectives: entity.objective.survey.objectives,
-			groups: DataEntityType.list()
+			types: DataEntityType.list()
 		]
 	}
 
@@ -71,7 +71,7 @@ class SectionController extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		
-//		entity.groupUuids = params['groupUuids']
+//		entity.typeCodes = params['typeCodes']
 		if (params.names!=null) entity.names = params.names
 	}
 	

@@ -1,7 +1,7 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractController;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
@@ -16,7 +16,7 @@ class SummaryController extends AbstractController {
 	
 	// TODO refactor into several actions for survey/objective/section
 	def summaryPage = {
-		LocationEntity entity = LocationEntity.get(params.int('organisation'))
+		LocationEntity entity = LocationEntity.get(params.int('location'))
 
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
@@ -45,34 +45,34 @@ class SummaryController extends AbstractController {
 			currentSurvey: survey,
 			currentObjective: objective,
 			currentSection: section,
-			currentOrganisation: entity,
+			currentLocation: entity,
 			summaryPage: summaryPage,
 			surveys: Survey.list(),
-			organisationRoot: locationService.getRootLocation(),
+			locationRoot: locationService.getRootLocation(),
 			template: template
 		])
 	}
 
 	def objectiveTable = {
-		DataEntity entity = DataEntity.get(params.int('organisation'))
+		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		Survey currentSurvey = Survey.get(params.int('survey'))
 
 		SummaryPage summaryPage = summaryService.getObjectiveTable(entity, currentSurvey)
 
 		render (view: '/survey/summary/objectiveTable', model: [
-			organisation: entity,
+			location: entity,
 			summaryPage: summaryPage
 		])
 	}
 
 	def sectionTable = {
-		DataEntity entity = DataEntity.get(params.int('organisation'))
+		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'))
 
 		SummaryPage summaryPage = summaryService.getSectionTable(entity, currentObjective)
 
 		render (view: '/survey/summary/sectionTable', model: [
-			organisation: entity,
+			location: entity,
 			summaryPage: summaryPage
 		])
 	}

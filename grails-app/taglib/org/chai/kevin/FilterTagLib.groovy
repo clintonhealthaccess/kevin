@@ -52,9 +52,9 @@ class FilterTagLib {
 		}
 	}
 	
-	def organisationFilter = {attrs, body ->
+	def locationFilter = {attrs, body ->
 		LocationEntity.withTransaction {
-			out << render(template:'/templates/organisationFilter', model:attrs)
+			out << render(template:'/templates/locationFilter', model:attrs)
 		}
 	}
 	
@@ -69,8 +69,8 @@ class FilterTagLib {
 		String filter = (String) params.get("filter");
 
 		LocationEntity entity = null;
-		if (params.get("organisation") != null) {
-			entity = LocationEntity.get(Integer.parseInt(params.get("organisation")))
+		if (params.get("location") != null) {
+			entity = LocationEntity.get(Integer.parseInt(params.get("location")))
 		}
 
 		LocationLevel level = null;
@@ -84,25 +84,25 @@ class FilterTagLib {
 				if (entity.getLevel().getOrder() >= level.getOrder()) {
 					// conflict
 					if (filter == "level") {
-						// adjust organisation to level
+						// adjust location to level
 						LocationLevel levelBefore = locationService.getLevelBefore(entity.getLevel())
 						if (levelBefore == null) entity = locationService.getRootLocation();
 						else entity = locationService.getParentOfLevel(entity, levelBefore);
 					}
 					// conflict
 					else {
-						// adjust level to organisation
+						// adjust level to location
 						level = locationService.getLevelAfter(entity.getLevel())
 					}
 				}
 			}
 			// conflict
 			else {
-				// adjust level to organisation
+				// adjust level to location
 				level = locationService.getLevelAfter(entity.getLevel())
 			}
 		}
-		if (entity != null) params.put("organisation", entity.id);
+		if (entity != null) params.put("location", entity.id);
 		if (level != null) params.put("level", level.id);
 		return params;
 	}

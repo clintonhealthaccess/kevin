@@ -62,7 +62,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 		return [
 			normalizedDataElement: entity,
 			periods: Period.list(),
-			groups: DataEntityType.list()
+			types: DataEntityType.list()
 		]
 	}
 

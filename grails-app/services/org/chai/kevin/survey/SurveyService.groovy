@@ -121,7 +121,7 @@ class SurveyService {
 		
 		def c = SurveyValidationRule.createCriteria()
 		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		c.add(Restrictions.like("groupUuidString", type.code, MatchMode.ANYWHERE))
+		c.add(Restrictions.like("typeCodeString", type.code, MatchMode.ANYWHERE))
 		
 		List<SurveyValidationRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
 		return filter(rules, surveyElement.id);
@@ -231,10 +231,10 @@ class SurveyService {
 	}
 	
 	Integer getNumberOfApplicableDataEntityTypes(SurveyElement surveyElement) {
-		Set<String> groupUuids = surveyElement.getOrganisationUnitGroupApplicable();
+		Set<String> typeCodes = surveyElement.getTypeApplicable();
 		int number = 0;
-		for (String groupUuid : groupUuids) {
-			DataEntityType type = locationService.findDataEntityTypeByCode(groupUuid);
+		for (String typeCode : typeCodes) {
+			DataEntityType type = locationService.findDataEntityTypeByCode(typeCode);
 			if (type != null) number += locationService.getNumberOfDataEntitiesForType(type)
 		}
 		return number;

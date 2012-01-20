@@ -79,8 +79,8 @@ public class DashboardTarget extends DashboardEntity {
 	}
 	
 	@Override
-	public <T> T visit(DashboardVisitor<T> visitor, CalculationEntity organisation, Period period) {
-		return visitor.visitTarget(this, organisation, period);
+	public <T> T visit(DashboardVisitor<T> visitor, CalculationEntity location, Period period) {
+		return visitor.visitTarget(this, location, period);
 	}
 	
 	@Override

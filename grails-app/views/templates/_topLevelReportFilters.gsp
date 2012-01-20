@@ -1,7 +1,7 @@
 <g:form method="get" url="[controller:controllerName, action:actionName]">
 <g:render template="/templates/programFilter"
 		model="[linkParams:linkParams]" />
-<g:render template="/templates/organisationFilter"
+<g:render template="/templates/locationFilter"
 		model="[linkParams:linkParams]" />
 <g:render template="/templates/iterationFilter"
 		model="[linkParams:linkParams]" />

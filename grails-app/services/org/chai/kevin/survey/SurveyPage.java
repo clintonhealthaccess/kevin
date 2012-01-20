@@ -14,7 +14,7 @@ import org.chai.kevin.Ordering;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
@@ -25,7 +25,7 @@ public class SurveyPage {
 
 	private final static Log log = LogFactory.getLog(SurveyPage.class);
 	
-	private DataEntity entity;
+	private DataLocationEntity entity;
 	private Survey survey;
 	private SurveyObjective objective;
 	private SurveySection section;
@@ -36,7 +36,7 @@ public class SurveyPage {
 	private Comparator<Orderable<Ordering>> comparator;
 	private Map<String, Enum> enums;
 	
-	public SurveyPage(DataEntity entity, Survey survey, 
+	public SurveyPage(DataLocationEntity entity, Survey survey, 
 			SurveyObjective objective, SurveySection section,
 			Map<SurveyObjective, SurveyEnteredObjective> objectives,
 			Map<SurveySection, SurveyEnteredSection> sections,
@@ -61,7 +61,7 @@ public class SurveyPage {
 		return survey.getPeriod();
 	}
 	
-	public DataEntity getOrganisation() {
+	public DataLocationEntity getLocation() {
 		return entity;
 	}
 

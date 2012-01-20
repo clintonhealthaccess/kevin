@@ -50,7 +50,7 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,11 +89,11 @@ public class ExpressionService {
 		Set<T> result = new HashSet<T>();
 		List<DataEntityType> dataEntityTypes = locationService.listTypes();
 		for (DataEntityType dataEntityType : dataEntityTypes) {
-			List<DataEntity> facilities = locationService.getDataEntities(entity, dataEntityType);
+			List<DataLocationEntity> facilities = locationService.getDataEntities(entity, dataEntityType);
 			
 			if (!facilities.isEmpty()) {
-				Map<DataEntity, StatusValuePair> values = new HashMap<DataEntity, StatusValuePair>();
-				for (DataEntity facility : facilities) {
+				Map<DataLocationEntity, StatusValuePair> values = new HashMap<DataLocationEntity, StatusValuePair>();
+				for (DataLocationEntity facility : facilities) {
 					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, facility, DataElement.class);
 					values.put(facility, statusValuePair);
 				}
@@ -104,7 +104,7 @@ public class ExpressionService {
 	}
 	
 	@Transactional(readOnly=true)
-	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, DataEntity facility, Period period) {
+	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, DataLocationEntity facility, Period period) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",facility="+facility+")");
 		
 		String expression = normalizedDataElement.getExpression(period, facility.getType().getCode());
@@ -116,8 +116,8 @@ public class ExpressionService {
 		return expressionValue;
 	}
 
-	// organisation has to be a facility
-	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataEntity facility, Class<T> clazz) {
+	// location has to be a facility
+	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataLocationEntity facility, Class<T> clazz) {
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null) {
 			statusValuePair.status = Status.DOES_NOT_APPLY;

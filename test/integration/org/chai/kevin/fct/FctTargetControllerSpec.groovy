@@ -16,7 +16,7 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		fctTargetController.params.code = CODE(2)
 		fctTargetController.params['objective.id'] = objective.id+""
 		fctTargetController.params['sum.id'] = sum.id+""
-		fctTargetController.params.groupUuids = [DISTRICT_HOSPITAL_GROUP]
+		fctTargetController.params.typeCodes = [DISTRICT_HOSPITAL_GROUP]
 		fctTargetController.saveWithoutTokenCheck()
 		
 		then:

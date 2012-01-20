@@ -62,7 +62,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.params.email = 'test@test.com'
 		authController.params.firstname = 'first'
 		authController.params.lastname = 'last'
-		authController.params.organisation = 'org'
+		authController.params.location = 'org'
 		authController.params.password = '1234'
 		authController.params.repeat = '1234'
 		authController.sendRegistration()
@@ -73,7 +73,7 @@ class AuthControllerSpec extends IntegrationTests {
 		User.count() == 1
 		User.findByEmail('test@test.com').firstname == 'first'
 		User.findByEmail('test@test.com').lastname == 'last'
-		User.findByEmail('test@test.com').organisation == 'org'
+		User.findByEmail('test@test.com').location == 'org'
 		User.findByEmail('test@test.com').passwordHash == new Sha256Hash('1234').toString()
 		User.findByEmail('test@test.com').uuid != null
 	}
@@ -87,7 +87,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.params.email = 'test@test.com'
 		authController.params.firstname = 'test'
 		authController.params.lastname = 'test'
-		authController.params.organisation = 'test'
+		authController.params.location = 'test'
 		authController.params.password = '1234'
 		authController.params.repeat = '1234'
 		authController.sendRegistration()
@@ -106,7 +106,7 @@ class AuthControllerSpec extends IntegrationTests {
 		authController.params.email = 'test@test.com'
 		authController.params.firstname = 'test'
 		authController.params.lastname = 'test'
-		authController.params.organisation = 'test'
+		authController.params.location = 'test'
 		authController.params.password = '1234'
 		authController.params.repeat = '1234'
 		authController.sendRegistration()

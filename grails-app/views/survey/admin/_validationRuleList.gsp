@@ -39,7 +39,7 @@
 			        X
 			        </g:else>
 			    </td>
-			    <td>${validationRule.groupUuidString}</td>
+			    <td>${validationRule.typeCodeString}</td>
 				<td><g:i18n field="${validationRule.messages}" /></td>
 				<td>
 					<div class="dropdown subnav-dropdown"> 

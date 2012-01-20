@@ -14,7 +14,7 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportObjective;
@@ -40,15 +40,15 @@ public class DsrService {
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public DsrTable getDsrTable(LocationEntity entity, ReportObjective objective, Period period, Set<DataEntityType> groups) {
+	public DsrTable getDsrTable(LocationEntity entity, ReportObjective objective, Period period, Set<DataEntityType> types) {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+entity+",objective="+objective+")");
 						
-		List<DataEntity> facilities = locationService.getDataEntities(entity, groups.toArray(new DataEntityType[groups.size()]));
-		Map<LocationEntity, List<DataEntity>> organisationMap = reportService.getParents(facilities, locationService.findLocationLevelByCode(groupLevel));
+		List<DataLocationEntity> facilities = locationService.getDataEntities(entity, types.toArray(new DataEntityType[types.size()]));
+		Map<LocationEntity, List<DataLocationEntity>> locationMap = reportService.getParents(facilities, locationService.findLocationLevelByCode(groupLevel));
 		
-		Map<DataEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataEntity, Map<DsrTarget, ReportValue>>();
+		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, objective);
-		for (DataEntity facility : facilities) {
+		for (DataLocationEntity facility : facilities) {
 			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
 			for (DsrTarget target : targets) {
 				targetMap.put(target, getDsrValue(target, facility, period));
@@ -56,16 +56,16 @@ public class DsrService {
 			valueMap.put(facility, targetMap);
 		}
 		
-		DsrTable dsrTable = new DsrTable(valueMap, targets, organisationMap);
+		DsrTable dsrTable = new DsrTable(valueMap, targets, locationMap);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
 		return dsrTable;
 	}
 
 
-	private ReportValue getDsrValue(DsrTarget target, DataEntity facility, Period period){
+	private ReportValue getDsrValue(DsrTarget target, DataLocationEntity facility, Period period){
 		String value = null;
 		
-		Set<String> targetUuids = Utils.split(target.getGroupUuidString());
+		Set<String> targetUuids = Utils.split(target.getTypeCodeString());
 		if (targetUuids.contains(facility.getType().getCode())) {
 			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), facility, period);
 			

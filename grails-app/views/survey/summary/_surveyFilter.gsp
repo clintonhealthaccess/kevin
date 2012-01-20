@@ -21,20 +21,20 @@
 				<g:each in="${surveys}" var="survey">
 					<li id="survey-${survey.id}" class="foldable ${currentSurvey?.id==survey.id?'current':''}">
 						<a class="foldable-toggle" href="#">(toggle)</a> 
-						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLink(controller: 'summary', action:'summaryPage', params:[organisation: organisation?.id, survey: survey.id, sort: SummaryPage.PROGRESS_SORT, order:'desc'])}">
+						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLink(controller: 'summary', action:'summaryPage', params:[location: currentLocation?.id, survey: survey.id, sort: SummaryPage.PROGRESS_SORT, order:'desc'])}">
 							<g:i18n field="${survey.names}" />
 						</a>
 						<ul class="survey-objective">
 							<g:each in="${survey.getObjectives()}" var="objective">
 								<li id="objective-${objective.id}" class="foldable ${currentObjective?.id==objective.id?'current':''}">
 									<a class="foldable-toggle" href="#">(toggle)</a> 
-									<a class="item ${currentObjective?.id == objective.id?'opened':''}" href="${createLink(controller:'summary', action:'summaryPage', params:[organisation: organisation?.id, objective: objective.id, sort: SummaryPage.PROGRESS_SORT, order:'desc'])}">
+									<a class="item ${currentObjective?.id == objective.id?'opened':''}" href="${createLink(controller:'summary', action:'summaryPage', params:[location: currentLocation?.id, objective: objective.id, sort: SummaryPage.PROGRESS_SORT, order:'desc'])}">
 										<span><g:i18n field="${objective.names}" /></span>
 									</a>
 									<ul class="survey-section">
 										<g:each in="${objective.getSections()}" var="section">
 											<li id="section-${section.id}" class="foldable ${currentSection?.id==section.id?'current':''}">
-												<a class="item ${currentSection?.id == section.id?'opened':''}" href="${createLink(controller:'summary', action:'summaryPage', params:[organisation: organisation?.id, section: section.id, sort: SummaryPage.PROGRESS_SORT, order:'desc'])}">
+												<a class="item ${currentSection?.id == section.id?'opened':''}" href="${createLink(controller:'summary', action:'summaryPage', params:[location: currentLocation?.id, section: section.id, sort: SummaryPage.PROGRESS_SORT, order:'desc'])}">
 													<span><g:i18n field="${section.names}" /></span>
 												</a>
 											</li>

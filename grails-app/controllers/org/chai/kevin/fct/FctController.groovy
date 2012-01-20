@@ -23,10 +23,10 @@ class FctController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("fct.view, params:"+params)
 
 		Period period = getPeriod();
-		LocationEntity entity = LocationEntity.get(params.int('organisation'));
+		LocationEntity entity = LocationEntity.get(params.int('location'));
 		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		LocationLevel level = LocationLevel.get(params.int('level'));
-		List<DataEntityType> facilityTypes = getFacilityTypes();
+		List<DataEntityType> facilityTypes = getTypes();
 		
 		FctTable fctTable = null;
 
@@ -40,13 +40,13 @@ class FctController extends AbstractController {
 			fctTable: fctTable,
 			currentPeriod: period,
 			currentObjective: objective,
-			currentOrganisation: entity,
+			currentLocation: entity,
 			currentLevel: level,
 			currentFacilityTypes: facilityTypes,
 			periods: Period.list(),
 			facilityTypes: locationService.listTypes(),
 			objectives: ReportObjective.list(),
-			organisationRoot: locationService.getRootLocation(),
+			locationRoot: locationService.getRootLocation(),
 			levels: locationService.listLevels()
 		]
 	}

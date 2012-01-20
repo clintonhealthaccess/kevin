@@ -38,14 +38,14 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 	}
 	
 	public boolean isComplete() {
-		return getGroupUuids().size() == calculationPartialValues.size();
+		return getTypeCodes().size() == calculationPartialValues.size();
 	}
 	
 	public Calculation<T> getData() {
 		return calculation;
 	}
 	
-	public List<DataEntityType> getGroupUuids() {
+	public List<DataEntityType> getTypeCodes() {
 		List<DataEntityType> result = new ArrayList<DataEntityType>();
 		for (T calculationPartialValue : calculationPartialValues) {
 			result.add(calculationPartialValue.getType());

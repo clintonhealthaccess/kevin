@@ -13,7 +13,7 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
@@ -44,11 +44,11 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		valueService.deleteValues(normalizedDataElement);
-		for (Iterator<Object[]> iterator = getCombinations(DataEntity.class); iterator.hasNext();) {
+		for (Iterator<Object[]> iterator = getCombinations(DataLocationEntity.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
-			DataEntity dataEntity = (DataEntity)row[0];
+			DataLocationEntity dataLocationEntity = (DataLocationEntity)row[0];
 			Period period = (Period)row[1];
-			NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, dataEntity, period);				
+			NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, dataLocationEntity, period);				
 			valueService.save(value);
 		}
 		normalizedDataElement.setCalculated(new Date());

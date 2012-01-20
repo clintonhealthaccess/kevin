@@ -77,7 +77,7 @@ public class CostTarget extends ReportTarget {
 	
 	private CostRampUp costRampUp;
 	private CostType costType;
-	private String groupUuidString = "";
+	private String typeCodeString = "";
 	
 	@ManyToOne(targetEntity=DataElement.class, optional=false)
 	public DataElement<?> getDataElement() {
@@ -116,19 +116,19 @@ public class CostTarget extends ReportTarget {
 	}
 	
 	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
+	public String getTypeCodeString() {
+		return typeCodeString;
 	}
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
+	public void setTypeCodeString(String typeCodeString) {
+		this.typeCodeString = typeCodeString;
 	}
 	
 	@Transient
-	public Set<String> getGroupUuids() {
-		return Utils.split(groupUuidString);
+	public Set<String> getTypeCodes() {
+		return Utils.split(typeCodeString);
 	}
-	public void setGroupUuids(Set<String> groupUuids) {
-		this.groupUuidString = Utils.unsplit(groupUuids);
+	public void setTypeCodes(Set<String> typeCodes) {
+		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 	
 	@Transient

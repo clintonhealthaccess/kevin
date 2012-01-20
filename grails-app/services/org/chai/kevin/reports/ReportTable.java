@@ -11,29 +11,29 @@ public abstract class ReportTable<T, S extends CalculationEntity> {
 
 	protected Map<S, Map<T, ReportValue>> valueMap;
 	protected List<T> targets;
-	protected Map<LocationEntity, List<S>> organisationMap;
+	protected Map<LocationEntity, List<S>> locationMap;
 	
 	public ReportTable(Map<S, Map<T, ReportValue>> valueMap, List<T> targets,
-			Map<LocationEntity, List<S>> organisationMap) {
+			Map<LocationEntity, List<S>> locationMap) {
 		this.valueMap = valueMap;
 		this.targets = targets;
-		this.organisationMap = organisationMap;
+		this.locationMap = locationMap;
 	}
 
-	public List<CalculationEntity> getOrganisations() {
-		return new ArrayList<CalculationEntity>(organisationMap.keySet());
+	public List<CalculationEntity> getLocations() {
+		return new ArrayList<CalculationEntity>(locationMap.keySet());
 	}
 	
 	public List<T> getTargets(){
 		return targets;
 	}
 	
-	public ReportValue getReportValue(CalculationEntity organisation, T target){
-		return valueMap.get(organisation).get(target);
+	public ReportValue getReportValue(CalculationEntity location, T target){
+		return valueMap.get(location).get(target);
 	}
 	
-	public Map<LocationEntity, List<S>> getOrganisationMap() {
-		return organisationMap;
+	public Map<LocationEntity, List<S>> getLocationMap() {
+		return locationMap;
 	}
 
 }

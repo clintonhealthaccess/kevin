@@ -1,7 +1,7 @@
 package org.chai.kevin.survey;
 
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 
 class SummaryServiceSpec extends SurveyIntegrationTests {
@@ -25,7 +25,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
-		questionSummary = summaryPage.getQuestionSummary(DataEntity.findByCode(KIVUYE))
+		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		questionSummary.questions == 2
@@ -33,7 +33,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		summaryPage = summaryService.getObjectiveSummaryPage(LocationEntity.findByCode(RWANDA), objective)
-		questionSummary = summaryPage.getQuestionSummary(DataEntity.findByCode(KIVUYE))
+		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		questionSummary.questions == 2
@@ -41,7 +41,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		summaryPage = summaryService.getSectionSummaryPage(LocationEntity.findByCode(RWANDA), section)
-		questionSummary = summaryPage.getQuestionSummary(DataEntity.findByCode(KIVUYE))
+		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		questionSummary.questions == 2
@@ -50,33 +50,33 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		when:
 		summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
 		summaryPage.sort(SummaryPage.FACILITY_SORT, 'desc', 'en')
-		questionSummary = summaryPage.getQuestionSummary(DataEntity.findByCode(KIVUYE))
+		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		questionSummary.questions == 2
 		questionSummary.completedQuestions == 0
-		summaryPage.facilities.equals([DataEntity.findByCode(KIVUYE), DataEntity.findByCode(BUTARO)])
+		summaryPage.facilities.equals([DataLocationEntity.findByCode(KIVUYE), DataLocationEntity.findByCode(BUTARO)])
 		
 		when:
 		summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
 		summaryPage.sort(SummaryPage.FACILITY_SORT, 'asc', 'en')
-		questionSummary = summaryPage.getQuestionSummary(DataEntity.findByCode(KIVUYE))
+		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		questionSummary.questions == 2
 		questionSummary.completedQuestions == 0
-		summaryPage.facilities.equals([DataEntity.findByCode(BUTARO), DataEntity.findByCode(KIVUYE)])
+		summaryPage.facilities.equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
 		
 		when:
-		newSurveyEnteredQuestion(question1, period, DataEntity.findByCode(KIVUYE), false, true)
+		newSurveyEnteredQuestion(question1, period, DataLocationEntity.findByCode(KIVUYE), false, true)
 		summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
 		summaryPage.sort(SummaryPage.PROGRESS_SORT, 'asc', 'en')
-		questionSummary = summaryPage.getQuestionSummary(DataEntity.findByCode(KIVUYE))
+		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		questionSummary.questions == 2
 		questionSummary.completedQuestions == 1
-		summaryPage.facilities.equals([DataEntity.findByCode(BUTARO), DataEntity.findByCode(KIVUYE)])
+		summaryPage.facilities.equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
 	}
 	
 	def "test counted questions does not apply to group"() {
@@ -90,9 +90,9 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		newSurveyEnteredQuestion(question1, period, DataEntity.findByCode(BUTARO), false, true)
+		newSurveyEnteredQuestion(question1, period, DataLocationEntity.findByCode(BUTARO), false, true)
 		def summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
-		def questionSummary = summaryPage.getQuestionSummary(DataEntity.findByCode(BUTARO))
+		def questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(BUTARO))
 		
 		then:
 		questionSummary.questions == 0

@@ -296,7 +296,7 @@ ul.horizontal li.last { margin-right: 0; }
 .dropdown-list .survey-section li:focus a, .dropdown-list .survey-section li:hover a { color: #00266f; }
 
 /* line 284, ../../src/stylesheets/partials/_nav.sass */
-.organisation-fold { border-top: 1px solid #b6cbdb; margin-top: 5px; padding-top: 5px; }
+.location-fold { border-top: 1px solid #b6cbdb; margin-top: 5px; padding-top: 5px; }
 
 /* line 289, ../../src/stylesheets/partials/_nav.sass */
 .foldable { min-width: 75px; }
@@ -308,7 +308,7 @@ ul.horizontal li.last { margin-right: 0; }
 .foldable.opened > span, .foldable.opened > a { font-weight: bold; }
 
 /* line 306, ../../src/stylesheets/partials/_nav.sass */
-.organisation-fold { padding: 0 5px; }
+.location-fold { padding: 0 5px; }
 
 /* line 310, ../../src/stylesheets/partials/_nav.sass */
 .paginateButtons .step { background: #e9f4fc; border: 1px solid #d8e3eb; color: #258cd5; display: inline-block; margin-right: 4px; padding: 3px 5px; text-decoration: none; -moz-border-radius: 2px; -webkit-border-radius: 2px; -o-border-radius: 2px; -ms-border-radius: 2px; -khtml-border-radius: 2px; border-radius: 2px; }
@@ -898,7 +898,7 @@ table.nice-table .cell { cursor: default; }
 /* line 13, ../../src/stylesheets/partials/_report.sass */
 #report .box-report-value { background-color: white; border: 1px solid #d8e3eb; text-align: right; }
 /* line 20, ../../src/stylesheets/partials/_report.sass */
-#report .box-report-organisation { background-color: #e9f4fc; border: 1px solid #d8e3eb; color: #258cd5; text-align: left; }
+#report .box-report-location { background-color: #e9f4fc; border: 1px solid #d8e3eb; color: #258cd5; text-align: left; }
 /* line 27, ../../src/stylesheets/partials/_report.sass */
 #report .object-name-box { background: #f6fdeb; border: 1px solid #d8e3eb; color: #258cd5; width: 70px; font-weight: bold; }
 /* line 33, ../../src/stylesheets/partials/_report.sass */

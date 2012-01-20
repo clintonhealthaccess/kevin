@@ -41,7 +41,7 @@ public class Polygon extends Gradient {
 		this.value = value;
 	}
 	
-	public CalculationEntity getOrganisation() {
+	public CalculationEntity getLocation() {
 		return entity;
 	}
 	
@@ -52,14 +52,14 @@ public class Polygon extends Gradient {
 	public String toJson() {
 		return 
 			"{" +
-				"\"organisation\":"+entity.toJson()+",\n"+
+				"\"location\":"+entity.toJson()+",\n"+
 				"\"color\":\""+getColor()+"\""+
 			"}";
 	}
 
 	@Override
 	public String toString() {
-		return "Polygon [organisation=" + entity + ", value=" + value
+		return "Polygon [location=" + entity + ", value=" + value
 				+ "]";
 	}
 	

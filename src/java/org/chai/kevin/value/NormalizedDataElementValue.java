@@ -41,7 +41,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.period.Period;
 
@@ -60,8 +60,8 @@ public class NormalizedDataElementValue extends StoredValue {
 	
 	public NormalizedDataElementValue() {}
 	
-	public NormalizedDataElementValue(Value value, Status status, DataEntity dataEntity, NormalizedDataElement data, Period period) {
-		super(dataEntity, period, value);
+	public NormalizedDataElementValue(Value value, Status status, DataLocationEntity dataLocationEntity, NormalizedDataElement data, Period period) {
+		super(dataLocationEntity, period, value);
 
 		this.status = status;
 		this.data = data;

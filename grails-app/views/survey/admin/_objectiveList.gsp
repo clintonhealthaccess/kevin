@@ -28,7 +28,7 @@
 					</ul>
 				</td>
 				<td><g:i18n field="${objective.names}" /></td>
-				<td>${objective.groupUuidString}</td>
+				<td>${objective.typeCodeString}</td>
 				<td>${objective.sections.size()}</td>
 				<td>${objective.order}</td>
 				<td>

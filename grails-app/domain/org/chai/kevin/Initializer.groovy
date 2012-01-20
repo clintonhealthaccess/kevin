@@ -37,7 +37,7 @@ import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostRampUpYear;
 import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.cost.CostTarget.CostType;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
@@ -61,7 +61,8 @@ import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
-import org.chai.kevin.survey.workflow.Workflow;
+import org.chai.kevin.survey.wizard.Wizard;
+import org.chai.kevin.survey.wizard.WizardStep;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
@@ -107,9 +108,9 @@ class Initializer {
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def kivuye = new SurveyUser(username: "kivuye", entityId: DataEntity.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
+		def kivuye = new SurveyUser(username: "kivuye", entityId: DataLocationEntity.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
 		kivuye.addToPermissions("editSurvey:view")
-		kivuye.addToPermissions("editSurvey:*:"+DataEntity.findByCode("Kivuye HC").id)
+		kivuye.addToPermissions("editSurvey:*:"+DataLocationEntity.findByCode("Kivuye HC").id)
 		kivuye.addToPermissions("menu:survey")
 		kivuye.save(failOnError: true)
 	}
@@ -156,8 +157,8 @@ class Initializer {
 			province.save(failOnError: true)
 			district.save(failOnError: true)
 			
-			def butaro = new DataEntity(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
-			def kivuye = new DataEntity(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
+			def butaro = new DataLocationEntity(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
+			def kivuye = new DataLocationEntity(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
 			
 			burera.dataEntities = [butaro, kivuye]
 			burera.save(failOnError: true)
@@ -253,6 +254,19 @@ class Initializer {
 							"key111": Type.TYPE_NUMBER()
 						])	
 					])	
+				])
+			)
+			
+			def wizardElement = new RawDataElement(names:j(["en":"Element Wizard"]), descriptions:j([:]), code:"WIZARDELEMENT",
+				type: Type.TYPE_MAP([
+					"key1": Type.TYPE_MAP([
+						"key11": Type.TYPE_NUMBER(),
+						"key12": Type.TYPE_STRING()
+					]),
+					"key2": Type.TYPE_MAP([
+						"key21": Type.TYPE_NUMBER(),
+						"key22": Type.TYPE_STRING()
+					])
 				])
 			)
 			
@@ -422,12 +436,13 @@ class Initializer {
 			dataElementMap.save(failOnError: true, flush:true)
 			siyelo1.save(failOnError: true, flush:true)
 			siyelo2.save(failOnError: true, flush:true)
+			wizardElement.save(failOnError: true, flush:true)
 			
 			// data value
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Butaro DH"),
+					entity: DataLocationEntity.findByCode("Butaro DH"),
 					value: v("30"),
 					timestamp: new Date(),
 					).save(failOnError: true)
@@ -435,7 +450,7 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("40"),
 					timestamp: new Date(),
 					).save(failOnError: true)
@@ -443,77 +458,77 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE3"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("\"value1\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE4"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("true"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE6"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("false"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE8"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("10"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE9"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("31"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE10"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("\"NGO or Partner\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE11"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("\"2011-06-29\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE81"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("44"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE91"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("33"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE101"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("\"Ministry of Health\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE111"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("\"2011-06-30\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
@@ -521,7 +536,7 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE12"),
 					period: Period.list()[0],
-					entity: DataEntity.findByCode("Kivuye HC"),
+					entity: DataLocationEntity.findByCode("Kivuye HC"),
 					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
@@ -574,7 +589,7 @@ class Initializer {
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.OPERATION,
 					costRampUp: CostRampUp.findByCode("CONST"),
-					groupUuidString: "District Hospital,Health Center"
+					typeCodeString: "District Hospital,Health Center"
 					).save(failOnError: true)
 
 			new CostTarget(
@@ -583,7 +598,7 @@ class Initializer {
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST"),
-					groupUuidString: "District Hospital,Health Center"
+					typeCodeString: "District Hospital,Health Center"
 					).save(failOnError: true)
 
 			new CostTarget(
@@ -592,7 +607,7 @@ class Initializer {
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST"),
-					groupUuidString: "District Hospital,Health Center"
+					typeCodeString: "District Hospital,Health Center"
 					).save(failOnError: true)
 
 			def hrh = ReportObjective.findByCode("Human Resources for Health")
@@ -727,7 +742,7 @@ class Initializer {
 					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 8,
-					groupUuidString: "Health Center",
+					typeCodeString: "Health Center",
 					code: "Accountant"
 					).save(failOnError:true)
 
@@ -736,7 +751,7 @@ class Initializer {
 					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 1,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "Days Of Nurse Training"
 					).save(failOnError:true)
 
@@ -745,7 +760,7 @@ class Initializer {
 					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
-					groupUuidString: "Health Center",
+					typeCodeString: "Health Center",
 					code: "A1"
 					).save(failOnError:true)
 
@@ -754,7 +769,7 @@ class Initializer {
 					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 5,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code:"A2"
 					).save(failOnError:true)
 
@@ -763,7 +778,7 @@ class Initializer {
 					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "A3"
 					).save(failOnError:true)
 
@@ -772,7 +787,7 @@ class Initializer {
 					objective: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 4,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "Testing Category Human Resource"
 					).save(failOnError:true)
 
@@ -781,7 +796,7 @@ class Initializer {
 					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 6,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "In-Facility Birth Ratio"
 					).save(failOnError:true)
 
@@ -790,7 +805,7 @@ class Initializer {
 					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "Mental Health Service"
 					).save(failOnError:true)
 
@@ -799,7 +814,7 @@ class Initializer {
 					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
-					groupUuidString: "Health Center",
+					typeCodeString: "Health Center",
 					code: "Malaria Rapid Test"
 					).save(failOnError:true)
 
@@ -808,7 +823,7 @@ class Initializer {
 					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "HIV Rapid Test"
 					).save(failOnError:true)
 
@@ -817,7 +832,7 @@ class Initializer {
 					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
-					groupUuidString: "Health Center",
+					typeCodeString: "Health Center",
 					code: "TB Stain Test"
 					).save(failOnError:true)
 
@@ -826,7 +841,7 @@ class Initializer {
 					objective: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 12,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "Catchment Population per CHW"
 					).save(failOnError:true)
 
@@ -835,7 +850,7 @@ class Initializer {
 					objective: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 1,
-					groupUuidString: "Health Center",
+					typeCodeString: "Health Center",
 					code: "Consultation Room"
 					).save(failOnError:true)
 
@@ -844,7 +859,7 @@ class Initializer {
 					objective: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "Facility Water Status"
 					).save(failOnError:true)
 
@@ -853,7 +868,7 @@ class Initializer {
 					objective: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "Incinerator Availability"
 					).save(failOnError:true)
 
@@ -861,7 +876,7 @@ class Initializer {
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
 					objective: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					code: "Facility Power Status"
 					).save(failOnError:true)
 
@@ -898,7 +913,7 @@ class Initializer {
 				descriptions:j([:]), 
 				code:"TARGET 1",
 				sum: sum1,
-				groupUuidString: "District Hospital,Health Center").save(failOnError:true)
+				typeCodeString: "District Hospital,Health Center").save(failOnError:true)
 			
 			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
 			sum2.save(failOnError: true);
@@ -908,7 +923,7 @@ class Initializer {
 				objective: hmr,
 				code:"TARGET 2",
 				sum: sum2,
-				groupUuidString: "District Hospital,Health Center").save(failOnError:true)
+				typeCodeString: "District Hospital,Health Center").save(failOnError:true)
 				
 			hmr.save(failOnError:true)
 		}
@@ -938,42 +953,42 @@ class Initializer {
 			def serviceDev = new SurveyObjective(
 				names: j(["en":"Service Delivery"]),
 				order: 2,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 			def hResourceHealth = new SurveyObjective(
 				names: j(["en":"Human Resources for Health"]),
 				order: 4,
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 			)
 
 			def geoAccess = new SurveyObjective(
 				names: j(["en":"Geographic Access"]),
 				order: 5,
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 			)
 
 			def institutCap = new SurveyObjective(
 				names: j(["en":"Institutional Capacity"]),
 				order: 3,
-				groupUuidString: "Health Center",
+				typeCodeString: "Health Center",
 			)
 
 			def coreFacId = new SurveyObjective(
 				names: j(["en":"Core Facility Identify"]),
 				order: 1,
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 			)
 
 			def finance = new SurveyObjective(
 				names: j(["en":"Finance"]),
 				order: 6,
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 			)
 
 			def dvandC = new SurveyObjective(
 				names: j(["en":"Drugs, Vaccines, and Consumables"]),
 				order: 7,
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 			)
 
 			surveyOne.addObjective(serviceDev)
@@ -992,7 +1007,7 @@ class Initializer {
 				names: j(["en":"Facility Identifier"]),
 				order: 1,
 				objective: coreFacId,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 
 			coreFacId.addSection(facilityId)
@@ -1002,27 +1017,27 @@ class Initializer {
 				names: j(["en":"Services"]),
 				order: 2,
 				objective: serviceDev,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 			def labTests= new SurveySection(
 				names: j(["en":"Lab Tests"]),
 				order: 1,
 				objective: serviceDev,
-				groupUuidString: "District Hospital"
+				typeCodeString: "District Hospital"
 			)
 
 			def patientReg=new SurveySection(
 				names: j(["en":"Patient Registration"]),
 				order: 3,
 				objective: serviceDev,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 
 			def patientQ1 = new SurveySimpleQuestion(
 				names: j(["en":"Patient Section Simple Question NUMBER"]),
 				descriptions: j([:]),
 				order: 3,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 			patientReg.addQuestion(patientQ1)
 			patientReg.save(failOnError: true)
@@ -1041,7 +1056,7 @@ class Initializer {
 				expression: "\$"+surveyElementPatientQ1.id+" > 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			def rulePatient2 = new SurveyValidationRule(
@@ -1049,7 +1064,7 @@ class Initializer {
 				expression: "\$"+surveyElementPatientQ1.id+" > 140",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: true
 			).save(failOnError: true)
 			surveyElementPatientQ1.addValidationRule(rulePatient1)
@@ -1060,21 +1075,21 @@ class Initializer {
 				names: j(["en":"Staffing"]),
 				order: 1,
 				objective: hResourceHealth,
-				groupUuidString: "District Hospital,Health Center"	
+				typeCodeString: "District Hospital,Health Center"	
 			)
 
 			def continuingEd = new SurveySection(
 				names: j(["en":"Continuing Education"]),
 				order: 2,
 				objective: hResourceHealth,
-				groupUuidString: "Health Center"
+				typeCodeString: "Health Center"
 			)
 
 			def openResponse = new SurveySection(
 				names: j(["en":"Open Response"]),
 				order: 3,
 				objective: hResourceHealth,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 
 			hResourceHealth.addSection(staffing)
@@ -1086,19 +1101,19 @@ class Initializer {
 				names: j(["en":"Infrastructure"]),
 				order: 3,
 				objective: geoAccess,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 			def medicalEq=new SurveySection(
 				names: j(["en":"Medical Equipment"]),
 				order: 2,
 				objective: geoAccess,
-				groupUuidString: "District Hospital,Health Center"	
+				typeCodeString: "District Hospital,Health Center"	
 			)
 			def wasteMgmnt=new SurveySection(
 				names: j(["en":"Waste Management"]),
 				order: 1,
 				objective: geoAccess,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 
 			geoAccess.addSection(infrastructure)
@@ -1111,7 +1126,7 @@ class Initializer {
 				names: j(["en":"Service Section Simple Question NUMBER"]),
 				descriptions: j(["en":"<br/>"]),
 				order: 3,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 			services.addQuestion(serviceQ1)
 			services.save(failOnError:true, flush:true)
@@ -1124,7 +1139,7 @@ class Initializer {
 				names: j(["en":"Service Section Simple Question BOOL"]),
 				descriptions: j(["en":""]),
 				order: 0,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 			services.addQuestion(serviceQ2)
 			services.save(failOnError:true, flush:true)
@@ -1137,7 +1152,7 @@ class Initializer {
 				names: j(["en":"Service Section Simple Question ENUM "]),
 				descriptions: j([:]),
 				order: 0,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
 			services.addQuestion(serviceQ3)
 			services.save(failOnError:true, flush:true)
@@ -1150,7 +1165,7 @@ class Initializer {
 //					names: j(["en":"Service Section Simple Question LIST"]),
 //					descriptions: j(["en":"Help text"]),
 //  				order: o(["en":4]),
-//					groupUuidString: "District Hospital,Health Center"
+//					typeCodeString: "District Hospital,Health Center"
 //					)
 //			services.addQuestion(serviceQ4)
 //			services.save(failOnError:true, flush:true)
@@ -1164,7 +1179,7 @@ class Initializer {
 					descriptions: j(["en":"<div>Help text</div>"]),
 					order: 5,
 //					order: o(["en":5]),
-					groupUuidString: "District Hospital,Health Center"
+					typeCodeString: "District Hospital,Health Center"
 					)
 			services.addQuestion(serviceQ5)
 			services.save(failOnError:true, flush:true)
@@ -1183,60 +1198,39 @@ class Initializer {
 					descriptions: j(["en":"Help text"]),
 					order: 6,
 //					order: o(["en":6]),
-					groupUuidString: "District Hospital,Health Center"
+					typeCodeString: "District Hospital,Health Center"
 					)
 			services.addQuestion(serviceQ6)
 			services.save(failOnError:true, flush:true)
 
 			def surveyElementServiceQ6 = new SurveyElement(
-					dataElement: RawDataElement.findByCode("LISTMAP2"),
+					dataElement: RawDataElement.findByCode("WIZARDELEMENT"),
 					surveyQuestion: serviceQ6,
 					headers: [
-						"[_].key0": j(["en":"Name"]),
-						"[_].key0.key01": j(["en":"Select from list"]),
-						"[_].key0.key02": j(["en":"If other"]),
-						"[_].key1": j(["en":"Identifiers"]),
-						"[_].key1.key11": j(["en":"Type of equipment"]),
-						"[_].key1.key11.key111": j(["en":"Select from list"]),
-						"[_].key1.key11.key112": j(["en":"If other, specify:"]),
-						"[_].key1.key12": j(["en":"Description"]),
-						"[_].key1.key13": j(["en":"Serial"]),
-						"[_].key1.key13.key131": j(["en":"Select from list"]),
-						"[_].key1.key13.key132": j(["en":"If other, please specify"]),
-						"[_].key1.key14": j(["en":"Model"]),
-						"[_].key1.key15": j(["en":"Manufacturer"]),
-						"[_].key1.key16": j(["en":"Status"]),
-						"[_].key1.key16.key161": j(["en":"Please select from list:"]),
-						"[_].key1.key16.key162": j(["en":"If not fully functional:"]),
-						"[_].key1.key17": j(["en":"Primary location"]),
-						"[_].key1.key18": j(["en":"Avg. daily hours of use"]),
+						"[_].key1": j(["en":"Basic Information"]),
+						"[_].key1.key11": j(["en":"Name"]),
+						"[_].key1.key12": j(["en":"Number"]),
 						"[_].key2": j(["en":"Supply and Maintenance"]),
 						"[_].key2.key21": j(["en":"Supplier Name"]),
 						"[_].key2.key22": j(["en":"Supplier Type"]),
-						"[_].key2.key23": j(["en":"Supplier Mobile"]),
-						"[_].key2.key24": j(["en":"Date Acquired"]),
-						"[_].key2.key25": j(["en":"Service Provider Name"]),
-						"[_].key2.key26": j(["en":"Service Provider Type"]),
-						"[_].key2.key27": j(["en":"Service Provider Mobile"]),
-						"[_].key2.key28": j(["en":"Date of last repair"]),
-						"[_].key2.key29": j(["en":"Date of last service"])
 					]).save(failOnError: true)
 			serviceQ6.surveyElement = surveyElementServiceQ6
 			serviceQ6.save(failOnError: true, flush: true)
 
 			/* START WORKFLOW */
-			def workflow = new Workflow(
-				names: j(["en":"Workflow question"]),
+			def wizard = new Wizard(
+				names: j(["en":"Wizard question"]),
 				descriptions: j(["en":"Help text"]),
+				fixedHeaderPrefix: "[_].key1",
 				order: 6,
-				groupUuidString: "District Hospital,Health Center"
+				typeCodeString: "District Hospital,Health Center"
 			)
-			services.addQuestion(workflow)
+			services.addQuestion(wizard)
 			services.save(failOnError:true, flush:true)
 	
-			def workflowElement = new SurveyElement(
+			def wizardElement = new SurveyElement(
 					dataElement: RawDataElement.findByCode("LISTMAP2"),
-					surveyQuestion: workflow,
+					surveyQuestion: wizard,
 					headers: [
 						"[_].key0": j(["en":"Name"]),
 						"[_].key0.key01": j(["en":"Select from list"]),
@@ -1267,10 +1261,15 @@ class Initializer {
 						"[_].key2.key28": j(["en":"Date of last repair"]),
 						"[_].key2.key29": j(["en":"Date of last service"])
 					]).save(failOnError: true)
-			workflow.surveyElement = workflowElement
-			workflow.save(failOnError: true, flush: true)
+			wizard.surveyElement = wizardElement
+			wizard.save(failOnError: true, flush: true)
 			
-			services.addQuestion(workflow)
+			def step1 = new WizardStep(wizard: wizard, prefix: "[_].key1.key11").save(failOnError: true)
+			def step2 = new WizardStep(wizard: wizard, prefix: "[_].key1.key16").save(failOnError: true)
+			
+			wizard.steps << [step1, step2]
+			wizard.save(failOnError: true, flush: true)
+			services.addQuestion(wizard)
 			/* END WORKFLOW */
 			
 			services.addQuestion(serviceQ2)
@@ -1287,7 +1286,7 @@ class Initializer {
 				expression: "\$"+surveyElementServiceQ6.id+"[_].key1.key18 < 24",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementServiceQ6],
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			surveyElementServiceQ6.addValidationRule(ruleQ6)
@@ -1299,14 +1298,14 @@ class Initializer {
 				expression: "\$"+surveyElementServiceQ1.id+" > 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementServiceQ1],
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			def rule2 = new SurveyValidationRule(
 				surveyElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 140",
 				messages: j(["en":"Validation error {0,here}"]),
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 				dependencies: [surveyElementServiceQ1],
 				allowOutlier: true
 			).save(failOnError: true)
@@ -1319,7 +1318,7 @@ class Initializer {
 					descriptions: j(["en":"Help text"]),
 					order: 1,
 //					order: o(["en":1]),
-					groupUuidString: "District Hospital,Health Center"
+					typeCodeString: "District Hospital,Health Center"
 					)
 			openResponse.addQuestion(openQ)
 			openResponse.save(failOnError:true, flush: true)
@@ -1333,7 +1332,7 @@ class Initializer {
 					descriptions: j(["en":"Help text"]),
 					order: 2,
 //					order: o(["en":2]),
-					groupUuidString: "District Hospital,Health Center"
+					typeCodeString: "District Hospital,Health Center"
 					)
 			staffing.addQuestion(checkBoxQ)
 			staffing.save(failOnError:true, flush: true)
@@ -1347,21 +1346,21 @@ class Initializer {
 					names: j(["en":"None Or Not Applicable"]),
 					order: 2,
 //					order: o(["en":2]),
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					surveyElement: surveyElementChecboxQ1
 					)
 			def option2 = new SurveyCheckboxOption(
 					names: j(["en":"Second Option"]),
 					order: 1,
 //					order: o(["en":1]),
-					groupUuidString: "District Hospital",
+					typeCodeString: "District Hospital",
 					surveyElement: surveyElementChecboxQ2
 					)
 			def option3 = new SurveyCheckboxOption(
 					names: j(["en":"Third Option"]),
 					order: 3,
 //					order: o(["en":3]),
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					surveyElement: surveyElementChecboxQ3
 					)
 			checkBoxQ.addOption(option1)
@@ -1375,7 +1374,7 @@ class Initializer {
 					descriptions: j(["en":"Help text"]),
 					order: 10,
 //					order: o(["en":10]),
-					groupUuidString: "District Hospital,Health Center"
+					typeCodeString: "District Hospital,Health Center"
 					)
 			staffing.addQuestion(staffingQ1)
 			staffing.save(failOnError:true, flush:true)
@@ -1484,7 +1483,7 @@ class Initializer {
 					tableNames: j(["en":"Training Modules"]),
 					order: 1,
 //					order: o(["en":1]),
-					groupUuidString: "Health Center,District Hospital"
+					typeCodeString: "Health Center,District Hospital"
 					)
 			staffing.addQuestion(tableQ)
 			staffing.save(failOnError:true, flush: true)
@@ -1494,28 +1493,28 @@ class Initializer {
 					names: j(["en":"Number Who Attended Training"]),
 					order: 1,
 //					order: o(["en":1]),
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					question: tableQ
 					)
 			def tabColumnTwo = new SurveyTableColumn(
 					names: j(["en":"Sum Total Number of Days"]),
 					order: 2,
 //					order: o(["en":2]),
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					question: tableQ
 					)
 			def tabColumnThree = new SurveyTableColumn(
 					names: j(["en":"Who Provided the Training"]),
 					order: 3,
 //					order: o(["en":3]),
-					groupUuidString: "Health Center",
+					typeCodeString: "Health Center",
 					question: tableQ
 					)
 			def tabColumnFour = new SurveyTableColumn(
 					names: j(["en":"Due Date"]),
 					order: 4,
 //					order: o(["en":4]),
-					groupUuidString: "District Hospital",
+					typeCodeString: "District Hospital",
 					question: tableQ
 					)
 
@@ -1540,7 +1539,7 @@ class Initializer {
 				expression: "\$"+surveyElementTable1.id+" < 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable1],
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			surveyElementTable1.addValidationRule(ruleTable1)
@@ -1564,7 +1563,7 @@ class Initializer {
 					order: 1,
 //					order: o(["en":1]),
 					question: tableQ,
-					groupUuidString: "District Hospital,Health Center",
+					typeCodeString: "District Hospital,Health Center",
 					surveyElements: dataElmntsLine1
 					)
 			def tabRowTwo = new SurveyTableRow(
@@ -1572,7 +1571,7 @@ class Initializer {
 					order: 2,
 //					order: o(["en":2]),
 					question: tableQ,
-					groupUuidString: "Health Center",
+					typeCodeString: "Health Center",
 					surveyElements: dataElmntsLine2
 					)
 
@@ -1586,7 +1585,7 @@ class Initializer {
 				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+" else true",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable21],
-				groupUuidString: "District Hospital,Health Center",
+				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
 			surveyElementChecboxQ3.addValidationRule(ruleCheckbox)

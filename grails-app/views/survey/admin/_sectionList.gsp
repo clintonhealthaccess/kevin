@@ -27,7 +27,7 @@
 					</ul>
 				</td>
 				<td><g:i18n field="${section.names}" /></td>
-				<td>${section.groupUuidString}</td>
+				<td>${section.typeCodeString}</td>
 				<td>${section.questions.size()}</td>
 				<td>${section.order}</td>
 				<td>

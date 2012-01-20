@@ -42,7 +42,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -82,7 +82,7 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataEntity entity, Period period) {
+	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataLocationEntity entity, Period period) {
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", entity="+entity+")");
 		T result = (T)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
 		.add(Restrictions.eq("period", period))

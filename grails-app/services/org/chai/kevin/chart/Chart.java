@@ -7,18 +7,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.chai.kevin.data.Data;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.value.DataValue;
 import org.hisp.dhis.period.Period;
 
 public class Chart {
 
-	private DataEntity entity;
+	private DataLocationEntity entity;
 	private Data<?> data;
 	private List<Period> periods;
 	private Map<Period, DataValue> values;
 	
-	public Chart(DataEntity entity, Data<?> data, List<Period> periods, Map<Period, DataValue> values) {
+	public Chart(DataLocationEntity entity, Data<?> data, List<Period> periods, Map<Period, DataValue> values) {
 		this.entity = entity;
 		this.data = data;
 		this.periods = periods;
@@ -33,7 +33,7 @@ public class Chart {
 		return values.get(period);
 	}
 	
-	public DataEntity getDataEntity() {
+	public DataLocationEntity getDataLocationEntity() {
 		return entity;
 	}
 	
@@ -46,7 +46,7 @@ public class Chart {
 
 		StringBuilder result = new StringBuilder();
 		result.append("{");
-		result.append("\"organisation\":");
+		result.append("\"location\":");
 		result.append("\""+entity.getNames()+"\"");
 		result.append(",\"values\":{");
 		for (Entry<Period, DataValue> entry : values.entrySet()) {

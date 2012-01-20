@@ -69,7 +69,7 @@ public class SurveySection extends Orderable<Integer> {
 	private Long id;
 	private Integer order;
 	private SurveyObjective objective;
-	private String groupUuidString;
+	private String typeCodeString;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
 	private Translation names = new Translation();
 
@@ -104,20 +104,20 @@ public class SurveySection extends Orderable<Integer> {
 	}
 
 	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
+	public String getTypeCodeString() {
+		return typeCodeString;
 	}
 
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
+	public void setTypeCodeString(String typeCodeString) {
+		this.typeCodeString = typeCodeString;
 	}
 	
 	@Transient
-	public Set<String> getGroupUuids() {
-		return Utils.split(groupUuidString);
+	public Set<String> getTypeCodes() {
+		return Utils.split(typeCodeString);
 	}
-	public void setGroupUuids(Set<String> groupUuids) {
-		this.groupUuidString = Utils.unsplit(groupUuids);
+	public void setTypeCodes(Set<String> typeCodes) {
+		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 
 	@OneToMany(targetEntity=SurveyQuestion.class, mappedBy="section")
@@ -153,10 +153,10 @@ public class SurveySection extends Orderable<Integer> {
 
 	@SuppressWarnings("unchecked")
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable() {
+	public Set<String> getTypeApplicable() {
 		return new HashSet<String>(CollectionUtils.intersection(
-				Utils.split(this.groupUuidString),
-				this.objective.getOrganisationUnitGroupApplicable()));
+				Utils.split(this.typeCodeString),
+				this.objective.getTypeApplicable()));
 	}
 
 	@Transient
@@ -172,7 +172,7 @@ public class SurveySection extends Orderable<Integer> {
 	public List<SurveyQuestion> getQuestions(DataEntityType type) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveyQuestion surveyQuestion : getQuestions()) {
-			if (Utils.split(surveyQuestion.getGroupUuidString()).contains(type.getCode())) {
+			if (Utils.split(surveyQuestion.getTypeCodeString()).contains(type.getCode())) {
 				result.add(surveyQuestion);
 			}
 		}
@@ -206,7 +206,7 @@ public class SurveySection extends Orderable<Integer> {
 
 	protected void deepCopy(SurveySection copy, SurveyCloner surveyCloner) {
 		copy.setNames(new Translation(getNames()));
-		copy.setGroupUuidString(getGroupUuidString());
+		copy.setTypeCodeString(getTypeCodeString());
 		copy.setObjective(surveyCloner.getObjective(getObjective()));
 		copy.setOrder(getOrder());
 		for (SurveyQuestion question : getQuestions()) {

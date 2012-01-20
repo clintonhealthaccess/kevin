@@ -13,7 +13,7 @@
 		
 			<div id="survey-header" class="subnav">
 				<g:render template="/survey/summary/surveyFilter"/>
-				<g:organisationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']}"/>
+				<g:locationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']}"/>
 			</div>
 						
 			<div class="main">			
@@ -21,6 +21,14 @@
 					<p class="help"><g:message code="survey.summary.selectsurveyfacility.text" default="Please select a survey and a facility to get to the respective survey."/></p>
 				</g:if>
 				<g:else>
+					<div class="push-20">
+						<div class="push-10">
+							<g:message code="location.label"/>: <g:i18n field="${currentLocation.names}"/>
+						</div>
+						<div>
+							<g:message code="survey.summary.progress"/>: <span class="progress-bar">${summaryPage.summary.completedQuestions}/${summaryPage.summary.questions}</span>
+						</div>
+					</div>
 					<g:render template="${template}"/>
 				</g:else>
 			</div>

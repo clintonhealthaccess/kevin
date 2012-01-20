@@ -20,7 +20,7 @@
 		</div>
 		<div class="filter">
 			<span class="bold"><g:message code="facility.label" default="Facility Name" />:</span>
-			<span><g:i18n field="${organisation.names}"/></span>
+			<span><g:i18n field="${location.names}"/></span>
 		</div>
 		<div class="filter">
 			<span class="bold"><g:message code="survey.labels.period" default="Year" />:</span>

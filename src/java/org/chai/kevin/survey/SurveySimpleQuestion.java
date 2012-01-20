@@ -96,13 +96,13 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 
 	@SuppressWarnings("unchecked")
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable(SurveyElement surveyElement) {
+	public Set<String> getTypeApplicable(SurveyElement surveyElement) {
 		if (!surveyElement.equals(this.surveyElement)) {
 			throw new IllegalArgumentException("survey element does not belong to question (simple)");
 		}
 		return new HashSet<String>(CollectionUtils.intersection(
-			Utils.split(this.getGroupUuidString()),
-			this.getSection().getOrganisationUnitGroupApplicable())
+			Utils.split(this.getTypeCodeString()),
+			this.getSection().getTypeApplicable())
 		);
 	}
 	

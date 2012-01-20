@@ -53,7 +53,7 @@ public abstract class Info<T extends DataValue> {
 	}
 	
 	@Deprecated
-	public CalculationEntity getOrganisationUnit() {
+	public CalculationEntity getLocation() {
 		return value.getEntity();
 	}
 	

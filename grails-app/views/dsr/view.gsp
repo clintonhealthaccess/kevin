@@ -123,14 +123,14 @@
 									</tr>
 								</thead>
 								<tbody>
-									<g:each in="${dsrTable.organisations}" var="parent">
+									<g:each in="${dsrTable.locations}" var="parent">
 									<tr>
 										<th colspan="${dsrTable.targets.size()+1}" class="parent-row"><g:i18n field="${parent.names}"/></th>
 									</tr>
-									<g:each in="${dsrTable.getOrganisationMap().get(parent)}" var="children">
+									<g:each in="${dsrTable.getLocationMap().get(parent)}" var="children">
 										<g:each in="${children}" var="child">										
-											<tr class="row organisation">
-												<th class="box-report-organisation"><g:i18n field="${child.names}"/></th>
+											<tr class="row location">
+												<th class="box-report-location"><g:i18n field="${child.names}"/></th>
 												<g:each in="${dsrTable.targets}" var="target">
 													<td class="box-report-value">
 														<g:if test="${!dsrTable.getReportValue(child, target) != null}">
@@ -152,7 +152,7 @@
 						</g:else>
 					</g:if>
 					<g:else>
-						<p class="help">Please select an Organisation / Objective</p>
+						<p class="help">Please select an Location / Objective</p>
 					</g:else>
 				</div>
 				<div class="clear"></div>

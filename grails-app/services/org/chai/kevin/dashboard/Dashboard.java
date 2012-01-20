@@ -37,27 +37,27 @@ import org.chai.kevin.location.LocationEntity;
 
 public class Dashboard {
 	
-	private List<CalculationEntity> organisations;
+	private List<CalculationEntity> locations;
 	private List<DashboardEntity> dashboardEntities;
 	
-	private List<LocationEntity> organisationPath;
+	private List<LocationEntity> locationPath;
 	private List<DashboardObjective> objectivePath;
 	
 	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values;
 	
-	public Dashboard(List<CalculationEntity> organisations, List<DashboardEntity> dashboardEntities,
-			List<LocationEntity> organisationPath, List<DashboardObjective> objectivePath,
+	public Dashboard(List<CalculationEntity> locations, List<DashboardEntity> dashboardEntities,
+			List<LocationEntity> locationPath, List<DashboardObjective> objectivePath,
 			Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values
 	) {
-		this.organisations = organisations;
+		this.locations = locations;
 		this.dashboardEntities = dashboardEntities;
-		this.organisationPath = organisationPath;
+		this.locationPath = locationPath;
 		this.objectivePath = objectivePath;
 		this.values = values;
 	}
 	
-	public List<CalculationEntity> getOrganisations() {
-		return organisations;
+	public List<CalculationEntity> getLocations() {
+		return locations;
 	}
 	
 	public List<DashboardEntity> getObjectiveEntities() {
@@ -68,8 +68,8 @@ public class Dashboard {
 		return objectivePath;
 	}
 	
-	public List<LocationEntity> getOrganisationPath() {
-		return organisationPath;
+	public List<LocationEntity> getLocationPath() {
+		return locationPath;
 	}
 	
 	public Integer getPercentage(CalculationEntity organisation, DashboardEntity dashboardEntity) {		
@@ -84,12 +84,12 @@ public class Dashboard {
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		for (Entry<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> organisationEntry : this.values.entrySet()) {
-			buffer.append(organisationEntry.getKey());
-			for (Entry<DashboardEntity, DashboardPercentage> objectiveEntry : organisationEntry.getValue().entrySet()) {
+		for (Entry<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> locationEntry : this.values.entrySet()) {
+			buffer.append(locationEntry.getKey());
+			for (Entry<DashboardEntity, DashboardPercentage> objectiveEntry : locationEntry.getValue().entrySet()) {
 				buffer.append(objectiveEntry.getKey());
 				buffer.append(":");
-				buffer.append(organisationEntry.getValue());
+				buffer.append(locationEntry.getValue());
 				buffer.append(",");
 			}
 			buffer.append("\n");

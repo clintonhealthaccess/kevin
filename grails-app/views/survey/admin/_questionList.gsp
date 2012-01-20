@@ -29,7 +29,7 @@
 					rel="${createLink(controller:question.getType().getTemplate(), action:'getDescription', params:[question: question.id])}"
 					onclick="return false;"><g:stripHtml field="${question.names}" chars="100"/></a></td>
 				<td>${question.getType()}</td>
-				<td>${question.groupUuidString}</td>
+				<td>${question.typeCodeString}</td>
 				<td>${question.order}</td>
 			</tr>
 		</g:each>

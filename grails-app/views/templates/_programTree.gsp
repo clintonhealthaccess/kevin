@@ -8,11 +8,11 @@
 		<% programLinkParams.remove("dashboardEntity") %>
 		<% programLinkParams['objective'] = objective.id+"" %>	
 		<a class="dropdown-link parameter" data-type="objective"
-			data-organisation="${objective.id}"
+			data-location="${objective.id}"
 			href="${createLinkByFilter(controller:controller, action:action, params:programLinkParams)}">
 			<g:i18n field="${objective.names}"/> </a>
 	<g:if test="${objective.children != null && !objective.children.isEmpty()}">
-		<ul class="organisation-fold" id="organisation-fold-${objective.id}">
+		<ul class="location-fold" id="location-fold-${objective.id}">
 			<g:each in="${objective.children}" var="child">
 				<g:render template="/templates/programTree"
 					model="[controller: controller, 

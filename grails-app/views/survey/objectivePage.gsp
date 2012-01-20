@@ -8,7 +8,7 @@
 	</head>
 	<body>
 		<div id="survey">
-			<g:render template="/survey/header" model="[period: surveyPage.period, organisation: surveyPage.organisation, objective: surveyPage.objective]"/>
+			<g:render template="/survey/header" model="[period: surveyPage.period, location: surveyPage.location, objective: surveyPage.objective]"/>
 			
 			<div class="main">
 				<g:set value="${surveyPage.enteredObjectives[surveyPage.objective].closed}" var="closed"/>
@@ -19,7 +19,7 @@
 						<p class="success">
 							<g:message code="survey.objective.submitted.text" default="This objective has already been submitted, please go on with the other sections." />
 							<shiro:hasPermission permission="admin:survey">
-								<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id])}">
+								<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [location: surveyPage.location.id, objective: surveyPage.objective.id])}">
 									<g:message code="survey.objective.reopen.text"/>
 								</a>
 							</shiro:hasPermission>
@@ -30,7 +30,7 @@
 				<g:if test="${!closed}">
 					<div id="submit-objective" class="${!surveyPage.canSubmit(surveyPage.objective)?'hidden':''} success-box">
 						<p class="success"><g:message code="survey.objective.ready.text" default="This part has been completed successfully. If you are sure that you entered the right data, please click submit." /></p>
-						<g:form url="[controller:'editSurvey', action:'submit', params: [organisation: surveyPage.organisation.id, objective: surveyPage.objective.id]]">
+						<g:form url="[controller:'editSurvey', action:'submit', params: [location: surveyPage.location.id, objective: surveyPage.objective.id]]">
 							<button type="submit">Submit</button>
 						</g:form>
 					</div>

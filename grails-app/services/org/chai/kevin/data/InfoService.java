@@ -37,7 +37,7 @@ import java.util.Set;
 
 import org.chai.kevin.LocationService;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
@@ -53,7 +53,7 @@ public class InfoService {
 	private ExpressionService expressionService;
 	private LocationService locationService;
 	
-	public NormalizedDataElementInfo getNormalizedDataElementInfo(NormalizedDataElement normalizedDataElement, DataEntity facility, Period period) {
+	public NormalizedDataElementInfo getNormalizedDataElementInfo(NormalizedDataElement normalizedDataElement, DataLocationEntity facility, Period period) {
 		NormalizedDataElementInfo info = null;
 		NormalizedDataElementValue expressionValue = valueService.getDataElementValue(normalizedDataElement, facility, period);
 		if (expressionValue != null) {
@@ -70,11 +70,11 @@ public class InfoService {
 		return info;
 	}
 	
-	public CalculationInfo getCalculationInfo(Calculation<?> calculation, CalculationEntity entity, Period period, Set<DataEntityType> groups) {
+	public CalculationInfo getCalculationInfo(Calculation<?> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
 		CalculationInfo info = null;
-		CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, entity, period, groups);
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, entity, period, types);
 		if (calculationValue != null) {
-			List<DataEntity> facilities = locationService.getDataEntities(entity);
+			List<DataLocationEntity> facilities = locationService.getDataEntities(entity);
 			Map<String, DataElement> dataMap = expressionService.getDataInExpression(calculation.getExpression(), DataElement.class);
 			List<DataElement<?>> dataElements = new ArrayList<DataElement<?>>();
 			for (DataElement<?> value : dataMap.values()) {
@@ -82,10 +82,10 @@ public class InfoService {
 			}
 			
 			Map<CalculationEntity, CalculationValue<?>> calculationValues = new HashMap<CalculationEntity, CalculationValue<?>>();
-			Map<DataEntity, Map<DataElement<?>, DataValue>> values = new HashMap<DataEntity, Map<DataElement<?>,DataValue>>();
-			for (DataEntity facility : facilities) {
-				if (groups.contains(facility.getType())) {
-					calculationValues.put(facility, valueService.getCalculationValue(calculation, facility, period, groups));
+			Map<DataLocationEntity, Map<DataElement<?>, DataValue>> values = new HashMap<DataLocationEntity, Map<DataElement<?>,DataValue>>();
+			for (DataLocationEntity facility : facilities) {
+				if (types.contains(facility.getType())) {
+					calculationValues.put(facility, valueService.getCalculationValue(calculation, facility, period, types));
 					Map<DataElement<?>, DataValue> data = new HashMap<DataElement<?>, DataValue>();
 					for (DataElement<?> dataElement : dataElements) {
 						data.put(dataElement, valueService.getDataElementValue(dataElement, facility, period));

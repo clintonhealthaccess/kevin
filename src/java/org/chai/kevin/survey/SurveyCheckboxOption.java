@@ -60,7 +60,7 @@ public class SurveyCheckboxOption extends Orderable<Integer> {
 
 	private Long id;
 	private Integer order;
-	private String groupUuidString;
+	private String typeCodeString;
 	private SurveyCheckboxQuestion question;
 	private SurveyElement surveyElement;
 	protected Translation names = new Translation();
@@ -85,21 +85,21 @@ public class SurveyCheckboxOption extends Orderable<Integer> {
 		this.order = order;
 	}
 
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
+	public void setTypeCodeString(String typeCodeString) {
+		this.typeCodeString = typeCodeString;
 	}
 
 	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
+	public String getTypeCodeString() {
+		return typeCodeString;
 	}
 	
 	@Transient
-	public Set<String> getGroupUuids() {
-		return Utils.split(groupUuidString);
+	public Set<String> getTypeCodes() {
+		return Utils.split(typeCodeString);
 	}
-	public void setGroupUuids(Set<String> groupUuids) {
-		this.groupUuidString = Utils.unsplit(groupUuids);
+	public void setTypeCodes(Set<String> typeCodes) {
+		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 
 	@ManyToOne(targetEntity = SurveyCheckboxQuestion.class)
@@ -133,14 +133,14 @@ public class SurveyCheckboxOption extends Orderable<Integer> {
 	}
 	
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable() {
-		return Utils.split(this.groupUuidString);
+	public Set<String> getTypeApplicable() {
+		return Utils.split(this.typeCodeString);
 	}
 
 	public SurveyCheckboxOption deepCopy(SurveyCloner cloner) {
 		SurveyCheckboxOption copy = new SurveyCheckboxOption();
 		copy.setNames(new Translation(getNames()));
-		copy.setGroupUuidString(getGroupUuidString());
+		copy.setTypeCodeString(getTypeCodeString());
 		copy.setOrder(getOrder());
 		copy.setSurveyElement(cloner.getElement(getSurveyElement()));
 		copy.setQuestion((SurveyCheckboxQuestion)cloner.getQuestion(getQuestion()));

@@ -7,20 +7,20 @@ import org.chai.kevin.util.Utils;
 
 abstract class ReportIntegrationTests extends IntegrationTests {
 	
-//	def newReportTarget(def code, def sum, def format, def groups, def objective) {
+//	def newReportTarget(def code, def sum, def format, def types, def objective) {
 //		def target = new ReportTarget(names: [:], 
 //			code: code, 
 //			format: format, 
 //			sum: sum, 
 //			objective: objective, 
-//			groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
+//			typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 //			
 //		objective.targets << target
 //		objective.save(failOnError: true)
 //		return target
 //	}
 //		
-//	def newReportTarget(def code, def sum, def groups, def objective) {
-//		return newReportTarget(code, sum, null, groups, objective)
+//	def newReportTarget(def code, def sum, def types, def objective) {
+//		return newReportTarget(code, sum, null, types, objective)
 //	}
 }

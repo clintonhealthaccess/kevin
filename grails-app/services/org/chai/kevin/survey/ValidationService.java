@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.ExpressionService;
@@ -28,7 +28,7 @@ public class ValidationService {
 	private JaqlService jaqlService;
 	
 	@Transactional(readOnly=true)
-	public Set<String> getSkippedPrefix(SurveyElement element, SurveySkipRule rule, DataEntity entity) {
+	public Set<String> getSkippedPrefix(SurveyElement element, SurveySkipRule rule, DataLocationEntity entity) {
 		if (log.isDebugEnabled()) log.debug("getSkippedPrefix(surveyElement="+element+", rule="+rule+", entity="+entity+")");
 		
 		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, entity);
@@ -46,7 +46,7 @@ public class ValidationService {
 	}
 	
 	@Transactional(readOnly=true)
-	public boolean isSkipped(SurveySkipRule skipRule, DataEntity entity) {
+	public boolean isSkipped(SurveySkipRule skipRule, DataLocationEntity entity) {
 		if (log.isDebugEnabled()) log.debug("isSkipped(surveyQuestion="+skipRule+", entity="+entity+")");
 		
 		boolean result = false;
@@ -60,11 +60,11 @@ public class ValidationService {
 	}
 	
 	@Transactional(readOnly=true)
-	public Set<String> getInvalidPrefix(SurveyValidationRule validationRule, DataEntity entity) {
+	public Set<String> getInvalidPrefix(SurveyValidationRule validationRule, DataLocationEntity entity) {
 		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(validationRule="+validationRule+", entity="+entity+")");
 
 		Set<String> result = new HashSet<String>();
-		if (Utils.split(validationRule.getGroupUuidString()).contains(entity.getType().getCode())) {
+		if (Utils.split(validationRule.getTypeCodeString()).contains(entity.getType().getCode())) {
 			// we validate only if that rule applies to the group
 			SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(validationRule.getSurveyElement(), entity);
 	
@@ -113,7 +113,7 @@ public class ValidationService {
 		return string.contains("[_]");
 	}
 	
-	private Boolean evaluate(String expression, DataEntity entity) {
+	private Boolean evaluate(String expression, DataLocationEntity entity) {
 		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+")");
 		
 		Map<String, Value> valueMap = new HashMap<String, Value>();

@@ -21,14 +21,14 @@ class FctControllerSpec extends FctIntegrationTests {
 		when: "valid table"
 		fctController = new FctController()
 		fctController.params.period = period.id
-		fctController.params.organisation = LocationEntity.findByCode(RWANDA).id
+		fctController.params.location = LocationEntity.findByCode(RWANDA).id
 		fctController.params.objective = objective.id
 		fctController.params.level = LocationLevel.findByCode(DISTRICT).id
 		def model = fctController.view()
 		
 		then:
 		model.currentPeriod.equals(period)
-		model.currentOrganisation.equals(LocationEntity.findByCode(RWANDA))
+		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
 		model.currentObjective.equals(objective)
 		model.currentLevel.equals(LocationLevel.findByCode(DISTRICT))
 		model.fctTable != null
@@ -46,7 +46,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		when: "no objective"
 		fctController = new FctController()
 		fctController.params.period = period.id
-		fctController.params.organisation = LocationEntity.findByCode(RWANDA).id
+		fctController.params.location = LocationEntity.findByCode(RWANDA).id
 		fctController.params.level = 3
 		def model = fctController.view()
 		
@@ -66,15 +66,15 @@ class FctControllerSpec extends FctIntegrationTests {
 		when: "invalid parameters"
 		fctController = new FctController()
 		fctController.params.currentPeriod = period.id
-		fctController.params.organisation = LocationEntity.findByCode(BURERA).id
+		fctController.params.location = LocationEntity.findByCode(BURERA).id
 		fctController.params.objective = objective.id
 		fctController.params.level = LocationLevel.findByCode(COUNTRY).id
-		fctController.params.filter = "organisation"
+		fctController.params.filter = "location"
 		def model = fctController.view()
 		
 		then:
 		model.fctTable != null
-		model.fctTable.organisations.isEmpty()
+		model.fctTable.locations.isEmpty()
 		
 	}
 	

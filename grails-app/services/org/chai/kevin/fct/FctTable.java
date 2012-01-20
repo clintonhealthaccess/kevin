@@ -40,8 +40,8 @@ public class FctTable extends ReportTable<FctTarget, LocationEntity> {
 	private Map<FctTarget, ReportValue> totalMap;
 	
 	public FctTable(Map<FctTarget, ReportValue> totalMap, Map<LocationEntity, Map<FctTarget, ReportValue>> valueMap, List<FctTarget> targets, 
-			Map<LocationEntity, List<LocationEntity>> organisationMap) {
-		super(valueMap, targets, organisationMap);
+			Map<LocationEntity, List<LocationEntity>> locationMap) {
+		super(valueMap, targets, locationMap);
 		this.totalMap = totalMap;
 	}
 

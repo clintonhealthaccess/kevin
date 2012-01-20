@@ -40,7 +40,7 @@ class AuthController {
 			render(view:'register', model:[register: cmd])
 		}
 		else {
-			def user = new User(username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, organisation: cmd.organisation, uuid: UUID.randomUUID().toString()).save()
+			def user = new User(username: cmd.email, email: cmd.email, passwordHash: new Sha256Hash(cmd.password).toHex(), permissionString:'', firstname: cmd.firstname, lastname: cmd.lastname, location: cmd.location, uuid: UUID.randomUUID().toString()).save()
 			RegistrationToken token = new RegistrationToken(token: RandomStringUtils.randomAlphabetic(20), user: user, used: false).save()
 			def url = createLink(absolute: true, controller:'auth', action:'confirmRegistration', params:[token:token.token])
 			
@@ -318,13 +318,13 @@ class NewPasswordCommand {
 class RegisterCommand extends NewPasswordCommand {
 	String firstname
 	String lastname
-	String organisation
+	String location
 	String email
 	
 	static constraints = {
 		firstname(nullable:false, blank:false)
 		lastname(nullable:false, blank:false)
-		organisation(nullable:false, blank:false)
+		location(nullable:false, blank:false)
 		email(blank:false, email:true, validator: {val, obj ->
 			return User.findByEmail(val) == null && User.findByUsername(val) == null
 		})

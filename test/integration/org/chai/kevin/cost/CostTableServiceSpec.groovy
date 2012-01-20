@@ -30,7 +30,7 @@ package org.chai.kevin.cost
 
 import org.chai.kevin.cost.CostTarget.CostType
 import org.chai.kevin.data.Type
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 
@@ -142,7 +142,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		5		| 0.0d
 	}
 	
-	def "cost service takes into account only selected groups"() {
+	def "cost service takes into account only selected types"() {
 		setup:
 		setupLocationTree()
 		
@@ -210,7 +210,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		
 	}
 	
-	def "explanation applies to correct organisation"() {
+	def "explanation applies to correct location"() {
 		setup:
 		setupLocationTree()
 		
@@ -224,8 +224,8 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def explanation = costTableService.getExplanation(period, costTarget, LocationEntity.findByCode(BURERA))
 		
 		then:
-		explanation.organisations.containsAll([DataEntity.findByCode(BUTARO)])
-		explanation.organisations.size() == 1
+		explanation.locations.containsAll([DataLocationEntity.findByCode(BUTARO)])
+		explanation.locations.size() == 1
 		
 	}
 	

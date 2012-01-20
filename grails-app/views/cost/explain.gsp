@@ -8,25 +8,25 @@
     <body>
     	<div class="explanation-heading">
     		Applies to:
-    		<g:each in="${explanation.groups}" var="group" status="i">
-    			<span>${group.name}</span><g:if test="${i < explanation.groups.size() - 1}">,</g:if>
+    		<g:each in="${explanation.types}" var="group" status="i">
+    			<span>${group.name}</span><g:if test="${i < explanation.types.size() - 1}">,</g:if>
     		</g:each>
     	</div>
     	<table class="listing">
-			<g:each in="${explanation.organisations}" var="organisation">
+			<g:each in="${explanation.locations}" var="location">
 				<tr>
 					<td>
 						<span>
 							<g:if test="${false}">
-								<a href="${createLink(controller:'cost', action:'view', params:[period: explanation.currentPeriod.id, objective: explanation.currentTarget.id, organisation: organisation.id])}">${organisation.name}</a>
+								<a href="${createLink(controller:'cost', action:'view', params:[period: explanation.currentPeriod.id, objective: explanation.currentTarget.id, location: location.id])}">${location.name}</a>
 							</g:if>
 							<g:else>
-								${organisation.name}
+								${location.name}
 							</g:else>
 						</span>
 					</th>
 					<g:each in="${explanation.years}" var="year">
-						<td><span>${explanation.getCost(organisation, year).roundedValue}</span></td>
+						<td><span>${explanation.getCost(location, year).roundedValue}</span></td>
 					</g:each>
 				</tr>
 			</g:each>

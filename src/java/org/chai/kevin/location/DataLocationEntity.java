@@ -12,10 +12,10 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name="DataEntity")
+@Entity(name="DataLocationEntity")
 @Table(name="dhsst_entity_data")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DataEntity extends CalculationEntity {
+public class DataLocationEntity extends CalculationEntity {
 
 	private LocationEntity location;
 	private DataEntityType type;
@@ -46,8 +46,8 @@ public class DataEntity extends CalculationEntity {
 
 	@Override
 	@Transient
-	public List<DataEntity> getDataEntities() {
-		List<DataEntity> result = new ArrayList<DataEntity>();
+	public List<DataLocationEntity> getDataEntities() {
+		List<DataLocationEntity> result = new ArrayList<DataLocationEntity>();
 		result.add(this);
 		return result;
 	}
@@ -59,7 +59,7 @@ public class DataEntity extends CalculationEntity {
 	}
 	
 	@Override
-	public List<DataEntity> getDataEntities(Set<LocationLevel> skipLevels) {
+	public List<DataLocationEntity> getDataEntities(Set<LocationLevel> skipLevels) {
 		return getDataEntities();
 	}
 
@@ -70,7 +70,7 @@ public class DataEntity extends CalculationEntity {
 
 	@Override
 	public String toString() {
-		return "DataEntity [getCode()=" + getCode() + "]";
+		return "DataLocationEntity [getCode()=" + getCode() + "]";
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public class LocationEntity extends CalculationEntity {
 
 	private LocationEntity parent;
 	private List<LocationEntity> children = new ArrayList<LocationEntity>();
-	private List<DataEntity> dataEntities = new ArrayList<DataEntity>();
+	private List<DataLocationEntity> dataLocationEntities = new ArrayList<DataLocationEntity>();
 	private LocationLevel level;
 
 	@ManyToOne(targetEntity=LocationEntity.class)
@@ -52,19 +52,19 @@ public class LocationEntity extends CalculationEntity {
 	}
 	
 	@Override
-	@OneToMany(targetEntity=DataEntity.class, mappedBy="location")
+	@OneToMany(targetEntity=DataLocationEntity.class, mappedBy="location")
 	@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-	public List<DataEntity> getDataEntities() {
-		return dataEntities;
+	public List<DataLocationEntity> getDataEntities() {
+		return dataLocationEntities;
 	}
 	
-	public void setDataEntities(List<DataEntity> dataEntities) {
-		this.dataEntities = dataEntities;
+	public void setDataEntities(List<DataLocationEntity> dataLocationEntities) {
+		this.dataLocationEntities = dataLocationEntities;
 	}
 
 	@Override
-	public List<DataEntity> getDataEntities(Set<LocationLevel>  skipLevels) {
-		List<DataEntity> result = new ArrayList<DataEntity>();
+	public List<DataLocationEntity> getDataEntities(Set<LocationLevel>  skipLevels) {
+		List<DataLocationEntity> result = new ArrayList<DataLocationEntity>();
 		result.addAll(getDataEntities());
 		for (LocationEntity child : children) {
 			if (skipLevels.contains(child.getLevel())) {

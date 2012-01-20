@@ -7,7 +7,7 @@
 		<li id="objective-${objective.id}" class="foldable ${surveyPage.objective?.id == objective.id?'current':''}">
 			<a class="foldable-toggle" href="#">(toggle)</a>
 		
-			<a class="item ${surveyPage.objective?.id == objective.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[organisation: surveyPage.organisation.id, objective:objective.id])}">
+			<a class="item ${surveyPage.objective?.id == objective.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[location: surveyPage.location.id, objective:objective.id])}">
 				<span><g:i18n field="${objective.names}" /></span>
 				<span class="item-status">
 					<span class="objective-status-complete objective-status ${enteredObjective.displayedStatus!='complete'?'hidden':''}"></span>
@@ -21,7 +21,7 @@
 					<g:set var="enteredSection" value="${surveyPage.enteredSections[section]}"/>
 
 					<li id="section-${section.id}">
-						<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[organisation: surveyPage.organisation.id, section:section.id])}">
+						<a class="item ${surveyPage.section?.id == section.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'sectionPage', params:[location: surveyPage.location.id, section:section.id])}">
 							<span><g:i18n field="${section.names}" /></span>
 							<span class="item-status">
 								<span class="section-status-complete section-status ${enteredSection.displayedStatus!='complete'?'hidden':''}"></span>
@@ -84,7 +84,7 @@
 		});
 		
 		surveyQueue = $.manageAjax.create('surveyQueue', {
-			url : "${createLink(controller:'editSurvey', action:'saveValue', params: [organisation: surveyPage.organisation.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
+			url : "${createLink(controller:'editSurvey', action:'saveValue', params: [location: surveyPage.location.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}",
 			type : 'POST',
 			dataType: 'json',
 			// ajax queue options

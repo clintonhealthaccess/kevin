@@ -68,7 +68,7 @@ public class SurveyObjective extends Orderable<Integer> {
 	private Integer order;
 	private Survey survey;
 	private List<SurveySection> sections = new ArrayList<SurveySection>();
-	private String groupUuidString;
+	private String typeCodeString;
 	private Translation names = new Translation();
 
 	@Id
@@ -117,21 +117,21 @@ public class SurveyObjective extends Orderable<Integer> {
 		return survey;
 	}
 
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
+	public void setTypeCodeString(String typeCodeString) {
+		this.typeCodeString = typeCodeString;
 	}
 
 	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
+	public String getTypeCodeString() {
+		return typeCodeString;
 	}
 
 	@Transient
-	public Set<String> getGroupUuids() {
-		return Utils.split(groupUuidString);
+	public Set<String> getTypeCodes() {
+		return Utils.split(typeCodeString);
 	}
-	public void setGroupUuids(Set<String> groupUuids) {
-		this.groupUuidString = Utils.unsplit(groupUuids);
+	public void setTypeCodes(Set<String> typeCodes) {
+		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 	
 
@@ -156,15 +156,15 @@ public class SurveyObjective extends Orderable<Integer> {
 //	}
 
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable() {
-		return Utils.split(this.groupUuidString);
+	public Set<String> getTypeApplicable() {
+		return Utils.split(this.typeCodeString);
 	}
 
 	@Transient
 	public List<SurveySection> getSections(DataEntityType type) {
 		List<SurveySection> result = new ArrayList<SurveySection>();
 		for (SurveySection surveySection : getSections()) {
-			if (Utils.split(surveySection.getGroupUuidString()).contains(type.getCode()))
+			if (Utils.split(surveySection.getTypeCodeString()).contains(type.getCode()))
 				result.add(surveySection);
 		}
 		return result;
@@ -217,7 +217,7 @@ public class SurveyObjective extends Orderable<Integer> {
 	protected void deepCopy(SurveyObjective copy, SurveyCloner cloner) {
 		copy.setNames(new Translation(getNames()));
 //		if (getDependency() != null) copy.setDependency(cloner.getObjective(getDependency()));
-		copy.setGroupUuidString(getGroupUuidString());
+		copy.setTypeCodeString(getTypeCodeString());
 		copy.setOrder(getOrder());
 		copy.setSurvey(cloner.getSurvey(getSurvey()));
 		for (SurveySection section : getSections()) {

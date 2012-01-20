@@ -173,7 +173,7 @@ public class Survey {
 	public List<SurveyObjective> getObjectives(DataEntityType type) {
 		List<SurveyObjective> result = new ArrayList<SurveyObjective>();
 		for (SurveyObjective surveyObjective : getObjectives()) {
-			if (Utils.split(surveyObjective.getGroupUuidString()).contains(type.getCode())) result.add(surveyObjective);
+			if (Utils.split(surveyObjective.getTypeCodeString()).contains(type.getCode())) result.add(surveyObjective);
 		}
 		return result;
 	}

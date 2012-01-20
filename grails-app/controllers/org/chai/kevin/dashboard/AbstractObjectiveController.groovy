@@ -49,8 +49,8 @@ abstract class AbstractObjectiveController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		def groups = DataEntityType.list()
-		return [entity: entity, groups: groups]
+		def types = DataEntityType.list()
+		return [entity: entity, types: types]
 	}
 	
 }

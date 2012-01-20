@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.AggregationValue;
@@ -37,7 +37,7 @@ public class Aggregation extends Calculation<AggregationPartialValue> {
 	}
 
 	@Override
-	public AggregationPartialValue getCalculationPartialValue(String expression, Map<DataEntity, StatusValuePair> values, CalculationEntity entity, Period period, DataEntityType type) {
+	public AggregationPartialValue getCalculationPartialValue(String expression, Map<DataLocationEntity, StatusValuePair> values, CalculationEntity entity, Period period, DataEntityType type) {
 		Value value = getValue(values.values());
 		return new AggregationPartialValue(this, entity, period, type, expression, value);
 	}

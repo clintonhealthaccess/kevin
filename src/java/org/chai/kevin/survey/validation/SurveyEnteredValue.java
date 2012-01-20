@@ -23,7 +23,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.ValuePredicate;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveySkipRule;
@@ -45,11 +45,11 @@ public class SurveyEnteredValue extends SurveyEnteredEntity {
 	private SurveyElement surveyElement;
 	private Value value;
 	private Value lastValue; //last year's value
-	private DataEntity entity;
+	private DataLocationEntity entity;
 	
 	public SurveyEnteredValue() {}
 	
-	public SurveyEnteredValue(SurveyElement surveyElement, DataEntity entity, Value value, Value lastValue) {
+	public SurveyEnteredValue(SurveyElement surveyElement, DataLocationEntity entity, Value value, Value lastValue) {
 		this.surveyElement = surveyElement;
 		this.entity = entity;
 		this.value = value;
@@ -101,12 +101,12 @@ public class SurveyEnteredValue extends SurveyEnteredEntity {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=DataEntity.class, fetch=FetchType.LAZY)
-	public DataEntity getEntity() {
+	@ManyToOne(targetEntity=DataLocationEntity.class, fetch=FetchType.LAZY)
+	public DataLocationEntity getEntity() {
 		return entity;
 	}
 	
-	public void setEntity(DataEntity entity) {
+	public void setEntity(DataLocationEntity entity) {
 		this.entity = entity;
 	}
 	

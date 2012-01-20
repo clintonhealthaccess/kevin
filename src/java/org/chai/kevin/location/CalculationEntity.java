@@ -75,10 +75,10 @@ public abstract class CalculationEntity {
 	public abstract LocationEntity getParent();
 	
 	@Transient
-	public abstract List<DataEntity> getDataEntities();
+	public abstract List<DataLocationEntity> getDataEntities();
 	
 	@Transient
-	public abstract List<DataEntity> getDataEntities(Set<LocationLevel> skipLevels);
+	public abstract List<DataLocationEntity> getDataEntities(Set<LocationLevel> skipLevels);
 	
 	@Transient
 	public abstract List<LocationEntity> getChildren();

@@ -50,7 +50,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	}
 		
 
-	def "test number of organisation applicable with all groups"() {
+	def "test number of location applicable with all types"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -68,11 +68,11 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		then:
-		element.getOrganisationUnitGroupApplicable().equals(new HashSet([(HEALTH_CENTER_GROUP)]))
+		element.getTypeApplicable().equals(new HashSet([(HEALTH_CENTER_GROUP)]))
 		surveyService.getNumberOfApplicableDataEntityTypes(element) == 1
 	}
 	
-	def "test number of organisation applicable with empty group"() {
+	def "test number of location applicable with empty group"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -90,7 +90,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 	
 		then:
-		element.getOrganisationUnitGroupApplicable().equals(new HashSet([]))
+		element.getTypeApplicable().equals(new HashSet([]))
 		surveyService.getNumberOfApplicableDataEntityTypes(element) == 0
 	}
 	

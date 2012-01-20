@@ -1,4 +1,4 @@
-<g:set var="organisationUnitGroup" value="${surveyPage.entity.type}"/>
+<g:set var="type" value="${surveyPage.entity.type}"/>
 
 <div id="question-${question.id}" class="question question-simple" data-question="${question.id}">
 	<h4>

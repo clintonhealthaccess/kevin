@@ -1,7 +1,7 @@
 package org.chai.kevin
 
 import org.chai.kevin.survey.SurveyElement;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
 import org.chai.kevin.survey.SurveyValidationRule;
@@ -48,7 +48,7 @@ class SurveyTagLib {
 		return false
 	}
 	
-	def replacePlaceHolders(String message, List<SurveyElement> elements, DataEntity entity) {
+	def replacePlaceHolders(String message, List<SurveyElement> elements, DataLocationEntity entity) {
 		String[] placeholders = StringUtils.substringsBetween(message, "{", "}")
 		String result = message;
 		for (String placeholder : placeholders) {
@@ -68,7 +68,7 @@ class SurveyTagLib {
 				SurveySection section = surveyElement.surveyQuestion.section
 				Survey survey = section.objective.survey 
 				String replacement = 
-					'<a href="'+createLink(controller: "editSurvey", action: "sectionPage", params: [section: section.id, organisation: entity.id], fragment: 'element-'+surveyElement.id)+'">'+
+					'<a href="'+createLink(controller: "editSurvey", action: "sectionPage", params: [section: section.id, location: entity.id], fragment: 'element-'+surveyElement.id)+'">'+
 					(text!=null?text:surveyElement.id)+'</a>'
 				result = StringUtils.replace(result, "{"+placeholder+"}", replacement);
 			}

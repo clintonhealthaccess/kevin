@@ -5,7 +5,7 @@
 		<ul>
 			<g:each in="${incompleteSections}" var="section">
 				<li>
-					<a href="${createLink(controller:'editSurvey', action:'sectionPage', params:[section:section.id, organisation: surveyPage.organisation.id])}">
+					<a href="${createLink(controller:'editSurvey', action:'sectionPage', params:[section:section.id, location: surveyPage.location.id])}">
 						<g:i18n field="${section.names}"/>
 					</a>
 				</li>

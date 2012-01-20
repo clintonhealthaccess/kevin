@@ -25,7 +25,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(LocationEntity.findByCode(RWANDA), objective, period, LocationLevel.findByCode(DISTRICT), new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		fctTable.getOrganisationMap().get(LocationEntity.findByCode(NORTH)).equals([LocationEntity.findByCode(BURERA)])
+		fctTable.getLocationMap().get(LocationEntity.findByCode(NORTH)).equals([LocationEntity.findByCode(BURERA)])
 		fctTable.getReportValue(LocationEntity.findByCode(BURERA), target).value == "2.0"
 		fctTable.getTotalValue(target).value == "2.0"
 		
@@ -33,7 +33,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(LocationEntity.findByCode(RWANDA), objective, period, LocationLevel.findByCode(DISTRICT), new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		
 		then:
-		fctTable.getOrganisationMap().get(LocationEntity.findByCode(NORTH)).equals([LocationEntity.findByCode(BURERA)])
+		fctTable.getLocationMap().get(LocationEntity.findByCode(NORTH)).equals([LocationEntity.findByCode(BURERA)])
 		fctTable.getReportValue(LocationEntity.findByCode(BURERA), target).value == "1.0"
 		fctTable.getTotalValue(target).value == "1.0"
 		
@@ -41,10 +41,10 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(LocationEntity.findByCode(BURERA), objective, period, LocationLevel.findByCode(COUNTRY), new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		fctTable.organisations.isEmpty()
+		fctTable.locations.isEmpty()
 	}
 		
-	def "test normal fct service with dummy organisation"() {
+	def "test normal fct service with dummy location"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -60,7 +60,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(LocationEntity.findByCode(RWANDA), objective, period, LocationLevel.findByCode(DISTRICT), new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		fctTable.getOrganisationMap().get(LocationEntity.findByCode(NORTH)).equals([LocationEntity.findByCode(BURERA), LocationEntity.findByCode("dummy")])
+		fctTable.getLocationMap().get(LocationEntity.findByCode(NORTH)).equals([LocationEntity.findByCode(BURERA), LocationEntity.findByCode("dummy")])
 		fctTable.getTotalValue(target).value == "2.0"
 		fctTable.getReportValue(LocationEntity.findByCode("dummy"), target).value == "0.0"
 		fctTable.getReportValue(LocationEntity.findByCode(BURERA), target).value == "2.0"

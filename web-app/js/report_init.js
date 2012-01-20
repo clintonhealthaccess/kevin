@@ -19,7 +19,7 @@ function toggleFacilityType() {
 			if (this.checked) checked.push($(this).val())
 		});
 		checked.push('Total');
-		$('.row.organisation').each(function(){
+		$('.row.location').each(function(){
 			if($.inArray($(this).data('group'), checked) >= 0) 
 				$(this).show();
 			else 

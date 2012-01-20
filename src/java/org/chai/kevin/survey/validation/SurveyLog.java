@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyObjective;
 
@@ -21,13 +21,13 @@ public class SurveyLog {
 	private Long id;
 	private String event;
 	private Date timestamp;
-	private DataEntity entity;
+	private DataLocationEntity entity;
 	private Survey survey;
 	private SurveyObjective objective;
 	
 	public SurveyLog() {}
 	
-	public SurveyLog(Survey survey, SurveyObjective objective, DataEntity entity) {
+	public SurveyLog(Survey survey, SurveyObjective objective, DataLocationEntity entity) {
 		this.survey = survey;
 		this.objective = objective;
 		this.entity = entity;
@@ -61,12 +61,12 @@ public class SurveyLog {
 		this.timestamp = timestamp;
 	}
 	
-	@ManyToOne(targetEntity=DataEntity.class)
-	public DataEntity getEntity() {
+	@ManyToOne(targetEntity=DataLocationEntity.class)
+	public DataLocationEntity getEntity() {
 		return entity;
 	}
 	
-	public void setEntity(DataEntity entity) {
+	public void setEntity(DataLocationEntity entity) {
 		this.entity = entity;
 	}
 	

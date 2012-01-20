@@ -69,7 +69,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 		[
 			question: entity,
 			options: options,
-			groups: DataEntityType.list(),
+			types: DataEntityType.list(),
 			sections: (entity.section)!=null?entity.survey.sections:null
 		]
 	}
@@ -79,7 +79,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		
-//		entity.groupUuids = params['groupUuids']
+//		entity.typeCodes = params['typeCodes']
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		

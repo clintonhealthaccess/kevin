@@ -36,14 +36,14 @@ import org.chai.kevin.data.DataElement;
 public class ExportDataElement extends ExportEntity {
 
 	private DataElement<?> dataElement;
-//	private List<Organisation> organisations;
-//	private Map<Organisation, DataValue> values;
+//	private List<Location> locations;
+//	private Map<Location, DataValue> values;
 
-//	public ExportDataElement(Period period, DataElement<?> dataElement,List<Organisation> organisations, Map<Organisation, DataValue> values) {
+//	public ExportDataElement(Period period, DataElement<?> dataElement,List<Location> locations, Map<Location, DataValue> values) {
 //		super();
 //		this.period = period;
 //		this.dataElement = dataElement;
-//		this.organisations = organisations;
+//		this.locations = locations;
 //		this.values= values;
 //	}
 
@@ -51,11 +51,11 @@ public class ExportDataElement extends ExportEntity {
 		return dataElement;
 	}
 
-//	public List<Organisation> getOrganisations() {
-//		return organisations;
+//	public List<Location> getLocations() {
+//		return locations;
 //	}
 
-//	public Map<Organisation, DataValue> getValues() {
+//	public Map<Location, DataValue> getValues() {
 //		return values;
 //	}
 

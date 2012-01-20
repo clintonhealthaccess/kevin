@@ -4,7 +4,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.NormalizedDataElementController;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
 
@@ -16,13 +16,13 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 	def "deleting normalized data element deletes values"() {
 		setup:
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def organisation = newDataEntity(BUTARO, type)
+		def location = newDataLocationEntity(BUTARO, type)
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		normalizedDataElementController = new NormalizedDataElementController()
 		
 		when:
-		newNormalizedDataElementValue(normalizedDataElement, organisation, period, Status.VALID, v("1"))
+		newNormalizedDataElementValue(normalizedDataElement, location, period, Status.VALID, v("1"))
 		normalizedDataElementController.params.id = normalizedDataElement.id
 		normalizedDataElementController.delete()
 		
@@ -54,7 +54,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		newNormalizedDataElementValue(normalizedDataElement, DataEntity.findByCode(BUTARO), period, Status.VALID, v("1"))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.VALID, v("1"))
 		normalizedDataElementController = new NormalizedDataElementController()
 		
 		when:

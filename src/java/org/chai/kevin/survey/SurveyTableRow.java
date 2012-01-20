@@ -67,7 +67,7 @@ public class SurveyTableRow extends Orderable<Integer> {
 
 	private Long id;
 	private Integer order;
-	private String groupUuidString;
+	private String typeCodeString;
 	private SurveyTableQuestion question;
 	private Map<SurveyTableColumn, SurveyElement> surveyElements = new LinkedHashMap<SurveyTableColumn, SurveyElement>();
 	private Translation names = new Translation();
@@ -93,21 +93,21 @@ public class SurveyTableRow extends Orderable<Integer> {
 	}
 
 	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
+	public String getTypeCodeString() {
+		return typeCodeString;
 	}
 
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
+	public void setTypeCodeString(String typeCodeString) {
+		this.typeCodeString = typeCodeString;
 	}
 	
 	@Transient
-	public Set<String> getGroupUuids() {
-		return Utils.split(groupUuidString);
+	public Set<String> getTypeCodes() {
+		return Utils.split(typeCodeString);
 	}
 	
-	public void setGroupUuids(Set<String> groupUuids) {
-		this.groupUuidString = Utils.unsplit(groupUuids);
+	public void setTypeCodes(Set<String> typeCodes) {
+		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 
 	@ManyToOne(targetEntity=SurveyTableQuestion.class, fetch=FetchType.LAZY)
@@ -144,15 +144,15 @@ public class SurveyTableRow extends Orderable<Integer> {
 	}
 
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable() {
-		return Utils.split(this.groupUuidString);
+	public Set<String> getTypeApplicable() {
+		return Utils.split(this.typeCodeString);
 	}
 	
     @Transient
 	protected SurveyTableRow deepCopy(SurveyCloner cloner, Map<Long, SurveyTableColumn> columns) {
     	SurveyTableRow copy = new SurveyTableRow();
     	copy.setNames(new Translation(getNames()));
-    	copy.setGroupUuidString(getGroupUuidString());
+    	copy.setTypeCodeString(getTypeCodeString());
     	copy.setOrder(getOrder());
     	copy.setQuestion((SurveyTableQuestion)cloner.getQuestion(getQuestion()));
     	for (Entry<SurveyTableColumn, SurveyElement> entry : getSurveyElements().entrySet()) {

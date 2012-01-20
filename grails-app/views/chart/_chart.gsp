@@ -6,11 +6,11 @@
 	function drawChart() {
 		$.ajax({
 			type: 'GET',
-			url: "${createLink(controller: 'chart', action: 'chart', params: [data: data, organisation: organisation])}",
+			url: "${createLink(controller: 'chart', action: 'chart', params: [data: data, location: location])}",
 			success: function(data) {
 				var dataTable = new google.visualization.DataTable();
 				dataTable.addColumn('string', 'Year');
-				dataTable.addColumn('number', data.chart.organisation);
+				dataTable.addColumn('number', data.chart.location);
 				dataTable.addRows(4);
 				var it = 0;
 				$.each(data.chart.values, function(key, value) {

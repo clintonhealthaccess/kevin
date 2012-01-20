@@ -68,14 +68,14 @@ beans = {
 	
 //	exportDataElementService(ExportDataElementService){
 //		dataElementService=ref("dataElementService")
-//		organisationService = ref("organisationService")
+//		locationService = ref("locationService")
 //		valueService = ref("valueService")
 //		infoService = ref("infoService")
-//		facilityLevel = organisationLevel
+//		facilityLevel = locationLevel
 //	}
 	
 	importerService(ImporterService){
-//		organisationService = ref("organisationService")
+//		locationService = ref("locationService")
 	}
 
 	

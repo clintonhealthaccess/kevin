@@ -63,10 +63,10 @@ class FctTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			objectives: ReportObjective.list(),
-			groups: DataEntityType.list(),
+			types: DataEntityType.list(),
 			objectives: ReportObjective.list(),
 			sums: entity.sum!=null?[entity.sum]:[],
-			groupUuids: Utils.split(entity.groupUuidString)
+			typeCodes: Utils.split(entity.typeCodeString)
 		]
 	}
 
@@ -89,7 +89,7 @@ class FctTargetController extends AbstractEntityController {
 
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-//		entity.groupUuidString = Utils.unsplit(params['groupUuids'])
+//		entity.typeCodeString = Utils.unsplit(params['typeCodes'])
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}

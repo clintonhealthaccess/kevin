@@ -44,15 +44,15 @@ abstract class AbstractController {
 
 	def locationService;
 
-	public List<DataEntityType> getFacilityTypes() {
-		List<DataEntityType> groups = null
-		if (params['facilityTypes'] != null) {
-			groups = params.list('facilityTypes').collect {DataEntityType.get(it)}
+	public List<DataEntityType> getTypes() {
+		List<DataEntityType> types = null
+		if (params['typeCodes'] != null) {
+			types = params.list('typeCodes').collect {DataEntityType.get(it)}
 		}
 		else {
-			groups = new ArrayList(ConfigurationHolder.config.facility.checked).collect {DataEntityType.findByCode(it)}
+			types = new ArrayList(ConfigurationHolder.config.facility.checked).collect {DataEntityType.findByCode(it)}
 		}
-		return groups;
+		return types;
 	}
 
 	def getPeriod() {

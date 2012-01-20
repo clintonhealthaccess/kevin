@@ -1,25 +1,25 @@
 <r:require module="foldable" />
 
-<li class="${current?.id == organisation?.id ?'current':''} foldable ${organisation?.level==1 ?'opened':''}">
-	<g:if test="${organisation.children != null && !organisation.children.isEmpty()}">
+<li class="${current?.id == location?.id ?'current':''} foldable ${location?.level==1 ?'opened':''}">
+	<g:if test="${location.children != null && !location.children.isEmpty()}">
 		<a class="foldable-toggle" href="#">(toggle)</a>
 	</g:if>
 		<% def locationLinkParams = new HashMap(linkParams) %>
-		<% locationLinkParams['organisation'] = organisation.id+"" %>	
-		<a class="dropdown-link parameter" data-type="organisation"
-			data-organisation="${organisation.id}"
+		<% locationLinkParams['location'] = location.id+"" %>	
+		<a class="dropdown-link parameter" data-type="location"
+			data-location="${location.id}"
 			href="${createLinkByFilter(controller:controller, action:action, params:locationLinkParams)}">
-			<g:i18n field="${organisation.names}" />
+			<g:i18n field="${location.names}" />
 		</a>
-	<g:if test="${organisation.children != null && !organisation.children.isEmpty()}">
-		<ul class="organisation-fold"
-			id="organisation-fold-${organisation.id}">
-			<g:each in="${organisation.children}" var="child">
-				<g:render template="/templates/organisationTree"
+	<g:if test="${location.children != null && !location.children.isEmpty()}">
+		<ul class="location-fold"
+			id="location-fold-${location.id}">
+			<g:each in="${location.children}" var="child">
+				<g:render template="/templates/locationTree"
 					model="[controller: controller, 
 					action: action,
 					current: current,
-					organisation: child,					
+					location: child,					
 					linkParams:linkParams]" />
 			</g:each>
 		</ul>

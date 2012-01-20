@@ -12,7 +12,7 @@
 		<g:set var="readonly" value="${surveyPage.isReadonly(surveyPage.objective)}"/>
 	
 		<div id="survey">
-			<g:render template="/survey/header" model="[period: surveyPage.period, organisation: surveyPage.organisation, objective: surveyPage.objective]"/>
+			<g:render template="/survey/header" model="[period: surveyPage.period, location: surveyPage.location, objective: surveyPage.objective]"/>
 			
 			<div class="main">
 
@@ -30,7 +30,7 @@
 				</div>
 				
 				<div>
-					<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [organisation: surveyPage.organisation.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
+					<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [location: surveyPage.location.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 						<ol id="questions">
 							<g:each in="${surveyPage.getQuestions(surveyPage.section)}" var="question" status="i">
 								<li class="question-container ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}">
@@ -57,7 +57,7 @@
 									</button>
 								</li>
 							</g:if>
-	  						<li><a href="${createLink(controller:'editSurvey', action:'objectivePage', params:[objective: surveyPage.objective.id, organisation: surveyPage.organisation.id])}" class="go-back"><g:message code="survey.section.back.label"/></a></li>
+	  						<li><a href="${createLink(controller:'editSurvey', action:'objectivePage', params:[objective: surveyPage.objective.id, location: surveyPage.location.id])}" class="go-back"><g:message code="survey.section.back.label"/></a></li>
 	  					</ul>
 					</g:form>
 				</div>

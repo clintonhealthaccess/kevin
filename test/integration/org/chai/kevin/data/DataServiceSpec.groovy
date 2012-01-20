@@ -197,8 +197,8 @@ class DataServiceSpec extends IntegrationTests {
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def period = newPeriod()
 		def type = newDataEntityType(HEALTH_CENTER_GROUP)
-		def organisation = newDataEntity(KIVUYE, type)
-		newRawDataElementValue(dataElement, period, organisation, Value.NULL)
+		def location = newDataLocationEntity(KIVUYE, type)
+		newRawDataElementValue(dataElement, period, location, Value.NULL)
 		
 		dataService.delete(dataElement)
 		
@@ -213,8 +213,8 @@ class DataServiceSpec extends IntegrationTests {
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		def period = newPeriod()
 		def type = newDataEntityType(HEALTH_CENTER_GROUP)
-		def organisation = newDataEntity(KIVUYE, type)
-		newNormalizedDataElementValue(dataElement, organisation, period, Status.VALID, Value.NULL)
+		def location = newDataLocationEntity(KIVUYE, type)
+		newNormalizedDataElementValue(dataElement, location, period, Status.VALID, Value.NULL)
 		
 		dataService.delete(dataElement)
 		
@@ -229,8 +229,8 @@ class DataServiceSpec extends IntegrationTests {
 		def calculation = newSum("1", CODE(1))
 		def period = newPeriod()
 		def type = newDataEntityType(HEALTH_CENTER_GROUP)
-		def organisation = newDataEntity(KIVUYE, type)
-		newSumPartialValue(calculation, period, organisation, DataEntityType.findByCode(HEALTH_CENTER_GROUP), Value.NULL)
+		def location = newDataLocationEntity(KIVUYE, type)
+		newSumPartialValue(calculation, period, location, DataEntityType.findByCode(HEALTH_CENTER_GROUP), Value.NULL)
 
 		dataService.delete(calculation)
 		

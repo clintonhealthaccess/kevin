@@ -36,5 +36,5 @@ constraints = {
 	code (nullable: false, blank: false, unique: true)
 	dataElement (nullable: false)
 	objective (nullable: false)
-	groupUuidString (nullable: null)
+	typeCodeString (nullable: null)
 }

@@ -46,7 +46,7 @@ import org.supercsv.prefs.CsvPreference;
 public class ImporterService {
 	
 	private static final Log log = LogFactory.getLog(ImporterService.class);
-//	private OrganisationService organisationService;
+//	private LocationService locationService;
 	
 	public void getFileImport(Reader reader,Period period) throws IOException{
 		

@@ -65,7 +65,7 @@ class DsrTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			objectives: ReportObjective.list(),
-			groups: DataEntityType.list(),
+			types: DataEntityType.list(),
 			categories: DsrTargetCategory.list(),
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[]
 		]
@@ -87,7 +87,7 @@ class DsrTargetController extends AbstractEntityController {
 
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-//		entity.groupUuids = params['groupUuids']
+//		entity.typeCodes = params['typeCodes']
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}

@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.LocationService
 import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
@@ -75,7 +75,7 @@ class SurveyValueService {
 		surveyEnteredSection.delete()
 	}
 	
-	Integer getNumberOfSurveyEnteredObjectives(Survey survey, DataEntity entity, Boolean closed, Boolean complete, Boolean invalid) {
+	Integer getNumberOfSurveyEnteredObjectives(Survey survey, DataLocationEntity entity, Boolean closed, Boolean complete, Boolean invalid) {
 		def c = SurveyEnteredObjective.createCriteria()
 		c.add(Restrictions.eq("entity", entity))
 		
@@ -90,7 +90,7 @@ class SurveyValueService {
 		c.uniqueResult();
 	}
 	
-	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataEntity entity, 
+	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataLocationEntity entity, 
 		SurveyObjective objective, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
 		def c = SurveyEnteredQuestion.createCriteria()
 		c.add(Restrictions.eq("entity", entity))
@@ -125,7 +125,7 @@ class SurveyValueService {
 		c.uniqueResult();
 	}
 	
-	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, DataEntity entity) {
+	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, DataLocationEntity entity) {
 		def c = SurveyEnteredSection.createCriteria()
 		c.add(Restrictions.naturalId()
 			.set("entity", entity)
@@ -138,7 +138,7 @@ class SurveyValueService {
 		return result
 	}
 	
-	SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective surveyObjective, DataEntity entity) {
+	SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective surveyObjective, DataLocationEntity entity) {
 		def c = SurveyEnteredObjective.createCriteria()
 		c.add(Restrictions.naturalId()
 			.set("entity", entity)
@@ -151,7 +151,7 @@ class SurveyValueService {
 		return result
 	}
 
-	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, DataEntity entity) {
+	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, DataLocationEntity entity) {
 		def c = SurveyEnteredQuestion.createCriteria()
 		c.add(Restrictions.naturalId()
 			.set("entity", entity)
@@ -164,7 +164,7 @@ class SurveyValueService {
 		return result
 	}
 	
-	SurveyEnteredValue getSurveyEnteredValue(SurveyElement surveyElement, DataEntity entity) {
+	SurveyEnteredValue getSurveyEnteredValue(SurveyElement surveyElement, DataLocationEntity entity) {
 		def c = SurveyEnteredValue.createCriteria()
 		c.add(Restrictions.naturalId()
 			.set("entity", entity)
@@ -179,7 +179,7 @@ class SurveyValueService {
 		return result
 	}
 	
-	List<SurveyEnteredValue> getSurveyEnteredValues(DataEntity entity, SurveySection section, SurveyObjective objective, Survey survey) {
+	List<SurveyEnteredValue> getSurveyEnteredValues(DataLocationEntity entity, SurveySection section, SurveyObjective objective, Survey survey) {
 		def c = SurveyEnteredValue.createCriteria()
 		c.add(Restrictions.eq("entity", entity))
 		

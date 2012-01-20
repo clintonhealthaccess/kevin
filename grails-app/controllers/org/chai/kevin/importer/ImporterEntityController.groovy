@@ -43,7 +43,7 @@ class ImporterEntityController extends AbstractController {
 	private final static String FILE_TYPE = "text/csv";
 	ImporterService importerService;
 	
-//	Organisation organisation
+//	Location location
 //	Period period,
 //	Value valued
 	

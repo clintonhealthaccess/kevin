@@ -38,7 +38,7 @@ public class SurveyValidationRule {
 
 	private Translation messages = new Translation();
 	private List<SurveyElement> dependencies = new ArrayList<SurveyElement>();
-	private String groupUuidString;
+	private String typeCodeString;
 	
 	@Id
 	@GeneratedValue
@@ -90,21 +90,21 @@ public class SurveyValidationRule {
 	}
 	
 	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
+	public String getTypeCodeString() {
+		return typeCodeString;
 	}
 
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
+	public void setTypeCodeString(String typeCodeString) {
+		this.typeCodeString = typeCodeString;
 	}
 	
 	@Transient
-	public Set<String> getGroupUuids() {
-		return Utils.split(groupUuidString);
+	public Set<String> getTypeCodes() {
+		return Utils.split(typeCodeString);
 	}
 	
-	public void setGroupUuids(Set<String> groupUuids) {
-		this.groupUuidString = Utils.unsplit(groupUuids);
+	public void setTypeCodes(Set<String> typeCodes) {
+		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 	
 	@Basic
@@ -140,7 +140,7 @@ public class SurveyValidationRule {
 		copy.setExpression(cloner.getExpression(getExpression(), copy));
 		copy.setSurveyElement(cloner.getElement(getSurveyElement()));
 		copy.setMessages(getMessages());
-		copy.setGroupUuidString(getGroupUuidString());
+		copy.setTypeCodeString(getTypeCodeString());
 		for (SurveyElement element : getDependencies()) {
 			SurveyElement newElement = null;
 			if (!element.getSurvey().equals(getSurveyElement().getSurvey())) {

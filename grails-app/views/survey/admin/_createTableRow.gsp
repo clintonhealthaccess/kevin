@@ -39,8 +39,8 @@
 				<div class="clear"></div>
 				<g:input name="order" label="Order" bean="${row}" field="order" />
 
-				<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${row}" field="groupUuidString" 
-					from="${groups}" value="${row.groupUuids*.toString()}" values="${groups.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
+				<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${row}" field="typeCodeString" 
+					from="${types}" value="${row.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 
 				<g:if test="${row.id != null}">

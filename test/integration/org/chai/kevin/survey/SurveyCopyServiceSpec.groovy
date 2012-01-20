@@ -148,7 +148,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		then:
 		SurveyValidationRule.count() == 2
 		SurveyValidationRule.list()[1].expression == SurveyValidationRule.list()[0].expression
-		SurveyValidationRule.list()[1].groupUuidString == SurveyValidationRule.list()[0].groupUuidString
+		SurveyValidationRule.list()[1].typeCodeString == SurveyValidationRule.list()[0].typeCodeString
 		
 	}
 		

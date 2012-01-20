@@ -35,7 +35,7 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.util.JSONUtils;
@@ -56,7 +56,7 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		def period = newPeriod()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def entity = newDataEntity(BUTARO, type)
+		def entity = newDataLocationEntity(BUTARO, type)
 		
 		when: "empty value list"
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -80,13 +80,13 @@ class ValueServiceSpec extends IntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		
 		then: "empty value list"
-		valueService.getDataElementValue(normalizedDataElement, DataEntity.findByCode(BUTARO), period) == null
+		valueService.getDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period) == null
 		
 		when:
-		def dataValue = newNormalizedDataElementValue(normalizedDataElement, DataEntity.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def dataValue = newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.VALID, v("1"))
 		
 		then:
-		valueService.getDataElementValue(normalizedDataElement, DataEntity.findByCode(BUTARO), period).equals(dataValue)
+		valueService.getDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period).equals(dataValue)
 	}
 	
 	def "test get average value"() {
@@ -96,16 +96,16 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		def average = newAverage("1", CODE(1))
-		def expectedValue = new AverageValue([], average, period, DataEntity.findByCode(BUTARO))
-		def value = valueService.getCalculationValue(average, DataEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		def expectedValue = new AverageValue([], average, period, DataLocationEntity.findByCode(BUTARO))
+		def value = valueService.getCalculationValue(average, DataLocationEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		 
 		then:
 		value.equals(expectedValue)
 		
 		when:
-		def partialValue = newAveragePartialValue(average, period, DataEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
-		expectedValue = new AverageValue([partialValue], average, period, DataEntity.findByCode(BUTARO))
-		value = valueService.getCalculationValue(average, DataEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		def partialValue = newAveragePartialValue(average, period, DataLocationEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		expectedValue = new AverageValue([partialValue], average, period, DataLocationEntity.findByCode(BUTARO))
+		value = valueService.getCalculationValue(average, DataLocationEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 
 		then:
 		value.equals(expectedValue)
@@ -118,16 +118,16 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		def sum = newSum("1", CODE(1))
-		def expectedValue = new SumValue([], sum, period, DataEntity.findByCode(BUTARO))
-		def value = valueService.getCalculationValue(sum, DataEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		def expectedValue = new SumValue([], sum, period, DataLocationEntity.findByCode(BUTARO))
+		def value = valueService.getCalculationValue(sum, DataLocationEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		 
 		then:
 		value.equals(expectedValue)
 		
 		when:
-		def partialValue = newSumPartialValue(sum, period, DataEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
-		expectedValue = new SumValue([partialValue], sum, period, DataEntity.findByCode(BUTARO))
-		value = valueService.getCalculationValue(sum, DataEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		def partialValue = newSumPartialValue(sum, period, DataLocationEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), v("1"))
+		expectedValue = new SumValue([partialValue], sum, period, DataLocationEntity.findByCode(BUTARO))
+		value = valueService.getCalculationValue(sum, DataLocationEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 
 		then:
 		value.equals(expectedValue)
@@ -140,8 +140,8 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		def aggregation = newAggregation("1", CODE(1))
-		def expectedValue = new AggregationValue([], aggregation, period, DataEntity.findByCode(BUTARO))
-		def value = valueService.getCalculationValue(aggregation, DataEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		def expectedValue = new AggregationValue([], aggregation, period, DataLocationEntity.findByCode(BUTARO))
+		def value = valueService.getCalculationValue(aggregation, DataLocationEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		 
 		then:
 		value.equals(expectedValue)
@@ -149,9 +149,9 @@ class ValueServiceSpec extends IntegrationTests {
 		when:
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER());
 		aggregation = newAggregation("\$"+dataElement.id, CODE(2))
-		def partialValue = newAggregationPartialValue(aggregation, period, DataEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), "\$"+dataElement.id, v("1"))
-		expectedValue = new AggregationValue([partialValue], aggregation, period, DataEntity.findByCode(BUTARO))
-		value = valueService.getCalculationValue(aggregation, DataEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		def partialValue = newAggregationPartialValue(aggregation, period, DataLocationEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), "\$"+dataElement.id, v("1"))
+		expectedValue = new AggregationValue([partialValue], aggregation, period, DataLocationEntity.findByCode(BUTARO))
+		value = valueService.getCalculationValue(aggregation, DataLocationEntity.findByCode(BUTARO), period, s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 
 		then:
 		value.equals(expectedValue)
@@ -161,11 +161,11 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		def period = newPeriod()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def organisation = newDataEntity(BUTARO, type)
+		def location = newDataLocationEntity(BUTARO, type)
 		
 		when: 
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		newRawDataElementValue(rawDataElement, period, organisation, v("40"))
+		newRawDataElementValue(rawDataElement, period, location, v("40"))
 		
 		then:
 		valueService.getNumberOfValues(rawDataElement, period) == 1
@@ -187,12 +187,12 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		def period = newPeriod()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def organisation = newDataEntity(BUTARO, type)
+		def location = newDataLocationEntity(BUTARO, type)
 		
 		when:
 		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		newRawDataElementValue(rawDataElement1, period, organisation, v("40"))
+		newRawDataElementValue(rawDataElement1, period, location, v("40"))
 		
 		then:
 		valueService.getNumberOfValues(rawDataElement1, period) == 1
@@ -203,11 +203,11 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		def period = newPeriod()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def organisation = newDataEntity(BUTARO, type)
+		def location = newDataLocationEntity(BUTARO, type)
 		
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, organisation, v("40"))
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, location, v("40"))
 		
 		then:
 		valueService.getValues(rawDataElement, period).equals([rawDataElementValue])
@@ -218,11 +218,11 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		def period = newPeriod()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def organisation = newDataEntity(BUTARO, type)
+		def location = newDataLocationEntity(BUTARO, type)
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
-		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataEntity.findByCode(BUTARO), v("40"))
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocationEntity.findByCode(BUTARO), v("40"))
 		
 		then:
 		RawDataElementValue.count() == 1
@@ -235,8 +235,8 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when: "only deletes right values"
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		newRawDataElementValue(rawDataElement, period, DataEntity.findByCode(BUTARO), v("40"))
-		newRawDataElementValue(rawDataElement2, period, DataEntity.findByCode(BUTARO), v("40"))
+		newRawDataElementValue(rawDataElement, period, DataLocationEntity.findByCode(BUTARO), v("40"))
+		newRawDataElementValue(rawDataElement2, period, DataLocationEntity.findByCode(BUTARO), v("40"))
 		valueService.deleteValues(rawDataElement)
 		
 		then:
@@ -252,7 +252,7 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		def date = normalizedDataElement.timestamp
-		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataEntity.findByCode(BUTARO), v("40"))
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocationEntity.findByCode(BUTARO), v("40"))
 		valueService.save(rawDataElementValue);
 		
 		then:
@@ -263,11 +263,11 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		def period = newPeriod()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def organisation = newDataEntity(BUTARO, type)
+		def location = newDataLocationEntity(BUTARO, type)
 		def average = newAverage("1", CODE(1))
 		
 		when:
-		newAveragePartialValue(average, period, DataEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		newAveragePartialValue(average, period, DataLocationEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		
 		then:
 		AveragePartialValue.count() == 1
@@ -280,8 +280,8 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		def average2 = newAverage("2", CODE(2))
-		newAveragePartialValue(average, period, DataEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
-		newAveragePartialValue(average2, period, DataEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		newAveragePartialValue(average, period, DataLocationEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		newAveragePartialValue(average2, period, DataLocationEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		valueService.deleteValues(average)
 		
 		then:

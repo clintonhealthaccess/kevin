@@ -113,7 +113,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	public List<SurveyCheckboxOption> getOptions(DataEntityType type) {
 		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
 		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {
-			if (Utils.split(surveyCheckboxOption.getGroupUuidString())
+			if (Utils.split(surveyCheckboxOption.getTypeCodeString())
 					.contains(type.getCode()))
 				result.add(surveyCheckboxOption);
 		}
@@ -122,7 +122,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 
 	@SuppressWarnings("unchecked")
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable(SurveyElement surveyElement) {
+	public Set<String> getTypeApplicable(SurveyElement surveyElement) {
 		Set<String> optionOrgUnitUuIds = new HashSet<String>();
 
 		boolean found = false;
@@ -130,8 +130,8 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 			if (surveyElement.equals(option.getSurveyElement())) {
 				found = true;
 				optionOrgUnitUuIds.addAll(CollectionUtils.intersection(
-					option.getOrganisationUnitGroupApplicable(),
-					Utils.split(this.getGroupUuidString()))
+					option.getTypeApplicable(),
+					Utils.split(this.getTypeCodeString()))
 				);
 			}
 		}
@@ -140,7 +140,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 			throw new IllegalArgumentException("survey element does not belong to question (options)");
 		}
 		return new HashSet<String>(CollectionUtils.intersection(optionOrgUnitUuIds,
-				this.getSection().getOrganisationUnitGroupApplicable()));
+				this.getSection().getTypeApplicable()));
 	}
 
 	@Override
