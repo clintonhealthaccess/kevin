@@ -28,31 +28,33 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.ArrayList
+import java.util.Arrays
+import java.util.Collections
+import java.util.HashSet
+import java.util.List
+import java.util.Map
+import java.util.Set
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
-import org.chai.kevin.location.LocationLevel;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.lang.StringUtils
+import org.chai.kevin.location.CalculationEntity
+import org.chai.kevin.location.DataEntityType
+import org.chai.kevin.location.DataLocationEntity
+import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.LocationLevel
+import org.chai.kevin.util.Utils
+import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode
+import org.hibernate.criterion.Order
+import org.hibernate.criterion.Projections
+import org.hibernate.criterion.Restrictions
 
-@Transactional(readOnly=true)
 public class LocationService {
 	
-	private static final Log log = LogFactory.getLog(LocationService.class);
+	static transactional = true
 	
-	private SessionFactory sessionFactory;
+	def languageService;
+	def sessionFactory;
 	
     public LocationEntity getRootLocation() {
     	return (LocationEntity)sessionFactory.getCurrentSession().createCriteria(LocationEntity.class).add(Restrictions.isNull("parent")).uniqueResult();
@@ -93,6 +95,43 @@ public class LocationService {
 		
 	public <T extends CalculationEntity> T getCalculationEntity(Long id, Class<T> clazz) {
 		return (T)sessionFactory.getCurrentSession().get(clazz, id);
+	}
+	
+	public Integer countLocation(Class<CalculationEntity> clazz, String text) {
+		return getSearchCriteria(clazz, text).setProjection(Projections.count("id")).uniqueResult()
+	}
+	
+	public <T extends CalculationEntity> List<T> searchLocation(Class<T> clazz, String text, Map<String, String> params) {
+		def criteria = getSearchCriteria(clazz, text)
+		
+		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+		if (params['max'] != null) criteria.setMaxResults(params['max'])
+		List<T> locations = criteria.addOrder(Order.asc("id")).list()
+		
+		StringUtils.split(text).each { chunk ->
+			locations.retainAll { location ->
+				// we look in "info" if it is a data element
+				Utils.matches(chunk, location.names[languageService.getCurrentLanguage()]) ||
+				Utils.matches(chunk, location.code)
+			}
+		}
+		return locations
+	}
+	
+	private <T extends CalculationEntity> Criteria getSearchCriteria(Class<T> clazz, String text) {
+		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz);
+		
+		def textRestrictions = Restrictions.conjunction()
+		StringUtils.split(text).each { chunk ->
+			def disjunction = Restrictions.disjunction();
+			
+			disjunction.add(Restrictions.ilike("code", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
+			
+			textRestrictions.add(disjunction)
+		}
+		criteria.add(textRestrictions)
+		return criteria
 	}
 	
 	// TODO property of level?
@@ -157,10 +196,6 @@ public class LocationService {
 			}
 		}
 		return result;
-	}
-	
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
 	}
 	
 

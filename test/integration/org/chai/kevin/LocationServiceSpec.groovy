@@ -93,6 +93,23 @@ class LocationServiceSpec extends IntegrationTests {
 	def "get parent of level for location for data entity"() {
 		
 	}
+	
+	def "search location"() {
+		setup:
+		setupLocationTree()
+		
+		when:
+		def result = locationService.searchLocation(LocationEntity.class, text, [:])
+		
+		then:
+		result.equals(expectedResult.collect{LocationEntity.findByCode(it)})
+		
+		where:
+		text	| expectedResult
+		"Bur"	| [BURERA]
+		"Nor"	| [NORTH]
+		"n/a"	| []
+	}
 
 		
 }

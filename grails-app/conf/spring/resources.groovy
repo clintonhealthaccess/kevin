@@ -196,10 +196,6 @@ beans = {
 		skipLevels = dashboardSkipLevels
 	}
 
-	locationService(LocationService) {
-		sessionFactory = ref("sessionFactory")
-	}
-	
 	// override the spring cache manager to use the same as hibernate
 	springcacheCacheManager(EhCacheManagerFactoryBean) {
 		shared = true
