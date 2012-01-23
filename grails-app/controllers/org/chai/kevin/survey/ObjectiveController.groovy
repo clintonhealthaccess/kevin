@@ -70,7 +70,6 @@ class ObjectiveController extends AbstractEntityController {
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-//		entity.typeCodes = params['typeCodes']	
 		if (params.names!=null) entity.names = params.names
 	}
 	

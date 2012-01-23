@@ -44,13 +44,13 @@ abstract class AbstractController {
 
 	def locationService;
 
-	public List<DataEntityType> getTypes() {
+	public List<DataEntityType> getLocationTypes() {
 		List<DataEntityType> types = null
-		if (params['typeCodes'] != null) {
-			types = params.list('typeCodes').collect {DataEntityType.get(it)}
+		if (params['locationTypes'] != null) {
+			types = params.list('locationTypes').collect {DataEntityType.get(it)}
 		}
 		else {
-			types = new ArrayList(ConfigurationHolder.config.facility.checked).collect {DataEntityType.findByCode(it)}
+			types = new ArrayList(ConfigurationHolder.config.type.checked).collect {DataEntityType.findByCode(it)}
 		}
 		return types;
 	}

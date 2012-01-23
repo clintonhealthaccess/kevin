@@ -85,7 +85,7 @@ public class DashboardService {
 		
 		List<CalculationEntity> locations = new ArrayList<CalculationEntity>();
 		
-		locations.add(location);		
+		locations.add(location);
 		locations.addAll(location.getChildren(getSkipLocationLevels()));
 		for (DataLocationEntity dataEntity : location.getDataEntities(getSkipLocationLevels())) {
 			if (types.contains(dataEntity.getType())) locations.add(dataEntity);
@@ -215,10 +215,10 @@ public class DashboardService {
 		return values;
 	}
 
-	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationEntity location, Set<DataEntityType> groups) {
+	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationEntity location, Set<DataEntityType> types) {
 		Map<DashboardEntity, DashboardPercentage> locationMap = new HashMap<DashboardEntity, DashboardPercentage>();
 		for (DashboardEntity dashboardEntity : dashboardEntities) {
-			DashboardPercentage percentage = dashboardEntity.visit(new PercentageVisitor(groups), location, period);
+			DashboardPercentage percentage = dashboardEntity.visit(new PercentageVisitor(types), location, period);
 			locationMap.put(dashboardEntity, percentage);
 		}
 		return locationMap;

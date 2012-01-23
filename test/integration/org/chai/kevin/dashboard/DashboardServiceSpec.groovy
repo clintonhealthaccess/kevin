@@ -47,6 +47,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		def root = newReportObjective(CODE(1))
+		def dashboardRoot = newDashboardObjective(ROOT, root, 0)
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		def dashboard = null

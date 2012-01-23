@@ -9,15 +9,15 @@
 	    <a class='facility selected' data-period='3' data-type='period' href='#'>
 	      <g:message code="filter.facility.type.label"/>
 	    </a>
-	    <g:if test="${facilityTypes != null && !facilityTypes.isEmpty()}">
+	    <g:if test="${locationTypes != null && !locationTypes.isEmpty()}">
 		    <div class='hidden dropdown-list'>
 		      <ul class="horizontal">
-		      	<g:each in="${facilityTypes}" var="type">
-						<li class="check_filter">
-						<input name="typeCodes" type="checkbox" id="${type.id}" value="${type.id}" 
-						${currentFacilityTypes.contains(type)?'checked="checked"':''}/>
+		      	<g:each in="${locationTypes}" var="type">
+					<li class="check_filter">
+						<input name="locationTypes" type="checkbox" id="${type.id}" value="${type.id}" 
+						${currentLocationTypes.contains(type)?'checked="checked"':''}/>
 						<label for="${type.id}"><g:i18n field="${type.names}"/></label>
-						</li>
+					</li>
 				</g:each>	        
 		      </ul>
 		    </div>

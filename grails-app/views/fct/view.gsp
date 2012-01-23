@@ -33,7 +33,7 @@
 		</div>
 		
 		<g:if test="${fctTable != null}">
-			<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
+			<g:render template="/templates/facilityTypeFilter" model="[locationTypes: locationTypes, currentLocationTypes: currentLocationTypes, linkParams:params]"/>
 		</g:if>
 		<div id="center" class="main">
 			<div id="values">

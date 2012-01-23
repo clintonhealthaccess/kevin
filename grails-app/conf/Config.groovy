@@ -218,10 +218,9 @@ site.period=0
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 
-facility.checked=["District Hospital","Health Center"]
+type.checked=["District Hospital","Health Center"]
 
 dashboard.objective.root="Strategic Programs"
-dashboard.facility.checked=["District Hospital","Health Center"]
 dashboard.skip.levels=[]
 cost.skip.levels=[]
 export.skip.levels=["Country"]

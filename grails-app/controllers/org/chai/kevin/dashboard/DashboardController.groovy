@@ -55,8 +55,8 @@ class DashboardController extends AbstractController {
 		DashboardEntity dashboardEntity = getDashboardEntity()
 		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
 
-		List<DataEntityType> facilityTypes = getTypes();
-		def info = dashboardService.getExplanation(entity, dashboardEntity, period, new HashSet(facilityTypes))
+		List<DataEntityType> locationTypes = getLocationTypes();
+		def info = dashboardService.getExplanation(entity, dashboardEntity, period, new HashSet(locationTypes))
 		def types = DataEntityType.list()
 		[
 			info: info, 
@@ -104,7 +104,7 @@ class DashboardController extends AbstractController {
 		def dashboard = null		
 		
 		Period period = getPeriod()
-		List<DataEntityType> facilityTypes = getTypes()
+		List<DataEntityType> locationTypes = getLocationTypes()
 		ReportObjective reportObjective = ReportObjective.get(params.int('objective'))
 		if(reportObjective == null) reportObjective = reportService.getRootObjective()		
 		DashboardEntity dashboardEntity = getDashboardEntity(reportObjective)		
@@ -122,7 +122,7 @@ class DashboardController extends AbstractController {
 			}
 			redirectIfDifferent(period, reportObjective, dashboardEntity, location)
 			
-			dashboard = dashboardService.getDashboard(location, reportObjective, period, new HashSet(facilityTypes));
+			dashboard = dashboardService.getDashboard(location, reportObjective, period, new HashSet(locationTypes));
 		}
 		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
 		
@@ -135,8 +135,8 @@ class DashboardController extends AbstractController {
 			objectiveRoot: reportService.getRootObjective(),
 			currentLocation: location,
 			locationRoot: locationService.getRootLocation(),
-			currentFacilityTypes: facilityTypes,
-			facilityTypes: DataEntityType.list()
+			currentLocationTypes: locationTypes,
+			locationTypes: DataEntityType.list()
 		]
 	}
 	
@@ -146,7 +146,7 @@ class DashboardController extends AbstractController {
 		def dashboard = null
 		
 		Period period = getPeriod()
-		List<DataEntityType> facilityTypes = getFacilityTypes()
+		List<DataEntityType> locationTypes = getFacilityTypes()
 		ReportObjective reportObjective = ReportObjective.get(params.int('objective'))	
 		if(reportObjective == null) reportObjective = reportService.getRootObjective()
 		DashboardEntity dashboardEntity = getDashboardEntity(reportObjective)
@@ -164,7 +164,7 @@ class DashboardController extends AbstractController {
 			}
 			redirectIfDifferent(period, reportObjective, dashboardEntity, location)
 			
-			dashboard = dashboardService.getCompareDashboard(location, reportObjective, period, new HashSet(facilityTypes));
+			dashboard = dashboardService.getCompareDashboard(location, reportObjective, period, new HashSet(locationTypes));
 			
 			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
 
