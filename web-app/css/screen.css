@@ -584,7 +584,7 @@ select:hover, select:focus { background: #ecf7ff; border-color: #258cd5; }
 /* line 292, ../../src/stylesheets/partials/_forms.sass */
 .entity-form-container form label { color: #258cd5; display: block; font-size: 11px; margin-bottom: 3px; }
 /* line 299, ../../src/stylesheets/partials/_forms.sass */
-.entity-form-container form span { font-size: 11px; }
+.entity-form-container form span, .entity-form-container form a { font-size: 11px; }
 /* line 302, ../../src/stylesheets/partials/_forms.sass */
 .entity-form-container form span.bold { color: #258cd5; }
 

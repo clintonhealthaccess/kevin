@@ -40,10 +40,12 @@ public class DsrService {
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public DsrTable getDsrTable(LocationEntity entity, ReportObjective objective, Period period, Set<DataEntityType> types) {
-		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+entity+",objective="+objective+")");
-						
-		List<DataLocationEntity> facilities = locationService.getDataEntities(entity, types.toArray(new DataEntityType[types.size()]));
+	public DsrTable getDsrTable(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types) {
+		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",objective="+objective+")");
+		
+		List<LocationEntity> topLevelLocations = location.getChildren();
+		
+		List<DataLocationEntity> facilities = locationService.getDataEntities(location, types.toArray(new DataEntityType[types.size()]));
 		Map<LocationEntity, List<DataLocationEntity>> locationMap = reportService.getParents(facilities, locationService.findLocationLevelByCode(groupLevel));
 		
 		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();
@@ -56,7 +58,7 @@ public class DsrService {
 			valueMap.put(facility, targetMap);
 		}
 		
-		DsrTable dsrTable = new DsrTable(valueMap, targets, locationMap);
+		DsrTable dsrTable = new DsrTable(valueMap, targets, locationMap, topLevelLocations);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
 		return dsrTable;
 	}

@@ -21,10 +21,10 @@
 			</div>
 			<div class="main">
 				<g:render template="/templates/topLevelReportTabs" model="[tab:'dashboard', linkParams:params]"/>
-				<g:render template="/templates/dashboard/reportTabHelp"/>
+				<g:render template="/templates/reportTabHelp"/>
 				<ul class='clearfix' id='questions'>
   					<li class='question push-20'>
-						<g:render template="/templates/dashboard/reportTableHeader" model="[table:'program']"/>						
+						<g:render template="/templates/reportTableHeader" model="[tab:'dashboard', table:'program']"/>						
 						<g:if test="dashboard != null">
 							<g:render template="/templates/dashboard/reportTableCompareFilter" model="[table:'program', params:params]"/>
 							<div class='horizontal-graph-wrap'>
@@ -33,7 +33,7 @@
 		                </g:if>
 	                </li>
 	                <li class='question push-10'>
-		                <g:render template="/templates/dashboard/reportTableHeader" model="[table:'location']"/>						
+		                <g:render template="/templates/reportTableHeader" model="[tab:'dashboard', table:'location']"/>						
 		                <g:if test="dashboard != null">
 		                <g:render template="/templates/dashboard/reportTableCompareFilter" model="[table:'location',params:params]"/>
 							<div class='horizontal-graph-wrap'>

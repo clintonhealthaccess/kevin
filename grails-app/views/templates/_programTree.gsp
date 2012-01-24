@@ -1,7 +1,7 @@
 <r:require module="foldable" />
 
 <li class="${current?.id == objective?.id ? 'current':''} foldable">
-	<g:if test="${objective.children != null && !objective.children.isEmpty()}">
+	<g:if test="${objective.children != null && !objective.children.empty}">
 		<a class="foldable-toggle" href="#">(toggle)</a>
 	</g:if>
 		<% def programLinkParams = new HashMap(linkParams) %>
@@ -11,7 +11,7 @@
 			data-location="${objective.id}"
 			href="${createLinkByFilter(controller:controller, action:action, params:programLinkParams)}">
 			<g:i18n field="${objective.names}"/> </a>
-	<g:if test="${objective.children != null && !objective.children.isEmpty()}">
+	<g:if test="${objective.children != null && !objective.children.empty}">
 		<ul class="location-fold" id="location-fold-${objective.id}">
 			<g:each in="${objective.children}" var="child">
 				<g:render template="/templates/programTree"

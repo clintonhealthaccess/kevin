@@ -6,7 +6,7 @@
 	<th></th>
   </tr>
 </thead>
-<g:if test="dashboard.dashboardEntities != null && !dashboard.dashboardEntities.isEmpty()}">
+<g:if test="dashboard.dashboardEntities != null && !dashboard.dashboardEntities.empty}">
 	<tbody>
 		<g:each in="${dashboard.dashboardEntities}" var="entity">
 			<g:if test="${entity.isTarget() || entity.objective != currentObjective}">
@@ -14,13 +14,13 @@
 					<g:set var="percentageValue" />
 					<td><g:if test="${!entity.isTarget()}">
 							<a href="${createLink(controller:'dashboard', action:'view', 
-						params:[period: currentPeriod.id, objective: entity.objective.id, organisation: currentOrganisation.id, dashboardEntity: entity.id])}">
+						params:[period: currentPeriod.id, objective: entity.objective.id, organisation: currentLocation.id, dashboardEntity: entity.id])}">
 								<g:i18n field="${entity.objective.names}" />
 							</a>
 						</g:if> <g:else>
 							<g:i18n field="${entity.names}" />
 						</g:else></td>
-					<td><g:set var="percentageValue" value="${dashboard.getPercentage(currentOrganisation, entity)}" />
+					<td><g:set var="percentageValue" value="${dashboard.getPercentage(currentLocation, entity)}" />
 						<g:if test="${percentageValue != null}">
 								${percentageValue}%
 						</g:if><g:else>

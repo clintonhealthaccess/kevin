@@ -20,7 +20,7 @@
 		<g:if test="${grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).hasProperty('search')}">
 			<g:searchBox action="search"/>
 		</g:if>
-		<g:if test="${!entities.isEmpty()}">
+		<g:if test="${!entities.empty}">
 			<div class="main">
 				<g:render template="${template}"/>
 			</div>

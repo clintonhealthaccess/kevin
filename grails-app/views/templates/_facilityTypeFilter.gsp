@@ -9,7 +9,7 @@
 	    <a class='facility selected' data-period='3' data-type='period' href='#'>
 	      <g:message code="filter.facility.type.label"/>
 	    </a>
-	    <g:if test="${locationTypes != null && !locationTypes.isEmpty()}">
+	    <g:if test="${locationTypes != null && !locationTypes.empty}">
 		    <div class='hidden dropdown-list'>
 		      <ul class="horizontal">
 		      	<g:each in="${locationTypes}" var="type">
