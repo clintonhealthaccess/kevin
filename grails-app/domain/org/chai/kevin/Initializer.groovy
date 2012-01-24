@@ -56,6 +56,7 @@ import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
+import org.chai.kevin.planning.ActivityType;
 import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
@@ -257,7 +258,7 @@ class Initializer {
 				])
 			)
 			
-			def wizardElement = new RawDataElement(names:j(["en":"Element Wizard"]), descriptions:j([:]), code:"WIZARDELEMENT",
+			def activityElement = new RawDataElement(names:j(["en":"Element Activity"]), descriptions:j([:]), code:"ACTIVITYELEMENT",
 				type: Type.TYPE_MAP([
 					"key1": Type.TYPE_MAP([
 						"key11": Type.TYPE_NUMBER(),
@@ -436,7 +437,7 @@ class Initializer {
 			dataElementMap.save(failOnError: true, flush:true)
 			siyelo1.save(failOnError: true, flush:true)
 			siyelo2.save(failOnError: true, flush:true)
-			wizardElement.save(failOnError: true, flush:true)
+			activityElement.save(failOnError: true, flush:true)
 			
 			// data value
 			new RawDataElementValue(
@@ -913,7 +914,8 @@ class Initializer {
 				descriptions:j([:]), 
 				code:"TARGET 1",
 				sum: sum1,
-				typeCodeString: "District Hospital,Health Center").save(failOnError:true)
+				typeCodeString: "District Hospital,Health Center"
+			).save(failOnError:true)
 			
 			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
 			sum2.save(failOnError: true);
@@ -923,11 +925,64 @@ class Initializer {
 				objective: hmr,
 				code:"TARGET 2",
 				sum: sum2,
-				typeCodeString: "District Hospital,Health Center").save(failOnError:true)
-				
+				typeCodeString: "District Hospital,Health Center"
+			).save(failOnError:true)
 			hmr.save(failOnError:true)
 		}
 	}	
+	
+	static def createPlanning() {
+		
+		def activityType = new ActivityType(
+			sections: ["[_].key1","[_].key2"],
+			sectionDescriptions: [
+				"[_].key1": j(["en":"Lorem ipsum blablablabla"]),
+				"[_].key2": j(["en":"Lorem ipsum blablablabla"])
+			],
+			headers: [
+				"[_].key1": j(["en":"Basic Information"]),
+				"[_].key1.key11": j(["en":"Name"]),
+				"[_].key1.key12": j(["en":"Number"]),
+				"[_].key2": j(["en":"Supply and Maintenance"]),
+				"[_].key2.key21": j(["en":"Supplier Name"]),
+				"[_].key2.key22": j(["en":"Supplier Type"]),
+			],
+			dataElement: RawDataElement.findByCode("ACTIVITYELEMENT")
+		).save(failOnError: true);
+		
+		/* START WORKFLOW */
+		//			def wizard = new Wizard(
+		//				names: j(["en":"Wizard question"]),
+		//				descriptions: j(["en":"Help text"]),
+		//				fixedHeaderPrefix: "[_].key1",
+		//				order: 6,
+		//				typeCodeString: "District Hospital,Health Center"
+		//			)
+		//			services.addQuestion(wizard)
+		//			services.save(failOnError:true, flush:true)
+		//
+		//			def wizardElement = new SurveyElement(
+		//					dataElement: RawDataElement.findByCode("LISTMAP2"),
+		//					surveyQuestion: serviceQ6,
+		//					headers: [
+		//						"[_].key1": j(["en":"Basic Information"]),
+		//						"[_].key1.key11": j(["en":"Name"]),
+		//						"[_].key1.key12": j(["en":"Number"]),
+		//						"[_].key2": j(["en":"Supply and Maintenance"]),
+		//						"[_].key2.key21": j(["en":"Supplier Name"]),
+		//						"[_].key2.key22": j(["en":"Supplier Type"]),
+		//					]).save(failOnError: true)
+		//			wizard.surveyElement = wizardElement
+		//			wizard.save(failOnError: true, flush: true)
+		//
+		//			def step1 = new WizardStep(wizard: wizard, prefix: "[_].key1.key11").save(failOnError: true)
+		//			def step2 = new WizardStep(wizard: wizard, prefix: "[_].key1.key16").save(failOnError: true)
+		//
+		//			wizard.steps << [step1, step2]
+		//			wizard.save(failOnError: true, flush: true)
+		//			services.addQuestion(wizard)
+		/* END WORKFLOW */
+	}
 	
 	static def createQuestionaire(){
 		if(!Survey.count()){
@@ -1204,74 +1259,42 @@ class Initializer {
 			services.save(failOnError:true, flush:true)
 
 			def surveyElementServiceQ6 = new SurveyElement(
-					dataElement: RawDataElement.findByCode("WIZARDELEMENT"),
-					surveyQuestion: serviceQ6,
-					headers: [
-						"[_].key1": j(["en":"Basic Information"]),
-						"[_].key1.key11": j(["en":"Name"]),
-						"[_].key1.key12": j(["en":"Number"]),
-						"[_].key2": j(["en":"Supply and Maintenance"]),
-						"[_].key2.key21": j(["en":"Supplier Name"]),
-						"[_].key2.key22": j(["en":"Supplier Type"]),
-					]).save(failOnError: true)
+				dataElement: RawDataElement.findByCode("LISTMAP2"),
+				surveyQuestion: serviceQ6,
+				headers: [
+					"[_].key0": j(["en":"Name"]),
+					"[_].key0.key01": j(["en":"Select from list"]),
+					"[_].key0.key02": j(["en":"If other"]),
+					"[_].key1": j(["en":"Identifiers"]),
+					"[_].key1.key11": j(["en":"Type of equipment"]),
+					"[_].key1.key11.key111": j(["en":"Select from list"]),
+					"[_].key1.key11.key112": j(["en":"If other, specify:"]),
+					"[_].key1.key12": j(["en":"Description"]),
+					"[_].key1.key13": j(["en":"Serial"]),
+					"[_].key1.key13.key131": j(["en":"Select from list"]),
+					"[_].key1.key13.key132": j(["en":"If other, please specify"]),
+					"[_].key1.key14": j(["en":"Model"]),
+					"[_].key1.key15": j(["en":"Manufacturer"]),
+					"[_].key1.key16": j(["en":"Status"]),
+					"[_].key1.key16.key161": j(["en":"Please select from list:"]),
+					"[_].key1.key16.key162": j(["en":"If not fully functional:"]),
+					"[_].key1.key17": j(["en":"Primary location"]),
+					"[_].key1.key18": j(["en":"Avg. daily hours of use"]),
+					"[_].key2": j(["en":"Supply and Maintenance"]),
+					"[_].key2.key21": j(["en":"Supplier Name"]),
+					"[_].key2.key22": j(["en":"Supplier Type"]),
+					"[_].key2.key23": j(["en":"Supplier Mobile"]),
+					"[_].key2.key24": j(["en":"Date Acquired"]),
+					"[_].key2.key25": j(["en":"Service Provider Name"]),
+					"[_].key2.key26": j(["en":"Service Provider Type"]),
+					"[_].key2.key27": j(["en":"Service Provider Mobile"]),
+					"[_].key2.key28": j(["en":"Date of last repair"]),
+					"[_].key2.key29": j(["en":"Date of last service"])
+				]).save(failOnError: true) 
+			
 			serviceQ6.surveyElement = surveyElementServiceQ6
 			serviceQ6.save(failOnError: true, flush: true)
 
-			/* START WORKFLOW */
-			def wizard = new Wizard(
-				names: j(["en":"Wizard question"]),
-				descriptions: j(["en":"Help text"]),
-				fixedHeaderPrefix: "[_].key1",
-				order: 6,
-				typeCodeString: "District Hospital,Health Center"
-			)
-			services.addQuestion(wizard)
-			services.save(failOnError:true, flush:true)
-	
-			def wizardElement = new SurveyElement(
-					dataElement: RawDataElement.findByCode("LISTMAP2"),
-					surveyQuestion: wizard,
-					headers: [
-						"[_].key0": j(["en":"Name"]),
-						"[_].key0.key01": j(["en":"Select from list"]),
-						"[_].key0.key02": j(["en":"If other"]),
-						"[_].key1": j(["en":"Identifiers"]),
-						"[_].key1.key11": j(["en":"Type of equipment"]),
-						"[_].key1.key11.key111": j(["en":"Select from list"]),
-						"[_].key1.key11.key112": j(["en":"If other, specify:"]),
-						"[_].key1.key12": j(["en":"Description"]),
-						"[_].key1.key13": j(["en":"Serial"]),
-						"[_].key1.key13.key131": j(["en":"Select from list"]),
-						"[_].key1.key13.key132": j(["en":"If other, please specify"]),
-						"[_].key1.key14": j(["en":"Model"]),
-						"[_].key1.key15": j(["en":"Manufacturer"]),
-						"[_].key1.key16": j(["en":"Status"]),
-						"[_].key1.key16.key161": j(["en":"Please select from list:"]),
-						"[_].key1.key16.key162": j(["en":"If not fully functional:"]),
-						"[_].key1.key17": j(["en":"Primary location"]),
-						"[_].key1.key18": j(["en":"Avg. daily hours of use"]),
-						"[_].key2": j(["en":"Supply and Maintenance"]),
-						"[_].key2.key21": j(["en":"Supplier Name"]),
-						"[_].key2.key22": j(["en":"Supplier Type"]),
-						"[_].key2.key23": j(["en":"Supplier Mobile"]),
-						"[_].key2.key24": j(["en":"Date Acquired"]),
-						"[_].key2.key25": j(["en":"Service Provider Name"]),
-						"[_].key2.key26": j(["en":"Service Provider Type"]),
-						"[_].key2.key27": j(["en":"Service Provider Mobile"]),
-						"[_].key2.key28": j(["en":"Date of last repair"]),
-						"[_].key2.key29": j(["en":"Date of last service"])
-					]).save(failOnError: true)
-			wizard.surveyElement = wizardElement
-			wizard.save(failOnError: true, flush: true)
-			
-			def step1 = new WizardStep(wizard: wizard, prefix: "[_].key1.key11").save(failOnError: true)
-			def step2 = new WizardStep(wizard: wizard, prefix: "[_].key1.key16").save(failOnError: true)
-			
-			wizard.steps << [step1, step2]
-			wizard.save(failOnError: true, flush: true)
-			services.addQuestion(wizard)
-			/* END WORKFLOW */
-			
 			services.addQuestion(serviceQ2)
 			services.addQuestion(serviceQ1)
 			services.addQuestion(serviceQ3)

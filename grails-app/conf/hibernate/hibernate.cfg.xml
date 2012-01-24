@@ -52,8 +52,10 @@
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredObjective" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyLog" />
 		
-		<mapping class="org.chai.kevin.survey.wizard.Wizard" />
-		<mapping class="org.chai.kevin.survey.wizard.WizardStep" />
+		<mapping class="org.chai.kevin.planning.ActivityType" />
+		
+		<!-- mapping class="org.chai.kevin.survey.wizard.Wizard" / -->
+		<!-- mapping class="org.chai.kevin.survey.wizard.WizardStep" / -->
 		
 		<mapping class="org.chai.kevin.location.CalculationEntity" />
 		<mapping class="org.chai.kevin.location.DataLocationEntity" />
