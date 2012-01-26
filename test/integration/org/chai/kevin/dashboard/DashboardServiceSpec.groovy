@@ -54,19 +54,19 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(RWANDA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(RWANDA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
 		dashboard.locations.equals([LocationEntity.findByCode(NORTH)])
 		
 		when:
-		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		s(dashboard.locations).equals(s([DataLocationEntity.findByCode(KIVUYE), DataLocationEntity.findByCode(BUTARO)]))
+		(dashboard.locations).equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
 		
 		when:
-		dashboard = dashboardService.getDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		
 		then:
 		dashboard.locations.equals([DataLocationEntity.findByCode(BUTARO)])
@@ -81,7 +81,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 
 		when:
-		def dashboard = dashboardService.getDashboard(LocationEntity.findByCode(currentLocationName), ReportObjective.findByCode(currentObjectiveName), period, new HashSet(types.collect {DataEntityType.findByCode(it)}));
+		def dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(currentLocationName), ReportObjective.findByCode(currentObjectiveName), period, new HashSet(types.collect {DataEntityType.findByCode(it)}));
 		def percentage = dashboard.getPercentage(getCalculationEntity(locationName), getDashboardEntity(objectiveName))
 
 		then:
@@ -89,17 +89,17 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		else percentage.value == value
 
 		where:
-		currentLocationName	| currentObjectiveName	| locationName	| objectiveName | types																							  | value
-		BURERA					| OBJECTIVE				| BUTARO			| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA					| OBJECTIVE				| BUTARO			| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
-		BURERA					| OBJECTIVE				| KIVUYE			| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA					| OBJECTIVE				| KIVUYE			| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
-		RWANDA					| ROOT					| NORTH				| OBJECTIVE		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
-		BURERA					| OBJECTIVE				| BUTARO			| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
-		RWANDA					| ROOT					| NORTH				| OBJECTIVE		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		currentLocationName	| currentObjectiveName	| locationName	| objectiveName | types										    | value
+		BURERA				| OBJECTIVE				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| OBJECTIVE				| BUTARO		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
+		BURERA				| OBJECTIVE				| KIVUYE		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| OBJECTIVE				| KIVUYE		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
+		RWANDA				| ROOT					| NORTH			| OBJECTIVE		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
+		BURERA				| OBJECTIVE				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		RWANDA				| ROOT					| NORTH			| OBJECTIVE		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
 	}
 
-	def "dashboard test objective path"() {
+	def "dashboard test program dashboard"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
@@ -107,21 +107,43 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 
 		when:
-		def dashboard = dashboardService.getDashboard(LocationEntity.findByCode(locationName), ReportObjective.findByCode(objectiveCode), period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]));
+		def dashboard = dashboardService.getProgramDashboard(LocationEntity.findByCode(locationName), ReportObjective.findByCode(objectiveCode), period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]));
 
 		then:
-		dashboard.objectiveEntities.containsAll expectedEntities.collect {getDashboardEntity(it)}
+		dashboard.dashboardEntities.containsAll expectedEntities.collect {getDashboardEntity(it)}
 		dashboard.objectivePath.containsAll expectedObjectivePath.collect {DashboardObjective.findByCode(it)}
 		// TODO order locations
-		dashboard.locations.containsAll expectedLocations.collect {DataLocationEntity.findByCode(it)}
+		dashboard.locations.containsAll expectedLocations.collect {getLocationEntity(it)}
 		dashboard.locationPath.containsAll expectedLocationPath.collect {LocationEntity.findByCode(it)}
 
 		where:
-		locationName| objectiveCode	| expectedLocations	| expectedEntities  | expectedLocationPath	| expectedObjectivePath
-		BURERA			| OBJECTIVE		| [BUTARO, KIVUYE]		| [TARGET1, TARGET2]| [RWANDA, NORTH]			| [ROOT]
-		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [OBJECTIVE]		| [RWANDA, NORTH]			| []
+		locationName	| objectiveCode	| expectedLocations	| expectedEntities  | expectedLocationPath	| expectedObjectivePath
+		BURERA			| OBJECTIVE		| [BURERA]			| [TARGET1, TARGET2]| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| ROOT			| [BURERA]			| [OBJECTIVE]		| [RWANDA, NORTH]		| []		
 	}
 
+	def "dashboard test location dashboard"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupDashboard()
+		refresh()
+
+		when:
+		def dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(locationName), ReportObjective.findByCode(objectiveCode), period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]));
+
+		then:
+		dashboard.dashboardEntities.containsAll expectedEntities.collect {getDashboardEntity(it)}
+		dashboard.objectivePath.containsAll expectedObjectivePath.collect {DashboardObjective.findByCode(it)}
+		// TODO order locations
+		dashboard.locations.containsAll expectedLocations.collect {getLocationEntity(it)}
+		dashboard.locationPath.containsAll expectedLocationPath.collect {LocationEntity.findByCode(it)}
+
+		where:
+		locationName	| objectiveCode	| expectedLocations		| expectedEntities  | expectedLocationPath	| expectedObjectivePath
+		BURERA			| OBJECTIVE		| [BUTARO, KIVUYE]		| [OBJECTIVE]		| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [ROOT]			| [RWANDA, NORTH]		| []
+	}
 	
 	def getDashboardEntity(String code) {
 		def entity = DashboardObjective.findByCode(code);
@@ -129,6 +151,12 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		return entity
 	}
 
+	def getLocationEntity(String code){
+		def entity = LocationEntity.findByCode(code);
+		if(entity == null) entity = DataLocationEntity.findByCode(code);
+		return entity
+	}
+	
 	def getReportObjectives(List<String> codes) {
 		def reportObjectives = []
 		for (String code : codes) {

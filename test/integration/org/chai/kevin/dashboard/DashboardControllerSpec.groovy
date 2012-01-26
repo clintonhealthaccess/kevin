@@ -30,7 +30,8 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.currentPeriod.equals(period)
 		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
 		model.currentLocationTypes.equals([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)])
-		model.dashboard != null
+		model.programDashboard != null
+		model.locationDashboard != null
 	}
 	
 	

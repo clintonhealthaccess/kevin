@@ -101,7 +101,8 @@ class DashboardController extends AbstractController {
     def view = {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)
 		
-		def dashboard = null		
+		def programDashboard = null		
+		def locationDashboard = null
 		
 		Period period = getPeriod()
 		List<DataEntityType> locationTypes = getLocationTypes()
@@ -122,12 +123,17 @@ class DashboardController extends AbstractController {
 			}
 			redirectIfDifferent(period, reportObjective, dashboardEntity, location)
 			
-			dashboard = dashboardService.getDashboard(location, reportObjective, period, new HashSet(locationTypes));
+			programDashboard = dashboardService.getProgramDashboard(location, reportObjective, period, new HashSet(locationTypes));
+			locationDashboard = dashboardService.getLocationDashboard(location, reportObjective, period, new HashSet(locationTypes));
 		}
-		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
+		if (log.isDebugEnabled()){
+			 log.debug('program dashboard: '+programDashboard)
+			 log.debug('location dashboard: '+locationDashboard)
+		}		
 		
 		[ 
-			dashboard:dashboard,			
+			programDashboard:programDashboard,
+			locationDashboard:locationDashboard,			
 			currentPeriod: period,
 			periods: Period.list(),
 			dashboardEntity: dashboardEntity,

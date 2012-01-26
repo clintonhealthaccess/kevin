@@ -12,7 +12,7 @@
 	<tbody>
 		<g:if test="${dsrTable.topLevelLocations != null && !dsrTable.topLevelLocations.empty}">
 			<g:each in="${dsrTable.topLevelLocations}" var="topLevelLocation">
-				<g:render template="/templates/dsr/reportProgramTableTree" model="[location:topLevelLocation, params:params]"/>
+				<g:render template="/templates/dsr/reportProgramTableTree" model="[location:topLevelLocation, level: 0, params:params]"/>
 			</g:each>
 		</g:if>
 	</tbody>

@@ -1,5 +1,4 @@
-<div class="filter">
-	<span class="bold"><g:message code="filter.level.label" /></span>
+<div class="filter">	
 	<g:each in="${levels}" var="level">
 		<% def levelLinkParams = new HashMap(linkParams) %>
 		<% levelLinkParams << [level:level.id+""] %>

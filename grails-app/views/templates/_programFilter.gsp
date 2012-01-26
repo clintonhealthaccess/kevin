@@ -1,6 +1,5 @@
 <div class="filter">
-	<span class="bold"><g:message code="filter.program.label"
-			default="Strategic Program" /></span> <span class="dropdown subnav-dropdown">
+	<span class="dropdown subnav-dropdown">
 		<g:if test="${currentObjective != null}">
 			<a href="#" class="program selected"
 				data-objective="${currentObjective.id}" data-type="objective"> <g:i18n

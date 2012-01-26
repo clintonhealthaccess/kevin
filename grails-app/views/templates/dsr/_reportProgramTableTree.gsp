@@ -1,7 +1,7 @@
 <g:if test="${location.collectsData()}">
 	<tr>
 	  <td>
-	    <span style='margin-left: 40px;'><g:i18n field="${location.names}"/></span>
+	    <span style='margin-left: ${level*20}px;'><g:i18n field="${location.names}"/></span>
 	  </td>
 		<g:each in="${dsrTable.targets}" var="target">
 			<g:if test="${!dsrTable.getReportValue(location, target) != null}">
@@ -12,7 +12,7 @@
 </g:if>
 <g:else>
 	<tr ${dsrTable.topLevelLocations.contains(location) ? 'class="tree_sign_minus"' : 'class="tree_sign_plus"'}>
-		<td><span><g:i18n field="${location.names}"/></span></td>
+		<td><span style='margin-left: ${level*20}px;'><g:i18n field="${location.names}"/></span></td>
 		<g:each in="${dsrTable.targets}" var="target">
 			<td></td>
 		</g:each>
@@ -23,7 +23,7 @@
 				<table>
 					<g:each in="${location.children}" var="child">
 						<g:render template="/templates/dsr/reportProgramTableTree"
-						model="[location:child, params:params]"/>
+						model="[location:child, level: level+1, params:params]"/>
 					</g:each>
 				</table>
 			</g:if>			

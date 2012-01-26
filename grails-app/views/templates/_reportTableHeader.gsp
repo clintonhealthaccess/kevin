@@ -18,7 +18,7 @@
 		<span class='question-default'> <img
 			src="${resource(dir:'images/icons',file:'star_small.png')}" />
 		</span>
-	  <g:i18n field="${currentObjective.names}"/> x <g:i18n field="${currentLocation.names}"/> 
+	  <g:i18n field="${currentObjective.names}"/> x <g:i18n field="${currentLocation.names}"/>
 	</g:elseif>
 	<g:else></g:else>
 </h4>

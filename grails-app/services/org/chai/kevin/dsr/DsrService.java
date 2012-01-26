@@ -14,12 +14,12 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportObjective;
 import org.chai.kevin.reports.ReportService;
-import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
@@ -36,17 +36,20 @@ public class DsrService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
-	private String groupLevel;
+	private String groupLevel; //TODO
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
 	public DsrTable getDsrTable(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types) {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",objective="+objective+")");
 		
-		List<LocationEntity> topLevelLocations = location.getChildren();
+		List<DataLocationEntity> facilities = locationService.getDataEntities(location, types.toArray(new DataEntityType[types.size()]));		
 		
-		List<DataLocationEntity> facilities = locationService.getDataEntities(location, types.toArray(new DataEntityType[types.size()]));
-		Map<LocationEntity, List<DataLocationEntity>> locationMap = reportService.getParents(facilities, locationService.findLocationLevelByCode(groupLevel));
+		List<? extends CalculationEntity> topLevelLocations = new ArrayList<CalculationEntity>();
+		if(location.getChildren() != null)
+			topLevelLocations = location.getChildren();
+		else
+			topLevelLocations = facilities;
 		
 		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, objective);
@@ -58,7 +61,7 @@ public class DsrService {
 			valueMap.put(facility, targetMap);
 		}
 		
-		DsrTable dsrTable = new DsrTable(valueMap, targets, locationMap, topLevelLocations);
+		DsrTable dsrTable = new DsrTable(valueMap, targets, topLevelLocations);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
 		return dsrTable;
 	}

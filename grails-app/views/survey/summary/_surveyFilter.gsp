@@ -1,7 +1,7 @@
 <%@ page import="org.chai.kevin.survey.SummaryPage" %>
 
 <div class="filter">
-	<span class="bold"><g:message code="survey.label" default="Survey" />:</span> <span class="dropdown subnav-dropdown">
+	<span class="dropdown subnav-dropdown">
 		<a class="selected" href="#"> 
 			<g:if test="${currentSection != null}">
 				<g:i18n field="${currentSection.names}" />

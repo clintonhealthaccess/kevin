@@ -31,7 +31,6 @@ package org.chai.kevin.dashboard;
 import grails.plugin.springcache.annotations.Cacheable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,20 +80,32 @@ public class DashboardService {
 	
 	@Transactional(readOnly = true)
 	@Cacheable("dashboardCache")
-	public Dashboard getDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types) {
+	public Dashboard getProgramDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types){
 		
-		List<CalculationEntity> locations = new ArrayList<CalculationEntity>();
-		
+		List<CalculationEntity> locations = new ArrayList<CalculationEntity>();		
 		locations.add(location);
+		
+		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
+		dashboardEntities.addAll(getDashboardEntities(objective));
+		
+		List<LocationEntity> locationPath = calculateLocationPath(location);
+		List<DashboardObjective> objectivePath = getBreadcrumb(objective);
+		return new Dashboard(locations, dashboardEntities, locationPath, objectivePath,
+				getValues(locations, dashboardEntities, period, types));
+	}
+	
+	@Transactional(readOnly = true)
+	@Cacheable("dashboardCache")
+	public Dashboard getLocationDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types) {
+		
+		List<CalculationEntity> locations = new ArrayList<CalculationEntity>();		
 		locations.addAll(location.getChildren(getSkipLocationLevels()));
 		for (DataLocationEntity dataEntity : location.getDataEntities(getSkipLocationLevels())) {
 			if (types.contains(dataEntity.getType())) locations.add(dataEntity);
 		}
 		
-		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();
-		
+		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
 		dashboardEntities.add(getDashboardObjective(objective));		
-		dashboardEntities.addAll(getDashboardEntities(objective));
 		
 		List<LocationEntity> locationPath = calculateLocationPath(location);
 		List<DashboardObjective> objectivePath = getBreadcrumb(objective);

@@ -80,15 +80,7 @@
 	  				<li><a class="${controllerName=='editSurvey'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 	  			</shiro:hasPermission>
 	  			<shiro:hasPermission permission="menu:reports">
-	  				<li><a class="${controllerName in ['dashboard','cost','dsr','maps']?'active':''}" href="#" onclick="return false;"><g:message code="header.navigation.reports" default="Reports"/></a>
-	  					<ul class="submenu">
-	  						<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.dashboard" default="Dashboard"/></a></li>
-	  						<li><a class="${controllerName=='cost'?'active':''}" href="${createLink(controller: 'cost', action:'view')}"><g:message code="header.navigation.costing" default="Costing"/></a></li>
-	  						<li><a class="${controllerName=='dsr'?'active':''}" href="${createLink(controller: 'dsr', action:'view')}"><g:message code="header.navigation.dsr" default="District Summary Reports"/></a></li>
-	  						<li><a class="${controllerName=='maps'?'active':''}" href="${createLink(controller: 'maps', action:'view')}"><g:message code="header.navigation.maps" default="Maps"/></a></li>
-	  						<li><a class="${controllerName=='fct'?'active':''}" href="${createLink(controller: 'fct', action:'view')}"><g:message code="header.navigation.fct" default="Facility Count Tables"/></a></li>
-	  					</ul>
-	  				</li>
+	  				<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports" default="Reports"/></a></li>
 	  			</shiro:hasPermission>
 	  			<shiro:hasPermission permission="menu:admin">
 	  				<li><a class="${controllerName!=null && org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"  onclick="return false;"><g:message code="header.navigation.administration" default="Administration"/></a>

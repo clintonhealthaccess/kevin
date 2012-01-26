@@ -9,51 +9,49 @@
 <g:if test="dashboard.organisations != null && !dashboard.organisations.empty}">
 	<tbody>
 		<g:each in="${dashboard.locations}" var="location">
-			<g:if test="${location != currentLocation}">
-				<tr>
-					<g:set var="percentageValue" />
-					<td><g:if test="${!location.collectsData()}">
-							<a href="${createLink(controller:'dashboard', action:'view', 
-						params:[period: currentPeriod.id, objective: currentObjective.id, location: location.id])}">
-								<g:i18n field="${location.names}" />
-							</a>
-						</g:if> <g:else>
+			<tr>
+				<g:set var="percentageValue" />
+				<td><g:if test="${!location.collectsData()}">
+						<a href="${createLink(controller:'dashboard', action:'view', 
+					params:[period: currentPeriod.id, objective: currentObjective.id, location: location.id])}">
 							<g:i18n field="${location.names}" />
-						</g:else>
-					</td>
-					<td><g:set var="percentageValue" value="${dashboard.getPercentage(location, dashboardEntity)}" />
-						<g:if test="${percentageValue != null}">
-								${percentageValue}%
-						</g:if><g:else>
-							<g:set var="percentageValue" value="N/A" />
-							${percentageValue}
-						</g:else></td>
-					<td>
-						<!-- percentage value --> 
-						<g:if test="${percentageValue == 'N/A'}">
-							<div class="js_bar_horizontal tooltip horizontal-bar"
-								data-entity="${currentObjective.id}"
-								data-percentage="${percentageValue}"
-								style="width:0%;"
-								original-title="${percentageValue}%"></div>
-						</g:if> 
-						<g:elseif test="${percentageValue > 100}">
-							<div class="js_bar_horizontal tooltip horizontal-bar expand-bar"
-								data-entity="${currentObjective.id}"
-								data-percentage="${percentageValue}"
-								style="width:100%;"
-								original-title="${percentageValue}%"></div>
-						</g:elseif> 
-						<g:else>
-							<div class="js_bar_horizontal tooltip horizontal-bar"
-								data-entity="${currentObjective.id}"
-								data-percentage="${percentageValue}"
-								style="width:${percentageValue}%;"
-								original-title="${percentageValue}%"></div>
-						</g:else>
-					</td>
-				</tr>
-			</g:if>
+						</a>
+					</g:if> <g:else>
+						<g:i18n field="${location.names}" />
+					</g:else>
+				</td>
+				<td><g:set var="percentageValue" value="${dashboard.getPercentage(location, dashboardEntity)}" />
+					<g:if test="${percentageValue != null}">
+							${percentageValue}%
+					</g:if><g:else>
+						<g:set var="percentageValue" value="N/A" />
+						${percentageValue}
+					</g:else></td>
+				<td>
+					<!-- percentage value --> 
+					<g:if test="${percentageValue == 'N/A'}">
+						<div class="js_bar_horizontal tooltip horizontal-bar"
+							data-entity="${currentObjective.id}"
+							data-percentage="${percentageValue}"
+							style="width:0%;"
+							original-title="${percentageValue}%"></div>
+					</g:if>
+					<g:elseif test="${percentageValue <= 100}">
+						<div class="js_bar_horizontal tooltip horizontal-bar"
+							data-entity="${currentObjective.id}"
+							data-percentage="${percentageValue}"
+							style="width:${percentageValue}%;"
+							original-title="${percentageValue}%"></div>
+					</g:elseif>
+					<g:else>
+						<div class="js_bar_horizontal tooltip horizontal-bar expand-bar"
+							data-entity="${currentObjective.id}"
+							data-percentage="${percentageValue}"
+							style="width:100%;"
+							original-title="${percentageValue}%"></div>
+					</g:else> 					
+				</td>
+			</tr>
 		</g:each>
 	</tbody>
 </g:if>

@@ -51,10 +51,13 @@ class DsrController extends AbstractController {
 	
 	def view = {
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
+		
 		Period period = getPeriod()
+		List<DataEntityType> locationTypes = getLocationTypes()
 		ReportObjective objective = ReportObjective.get(params.int('objective'));
+		if(objective == null) objective = reportService.getRootObjective()
 		LocationEntity location = LocationEntity.get(params.int('location'));
-		List<DataEntityType> locationTypes = getLocationTypes();
+		if (location == null) location = locationService.getRootLocation()
 		
 		def dsrTable = null
 		if (period != null && objective != null && location != null) {
@@ -70,10 +73,10 @@ class DsrController extends AbstractController {
 			currentObjective: objective,
 			objectiveRoot: reportService.getRootObjective(),
 			currentLocation: location,
+			locationRoot: locationService.getRootLocation(),
 			currentLocationTypes: locationTypes,
 			locationTypes: locationService.listTypes(),
-			objectives: ReportObjective.list(),
-		    locationRoot: locationService.getRootLocation()
+//			objectives: ReportObjective.list()
 		]
 	}
 	

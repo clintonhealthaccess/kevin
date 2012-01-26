@@ -24,13 +24,13 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target) != null
-		dsrTable.getLocationMap().get(LocationEntity.findByCode(BURERA)).equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
+		dsrTable.getTopLevelLocations().equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
 
 		when:
 		dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		
 		then:
-		dsrTable.getLocationMap().get(LocationEntity.findByCode(BURERA)).equals([DataLocationEntity.findByCode(BUTARO)])
+		dsrTable.getTopLevelLocations().equals([DataLocationEntity.findByCode(BUTARO)])
 
 	}
 	

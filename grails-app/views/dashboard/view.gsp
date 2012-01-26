@@ -25,19 +25,19 @@
 				<ul class='clearfix' id='questions'>
   					<li class='question push-20'>
 						<g:render template="/templates/reportTableHeader" model="[tab:'dashboard', table:'program']"/>						
-						<g:if test="dashboard != null">
-							<g:render template="/templates/dashboard/reportTableCompareFilter" model="[table:'program', params:params]"/>
+						<g:if test="programDashboard != null">
+							<g:render template="/templates/dashboard/reportTableCompareFilter" model="[table:'program', dashboard:programDashboard, params:params]"/>
 							<div class='horizontal-graph-wrap'>
-								<g:render template="/templates/dashboard/reportProgramTable" model="[params:params]"/>
+								<g:render template="/templates/dashboard/reportProgramTable" model="[dashboard:programDashboard, params:params]"/>
 			                </div>
 		                </g:if>
 	                </li>
 	                <li class='question push-10'>
 		                <g:render template="/templates/reportTableHeader" model="[tab:'dashboard', table:'location']"/>						
-		                <g:if test="dashboard != null">
-		                <g:render template="/templates/dashboard/reportTableCompareFilter" model="[table:'location',params:params]"/>
+		                <g:if test="locationDashboard != null">
+		                <g:render template="/templates/dashboard/reportTableCompareFilter" model="[table:'location', dashboard:locationDashboard, params:params]"/>
 							<div class='horizontal-graph-wrap'>
-								<g:render template="/templates/dashboard/reportLocationTable" model="[params:params]"/>			                  
+								<g:render template="/templates/dashboard/reportLocationTable" model="[dashboard:locationDashboard, params:params]"/>			                  
 							</div>
 		                </g:if>
 		            </li>

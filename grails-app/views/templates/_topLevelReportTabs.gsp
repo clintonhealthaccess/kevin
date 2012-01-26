@@ -1,4 +1,10 @@
 <ul class='horizontal' id='tab-nav'>
+	
+	<% def tabLinkParams = new HashMap(linkParams) %>
+	<% tabLinkParams.remove("dashboardEntity") %>
+	<% tabLinkParams['objective'] = currentObjective.id+"" %>
+	<% linkParams = tabLinkParams %>
+	
 	<li><a ${tab == 'dashboard' ? 'class="selected"':''}
 	href="${createLink(controller:'dashboard', action:'view', params:linkParams)}">Performance</a></li>
 	<li><a ${tab == 'dsr' ? 'class="selected"':''}
