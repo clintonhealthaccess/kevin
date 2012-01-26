@@ -32,6 +32,31 @@
 					<li><a class="${languageService.currentLanguage==language?'no-link':''}" href="${createLink(controller: controllerName, action: actionName, params: params)}">${language}</a></li>
 				</g:each>
 			</ul>
+			
+			<ul class="locales" id="top_nav">
+			  <shiro:user>
+					<li><a class="${controllerName=='auth'?'active':''}" href="${createLinkWithTargetURI(controller: 'auth', action:'newPassword')}"><g:message code="header.navigation.password" default="My Account"/></a></li>
+  				</li>
+  			</shiro:user>
+				<shiro:user>
+					<li>
+						<a class="no-link" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout" default="Logout"/></a>
+					</li>
+				</shiro:user>
+				<shiro:notUser>
+					<g:if test="${controllerName != 'auth' || actionName != 'login'}">
+						<li>
+							<a class="no-link" href="${createLink(controller: 'auth', action: 'login')}"><g:message code="header.labels.login" default="Login"/></a>
+						</li>
+					</g:if>
+					<g:if test="${controllerName != 'auth' || actionName != 'register'}">
+						<li>
+							<a class="no-link" href="${createLink(controller: 'auth', action: 'register')}"><g:message code="header.labels.register" default="Request access"/></a>
+						</li>
+					</g:if>
+				</shiro:notUser>
+			</ul>
+			
 			<h2>
 				<span class="right"><img src="${resource(dir:'images',file:'rwanda.png')}" alt='Rwanda coat of arms' width='33' /></span>
 				<span><g:message code="header.labels.moh"/></span>
@@ -41,29 +66,12 @@
 			<ul id="logout">
 				<shiro:hasPermission permission="admin">
 					<li>
-						<a class="redmine follow" target="_blank" href="http://districthealth.moh.gov.rw/redmine"><g:message code="header.labels.redmine" default="Found a bug? Go to REDMINE"/></a>
+						<a class="redmine follow" target="_blank" href="http://districthealth.moh.gov.rw/redmine"><g:message code="header.labels.redmine" default="Report a bug"/></a>
 	   				</li>
 				</shiro:hasPermission>
 				<li>
-					<a class="redmine follow" href="${createLink(uri:'/helpdesk')}"><g:message code="header.labels.helpdesk" default="Questions? Call the Helpdesk 114"/></a>
+					<a class="redmine follow" href="${createLink(uri:'/helpdesk')}"><g:message code="header.labels.helpdesk" default="Helpdesk 114"/></a>
 				</li>
-				<shiro:user>
-					<li>
-						<a class="follow" href="${createLink(controller: 'auth', action: 'signOut')}"><g:message code="header.labels.logout" default="Logout"/></a>
-					</li>
-				</shiro:user>
-				<shiro:notUser>
-					<g:if test="${controllerName != 'auth' || actionName != 'login'}">
-						<li>
-							<a class="follow" href="${createLink(controller: 'auth', action: 'login')}"><g:message code="header.labels.login" default="Login"/></a>
-						</li>
-					</g:if>
-					<g:if test="${controllerName != 'auth' || actionName != 'register'}">
-						<li>
-							<a class="follow" href="${createLink(controller: 'auth', action: 'register')}"><g:message code="header.labels.register" default="Request access"/></a>
-						</li>
-					</g:if>
-				</shiro:notUser>
 			</ul>
 		</div>
 			
@@ -104,13 +112,6 @@
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>
-	  			<shiro:user>
-	  				<li><a class="${controllerName in ['auth']?'active':''}" href="#" onclick="return false;"><g:message code="header.navigation.account" default="My Account"/></a>
-	  					<ul class="submenu">
-	  						<li><a class="${controllerName=='auth'?'active':''}" href="${createLinkWithTargetURI(controller: 'auth', action:'newPassword')}"><g:message code="header.navigation.password" default="Change password"/></a></li>
-	  					</ul>
-	  				</li>
-	  			</shiro:user>
 	  		</ul>
 	  	</div>
 	</div>			

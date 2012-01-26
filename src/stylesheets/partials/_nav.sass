@@ -1,7 +1,6 @@
 
 // Languages switch
-#switcher
-  right: 0
+#switcher, #top_nav
   position: absolute
   top: 0
   +pie-clearfix
@@ -23,6 +22,11 @@
     &:hover, &:focus, &.no-link
       background: $primary
       color: #fff
+      
+#switcher
+  left: 0
+#top_nav
+  right: 0
 
 
 // Main navigation
@@ -51,9 +55,9 @@
     border-right: 1px solid $primary_light
     color: #fff
     display: inline-block
-    font-size: 13px
+    font-size: 12px
     font-weight: bold
-    padding: 14px 25px
+    padding: 15px 22px
     text-decoration: none
     +text-shadow(rgba(0, 0, 0, 0.3), 0, 1px, 0)
     &:hover, &:focus, &.active
@@ -170,6 +174,10 @@
       background: url("../images/icons/star.png") no-repeat 14px 50% #fcfcfc
       &:hover, &:focus
         background: url("../images/icons/star_hover.png") no-repeat 14px 50%
+    &.survey
+      background: url("../images/icons/survey.png") no-repeat 14px 50% #fcfcfc
+      &:hover, &:focus
+        background: url("../images/icons/survey_hover.png") no-repeat 14px 50% #fcfcfc
     &.location
       background: url("../images/icons/marker.png") no-repeat 14px 50% #fcfcfc
       &:hover, &:focus

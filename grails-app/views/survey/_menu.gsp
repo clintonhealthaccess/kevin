@@ -9,6 +9,7 @@
 		
 			<a class="item ${surveyPage.objective?.id == objective.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[location: surveyPage.location.id, objective:objective.id])}">
 				<span><g:i18n field="${objective.names}" /></span>
+				
 				<span class="item-status">
 					<span class="objective-status-complete objective-status ${enteredObjective.displayedStatus!='complete'?'hidden':''}"></span>
 					<span class="objective-status-invalid  objective-status ${enteredObjective.displayedStatus!='invalid'?'hidden':''}"></span>
