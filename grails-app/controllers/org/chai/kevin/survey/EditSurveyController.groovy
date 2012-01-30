@@ -136,7 +136,7 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
 
 		// TODO make sure this is a facility
-		CalculationEntity entity = locationService.getCalculationEntity(CalculationEntity.class, params.int('location'))
+		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
 		Survey survey = Survey.get(params.int('survey'))
 		
 		surveyPageService.refresh(entity, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
