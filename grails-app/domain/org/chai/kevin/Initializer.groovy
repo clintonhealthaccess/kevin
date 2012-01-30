@@ -642,7 +642,7 @@ class Initializer {
 
 			def nursea1 = new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
-					calculation: calculation1, 
+					calculation: calculation1, objective: staffing,
 					weight: 1, order: 1).save(failOnError: true, flush:true)
 
 			def calculation2 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Average constant 20", timestamp:new Date())
@@ -650,7 +650,7 @@ class Initializer {
 
 			def nursea2 = new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
-					calculation: calculation2, 
+					calculation: calculation2,  objective: staffing,
 					weight: 1, order: 2).save(failOnError: true, flush:true)
 
 			def calculation3 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Average 1", timestamp:new Date())
@@ -658,7 +658,7 @@ class Initializer {
 
 			def target1 = new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
-					calculation: calculation3, 
+					calculation: calculation3,  objective: staffing,
 					weight: 1, order: 3).save(failOnError: true, flush:true)
 
 			def calculation4 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Average 2", timestamp:new Date())
@@ -666,7 +666,7 @@ class Initializer {
 
 			def missexpr = new DashboardTarget(
 					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
-					calculation: calculation4, 
+					calculation: calculation4,  objective: staffing,
 					weight: 1, order: 4).save(failOnError: true, flush:true)
 
 			def calculation5 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 3", timestamp:new Date())
@@ -674,7 +674,7 @@ class Initializer {
 
 			def missdata = new DashboardTarget(
 					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
-					calculation: calculation5, 
+					calculation: calculation5,  objective: staffing,
 					weight: 1, order: 5).save(failOnError: true, flush:true)
 
 			def calculation6 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 4", timestamp:new Date())
@@ -682,16 +682,9 @@ class Initializer {
 
 			def enume = new DashboardTarget(
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
-					calculation: calculation6,
+					calculation: calculation6, objective: staffing,
 					weight: 1, order: 6).save(failOnError: true, flush:true)
 
-			nursea1.setObjective(staffing)
-			nursea2.setObjective(staffing)
-			target1.setObjective(staffing)
-			missexpr.setObjective(staffing)
-			missdata.setObjective(staffing)
-			enume.setObjective(staffing)
-			
 			nursea1.save(failOnError: true)
 			nursea2.save(failOnError: true)
 			target1.save(failOnError: true)

@@ -10,6 +10,7 @@ import org.chai.kevin.JaqlService
 import org.chai.kevin.LocationService
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
+import org.chai.kevin.dashboard.DashboardPercentageService;
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.planning.ActivityService;
@@ -191,11 +192,16 @@ beans = {
 
 	dashboardService(DashboardService) {
 		reportService = ref("reportService")
-		infoService = ref("infoService")
-		valueService = ref("valueService")
 		locationService = ref("locationService")
 		sessionFactory = ref("sessionFactory")
+		dashboardPercentageService = ref("dashboardPercentageService")
 		skipLevels = dashboardSkipLevels
+	}
+	
+	dashboardPercentageService(DashboardPercentageService) {
+//		infoService = ref("infoService")
+		valueService = ref("valueService")
+		dashboardService = ref("dashboardService")
 	}
 
 	activityService(ActivityService) {

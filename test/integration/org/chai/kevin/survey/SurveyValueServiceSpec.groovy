@@ -142,7 +142,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, null).isEmpty()
 		
 		when:
-		def value1 = newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL)
+		def value1 = newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		
 		then:
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, null).equals([value1])
@@ -150,7 +150,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), section2, null, null).isEmpty()
 		
 		when:
-		def value2 = newSurveyEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL)
+		def value2 = newSurveyEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		
 		then:
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, null).equals([value1, value2])
@@ -180,7 +180,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, null).isEmpty()
 		
 		when:
-		def value1 = newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL)
+		def value1 = newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		
 		then:
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, null).equals([value1])
@@ -188,7 +188,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, objective2, null).isEmpty()
 		
 		when:
-		def value2 = newSurveyEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL)
+		def value2 = newSurveyEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		
 		then:
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, null).equals([value1, value2])
@@ -219,7 +219,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, null).isEmpty()
 		
 		when:
-		def value1 = newSurveyEnteredValue(element1, period1, DataLocationEntity.findByCode(KIVUYE), Value.NULL)
+		def value1 = newSurveyEnteredValue(element1, period1, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		
 		then:
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, null).equals([value1])
@@ -227,7 +227,7 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, survey2).isEmpty()
 		
 		when:
-		def value2 = newSurveyEnteredValue(element2, period2, DataLocationEntity.findByCode(KIVUYE), Value.NULL)
+		def value2 = newSurveyEnteredValue(element2, period2, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		
 		then:
 		surveyValueService.getSurveyEnteredValues(DataLocationEntity.findByCode(KIVUYE), null, null, null).equals([value1, value2])

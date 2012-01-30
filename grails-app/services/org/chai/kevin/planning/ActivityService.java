@@ -35,7 +35,7 @@ public class ActivityService {
 	private RawDataElementValue getDataElementValue(ActivityType type, DataLocationEntity location, Period period) {
 		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getDataElement(), location, period);
 		if (dataElementValue == null) {
-			dataElementValue = new RawDataElementValue(type.getDataElement(), location, period, Value.NULL);
+			dataElementValue = new RawDataElementValue(type.getDataElement(), location, period, Value.NULL_INSTANCE());
 			valueService.save(dataElementValue);
 		}
 		return dataElementValue;

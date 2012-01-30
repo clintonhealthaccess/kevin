@@ -66,7 +66,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 
 		when:
 		dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		newRawDataElementValue(dataElement, period, entity, Value.NULL)
+		newRawDataElementValue(dataElement, period, entity, Value.NULL_INSTANCE())
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.delete()
 
@@ -95,7 +95,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		dataElement.type.equals(Type.TYPE_BOOL())
 
 		when:
-		newRawDataElementValue(dataElement, period, entity, Value.NULL)
+		newRawDataElementValue(dataElement, period, entity, Value.NULL_INSTANCE())
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.params.code = dataElement.code
 		rawDataElementController.params['type.jsonValue'] = Type.TYPE_STRING().getJsonValue()

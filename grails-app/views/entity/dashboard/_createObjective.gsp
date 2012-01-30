@@ -14,10 +14,12 @@
 		<g:input name="weight" label="Weight" bean="${entity}" field="weight"/>
 		<g:input name="order" label="Order" bean="${entity}" field="order"/>
 		
-		<input type="hidden" name="id" value="${entity.id}"></input>
+		<g:if test="${entity.id != null}">
+			<input type="hidden" name="id" value="${entity.id}"></input>
+		</g:if>
 		
 		<div class="row">
-			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
+			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>
 			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
 		</div>
     </g:form>

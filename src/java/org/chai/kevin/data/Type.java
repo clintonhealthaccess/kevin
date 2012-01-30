@@ -286,10 +286,10 @@ public class Type extends JSONValue {
 						
 						for (Integer index : filteredIndexList) {
 							Value oldListValue = null;
-							if (oldValue.isNull()) oldListValue = Value.NULL;
+							if (oldValue.isNull()) oldListValue = Value.NULL_INSTANCE();
 							else {
 								if (index < oldValue.getListValue().size()) oldListValue = oldValue.getListValue().get(index);
-								else oldListValue = Value.NULL;
+								else oldListValue = Value.NULL_INSTANCE();
 							}
 							array1.add(getListType().mergeValueFromMap(oldListValue, map, suffix+"["+index+"]", attributes).getJsonObject());
 						}
@@ -304,10 +304,10 @@ public class Type extends JSONValue {
 						JSONObject element = new JSONObject();
 						element.put(Value.MAP_KEY, entry.getKey());
 						Value oldMapValue = null;
-						if (oldValue.isNull()) oldMapValue = Value.NULL;
+						if (oldValue.isNull()) oldMapValue = Value.NULL_INSTANCE();
 						else {
 							oldMapValue = oldValue.getMapValue().get(entry.getKey());
-							if (oldMapValue == null) oldMapValue = Value.NULL;
+							if (oldMapValue == null) oldMapValue = Value.NULL_INSTANCE();
 						}
 						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).mergeValueFromMap(oldMapValue, map, suffix+"."+entry.getKey(), attributes).getJsonObject());
 						array.add(element);
@@ -339,7 +339,7 @@ public class Type extends JSONValue {
 	@SuppressWarnings("unchecked")
 	@Transient
 	public Value getValue(Object value) {
-		if (value == null) return Value.NULL;
+		if (value == null) return Value.NULL_INSTANCE();
 		try {
 			JSONObject object = new JSONObject();
 			switch (getType()) {
@@ -388,7 +388,7 @@ public class Type extends JSONValue {
 	}
 	
 	public Value getValueFromJaql(String jaqlString) {
-		if (jaqlString == null || jaqlString.equals("null")) return Value.NULL;
+		if (jaqlString == null || jaqlString.equals("null")) return Value.NULL_INSTANCE();
 		try {
 			JSONObject object = new JSONObject();
 			switch (getType()) {

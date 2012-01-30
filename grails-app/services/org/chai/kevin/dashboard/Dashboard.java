@@ -41,18 +41,14 @@ public class Dashboard {
 	private List<DashboardEntity> dashboardEntities;
 	
 	private List<LocationEntity> locationPath;
-	private List<DashboardObjective> objectivePath;
-	
 	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values;
 	
 	public Dashboard(List<CalculationEntity> locations, List<DashboardEntity> dashboardEntities,
-			List<LocationEntity> locationPath, List<DashboardObjective> objectivePath,
-			Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values
+			List<LocationEntity> locationPath, Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values
 	) {
 		this.locations = locations;
 		this.dashboardEntities = dashboardEntities;
 		this.locationPath = locationPath;
-		this.objectivePath = objectivePath;
 		this.values = values;
 	}
 	
@@ -62,10 +58,6 @@ public class Dashboard {
 	
 	public List<DashboardEntity> getObjectiveEntities() {
 		return dashboardEntities;
-	}
-	
-	public List<DashboardObjective> getObjectivePath() {
-		return objectivePath;
 	}
 	
 	public List<LocationEntity> getLocationPath() {

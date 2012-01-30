@@ -121,12 +121,12 @@ public class ExpressionService {
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null) {
 			statusValuePair.status = Status.DOES_NOT_APPLY;
-			statusValuePair.value = Value.NULL;
+			statusValuePair.value = Value.NULL_INSTANCE();
 		}
 		else {
 			Map<String, T> datas = getDataInExpression(expression, clazz);
 			if (hasNullValues(datas.values())) {
-				statusValuePair.value = Value.NULL;
+				statusValuePair.value = Value.NULL_INSTANCE();
 				statusValuePair.status = Status.MISSING_DATA_ELEMENT;
 			}
 			else {
@@ -140,7 +140,7 @@ public class ExpressionService {
 				}
 				
 				if (hasNullValues(valueMap.values())) {
-					statusValuePair.value = Value.NULL;
+					statusValuePair.value = Value.NULL_INSTANCE();
 					statusValuePair.status = Status.MISSING_VALUE;
 				}
 				else {
@@ -149,7 +149,7 @@ public class ExpressionService {
 						statusValuePair.status = Status.VALID;
 					} catch (IllegalArgumentException e) {
 						log.warn("there was an error evaluating expression: "+expression, e);
-						statusValuePair.value = Value.NULL;
+						statusValuePair.value = Value.NULL_INSTANCE();
 						statusValuePair.status = Status.ERROR;
 					}
 				}

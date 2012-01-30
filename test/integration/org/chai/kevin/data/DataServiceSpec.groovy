@@ -198,7 +198,7 @@ class DataServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def type = newDataEntityType(HEALTH_CENTER_GROUP)
 		def location = newDataLocationEntity(KIVUYE, type)
-		newRawDataElementValue(dataElement, period, location, Value.NULL)
+		newRawDataElementValue(dataElement, period, location, Value.NULL_INSTANCE())
 		
 		dataService.delete(dataElement)
 		
@@ -214,7 +214,7 @@ class DataServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def type = newDataEntityType(HEALTH_CENTER_GROUP)
 		def location = newDataLocationEntity(KIVUYE, type)
-		newNormalizedDataElementValue(dataElement, location, period, Status.VALID, Value.NULL)
+		newNormalizedDataElementValue(dataElement, location, period, Status.VALID, Value.NULL_INSTANCE())
 		
 		dataService.delete(dataElement)
 		
@@ -230,7 +230,7 @@ class DataServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def type = newDataEntityType(HEALTH_CENTER_GROUP)
 		def location = newDataLocationEntity(KIVUYE, type)
-		newSumPartialValue(calculation, period, location, DataEntityType.findByCode(HEALTH_CENTER_GROUP), Value.NULL)
+		newSumPartialValue(calculation, period, location, DataEntityType.findByCode(HEALTH_CENTER_GROUP), Value.NULL_INSTANCE())
 
 		dataService.delete(calculation)
 		

@@ -29,12 +29,15 @@ package org.chai.kevin.dashboard
 */
 
 import grails.plugin.springcache.annotations.CacheFlush
+
+import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.reports.ReportObjective;
 
+class DashboardTargetController extends AbstractEntityController {
 
-class DashboardTargetController extends AbstractObjectiveController {
-
+	def dataService
+	
 	def getEntity(def id) {
 		return DashboardTarget.get(id)
 	}
@@ -48,7 +51,7 @@ class DashboardTargetController extends AbstractObjectiveController {
 	}
 	
 	def getTemplate() {
-		return '/dashboard/createTarget'
+		return '/entity/dashboard/createTarget'
 	}
 	
 	def deleteEntity(def entity) {
@@ -56,18 +59,14 @@ class DashboardTargetController extends AbstractObjectiveController {
 	}
 	
 	def getModel(def entity) {
-		def model = super.getModel(entity)
-		
 		def calculations = []
 		if (entity.calculation != null) calculations.add(entity.calculation)
 		
 		def dashboardObjectives = DashboardObjective.list()
 		def reportObjectives = []
-		for(objective in dashboardObjectives)
-			reportObjectives.add(objective.getObjective())
+		for (objective in dashboardObjectives) reportObjectives.add(objective.getObjective())
 		
-		model << [entity: entity, objectives: reportObjectives, calculations: calculations]
-		return model;
+		return [entity: entity, objectives: reportObjectives, calculations: calculations]
 	}
 	
 	def bindParams(def entity) {
@@ -93,5 +92,18 @@ class DashboardTargetController extends AbstractObjectiveController {
 	@CacheFlush("dashboardCache")
 	def delete = {		
 		super.delete()
+	}
+	
+	def list = {
+		adaptParamsForList()
+		
+		List<DashboardTarget> targets = DashboardTarget.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: targets,
+			template: "dashboard/targetList",
+			code: getLabel(),
+			entityCount: DashboardTarget.count()
+		])
 	}
 }

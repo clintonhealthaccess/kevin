@@ -131,14 +131,14 @@ class CalculationValueUnitSpec extends UnitSpec {
 		value = new AverageValue([partialValue], average, null, null)
 		
 		then:
-		value.getValue().equals(Value.NULL)
+		value.getValue().equals(Value.NULL_INSTANCE())
 		
 		when:
 		partialValue = new AveragePartialValue(value: v("0"), numberOfFacilities: 0)
 		value = new AverageValue([partialValue], average, null, null)
 
 		then:
-		value.getValue().equals(Value.NULL)
+		value.getValue().equals(Value.NULL_INSTANCE())
 	}
 	
 	def "test aggregation with invalid values"() {
@@ -154,7 +154,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		value = new AggregationValue([partialValue1, partialValue2], aggregation, null, null)
 		
 		then:
-		value.getValue().equals(Value.NULL)
+		value.getValue().equals(Value.NULL_INSTANCE())
 		
 		when:
 		partialValue1 = new AggregationPartialValue(value: v("0"), expressionData: '\$1')
@@ -162,7 +162,7 @@ class CalculationValueUnitSpec extends UnitSpec {
 		value = new AggregationValue([partialValue1, partialValue2], aggregation, null, null)
 
 		then:
-		value.getValue().equals(Value.NULL)
+		value.getValue().equals(Value.NULL_INSTANCE())
 	}
 	
 	

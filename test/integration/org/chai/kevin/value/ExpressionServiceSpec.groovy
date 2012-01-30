@@ -66,7 +66,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period)
 		
 		then:
-		result.value == Value.NULL
+		result.value == Value.NULL_INSTANCE()
 		result.status == Status.MISSING_DATA_ELEMENT
 		
 		when: "value is missing for facility"
@@ -74,14 +74,14 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period)
 		
 		then:
-		result.value == Value.NULL
+		result.value == Value.NULL_INSTANCE()
 		result.status == Status.MISSING_VALUE
 
 		when: "expression is missing for facility type"
 		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(KIVUYE), period)
 				
 		then:
-		result.value == Value.NULL
+		result.value == Value.NULL_INSTANCE()
 		result.status == Status.DOES_NOT_APPLY
 		
 		when: "everything is fine"
@@ -94,12 +94,12 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result.status == Status.VALID
 			
 		when: "null value"
-		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL)
+		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id+''):[(HEALTH_CENTER_GROUP):"\$"+dataElement.id]]))
 		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(KIVUYE), period)
 		
 		then:
-		result.value == Value.NULL
+		result.value == Value.NULL_INSTANCE()
 		result.status == Status.ERROR
 	}
 	
@@ -116,7 +116,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		then:
 		result.status == Status.ERROR
-		result.value == Value.NULL
+		result.value == Value.NULL_INSTANCE()
 		
 		where:
 		type				| formula
@@ -365,7 +365,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		then:
 //		result.hasMissingValues == false
 //		result.hasMissingExpression == true
-//		result.value == Value.NULL
+//		result.value == Value.NULL_INSTANCE()
 //		
 //		where:
 //		locationName << [BUTARO, KIVUYE, BURERA, NORTH, RWANDA]
@@ -419,7 +419,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		
 //		where:
 //		locationName	| value		| missingValues
-//		BUTARO				| Value.NULL| true
+//		BUTARO				| Value.NULL_INSTANCE()| true
 //		KIVUYE				| v("1")	| false
 //		BURERA				| v("1")	| true
 //		NORTH				| v("1")	| true

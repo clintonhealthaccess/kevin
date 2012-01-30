@@ -50,51 +50,42 @@ class DashboardController extends AbstractController {
 		redirect (action: 'view', params: params)
 	}
 	
-	def explain = {
-		Period period = Period.get(params.int('period'))
-		DashboardEntity dashboardEntity = getDashboardEntity()
-		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
-
-		List<DataEntityType> locationTypes = getLocationTypes();
-		def info = dashboardService.getExplanation(entity, dashboardEntity, period, new HashSet(locationTypes))
-		def types = DataEntityType.list()
-		[
-			info: info, 
-			types: types, 
-			dashboardEntity: dashboardEntity
-		]
-	}
+//	def explain = {
+//		Period period = Period.get(params.int('period'))
+//		DashboardEntity dashboardEntity = getDashboardEntity()
+//		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
+//
+//		List<DataEntityType> locationTypes = getLocationTypes();
+//		def info = dashboardService.getExplanation(entity, dashboardEntity, period, new HashSet(locationTypes))
+//		def types = DataEntityType.list()
+//		[
+//			info: info, 
+//			types: types, 
+//			dashboardEntity: dashboardEntity
+//		]
+//	}
 	
-	protected def redirectIfDifferent(def period, def objective, def dashboardEntity, def location) {
-		if (period.id+'' != params['period'] || objective.id+'' != params['objective'] ||
-			dashboardEntity.id+'' != params['dashboardEntity'] || location.id+'' != params['location'] ) {
+	protected def redirectIfDifferent(def period, def objective, def location) {
+		if (period.id+'' != params['period'] || objective.id+'' != params['objective'] || location.id+'' != params['location'] ) {
 			
 			if (log.isInfoEnabled()) {
 				log.info ("redirecting to action: "+params['action']+
 					", period: "+period.id+
 					", objective: "+objective.id+
-					", dashboardEntity: "+dashboardEntity.id+
 					", location: "+location.id);
 			}
 			
 			redirect (controller: 'dashboard', action: params['action'],
-				params: [period: period.id, objective: objective.id, dashboardEntity: dashboardEntity.id, location: location.id]);
+				params: [period: period.id, objective: objective.id, location: location.id]);
 	
 		}
 	}
 	
 	private def getDashboardEntity(def reportObjective) {		
-		DashboardEntity entity = null
-		entity = DashboardObjective.get(params.int('dashboardEntity'));
-		if(entity == null){
-			entity = DashboardTarget.get(params.int('dashboardEntity'));
-			if(entity == null && reportObjective != null){
-				entity = dashboardService.getDashboardObjective(reportObjective)
-				if(entity == null){
-					entity = dashboardService.getDashboardObjective(reportService.getRootObjective())
-				}
-			}
-		}		
+		DashboardEntity entity = dashboardService.getDashboardObjective(reportObjective)
+		if (entity == null) {
+			entity = dashboardService.getDashboardObjective(reportService.getRootObjective())
+		}
 		return entity
 	}
 	
@@ -118,10 +109,9 @@ class DashboardController extends AbstractController {
 			if (log.isInfoEnabled()){
 				log.info("compare dashboard for period: "+period.id+
 					", location: "+location.id+
-					", objective:"+reportObjective.id+
-					", dashboardEntity: " + dashboardEntity.id);
+					", objective:"+reportObjective.id);
 			}
-			redirectIfDifferent(period, reportObjective, dashboardEntity, location)
+			redirectIfDifferent(period, reportObjective, location)
 			
 			programDashboard = dashboardService.getProgramDashboard(location, reportObjective, period, new HashSet(locationTypes));
 			locationDashboard = dashboardService.getLocationDashboard(location, reportObjective, period, new HashSet(locationTypes));
@@ -152,11 +142,11 @@ class DashboardController extends AbstractController {
 		def dashboard = null
 		
 		Period period = getPeriod()
-		List<DataEntityType> locationTypes = getFacilityTypes()
+		List<DataEntityType> locationTypes = getLocationTypes()
 		ReportObjective reportObjective = ReportObjective.get(params.int('objective'))	
 		if(reportObjective == null) reportObjective = reportService.getRootObjective()
 		DashboardEntity dashboardEntity = getDashboardEntity(reportObjective)
-		LocationEntity location = LocationEntity.get(params.int('organisation'))
+		LocationEntity location = LocationEntity.get(params.int('location'))
 		if (location == null) location = locationService.getRootLocation()
 		
 		if (dashboardEntity != null) {						
@@ -168,7 +158,7 @@ class DashboardController extends AbstractController {
 					", objective:"+reportObjective.id+
 					", dashboardEntity: " + dashboardEntity.id);
 			}
-			redirectIfDifferent(period, reportObjective, dashboardEntity, location)
+			redirectIfDifferent(period, reportObjective, location)
 			
 			dashboard = dashboardService.getCompareDashboard(location, reportObjective, period, new HashSet(locationTypes));
 			

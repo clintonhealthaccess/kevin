@@ -62,7 +62,7 @@ public class JaqlService {
 		}
 		
 		JsonValue jsonValue = getMe().getJsonValue(expression, jaqlVariables);
-		if (jsonValue == null) return Value.NULL;
+		if (jsonValue == null) return Value.NULL_INSTANCE();
 		return type.getValueFromJaql(jsonValue.toString());
 	}
 	

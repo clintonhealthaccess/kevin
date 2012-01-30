@@ -75,7 +75,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def calculated = new Date()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
-		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.VALID, Value.NULL)
+		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.VALID, Value.NULL_INSTANCE())
 		def timestamp = normalizedDataElementValue.timestamp
 		
 		then:

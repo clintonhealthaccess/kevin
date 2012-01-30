@@ -7,7 +7,7 @@
 	<select id="options-${random}" name="${name}" ${multiple?'multiple':''}>
 		<g:if test="${!multiple}"><option value="">-- Please select from the list --</option></g:if>
 		<g:each in="${from}" var="item" status="i">
-			<option value="${item[optionKey]}" ${(multiple?value.contains(item[optionKey]):item[optionKey].equals(value))?'selected':''}>
+			<option value="${item[optionKey]}" ${(multiple?value?.contains(item[optionKey]):item[optionKey].equals(value))?'selected':''}>
 				<g:if test="${values!=null}">
 					${values[i]}
 				</g:if>

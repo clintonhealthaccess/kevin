@@ -27,7 +27,9 @@ public class Value extends JSONValue {
 	
 	private static final String[] KEYWORDS = new String[]{MAP_KEY, MAP_VALUE, VALUE_STRING};
 	
-	public static final Value NULL = new Value("{"+VALUE_STRING+": null}");
+	public static final Value NULL_INSTANCE() {
+		return new Value("{"+VALUE_STRING+": null}");
+	}
 	
 	public Value() {super();}
 	
@@ -73,7 +75,7 @@ public class Value extends JSONValue {
 	
 	@Transient
 	public Value getValueWithoutAttributes() {
-		if (isNull()) return Value.NULL;
+		if (isNull()) return Value.NULL_INSTANCE();
 		else {
 			JSONObject object = new JSONObject();
 			try {

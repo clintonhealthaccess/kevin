@@ -44,7 +44,7 @@ class HomeController {
 			redirect (controller: "editSurvey", action: "view")
 		}
 		else {
-			redirect (controller: "dsr", action: "view")
+			redirect (controller: "dashboard", action: "view")
 		}
 	}
 	

@@ -147,7 +147,9 @@ security.shiro.authc.required = false
 			error  'grails.app.services.org.grails.plugin.resource',
 				   'grails.app.resourceMappers.org.grails.plugin.resource',
 				   'grails.app.taglib.org.grails.plugin.resource',
-				   'grails.app.resourceMappers.org.grails.plugin.cachedresources'
+				   'grails.app.resourceMappers.org.grails.plugin.cachedresources',
+				   'grails.app.services.grails.plugin.springcache',
+				   'grails.plugin.springcache'
 			
 			error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
 				   'org.codehaus.groovy.grails.web.pages', //  GSP
@@ -159,8 +161,6 @@ security.shiro.authc.required = false
 				   'net.sf.ehcache.hibernate',
 				   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
 				   'org.chai.kevin.JaqlService',
-				   'grails.app.services.grails.plugin.springcache',
-				   'grails.plugin.springcache',
 				   'org.springframework',
 				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.hibernate'

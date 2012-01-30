@@ -51,6 +51,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
@@ -256,7 +257,7 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refresh(LocationEntity entity, Survey survey, boolean closeIfComplete) {
+	public void refresh(CalculationEntity entity, Survey survey, boolean closeIfComplete) {
 		List<DataLocationEntity> facilities = locationService.getDataEntities(entity);
 	
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
@@ -339,11 +340,11 @@ public class SurveyPageService {
 		SurveyEnteredValue enteredValue = getSurveyEnteredValue(facility, element);
 		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), facility, survey.getPeriod());
 		if (rawDataElementValue != null) enteredValue.setValue(rawDataElementValue.getValue());
-		else enteredValue.setValue(Value.NULL);
+		else enteredValue.setValue(Value.NULL_INSTANCE());
 		if (survey.getLastPeriod() != null) {
 			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), facility, survey.getLastPeriod());
 			if (lastDataValue != null) enteredValue.setLastValue(lastDataValue.getValue());
-			else enteredValue.setLastValue(Value.NULL);
+			else enteredValue.setLastValue(Value.NULL_INSTANCE());
 		}
 		surveyValueService.save(enteredValue);
 	}
@@ -530,7 +531,7 @@ public class SurveyPageService {
 			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(entity.getType())) {
 				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(entity, elementInQuestion);
 
-				if (reset) enteredValueForElementInQuestion.getValue().setJsonObject(Value.NULL.getJsonObject());
+				if (reset) enteredValueForElementInQuestion.getValue().setJsonObject(Value.NULL_INSTANCE().getJsonObject());
 				else if (enteredValueForElementInQuestion.getValue().isNull()) {
 					enteredValueForElementInQuestion.getValue().setJsonObject(enteredValueForElementInQuestion.getType().getValue(false).getJsonObject());
 				}
@@ -595,7 +596,7 @@ public class SurveyPageService {
 				// if the question is skipped we save NULL
 				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, element.getSurveyQuestion());
 				if (enteredQuestion.isSkipped()) {
-					valueToSave = Value.NULL;
+					valueToSave = Value.NULL_INSTANCE();
 				}
 				else {
 					final Type type = enteredValue.getType();
@@ -604,7 +605,7 @@ public class SurveyPageService {
 						@Override
 						public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
 							// if it is skipped we return NULL
-							if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL.getJsonValue());
+							if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL_INSTANCE().getJsonValue());
 							// we remove the attributes
 							currentValue.setAttribute("skipped", null);
 							currentValue.setAttribute("invalid", null);
@@ -689,7 +690,7 @@ public class SurveyPageService {
 //				RawDataElementValue lastDataValue = valueService.getValue(element.getDataElement(), entity(), element.getSurvey().getLastPeriod());
 //				if (lastDataValue != null) lastValue = lastDataValue.getValue();
 //			}
-			enteredValue = new SurveyEnteredValue(element, entity, Value.NULL, null);
+			enteredValue = new SurveyEnteredValue(element, entity, Value.NULL_INSTANCE(), null);
 			surveyValueService.save(enteredValue);
 		}
 		return enteredValue;

@@ -117,4 +117,42 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController.response.getContentType() == "application/zip"
 	}
 	
+	def "refresh survey works with location"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		editSurveyController = new EditSurveyController()
+		
+		when:
+		editSurveyController.params.location = LocationEntity.findByCode(RWANDA).id
+		editSurveyController.params.survey = survey.id
+		editSurveyController.refresh()
+		
+		then:
+		editSurveyController.redirectedUrl.contains('editSurvey/surveyPage')
+	}
+	
+	def "refresh survey works with data entity"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		editSurveyController = new EditSurveyController()
+		
+		when:
+		editSurveyController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		editSurveyController.params.survey = survey.id
+		editSurveyController.refresh()
+		
+		then:
+		editSurveyController.redirectedUrl.contains('editSurvey/surveyPage')
+	}
+	
 }
