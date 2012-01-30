@@ -12,24 +12,30 @@ import org.chai.kevin.survey.SurveyElement;
 class SurveyTagLib {
 
 	def renderUserErrors = {attrs, body ->
-		def enteredValue = attrs['element']
-		def prefix = attrs['suffix']
+		if (log.isDebugEnabled()) log.debug('renderUserErrors(attrs='+attrs+',body='+body+')')
 		
-		def rules = getRules(enteredValue?.getErrors(prefix));
-		if (enteredValue != null && !rules.empty) {
+		def element = attrs['element']
+		def validatable = attrs['validatable']
+		def prefix = attrs['suffix']
+		def location = attrs['location']
+		
+		if (log.isDebugEnabled()) log.debug('rendering errors for element:'+element+', validatable:'+validatable+', prefix:'+prefix)
+		
+		def rules = getRules(validatable?.getErrors(prefix));
+		if (!rules.empty) {
 			boolean hasErrors = hasErrors(rules)
 
 			def errors = []			
 			rules.each { rule ->
 				def error = [:]
 				error.displayed = (hasErrors && !rule.allowOutlier) || (!hasErrors && rule.allowOutlier)
-				if (error.displayed) error.message = replacePlaceHolders(g.i18n(field: rule.messages).toString(), rule.dependencies, enteredValue.entity)
+				if (error.displayed) error.message = replacePlaceHolders(g.i18n(field: rule.messages).toString(), rule.dependencies, location)
 				error.rule = rule
 				error.suffix = prefix
-				error.accepted = enteredValue.isAcceptedWarning(rule, prefix)
+				error.accepted = validatable.isAcceptedWarning(rule, prefix)
 				errors.add(error)
 			} 
-			out << g.render(template: '/survey/errors', model: [errors: errors, surveyElement: enteredValue.surveyElement])
+			out << g.render(template: '/survey/errors', model: [errors: errors, element: element])
 		}
 	}
 	
@@ -48,7 +54,9 @@ class SurveyTagLib {
 		return false
 	}
 	
-	def replacePlaceHolders(String message, List<SurveyElement> elements, DataLocationEntity entity) {
+	def replacePlaceHolders(String message, List<SurveyElement> elements, DataLocationEntity location) {
+		if (log.isDebugEnabled()) log.debug('replacePlaceHolders(${message}, ${elements}, ${location})')
+		
 		String[] placeholders = StringUtils.substringsBetween(message, "{", "}")
 		String result = message;
 		for (String placeholder : placeholders) {
@@ -68,7 +76,7 @@ class SurveyTagLib {
 				SurveySection section = surveyElement.surveyQuestion.section
 				Survey survey = section.objective.survey 
 				String replacement = 
-					'<a href="'+createLink(controller: "editSurvey", action: "sectionPage", params: [section: section.id, location: entity.id], fragment: 'element-'+surveyElement.id)+'">'+
+					'<a href="'+createLink(controller: "editSurvey", action: "sectionPage", params: [section: section.id, location: location.id], fragment: 'element-'+surveyElement.id)+'">'+
 					(text!=null?text:surveyElement.id)+'</a>'
 				result = StringUtils.replace(result, "{"+placeholder+"}", replacement);
 			}

@@ -1,21 +1,22 @@
 <!-- Value type question -->
 
 <div class="error-list">
-	<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
+	<g:renderUserErrors element="${element}" validatable="${validatable}" suffix="${suffix}"/>
 </div>	
 
-<ul id="element-${surveyElement.id}-${suffix}" class="adv-form element element-list ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
-	<a name="element-${surveyElement.id}-${suffix}"></a>
+<ul id="element-${element.id}-${suffix}" class="adv-form element element-list ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
+	<a name="element-${element.id}-${suffix}"></a>
 	
 	<g:if test="${print}">
 			<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
+				location: location,
 				value: null,
 				lastValue: null,
 				type: type.listType, 
 				suffix: suffix+'['+i+']',
 				headerSuffix: (headerSuffix==null?suffix:headerSuffix)+'[_]',
-				surveyElement: surveyElement,
-				enteredValue: enteredValue,
+				element: element,
+				validatable: validatable,
 				readonly: readonly
 			]"/>
 	</g:if>
@@ -30,16 +31,17 @@
 				
 				<ul class="minimized-content"></ul>
 			
-				<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[${i}]"/>
-				<input type="hidden" class="list-input-indexes" name="surveyElements[${surveyElement.id}].value${suffix}.indexes" value="[${i}]"/>
+				<input type="hidden" class="list-input" name="elements[${element.id}].value${suffix}" value="[${i}]"/>
+				<input type="hidden" class="list-input-indexes" name="elements[${element.id}].value${suffix}.indexes" value="[${i}]"/>
 				<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
+					location: location,
 					value: item,
 					lastValue: null,
 					type: type.listType, 
 					suffix: suffix+'['+i+']',
 					headerSuffix: (headerSuffix==null?suffix:headerSuffix)+'[_]',
-					surveyElement: surveyElement,
-					enteredValue: enteredValue,
+					element: element,
+					validatable: validatable,
 					readonly: readonly
 				]"/>
 				<div class="clear"></div>
@@ -56,16 +58,17 @@
 					
 					<ul class="minimized-content"></ul>
 					
-					<input type="hidden" class="list-input" name="surveyElements[${surveyElement.id}].value${suffix}" value="[_]"/>
-					<input type="hidden" class="list-input-indexes" name="surveyElements[${surveyElement.id}].value${suffix}.indexes" value="[_]"/>
+					<input type="hidden" class="list-input" name="elements[${element.id}].value${suffix}" value="[_]"/>
+					<input type="hidden" class="list-input-indexes" name="elements[${element.id}].value${suffix}.indexes" value="[_]"/>
 					<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
+						location: location,
 						value: null,
 						lastValue: null,
 						type: type.listType, 
 						suffix: suffix+'[_]',
 						headerSuffix: (headerSuffix==null?suffix:headerSuffix)+'[_]',
-						surveyElement: surveyElement,
-						enteredValue: enteredValue,
+						element: element,
+						validatable: validatable,
 						readonly: readonly 
 					]"/>
 					<div class="clear"></div>
@@ -76,7 +79,7 @@
 	</g:else>
 
 	<g:if test="${showHints}">
-		<div class="admin-hint">Element: ${surveyElement.id} - Prefix: ${suffix}</div>
+		<g:renderUserErrors element="${element}" validatable="${validatable}" suffix="${suffix}" location="${location}"/>
 	</g:if>
 
 	<!-- TODO last value -->

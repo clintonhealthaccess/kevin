@@ -30,7 +30,7 @@
 				</div>
 				
 				<div>
-					<g:form id="survey-form" url="[controller:'editSurvey', action:'save', params: [location: surveyPage.location.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
+					<g:form url="[controller:'editSurvey', action:'save', params: [location: surveyPage.location.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 						<ol id="questions">
 							<g:each in="${surveyPage.getQuestions(surveyPage.section)}" var="question" status="i">
 								<li class="question-container ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}">
@@ -65,10 +65,30 @@
 		</div>
 		<r:script>
 			$(document).ready(function() {
-				initializeSurvey(valueChangedInSection);
+				${render(template:'/templates/messages')}
+			
+				new DataEntry({
+					element: $('#survey'),
+					callback: valueChangedInSection,
+					url: "${createLink(controller:'editSurvey', action:'saveValue', params: [location: surveyPage.location.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}", 
+					messages: messages,
+					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
+				});
 			});
 		
-			function valueChangedInSection(data, element) {
+			function valueChangedInSection(dataEntry, data, element) {
+				
+				// we go through all the sections
+				$.each(data.sections, function(index, section) {
+					$('#section-'+section.id).find('.section-status').addClass('hidden');
+					$('#section-'+section.id).find('.section-status-'+section.status).removeClass('hidden');
+				});
+				
+				// we go through the objectives
+				$.each(data.objectives, function(index, objective) {
+					$('#objective-'+objective.id).find('.objective-status').addClass('hidden');
+					$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
+				});
 				
 				// we go through all changed elements
 				$.each(data.elements, function(index, element) {

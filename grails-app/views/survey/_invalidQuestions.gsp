@@ -2,7 +2,7 @@
 <g:set value="${surveyPage.getInvalidQuestions(surveyPage.objective)}" var="invalidQuestions"/>
 <g:if test="${!invalidQuestions.isEmpty()}">
 	<div><g:message code="survey.objective.error.text" default="The following questions do not pass validation, please check" />:</div>
-	<form id="survey-form">
+	<form>
 		<g:each in="${invalidQuestions}" var="question" status="i">
 			<div class="invalid-question ${i!=0?'hidden':''}">
 				<h5>In section: <g:i18n field="${question.section.names}" /> </h5>

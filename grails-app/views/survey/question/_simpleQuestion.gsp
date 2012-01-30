@@ -25,12 +25,13 @@
 				<g:set var="enteredValue" value="${surveyPage.elements[surveyElement]}" />
 			
 				<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}"  model="[
+					location: enteredValue.entity,
 					value: enteredValue.value,
 					lastValue: enteredValue.lastValue,
 					type: dataElement.type, 
 					suffix:'',
-					surveyElement: surveyElement, 
-					enteredValue: enteredValue, 
+					element: surveyElement, 
+					validatable: enteredValue.validatable, 
 					readonly: readonly,
 					print: print,
 					appendix: appendix

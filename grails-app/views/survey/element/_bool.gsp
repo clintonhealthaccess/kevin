@@ -1,6 +1,6 @@
 <!-- Bool type question -->
-<div id="element-${surveyElement.id}-${suffix}" class="element element-bool ${enteredValue?.isSkipped(suffix)?'skipped':''} ${(enteredValue==null || enteredValue?.isValid(suffix))?'':'errors'}" data-element="${surveyElement.id}" data-suffix="${suffix}">
-	<a name="element-${surveyElement.id}-${suffix}"></a>
+<div id="element-${element.id}-${suffix}" class="element element-bool ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
+	<a name="element-${element.id}-${suffix}"></a>
 
 	<g:if test="${lastValue!=null}">
 		<g:if test="${lastValue.booleanValue == true}">
@@ -12,12 +12,12 @@
 	</g:if>
 
 	<g:if test="${isCheckbox}">
-		<input class="input" type="hidden" value="0" name="surveyElements[${surveyElement.id}].value${suffix}"/>
-		<input type="checkbox" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" value="1" name="surveyElements[${surveyElement.id}].value${suffix}" ${value?.booleanValue==true?'checked="checked"':''} disabled="disabled"/>
+		<input class="input" type="hidden" value="0" name="elements[${element.id}].value${suffix}"/>
+		<input type="checkbox" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" value="1" name="elements[${element.id}].value${suffix}" ${value?.booleanValue==true?'checked="checked"':''} disabled="disabled"/>
 	</g:if>
 	<g:else>
 		<g:if test="${!print}">
-			<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="surveyElements[${surveyElement.id}].value${suffix}" disabled="disabled">
+			<select class="${tooltipValue!=null?'tooltip':''} input ${!readonly?'loading-disabled':''}" ${tooltipValue!=null?'title="'+tooltipValue+'"':''} name="elements[${element.id}].value${suffix}" disabled="disabled">
 				<option value=""><g:message code="survey.element.bool.select.label"/></option>
 				<option value="1" ${value?.booleanValue==true ? 'selected':''}><g:message code="survey.element.bool.yes.label"/></option>
 				<option value="0" ${value?.booleanValue==false ? 'selected':''}><g:message code="survey.element.bool.no.label"/></option>
@@ -34,10 +34,10 @@
 	</g:else>
 
 	<g:if test="${showHints}">
-		<div class="admin-hint">Element: ${surveyElement.id} - Prefix: ${suffix}</div>
+		<div class="admin-hint">Element: ${element.id} - Prefix: ${suffix}</div>
 	</g:if>
 
 	<div class="error-list">
-		<g:renderUserErrors element="${enteredValue}" suffix="${suffix}"/>
+		<g:renderUserErrors element="${element}" validatable="${validatable}" suffix="${suffix}" location="${location}"/>
 	</div>
 </div>

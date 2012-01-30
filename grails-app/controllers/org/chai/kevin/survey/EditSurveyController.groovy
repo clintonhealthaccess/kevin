@@ -41,7 +41,7 @@ class EditSurveyController extends AbstractController {
 
 	SurveyPageService surveyPageService;
 	SurveyExportService surveyExportService;
-	ValidationService validationService;
+	SurveyValidationService surveyValidationService;
 	SessionFactory sessionFactory;
 	
 	def index = {
@@ -180,13 +180,12 @@ class EditSurveyController extends AbstractController {
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 
-		def entity = DataLocationEntity.get(params.int('location'))
-
+		def location = DataLocationEntity.get(params.int('location'))
 		def currentSection = SurveySection.get(params.int('section'))
 		def currentObjective = SurveyObjective.get(params.int('objective'))
 		def surveyElements = [SurveyElement.get(params.int('element'))]
 
-		def surveyPage = surveyPageService.modify(entity, currentObjective, surveyElements, params);
+		def surveyPage = surveyPageService.modify(location, currentObjective, surveyElements, params);
 
 		if (surveyPage == null) {
 			render(contentType:"text/json") { status = 'error' }
@@ -197,10 +196,10 @@ class EditSurveyController extends AbstractController {
 
 			if (currentSection == null) {
 				sessionFactory.currentSession.clear()
-				entity = DataLocationEntity.get(params.int('entity'))
+				location = DataLocationEntity.get(params.int('location'))
 				currentObjective = SurveyObjective.get(params.int('objective'))
 				
-				def completeSurveyPage = surveyPageService.getSurveyPage(entity, currentObjective)
+				def completeSurveyPage = surveyPageService.getSurveyPage(location, currentObjective)
 				invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
 				incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
 			}
@@ -246,19 +245,19 @@ class EditSurveyController extends AbstractController {
 							id: surveyElement.id,
 							questionId: surveyElement.surveyQuestion.id,
 							skipped: array {
-								enteredValue.skippedPrefixes.each { prefix -> element prefix }
+								enteredValue.validatable.skippedPrefixes.each { prefix -> element prefix }
 							},
 							invalid: array {
-								enteredValue.invalidPrefixes.each { invalidPrefix ->
+								enteredValue.validatable.invalidPrefixes.each { invalidPrefix ->
 									pre (
 										prefix: invalidPrefix,
-										valid: enteredValue.isValid(invalidPrefix),
-										errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
+										valid: enteredValue.validatable.isValid(invalidPrefix),
+										errors: g.renderUserErrors(element: surveyElement, validatable: enteredValue.validatable, suffix: invalidPrefix, location: enteredValue.entity)
 									)
 								}
 							},
 							nullPrefixes: array {
-								enteredValue.nullPrefixes.each { prefix -> element prefix }
+								enteredValue.validatable.nullPrefixes.each { prefix -> element prefix }
 							}
 						)
 					}
@@ -307,21 +306,21 @@ class EditSurveyController extends AbstractController {
 
 	def print = {
 		Survey survey = Survey.get(params.int('survey'));
-		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
+		DataLocationEntity location = DataLocationEntity.get(params.int('location'))
 
-		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(entity,survey);
+		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(location, survey);
 
 		render (view: '/survey/print/surveyPrint', model:[surveyPage: surveyPage])
 	}
 
 	def export = {
-		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
+		CalculationEntity location = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
 		Survey survey = Survey.get(params.int('survey'))	
 
-		String filename = surveyExportService.getExportFilename(entity, section, objective, survey);
-		File csvFile = surveyExportService.getSurveyExportFile(filename, entity, section, objective, survey);
+		String filename = surveyExportService.getExportFilename(location, section, objective, survey);
+		File csvFile = surveyExportService.getSurveyExportFile(filename, location, section, objective, survey);
 		def zipFile = Utils.getZipFile(csvFile, filename)
 			
 		if(zipFile.exists()){

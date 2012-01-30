@@ -12,6 +12,7 @@ import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.InfoService;
+import org.chai.kevin.planning.ActivityService;
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.dsr.DsrService
 import org.chai.kevin.export.ExportDataElementService;
@@ -22,9 +23,10 @@ import org.chai.kevin.survey.SummaryService
 import org.chai.kevin.survey.SurveyCopyService
 import org.chai.kevin.survey.SurveyExportService
 import org.chai.kevin.survey.SurveyPageService
-import org.chai.kevin.survey.ValidationService
+import org.chai.kevin.survey.SurveyValidationService
 import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.RefreshValueService;
+import org.chai.kevin.value.ValidationService;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
@@ -78,6 +80,9 @@ beans = {
 //		locationService = ref("locationService")
 	}
 
+	validationService(ValidationService){
+		jaqlService = ref("jaqlService")
+	}
 	
 	surveyCopyService(SurveyCopyService) {
 		sessionFactory = ref("sessionFactory")
@@ -97,11 +102,8 @@ beans = {
 		grailsApplication = ref("grailsApplication")
 	}
 	
-	validationService(ValidationService){
-		locationService = ref("locationService")
-		surveyValueService = ref("surveyValueService")
-		surveyService = ref("surveyService")
-		jaqlService = ref("jaqlService")
+	surveyValidationService(SurveyValidationService){
+		validationService = ref("validationService")
 	}
 	
 	surveyPageService(SurveyPageService){
@@ -111,7 +113,7 @@ beans = {
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		validationService = ref("validationService")
+		surveyValidationService = ref("surveyValidationService")
 		sessionFactory = ref("sessionFactory")
 		grailsApplication = ref("grailsApplication")
 	}
@@ -196,6 +198,10 @@ beans = {
 		skipLevels = dashboardSkipLevels
 	}
 
+	activityService(ActivityService) {
+		valueService = ref("valueService")
+	}
+	
 	// override the spring cache manager to use the same as hibernate
 	springcacheCacheManager(EhCacheManagerFactoryBean) {
 		shared = true

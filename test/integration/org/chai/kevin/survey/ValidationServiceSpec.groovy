@@ -6,7 +6,7 @@ import org.chai.kevin.value.Value
 
 class ValidationServiceSpec extends SurveyIntegrationTests {
 
-	def validationService;
+	def surveyValidationService;
 	
 	def "skip elemnts"() {
 		setup:
@@ -24,7 +24,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]},{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
-		def skipped = validationService.getSkippedPrefix(element1, rule, DataLocationEntity.findByCode(KIVUYE))
+		def skipped = surveyValidationService.getSkippedPrefix(element1, rule, DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		skipped.equals(s(["[0].key1","[0].key2","[1].key1","[1].key2"]))
@@ -55,7 +55,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		
 		newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
 		newSurveyEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		def prefixes = validationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE))
+		def prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		prefixes.equals(new HashSet([""]))
@@ -85,7 +85,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		
 		newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("2"))
 		newSurveyEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		def prefixes = validationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE))
+		def prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		prefixes.isEmpty()
@@ -116,7 +116,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		
 		newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("0"))
 		newSurveyEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL)
-		def prefixes = validationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE))
+		def prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		prefixes.isEmpty()
@@ -142,14 +142,14 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("0"))
-		prefixes = validationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE))
+		prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		prefixes.isEmpty()
 		
 		when:
 		newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(BUTARO), v("0"))
-		prefixes = validationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(BUTARO))
+		prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(BUTARO))
 		
 		then:
 		prefixes.equals(new HashSet([""]))

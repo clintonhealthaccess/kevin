@@ -24,10 +24,10 @@
 						
 					</ul>
 				</td>
-				<td>${location.code}</td>
 				<td>
 					<g:i18n field="${location.names}"/>
 				</td>
+				<td>${location.code}</td>
 				<td>
 					<g:i18n field="${location.level.names}"/>
 				</td>

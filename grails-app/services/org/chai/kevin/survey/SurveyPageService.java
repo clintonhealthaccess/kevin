@@ -55,12 +55,14 @@ import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
+import org.chai.kevin.survey.SurveyValidationService.ValidatableLocator;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveyLog;
 import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
@@ -82,7 +84,7 @@ public class SurveyPageService {
 	private LocationService locationService;
 	private ValueService valueService;
 	private DataService dataService;
-	private ValidationService validationService;
+	private SurveyValidationService surveyValidationService;
 	private SessionFactory sessionFactory;
 	private GrailsApplication grailsApplication;
 	
@@ -362,43 +364,22 @@ public class SurveyPageService {
 		SurveyPage surveyPage = null;
 		// if the objective is not closed, we go on with the save
 		if (!enteredObjective.isClosed()) {
-			Set<String> attributes = new HashSet<String>();
-			attributes.add("warning");
-
 			Map<SurveyElement, SurveyEnteredValue> affectedElements = new HashMap<SurveyElement, SurveyEnteredValue>();
 			// first we save the values
 			for (SurveyElement element : elements) {
 				if (log.isDebugEnabled()) log.debug("setting new value for element: "+element);
 				
 				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
+				ValidatableValue validatableValue = enteredValue.getValidatable();
 				
-				final Type valueType = element.getDataElement().getType();
-				final Value oldValue = enteredValue.getValue();
-				
-				if (log.isDebugEnabled()) log.debug("getting new value from parameters for element: "+element);
-				Value value = valueType.mergeValueFromMap(oldValue, params, "surveyElements["+element.getId()+"].value", attributes);
-				
-				// reset accepted warnings for changed values
-				if (log.isDebugEnabled()) log.debug("resetting warning for modified prefixes: "+element);
-				valueType.transformValue(value, new ValuePredicate() {
-					@Override
-					public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
-						Value oldPrefix = valueType.getValue(oldValue, currentPrefix);
-						if (oldPrefix != null && oldPrefix.getAttribute("warning") != null) {
-							if (!oldPrefix.getValueWithoutAttributes().equals(currentValue.getValueWithoutAttributes())) {
-								currentValue.setAttribute("warning", null);
-								return true;
-							}
-						}
-						return false;
-					}
-				});
+				// merge the values
+				// this modifies the value object accordingly
+				validatableValue.mergeValue(params, "elements["+element.getId()+"].value");
 				
 				// set the value and save
 				// here, a write lock is acquired on the SurveyEnteredValue that will be kept
 				// till the end of the transaction, if in READ_COMMITTED isolation mode, a timeout
 				// is likely to occur because the transaction is quite long
-				enteredValue.setValue(value);
 				affectedElements.put(element, enteredValue);
 				
 				// if it is a checkbox question, we need to reset the values to null
@@ -412,8 +393,20 @@ public class SurveyPageService {
 		if (log.isDebugEnabled()) log.debug("modify(...)="+surveyPage);
 		return surveyPage;
 	}
-		
-		
+
+	
+	private ValidatableLocator getLocator() {
+		return new ValidatableLocator() {
+			
+			@Override
+			public ValidatableValue getValidatable(Long id, DataLocationEntity location) {
+				SurveyElement element = surveyService.getSurveyElement(id);
+				SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, location);
+				return enteredValue.getValidatable();
+			}
+		};
+	}
+
 	private SurveyPage evaluateRulesAndSave(DataLocationEntity entity, List<SurveyElement> elements, Map<SurveyElement, SurveyEnteredValue> affectedElements) {  
 		if (log.isDebugEnabled()) log.debug("evaluateRulesAndSave(entity="+entity+", elements="+elements+")");
 		
@@ -432,10 +425,10 @@ public class SurveyPageService {
 		for (SurveyValidationRule validationRule : validationRules) {
 			if (log.isDebugEnabled()) log.debug("getting invalid prefixes for validation rule: "+validationRule);
 			
-			Set<String> prefixes = validationService.getInvalidPrefix(validationRule, entity);
+			Set<String> prefixes = surveyValidationService.getInvalidPrefix(validationRule, entity, getLocator());
 
 			SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, validationRule.getSurveyElement());
-			enteredValue.setInvalid(validationRule, prefixes);
+			enteredValue.getValidatable().setInvalid(validationRule, prefixes);
 			
 			affectedElements.put(validationRule.getSurveyElement(), enteredValue);
 		}
@@ -444,15 +437,15 @@ public class SurveyPageService {
 			for (SurveyElement element : surveySkipRule.getSkippedSurveyElements().keySet()) {
 				if (log.isDebugEnabled()) log.debug("getting skipped prefixes for skip rule: "+surveySkipRule+", element: "+element);
 				
-				Set<String> prefixes = validationService.getSkippedPrefix(element, surveySkipRule, entity);
+				Set<String> prefixes = surveyValidationService.getSkippedPrefix(element, surveySkipRule, entity, getLocator());
 
 				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
-				enteredValue.setSkipped(surveySkipRule, prefixes);
+				enteredValue.getValidatable().setSkipped(surveySkipRule, prefixes);
 				
 				affectedElements.put(element, enteredValue);
 			}
 
-			boolean skipped = validationService.isSkipped(surveySkipRule, entity);
+			boolean skipped = surveyValidationService.isSkipped(surveySkipRule, entity, getLocator());
 			for (SurveyQuestion question : surveySkipRule.getSkippedSurveyQuestions()) {
 				
 				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
@@ -578,8 +571,8 @@ public class SurveyPageService {
 		// TODO replace this method by a call to the survey element service
 		for (SurveyElement element : question.getQuestion().getSurveyElements(entity.getType())) {
 			SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
-			if (!enteredValue.isComplete()) complete = false;
-			if (enteredValue.isInvalid()) invalid = true;
+			if (!enteredValue.getValidatable().isComplete()) complete = false;
+			if (enteredValue.getValidatable().isInvalid()) invalid = true;
 		}
 		question.setInvalid(invalid);
 		question.setComplete(complete);
@@ -746,10 +739,10 @@ public class SurveyPageService {
 		this.valueService = valueService;
 	}
 	
-	public void setValidationService(ValidationService validationService) {
-		this.validationService = validationService;
+	public void setSurveyValidationService(SurveyValidationService surveyValidationService) {
+		this.surveyValidationService = surveyValidationService;
 	}
-
+	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}

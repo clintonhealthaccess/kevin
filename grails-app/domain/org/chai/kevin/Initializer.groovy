@@ -259,7 +259,7 @@ class Initializer {
 			)
 			
 			def activityElement = new RawDataElement(names:j(["en":"Element Activity"]), descriptions:j([:]), code:"ACTIVITYELEMENT",
-				type: Type.TYPE_MAP([
+				type: Type.TYPE_LIST(Type.TYPE_MAP([
 					"key1": Type.TYPE_MAP([
 						"key11": Type.TYPE_NUMBER(),
 						"key12": Type.TYPE_STRING()
@@ -268,7 +268,7 @@ class Initializer {
 						"key21": Type.TYPE_NUMBER(),
 						"key22": Type.TYPE_STRING()
 					])
-				])
+				]))
 			)
 			
 			def siyelo2 = new RawDataElement(names:j(["en":"Element 111"]), descriptions:j([:]), code:"LISTMAP2",
@@ -934,18 +934,18 @@ class Initializer {
 	static def createPlanning() {
 		
 		def activityType = new ActivityType(
-			sections: ["[_].key1","[_].key2"],
+			sections: [".key1",".key2"],
 			sectionDescriptions: [
-				"[_].key1": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].key2": j(["en":"Lorem ipsum blablablabla"])
+				".key1": j(["en":"Lorem ipsum blablablabla"]),
+				".key2": j(["en":"Lorem ipsum blablablabla"])
 			],
 			headers: [
-				"[_].key1": j(["en":"Basic Information"]),
-				"[_].key1.key11": j(["en":"Name"]),
-				"[_].key1.key12": j(["en":"Number"]),
-				"[_].key2": j(["en":"Supply and Maintenance"]),
-				"[_].key2.key21": j(["en":"Supplier Name"]),
-				"[_].key2.key22": j(["en":"Supplier Type"]),
+				".key1": j(["en":"Basic Information"]),
+				".key1.key11": j(["en":"Name"]),
+				".key1.key12": j(["en":"Number"]),
+				".key2": j(["en":"Supply and Maintenance"]),
+				".key2.key21": j(["en":"Supplier Name"]),
+				".key2.key22": j(["en":"Supplier Type"]),
 			],
 			dataElement: RawDataElement.findByCode("ACTIVITYELEMENT")
 		).save(failOnError: true);

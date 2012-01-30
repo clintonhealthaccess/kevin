@@ -217,7 +217,7 @@ public class Type extends JSONValue {
 		case DATE:
 			throw new IllegalArgumentException();
 		case LIST:
-			if (!prefix.startsWith("[_]")) throw new IllegalArgumentException();
+			if (!prefix.startsWith("[_]")) throw new IllegalArgumentException("Prefix "+prefix+" not found in type: "+this);
 			return getListType().getType(prefix.substring(3));
 		case MAP:
 			boolean found = false;
@@ -227,7 +227,7 @@ public class Type extends JSONValue {
 					return entry.getValue().getType(prefix.substring(entry.getKey().length()+1));
 				}
 			}
-			if (!found) throw new IllegalArgumentException();
+			if (!found) throw new IllegalArgumentException("Prefix "+prefix+" not found in type: "+this);
 		default:
 			throw new NotImplementedException();
 		}
@@ -249,6 +249,7 @@ public class Type extends JSONValue {
 	}
 	
 	@Transient
+	// TODO make that method modify the oldValue
 	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String suffix, Set<String> attributes) {
 		try {
 			// first we construct the jsonobject containing the value only

@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.Type;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -84,6 +85,9 @@ public class ActivityType {
 		this.headers = headers;
 	}
 	
+	public Type getSectionType(String section) {
+		return dataElement.getType().getType("[_]"+section);
+	}
 	
 
 }

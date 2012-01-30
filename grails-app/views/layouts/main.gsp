@@ -73,9 +73,6 @@
 		<div id="navigation">
 		<div class="wrapper">
 	  		<ul id="main-menu" class="menu">
-	  		 	<shiro:hasPermission permission="menu:planning">
-	  				<li><a class="${controllerName=='planning'?'active':''}" href="${createLink(controller: 'planning', action:'workflow')}"><g:message code="header.navigation.planning" default="Planning"/></a></li>
-	  			</shiro:hasPermission>
 	  		    <shiro:hasPermission permission="menu:survey">
 	  				<li><a class="${controllerName=='editSurvey'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 	  			</shiro:hasPermission>

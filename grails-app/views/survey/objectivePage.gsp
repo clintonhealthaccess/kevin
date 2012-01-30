@@ -47,17 +47,37 @@
 		</div>
 		<r:script>
 			$(document).ready(function() {
-				initializeSurvey(valueChangedInObjective);
+				${render(template:'/templates/messages')}
+			
+				new DataEntry({
+					element: $('#survey'),
+					callback: valueChangedInObjective,
+					url: "${createLink(controller:'editSurvey', action:'saveValue', params: [location: surveyPage.location.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}", 
+					messages: messages,
+					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
+				});
 			});
 		
-			function valueChangedInObjective(data, element) {
+			function valueChangedInObjective(dataEntry, data, element) {
+				// we go through all the sections
+				$.each(data.sections, function(index, section) {
+					$('#section-'+section.id).find('.section-status').addClass('hidden');
+					$('#section-'+section.id).find('.section-status-'+section.status).removeClass('hidden');
+				});
+				
+				// we go through the objectives
+				$.each(data.objectives, function(index, objective) {
+					$('#objective-'+objective.id).find('.objective-status').addClass('hidden');
+					$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
+				});
+			
 				$('#incomplete-sections-container').html(data.incompleteSections);
 				$('#invalid-questions-container').html(data.invalidQuestions);
 				
 				if ($.trim(data.invalidQuestions) == '' && $.trim(data.incompleteSections) == '') $('#submit-objective').removeClass('hidden');
 				else $('#submit-objective').addClass('hidden');
 				
-				enableAfterLoading();
+				dataEntry.enableAfterLoading();
 			}
 		</r:script>
 	</body>
