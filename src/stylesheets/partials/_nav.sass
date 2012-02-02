@@ -198,6 +198,9 @@
         color: #fff
         +box-shadow($yes - #222 0 2px 9px 0 inset)
         +text-shadow($yes - #222 0 1px 0)
+    &.manage-btn
+      padding: 5px 8px
+      +box-shadow(none)
 
 .dropdown-list
   background: $dropdown
@@ -213,6 +216,9 @@
   +border-bottom-radius(3px)
   +border-top-right-radius(3px)
   +box-shadow(#ccc 2px 2px 3px, $dropdown - #111 0 0 8px 3px inset)
+  
+  &.manage-list
+    top: 18px
 
   li
     border-bottom: 1px dotted $dropdown - #191919
