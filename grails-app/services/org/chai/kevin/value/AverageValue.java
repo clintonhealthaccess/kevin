@@ -1,16 +1,14 @@
 package org.chai.kevin.value;
 
-import java.util.List;
+import java.util.Set;
 
 import org.chai.kevin.data.Average;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.value.AveragePartialValue;
-import org.chai.kevin.value.Value;
 import org.hisp.dhis.period.Period;
 
 public class AverageValue extends CalculationValue<AveragePartialValue> {
 
-	public AverageValue(List<AveragePartialValue> calculationPartialValues, Average calculation, Period period, CalculationEntity entity) {
+	public AverageValue(Set<AveragePartialValue> calculationPartialValues, Average calculation, Period period, CalculationEntity entity) {
 		super(calculationPartialValues, calculation, period, entity);
 	}
 

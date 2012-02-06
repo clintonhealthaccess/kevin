@@ -13,7 +13,7 @@ import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardPercentageService;
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.InfoService;
-import org.chai.kevin.planning.ActivityService;
+import org.chai.kevin.planning.PlanningService;
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.dsr.DsrService
 import org.chai.kevin.export.ExportDataElementService;
@@ -205,8 +205,10 @@ beans = {
 		dashboardService = ref("dashboardService")
 	}
 
-	activityService(ActivityService) {
+	planningService(PlanningService) {
 		valueService = ref("valueService")
+		dataService = ref("dataService")
+		expressionService = ref("expressionService")
 	}
 	
 	// override the spring cache manager to use the same as hibernate

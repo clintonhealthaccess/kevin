@@ -7,7 +7,7 @@
 	</g:if>
 		<% def locationLinkParams = new HashMap(linkParams) %>
 		<% locationLinkParams['location'] = location.id+"" %>	
-		<a class="dropdown-link parameter" data-type="location"
+		<a class="dropdown-link js_dropdown-link parameter" data-type="location"
 			data-location="${location.id}"
 			href="${createLinkByFilter(controller:controller, action:action, params:locationLinkParams)}">
 			<g:i18n field="${location.names}" />

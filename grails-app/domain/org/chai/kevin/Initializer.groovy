@@ -56,7 +56,9 @@ import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
-import org.chai.kevin.planning.ActivityType;
+import org.chai.kevin.planning.PlanningCost;
+import org.chai.kevin.planning.PlanningCost.PlanningCostType;
+import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
@@ -258,8 +260,9 @@ class Initializer {
 				])
 			)
 			
-			def activityElement = new RawDataElement(names:j(["en":"Element Activity"]), descriptions:j([:]), code:"ACTIVITYELEMENT",
+			def planningElement = new RawDataElement(names:j(["en":"Element Planning"]), descriptions:j([:]), code:"PLANNINGELEMENT",
 				type: Type.TYPE_LIST(Type.TYPE_MAP([
+					"key0": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 					"key1": Type.TYPE_MAP([
 						"key11": Type.TYPE_NUMBER(),
 						"key12": Type.TYPE_STRING()
@@ -437,7 +440,7 @@ class Initializer {
 			dataElementMap.save(failOnError: true, flush:true)
 			siyelo1.save(failOnError: true, flush:true)
 			siyelo2.save(failOnError: true, flush:true)
-			activityElement.save(failOnError: true, flush:true)
+			planningElement.save(failOnError: true, flush:true)
 			
 			// data value
 			new RawDataElementValue(
@@ -926,7 +929,8 @@ class Initializer {
 	
 	static def createPlanning() {
 		
-		def activityType = new ActivityType(
+		def planningType = new PlanningType(
+			names: j(["en":"Activity"]),
 			sections: [".key1",".key2"],
 			sectionDescriptions: [
 				".key1": j(["en":"Lorem ipsum blablablabla"]),
@@ -940,8 +944,27 @@ class Initializer {
 				".key2.key21": j(["en":"Supplier Name"]),
 				".key2.key22": j(["en":"Supplier Type"]),
 			],
-			dataElement: RawDataElement.findByCode("ACTIVITYELEMENT")
+			dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
+			discriminator: '.key0'
 		).save(failOnError: true);
+		
+		def sumCost1 = new Sum(
+			code: 'SUMPLANNING', 
+			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.key0 == "value1")[0].key1.key12 * 2'
+		).save(failOnError: true);
+	
+		def planningCost1 = new PlanningCost(
+			planningType: planningType,
+			type: PlanningCostType.INCOMING,
+			discriminatorValue: 'value1',
+			sum: sumCost1,
+			section: '.key1',
+			groupSection: '.key1',
+			names: j(["en":"Salaries"])
+		)
+	
+		planningType.costs.add(planningCost1)
+		planningType.save(failOnError: true)
 		
 		/* START WORKFLOW */
 		//			def wizard = new Wizard(

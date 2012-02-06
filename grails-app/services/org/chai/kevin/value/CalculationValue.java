@@ -2,6 +2,7 @@ package org.chai.kevin.value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Transient;
 
@@ -14,10 +15,10 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 
 	private CalculationEntity entity;
 	private Period period;
-	private List<T> calculationPartialValues;
+	private Set<T> calculationPartialValues;
 	private Calculation<T> calculation;
 	
-	public CalculationValue(List<T> calculationPartialValues, Calculation<T> calculation, Period period, CalculationEntity entity) {
+	public CalculationValue(Set<T> calculationPartialValues, Calculation<T> calculation, Period period, CalculationEntity entity) {
 		this.calculationPartialValues = calculationPartialValues;
 		this.calculation = calculation;
 		this.period = period;
@@ -53,7 +54,7 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 		return result;
 	}
 	
-	public List<T> getCalculationPartialValues() {
+	public Set<T> getCalculationPartialValues() {
 		return calculationPartialValues;
 	}
 

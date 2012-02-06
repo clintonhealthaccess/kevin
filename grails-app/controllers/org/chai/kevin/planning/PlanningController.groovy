@@ -9,41 +9,41 @@ import org.hisp.dhis.period.Period;
 
 class PlanningController extends AbstractController {
 	
-	def activityService
+	def planningService
 	
-	def editActivity = {		
-		def activityType = ActivityType.get(params.int('activityType'))
+	def editPlanningLine = {		
+		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
 		def period = Period.get(params.int('period'))
 		def lineNumber = params.int('lineNumber')
 		
-		def newActivity = activityService.getActivity(activityType, location, period, lineNumber)
+		def newPlanningLine = planningService.getPlanningLine(planningType, location, period, lineNumber)
 		
-		render (view: '/planning/newActivity', model: [
-			activityType: activityType, 
-			activity: newActivity,
+		render (view: '/planning/editPlanningLine', model: [
+			planningType: planningType, 
+			planningLine: newPlanningLine,
 			location: location,
 			period: period
 		])
 	}
 
 	def saveValue = {
-		def activityType = ActivityType.get(params.int('activityType'))
+		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
 		def period = Period.get(params.int('period'))
 		def lineNumber = params.int('lineNumber')
 		
-		activityService.modify(location, period, activityType, lineNumber, params)
+		planningService.modify(location, period, planningType, lineNumber, params)
 		
-		def activity = activityService.getActivity(activityType, location, period, lineNumber)
-		def validatable = activity.validatable
+		def planningLine = planningService.getPlanningLine(planningType, location, period, lineNumber)
+		def validatable = planningLine.validatable
 		
 		render(contentType:"text/json") {
 			status = 'success'
 			
 			elements = array {
 				elem (
-					id: activityType.id,
+					id: planningType.id,
 					skipped: array {
 						validatable.skippedPrefixes.each { prefix -> element prefix }
 					},
@@ -52,7 +52,7 @@ class PlanningController extends AbstractController {
 							pre (
 								prefix: invalidPrefix,
 								valid: validatable.isValid(invalidPrefix),
-								errors: g.renderUserErrors(element: activity, validatable: validatable, suffix: invalidPrefix, location: location)
+								errors: g.renderUserErrors(element: planningLine, validatable: validatable, suffix: invalidPrefix, location: location)
 							)
 						}
 					},
@@ -62,6 +62,20 @@ class PlanningController extends AbstractController {
 				)
 			}
 		}
+	}
+	
+	def budget = {
+		def location = DataLocationEntity.get(params.int('location'))
+		def period = Period.get(params.int('period'))
+		
+		def planningTypes = PlanningType.list()
+		def budgetPlanningTypes = planningTypes.collect {
+			planningService.getPlanningTypeBudget(it, location, period)
+		}
+		
+		render (view: '/planning/budget', model: [
+			budgetPlanningTypes: budgetPlanningTypes
+		])
 	}
 		
 }

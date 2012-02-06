@@ -21,14 +21,14 @@
 				<!-- TODO use a filter here -->
 				<div class="filter">
 					<span class="bold">Target:</span>
-					<span class="dropdown dropdown-target subnav-dropdown">
+					<span class="js_dropdown dropdown-target dropdown">
 						<g:if test="${currentTarget != null}">
 							<a class="selected" href="#" data-target="${currentTarget.id}" data-type="target"><g:i18n field="${currentTarget.names}"/></a>
 						</g:if>
 						<g:else>
 							<a class="selected" href="#" data-type="target">no target selected</a>
 						</g:else>
-						<div class="hidden dropdown-list">
+						<div class="hidden dropdown-list js_dropdown-list">
 							<g:if test="${!targets.empty}">
 								<ul>
 									<g:each in="${targets}" var="target">

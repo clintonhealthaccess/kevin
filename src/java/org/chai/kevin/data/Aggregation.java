@@ -3,6 +3,7 @@ package org.chai.kevin.data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -13,6 +14,7 @@ import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.AggregationValue;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.Value;
@@ -26,7 +28,7 @@ import org.hisp.dhis.period.Period;
 public class Aggregation extends Calculation<AggregationPartialValue> {
 
 	@Override
-	public AggregationValue getCalculationValue(List<AggregationPartialValue> partialValues, Period period, CalculationEntity entity) {
+	public AggregationValue getCalculationValue(Set<AggregationPartialValue> partialValues, Period period, CalculationEntity entity) {
 		return new AggregationValue(partialValues, this, period, entity);
 	}
 

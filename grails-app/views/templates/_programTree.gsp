@@ -14,7 +14,7 @@
 	</g:if>
 	<g:else>
 		<a class="foldable-toggle" href="#">(toggle)</a>
-		<a class="dropdown-link parameter" data-type="objective"
+		<a class="dropdown-link js_dropdown-link parameter" data-type="objective"
 			data-location="${objective.id}"
 			href="${createLinkByFilter(controller:controller, action:action, params:programLinkParams)}">
 			<g:i18n field="${objective.names}"/> </a>

@@ -1,7 +1,7 @@
 <%@ page import="org.chai.kevin.survey.SummaryPage" %>
 
 <div class="filter">
-	<span class="dropdown subnav-dropdown">
+	<span class="js_dropdown dropdown">
 		<a class="selected" href="#"> 
 			<g:if test="${currentSection != null}">
 				<g:i18n field="${currentSection.names}" />
@@ -16,7 +16,7 @@
 				<g:message code="default.select.label" args="[message(code:'survey.label')]" default="Select a survey" />
 			</g:else>
 		</a>
-		<div id="survey-menu" class="hidden dropdown-list">
+		<div id="survey-menu" class="hidden dropdown-list js_dropdown-list">
 			<ul>
 				<g:each in="${surveys}" var="survey">
 					<li id="survey-${survey.id}" class="foldable ${currentSurvey?.id==survey.id?'current':''}">

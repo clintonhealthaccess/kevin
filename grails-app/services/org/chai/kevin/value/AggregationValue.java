@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.JaqlService;
@@ -17,7 +18,7 @@ import com.ibm.jaql.json.type.JsonValue;
 
 public class AggregationValue extends CalculationValue<AggregationPartialValue> {
 
-	public AggregationValue(List<AggregationPartialValue> calculationPartialValues, Aggregation calculation, Period period, CalculationEntity entity) {
+	public AggregationValue(Set<AggregationPartialValue> calculationPartialValues, Aggregation calculation, Period period, CalculationEntity entity) {
 		super(calculationPartialValues, calculation, period, entity);
 	}
 

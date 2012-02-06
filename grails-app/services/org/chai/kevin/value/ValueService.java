@@ -29,6 +29,7 @@ package org.chai.kevin.value;
  */
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -102,12 +103,12 @@ public class ValueService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
-		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
+	private <T extends CalculationPartialValue> Set<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
+		return new HashSet<T>((List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
 		.add(Restrictions.eq("period", period))
 		.add(Restrictions.eq("entity", entity))
 		.add(Restrictions.eq("data", calculation))
-		.add(Restrictions.in("type", types)).list();
+		.add(Restrictions.in("type", types)).list());
 	}
 	
 	@Transactional(readOnly=true)

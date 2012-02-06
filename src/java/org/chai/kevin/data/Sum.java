@@ -31,6 +31,7 @@ package org.chai.kevin.data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -53,7 +54,7 @@ import org.hisp.dhis.period.Period;
 public class Sum extends Calculation<SumPartialValue> {
 	
 	@Override
-	public SumValue getCalculationValue(List<SumPartialValue> partialValues, Period period, CalculationEntity entity) {
+	public SumValue getCalculationValue(Set<SumPartialValue> partialValues, Period period, CalculationEntity entity) {
 		return new SumValue(partialValues, this, period, entity);
 	}
 

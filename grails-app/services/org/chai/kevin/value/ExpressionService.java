@@ -179,7 +179,7 @@ public class ExpressionService {
 		} catch (IllegalArgumentException e) {
 			return false;
 		}
-		return value != null;
+		return true;
     }
 	
 	@Transactional(readOnly=true)

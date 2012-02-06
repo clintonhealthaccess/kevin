@@ -1,5 +1,5 @@
 <div class="filter">
-	<span class="dropdown subnav-dropdown">
+	<span class="js_dropdown dropdown">
 		<g:if test="${currentLocation != null}">
 			<a class="location selected" href="#" data-type="location" data-location="${currentLocation.id}">
 				<g:i18n field="${currentLocation.names}"/>
@@ -10,7 +10,7 @@
 				<g:message code="filter.location.noselection.label" default="no location selected"/>
 			</a>
 		</g:else> 
-		<div class="hidden dropdown-list">
+		<div class="hidden dropdown-list js_dropdown-list">
 			<ul>
 				<g:render template="/templates/locationTree" model="[
 					controller: controllerName, 

@@ -4,19 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.chai.kevin.Translation;
+import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 
-public class Activity {
+public class PlanningLine {
 
 	private RawDataElementValue dataElementValue;
 	private Integer lineNumber;
-	private ActivityType type;
+	private PlanningType type;
 	private ValidatableValue validatable;
 	
-	public Activity(ActivityType type, RawDataElementValue value, Integer lineNumber) {
+	public PlanningLine(PlanningType type, RawDataElementValue value, Integer lineNumber) {
 		this.dataElementValue = value;
 		this.type = type;
 		this.lineNumber = lineNumber;
@@ -45,16 +49,29 @@ public class Activity {
 
 	public void mergeValues(Map<String, Object> params) {
 		params.put("elements["+type.getId()+"].value", getLineNumbers());
-		validatable.mergeValue(params, "elements["+type.getId()+"].value");
+		getValidatable().mergeValue(params, "elements["+type.getId()+"].value");
 	}
 	
 	private List<String> getLineNumbers() {
 		List<String> result = new ArrayList<String>();
 		Integer linesInValue = dataElementValue.getValue().isNull()?0:dataElementValue.getValue().getListValue().size();
-		for (int i = 0; i <= Math.max(linesInValue, lineNumber); i++) {
+		for (int i = 0; i <= Math.max(linesInValue-1, lineNumber); i++) {
 			result.add("["+i+"]");
 		}
 		return result;
+	}
+
+	public String getDiscriminatorValue() {
+		return type.getDataElement().getType().getValue(dataElementValue.getValue(), "["+lineNumber+"]"+type.getDiscriminator()).getStringValue();
+	}
+	
+	public Translation getNames(DataService dataService) {
+		if (type.getDiscriminatorType().getType() == ValueType.ENUM) {
+			EnumOption option = dataService.findEnumByCode(type.getDiscriminatorType().getEnumCode()).getOptionForValue(getDiscriminatorValue());
+			if (option != null) return option.getNames();
+			return null;
+		}
+		else return null;
 	}
 	
 }

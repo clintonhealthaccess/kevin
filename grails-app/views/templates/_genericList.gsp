@@ -1,6 +1,6 @@
 <div class="entity-list">
 	<div id="entities">
-		<h5 class="subnav">
+		<div class="heading">
 	     	<g:message code="default.list.label" args="[entityName]" />
 	     	<g:if test="${!search}">
 		     	<span class="right">
@@ -14,7 +14,7 @@
 		  			</g:else>
 		     	</span>
 	     	</g:if>
-		</h5>
+		</div>
 		
 		<!-- Template goes here -->
 		<g:if test="${grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).hasProperty('search')}">

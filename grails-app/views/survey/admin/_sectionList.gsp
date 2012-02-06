@@ -31,9 +31,9 @@
 				<td>${section.questions.size()}</td>
 				<td>${section.order}</td>
 				<td>
-					<div class="dropdown subnav-dropdown"> 
+					<div class="js_dropdown dropdown"> 
 						<a class="selected" href="#" data-type="section"><g:message code="entity.list.manage.label" default="Manage"/></a>
-						<div class="hidden dropdown-list">
+						<div class="hidden dropdown-list js_dropdown-list">
 							<ul>
 								<li>
 									<a href="${createLink(controller:'question', action:'list',params:[surveyId:objective.survey?.id,objectiveId: objective?.id,sectionId: section.id])}">
