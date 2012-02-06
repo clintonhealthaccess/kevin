@@ -31,9 +31,9 @@
 				<td>${enumation.code}</td>
 				<td>${enumation.enumOptions.size()}</td>
 				<td>
-				<div class="js_dropdown manage-btn"> 
-					<a class="selected" href="#">Manage</a>
-					<div class="hidden js_dropdown-list manage-list">
+				<div class="js_dropdown dropdown"> 
+					<a class="selected manage-btn" href="#">Manage</a>
+					<div class="hidden js_dropdown-list manage-list dropdown-list">
 						<ul>
 							<li>
 								<a href="${createLink(controller:'enumOption', action:'list',params:[enumId: enumation.id])}">

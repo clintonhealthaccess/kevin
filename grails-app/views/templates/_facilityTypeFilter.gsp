@@ -1,16 +1,11 @@
 <div class="filter">
-	<g:each in="${linkParams}" var="param">
-		<g:if test="${param.key != 'action' && param.key != 'controller' && param.key != 'typeCodes'}">
-			<input type="hidden" name="${param.key}" value="${param.value}"/>
-		</g:if>
-	</g:each>
 	
 	<span class="js_dropdown dropdown">
 		<a class='facility selected' data-period='3' data-type='period' href='#'>
 			<g:message code="filter.facility.type.label"/>
 		</a>
 		<g:if test="${locationTypes != null && !locationTypes.isEmpty()}">
-			<div class='hidden dropdown-list' id='js_facility_filter'>
+			<div class="hidden js_dropdown-list dropdown-list" id="js_facility_filter">
 				<ul>
 					<li><a id="js_checkall" class="dropdown-check" href="">Check all</a><a id="js_uncheckall" class="dropdown-check" href="">Uncheck all</a></li>
 						<g:each in="${locationTypes}" var="type">

@@ -5,7 +5,7 @@
 		<div class="filter">
 			<span class="bold"><g:message code="survey.labels.objective" default="Strategic Objective" />:</span>
 			<span class="js_dropdown dropdown">
-				<a class="selected" href="#">
+				<a class="program selected" href="#">
 					<g:if test="${objective != null}">
 						<g:i18n field="${objective.names}" />
 					</g:if>
