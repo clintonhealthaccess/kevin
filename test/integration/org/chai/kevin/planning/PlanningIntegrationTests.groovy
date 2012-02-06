@@ -2,7 +2,7 @@ package org.chai.kevin.planning
 
 import org.chai.kevin.IntegrationTests;
 
-class PlanningIntegrationTests extends IntegrationTests {
+abstract class PlanningIntegrationTests extends IntegrationTests {
 
 	def newPlanningType(def dataElement, def discriminator, def sections) {
 		return new PlanningType(

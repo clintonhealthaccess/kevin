@@ -114,7 +114,7 @@ public class RefreshValueService {
 	
 	@Transactional(readOnly = true)
 	public boolean isUpToDate(Calculation<CalculationPartialValue> calculation, CalculationEntity location, Period period) {
-		Set<CalculationPartialValue> values = valueService.getPartialValues(calculation, location, period);
+		List<CalculationPartialValue> values = valueService.getPartialValues(calculation, location, period);
 		for (CalculationPartialValue calculationPartialValue : values) {
 			if (calculationPartialValue.getTimestamp().before(calculation.getTimestamp())) return false;
 		}

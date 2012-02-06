@@ -58,7 +58,7 @@ class DsrTargetController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "/dsr/createTarget"
+		return "/entity/dsr/createTarget"
 	}
 
 	def getModel(def entity) {
@@ -89,6 +89,19 @@ class DsrTargetController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
+	}
+	
+	def list = {
+		adaptParamsForList()
+		
+		List<DsrTarget> objectives = DsrTarget.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: objectives,
+			template: "dsr/targetList",
+			code: getLabel(),
+			entityCount: DsrTarget.count()
+		])
 	}
 	
 	@CacheFlush("dsrCache")

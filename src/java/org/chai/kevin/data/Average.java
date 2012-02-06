@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -56,7 +55,7 @@ import org.hisp.dhis.period.Period;
 public class Average extends Calculation<AveragePartialValue> {
 
 	@Override
-	public AverageValue getCalculationValue(Set<AveragePartialValue> partialValues, Period period, CalculationEntity entity) {
+	public AverageValue getCalculationValue(List<AveragePartialValue> partialValues, Period period, CalculationEntity entity) {
 		return new AverageValue(partialValues, this, period, entity);
 	}
 

@@ -42,9 +42,9 @@
 			    <td>${validationRule.typeCodeString}</td>
 				<td><g:i18n field="${validationRule.messages}" /></td>
 				<td>
-					<div class="js_dropdown dropdown"> 
+					<div class="js_dropdown manage-btn"> 
 						<a class="selected" href="#" data-type="survey"><g:message code="entity.list.manage.label" default="Manage"/></a>
-						<div class="hidden dropdown-list js_dropdown-list">
+						<div class="hidden manage-list js_dropdown-list">
 							<ul>
 								<li>
 							 		<a href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'copy', params:[id: validationRule.id])}"><g:message code="survey.clone.label" default="Clone" /> </a>

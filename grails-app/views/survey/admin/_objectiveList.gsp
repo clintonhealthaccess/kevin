@@ -32,9 +32,9 @@
 				<td>${objective.sections.size()}</td>
 				<td>${objective.order}</td>
 				<td>
-					<div class="js_dropdown dropdown"> 
+					<div class="js_dropdown manage-btn"> 
 						<a class="selected" href="#" data-type="objective"><g:message code="entity.list.manage.label" default="Manage"/></a>
-						<div class="hidden dropdown-list js_dropdown-list">
+						<div class="hidden manage-list js_dropdown-list">
 							<ul>
 								<li>
 									<a href="${createLink(controller:'section', action:'list', params:[surveyId:survey?.id,objectiveId: objective.id])}">

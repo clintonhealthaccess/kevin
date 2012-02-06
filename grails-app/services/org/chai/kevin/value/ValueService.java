@@ -103,20 +103,20 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> Set<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
-		return new HashSet<T>((List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
+	public <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
+		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
 		.add(Restrictions.eq("period", period))
 		.add(Restrictions.eq("entity", entity))
-		.add(Restrictions.eq("data", calculation)).list());
+		.add(Restrictions.eq("data", calculation)).list();
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CalculationPartialValue> Set<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
-		return new HashSet<T>((List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
+	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
+		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
 		.add(Restrictions.eq("period", period))
 		.add(Restrictions.eq("entity", entity))
 		.add(Restrictions.eq("data", calculation))
-		.add(Restrictions.in("type", types)).list());
+		.add(Restrictions.in("type", types)).list();
 	}
 	
 	@Transactional(readOnly=true)

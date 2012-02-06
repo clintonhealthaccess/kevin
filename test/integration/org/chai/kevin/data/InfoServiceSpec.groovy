@@ -1,12 +1,12 @@
 package org.chai.kevin.data
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.SumValue;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.Status;
+import org.chai.kevin.value.SumValue;
 
 class InfoServiceSpec extends IntegrationTests {
 

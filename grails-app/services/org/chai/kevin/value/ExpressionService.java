@@ -28,6 +28,7 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,10 +73,10 @@ public class ExpressionService {
 	}
 	
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
+	public <T extends CalculationPartialValue> List<T> calculatePartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",entity="+entity+")");
 		
-		Set<T> result = new HashSet<T>();
+		List<T> result = new ArrayList<T>();
 		List<String> expressions = calculation.getPartialExpressions();
 		for (String expression : expressions) {
 			result.addAll(calculatePartialValues(calculation, expression, entity, period));

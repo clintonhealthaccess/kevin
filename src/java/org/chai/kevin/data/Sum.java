@@ -31,18 +31,17 @@ package org.chai.kevin.data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.SumValue;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.SumPartialValue;
+import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -54,7 +53,7 @@ import org.hisp.dhis.period.Period;
 public class Sum extends Calculation<SumPartialValue> {
 	
 	@Override
-	public SumValue getCalculationValue(Set<SumPartialValue> partialValues, Period period, CalculationEntity entity) {
+	public SumValue getCalculationValue(List<SumPartialValue> partialValues, Period period, CalculationEntity entity) {
 		return new SumValue(partialValues, this, period, entity);
 	}
 

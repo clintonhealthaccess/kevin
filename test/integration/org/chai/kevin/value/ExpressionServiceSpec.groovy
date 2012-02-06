@@ -525,8 +525,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		when:
 		formula = "\$"+dataElement.id+" == \"a\""
 		
-		then:
-		!expressionService.expressionIsValid(formula, Data.class)
+		then: // this changed, there is no more type check
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		formula = "1\n+1"

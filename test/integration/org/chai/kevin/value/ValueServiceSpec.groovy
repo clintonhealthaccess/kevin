@@ -29,7 +29,6 @@ package org.chai.kevin.value
 */
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.SumValue;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.NormalizedDataElement;

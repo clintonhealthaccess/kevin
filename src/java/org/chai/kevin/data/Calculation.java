@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -69,7 +68,7 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	public abstract T getCalculationPartialValue(String expression, Map<DataLocationEntity, StatusValuePair> values, 
 			CalculationEntity location, Period period, DataEntityType type);
 	
-	public abstract CalculationValue<T> getCalculationValue(Set<T> partialValues, Period period, CalculationEntity entity);
+	public abstract CalculationValue<T> getCalculationValue(List<T> partialValues, Period period, CalculationEntity entity);
 	
 	protected Value getValue(Collection<StatusValuePair> statusValuePairs) {
 		Double value = 0d;

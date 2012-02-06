@@ -15,10 +15,10 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 
 	private CalculationEntity entity;
 	private Period period;
-	private Set<T> calculationPartialValues;
+	private List<T> calculationPartialValues;
 	private Calculation<T> calculation;
 	
-	public CalculationValue(Set<T> calculationPartialValues, Calculation<T> calculation, Period period, CalculationEntity entity) {
+	public CalculationValue(List<T> calculationPartialValues, Calculation<T> calculation, Period period, CalculationEntity entity) {
 		this.calculationPartialValues = calculationPartialValues;
 		this.calculation = calculation;
 		this.period = period;
@@ -54,7 +54,7 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 		return result;
 	}
 	
-	public Set<T> getCalculationPartialValues() {
+	public List<T> getCalculationPartialValues() {
 		return calculationPartialValues;
 	}
 

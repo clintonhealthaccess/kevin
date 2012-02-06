@@ -11,6 +11,7 @@ import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.AverageValue;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.SumPartialValue;
+import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 
 class CalculationValueUnitSpec extends UnitSpec {
