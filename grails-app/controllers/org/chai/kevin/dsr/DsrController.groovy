@@ -33,6 +33,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 import java.util.Collections;
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.LanguageService
+import org.chai.kevin.LocationService
 import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
@@ -42,8 +44,14 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DsrController extends AbstractController {
 
-	ReportService reportService;
+	LanguageService languageService;
 	DsrService dsrService;
+	
+	public DsrTargetCategory getDsrTargetCategory(){
+		def dsrTargetCategory = null
+		//TODO
+		return dsrTargetCategory
+	}
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -54,20 +62,32 @@ class DsrController extends AbstractController {
 		
 		Period period = getPeriod()
 		List<DataEntityType> locationTypes = getLocationTypes()
-		ReportObjective objective = ReportObjective.get(params.int('objective'));
-		if(objective == null) objective = reportService.getRootObjective()
-		LocationEntity location = LocationEntity.get(params.int('location'));
-		if (location == null) location = locationService.getRootLocation()
+		ReportObjective objective = getObjective()
+		LocationEntity location = getLocation()		
+		//TODO DsrTargetCategory category = getDsrTargetCategory()		
 		
 		def dsrTable = null
+		def category = null
 		if (period != null && objective != null && location != null) {
 			 dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet(locationTypes));
+			 
+			 def dsrTargetCategories = dsrTable.getTargetCategories()
+			 if(dsrTargetCategories != null){
+				 for(DsrTargetCategory dsrTargetCategory : dsrTargetCategories){
+					 String categoryName = languageService.getText(dsrTargetCategory.getNames());
+					 if(categoryName == "Critical Indicators"){						 
+					 	category = dsrTargetCategory;
+						break;
+					 }
+				 }		 
+			 }
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
 		
 		[
-			dsrTable: dsrTable, 
+			dsrTable: dsrTable,
+			currentCategory: category,
 			currentPeriod: period,
 			periods: Period.list(),
 			currentObjective: objective,
@@ -76,7 +96,6 @@ class DsrController extends AbstractController {
 			locationRoot: locationService.getRootLocation(),
 			currentLocationTypes: locationTypes,
 			locationTypes: locationService.listTypes(),
-//			objectives: ReportObjective.list()
 		]
 	}
 	

@@ -23,14 +23,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target) != null
-		dsrTable.getTopLevelLocations().equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
-
-		when:
-		dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		
-		then:
-		dsrTable.getTopLevelLocations().equals([DataLocationEntity.findByCode(BUTARO)])
+		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target) != null		
 
 	}
 	
@@ -86,7 +79,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		dsrTable.getReportValue(DataLocationEntity.findByCode(locationName), target).value == null
+		dsrTable.getReportValue(DataLocationEntity.findByCode(locationName), target).value == "N/A"
 		
 		where:
 		locationName << [BUTARO, KIVUYE]
@@ -106,7 +99,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		
 		then:
 		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target).value == "10"		
-		dsrTable.getReportValue(DataLocationEntity.findByCode(KIVUYE), target).value == null
+		dsrTable.getReportValue(DataLocationEntity.findByCode(KIVUYE), target).value == "N/A"
 		
 	}
 	

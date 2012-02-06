@@ -4,16 +4,23 @@
 			<th>Facility</th>
 			<g:if test="${dsrTable.targets != null && !dsrTable.targets.empty}">
 				<g:each in="${dsrTable.targets}" var="target">
-					<th><g:i18n field="${target.names}" /></th>
+					<th class="dsr-target" data-category="${target.category?.id ?: 0}"><g:i18n field="${target.names}" /></th>
 				</g:each>
 			</g:if>
 		</tr>
 	</thead>
 	<tbody>
-		<g:if test="${dsrTable.topLevelLocations != null && !dsrTable.topLevelLocations.empty}">
-			<g:each in="${dsrTable.topLevelLocations}" var="topLevelLocation">
-				<g:render template="/templates/dsr/reportProgramTableTree" model="[location:topLevelLocation, level: 0, params:params]"/>
+		<g:if test="${currentLocation.children != null && !currentLocation.children.empty}">
+			<g:each in="${currentLocation.children}" var="child">
+				<g:render template="/templates/dsr/reportProgramTableTree"
+				model="[location:child, level:0, params:params]"/>
 			</g:each>
 		</g:if>
-	</tbody>
+		<g:if test="${currentLocation.dataLocationEntities != null && !currentLocation.dataLocationEntities.empty}">
+			<g:each in="${currentLocation.dataLocationEntities}" var="entity">
+				<g:render template="/templates/dsr/reportProgramTableTree"
+				model="[location:entity, level:0, params:params]"/>
+			</g:each>
+		</g:if>
+	</tbody>			
 </table>

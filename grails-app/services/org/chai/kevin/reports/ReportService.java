@@ -31,7 +31,7 @@ public class ReportService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
-	private String groupLevel;
+//	private String groupLevel;
 	private SessionFactory sessionFactory;
 	
 	
@@ -61,8 +61,9 @@ public class ReportService {
 	}
 	
 	public ReportObjective getRootObjective() {
-		return (ReportObjective)sessionFactory.getCurrentSession().createCriteria(ReportObjective.class)
+		ReportObjective objective = (ReportObjective)sessionFactory.getCurrentSession().createCriteria(ReportObjective.class)
 			.add(Restrictions.isNull("parent")).uniqueResult();
+		return objective;
 	}
 
 	public <T> List<T> getReportTargets(Class<T> clazz, ReportObjective objective) {
@@ -88,9 +89,9 @@ public class ReportService {
 		this.languageService = languageService;
 	}
 	
-	public void setGroupLevel(String groupLevel) {
-		this.groupLevel = groupLevel;
-	}
+//	public void setGroupLevel(String groupLevel) {
+//		this.groupLevel = groupLevel;
+//	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;

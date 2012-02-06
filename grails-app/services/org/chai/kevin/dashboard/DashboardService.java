@@ -88,7 +88,7 @@ public class DashboardService {
 		
 		return new Dashboard(locations, dashboardEntities, calculateLocationPath(location), getValues(locations, dashboardEntities, period, types));
 	}
-	
+			
 	@Transactional(readOnly = true)
 	public Dashboard getLocationDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types) {
 		
@@ -105,7 +105,7 @@ public class DashboardService {
 	}
 
 	@Transactional(readOnly = true)
-	public Dashboard getCompareDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> groups) {		
+	public Dashboard getLocationCompareDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> groups) {		
 		List<CalculationEntity> locations = new ArrayList<CalculationEntity>();
 		locations.add(location);
 		
@@ -114,12 +114,6 @@ public class DashboardService {
 		
 		return new Dashboard(locations, dashboardEntities, calculateLocationPath(location), getValues(locations, dashboardEntities, period, groups));
 	}
-	
-//	@Transactional(readOnly = true)
-//	public Info<?> getExplanation(CalculationEntity entity, DashboardEntity dashboardEntity, Period period, Set<DataEntityType> groups) {
-//		return dashboardEntity.visit(new ExplanationVisitor(groups), entity, period);
-//	}
-
 	
 	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> getValues(List<CalculationEntity> locations, List<DashboardEntity> objectiveEntries, Period period, Set<DataEntityType> types) {
 		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values = new HashMap<CalculationEntity, Map<DashboardEntity, DashboardPercentage>>();

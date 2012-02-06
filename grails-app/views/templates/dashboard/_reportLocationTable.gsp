@@ -34,7 +34,7 @@
 							data-entity="${currentObjective.id}"
 							data-percentage="${percentageValue}"
 							style="width:0%;"
-							original-title="${percentageValue}%"></div>
+							original-title="${percentageValue}"></div>
 					</g:if>
 					<g:elseif test="${percentageValue <= 100}">
 						<div class="js_bar_horizontal tooltip horizontal-bar"

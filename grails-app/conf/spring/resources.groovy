@@ -138,18 +138,19 @@ beans = {
 	}
 
 	reportService(ReportService){
+		dataService = ref("dataService")
 		languageService = ref("languageService")
 		locationService = ref("locationService")
-		sessionFactory = ref("sessionFactory")
+		valueService = ref("valueService")		
+		sessionFactory = ref("sessionFactory")		
 	}
 	
-	dsrService(DsrService){
+	dsrService(DsrService){		
 		reportService = ref("reportService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		languageService = ref("languageService")
-		groupLevel = dsrGroupLevel
 	}
 	
 	fctService(FctService){
@@ -195,7 +196,7 @@ beans = {
 		locationService = ref("locationService")
 		sessionFactory = ref("sessionFactory")
 		dashboardPercentageService = ref("dashboardPercentageService")
-		skipLevels = dashboardSkipLevels
+		skipLevels = dashboardSkipLevels				
 	}
 	
 	dashboardPercentageService(DashboardPercentageService) {

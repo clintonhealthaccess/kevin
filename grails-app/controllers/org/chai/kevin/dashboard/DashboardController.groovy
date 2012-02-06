@@ -30,6 +30,7 @@ package org.chai.kevin.dashboard
 
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractController
+import org.chai.kevin.LocationService
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
@@ -44,27 +45,11 @@ import org.hisp.dhis.period.Period
 class DashboardController extends AbstractController {
 	
 	DashboardService dashboardService;
-	ReportService reportService;
 	
 	def index = {
 		redirect (action: 'view', params: params)
 	}
-	
-//	def explain = {
-//		Period period = Period.get(params.int('period'))
-//		DashboardEntity dashboardEntity = getDashboardEntity()
-//		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
-//
-//		List<DataEntityType> locationTypes = getLocationTypes();
-//		def info = dashboardService.getExplanation(entity, dashboardEntity, period, new HashSet(locationTypes))
-//		def types = DataEntityType.list()
-//		[
-//			info: info, 
-//			types: types, 
-//			dashboardEntity: dashboardEntity
-//		]
-//	}
-	
+		
 	protected def redirectIfDifferent(def period, def objective, def location) {
 		if (period.id+'' != params['period'] || objective.id+'' != params['objective'] || location.id+'' != params['location'] ) {
 			
@@ -97,11 +82,9 @@ class DashboardController extends AbstractController {
 		
 		Period period = getPeriod()
 		List<DataEntityType> locationTypes = getLocationTypes()
-		ReportObjective reportObjective = ReportObjective.get(params.int('objective'))
-		if(reportObjective == null) reportObjective = reportService.getRootObjective()		
+		ReportObjective reportObjective = getObjective()	
 		DashboardEntity dashboardEntity = getDashboardEntity(reportObjective)		
-		LocationEntity location = LocationEntity.get(params.int('location'))
-		if (location == null) location = locationService.getRootLocation()
+		LocationEntity location = getLocation()
 		
 		if (dashboardEntity != null) {
 			reportObjective = dashboardEntity.getReportObjective()
@@ -160,8 +143,12 @@ class DashboardController extends AbstractController {
 			}
 			redirectIfDifferent(period, reportObjective, location)
 			
-			dashboard = dashboardService.getCompareDashboard(location, reportObjective, period, new HashSet(locationTypes));
-			
+			def table = (String) params.get("table")			
+			if(table == 'program')
+				dashboard = dashboardService.getProgramDashboard(location, reportObjective, period, new HashSet(locationTypes));
+			if(table == 'location')
+				dashboard = dashboardService.getLocationCompareDashboard(location, reportObjective, period, new HashSet(locationTypes));
+						
 			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
 
 			render(contentType:"text/json") {
@@ -181,7 +168,6 @@ class DashboardController extends AbstractController {
 				status = 'error'
 			}
 		}
-
 	}
 	
 }

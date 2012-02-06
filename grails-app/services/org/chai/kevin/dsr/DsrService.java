@@ -36,7 +36,6 @@ public class DsrService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
-	private String groupLevel; //TODO
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
@@ -45,14 +44,19 @@ public class DsrService {
 		
 		List<DataLocationEntity> facilities = locationService.getDataEntities(location, types.toArray(new DataEntityType[types.size()]));		
 		
-		List<? extends CalculationEntity> topLevelLocations = new ArrayList<CalculationEntity>();
-		if(location.getChildren() != null)
-			topLevelLocations = location.getChildren();
-		else
-			topLevelLocations = facilities;
-		
 		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, objective);
+		
+//		List<DsrTarget> categoryTargets = new ArrayList<DsrTarget>();
+//		if(dsrTargetCategory != null){
+//			for(DsrTarget target : targets){
+//				if(target.getCategory().equals(dsrTargetCategory))
+//					categoryTargets.add(target);					
+//			}
+//			if(!categoryTargets.isEmpty())
+//				targets = categoryTargets;
+//		}
+		
 		for (DataLocationEntity facility : facilities) {
 			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
 			for (DsrTarget target : targets) {
@@ -61,11 +65,10 @@ public class DsrService {
 			valueMap.put(facility, targetMap);
 		}
 		
-		DsrTable dsrTable = new DsrTable(valueMap, targets, topLevelLocations);
+		DsrTable dsrTable = new DsrTable(valueMap, targets);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
 		return dsrTable;
 	}
-
 
 	private ReportValue getDsrValue(DsrTarget target, DataLocationEntity facility, Period period){
 		String value = null;
@@ -95,17 +98,21 @@ public class DsrService {
 						if (option != null) value = languageService.getText(option.getNames());
 						else value = dataValue.getValue().getEnumValue();
 					}
-					else value = "";
+					else value = "N/A";
 					break;
 				default:
-					value = "";
+					value = "N/A";
 					break;
 				}
 			}
+			else
+				value = "N/A";
 		}
+		else
+			value="N/A";
+		
 		return new ReportValue(value);
 	}
-
 	
 	private static String getFormat(DsrTarget target, Double value) {
 		String format = target.getFormat();
@@ -134,10 +141,6 @@ public class DsrService {
 	
 	public void setLanguageService(LanguageService languageService) {
 		this.languageService = languageService;
-	}
-	
-	public void setGroupLevel(String groupLevel) {
-		this.groupLevel = groupLevel;
 	}
 	
 }

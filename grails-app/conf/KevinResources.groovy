@@ -146,6 +146,25 @@ modules = {
 		resource url: '/js/dataentry.js', bundle: 'core'
 	}
 	
+	chartanimation {
+		dependsOn 'jquery'
+		
+		resource url: '/js/chartanimation_init.js'
+	}
+	
+	comparefilter {
+		dependsOn 'jquery'
+		
+		resource url: '/js/jquery/comparefilter/jquery.form.js', bundle: 'core'
+		resource url: '/js/dashboard/comparefilter_init.js'
+	}
+	
+	categoryfilter {
+		dependsOn 'jquery'
+		
+		resource url: '/js/dsr/categoryfilter_init.js'
+	}
+	
 	// Start resources for pages
 	list {
 		dependsOn 'core,spinner,form,fieldselection,cluetip,dropdown,explanation,chosen'
@@ -164,7 +183,7 @@ modules = {
 	}
 
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,categoryfilter'
 
 		//resource url: '/css/dsr.css'
 	}
@@ -176,7 +195,7 @@ modules = {
 	}
 	
 	dashboard {
-		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen'
+		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter'
 
 		//resource url: '/css/dashboard.css'
 	}

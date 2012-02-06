@@ -1,7 +1,10 @@
 package org.chai.kevin.dsr;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
@@ -39,15 +42,14 @@ import org.chai.kevin.reports.ReportValue;
 
 public class DsrTable extends ReportTable<DsrTarget, DataLocationEntity> {
 	
-	public List<? extends CalculationEntity> topLevelLocations;
-	
-	public DsrTable(Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap, List<DsrTarget> targets, 
-			List<? extends CalculationEntity> topLevelLocations) {
+	public DsrTable(Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap, List<DsrTarget> targets) {
 		super(valueMap, targets, null);
-		this.topLevelLocations = topLevelLocations;
 	}
 	
-	public List<? extends CalculationEntity> getTopLevelLocations(){
-		return topLevelLocations;
+	public Set<DsrTargetCategory> getTargetCategories(){
+		Set<DsrTargetCategory> categories = new HashSet<DsrTargetCategory>();		
+		for(DsrTarget target : getTargets()) 
+			if(target.getCategory() != null) categories.add(target.getCategory());				
+		return categories;		
 	}
 }

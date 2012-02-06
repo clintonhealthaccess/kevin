@@ -19,7 +19,7 @@
 					action: actionName,
 					current: currentObjective,
 					objective: objectiveRoot,
-					linkParams: linkParams]" />
+					params:params]" />
 			</ul>
 		</div>
 	</span>

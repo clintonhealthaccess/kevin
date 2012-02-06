@@ -1,10 +1,10 @@
 <g:form method="get" url="[controller:controllerName, action:actionName]">
 <g:render template="/templates/programFilter"
-		model="[linkParams:linkParams]" />
+		model="[params:params]" />
 <g:render template="/templates/locationFilter"
-		model="[linkParams:linkParams]" />
+		model="[params:params]" />
 <g:render template="/templates/iterationFilter"
-		model="[linkParams:linkParams]" />
+		model="[params:params]" />
 <g:render template="/templates/facilityTypeFilter"
-		model="[linkParams:linkParams]" />
+		model="[params:params]" />
 </g:form>
