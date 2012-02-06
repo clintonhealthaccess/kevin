@@ -40,7 +40,7 @@ public class DsrService {
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
 	public DsrTable getDsrTable(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types) {
-		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",objective="+objective+")");
+		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",objective="+objective+",types="+types+")");
 		
 		List<DataLocationEntity> facilities = locationService.getDataEntities(location, types.toArray(new DataEntityType[types.size()]));		
 		

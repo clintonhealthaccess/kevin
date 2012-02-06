@@ -147,7 +147,7 @@ modules = {
 	}
 	
 	chartanimation {
-		dependsOn 'jquery'
+		dependsOn 'jquery,tipsy'
 		
 		resource url: '/js/chartanimation_init.js'
 	}

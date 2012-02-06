@@ -188,8 +188,8 @@ public class LocationService {
 		}
 	}
 	
-	private List<DataLocationEntity> getDataEntitiesForLocation(CalculationEntity calculationEntity, Set<DataEntityType> types) {
-		List<DataLocationEntity> result = new ArrayList(calculationEntity.getDataEntities());
+	private Set<DataLocationEntity> getDataEntitiesForLocation(CalculationEntity calculationEntity, Set<DataEntityType> types) {
+		Set<DataLocationEntity> result = new HashSet<DataLocationEntity>(calculationEntity.getDataEntities());
 		if (!types.isEmpty()) {
 			for (DataLocationEntity dataLocationEntity : calculationEntity.getDataEntities()) {
 				if (!types.contains(dataLocationEntity.getType())) result.remove(dataLocationEntity);

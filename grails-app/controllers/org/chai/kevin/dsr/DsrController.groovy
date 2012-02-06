@@ -64,7 +64,6 @@ class DsrController extends AbstractController {
 		List<DataEntityType> locationTypes = getLocationTypes()
 		ReportObjective objective = getObjective()
 		LocationEntity location = getLocation()		
-		//TODO DsrTargetCategory category = getDsrTargetCategory()		
 		
 		def dsrTable = null
 		def category = null
@@ -75,6 +74,8 @@ class DsrController extends AbstractController {
 			 if(dsrTargetCategories != null){
 				 for(DsrTargetCategory dsrTargetCategory : dsrTargetCategories){
 					 String categoryName = languageService.getText(dsrTargetCategory.getNames());
+					 
+					 // FIXME HACK
 					 if(categoryName == "Critical Indicators"){						 
 					 	category = dsrTargetCategory;
 						break;
