@@ -93,13 +93,21 @@ public class ValueService {
 		return result;
 	}
 	
-	
 	@Transactional(readOnly=true)
 	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", entity="+entity+", types="+types+")");
 		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, entity, period, types), period, entity);
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(...)="+result);
 		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
+	public <T extends CalculationPartialValue> Set<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
+		return new HashSet<T>((List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
+		.add(Restrictions.eq("period", period))
+		.add(Restrictions.eq("entity", entity))
+		.add(Restrictions.eq("data", calculation)).list());
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -57,6 +57,17 @@ public class PlanningService {
 		planningLine.save(valueService);
 	}
 
+	public boolean isCalculated(PlanningType type, DataLocationEntity location, Period period) {
+		for (PlanningCost planningCost : type.getCosts()) {
+			
+		}
+		return false;
+	}
+	
+	public void refreshBudget(PlanningType type, DataLocationEntity location, Period period) {
+		
+	}
+	
 	public BudgetPlanningType getPlanningTypeBudget(PlanningType type, DataLocationEntity location, Period period) {
 		List<PlanningLine> planningLines = getPlanningLines(type, location, period);
 		

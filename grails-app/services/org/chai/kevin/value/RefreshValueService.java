@@ -5,6 +5,7 @@ import grails.plugin.springcache.annotations.CacheFlush;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,6 +14,7 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
@@ -70,15 +72,12 @@ public class RefreshValueService {
 			Object[] row = (Object[]) iterator.next();
 			CalculationEntity entity = (CalculationEntity)row[0];
 			Period period = (Period)row[1];
-			for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, entity, period)) {
-				valueService.save(partialValue);
-			}
+			refreshCalculation(calculation, entity, period);
 		}
 		calculation.setCalculated(new Date());
 		dataService.save(calculation);
 	}
-	
-	
+
 	@Transactional(readOnly = true)
 	@CacheFlush({"dsrCache", "dashboardCache", "fctCache"})
 	public void refreshNormalizedDataElements() {
@@ -110,6 +109,22 @@ public class RefreshValueService {
 				getMe().refreshCalculationInTransaction(calculation);
 				sessionFactory.getCurrentSession().clear();
 			}
+		}
+	}
+	
+	@Transactional(readOnly = true)
+	public boolean isUpToDate(Calculation<CalculationPartialValue> calculation, CalculationEntity location, Period period) {
+		Set<CalculationPartialValue> values = valueService.getPartialValues(calculation, location, period);
+		for (CalculationPartialValue calculationPartialValue : values) {
+			if (calculationPartialValue.getTimestamp().before(calculation.getTimestamp())) return false;
+		}
+		return true;
+	}
+	
+	@Transactional(readOnly = true)
+	public void refreshCalculation(Calculation<?> calculation, CalculationEntity entity, Period period) {
+		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, entity, period)) {
+			valueService.save(partialValue);
 		}
 	}
 
