@@ -61,8 +61,12 @@ public class PlanningLine {
 		return result;
 	}
 
-	public String getDiscriminatorValue() {
+	private String getDiscriminatorValue() {
 		return type.getDataElement().getType().getValue(dataElementValue.getValue(), "["+lineNumber+"]"+type.getDiscriminator()).getStringValue();
+	}
+	
+	public List<PlanningCost> getPlanningCosts() {
+		return type.getPlanningCosts(getDiscriminatorValue());
 	}
 	
 	public Translation getNames(DataService dataService) {

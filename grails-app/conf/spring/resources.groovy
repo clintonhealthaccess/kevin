@@ -208,7 +208,7 @@ beans = {
 	planningService(PlanningService) {
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		expressionService = ref("expressionService")
+		refreshValueService = ref("refreshValueService")
 	}
 	
 	// override the spring cache manager to use the same as hibernate

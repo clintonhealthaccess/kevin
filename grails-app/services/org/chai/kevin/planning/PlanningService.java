@@ -1,22 +1,28 @@
 package org.chai.kevin.planning;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.chai.kevin.data.DataService;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.RefreshValueService;
+import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.hisp.dhis.period.Period;
 
 public class PlanningService {
 
-	private ExpressionService expressionService;
+//	private ExpressionService expressionService;
 	private ValueService valueService;
 	private DataService dataService;
+	private RefreshValueService refreshValueService;
 	
 	public List<PlanningLine> getPlanningLines(PlanningType type, DataLocationEntity location, Period period) {
 		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getDataElement(), location, period);
@@ -53,35 +59,29 @@ public class PlanningService {
 		// second we run the validation rules
 		// TODO
 		
-		// third we set and save the value
+		// last we set and save the value
 		planningLine.save(valueService);
 	}
-
-	public boolean isCalculated(PlanningType type, DataLocationEntity location, Period period) {
-		for (PlanningCost planningCost : type.getCosts()) {
-			
-		}
-		return false;
-	}
 	
-	public void refreshBudget(PlanningType type, DataLocationEntity location, Period period) {
+	public void refreshBudget(PlanningType type, DataLocationEntity location, Period period, Integer lineNumber) {
+		PlanningLine planningLine = getPlanningLine(type, location, period, lineNumber);
 		
+		for (PlanningCost planningCost : planningLine.getPlanningCosts()) {
+			refreshValueService.refreshCalculation(planningCost.getSum(), location, period);
+		}
 	}
 	
 	public BudgetPlanningType getPlanningTypeBudget(PlanningType type, DataLocationEntity location, Period period) {
 		List<PlanningLine> planningLines = getPlanningLines(type, location, period);
 		
+		Set<DataEntityType> types = new HashSet<DataEntityType>();
+		types.add(location.getType());
+		
 		List<BudgetPlanningLine> budgetPlanningLines = new ArrayList<BudgetPlanningLine>();
 		for (PlanningLine planningLine : planningLines) {
 			List<BudgetCost> budgetCosts = new ArrayList<BudgetCost>();
-			List<PlanningCost> costs = type.getPlanningCosts(planningLine.getDiscriminatorValue());
-			for (PlanningCost planningCost : costs) {
-				// TODO use pre-calculated value ?
-				budgetCosts.add(new BudgetCost(planningCost, 
-					planningCost.getSum().getCalculationValue(
-						expressionService.calculatePartialValues(planningCost.getSum(), location, period), period, location)
-					)
-				);
+			for (PlanningCost planningCost : planningLine.getPlanningCosts()) {
+				budgetCosts.add(new BudgetCost(planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, period, types)));
 			}
 			budgetPlanningLines.add(new BudgetPlanningLine(planningLine, budgetCosts, planningLine.getNames(dataService)));
 		}
@@ -96,9 +96,9 @@ public class PlanningService {
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}
-	
-	public void setExpressionService(ExpressionService expressionService) {
-		this.expressionService = expressionService;
+
+	public void setRefreshValueService(RefreshValueService refreshValueService) {
+		this.refreshValueService = refreshValueService;
 	}
-	
+
 }

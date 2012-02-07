@@ -78,4 +78,12 @@ class PlanningController extends AbstractController {
 		])
 	}
 		
+	def listPlanningLines = {
+		
+	}
+	
+	def overview = {
+		
+	}
+	
 }

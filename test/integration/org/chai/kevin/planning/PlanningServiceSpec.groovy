@@ -67,6 +67,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		when:
 		def sum = newSum('($'+dataElement.id+' -> filter $.key0 == "value")[0].key1 * 2', CODE(3))
 		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, sum, "", "value", planningType)
+		refreshCalculation()
 		planningTypeBudget = planningService.getPlanningTypeBudget(planningType, DataLocationEntity.findByCode(BUTARO), period)
 		
 		then:

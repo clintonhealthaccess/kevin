@@ -112,14 +112,14 @@ public class RefreshValueService {
 		}
 	}
 	
-	@Transactional(readOnly = true)
-	public boolean isUpToDate(Calculation<CalculationPartialValue> calculation, CalculationEntity location, Period period) {
-		List<CalculationPartialValue> values = valueService.getPartialValues(calculation, location, period);
-		for (CalculationPartialValue calculationPartialValue : values) {
-			if (calculationPartialValue.getTimestamp().before(calculation.getTimestamp())) return false;
-		}
-		return true;
-	}
+//	@Transactional(readOnly = true)
+//	public boolean isUpToDate(Calculation<CalculationPartialValue> calculation, CalculationEntity location, Period period) {
+//		List<CalculationPartialValue> values = valueService.getPartialValues(calculation, location, period);
+//		for (CalculationPartialValue calculationPartialValue : values) {
+//			if (calculationPartialValue.getTimestamp().before(calculation.getTimestamp())) return false;
+//		}
+//		return true;
+//	}
 	
 	@Transactional(readOnly = true)
 	public void refreshCalculation(Calculation<?> calculation, CalculationEntity entity, Period period) {
