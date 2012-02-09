@@ -180,6 +180,7 @@ button, input[type=submit], .next
   font-size: 14px
   font-weight: bold
   padding: 6px 40px
+  text-decoration: none
   +border-radius(3px)
   +box-shadow(#ddd, 0px, 3px, 1px)
   +linear-gradient(color-stops($yes + #090909, $yes - #090909))
@@ -204,8 +205,26 @@ button, input[type=submit], .next
     +linear-gradient(color-stops(#fff, #fff))
     +text-shadow(#fff, 0, 0, 0)
   &.medium
-    font-size: 12px
-    padding: 4px 20px
+    font-size: 11px
+    padding: 6px 20px
+    +box-shadow(#ddd, 0px, 2px, 1px)
+  &.small
+    font-size: 10px
+    padding: 3px 15px
+    +border-radius(2px)
+    +box-shadow(#ddd, 0px, 1px, 1px)
+  &.gray
+    background: #eee
+    border: 1px solid #bbb
+    color: $primary
+    +linear-gradient(color-stops(#f9f9f9, #eee))
+    +text-shadow(#fff, 0, 1px, 0)
+    &:hover, &:focus
+      background: $yes - #111
+      border: 1px solid $yes - #333
+      color: #fff
+      +linear-gradient(color-stops($yes, $yes - #111))
+      +text-shadow($yes - #333, 0, 1px, 0)
   
 select
   background: #f6f6f6
@@ -308,6 +327,9 @@ select
   background: $filler + #060606
   color: #333
   padding: 3px
+  &:hover, &:focus, &:active
+    background: $filler + #030303
+    border-color: $primary
   
 .idle-field
   background: #f9f9f9
@@ -316,7 +338,7 @@ select
   font: normal 12px Arial, sans-serif
   padding: 3px
   +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
-  &:hover, &:focus
+  &:hover, &:focus, &:active
     background: $filler + #030303
     border-color: $primary
   

@@ -1,5 +1,6 @@
 <div class="filter">
-	<span class="js_dropdown dropdown">
+	<span class="bold"><g:message code="filter.program.label"
+			default="Strategic Program" /></span> <span class="dropdown subnav-dropdown">
 		<g:if test="${currentObjective != null}">
 			<a href="#" class="program selected"
 				data-objective="${currentObjective.id}" data-type="objective"> <g:i18n
@@ -11,7 +12,7 @@
 					default="Please select a program" />
 			</a>
 		</g:else>
-		<div class="hidden dropdown-list js_dropdown-list">
+		<div class="hidden dropdown-list">
 			<ul>
 				<g:render template="/templates/programTree"
 					model="[
@@ -19,7 +20,7 @@
 					action: actionName,
 					current: currentObjective,
 					objective: objectiveRoot,
-					params:params]" />
+					linkParams: linkParams]" />
 			</ul>
 		</div>
 	</span>

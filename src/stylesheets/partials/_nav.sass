@@ -127,7 +127,7 @@
   //background: url('../images/bg/subnav_bg.png') repeat-x
   color: #888
   font-size: 11px
-  padding: 30px 15px
+  padding: 30px 15px 25px
   +pie-clearfix
   a
     font-size: 11px
@@ -382,3 +382,31 @@
     &.selected
       border-bottom: 1px solid #fff
       margin-bottom: -1px
+
+// Tab sub-navigation
+
+#tab-subnav
+  background: #fff
+  border-bottom: 1px solid #e3e3e3
+  margin: -15px -15px 15px
+  //+linear-gradient(color-stops(#fafafa, #f1f1f1))
+  +pie-clearfix
+  li
+    margin-right: 0
+  a
+    color: #666
+    display: block
+    font-size: 11px
+    padding: 14px 20px 
+    text-decoration: none
+    +text-shadow(#fff 0 1px 0)
+    &:hover, &:focus, &.selected
+      background: #fff
+      color: $primary
+      +linear-gradient(color-stops(#fff, #fff))
+      +transition(all .5s)
+
+    &.selected
+      background: url('../images/icons/tab-subnav.png') no-repeat center bottom
+      position: relative
+      bottom: -1px
