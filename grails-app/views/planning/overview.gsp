@@ -51,10 +51,12 @@
 					        					<ul class="overview-recent">
 					        						<g:each in="${planningList.getLatestEntries(5)}" var="entry">
 														<li>
-															<a href="#"><g:i18n field="${entry.names}"/></a>
+															<a href="${createLink(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">
+																<g:value value="${entry.discriminatorValue}" type="${planningList.planningType.discriminatorType}" enums="${entry.enums}"/>
+															</a>
 															<span class="overview-manage right">
 																<a href="${createLink(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">edit</a>
-																<a href="${createLink(controller:'planning', action:'deletePlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">delete</a>
+																<a href="${createLinkWithTargetURI(controller:'planning', action:'deletePlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">delete</a>
 															</span>
 														</li>
 													</g:each>

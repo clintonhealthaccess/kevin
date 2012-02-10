@@ -263,8 +263,8 @@ class Initializer {
 			
 			def planningElement = new RawDataElement(names:j(["en":"Element Planning"]), descriptions:j([:]), code:"PLANNINGELEMENT",
 				type: Type.TYPE_LIST(Type.TYPE_MAP([
-					"key0": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 					"key1": Type.TYPE_MAP([
+						"key10": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 						"key11": Type.TYPE_NUMBER(),
 						"key12": Type.TYPE_STRING()
 					]),
@@ -944,6 +944,7 @@ class Initializer {
 			],
 			headers: [
 				"[_].key1": j(["en":"Basic Information"]),
+				"[_].key1.key10": j(["en":"Type"]),
 				"[_].key1.key11": j(["en":"Name"]),
 				"[_].key1.key12": j(["en":"Number"]),
 				"[_].key2": j(["en":"Supply and Maintenance"]),
@@ -951,7 +952,7 @@ class Initializer {
 				"[_].key2.key22": j(["en":"Supplier Type"]),
 			],
 			dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
-			discriminator: '[_].key0',
+			discriminator: '[_].key1.key10',
 			planning: planning
 		).save(failOnError: true);
 		

@@ -49,6 +49,10 @@ public abstract class AbstractController {
 	ReportService reportService;
 	LocationService locationService;
 	
+	def getTargetURI() {
+		return params.targetURI?: "/"
+	}
+	
 	public List<DataEntityType> getLocationTypes() {
 		List<DataEntityType> types = null
 		if (params['locationTypes'] != null) {

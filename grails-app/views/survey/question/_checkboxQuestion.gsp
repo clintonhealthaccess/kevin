@@ -35,7 +35,8 @@
 						element: surveyElement, 
 						validatable: enteredValue.validatable, 
 						readonly: readonly,
-						isCheckbox: true
+						isCheckbox: true,
+						enums: surveyPage.enums
 					]"/>
 					<g:i18n field="${option.names}"/>
 				</g:if>

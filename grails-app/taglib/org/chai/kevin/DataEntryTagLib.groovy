@@ -1,6 +1,9 @@
 package org.chai.kevin
 
 import org.chai.kevin.survey.SurveyElement;
+import java.util.Comparator;
+
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
@@ -9,8 +12,57 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.survey.SurveyElement;
 
-class SurveyTagLib {
+class DataEntryTagLib {
 
+	def languageService
+	
+	// TODO test
+	def value = {attrs, body ->
+		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')
+		
+		def type = attrs['type']
+		def value = attrs['value']
+		def enums = attrs['enums']
+		
+		def result = null
+		switch (type.type) {
+			case (ValueType.ENUM):
+				def enume = enums[type.enumCode]
+				if (enume == null) result = value.enumValue
+				else {
+					def option = enume.getOptionForValue(value.enumValue)
+					if (option == null) result = value.enumValue
+					else result = languageService.getText(option.names)
+				}
+				break;
+			default:
+				result = value.stringValue
+		}
+		out << result
+	}
+	
+	def eachOption = { attrs, body ->
+		if (log.isDebugEnabled()) log.debug('eachOption(attrs='+attrs+',body='+body+')')
+		
+		def enume = attrs['enum']
+		def var = attrs['var']
+		
+		def options = enume.activeEnumOptions.sort(getOrderingComparator())
+
+		for (option in options) {
+			if (var) {
+				out << body([(var):option])
+			}	
+			else {
+				out << body(option)
+			}
+		}
+	}
+	
+	private Comparator<Orderable<Ordering>> getOrderingComparator() {
+		return Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage);
+	}
+	
 	def renderUserErrors = {attrs, body ->
 		if (log.isDebugEnabled()) log.debug('renderUserErrors(attrs='+attrs+',body='+body+')')
 		

@@ -155,35 +155,28 @@ public class PlanningType {
 	
 	@Transient
 	public Type getDiscriminatorType() {
-		return dataElement.getType().getType(getDiscriminator());
+		return getType(getDiscriminator());
 	}
 	
 	@Transient
-	public Type getSectionType(String section) {
+	public Type getType(String section) {
 		return dataElement.getType().getType(section);
 	}
 	
-	@Transient
-	public List<String> getValuePrefixes(String section) {
-		final Type sectionType = dataElement.getType().getType(section);
-		final List<String> result = new ArrayList<String>();
-		dataElement.getType().visit(new TypeVisitor() {
-			@Override
-			public void handle(Type type, String prefix) {
-				if (!type.isComplexType() && getParents().contains(sectionType)) {
-					result.add(prefix);
-				}
-			}
-		});
-		return result;
-	}
-
 	@Transient
 	public List<PlanningCost> getPlanningCosts(String discriminatorValue) {
 		List<PlanningCost> result = new ArrayList<PlanningCost>();
 		for (PlanningCost planningCost : getCosts()) {
 			if (planningCost.getDiscriminatorValue().equals(discriminatorValue)) result.add(planningCost);
 		}
+		return result;
+	}
+	
+	@Transient
+	public List<String> getValuePrefixes(String section) {
+		List<String> result = dataElement.getValuePrefixes(section);
+		// we get rid of the discriminator
+		result.remove(getDiscriminator());
 		return result;
 	}
 }

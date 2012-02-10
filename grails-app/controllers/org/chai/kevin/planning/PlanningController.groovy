@@ -27,7 +27,13 @@ class PlanningController extends AbstractController {
 	}
 	
 	def deletePlanningEntry = {
-			
+		def planningType = PlanningType.get(params.int('planningType'))
+		def location = DataLocationEntity.get(params.int('location'))
+		def lineNumber = params.int('lineNumber')
+		
+		planningService.deletePlanningEntry(planningType, location, lineNumber)
+		
+		redirect (uri: getTargetURI())
 	}
 
 	def saveValue = {

@@ -36,10 +36,6 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 abstract class AbstractEntityController extends AbstractController {
 	
-	def getTargetURI() {
-		return params.targetURI?: "/"
-	}
-	
 	def index = {
         redirect(action: "list", params: params)
     }

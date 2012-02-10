@@ -348,38 +348,4 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		surveyPage.getOptions(question).equals([option2, option1])
 	}
 	
-	def "test enum option order"() {
-		setup:
-		setupLocationTree()
-		setupSecurityManager(newUser('test', 'uuid'))
-		def period = newPeriod()
-		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def enume = newEnume(CODE(2))
-		def option1 = newEnumOption(enume, v("1"), o(['en':2, 'fr':1]))
-		def option2 = newEnumOption(enume, v("2"), o(['en':1, 'fr':2]))
-		def dataElement = newRawDataElement(CODE(1), Type.TYPE_ENUM(enume.code))
-		def surveyElement = newSurveyElement(question, dataElement)
-		
-		when:
-		def surveyPage = surveyPageService.getSurveyPage(DataLocationEntity.findByCode(KIVUYE), section)
-		
-		then:
-		surveyPage.getEnumOptions(enume).equals([option2, option1])
-		
-		when:
-		surveyPageService.languageService = new LanguageService(){
-			public String getCurrentLanguage() {
-				return "fr";
-			}
-		}
-		surveyPage = surveyPageService.getSurveyPage(DataLocationEntity.findByCode(KIVUYE), section)
-		
-		then:
-		surveyPage.getEnumOptions(enume).equals([option1, option2])
-	}
-	
-	
 }

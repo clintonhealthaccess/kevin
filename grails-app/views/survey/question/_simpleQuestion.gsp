@@ -34,7 +34,8 @@
 					validatable: enteredValue.validatable, 
 					readonly: readonly,
 					print: print,
-					appendix: appendix
+					appendix: appendix,
+					enums: surveyPage.enums
 				]"/>
 			</g:if>
 			<g:else>

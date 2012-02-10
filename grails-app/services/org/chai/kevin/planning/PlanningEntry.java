@@ -1,6 +1,7 @@
 package org.chai.kevin.planning;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,14 +22,14 @@ public class PlanningEntry {
 	private RawDataElementValue dataElementValue;
 	private Integer lineNumber;
 	private PlanningType type;
-	private Enum enume;
+	private Map<String, Enum>  enums;
 	private ValidatableValue validatable;
 	
-	public PlanningEntry(PlanningType type, RawDataElementValue value, Integer lineNumber, Enum enume) {
+	public PlanningEntry(PlanningType type, RawDataElementValue value, Integer lineNumber, Map<String, Enum> enums) {
 		this.dataElementValue = value;
 		this.type = type;
 		this.lineNumber = lineNumber;
-		this.enume = enume;
+		this.enums = enums;
 	}
 
 	public boolean isBudgetUpdated() {
@@ -56,45 +57,48 @@ public class PlanningEntry {
 		return prefix.replaceFirst("^\\[_\\]", "["+lineNumber+"]");
 	}
 	
-	private Value getValue() {
-		return dataElementValue.getData().getType().getValue(dataElementValue.getValue(), getPrefix("[_]"));
-	}
-	
 	public Value getValue(String prefix) {
 		return dataElementValue.getData().getType().getValue(dataElementValue.getValue(), getPrefix(prefix));
 	}
 	
-	public void save(ValueService valueService) {
-		valueService.save(dataElementValue);
+	public Value getDiscriminatorValue() {
+		return getValue(type.getDiscriminator());
+	}
+	
+	private Value getValue() {
+		return getValue("[_]");
 	}
 
 	public void mergeValues(Map<String, Object> params) {
-		params.put("elements["+type.getId()+"].value", getLineNumbers());
+		params.put("elements["+type.getId()+"].value", getLineNumbers(null));
 		getValidatable().mergeValue(params, "elements["+type.getId()+"].value");
 	}
 	
-	private List<String> getLineNumbers() {
+	public void delete() {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("elements["+type.getId()+"].value", getLineNumbers(lineNumber));
+		getValidatable().mergeValue(params, "elements["+type.getId()+"].value");
+	}
+	
+	private List<String> getLineNumbers(Integer skip) {
 		List<String> result = new ArrayList<String>();
 		Integer linesInValue = dataElementValue.getValue().isNull()?0:dataElementValue.getValue().getListValue().size();
 		for (int i = 0; i <= Math.max(linesInValue-1, lineNumber); i++) {
-			result.add("["+i+"]");
+			if (skip == null || i != skip) result.add("["+i+"]");
 		}
 		return result;
 	}
-
-	private String getDiscriminatorValue() {
-		return type.getDataElement().getType().getValue(dataElementValue.getValue(), getPrefix(type.getDiscriminator())).getStringValue();
-	}
 	
 	public List<PlanningCost> getPlanningCosts() {
-		return type.getPlanningCosts(getDiscriminatorValue());
-	}
-	
-	public Translation getNames() {
-		if (enume.getOptionForValue(getDiscriminatorValue())!=null) {
-			return enume.getOptionForValue(getDiscriminatorValue()).getNames();
-		}
-		return null;
+		return type.getPlanningCosts(getDiscriminatorValue().getStringValue());
 	}
 
+	public Map<String, Enum> getEnums() {
+		return enums;
+	}
+	
+	// TODO move to PlanningList
+	public void save(ValueService valueService) {
+		valueService.save(dataElementValue);
+	}
 }

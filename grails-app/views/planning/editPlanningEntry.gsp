@@ -20,10 +20,10 @@
 				<g:each in="${planningType.sections}" var="section">
 					<g:i18n field="${planningType.headers[section]}"/>
 	
-					<g:render template="/survey/element/${planningType.getSectionType(section).type.name().toLowerCase()}"  model="[
+					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
 						value: planningLine.getValue(section),
 						lastValue: null,
-						type: planningType.getSectionType(section), 
+						type: planningType.getType(section), 
 						suffix: planningLine.getPrefix(section),
 						headerSuffix: section,
 						
@@ -31,7 +31,8 @@
 						element: planningType,
 						validatable: planningLine.validatable,
 						
-						readonly: readonly
+						readonly: readonly,
+						enums: planningLine.enums
 					]"/>
 					
 				</g:each>

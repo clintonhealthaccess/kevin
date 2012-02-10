@@ -1,7 +1,9 @@
 package org.chai.kevin.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -50,6 +52,33 @@ public abstract class DataElement<T extends DataValue> extends Data<T> {
 		});
 	
 		return prefixes;
+	}
+	
+	@Transient
+	public List<String> getValuePrefixes(String section) {
+		final Type sectionType = getType().getType(section);
+		final List<String> result = new ArrayList<String>();
+		getType().visit(new TypeVisitor() {
+			@Override
+			public void handle(Type type, String prefix) {
+				if (!type.isComplexType() && getParents().contains(sectionType)) {
+					result.add(prefix);
+				}
+			}
+		});
+		return result;
+	}
+
+	@Transient
+	public Map<String, Type> getEnumPrefixes() {
+		final Map<String, Type> result = new HashMap<String, Type>();
+		getType().visit(new TypeVisitor() {
+			@Override
+			public void handle(Type type, String prefix) {
+				if (type.getType() == ValueType.ENUM) result.put(prefix, type);
+			}
+		});
+		return result;
 	}
 	
 }

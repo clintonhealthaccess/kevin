@@ -3,7 +3,6 @@
 <div id="survey-header" class="subnav">
 	<div>
 		<div class="filter">
-			<span class="bold"><g:message code="survey.labels.objective" default="Strategic Objective" />:</span>
 			<span class="js_dropdown dropdown">
 				<a class="program selected" href="#">
 					<g:if test="${objective != null}">

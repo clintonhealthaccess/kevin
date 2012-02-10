@@ -48,7 +48,8 @@
 										suffix:'',
 										element: surveyElement, 
 										validatable: enteredValue.validatable, 
-										readonly: readonly
+										readonly: readonly,
+										enums: surveyPage.enums
 									]" />
 								</g:if>
 								<g:else>

@@ -1,13 +1,16 @@
 package org.chai.kevin.planning;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
@@ -28,19 +31,20 @@ public class PlanningService {
 	
 	public PlanningList getPlanningList(PlanningType type, DataLocationEntity location) {
 		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getDataElement(), location, type.getPeriod());
-		return new PlanningList(type, dataElementValue, getEnum(type));
+		
+		return new PlanningList(type, dataElementValue, getEnums(type));
 	}
 	
 	public PlanningEntry getPlanningEntry(PlanningType type, DataLocationEntity location, Integer lineNumber) {
 		RawDataElementValue dataElementValue = getDataElementValue(type, location);
 		
-		return new PlanningEntry(type, dataElementValue, lineNumber, getEnum(type));
+		return new PlanningEntry(type, dataElementValue, lineNumber, getEnums(type));
 	}
 	
-	private Enum getEnum(PlanningType type) {
-		Enum result = null;
-		if (type.getDiscriminatorType().getType() == ValueType.ENUM) {
-			result = dataService.findEnumByCode(type.getDiscriminatorType().getEnumCode());
+	private Map<String, Enum> getEnums(PlanningType type) {
+		Map<String, Enum> result = new HashMap<String, Enum>();
+		for (Entry<String, Type> prefix : type.getDataElement().getEnumPrefixes().entrySet()) {
+			result.put(prefix.getValue().getEnumCode(), dataService.findEnumByCode(prefix.getValue().getEnumCode()));
 		}
 		return result;
 	}
@@ -52,6 +56,12 @@ public class PlanningService {
 			valueService.save(dataElementValue);
 		}
 		return dataElementValue;
+	}
+	
+	public void deletePlanningEntry(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+		PlanningEntry planningEntry = getPlanningEntry(type, location, lineNumber);
+		planningEntry.delete();
+		planningEntry.save(valueService);
 	}
 	
 	public PlanningEntry modify(PlanningType type, DataLocationEntity location, Integer lineNumber, Map<String, Object> params) {

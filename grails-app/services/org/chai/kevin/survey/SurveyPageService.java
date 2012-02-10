@@ -89,10 +89,6 @@ public class SurveyPageService {
 	private SessionFactory sessionFactory;
 	private GrailsApplication grailsApplication;
 	
-	private Comparator<Orderable<Ordering>> getOrderingComparator() {
-		return Ordering.getOrderableComparator(languageService.getCurrentLanguage(), languageService.getFallbackLanguage());
-	}
-	
 	@Transactional(readOnly = true)
 	public Survey getDefaultSurvey() {
 		return (Survey)sessionFactory.getCurrentSession()
@@ -129,7 +125,7 @@ public class SurveyPageService {
 			collectEnums(element, enums);
 		}
 		
-		SurveyPage page = new SurveyPage(entity, currentQuestion.getSurvey(), null, null, null, null, questions, elements, enums, getOrderingComparator());
+		SurveyPage page = new SurveyPage(entity, currentQuestion.getSurvey(), null, null, null, null, questions, elements, enums);
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
 	}
@@ -167,7 +163,7 @@ public class SurveyPageService {
 			}
 		}
 		
-		SurveyPage page = new SurveyPage(entity, survey, currentObjective, currentSection, objectives, sections, questions, elements, enums, getOrderingComparator());
+		SurveyPage page = new SurveyPage(entity, survey, currentObjective, currentSection, objectives, sections, questions, elements, enums);
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
 	}
@@ -208,7 +204,7 @@ public class SurveyPageService {
 			}
 		}
 		
-		SurveyPage page = new SurveyPage(entity, survey, currentObjective, null, objectives, sections, questions, elements, enums, getOrderingComparator());
+		SurveyPage page = new SurveyPage(entity, survey, currentObjective, null, objectives, sections, questions, elements, enums);
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
 	}
@@ -234,7 +230,7 @@ public class SurveyPageService {
 			}
 
 		}
-		return new SurveyPage(entity, survey, null, null, null, null,null, elements, enums, getOrderingComparator());
+		return new SurveyPage(entity, survey, null, null, null, null,null, elements, enums);
 	}
 	
 
@@ -253,7 +249,7 @@ public class SurveyPageService {
 				sections.put(section, enteredSection);
 			}
 		}
-		return new SurveyPage(entity, survey, null, null, objectives, sections, null, null, null, getOrderingComparator());
+		return new SurveyPage(entity, survey, null, null, objectives, sections, null, null, null);
 	}
 	
 	@Transactional(readOnly = false)
@@ -512,7 +508,7 @@ public class SurveyPageService {
 			surveyValueService.save(surveyEnteredObjective);
 		}
 		
-		return new SurveyPage(entity, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements, null, getOrderingComparator());
+		return new SurveyPage(entity, null, null, null, affectedObjectives, affectedSections, affectedQuestions, affectedElements, null);
 	}
 
 	// FIXME HACK 
