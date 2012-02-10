@@ -1,4 +1,4 @@
-package org.chai.kevin.planning;
+package org.chai.kevin.planning.budget;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,26 +6,26 @@ import java.util.List;
 import java.util.Set;
 
 import org.chai.kevin.Translation;
+import org.chai.kevin.planning.PlanningCost;
+import org.chai.kevin.planning.PlanningEntry;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 
-public class BudgetPlanningLine {
+public class PlanningEntryBudget {
 
-	private PlanningLine planningLine;
+	private PlanningEntry planningEntry;
 	private List<BudgetCost> budgetCosts;
-	private Translation names;
 
-	public BudgetPlanningLine(PlanningLine planningLine, List<BudgetCost> budgetCosts, Translation names) {
-		this.planningLine = planningLine;
+	public PlanningEntryBudget(PlanningEntry planningEntry, List<BudgetCost> budgetCosts) {
+		this.planningEntry = planningEntry;
 		this.budgetCosts = budgetCosts;
-		this.names = names;
 	}
 	
-	public Translation getNames() {
-		return names;
-	}
+//	public Translation getNames() {
+//		return names;
+//	}
 	
-	public PlanningLine getPlanningLine() {
-		return planningLine;
+	public PlanningEntry getPlanningLine() {
+		return planningEntry;
 	}
 	
 	public Double getOutgoing() {

@@ -240,22 +240,4 @@ class SurveyService {
 		return number;
 	}
 	
-	// TODO move this somewhere else and change signature to getHeaderPrefixes(Type type)
-	List<String> getHeaderPrefixes(SurveyElement element) {
-		
-		List<String> prefixes = new ArrayList(element.getDataElement().getType().getPrefixes(
-			element.getDataElement().getType().getPlaceHolderValue(),
-			new PrefixPredicate() {
-				@Override
-				public boolean holds(Type type, Value value, String prefix) {
-					if (getParent() != null && getParent().getType() == ValueType.MAP) return true;
-				}
-			}).keySet());
-		
-		return prefixes.collect { prefix ->
-			prefix.replace("[0]", "[_]")
-		}
-		
-	}
-	
 }

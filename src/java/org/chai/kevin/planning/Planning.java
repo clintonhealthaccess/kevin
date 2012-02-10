@@ -1,5 +1,6 @@
 package org.chai.kevin.planning;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ public class Planning {
 	private Long id;
 	
 	private Period period;
-	private List<PlanningType> planningTypes;
+	private List<PlanningType> planningTypes = new ArrayList<PlanningType>();
 	// TODO add settings form page
 	
 	@Id

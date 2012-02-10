@@ -52,6 +52,7 @@
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredObjective" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyLog" />
 		
+		<mapping class="org.chai.kevin.planning.Planning" />
 		<mapping class="org.chai.kevin.planning.PlanningType" />
 		<mapping class="org.chai.kevin.planning.PlanningCost" />
 				

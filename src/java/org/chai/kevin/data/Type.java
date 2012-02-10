@@ -743,6 +743,25 @@ public class Type extends JSONValue {
 	}
 	
 	public static abstract class TypeVisitor {
+		private Stack<Type> typeStack = new Stack<Type>();
+		
+		public Stack<Type> getParents() {
+			return typeStack;
+		}
+		
+		public Type getParent() {
+			if (typeStack.size() >= 2) return typeStack.get(typeStack.size() - 2);
+			return null;
+		}
+		
+		protected void addType(String prefix, Type type) {
+			typeStack.add(type);	
+		}
+		
+		protected void removeType(String prefix) {
+			typeStack.pop();
+		}
+		
 		public abstract void handle(Type type, String prefix);
 	}
 	
@@ -751,6 +770,7 @@ public class Type extends JSONValue {
 	}
 	
 	private void visit(String prefix, TypeVisitor typeVisitor) {
+		typeVisitor.addType(prefix, this);
 		typeVisitor.handle(this, prefix);
 		switch (getType()) {
 			case NUMBER:
@@ -771,6 +791,7 @@ public class Type extends JSONValue {
 			default:
 				throw new NotImplementedException();
 		}
+		typeVisitor.removeType(prefix);
 	}
 	
 	@Deprecated

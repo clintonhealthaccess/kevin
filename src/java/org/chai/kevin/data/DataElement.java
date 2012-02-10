@@ -1,5 +1,8 @@
 package org.chai.kevin.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -8,7 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.chai.kevin.data.Type.TypeVisitor;
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.DataValue;
 
 @Entity(name="DataElement")
@@ -28,6 +34,22 @@ public abstract class DataElement<T extends DataValue> extends Data<T> {
 	
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	@Transient
+	public List<String> getHeaderPrefixes() {
+		final List<String> prefixes = new ArrayList<String>();
+		
+		getType().visit(new TypeVisitor() {
+			@Override
+			public void handle(Type type, String prefix) {
+				if (getParent() != null && getParent().getType() == ValueType.MAP) {
+					prefixes.add(prefix);
+				}
+			}
+		});
+	
+		return prefixes;
 	}
 	
 }

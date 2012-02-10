@@ -1,5 +1,6 @@
-package org.chai.kevin.planning;
+package org.chai.kevin.planning.budget;
 
+import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.value.SumValue;
 
 public class BudgetCost {

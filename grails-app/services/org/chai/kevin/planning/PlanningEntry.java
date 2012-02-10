@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.RawDataElementValue;
@@ -13,19 +14,31 @@ import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 
-public class PlanningLine {
+public class PlanningEntry {
 
+	private static final String BUDGET_UPDATED = "budget_updated";
+	
 	private RawDataElementValue dataElementValue;
 	private Integer lineNumber;
 	private PlanningType type;
+	private Enum enume;
 	private ValidatableValue validatable;
 	
-	public PlanningLine(PlanningType type, RawDataElementValue value, Integer lineNumber) {
+	public PlanningEntry(PlanningType type, RawDataElementValue value, Integer lineNumber, Enum enume) {
 		this.dataElementValue = value;
 		this.type = type;
 		this.lineNumber = lineNumber;
+		this.enume = enume;
 	}
 
+	public boolean isBudgetUpdated() {
+		return getValue().getAttribute(BUDGET_UPDATED).equals(Boolean.TRUE.toString());
+	}
+
+	public void setBudgetUpdated(Boolean value) {
+		getValue().setAttribute(BUDGET_UPDATED, value.toString());
+	}
+	
 	public String getLineSuffix(String section) {
 		return "";
 	}
@@ -39,8 +52,16 @@ public class PlanningLine {
 		return validatable;
 	}
 	
-	public Value getValue(String section) {
-		return dataElementValue.getData().getType().getValue(dataElementValue.getValue(), "["+lineNumber+"]"+section);
+	public String getPrefix(String prefix) {
+		return prefix.replaceFirst("^\\[_\\]", "["+lineNumber+"]");
+	}
+	
+	private Value getValue() {
+		return dataElementValue.getData().getType().getValue(dataElementValue.getValue(), getPrefix("[_]"));
+	}
+	
+	public Value getValue(String prefix) {
+		return dataElementValue.getData().getType().getValue(dataElementValue.getValue(), getPrefix(prefix));
 	}
 	
 	public void save(ValueService valueService) {
@@ -62,20 +83,18 @@ public class PlanningLine {
 	}
 
 	private String getDiscriminatorValue() {
-		return type.getDataElement().getType().getValue(dataElementValue.getValue(), "["+lineNumber+"]"+type.getDiscriminator()).getStringValue();
+		return type.getDataElement().getType().getValue(dataElementValue.getValue(), getPrefix(type.getDiscriminator())).getStringValue();
 	}
 	
 	public List<PlanningCost> getPlanningCosts() {
 		return type.getPlanningCosts(getDiscriminatorValue());
 	}
 	
-	public Translation getNames(DataService dataService) {
-		if (type.getDiscriminatorType().getType() == ValueType.ENUM) {
-			EnumOption option = dataService.findEnumByCode(type.getDiscriminatorType().getEnumCode()).getOptionForValue(getDiscriminatorValue());
-			if (option != null) return option.getNames();
-			return null;
+	public Translation getNames() {
+		if (enume.getOptionForValue(getDiscriminatorValue())!=null) {
+			return enume.getOptionForValue(getDiscriminatorValue()).getNames();
 		}
-		else return null;
+		return null;
 	}
-	
+
 }

@@ -56,6 +56,7 @@ import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
+import org.chai.kevin.planning.Planning;
 import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.planning.PlanningType;
@@ -929,25 +930,34 @@ class Initializer {
 	
 	static def createPlanning() {
 		
+		def planning = new Planning(
+			period: Period.list()[0],
+		).save(failOnError: true)
+		
 		def planningType = new PlanningType(
 			names: j(["en":"Activity"]),
-			sections: [".key1",".key2"],
+			namesPlural: j(["en":"Activities"]),
+			sections: ["[_].key1","[_].key2"],
 			sectionDescriptions: [
-				".key1": j(["en":"Lorem ipsum blablablabla"]),
-				".key2": j(["en":"Lorem ipsum blablablabla"])
+				"[_].key1": j(["en":"Lorem ipsum blablablabla"]),
+				"[_].key2": j(["en":"Lorem ipsum blablablabla"])
 			],
 			headers: [
-				".key1": j(["en":"Basic Information"]),
-				".key1.key11": j(["en":"Name"]),
-				".key1.key12": j(["en":"Number"]),
-				".key2": j(["en":"Supply and Maintenance"]),
-				".key2.key21": j(["en":"Supplier Name"]),
-				".key2.key22": j(["en":"Supplier Type"]),
+				"[_].key1": j(["en":"Basic Information"]),
+				"[_].key1.key11": j(["en":"Name"]),
+				"[_].key1.key12": j(["en":"Number"]),
+				"[_].key2": j(["en":"Supply and Maintenance"]),
+				"[_].key2.key21": j(["en":"Supplier Name"]),
+				"[_].key2.key22": j(["en":"Supplier Type"]),
 			],
 			dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
-			discriminator: '.key0'
+			discriminator: '[_].key0',
+			planning: planning
 		).save(failOnError: true);
 		
+		planning.planningTypes << planningType
+		planning.save(failOnError: true)
+	
 		def sumCost1 = new Sum(
 			code: 'SUMPLANNING', 
 			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.key0 == "value1")[0].key1.key12 * 2'

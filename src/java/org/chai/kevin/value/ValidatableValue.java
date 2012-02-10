@@ -1,7 +1,9 @@
 package org.chai.kevin.value;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,7 +14,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
+import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveySkipRule;
 import org.chai.kevin.survey.SurveyValidationRule;
@@ -239,5 +243,5 @@ public class ValidatableValue {
 		// set the new value
 		getType().setValue(getValue(), "", value);
 	}
-	
+
 }

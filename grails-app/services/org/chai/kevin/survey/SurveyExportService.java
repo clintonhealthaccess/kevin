@@ -273,7 +273,8 @@ public class SurveyExportService {
 		List<LocationLevel> levels = locationService.listLevels(getSkipLevelList().toArray(new LocationLevel[getSkipLevelList().size()]));					
 		for (LocationLevel level : levels){			
 			LocationEntity parent = locationService.getParentOfLevel(facility, level);
-			dataPoint.add(formatExportDataItem(languageService.getText(parent.getNames())));
+			if (parent != null) dataPoint.add(formatExportDataItem(languageService.getText(parent.getNames())));
+			else dataPoint.add("");
 		}
 		dataPoint.add(formatExportDataItem(languageService.getText(facility.getNames())));
 		dataPoint.add(formatExportDataItem(languageService.getText(facility.getType().getNames())));			

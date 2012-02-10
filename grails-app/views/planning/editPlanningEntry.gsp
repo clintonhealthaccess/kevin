@@ -24,7 +24,7 @@
 						value: planningLine.getValue(section),
 						lastValue: null,
 						type: planningType.getSectionType(section), 
-						suffix: '['+planningLine.lineNumber+']'+section,
+						suffix: planningLine.getPrefix(section),
 						headerSuffix: section,
 						
 						// get rid of those in the templates??

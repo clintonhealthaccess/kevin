@@ -24,8 +24,10 @@ import javax.persistence.Transient;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.data.Type.TypeVisitor;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hisp.dhis.period.Period;
 
 @Entity(name="PlanningType")
 @Table(name="dhsst_planning_type")
@@ -33,7 +35,9 @@ public class PlanningType {
 
 	private Long id;
 	
+	private Planning planning;
 	private Translation names = new Translation();
+	private Translation namesPlural = new Translation();
 	private String discriminator;
 	private List<String> sections;
 	private Map<String, Translation> sectionDescriptions = new HashMap<String, Translation>();
@@ -62,6 +66,16 @@ public class PlanningType {
 	
 	public void setNames(Translation names) {
 		this.names = names;
+	}
+	
+	@Embedded
+	@AttributeOverrides({ @AttributeOverride(name = "jsonText", column = @Column(name = "jsonNamesPlural", nullable = false)) })
+	public Translation getNamesPlural() {
+		return namesPlural;
+	}
+	
+	public void setNamesPlural(Translation namesPlural) {
+		this.namesPlural = namesPlural;
 	}
 	
 	@JoinColumn(nullable=false)
@@ -116,6 +130,15 @@ public class PlanningType {
 		this.costs = costs;
 	}
 
+	@ManyToOne(targetEntity=Planning.class)
+	public Planning getPlanning() {
+		return planning;
+	}
+	
+	public void setPlanning(Planning planning) {
+		this.planning = planning;
+	}
+	
 	@Basic
 	public String getDiscriminator() {
 		return discriminator;
@@ -126,13 +149,33 @@ public class PlanningType {
 	}
 
 	@Transient
+	public Period getPeriod() {
+		return planning.getPeriod();
+	}
+	
+	@Transient
 	public Type getDiscriminatorType() {
-		return dataElement.getType().getType("[_]"+getDiscriminator());
+		return dataElement.getType().getType(getDiscriminator());
 	}
 	
 	@Transient
 	public Type getSectionType(String section) {
-		return dataElement.getType().getType("[_]"+section);
+		return dataElement.getType().getType(section);
+	}
+	
+	@Transient
+	public List<String> getValuePrefixes(String section) {
+		final Type sectionType = dataElement.getType().getType(section);
+		final List<String> result = new ArrayList<String>();
+		dataElement.getType().visit(new TypeVisitor() {
+			@Override
+			public void handle(Type type, String prefix) {
+				if (!type.isComplexType() && getParents().contains(sectionType)) {
+					result.add(prefix);
+				}
+			}
+		});
+		return result;
 	}
 
 	@Transient

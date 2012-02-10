@@ -70,7 +70,8 @@ public class DataLocationEntity extends CalculationEntity {
 
 	@Override
 	public String toString() {
-		return "DataLocationEntity [getCode()=" + getCode() + "]";
+		return "DataLocationEntity [type=" + type + ", getNames()="
+				+ getNames() + ", getCode()=" + getCode() + "]";
 	}
 
 	@Override

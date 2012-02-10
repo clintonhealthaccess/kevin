@@ -70,7 +70,7 @@ class SimpleQuestionController extends AbstractEntityController {
 			question: entity,
 			types: DataEntityType.list(),
 			sections: (entity.section)!=null?entity.survey.sections:null,
-			headerPrefixes: entity.surveyElement!=null?surveyService.getHeaderPrefixes(entity.surveyElement):null
+			headerPrefixes: entity.surveyElement!=null?entity.surveyElement.dataElement.headerPrefixes:null
 		]
 	}
 

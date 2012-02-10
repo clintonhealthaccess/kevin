@@ -1,5 +1,4 @@
 <div class="filter">
-	<span class="bold"><g:message code="filter.period.label"/></span>
 	<span class="dropdown subnav-dropdown">
 		<a class="time selected" href="#" data-period="${currentPeriod.id}" data-type="period">
 			<g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/>

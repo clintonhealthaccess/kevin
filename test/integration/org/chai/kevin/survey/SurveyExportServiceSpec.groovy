@@ -1,7 +1,9 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.survey.export.SurveyExportData
 import org.chai.kevin.survey.export.SurveyExportDataPoint
 import org.chai.kevin.survey.validation.SurveyEnteredValue
@@ -76,6 +78,29 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		then:
 		dataPoints.size() == 1
 		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0"])
+	}
+	
+	def "test for export survey with facility not attached to lowest level"(){
+		setup:
+		setupLocationTree()
+		def dataLocation = newDataLocationEntity(j(["en":"Test"]), "TEST", LocationEntity.findByCode(NORTH), DataEntityType.findByCode(HEALTH_CENTER_GROUP))
+		def period = newPeriod()
+		def survey = newSurvey(j(["en":"survey"]), period)
+		def objective = newSurveyObjective(j(["en":"objective"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(j(["en":"section"]), objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def type = Type.TYPE_NUMBER()
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
+		SurveyEnteredValue surveyEnteredValue = newSurveyEnteredValue(element, period, dataLocation, v("10"))
+		Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>()
+		surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue)
+		
+		when:
+		List<SurveyExportDataPoint> dataPoints = surveyExportService.getSurveyExportDataPoints(dataLocation, survey, objective, section, question, surveyElementValueMap)
+	
+		then:
+		dataPoints.size() == 1
+		dataPoints.get(0).equals(["survey",NORTH,"","Test",HEALTH_CENTER_GROUP,"objective","section","SIMPLE","NUMBER","question","10.0"])
 	}
 	
 	def "test for skip levels"(){

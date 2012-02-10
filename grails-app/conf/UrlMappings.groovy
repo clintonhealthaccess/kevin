@@ -54,6 +54,8 @@ class UrlMappings {
 		
 		"/summary/$action/$location?"(controller:"summary")
 		
+		"/planning/$action/$location?"(controller:"planning")
+		
 		"/$controller/$action?"{
 			constraints {
 				// apply constraints here

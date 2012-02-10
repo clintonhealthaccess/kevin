@@ -1,15 +1,24 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.IntegrationTests;
+import org.hibernate.loader.custom.Return;
 
 abstract class PlanningIntegrationTests extends IntegrationTests {
 
-	def newPlanningType(def dataElement, def discriminator, def sections) {
-		return new PlanningType(
+	def newPlanning(def period) {
+		return new Planning(period: period).save(failOnError: true)
+	}
+	
+	def newPlanningType(def dataElement, def discriminator, def sections, def planning) {
+		def planningType = new PlanningType(
 			sections: sections,
 			dataElement: dataElement,
-			discriminator: discriminator
+			discriminator: discriminator,
+			planning: planning
 		).save(failOnError: true)
+		planning.planningTypes << planningType
+		planning.save(failOnError: true)
+		return planningType
 	}
 	
 	def newPlanningCost(def type, def sum, def section, def discriminatorValue, def planningType) {
