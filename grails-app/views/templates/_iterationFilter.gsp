@@ -1,9 +1,9 @@
 <div class="filter">
-	<span class="dropdown subnav-dropdown">
+	<span class="dropdown js_dropdown">
 		<a class="time selected" href="#" data-period="${currentPeriod.id}" data-type="period">
 			<g:dateFormat format="yyyy" date="${currentPeriod.startDate}"/>
 		</a>
-		<div class="hidden dropdown-list">
+		<div class="hidden dropdown-list js_dropdown-list">
 			<ul>
 				<g:each in="${periods}" var="period">
 					<% def periodLinkParams = new HashMap(linkParams) %>
