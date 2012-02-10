@@ -1,5 +1,9 @@
 package org.chai.kevin.planning
 
-class PlanningControllerSpec {
-
+class PlanningControllerSpec extends PlanningIntegrationTests {
+	
+//	def ""() {
+//		
+//	}
+	
 }

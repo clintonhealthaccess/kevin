@@ -20,7 +20,7 @@
 						</a>
 					</td>
 					<td>${summaryPage.getSurveyEnteredObjective(facility)?.closed?'\u2713':''}</td>
-					<td><span class="progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
+					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
 						<a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: currentObjective.id, location: facility.id])}">
 							<g:message code="survey.summary.viewsurvey.label" default="View Survey" />

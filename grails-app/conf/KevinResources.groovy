@@ -73,6 +73,7 @@ modules = {
 		dependsOn 'jquery'
 
 		resource url: '/js/jquery/progressbar/jquery.progressbar.js', bundle: 'core'
+		resource url: '/js/progressbar_init.js', bundle: 'core'
 	}
 
 	chosen {

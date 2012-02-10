@@ -19,7 +19,7 @@
 						<a href="${createLink(controller: 'summary', action: 'objectiveTable', params: [survey: currentSurvey.id, location: facility.id])}"><g:i18n field="${facility.names}"/></a>
 					</td>
 					<td>${objectiveSummary.submittedObjectives}/${objectiveSummary.objectives}</td>
-					<td><span class="progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
+					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
 						<ul class="horizontal">
 							<li>

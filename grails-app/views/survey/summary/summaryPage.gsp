@@ -26,7 +26,7 @@
 							<g:message code="location.label"/>: <g:i18n field="${currentLocation.names}"/>
 						</div>
 						<div>
-							<g:message code="survey.summary.progress"/>: <span class="progress-bar">${summaryPage.summary.completedQuestions}/${summaryPage.summary.questions}</span>
+							<g:message code="survey.summary.progress"/>: <span class="js_progress-bar">${summaryPage.summary.completedQuestions}/${summaryPage.summary.questions}</span>
 						</div>
 					</div>
 					<g:render template="${template}"/>
@@ -35,30 +35,9 @@
 		</div>
 		
 		<r:script>
-			function progressBar() {
-				$(".progress-bar").each(function(){
-					var values = $(this).html().split('/');
-					
-					if (values.length == 2) {
-						var value;
-						if(values[1] == 0) value = 0;
-						else value = (values[0]/values[1])*100;
-						$(this).progressBar(value, {
-							steps: 0,
-							boxImage: "${resource(dir:'js/jquery/progressbar/images',file:'progressbar.gif')}",
-							barImage: {
-								0:  "${resource(dir:'js/jquery/progressbar/images',file:'progressbg_red.gif')}",
-								30: "${resource(dir:'js/jquery/progressbar/images',file:'progressbg_yellow.gif')}",
-								70: "${resource(dir:'js/jquery/progressbar/images',file:'progressbg_green.gif')}"
-							}
-						});
-					}
-				});
-			} 
+			${render(template:'/templates/progressImages')}
 		
 			$(document).ready(function() {
-				progressBar();				
-
 				$('.objective-table-link').bind('click', function() {
     				var facility = $(this).data('facility');
     				explanationClick(this, facility, function(){progressBar();});

@@ -80,17 +80,19 @@
 			<!--<h1>Welcome to Kevin</h1>-->
 		<div id="navigation">
 		<div class="wrapper">
-	  		<ul id="main-menu" class="menu">
-	  		    <shiro:hasPermission permission="menu:survey">
-	  				<li><a class="${controllerName=='editSurvey'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
-	  			</shiro:hasPermission>
-	  			<shiro:hasPermission permission="menu:reports">
-	  				<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports" default="Reports"/></a></li>
-	  			</shiro:hasPermission>
-	  			<shiro:hasPermission permission="menu:admin">
+			<ul id="main-menu" class="menu">
+				<shiro:hasPermission permission="menu:survey">
+					<li><a class="${controllerName=='editSurvey'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
+				</shiro:hasPermission>
+				<shiro:hasPermission permission="menu:planning">
+					<li><a class="${controllerName=='planning'?'active':''}" href="${createLink(controller: 'planning', action:'view')}"><g:message code="header.navigation.planning" default="Planning"/></a></li>
+				</shiro:hasPermission>
+				<shiro:hasPermission permission="menu:reports">
+					<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports" default="Reports"/></a></li>
+				</shiro:hasPermission>
+				<shiro:hasPermission permission="menu:admin">
 	  				<li><a class="${controllerName!=null && org.chai.kevin.AbstractEntityController.class.isAssignableFrom(grailsApplication.getArtefactByLogicalPropertyName('Controller', controllerName).getClazz())?'active':''}" href="#"  onclick="return false;"><g:message code="header.navigation.administration" default="Administration"/></a>
 	  					<ul class="submenu">
-	  <!-- 								<li><a href="${createLink(controller: 'constant', action:'list')}"><g:message code="header.navigation.constants" default="Constants"/></a></li> -->
 	  						<li><a class="${controllerName=='rawDataElement'?'active':''}" href="${createLink(controller: 'rawDataElement', action:'list')}"><g:message code="rawdataelement.label" default="Raw data Element"/></a></li>
 	  						<li><a class="${controllerName=='normalizedDataElement'?'active':''}" href="${createLink(controller: 'normalizedDataElement', action:'list')}"><g:message code="normalizedDataElement.label" default="Normalized data element"/></a></li>
 	  						<li><a class="${controllerName=='calculation'?'active':''}" href="${createLink(controller: 'calculation', action:'list')}"><g:message code="calculation.label" default="Calculation"/></a></li>
@@ -100,7 +102,6 @@
 	  						<li><a class="${controllerName=='dashboardTarget'?'active':''}" href="${createLink(controller: 'dashboardTarget', action:'list')}"><g:message code="dashboard.target.label" default="Dashboard Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label" default="DSR Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTargetCategory'?'active':''}" href="${createLink(controller: 'dsrTargetCategory', action:'list')}"><g:message code="dsr.targetcategory.label" default="DSR Target Category"/></a></li>
-	  						
 	  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a></li>
 	  						<li><a class="${controllerName=='location'?'active':''}" href="${createLink(controller: 'location', action:'list')}"><g:message code="location.label" default="Location"/></a></li>
 	  						<li><a class="${controllerName=='locationLevel'?'active':''}" href="${createLink(controller: 'locationLevel', action:'list')}"><g:message code="locationLevel.label" default="Location Level"/></a></li>
@@ -108,7 +109,6 @@
 	  						<li><a class="${controllerName=='dataEntityType'?'active':''}" href="${createLink(controller: 'dataEntityType', action:'list')}"><g:message code="dataEntityType.label" default="Data Entity Type"/></a></li>
 	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'user', action:'list')}"><g:message code="user.label" default="User"/></a></li>
 							<li><a class="${controllerName=='importerEntity'?'active':''}" href="${createLink(controller: 'importerEntity', action:'importer')}"><g:message code="import.label" default="Import"/></a></li>
-	  				
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>
@@ -137,7 +137,6 @@
 					$('ul', this).addClass('open');
 					$('ul', this).show();
 				}
-	 
 			}, 
 			function () {
 				var self = this;

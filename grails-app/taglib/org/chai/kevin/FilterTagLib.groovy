@@ -48,19 +48,19 @@ class FilterTagLib {
 
 	def iterationFilter = {attrs, body ->
 		Period.withTransaction {
-			out << render(template:'/templates/iterationFilter', model:attrs)
+			out << render(template:'/tags/filter/iterationFilter', model:attrs)
 		}
 	}
 	
 	def locationFilter = {attrs, body ->
 		LocationEntity.withTransaction {
-			out << render(template:'/templates/locationFilter', model:attrs)
+			out << render(template:'/tags/filter/locationFilter', model:attrs)
 		}
 	}
 	
 	def levelFilter = {attrs, body ->
 		LocationLevel.withTransaction {
-			out << render(template:'/templates/levelFilter', model:attrs)
+			out << render(template:'/tags/filter/levelFilter', model:attrs)
 		}
 	}
 	

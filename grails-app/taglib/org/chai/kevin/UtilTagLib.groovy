@@ -52,44 +52,6 @@ class UtilTagLib {
 		out << new java.text.SimpleDateFormat(attrs.format).format(attrs.date)
 	}
 	
-	def input = { attrs, body ->
-		if (attrs["type"] == null) attrs["type"] = 'text'
-		out << render(template:"/tags/input", model: attrs)
-	}
-	
-	def file = { attrs, body ->
-		if (attrs["type"] == null) attrs["type"] = 'file'
-		out << render(template:"/tags/file", model: attrs)
-	}
-	
-	def i18nInput = { attrs, body ->
-		if (attrs["type"] == null) attrs["type"] = 'text'
-		attrs["locales"] = languageService.getAvailableLanguages();
-		out << render(template:"/tags/i18nInput", model: attrs)
-	}
-	
-	def textarea = { attrs, body ->
-		if (attrs["type"] == null) attrs["type"] = 'text'
-		if (attrs["rows"] == null) attrs["rows"] = '1'
-		out << render(template:"/tags/textarea", model: attrs)
-	}
-	
-	def i18nTextarea = { attrs, body ->
-		if (attrs["type"] == null) attrs["type"] = 'text'
-		if (attrs["rows"] == null) attrs["rows"] = '4'
-		if (attrs["width"] == null) attrs["width"] = '300'
-		if (attrs["readonly"] == null) attrs["readonly"] = false
-		attrs["locales"] = languageService.getAvailableLanguages();
-		out << render(template:"/tags/i18nTextarea", model: attrs)
-	}
-	def i18nRichTextarea = { attrs, body ->
-		if (attrs["type"] == null) attrs["type"] = 'text'
-		if (attrs["rows"] == null) attrs["rows"] = '4'
-		if (attrs["width"] == null) attrs["width"] = '300'
-		attrs["locales"] = languageService.getAvailableLanguages();
-		out << render(template:"/tags/i18nRichTextarea", model: attrs)
-	}
-	
 	def searchBox = { attrs, body ->
 		if (attrs['controller'] == null) attrs['controller'] = controllerName;
 		if (attrs['action'] == null) attrs['action'] = actionName;
@@ -99,20 +61,12 @@ class UtilTagLib {
 		attrs['hiddenParams'].remove('controller')
 		attrs['hiddenParams'].remove('action')
 		attrs['hiddenParams'].remove('q')
-		out << render(template:"/tags/searchBox", model: attrs);
+		out << render(template:"/tags/util/searchBox", model: attrs);
 	}
-	
-	def selectFromEnum = { attrs, body ->
-		out << render(template:"/tags/selectFromEnum", model: attrs)
-	}
-	
-	def selectFromList = { attrs, body ->
-		out << render(template:"/tags/selectFromList", model: attrs)	
-	}		
 	
 	def locales = { attrs, body ->
 		attrs["locales"] = languageService.getAvailableLanguages();
-		out << render(template:"/tags/locales", model: attrs)
+		out << render(template:"/tags/util/locales", model: attrs)
 	}
 	
 	def i18n = { attrs, body ->

@@ -14,7 +14,7 @@
 				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(facility)}" />
 				<tr>
 					<td><g:i18n field="${facility.names}"/></td>
-					<td><span class="progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
+					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
 						<a href="${createLink(controller: 'editSurvey', action: 'sectionPage', params: [section: currentSection.id, location: facility.id])}">
 							<g:message code="survey.viewsurvey.label" default="View Survey" />

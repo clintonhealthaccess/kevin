@@ -11,6 +11,14 @@ class PlanningController extends AbstractController {
 	
 	def planningService
 	
+	def index = {
+		redirect (action: 'planning', params: params)	
+	}
+	
+	def planning = {
+		
+	}
+	
 	def editPlanningEntry = {	
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))

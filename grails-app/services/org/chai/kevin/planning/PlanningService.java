@@ -11,7 +11,6 @@ import java.util.Set;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.planning.budget.BudgetCost;

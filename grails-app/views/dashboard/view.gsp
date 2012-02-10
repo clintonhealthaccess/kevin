@@ -26,18 +26,18 @@
   					<li class='question push-20'>
 						<g:render template="/templates/reportTableHeader" model="[tab:'dashboard', table:'program']"/>						
 						<g:if test="programDashboard != null">
-							<g:render template="/templates/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard, params:params]"/>
+							<g:render template="/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard, params:params]"/>
 							<div class='horizontal-graph-wrap'>
-								<g:render template="/templates/dashboard/reportProgramTable" model="[dashboard:programDashboard, params:params]"/>
+								<g:render template="/dashboard/reportProgramTable" model="[dashboard:programDashboard, params:params]"/>
 			                </div>
 		                </g:if>
 	                </li>
 	                <li class='question push-10'>
 		                <g:render template="/templates/reportTableHeader" model="[tab:'dashboard', table:'location']"/>						
 		                <g:if test="locationDashboard != null">
-		                <g:render template="/templates/dashboard/reportCompareFilter" model="[table:'location', dashboard:locationDashboard, params:params]"/>
+		                <g:render template="/dashboard/reportCompareFilter" model="[table:'location', dashboard:locationDashboard, params:params]"/>
 							<div class='horizontal-graph-wrap'>
-								<g:render template="/templates/dashboard/reportLocationTable" model="[dashboard:locationDashboard, params:params]"/>			                  
+								<g:render template="/dashboard/reportLocationTable" model="[dashboard:locationDashboard, params:params]"/>			                  
 							</div>
 		                </g:if>
 		            </li>

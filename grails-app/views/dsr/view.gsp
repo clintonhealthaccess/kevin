@@ -22,10 +22,10 @@
 				<ul id='questions'>
 	              <li class='question'>
 	                <g:render template="/templates/reportTableHeader" model="[tab:'dsr']"/>	                
-	                <g:render template="/templates/dsr/reportCategoryFilter" model="[params:params]"/>
+	                <g:render template="/dsr/reportCategoryFilter" model="[params:params]"/>
 	              </li>
 	              <g:if test="${dsrTable != null}">             
-	              	<g:render template="/templates/dsr/reportProgramTable" model="[params:params]"/>
+	              	<g:render template="/dsr/reportProgramTable" model="[params:params]"/>
 	              </g:if>
 				</ul>
 			</div>		
