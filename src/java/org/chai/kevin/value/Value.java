@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
@@ -190,5 +191,30 @@ public class Value extends JSONValue {
 		return mapValue;
 	}
 
+	
+	public static Value VALUE_BOOL(Boolean value) {
+		return new Value("{\""+VALUE_STRING+"\":"+value.toString()+"}");
+	}
+	
+	public static Value VALUE_NUMBER(Number value) {
+		return new Value("{\""+VALUE_STRING+"\":"+value.toString()+"}");
+	}
+	
+	public static Value VALUE_STRING(String value) {
+		return new Value("{\""+VALUE_STRING+"\":\""+value.toString()+"\"}");
+	}
+	
+	public static Value VALUE_LIST(List<Value> values) {
+		return new Value("{\""+VALUE_STRING+"\":"+values.toString()+"}");
+	}
+	
+	public static Value VALUE_MAP(Map<String, Value> values) {
+		StringBuffer json = new StringBuffer();
+		for (Entry<String, Value> entry : values.entrySet()) {
+			json.append("{\""+MAP_KEY+"\":\""+entry.getKey()+"\",\""+MAP_VALUE+"\":"+entry.getValue().toString()+"}");
+			json.append(",");
+		}
+		return new Value("{\""+VALUE_STRING+"\":["+json.toString()+"]}");
+	}
 	
 }

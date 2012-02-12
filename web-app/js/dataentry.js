@@ -193,7 +193,11 @@ DataEntry.prototype.listAddClick = function(list, callback) {
 	var index = $(list).prev().prev().data('index');
 	if (index == null) index = "0";
 	else index = parseInt(index)+1;
-	var copyHtml = clone.html().replace(RegExp(suffix+'\\[_\\]', 'g'), suffix+'['+index+']')
+
+	// we change the html	
+	$(clone).find(".list-input").first().val('['+index+']')
+	$(clone).find(".list-input-indexes").first().val('['+index+']')
+	var copyHtml = clone.html().replace(RegExp(escape(suffix)+'\\[_\\]', 'g'), suffix+'['+index+']')
 
 	$(list).prev().before(copyHtml);
 	$(list).prev().prev().data('index', index);

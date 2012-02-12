@@ -34,6 +34,19 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 //		languageService.metaClass.remove('getCurrentLanguage')
 //	}
 	
+	def testValueWithNullValue() {
+		
+		assertEquals applyTemplate(
+			'<g:value value="${value}" type="${type}" enums="${enums}"/>',
+			[
+				'value': null,
+				'type': Type.TYPE_ENUM("code"),
+				'enums': [:]
+			]
+		), ''
+		
+	}
+	
 	def testValueWithEmptyEnum() {
 		
 		assertEquals applyTemplate(

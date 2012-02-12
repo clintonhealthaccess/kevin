@@ -21,7 +21,7 @@
 			]"/>
 	</g:if>
 	<g:else>
-		<g:each in="${value.listValue}" var="item" status="i">
+		<g:each in="${value?.listValue}" var="item" status="i">
 			<li class="element-list-row adv-form-row" data-index="${i}">
 				<ul class="adv-form-actions horizontal right">
 					<li><a class="element-list-minimize ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.minimize.label" /></a></li>

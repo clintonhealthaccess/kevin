@@ -263,14 +263,67 @@ class Initializer {
 			
 			def planningElement = new RawDataElement(names:j(["en":"Element Planning"]), descriptions:j([:]), code:"PLANNINGELEMENT",
 				type: Type.TYPE_LIST(Type.TYPE_MAP([
-					"key1": Type.TYPE_MAP([
-						"key10": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
-						"key11": Type.TYPE_NUMBER(),
-						"key12": Type.TYPE_STRING()
+					"basic": Type.TYPE_MAP([
+						"activity": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+						"area": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+						"instances": Type.TYPE_NUMBER(),
+						"responsible": Type.TYPE_STRING(),
+						"new_structure": Type.TYPE_BOOL()
 					]),
-					"key2": Type.TYPE_MAP([
-						"key21": Type.TYPE_NUMBER(),
-						"key22": Type.TYPE_STRING()
+					"staffing": Type.TYPE_MAP([
+						"nurse": Type.TYPE_MAP([
+							"nurse_time": Type.TYPE_NUMBER(),
+							"nurse_level": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code)
+						], true),
+						"doctor": Type.TYPE_MAP([
+							"doctor_time": Type.TYPE_NUMBER(),
+							"doctor_level": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code)
+						], true),
+						"other": Type.TYPE_MAP([
+							"other_time": Type.TYPE_NUMBER(),
+							"other_type": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code)
+						], true)
+					]),
+					"consumables": Type.TYPE_MAP([
+						"tests": Type.TYPE_MAP([
+							"blood_sugar": Type.TYPE_NUMBER(),
+							"hiv": Type.TYPE_NUMBER()
+						]),
+						"medicine": Type.TYPE_MAP([
+							"arv": Type.TYPE_NUMBER(),
+							"tb": Type.TYPE_NUMBER(),
+							"malaria": Type.TYPE_NUMBER()
+						]),
+						"other": Type.TYPE_LIST(
+							Type.TYPE_MAP([
+								"type": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
+								"number": Type.TYPE_NUMBER()	
+							])	
+						)
+					]),
+					"monthly_breakdown": Type.TYPE_MAP([
+						"january": Type.TYPE_NUMBER(),
+						"february": Type.TYPE_NUMBER(),
+						"march": Type.TYPE_NUMBER(),
+						"april": Type.TYPE_NUMBER(),
+						"mai": Type.TYPE_NUMBER(),
+						"june": Type.TYPE_NUMBER(),
+						"july": Type.TYPE_NUMBER(),
+						"august": Type.TYPE_NUMBER(),
+						"september": Type.TYPE_NUMBER(),
+						"october": Type.TYPE_NUMBER(),
+						"november": Type.TYPE_NUMBER(),
+						"december": Type.TYPE_NUMBER()
+					]),
+					"funding_sources": Type.TYPE_MAP([
+						"general_fund": Type.TYPE_BOOL(),
+						"sources": Type.TYPE_MAP([
+							"facility": Type.TYPE_NUMBER(),
+							"minisante": Type.TYPE_NUMBER(),
+							"hospital": Type.TYPE_NUMBER(),
+							"gfatm": Type.TYPE_NUMBER(),
+							"other": Type.TYPE_NUMBER()
+						])
 					])
 				]))
 			)
@@ -937,22 +990,66 @@ class Initializer {
 		def planningType = new PlanningType(
 			names: j(["en":"Activity"]),
 			namesPlural: j(["en":"Activities"]),
-			sections: ["[_].key1","[_].key2"],
+//			sections: ["[_].key1","[_].key2"],
 			sectionDescriptions: [
-				"[_].key1": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].key2": j(["en":"Lorem ipsum blablablabla"])
+				"[_].basic": j(["en":"Lorem ipsum blablablabla"]),
+				"[_].staffing": j(["en":"Lorem ipsum blablablabla"]),
+				"[_].consumables": j(["en":"Lorem ipsum blablablabla"]),
+				"[_].monthly_breakdown": j(["en":"Lorem ipsum blablablabla"]),
+				"[_].funding_sources": j(["en":"Lorem ipsum blablablabla"])
 			],
 			headers: [
-				"[_].key1": j(["en":"Basic Information"]),
-				"[_].key1.key10": j(["en":"Type"]),
-				"[_].key1.key11": j(["en":"Name"]),
-				"[_].key1.key12": j(["en":"Number"]),
-				"[_].key2": j(["en":"Supply and Maintenance"]),
-				"[_].key2.key21": j(["en":"Supplier Name"]),
-				"[_].key2.key22": j(["en":"Supplier Type"]),
+				"[_].basic": j(["en":"Basic Information"]),
+				"[_].basic.activity": j(["en":"Activity"]),
+				"[_].basic.area": j(["en":"Service area"]),
+				"[_].basic.instances": j(["en":"Number of instances"]),
+				"[_].basic.responsible": j(["en":"Person responsible"]),
+				"[_].basic.new_structure": j(["en":"Requires new room/structure"]),
+				"[_].staffing": j(["en":"Staffing Requirements"]),
+				"[_].staffing.nurse": j(["en":"Nurse"]),
+				"[_].staffing.nurse.nurse_time": j(["en":"Time per instance"]),
+				"[_].staffing.nurse.nurse_level": j(["en":"Level of nurse"]),
+				"[_].staffing.doctor": j(["en":"Doctor"]),
+				"[_].staffing.doctor.doctor_time": j(["en":"Time per instance"]),
+				"[_].staffing.doctor.doctor_level": j(["en":"Level of doctor"]),
+				"[_].staffing.other": j(["en":"Other staff"]),
+				"[_].staffing.other.other_time": j(["en":"Time per instance"]),
+				"[_].staffing.other.other_type": j(["en":"Level of staff"]),
+				"[_].consumables": j(["en":"Consumables"]),
+				"[_].consumables.tests": j(["en":"Number of required tests"]),
+				"[_].consumables.tests.blood_sugar": j(["en":"Sugar in blood"]),
+				"[_].consumables.tests.hiv": j(["en":"HIV"]),
+				"[_].consumables.medicine": j(["en":"Drugs required"]),
+				"[_].consumables.medicine.arv": j(["en":"ARV drugs"]),
+				"[_].consumables.medicine.tb": j(["en":"TB drugs"]),
+				"[_].consumables.medicine.malaria": j(["en":"Malaria drugs"]),
+				"[_].consumables.other": j(["en":"Other"]),
+				"[_].consumables.other[_].type": j(["en":"Type"]),
+				"[_].consumables.other[_].number": j(["en":"Number required"]),
+				"[_].monthly_breakdown": j(["en":"Monthly Breakdown"]),
+				"[_].monthly_breakdown.january": j(["en":"January"]),
+				"[_].monthly_breakdown.february": j(["en":"February"]),
+				"[_].monthly_breakdown.march": j(["en":"March"]),
+				"[_].monthly_breakdown.april": j(["en":"April"]),
+				"[_].monthly_breakdown.mai": j(["en":"Mai"]),
+				"[_].monthly_breakdown.june": j(["en":"June"]),
+				"[_].monthly_breakdown.july": j(["en":"July"]),
+				"[_].monthly_breakdown.august": j(["en":"August"]),
+				"[_].monthly_breakdown.september": j(["en":"September"]),
+				"[_].monthly_breakdown.october": j(["en":"October"]),
+				"[_].monthly_breakdown.november": j(["en":"November"]),
+				"[_].monthly_breakdown.december": j(["en":"December"]),
+				"[_].funding_sources": j(["en":"Funding Sources"]),
+				"[_].funding_sources.general_fund": j(["en":"Funded by the general fund"]),
+				"[_].funding_sources.sources": j(["en":"Individual sources"]),
+				"[_].funding_sources.sources.facility": j(["en":"Facility"]),
+				"[_].funding_sources.sources.minisante": j(["en":"Minisanté"]),
+				"[_].funding_sources.sources.hospital": j(["en":"District hospital"]),
+				"[_].funding_sources.sources.gfatm": j(["en":"Global Fund"]),
+				"[_].funding_sources.sources.other": j(["en":"Other"])
 			],
 			dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
-			discriminator: '[_].key1.key10',
+			discriminator: '[_].basic.activity',
 			planning: planning
 		).save(failOnError: true);
 		

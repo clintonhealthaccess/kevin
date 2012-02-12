@@ -25,6 +25,11 @@ public class PlanningEntry {
 	private Map<String, Enum>  enums;
 	private ValidatableValue validatable;
 	
+	public PlanningEntry(RawDataElementValue value, Integer lineNumber) {
+		this.dataElementValue = value;
+		this.lineNumber = lineNumber;
+	}
+	
 	public PlanningEntry(PlanningType type, RawDataElementValue value, Integer lineNumber, Map<String, Enum> enums) {
 		this.dataElementValue = value;
 		this.type = type;

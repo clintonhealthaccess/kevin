@@ -39,11 +39,13 @@ public class PlanningType {
 	private Translation names = new Translation();
 	private Translation namesPlural = new Translation();
 	private String discriminator;
-	private List<String> sections;
 	private Map<String, Translation> sectionDescriptions = new HashMap<String, Translation>();
 	private Map<String, Translation> headers = new HashMap<String, Translation>();
 	
-	// only accepts element of LIST type
+	// TODO have that be the elements of the first MAP inside the LIST	 
+//	private List<String> sections;
+	
+	// only accepts element of LIST<MAP> type
 	private RawDataElement dataElement;
 	
 	private List<PlanningCost> costs = new ArrayList<PlanningCost>();
@@ -88,16 +90,16 @@ public class PlanningType {
 		this.dataElement = dataElement;
 	}
 	
-	@ElementCollection(targetClass=String.class)
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	@JoinTable(name="dhsst_planning_type_sections")
-	public List<String> getSections() {
-		return sections;
-	}
-	
-	public void setSections(List<String> sections) {
-		this.sections = sections;
-	}
+//	@ElementCollection(targetClass=String.class)
+//	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+//	@JoinTable(name="dhsst_planning_type_sections")
+//	public List<String> getSections() {
+//		return sections;
+//	}
+//	
+//	public void setSections(List<String> sections) {
+//		this.sections = sections;
+//	}
 	
 	@ElementCollection(targetClass=Translation.class)
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
@@ -172,11 +174,34 @@ public class PlanningType {
 		return result;
 	}
 	
+	/**
+	 * Value prefixes are all values having the following properties:
+	 * 
+	 *  - Non-complex values not in block MAP
+	 *  - Block MAP values
+	 *  - LIST values
+	 * 
+	 * @param section
+	 * @return
+	 */
 	@Transient
 	public List<String> getValuePrefixes(String section) {
 		List<String> result = dataElement.getValuePrefixes(section);
 		// we get rid of the discriminator
+		// TODO how do we handle lists
 		result.remove(getDiscriminator());
+		return result;
+	}
+	
+	@Transient
+	public List<String> getSections() {
+		final List<String> result = new ArrayList<String>();
+		dataElement.getType().visit(new TypeVisitor() {
+			@Override
+			public void handle(Type type, String prefix) {
+				if (getParents().size() == 3) result.add(prefix);
+			}
+		});
 		return result;
 	}
 }

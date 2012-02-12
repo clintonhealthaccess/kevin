@@ -24,19 +24,25 @@ class DataEntryTagLib {
 		def value = attrs['value']
 		def enums = attrs['enums']
 		
-		def result = null
-		switch (type.type) {
-			case (ValueType.ENUM):
-				def enume = enums[type.enumCode]
-				if (enume == null) result = value.enumValue
-				else {
-					def option = enume.getOptionForValue(value.enumValue)
-					if (option == null) result = value.enumValue
-					else result = languageService.getText(option.names)
-				}
-				break;
-			default:
-				result = value.stringValue
+		def result = ''
+		if (value != null && !value.isNull()) {
+			switch (type.type) {
+				case (ValueType.ENUM):
+					def enume = enums[type.enumCode]
+					if (enume == null) result = value.enumValue
+					else {
+						def option = enume.getOptionForValue(value.enumValue)
+						if (option == null) result = value.enumValue
+						else result = languageService.getText(option.names)
+					}
+					break;
+				case (ValueType.MAP):
+					// TODO
+				case (ValueType.LIST):
+					// TODO
+				default:
+					result = value.stringValue
+			}
 		}
 		out << result
 	}
@@ -87,7 +93,7 @@ class DataEntryTagLib {
 				error.accepted = validatable.isAcceptedWarning(rule, prefix)
 				errors.add(error)
 			} 
-			out << g.render(template: '/survey/errors', model: [errors: errors, element: element])
+			out << g.render(template: '/dataEntry/errors', model: [errors: errors, element: element])
 		}
 	}
 	
