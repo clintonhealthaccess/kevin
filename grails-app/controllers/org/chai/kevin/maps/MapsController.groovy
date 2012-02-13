@@ -52,9 +52,7 @@ class MapsController extends AbstractController {
 		LocationEntity entity = LocationEntity.get(params.int('location'));
 		
 		[
-			periods: Period.list(), 
 			targets: MapsTarget.list(),
-			locationRoot: locationService.getRootLocation(),
 			currentPeriod: period, 
 			currentTarget: target,
 			currentLocation: entity

@@ -43,11 +43,8 @@ class FctController extends AbstractController {
 			currentLocation: entity,
 			currentLevel: level,
 			currentLocationTypes: locationTypes,
-			periods: Period.list(),
 			locationTypes: locationService.listTypes(),
-			objectives: ReportObjective.list(),
-			locationRoot: locationService.getRootLocation(),
-			levels: locationService.listLevels()
+			objectives: ReportObjective.list()
 		]
 	}
 }

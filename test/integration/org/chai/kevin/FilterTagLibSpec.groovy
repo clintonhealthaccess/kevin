@@ -14,8 +14,8 @@ class FilterTagLibSpec extends IntegrationTests {
 		
 		expect:
 		filterTagLib.createLinkByFilter([
-			controller:'controller', 
-			action:'action', 
+			controller:'controller',
+			action:'action',
 			params: [location: LocationEntity.findByCode(RWANDA).id+'', filter: 'location']
 		], null) == "/controller/action?level="+LocationLevel.findByCode(PROVINCE).id+"&location="+LocationEntity.findByCode(RWANDA).id+"&filter=location"
 	}

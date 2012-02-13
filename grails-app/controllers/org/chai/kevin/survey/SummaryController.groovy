@@ -48,7 +48,6 @@ class SummaryController extends AbstractController {
 			currentLocation: entity,
 			summaryPage: summaryPage,
 			surveys: Survey.list(),
-			locationRoot: locationService.getRootLocation(),
 			template: template
 		])
 	}

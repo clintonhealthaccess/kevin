@@ -11,7 +11,7 @@
 		<g:set var="closed" value="${surveyPage.enteredObjectives[surveyPage.objective].closed}"/>
 		<g:set var="readonly" value="${surveyPage.isReadonly(surveyPage.objective)}"/>
 	
-		<div id="survey">
+		<div>
 			<g:render template="/survey/header" model="[period: surveyPage.period, location: surveyPage.location, objective: surveyPage.objective]"/>
 			
 			<div class="main">

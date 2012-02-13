@@ -108,14 +108,11 @@ class DashboardController extends AbstractController {
 			programDashboard:programDashboard,
 			locationDashboard:locationDashboard,			
 			currentPeriod: period,
-			periods: Period.list(),
 			dashboardEntity: dashboardEntity,
 			currentObjective: reportObjective,
 			objectiveRoot: reportService.getRootObjective(),
 			currentLocation: location,
-			locationRoot: locationService.getRootLocation(),
-			currentLocationTypes: locationTypes,
-			locationTypes: DataEntityType.list()
+			currentLocationTypes: locationTypes
 		]
 	}
 	

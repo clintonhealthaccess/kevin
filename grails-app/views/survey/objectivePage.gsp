@@ -7,7 +7,7 @@
 		<r:require modules="survey"/>
 	</head>
 	<body>
-		<div id="survey">
+		<div">
 			<g:render template="/survey/header" model="[period: surveyPage.period, location: surveyPage.location, objective: surveyPage.objective]"/>
 			
 			<div class="main">

@@ -41,7 +41,8 @@ class PlanningController extends AbstractController {
 	}
 	
 	def summaryPage = {
-			
+		
+		render (view: '/planning/summary/summaryPage')	
 	}
 	
 	def editPlanningEntry = {	

@@ -1,6 +1,6 @@
 <r:require module="dropdown"/>
 
-<div id="survey-header" class="subnav">
+<div class="subnav">
 	<div>
 		<div class="filter">
 			<span class="js_dropdown dropdown">
@@ -12,7 +12,7 @@
 					<g:message code="survey.labels.objective.select" default="Select an objective" />	
 					</g:else>
 				</a>
-				<div id="survey-menu" class="hidden dropdown-list js_dropdown-list">
+				<div class="hidden dropdown-list js_dropdown-list">
 					<g:render template="/survey/menu" model="[surveyPage: surveyPage]"/>
 				</div>
 			</span>

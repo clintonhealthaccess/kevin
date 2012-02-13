@@ -29,8 +29,12 @@
 						readonly: readonly,
 						enums: planningLine.enums
 					]"/>
-
+					
+					<div>
+						<g:i18n field="${planningType.sectionDescriptions[section]}"/>
+					</div>
   				</g:each>
+  				
   			</g:form>
 			</div>
 		</div>

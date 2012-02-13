@@ -15,12 +15,10 @@
 	<body>
 		<div id="report">
 			<div class="subnav">
-				<g:iterationFilter linkParams="${params}"/>
-				<g:locationFilter linkParams="${params << [filter:'location']}"/>
-				
+				<g:iterationFilter linkParams="${params}" selected="${currentPeriod}"/>
+				<g:locationFilter linkParams="${params << [filter:'location']}" selected="${currentLocation}"/>
 				<g:render template="/templates/objectiveFilter" model="[linkParams:params]"/>
-				
-				<g:levelFilter linkParams="${params << [filter:'level']}"/>												
+				<g:levelFilter linkParams="${params << [filter:'level']}" selected="${currentLevel}"/>												
 				
 				<div class="right">
 				<!-- ADMIN SECTION -->
@@ -33,7 +31,7 @@
 		</div>
 		
 		<g:if test="${fctTable != null}">
-			<g:render template="/templates/facilityTypeFilter" model="[locationTypes: locationTypes, currentLocationTypes: currentLocationTypes, linkParams:params]"/>
+			<g:locationTypeFilter linkParams="${linkParams}" selected="${currentLocationTypes}" />
 		</g:if>
 		<div id="center" class="main">
 			<div id="values">

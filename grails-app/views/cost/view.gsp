@@ -16,8 +16,8 @@
     <body>
     	<div id="cost">
 			<div class="subnav">
-				<g:iterationFilter linkParams="${[location: currentLocation?.id, objective: currentObjective?.id]}"/>
-				<g:locationFilter linkParams="${[period: currentPeriod.id, objective: currentObjective?.id]}"/>
+				<g:iterationFilter linkParams="${[location: currentLocation?.id, objective: currentObjective?.id]}" selected="${currentPeriod}"/>
+				<g:locationFilter linkParams="${[period: currentPeriod.id, objective: currentObjective?.id]}" selected="${currentLocation}"/>
 				<g:render template="/templates/objectiveFilter" model="[linkParams:[period: currentPeriod.id, location: currentLocation?.id]]"/>
 				
 				<shiro:hasPermission permission="admin:cost">					

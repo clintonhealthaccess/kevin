@@ -90,13 +90,10 @@ class DsrController extends AbstractController {
 			dsrTable: dsrTable,
 			currentCategory: category,
 			currentPeriod: period,
-			periods: Period.list(),
 			currentObjective: objective,
 			objectiveRoot: reportService.getRootObjective(),
 			currentLocation: location,
-			locationRoot: locationService.getRootLocation(),
-			currentLocationTypes: locationTypes,
-			locationTypes: locationService.listTypes(),
+			currentLocationTypes: locationTypes
 		]
 	}
 	

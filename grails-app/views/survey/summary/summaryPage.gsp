@@ -1,5 +1,4 @@
 <%@ page import="org.chai.kevin.survey.SummaryPage" %>
-
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -9,11 +8,10 @@
 		<r:require modules="progressbar,dropdown,explanation,survey"/>
 	</head>
 	<body>
-		<div id="survey">
-		
-			<div id="survey-header" class="subnav">
+		<div>
+			<div class="subnav">
 				<g:render template="/survey/summary/surveyFilter"/>
-				<g:locationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']}"/>
+				<g:locationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']}" selected="${currentLocation}"/>
 			</div>
 						
 			<div class="main">			

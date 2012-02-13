@@ -117,30 +117,28 @@ abstract class IntegrationTests extends IntegrationSpec {
 		newDataLocationEntity(j(["en":KIVUYE]), KIVUYE, burera, hc)
 	}
 	
-	Period newPeriod() {
-//		def monthly = new MonthlyPeriodType();
-//		monthly.save(failOnError: true)
+	static def newPeriod() {
 		def period = new Period(startDate: mar01, endDate: mar31)
 		return period.save(failOnError: true)
 	} 
 	
-	def newDataEntityType(def code) {
+	static def newDataEntityType(def code) {
 		return newDataEntityType([:], code)
 	}
 	
-	def newDataEntityType(def names, def code) {
+	static def newDataEntityType(def names, def code) {
 		return new DataEntityType(names: names, code: code).save(failOnError: true)
 	}
 	
-	def newDataLocationEntity(def code, def type) {
+	static def newDataLocationEntity(def code, def type) {
 		return newDataLocationEntity([:], code, null, type)
 	}
 	
-	def newDataLocationEntity(def code, def parent, def type) {
+	static def newDataLocationEntity(def code, def parent, def type) {
 		return newDataLocationEntity([:], code, parent, type)
 	}
 	
-	def newDataLocationEntity(def names, def code, def location, def type) {
+	static def newDataLocationEntity(def names, def code, def location, def type) {
 		def entity = new DataLocationEntity(names: names, code: code, location: location, type: type).save(failOnError: true)
 		if (location != null) {
 			 location.dataEntities << entity
@@ -149,23 +147,23 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return entity
 	}
 	
-	def newLocationLevel(String code, def order) {
+	static def newLocationLevel(String code, def order) {
 		return new LocationLevel(code: code, order: order).save(failOnError: true)
 	}
 	
-	def newLocationEntity(String code, def level) {
+	static def newLocationEntity(String code, def level) {
 		return newLocationEntity([:], code, null, level)
 	}
 
-	def newLocationEntity(def names, def code, def level) {
+	static def newLocationEntity(def names, def code, def level) {
 		return newLocationEntity(names, code, null, level)
 	}
 		
-	def newLocationEntity(String code, def parent, def level) {
+	static def newLocationEntity(String code, def parent, def level) {
 		return newLocationEntity([:], code, parent, level)
 	}
 	
-	def newLocationEntity(def names, def code, def parent, def level) {
+	static def newLocationEntity(def names, def code, def parent, def level) {
 		def entity = new LocationEntity(names: names, code: code, parent: parent, level: level).save(failOnError: true)
 		level.locations << entity
 		level.save(failOnError: true)
@@ -176,11 +174,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return entity
 	}
 	
-	def newUser(def username, def uuid) {
+	static def newUser(def username, def uuid) {
 		return new User(username: username, permissionString: '', passwordHash:'', uuid: uuid).save(failOnError: true)
 	}
 	
-	def newSurveyUser(def username, def uuid, def entityId) {
+	static def newSurveyUser(def username, def uuid, def entityId) {
 		return new SurveyUser(username: username, permissionString: '', passwordHash:'', uuid: uuid, entityId: entityId).save(failOnError: true)
 	}
 	
@@ -281,18 +279,18 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return enumOption
 	}
 	
-	def newReportObjective(def code) {
+	static def newReportObjective(def code) {
 		return new ReportObjective(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
 	}
 	
-	def newReportObjective(def code, def parent) {
+	static def newReportObjective(def code, def parent) {
 		def reportObjective = new ReportObjective(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
 		parent.children << reportObjective
 		parent.save(failOnError: true)
 		return reportObjective
 	}
 	
-//	def newReportObjective(def code, def parent, def children){
+//	static def newReportObjective(def code, def parent, def children){
 //		return new ReportObjective(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
 //	}
 	

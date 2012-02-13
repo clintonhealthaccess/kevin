@@ -29,6 +29,7 @@ package org.chai.kevin
  */
 
 import org.chai.kevin.LocationService;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.hisp.dhis.period.Period;
@@ -48,19 +49,37 @@ class FilterTagLib {
 
 	def iterationFilter = {attrs, body ->
 		Period.withTransaction {
-			out << render(template:'/tags/filter/iterationFilter', model:attrs)
+			def model = new HashMap(attrs)
+			model << [periods: Period.list(), currentPeriod: attrs['selected']]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/iterationFilter', model:model)
 		}
 	}
 	
 	def locationFilter = {attrs, body ->
 		LocationEntity.withTransaction {
-			out << render(template:'/tags/filter/locationFilter', model:attrs)
+			def model = new HashMap(attrs)
+			model << [locationRoot: locationService.rootLocation, currentLocation: attrs['selected']]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/locationFilter', model:model)
 		}
 	}
 	
 	def levelFilter = {attrs, body ->
 		LocationLevel.withTransaction {
-			out << render(template:'/tags/filter/levelFilter', model:attrs)
+			def model = new HashMap(attrs)
+			model << [levels: LocationLevel.list(), currentLevel: attrs['selected']]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/levelFilter', model:model)
+		}
+	}
+	
+	def locationTypeFilter = {attrs, body ->
+		DataEntityType.withTransaction {
+			def model = new HashMap(attrs)
+			model << [locationTypes: DataEntityType.list(), currentLocationTypes: attrs['selected']]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/locationTypeFilter', model:model)
 		}
 	}
 	

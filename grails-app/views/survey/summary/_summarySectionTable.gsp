@@ -2,7 +2,7 @@
 
 <%@ page import="org.chai.kevin.survey.SummaryPage" %>
 
-<div id="survey-summary">
+<div>
 	<table class="listing">
 		<thead>
 			<g:sortableColumn property="${SummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
