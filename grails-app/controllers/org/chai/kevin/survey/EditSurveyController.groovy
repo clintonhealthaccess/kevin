@@ -52,22 +52,20 @@ class EditSurveyController extends AbstractController {
 		// this action redirects to the current survey if a SurveyUser logs in
 		// or to a survey summary page if an admin logs in
 		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
-		User user = User.findByUuid(SecurityUtils.subject.principal)
+		def user = getUser()
 
-		if (user.hasProperty('entityId') != null) {
-			Survey survey = Survey.get(params.int('survey'))
+		if (user.dataLocation != null) {
+			Survey dataEntry = Survey.get(params.int('survey'))
 
-			if (survey == null) {
-				survey = surveyPageService.getDefaultSurvey()
+			if (dataEntry == null) {
+				dataEntry = surveyPageService.getDefaultSurvey()
 			}
-			if (survey == null) {
+			if (dataEntry == null) {
 				log.info("no default survey - redirecting to 404")
 				response.sendError(404)
 			}
 			else {
-				DataLocationEntity entity = DataLocationEntity.get(user.entityId)
-	
-				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: survey?.id, location: entity.id])
+				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: survey?.id, location: user.dataLocation.id])
 			}
 		}
 		else {

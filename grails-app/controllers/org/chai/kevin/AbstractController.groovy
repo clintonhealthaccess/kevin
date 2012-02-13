@@ -53,6 +53,10 @@ public abstract class AbstractController {
 		return params.targetURI?: "/"
 	}
 	
+	def getUser() {
+		return User.findByUuid(SecurityUtils.subject.principal)
+	}
+	
 	public List<DataEntityType> getLocationTypes() {
 		List<DataEntityType> types = null
 		if (params['locationTypes'] != null) {
