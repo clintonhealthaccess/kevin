@@ -169,7 +169,19 @@
     padding: 10px 7px
     
   input[type=checkbox]
+    background: $dropdown
+    border: 1px solid $primary
     margin: 0
+    +border-radius(3px)
+    +box-shadow($dropdown - #111, 1px, 1px, 4px inset)
+    
+  .standout 
+    > td
+      background: $primary + #191919
+      //border-bottom: 1px solid $primary
+      color: #fff
+    &:hover > td, &:focus > td
+      background: $primary
     
 .table-aside
   margin: 10px 0

@@ -99,7 +99,7 @@ type="text/css" rel="stylesheet" media="screen, projection" />
         
         <div id='questions'>
           <div class='question push-20'>
-            <h4 class='section-title'> <span class='question-default'> <img src="/kevin/static/PnPNkVfHIpcScmB9ptVadgIVvvaqw4c5Kn0odzx0exg.png" /> </span>Projected Budget</h4>
+            <h4 class='section-title'> <span class='question-default'> <img src="/kevin/static/PnPNkVfHIpcScmB9ptVadgIVvvaqw4c5Kn0odzx0exg.png" /> </span>Operational Undertakings: Kigali HD</h4>
             <div class="budget">
               <div class="table-wrap left clear">
                 <table class="nested col5 push-top-10">
@@ -114,7 +114,7 @@ type="text/css" rel="stylesheet" media="screen, projection" />
                   </thead>
 
                   <tbody>
-                    <tr class="tree_sign_minus">
+                    <tr class="tree_sign_minus standout">
                       <td><span>Services</span></td>
                       <td>(221)</td>
                       <td>231</td>
@@ -223,7 +223,7 @@ type="text/css" rel="stylesheet" media="screen, projection" />
                         </tbody></table>
                       </td>
                     </tr>
-                    <tr class="tree_sign_plus">
+                    <tr class="tree_sign_plus standout">
                       <td><span>Activities</span></td>
                       <td>(23)</td>
                       <td>15</td>
@@ -242,7 +242,7 @@ type="text/css" rel="stylesheet" media="screen, projection" />
                         </tbody></table>
                       </td>
                     </tr>
-                    <tr class="tree_sign_plus">
+                    <tr class="tree_sign_plus standout">
                       <td><span>Investments</span></td>
                       <td>(23)</td>
                       <td>15</td>
@@ -273,6 +273,36 @@ type="text/css" rel="stylesheet" media="screen, projection" />
                 <br />
                 <input type="submit" value="Submit">
               </div>
+
+              <div class="right table-aside">
+              <p class="diff positive">Budget difference: 70 Million RWD</p>
+              <div class="diff">
+                <div>
+                  <div class="diff-title">
+                    <h5>Provide Condoms</h5>
+                    <h6>Staffing Requirements</h6>
+                  </div>
+                  <ul>
+                    <li>
+                      <h6>Nurses</h6>
+                      <p><span>Minutes per instance</span><input type="text" class="idle-field"></p>
+                      <p><span>Level</span><select><option>A0</option></select></p>
+                    </li>
+                    <li>
+                      <h6>Doctors</h6>
+                      <p><span>Minutes per instance</span><input type="text" class="idle-field"></p>
+                      <p><span>Level</span><select><option>Hematologist</option></select></p>
+                    </li>
+                    <li>
+                      <h6>Other</h6>
+                      <p><span>Minutes per instance</span><input type="text" class="idle-field"></p>
+                      <p><span>Level</span><select><option>Nutritionist</option></select></p>
+                    </li>
+                    <li><input class="medium right" type="submit" value="Update"></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
             </div>
           </div>
         </div>
