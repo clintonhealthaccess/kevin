@@ -16,8 +16,32 @@ class PlanningController extends AbstractController {
 	}
 	
 	def view = {
-		
-		
+		// this action redirects to the current survey if a SurveyUser logs in
+		// or to a survey summary page if an admin logs in
+		if (log.isDebugEnabled()) log.debug("planning.view, params:"+params)
+		def user = getUser()
+
+		if (user.hasProperty('dataLocation') && user.dataLocation != null) {
+			Planning dataEntry = Planning.get(params.int('planning'))
+
+			if (dataEntry == null) {
+				dataEntry = planningService.getDefaultPlanning()
+			}
+			if (dataEntry == null) {
+				log.info("no planning found - redirecting to 404")
+				response.sendError(404)
+			}
+			else {
+				redirect (controller:'planning', action: 'overview', params: [planning: planning?.id, location: user.dataLocation.id])
+			}
+		}
+		else {
+			redirect (controller: 'planning', action: 'summaryPage')
+		}
+	}
+	
+	def summaryPage = {
+			
 	}
 	
 	def editPlanningEntry = {	
@@ -149,5 +173,7 @@ class PlanningController extends AbstractController {
 			planningLists: planningLists
 		])
 	}
-	
+
+	def tmp = {}
+		
 }

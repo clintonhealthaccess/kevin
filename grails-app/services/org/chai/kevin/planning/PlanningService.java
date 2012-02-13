@@ -28,6 +28,10 @@ public class PlanningService {
 	private DataService dataService;
 	private RefreshValueService refreshValueService;
 	
+	public Planning getDefaultPlanning() {
+		return null;
+	}
+	
 	public PlanningList getPlanningList(PlanningType type, DataLocationEntity location) {
 		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getDataElement(), location, type.getPeriod());
 		

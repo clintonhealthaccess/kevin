@@ -8,19 +8,14 @@
 	</head>
 	<body>
 		<div id="planning">
-			<div class="main">  
-				<p class="help">
-					Welcome to the planning tool
-				</p>
-			</div>
-			
-			<g:form url="[controller:'planning', action:'save', params: [location: location.id, planningType: planningType.id, period: period.id]]">
-				<input class="always-send" type="hidden" name="lineNumber" value="${planningLine.lineNumber}"/>
-				
-				<g:each in="${planningType.sections}" var="section">
-					<g:i18n field="${planningType.headers[section]}"/>
-	
-					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
+			<div class="main" id="questions">  
+				<g:form url="[controller:'planning', action:'save', params: [location: location.id, planningType: planningType.id, period: period.id]]">
+  				<input class="always-send" type="hidden" name="lineNumber" value="${planningLine.lineNumber}"/>
+
+  				<g:each in="${planningType.sections}" var="section">
+  					<h4 class='section-title'> <span class='question-default'> 1 </span><g:i18n field="${planningType.headers[section]}"/></h4>
+
+  					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
 						value: planningLine.getValue(section),
 						lastValue: null,
 						type: planningType.getType(section), 
@@ -34,9 +29,10 @@
 						readonly: readonly,
 						enums: planningLine.enums
 					]"/>
-					
-				</g:each>
-			</g:form>
+
+  				</g:each>
+  			</g:form>
+			</div>
 		</div>
 		
 		<r:script>

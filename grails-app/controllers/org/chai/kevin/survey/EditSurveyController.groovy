@@ -54,7 +54,7 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
 		def user = getUser()
 
-		if (user.dataLocation != null) {
+		if (user.hasProperty('dataLocation') && user.dataLocation != null) {
 			Survey dataEntry = Survey.get(params.int('survey'))
 
 			if (dataEntry == null) {

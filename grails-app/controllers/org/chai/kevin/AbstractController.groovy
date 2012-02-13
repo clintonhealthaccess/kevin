@@ -28,6 +28,7 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity
@@ -36,6 +37,7 @@ import org.chai.kevin.LocationService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.reports.ReportService
+import org.chai.kevin.security.User;
 import org.chai.kevin.survey.SummaryPage
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyObjective
