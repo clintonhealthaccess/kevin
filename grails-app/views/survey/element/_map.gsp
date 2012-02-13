@@ -5,12 +5,12 @@
 </g:if>
 
 <!-- Value type question -->
-<ul id="element-${element.id}-${suffix}" class="adv-form push-20 horizontal element element-map-level-${levels.size()} element-map ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
+<ul id="element-${element.id}-${suffix}" class="adv-form adv-form-${levels.size()} horizontal element element-map-level-${levels.size()} element-map ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
 	<a name="element-${element.id}-${suffix}"></a>
 	
-	<g:if test="${levels.size() == 0}">
+	<!--<g:if test="${levels.size() == 0}">
 		<h5 class="adv-form-title">Basic Identifiers</h5>
-	</g:if>	
+	</g:if>-->
 	
 	<% levels.push(type) %>
 	<g:each in="${type.elementMap}" var="it" status="i">
@@ -21,7 +21,7 @@
   			</g:if>
   			<g:else>
   				<g:if test="${levels.size() == 1 && it.value.getAttribute('block')!='true'}">
-  					<h5><g:i18n field="${element.headers.get(headerSuffix+'.'+it.key)}"/></h5>
+  					<h5 class="adv-form-title"><g:i18n field="${element.headers.get(headerSuffix+'.'+it.key)}"/></h5>
   				</g:if>
   				<g:if test="${levels.size() > 1 || it.value.getAttribute('block')=='true'}">
   					<h6><g:i18n field="${element.headers.get(headerSuffix+'.'+it.key)}"/></h6>
