@@ -5,7 +5,7 @@
 </g:if>
 
 <!-- Value type question -->
-<ul id="element-${element.id}-${suffix}" class="horizontal element element-map-level-${levels.size()} element-map ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
+<ul id="element-${element.id}-${suffix}" class="adv-form push-20 horizontal element element-map-level-${levels.size()} element-map ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
 	<a name="element-${element.id}-${suffix}"></a>
 	
 	<g:if test="${levels.size() == 0}">
