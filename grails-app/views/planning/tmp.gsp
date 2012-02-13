@@ -69,7 +69,7 @@ type="text/css" rel="stylesheet" media="screen, projection" />
                             <td><input type="checkbox"></td>
                           </tr>
 
-                          <tr class="tree_sign_minus">
+                          <tr class="tree_sign_minus active-row">
                             <td><span style="margin-left: 20px;">Provide Condoms</span></td>
                             <td>(60)</td>
                             <td>60</td>
@@ -81,13 +81,42 @@ type="text/css" rel="stylesheet" media="screen, projection" />
                             <td colspan="7" class="bucket">
                               <table>
                                 <tbody>
-                                <tr><td colspan="100"><span style="margin-left: 30px;">Outgoing</span></td></tr>
-                                <tr>
+                                <tr><td colspan="100"><span style="margin-left: 30px;" class="sub-title">Outgoing</span></td></tr>
+                                <tr class="tree_sign_minus">
                                   <td><span style="margin-left: 40px;">Staffing</span></td>
                                   <td>-</td>
                                   <td>20</td>
                                   <td>-</td>
                                   <td></td>
+                                </tr>
+                                <tr style="display: table-row" class="sub_tree">
+                                  <td colspan="7" class="bucket">
+                                    <table class="condensed">
+                                      <tbody>
+                                      <tr>
+                                        <td><span style="margin-left: 50px;">Staffing</span></td>
+                                        <td>-</td>
+                                        <td>20</td>
+                                        <td>-</td>
+                                        <td></td>
+                                      </tr>
+                                      <tr>
+                                        <td><span style="margin-left: 50px;">Staffing</span></td>
+                                        <td>-</td>
+                                        <td>20</td>
+                                        <td>-</td>
+                                        <td></td>
+                                      </tr>
+                                      <tr>
+                                        <td><span style="margin-left: 50px;">Staffing</span></td>
+                                        <td>-</td>
+                                        <td>20</td>
+                                        <td>-</td>
+                                        <td></td>
+                                      </tr>
+                                      </tbody>
+                                    </table>
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td><span style="margin-left: 40px;">Equipment</span></td>
@@ -103,7 +132,7 @@ type="text/css" rel="stylesheet" media="screen, projection" />
                                   <td>-</td>
                                   <td></td>
                                 </tr>
-                                <tr><td colspan="100"><span style="margin-left: 30px;">Incoming</span></td></tr>
+                                <tr><td colspan="100"><span style="margin-left: 30px;" class="sub-title">Incoming</span></td></tr>
                                 <tr>
                                   <td><span style="margin-left: 40px;">Facility</span></td>
                                   <td>(20)</td>
