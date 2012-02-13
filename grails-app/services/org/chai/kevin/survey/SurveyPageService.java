@@ -75,7 +75,6 @@ public class SurveyPageService {
 	
 	private static Log log = LogFactory.getLog(SurveyPageService.class);
 	
-	private LanguageService languageService;
 	private SurveyService surveyService;
 	private SurveyValueService surveyValueService;
 	private LocationService locationService;
@@ -746,10 +745,6 @@ public class SurveyPageService {
 
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;
-	}
-	
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
 	}
 	
 	public void setGrailsApplication(GrailsApplication grailsApplication) {

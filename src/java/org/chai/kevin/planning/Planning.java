@@ -3,6 +3,7 @@ package org.chai.kevin.planning;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,6 +22,8 @@ public class Planning {
 	private Period period;
 	private List<PlanningType> planningTypes = new ArrayList<PlanningType>();
 	// TODO add settings form page
+	
+	private Boolean active;
 	
 	@Id
 	@GeneratedValue
@@ -48,6 +51,15 @@ public class Planning {
 	
 	public void setPeriod(Period period) {
 		this.period = period;
+	}
+	
+	@Basic
+	public Boolean getActive() {
+		return active;
+	}
+	
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 	
 }

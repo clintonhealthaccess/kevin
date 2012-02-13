@@ -108,7 +108,6 @@ beans = {
 	}
 	
 	surveyPageService(SurveyPageService){
-		languageService = ref("languageService")
 		surveyValueService = ref("surveyValueService")
 		surveyService = ref("surveyService")
 		locationService = ref("locationService")

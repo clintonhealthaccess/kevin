@@ -6,7 +6,11 @@ import org.hibernate.loader.custom.Return;
 abstract class PlanningIntegrationTests extends IntegrationTests {
 
 	def newPlanning(def period) {
-		return new Planning(period: period).save(failOnError: true)
+		return newPlanning(period, false)
+	}
+	
+	def newPlanning(def period, def active) {
+		return new Planning(period: period, active: active).save(failOnError: true)
 	}
 	
 	def newPlanningType(def dataElement, def discriminator, def sections, def planning) {

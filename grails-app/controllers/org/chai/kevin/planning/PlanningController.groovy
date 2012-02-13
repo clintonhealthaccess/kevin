@@ -15,7 +15,8 @@ class PlanningController extends AbstractController {
 		redirect (action: 'planning', params: params)	
 	}
 	
-	def planning = {
+	def view = {
+		
 		
 	}
 	
