@@ -985,6 +985,7 @@ class Initializer {
 		
 		def planning = new Planning(
 			period: Period.list()[0],
+			names: j(["en":"Planning 2011"])
 		).save(failOnError: true)
 		
 		def planningType = new PlanningType(

@@ -59,6 +59,7 @@ class FilterTagLib {
 	def locationFilter = {attrs, body ->
 		LocationEntity.withTransaction {
 			def model = new HashMap(attrs)
+			// TODO get list of location
 			model << [locationRoot: locationService.rootLocation, currentLocation: attrs['selected']]
 			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/locationFilter', model:model)

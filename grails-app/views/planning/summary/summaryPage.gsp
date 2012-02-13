@@ -11,8 +11,10 @@
 		<div>
 			<div class="subnav">
 				<g:render template="/planning/summary/planningFilter"/>
-				<g:locationFilter linkParams="${[planning: planning?.id, order:'desc']}" selected="${location}"/>
+				<g:locationFilter linkParams="${[planning: currentPlanning?.id, order:'desc']}" selected="${currentLocation}"/>
 			</div>
-	
+			
+			
+		</div>
 	</body>
 </html>

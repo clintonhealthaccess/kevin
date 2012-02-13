@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.period.Period;
 
@@ -42,7 +43,14 @@ class PlanningController extends AbstractController {
 	
 	def summaryPage = {
 		
-		render (view: '/planning/summary/summaryPage')	
+		def location = LocationEntity.get(params.int('location'))
+		def planning = Planning.get(params.int('planning'))
+		
+		render (view: '/planning/summary/summaryPage', model: [
+			plannings: Planning.list(),
+			currentPlanning: planning,
+			currentLocation: location
+		])	
 	}
 	
 	def editPlanningEntry = {	

@@ -1,4 +1,8 @@
 $(document).ready(function() {
+	progressBar();
+});
+
+function progressBar() {
 	$(".js_progress-bar").each(function(){
 		var values = $(this).html().split('/');
 		
@@ -17,4 +21,4 @@ $(document).ready(function() {
 			});
 		}
 	});
-});
+}

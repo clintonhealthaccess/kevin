@@ -25,13 +25,13 @@
 				<tbody>
 					<g:if test="${location.children != null && !location.children.empty}">
 						<g:each in="${location.children}" var="child">
-							<g:render template="/templates/dsr/reportProgramTableTree"
+							<g:render template="/dsr/reportProgramTableTree"
 							model="[location:child, level:level+1, params:params]"/>
 						</g:each>
 					</g:if>
 					<g:if test="${location.dataLocationEntities != null && !location.dataLocationEntities.empty}">
 						<g:each in="${location.dataLocationEntities}" var="entity">
-							<g:render template="/templates/dsr/reportProgramTableTree"
+							<g:render template="/dsr/reportProgramTableTree"
 							model="[location:entity, level:level+1, params:params]"/>
 						</g:each>
 					</g:if>
