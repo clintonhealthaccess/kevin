@@ -113,16 +113,16 @@ class PlanningController extends AbstractController {
 		}
 	}
 	
-	def budgetUpdated = {
-		// TODO returns a json 'true' if the budget is updated
-		def planning = Planning.get(params.int('planning'))
-		def location = DataLocationEntity.get(params.int('location'))
-
-		// TODO
-		for (def planningType: planning.planningTypes) {
-			planningService.getPlanningList(planningType, location)
-		}
-	}
+//	def budgetUpdated = {
+//		// TODO returns a json 'true' if the budget is updated
+//		def planning = Planning.get(params.int('planning'))
+//		def location = DataLocationEntity.get(params.int('location'))
+//
+//		// TODO
+//		for (def planningType: planning.planningTypes) {
+//			planningService.getPlanningList(planningType, location)
+//		}
+//	}
 	
 	def updateBudget = {
 		// TODO waiting page that polls 'budgetUpdated' to see if the budget is updated
