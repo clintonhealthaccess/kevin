@@ -990,56 +990,58 @@ table.nice-table .cell { cursor: default; }
 /* line 78, ../../src/stylesheets/partials/_graphs.sass */
 .selector { font-size: 11px; }
 /* line 80, ../../src/stylesheets/partials/_graphs.sass */
+.selector form { display: inline; }
+/* line 82, ../../src/stylesheets/partials/_graphs.sass */
 .selector select { background: white; border: 1px solid #47aef7; color: #258cd5; font-size: 11px; font-weight: bold; margin-top: 8px; opacity: 0.9; padding: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: #e9f4fc 0 2px 0px; -webkit-box-shadow: #e9f4fc 0 2px 0px; -o-box-shadow: #e9f4fc 0 2px 0px; box-shadow: #e9f4fc 0 2px 0px; }
-/* line 91, ../../src/stylesheets/partials/_graphs.sass */
+/* line 93, ../../src/stylesheets/partials/_graphs.sass */
 .selector select:hover, .selector select:focus { border: 1px solid #369de6; opacity: 1; }
 
-/* line 95, ../../src/stylesheets/partials/_graphs.sass */
+/* line 97, ../../src/stylesheets/partials/_graphs.sass */
 .vertical-graph { float: left; width: 85%; }
-/* line 99, ../../src/stylesheets/partials/_graphs.sass */
+/* line 101, ../../src/stylesheets/partials/_graphs.sass */
 .vertical-graph tr:first-child { background: #effaff; border-left: 1px solid #258cd5; border-bottom: 1px solid #258cd5; -moz-box-shadow: #e9e9e9 0 -4px 6px inset; -webkit-box-shadow: #e9e9e9 0 -4px 6px inset; -o-box-shadow: #e9e9e9 0 -4px 6px inset; box-shadow: #e9e9e9 0 -4px 6px inset; }
-/* line 104, ../../src/stylesheets/partials/_graphs.sass */
+/* line 106, ../../src/stylesheets/partials/_graphs.sass */
 .vertical-graph tr:first-child td { height: 200px; }
-/* line 107, ../../src/stylesheets/partials/_graphs.sass */
+/* line 109, ../../src/stylesheets/partials/_graphs.sass */
 .vertical-graph td { padding-top: 5px; text-align: center; vertical-align: bottom; }
-/* line 112, ../../src/stylesheets/partials/_graphs.sass */
+/* line 114, ../../src/stylesheets/partials/_graphs.sass */
 .vertical-graph td div { display: inline-block; margin-bottom: -2px; width: 20px; }
 
-/* line 117, ../../src/stylesheets/partials/_graphs.sass */
-.chart_legend { float: right; }
 /* line 119, ../../src/stylesheets/partials/_graphs.sass */
-.chart_legend li { margin: 10px; }
+.chart_legend { float: right; }
 /* line 121, ../../src/stylesheets/partials/_graphs.sass */
+.chart_legend li { margin: 10px; }
+/* line 123, ../../src/stylesheets/partials/_graphs.sass */
 .chart_legend li span { display: block; float: left; height: 10px; margin-right: 5px; width: 10px; }
 
-/* line 128, ../../src/stylesheets/partials/_graphs.sass */
+/* line 130, ../../src/stylesheets/partials/_graphs.sass */
 .chart { display: inline-block; float: left; font-size: 10px; padding-right: 4px; text-align: right; width: 20px; }
-/* line 136, ../../src/stylesheets/partials/_graphs.sass */
-.chart li:nth-child(2) { margin-top: 85px; }
 /* line 138, ../../src/stylesheets/partials/_graphs.sass */
+.chart li:nth-child(2) { margin-top: 85px; }
+/* line 140, ../../src/stylesheets/partials/_graphs.sass */
 .chart li:last-child { margin-top: 85px; }
 
-/* line 141, ../../src/stylesheets/partials/_graphs.sass */
+/* line 143, ../../src/stylesheets/partials/_graphs.sass */
 .bar1 { background: #258cd5; }
 
-/* line 143, ../../src/stylesheets/partials/_graphs.sass */
+/* line 145, ../../src/stylesheets/partials/_graphs.sass */
 .bar2 { background: #d30000; }
 
-/* line 145, ../../src/stylesheets/partials/_graphs.sass */
+/* line 147, ../../src/stylesheets/partials/_graphs.sass */
 .bar3 { background: #65c029; }
 
-/* line 148, ../../src/stylesheets/partials/_graphs.sass */
+/* line 150, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-wrap { overflow: hidden; position: relative; width: 100%; }
 
-/* line 153, ../../src/stylesheets/partials/_graphs.sass */
+/* line 155, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-average { bottom: 1px; position: absolute; right: 15px; top: 33px; width: 610px; }
 
-/* line 160, ../../src/stylesheets/partials/_graphs.sass */
+/* line 162, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-tip { background: #258cd5; color: white; font-size: 10px; font-weight: bold; height: 10px; left: 63%; margin: 0 0 0 -8px; opacity: 0.6; padding: 3px; position: absolute; text-align: center; top: -18px; width: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; -o-border-radius: 10px; -ms-border-radius: 10px; -khtml-border-radius: 10px; border-radius: 10px; -moz-box-shadow: white 0 1px 0; -webkit-box-shadow: white 0 1px 0; -o-box-shadow: white 0 1px 0; box-shadow: white 0 1px 0; }
-/* line 176, ../../src/stylesheets/partials/_graphs.sass */
-.horizontal-graph-tip:hover, .horizontal-graph-tip:focus { opacity: 1; }
 /* line 178, ../../src/stylesheets/partials/_graphs.sass */
+.horizontal-graph-tip:hover, .horizontal-graph-tip:focus { opacity: 1; }
+/* line 180, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-tip.expand-tick { background: #65c029; }
 
-/* line 181, ../../src/stylesheets/partials/_graphs.sass */
+/* line 183, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph-marker { background: #fcfcfc; border-right: 1px solid #87e24b; bottom: 0; height: 100%; position: relative; top: 0; width: 63%; -moz-box-shadow: #eeeeee -2px 0 10px inset; -webkit-box-shadow: #eeeeee -2px 0 10px inset; -o-box-shadow: #eeeeee -2px 0 10px inset; box-shadow: #eeeeee -2px 0 10px inset; }
