@@ -193,6 +193,4 @@ class PlanningController extends AbstractController {
 		])
 	}
 
-	def tmp = {}
-		
 }
