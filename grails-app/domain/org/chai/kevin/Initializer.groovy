@@ -993,11 +993,11 @@ class Initializer {
 			namesPlural: j(["en":"Activities"]),
 //			sections: ["[_].key1","[_].key2"],
 			sectionDescriptions: [
-				"[_].basic": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].staffing": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].consumables": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].monthly_breakdown": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].funding_sources": j(["en":"Lorem ipsum blablablabla"])
+				"[_].basic": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].staffing": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].consumables": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].monthly_breakdown": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
 			],
 			headers: [
 				"[_].basic": j(["en":"Basic Information"]),

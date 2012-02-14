@@ -13,7 +13,7 @@
   				<input class="always-send" type="hidden" name="lineNumber" value="${planningLine.lineNumber}"/>
 
   				<g:each in="${planningType.sections}" var="section">
-  					<h4 class='section-title'> <span class='question-default'> 1 </span><g:i18n field="${planningType.headers[section]}"/></h4>
+  					<div class="section-title-wrap"><h4 class='section-title'> <span class='question-default'> 1 </span><g:i18n field="${planningType.headers[section]}"/></h4></div>
 
   					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
 						value: planningLine.getValue(section),
@@ -30,8 +30,8 @@
 						enums: planningLine.enums
 					]"/>
 					
-					<div>
-						<g:i18n field="${planningType.sectionDescriptions[section]}"/>
+					<div class="adv-aside question-help-container">
+						<div class="question-help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
 					</div>
   				</g:each>
   				
