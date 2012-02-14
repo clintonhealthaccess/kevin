@@ -6,13 +6,17 @@ import java.util.Map;
 
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.ValidatableValue;
+import org.chai.kevin.value.ValueService;
 
 public class PlanningList {
 
-	private PlanningType planningType;
-	private RawDataElementValue dataElementValue;
-	private Map<String, Enum> enums;
+	private final PlanningType planningType;
+	private final RawDataElementValue dataElementValue;
+	private final Map<String, Enum> enums;
+	
 	private List<PlanningEntry> planningEntries;
+	private ValidatableValue validatableValue;
 	
 	public PlanningList(PlanningType planningType, RawDataElementValue dataElementValue, Map<String, Enum> enums) {
 		this.planningType = planningType;
@@ -25,11 +29,26 @@ public class PlanningList {
 			planningEntries = new ArrayList<PlanningEntry>();
 			if (dataElementValue != null && !dataElementValue.getValue().isNull()) {
 				for (int i = 0; i < dataElementValue.getValue().getListValue().size(); i++) {
-					planningEntries.add(new PlanningEntry(planningType, dataElementValue, i, enums));
+					planningEntries.add(new PlanningEntry(planningType, getValidatableValue(), i, enums));
 				}
 			}
 		}
 		return planningEntries;
+	}
+	
+	
+	private ValidatableValue getValidatableValue() {
+		if (validatableValue == null) {
+			validatableValue = new ValidatableValue(dataElementValue.getValue(), dataElementValue.getData().getType());
+		}
+		return validatableValue;
+	}
+	
+	public PlanningEntry getOrCreatePlanningEntry(Integer lineNumber) {
+		if (lineNumber >= getPlanningEntries().size()) {
+			return new PlanningEntry(planningType, getValidatableValue(), lineNumber, enums);
+		}
+		else return getPlanningEntries().get(lineNumber);
 	}
 	
 	public List<PlanningEntry> getLatestEntries(Integer numberOfEntries) {
@@ -52,4 +71,7 @@ public class PlanningList {
 		return getPlanningEntries().isEmpty();
 	}
 	
+	public void save(ValueService valueService) {
+		if (dataElementValue != null) valueService.save(dataElementValue);
+	}
 }

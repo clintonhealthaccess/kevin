@@ -21,6 +21,7 @@ import org.chai.kevin.value.RefreshValueService;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.springframework.transaction.annotation.Transactional;
 
 public class PlanningService {
 
@@ -32,17 +33,18 @@ public class PlanningService {
 		return null;
 	}
 	
+	@Transactional(readOnly=true)
 	public PlanningList getPlanningList(PlanningType type, DataLocationEntity location) {
-		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getDataElement(), location, type.getPeriod());
+		RawDataElementValue dataElementValue = getDataElementValue(type, location);
 		
 		return new PlanningList(type, dataElementValue, getEnums(type));
 	}
 	
-	public PlanningEntry getPlanningEntry(PlanningType type, DataLocationEntity location, Integer lineNumber) {
-		RawDataElementValue dataElementValue = getDataElementValue(type, location);
-		
-		return new PlanningEntry(type, dataElementValue, lineNumber, getEnums(type));
-	}
+//	public PlanningEntry getPlanningEntry(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+//		RawDataElementValue dataElementValue = getDataElementValue(type, location);
+//		
+//		return new PlanningEntry(type, dataElementValue, lineNumber, getEnums(type));
+//	}
 	
 	private Map<String, Enum> getEnums(PlanningType type) {
 		Map<String, Enum> result = new HashMap<String, Enum>();
@@ -56,19 +58,22 @@ public class PlanningService {
 		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getDataElement(), location, type.getPeriod());
 		if (dataElementValue == null) {
 			dataElementValue = new RawDataElementValue(type.getDataElement(), location, type.getPeriod(), Value.NULL_INSTANCE());
-			valueService.save(dataElementValue);
 		}
 		return dataElementValue;
 	}
 	
+	@Transactional(readOnly=false)
 	public void deletePlanningEntry(PlanningType type, DataLocationEntity location, Integer lineNumber) {
-		PlanningEntry planningEntry = getPlanningEntry(type, location, lineNumber);
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry planningEntry = planningList.getPlanningEntries().get(lineNumber);
 		planningEntry.delete();
-		planningEntry.save(valueService);
+		planningList.save(valueService);
 	}
 	
+	@Transactional(readOnly=false)
 	public PlanningEntry modify(PlanningType type, DataLocationEntity location, Integer lineNumber, Map<String, Object> params) {
-		PlanningEntry planningEntry = getPlanningEntry(type, location, lineNumber);
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
 		
 		// first we merge the values to create a new value
 		planningEntry.mergeValues(params);
@@ -78,10 +83,11 @@ public class PlanningService {
 		// TODO
 		
 		// last we set and save the value
-		planningEntry.save(valueService);
+		planningList.save(valueService);
 		return planningEntry;
 	}
 	
+	@Transactional(readOnly=false)
 	public void refreshBudget(PlanningType type, DataLocationEntity location) {
 		PlanningList planningList = getPlanningList(type, location);
 		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
@@ -92,8 +98,10 @@ public class PlanningService {
 				planningEntry.setBudgetUpdated(true);
 			}
 		}
+		planningList.save(valueService);
 	}
 	
+	@Transactional(readOnly=true)
 	public PlanningTypeBudget getPlanningTypeBudget(PlanningType type, DataLocationEntity location) {
 		PlanningList planningList = getPlanningList(type, location);
 		
@@ -102,9 +110,9 @@ public class PlanningService {
 		
 		List<PlanningEntryBudget> planningEntryBudgets = new ArrayList<PlanningEntryBudget>();
 		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
-			List<BudgetCost> budgetCosts = new ArrayList<BudgetCost>();
+			Map<PlanningCost, BudgetCost> budgetCosts = new HashMap<PlanningCost, BudgetCost>();
 			for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
-				budgetCosts.add(new BudgetCost(planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, type.getPeriod(), types)));
+				budgetCosts.put(planningCost, new BudgetCost(planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, type.getPeriod(), types)));
 			}
 			planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
 		}

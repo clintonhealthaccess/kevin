@@ -58,7 +58,8 @@ class PlanningController extends AbstractController {
 		def location = DataLocationEntity.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		
-		def newPlanningLine = planningService.getPlanningEntry(planningType, location, lineNumber)
+		def planningList = planningService.getPlanningList(planningType, location)
+		def newPlanningLine = planningList.getOrCreatePlanningEntry(lineNumber)
 		
 		render (view: '/planning/editPlanningEntry', model: [
 			planningType: planningType, 
@@ -83,10 +84,8 @@ class PlanningController extends AbstractController {
 		def location = DataLocationEntity.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		
-		planningService.modify(planningType, location, lineNumber, params)
-		
-		def planningLine = planningService.getPlanningEntry(planningType, location, lineNumber)
-		def validatable = planningLine.validatable
+		def planningEntry = planningService.modify(planningType, location, lineNumber, params)
+		def validatable = planningEntry.validatable
 		
 		render(contentType:"text/json") {
 			status = 'success'
@@ -102,7 +101,7 @@ class PlanningController extends AbstractController {
 							pre (
 								prefix: invalidPrefix,
 								valid: validatable.isValid(invalidPrefix),
-								errors: g.renderUserErrors(element: planningLine, validatable: validatable, suffix: invalidPrefix, location: location)
+								errors: g.renderUserErrors(element: planningEntry, validatable: validatable, suffix: invalidPrefix, location: location)
 							)
 						}
 					},
@@ -119,13 +118,22 @@ class PlanningController extends AbstractController {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocationEntity.get(params.int('location'))
 
+		// TODO
 		for (def planningType: planning.planningTypes) {
 			planningService.getPlanningList(planningType, location)
 		}
 	}
 	
-	def updatingBudget = {
-		// TODO waiting page that polls 'budgetUpdated' to see if the budget is updated	
+	def updateBudget = {
+		// TODO waiting page that polls 'budgetUpdated' to see if the budget is updated
+		def planning = Planning.get(params.int('planning'))
+		def location = DataLocationEntity.get(params.int('location'))
+		
+		// TODO do this in the background
+		for (def planningType: planning.planningTypes) {
+			planningService.refreshBudget(planningType, location)
+		}
+		redirect (action: 'budget', params:[planning: planning.id, location: location.id] )
 	}
 	
 	def budget = {
@@ -136,17 +144,19 @@ class PlanningController extends AbstractController {
 		// redirect to waiting page 'updatingBudget' if they must
 		for (def planningType: planning.planningTypes) {
 			if (!planningService.getPlanningList(planningType, location).isBudgetUpdated()) {
-				redirect (action: 'updatingBudget', params:[planning: planning, location: location])
+				redirect (action: 'updateBudget', params:[planning: planning.id, location: location.id])
 				return;
 			} 
 		}
 
-		def budgetPlanningTypes = planning.planningTypes.collect {
-			planningService.getPlanningTypeBudget(it, location, period)
+		def planningTypeBudgets = planning.planningTypes.collect {
+			planningService.getPlanningTypeBudget(it, location)
 		}
 		
-		render (view: '/planning/budget', model: [
-			budgetPlanningTypes: budgetPlanningTypes
+		render (view: '/planning/budget/budget', model: [
+			planning: planning,
+			location: location,
+			planningTypeBudgets: planningTypeBudgets
 		])
 	}
 		

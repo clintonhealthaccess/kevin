@@ -1058,8 +1058,8 @@ class Initializer {
 		planning.save(failOnError: true)
 	
 		def sumCost1 = new Sum(
-			code: 'SUMPLANNING', 
-			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.key0 == "value1")[0].key1.key12 * 2'
+			code: 'SUMPLANNING1', 
+			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.basic.activity == "value1")[0].basic.instances * 2'
 		).save(failOnError: true);
 	
 		def planningCost1 = new PlanningCost(
@@ -1067,12 +1067,27 @@ class Initializer {
 			type: PlanningCostType.INCOMING,
 			discriminatorValue: 'value1',
 			sum: sumCost1,
-			section: '.key1',
-			groupSection: '.key1',
+			section: '[_].staffing',
+			groupSection: '[_].staffing',
 			names: j(["en":"Salaries"])
-		)
+		).save(failOnError: true)
 	
-		planningType.costs.add(planningCost1)
+		def sumCost2 = new Sum(
+			code: 'SUMPLANNING2',
+			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.basic.activity == "value1")[0].basic.instances * 10'
+		).save(failOnError: true);
+	
+		def planningCost2 = new PlanningCost(
+			planningType: planningType,
+			type: PlanningCostType.OUTGOING,
+			discriminatorValue: 'value1',
+			sum: sumCost2,
+			section: '[_].consumables',
+			names: j(["en":"Patient"])
+		).save(failOnError: true)
+		
+		planningType.costs << planningCost1
+		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
 		/* START WORKFLOW */

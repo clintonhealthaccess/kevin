@@ -69,6 +69,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	
 	def refreshValueService
 	def springcacheService
+	def sessionFactory
 	
 	static final String CODE (def number) { return "CODE"+number }
 	

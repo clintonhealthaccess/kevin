@@ -14,35 +14,40 @@ import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.hibernate.classic.Validatable;
 
 public class PlanningEntry {
 
 	private static final String BUDGET_UPDATED = "budget_updated";
 	
-	private RawDataElementValue dataElementValue;
 	private Integer lineNumber;
 	private PlanningType type;
 	private Map<String, Enum>  enums;
 	private ValidatableValue validatable;
 	
-	public PlanningEntry(RawDataElementValue value, Integer lineNumber) {
-		this.dataElementValue = value;
+	public PlanningEntry() {}
+	
+	public PlanningEntry(ValidatableValue validatable, Integer lineNumber) {
+		this.validatable = validatable;
 		this.lineNumber = lineNumber;
+		this.type = null;
+		this.enums = null;
 	}
 	
-	public PlanningEntry(PlanningType type, RawDataElementValue value, Integer lineNumber, Map<String, Enum> enums) {
-		this.dataElementValue = value;
+	public PlanningEntry(PlanningType type, ValidatableValue validatable, Integer lineNumber, Map<String, Enum> enums) {
+		this.validatable = validatable;
 		this.type = type;
 		this.lineNumber = lineNumber;
 		this.enums = enums;
 	}
 
 	public boolean isBudgetUpdated() {
+		if (getValue().getAttribute(BUDGET_UPDATED) == null) return false;
 		return getValue().getAttribute(BUDGET_UPDATED).equals(Boolean.TRUE.toString());
 	}
 
 	public void setBudgetUpdated(Boolean value) {
-		getValue().setAttribute(BUDGET_UPDATED, value.toString());
+		validatable.getType().setAttribute(validatable.getValue(), getPrefix("[_]"), BUDGET_UPDATED, value.toString());
 	}
 	
 	public String getLineSuffix(String section) {
@@ -54,7 +59,6 @@ public class PlanningEntry {
 	}
 	
 	public ValidatableValue getValidatable() {
-		if (validatable == null) validatable = new ValidatableValue(dataElementValue.getValue(), type.getDataElement().getType());
 		return validatable;
 	}
 	
@@ -63,7 +67,7 @@ public class PlanningEntry {
 	}
 	
 	public Value getValue(String prefix) {
-		return dataElementValue.getData().getType().getValue(dataElementValue.getValue(), getPrefix(prefix));
+		return validatable.getType().getValue(validatable.getValue(), getPrefix(prefix));
 	}
 	
 	public Value getDiscriminatorValue() {
@@ -87,7 +91,7 @@ public class PlanningEntry {
 	
 	private List<String> getLineNumbers(Integer skip) {
 		List<String> result = new ArrayList<String>();
-		Integer linesInValue = dataElementValue.getValue().isNull()?0:dataElementValue.getValue().getListValue().size();
+		Integer linesInValue = validatable.getValue().isNull()?0:validatable.getValue().getListValue().size();
 		for (int i = 0; i <= Math.max(linesInValue-1, lineNumber); i++) {
 			if (skip == null || i != skip) result.add("["+i+"]");
 		}
@@ -102,8 +106,4 @@ public class PlanningEntry {
 		return enums;
 	}
 	
-	// TODO move to PlanningList
-	public void save(ValueService valueService) {
-		valueService.save(dataElementValue);
-	}
 }

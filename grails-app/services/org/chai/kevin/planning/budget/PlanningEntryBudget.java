@@ -2,8 +2,13 @@ package org.chai.kevin.planning.budget;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.planning.PlanningCost;
@@ -13,9 +18,9 @@ import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 public class PlanningEntryBudget {
 
 	private PlanningEntry planningEntry;
-	private List<BudgetCost> budgetCosts;
+	private Map<PlanningCost, BudgetCost> budgetCosts;
 
-	public PlanningEntryBudget(PlanningEntry planningEntry, List<BudgetCost> budgetCosts) {
+	public PlanningEntryBudget(PlanningEntry planningEntry, Map<PlanningCost, BudgetCost> budgetCosts) {
 		this.planningEntry = planningEntry;
 		this.budgetCosts = budgetCosts;
 	}
@@ -24,7 +29,7 @@ public class PlanningEntryBudget {
 //		return names;
 //	}
 	
-	public PlanningEntry getPlanningLine() {
+	public PlanningEntry getPlanningEntry() {
 		return planningEntry;
 	}
 	
@@ -36,38 +41,62 @@ public class PlanningEntryBudget {
 		return getSum(PlanningCostType.INCOMING);
 	}
 	
+	public Double getDifference() {
+		return getIncoming() - getOutgoing();
+	}
+
 	protected Double getSum(PlanningCostType costType) {
 		Double result = 0d;
-		for (BudgetCost cost : budgetCosts) {
-			if (cost.getPlanningCost().getType().equals(costType)) {
-				result += cost.getValue();
+		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+			if (planningCost.getType().equals(costType)) {
+				result += getBudgetCost(planningCost).getValue();
 			}
 		}
 		return result;
 	}
 	
-	public Double getDifference() {
-		return getIncoming() - getOutgoing();
-	}
-	
-	public Set<String> getGroupSections(PlanningCostType type) {
-		Set<String> result = new HashSet<String>();
-		for (BudgetCost cost : budgetCosts) {
-			result.add(cost.getPlanningCost().getGroupSection());
+	public Double getGroupTotal(PlanningCostType type, String groupSection) {
+		Double result = 0d;
+		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+			if (planningCost.getType() == type && 
+				(	planningCost.getGroupSection() == groupSection 
+					||
+					planningCost.getGroupSection().equals(groupSection)
+				)) {
+				result += getBudgetCost(planningCost).getValue();
+			}
 		}
 		return result;
 	}
 	
-	public List<BudgetCost> getBudgetCosts() {
-		return budgetCosts;
-	}
-	
-	public List<BudgetCost> getBudgetCosts(PlanningCostType type, String groupSection) {
-		List<BudgetCost> result = new ArrayList<BudgetCost>();
-		for (BudgetCost cost : budgetCosts) {
-			if (cost.getPlanningCost().getType().equals(type) && cost.getPlanningCost().getGroupSection().equals(groupSection)) result.add(cost);
+	public List<String> getGroupSections(PlanningCostType type) {
+		List<String> result = new ArrayList<String>();
+		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+			if (planningCost.getType().equals(type) && !result.contains(planningCost.getGroupSection())) {
+				result.add(planningCost.getGroupSection());
+			}
 		}
 		return result;
+	}
+	
+	public List<PlanningCost> getPlanningCosts(PlanningCostType type, String groupSection) {
+		List<PlanningCost> result = new ArrayList<PlanningCost>();
+		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+			if (	planningCost.getType() == type 
+					&& 
+					(	planningCost.getGroupSection() == groupSection 
+						||
+						planningCost.getGroupSection().equals(groupSection)
+					)
+			) {
+				result.add(planningCost);
+			}
+		}
+		return result;
+	}
+	
+	public BudgetCost getBudgetCost(PlanningCost planningCost) {
+		return budgetCosts.get(planningCost);
 	}
 
 }

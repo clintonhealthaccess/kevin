@@ -605,10 +605,11 @@ public class TypeUnitSpec extends UnitSpec {
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}")
 		type.setAttribute(value, "[0]", "attribute", "test")
-	
+		
 		then:
 		value.getListValue().get(0).getAttribute("attribute") == "test"
 		type.getAttribute(value, "[0]", "attribute") == "test"
+		value.jsonValue.contains ("attribute")
 		
 //		when:
 //		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
@@ -626,15 +627,18 @@ public class TypeUnitSpec extends UnitSpec {
 		then:
 		value.getMapValue().get("key1").getAttribute("attribute") == "test"
 		type.getAttribute(value, ".key1", "attribute") == "test"
+		value.jsonValue.contains ("attribute")
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
 		value = new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":10}}]}]}")
 		type.setAttribute(value, "[0].key1", "attribute", "test")
+		value.jsonValue.contains ("attribute")
 		
 		then:
 		value.getListValue().get(0).getMapValue().get("key1").getAttribute("attribute") == "test"
 		type.getAttribute(value, "[0].key1", "attribute") == "test"
+		value.jsonValue.contains ("attribute")
 	}
 	
 	def "set value"() {

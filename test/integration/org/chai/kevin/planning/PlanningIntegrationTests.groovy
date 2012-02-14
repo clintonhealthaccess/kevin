@@ -13,9 +13,8 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return new Planning(period: period, active: active).save(failOnError: true)
 	}
 	
-	def newPlanningType(def dataElement, def discriminator, def sections, def planning) {
+	def newPlanningType(def dataElement, def discriminator, def planning) {
 		def planningType = new PlanningType(
-			sections: sections,
 			dataElement: dataElement,
 			discriminator: discriminator,
 			planning: planning

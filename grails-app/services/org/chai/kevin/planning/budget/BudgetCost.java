@@ -17,7 +17,7 @@ public class BudgetCost {
 		return value.getValue().getNumberValue().doubleValue();
 	}
 	
-	protected PlanningCost getPlanningCost() {
+	public PlanningCost getPlanningCost() {
 		return planningCost;
 	}
 	
