@@ -16,28 +16,28 @@
     </head>
     <body>
 		<div id="report">
-			<div class="subnav">			
-				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params, params:params]"/>
+			<div class="subnav">
+				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
 			<div class="main">
-				<g:render template="/templates/topLevelReportTabs" model="[tab:'dashboard', linkParams:params]"/>
-				<g:render template="/templates/reportTabHelp" model="[params:params]"/>
+				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
+				<g:render template="/templates/reportTabHelp"/>
 				<ul class='clearfix' id='questions'>
   					<li class='question push-20'>
-						<g:render template="/templates/reportTableHeader" model="[tab:'dashboard', table:'program']"/>						
-						<g:if test="programDashboard != null">
-							<g:render template="/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard, params:params]"/>
+						<g:render template="/templates/reportTableHeader" model="[table:'program']"/>						
+						<g:if test="${programDashboard.hasData()}">
+							<g:render template="/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard]"/>
 							<div class='horizontal-graph-wrap'>
-								<g:render template="/dashboard/reportProgramTable" model="[dashboard:programDashboard, params:params]"/>
+								<g:render template="/dashboard/reportProgramTable" model="[dashboard:programDashboard]"/>
 			                </div>
 		                </g:if>
 	                </li>
 	                <li class='question push-10'>
-		                <g:render template="/templates/reportTableHeader" model="[tab:'dashboard', table:'location']"/>						
-		                <g:if test="locationDashboard != null">
-		                <g:render template="/dashboard/reportCompareFilter" model="[table:'location', dashboard:locationDashboard, params:params]"/>
+		                <g:render template="/templates/reportTableHeader" model="[table:'location']"/>						
+		                <g:if test="${locationDashboard.hasData()}">
+		                <g:render template="/dashboard/reportCompareFilter" model="[table:'location', dashboard:locationDashboard]"/>
 							<div class='horizontal-graph-wrap'>
-								<g:render template="/dashboard/reportLocationTable" model="[dashboard:locationDashboard, params:params]"/>			                  
+								<g:render template="/dashboard/reportLocationTable" model="[dashboard:locationDashboard]"/>			                  
 							</div>
 		                </g:if>
 		            </li>

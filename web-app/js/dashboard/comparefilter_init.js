@@ -45,12 +45,10 @@ function compareFilter(table, locationId) {
 						$(compareDiv).css('width', '100%');
 					}
 				}
-				$(compareDiv).show();
-	//					animateCharts(true, 'program');					
+				$(compareDiv).show();					
 			})
 		}
 		if(table == 'location'){				
-//			var dashboardEntityId = $('.horizontal-graph-average').data('entity');
 			var percentageValue = data.compareValues[0].value;
 			var compareDiv = $('.horizontal-graph-average');
 			var tooltip = $(compareDiv).children('.tooltip');
@@ -73,8 +71,7 @@ function compareFilter(table, locationId) {
 					$(tickmark).css('width', '100%');
 					}
 				}
-				$(compareDiv).show();
-	//					animateCharts(true, 'location');			
+				$(compareDiv).show();	
 			}
 		}
 	);		

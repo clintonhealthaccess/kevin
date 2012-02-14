@@ -122,7 +122,7 @@ grails.project.dependency.resolution = {
 		compile ":cdn-resources:0.2"
 		compile ":mail:1.0"
 		
-		test (":spock:0.6-SNAPSHOT") {changing = false}
+//		test (":spock:0.6-SNAPSHOT") {changing = false}
 	}
 
 	

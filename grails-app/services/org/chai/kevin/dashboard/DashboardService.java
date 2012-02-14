@@ -69,69 +69,52 @@ public class DashboardService {
 	private DashboardPercentageService dashboardPercentageService;
 	private Set<String> skipLevels;
 	
-	private Set<LocationLevel> getSkipLocationLevels() {
-		Set<LocationLevel> levels = new HashSet<LocationLevel>();
-		for (String skipLevel : skipLevels) {
-			levels.add(locationService.findLocationLevelByCode(skipLevel));
-		}
-		return levels;
-	}
-	
 	@Transactional(readOnly = true)
 	public Dashboard getProgramDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types){
-		
-		List<CalculationEntity> locations = new ArrayList<CalculationEntity>();		
-		locations.add(location);
-		
+
+		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();		
+		locationEntities.add(location);
+
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
 		dashboardEntities.addAll(getDashboardEntities(objective));
 		
-		return new Dashboard(locations, dashboardEntities, calculateLocationPath(location), getValues(locations, dashboardEntities, period, types));
+		return new Dashboard(locationEntities, dashboardEntities,calculateLocationPath(location), getValues(locationEntities, dashboardEntities, period, types));
 	}
 			
 	@Transactional(readOnly = true)
-	public Dashboard getLocationDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types) {
+	public Dashboard getLocationDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types, boolean compare) {
 		
-		List<CalculationEntity> locations = new ArrayList<CalculationEntity>();		
-		locations.addAll(location.getChildren(getSkipLocationLevels()));
-		for (DataLocationEntity dataEntity : location.getDataEntities(getSkipLocationLevels())) {
-			if (types.contains(dataEntity.getType())) locations.add(dataEntity);
+		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();
+		if(compare){
+			locationEntities.add(location);
 		}
+		else{
+			locationEntities.addAll(locationService.getLocationEntities(location, skipLevels, types));	
+		}		
 		
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
 		dashboardEntities.add(getDashboardObjective(objective));		
 		
-		return new Dashboard(locations, dashboardEntities, calculateLocationPath(location), getValues(locations, dashboardEntities, period, types));
-	}
-
-	@Transactional(readOnly = true)
-	public Dashboard getLocationCompareDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> groups) {		
-		List<CalculationEntity> locations = new ArrayList<CalculationEntity>();
-		locations.add(location);
-		
-		List<DashboardEntity> dashboardEntities = getDashboardEntities(objective);
-		dashboardEntities.add(getDashboardObjective(objective));
-		
-		return new Dashboard(locations, dashboardEntities, calculateLocationPath(location), getValues(locations, dashboardEntities, period, groups));
+		return new Dashboard(locationEntities, dashboardEntities, calculateLocationPath(location), getValues(locationEntities, dashboardEntities, period, types));
 	}
 	
-	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> getValues(List<CalculationEntity> locations, List<DashboardEntity> objectiveEntries, Period period, Set<DataEntityType> types) {
-		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values = new HashMap<CalculationEntity, Map<DashboardEntity, DashboardPercentage>>();
+	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> getValues(List<CalculationEntity> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataEntityType> types) {
+		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap = new HashMap<CalculationEntity, Map<DashboardEntity, DashboardPercentage>>();
 
-		for (CalculationEntity entity : locations) {
-			Map<DashboardEntity, DashboardPercentage> locationMap = getValues(objectiveEntries, period, entity, types);
-			values.put(entity, locationMap);
+		for (CalculationEntity location : locations) {
+			Map<DashboardEntity, DashboardPercentage> locationMap = getValues(dashboardEntities, period, location, types);
+			valueMap.put(location, locationMap);
 		}
-		return values;
+		return valueMap;
 	}
 
 	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationEntity location, Set<DataEntityType> types) {
-		Map<DashboardEntity, DashboardPercentage> locationMap = new HashMap<DashboardEntity, DashboardPercentage>();
+		Map<DashboardEntity, DashboardPercentage> entityMap = new HashMap<DashboardEntity, DashboardPercentage>();
 		for (DashboardEntity dashboardEntity : dashboardEntities) {
 			DashboardPercentage percentage = dashboardPercentageService.getDashboardValue(period, location, types, dashboardEntity);
-			locationMap.put(dashboardEntity, percentage);
+			entityMap.put(dashboardEntity, percentage);
 		}
-		return locationMap;
+		return entityMap;
 	}
 
 	private List<LocationEntity> calculateLocationPath(LocationEntity entity) {
@@ -158,16 +141,28 @@ public class DashboardService {
 //		return objectivePath;
 //	}
 	
-	public List<DashboardEntity> getDashboardEntities(ReportObjective objective) {
-		List<DashboardEntity> entities = new ArrayList<DashboardEntity>();
-		if(objective.getChildren() != null) {
-			for (ReportObjective child : objective.getChildren()) {
-				DashboardEntity dashboardEntity = getDashboardObjective(child);
-				if(dashboardEntity != null)	entities.add(dashboardEntity);
+	public List<DashboardEntity> getDashboardEntities(ReportObjective objective) {		
+		List<DashboardEntity> entities = new ArrayList<DashboardEntity>();				
+		
+		List<DashboardEntity> dashboardObjectives = getDashboardObjectives(objective);
+		entities.addAll(dashboardObjectives);
+		
+		List<DashboardTarget> dashboardTargets = reportService.getReportTargets(DashboardTarget.class, objective);		
+		entities.addAll(dashboardTargets);
+		
+		return entities;
+	}
+	
+	public List<DashboardEntity> getDashboardObjectives(ReportObjective objective){
+		List<DashboardEntity> result = new ArrayList<DashboardEntity>();
+		List<ReportObjective> children = objective.getChildren();
+		if(children != null) {
+			for (ReportObjective child : children) {
+				DashboardEntity dashboardObjective = getDashboardObjective(child);
+				if(dashboardObjective != null)	result.add(dashboardObjective);
 			}
 		}
-		entities.addAll(reportService.getReportTargets(DashboardTarget.class, objective));
-		return entities;
+		return result;
 	}
 	
 	public DashboardEntity getDashboardObjective(ReportObjective objective) {
@@ -178,7 +173,7 @@ public class DashboardService {
 		
 		return dashboardObjective;
 	}
-
+	
 	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}

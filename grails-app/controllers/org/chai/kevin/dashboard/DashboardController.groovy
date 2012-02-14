@@ -81,70 +81,83 @@ class DashboardController extends AbstractController {
 		def locationDashboard = null
 		
 		Period period = getPeriod()
-		List<DataEntityType> locationTypes = getLocationTypes()
-		ReportObjective reportObjective = getObjective()	
-		DashboardEntity dashboardEntity = getDashboardEntity(reportObjective)		
-		LocationEntity location = getLocation()
+		List<DataEntityType> locationTypes = getLocationTypes()						
 		
-		if (dashboardEntity != null) {
-			reportObjective = dashboardEntity.getReportObjective()
-			
+		ReportObjective objective = getObjective()
+		DashboardEntity dashboardEntity = getDashboardEntity(objective)
+		ReportObjective objectiveRoot = reportService.getRootObjective()
+		List<ReportObjective> objectiveTree = reportService.getObjectiveTree(DashboardTarget.class).asList()
+		if(!objectiveTree.contains(objective)) objective = objectiveRoot
+		
+		LocationEntity location = getLocation()
+		LocationEntity locationRoot = locationService.getRootLocation()
+		List<LocationEntity> locationTree = locationService.getLocationTree().asList()
+		
+		if (period != null && objective != null && dashboardEntity != null && location != null && locationTypes != null) {			
 			if (log.isInfoEnabled()){
 				log.info("compare dashboard for period: "+period.id+
 					", location: "+location.id+
-					", objective:"+reportObjective.id);
+					", objective:"+objective.id);
 			}
-			redirectIfDifferent(period, reportObjective, location)
+			redirectIfDifferent(period, objective, location)
 			
-			programDashboard = dashboardService.getProgramDashboard(location, reportObjective, period, new HashSet(locationTypes));
-			locationDashboard = dashboardService.getLocationDashboard(location, reportObjective, period, new HashSet(locationTypes));
+			programDashboard = dashboardService.getProgramDashboard(location, objective, period, new HashSet(locationTypes));
+			locationDashboard = dashboardService.getLocationDashboard(location, objective, period, new HashSet(locationTypes), false);
 		}
 		if (log.isDebugEnabled()){
 			 log.debug('program dashboard: '+programDashboard)
 			 log.debug('location dashboard: '+locationDashboard)
 		}		
 		
-		[ 
-			programDashboard:programDashboard,
-			locationDashboard:locationDashboard,			
+		[
+			programDashboard: programDashboard,
+			locationDashboard: locationDashboard,			
 			currentPeriod: period,
 			dashboardEntity: dashboardEntity,
 			currentObjective: reportObjective,
 			objectiveRoot: reportService.getRootObjective(),
 			currentLocation: location,
 			currentLocationTypes: locationTypes
+//=======
+//			periods: Period.list(),
+//			dashboardEntity: dashboardEntity,			 
+//			currentObjective: objective,
+//			objectiveRoot: objectiveRoot,
+//			objectiveTree: objectiveTree,
+//			currentLocation: location,
+//			locationRoot: locationRoot,
+//			locationTree: locationTree,			
+//			currentLocationTypes: locationTypes,
+//			locationTypes: DataEntityType.list()
+//>>>>>>> dashboard and dsr work, filtering objectives and locations across all report types, added report category filter to dsr, and fixed top level facility type filter bug
 		]
 	}
 	
 	def compare = {
-		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)
-		
-		def dashboard = null
+		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)								
 		
 		Period period = getPeriod()
-		List<DataEntityType> locationTypes = getLocationTypes()
-		ReportObjective reportObjective = ReportObjective.get(params.int('objective'))	
-		if(reportObjective == null) reportObjective = reportService.getRootObjective()
-		DashboardEntity dashboardEntity = getDashboardEntity(reportObjective)
-		LocationEntity location = LocationEntity.get(params.int('location'))
-		if (location == null) location = locationService.getRootLocation()
+		List<DataEntityType> locationTypes = getLocationTypes()	
+		ReportObjective objective = getObjective()
+		DashboardEntity dashboardEntity = getDashboardEntity(objective)		
+		LocationEntity location = getLocation()
 		
-		if (dashboardEntity != null) {						
-			reportObjective = dashboardEntity.getReportObjective()
+		def dashboard = null
+		if (period != null && objective != null && dashboardEntity != null && location != null && locationTypes != null) {			
 			
 			if (log.isInfoEnabled()){
 				log.info("compare dashboard for period: "+period.id+
 					", location: "+location.id+
-					", objective:"+reportObjective.id+
+					", objective:"+objective.id+
 					", dashboardEntity: " + dashboardEntity.id);
 			}
-			redirectIfDifferent(period, reportObjective, location)
+			redirectIfDifferent(period, objective, location)
 			
 			def table = (String) params.get("table")			
 			if(table == 'program')
-				dashboard = dashboardService.getProgramDashboard(location, reportObjective, period, new HashSet(locationTypes));
+				dashboard = dashboardService.getProgramDashboard(location, objective, period, new HashSet(locationTypes));
 			if(table == 'location')
-				dashboard = dashboardService.getLocationCompareDashboard(location, reportObjective, period, new HashSet(locationTypes));
+				dashboard = dashboardService.getLocationDashboard(location, objective, period, new HashSet(locationTypes), true);
 						
 			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
 

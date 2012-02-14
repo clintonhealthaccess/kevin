@@ -63,15 +63,22 @@ public class LocationEntity extends CalculationEntity {
 	}
 
 	@Override
-	public List<DataLocationEntity> getDataEntities(Set<LocationLevel>  skipLevels) {
+	public List<DataLocationEntity> getDataEntities(Set<LocationLevel>  skipLevels, Set<DataEntityType> types) {
 		List<DataLocationEntity> result = new ArrayList<DataLocationEntity>();
-		result.addAll(getDataEntities());
+		
+		List<DataLocationEntity> dataEntities = getDataEntities();
+		for (DataLocationEntity dataEntity : dataEntities) {
+			if (types != null && types.contains(dataEntity.getType())) 
+				result.add(dataEntity);
+		}		
+		
 		for (LocationEntity child : children) {
 			if (skipLevels.contains(child.getLevel())) {
-				result.addAll(child.getDataEntities(skipLevels));
+				result.addAll(child.getDataEntities(skipLevels, types));
 			}
 		}
-		return result;
+		
+		return result;				
 	}
 
 	@Override
@@ -105,4 +112,3 @@ public class LocationEntity extends CalculationEntity {
 	}
 
 }
-

@@ -14,18 +14,18 @@
 	<body>
 		<div id="report">
 			<div class="subnav">			
-				<g:render template="/templates/topLevelReportFilters" model="[tab:'dsr', linkParams:params, params:params]"/>
+				<g:render template="/templates/topLevelReportFilters" model="[linkParams:params]"/>
 			</div>
 			<div class="main">
-				<g:render template="/templates/topLevelReportTabs" model="[tab:'dsr', linkParams:params]"/>
-				<g:render template="/templates/reportTabHelp" model="[params:params]"/>			
+				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
+				<g:render template="/templates/reportTabHelp"/>			
 				<ul id='questions'>
 	              <li class='question'>
-	                <g:render template="/templates/reportTableHeader" model="[tab:'dsr']"/>	                
-	                <g:render template="/dsr/reportCategoryFilter" model="[params:params]"/>
+	                <g:render template="/templates/reportTableHeader"/>	                
+	                <g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>
 	              </li>
-	              <g:if test="${dsrTable != null}">             
-	              	<g:render template="/dsr/reportProgramTable" model="[params:params]"/>
+	              <g:if test="${dsrTable.hasData()}">
+	              	<g:render template="/dsr/reportProgramTable" model="[linkParams:params]"/>
 	              </g:if>
 				</ul>
 			</div>		

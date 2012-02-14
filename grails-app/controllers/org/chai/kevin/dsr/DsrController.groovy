@@ -32,6 +32,8 @@ import org.chai.kevin.AbstractController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 import java.util.Collections;
+
+import org.apache.jasper.compiler.Node.ParamsAction;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.LanguageService
 import org.chai.kevin.LocationService
@@ -47,10 +49,28 @@ class DsrController extends AbstractController {
 	LanguageService languageService;
 	DsrService dsrService;
 	
-	public DsrTargetCategory getDsrTargetCategory(){
+	public DsrTargetCategory getDsrTargetCategory(def objective){
 		def dsrTargetCategory = null
-		//TODO
+		if(params.int('dsrCategory') != null)
+			dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))
+		else{
+			def categories = dsrService.getTargetCategories(objective)
+			if(categories != null && !categories.empty)
+				dsrTargetCategory = categories.first()
+		}
 		return dsrTargetCategory
+	}
+	
+	public List<DataEntityType> getLocationTypes() {
+		List<DataEntityType> types = null
+		if (params.list('locationTypes') != null && !params.list('locationTypes').empty) {
+			def locationTypes = params.list('locationTypes')
+			types = locationTypes.collect{ DataEntityType.get(it) }
+		}
+		else {
+			types = new ArrayList(ConfigurationHolder.config.site.locationtype.checked).collect {DataEntityType.findByCode(it)}
+		}
+		return types
 	}
 	
 	def index = {
@@ -60,28 +80,26 @@ class DsrController extends AbstractController {
 	def view = {
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
 		
-		Period period = getPeriod()
-		List<DataEntityType> locationTypes = getLocationTypes()
-		ReportObjective objective = getObjective()
-		LocationEntity location = getLocation()		
+		def parms = params
 		
-		def dsrTable = null
-		def category = null
-		if (period != null && objective != null && location != null) {
-			 dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet(locationTypes));
-			 
-			 def dsrTargetCategories = dsrTable.getTargetCategories()
-			 if(dsrTargetCategories != null){
-				 for(DsrTargetCategory dsrTargetCategory : dsrTargetCategories){
-					 String categoryName = languageService.getText(dsrTargetCategory.getNames());
-					 
-					 // FIXME HACK
-					 if(categoryName == "Critical Indicators"){						 
-					 	category = dsrTargetCategory;
-						break;
-					 }
-				 }		 
-			 }
+		Period period = getPeriod()		
+		
+		ReportObjective objective = getObjective()
+		ReportObjective objectiveRoot = reportService.getRootObjective()
+		List<ReportObjective> objectiveTree = reportService.getObjectiveTree(DsrTarget.class).asList()
+		if(!objectiveTree.contains(objective)) objective = objectiveRoot
+		
+		LocationEntity location = getLocation()
+		LocationEntity locationRoot = locationService.getRootLocation()
+		List<LocationEntity> locationTree = locationService.getLocationTree().asList()
+		 
+		List<DataEntityType> locationTypes = getLocationTypes()				
+		
+		DsrTargetCategory category = getDsrTargetCategory(objective)
+		
+		def dsrTable = null		
+		if (period != null && objective != null && location != null && locationTypes != null) {
+			 dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet(locationTypes), category);		 			 			 			 
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
@@ -91,9 +109,16 @@ class DsrController extends AbstractController {
 			currentCategory: category,
 			currentPeriod: period,
 			currentObjective: objective,
-			objectiveRoot: reportService.getRootObjective(),
+			objectiveRoot: objectiveRoot,
+			objectiveTree: objectiveTree,
 			currentLocation: location,
 			currentLocationTypes: locationTypes
+//=======
+//			locationRoot: locationRoot,
+//			locationTree: locationTree,
+//			currentLocationTypes: locationTypes,
+//			locationTypes: locationService.listTypes(),
+//>>>>>>> dashboard and dsr work, filtering objectives and locations across all report types, added report category filter to dsr, and fixed top level facility type filter bug
 		]
 	}
 	

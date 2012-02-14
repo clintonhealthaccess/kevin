@@ -60,6 +60,52 @@ public class LocationService {
     	return (LocationEntity)sessionFactory.getCurrentSession().createCriteria(LocationEntity.class).add(Restrictions.isNull("parent")).uniqueResult();
     }
     
+	public Set<LocationEntity> getLocationTree(){
+		Set<LocationEntity> locationTree = new HashSet<LocationEntity>()
+		Set<DataLocationEntity> facilityLocations = getFacilityLocations()	
+		for(LocationEntity facilityLocation : facilityLocations){
+			locationTree.add(facilityLocation)					
+			def parent = facilityLocation.getParent()
+			while(parent != null){
+				if(!locationTree.contains(parent)) locationTree.add(parent)
+				parent = parent.getParent()
+			}			
+		}
+		return locationTree;
+	}
+	
+	public Set<LocationEntity> getFacilityLocations() {
+		List<DataLocationEntity> facilities = (List<DataLocationEntity>)sessionFactory.getCurrentSession()
+				.createCriteria(DataLocationEntity.class)
+				.add(Restrictions.isNotNull("location"))
+				.list();
+		Set<LocationEntity> locations = new HashSet();
+		for(DataLocationEntity facility : facilities){
+			locations.add(facility.getLocation());
+		}
+		return locations;
+	}
+	
+	public List<CalculationEntity> getLocationEntities(LocationEntity location, Set<String> skipLevels, Set<DataEntityType> types) {
+		List<CalculationEntity> entities = new ArrayList<CalculationEntity>();
+		
+		List<LocationEntity> children = location.getChildren(getSkipLocationLevels(skipLevels));
+		entities.addAll(children);
+		
+		List<DataLocationEntity> dataEntities = location.getDataEntities(getSkipLocationLevels(skipLevels), types);
+		entities.addAll(dataEntities);
+		
+		return entities;
+	}
+	
+	private Set<LocationLevel> getSkipLocationLevels(skipLevels) {
+		Set<LocationLevel> levels = new HashSet<LocationLevel>();
+		for (String skipLevel : skipLevels) {
+			levels.add(findLocationLevelByCode(skipLevel));
+		}
+		return levels;
+	}
+	
     public DataEntityType findDataEntityTypeByCode(String code) {
     	return (DataEntityType)sessionFactory.getCurrentSession().createCriteria(DataEntityType.class).add(Restrictions.eq("code", code)).uniqueResult();
     }
@@ -198,5 +244,4 @@ public class LocationService {
 		return result;
 	}
 	
-
 }
