@@ -359,23 +359,29 @@ ul.horizontal li.last { margin-right: 0; }
 /* line 367, ../../src/stylesheets/partials/_nav.sass */
 #tab-nav li { margin-right: 0; }
 /* line 369, ../../src/stylesheets/partials/_nav.sass */
+#tab-nav li.settings { float: right; }
+/* line 371, ../../src/stylesheets/partials/_nav.sass */
+#tab-nav li.settings a { background: white; border: 1px solid #e3e3e3; color: primary; font-size: 11px; letter-spacing: 0.5px; margin: 8px; padding: 6px 12px 5px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: #eeeeee 0 0 3px inset; -webkit-box-shadow: #eeeeee 0 0 3px inset; -o-box-shadow: #eeeeee 0 0 3px inset; box-shadow: #eeeeee 0 0 3px inset; }
+/* line 381, ../../src/stylesheets/partials/_nav.sass */
+#tab-nav li.settings a:hover, #tab-nav li.settings a:focus, #tab-nav li.settings a.selected { background: #333333; border: 1px solid #222222; color: white; -moz-box-shadow: #111111 0 0 3px inset; -webkit-box-shadow: #111111 0 0 3px inset; -o-box-shadow: #111111 0 0 3px inset; box-shadow: #111111 0 0 3px inset; text-shadow: black 0 1px 0; }
+/* line 387, ../../src/stylesheets/partials/_nav.sass */
 #tab-nav a { border-right: 1px solid #e3e3e3; color: #666666; display: block; padding: 14px 20px; text-decoration: none; text-shadow: white 0 1px 0; }
-/* line 376, ../../src/stylesheets/partials/_nav.sass */
+/* line 394, ../../src/stylesheets/partials/_nav.sass */
 #tab-nav a:hover, #tab-nav a:focus, #tab-nav a.selected { background: white; color: #258cd5; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #ffffff)); background-image: -webkit-linear-gradient(top, #ffffff, #ffffff); background-image: -moz-linear-gradient(top, #ffffff, #ffffff); background-image: -o-linear-gradient(top, #ffffff, #ffffff); background-image: -ms-linear-gradient(top, #ffffff, #ffffff); background-image: linear-gradient(top, #ffffff, #ffffff); -moz-transition: all 0.5s; -webkit-transition: all 0.5s; -o-transition: all 0.5s; transition: all 0.5s; }
-/* line 382, ../../src/stylesheets/partials/_nav.sass */
+/* line 400, ../../src/stylesheets/partials/_nav.sass */
 #tab-nav a.selected { border-bottom: 1px solid white; margin-bottom: -1px; }
 
-/* line 388, ../../src/stylesheets/partials/_nav.sass */
+/* line 406, ../../src/stylesheets/partials/_nav.sass */
 #tab-subnav { background: white; border-bottom: 1px solid #e3e3e3; margin: -15px -15px 15px; *zoom: 1; }
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 #tab-subnav:after { content: ""; display: table; clear: both; }
-/* line 394, ../../src/stylesheets/partials/_nav.sass */
+/* line 412, ../../src/stylesheets/partials/_nav.sass */
 #tab-subnav li { margin-right: 0; }
-/* line 396, ../../src/stylesheets/partials/_nav.sass */
+/* line 414, ../../src/stylesheets/partials/_nav.sass */
 #tab-subnav a { color: #666666; display: block; font-size: 11px; padding: 14px 20px; text-decoration: none; text-shadow: white 0 1px 0; }
-/* line 403, ../../src/stylesheets/partials/_nav.sass */
+/* line 421, ../../src/stylesheets/partials/_nav.sass */
 #tab-subnav a:hover, #tab-subnav a:focus, #tab-subnav a.selected { background: white; color: #258cd5; background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #ffffff)); background-image: -webkit-linear-gradient(top, #ffffff, #ffffff); background-image: -moz-linear-gradient(top, #ffffff, #ffffff); background-image: -o-linear-gradient(top, #ffffff, #ffffff); background-image: -ms-linear-gradient(top, #ffffff, #ffffff); background-image: linear-gradient(top, #ffffff, #ffffff); -moz-transition: all 0.5s; -webkit-transition: all 0.5s; -o-transition: all 0.5s; transition: all 0.5s; }
-/* line 409, ../../src/stylesheets/partials/_nav.sass */
+/* line 427, ../../src/stylesheets/partials/_nav.sass */
 #tab-subnav a.selected { background: url("../images/icons/tab-subnav.png") no-repeat center bottom; position: relative; bottom: -1px; }
 
 /* line 1, ../../src/stylesheets/partials/_footer.sass */
