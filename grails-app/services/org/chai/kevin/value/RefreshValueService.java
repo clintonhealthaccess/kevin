@@ -45,7 +45,7 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		valueService.deleteValues(normalizedDataElement);
+		valueService.deleteValues(normalizedDataElement, null, null);
 		for (Iterator<Object[]> iterator = getCombinations(DataLocationEntity.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
 			DataLocationEntity dataLocationEntity = (DataLocationEntity)row[0];
@@ -67,7 +67,7 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		valueService.deleteValues(calculation);
+		valueService.deleteValues(calculation, null, null);
 		for (Iterator<Object[]> iterator = getCombinations(CalculationEntity.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
 			CalculationEntity entity = (CalculationEntity)row[0];
@@ -114,6 +114,7 @@ public class RefreshValueService {
 	
 	@Transactional(readOnly = false)
 	public void refreshCalculation(Calculation<?> calculation, CalculationEntity entity, Period period) {
+		valueService.deleteValues(calculation, entity, period);
 		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, entity, period)) {
 			valueService.save(partialValue);
 		}

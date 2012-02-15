@@ -3,6 +3,7 @@ package org.chai.kevin.survey;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.survey.summary.SurveySummaryPage;
 
 class SummaryServiceSpec extends SurveyIntegrationTests {
 	
@@ -49,7 +50,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
-		summaryPage.sort(SummaryPage.FACILITY_SORT, 'desc', 'en')
+		summaryPage.sort(SurveySummaryPage.FACILITY_SORT, 'desc', 'en')
 		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
@@ -59,7 +60,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
-		summaryPage.sort(SummaryPage.FACILITY_SORT, 'asc', 'en')
+		summaryPage.sort(SurveySummaryPage.FACILITY_SORT, 'asc', 'en')
 		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
@@ -70,7 +71,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		when:
 		newSurveyEnteredQuestion(question1, period, DataLocationEntity.findByCode(KIVUYE), false, true)
 		summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
-		summaryPage.sort(SummaryPage.PROGRESS_SORT, 'asc', 'en')
+		summaryPage.sort(SurveySummaryPage.PROGRESS_SORT, 'asc', 'en')
 		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:

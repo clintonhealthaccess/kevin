@@ -8,11 +8,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.planning.budget.BudgetCost;
 import org.chai.kevin.planning.budget.PlanningEntryBudget;
 import org.chai.kevin.planning.budget.PlanningTypeBudget;
@@ -28,9 +30,30 @@ public class PlanningService {
 	private ValueService valueService;
 	private DataService dataService;
 	private RefreshValueService refreshValueService;
+	private LocationService locationService;
 	
 	public Planning getDefaultPlanning() {
 		return null;
+	}
+	
+	@Transactional(readOnly=true)
+	public PlanningSummaryPage getSummaryPage(Planning planning, LocationEntity location) {
+		List<DataLocationEntity> dataEntities = locationService.getDataEntities(location);
+		Map<PlanningType, PlanningTypeSummary> summaries = new HashMap<PlanningType, PlanningTypeSummary>();
+		for (PlanningType planningType : planning.getPlanningTypes()) {
+			summaries.put(planningType, getPlanningTypeSummary(planningType, dataEntities));
+		}
+		
+		return new PlanningSummaryPage(planning.getPlanningTypes(), dataEntities, summaries);
+	}
+	
+	// TODO move to planning type
+	private PlanningTypeSummary getPlanningTypeSummary(PlanningType planningType, List<DataLocationEntity> dataEntities) {
+		Map<DataLocationEntity, Integer> numberOfEntries = new HashMap<DataLocationEntity, Integer>();
+		for (DataLocationEntity entity : dataEntities) {
+			numberOfEntries.put(entity, getPlanningList(planningType, entity).getPlanningEntries().size());
+		}
+		return new PlanningTypeSummary(planningType, numberOfEntries);
 	}
 	
 	@Transactional(readOnly=true)
@@ -112,7 +135,7 @@ public class PlanningService {
 		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
 			Map<PlanningCost, BudgetCost> budgetCosts = new HashMap<PlanningCost, BudgetCost>();
 			for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
-				budgetCosts.put(planningCost, new BudgetCost(planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, type.getPeriod(), types)));
+				budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, type.getPeriod(), types)));
 			}
 			planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
 		}
@@ -130,6 +153,10 @@ public class PlanningService {
 
 	public void setRefreshValueService(RefreshValueService refreshValueService) {
 		this.refreshValueService = refreshValueService;
+	}
+	
+	public void setLocationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 
 }

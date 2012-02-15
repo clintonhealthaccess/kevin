@@ -3,7 +3,10 @@
 <tr>
 	<td>
 		<span style="margin-left: ${margin};">
-			<g:i18n field="${budgetCost.planningCost.names}"/>
+			<a class="js_budget-section-link" 
+				href="${createLink(controller:'planning', action:'editPlanningSection', params:[location:location.id, planningType:planningType.id, lineNumber: budgetCost.planningEntry.lineNumber, section: budgetCost.planningCost.section])}">
+				<g:i18n field="${budgetCost.planningCost.names}"/>
+			</a>
 		</span>
 	</td>
 	<g:if test="${costType == PlanningCostType.INCOMING}">

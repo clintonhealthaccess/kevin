@@ -1053,7 +1053,7 @@ class Initializer {
 			discriminator: '[_].basic.activity',
 			planning: planning
 		).save(failOnError: true);
-		
+	
 		planning.planningTypes << planningType
 		planning.save(failOnError: true)
 	
@@ -1090,38 +1090,20 @@ class Initializer {
 		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-		/* START WORKFLOW */
-		//			def wizard = new Wizard(
-		//				names: j(["en":"Wizard question"]),
-		//				descriptions: j(["en":"Help text"]),
-		//				fixedHeaderPrefix: "[_].key1",
-		//				order: 6,
-		//				typeCodeString: "District Hospital,Health Center"
-		//			)
-		//			services.addQuestion(wizard)
-		//			services.save(failOnError:true, flush:true)
-		//
-		//			def wizardElement = new SurveyElement(
-		//					dataElement: RawDataElement.findByCode("LISTMAP2"),
-		//					surveyQuestion: serviceQ6,
-		//					headers: [
-		//						"[_].key1": j(["en":"Basic Information"]),
-		//						"[_].key1.key11": j(["en":"Name"]),
-		//						"[_].key1.key12": j(["en":"Number"]),
-		//						"[_].key2": j(["en":"Supply and Maintenance"]),
-		//						"[_].key2.key21": j(["en":"Supplier Name"]),
-		//						"[_].key2.key22": j(["en":"Supplier Type"]),
-		//					]).save(failOnError: true)
-		//			wizard.surveyElement = wizardElement
-		//			wizard.save(failOnError: true, flush: true)
-		//
-		//			def step1 = new WizardStep(wizard: wizard, prefix: "[_].key1.key11").save(failOnError: true)
-		//			def step2 = new WizardStep(wizard: wizard, prefix: "[_].key1.key16").save(failOnError: true)
-		//
-		//			wizard.steps << [step1, step2]
-		//			wizard.save(failOnError: true, flush: true)
-		//			services.addQuestion(wizard)
-		/* END WORKFLOW */
+		new RawDataElementValue(
+			data: RawDataElement.findByCode("PLANNINGELEMENT"),
+			entity: DataLocationEntity.findByCode("Butaro DH"),
+			period: Period.list()[0],
+			value: Value.VALUE_LIST([
+				Value.VALUE_MAP([
+					"basic": Value.VALUE_MAP([
+						"activity": Value.VALUE_STRING("value1"), 
+						"instances": Value.VALUE_NUMBER(10)
+					])
+				])
+			]),
+			timestamp: new Date()
+		).save(failOnError: true)
 	}
 	
 	static def createQuestionaire(){

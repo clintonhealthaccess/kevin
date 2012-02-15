@@ -11,6 +11,7 @@ import org.hisp.dhis.period.Period;
 class PlanningController extends AbstractController {
 	
 	def planningService
+	def languageService
 	
 	def index = {
 		redirect (action: 'planning', params: params)	
@@ -42,11 +43,17 @@ class PlanningController extends AbstractController {
 	}
 	
 	def summaryPage = {
-		
 		def location = LocationEntity.get(params.int('location'))
 		def planning = Planning.get(params.int('planning'))
 		
+		def summaryPage = null
+		if (location != null && planning != null) { 
+			summaryPage = planningService.getSummaryPage(planning, location)
+			summaryPage.sort(params.sort, params.order, languageService.currentLanguage)
+		}
+		
 		render (view: '/planning/summary/summaryPage', model: [
+			summaryPage: summaryPage,
 			plannings: Planning.list(),
 			currentPlanning: planning,
 			currentLocation: location
@@ -59,13 +66,29 @@ class PlanningController extends AbstractController {
 		def lineNumber = params.int('lineNumber')
 		
 		def planningList = planningService.getPlanningList(planningType, location)
-		def newPlanningLine = planningList.getOrCreatePlanningEntry(lineNumber)
+		def newPlanningEntry = planningList.getOrCreatePlanningEntry(lineNumber)
 		
 		render (view: '/planning/editPlanningEntry', model: [
 			planningType: planningType, 
-			planningLine: newPlanningLine,
+			planningEntry: newPlanningEntry,
+			location: location
+		])
+	}
+	
+	def editPlanningSection = {
+		def planningType = PlanningType.get(params.int('planningType'))
+		def location = DataLocationEntity.get(params.int('location'))
+		def lineNumber = params.int('lineNumber')
+		def section = params.section
+		
+		def planningList = planningService.getPlanningList(planningType, location)
+		def planningEntry = planningList.planningEntries[lineNumber]
+		
+		render (template: '/planning/budget/planningSection', model:[
+			planningType: planningType,
+			planningEntry: planningEntry,
 			location: location,
-			period: period
+			section: section
 		])
 	}
 	

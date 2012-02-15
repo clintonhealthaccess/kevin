@@ -29,7 +29,7 @@
 					</h3>
 				</div>
 				
-				<div>
+				<div id="js_survey">
 					<g:form url="[controller:'editSurvey', action:'save', params: [location: surveyPage.location.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 						<ol id="questions">
 							<g:each in="${surveyPage.getQuestions(surveyPage.section)}" var="question" status="i">
@@ -68,7 +68,7 @@
 				${render(template:'/templates/messages')}
 			
 				new DataEntry({
-					element: $('#survey'),
+					element: $('#js_survey'),
 					callback: valueChangedInSection,
 					url: "${createLink(controller:'editSurvey', action:'saveValue', params: [location: surveyPage.location.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}", 
 					messages: messages,

@@ -43,7 +43,23 @@ DataEntry.prototype.initializeSurvey = function() {
 		maximizeRow($(this).parents('.element-list-row').first());
 		return false;
 	});
-	
+	this.element.delegate('button[type=submit]', 'click', function(){
+		if (self.ajaxCallsInProgress()) {
+			alert(self.settings.messages['dataentry.exit.saving.alert.text']);
+			return false;
+		}
+		else if ($('.question-container.incomplete').length > 0) {
+			return confirm(self.settings.messages['dataentry.exit.incomplete.confirm.text']);
+		}
+	});
+	this.element.delegate('button[type=cancel]', 'click', function(){
+		$.manageAjax.clear(self.queueName, true);
+		$('.ajax-in-process').find('.input').removeAttr('disabled');
+		$('.ajax-in-process').addClass('ajax-error');
+		$('.ajax-in-process').removeClass('.ajax-in-process')
+		return false;
+	});
+
 	// stop all calls to external links while values are saving
 	$(document).delegate('a', 'click', function(){
 		if (self.ajaxCallsInProgress() || $('.element.ajax-error').length > 0) {
@@ -59,24 +75,6 @@ DataEntry.prototype.initializeSurvey = function() {
 		// ajax queue options
 		queue: true,
 		cacheResponse: false
-	});
-	
-	$('button[type=submit]').bind('click', function(){
-		if (self.ajaxCallsInProgress()) {
-			alert(self.settings.messages['dataentry.exit.saving.alert.text']);
-			return false;
-		}
-		else if ($('.question-container.incomplete').length > 0) {
-			return confirm(self.settings.messages['dataentry.exit.incomplete.confirm.text']);
-		}
-	});
-	
-	$('button[type=cancel]').bind('click', function(){
-		$.manageAjax.clear(self.queueName, true);
-		$('.ajax-in-process').find('.input').removeAttr('disabled');
-		$('.ajax-in-process').addClass('ajax-error');
-		$('.ajax-in-process').removeClass('.ajax-in-process')
-		return false;
 	});
 
 	minimizeRows(this.element.find('.element-list-row'));		
@@ -104,11 +102,11 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 		data += '&'+$(input).serialize();
 	})
 	// we send the list indexes
-	$(element).parents('.element-list').find('.list-input-indexes').each(function(i, input) {
+	$(element).parents('.element-list').find('.js_list-input-indexes').each(function(i, input) {
 		data += '&'+$(input).serialize();
 	});
 	// we send the fields that should always be sent
-	this.element.find('.always-send').each(function(i, input) {
+	this.element.find('.js_always-send').each(function(i, input) {
 		data += '&'+$(input).serialize();
 	});
 	
@@ -179,9 +177,9 @@ DataEntry.prototype.listRemoveClick = function(toRemove) {
 	var element = $(toRemove).parents('.element').first();
 	var index = $(toRemove).parents('.element-list-row').first().data('index');
 	
-	$(toRemove).parents('.element-list-row').find('.list-input').remove();
+	$(toRemove).parents('.element-list-row').find('.js_list-input').remove();
 
-	this.surveyValueChanged(element, $(element).find('.list-input'), function(dataEntry, data, element) {
+	this.surveyValueChanged(element, $(element).find('.js_list-input'), function(dataEntry, data, element) {
 		$(toRemove).parents('.element-list-row').first().remove();	
 	});
 }
@@ -195,8 +193,8 @@ DataEntry.prototype.listAddClick = function(list, callback) {
 	else index = parseInt(index)+1;
 
 	// we change the html	
-	$(clone).find(".list-input").first().val('['+index+']')
-	$(clone).find(".list-input-indexes").first().val('['+index+']')
+	$(clone).find(".js_list-input").first().val('['+index+']')
+	$(clone).find(".js_list-input-indexes").first().val('['+index+']')
 	var copyHtml = clone.html().replace(RegExp(escape(suffix)+'\\[_\\]', 'g'), suffix+'['+index+']')
 
 	$(list).prev().before(copyHtml);
@@ -204,7 +202,7 @@ DataEntry.prototype.listAddClick = function(list, callback) {
 	
 	var self = this;
 	
-	this.surveyValueChanged($(list).parents('.element').first(), $(list).parents('.element').first().find('.list-input'), function(dataEntry, data, element) {
+	this.surveyValueChanged($(list).parents('.element').first(), $(list).parents('.element').first().find('.js_list-input'), function(dataEntry, data, element) {
 		$(list).prev().prev().show();
 
 		maximizeRow($(list).prev().prev());

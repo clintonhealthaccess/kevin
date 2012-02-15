@@ -1,4 +1,4 @@
-<%@ page import="org.chai.kevin.survey.SummaryPage" %>
+<%@ page import="org.chai.kevin.survey.summary.SurveySummaryPage" %>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -11,7 +11,7 @@
 		<div>
 			<div class="subnav">
 				<g:render template="/survey/summary/surveyFilter"/>
-				<g:locationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']}" selected="${currentLocation}"/>
+				<g:locationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc']}" selected="${currentLocation}"/>
 			</div>
 						
 			<div class="main">			

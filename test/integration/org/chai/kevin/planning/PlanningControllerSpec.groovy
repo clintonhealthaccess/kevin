@@ -21,7 +21,6 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.response.redirectedUrl == '/planning/summaryPage'
 	}
 	
-	
 	def "accessing index page redirects to proper page - data entry user to own planning page"() {
 		setup:
 		setupLocationTree()
@@ -35,6 +34,40 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		
 		then:
 		planningController.response.redirectedUrl == '/planning/overview/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
+	}
+	
+	def "summary page works when no params"() {
+		setup:
+		planningController = new PlanningController()
+		
+		when:
+		planningController.summaryPage()
+		
+		then:
+		planningController.modelAndView.model.currentLocation == null
+		planningController.modelAndView.model.currentPlanning == null
+		planningController.modelAndView.model.summaryPage == null
+	}
+	
+	def "summary page works with params"() {
+		setup:
+		setupLocationTree()
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		def planningType = newPlanningType(dataElement, "[_].key0", planning)
+		planningController = new PlanningController()
+		
+		when:
+		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.planning = planning.id
+		planningController.summaryPage() 
+		
+		then:
+		planningController.modelAndView.model.currentLocation.equals(DataLocationEntity.findByCode(BUTARO))
+		planningController.modelAndView.model.currentPlanning.equals(planning)
+		planningController.modelAndView.model.summaryPage != null
+		
 	}
 	
 	def "access budget page when budget is not updated redirects to update budget"() {

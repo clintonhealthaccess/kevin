@@ -38,11 +38,11 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.security.User;
-import org.chai.kevin.survey.SummaryPage
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyObjective
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
+import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.period.Period
 

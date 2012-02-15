@@ -26,25 +26,25 @@
 				</div>
 					
 				<div id="questions">
-					<g:form url="[controller:'planning', action:'save', params: [location: location.id, planningType: planningType.id, period: period.id]]">
-		  				<input class="always-send" type="hidden" name="lineNumber" value="${planningLine.lineNumber}"/>
+					<g:form url="[controller:'planning', action:'save', params: [location: location.id, planningType: planningType.id]]">
+		  				<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
 		
 		  				<g:each in="${planningType.sections}" var="section" status="i">
 		  					<div class="section-title-wrap"><h4 class='section-title'> <span class='question-default'> ${i+1} </span><g:i18n field="${planningType.headers[section]}"/></h4></div>
 		
 		  					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
-								value: planningLine.getValue(section),
+								value: planningEntry.getValue(section),
 								lastValue: null,
 								type: planningType.getType(section), 
-								suffix: planningLine.getPrefix(section),
+								suffix: planningEntry.getPrefix(section),
 								headerSuffix: section,
 								
 								// get rid of those in the templates??
 								element: planningType,
-								validatable: planningLine.validatable,
+								validatable: planningEntry.validatable,
 								
 								readonly: readonly,
-								enums: planningLine.enums
+								enums: planningEntry.enums
 							]"/>
 							
 							<div class="adv-aside question-help-container">
@@ -68,7 +68,7 @@
 				new DataEntry({
 					element: $('#planning'),
 					callback: function() {},
-					url: "${createLink(controller:'planning', action:'saveValue', params: [location: location.id, planningType: planningType.id, period: period.id])}", 
+					url: "${createLink(controller:'planning', action:'saveValue', params: [location: location.id, planningType: planningType.id])}", 
 					messages: messages,
 					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
 				});
