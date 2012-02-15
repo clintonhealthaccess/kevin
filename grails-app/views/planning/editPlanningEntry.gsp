@@ -51,11 +51,12 @@
 								<div class="question-help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
 							</div>
 		  				</g:each>
-		  				
-		  				<input type="submit" value="Submit">
-		  				<a class="next gray medium" href="#">
-		  					Return to listing
-		  				</a>
+              <div class="clearfix">
+  		  				<input type="submit" value="Submit">
+  		  				<a class="next gray medium" href="#">
+  		  					Return to listing
+  		  				</a>
+		  				</div>
 	  				</g:form>
 				</div>
 			</div>

@@ -1,4 +1,4 @@
-<div>
+<div class="budget-edit">
 	<div class="diff-title">
 		<h5>
 			<g:value value="${planningEntry.discriminatorValue}" type="${planningType.discriminatorType}" enums="${planningEntry.enums}"/>
