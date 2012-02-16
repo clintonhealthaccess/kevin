@@ -230,13 +230,18 @@
 
     
       
-.add-first
+.context-message
   background: $filler + #030303
   border: 1px solid $filler - #090909
   padding: 15px 10px
   position: relative
   +border-radius(3px)
   +box-shadow($filler 2px 2px 5px inset)
+  &.warning
+    background: url("../images/icons/warning2.png") no-repeat 8px center $filler3
+    border: 1px solid $filler3 - #090909
+    padding-left: 40px
+    +box-shadow($filler3 2px 2px 5px inset)
       
 #planning
   .adv-form-0

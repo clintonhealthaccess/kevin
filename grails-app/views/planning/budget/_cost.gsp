@@ -18,4 +18,5 @@
 	</g:if>
 	<td>-</td>
 	<td></td>
+	<td class="status"><r:img uri="/images/icons/status_incomplete.png" class="tooltip" title="Help message" /></td>
 </tr>

@@ -161,6 +161,18 @@
           display: inline-block
           padding-left: 20px
           
+  &.col6
+    td, th
+      width: 90px
+      &:first-child
+        text-align: left
+        width: 200px
+        > span
+          display: inline-block
+          padding-left: 20px
+      &.status
+        width: 30px
+          
   tr.total td
     background: $filler
     border-top: 1px solid $dropdown !important

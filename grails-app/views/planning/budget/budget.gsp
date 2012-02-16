@@ -30,9 +30,10 @@
 								Operational Undertakings: <g:i18n field="${location.names}"/>
 							</h4>
 							<div class="budget">
+							  <p class="context-message warning">Your activity <activity name> was changed. Please <a href="#">update your budget</a>.</p>
 								<div class="table-wrap left clear">
 	              
-									<table class="nested col5 push-top-10">
+									<table class="nested col6 push-top-10">
 										<thead>
 											<tr>
 												<th></th>
@@ -40,6 +41,7 @@
 												<th>Incoming</th>
 												<th>Difference</th>
 												<th>General Fund</th>
+												<th class="status"></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -58,10 +60,11 @@
 													<td>${planningTypeBudget.incoming}</td>
 													<td>${planningTypeBudget.difference}</td>
 													<td><input type="checkbox"></td>
+													<td class="status"></td>
 												</tr>
 												<tr style="display: table-row" class="sub_tree">
 													<td colspan="7" class="bucket">
-												        <table>
+												    <table>
 															<tbody>
 																
 																<!-- 
@@ -82,6 +85,7 @@
 																		<td>${budgetPlanningEntry.incoming}</td>
 																		<td>${budgetPlanningEntry.difference}</td>
 																		<td><input type="checkbox"></td>
+																		<td class="status"></td>
 																	</tr>
 																	<tr style="display: table-row" class="sub_tree">
 																		<td colspan="7" class="bucket">
@@ -111,6 +115,7 @@
 												<td>${incoming}</td>
 												<td>${difference}</td>
 												<td></td>
+												<td class="status"></td>
 											</tr>
 										</tbody>
 									</table>

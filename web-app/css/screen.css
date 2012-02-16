@@ -492,44 +492,52 @@ ul.horizontal li.last { margin-right: 0; }
 .nested.col5 td:first-child, .nested.col5 th:first-child { text-align: left; width: 200px; }
 /* line 160, ../../src/stylesheets/partials/_tables.sass */
 .nested.col5 td:first-child > span, .nested.col5 th:first-child > span { display: inline-block; padding-left: 20px; }
-/* line 164, ../../src/stylesheets/partials/_tables.sass */
+/* line 165, ../../src/stylesheets/partials/_tables.sass */
+.nested.col6 td, .nested.col6 th { width: 90px; }
+/* line 167, ../../src/stylesheets/partials/_tables.sass */
+.nested.col6 td:first-child, .nested.col6 th:first-child { text-align: left; width: 200px; }
+/* line 170, ../../src/stylesheets/partials/_tables.sass */
+.nested.col6 td:first-child > span, .nested.col6 th:first-child > span { display: inline-block; padding-left: 20px; }
+/* line 173, ../../src/stylesheets/partials/_tables.sass */
+.nested.col6 td.status, .nested.col6 th.status { width: 30px; }
+/* line 176, ../../src/stylesheets/partials/_tables.sass */
 .nested tr.total td { background: #e9f4fc; border-top: 1px solid #cfe4f4 !important; color: #258cd5; font-weight: bold; padding: 10px 7px; }
-/* line 171, ../../src/stylesheets/partials/_tables.sass */
+/* line 183, ../../src/stylesheets/partials/_tables.sass */
 .nested input[type=checkbox] { background: #cfe4f4; border: 1px solid #258cd5; margin: 0; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: #bed3e3, 1px, 1px, 4px inset; -webkit-box-shadow: #bed3e3, 1px, 1px, 4px inset; -o-box-shadow: #bed3e3, 1px, 1px, 4px inset; box-shadow: #bed3e3, 1px, 1px, 4px inset; }
-/* line 179, ../../src/stylesheets/partials/_tables.sass */
-.nested .standout > td { background: #3ea5ee; color: white; font-weight: bold; }
-/* line 184, ../../src/stylesheets/partials/_tables.sass */
-.nested .standout:hover > td, .nested .standout:focus > td { background: #258cd5; }
-/* line 187, ../../src/stylesheets/partials/_tables.sass */
-.nested .sub-title { color: #258cd5; font-style: italic; }
 /* line 191, ../../src/stylesheets/partials/_tables.sass */
+.nested .standout > td { background: #3ea5ee; color: white; font-weight: bold; }
+/* line 196, ../../src/stylesheets/partials/_tables.sass */
+.nested .standout:hover > td, .nested .standout:focus > td { background: #258cd5; }
+/* line 199, ../../src/stylesheets/partials/_tables.sass */
+.nested .sub-title { color: #258cd5; font-style: italic; }
+/* line 203, ../../src/stylesheets/partials/_tables.sass */
 .nested .active-row > td:first-child { background: url("../images/active_row.png") no-repeat left center; }
 
-/* line 194, ../../src/stylesheets/partials/_tables.sass */
+/* line 206, ../../src/stylesheets/partials/_tables.sass */
 .table-aside { margin: 10px 0; width: 280px; }
 
-/* line 198, ../../src/stylesheets/partials/_tables.sass */
+/* line 210, ../../src/stylesheets/partials/_tables.sass */
 .explanation-heading { background: #e9f4fc; font-size: 11px; font-style: italic; margin-top: 5px; padding: 7px 13px; }
 
-/* line 205, ../../src/stylesheets/partials/_tables.sass */
+/* line 217, ../../src/stylesheets/partials/_tables.sass */
 .explanation-row { border: none; padding: 0 10px !important; }
-/* line 208, ../../src/stylesheets/partials/_tables.sass */
+/* line 220, ../../src/stylesheets/partials/_tables.sass */
 .explanation-row > td { padding: 0; border: none; }
 
-/* line 212, ../../src/stylesheets/partials/_tables.sass */
+/* line 224, ../../src/stylesheets/partials/_tables.sass */
 .explanation-cell table { margin-bottom: 10px; }
 
-/* line 215, ../../src/stylesheets/partials/_tables.sass */
+/* line 227, ../../src/stylesheets/partials/_tables.sass */
 .shorten { max-width: 100px; overflow: hidden; }
 
-/* line 219, ../../src/stylesheets/partials/_tables.sass */
-.add-row, .element-list-add { background: url("../images/icons/toggle_plus.png") no-repeat 10px center #e9f4fc; border: 1px solid #c7d2da; display: inline-block; font-size: 12px; font-weight: bold; margin-top: 10px; padding: 8px 20px 7px 35px; text-decoration: none; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 0 2px 1px #eeeeee; -webkit-box-shadow: 0 2px 1px #eeeeee; -o-box-shadow: 0 2px 1px #eeeeee; box-shadow: 0 2px 1px #eeeeee; text-shadow: white 0 1px 0; }
 /* line 231, ../../src/stylesheets/partials/_tables.sass */
+.add-row, .element-list-add { background: url("../images/icons/toggle_plus.png") no-repeat 10px center #e9f4fc; border: 1px solid #c7d2da; display: inline-block; font-size: 12px; font-weight: bold; margin-top: 10px; padding: 8px 20px 7px 35px; text-decoration: none; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 0 2px 1px #eeeeee; -webkit-box-shadow: 0 2px 1px #eeeeee; -o-box-shadow: 0 2px 1px #eeeeee; box-shadow: 0 2px 1px #eeeeee; text-shadow: white 0 1px 0; }
+/* line 243, ../../src/stylesheets/partials/_tables.sass */
 .add-row:hover, .add-row:focus, .element-list-add:hover, .element-list-add:focus { background: url("../images/icons/toggle_plus.png") no-repeat 10px center #65c029; border: 1px solid #3c9700; color: white; -moz-box-shadow: 0 2px 1px #cccccc; -webkit-box-shadow: 0 2px 1px #cccccc; -o-box-shadow: 0 2px 1px #cccccc; box-shadow: 0 2px 1px #cccccc; text-shadow: #328d00 0 1px 0; }
-/* line 237, ../../src/stylesheets/partials/_tables.sass */
+/* line 249, ../../src/stylesheets/partials/_tables.sass */
 .add-row:active, .element-list-add:active { position: relative; top: 1px; -moz-box-shadow: 0 1px 1px #cccccc; -webkit-box-shadow: 0 1px 1px #cccccc; -o-box-shadow: 0 1px 1px #cccccc; box-shadow: 0 1px 1px #cccccc; }
 
-/* line 242, ../../src/stylesheets/partials/_tables.sass */
+/* line 254, ../../src/stylesheets/partials/_tables.sass */
 .sub_tree { display: none; }
 
 /* line 3, ../../src/stylesheets/partials/_forms.sass */
@@ -1249,15 +1257,17 @@ table.nice-table .cell { cursor: default; }
 .diff .adv-form-section.last ul { padding: 0; }
 
 /* line 233, ../../src/stylesheets/partials/_planning.sass */
-.add-first { background: #ecf7ff; border: 1px solid #e0ebf3; padding: 15px 10px; position: relative; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: #e9f4fc 2px 2px 5px inset; -webkit-box-shadow: #e9f4fc 2px 2px 5px inset; -o-box-shadow: #e9f4fc 2px 2px 5px inset; box-shadow: #e9f4fc 2px 2px 5px inset; }
+.context-message { background: #ecf7ff; border: 1px solid #e0ebf3; padding: 15px 10px; position: relative; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: #e9f4fc 2px 2px 5px inset; -webkit-box-shadow: #e9f4fc 2px 2px 5px inset; -o-box-shadow: #e9f4fc 2px 2px 5px inset; box-shadow: #e9f4fc 2px 2px 5px inset; }
+/* line 240, ../../src/stylesheets/partials/_planning.sass */
+.context-message.warning { background: url("../images/icons/warning2.png") no-repeat 8px center #f4e9e9; border: 1px solid #ebe0e0; padding-left: 40px; -moz-box-shadow: #f4e9e9 2px 2px 5px inset; -webkit-box-shadow: #f4e9e9 2px 2px 5px inset; -o-box-shadow: #f4e9e9 2px 2px 5px inset; box-shadow: #f4e9e9 2px 2px 5px inset; }
 
-/* line 242, ../../src/stylesheets/partials/_planning.sass */
-#planning .adv-form-0 { float: left; width: 75%; }
-/* line 245, ../../src/stylesheets/partials/_planning.sass */
-#planning .adv-form-0 > input, #planning .adv-form-0 select { margin-bottom: 5px; }
 /* line 247, ../../src/stylesheets/partials/_planning.sass */
+#planning .adv-form-0 { float: left; width: 75%; }
+/* line 250, ../../src/stylesheets/partials/_planning.sass */
+#planning .adv-form-0 > input, #planning .adv-form-0 select { margin-bottom: 5px; }
+/* line 252, ../../src/stylesheets/partials/_planning.sass */
 #planning .adv-form-row { width: 95%; }
-/* line 249, ../../src/stylesheets/partials/_planning.sass */
+/* line 254, ../../src/stylesheets/partials/_planning.sass */
 #planning .adv-aside { float: right; margin-left: 2%; width: 23%; }
-/* line 253, ../../src/stylesheets/partials/_planning.sass */
+/* line 258, ../../src/stylesheets/partials/_planning.sass */
 #planning .question-help { padding-right: 10px; }
