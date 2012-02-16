@@ -30,7 +30,7 @@
 								Operational Undertakings: <g:i18n field="${location.names}"/>
 							</h4>
 							<div class="budget">
-							  <p class="context-message warning">Your activity <activity name> was changed. Please <a href="#">update your budget</a>.</p>
+							  <p class="context-message warning">Your activity *activity name* was changed. Please <a href="#">update your budget</a>.</p>
 								<div class="table-wrap left clear">
 	              
 									<table class="nested col6 push-top-10">

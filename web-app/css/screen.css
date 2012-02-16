@@ -1262,12 +1262,12 @@ table.nice-table .cell { cursor: default; }
 .context-message.warning { background: url("../images/icons/warning2.png") no-repeat 8px center #f4e9e9; border: 1px solid #ebe0e0; padding-left: 40px; -moz-box-shadow: #f4e9e9 2px 2px 5px inset; -webkit-box-shadow: #f4e9e9 2px 2px 5px inset; -o-box-shadow: #f4e9e9 2px 2px 5px inset; box-shadow: #f4e9e9 2px 2px 5px inset; }
 
 /* line 247, ../../src/stylesheets/partials/_planning.sass */
-#planning .adv-form-0 { float: left; width: 75%; }
+#planning .adv-form-0 { float: left; width: 67%; }
 /* line 250, ../../src/stylesheets/partials/_planning.sass */
-#planning .adv-form-0 > input, #planning .adv-form-0 select { margin-bottom: 5px; }
+#planning .adv-form-0 input[type=text], #planning .adv-form-0 select { margin-bottom: 5px; }
 /* line 252, ../../src/stylesheets/partials/_planning.sass */
 #planning .adv-form-row { width: 95%; }
 /* line 254, ../../src/stylesheets/partials/_planning.sass */
-#planning .adv-aside { float: right; margin-left: 2%; width: 23%; }
+#planning .adv-aside { float: right; margin-left: 2%; width: 31%; }
 /* line 258, ../../src/stylesheets/partials/_planning.sass */
 #planning .question-help { padding-right: 10px; }
