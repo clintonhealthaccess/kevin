@@ -126,7 +126,6 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 			self.toggleControls($.queue(document, self.queueName).length > 0);
 			
 			if (data.status == 'success') {
-				
 				// we reset null elements
 				$.each(data.elements, function(elementIndex, element) {
 					$.each(element.nullPrefixes, function(prefixIndex, prefix) {
@@ -137,11 +136,31 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 					});
 				});
 				
-				callback(self, data, element);
+				// we go through all changed elements
+				$.each(data.elements, function(index, element) {
+					
+					// we remove all the skips
+					$('#element-'+element.id).find('.element').removeClass('skipped').find('.input').removeAttr('disabled');
+					
+					// we add them again
+					$.each(element.skipped, function(index, skipped) {
+						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(skipped))
+						.addClass('skipped').find('.input').attr('disabled', 'disabled');
+					});
+					
+					// we remove all the errors
+					$('#element-'+element.id).find('.element').removeClass('errors');
+					$('#element-'+element.id).find('.element').children('.error-list').html('');
+					
+					// we add them again
+					$.each(element.invalid, function(index, invalid) {
+						if (!invalid.valid) $('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).addClass('errors');
+						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).children('.error-list').html(invalid.errors);
+					});
+					
+				});
 			}
-			else {
-				alert(self.settings.messages['dataentry.saving.objective.closed.text']);
-			}
+			callback(self, data, element);
 		},
 		error: function() {
 			$(element).removeClass('ajax-in-process');

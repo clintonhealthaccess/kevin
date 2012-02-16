@@ -23,7 +23,7 @@
         
 						<ul class="clearfix" id="questions">
 							<li class="question push-20">
-								<a href="${createLink(controller:'planning', action:'editPlanningEntry', params:[planningType: planningType.id, location: location.id, lineNumber: planningList.nextLineNumber])}" class="next medium gray right">
+								<a href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[planningType: planningType.id, location: location.id, lineNumber: planningList.nextLineNumber])}" class="next medium gray right">
 									Create New <g:i18n field="${planningType.names}"/>
 								</a>
 								<h4 class="section-title">
@@ -52,7 +52,7 @@
 											<tbody>
 												<g:each in="${planningList.planningEntries}" var="entry">
 													<tr>
-														<td class="status pos neg"></td>
+														<td class="status ${entry.submitted?'pos':'neg'}"></td>
 														<td>
 															<a href="#">
 																<g:value value="${entry.discriminatorValue}" type="${planningType.discriminatorType}" enums="${entry.enums}"/>
@@ -65,7 +65,7 @@
 														</g:each>
 														
 														<td>
-															<a class="edit-link" href="${createLink(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">edit</a>
+															<a class="edit-link" href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">edit</a>
 															<a class="delete-link" href="${createLinkWithTargetURI(controller:'planning', action:'deletePlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">delete</a>
 														</td>
 													</tr>
@@ -87,7 +87,7 @@
 								</g:if>
 								<g:else>
 									<p>You haven't added any <g:i18n field="${planningList.planningType.namesPlural}"/> yet. 
-		        						<a href="${createLink(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:planningList.nextLineNumber])}">
+		        						<a href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:planningList.nextLineNumber])}">
 		        							Add your first <g:i18n field="${planningList.planningType.names}"/>
 		        						</a>
 	        						</p>

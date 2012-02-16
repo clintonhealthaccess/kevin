@@ -365,7 +365,7 @@ public class SurveyPageService {
 				
 				// merge the values
 				// this modifies the value object accordingly
-				validatableValue.mergeValue(params, "elements["+element.getId()+"].value");
+				validatableValue.mergeValue(params, "elements["+element.getId()+"].value", new HashSet<String>());
 				
 				// set the value and save
 				// here, a write lock is acquired on the SurveyEnteredValue that will be kept

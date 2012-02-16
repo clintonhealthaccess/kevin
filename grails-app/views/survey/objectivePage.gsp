@@ -59,25 +59,30 @@
 			});
 		
 			function valueChangedInObjective(dataEntry, data, element) {
-				// we go through all the sections
-				$.each(data.sections, function(index, section) {
-					$('#section-'+section.id).find('.section-status').addClass('hidden');
-					$('#section-'+section.id).find('.section-status-'+section.status).removeClass('hidden');
-				});
+				if (data.status == 'success') {
+					// we go through all the sections
+					$.each(data.sections, function(index, section) {
+						$('#section-'+section.id).find('.section-status').addClass('hidden');
+						$('#section-'+section.id).find('.section-status-'+section.status).removeClass('hidden');
+					});
+					
+					// we go through the objectives
+					$.each(data.objectives, function(index, objective) {
+						$('#objective-'+objective.id).find('.objective-status').addClass('hidden');
+						$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
+					});
 				
-				// we go through the objectives
-				$.each(data.objectives, function(index, objective) {
-					$('#objective-'+objective.id).find('.objective-status').addClass('hidden');
-					$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
-				});
-			
-				$('#incomplete-sections-container').html(data.incompleteSections);
-				$('#invalid-questions-container').html(data.invalidQuestions);
-				
-				if ($.trim(data.invalidQuestions) == '' && $.trim(data.incompleteSections) == '') $('#js_submit-objective').removeClass('hidden');
-				else $('#js_submit-objective').addClass('hidden');
-				
-				dataEntry.enableAfterLoading();
+					$('#incomplete-sections-container').html(data.incompleteSections);
+					$('#invalid-questions-container').html(data.invalidQuestions);
+					
+					if ($.trim(data.invalidQuestions) == '' && $.trim(data.incompleteSections) == '') $('#js_submit-objective').removeClass('hidden');
+					else $('#js_submit-objective').addClass('hidden');
+					
+					dataEntry.enableAfterLoading();
+				}
+				else {
+					alert(self.settings.messages['dataentry.saving.objective.closed.text']);
+				}
 			}
 		</r:script>
 	</body>

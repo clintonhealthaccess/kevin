@@ -212,12 +212,12 @@ public class ValidatableValue {
 		});
 	}
 	
-	public void mergeValue(Map<String, Object> params, String prefix) {
-		Set<String> attributes = new HashSet<String>();
-		attributes.add("warning");
+	public void mergeValue(Map<String, Object> params, String prefix, Set<String> attributes) {
+		Set<String> newAttributes = new HashSet<String>(attributes);
+		newAttributes.add("warning");
 		
 		if (log.isDebugEnabled()) log.debug("getting new value from parameters for prefix: "+prefix);
-		Value value = getType().mergeValueFromMap(getValue(), params, prefix, attributes);
+		Value value = getType().mergeValueFromMap(getValue(), params, prefix, newAttributes);
 		
 		// reset accepted warnings for changed values
 		if (log.isDebugEnabled()) log.debug("resetting warning for modified prefix: "+prefix);

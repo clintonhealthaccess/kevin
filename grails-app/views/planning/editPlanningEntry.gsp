@@ -26,7 +26,7 @@
 				</div>
 					
 				<div id="questions">
-					<g:form url="[controller:'planning', action:'save', params: [location: location.id, planningType: planningType.id]]">
+					<g:form url="[controller:'planning', action:'submit', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
 		  				<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
 		
 		  				<g:each in="${planningType.sections}" var="section" status="i">

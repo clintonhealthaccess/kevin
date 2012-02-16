@@ -36,7 +36,6 @@ public class PlanningList {
 		return planningEntries;
 	}
 	
-	
 	private ValidatableValue getValidatableValue() {
 		if (validatableValue == null) {
 			validatableValue = new ValidatableValue(dataElementValue.getValue(), dataElementValue.getData().getType());

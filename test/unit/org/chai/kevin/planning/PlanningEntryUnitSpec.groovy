@@ -73,4 +73,9 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		type.getAttribute(value, "[0]", "budget_updated") == "true"
 	}
 	
+	def "merge value does not reset attributes"() {
+		expect:
+		false
+	}
+	
 }

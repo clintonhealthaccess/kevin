@@ -111,17 +111,40 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=false)
+	public boolean submit(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
+		
+		// we re-run the validation rules
+		// TODO
+		
+		// we submit the entry
+		planningEntry.setSubmitted(true);
+				
+		// then we recalculate the budget
+		refreshBudget(planningEntry, location);
+		
+		// last we save the value
+		planningList.save(valueService);
+		return true;
+	}
+	
+	@Transactional(readOnly=false)
 	public void refreshBudget(PlanningType type, DataLocationEntity location) {
 		PlanningList planningList = getPlanningList(type, location);
 		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
-			if (!planningEntry.isBudgetUpdated()) {
-				for (PlanningCost cost : planningEntry.getPlanningCosts()) {
-					refreshValueService.refreshCalculation(cost.getSum(), location, type.getPeriod());
-				}
-				planningEntry.setBudgetUpdated(true);
-			}
+			refreshBudget(planningEntry, location);
 		}
 		planningList.save(valueService);
+	}
+	
+	private void refreshBudget(PlanningEntry planningEntry, DataLocationEntity location) {
+		if (planningEntry.isSubmitted() && !planningEntry.isBudgetUpdated()) {
+			for (PlanningCost cost : planningEntry.getPlanningCosts()) {
+				refreshValueService.refreshCalculation(cost.getSum(), location, cost.getPlanningType().getPeriod());
+			}
+			planningEntry.setBudgetUpdated(true);
+		}
 	}
 	
 	@Transactional(readOnly=true)
@@ -133,11 +156,13 @@ public class PlanningService {
 		
 		List<PlanningEntryBudget> planningEntryBudgets = new ArrayList<PlanningEntryBudget>();
 		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
-			Map<PlanningCost, BudgetCost> budgetCosts = new HashMap<PlanningCost, BudgetCost>();
-			for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
-				budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, type.getPeriod(), types)));
+			if (planningEntry.isSubmitted()) {
+				Map<PlanningCost, BudgetCost> budgetCosts = new HashMap<PlanningCost, BudgetCost>();
+				for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+					budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, type.getPeriod(), types)));
+				}
+				planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
 			}
-			planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
 		}
 		
 		return new PlanningTypeBudget(type, planningEntryBudgets);

@@ -71,7 +71,8 @@ class PlanningController extends AbstractController {
 		render (view: '/planning/editPlanningEntry', model: [
 			planningType: planningType, 
 			planningEntry: newPlanningEntry,
-			location: location
+			location: location,
+			targetURI: targetURI
 		])
 	}
 	
@@ -147,30 +148,38 @@ class PlanningController extends AbstractController {
 //		}
 //	}
 	
+	def submit = {
+		def planningType = PlanningType.get(params.int('planningType'))
+		def location = DataLocationEntity.get(params.int('location'))
+		def lineNumber = params.int('lineNumber')
+		
+		planningService.modify(planningType, location, lineNumber, params)
+		def submitted = planningService.submit(planningType, location, lineNumber)
+		
+		if (submitted) {
+			redirect (uri: targetURI)
+		}
+		else {
+			// TODO add flash message
+			redirect (action: 'editPlanningEntry', params:[planningType: planningType.id, location:location.id, lineNumber:lineNumber.id])
+		}
+	}
+	
 	def updateBudget = {
 		// TODO waiting page that polls 'budgetUpdated' to see if the budget is updated
-		def planning = Planning.get(params.int('planning'))
+		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
+		def lineNumber = params.int('lineNumber')
 		
-		// TODO do this in the background
-		for (def planningType: planning.planningTypes) {
-			planningService.refreshBudget(planningType, location)
-		}
+		planningService.modify(planningType, location, lineNumber, params)
+		planningService.refreshBudget(planningType, location)
+
 		redirect (action: 'budget', params:[planning: planning.id, location: location.id] )
 	}
 	
 	def budget = {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocationEntity.get(params.int('location'))
-
-		// waiting logic if some budget costs must be calculated
-		// redirect to waiting page 'updatingBudget' if they must
-		for (def planningType: planning.planningTypes) {
-			if (!planningService.getPlanningList(planningType, location).isBudgetUpdated()) {
-				redirect (action: 'updateBudget', params:[planning: planning.id, location: location.id])
-				return;
-			} 
-		}
 
 		def planningTypeBudgets = planning.planningTypes.collect {
 			planningService.getPlanningTypeBudget(it, location)
