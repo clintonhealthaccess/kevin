@@ -1206,43 +1206,58 @@ table.nice-table .cell { cursor: default; }
 .table-nav a.selected { background: #e9f4fc; color: #0059a2; text-shadow: white 0 1px 0; }
 
 /* line 156, ../../src/stylesheets/partials/_planning.sass */
-.diff { background: white; border: 1px solid #cfe4f4; margin-bottom: 10px; }
-/* line 160, ../../src/stylesheets/partials/_planning.sass */
+.diff { background: white; border: 1px solid #cfe4f4; margin-bottom: 10px; *zoom: 1; }
+/* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
+.diff:after { content: ""; display: table; clear: both; }
+/* line 161, ../../src/stylesheets/partials/_planning.sass */
 .diff.positive { background: #f6fdeb; border: 1px solid #65c029; color: #65c029; padding: 10px; text-shadow: white 0 1px 0; }
-/* line 166, ../../src/stylesheets/partials/_planning.sass */
+/* line 167, ../../src/stylesheets/partials/_planning.sass */
 .diff.negative { background: #f4e9e9; border: 1px solid #d30000; color: #d30000; padding: 10px; text-shadow: white 0 1px 0; }
-/* line 172, ../../src/stylesheets/partials/_planning.sass */
+/* line 173, ../../src/stylesheets/partials/_planning.sass */
 .diff .diff-title { background: #e9f4fc; padding: 10px; }
-/* line 175, ../../src/stylesheets/partials/_planning.sass */
-.diff h5 { color: #258cd5; font-size: 15px; font-weight: bold; margin-bottom: 5px; }
-/* line 181, ../../src/stylesheets/partials/_planning.sass */
+/* line 176, ../../src/stylesheets/partials/_planning.sass */
+.diff h5 { border: none; color: #258cd5; font-size: 15px; font-weight: bold; margin: 5px 0; }
+/* line 183, ../../src/stylesheets/partials/_planning.sass */
 .diff h6 { color: #888888; font-size: 10px; font-weight: bold; padding-bottom: 5px; text-transform: uppercase; }
-/* line 187, ../../src/stylesheets/partials/_planning.sass */
-.diff p { padding-bottom: 5px; }
 /* line 189, ../../src/stylesheets/partials/_planning.sass */
+.diff p { padding-bottom: 5px; }
+/* line 191, ../../src/stylesheets/partials/_planning.sass */
 .diff span { display: inline-block; float: left; font-size: 11px; width: 118px; }
-/* line 195, ../../src/stylesheets/partials/_planning.sass */
-.diff input[type=text] { width: 132px; }
 /* line 197, ../../src/stylesheets/partials/_planning.sass */
-.diff select { width: 100px; }
+.diff input[type=text] { margin-right: 0; width: 112px; }
 /* line 200, ../../src/stylesheets/partials/_planning.sass */
-.diff ul { border-top: 1px solid #cfe4f4; padding: 10px; *zoom: 1; }
+.diff select { margin-right: 0; width: 120px; min-width: 120px; }
+/* line 204, ../../src/stylesheets/partials/_planning.sass */
+.diff input[type=submit] { margin: 10px; }
+/* line 206, ../../src/stylesheets/partials/_planning.sass */
+.diff ul { margin-top: 5px; padding: 10px; *zoom: 1; }
 /* line 38, ../../../../../../opt/local/lib/ruby/gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
 .diff ul:after { content: ""; display: table; clear: both; }
-/* line 204, ../../src/stylesheets/partials/_planning.sass */
-.diff ul h6 { border-bottom: 1px solid #cfe4f4; margin-bottom: 7px; }
-/* line 208, ../../src/stylesheets/partials/_planning.sass */
-.diff li { padding-bottom: 15px; }
 /* line 210, ../../src/stylesheets/partials/_planning.sass */
-.diff li:last-child { padding-bottom: 0; }
-
-/* line 214, ../../src/stylesheets/partials/_planning.sass */
-#planning .adv-form-0 { float: left; width: 75%; }
-/* line 217, ../../src/stylesheets/partials/_planning.sass */
-#planning .adv-form-0 > input, #planning .adv-form-0 select { margin-bottom: 5px; }
-/* line 219, ../../src/stylesheets/partials/_planning.sass */
-#planning .adv-form-row { width: 95%; }
-/* line 221, ../../src/stylesheets/partials/_planning.sass */
-#planning .adv-aside { float: right; margin-left: 2%; width: 23%; }
+.diff ul h5 { border-bottom: 1px dotted #cfe4f4; font-size: 12px; padding-bottom: 5px; margin-bottom: 7px; }
+/* line 215, ../../src/stylesheets/partials/_planning.sass */
+.diff ul.adv-form-0 { border-bottom: 1px dotted #cfe4f4; margin-bottom: 0; }
+/* line 218, ../../src/stylesheets/partials/_planning.sass */
+.diff ul.adv-form-0 > li { margin-right: 0; }
+/* line 220, ../../src/stylesheets/partials/_planning.sass */
+.diff ul.adv-form-1 { padding: 5px 0 5px 5px; }
+/* line 222, ../../src/stylesheets/partials/_planning.sass */
+.diff ul.adv-form-1 li:last-child { padding-right: 0; }
 /* line 225, ../../src/stylesheets/partials/_planning.sass */
+.diff .element-list-add { margin-top: 5px; }
+/* line 228, ../../src/stylesheets/partials/_planning.sass */
+.diff .adv-form-section.last ul { padding: 0; }
+
+/* line 233, ../../src/stylesheets/partials/_planning.sass */
+.add-first { background: #ecf7ff; border: 1px solid #e0ebf3; padding: 15px 10px; position: relative; -moz-border-radius: 3px; -webkit-border-radius: 3px; -o-border-radius: 3px; -ms-border-radius: 3px; -khtml-border-radius: 3px; border-radius: 3px; -moz-box-shadow: #e9f4fc 2px 2px 5px inset; -webkit-box-shadow: #e9f4fc 2px 2px 5px inset; -o-box-shadow: #e9f4fc 2px 2px 5px inset; box-shadow: #e9f4fc 2px 2px 5px inset; }
+
+/* line 242, ../../src/stylesheets/partials/_planning.sass */
+#planning .adv-form-0 { float: left; width: 75%; }
+/* line 245, ../../src/stylesheets/partials/_planning.sass */
+#planning .adv-form-0 > input, #planning .adv-form-0 select { margin-bottom: 5px; }
+/* line 247, ../../src/stylesheets/partials/_planning.sass */
+#planning .adv-form-row { width: 95%; }
+/* line 249, ../../src/stylesheets/partials/_planning.sass */
+#planning .adv-aside { float: right; margin-left: 2%; width: 23%; }
+/* line 253, ../../src/stylesheets/partials/_planning.sass */
 #planning .question-help { padding-right: 10px; }
