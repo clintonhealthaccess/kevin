@@ -50,7 +50,7 @@ public class PlanningEntry {
 	public void setBudgetUpdated(Boolean value) {
 		setAttribute(BUDGET_UPDATED, value);
 	}
-	
+
 	public boolean isSubmitted() {
 		return isAttributeSet(SUBMITTED);
 	}
@@ -58,6 +58,30 @@ public class PlanningEntry {
 	public void setSubmitted(Boolean value) {
 		setAttribute(SUBMITTED, value);
 	}
+
+	public Set<String> getInvalidSections() {
+		Set<String> result = new HashSet<String>();
+		for (String section : type.getSections()) {
+			if (!getValidatable().isTreeValid(getPrefix(section))) result.add(section);
+		}
+		return result;
+	}
+	
+	public Set<String> getIncompleteSections() {
+		Set<String> result = new HashSet<String>();
+		for (String section : type.getSections()) {
+			if (!getValidatable().isTreeComplete(getPrefix(section))) result.add(section);
+		}
+		return result;
+	}
+	
+//	public boolean isValid() {
+//		return getValidatable().isTreeValid(getPrefix("[_]"));
+//	}
+//	
+//	public boolean isComplete() {
+//		return getValidatable().isTreeComplete(getPrefix("[_]"));
+//	}
 	
 	private boolean isAttributeSet(String attribute) {
 		if (getValue().getAttribute(attribute) == null) return false;

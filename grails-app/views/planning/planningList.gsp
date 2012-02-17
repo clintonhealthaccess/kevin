@@ -54,7 +54,7 @@
 													<tr>
 														<td class="status ${entry.submitted?'pos':'neg'}"></td>
 														<td>
-															<a href="#">
+															<a href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">
 																<g:value value="${entry.discriminatorValue}" type="${planningType.discriminatorType}" enums="${entry.enums}"/>
 															</a>
 														</td>

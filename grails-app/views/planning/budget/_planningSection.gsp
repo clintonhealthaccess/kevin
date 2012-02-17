@@ -27,6 +27,8 @@
 			enums: planningEntry.enums
 		]"/>
 	
-		<input class="medium right" type="submit" value="Update">
+		<button class="medium right" type="submit">
+			Update budget
+		</button>
 	</g:form>
 </div>

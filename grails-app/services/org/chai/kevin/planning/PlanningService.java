@@ -111,7 +111,7 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=false)
-	public boolean submit(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+	public void submit(PlanningType type, DataLocationEntity location, Integer lineNumber) {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
 		
@@ -126,8 +126,23 @@ public class PlanningService {
 		
 		// last we save the value
 		planningList.save(valueService);
-		return true;
 	}
+	
+	@Transactional(readOnly=false)
+	public void unsubmit(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
+		
+		// we re-run the validation rules
+		// TODO
+		
+		// we submit the entry
+		planningEntry.setSubmitted(false);
+				
+		// last we save the value
+		planningList.save(valueService);
+	}
+		
 	
 	@Transactional(readOnly=false)
 	public void refreshBudget(PlanningType type, DataLocationEntity location) {

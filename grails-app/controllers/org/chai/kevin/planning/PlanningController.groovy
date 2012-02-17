@@ -113,7 +113,20 @@ class PlanningController extends AbstractController {
 		
 		render(contentType:"text/json") {
 			status = 'success'
-			
+			id = planningType.id
+			complete = planningEntry.incompleteSections.empty
+			valid = planningEntry.invalidSections.empty
+			budgetUpdated = planningEntry.budgetUpdated
+			sections = array {
+				planningType.sections.each { section ->
+					sect (
+						section: section,
+						prefix: planningEntry.getPrefix(section),
+						invalid: planningEntry.invalidSections.contains(section),
+						complete: !planningEntry.incompleteSections.contains(section)
+					)
+				}
+			}
 			elements = array {
 				elem (
 					id: planningType.id,
@@ -137,36 +150,29 @@ class PlanningController extends AbstractController {
 		}
 	}
 	
-//	def budgetUpdated = {
-//		// TODO returns a json 'true' if the budget is updated
-//		def planning = Planning.get(params.int('planning'))
-//		def location = DataLocationEntity.get(params.int('location'))
-//
-//		// TODO
-//		for (def planningType: planning.planningTypes) {
-//			planningService.getPlanningList(planningType, location)
-//		}
-//	}
-	
 	def submit = {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		
 		planningService.modify(planningType, location, lineNumber, params)
-		def submitted = planningService.submit(planningType, location, lineNumber)
+		planningService.submit(planningType, location, lineNumber)
 		
-		if (submitted) {
-			redirect (uri: targetURI)
-		}
-		else {
-			// TODO add flash message
-			redirect (action: 'editPlanningEntry', params:[planningType: planningType.id, location:location.id, lineNumber:lineNumber.id])
-		}
+		redirect (uri: targetURI)
+	}
+	
+	def unsubmit = {
+		def planningType = PlanningType.get(params.int('planningType'))
+		def location = DataLocationEntity.get(params.int('location'))
+		def lineNumber = params.int('lineNumber')
+		
+		planningService.modify(planningType, location, lineNumber, params)
+		planningService.unsubmit(planningType, location, lineNumber)
+		
+		redirect (uri: targetURI)
 	}
 	
 	def updateBudget = {
-		// TODO waiting page that polls 'budgetUpdated' to see if the budget is updated
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')

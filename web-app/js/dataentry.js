@@ -48,7 +48,7 @@ DataEntry.prototype.initializeSurvey = function() {
 			alert(self.settings.messages['dataentry.exit.saving.alert.text']);
 			return false;
 		}
-		else if ($('.question-container.incomplete').length > 0) {
+		else if (this.element.find('.incomplete').length > 0) {
 			return confirm(self.settings.messages['dataentry.exit.incomplete.confirm.text']);
 		}
 	});

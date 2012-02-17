@@ -1,6 +1,7 @@
 package org.chai.kevin.planning;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,10 +45,13 @@ public class PlanningList {
 	}
 	
 	public PlanningEntry getOrCreatePlanningEntry(Integer lineNumber) {
+		PlanningEntry result = null;
 		if (lineNumber >= getPlanningEntries().size()) {
-			return new PlanningEntry(planningType, getValidatableValue(), lineNumber, enums);
+			result = new PlanningEntry(planningType, getValidatableValue(), lineNumber, enums);
+			result.mergeValues(new HashMap<String, Object>());
 		}
-		else return getPlanningEntries().get(lineNumber);
+		else result = getPlanningEntries().get(lineNumber);
+		return result;
 	}
 	
 	public List<PlanningEntry> getLatestEntries(Integer numberOfEntries) {
