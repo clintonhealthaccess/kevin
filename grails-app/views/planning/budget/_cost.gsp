@@ -18,4 +18,5 @@
 	</g:if>
 	<td>-</td>
 	<td></td>
+	<td class="status incomplete tooltip" title="Help message"></td>
 </tr>

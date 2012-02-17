@@ -33,6 +33,7 @@
 				</g:if>
 				<td>-</td>
 				<td></td>
+				<td class="status invalid tooltip" title="Help message"></td>
 			</tr>
 			<tr style="display: table-row" class="sub_tree">
 				<td colspan="7" class="bucket">

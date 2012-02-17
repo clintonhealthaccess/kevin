@@ -86,7 +86,7 @@
 									</div>
 								</g:if>
 								<g:else>
-									<p class="add-first">You haven't added any <g:i18n field="${planningList.planningType.namesPlural}"/> yet. 
+									<p class="context-message">You haven't added any <g:i18n field="${planningList.planningType.namesPlural}"/> yet. 
 		        						<a href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:planningList.nextLineNumber])}">
 		        							Add your first <g:i18n field="${planningList.planningType.names}"/>
 		        						</a>
