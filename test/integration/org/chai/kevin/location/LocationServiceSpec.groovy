@@ -1,4 +1,4 @@
-package org.chai.kevin
+package org.chai.kevin.location
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -30,10 +30,12 @@ package org.chai.kevin
 
 import java.sql.Types;
 
+import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.location.DataEntity
 import org.chai.kevin.location.DataEntityType
 import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.LocationService;
 
 class LocationServiceSpec extends IntegrationTests {
 
@@ -93,6 +95,49 @@ class LocationServiceSpec extends IntegrationTests {
 	def "get parent of level for organisation for data entity"() {
 		
 	}
+	
+	def "get data entity by code"(){
+		setup:
+		setupLocationTree()
+		
+		when: 
+		def dataEntity = DataEntity.findByCode(BUTARO)
+		def dataEntOne = locationService.getCalculationEntity(BUTARO, DataEntity.class);
+		
+		then:
+		dataEntOne != null
+		dataEntOne.equals(dataEntity) 	
+		
+		when:
+		def dataEntTwo = locationService.getCalculationEntity(BUTARO, LocationEntity.class);
+		
+		then:
+		dataEntTwo == null
+		!dataEntTwo.equals(dataEntity)
+	}
+	
+	def "get location entity by code"(){
+		setup:
+		setupLocationTree()
+		
+		when:
+		def locationEntity = LocationEntity.findByCode(BURERA)
+		def locationEntOne = locationService.getCalculationEntity(BURERA,LocationEntity.class)
+		
+		then:
+		locationEntOne != null
+		locationEntOne.equals(locationEntity)
+		
+		when:
+		def locationEntTwo = locationService.getCalculationEntity(BURERA,DataEntity.class)
+		then:
+		locationEntTwo == null
+		!locationEntTwo.equals(locationEntity)
+		
+		
+	}
+	
+	
 
 		
 }
