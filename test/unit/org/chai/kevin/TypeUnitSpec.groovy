@@ -1,7 +1,11 @@
 package org.chai.kevin;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
+import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
@@ -272,77 +276,84 @@ public class TypeUnitSpec extends UnitSpec {
 		value.isNull() == true
 	}
 	
-	def "test map"() {
+	def "test merge value from map"() {
 		setup:
 		def value = null
 		def type = null
+		def sanitizer = new Sanitizer() {
+			public Object sanitizeValue(Object currentValue, Type currentType, String prefix, String genericPrefix) {
+				return currentValue;
+			}
+		}
 		
 		when:
 		type = new Type("{\"type\":\"number\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value': ''], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value': null], 'value', new HashSet([]), sanitizer)
 		
 		then:
 		value.isNull() == true
 
 		when:
 		type = new Type("{\"type\":\"string\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value': ''], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value': ''], 'value', new HashSet([]), sanitizer)
 		
 		then:
-		value.isNull() == true
+		value.isNull() == false
+		value.getStringValue() == ''
 		
 		when:
 		type = new Type("{\"type\":\"string\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value': 'test\\'], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value': 'test\\'], 'value', new HashSet([]), sanitizer)
 		
 		then:
 		value.getStringValue() == 'test'
 		
 		when:
 		type = new Type("{\"type\":\"bool\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value': '0'], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value': false], 'value', new HashSet([]), sanitizer)
 		
 		then:
 		value.getBooleanValue() == false
 		
-		when:
-		type = new Type("{\"type\":\"bool\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value':["0", "1"]], 'value', new HashSet([]))
+		// TODO move to survey test
+//		when:
+//		type = new Type("{\"type\":\"bool\"}");
+//		value = type.mergeValueFromMap(Value.NULL, ['value':["0", "1"]], 'value', new HashSet([]), sanitizer)
+//		
+//		then:
+//		value.getBooleanValue() == true
 		
-		then:
-		value.getBooleanValue() == true
+//		when:
+//		type = new Type("{\"type\":\"date\"}");
+//		value = type.mergeValueFromMap(Value.NULL, ['value':"123"], 'value', new HashSet([]), sanitizer)
+//		
+//		then:
+//		value.isNull()
 		
 		when:
 		type = new Type("{\"type\":\"date\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value':"123"], 'value', new HashSet([]))
-		
-		then:
-		value.isNull()
-		
-		when:
-		type = new Type("{\"type\":\"date\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value':"12-12-2012"], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value': new Date()], 'value', new HashSet([]), sanitizer)
 		
 		then:
 		value.getDateValue() != null
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.mergeValueFromMap(Value.NULL, ['value[0]':'10', 'value[_]':'2', 'value':['[0]', '[_]']], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value[0]':10, 'value[_]':2, 'value':['[0]', '[_]']], 'value', new HashSet([]), sanitizer)
 		
 		then:
 		value.equals(new Value("{\"value\":[{\"value\":10}]}"))
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.mergeValueFromMap(Value.NULL, ['value[0]':'10', 'value[_]':'2', 'value':['[0]', '[_]', '', '', '']], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, ['value[0]':10, 'value[_]':2, 'value':['[0]', '[_]', '', '', '']], 'value', new HashSet([]), sanitizer)
 		
 		then:
 		value.equals(new Value("{\"value\":[{\"value\":10}]}"))
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.mergeValueFromMap(Value.NULL, [:], 'value', new HashSet([]))
+		value = type.mergeValueFromMap(Value.NULL, [:], 'value', new HashSet([]), sanitizer)
 		
 		then:
 		value.equals(Value.NULL)
@@ -444,6 +455,54 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		then:
 		list.containsAll([[""]])
+	}
+	
+	def "test generic prefix for merge value from map"() {
+		setup:
+		def type = null
+		def map = null
+		def genericPrefixes = null
+		def prefixes = null
+		def sanitizer = new Sanitizer() {
+			public Object sanitizeValue(Object value, Type currentType, String prefix, String genericPrefix) {
+				genericPrefixes << genericPrefix
+				prefixes << prefix
+				return value;
+			}
+		}
+		
+		when:
+		genericPrefixes = []
+		prefixes = []
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		map = ['value[0]':'10', 'value':['[0]']]
+		type.mergeValueFromMap(Value.NULL, map, 'value', new HashSet(), sanitizer);
+	
+		then:
+		genericPrefixes.equals(['value[_]'])
+		prefixes.equals(['value[0]'])
+		
+		when:
+		genericPrefixes = []
+		prefixes = []
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
+		map = ['value[0].key1':'10', 'value':['[0]']]
+		type.mergeValueFromMap(Value.NULL, map, 'value', new HashSet(), sanitizer);
+		
+		then:
+		genericPrefixes.equals(['value[_].key1'])
+		prefixes.equals(['value[0].key1'])
+		
+		when:
+		genericPrefixes = []
+		prefixes = []
+		type = Type.TYPE_LIST(Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		map = ['value[0][0]':'10', 'value':['[0]'], 'value[0]':['[0]']]
+		type.mergeValueFromMap(Value.NULL, map, 'value', new HashSet(), sanitizer);
+		
+		then:
+		genericPrefixes.equals(['value[_][_]'])
+		prefixes.equals(['value[0][0]'])
 	}
 	
 	def "test type visit"() {

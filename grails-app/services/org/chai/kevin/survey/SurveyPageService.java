@@ -30,6 +30,7 @@ package org.chai.kevin.survey;
  * @author Jean Kahigiso M.
  *
  */
+import java.text.ParseException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.sf.json.JSONNull;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +51,7 @@ import org.chai.kevin.Ordering;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
@@ -60,6 +64,7 @@ import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveyLog;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -346,6 +351,56 @@ public class SurveyPageService {
 		surveyValueService.save(enteredValue);
 	}
 	
+	private static Sanitizer SANITIZER = new Sanitizer(){
+			
+		@Override
+		public Object sanitizeValue(Object value, Type type, String prefix, String genericPrefix) {
+			Object result = null;
+			String string = String.valueOf(value);
+			switch (type.getType()) {
+				case NUMBER:
+					if (string.trim().isEmpty()) result = null;
+					else {
+						try {
+							result = Double.parseDouble(string);
+						} catch (NumberFormatException e) {
+							result = JSONNull.getInstance();
+						}
+					}
+					break;
+				case BOOL:
+					if (value != null && string.equals("0")) result = false;
+					else if (value != null && !string.equals("") && !string.equals("0")) result = true;
+					else result = null;
+					break;
+				case STRING:
+				case TEXT:
+					if (value == null || string.equals("")) result = null;
+					else result = string;
+					break;
+				case DATE:
+					if (value == null || string.equals("")) result = null;
+					else {
+						try {
+							result = Utils.formatDate(Utils.parseDate(string));
+						} catch (ParseException e) {
+							result = null;
+						}
+					}
+					break;
+				case ENUM:
+					if (value == null || string.equals("")) result = null;
+					else result = string; 
+					break;
+				default:
+					if (value == null || string.equals("")) result = null;
+					else result = string;
+			}
+			return result;
+		}
+		
+	};
+	
 	// returns the list of modified elements/questions/sections/objectives (skip, validation, etc..)
 	// we set the isolation level on READ_UNCOMMITTED to avoid deadlocks because in READ_COMMITTED
 	// mode, a write lock is acquired at the beginning and never released till this method terminates
@@ -376,7 +431,7 @@ public class SurveyPageService {
 				final Value oldValue = enteredValue.getValue();
 				
 				if (log.isDebugEnabled()) log.debug("getting new value from parameters for element: "+element);
-				Value value = valueType.mergeValueFromMap(oldValue, params, "surveyElements["+element.getId()+"].value", attributes);
+				Value value = valueType.mergeValueFromMap(oldValue, params, "surveyElements["+element.getId()+"].value", attributes, SANITIZER);
 				
 				// reset accepted warnings for changed values
 				if (log.isDebugEnabled()) log.debug("resetting warning for modified prefixes: "+element);

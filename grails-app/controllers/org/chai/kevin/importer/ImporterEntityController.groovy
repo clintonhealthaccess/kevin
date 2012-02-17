@@ -30,6 +30,9 @@ package org.chai.kevin.importer
 import java.io.InputStreamReader
 
 import org.chai.kevin.AbstractController
+import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.Type;
+import org.chai.kevin.value.RawDataElementValue;
 import org.hisp.dhis.period.Period
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
@@ -39,46 +42,54 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile
  *
  */
 class ImporterEntityController extends AbstractController {
-	
-	private final static String FILE_TYPE = "text/csv";
 	ImporterService importerService;
+	final String IMPORT_FORM = "import";
+	final String IMPORT_OUTPUT = "importoutput";
 	
-//	Organisation organisation
-//	Period period,
-//	Value valued
-	
-
-	def importer ={ ImporterEntityCommand cmd ->
-		this.getModel(cmd);
+	def importer = {
+		this.getModel(null,null,IMPORT_FORM);
 	}
-
+	
 	def uploader = { ImporterEntityCommand cmd ->
-		
-		Period period = Period.get(params.int('period.id'));
-		MultipartHttpServletRequest mpr = (MultipartHttpServletRequest)request;
-		CommonsMultipartFile file = (CommonsMultipartFile) mpr.getFile("file");
-		  
-		if(period!=null && file.contentType.equals(FILE_TYPE)){
-			InputStreamReader csvInputStreamReader = new InputStreamReader(file.getInputStream());
-			importerService.getFileImport(csvInputStreamReader, period);
+		ImporterErrorManager errorManager = new ImporterErrorManager();
+		if (!cmd.hasErrors()) {
+			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());
+			importerService.importFile(cmd.dataElement,csvInputStreamReader, cmd.period,errorManager);
+			this.getModel(cmd,errorManager,IMPORT_FORM);
 		}
-		this.getModel(cmd);
+		this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 	}
-	
-	def getModel(def cmd) {
+
+	def getModel(def cmd,ImporterErrorManager errorManager,String view) {
+		
 		List<Period> periods = Period.list()
-		render (view: '/import/import', model:[
+		List<RawDataElement> dataElements =[]
+		render (view: '/import/'+view, model:[
 					periods: periods,
-					cmd: cmd
+					dataElements: dataElements,
+					importerEntity: cmd,
+					errorManager: errorManager
 				])
 	}
 }
 
 class ImporterEntityCommand {
+
 	Period period;
 	CommonsMultipartFile file;
+	RawDataElement dataElement;
+
 	static constraints = {
 		period(blank:false,nullable:false)
-		file(blank:false,nullable:false)
+		dataElement(blank:false,nullable:false)
+		file(blank:false,nullable:false, validator: { val, obj ->
+
+			final String FILE_TYPE = "text/csv";
+			boolean valid = true;
+			if(val != null)
+				if(!val.contentType.equals(FILE_TYPE))
+					return valid=false;
+			return valid;
+		})
 	}
 }

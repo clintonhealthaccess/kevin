@@ -22,7 +22,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
-import net.sf.json.util.JSONUtils;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
@@ -233,6 +232,11 @@ public class Type extends JSONValue {
 		}
 	}
 	
+	public Object getValueToSet(String fieldValue){
+		return null;
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	private static List<Integer> getIndexList(Map<String, Object> map, String key) {
 		List<String> stringIndexList = new ArrayList<String>();
@@ -248,8 +252,39 @@ public class Type extends JSONValue {
 		return filteredIndexList;
 	}
 	
+	
+	public interface Sanitizer {
+		
+		/**
+		 * Takes an object and returns the value corresponding to the type.
+		 * 
+		 * NUMBER -> java.lang.Number
+		 * BOOL -> java.lang.Bool
+		 * STRING -> java.lang.String
+		 * TEXT -> java.lang.String
+		 * ENUM -> java.lang.String
+		 * DATE -> java.lang.Date
+		 * 
+		 * If the value cannot be sanitized, this method should return null.
+		 * 
+		 * @param value
+		 * @param type
+		 * @param prefix
+		 * @return 
+		 */
+		public Object sanitizeValue(Object value, Type type, String prefix, String genericPrefix);
+		
+	}
+	
 	@Transient
-	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String suffix, Set<String> attributes) {
+	// TODO write javadoc
+	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, Set<String> attributes, Sanitizer sanitizer) {
+		return mergeValueFromMap(oldValue, map, prefix, prefix, attributes, sanitizer);
+	}
+	
+	@Transient
+	// TODO write javadoc
+	private Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, String genericPrefix, Set<String> attributes, Sanitizer sanitizer) {
 		try {
 			// first we construct the jsonobject containing the value only
 			JSONObject object = new JSONObject();
@@ -260,28 +295,30 @@ public class Type extends JSONValue {
 				case TEXT:
 				case ENUM:
 				case DATE:
-					if (!map.containsKey(suffix)) {
+					if (!map.containsKey(prefix)) {
 						if (oldValue.isNull()) object.put(Value.VALUE_STRING, JSONNull.getInstance());
 						else object.put(Value.VALUE_STRING, oldValue.getJsonObject().get(Value.VALUE_STRING));
 					}
 					else {
-						object.put(Value.VALUE_STRING, sanitizeValue(map.get(suffix)));
+						object.put(Value.VALUE_STRING, jsonFromString(sanitizer.sanitizeValue(map.get(prefix), this, prefix, genericPrefix)));
 					}
 					break;
 				case LIST:
 					JSONArray array1 = new JSONArray();
-					if (!map.containsKey(suffix)) {
+					if (!map.containsKey(prefix)) {
+						// we modify existing lines
 						// we don't modify the list but merge the values inside it
 						if (!oldValue.isNull()) { 
-							List<Integer> indexList = Type.getIndexList(map, suffix+".indexes");
+							List<Integer> indexList = Type.getIndexList(map, prefix+".indexes");
 							for (int i = 0; i < oldValue.getListValue().size(); i++) {
-								if (indexList.size() > i) array1.add(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, suffix+"["+indexList.get(i)+"]", attributes).getJsonObject());
+								if (indexList.size() > i) array1.add(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, prefix+"["+indexList.get(i)+"]", genericPrefix+"[_]", attributes, sanitizer).getJsonObject());
 							}
 						}
 					}
 					else {
+						// we add a new line to the list
 						// the list gets modified with the new indexes
-						List<Integer> filteredIndexList = Type.getIndexList(map, suffix);
+						List<Integer> filteredIndexList = Type.getIndexList(map, prefix);
 						
 						for (Integer index : filteredIndexList) {
 							Value oldListValue = null;
@@ -290,7 +327,7 @@ public class Type extends JSONValue {
 								if (index < oldValue.getListValue().size()) oldListValue = oldValue.getListValue().get(index);
 								else oldListValue = Value.NULL;
 							}
-							array1.add(getListType().mergeValueFromMap(oldListValue, map, suffix+"["+index+"]", attributes).getJsonObject());
+							array1.add(getListType().mergeValueFromMap(oldListValue, map, prefix+"["+index+"]", genericPrefix+"[_]", attributes, sanitizer).getJsonObject());
 						}
 					}
 					if (array1.size() == 0) object.put(Value.VALUE_STRING, JSONNull.getInstance());
@@ -308,7 +345,7 @@ public class Type extends JSONValue {
 							oldMapValue = oldValue.getMapValue().get(entry.getKey());
 							if (oldMapValue == null) oldMapValue = Value.NULL;
 						}
-						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).mergeValueFromMap(oldMapValue, map, suffix+"."+entry.getKey(), attributes).getJsonObject());
+						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).mergeValueFromMap(oldMapValue, map, prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey(), attributes, sanitizer).getJsonObject());
 						array.add(element);
 					}
 					object.put(Value.VALUE_STRING, array);
@@ -320,11 +357,11 @@ public class Type extends JSONValue {
 			// then we construct a new value object and set the attributes on it
 			Value value = new Value(object);
 			for (String attribute : attributes) {
-				if (!map.containsKey(suffix)) {
+				if (!map.containsKey(prefix)) {
 					value.setAttribute(attribute, oldValue.getAttribute(attribute));
 				}
 				else {
-					Object attributeValue = map.get(suffix+"["+attribute+"]");
+					Object attributeValue = map.get(prefix+"["+attribute+"]");
 					String attributeString = String.valueOf(attributeValue);
 					if (attributeValue != null && !attributeString.isEmpty()) value.setAttribute(attribute, attributeString);
 				}
@@ -335,6 +372,13 @@ public class Type extends JSONValue {
 		}
 	}
 	
+	private Object jsonFromString(Object value) {
+		if (value == null) return JSONNull.getInstance();
+		else if (value instanceof String) return escape((String)value);
+		else if (value instanceof Date) return Utils.formatDate((Date)value);
+		else return value;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Transient
 	public Value getValue(Object value) {
@@ -790,60 +834,15 @@ public class Type extends JSONValue {
 		}
 	}
 	
+	private Object escape(String string) {
+		return string.replace("\\", "").replace("\"", "");
+	}
+	
 	public String getDisplayValue(Value value) {
 		// TODO implement this
 		return getJaqlValue(value);
 	}
 	
-	private Object sanitizeValue(Object value) {
-		Object result = null;
-		String string = String.valueOf(value);
-		switch (getType()) {
-			case NUMBER:
-				if (string.trim().isEmpty()) result = JSONNull.getInstance();
-				else {
-					try {
-						result = Double.parseDouble(string);
-					} catch (NumberFormatException e) {
-						result = JSONNull.getInstance();
-					}
-				}
-				break;
-			case BOOL:
-				if (value != null && string.equals("0")) result = false;
-				else if (value != null && !string.equals("") && !string.equals("0")) result = true;
-				else result = JSONNull.getInstance();
-				break;
-			case STRING:
-			case TEXT:
-				if (value == null || string.equals("")) result = JSONNull.getInstance();
-				else result = escape(string);
-				break;
-			case DATE:
-				if (value == null || string.equals("")) result = JSONNull.getInstance();
-				else {
-					try {
-						result = Utils.formatDate(Utils.parseDate(string));
-					} catch (ParseException e) {
-						result = JSONNull.getInstance();
-					}
-				}
-				break;
-			case ENUM:
-				if (value == null || string.equals("")) result = JSONNull.getInstance();
-				else result = string; 
-				break;
-			default:
-				if (value == null || string.equals("")) result = JSONNull.getInstance();
-				else result = string;
-		}
-		return result;
-	}
-	
-	private Object escape(String string) {
-		return string.replace("\\", "").replace("\"", "");
-	}
-
 	private List<String> replace(List<String> strings, String toReplace, String replaceWith) {
 		List<String> result = new ArrayList<String>();
 		for (String string : strings) {

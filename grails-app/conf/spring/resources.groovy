@@ -75,7 +75,9 @@ beans = {
 //	}
 	
 	importerService(ImporterService){
-//		organisationService = ref("organisationService")
+		locationService = ref("locationService")
+		valueService = ref("valueService")
+		dataService=ref("dataService")
 	}
 
 	

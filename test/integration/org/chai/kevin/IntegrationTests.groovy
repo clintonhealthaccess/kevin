@@ -1,6 +1,6 @@
 package org.chai.kevin
 
-/*
+/**
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
@@ -90,8 +90,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static final String BUTARO = "Butaro DH"
 	static final String KIVUYE = "Kivuye HC"
 	
-	static Date mar01 = getDate( 2005, 3, 1 );
-	static Date mar31 = getDate( 2005, 3, 31 );
+	static final Date mar01 = getDate( 2005, 3, 1 );
+	static final Date mar31 = getDate( 2005, 3, 31 );
 	
 	def setup() {
 		// using cache.use_second_level_cache = false in test mode doesn't work so

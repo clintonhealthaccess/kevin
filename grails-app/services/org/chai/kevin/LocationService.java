@@ -95,6 +95,12 @@ public class LocationService {
 		return (T)sessionFactory.getCurrentSession().get(clazz, id);
 	}
 	
+	public <T extends CalculationEntity> T getCalculationEntity(String code,
+			Class<T> clazz) {
+		return (T) sessionFactory.getCurrentSession().createCriteria(clazz)
+				.add(Restrictions.eq("code", code)).uniqueResult();
+	}
+
 	// TODO property of level?
 	public LocationLevel getLevelBefore(LocationLevel level) {
 		List<LocationLevel> levels = listLevels();
