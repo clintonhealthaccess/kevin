@@ -839,7 +839,7 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 /* line 49, ../../src/stylesheets/partials/_flashes.sass */
 .show-question-help a:hover, .show-question-help a:focus { color: #258cd5; opacity: 1; }
 /* line 52, ../../src/stylesheets/partials/_flashes.sass */
-.show-question-help.moved { float: right; margin-top: -42px; position: relative; z-index: 11; }
+.show-question-help.moved { float: right; position: relative; z-index: 11; }
 
 /* line 58, ../../src/stylesheets/partials/_flashes.sass */
 .hide-question-help { background: url("../images/icons/icon_close_flash.png") no-repeat center; cursor: pointer; height: 12px; left: 97%; opacity: 0.3; position: absolute; text-indent: -6666px; top: 40%; width: 12px; }
