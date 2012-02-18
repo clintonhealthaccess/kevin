@@ -65,7 +65,7 @@ public class PlanningList {
 	
 	public boolean isBudgetUpdated() {
 		for (PlanningEntry planningEntry : getPlanningEntries()) {
-			if (!planningEntry.isBudgetUpdated()) return false;
+			if (!planningEntry.isBudgetUpdated() && planningEntry.isSubmitted()) return false;
 		}
 		return true;
 	}

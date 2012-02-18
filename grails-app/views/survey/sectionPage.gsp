@@ -31,6 +31,7 @@
 				
 				<div id="js_survey">
 					<g:form url="[controller:'editSurvey', action:'save', params: [location: surveyPage.location.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
+					
 						<ol id="questions">
 							<g:each in="${surveyPage.getQuestions(surveyPage.section)}" var="question" status="i">
 								<li class="question-container ${surveyPage.enteredQuestions[question].skipped?'hidden':''} ${!surveyPage.enteredQuestions[question].complete?'incomplete':''} ${surveyPage.enteredQuestions[question].invalid?'invalid':''}">

@@ -23,6 +23,8 @@ import org.chai.kevin.value.RefreshValueService;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
 public class PlanningService {
@@ -31,9 +33,11 @@ public class PlanningService {
 	private DataService dataService;
 	private RefreshValueService refreshValueService;
 	private LocationService locationService;
+	private SessionFactory sessionFactory;
 	
 	public Planning getDefaultPlanning() {
-		return null;
+		return (Planning)sessionFactory.getCurrentSession()
+				.createCriteria(Planning.class).add(Restrictions.eq("active", true)).uniqueResult();
 	}
 	
 	@Transactional(readOnly=true)
@@ -143,6 +147,13 @@ public class PlanningService {
 		planningList.save(valueService);
 	}
 		
+	@Transactional(readOnly=false)
+	public boolean isBudgetUpdated(Planning planning, DataLocationEntity location) {
+		for (PlanningType planningType : planning.getPlanningTypes()) {
+			if (!getPlanningList(planningType, location).isBudgetUpdated()) return false;
+		}
+		return true;
+	}
 	
 	@Transactional(readOnly=false)
 	public void refreshBudget(PlanningType type, DataLocationEntity location) {
@@ -199,4 +210,8 @@ public class PlanningService {
 		this.locationService = locationService;
 	}
 
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+	
 }

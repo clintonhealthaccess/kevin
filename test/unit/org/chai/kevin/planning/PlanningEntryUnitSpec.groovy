@@ -2,7 +2,6 @@ package org.chai.kevin.planning
 
 import grails.plugin.spock.UnitSpec;
 
-import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.RawDataElementValue;
@@ -76,7 +75,7 @@ class PlanningEntryUnitSpec extends UnitSpec {
 	def "get invalid sections"() {
 		setup:
 		def planningEntry = null
-		def value
+		def value = null
 		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
 		
 		when:
@@ -86,7 +85,7 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		planningEntry = new PlanningEntry(planningType, new ValidatableValue(value, type), 0, null)
 		
 		then:
-		planningEntry.getInvalidSections().equals(IntegrationTests.s(['[_].key1']))
+		planningEntry.getInvalidSections().equals(new HashSet(['[_].key1']))
 		
 		when:
 		value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("test"), "key2":Value.VALUE_STRING("value")])]);
@@ -97,8 +96,21 @@ class PlanningEntryUnitSpec extends UnitSpec {
 	}
 	
 	def "merge value does not reset attributes"() {
-		expect:
-		false
+		setup:
+		def planningEntry = null
+		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":new Value("{\"value\":\"test\", \"invalid\":\"1\"}"), "key2":Value.VALUE_STRING("value")])]);
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
+		type.setAttribute(value, "[0]", "budget_updated", "true")
+				
+		when:
+		def planningType = Mock(PlanningType)
+		planningType.getId() >> 1
+		planningEntry = new PlanningEntry(planningType, new ValidatableValue(value, type), 0, null)
+		planningEntry.mergeValues(["elements[0].value[0].key1":"value", "elements[0].value":"[0]"])
+		
+		then:
+		planningEntry.validatable.value.jsonValue.contains("budget_updated")
+		
 	}
 	
 }

@@ -346,6 +346,13 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		then:
 		value.equals(Value.NULL_INSTANCE())
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		value = type.mergeValueFromMap(new Value("{\"value\":[{\"value\":10}]}"), [:], 'value', new HashSet([]))
+		
+		then:
+		value.equals(new Value("{\"value\":[{\"value\":10}]}"))
 	}
 	
 	def "test equal"() {
@@ -464,7 +471,7 @@ public class TypeUnitSpec extends UnitSpec {
 		expectedVisitedTypes.equals(visitedTypes)
 	}
 	
-	def "visit"() {
+	def "value visit"() {
 		setup:
 		def type = null
 		def value = null
@@ -503,8 +510,25 @@ public class TypeUnitSpec extends UnitSpec {
 		expectedVisitedValues.equals(visitedValues)
 		expectedVisitedTypes.equals(visitedTypeMap)
 	}
-	
-	
+		
+	def "test value visit when value not complete"() {
+		setup:
+		def value;
+		def type;
+		
+		when:
+		type = Type.TYPE_MAP(["key0": Type.TYPE_NUMBER()])
+		value = new Value("{\"value\": []}")
+		def visitedValues = []
+		type.visit(value, new ValueVisitor() {
+			public void handle(Type currentType, Value currentValue, String prefix, String genericPrefix) {
+				visitedValues << currentValue
+			}
+		})
+		
+		then:
+		visitedValues.equals([Value.VALUE_MAP([:])])
+	}
 	
 	public static class NullPrefixPredicate extends PrefixPredicate {
 		public boolean holds(Type type, Value value, String prefix) {

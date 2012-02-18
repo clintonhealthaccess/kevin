@@ -65,7 +65,7 @@ class EditSurveyController extends AbstractController {
 				response.sendError(404)
 			}
 			else {
-				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: survey?.id, location: user.dataLocation.id])
+				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: dataEntry?.id, location: user.dataLocation.id])
 			}
 		}
 		else {

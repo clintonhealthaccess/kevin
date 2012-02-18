@@ -57,15 +57,16 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		planningTypeBudget = planningService.getPlanningTypeBudget(planningType, DataLocationEntity.findByCode(BUTARO))
 		
 		then:
-		planningTypeBudget.budgetPlanningLines.size() == 0
+		planningTypeBudget.budgetPlanningEntries.size() == 0
 		
 		when:
-		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
+		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
 			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
+		elementValue.value.listValue[0].setAttribute("submitted", "true")
 		planningTypeBudget = planningService.getPlanningTypeBudget(planningType, DataLocationEntity.findByCode(BUTARO))
 		
 		then:
-		planningTypeBudget.budgetPlanningLines.size() == 1
+		planningTypeBudget.budgetPlanningEntries.size() == 1
 		
 		when:
 		def sum = newSum('($'+dataElement.id+' -> filter $.key0 == "value")[0].key1 * 2', CODE(3))
@@ -74,9 +75,9 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		planningTypeBudget = planningService.getPlanningTypeBudget(planningType, DataLocationEntity.findByCode(BUTARO))
 		
 		then:
-		planningTypeBudget.budgetPlanningLines.size() == 1
-		planningTypeBudget.budgetPlanningLines[0].budgetCosts.size() == 1
-		planningTypeBudget.budgetPlanningLines[0].budgetCosts[0].value == 2.0d
+		planningTypeBudget.budgetPlanningEntries.size() == 1
+		planningTypeBudget.budgetPlanningEntries[0].budgetCosts.size() == 1
+		planningTypeBudget.budgetPlanningEntries[0].getBudgetCost(planningCost).value == 2.0d
 		
 	}
 	
@@ -147,6 +148,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		)
 		
 		when:
+		elementValue.value.listValue[0].setAttribute('budget_updated', 'true')
 		planningService.refreshBudget(planningType, DataLocationEntity.findByCode(BUTARO))
 		
 		then:

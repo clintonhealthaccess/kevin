@@ -30,7 +30,9 @@
 								Operational Undertakings: <g:i18n field="${location.names}"/>
 							</h4>
 							<div class="budget">
-							  <p class="context-message warning">Your activity *activity name* was changed. Please <a href="#">update your budget</a>.</p>
+							 	<p id="js_budget-warning" class="context-message warning ${updatedBudget?'hidden':''}">
+							  		Some activities were changed. Please <a href="${createLink(controller:'planning', action:'updateBudget', params:[location:location.id, planning:planning.id])}">update your budget</a>.
+							  	</p>
 								<div class="table-wrap left clear">
 	              
 									<table class="nested col6 push-top-10">
@@ -50,6 +52,7 @@
 											    if there is no entries in the corresponding planning type 
 											-->
 											<g:each in="${planningTypeBudgets}" var="planningTypeBudget">
+												<g:set var="planningType" value="${planningTypeBudget.planningType}"/>
 												<tr class="tree_sign_minus standout">
 													<td>
 														<span>
@@ -73,11 +76,12 @@
 																	either OUTGOING or INCOMING or both
 																-->
 																<g:each in="${planningTypeBudget.budgetPlanningEntries}" var="budgetPlanningEntry">
-																	<tr class="tree_sign_minus active-row">
+																	<g:set var="planningEntry" value="${budgetPlanningEntry.planningEntry}"/>
+																	<tr id="planning-${planningType.id}-${planningEntry.lineNumber}" class="tree_sign_minus active-row">
 																		<td>
 																			<span style="margin-left: 20px;">
 																				<a class="js_budget-section-link" href="${createLink(controller:'planning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.planningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
-																					<g:value value="${budgetPlanningEntry.planningEntry.discriminatorValue}" type="${planningTypeBudget.planningType.discriminatorType}" enums="${budgetPlanningEntry.planningEntry.enums}"/>
+																					<g:value value="${planningEntry.discriminatorValue}" type="${planningTypeBudget.planningType.discriminatorType}" enums="${budgetPlanningEntry.planningEntry.enums}"/>
 																				</a>
 																			</span>
 																		</td>
@@ -85,7 +89,11 @@
 																		<td>${budgetPlanningEntry.incoming}</td>
 																		<td>${budgetPlanningEntry.difference}</td>
 																		<td><input type="checkbox"></td>
-																		<td class="status"></td>
+																		<td class="status 
+																			${!planningEntry.invalidSections.empty?'invalid':''} 
+																			${!planningEntry.incompleteSections.empty?'incomplete':''}
+																			${(!planningEntry.incompleteSections.empty || !planningEntry.incompleteSections.empty)?'tooltip':''}
+																			" title="Help message"></td>
 																	</tr>
 																	<tr style="display: table-row" class="sub_tree">
 																		<td colspan="7" class="bucket">
@@ -141,7 +149,18 @@
 
 				var dataEntry = new DataEntry({
 					element: $('#js_budget-section-edit'),
-					callback: function() {},
+					callback: function(dataEntry, data, element) {
+						if (data.complete) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').removeClass('incomplete')
+						else $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('incomplete')
+						if (data.valid) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').removeClass('invalid')
+						else $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('invalid')
+						
+						if ($(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').hasClass('incomplete')) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('tooltip');
+						if ($(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').hasClass('invalid')) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('tooltip');
+						
+						if (data.budgetUpdated) $('#js_budget-warning').hide();
+						else $('#js_budget-warning').show();
+					},
 					url: "${createLink(controller:'planning', action:'saveValue', params: [location: location.id])}", 
 					messages: messages,
 					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
@@ -150,7 +169,7 @@
 				var queueName = 'queue'+Math.floor(Math.random()*11);
 				var rightPaneQueue = $.manageAjax.create(queueName, {
 					type : 'POST',
-					dataType: 'html',
+					dataType: 'json',
 					queue: 'clear',
 					cacheResponse: false,
 					maxRequests: 1,
@@ -168,10 +187,16 @@
 							$('#js_budget-section-edit').html('');
 						},
 						success: function(data) {
-							$('#js_budget-section-edit').html(data);
-							$('#js_budget-section-edit').removeClass('loading');
-							
-							dataEntry.enableAfterLoading();
+							if (data.status == 'success') {
+								$('#js_budget-section-edit').html(data.html);
+								$('#js_budget-section-edit').removeClass('loading');
+
+								dataEntry.enableAfterLoading();
+							}
+							else {
+								$('#js_budget-section-edit').removeClass('loading');
+								$('#js_budget-section-edit').addClass('error');
+							}
 						},
 						error: function() {
 							$('#js_budget-section-edit').removeClass('loading');

@@ -34,7 +34,7 @@ class PlanningController extends AbstractController {
 				response.sendError(404)
 			}
 			else {
-				redirect (controller:'planning', action: 'overview', params: [planning: planning?.id, location: user.dataLocation.id])
+				redirect (controller:'planning', action: 'overview', params: [planning: dataEntry?.id, location: user.dataLocation.id])
 			}
 		}
 		else {
@@ -85,12 +85,15 @@ class PlanningController extends AbstractController {
 		def planningList = planningService.getPlanningList(planningType, location)
 		def planningEntry = planningList.planningEntries[lineNumber]
 		
-		render (template: '/planning/budget/planningSection', model:[
-			planningType: planningType,
-			planningEntry: planningEntry,
-			location: location,
-			section: section
-		])
+		render(contentType:"text/json") {
+			status = 'success'
+			html = g.render (template: '/planning/budget/planningSection', model:[
+				planningType: planningType,
+				planningEntry: planningEntry,
+				location: location,
+				section: section
+			])
+		}
 	}
 	
 	def deletePlanningEntry = {
@@ -106,14 +109,15 @@ class PlanningController extends AbstractController {
 	def saveValue = {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
+		def lineNumberParam = params.int('lineNumber')
 		
-		def planningEntry = planningService.modify(planningType, location, lineNumber, params)
+		def planningEntry = planningService.modify(planningType, location, lineNumberParam, params)
 		def validatable = planningEntry.validatable
 		
 		render(contentType:"text/json") {
 			status = 'success'
 			id = planningType.id
+			lineNumber = lineNumberParam
 			complete = planningEntry.incompleteSections.empty
 			valid = planningEntry.invalidSections.empty
 			budgetUpdated = planningEntry.budgetUpdated
@@ -155,7 +159,6 @@ class PlanningController extends AbstractController {
 		def location = DataLocationEntity.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		
-		planningService.modify(planningType, location, lineNumber, params)
 		planningService.submit(planningType, location, lineNumber)
 		
 		redirect (uri: targetURI)
@@ -166,19 +169,23 @@ class PlanningController extends AbstractController {
 		def location = DataLocationEntity.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		
-		planningService.modify(planningType, location, lineNumber, params)
 		planningService.unsubmit(planningType, location, lineNumber)
 		
 		redirect (uri: targetURI)
 	}
 	
 	def updateBudget = {
+		def planning = Planning.get(params.int('planning'))
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
 		
-		planningService.modify(planningType, location, lineNumber, params)
-		planningService.refreshBudget(planningType, location)
+		if (planning != null) planning.planningTypes.each {
+			planningService.refreshBudget(it, location)
+		}
+		else {
+			planning = planningType.planning
+			planningService.refreshBudget(planningType, location)
+		}
 
 		redirect (action: 'budget', params:[planning: planning.id, location: location.id] )
 	}
@@ -190,10 +197,11 @@ class PlanningController extends AbstractController {
 		def planningTypeBudgets = planning.planningTypes.collect {
 			planningService.getPlanningTypeBudget(it, location)
 		}
-		
+
 		render (view: '/planning/budget/budget', model: [
 			planning: planning,
 			location: location,
+			updatedBudget: planningService.isBudgetUpdated(planning, location),
 			planningTypeBudgets: planningTypeBudgets
 		])
 	}

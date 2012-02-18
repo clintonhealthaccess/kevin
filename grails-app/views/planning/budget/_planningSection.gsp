@@ -27,8 +27,6 @@
 			enums: planningEntry.enums
 		]"/>
 	
-		<button class="medium right" type="submit">
-			Update budget
-		</button>
+		<a class="next gray medium" href="${createLink(controller:'planning', action:'updateBudget', params:[location: location.id, planningType: planningType.id])}">Update budget</a>
 	</g:form>
 </div>

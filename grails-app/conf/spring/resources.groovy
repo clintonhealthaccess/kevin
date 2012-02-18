@@ -208,6 +208,7 @@ beans = {
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		locationService = ref("locationService")
+		sessionFactory = ref("sessionFactory")
 		refreshValueService = ref("refreshValueService")
 	}
 	

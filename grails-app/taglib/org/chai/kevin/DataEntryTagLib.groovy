@@ -93,7 +93,7 @@ class DataEntryTagLib {
 				error.accepted = validatable.isAcceptedWarning(rule, prefix)
 				errors.add(error)
 			} 
-			out << g.render(template: '/dataEntry/errors', model: [errors: errors, element: element])
+			out << g.render(template: '/tags/dataEntry/errors', model: [errors: errors, element: element])
 		}
 	}
 	

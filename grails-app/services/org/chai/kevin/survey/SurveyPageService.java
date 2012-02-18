@@ -388,11 +388,11 @@ public class SurveyPageService {
 	
 	private ValidatableLocator getLocator() {
 		return new ValidatableLocator() {
-			
 			@Override
 			public ValidatableValue getValidatable(Long id, DataLocationEntity location) {
 				SurveyElement element = surveyService.getSurveyElement(id);
-				SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, location);
+				SurveyEnteredValue enteredValue = getSurveyEnteredValue(location, element);
+				if (enteredValue == null) return null;
 				return enteredValue.getValidatable();
 			}
 		};
