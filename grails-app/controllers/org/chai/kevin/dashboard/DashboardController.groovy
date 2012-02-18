@@ -80,18 +80,11 @@ class DashboardController extends AbstractController {
 		def programDashboard = null		
 		def locationDashboard = null
 		
-		Period period = getPeriod()
-		List<DataEntityType> locationTypes = getLocationTypes()						
-		
+		Period period = getPeriod()							
 		ReportObjective objective = getObjective()
-		DashboardEntity dashboardEntity = getDashboardEntity(objective)
-		ReportObjective objectiveRoot = reportService.getRootObjective()
-		List<ReportObjective> objectiveTree = reportService.getObjectiveTree(DashboardTarget.class).asList()
-		if(!objectiveTree.contains(objective)) objective = objectiveRoot
-		
+		DashboardEntity dashboardEntity = getDashboardEntity(objective)		
 		LocationEntity location = getLocation()
-		LocationEntity locationRoot = locationService.getRootLocation()
-		List<LocationEntity> locationTree = locationService.getLocationTree().asList()
+		List<DataEntityType> locationTypes = getLocationTypes()
 		
 		if (period != null && objective != null && dashboardEntity != null && location != null && locationTypes != null) {			
 			if (log.isInfoEnabled()){
@@ -114,33 +107,21 @@ class DashboardController extends AbstractController {
 			locationDashboard: locationDashboard,			
 			currentPeriod: period,
 			dashboardEntity: dashboardEntity,
-			currentObjective: reportObjective,
-			objectiveRoot: reportService.getRootObjective(),
+			currentObjective: objective,
+			currentTarget: DashboardTarget.class,
 			currentLocation: location,
 			currentLocationTypes: locationTypes
-//=======
-//			periods: Period.list(),
-//			dashboardEntity: dashboardEntity,			 
-//			currentObjective: objective,
-//			objectiveRoot: objectiveRoot,
-//			objectiveTree: objectiveTree,
-//			currentLocation: location,
-//			locationRoot: locationRoot,
-//			locationTree: locationTree,			
-//			currentLocationTypes: locationTypes,
-//			locationTypes: DataEntityType.list()
-//>>>>>>> dashboard and dsr work, filtering objectives and locations across all report types, added report category filter to dsr, and fixed top level facility type filter bug
 		]
 	}
 	
 	def compare = {
 		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)								
 		
-		Period period = getPeriod()
-		List<DataEntityType> locationTypes = getLocationTypes()	
+		Period period = getPeriod()	
 		ReportObjective objective = getObjective()
 		DashboardEntity dashboardEntity = getDashboardEntity(objective)		
 		LocationEntity location = getLocation()
+		List<DataEntityType> locationTypes = getLocationTypes()
 		
 		def dashboard = null
 		if (period != null && objective != null && dashboardEntity != null && location != null && locationTypes != null) {			

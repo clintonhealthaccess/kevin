@@ -44,17 +44,19 @@ public class DsrService {
 	public DsrTable getDsrTable(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types, DsrTargetCategory category) {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",objective="+objective+",types="+types+",category="+category+")");
 		
-		List<DataLocationEntity> facilities = locationService.getDataEntities(location, types.toArray(new DataEntityType[types.size()]));		
+		List<DataLocationEntity> facilities = location.collectDataLocationEntities(types, null);				
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, objective);
 		
 		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();				
+		
+		LocationEntity locationRoot = new LocationEntity();
+		List<LocationEntity> locationTree = new ArrayList<LocationEntity>();
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
 		if(facilities.isEmpty() || targets.isEmpty())
-			return new DsrTable(valueMap, targets, targetCategories);
+			return new DsrTable(valueMap, targets, targetCategories, locationRoot, locationTree);		
 		
 		List<DsrTarget> categoryTargets = new ArrayList<DsrTarget>();
-
 		if(category != null){
 			for(DsrTarget target : targets){
 				if(category.equals(target.getCategory()))
@@ -72,9 +74,11 @@ public class DsrService {
 			valueMap.put(facility, targetMap);
 		}				
 		
+		locationRoot = locationService.getRootLocation();
+		locationTree = location.collectTreeWithDataEntities(types, null);		
 		targetCategories = getTargetCategories(objective);
 		
-		DsrTable dsrTable = new DsrTable(valueMap, targets, targetCategories);
+		DsrTable dsrTable = new DsrTable(valueMap, targets, targetCategories, locationRoot, locationTree);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
 		return dsrTable;
 	}

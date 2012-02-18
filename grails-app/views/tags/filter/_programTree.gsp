@@ -16,7 +16,7 @@
 		<g:each in="${objective.children}" var="child">
 			<g:if test="${objectiveTree.contains(child)}">
 				<ul class="location-fold" id="location-fold-${objective.id}">
-					<g:render template="/templates/programTree"
+					<g:render template="/tags/filter/programTree"
 						model="[
 						controller: controller, 
 						action: action,

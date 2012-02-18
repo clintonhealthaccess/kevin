@@ -54,19 +54,19 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(RWANDA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(RWANDA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]), false)
 		
 		then:
 		dashboard.locations.equals([LocationEntity.findByCode(NORTH)])
 		
 		when:
-		dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]), false)
 		
 		then:
 		(dashboard.locations).equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
 		
 		when:
-		dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(BURERA), root, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]), false)
 		
 		then:
 		dashboard.locations.equals([DataLocationEntity.findByCode(BUTARO)])
@@ -81,7 +81,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 
 		when:
-		def dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(currentLocationName), ReportObjective.findByCode(currentObjectiveName), period, new HashSet(types.collect {DataEntityType.findByCode(it)}));
+		def dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(currentLocationName), ReportObjective.findByCode(currentObjectiveName), period, new HashSet(types.collect {DataEntityType.findByCode(it)}), false);
 		def percentage = dashboard.getPercentage(getCalculationEntity(locationName), getDashboardEntity(objectiveName))
 
 		then:
@@ -122,6 +122,24 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		BURERA			| ROOT			| [BURERA]			| [OBJECTIVE]		| [RWANDA, NORTH]		| []		
 	}
 
+	def "get program dashboard with no dashboard entities"(){
+		setup:
+		setupLocationTree()
+		
+		when:
+		def burera = LocationEntity.findByCode(BURERA)
+		def root = newReportObjective(ROOT)
+		def dashboardRoot = newDashboardObjective(ROOT, root, 0)
+		def period = Period.list()[0]				
+		def types = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)])
+		
+		then:
+		def dashboard = dashboardService.getProgramDashboard(burera, root, period, types)
+		dashboard.locations.isEmpty() == false
+		dashboard.dashboardEntities.isEmpty() == true
+		dashboard.hasData() == false
+	}
+	
 	def "dashboard test location dashboard"() {
 		setup:
 		def period = newPeriod()
@@ -130,7 +148,8 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 
 		when:
-		def dashboard = dashboardService.getLocationDashboard(LocationEntity.findByCode(locationName), ReportObjective.findByCode(objectiveCode), period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]));
+		def dashboard = 
+		dashboardService.getLocationDashboard(LocationEntity.findByCode(locationName), ReportObjective.findByCode(objectiveCode), period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]), false);
 
 		then:
 		dashboard.dashboardEntities.containsAll expectedEntities.collect {getDashboardEntity(it)}
@@ -144,6 +163,25 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		BURERA			| OBJECTIVE		| [BUTARO, KIVUYE]		| [OBJECTIVE]		| [RWANDA, NORTH]		| [ROOT]
 		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [ROOT]			| [RWANDA, NORTH]		| []
 	}
+	
+	def "get location dashboard with no location entities"(){
+		setup:
+		def period = newPeriod()
+		setupDashboard()
+		
+		when:
+		def country = newLocationLevel(COUNTRY, 1)
+		def rwanda = newLocationEntity(j(["en":RWANDA]), RWANDA, country)		
+		def root = ReportObjective.findByCode(ROOT)	
+		def types = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)])
+		
+		then:
+		def dashboard = dashboardService.getLocationDashboard(rwanda, root, period, types, false)
+		dashboard.locations.isEmpty() == true
+		dashboard.dashboardEntities.isEmpty() == false
+		dashboard.hasData() == false
+	}
+	
 	
 	def getDashboardEntity(String code) {
 		def entity = DashboardObjective.findByCode(code);

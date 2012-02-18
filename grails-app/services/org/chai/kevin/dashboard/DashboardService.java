@@ -78,24 +78,40 @@ public class DashboardService {
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
 		dashboardEntities.addAll(getDashboardEntities(objective));
 		
-		return new Dashboard(locationEntities, dashboardEntities,calculateLocationPath(location), getValues(locationEntities, dashboardEntities, period, types));
+		List<LocationEntity> locationPath = new ArrayList<LocationEntity>();
+		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap = 
+				new HashMap<CalculationEntity, Map<DashboardEntity, DashboardPercentage>>();
+		
+		if(dashboardEntities.isEmpty())
+			return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
+		
+		locationPath = calculateLocationPath(location);
+		valueMap = getValues(locationEntities, dashboardEntities, period, types);
+		
+		return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
 	}
 			
 	@Transactional(readOnly = true)
 	public Dashboard getLocationDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types, boolean compare) {
 		
 		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();
-		if(compare){
-			locationEntities.add(location);
-		}
-		else{
-			locationEntities.addAll(locationService.getLocationEntities(location, skipLevels, types));	
-		}		
+		if(compare) locationEntities.add(location);
+		else locationEntities.addAll(locationService.getLocationEntities(location, skipLevels, types));	
 		
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
 		dashboardEntities.add(getDashboardObjective(objective));		
 		
-		return new Dashboard(locationEntities, dashboardEntities, calculateLocationPath(location), getValues(locationEntities, dashboardEntities, period, types));
+		List<LocationEntity> locationPath = new ArrayList<LocationEntity>();
+		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap = 
+				new HashMap<CalculationEntity, Map<DashboardEntity, DashboardPercentage>>();
+		
+		if(locationEntities.isEmpty())
+			return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
+		
+		locationPath = calculateLocationPath(location);
+		valueMap = getValues(locationEntities, dashboardEntities, period, types);
+		
+		return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
 	}
 	
 	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> getValues(List<CalculationEntity> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataEntityType> types) {

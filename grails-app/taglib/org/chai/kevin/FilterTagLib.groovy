@@ -48,19 +48,58 @@ class FilterTagLib {
 	def iterationFilter = {attrs, body ->
 		Period.withTransaction {
 			def model = new HashMap(attrs)
-			model << [periods: Period.list(), currentPeriod: attrs['selected']]
+			model << 
+				[
+					currentPeriod: attrs['selected'],
+					periods: Period.list()
+				]
 			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/iterationFilter', model:model)
 		}
 	}
-	
+
+	def programFilter = {attrs, body ->
+		ReportObjective.withTransaction {
+			def model = new HashMap(attrs)
+			def objective = attrs['selected']
+			def target = attrs['selectedTarget']
+			model << 
+				[
+					currentObjective: objective,
+					objectiveRoot: reportService.getRootObjective(), 
+					objectiveTree: reportService.getObjectiveTree(target).asList()			
+				]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/programFilter', model:model)
+		}
+	}
+		
 	def locationFilter = {attrs, body ->
 		LocationEntity.withTransaction {
-			def model = new HashMap(attrs)
-			// TODO get list of location
-			model << [locationRoot: locationService.rootLocation, currentLocation: attrs['selected']]
+			def model = new HashMap(attrs)					
+			def locationFilterRoot = locationService.getRootLocation()
+			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(null, null)		
+			model << 
+				[
+					currentLocation: attrs['selected'],
+					locationFilterRoot: locationFilterRoot, 
+					locationFilterTree: locationFilterTree
+				]
 			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/locationFilter', model:model)
+		}
+	}
+	
+	def locationTypeFilter = {attrs, body ->
+		DataEntityType.withTransaction {
+			def model = new HashMap(attrs)
+			model << 
+				[
+					currentLocationTypes: attrs['selected'],
+					locationTypes: DataEntityType.list()					
+				]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/locationTypeFilter', model:model)
 		}
 	}
 	
@@ -72,15 +111,6 @@ class FilterTagLib {
 //			out << render(template:'/tags/filter/levelFilter', model:model)
 //		}
 //	}
-	
-	def locationTypeFilter = {attrs, body ->
-		DataEntityType.withTransaction {
-			def model = new HashMap(attrs)
-			model << [locationTypes: DataEntityType.list(), currentLocationTypes: attrs['selected']]
-			if (model.linkParams == null) model << [linkParams: [:]]
-			out << render(template:'/tags/filter/locationTypeFilter', model:model)
-		}
-	}
 	
 	def createLinkByFilter = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]

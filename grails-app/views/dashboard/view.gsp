@@ -31,6 +31,9 @@
 								<g:render template="/dashboard/reportProgramTable" model="[dashboard:programDashboard]"/>
 			                </div>
 		                </g:if>
+		                <g:else>
+		                	<g:message code="dashboard.report.table.noselection.label"/>
+		                </g:else>
 	                </li>
 	                <li class='question push-10'>
 		                <g:render template="/templates/reportTableHeader" model="[table:'location']"/>						
@@ -40,6 +43,9 @@
 								<g:render template="/dashboard/reportLocationTable" model="[dashboard:locationDashboard]"/>			                  
 							</div>
 		                </g:if>
+		                <g:else>
+		                	<g:message code="dashboard.report.table.noselection.label"/>
+		                </g:else>
 		            </li>
 		        </ul>    
 			</div>    	

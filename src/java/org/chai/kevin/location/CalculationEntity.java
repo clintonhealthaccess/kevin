@@ -1,5 +1,6 @@
 package org.chai.kevin.location;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -72,13 +73,37 @@ public abstract class CalculationEntity {
 	}
 	
 	@Transient
-	public abstract LocationEntity getParent();
+	public abstract LocationEntity getParent();		
+	
+	protected boolean collectLocations(List<LocationEntity> locations, List<DataLocationEntity> dataLocations, Set<DataEntityType> dataEntityTypes, Set<LocationLevel> skips) {
+		boolean result = false;
+		for (LocationEntity child : getChildren(skips)) {
+			result = result | child.collectLocations(locations, dataLocations, dataEntityTypes, skips);
+		}
+	
+		if (!result) {
+			List<DataLocationEntity> dataEntities = getDataEntities(skips, dataEntityTypes);
+			if (!dataEntities.isEmpty()) {
+				result = true;
+				if (dataLocations != null) dataLocations.addAll(dataEntities);
+			}
+		}
+		
+		if (result && locations != null) locations.add((LocationEntity) this);
+		return result;
+	}
+	
+	public List<DataLocationEntity> collectDataLocationEntities(Set<DataEntityType> dataEntityTypes, Set<LocationLevel> skips) {
+		List<DataLocationEntity> dataLocations = new ArrayList<DataLocationEntity>();
+		collectLocations(null, dataLocations, dataEntityTypes, skips);
+		return dataLocations;
+	}
 	
 	@Transient
 	public abstract List<DataLocationEntity> getDataEntities();
 	
 	@Transient
-	public abstract List<DataLocationEntity> getDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types);
+	public abstract List<DataLocationEntity> getDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types);		
 	
 	@Transient
 	public abstract List<LocationEntity> getChildren();

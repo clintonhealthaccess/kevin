@@ -27,6 +27,9 @@
 	              <g:if test="${dsrTable.hasData()}">
 	              	<g:render template="/dsr/reportProgramTable" model="[linkParams:params]"/>
 	              </g:if>
+	              <g:else>
+	              	<g:message code="dsr.report.table.noselection.label"/>	              	
+	              </g:else>
 				</ul>
 			</div>		
 		</div>		

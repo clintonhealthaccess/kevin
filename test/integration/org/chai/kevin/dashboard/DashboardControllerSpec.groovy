@@ -34,4 +34,11 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.locationDashboard != null
 	}
 	
+	def "get dashboard with no objectives"(){
+	}
+	
+	def "get dashboard with no locations"(){
+		
+	}
+	
 }

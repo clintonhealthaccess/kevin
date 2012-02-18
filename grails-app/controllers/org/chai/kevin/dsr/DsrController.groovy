@@ -61,18 +61,6 @@ class DsrController extends AbstractController {
 		return dsrTargetCategory
 	}
 	
-	public List<DataEntityType> getLocationTypes() {
-		List<DataEntityType> types = null
-		if (params.list('locationTypes') != null && !params.list('locationTypes').empty) {
-			def locationTypes = params.list('locationTypes')
-			types = locationTypes.collect{ DataEntityType.get(it) }
-		}
-		else {
-			types = new ArrayList(ConfigurationHolder.config.site.locationtype.checked).collect {DataEntityType.findByCode(it)}
-		}
-		return types
-	}
-	
 	def index = {
 		redirect (action: 'view', params: params)
 	}
@@ -84,22 +72,14 @@ class DsrController extends AbstractController {
 		
 		Period period = getPeriod()		
 		
-		ReportObjective objective = getObjective()
-		ReportObjective objectiveRoot = reportService.getRootObjective()
-		List<ReportObjective> objectiveTree = reportService.getObjectiveTree(DsrTarget.class).asList()
-		if(!objectiveTree.contains(objective)) objective = objectiveRoot
-		
+		ReportObjective objective = getObjective()		
 		LocationEntity location = getLocation()
-		LocationEntity locationRoot = locationService.getRootLocation()
-		List<LocationEntity> locationTree = locationService.getLocationTree().asList()
-		 
-		List<DataEntityType> locationTypes = getLocationTypes()				
-		
+		List<DataEntityType> locationTypes = getLocationTypes()
 		DsrTargetCategory category = getDsrTargetCategory(objective)
 		
 		def dsrTable = null		
 		if (period != null && objective != null && location != null && locationTypes != null) {
-			 dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet(locationTypes), category);		 			 			 			 
+			 dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet(locationTypes), category);		 			 			 
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
@@ -109,17 +89,11 @@ class DsrController extends AbstractController {
 			currentCategory: category,
 			currentPeriod: period,
 			currentObjective: objective,
-			objectiveRoot: objectiveRoot,
-			objectiveTree: objectiveTree,
+			currentTarget: DsrTarget.class,
 			currentLocation: location,
+			locationRoot: dsrTable.getLocationRoot(),
+			locationTree: dsrTable.getLocationTree().asList(),
 			currentLocationTypes: locationTypes
-//=======
-//			locationRoot: locationRoot,
-//			locationTree: locationTree,
-//			currentLocationTypes: locationTypes,
-//			locationTypes: locationService.listTypes(),
-//>>>>>>> dashboard and dsr work, filtering objectives and locations across all report types, added report category filter to dsr, and fixed top level facility type filter bug
 		]
-	}
-	
+	}	
 }

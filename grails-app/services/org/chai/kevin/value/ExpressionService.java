@@ -88,9 +88,9 @@ public class ExpressionService {
 		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",entity="+entity+")");
 		
 		Set<T> result = new HashSet<T>();
-		List<DataEntityType> dataEntityTypes = locationService.listTypes();
-		for (DataEntityType dataEntityType : dataEntityTypes) {
-			List<DataLocationEntity> facilities = locationService.getDataEntities(entity, dataEntityType);
+		Set<DataEntityType> types = new HashSet<DataEntityType>(locationService.listTypes());
+		for (DataEntityType type : types) {
+			List<DataLocationEntity> facilities = entity.collectDataLocationEntities(types, null);
 			
 			if (!facilities.isEmpty()) {
 				Map<DataLocationEntity, StatusValuePair> values = new HashMap<DataLocationEntity, StatusValuePair>();
@@ -98,7 +98,7 @@ public class ExpressionService {
 					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, facility, DataElement.class);
 					values.put(facility, statusValuePair);
 				}
-				result.add(calculation.getCalculationPartialValue(expression, values, entity, period, dataEntityType));
+				result.add(calculation.getCalculationPartialValue(expression, values, entity, period, type));
 			}
 		}
 		return result;

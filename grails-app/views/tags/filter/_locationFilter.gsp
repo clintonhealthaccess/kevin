@@ -11,15 +11,15 @@
 			</a>
 		</g:else> 
 		<div class="hidden dropdown-list js_dropdown-list">
-			<g:if test="${locationTree != null && !locationTree.empty}">
+			<g:if test="${locationFilterTree != null && !locationFilterTree.empty}">
 				<ul>
-					<g:render template="/templates/locationTree" 
+					<g:render template="/tags/filter/locationTree" 
 						model="[
 							controller: controllerName, 
 							action: actionName,
 							current: currentLocation,
-							location: locationRoot,
-							locationTree: locationTree,				
+							location: locationFilterRoot,
+							locationFilterTree: locationFilterTree,				
 							linkParams: linkParams
 						]" />
 				</ul>
