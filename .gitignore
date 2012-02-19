@@ -13,3 +13,4 @@ userScripts/**
 bin/
 *.hprof
 *.hprof.index
+build.info

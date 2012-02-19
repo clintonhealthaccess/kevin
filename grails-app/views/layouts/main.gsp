@@ -123,8 +123,11 @@
 	</div>
 
 	<div id="footer">
-	  <div class="wrapper">
-		  &copy; <g:message code="footer.labels.chai" default="Clinton Health Access Initiative"/> <br /><a href="${createLink(controller:'home', action:'about')}"><g:message code="footer.labels.about" default="About"/></a> | <a href="${createLink(controller:'home', action:'contact')}"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="${createLink(controller:'home', action:'helpdesk')}"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
+		<div class="wrapper push-20">
+			&copy; <g:message code="footer.labels.chai" default="Clinton Health Access Initiative"/> <br /><a href="${createLink(controller:'home', action:'about')}"><g:message code="footer.labels.about" default="About"/></a> | <a href="${createLink(controller:'home', action:'contact')}"><g:message code="footer.labels.contact" default="Contact"/></a> | <a href="${createLink(controller:'home', action:'helpdesk')}"><g:message code="footer.labels.helpdesk" default="Helpdesk"/></a>
+		</div>
+		<div style="opacity: 0.6">
+			<g:buildInfo/>
 		</div>
 	</div>
 
