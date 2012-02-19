@@ -35,7 +35,7 @@
 							  	</p>
 								<div class="table-wrap left clear">
 	              
-									<table class="nested col6 push-top-10">
+									<table class="nested budget push-top-10">
 										<thead>
 											<tr>
 												<th></th>
@@ -133,7 +133,7 @@
 								
 								<div class="right table-aside">
 									<p class="diff positive">TODO Budget difference: 70 Million RWD</p>
-									<div class="diff" id="js_budget-section-edit">
+									<div class="diff loading context-message" id="js_budget-section-edit">
 
 									</div>
 								</div>
