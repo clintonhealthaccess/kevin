@@ -7,14 +7,21 @@ import grails.util.Metadata;
 
 class BuildInfoTagLib {
 
-	static def build 
+	def grailsApplication
 	
-	static {
-		File file = new File("build.info")
-		if (file.exists()) build = Metadata.getInstance(new File("build.info"))
-		else build = null
+	def buildInstance
+	def buildInitialized = false
+
+	def getBuild() {
+		if (!buildInitialized) {
+			def resource = grailsApplication.parentContext.getResource("classpath:build.info")
+			if (resource.exists()) buildInstance = Metadata.getInstance(resource.inputStream)
+			else buildInstance = null
+			buildInitialized = true
+		}
+		return buildInstance
 	}
-	
+		
 	def buildInfo = {attrs, body ->
 		if (GrailsUtil.environment == 'production') {
 			if (build == null) {

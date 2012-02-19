@@ -15,7 +15,7 @@ eventCreateWarStart = { warName, stagingDir ->
 		gitCommit = proc.text
 	} catch (Exception e) {}
 	
-	Metadata build = Metadata.getInstance(new File("build.info"));
+	Metadata build = Metadata.getInstance(new File("${stagingDir}/WEB-INF/classes/build.info"));
 	build.'app.buildDate' = buildDate
 	build.'app.gitCommit' = gitCommit
 	build.'app.systemName' = InetAddress.getLocalHost().getHostName()
