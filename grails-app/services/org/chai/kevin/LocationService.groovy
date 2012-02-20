@@ -97,6 +97,10 @@ public class LocationService {
 		return (T)sessionFactory.getCurrentSession().get(clazz, id);
 	}
 	
+	public <T extends CalculationEntity> T findCalculationEntityByCode(String code, Class<T> clazz) {
+		return (T) sessionFactory.getCurrentSession().createCriteria(clazz)
+				.add(Restrictions.eq("code", code)).uniqueResult();
+	}
 	public Integer countLocation(Class<CalculationEntity> clazz, String text) {
 		return getSearchCriteria(clazz, text).setProjection(Projections.count("id")).uniqueResult()
 	}
@@ -133,7 +137,6 @@ public class LocationService {
 		criteria.add(textRestrictions)
 		return criteria
 	}
-	
 	// TODO property of level?
 	public LocationLevel getLevelBefore(LocationLevel level) {
 		List<LocationLevel> levels = listLevels();

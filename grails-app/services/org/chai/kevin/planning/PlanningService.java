@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
@@ -72,7 +71,7 @@ public class PlanningService {
 //		
 //		return new PlanningEntry(type, dataElementValue, lineNumber, getEnums(type));
 //	}
-	
+
 	private Map<String, Enum> getEnums(PlanningType type) {
 		Map<String, Enum> result = new HashMap<String, Enum>();
 		for (Entry<String, Type> prefix : type.getDataElement().getEnumPrefixes().entrySet()) {
@@ -191,7 +190,6 @@ public class PlanningService {
 	public void setRefreshValueService(RefreshValueService refreshValueService) {
 		this.refreshValueService = refreshValueService;
 	}
-	
 	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
 	}
@@ -199,5 +197,4 @@ public class PlanningService {
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-	
 }

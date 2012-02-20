@@ -58,7 +58,6 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		
 		then:
 		planningTypeBudget.budgetPlanningEntries.size() == 0
-		
 		when:
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
 			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))

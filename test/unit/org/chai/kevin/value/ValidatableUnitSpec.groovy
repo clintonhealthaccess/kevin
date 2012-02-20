@@ -30,7 +30,6 @@ class ValidatableUnitSpec extends UnitSpec {
 		then:
 		validatable.getSkippedPrefixes().equals(new HashSet([""]))
 	}
-	
 	def "test is tree valid"() {
 		setup:
 		def value
@@ -90,5 +89,4 @@ class ValidatableUnitSpec extends UnitSpec {
 		validatable.isTreeComplete("[1]") == true
 		
 	}
-	
 }

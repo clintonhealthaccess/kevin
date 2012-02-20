@@ -265,7 +265,6 @@ class ValueServiceSpec extends IntegrationTests {
 		
 		when:
 		valueService.deleteValues(rawDataElement, DataLocationEntity.findByCode(BUTARO), period2)
-		
 		then:
 		RawDataElementValue.count() == 1
 	}

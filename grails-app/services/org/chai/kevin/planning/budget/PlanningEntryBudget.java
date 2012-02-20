@@ -23,6 +23,7 @@ public class PlanningEntryBudget {
 //	}
 	
 	public PlanningEntry getPlanningEntry() {
+
 		return planningEntry;
 	}
 	
@@ -33,7 +34,7 @@ public class PlanningEntryBudget {
 	public Double getIncoming() {
 		return getSum(PlanningCostType.INCOMING);
 	}
-	
+
 	public Double getDifference() {
 		return getIncoming() - getOutgoing();
 	}
@@ -47,7 +48,6 @@ public class PlanningEntryBudget {
 		}
 		return result;
 	}
-	
 	public Double getGroupTotal(PlanningCostType type, String groupSection) {
 		Double result = 0d;
 		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {

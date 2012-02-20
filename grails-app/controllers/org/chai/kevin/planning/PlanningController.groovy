@@ -64,7 +64,6 @@ class PlanningController extends AbstractController {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
-		
 		def planningList = planningService.getPlanningList(planningType, location)
 		def newPlanningEntry = planningList.getOrCreatePlanningEntry(lineNumber)
 		
@@ -144,6 +143,7 @@ class PlanningController extends AbstractController {
 								prefix: invalidPrefix,
 								valid: validatable.isValid(invalidPrefix),
 								errors: g.renderUserErrors(element: planningEntry, validatable: validatable, suffix: invalidPrefix, location: location)
+
 							)
 						}
 					},
@@ -154,7 +154,7 @@ class PlanningController extends AbstractController {
 			}
 		}
 	}
-	
+
 	def submit = {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
@@ -189,12 +189,12 @@ class PlanningController extends AbstractController {
 		}
 
 		redirect (action: 'budget', params:[planning: planning.id, location: location.id] )
+
 	}
 	
 	def budget = {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocationEntity.get(params.int('location'))
-
 		def planningTypeBudgets = planning.planningTypes.collect {
 			planningService.getPlanningTypeBudget(it, location)
 		}
@@ -246,5 +246,4 @@ class PlanningController extends AbstractController {
 			planningLists: planningLists
 		])
 	}
-
 }

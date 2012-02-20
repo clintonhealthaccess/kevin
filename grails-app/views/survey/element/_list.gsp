@@ -30,7 +30,6 @@
 				</ul>
 				
 				<ul class="minimized-content"></ul>
-			
 				<input type="hidden" class="js_list-input" name="elements[${element.id}].value${suffix}" value="[${i}]"/>
 				<input type="hidden" class="js_list-input-indexes" name="elements[${element.id}].value${suffix}.indexes" value="[${i}]"/>
 				<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[
@@ -57,7 +56,6 @@
 					</ul>
 					
 					<ul class="minimized-content"></ul>
-					
 					<input type="hidden" class="js_list-input" name="elements[${element.id}].value${suffix}" value="[_]"/>
 					<input type="hidden" class="js_list-input-indexes" name="elements[${element.id}].value${suffix}.indexes" value="[_]"/>
 					<g:render template="/survey/element/${type.listType.type.name().toLowerCase()}"  model="[

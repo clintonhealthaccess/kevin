@@ -28,7 +28,6 @@
 						<g:i18n field="${surveyPage.section.names}" />
 					</h3>
 				</div>
-				
 				<div id="js_survey">
 					<g:form url="[controller:'editSurvey', action:'save', params: [location: surveyPage.location.id, section: surveyPage.section.id, survey: surveyPage.survey.id]]">
 					

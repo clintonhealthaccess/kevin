@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.value.RawDataElementValue;
+
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.ValueService;
 
@@ -73,7 +74,6 @@ public class PlanningList {
 	public boolean isEmpty() {
 		return getPlanningEntries().isEmpty();
 	}
-	
 	public void save(ValueService valueService) {
 		if (dataElementValue != null) valueService.save(dataElementValue);
 	}

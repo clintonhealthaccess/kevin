@@ -14,7 +14,6 @@
 				<g:render template="/planning/summary/planningFilter"/>
 				<g:locationFilter linkParams="${[planning: currentPlanning?.id, order:'desc']}" selected="${currentLocation}"/>
 			</div>
-			
 			<div class="main">			
 				<g:if test="${summaryPage == null}">
 					<p class="help"><g:message code="planning.summary.selectplanningfacility.text" default="Please select a planning and a facility to get to the respective survey."/></p>
@@ -51,8 +50,7 @@
 						</table>
 					</div>
 				</g:else>
-			</div>
-			
+			</div>			
 		</div>
 	</body>
 </html>
