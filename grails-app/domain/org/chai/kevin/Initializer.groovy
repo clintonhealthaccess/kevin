@@ -616,8 +616,7 @@ class Initializer {
 		}
 
 	}
-	
-	
+		
 	static def createMaps() {
 		if (!MapsTarget.count()) {
 			def calculation1 = new Average(expression: "\$"+NormalizedDataElement.findByCode("Element 1").id, code: "Maps average 1", timestamp:new Date())

@@ -56,7 +56,7 @@ public class SummaryService {
 	
 	@Transactional(readOnly = true)
 	public SurveySummaryPage getSurveySummaryPage(LocationEntity location, Survey survey) {
-		List<DataLocationEntity> facilities = locationService.getDataEntities(location);
+		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, null);
 		
 		Map<DataEntityType, List<SurveyObjective>> objectiveMap = new HashMap<DataEntityType, List<SurveyObjective>>();
 		Map<DataEntityType, List<SurveyQuestion>> questionMap = new HashMap<DataEntityType, List<SurveyQuestion>>();
@@ -95,7 +95,7 @@ public class SummaryService {
 	
 	@Transactional(readOnly = true)
 	public SurveySummaryPage getObjectiveSummaryPage(LocationEntity location, SurveyObjective objective) {
-		List<DataLocationEntity> facilities = locationService.getDataEntities(location);
+		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, null);
 
 		Map<DataLocationEntity, SurveyEnteredObjective> enteredObjectiveMap = new HashMap<DataLocationEntity, SurveyEnteredObjective>();
 		Map<DataLocationEntity, QuestionSummary> questionSummaryMap = new HashMap<DataLocationEntity, QuestionSummary>();
@@ -120,7 +120,7 @@ public class SummaryService {
 	
 	@Transactional(readOnly = true)
 	public SurveySummaryPage getSectionSummaryPage(LocationEntity location, SurveySection section) {
-		List<DataLocationEntity> facilities = locationService.getDataEntities(location);
+		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, null);
 
 		Map<DataLocationEntity, QuestionSummary> questionSummaryMap = new HashMap<DataLocationEntity, QuestionSummary>();
 		

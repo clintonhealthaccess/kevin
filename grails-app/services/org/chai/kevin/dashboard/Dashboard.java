@@ -41,15 +41,15 @@ public class Dashboard {
 	private List<DashboardEntity> dashboardEntities;
 	
 	private List<LocationEntity> locationPath;
-	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values;
+	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap;
 	
 	public Dashboard(List<CalculationEntity> locations, List<DashboardEntity> dashboardEntities,
-			List<LocationEntity> locationPath, Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> values
+			List<LocationEntity> locationPath, Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap
 	) {
 		this.locations = locations;
 		this.dashboardEntities = dashboardEntities;
 		this.locationPath = locationPath;
-		this.values = values;
+		this.valueMap = valueMap;
 	}
 	
 	public List<CalculationEntity> getLocations() {
@@ -66,17 +66,21 @@ public class Dashboard {
 	
 	public Integer getPercentage(CalculationEntity organisation, DashboardEntity dashboardEntity) {		
 		DashboardPercentage percentage = null;
-		percentage = values.get(organisation).get(dashboardEntity);
+		percentage = valueMap.get(organisation).get(dashboardEntity);
 		if(percentage != null && percentage.isValid())
 			return percentage.getRoundedValue();
 		else
 			return null;
 	}
 	
+	public boolean hasData(){
+		return !valueMap.isEmpty();
+	}
+	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		for (Entry<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> locationEntry : this.values.entrySet()) {
+		for (Entry<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> locationEntry : this.valueMap.entrySet()) {
 			buffer.append(locationEntry.getKey());
 			for (Entry<DashboardEntity, DashboardPercentage> objectiveEntry : locationEntry.getValue().entrySet()) {
 				buffer.append(objectiveEntry.getKey());

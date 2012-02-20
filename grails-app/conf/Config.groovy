@@ -227,7 +227,7 @@ site.period=0
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 
-type.checked=["District Hospital","Health Center"]
+site.locationtype.checked=["District Hospital","Health Center"]
 
 dashboard.objective.root="Strategic Programs"
 dashboard.skip.levels=[]

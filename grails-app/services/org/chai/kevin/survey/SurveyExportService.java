@@ -115,8 +115,8 @@ public class SurveyExportService {
 	
 	@Transactional(readOnly=true)
 	public File getSurveyExportFile(String filename, CalculationEntity entity, SurveySection section, SurveyObjective objective, Survey survey) throws IOException { 
-		
-		List<DataLocationEntity> facilities = locationService.getDataEntities(entity);
+				
+		List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, null);
 		Collections.sort(facilities, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
 		
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);

@@ -17,6 +17,7 @@ public class ReportObjective extends ReportEntity {
 	private Long id;
 	private ReportObjective parent;
 	private List<ReportObjective> children = new ArrayList<ReportObjective>();
+	private List<ReportTarget> targets = new ArrayList<ReportTarget>();
 	
 	@Id
 	@GeneratedValue

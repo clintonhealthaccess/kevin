@@ -248,8 +248,8 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public void refresh(CalculationEntity entity, Survey survey, boolean closeIfComplete) {
-		List<DataLocationEntity> facilities = locationService.getDataEntities(entity);
-	
+		List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, null);
+		
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		

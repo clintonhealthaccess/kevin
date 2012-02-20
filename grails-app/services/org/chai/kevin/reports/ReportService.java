@@ -3,15 +3,18 @@ package org.chai.kevin.reports;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.LocationSorter;
+import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.LocationEntity;
@@ -66,11 +69,51 @@ public class ReportService {
 		return objective;
 	}
 
+	public List<ReportObjective> getObjectiveTree(Class clazz){
+		List<ReportObjective> objectiveTree = new ArrayList<ReportObjective>();		
+		Set<ReportObjective> targetObjectives = getReportTargetObjectives(clazz);		
+		for(ReportObjective targetObjective : targetObjectives){
+			objectiveTree.add(targetObjective);			
+			ReportObjective parent = targetObjective.getParent();
+			while(parent != null){
+				if(!objectiveTree.contains(parent)) objectiveTree.add(parent);
+				parent = parent.getParent();
+			}
+		}
+		return objectiveTree;
+	}
+	
 	public <T> List<T> getReportTargets(Class<T> clazz, ReportObjective objective) {
-		return (List<T>)sessionFactory.getCurrentSession()
+		if(objective == null){
+			return (List<T>)sessionFactory.getCurrentSession()
+			.createCriteria(clazz)			
+			.list();
+		}
+		else{
+			return (List<T>)sessionFactory.getCurrentSession()
 			.createCriteria(clazz)
 			.add(Restrictions.eq("objective", objective))
-			.list();
+			.list();	
+		}
+	}
+	
+	public Set<ReportObjective> getReportTargetObjectives(Class clazz){
+		Set<ReportObjective> objectives = new HashSet<ReportObjective>();
+		if(clazz.equals(DashboardTarget.class)){
+			List<DashboardTarget> targets = getReportTargets(clazz, null);		
+			for(DashboardTarget target : targets){
+				if(target.getObjective() != null) 
+					objectives.add(target.getObjective());
+			}
+		}
+		else{
+			List<ReportTarget> targets = getReportTargets(clazz, null);		
+			for(ReportTarget target : targets){
+				if(target.getObjective() != null) 
+					objectives.add(target.getObjective());
+			}	
+		}		
+		return objectives;
 	}
 	
 	public void setLocationService(LocationService locationService) {
