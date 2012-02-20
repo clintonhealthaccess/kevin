@@ -51,11 +51,11 @@
 					        					<ul class="overview-recent">
 					        						<g:each in="${planningList.getLatestEntries(5)}" var="entry">
 														<li>
-															<a href="${createLink(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">
+															<a href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">
 																<g:value value="${entry.discriminatorValue}" type="${planningList.planningType.discriminatorType}" enums="${entry.enums}"/>
 															</a>
 															<span class="overview-manage right">
-																<a href="${createLink(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">edit</a>
+																<a href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">edit</a>
 																<a href="${createLinkWithTargetURI(controller:'planning', action:'deletePlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">delete</a>
 															</span>
 														</li>
@@ -64,13 +64,13 @@
 				        					</g:if>
 				        					<g:else>
 				        						<p>You haven't added any <g:i18n field="${planningList.planningType.namesPlural}"/> yet. 
-					        						<a href="${createLink(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:planningList.nextLineNumber])}">
+					        						<a href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:planningList.nextLineNumber])}">
 					        							Add your first <g:i18n field="${planningList.planningType.names}"/>
 					        						</a>
 				        						</p>
 				        					</g:else>
 				        					<p class="overview-new">
-				        						<a class="next gray medium" href="${createLink(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:planningList.nextLineNumber])}">
+				        						<a class="next gray medium" href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:planningList.nextLineNumber])}">
 				        							Create New <g:i18n field="${planningList.planningType.names}"/>
 				        						</a>
 				        					</p>

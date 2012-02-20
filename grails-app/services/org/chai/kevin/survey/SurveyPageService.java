@@ -40,7 +40,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
@@ -366,7 +365,7 @@ public class SurveyPageService {
 				
 				// merge the values
 				// this modifies the value object accordingly
-				validatableValue.mergeValue(params, "elements["+element.getId()+"].value");
+				validatableValue.mergeValue(params, "elements["+element.getId()+"].value", new HashSet<String>());
 				
 				// set the value and save
 				// here, a write lock is acquired on the SurveyEnteredValue that will be kept
@@ -389,11 +388,11 @@ public class SurveyPageService {
 	
 	private ValidatableLocator getLocator() {
 		return new ValidatableLocator() {
-			
 			@Override
 			public ValidatableValue getValidatable(Long id, DataLocationEntity location) {
 				SurveyElement element = surveyService.getSurveyElement(id);
-				SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, location);
+				SurveyEnteredValue enteredValue = getSurveyEnteredValue(location, element);
+				if (enteredValue == null) return null;
 				return enteredValue.getValidatable();
 			}
 		};

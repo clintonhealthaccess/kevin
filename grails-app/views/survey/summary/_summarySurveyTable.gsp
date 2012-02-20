@@ -1,13 +1,13 @@
 <r:require modules="progressbar,dropdown,explanation,survey" />
 
-<%@ page import="org.chai.kevin.survey.SummaryPage" %> 
+<%@ page import="org.chai.kevin.survey.summary.SurveySummaryPage" %> 
 
 <div>
 	<table class="listing">
 		<thead>
-			<g:sortableColumn property="${SummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
+			<g:sortableColumn property="${SurveySummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
 			<th><g:message code="survey.summary.objectivesubmitted.label" default="Objectives Submitted" /></th>
-			<g:sortableColumn property="${SummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress', default: 'Overall progress')}" params="${params}" defaultOrder="desc"/>
+			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress', default: 'Overall progress')}" params="${params}" defaultOrder="desc"/>
 			<th></th>
 		</thead>
 		<tbody>
@@ -16,7 +16,7 @@
 				<g:set var="objectiveSummary" value="${summaryPage.getObjectiveSummary(facility)}" />
 				<tr>
 					<td class="objective-table-link" data-facility="${facility.id}">
-						<a href="${createLink(controller: 'summary', action: 'objectiveTable', params: [survey: currentSurvey.id, location: facility.id])}"><g:i18n field="${facility.names}"/></a>
+						<a href="${createLink(controller: 'surveySummary', action: 'objectiveTable', params: [survey: currentSurvey.id, location: facility.id])}"><g:i18n field="${facility.names}"/></a>
 					</td>
 					<td>${objectiveSummary.submittedObjectives}/${objectiveSummary.objectives}</td>
 					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>

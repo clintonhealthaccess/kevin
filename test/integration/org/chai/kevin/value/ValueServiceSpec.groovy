@@ -227,7 +227,7 @@ class ValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 1
 		
 		when:
-		valueService.deleteValues(rawDataElement)
+		valueService.deleteValues(rawDataElement, null, null)
 		
 		then:
 		RawDataElementValue.count() == 0
@@ -236,7 +236,35 @@ class ValueServiceSpec extends IntegrationTests {
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		newRawDataElementValue(rawDataElement, period, DataLocationEntity.findByCode(BUTARO), v("40"))
 		newRawDataElementValue(rawDataElement2, period, DataLocationEntity.findByCode(BUTARO), v("40"))
-		valueService.deleteValues(rawDataElement)
+		valueService.deleteValues(rawDataElement, null, null)
+		
+		then:
+		RawDataElementValue.count() == 1
+	}
+	
+	def "test delete data element values of period and entity"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def period2 = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		
+		when:
+		def rawDataElementValue1 = newRawDataElementValue(rawDataElement, period1, DataLocationEntity.findByCode(BUTARO), v("40"))
+		def rawDataElementValue2 = newRawDataElementValue(rawDataElement, period2, DataLocationEntity.findByCode(KIVUYE), v("40"))
+		def rawDataElementValue3 = newRawDataElementValue(rawDataElement, period2, DataLocationEntity.findByCode(BUTARO), v("40"))
+		
+		then:
+		RawDataElementValue.count() == 3
+		
+		when:
+		valueService.deleteValues(rawDataElement, null, period1)
+		
+		then:
+		RawDataElementValue.count() == 2
+		
+		when:
+		valueService.deleteValues(rawDataElement, DataLocationEntity.findByCode(BUTARO), period2)
 		
 		then:
 		RawDataElementValue.count() == 1
@@ -272,7 +300,7 @@ class ValueServiceSpec extends IntegrationTests {
 		AveragePartialValue.count() == 1
 		
 		when:
-		valueService.deleteValues(average)
+		valueService.deleteValues(average, null, null)
 		
 		then:
 		AveragePartialValue.count() == 0
@@ -281,7 +309,7 @@ class ValueServiceSpec extends IntegrationTests {
 		def average2 = newAverage("2", CODE(2))
 		newAveragePartialValue(average, period, DataLocationEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		newAveragePartialValue(average2, period, DataLocationEntity.findByCode(BUTARO), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
-		valueService.deleteValues(average)
+		valueService.deleteValues(average, null, null)
 		
 		then:
 		AveragePartialValue.count() == 1

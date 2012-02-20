@@ -67,7 +67,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
-		if (entity.id != null) valueService.deleteValues(entity)
+		if (entity.id != null) valueService.deleteValues(entity, null, null)
 		
 		entity.setTimestamp(new Date());
 		entity.save()
@@ -79,7 +79,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 			flash.message = message(code: "normalizeddataelement.delete.hasreferencingdata", default: "Could not delete element, some other data still reference this element.")
 		}
 		else {
-			valueService.deleteValues(entity)
+			valueService.deleteValues(entity, null, null)
 			entity.delete()
 		}
 	}

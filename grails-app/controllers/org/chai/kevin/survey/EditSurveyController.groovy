@@ -69,7 +69,7 @@ class EditSurveyController extends AbstractController {
 			}
 		}
 		else {
-			redirect (controller: 'summary', action: 'summaryPage')
+			redirect (controller: 'surveySummary', action: 'summaryPage')
 		}
 	}
 

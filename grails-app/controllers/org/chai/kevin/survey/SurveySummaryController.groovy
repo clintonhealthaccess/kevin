@@ -3,9 +3,10 @@ package org.chai.kevin.survey
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
-class SummaryController extends AbstractController {
+class SurveySummaryController extends AbstractController {
 
 	def summaryService
 	def languageService
@@ -23,7 +24,7 @@ class SummaryController extends AbstractController {
 		Survey survey = Survey.get(params.int('survey'))
 		
 		def template = null;
-		SummaryPage summaryPage = null;
+		SurveySummaryPage summaryPage = null;
 		
 		// TODO build different classes for this and refactor into several actions
 		if (section != null && entity != null) {
@@ -56,7 +57,7 @@ class SummaryController extends AbstractController {
 		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		Survey currentSurvey = Survey.get(params.int('survey'))
 
-		SummaryPage summaryPage = summaryService.getObjectiveTable(entity, currentSurvey)
+		SurveySummaryPage summaryPage = summaryService.getObjectiveTable(entity, currentSurvey)
 
 		render (view: '/survey/summary/objectiveTable', model: [
 			location: entity,
@@ -68,7 +69,7 @@ class SummaryController extends AbstractController {
 		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'))
 
-		SummaryPage summaryPage = summaryService.getSectionTable(entity, currentObjective)
+		SurveySummaryPage summaryPage = summaryService.getSectionTable(entity, currentObjective)
 
 		render (view: '/survey/summary/sectionTable', model: [
 			location: entity,

@@ -79,7 +79,7 @@ class DataEntryTagLib {
 		
 		if (log.isDebugEnabled()) log.debug('rendering errors for element:'+element+', validatable:'+validatable+', prefix:'+prefix)
 		
-		def rules = getRules(validatable?.getErrors(prefix));
+		def rules = getRules(validatable?.getErrorRules(prefix));
 		if (!rules.empty) {
 			boolean hasErrors = hasErrors(rules)
 
@@ -93,7 +93,7 @@ class DataEntryTagLib {
 				error.accepted = validatable.isAcceptedWarning(rule, prefix)
 				errors.add(error)
 			} 
-			out << g.render(template: '/dataEntry/errors', model: [errors: errors, element: element])
+			out << g.render(template: '/tags/dataEntry/errors', model: [errors: errors, element: element])
 		}
 	}
 	

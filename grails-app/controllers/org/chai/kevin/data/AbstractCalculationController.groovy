@@ -12,7 +12,7 @@ abstract class AbstractCalculationController extends AbstractEntityController {
 	}
 	
 	def deleteEntity(def entity) {
-		valueService.deleteValues(entity)
+		valueService.deleteValues(entity, null, null)
 		dataService.delete(entity)
 	}
 	
@@ -21,7 +21,7 @@ abstract class AbstractCalculationController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
-		if (entity.id != null) valueService.deleteValues(entity)
+		if (entity.id != null) valueService.deleteValues(entity, null, null)
 		
 		entity.setTimestamp(new Date());
 		entity.save()
