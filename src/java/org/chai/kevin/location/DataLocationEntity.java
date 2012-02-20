@@ -59,8 +59,8 @@ public class DataLocationEntity extends CalculationEntity {
 	}
 	
 	@Override
-	public List<DataLocationEntity> getDataEntities(Set<LocationLevel> skipLevels) {
-		return getDataEntities();
+	public List<DataLocationEntity> getDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
+		return  getDataEntities();
 	}
 
 	@Override

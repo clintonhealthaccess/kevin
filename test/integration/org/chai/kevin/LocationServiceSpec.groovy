@@ -56,27 +56,7 @@ class LocationServiceSpec extends IntegrationTests {
 		BURERA		| COUNTRY	| []
 	}
 	
-	def "get data entities for location"() {
-		setup:
-		setupLocationTree()
-		
-		expect:
-		def typeList = types.collect{DataEntityType.findByCode(it)}
-		locationService.getDataEntities(LocationEntity.findByCode(location), typeList.toArray(new DataEntityType[typeList.size()])).containsAll(expectedEntities.collect{DataLocationEntity.findByCode(it)})
-		
-		where:
-		location	| types												| expectedEntities
-		RWANDA		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]	| [BUTARO, KIVUYE]
-		RWANDA		| [DISTRICT_HOSPITAL_GROUP]							| [BUTARO]
-		NORTH		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]	| [BUTARO, KIVUYE]
-		NORTH		| [DISTRICT_HOSPITAL_GROUP]							| [BUTARO]
-	}
-	
-	def "get data entities for data entity"() {
-		
-	}
-	
-	def "get parent of level for location for location"() {
+	def "get parent of level for location"() {
 		setup:
 		setupLocationTree()
 		
