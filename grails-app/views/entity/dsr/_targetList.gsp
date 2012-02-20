@@ -16,12 +16,12 @@
 				<td>
 					<ul class="horizontal">
 						<li>
-							<a class="edit-link" href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'edit', params:[id: target.id])}">
+							<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', params:[id: target.id])}">
 								<g:message code="default.link.edit.label" default="Edit" />
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'dashboardTarget', action:'delete', params:[id: target.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="default.link.delete.label" default="Delete" /></a>
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', params:[id: target.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="default.link.delete.label" default="Delete" /></a>
 						</li>
 						
 					</ul>
