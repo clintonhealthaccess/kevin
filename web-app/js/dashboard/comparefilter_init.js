@@ -66,7 +66,7 @@ function compareFilter(table, locationId) {
 				$(tooltip).attr('title', percentageValue + '%')
 				$(tooltip).attr('data-percentage', percentageValue);
 				if(percentageValue > 100){
-					$(tooltip).addClass('.expand-tick');
+					$(tooltip).addClass('expand-tick');
 					$(tooltip).css('left', '100%');
 					$(tickmark).css('width', '100%');
 					}

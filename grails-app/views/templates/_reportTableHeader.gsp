@@ -22,3 +22,4 @@
 	</g:elseif>
 	<g:else></g:else>
 </h4>
+<a class="level-up" href="#">Level Up</a>
