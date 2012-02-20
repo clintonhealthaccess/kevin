@@ -19,7 +19,7 @@
   					<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(objective)}"/>
   					<tr>
   						<td class="section-table-link" data-objective="${objective.id}" data-location="${location.id}">
-  							<a href="${createLink(controller: 'summary', action: 'sectionTable', params: [location: location.id, objective: objective.id])}">
+  							<a href="${createLink(controller: 'surveySummary', action: 'sectionTable', params: [location: location.id, objective: objective.id])}">
   								<g:i18n field="${objective.names}"/>
   							</a>
   						</td>

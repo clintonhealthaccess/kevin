@@ -993,11 +993,11 @@ class Initializer {
 			namesPlural: j(["en":"Activities"]),
 //			sections: ["[_].key1","[_].key2"],
 			sectionDescriptions: [
-				"[_].basic": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].staffing": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].consumables": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].monthly_breakdown": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].funding_sources": j(["en":"Lorem ipsum blablablabla"])
+				"[_].basic": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].staffing": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].consumables": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].monthly_breakdown": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
 			],
 			headers: [
 				"[_].basic": j(["en":"Basic Information"]),
@@ -1053,13 +1053,13 @@ class Initializer {
 			discriminator: '[_].basic.activity',
 			planning: planning
 		).save(failOnError: true);
-		
+	
 		planning.planningTypes << planningType
 		planning.save(failOnError: true)
 	
 		def sumCost1 = new Sum(
-			code: 'SUMPLANNING', 
-			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.key0 == "value1")[0].key1.key12 * 2'
+			code: 'SUMPLANNING1', 
+			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.basic.activity == "value1")[0].basic.instances * 2'
 		).save(failOnError: true);
 	
 		def planningCost1 = new PlanningCost(
@@ -1067,46 +1067,43 @@ class Initializer {
 			type: PlanningCostType.INCOMING,
 			discriminatorValue: 'value1',
 			sum: sumCost1,
-			section: '.key1',
-			groupSection: '.key1',
+			section: '[_].staffing',
+			groupSection: '[_].staffing',
 			names: j(["en":"Salaries"])
-		)
+		).save(failOnError: true)
 	
-		planningType.costs.add(planningCost1)
+		def sumCost2 = new Sum(
+			code: 'SUMPLANNING2',
+			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.basic.activity == "value1")[0].basic.instances * 10'
+		).save(failOnError: true);
+	
+		def planningCost2 = new PlanningCost(
+			planningType: planningType,
+			type: PlanningCostType.OUTGOING,
+			discriminatorValue: 'value1',
+			sum: sumCost2,
+			section: '[_].consumables',
+			names: j(["en":"Patient"])
+		).save(failOnError: true)
+		
+		planningType.costs << planningCost1
+		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-		/* START WORKFLOW */
-		//			def wizard = new Wizard(
-		//				names: j(["en":"Wizard question"]),
-		//				descriptions: j(["en":"Help text"]),
-		//				fixedHeaderPrefix: "[_].key1",
-		//				order: 6,
-		//				typeCodeString: "District Hospital,Health Center"
-		//			)
-		//			services.addQuestion(wizard)
-		//			services.save(failOnError:true, flush:true)
-		//
-		//			def wizardElement = new SurveyElement(
-		//					dataElement: RawDataElement.findByCode("LISTMAP2"),
-		//					surveyQuestion: serviceQ6,
-		//					headers: [
-		//						"[_].key1": j(["en":"Basic Information"]),
-		//						"[_].key1.key11": j(["en":"Name"]),
-		//						"[_].key1.key12": j(["en":"Number"]),
-		//						"[_].key2": j(["en":"Supply and Maintenance"]),
-		//						"[_].key2.key21": j(["en":"Supplier Name"]),
-		//						"[_].key2.key22": j(["en":"Supplier Type"]),
-		//					]).save(failOnError: true)
-		//			wizard.surveyElement = wizardElement
-		//			wizard.save(failOnError: true, flush: true)
-		//
-		//			def step1 = new WizardStep(wizard: wizard, prefix: "[_].key1.key11").save(failOnError: true)
-		//			def step2 = new WizardStep(wizard: wizard, prefix: "[_].key1.key16").save(failOnError: true)
-		//
-		//			wizard.steps << [step1, step2]
-		//			wizard.save(failOnError: true, flush: true)
-		//			services.addQuestion(wizard)
-		/* END WORKFLOW */
+		new RawDataElementValue(
+			data: RawDataElement.findByCode("PLANNINGELEMENT"),
+			entity: DataLocationEntity.findByCode("Butaro DH"),
+			period: Period.list()[0],
+			value: Value.VALUE_LIST([
+				Value.VALUE_MAP([
+					"basic": Value.VALUE_MAP([
+						"activity": Value.VALUE_STRING("value1"), 
+						"instances": Value.VALUE_NUMBER(10)
+					])
+				])
+			]),
+			timestamp: new Date()
+		).save(failOnError: true)
 	}
 	
 	static def createQuestionaire(){

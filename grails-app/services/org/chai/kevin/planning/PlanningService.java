@@ -8,11 +8,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.planning.budget.BudgetCost;
 import org.chai.kevin.planning.budget.PlanningEntryBudget;
 import org.chai.kevin.planning.budget.PlanningTypeBudget;
@@ -21,28 +23,55 @@ import org.chai.kevin.value.RefreshValueService;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Transactional;
 
 public class PlanningService {
 
 	private ValueService valueService;
 	private DataService dataService;
 	private RefreshValueService refreshValueService;
+	private LocationService locationService;
+	private SessionFactory sessionFactory;
 	
 	public Planning getDefaultPlanning() {
-		return null;
+		return (Planning)sessionFactory.getCurrentSession()
+				.createCriteria(Planning.class).add(Restrictions.eq("active", true)).uniqueResult();
 	}
 	
+	@Transactional(readOnly=true)
+	public PlanningSummaryPage getSummaryPage(Planning planning, LocationEntity location) {
+		List<DataLocationEntity> dataEntities = locationService.getDataEntities(location);
+		Map<PlanningType, PlanningTypeSummary> summaries = new HashMap<PlanningType, PlanningTypeSummary>();
+		for (PlanningType planningType : planning.getPlanningTypes()) {
+			summaries.put(planningType, getPlanningTypeSummary(planningType, dataEntities));
+		}
+		
+		return new PlanningSummaryPage(planning.getPlanningTypes(), dataEntities, summaries);
+	}
+	
+	// TODO move to planning type
+	private PlanningTypeSummary getPlanningTypeSummary(PlanningType planningType, List<DataLocationEntity> dataEntities) {
+		Map<DataLocationEntity, Integer> numberOfEntries = new HashMap<DataLocationEntity, Integer>();
+		for (DataLocationEntity entity : dataEntities) {
+			numberOfEntries.put(entity, getPlanningList(planningType, entity).getPlanningEntries().size());
+		}
+		return new PlanningTypeSummary(planningType, numberOfEntries);
+	}
+	
+	@Transactional(readOnly=true)
 	public PlanningList getPlanningList(PlanningType type, DataLocationEntity location) {
-		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getDataElement(), location, type.getPeriod());
+		RawDataElementValue dataElementValue = getDataElementValue(type, location);
 		
 		return new PlanningList(type, dataElementValue, getEnums(type));
 	}
 	
-	public PlanningEntry getPlanningEntry(PlanningType type, DataLocationEntity location, Integer lineNumber) {
-		RawDataElementValue dataElementValue = getDataElementValue(type, location);
-		
-		return new PlanningEntry(type, dataElementValue, lineNumber, getEnums(type));
-	}
+//	public PlanningEntry getPlanningEntry(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+//		RawDataElementValue dataElementValue = getDataElementValue(type, location);
+//		
+//		return new PlanningEntry(type, dataElementValue, lineNumber, getEnums(type));
+//	}
 	
 	private Map<String, Enum> getEnums(PlanningType type) {
 		Map<String, Enum> result = new HashMap<String, Enum>();
@@ -56,19 +85,22 @@ public class PlanningService {
 		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getDataElement(), location, type.getPeriod());
 		if (dataElementValue == null) {
 			dataElementValue = new RawDataElementValue(type.getDataElement(), location, type.getPeriod(), Value.NULL_INSTANCE());
-			valueService.save(dataElementValue);
 		}
 		return dataElementValue;
 	}
 	
+	@Transactional(readOnly=false)
 	public void deletePlanningEntry(PlanningType type, DataLocationEntity location, Integer lineNumber) {
-		PlanningEntry planningEntry = getPlanningEntry(type, location, lineNumber);
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry planningEntry = planningList.getPlanningEntries().get(lineNumber);
 		planningEntry.delete();
-		planningEntry.save(valueService);
+		planningList.save(valueService);
 	}
 	
+	@Transactional(readOnly=false)
 	public PlanningEntry modify(PlanningType type, DataLocationEntity location, Integer lineNumber, Map<String, Object> params) {
-		PlanningEntry planningEntry = getPlanningEntry(type, location, lineNumber);
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
 		
 		// first we merge the values to create a new value
 		planningEntry.mergeValues(params);
@@ -78,22 +110,70 @@ public class PlanningService {
 		// TODO
 		
 		// last we set and save the value
-		planningEntry.save(valueService);
+		planningList.save(valueService);
 		return planningEntry;
 	}
 	
+	@Transactional(readOnly=false)
+	public void submit(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
+		
+		// we re-run the validation rules
+		// TODO
+		
+		// we submit the entry
+		planningEntry.setSubmitted(true);
+				
+		// then we recalculate the budget
+		refreshBudget(planningEntry, location);
+		
+		// last we save the value
+		planningList.save(valueService);
+	}
+	
+	@Transactional(readOnly=false)
+	public void unsubmit(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
+		
+		// we re-run the validation rules
+		// TODO
+		
+		// we submit the entry
+		planningEntry.setSubmitted(false);
+				
+		// last we save the value
+		planningList.save(valueService);
+	}
+		
+	@Transactional(readOnly=false)
+	public boolean isBudgetUpdated(Planning planning, DataLocationEntity location) {
+		for (PlanningType planningType : planning.getPlanningTypes()) {
+			if (!getPlanningList(planningType, location).isBudgetUpdated()) return false;
+		}
+		return true;
+	}
+	
+	@Transactional(readOnly=false)
 	public void refreshBudget(PlanningType type, DataLocationEntity location) {
 		PlanningList planningList = getPlanningList(type, location);
 		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
-			if (!planningEntry.isBudgetUpdated()) {
-				for (PlanningCost cost : planningEntry.getPlanningCosts()) {
-					refreshValueService.refreshCalculation(cost.getSum(), location, type.getPeriod());
-				}
-				planningEntry.setBudgetUpdated(true);
+			refreshBudget(planningEntry, location);
+		}
+		planningList.save(valueService);
+	}
+	
+	private void refreshBudget(PlanningEntry planningEntry, DataLocationEntity location) {
+		if (planningEntry.isSubmitted() && !planningEntry.isBudgetUpdated()) {
+			for (PlanningCost cost : planningEntry.getPlanningCosts()) {
+				refreshValueService.refreshCalculation(cost.getSum(), location, cost.getPlanningType().getPeriod());
 			}
+			planningEntry.setBudgetUpdated(true);
 		}
 	}
 	
+	@Transactional(readOnly=true)
 	public PlanningTypeBudget getPlanningTypeBudget(PlanningType type, DataLocationEntity location) {
 		PlanningList planningList = getPlanningList(type, location);
 		
@@ -102,11 +182,13 @@ public class PlanningService {
 		
 		List<PlanningEntryBudget> planningEntryBudgets = new ArrayList<PlanningEntryBudget>();
 		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
-			List<BudgetCost> budgetCosts = new ArrayList<BudgetCost>();
-			for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
-				budgetCosts.add(new BudgetCost(planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, type.getPeriod(), types)));
+			if (planningEntry.isSubmitted()) {
+				Map<PlanningCost, BudgetCost> budgetCosts = new HashMap<PlanningCost, BudgetCost>();
+				for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+					budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, type.getPeriod(), types)));
+				}
+				planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
 			}
-			planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
 		}
 		
 		return new PlanningTypeBudget(type, planningEntryBudgets);
@@ -123,5 +205,13 @@ public class PlanningService {
 	public void setRefreshValueService(RefreshValueService refreshValueService) {
 		this.refreshValueService = refreshValueService;
 	}
+	
+	public void setLocationService(LocationService locationService) {
+		this.locationService = locationService;
+	}
 
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+	
 }
