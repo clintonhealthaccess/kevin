@@ -45,6 +45,8 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -148,11 +150,16 @@ public class ValueService {
 	}
 	
 	@Transactional(readOnly=false)
-	public void deleteValues(Data<?> data) {
-		sessionFactory.getCurrentSession()
-		.createQuery("delete from "+data.getValueClass().getAnnotation(Entity.class).name()+" where data = :data")
-		.setParameter("data", data)
-		.executeUpdate();
+	public void deleteValues(Data<?> data, CalculationEntity entity, Period period) {
+		String queryString = "delete from "+data.getValueClass().getAnnotation(Entity.class).name()+" where data = :data";
+		if (entity != null) queryString += " and entity = :entity";
+		if (period != null) queryString += " and period = :period";
+		Query query = sessionFactory.getCurrentSession()
+		.createQuery(queryString)
+		.setParameter("data", data);
+		if (entity != null) query.setParameter("entity", entity);
+		if (period != null) query.setParameter("period", period);
+		query.executeUpdate();
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -162,4 +169,5 @@ public class ValueService {
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;
 	}
+
 }

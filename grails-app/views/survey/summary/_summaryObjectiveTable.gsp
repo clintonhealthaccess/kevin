@@ -1,13 +1,13 @@
-<%@ page import="org.chai.kevin.survey.SummaryPage" %>
+<%@ page import="org.chai.kevin.survey.summary.SurveySummaryPage" %>
 
 <r:require modules="progressbar,dropdown,explanation,survey" />
 
 <div>
 	<table class="listing">
 		<thead>
-			<g:sortableColumn property="${SummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
+			<g:sortableColumn property="${SurveySummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
 			<th><g:message code="survey.summary.submitted" default="Submitted" /></th>
-			<g:sortableColumn property="${SummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress', default: 'Overall progress')}" params="${params}" defaultOrder="desc"/>
+			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress', default: 'Overall progress')}" params="${params}" defaultOrder="desc"/>
 			<th></th>
 		</thead>
 		<tbody>
@@ -15,7 +15,7 @@
 				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(facility)}" />
 				<tr>
 					<td class="section-table-link" data-objective="${currentObjective.id}" data-location="${facility.id}">
-						<a href="${createLink(controller: 'summary', action: 'sectionTable', params: [objective: currentObjective.id, location: facility.id])}">
+						<a href="${createLink(controller: 'surveySummary', action: 'sectionTable', params: [objective: currentObjective.id, location: facility.id])}">
 							<g:i18n field="${facility.names}"/>
 						</a>
 					</td>

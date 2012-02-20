@@ -36,19 +36,20 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 
-	def "normalized data element code is unique"() {
-		when:
-		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
-
-		then:
-		NormalizedDataElement.count() == 1;
-
-		when:
-		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
-
-		then:
-		thrown ValidationException
-	}
+	// TODO uncomment when GRAILS-8615 is fixed
+//	def "normalized data element code is unique"() {
+//		when:
+//		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
+//
+//		then:
+//		NormalizedDataElement.count() == 1;
+//
+//		when:
+//		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap:e([:])).save(failOnError: true)
+//
+//		then:
+//		thrown ValidationException
+//	}
 	
 	def "normalized data element value hashcode and equals"() {
 		setup:

@@ -11,6 +11,7 @@ import org.hisp.dhis.period.Period;
 class PlanningController extends AbstractController {
 	
 	def planningService
+	def languageService
 	
 	def index = {
 		redirect (action: 'planning', params: params)	
@@ -33,7 +34,7 @@ class PlanningController extends AbstractController {
 				response.sendError(404)
 			}
 			else {
-				redirect (controller:'planning', action: 'overview', params: [planning: planning?.id, location: user.dataLocation.id])
+				redirect (controller:'planning', action: 'overview', params: [planning: dataEntry?.id, location: user.dataLocation.id])
 			}
 		}
 		else {
@@ -42,11 +43,17 @@ class PlanningController extends AbstractController {
 	}
 	
 	def summaryPage = {
-		
 		def location = LocationEntity.get(params.int('location'))
 		def planning = Planning.get(params.int('planning'))
 		
+		def summaryPage = null
+		if (location != null && planning != null) { 
+			summaryPage = planningService.getSummaryPage(planning, location)
+			summaryPage.sort(params.sort, params.order, languageService.currentLanguage)
+		}
+		
 		render (view: '/planning/summary/summaryPage', model: [
+			summaryPage: summaryPage,
 			plannings: Planning.list(),
 			currentPlanning: planning,
 			currentLocation: location
@@ -58,14 +65,36 @@ class PlanningController extends AbstractController {
 		def location = DataLocationEntity.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		
-		def newPlanningLine = planningService.getPlanningEntry(planningType, location, lineNumber)
+		def planningList = planningService.getPlanningList(planningType, location)
+		def newPlanningEntry = planningList.getOrCreatePlanningEntry(lineNumber)
 		
 		render (view: '/planning/editPlanningEntry', model: [
 			planningType: planningType, 
-			planningLine: newPlanningLine,
+			planningEntry: newPlanningEntry,
 			location: location,
-			period: period
+			targetURI: targetURI
 		])
+	}
+	
+	def editPlanningSection = {
+		
+		def planningType = PlanningType.get(params.int('planningType'))
+		def location = DataLocationEntity.get(params.int('location'))
+		def lineNumber = params.int('lineNumber')
+		def section = params.section
+		
+		def planningList = planningService.getPlanningList(planningType, location)
+		def planningEntry = planningList.planningEntries[lineNumber]
+		
+		render(contentType:"text/json") {
+			status = 'success'
+			html = g.render (template: '/planning/budget/planningSection', model:[
+				planningType: planningType,
+				planningEntry: planningEntry,
+				location: location,
+				section: section
+			])
+		}
 	}
 	
 	def deletePlanningEntry = {
@@ -81,16 +110,28 @@ class PlanningController extends AbstractController {
 	def saveValue = {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
+		def lineNumberParam = params.int('lineNumber')
 		
-		planningService.modify(planningType, location, lineNumber, params)
-		
-		def planningLine = planningService.getPlanningEntry(planningType, location, lineNumber)
-		def validatable = planningLine.validatable
+		def planningEntry = planningService.modify(planningType, location, lineNumberParam, params)
+		def validatable = planningEntry.validatable
 		
 		render(contentType:"text/json") {
 			status = 'success'
-			
+			id = planningType.id
+			lineNumber = lineNumberParam
+			complete = planningEntry.incompleteSections.empty
+			valid = planningEntry.invalidSections.empty
+			budgetUpdated = planningEntry.budgetUpdated
+			sections = array {
+				planningType.sections.each { section ->
+					sect (
+						section: section,
+						prefix: planningEntry.getPrefix(section),
+						invalid: planningEntry.invalidSections.contains(section),
+						complete: !planningEntry.incompleteSections.contains(section)
+					)
+				}
+			}
 			elements = array {
 				elem (
 					id: planningType.id,
@@ -102,7 +143,7 @@ class PlanningController extends AbstractController {
 							pre (
 								prefix: invalidPrefix,
 								valid: validatable.isValid(invalidPrefix),
-								errors: g.renderUserErrors(element: planningLine, validatable: validatable, suffix: invalidPrefix, location: location)
+								errors: g.renderUserErrors(element: planningEntry, validatable: validatable, suffix: invalidPrefix, location: location)
 							)
 						}
 					},
@@ -114,40 +155,63 @@ class PlanningController extends AbstractController {
 		}
 	}
 	
-	def budgetUpdated = {
-		// TODO returns a json 'true' if the budget is updated
-		def planning = Planning.get(params.int('planning'))
+	def submit = {
+		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
-
-		for (def planningType: planning.planningTypes) {
-			planningService.getPlanningList(planningType, location)
-		}
+		def lineNumber = params.int('lineNumber')
+		
+		planningService.submit(planningType, location, lineNumber)
+		
+		redirect (uri: targetURI)
 	}
 	
-	def updatingBudget = {
-		// TODO waiting page that polls 'budgetUpdated' to see if the budget is updated	
+	def unsubmit = {
+		def planningType = PlanningType.get(params.int('planningType'))
+		def location = DataLocationEntity.get(params.int('location'))
+		def lineNumber = params.int('lineNumber')
+		
+		planningService.unsubmit(planningType, location, lineNumber)
+		
+		redirect (uri: targetURI)
+	}
+	
+	def updateBudget = {
+		def planning = Planning.get(params.int('planning'))
+		def planningType = PlanningType.get(params.int('planningType'))
+		def location = DataLocationEntity.get(params.int('location'))
+		
+		if (planning != null) planning.planningTypes.each {
+			planningService.refreshBudget(it, location)
+		}
+		else {
+			planning = planningType.planning
+			planningService.refreshBudget(planningType, location)
+		}
+
+		redirect (action: 'budget', params:[planning: planning.id, location: location.id] )
 	}
 	
 	def budget = {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocationEntity.get(params.int('location'))
 
-		// waiting logic if some budget costs must be calculated
-		// redirect to waiting page 'updatingBudget' if they must
-		for (def planningType: planning.planningTypes) {
-			if (!planningService.getPlanningList(planningType, location).isBudgetUpdated()) {
-				redirect (action: 'updatingBudget', params:[planning: planning, location: location])
-				return;
-			} 
+		def planningTypeBudgets = planning.planningTypes.collect {
+			planningService.getPlanningTypeBudget(it, location)
 		}
 
-		def budgetPlanningTypes = planning.planningTypes.collect {
-			planningService.getPlanningTypeBudget(it, location, period)
-		}
-		
-		render (view: '/planning/budget', model: [
-			budgetPlanningTypes: budgetPlanningTypes
+		render (view: '/planning/budget/budget', model: [
+			planning: planning,
+			location: location,
+			updatedBudget: isBudgetUpdated(planning, location),
+			planningTypeBudgets: planningTypeBudgets
 		])
+	}
+	
+	def isBudgetUpdated(def planning, def location) {
+		for (def planningType : planning.planningTypes) {
+			if (!planningService.getPlanningList(planningType, location).isBudgetUpdated()) return false
+		}
+		return true
 	}
 		
 	def planningList = {
@@ -183,6 +247,4 @@ class PlanningController extends AbstractController {
 		])
 	}
 
-	def tmp = {}
-		
 }
