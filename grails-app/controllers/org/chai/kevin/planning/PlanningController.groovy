@@ -77,6 +77,7 @@ class PlanningController extends AbstractController {
 	}
 	
 	def editPlanningSection = {
+		
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocationEntity.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
@@ -201,9 +202,16 @@ class PlanningController extends AbstractController {
 		render (view: '/planning/budget/budget', model: [
 			planning: planning,
 			location: location,
-			updatedBudget: planningService.isBudgetUpdated(planning, location),
+			updatedBudget: isBudgetUpdated(planning, location),
 			planningTypeBudgets: planningTypeBudgets
 		])
+	}
+	
+	def isBudgetUpdated(def planning, def location) {
+		for (def planningType : planning.planningTypes) {
+			if (!planningService.getPlanningList(planningType, location).isBudgetUpdated()) return false
+		}
+		return true
 	}
 		
 	def planningList = {

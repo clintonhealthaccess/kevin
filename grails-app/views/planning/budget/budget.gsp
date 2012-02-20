@@ -133,8 +133,13 @@
 								
 								<div class="right table-aside">
 									<p class="diff positive">TODO Budget difference: 70 Million RWD</p>
-									<div class="diff loading context-message" id="js_budget-section-edit">
-
+									<div class="diff context-message hidden" id="js_budget-section-edit">
+										<div class="js_content">
+										
+										</div>
+										<span class="hidden js_warning-message">
+											Could not load panel
+										</span>
 									</div>
 								</div>
 							</div>
@@ -183,24 +188,31 @@
 					$.manageAjax.add(queueName, {
 						url: $(this).attr('href'),
 						beforeSend: function() {
+							$('#js_budget-section-edit').show();
+							$('#js_budget-section-edit').removeClass('warning');
+							$('#js_budget-section-edit .js_warning-message').hide();
 							$('#js_budget-section-edit').addClass('loading');
-							$('#js_budget-section-edit').html('');
+							$('#js_budget-section-edit .js_content').html('');
 						},
 						success: function(data) {
 							if (data.status == 'success') {
-								$('#js_budget-section-edit').html(data.html);
+								$('#js_budget-section-edit .js_content').html(data.html);
 								$('#js_budget-section-edit').removeClass('loading');
-
+								$('#js_budget-section-edit').removeClass('warning');
+								$('#js_budget-section-edit .js_warning-message').hide();
+								
 								dataEntry.enableAfterLoading();
 							}
 							else {
 								$('#js_budget-section-edit').removeClass('loading');
-								$('#js_budget-section-edit').addClass('error');
+								$('#js_budget-section-edit').addClass('warning');
+								$('#js_budget-section-edit .js_warning-message').show();
 							}
 						},
 						error: function() {
 							$('#js_budget-section-edit').removeClass('loading');
-							$('#js_budget-section-edit').addClass('error');
+							$('#js_budget-section-edit').addClass('warning');
+							$('#js_budget-section-edit .js_warning-message').show();
 						}
 					});
 					

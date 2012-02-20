@@ -119,9 +119,6 @@ public class PlanningService {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
 		
-		// we re-run the validation rules
-		// TODO
-		
 		// we submit the entry
 		planningEntry.setSubmitted(true);
 				
@@ -137,9 +134,6 @@ public class PlanningService {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
 		
-		// we re-run the validation rules
-		// TODO
-		
 		// we submit the entry
 		planningEntry.setSubmitted(false);
 				
@@ -147,14 +141,6 @@ public class PlanningService {
 		planningList.save(valueService);
 	}
 		
-	@Transactional(readOnly=false)
-	public boolean isBudgetUpdated(Planning planning, DataLocationEntity location) {
-		for (PlanningType planningType : planning.getPlanningTypes()) {
-			if (!getPlanningList(planningType, location).isBudgetUpdated()) return false;
-		}
-		return true;
-	}
-	
 	@Transactional(readOnly=false)
 	public void refreshBudget(PlanningType type, DataLocationEntity location) {
 		PlanningList planningList = getPlanningList(type, location);

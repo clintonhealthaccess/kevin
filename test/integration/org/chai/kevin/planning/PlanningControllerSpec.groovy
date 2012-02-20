@@ -152,8 +152,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		
 	}
 	
-	def "update budget sets budget updated to true and redirects to budget"() {
-		setup:
+	def "update budget sets budget updated to true and redirects to budget - with planning"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -179,6 +178,94 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		RawDataElementValue.count() == 1
 		RawDataElementValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
 		
+	}
+	
+	def "udpate budget sets budget updated to true and redirects to budget - with planning type"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		def planningType = newPlanningType(dataElement, "[_].key0", planning)
+		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
+			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
+		)
+		planningController = new PlanningController()
+		
+		when:
+		elementValue.value.listValue[0].setAttribute("submitted", "true")
+		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.updateBudget()
+		
+		then:
+		planningController.response.redirectedUrl == '/planning/budget/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
+	}
+	
+	def "submit sets submitted flag to true and redirects to targetURI"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		def planningType = newPlanningType(dataElement, "[_].key0", planning)
+		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
+			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
+		)
+		planningController = new PlanningController()
+		
+		when:
+		planningController.params.targetURI = '/test'
+		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.lineNumber = 0
+		planningController.submit()
+		
+		then:
+		planningController.response.redirectedUrl == '/test'
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
+		RawDataElementValue.list()[0].value.listValue[0].getAttribute("submitted") == 'true'
+	}
+	
+	
+	def "unsubmit sets submitted flag to false and redirects to targetURI"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		def planningType = newPlanningType(dataElement, "[_].key0", planning)
+		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
+			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
+		)
+		planningController = new PlanningController()
+		
+		when:
+		elementValue.value.listValue[0].setAttribute("submitted", "true")
+		elementValue.value.listValue[0].setAttribute("budget_updated", "true")
+		planningController.params.targetURI = '/test'
+		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.lineNumber = 0
+		planningController.unsubmit()
+		
+		then:
+		planningController.response.redirectedUrl == '/test'
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
+		RawDataElementValue.list()[0].value.listValue[0].getAttribute("submitted") == 'false'
 	}
 	
 }
