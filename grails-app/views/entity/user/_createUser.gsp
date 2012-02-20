@@ -13,7 +13,9 @@
 			<g:input name="location" label="Location" bean="${user}" field="location"/>
 			<g:input name="email" label="Email" bean="${user}" field="email"/>
 			<g:input name="permissionString" label="Permission" bean="${user}" field="permissionString"/>
-			
+			<g:inputPass name="passwordHash" label="Password" bean="${user}" field="passwordHash"/>
+			<g:inputPass name="passwordHash" label="Repeat password"  field="passwordHash"/>
+						
 			<div class="row">
 				<label><g:message code="user.confirmed.label" default="Confirmed"/></label>
 				<g:checkBox name="confirmed" value="${user.confirmed}" />

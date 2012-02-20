@@ -27,6 +27,9 @@ class UserController extends AbstractEntityController {
 
 	def bindParams(def entity) {
 		entity.properties = params
+		
+		if (params.passwordHash!=null && params.confirmPass.equals(params.passwordHash))
+			entity.passwordHash = params.passwordHash
 	}
 	
 	def list = {
