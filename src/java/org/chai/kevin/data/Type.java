@@ -216,7 +216,7 @@ public class Type extends JSONValue {
 		case DATE:
 			throw new IllegalArgumentException();
 		case LIST:
-			if (!prefix.startsWith("[_]")) throw new IllegalArgumentException();
+			if (!prefix.startsWith("[_]")) throw new IllegalArgumentException("Prefix "+prefix+" not found in type: "+this);
 			return getListType().getType(prefix.substring(3));
 		case MAP:
 			boolean found = false;
@@ -226,7 +226,7 @@ public class Type extends JSONValue {
 					return entry.getValue().getType(prefix.substring(entry.getKey().length()+1));
 				}
 			}
-			if (!found) throw new IllegalArgumentException();
+			if (!found) throw new IllegalArgumentException("Prefix "+prefix+" not found in type: "+this);
 		default:
 			throw new NotImplementedException();
 		}
@@ -322,10 +322,10 @@ public class Type extends JSONValue {
 						
 						for (Integer index : filteredIndexList) {
 							Value oldListValue = null;
-							if (oldValue.isNull()) oldListValue = Value.NULL;
+							if (oldValue.isNull()) oldListValue = Value.NULL_INSTANCE();
 							else {
 								if (index < oldValue.getListValue().size()) oldListValue = oldValue.getListValue().get(index);
-								else oldListValue = Value.NULL;
+								else oldListValue = Value.NULL_INSTANCE();
 							}
 							array1.add(getListType().mergeValueFromMap(oldListValue, map, prefix+"["+index+"]", genericPrefix+"[_]", attributes, sanitizer).getJsonObject());
 						}
@@ -340,10 +340,10 @@ public class Type extends JSONValue {
 						JSONObject element = new JSONObject();
 						element.put(Value.MAP_KEY, entry.getKey());
 						Value oldMapValue = null;
-						if (oldValue.isNull()) oldMapValue = Value.NULL;
+						if (oldValue.isNull()) oldMapValue = Value.NULL_INSTANCE();
 						else {
 							oldMapValue = oldValue.getMapValue().get(entry.getKey());
-							if (oldMapValue == null) oldMapValue = Value.NULL;
+							if (oldMapValue == null) oldMapValue = Value.NULL_INSTANCE();
 						}
 						element.put(Value.MAP_VALUE, elementMap.get(entry.getKey()).mergeValueFromMap(oldMapValue, map, prefix+"."+entry.getKey(), genericPrefix+"."+entry.getKey(), attributes, sanitizer).getJsonObject());
 						array.add(element);
@@ -373,16 +373,42 @@ public class Type extends JSONValue {
 	}
 	
 	private Object jsonFromString(Object value) {
-		if (value == null) return JSONNull.getInstance();
-		else if (value instanceof String) return escape((String)value);
-		else if (value instanceof Date) return Utils.formatDate((Date)value);
-		else return value;
+			if (value == null) return JSONNull.getInstance();
+			switch(getType()){
+			case NUMBER:
+				if(value instanceof Number)
+					return ((Number)value).doubleValue();
+				else
+					return null;
+			case BOOL:
+				if(value instanceof Boolean)
+					return (Boolean)value;
+				else
+					return null;
+			case ENUM:
+			case STRING:
+			case TEXT:
+				if(value instanceof String)
+					return escape((String)value);
+				else
+					return null;
+			case DATE:
+				if(value instanceof Date)
+					return Utils.formatDate((Date)value);
+				else
+					return null;
+			case LIST:
+			case MAP:
+				throw new IllegalArgumentException();				
+			default:
+				throw new NotImplementedException();
+			}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Transient
 	public Value getValue(Object value) {
-		if (value == null) return Value.NULL;
+		if (value == null) return Value.NULL_INSTANCE();
 		try {
 			JSONObject object = new JSONObject();
 			switch (getType()) {
@@ -431,7 +457,7 @@ public class Type extends JSONValue {
 	}
 	
 	public Value getValueFromJaql(String jaqlString) {
-		if (jaqlString == null || jaqlString.equals("null")) return Value.NULL;
+		if (jaqlString == null || jaqlString.equals("null")) return Value.NULL_INSTANCE();
 		try {
 			JSONObject object = new JSONObject();
 			switch (getType()) {
@@ -786,6 +812,25 @@ public class Type extends JSONValue {
 	}
 	
 	public static abstract class TypeVisitor {
+		private Stack<Type> typeStack = new Stack<Type>();
+		
+		public Stack<Type> getParents() {
+			return typeStack;
+		}
+		
+		public Type getParent() {
+			if (typeStack.size() >= 2) return typeStack.get(typeStack.size() - 2);
+			return null;
+		}
+		
+		protected void addType(String prefix, Type type) {
+			typeStack.add(type);	
+		}
+		
+		protected void removeType(String prefix) {
+			typeStack.pop();
+		}
+		
 		public abstract void handle(Type type, String prefix);
 	}
 	
@@ -794,6 +839,7 @@ public class Type extends JSONValue {
 	}
 	
 	private void visit(String prefix, TypeVisitor typeVisitor) {
+		typeVisitor.addType(prefix, this);
 		typeVisitor.handle(this, prefix);
 		switch (getType()) {
 			case NUMBER:
@@ -814,6 +860,7 @@ public class Type extends JSONValue {
 			default:
 				throw new NotImplementedException();
 		}
+		typeVisitor.removeType(prefix);
 	}
 	
 	@Deprecated

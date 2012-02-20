@@ -11,7 +11,7 @@
 		<g:i18nTextarea name="descriptions" bean="${rawDataElement}" value="${rawDataElement.descriptions}" label="Descriptions" field="descriptions" height="150"  width="300" maxHeight="150" />
 		
 		<g:input name="code" label="Code" bean="${rawDataElement}" field="code" />
-		<g:textarea name="type.jsonValue" label="Type" bean="${rawDataElement}" field="type" readonly="${hasValues}"/>
+		<g:textarea name="type.jsonValue" label="Type" bean="${rawDataElement}" field="type" value="${rawDataElement.type?.jsonValue}" readonly="${hasValues}"/>
 		
 		<g:input name="info" label="Info" bean="${rawDataElement}" field="info"/>
 		

@@ -1,10 +1,13 @@
 package org.chai.kevin.dsr;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.reports.ReportValue;
@@ -37,11 +40,16 @@ import org.chai.kevin.reports.ReportValue;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class DsrTable extends ReportTable<DsrTarget, DataEntity> {
-
-	public DsrTable(Map<DataEntity, Map<DsrTarget, ReportValue>> valueMap, List<DsrTarget> targets, 
-			Map<LocationEntity, List<DataEntity>> organisationMap) {
-		super(valueMap, targets, organisationMap);
+public class DsrTable extends ReportTable<DsrTarget, DataLocationEntity> {
+	
+	public DsrTable(Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap, List<DsrTarget> targets) {
+		super(valueMap, targets, null);
 	}
 	
+	public Set<DsrTargetCategory> getTargetCategories(){
+		Set<DsrTargetCategory> categories = new HashSet<DsrTargetCategory>();		
+		for(DsrTarget target : getTargets()) 
+			if(target.getCategory() != null) categories.add(target.getCategory());				
+		return categories;		
+	}
 }

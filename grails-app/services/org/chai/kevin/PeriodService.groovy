@@ -4,6 +4,8 @@ import org.hisp.dhis.period.Period;
 
 class PeriodService {
 
+	static transactional = true
+	
 	def sessionFactory
 	
 	List<Period> getPeriods() {
@@ -12,11 +14,5 @@ class PeriodService {
 			a, b -> a.startDate.compareTo b.startDate
 		}
 	}
-	
-//	def getDefaultPeriodType() {
-//		return sessionFactory.currentSession.createQuery(
-//			"from PeriodType"	
-//		).setMaxResults(1).uniqueResult()
-//	}
 	
 }

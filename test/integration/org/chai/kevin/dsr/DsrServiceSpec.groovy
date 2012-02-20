@@ -1,7 +1,7 @@
 package org.chai.kevin.dsr
 
 import org.chai.kevin.data.Type
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 
@@ -16,21 +16,14 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def objective = newReportObjective(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(2), dataElement, [], objective)
-		def organisation = LocationEntity.findByCode(BURERA)
+		def location = LocationEntity.findByCode(BURERA)
 		def dsrTable = null
 		
 		when:
-		dsrTable = dsrService.getDsrTable(organisation, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		dsrTable.getReportValue(DataEntity.findByCode(BUTARO), target) != null
-		dsrTable.getOrganisationMap().get(LocationEntity.findByCode(BURERA)).equals([DataEntity.findByCode(BUTARO), DataEntity.findByCode(KIVUYE)])
-
-		when:
-		dsrTable = dsrService.getDsrTable(organisation, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
-		
-		then:
-		dsrTable.getOrganisationMap().get(LocationEntity.findByCode(BURERA)).equals([DataEntity.findByCode(BUTARO)])
+		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target) != null		
 
 	}
 	
@@ -45,11 +38,11 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def dsrTable = null
 		
 		when:
-		newRawDataElementValue(dataElement, period, DataEntity.findByCode(BUTARO), v("\"option\""))
+		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO), v("\"option\""))
 		dsrTable = dsrService.getDsrTable(LocationEntity.findByCode(BURERA), objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		dsrTable.getReportValue(DataEntity.findByCode(BUTARO), target).value == "option"
+		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target).value == "option"
 	}
 	
 	def "test dsr formatting"() {
@@ -60,11 +53,11 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def objective = newReportObjective(CODE(2))
 		def target = newDsrTarget(CODE(3), normalizedDataElement, format, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
 		refreshNormalizedDataElement()
-		def organisation = LocationEntity.findByCode(BURERA)
-		def dsrTable = dsrService.getDsrTable(organisation, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		def location = LocationEntity.findByCode(BURERA)
+		def dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		dsrTable.getReportValue(DataEntity.findByCode(BUTARO), target).value == value
+		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target).value == value
 		
 		where:
 		format	| value
@@ -74,7 +67,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		
 	}
 
-	def "test dsr with no groups should return no value"() {
+	def "test dsr with no types should return no value"() {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
@@ -82,18 +75,18 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def objective = newReportObjective(CODE(2))
 		def target = newDsrTarget(CODE(3), normalizedDataElement, [], objective)
 		refreshNormalizedDataElement()
-		def organisation = LocationEntity.findByCode(BURERA)
-		def dsrTable = dsrService.getDsrTable(organisation, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		def location = LocationEntity.findByCode(BURERA)
+		def dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		dsrTable.getReportValue(DataEntity.findByCode(organisationName), target).value == null
+		dsrTable.getReportValue(DataLocationEntity.findByCode(locationName), target).value == "N/A"
 		
 		where:
-		organisationName << [BUTARO, KIVUYE]
+		locationName << [BUTARO, KIVUYE]
 		
 	}
 	
-	def "test dsr with groups"() {
+	def "test dsr with types"() {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
@@ -101,12 +94,12 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def objective = newReportObjective(CODE(2))
 		def target = newDsrTarget(CODE(3), normalizedDataElement, [DISTRICT_HOSPITAL_GROUP], objective)
 		refreshNormalizedDataElement()
-		def organisation = LocationEntity.findByCode(BURERA)
-		def dsrTable = dsrService.getDsrTable(organisation, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		def location = LocationEntity.findByCode(BURERA)
+		def dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
 		
 		then:
-		dsrTable.getReportValue(DataEntity.findByCode(BUTARO), target).value == "10"		
-		dsrTable.getReportValue(DataEntity.findByCode(KIVUYE), target).value == null
+		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target).value == "10"		
+		dsrTable.getReportValue(DataLocationEntity.findByCode(KIVUYE), target).value == "N/A"
 		
 	}
 	

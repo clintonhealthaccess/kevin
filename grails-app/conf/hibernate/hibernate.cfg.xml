@@ -52,11 +52,15 @@
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredObjective" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyLog" />
 		
-		<mapping class="org.chai.kevin.survey.workflow.Workflow" />
-		<mapping class="org.chai.kevin.survey.workflow.WorkflowStep" />
+		<mapping class="org.chai.kevin.planning.Planning" />
+		<mapping class="org.chai.kevin.planning.PlanningType" />
+		<mapping class="org.chai.kevin.planning.PlanningCost" />
+				
+		<!-- mapping class="org.chai.kevin.survey.wizard.Wizard" / -->
+		<!-- mapping class="org.chai.kevin.survey.wizard.WizardStep" / -->
 		
 		<mapping class="org.chai.kevin.location.CalculationEntity" />
-		<mapping class="org.chai.kevin.location.DataEntity" />
+		<mapping class="org.chai.kevin.location.DataLocationEntity" />
 		<mapping class="org.chai.kevin.location.DataEntityType" />
 		<mapping class="org.chai.kevin.location.LocationEntity" />
 		<mapping class="org.chai.kevin.location.LocationLevel" />

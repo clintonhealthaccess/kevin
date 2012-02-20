@@ -46,9 +46,9 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 	}
 	
 	@Transient
-	public String getExpression(Period period, String groupUuid) {
+	public String getExpression(Period period, String typeCode) {
 		if (!expressionMap.containsKey(Long.toString(period.getId()))) return null;
-		return expressionMap.get(Long.toString(period.getId())).get(groupUuid);
+		return expressionMap.get(Long.toString(period.getId())).get(typeCode);
 	}
 	
 	@Transient

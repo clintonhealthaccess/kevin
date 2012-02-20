@@ -24,7 +24,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		when:
 		surveyValidationRuleController.params['surveyElement.id'] = element.id
 		surveyValidationRuleController.params['prefix'] = ""
-		surveyValidationRuleController.params['groupUuids'] = [HEALTH_CENTER_GROUP]
+		surveyValidationRuleController.params['typeCodes'] = [HEALTH_CENTER_GROUP]
 		surveyValidationRuleController.params['expression'] = "true"
 		surveyValidationRuleController.params['allowOutlier'] = false
 		surveyValidationRuleController.params.messages = [:]
@@ -33,7 +33,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		
 		then:
 		SurveyValidationRule.count() == 1
-		SurveyValidationRule.list()[0].groupUuidString == Utils.unsplit([(HEALTH_CENTER_GROUP)])
+		SurveyValidationRule.list()[0].typeCodeString == Utils.unsplit([(HEALTH_CENTER_GROUP)])
 		SurveyValidationRule.list()[0].messages['en'] == "Validation rule"
 		
 	}

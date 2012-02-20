@@ -38,10 +38,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.AverageValue;
+import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
@@ -65,15 +66,15 @@ public class Average extends Calculation<AveragePartialValue> {
 	}
 
 	@Override
-	public AveragePartialValue getCalculationPartialValue(String expression, Map<DataEntity, StatusValuePair> values, CalculationEntity entity, Period period, DataEntityType type) {
+	public AveragePartialValue getCalculationPartialValue(String expression, Map<DataLocationEntity, StatusValuePair> values, CalculationEntity entity, Period period, DataEntityType type) {
 		Value value = getValue(values.values());
 		Integer numberOfFacilities = getNumberOfFacilities(values);
 		return new AveragePartialValue(this, entity, period, type, numberOfFacilities, value);
 	}
 
-	private Integer getNumberOfFacilities(Map<DataEntity, StatusValuePair> values) {
+	private Integer getNumberOfFacilities(Map<DataLocationEntity, StatusValuePair> values) {
 		Integer result = 0;
-		for (Entry<DataEntity, StatusValuePair> entry : values.entrySet()) {
+		for (Entry<DataLocationEntity, StatusValuePair> entry : values.entrySet()) {
 			if (!entry.getValue().value.isNull()) result++;
 		}
 		return result;
@@ -92,5 +93,7 @@ public class Average extends Calculation<AveragePartialValue> {
 		return "Average [getExpression()=" + getExpression() + ", getId()="
 				+ getId() + ", getCode()=" + getCode() + "]";
 	}
+
+
 
 }

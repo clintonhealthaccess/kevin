@@ -28,10 +28,16 @@ package org.chai.kevin;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.apache.shiro.SecurityUtils;
+import org.chai.kevin.dsr.DsrTargetCategory
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.LocationService
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportService
+import org.chai.kevin.security.User;
 import org.chai.kevin.survey.SummaryPage
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyObjective
@@ -40,27 +46,46 @@ import org.chai.kevin.survey.SurveySection
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.period.Period
 
-abstract class AbstractController {
+public abstract class AbstractController {
 
-	def locationService;
-
-	public List<DataEntityType> getOrganisationUnitGroups() {
-		List<DataEntityType> groups = null
-		if (params['groupUuids'] != null) {
-			groups = params.list('groupUuids').collect {DataEntityType.get(it)}
+	ReportService reportService;
+	LocationService locationService;
+	
+	def getTargetURI() {
+		return params.targetURI?: "/"
+	}
+	
+	def getUser() {
+		return User.findByUuid(SecurityUtils.subject.principal)
+	}
+	
+	public List<DataEntityType> getLocationTypes() {
+		List<DataEntityType> types = null
+		if (params['locationTypes'] != null) {
+			types = params.list('locationTypes').collect {DataEntityType.get(it)}
 		}
 		else {
-			groups = new ArrayList(ConfigurationHolder.config.facility.checked).collect {DataEntityType.findByCode(it)}
+			types = new ArrayList(ConfigurationHolder.config.type.checked).collect {DataEntityType.findByCode(it)}
 		}
-		return groups;
+		return types
 	}
 
 	def getPeriod() {
 		Period period = Period.get(params.int('period'))
-		if (period == null) {
-			period = Period.findAll()[ConfigurationHolder.config.site.period]
-		}
+		if (period == null)  period = Period.findAll()[ConfigurationHolder.config.site.period]
 		return period
+	}
+	
+	def getObjective(){
+		ReportObjective objective = ReportObjective.get(params.int('objective'))
+		if(objective == null) objective = reportService.getRootObjective()
+		return objective
+	}
+	
+	def getLocation(){
+		LocationEntity location = LocationEntity.get(params.int('location'));
+		if (location == null) location = locationService.getRootLocation()
+		return location
 	}
 	
 	def adaptParamsForList() {

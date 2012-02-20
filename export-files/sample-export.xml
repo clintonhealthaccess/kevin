@@ -2,7 +2,7 @@
 <dataValueSets>
 
 	<dataValueSet code="" period="">
-		<dataValue organisation="">
+		<dataValue location="">
 			<number>
 				<value>
 					10
@@ -12,7 +12,7 @@
 	</dataValueSet>
 	
 	<dataValueSet code="" period="">
-		<dataValue organisation="">
+		<dataValue location="">
 			<string>
 				<value>
 					Some text
@@ -22,7 +22,7 @@
 	</dataValueSet>
 	
 	<dataValueSet code="" period="">
-		<dataValue organisation="">
+		<dataValue location="">
 			<date>
 				<value>
 					2011-09-03
@@ -32,7 +32,7 @@
 	</dataValueSet>
 	
 	<dataValueSet code="" period="">
-		<dataValue organisation="">
+		<dataValue location="">
 			<enum>
 				<value>
 					1
@@ -42,7 +42,7 @@
 	</dataValueSet>
 	
 	<dataValueSet code="" period="">
-		<dataValue organisation="">
+		<dataValue location="">
 			<list>
 				<value>
 					String
@@ -58,7 +58,7 @@
 	</dataValueSet>
 	
 	<dataValueSet code="" period="">
-		<dataValue organisation="">
+		<dataValue location="">
 			<map>
 				<value>
 					1

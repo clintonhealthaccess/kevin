@@ -38,23 +38,23 @@ import org.hisp.dhis.period.Period;
 
 public class Explanation {
 
-	// if this is null, it means no expression is defined for the specified objective and organisation
+	// if this is null, it means no expression is defined for the specified objective and location
 	private Map<CalculationEntity, Map<Integer, Cost>> costs;
-	private List<CalculationEntity> organisations;
+	private List<CalculationEntity> locations;
 	private List<Integer> years;
 	private CostTarget currentTarget;
 	private ReportObjective currentObjective;
 	private Period currentPeriod;
-	private List<DataEntityType> groups;
+	private List<DataEntityType> types;
 	
-	public Explanation(CostTarget currentTarget, List<DataEntityType> groups, ReportObjective currentObjective, Period currentPeriod, List<CalculationEntity> organisations, List<Integer> years, Map<CalculationEntity, Map<Integer, Cost>> costs) {
+	public Explanation(CostTarget currentTarget, List<DataEntityType> types, ReportObjective currentObjective, Period currentPeriod, List<CalculationEntity> locations, List<Integer> years, Map<CalculationEntity, Map<Integer, Cost>> costs) {
 		this.costs = costs;
-		this.organisations = organisations;
+		this.locations = locations;
 		this.years = years;
 		this.currentTarget = currentTarget;
 		this.currentObjective = currentObjective;
 		this.currentPeriod = currentPeriod;
-		this.groups = groups;
+		this.types = types;
 	}
 
 	public CostTarget getCurrentTarget() {
@@ -69,16 +69,16 @@ public class Explanation {
 		return currentPeriod;
 	}
 	
-	public List<CalculationEntity> getOrganisations() {
-		return organisations;
+	public List<CalculationEntity> getLocations() {
+		return locations;
 	}
 	
-	public Cost getCost(CalculationEntity organisation, Integer year) {
-		return costs.get(organisation).get(year);
+	public Cost getCost(CalculationEntity location, Integer year) {
+		return costs.get(location).get(year);
 	}
 	
 	public List<DataEntityType> getGroups() {
-		return groups;
+		return types;
 	}
 	
 	public List<Integer> getYears() {

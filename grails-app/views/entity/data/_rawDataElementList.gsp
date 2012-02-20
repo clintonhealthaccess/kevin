@@ -33,8 +33,8 @@
   				<td><g:toHtml value="${rawDataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td>${rawDataElement.code}</td>
   			</tr>
-  			<tr>
-  				<td colspan="5" class="explanation-row">
+  			<tr class="explanation-row">
+  				<td colspan="5">
   					<div class="explanation-cell" id="explanation-${rawDataElement.id}"></div>
   				</td>
   			</tr>

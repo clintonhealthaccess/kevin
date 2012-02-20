@@ -31,17 +31,16 @@ package org.chai.kevin.location
 import java.sql.Types;
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.location.DataEntity
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType
 import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.LocationService;
 
 class LocationServiceSpec extends IntegrationTests {
 
 	def locationService;
 	
-	def "get organisations of level"() {
+	def "get locations of level"() {
 		setup:
 		setupLocationTree()
 		
@@ -64,7 +63,7 @@ class LocationServiceSpec extends IntegrationTests {
 		
 		expect:
 		def typeList = types.collect{DataEntityType.findByCode(it)}
-		locationService.getDataEntities(LocationEntity.findByCode(location), typeList.toArray(new DataEntityType[typeList.size()])).containsAll(expectedEntities.collect{DataEntity.findByCode(it)})
+		locationService.getDataEntities(LocationEntity.findByCode(location), typeList.toArray(new DataEntityType[typeList.size()])).containsAll(expectedEntities.collect{DataLocationEntity.findByCode(it)})
 		
 		where:
 		location	| types												| expectedEntities
@@ -78,7 +77,7 @@ class LocationServiceSpec extends IntegrationTests {
 		
 	}
 	
-	def "get parent of level for organisation for location"() {
+	def "get parent of level for location for location"() {
 		setup:
 		setupLocationTree()
 		
@@ -92,7 +91,7 @@ class LocationServiceSpec extends IntegrationTests {
 		
 	}
 	
-	def "get parent of level for organisation for data entity"() {
+	def "get parent of level for location for data entity"() {
 		
 	}
 	
@@ -101,15 +100,15 @@ class LocationServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		
 		when: 
-		def dataEntity = DataEntity.findByCode(BUTARO)
-		def dataEntOne = locationService.getCalculationEntity(BUTARO, DataEntity.class);
+		def dataEntity = DataLocationEntity.findByCode(BUTARO)
+		def dataEntOne = locationService.findCalculationEntityByCode(BUTARO, DataLocationEntity.class);
 		
 		then:
 		dataEntOne != null
 		dataEntOne.equals(dataEntity) 	
 		
 		when:
-		def dataEntTwo = locationService.getCalculationEntity(BUTARO, LocationEntity.class);
+		def dataEntTwo = locationService.findCalculationEntityByCode(BUTARO, LocationEntity.class);
 		
 		then:
 		dataEntTwo == null
@@ -122,22 +121,37 @@ class LocationServiceSpec extends IntegrationTests {
 		
 		when:
 		def locationEntity = LocationEntity.findByCode(BURERA)
-		def locationEntOne = locationService.getCalculationEntity(BURERA,LocationEntity.class)
+		def locationEntOne = locationService.findCalculationEntityByCode(BURERA,LocationEntity.class)
 		
 		then:
 		locationEntOne != null
 		locationEntOne.equals(locationEntity)
 		
 		when:
-		def locationEntTwo = locationService.getCalculationEntity(BURERA,DataEntity.class)
+		def locationEntTwo = locationService.findCalculationEntityByCode(BURERA,DataLocationEntity.class)
+		
 		then:
 		locationEntTwo == null
 		!locationEntTwo.equals(locationEntity)
 		
 		
 	}
-	
-	
 
+	def "search location"() {
+		setup:
+		setupLocationTree()
+		
+		when:
+		def result = locationService.searchLocation(LocationEntity.class, text, [:])
+		
+		then:
+		result.equals(expectedResult.collect{LocationEntity.findByCode(it)})
+		
+		where:
+		text	| expectedResult
+		"Bur"	| [BURERA]
+		"Nor"	| [NORTH]
+		"n/a"	| []
+	}
 		
 }

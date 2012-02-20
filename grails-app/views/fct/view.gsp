@@ -15,12 +15,10 @@
 	<body>
 		<div id="report">
 			<div class="subnav">
-				<g:iterationFilter linkParams="${params}"/>
-				<g:organisationFilter linkParams="${params << [filter:'organisation']}"/>
-				
+				<g:iterationFilter linkParams="${params}" selected="${currentPeriod}"/>
+				<g:locationFilter linkParams="${params << [filter:'location']}" selected="${currentLocation}"/>
 				<g:render template="/templates/objectiveFilter" model="[linkParams:params]"/>
-				
-				<g:levelFilter linkParams="${params << [filter:'level']}"/>												
+				<g:levelFilter linkParams="${params << [filter:'level']}" selected="${currentLevel}"/>												
 				
 				<div class="right">
 				<!-- ADMIN SECTION -->
@@ -33,7 +31,7 @@
 		</div>
 		
 		<g:if test="${fctTable != null}">
-			<g:render template="/templates/facilityTypeFilter" model="[facilityTypes: facilityTypes, currentFacilityTypes: currentFacilityTypes, linkParams:params]"/>
+			<g:locationTypeFilter linkParams="${linkParams}" selected="${currentLocationTypes}" />
 		</g:if>
 		<div id="center" class="main">
 			<div id="values">
@@ -80,14 +78,14 @@
 								</tr>
 							</thead>
 							<tbody>								
-								<g:each in="${fctTable.organisations}" var="parent">
+								<g:each in="${fctTable.locations}" var="parent">
 									<tr>
 										<th colspan="${fctTable.targets.size()+1}" class="parent-row"><g:i18n field="${parent.names}"/></th>
 									</tr>
-									<g:each in="${fctTable.getOrganisationMap().get(parent)}" var="children">
+									<g:each in="${fctTable.getLocationMap().get(parent)}" var="children">
 										<g:each in="${children}" var="child">										
-											<tr class="row organisation">
-												<th class="box-report-organisation"><g:i18n field="${child.names}"/></th>
+											<tr class="row location">
+												<th class="box-report-location"><g:i18n field="${child.names}"/></th>
 												<g:each in="${fctTable.targets}" var="target">
 													<td class="box-report-value">
 														<g:if test="${!fctTable.getReportValue(child, target) != null}">
@@ -103,7 +101,7 @@
 									<th colspan="${fctTable.targets.size()+1}" class="parent-row">Total</th>
 								</tr>
 								<tr>
-									<th class="box-report-organisation"><g:i18n field="${currentOrganisation.names}"/></th>
+									<th class="box-report-location"><g:i18n field="${currentLocation.names}"/></th>
 									<g:each in="${fctTable.targets}" var="target">
 										<td class="box-report-value">
 											<g:if test="${!fctTable.getTotalValue(target) != null}">
@@ -122,7 +120,7 @@
 					</g:else>
 				</g:if>
 				<g:else>
-					<div class="help">Please select an Organisation / Objective</div>
+					<div class="help">Please select an Location / Objective</div>
 				</g:else>
 			</div>
 		</div>

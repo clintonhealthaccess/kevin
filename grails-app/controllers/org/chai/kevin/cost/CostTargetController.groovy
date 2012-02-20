@@ -61,7 +61,7 @@ class CostTargetController extends AbstractEntityController {
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[],
 			dataElementsEnd:  entity.dataElementEnd!=null?[entity.dataElementEnd]:[],
 			costRampUps: CostRampUp.list(), 
-			groups: DataEntityType.list()
+			types: DataEntityType.list()
 		]
 	}
 	
@@ -72,7 +72,6 @@ class CostTargetController extends AbstractEntityController {
 		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-//		entity.groupUuids = params['groupUuids'];
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = entity.descriptions
 

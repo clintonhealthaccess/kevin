@@ -121,7 +121,7 @@ class SurveyService {
 		
 		def c = SurveyValidationRule.createCriteria()
 		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		c.add(Restrictions.like("groupUuidString", type.code, MatchMode.ANYWHERE))
+		c.add(Restrictions.like("typeCodeString", type.code, MatchMode.ANYWHERE))
 		
 		List<SurveyValidationRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
 		return filter(rules, surveyElement.id);
@@ -231,31 +231,13 @@ class SurveyService {
 	}
 	
 	Integer getNumberOfApplicableDataEntityTypes(SurveyElement surveyElement) {
-		Set<String> groupUuids = surveyElement.getOrganisationUnitGroupApplicable();
+		Set<String> typeCodes = surveyElement.getTypeApplicable();
 		int number = 0;
-		for (String groupUuid : groupUuids) {
-			DataEntityType type = locationService.findDataEntityTypeByCode(groupUuid);
+		for (String typeCode : typeCodes) {
+			DataEntityType type = locationService.findDataEntityTypeByCode(typeCode);
 			if (type != null) number += locationService.getNumberOfDataEntitiesForType(type)
 		}
 		return number;
-	}
-	
-	// TODO move this somewhere else and change signature to getHeaderPrefixes(Type type)
-	List<String> getHeaderPrefixes(SurveyElement element) {
-		
-		List<String> prefixes = new ArrayList(element.getDataElement().getType().getPrefixes(
-			element.getDataElement().getType().getPlaceHolderValue(),
-			new PrefixPredicate() {
-				@Override
-				public boolean holds(Type type, Value value, String prefix) {
-					if (getParent() != null && getParent().getType() == ValueType.MAP) return true;
-				}
-			}).keySet());
-		
-		return prefixes.collect { prefix ->
-			prefix.replace("[0]", "[_]")
-		}
-		
 	}
 	
 }

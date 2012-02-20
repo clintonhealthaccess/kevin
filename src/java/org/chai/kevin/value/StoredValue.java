@@ -66,7 +66,7 @@ public abstract class StoredValue implements DataValue {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.chai.kevin.value.DataValue#getOrganisationUnit()
+	 * @see org.chai.kevin.value.DataValue#getLocation()
 	 */
 	@Override
 	@NaturalId

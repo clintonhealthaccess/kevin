@@ -84,5 +84,4 @@ class DsrObjectiveController extends AbstractEntityController{
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 
-
 }

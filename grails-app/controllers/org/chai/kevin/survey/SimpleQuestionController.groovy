@@ -68,9 +68,9 @@ class SimpleQuestionController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			question: entity,
-			groups: DataEntityType.list(),
+			types: DataEntityType.list(),
 			sections: (entity.section)!=null?entity.survey.sections:null,
-			headerPrefixes: entity.surveyElement!=null?surveyService.getHeaderPrefixes(entity.surveyElement):null
+			headerPrefixes: entity.surveyElement!=null?entity.surveyElement.dataElement.headerPrefixes:null
 		]
 	}
 
@@ -78,7 +78,6 @@ class SimpleQuestionController extends AbstractEntityController {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-//		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		

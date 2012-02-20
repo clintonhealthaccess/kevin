@@ -34,5 +34,5 @@ package org.chai.kevin.survey
 constraints = {
 	question(nullable:false)
 	order(nullable:false)
-	groupUuidString(nullable:false /*,blank:false*/ )
+	typeCodeString(nullable:false /*,blank:false*/ )
 }

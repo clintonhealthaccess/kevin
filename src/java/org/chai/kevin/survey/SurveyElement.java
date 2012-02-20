@@ -122,8 +122,8 @@ public class SurveyElement {
 	}
 
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable(){
-		return this.surveyQuestion.getOrganisationUnitGroupApplicable(this);
+	public Set<String> getTypeApplicable(){
+		return this.surveyQuestion.getTypeApplicable(this);
 	}
 
 	@Transient

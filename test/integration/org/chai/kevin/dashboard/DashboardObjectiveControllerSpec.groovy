@@ -77,12 +77,9 @@ class DashboardObjectiveControllerSpec extends DashboardIntegrationTests {
 		dashboardObjectiveController.params['weight'] = 1
 		dashboardObjectiveController.params['code'] = "NEW"
 		dashboardObjectiveController.saveWithoutTokenCheck()
-		def newObjective = DashboardObjective.findByCode("NEW")
 		
 		then:
 		dashboardObjectiveController.response.redirectedUrl.equals(dashboardObjectiveController.getTargetURI())
-		newObjective != null
-		newObjective.weight == 1
 		DashboardObjective.count() == 1
 	}
 	

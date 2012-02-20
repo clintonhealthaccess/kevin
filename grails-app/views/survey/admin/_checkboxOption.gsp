@@ -17,7 +17,7 @@
 </div>
 <div>
 	<span class="bold"><g:message code="facility.type.label" default="Facility Groups"/>:</span>
-	<span>${option.groupUuidString}</span>
+	<span>${option.typeCodeString}</span>
 </div>
 <div>
 	<span class="bold"><g:message code="survey.checkboxquestion.checkboxoption.order.label" default="Order"/>:</span>

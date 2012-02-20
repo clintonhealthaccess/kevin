@@ -28,6 +28,7 @@ package org.chai.kevin.value;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +51,7 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,10 +73,10 @@ public class ExpressionService {
 	}
 	
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
+	public <T extends CalculationPartialValue> List<T> calculatePartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",entity="+entity+")");
 		
-		Set<T> result = new HashSet<T>();
+		List<T> result = new ArrayList<T>();
 		List<String> expressions = calculation.getPartialExpressions();
 		for (String expression : expressions) {
 			result.addAll(calculatePartialValues(calculation, expression, entity, period));
@@ -89,11 +90,11 @@ public class ExpressionService {
 		Set<T> result = new HashSet<T>();
 		List<DataEntityType> dataEntityTypes = locationService.listTypes();
 		for (DataEntityType dataEntityType : dataEntityTypes) {
-			List<DataEntity> facilities = locationService.getDataEntities(entity, dataEntityType);
+			List<DataLocationEntity> facilities = locationService.getDataEntities(entity, dataEntityType);
 			
 			if (!facilities.isEmpty()) {
-				Map<DataEntity, StatusValuePair> values = new HashMap<DataEntity, StatusValuePair>();
-				for (DataEntity facility : facilities) {
+				Map<DataLocationEntity, StatusValuePair> values = new HashMap<DataLocationEntity, StatusValuePair>();
+				for (DataLocationEntity facility : facilities) {
 					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, facility, DataElement.class);
 					values.put(facility, statusValuePair);
 				}
@@ -104,7 +105,7 @@ public class ExpressionService {
 	}
 	
 	@Transactional(readOnly=true)
-	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, DataEntity facility, Period period) {
+	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, DataLocationEntity facility, Period period) {
 		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",facility="+facility+")");
 		
 		String expression = normalizedDataElement.getExpression(period, facility.getType().getCode());
@@ -116,17 +117,17 @@ public class ExpressionService {
 		return expressionValue;
 	}
 
-	// organisation has to be a facility
-	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataEntity facility, Class<T> clazz) {
+	// location has to be a facility
+	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataLocationEntity facility, Class<T> clazz) {
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null) {
 			statusValuePair.status = Status.DOES_NOT_APPLY;
-			statusValuePair.value = Value.NULL;
+			statusValuePair.value = Value.NULL_INSTANCE();
 		}
 		else {
 			Map<String, T> datas = getDataInExpression(expression, clazz);
 			if (hasNullValues(datas.values())) {
-				statusValuePair.value = Value.NULL;
+				statusValuePair.value = Value.NULL_INSTANCE();
 				statusValuePair.status = Status.MISSING_DATA_ELEMENT;
 			}
 			else {
@@ -140,7 +141,7 @@ public class ExpressionService {
 				}
 				
 				if (hasNullValues(valueMap.values())) {
-					statusValuePair.value = Value.NULL;
+					statusValuePair.value = Value.NULL_INSTANCE();
 					statusValuePair.status = Status.MISSING_VALUE;
 				}
 				else {
@@ -149,7 +150,7 @@ public class ExpressionService {
 						statusValuePair.status = Status.VALID;
 					} catch (IllegalArgumentException e) {
 						log.warn("there was an error evaluating expression: "+expression, e);
-						statusValuePair.value = Value.NULL;
+						statusValuePair.value = Value.NULL_INSTANCE();
 						statusValuePair.status = Status.ERROR;
 					}
 				}
@@ -179,7 +180,7 @@ public class ExpressionService {
 		} catch (IllegalArgumentException e) {
 			return false;
 		}
-		return value != null;
+		return true;
     }
 	
 	@Transactional(readOnly=true)

@@ -36,23 +36,25 @@ class UrlMappings {
 		"/contact"(controller:'home', action:"contact")
 		"/upgrade"(controller:'home', action:"upgrade")
 		
-		"/dashboard/$action/$period?/$dashboardEntity?/$organisation?"(controller:"dashboard")
+		"/dashboard/$action/$period?/$location?"(controller:"dashboard")
 		
-		"/cost/$action/$period?/$objective?/$organisation?"(controller:"cost")
+		"/cost/$action/$period?/$objective?/$location?"(controller:"cost")
 
-		"/dsr/$action/$period?/$objective?/$organisation?"(controller:"dsr")
+		"/dsr/$action/$period?/$objective?/$location?"(controller:"dsr")
 		
 		"/maps/view"(controller:"maps", action:"view")
 		
 		"/maps/map/$period?/$location?/$level?/$target?"(controller:"maps", action: "map")
 		
-		"/chart/chart/$data/$organisation"(controller:"chart", action: "chart")
+		"/chart/chart/$data/$location"(controller:"chart", action: "chart")
 		
 		"/auth/$action"(controller:"auth")
 		
-		"/editSurvey/$action/$organisation?"(controller:"editSurvey")
+		"/editSurvey/$action/$location?"(controller:"editSurvey")
 		
 		"/summary/$action/$location?"(controller:"summary")
+		
+		"/planning/$action/$location?"(controller:"planning")
 		
 		"/$controller/$action?"{
 			constraints {

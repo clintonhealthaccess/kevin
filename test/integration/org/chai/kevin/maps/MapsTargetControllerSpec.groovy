@@ -14,7 +14,7 @@ class MapsTargetControllerSpec extends MapsIntegrationTests {
 		when:
 		mapsTargetController.params.code = CODE(2)
 		mapsTargetController.params['calculation.id'] = average.id+""
-		mapsTargetController.params.groupUuids = [DISTRICT_HOSPITAL_GROUP]
+		mapsTargetController.params.typeCodes = [DISTRICT_HOSPITAL_GROUP]
 		mapsTargetController.saveWithoutTokenCheck()
 		
 		then:
@@ -24,7 +24,7 @@ class MapsTargetControllerSpec extends MapsIntegrationTests {
 	
 //	def "create target does not show sums"() {
 //		setup:
-//		setupOrganisationUnitTree()
+//		setupLocationTree()
 //		def sum = newSum("1", CODE(1))
 //		def average = newAverage("1", CODE(2))
 //		mapsTargetController = new MapsTargetController()

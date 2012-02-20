@@ -113,7 +113,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 	
 //	def "create target does not show sums"() {
 //		setup:
-//		setupOrganisationUnitTree()
+//		setupLocationTree()
 //		def sum = newSum("1", CODE(1))
 //		def average = newAverage("1", CODE(2))
 //		dashboardTargetController = new DashboardTargetController()

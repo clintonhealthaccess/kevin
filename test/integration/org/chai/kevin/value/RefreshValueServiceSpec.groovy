@@ -34,7 +34,7 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.util.JSONUtils;
@@ -75,7 +75,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def calculated = new Date()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
-		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, DataEntity.findByCode(BUTARO), period, Status.VALID, Value.NULL)
+		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.VALID, Value.NULL_INSTANCE())
 		def timestamp = normalizedDataElementValue.timestamp
 		
 		then:

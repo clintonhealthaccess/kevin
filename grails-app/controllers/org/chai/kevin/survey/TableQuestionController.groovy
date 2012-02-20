@@ -72,7 +72,7 @@ class TableQuestionController extends AbstractEntityController {
 			columns: columns,
 			rows: rows,
 			question: entity,
-			groups: DataEntityType.list(),
+			types: DataEntityType.list(),
 			sections: (entity.section)!=null?entity.survey.sections:null
 		]
 	}
@@ -81,8 +81,6 @@ class TableQuestionController extends AbstractEntityController {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-
-//		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		if (params.tableNames!=null) entity.tableNames = params.tableNames

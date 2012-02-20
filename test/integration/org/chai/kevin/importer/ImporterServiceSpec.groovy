@@ -39,7 +39,7 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntity
+import org.chai.kevin.location.DataLocationEntity
 import org.chai.kevin.location.DataEntityType
 import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.location.LocationLevel;
@@ -67,7 +67,7 @@ class ImporterServiceSpec extends IntegrationTests {
 			
 		then:
 		RawDataElementValue.count() == 1
-		RawDataElementValue.list()[0].entity.equals(DataEntity.findByCode(BUTARO))
+		RawDataElementValue.list()[0].entity.equals(DataLocationEntity.findByCode(BUTARO))
 		RawDataElementValue.list()[0].data.equals(RawDataElement.findByCode(CODE(1)))
 		RawDataElementValue.list()[0].period.equals(period)
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]))

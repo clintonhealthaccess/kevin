@@ -4,7 +4,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.RawDataElementController;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyIntegrationTests;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
@@ -43,7 +43,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		setup:
 		rawDataElementController = new RawDataElementController()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def entity = newDataEntity(BUTARO, type)
+		def entity = newDataLocationEntity(BUTARO, type)
 		def period = newPeriod()
 		def dataElement = null
 
@@ -60,13 +60,13 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		setup:
 		rawDataElementController = new RawDataElementController()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def entity = newDataEntity(BUTARO, type)
+		def entity = newDataLocationEntity(BUTARO, type)
 		def period = newPeriod()
 		def dataElement = null
 
 		when:
 		dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		newRawDataElementValue(dataElement, period, entity, Value.NULL)
+		newRawDataElementValue(dataElement, period, entity, Value.NULL_INSTANCE())
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.delete()
 
@@ -80,7 +80,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		setup:
 		rawDataElementController = new RawDataElementController()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def entity = newDataEntity(BUTARO, type)
+		def entity = newDataLocationEntity(BUTARO, type)
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 
@@ -95,7 +95,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		dataElement.type.equals(Type.TYPE_BOOL())
 
 		when:
-		newRawDataElementValue(dataElement, period, entity, Value.NULL)
+		newRawDataElementValue(dataElement, period, entity, Value.NULL_INSTANCE())
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.params.code = dataElement.code
 		rawDataElementController.params['type.jsonValue'] = Type.TYPE_STRING().getJsonValue()
@@ -117,7 +117,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		def section = SurveyIntegrationTests.newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
-		SurveyIntegrationTests.newSurveyEnteredValue(element, period, DataEntity.findByCode(BUTARO), v("1"))
+		SurveyIntegrationTests.newSurveyEnteredValue(element, period, DataLocationEntity.findByCode(BUTARO), v("1"))
 
 		expect:
 		RawDataElement.count() == 1
@@ -147,7 +147,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		def section = SurveyIntegrationTests.newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
-		SurveyIntegrationTests.newSurveyEnteredValue(element, period, DataEntity.findByCode(BUTARO), v("1"))
+		SurveyIntegrationTests.newSurveyEnteredValue(element, period, DataLocationEntity.findByCode(BUTARO), v("1"))
 
 		expect:
 		RawDataElement.count() == 1
@@ -194,7 +194,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		def section = SurveyIntegrationTests.newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
 		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
-		SurveyIntegrationTests.newSurveyEnteredValue(element, period, DataEntity.findByCode(BUTARO), v("1"))
+		SurveyIntegrationTests.newSurveyEnteredValue(element, period, DataLocationEntity.findByCode(BUTARO), v("1"))
 		rawDataElementController = new RawDataElementController()
 
 		expect:

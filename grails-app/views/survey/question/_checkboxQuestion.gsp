@@ -1,4 +1,4 @@
-<g:set var="organisationUnitGroup" value="${surveyPage.entity.type}"/>
+<g:set var="type" value="${surveyPage.entity.type}"/>
 
 <div id="question-${question.id}" class="question question-checkbox" data-question="${question.id}">
 	<h4>
@@ -27,14 +27,16 @@
 					<g:set var="enteredValue" value="${surveyPage.elements[surveyElement]}" />
 				
 					<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
+						location: enteredValue.entity,
 						value: enteredValue.value, 
 						lastValue: enteredValue.lastValue,
 						type: dataElement.type, 
 						suffix:'',
-						surveyElement: surveyElement, 
-						enteredValue: enteredValue, 
+						element: surveyElement, 
+						validatable: enteredValue.validatable, 
 						readonly: readonly,
-						isCheckbox: true
+						isCheckbox: true,
+						enums: surveyPage.enums
 					]"/>
 					<g:i18n field="${option.names}"/>
 				</g:if>

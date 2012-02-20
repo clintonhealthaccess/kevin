@@ -38,20 +38,20 @@ import org.hisp.dhis.period.Period;
 public class ExportDataElementService {
 
 	private ValueService dataValueService;
-//	private OrganisationService organisationService;
+//	private LocationService locationService;
 	int facilityLevel;
 	
 	public ExportDataElement getDataElementExport(Period period,DataElement<?> dataElement){
-//		List<Organisation> organisations = organisationService.getOrganisationsOfLevel(facilityLevel);
+//		List<Location> locations = locationService.getLocationsOfLevel(facilityLevel);
 //		
-//		Map<Organisation, DataValue> values = new HashMap<Organisation,DataValue>();
-//		for(Organisation organisation: organisations){
-//			Map<Organisation, DataValue> dataValue =new HashMap<Organisation,DataValue>();
-//			dataValue.put(organisation, dataValueService.getDataElementValue(dataElement, organisation.getOrganisationUnit(), period));
+//		Map<Location, DataValue> values = new HashMap<Location,DataValue>();
+//		for(Location location: locations){
+//			Map<Location, DataValue> dataValue =new HashMap<Location,DataValue>();
+//			dataValue.put(location, dataValueService.getDataElementValue(dataElement, location.getLocation(), period));
 //			
 //		}
 //		
-//		return new ExportDataElement(period, dataElement, organisations,values);
+//		return new ExportDataElement(period, dataElement, locations,values);
 		return null;
 	}
 

@@ -29,10 +29,15 @@ package org.chai.kevin.dashboard
 */
 
 import grails.plugin.springcache.annotations.CacheFlush
+
+import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.reports.ReportObjective
 
-class DashboardObjectiveController extends AbstractObjectiveController {
 
+class DashboardObjectiveController extends AbstractEntityController {
+
+	def dashboardService
+	
 	def getEntity(def id) {
 		return DashboardObjective.get(id)
 	}
@@ -47,7 +52,7 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 	}
 	
 	def getTemplate() {
-		return '/dashboard/createObjective';
+		return '/entity/dashboard/createObjective';
 	}
 	
 	def deleteEntity(def entity) {
@@ -62,27 +67,23 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 	}
 	
 	def getModel(def entity) {
-		def model = super.getModel(entity)
 		
 		def reportObjectives = ReportObjective.list()
 		def dashboardObjectives = DashboardObjective.list()
-		for(objective in dashboardObjectives)
-			reportObjectives.remove(objective.getObjective())
+		for (objective in dashboardObjectives) reportObjectives.remove(objective.getObjective())
+		if (entity.objective != null) reportObjectives.add(entity.objective)
 		
-		model << [entity: entity, objectives: reportObjectives]
-		return model;
+		return [entity: entity, objectives: reportObjectives]
 	}
 	
 	def bindParams(def entity) {		
 		entity.properties = params
-			if(params.objective){					
-				 def reportObjective = ReportObjective.get(params.objective.id)
-				 entity.objective = params.objective
-				 
-				 entity.names = reportObjective.names
-				 entity.descriptions = reportObjective.descriptions
-				 entity.code = reportObjective.code
-			}
+		
+		if (entity.objective) {
+			entity.names = entity.objective.names
+			entity.descriptions = entity.objective.descriptions
+			entity.code = entity.objective.code
+		}
 	}
 	
 	@CacheFlush("dashboardCache")
@@ -98,6 +99,19 @@ class DashboardObjectiveController extends AbstractObjectiveController {
 	@CacheFlush("dashboardCache")
 	def delete = {
 		super.delete()
+	}
+	
+	def list = {
+		adaptParamsForList()
+		
+		List<DashboardObjective> objectives = DashboardObjective.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: objectives,
+			template: "dashboard/objectiveList",
+			code: getLabel(),
+			entityCount: DashboardObjective.count()
+		])
 	}
 	
 }

@@ -32,7 +32,7 @@ import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.security.User
 import org.chai.kevin.util.Utils;
 import org.hibernate.SessionFactory;
@@ -41,7 +41,7 @@ class EditSurveyController extends AbstractController {
 
 	SurveyPageService surveyPageService;
 	SurveyExportService surveyExportService;
-	ValidationService validationService;
+	SurveyValidationService surveyValidationService;
 	SessionFactory sessionFactory;
 	
 	def index = {
@@ -52,22 +52,20 @@ class EditSurveyController extends AbstractController {
 		// this action redirects to the current survey if a SurveyUser logs in
 		// or to a survey summary page if an admin logs in
 		if (log.isDebugEnabled()) log.debug("survey.view, params:"+params)
-		User user = User.findByUuid(SecurityUtils.subject.principal)
+		def user = getUser()
 
-		if (user.hasProperty('entityId') != null) {
-			Survey survey = Survey.get(params.int('survey'))
+		if (user.hasProperty('dataLocation') && user.dataLocation != null) {
+			Survey dataEntry = Survey.get(params.int('survey'))
 
-			if (survey == null) {
-				survey = surveyPageService.getDefaultSurvey()
+			if (dataEntry == null) {
+				dataEntry = surveyPageService.getDefaultSurvey()
 			}
-			if (survey == null) {
+			if (dataEntry == null) {
 				log.info("no default survey - redirecting to 404")
 				response.sendError(404)
 			}
 			else {
-				DataEntity entity = DataEntity.get(user.entityId)
-	
-				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: survey?.id, organisation: entity.id])
+				redirect (controller:'editSurvey', action: 'surveyPage', params: [survey: dataEntry?.id, location: user.dataLocation.id])
 			}
 		}
 		else {
@@ -75,12 +73,12 @@ class EditSurveyController extends AbstractController {
 		}
 	}
 
-	def validateParameters(def organisation, def groups) {
+	def validateParameters(def location, def types) {
 		def valid = true;
 
-		if (organisation == null) valid = false
+		if (location == null) valid = false
 		else {
-			if (groups != null && !groups.contains(organisation.type.code)) valid = false
+			if (types != null && !types.contains(location.type.code)) valid = false
 		}
 
 		if (!valid) {
@@ -93,10 +91,10 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
 
 		// TODO make sure this is a facility
-		DataEntity entity = DataEntity.get(params.int('organisation'))
+		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		SurveySection currentSection =  SurveySection.get(params.int('section'));
 
-		if (validateParameters(entity, Utils.split(currentSection?.groupUuidString))) {
+		if (validateParameters(entity, Utils.split(currentSection?.typeCodeString))) {
 			def surveyPage = surveyPageService.getSurveyPage(entity,currentSection)
 
 			render (view: '/survey/sectionPage', model: [surveyPage: surveyPage])
@@ -107,10 +105,10 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.objective, params:"+params)
 
 		// TODO make sure this is a facility
-		DataEntity entity = DataEntity.get(params.int('organisation'))
+		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 
-		if (validateParameters(entity, Utils.split(currentObjective?.groupUuidString))) {
+		if (validateParameters(entity, Utils.split(currentObjective?.typeCodeString))) {
 			def surveyPage = surveyPageService.getSurveyPage(entity, currentObjective)
 
 			render (view: '/survey/objectivePage', model: [surveyPage: surveyPage])
@@ -121,7 +119,7 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
 
 		// TODO make sure this is a facility
-		DataEntity entity = DataEntity.get(params.int('organisation'))
+		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 
 		if (validateParameters(entity, null)) {
 			Survey survey = Survey.get(params.int('survey'))
@@ -136,34 +134,34 @@ class EditSurveyController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
 
 		// TODO make sure this is a facility
-		DataEntity entity = DataEntity.get(params.int('organisation'))
-
+		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
 		Survey survey = Survey.get(params.int('survey'))
+		
 		surveyPageService.refresh(entity, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
 
-		redirect (action: "surveyPage", params: [organisation: entity.id, survey: survey.id])
+		redirect (action: "surveyPage", params: [location: entity.id, survey: survey.id])
 	}
 
 	def reopen = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
-		DataEntity entity = DataEntity.get(params.int('organisation'))
+		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 
-		if (validateParameters(entity, Utils.split(currentObjective?.groupUuidString))) {
+		if (validateParameters(entity, Utils.split(currentObjective?.typeCodeString))) {
 			surveyPageService.reopen(entity, currentObjective);
 
-			redirect (action: "objectivePage", params: [organisation: entity.id, objective: currentObjective.id])
+			redirect (action: "objectivePage", params: [location: entity.id, objective: currentObjective.id])
 		}
 	}
 
 	def submit = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
-		DataEntity entity = DataEntity.get(params.int('organisation'))
+		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'));
 
-		if (validateParameters(entity, Utils.split(currentObjective?.groupUuidString))) {
+		if (validateParameters(entity, Utils.split(currentObjective?.typeCodeString))) {
 			boolean success = surveyPageService.submit(entity, currentObjective);
 
 			if (success) {
@@ -173,20 +171,19 @@ class EditSurveyController extends AbstractController {
 				flash.message = message(code: "survey.objective.review", default: "The survey could not be submitted, please review the sections.");
 			}
 
-			redirect (action: "objectivePage", params: [organisation: entity.id, objective: currentObjective.id])
+			redirect (action: "objectivePage", params: [location: entity.id, objective: currentObjective.id])
 		}
 	}
 
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 
-		def entity = DataEntity.get(params.int('organisation'))
-
+		def location = DataLocationEntity.get(params.int('location'))
 		def currentSection = SurveySection.get(params.int('section'))
 		def currentObjective = SurveyObjective.get(params.int('objective'))
 		def surveyElements = [SurveyElement.get(params.int('element'))]
 
-		def surveyPage = surveyPageService.modify(entity, currentObjective, surveyElements, params);
+		def surveyPage = surveyPageService.modify(location, currentObjective, surveyElements, params);
 
 		if (surveyPage == null) {
 			render(contentType:"text/json") { status = 'error' }
@@ -197,10 +194,10 @@ class EditSurveyController extends AbstractController {
 
 			if (currentSection == null) {
 				sessionFactory.currentSession.clear()
-				entity = DataEntity.get(params.int('entity'))
+				location = DataLocationEntity.get(params.int('location'))
 				currentObjective = SurveyObjective.get(params.int('objective'))
 				
-				def completeSurveyPage = surveyPageService.getSurveyPage(entity, currentObjective)
+				def completeSurveyPage = surveyPageService.getSurveyPage(location, currentObjective)
 				invalidQuestionsHtml = g.render(template: '/survey/invalidQuestions', model: [surveyPage: completeSurveyPage])
 				incompleteSectionsHtml = g.render(template: '/survey/incompleteSections', model: [surveyPage: completeSurveyPage])
 			}
@@ -246,19 +243,19 @@ class EditSurveyController extends AbstractController {
 							id: surveyElement.id,
 							questionId: surveyElement.surveyQuestion.id,
 							skipped: array {
-								enteredValue.skippedPrefixes.each { prefix -> element prefix }
+								enteredValue.validatable.skippedPrefixes.each { prefix -> element prefix }
 							},
 							invalid: array {
-								enteredValue.invalidPrefixes.each { invalidPrefix ->
+								enteredValue.validatable.invalidPrefixes.each { invalidPrefix ->
 									pre (
 										prefix: invalidPrefix,
-										valid: enteredValue.isValid(invalidPrefix),
-										errors: g.renderUserErrors(element: enteredValue, suffix: invalidPrefix)
+										valid: enteredValue.validatable.isValid(invalidPrefix),
+										errors: g.renderUserErrors(element: surveyElement, validatable: enteredValue.validatable, suffix: invalidPrefix, location: enteredValue.entity)
 									)
 								}
 							},
 							nullPrefixes: array {
-								enteredValue.nullPrefixes.each { prefix -> element prefix }
+								enteredValue.validatable.nullPrefixes.each { prefix -> element prefix }
 							}
 						)
 					}
@@ -271,16 +268,16 @@ class EditSurveyController extends AbstractController {
 	def save = {
 		if (log.isDebugEnabled()) log.debug("survey.save, params:"+params)
 
-		DataEntity currentOrganisation = DataEntity.get(params.int('organisation'))
+		DataLocationEntity currentLocation = DataLocationEntity.get(params.int('location'))
 		def currentSection = SurveySection.get(params.int('section'));
 
-		if (validateParameters(currentOrganisation, Utils.split(currentSection?.groupUuidString))) {
+		if (validateParameters(currentLocation, Utils.split(currentSection?.typeCodeString))) {
 			def surveyElements = getSurveyElements()
-			surveyPageService.modify(currentOrganisation, currentSection.objective, surveyElements, params);
-			def sectionPage = surveyPageService.getSurveyPage(currentOrganisation, currentSection)
+			surveyPageService.modify(currentLocation, currentSection.objective, surveyElements, params);
+			def sectionPage = surveyPageService.getSurveyPage(currentLocation, currentSection)
 
 			def action
-			def params = [organisation: sectionPage.organisation.id]
+			def params = [location: sectionPage.location.id]
 			if (!sectionPage.sections[currentSection].invalid) {
 				if (sectionPage.isLastSection(currentSection)) {
 					// we go to the next objective
@@ -307,21 +304,21 @@ class EditSurveyController extends AbstractController {
 
 	def print = {
 		Survey survey = Survey.get(params.int('survey'));
-		DataEntity entity = DataEntity.get(params.int('organisation'))
+		DataLocationEntity location = DataLocationEntity.get(params.int('location'))
 
-		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(entity,survey);
+		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(location, survey);
 
 		render (view: '/survey/print/surveyPrint', model:[surveyPage: surveyPage])
 	}
 
 	def export = {
-		CalculationEntity entity = locationService.getCalculationEntity(params.int('organisation'), CalculationEntity.class)
+		CalculationEntity location = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
 		Survey survey = Survey.get(params.int('survey'))	
 
-		String filename = surveyExportService.getExportFilename(entity, section, objective, survey);
-		File csvFile = surveyExportService.getSurveyExportFile(filename, entity, section, objective, survey);
+		String filename = surveyExportService.getExportFilename(location, section, objective, survey);
+		File csvFile = surveyExportService.getSurveyExportFile(filename, location, section, objective, survey);
 		def zipFile = Utils.getZipFile(csvFile, filename)
 			
 		if(zipFile.exists()){

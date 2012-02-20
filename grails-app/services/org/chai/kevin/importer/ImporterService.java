@@ -46,7 +46,7 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.Sanitizer;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
@@ -67,7 +67,6 @@ public class ImporterService {
 	private ValueService valueService;	
 	private DataService dataService;
 	private static final String CODE_HEADER = "code";
-	
 	public void importFile(RawDataElement rawDataElement, Reader reader, Period period,ImporterErrorManager manager) throws IOException{
 		
 		ICsvMapReader readFileAsMap = new CsvMapReader(reader, CsvPreference.EXCEL_PREFERENCE);
@@ -89,7 +88,7 @@ public class ImporterService {
 				}
 			}
 			Value value = null;
-			DataEntity dataEntity=null;
+			DataLocationEntity dataEntity=null;
 			RawDataElementValue rawDataElementValue= null;			
 			manager.setNumberOfSavedRows(0);
 			manager.setNumberOfUnsavedRows(0);
@@ -110,7 +109,7 @@ public class ImporterService {
 					// 2 update the position	
 					if (positions.get(code) == null) positions.put(code, 0);
 					// 3 update the location
-					dataEntity = locationService.getCalculationEntity(code, DataEntity.class);
+					dataEntity = locationService.findCalculationEntityByCode(code, DataLocationEntity.class);
 					if(dataEntity==null){
 						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"error.message.unknown.location"));
 					}else{

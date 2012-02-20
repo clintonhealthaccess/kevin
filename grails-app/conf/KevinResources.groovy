@@ -73,6 +73,7 @@ modules = {
 		dependsOn 'jquery'
 
 		resource url: '/js/jquery/progressbar/jquery.progressbar.js', bundle: 'core'
+		resource url: '/js/progressbar_init.js', bundle: 'core'
 	}
 
 	chosen {
@@ -100,7 +101,7 @@ modules = {
 		resource url: '/js/foldable_init.js', bundle: 'core'
 		//resource url: '/css/foldable.css', bundle: 'core'
 	}
-
+	
 	dropdown {
 		dependsOn 'jquery'
 
@@ -139,7 +140,32 @@ modules = {
 
 		resource url: 'js/jquery/ajaxmanager/jquery.ajaxmanager.js', bundle: 'core'
 	}
-
+	
+	dataentry {
+		dependsOn 'jquery,ajaxmanager,datepicker'
+		
+		resource url: '/js/dataentry.js', bundle: 'core'
+	}
+	
+	chartanimation {
+		dependsOn 'jquery,tipsy'
+		
+		resource url: '/js/chartanimation_init.js'
+	}
+	
+	comparefilter {
+		dependsOn 'jquery'
+		
+		resource url: '/js/jquery/comparefilter/jquery.form.js', bundle: 'core'
+		resource url: '/js/dashboard/comparefilter_init.js'
+	}
+	
+	categoryfilter {
+		dependsOn 'jquery'
+		
+		resource url: '/js/dsr/categoryfilter_init.js'
+	}
+	
 	// Start resources for pages
 	list {
 		dependsOn 'core,spinner,form,fieldselection,cluetip,dropdown,explanation,chosen'
@@ -148,13 +174,17 @@ modules = {
 	}
 
 	survey {
-		dependsOn 'core,ajaxmanager,questionhelp,datepicker'
+		dependsOn 'core,questionhelp,dataentry'
 
 		//resource url: '/css/survey.css'
 	}
+	
+	planning {
+		dependsOn 'core,dataentry'
+	}
 
 	dsr {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,categoryfilter'
 
 		//resource url: '/css/dsr.css'
 	}
@@ -166,7 +196,7 @@ modules = {
 	}
 	
 	dashboard {
-		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen'
+		dependsOn 'core,cluetip,dropdown,nicetable,explanation,spinner,chosen,chartanimation,comparefilter'
 
 		//resource url: '/css/dashboard.css'
 	}

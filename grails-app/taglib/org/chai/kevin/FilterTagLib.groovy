@@ -29,6 +29,7 @@ package org.chai.kevin
  */
 
 import org.chai.kevin.LocationService;
+import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.hisp.dhis.period.Period;
@@ -48,19 +49,38 @@ class FilterTagLib {
 
 	def iterationFilter = {attrs, body ->
 		Period.withTransaction {
-			out << render(template:'/templates/iterationFilter', model:attrs)
+			def model = new HashMap(attrs)
+			model << [periods: Period.list(), currentPeriod: attrs['selected']]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/iterationFilter', model:model)
 		}
 	}
 	
-	def organisationFilter = {attrs, body ->
+	def locationFilter = {attrs, body ->
 		LocationEntity.withTransaction {
-			out << render(template:'/templates/organisationFilter', model:attrs)
+			def model = new HashMap(attrs)
+			// TODO get list of location
+			model << [locationRoot: locationService.rootLocation, currentLocation: attrs['selected']]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/locationFilter', model:model)
 		}
 	}
 	
 	def levelFilter = {attrs, body ->
 		LocationLevel.withTransaction {
-			out << render(template:'/templates/levelFilter', model:attrs)
+			def model = new HashMap(attrs)
+			model << [levels: LocationLevel.list(), currentLevel: attrs['selected']]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/levelFilter', model:model)
+		}
+	}
+	
+	def locationTypeFilter = {attrs, body ->
+		DataEntityType.withTransaction {
+			def model = new HashMap(attrs)
+			model << [locationTypes: DataEntityType.list(), currentLocationTypes: attrs['selected']]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/locationTypeFilter', model:model)
 		}
 	}
 	
@@ -69,8 +89,8 @@ class FilterTagLib {
 		String filter = (String) params.get("filter");
 
 		LocationEntity entity = null;
-		if (params.get("organisation") != null) {
-			entity = LocationEntity.get(Integer.parseInt(params.get("organisation")))
+		if (params.get("location") != null) {
+			entity = LocationEntity.get(Integer.parseInt(params.get("location")))
 		}
 
 		LocationLevel level = null;
@@ -84,25 +104,25 @@ class FilterTagLib {
 				if (entity.getLevel().getOrder() >= level.getOrder()) {
 					// conflict
 					if (filter == "level") {
-						// adjust organisation to level
+						// adjust location to level
 						LocationLevel levelBefore = locationService.getLevelBefore(entity.getLevel())
 						if (levelBefore == null) entity = locationService.getRootLocation();
 						else entity = locationService.getParentOfLevel(entity, levelBefore);
 					}
 					// conflict
 					else {
-						// adjust level to organisation
+						// adjust level to location
 						level = locationService.getLevelAfter(entity.getLevel())
 					}
 				}
 			}
 			// conflict
 			else {
-				// adjust level to organisation
+				// adjust level to location
 				level = locationService.getLevelAfter(entity.getLevel())
 			}
 		}
-		if (entity != null) params.put("organisation", entity.id);
+		if (entity != null) params.put("location", entity.id);
 		if (level != null) params.put("level", level.id);
 		return params;
 	}

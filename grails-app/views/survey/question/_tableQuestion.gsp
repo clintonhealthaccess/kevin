@@ -1,4 +1,4 @@
-<g:set var="organisationUnitGroup" value="${surveyPage.entity.type}"/>
+<g:set var="type" value="${surveyPage.entity.type}"/>
 
 <div id="question-${question.id}" class="question question-table" data-question="${question.id}">
 	<h4>
@@ -41,13 +41,15 @@
 									<g:set var="enteredValue" value="${surveyPage.elements[surveyElement]}" />
 				
 									<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
+										location: enteredValue.entity,
 										value: enteredValue.value, 
 										lastValue: enteredValue.lastValue,
 										type: dataElement.type, 
 										suffix:'',
-										surveyElement: surveyElement, 
-										enteredValue: enteredValue, 
-										readonly: readonly
+										element: surveyElement, 
+										validatable: enteredValue.validatable, 
+										readonly: readonly,
+										enums: surveyPage.enums
 									]" />
 								</g:if>
 								<g:else>

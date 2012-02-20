@@ -49,15 +49,13 @@ class MapsController extends AbstractController {
 		
 		Period period = getPeriod()
 		MapsTarget target = MapsTarget.get(params.int('target'));
-		LocationEntity entity = LocationEntity.get(params.int('organisation'));
+		LocationEntity entity = LocationEntity.get(params.int('location'));
 		
 		[
-			periods: Period.list(), 
 			targets: MapsTarget.list(),
-			organisationTree: locationService.getRootLocation(),
 			currentPeriod: period, 
 			currentTarget: target,
-			currentOrganisation: entity
+			currentLocation: entity
 		]
 	}
 	
@@ -65,19 +63,19 @@ class MapsController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("maps.infos, params:"+params)
 		
 		Period period = Period.get(params.int('period'))
-		CalculationEntity entity = locationService.getCalculationEntity(params.int('organisation'), CalculationEntity.class);
+		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class);
 		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
-		def info = mapsService.getExplanation(period, organisation, target);
+		def info = mapsService.getExplanation(period, location, target);
 		
-		[info: info, target: target, groups: DataEntityType.list()]
+		[info: info, target: target, types: DataEntityType.list()]
 	}
 	
 	def map = {
 		if (log.isDebugEnabled()) log.debug("maps.map, params:"+params)
 		
 		Period period = getPeriod()
-		LocationEntity entity = LocationEntity.get(params.int('organisation'));
+		LocationEntity entity = LocationEntity.get(params.int('location'));
 		if (entity == null) entity = locationService.getRootLocation();
 		LocationLevel level = LocationLevel.get(params.int('level'))
 		if (level == null) level = entity.getLevel()

@@ -7,20 +7,20 @@ import org.chai.kevin.util.Utils;
 
 abstract class FctIntegrationTests extends IntegrationTests {
 	
-	def newFctTarget(def code, def sum, def format, def groups, def objective) {
+	def newFctTarget(def code, def sum, def format, def types, def objective) {
 		def target = new FctTarget(names: [:], 
 			code: code, 
 			format: format, 
 			sum: sum, 
 			objective: objective, 
-			groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
+			typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 			
 //		objective.targets << target
 		objective.save(failOnError: true)
 		return target
 	}
 		
-	def newFctTarget(def code, def sum, def groups, def objective) {
-		return newFctTarget(code, sum, null, groups, objective)
+	def newFctTarget(def code, def sum, def types, def objective) {
+		return newFctTarget(code, sum, null, types, objective)
 	}
 }

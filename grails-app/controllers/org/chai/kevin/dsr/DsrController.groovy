@@ -33,6 +33,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 import java.util.Collections;
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.LanguageService
+import org.chai.kevin.LocationService
 import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
@@ -42,8 +44,14 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class DsrController extends AbstractController {
 
-	ReportService reportService;
+	LanguageService languageService;
 	DsrService dsrService;
+	
+	public DsrTargetCategory getDsrTargetCategory(){
+		def dsrTargetCategory = null
+		//TODO
+		return dsrTargetCategory
+	}
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -51,29 +59,41 @@ class DsrController extends AbstractController {
 	
 	def view = {
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
+		
 		Period period = getPeriod()
-		ReportObjective objective = ReportObjective.get(params.int('objective'));
-		LocationEntity entity = LocationEntity.get(params.int('organisation'));
-		List<DataEntityType> facilityTypes = getOrganisationUnitGroups();
+		List<DataEntityType> locationTypes = getLocationTypes()
+		ReportObjective objective = getObjective()
+		LocationEntity location = getLocation()		
 		
 		def dsrTable = null
-		if (period != null && objective != null && entity != null) {
-			 dsrTable = dsrService.getDsrTable(entity, objective, period, new HashSet(facilityTypes));
+		def category = null
+		if (period != null && objective != null && location != null) {
+			 dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet(locationTypes));
+			 
+			 def dsrTargetCategories = dsrTable.getTargetCategories()
+			 if(dsrTargetCategories != null){
+				 for(DsrTargetCategory dsrTargetCategory : dsrTargetCategories){
+					 String categoryName = languageService.getText(dsrTargetCategory.getNames());
+					 
+					 // FIXME HACK
+					 if(categoryName == "Critical Indicators"){						 
+					 	category = dsrTargetCategory;
+						break;
+					 }
+				 }		 
+			 }
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
 		
 		[
-			dsrTable: dsrTable, 
+			dsrTable: dsrTable,
+			currentCategory: category,
 			currentPeriod: period,
 			currentObjective: objective,
 			objectiveRoot: reportService.getRootObjective(),
-			currentOrganisation: entity,
-			currentFacilityTypes: facilityTypes,
-			periods: Period.list(),
-			facilityTypes: locationService.listTypes(),
-			objectives: ReportObjective.list(),
-		    organisationRoot: locationService.getRootLocation()
+			currentLocation: location,
+			currentLocationTypes: locationTypes
 		]
 	}
 	

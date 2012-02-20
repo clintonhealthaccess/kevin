@@ -16,8 +16,8 @@
 			<label><g:message code="survey.label" default="Survey"/>:</label> <g:i18n field="${objective.survey.names}"/>
 		</div>
 		
-		<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${objective}" field="groupUuidString" 
-			from="${groups}" value="${objective.groupUuids*.toString()}" values="${groups.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
+		<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${objective}" field="typeCodeString" 
+			from="${types}" value="${objective.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<g:if test="${objective.id != null}">
 			<input type="hidden" name="id" value="${objective.id}"></input>

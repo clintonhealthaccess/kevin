@@ -10,8 +10,7 @@
 	
 </head>
 <body>
-	
-	<div class="subnav">
+	<div class="heading">
 		<ul class="inline-list">
 			<li>
 				<a href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a>

@@ -14,7 +14,7 @@ import org.chai.kevin.Ordering;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
@@ -25,7 +25,7 @@ public class SurveyPage {
 
 	private final static Log log = LogFactory.getLog(SurveyPage.class);
 	
-	private DataEntity entity;
+	private DataLocationEntity entity;
 	private Survey survey;
 	private SurveyObjective objective;
 	private SurveySection section;
@@ -33,17 +33,17 @@ public class SurveyPage {
 	private Map<SurveySection, SurveyEnteredSection> sections;
 	private Map<SurveyQuestion, SurveyEnteredQuestion> questions;
 	private Map<SurveyElement, SurveyEnteredValue> elements;
-	private Comparator<Orderable<Ordering>> comparator;
+//	private Comparator<Orderable<Ordering>> comparator;
 	private Map<String, Enum> enums;
 	
-	public SurveyPage(DataEntity entity, Survey survey, 
+	public SurveyPage(DataLocationEntity entity, Survey survey, 
 			SurveyObjective objective, SurveySection section,
 			Map<SurveyObjective, SurveyEnteredObjective> objectives,
 			Map<SurveySection, SurveyEnteredSection> sections,
 			Map<SurveyQuestion, SurveyEnteredQuestion> questions,
 			Map<SurveyElement, SurveyEnteredValue> elements,
-			Map<String, Enum> enums,
-			Comparator<Orderable<Ordering>> comparator) {
+//			Comparator<Orderable<Ordering>> comparator
+			Map<String, Enum> enums) {
 		super();
 		this.entity = entity;
 		this.survey = survey;
@@ -54,14 +54,14 @@ public class SurveyPage {
 		this.questions = questions;
 		this.elements = elements;
 		this.enums = enums;
-		this.comparator = comparator;
+//		this.comparator = comparator;
 	}
 
 	public Period getPeriod() {
 		return survey.getPeriod();
 	}
 	
-	public DataEntity getOrganisation() {
+	public DataLocationEntity getLocation() {
 		return entity;
 	}
 
@@ -77,9 +77,13 @@ public class SurveyPage {
 		return section;
 	}
 	
-	public Enum getEnum(String code) {
-		return enums.get(code);
+	public Map<String, Enum> getEnums() {
+		return enums;
 	}
+	
+//	public Enum getEnum(String code) {
+//		return enums.get(code);
+//	}
 	
 	public Map<SurveyObjective, SurveyEnteredObjective> getEnteredObjectives() {
 		return objectives;
@@ -137,12 +141,12 @@ public class SurveyPage {
 		return objectives;
 	}
 	
-	public List<EnumOption> getEnumOptions(Enum enume) {
-		if (enume == null) return new ArrayList<EnumOption>();
-		List<EnumOption> options = enume.getActiveEnumOptions();
-		Collections.sort(options, comparator);
-		return options;
-	}
+//	public List<EnumOption> getEnumOptions(Enum enume) {
+//		if (enume == null) return new ArrayList<EnumOption>();
+//		List<EnumOption> options = enume.getActiveEnumOptions();
+//		Collections.sort(options, comparator);
+//		return options;
+//	}
 
 	public List<SurveySection> getIncompleteSections(SurveyObjective objective) {
 		if (log.isDebugEnabled()) log.debug("getIncompleteSections(objective="+objective+")");

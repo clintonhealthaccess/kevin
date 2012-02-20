@@ -62,7 +62,7 @@ import org.chai.kevin.util.Utils;
 public abstract class SurveyQuestion extends Orderable<Integer> {
 
 	// TODO might be a good idea to get rid of this
-	public enum QuestionType {CHECKBOX("checkboxQuestion"), TABLE("tableQuestion"), SIMPLE("simpleQuestion"), WORKFLOW("workflowQuestion");
+	public enum QuestionType {CHECKBOX("checkboxQuestion"), TABLE("tableQuestion"), SIMPLE("simpleQuestion"), WIZARD("wizardQuestion");
 		private String template;
 	
 		private QuestionType(String template) {
@@ -78,7 +78,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 	private Long id;
 	private Integer order;
 	private SurveySection section;
-	private String groupUuidString;
+	private String typeCodeString;
 	private Translation names = new Translation();
 	private Translation descriptions = new Translation();
 
@@ -113,21 +113,21 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 	}
 
 	@Lob
-	public String getGroupUuidString() {
-		return groupUuidString;
+	public String getTypeCodeString() {
+		return typeCodeString;
 	}
 
-	public void setGroupUuidString(String groupUuidString) {
-		this.groupUuidString = groupUuidString;
+	public void setTypeCodeString(String typeCodeString) {
+		this.typeCodeString = typeCodeString;
 	}
 
 	@Transient
-	public Set<String> getGroupUuids() {
-		return Utils.split(groupUuidString);
+	public Set<String> getTypeCodes() {
+		return Utils.split(typeCodeString);
 	}
 	
-	public void setGroupUuids(Set<String> groupUuids) {
-		this.groupUuidString = Utils.unsplit(groupUuids);
+	public void setTypeCodes(Set<String> typeCodes) {
+		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 	
 	@Embedded
@@ -163,7 +163,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 	public abstract List<SurveyElement> getSurveyElements();
 	
 	@Transient
-	public abstract Set<String> getOrganisationUnitGroupApplicable(SurveyElement surveyElement);
+	public abstract Set<String> getTypeApplicable(SurveyElement surveyElement);
 
 	@Transient
 	public Survey getSurvey() {
@@ -199,7 +199,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 	protected void deepCopy(SurveyQuestion copy, SurveyCloner surveyCloner) {
 		copy.setNames(new Translation(getNames()));
 		copy.setDescriptions(new Translation(getDescriptions()));
-		copy.setGroupUuidString(getGroupUuidString());
+		copy.setTypeCodeString(getTypeCodeString());
 		copy.setOrder(getOrder());
 		copy.setSection(surveyCloner.getSection(getSection()));
 	}

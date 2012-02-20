@@ -55,6 +55,38 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 		thrown ValidationException
 	}
 	
+	def "report objective cannot be null on target"() {
+		when:
+		def calculation = newAverage("1", CODE(3))
+		def objective = newReportObjective(CODE(2))
+		new DashboardTarget(code: CODE(1), objective: objective, calculation: calculation, weight: 1).save(failOnError: true)
+		
+		then:
+		DashboardTarget.count() == 1
+		
+		when:
+		new DashboardTarget(code: CODE(4), objective: objective, weight: 1).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "report objective cannot be null on objective"() {
+		when:
+		def calculation = newAverage("1", CODE(3))
+		def objective = newReportObjective(CODE(2))
+		new DashboardObjective(code: CODE(1), objective: objective, weight: 1).save(failOnError: true)
+		
+		then:
+		DashboardObjective.count() == 1
+		
+		when:
+		new DashboardObjective(code: CODE(4), weight: 1).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
 	def "weight cannot be null on objective"() {
 		when:
 		def calculation = newAverage("1", CODE(3))

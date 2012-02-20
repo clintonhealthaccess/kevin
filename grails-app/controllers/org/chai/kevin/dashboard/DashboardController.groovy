@@ -30,8 +30,9 @@ package org.chai.kevin.dashboard
 
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractController
+import org.chai.kevin.LocationService
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.Translation;
@@ -44,41 +45,31 @@ import org.hisp.dhis.period.Period
 class DashboardController extends AbstractController {
 	
 	DashboardService dashboardService;
-	ReportService reportService;
 	
 	def index = {
 		redirect (action: 'view', params: params)
 	}
+		
+	protected def redirectIfDifferent(def period, def objective, def location) {
+		if (period.id+'' != params['period'] || objective.id+'' != params['objective'] || location.id+'' != params['location'] ) {
+			
+			if (log.isInfoEnabled()) {
+				log.info ("redirecting to action: "+params['action']+
+					", period: "+period.id+
+					", objective: "+objective.id+
+					", location: "+location.id);
+			}
+			
+			redirect (controller: 'dashboard', action: params['action'],
+				params: [period: period.id, objective: objective.id, location: location.id]);
 	
-	def explain = {
-		Period period = Period.get(params.int('period'))
-		DashboardEntity dashboardEntity = getDashboardEntity()
-		CalculationEntity entity = locationService.getCalculationEntity(params.int('organisation'), CalculationEntity.class)
-
-		List<DataEntityType> facilityTypes = getOrganisationUnitGroups(true);
-		def info = dashboardService.getExplanation(entity, dashboardEntity, period, new HashSet(facilityTypes))
-		def groups = DataEntityType.list()
-		[
-			info: info, 
-			groups: groups, 
-			dashboardEntity: dashboardEntity
-		]
-	}
-	
-	protected def redirectIfDifferent(def period, def objective, def locationEntity) {
-		if (period.id+'' != params['period'] || objective.id+'' != params['dashboardEntity'] || locationEntity.id+'' != params['organisation'] ) {
-			if (log.isInfoEnabled()) log.info ("redirecting to action: "+params['action']+", period: "+period.id+", objective: "+objective.id+", entity: "+locationEntity.id)
-			redirect (controller: 'dashboard', action: params['action'], params: [period: period.id, dashboardEntity: objective.id, organisation: locationEntity.id]);
 		}
 	}
 	
-	private def getDashboardEntity() {
-		DashboardEntity entity = DashboardObjective.get(params.int('dashboardEntity'));
+	private def getDashboardEntity(def reportObjective) {		
+		DashboardEntity entity = dashboardService.getDashboardObjective(reportObjective)
 		if (entity == null) {
-			entity = DashboardTarget.get(params.int('dashboardEntity'));
-			if(entity == null){
-				entity = dashboardService.getDashboardObjective(reportService.getRootObjective())
-			}
+			entity = dashboardService.getDashboardObjective(reportService.getRootObjective())
 		}
 		return entity
 	}
@@ -86,56 +77,92 @@ class DashboardController extends AbstractController {
     def view = {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)
 		
-		def reportObjective = null
-		def dashboard = null		
+		def programDashboard = null		
+		def locationDashboard = null
 		
 		Period period = getPeriod()
-		List<DataEntityType> facilityTypes = getOrganisationUnitGroups()
-		DashboardEntity dashboardEntity = getDashboardEntity()
-		
-		LocationEntity locationEntity = LocationEntity.get(params.int('organisation'))
-		if (locationEntity == null) locationEntity = locationService.getRootLocation()
+		List<DataEntityType> locationTypes = getLocationTypes()
+		ReportObjective reportObjective = getObjective()	
+		DashboardEntity dashboardEntity = getDashboardEntity(reportObjective)		
+		LocationEntity location = getLocation()
 		
 		if (dashboardEntity != null) {
 			reportObjective = dashboardEntity.getReportObjective()
 			
-			if (log.isInfoEnabled()) log.info("view dashboard for period: "+period.id+", entity: "+locationEntity.id+", dashboardEntity:"+ dashboardEntity.id);
-			redirectIfDifferent(period, dashboardEntity, locationEntity)
+			if (log.isInfoEnabled()){
+				log.info("compare dashboard for period: "+period.id+
+					", location: "+location.id+
+					", objective:"+reportObjective.id);
+			}
+			redirectIfDifferent(period, reportObjective, location)
 			
-			dashboard = dashboardService.getDashboard(locationEntity, reportObjective, period, new HashSet(facilityTypes));
+			programDashboard = dashboardService.getProgramDashboard(location, reportObjective, period, new HashSet(locationTypes));
+			locationDashboard = dashboardService.getLocationDashboard(location, reportObjective, period, new HashSet(locationTypes));
 		}
-		if (log.isDebugEnabled()) log.debug('dashboard: '+dashboard)
+		if (log.isDebugEnabled()){
+			 log.debug('program dashboard: '+programDashboard)
+			 log.debug('location dashboard: '+locationDashboard)
+		}		
 		
 		[ 
-			dashboard: dashboard,
+			programDashboard:programDashboard,
+			locationDashboard:locationDashboard,			
 			currentPeriod: period,
-			periods: Period.list(),
 			dashboardEntity: dashboardEntity,
 			currentObjective: reportObjective,
 			objectiveRoot: reportService.getRootObjective(),
-			currentOrganisation: locationEntity,
-			organisationRoot: locationService.getRootLocation(),
-			currentFacilityTypes: facilityTypes,
-			facilityTypes: DataEntityType.list()
+			currentLocation: location,
+			currentLocationTypes: locationTypes
 		]
 	}
 	
-	def getDescription = {
-		def dashboardEntity = null;
-		if (NumberUtils.isNumber(params['id'])) {
-			dashboardEntity = DashboardObjective.get(params['id'])
-			if (dashboardEntity == null) DashboardTarget.get(params['id'])
-		}
+	def compare = {
+		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)
 		
-		if (dashboardEntity == null) {
-			render(contentType:"text/json") {
-				result = 'error'
+		def dashboard = null
+		
+		Period period = getPeriod()
+		List<DataEntityType> locationTypes = getLocationTypes()
+		ReportObjective reportObjective = ReportObjective.get(params.int('objective'))	
+		if(reportObjective == null) reportObjective = reportService.getRootObjective()
+		DashboardEntity dashboardEntity = getDashboardEntity(reportObjective)
+		LocationEntity location = LocationEntity.get(params.int('location'))
+		if (location == null) location = locationService.getRootLocation()
+		
+		if (dashboardEntity != null) {						
+			reportObjective = dashboardEntity.getReportObjective()
+			
+			if (log.isInfoEnabled()){
+				log.info("compare dashboard for period: "+period.id+
+					", location: "+location.id+
+					", objective:"+reportObjective.id+
+					", dashboardEntity: " + dashboardEntity.id);
 			}
-		}
+			redirectIfDifferent(period, reportObjective, location)
+			
+			def table = (String) params.get("table")			
+			if(table == 'program')
+				dashboard = dashboardService.getProgramDashboard(location, reportObjective, period, new HashSet(locationTypes));
+			if(table == 'location')
+				dashboard = dashboardService.getLocationCompareDashboard(location, reportObjective, period, new HashSet(locationTypes));
+						
+			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
+
+			render(contentType:"text/json") {
+				status = 'success'	
+				compareValues = array {
+					dashboard.dashboardEntities.each{ entity ->
+						obj (
+							id: entity.id,
+							value: dashboard.getPercentage(location, entity)
+							)
+					}
+				}			
+			}
+		}		
 		else {
 			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: 'description', model: [objective: dashboardEntity])
+				status = 'error'
 			}
 		}
 	}

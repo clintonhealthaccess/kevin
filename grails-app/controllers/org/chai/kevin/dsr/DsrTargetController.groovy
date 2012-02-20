@@ -58,14 +58,14 @@ class DsrTargetController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "/dsr/createTarget"
+		return "/entity/dsr/createTarget"
 	}
 
 	def getModel(def entity) {
 		[
 			target: entity,
 			objectives: ReportObjective.list(),
-			groups: DataEntityType.list(),
+			types: DataEntityType.list(),
 			categories: DsrTargetCategory.list(),
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[]
 		]
@@ -87,9 +87,21 @@ class DsrTargetController extends AbstractEntityController {
 
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
-//		entity.groupUuids = params['groupUuids']
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
+	}
+	
+	def list = {
+		adaptParamsForList()
+		
+		List<DsrTarget> objectives = DsrTarget.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: objectives,
+			template: "dsr/targetList",
+			code: getLabel(),
+			entityCount: DsrTarget.count()
+		])
 	}
 	
 	@CacheFlush("dsrCache")

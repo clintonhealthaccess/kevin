@@ -1,4 +1,4 @@
-<div class="main">
+<div class="table-wrap">
 	<table class="listing">
 		<thead>
 			<tr>
@@ -14,18 +14,18 @@
 		</thead>
 		<tbody>
 			<g:each in="${entities}" status="i" var="user">
-  				<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-  					<td>
-  	            		<ul class="horizontal">
-  			           		<li>
-  			           			<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id: user.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
-  							</li>
-  			           		<li>
-  			           			<a class="delete-link" href="${createLinkWithTargetURI(controller:'user', action:'delete', params:[id:user.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="default.link.delete.label" default="Delete" /></a>
-  							</li>
-  		           		</ul>
-  					</td>
-  					<td>${user.username}</td>
+				<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+					<td>
+	            		<ul class="horizontal">
+			           		<li>
+			           			<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id: user.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
+							</li>
+			           		<li>
+			           			<a class="delete-link" href="${createLinkWithTargetURI(controller:'user', action:'delete', params:[id:user.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="default.link.delete.label" default="Delete" /></a>
+							</li>
+		           		</ul>
+					</td>
+					<td>${user.username}</td>
 	  				<td>${user.email}</td>
 	  				<td>${user.permissionString}</td>
 	  				<td>${user.roles}</td>

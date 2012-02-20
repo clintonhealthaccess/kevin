@@ -62,11 +62,11 @@ public class MapsService {
 		List<LocationLevel> levels = locationService.listLevels();
 		
 		if (target == null) return new Maps(period, target, entity, level, polygons, levels);
-		List<LocationEntity> organisations = locationService.getChildrenOfLevel(entity, level);
+		List<LocationEntity> locations = locationService.getChildrenOfLevel(entity, level);
 
-		for (CalculationEntity child : organisations) {
+		for (CalculationEntity child : locations) {
 			Double value = null;
-			// TODO groups
+			// TODO types
 			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child, period, new HashSet<DataEntityType>(locationService.listTypes()));
 			if (calculationValue != null) {
 				if (!calculationValue.getValue().isNull()) {
@@ -81,7 +81,7 @@ public class MapsService {
 	}
 
 	public Info<?> getExplanation(Period period, CalculationEntity entity, MapsTarget target) {
-		// TODO groups
+		// TODO types
 		return infoService.getCalculationInfo(target.getCalculation(), entity, period, new HashSet<DataEntityType>(locationService.listTypes()));
 	}
 	

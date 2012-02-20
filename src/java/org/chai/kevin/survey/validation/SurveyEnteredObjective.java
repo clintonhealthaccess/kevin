@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyObjective;
 import org.hibernate.annotations.NaturalId;
 
@@ -22,7 +22,7 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 
 	private Long id;
 	private SurveyObjective objective;
-	private DataEntity entity;
+	private DataLocationEntity entity;
 	
 	private Boolean complete;
 	private Boolean invalid;
@@ -30,7 +30,7 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 	
 	public SurveyEnteredObjective() {}
 	
-	public SurveyEnteredObjective(SurveyObjective objective, DataEntity entity, Boolean invalid, Boolean complete, Boolean closed) {
+	public SurveyEnteredObjective(SurveyObjective objective, DataLocationEntity entity, Boolean invalid, Boolean complete, Boolean closed) {
 		super();
 		this.objective = objective;
 		this.entity = entity;
@@ -60,12 +60,12 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=DataEntity.class, fetch=FetchType.LAZY)
-	public DataEntity getEntity() {
+	@ManyToOne(targetEntity=DataLocationEntity.class, fetch=FetchType.LAZY)
+	public DataLocationEntity getEntity() {
 		return entity;
 	}
 	
-	public void setEntity(DataEntity entity) {
+	public void setEntity(DataLocationEntity entity) {
 		this.entity = entity;
 	}
 	

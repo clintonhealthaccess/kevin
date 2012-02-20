@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyQuestion;
 import org.chai.kevin.survey.SurveySkipRule;
 import org.hibernate.annotations.NaturalId;
@@ -28,7 +28,7 @@ public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 	
 	private Long id;
 	private SurveyQuestion question;
-	private DataEntity entity;
+	private DataLocationEntity entity;
 	
 	private Boolean complete;
 	private Boolean invalid;
@@ -36,7 +36,7 @@ public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 	
 	public SurveyEnteredQuestion() {}
 	
-	public SurveyEnteredQuestion(SurveyQuestion question, DataEntity entity, Boolean invalid, Boolean complete) {
+	public SurveyEnteredQuestion(SurveyQuestion question, DataLocationEntity entity, Boolean invalid, Boolean complete) {
 		super();
 		this.question = question;
 		this.entity = entity;
@@ -65,12 +65,12 @@ public class SurveyEnteredQuestion extends SurveyEnteredEntity {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=DataEntity.class, fetch=FetchType.LAZY)
-	public DataEntity getEntity() {
+	@ManyToOne(targetEntity=DataLocationEntity.class, fetch=FetchType.LAZY)
+	public DataLocationEntity getEntity() {
 		return entity;
 	}
 	
-	public void setEntity(DataEntity entity) {
+	public void setEntity(DataLocationEntity entity) {
 		this.entity = entity;
 	}
 	

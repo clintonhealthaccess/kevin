@@ -39,12 +39,12 @@
 			        X
 			        </g:else>
 			    </td>
-			    <td>${validationRule.groupUuidString}</td>
+			    <td>${validationRule.typeCodeString}</td>
 				<td><g:i18n field="${validationRule.messages}" /></td>
 				<td>
-					<div class="dropdown subnav-dropdown"> 
-						<a class="selected" href="#" data-type="survey"><g:message code="entity.list.manage.label" default="Manage"/></a>
-						<div class="hidden dropdown-list">
+					<div class="js_dropdown dropdown"> 
+						<a class="selected manage-btn" href="#" data-type="survey"><g:message code="entity.list.manage.label" default="Manage"/></a>
+						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>
 							 		<a href="${createLinkWithTargetURI(controller:'surveyValidationRule', action:'copy', params:[id: validationRule.id])}"><g:message code="survey.clone.label" default="Clone" /> </a>

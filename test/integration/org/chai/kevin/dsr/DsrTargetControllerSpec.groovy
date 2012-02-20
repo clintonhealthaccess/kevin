@@ -41,28 +41,28 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 //	def "delete target refreshes cache"() {
 //		setup:
 //		dsrTargetController = new DsrTargetController()
-//		setupOrganisationUnitTree()
+//		setupLocationTree()
 //		def period = newPeriod()
 //		def objective = newDsrObjective(CODE(1))
 //		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "1")
 //		def target = newDsrTarget(CODE(2), expression, [], objective)
-//		def organisation = LocationEntity.findByCode(BURERA)
+//		def location = LocationEntity.findByCode(BURERA)
 //		refresh()
 //		
 //		when:
-//		def dsrTable = reportService.getDsrTable(organisation, objective, period)
+//		def dsrTable = reportService.getDsrTable(location, objective, period)
 //		
 //		then:
-//		dsrTable.getDsrValue(DataEntity.findByCode(BUTARO), target) != null
+//		dsrTable.getDsrValue(DataLocationEntity.findByCode(BUTARO), target) != null
 //		
 //		// TODO can't work because controller class is not instrumented 
 ////		when:
 ////		dsrTargetController.params.id = target.id
 ////		dsrTargetController.delete()
-////		dsrTable = dsrService.getDsr(organisation, objective, period)
+////		dsrTable = dsrService.getDsr(location, objective, period)
 ////		
 ////		then:
-////		dsrTable.getDsr(DataEntity.findByCode(BUTARO), target) == null
+////		dsrTable.getDsr(DataLocationEntity.findByCode(BUTARO), target) == null
 //	}
 	
 	def "save target saves target"() {
@@ -77,7 +77,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		dsrTargetController.params.code = CODE(2)
 		dsrTargetController.params['dataElement.id'] = dataElement.id+""
 		dsrTargetController.params['objective.id'] = objective.id+""
-		dsrTargetController.params.groupUuids = [DISTRICT_HOSPITAL_GROUP]
+		dsrTargetController.params.typeCodes = [DISTRICT_HOSPITAL_GROUP]
 		dsrTargetController.saveWithoutTokenCheck()
 		
 		then:

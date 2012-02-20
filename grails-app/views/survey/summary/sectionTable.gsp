@@ -18,11 +18,11 @@
   					<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(section)}"/>
   					<tr>
   						<td><g:i18n field="${section.names}"/></td>
-  						<td><span class="progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
+  						<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
   						<td>
-  							<a href="${createLink(controller: 'editSurvey', action: 'sectionPage', params: [section: section.id, organisation: organisation.id])}"><g:message code="survey.viewsurvey.label" default="View Survey"/></a>
+  							<a href="${createLink(controller: 'editSurvey', action: 'sectionPage', params: [section: section.id, location: location.id])}"><g:message code="survey.viewsurvey.label" default="View Survey"/></a>
   							<shiro:hasPermission permission="editSurvey:export"> 
-								<a href="${createLink(controller: 'editSurvey', action: 'export', params: [section: section.id, organisation: organisation.id])}">
+								<a href="${createLink(controller: 'editSurvey', action: 'export', params: [section: section.id, location: location.id])}">
 								<g:message code="survey.summary.exportsection.label" default="Export Survey Section" /></a>
 							</shiro:hasPermission>
 						</td>

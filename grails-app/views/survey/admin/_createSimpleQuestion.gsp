@@ -54,8 +54,8 @@
 					</div>
 				</div>
 
-				<g:selectFromList name="groupUuids" label="${message(code:'facility.type.label')}" bean="${question}" field="groupUuidString" 
-					from="${groups}" value="${question.groupUuids*.toString()}" values="${groups.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
+				<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${question}" field="typeCodeString" 
+					from="${types}" value="${question.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 				<g:if test="${question.id != null}">
 					<input type="hidden" name="id" value="${question.id}"></input>

@@ -49,7 +49,7 @@ class DsrTargetCategoryController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "/dsr/createTargetCategory"
+		return "/entity/dsr/createTargetCategory"
 	}
 	
 	def getModel(def entity) {
@@ -88,6 +88,19 @@ class DsrTargetCategoryController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
+	}
+	
+	def list = {
+		adaptParamsForList()
+		
+		List<DsrTargetCategory> categories = DsrTargetCategory.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: categories,
+			template: "dsr/targetCategoryList",
+			code: getLabel(),
+			entityCount: DsrTargetCategory.count()
+		])
 	}
 
 }

@@ -12,7 +12,7 @@ class StoredValueSpec extends IntegrationTests {
 		setup:
 		def period = newPeriod()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def entity = newDataEntity(BUTARO, type)
+		def entity = newDataLocationEntity(BUTARO, type)
 		
 		
 		when:

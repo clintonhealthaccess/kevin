@@ -29,6 +29,7 @@ package org.chai.kevin.value;
  */
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,7 +43,7 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -82,7 +83,7 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataEntity entity, Period period) {
+	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataLocationEntity entity, Period period) {
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", entity="+entity+")");
 		T result = (T)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
 		.add(Restrictions.eq("period", period))
@@ -92,13 +93,21 @@ public class ValueService {
 		return result;
 	}
 	
-	
 	@Transactional(readOnly=true)
 	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", entity="+entity+", types="+types+")");
 		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, entity, period, types), period, entity);
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(...)="+result);
 		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
+	public <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
+		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
+		.add(Restrictions.eq("period", period))
+		.add(Restrictions.eq("entity", entity))
+		.add(Restrictions.eq("data", calculation)).list();
 	}
 	
 	@SuppressWarnings("unchecked")

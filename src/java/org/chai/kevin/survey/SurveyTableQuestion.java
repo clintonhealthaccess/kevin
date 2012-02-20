@@ -155,7 +155,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	public List<SurveyTableRow> getRows(DataEntityType type) {
 		List<SurveyTableRow> result = new ArrayList<SurveyTableRow>();
 		for (SurveyTableRow surveyTableRow : getRows()) {
-			if (Utils.split(surveyTableRow.getGroupUuidString()).contains(type.getCode()))
+			if (Utils.split(surveyTableRow.getTypeCodeString()).contains(type.getCode()))
 				result.add(surveyTableRow);
 		}
 		return result;
@@ -165,7 +165,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	public List<SurveyTableColumn> getColumns(DataEntityType type) {
 		List<SurveyTableColumn> result = new ArrayList<SurveyTableColumn>();
 		for (SurveyTableColumn surveyTableColumn : getColumns()) {
-			if (Utils.split(surveyTableColumn.getGroupUuidString()).contains(type.getCode()))
+			if (Utils.split(surveyTableColumn.getTypeCodeString()).contains(type.getCode()))
 				result.add(surveyTableColumn);
 		}
 		return result;
@@ -173,7 +173,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Transient
-	public Set<String> getOrganisationUnitGroupApplicable(
+	public Set<String> getTypeApplicable(
 			SurveyElement surveyElement) {
 		Set<String> columnRowOrgUnitUuIDs = new HashSet<String>();
 		
@@ -187,8 +187,8 @@ public class SurveyTableQuestion extends SurveyQuestion {
 						found = true;
 						columnRowOrgUnitUuIDs.addAll(
 							CollectionUtils.intersection(
-								row.getOrganisationUnitGroupApplicable(),
-								((SurveyTableColumn) pairs.getKey()).getOrganisationUnitGroupApplicable()
+								row.getTypeApplicable(),
+								((SurveyTableColumn) pairs.getKey()).getTypeApplicable()
 							)
 						);
 					}
@@ -201,9 +201,9 @@ public class SurveyTableQuestion extends SurveyQuestion {
 			CollectionUtils.intersection(
 				CollectionUtils.intersection(
 					columnRowOrgUnitUuIDs, 
-					Utils.split(this.getGroupUuidString())
+					Utils.split(this.getTypeCodeString())
 				),
-				getSection().getOrganisationUnitGroupApplicable()	
+				getSection().getTypeApplicable()	
 			)
 		);
 	}

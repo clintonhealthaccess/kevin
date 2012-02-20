@@ -62,7 +62,7 @@ public class Maps {
 		return target;
 	}
 	
-	public LocationEntity getOrganisation() {
+	public LocationEntity getLocation() {
 		return entity;
 	}
 	
@@ -98,7 +98,7 @@ public class Maps {
 		if (levels.size() != 0) builder.deleteCharAt(builder.length()-1);
 		builder.append("]");
 		builder.append(",");
-		builder.append("\"selectedOrganisation\":"+entity.getId());
+		builder.append("\"selectedLocation\":"+entity.getId());
 		builder.append(",");
 		if (entity.getCoordinates() != null) {
 			builder.append("\"selectedCoordinates\":"+entity.getCoordinates());

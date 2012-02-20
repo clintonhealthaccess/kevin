@@ -56,7 +56,7 @@ import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
@@ -113,35 +113,33 @@ abstract class IntegrationTests extends IntegrationSpec {
 		def north = newLocationEntity(j(["en":NORTH]), NORTH, rwanda, province)
 		def burera = newLocationEntity(j(["en":BURERA]), BURERA, north, district)
 		
-		newDataEntity(j(["en":BUTARO]), BUTARO, burera, dh)
-		newDataEntity(j(["en":KIVUYE]), KIVUYE, burera, hc)
+		newDataLocationEntity(j(["en":BUTARO]), BUTARO, burera, dh)
+		newDataLocationEntity(j(["en":KIVUYE]), KIVUYE, burera, hc)
 	}
 	
-	Period newPeriod() {
-//		def monthly = new MonthlyPeriodType();
-//		monthly.save(failOnError: true)
+	static def newPeriod() {
 		def period = new Period(startDate: mar01, endDate: mar31)
 		return period.save(failOnError: true)
 	} 
 	
-	def newDataEntityType(def code) {
+	static def newDataEntityType(def code) {
 		return newDataEntityType([:], code)
 	}
 	
-	def newDataEntityType(def names, def code) {
+	static def newDataEntityType(def names, def code) {
 		return new DataEntityType(names: names, code: code).save(failOnError: true)
 	}
 	
-	def newDataEntity(def code, def type) {
-		return newDataEntity([:], code, null, type)
+	static def newDataLocationEntity(def code, def type) {
+		return newDataLocationEntity([:], code, null, type)
 	}
 	
-	def newDataEntity(def code, def parent, def type) {
-		return newDataEntity([:], code, parent, type)
+	static def newDataLocationEntity(def code, def parent, def type) {
+		return newDataLocationEntity([:], code, parent, type)
 	}
 	
-	def newDataEntity(def names, def code, def location, def type) {
-		def entity = new DataEntity(names: names, code: code, location: location, type: type).save(failOnError: true)
+	static def newDataLocationEntity(def names, def code, def location, def type) {
+		def entity = new DataLocationEntity(names: names, code: code, location: location, type: type).save(failOnError: true)
 		if (location != null) {
 			 location.dataEntities << entity
 			 location.save(failOnError: true)
@@ -149,23 +147,23 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return entity
 	}
 	
-	def newLocationLevel(String code, def order) {
+	static def newLocationLevel(String code, def order) {
 		return new LocationLevel(code: code, order: order).save(failOnError: true)
 	}
 	
-	def newLocationEntity(String code, def level) {
+	static def newLocationEntity(String code, def level) {
 		return newLocationEntity([:], code, null, level)
 	}
 
-	def newLocationEntity(def names, def code, def level) {
+	static def newLocationEntity(def names, def code, def level) {
 		return newLocationEntity(names, code, null, level)
 	}
 		
-	def newLocationEntity(String code, def parent, def level) {
+	static def newLocationEntity(String code, def parent, def level) {
 		return newLocationEntity([:], code, parent, level)
 	}
 	
-	def newLocationEntity(def names, def code, def parent, def level) {
+	static def newLocationEntity(def names, def code, def parent, def level) {
 		def entity = new LocationEntity(names: names, code: code, parent: parent, level: level).save(failOnError: true)
 		level.locations << entity
 		level.save(failOnError: true)
@@ -176,11 +174,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return entity
 	}
 	
-	def newUser(def username, def uuid) {
+	static def newUser(def username, def uuid) {
 		return new User(username: username, permissionString: '', passwordHash:'', uuid: uuid).save(failOnError: true)
 	}
 	
-	def newSurveyUser(def username, def uuid, def entityId) {
+	static def newSurveyUser(def username, def uuid, def entityId) {
 		return new SurveyUser(username: username, permissionString: '', passwordHash:'', uuid: uuid, entityId: entityId).save(failOnError: true)
 	}
 	
@@ -281,18 +279,18 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return enumOption
 	}
 	
-	def newReportObjective(def code) {
+	static def newReportObjective(def code) {
 		return new ReportObjective(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
 	}
 	
-	def newReportObjective(def code, def parent) {
+	static def newReportObjective(def code, def parent) {
 		def reportObjective = new ReportObjective(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
 		parent.children << reportObjective
 		parent.save(failOnError: true)
 		return reportObjective
 	}
 	
-//	def newReportObjective(def code, def parent, def children){
+//	static def newReportObjective(def code, def parent, def children){
 //		return new ReportObjective(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
 //	}
 	
@@ -337,13 +335,13 @@ abstract class IntegrationTests extends IntegrationSpec {
 //		return result;
 //	}
 	
-//	static def getOrganisation(def name) {
-//		return new Organisation(OrganisationUnit.findByName(name))
+//	static def getLocation(def name) {
+//		return new Location(Location.findByName(name))
 //	}
 	
 	static def getCalculationEntity(def code) {
 		def entity = LocationEntity.findByCode(code)
-		if (entity == null) entity = DataEntity.findByCode(code)
+		if (entity == null) entity = DataLocationEntity.findByCode(code)
 		return entity
 	}
 	
@@ -358,7 +356,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def getDataEntities(def codes) {
 		def result = []
 		for (String code : codes) {
-			result.add(DataEntity.findByCode(code))
+			result.add(DataLocationEntity.findByCode(code))
 		}
 		return result
 	}

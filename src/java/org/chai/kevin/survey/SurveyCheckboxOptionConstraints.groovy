@@ -34,7 +34,7 @@ package org.chai.kevin.survey
 constraints = {
 	question(nullable: false)
 	order(nullable: false)
-	groupUuidString(nullable:false /*,blank:false*/)
+	typeCodeString(nullable:false /*,blank:false*/)
 	surveyElement(validator: {val, obj ->
 		if (val != null) {
 			return val.dataElement.type.type.name() == "BOOL"

@@ -36,5 +36,5 @@ constraints = {
 	code (nullable: false, blank: false, unique: true)
 	sum (nullable: false)
 	objective (nullable: false)
-	groupUuidString (nullable: null)
+	typeCodeString (nullable: null)
 }

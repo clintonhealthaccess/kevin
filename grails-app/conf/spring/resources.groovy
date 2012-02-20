@@ -10,8 +10,10 @@ import org.chai.kevin.JaqlService
 import org.chai.kevin.LocationService
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
+import org.chai.kevin.dashboard.DashboardPercentageService;
 import org.chai.kevin.dashboard.DashboardService
 import org.chai.kevin.data.InfoService;
+import org.chai.kevin.planning.PlanningService;
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.dsr.DsrService
 import org.chai.kevin.export.ExportDataElementService;
@@ -22,9 +24,10 @@ import org.chai.kevin.survey.SummaryService
 import org.chai.kevin.survey.SurveyCopyService
 import org.chai.kevin.survey.SurveyExportService
 import org.chai.kevin.survey.SurveyPageService
-import org.chai.kevin.survey.ValidationService
+import org.chai.kevin.survey.SurveyValidationService
 import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.RefreshValueService;
+import org.chai.kevin.value.ValidationService;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
@@ -68,10 +71,10 @@ beans = {
 	
 //	exportDataElementService(ExportDataElementService){
 //		dataElementService=ref("dataElementService")
-//		organisationService = ref("organisationService")
+//		locationService = ref("locationService")
 //		valueService = ref("valueService")
 //		infoService = ref("infoService")
-//		facilityLevel = organisationLevel
+//		facilityLevel = locationLevel
 //	}
 	
 	importerService(ImporterService){
@@ -80,6 +83,9 @@ beans = {
 		dataService=ref("dataService")
 	}
 
+	validationService(ValidationService){
+		jaqlService = ref("jaqlService")
+	}
 	
 	surveyCopyService(SurveyCopyService) {
 		sessionFactory = ref("sessionFactory")
@@ -99,21 +105,17 @@ beans = {
 		grailsApplication = ref("grailsApplication")
 	}
 	
-	validationService(ValidationService){
-		locationService = ref("locationService")
-		surveyValueService = ref("surveyValueService")
-		surveyService = ref("surveyService")
-		jaqlService = ref("jaqlService")
+	surveyValidationService(SurveyValidationService){
+		validationService = ref("validationService")
 	}
 	
 	surveyPageService(SurveyPageService){
-		languageService = ref("languageService")
 		surveyValueService = ref("surveyValueService")
 		surveyService = ref("surveyService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		validationService = ref("validationService")
+		surveyValidationService = ref("surveyValidationService")
 		sessionFactory = ref("sessionFactory")
 		grailsApplication = ref("grailsApplication")
 	}
@@ -137,18 +139,19 @@ beans = {
 	}
 
 	reportService(ReportService){
+		dataService = ref("dataService")
 		languageService = ref("languageService")
 		locationService = ref("locationService")
-		sessionFactory = ref("sessionFactory")
+		valueService = ref("valueService")		
+		sessionFactory = ref("sessionFactory")		
 	}
 	
-	dsrService(DsrService){
+	dsrService(DsrService){		
 		reportService = ref("reportService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		languageService = ref("languageService")
-		groupLevel = dsrGroupLevel
 	}
 	
 	fctService(FctService){
@@ -191,15 +194,22 @@ beans = {
 
 	dashboardService(DashboardService) {
 		reportService = ref("reportService")
-		infoService = ref("infoService")
-		valueService = ref("valueService")
 		locationService = ref("locationService")
 		sessionFactory = ref("sessionFactory")
-		skipLevels = dashboardSkipLevels
+		dashboardPercentageService = ref("dashboardPercentageService")
+		skipLevels = dashboardSkipLevels				
+	}
+	
+	dashboardPercentageService(DashboardPercentageService) {
+//		infoService = ref("infoService")
+		valueService = ref("valueService")
+		dashboardService = ref("dashboardService")
 	}
 
-	locationService(LocationService) {
-		sessionFactory = ref("sessionFactory")
+	planningService(PlanningService) {
+		valueService = ref("valueService")
+		dataService = ref("dataService")
+		refreshValueService = ref("refreshValueService")
 	}
 	
 	// override the spring cache manager to use the same as hibernate

@@ -1,5 +1,4 @@
 <%@ page import="org.chai.kevin.survey.SummaryPage" %>
-
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -9,11 +8,10 @@
 		<r:require modules="progressbar,dropdown,explanation,survey"/>
 	</head>
 	<body>
-		<div id="survey">
-		
-			<div id="survey-header" class="subnav">
+		<div>
+			<div class="subnav">
 				<g:render template="/survey/summary/surveyFilter"/>
-				<g:organisationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']}"/>
+				<g:locationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SummaryPage.PROGRESS_SORT, order:'desc']}" selected="${currentLocation}"/>
 			</div>
 						
 			<div class="main">			
@@ -21,36 +19,23 @@
 					<p class="help"><g:message code="survey.summary.selectsurveyfacility.text" default="Please select a survey and a facility to get to the respective survey."/></p>
 				</g:if>
 				<g:else>
+					<div class="push-20">
+						<div class="push-10">
+							<g:message code="location.label"/>: <g:i18n field="${currentLocation.names}"/>
+						</div>
+						<div>
+							<g:message code="survey.summary.progress"/>: <span class="js_progress-bar">${summaryPage.summary.completedQuestions}/${summaryPage.summary.questions}</span>
+						</div>
+					</div>
 					<g:render template="${template}"/>
 				</g:else>
 			</div>
 		</div>
 		
 		<r:script>
-			function progressBar() {
-				$(".progress-bar").each(function(){
-					var values = $(this).html().split('/');
-					
-					if (values.length == 2) {
-						var value;
-						if(values[1] == 0) value = 0;
-						else value = (values[0]/values[1])*100;
-						$(this).progressBar(value, {
-							steps: 0,
-							boxImage: "${resource(dir:'js/jquery/progressbar/images',file:'progressbar.gif')}",
-							barImage: {
-								0:  "${resource(dir:'js/jquery/progressbar/images',file:'progressbg_red.gif')}",
-								30: "${resource(dir:'js/jquery/progressbar/images',file:'progressbg_yellow.gif')}",
-								70: "${resource(dir:'js/jquery/progressbar/images',file:'progressbg_green.gif')}"
-							}
-						});
-					}
-				});
-			} 
+			${render(template:'/templates/progressImages')}
 		
 			$(document).ready(function() {
-				progressBar();				
-
 				$('.objective-table-link').bind('click', function() {
     				var facility = $(this).data('facility');
     				explanationClick(this, facility, function(){progressBar();});

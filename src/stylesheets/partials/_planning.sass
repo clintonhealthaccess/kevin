@@ -1,0 +1,212 @@
+.overview-section
+  +pie-clearfix
+  > li
+    background: #f9f9f9
+    border: 1px solid $filler - #090909
+    float: left
+    height: 150px
+    margin-right: 1.5%
+    padding: 20px 1.5%
+    position: relative
+    width: 29%
+    +border-radius(3px)
+    +box-shadow($filler - #050505 2px 2px 5px inset)
+    &:last-child
+      margin-right: 0
+    &:hover, &:focus
+      border: 1px solid $filler - #333
+      .overview-new a
+        border: 1px solid $primary
+      
+  h5 a
+    display: block
+    font-size: 15px
+    font-weight: bold
+    margin-bottom: 20px
+    text-decoration: none
+    &:hover, &:focus
+      text-decoration: underline
+      
+  h6
+    clear: both
+    color: #888
+    font-size: 10px
+    font-weight: bold
+    margin-bottom: 3px
+    padding-bottom: 5px
+    text-transform: uppercase
+    
+  p, a
+    font-size: 11px
+    
+.overview-recent
+  +pie-clearfix
+  
+  li
+    border-top: 1px solid #eee
+    padding: 4px 0 5px 7px
+    &:hover, &:focus
+      .overview-manage
+        display: inline-block
+    
+  a
+    font-size: 11px
+    text-decoration: none
+    &:hover, &:focus
+      text-decoration: underline
+  
+.overview-manage
+  display: none
+  a
+    background: $filler
+    font-size: 10px
+    margin-left: 1px
+    padding: 3px 5px
+    +border-radius(3px)
+    +box-shadow($filler - #050505 2px 2px 5px inset)
+    +text-shadow(#fff 0 1px 0)
+  
+.overview-all
+  font-size: 11px
+  span
+    font-weight: bold
+    
+.overview-new
+  bottom: -6px
+  left: 24%
+  position: absolute
+  text-align: center
+  
+  a
+    width: 125px
+      
+.toolbar
+  background: #fcfcfc
+  border: 1px solid $filler - #090909
+  //margin-bottom: 10px
+  padding: 7px 10px
+  +border-radius(3px)
+  +box-shadow($filler - #050505 2px 2px 5px inset)
+  +pie-clearfix
+  
+  a
+    background: #fff
+    border: 1px solid $filler - #111
+    display: block
+    font-size: 11px
+    margin-right: 5px
+    padding: 6px 9px
+    text-decoration: none
+    +border-radius(3px)
+    +box-shadow(#eee 0 0 5px)
+    +text-shadow(#fff 0 1px 0)
+    &:hover, &:focus
+      border: 1px solid $primary
+    
+  input[type=text]
+    background: #fff
+    border: 1px solid $filler - #333
+    color: #444
+    font: normal 12px Arial, sans-serif
+    margin-top: 1px
+    padding: 4px
+    +border-radius(2px)
+    +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
+    &:hover, &:focus
+      background: $filler + #030303
+      border-color: $primary
+
+.funding
+  font-size: 11px
+  padding: 10px
+  input[type=text]
+    background: #fff
+    border: 1px solid $filler - #333
+    color: #444
+    font: normal 12px Arial, sans-serif
+    margin-top: 1px
+    padding: 4px
+    +border-radius(2px)
+    +box-shadow($filler - #111, 1px, 1px, 3px, 0, inset)
+    &:hover, &:focus
+      background: $filler + #030303
+      border-color: $primary
+
+.table-nav
+  float: left
+  padding: 0 170px
+  li
+    display: inline
+    float: left
+    &:last-child a
+      border-right: 1px solid $dropdown
+  a
+    border: 1px solid $dropdown
+    border-right: none
+    border-top: none
+    display: block
+    font-size: 11px
+    padding: 7px 12px
+    text-decoration: none
+    &.selected
+      background: $filler
+      color: $primary - #333
+      +text-shadow(#fff 0 1px 0)
+      
+.diff
+  background: #fff
+  border: 1px solid $dropdown
+  margin-bottom: 10px
+  &.positive
+    background: $filler2
+    border: 1px solid $yes
+    color: $yes
+    padding: 10px
+    +text-shadow(#fff 0 1px 0)
+  &.negative
+    background: $filler3
+    border: 1px solid $no
+    color: $no
+    padding: 10px
+    +text-shadow(#fff 0 1px 0)
+  .diff-title
+    background: $filler
+    padding: 10px
+  h5
+    color: $primary
+    font-size: 15px
+    font-weight: bold
+    margin-bottom: 5px
+
+  h6
+    color: #888
+    font-size: 10px
+    font-weight: bold
+    padding-bottom: 5px
+    text-transform: uppercase
+  p
+    padding-bottom: 5px
+  span
+    display: inline-block
+    float: left
+    font-size: 11px
+    width: 118px
+    
+  input[type=text]
+    width: 132px
+  select
+    width: 100px
+    
+  ul
+    border-top: 1px solid $dropdown
+    padding: 10px
+    +pie-clearfix
+    h6
+      border-bottom: 1px solid $dropdown
+      margin-bottom: 7px
+    
+  li
+    padding-bottom: 15px
+    &:last-child
+      padding-bottom: 0
+      

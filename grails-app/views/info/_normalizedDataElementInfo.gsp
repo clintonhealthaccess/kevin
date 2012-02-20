@@ -30,10 +30,10 @@
 			</div>
 		</div>
 	</div>
-	<g:if test="${info.valuesForOrganisation != null}">
+	<g:if test="${info.valuesForLocation != null}">
 		<div class="span box">
 			<span class="bold">Data</span>
-			<table class="listing"><g:each in="${info.valuesForOrganisation}" var="data">
+			<table class="listing"><g:each in="${info.valuesForLocation}" var="data">
 				<g:set var="dataElement" value="${data.key}"/>
 				<g:set var="dataValue" value="${data.value}"/>
 				
@@ -66,7 +66,7 @@
 			<a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Trend</a>
 		</span>
 		<div class="span box hidden">
-			<g:render template="/chart/chart" model="[data: info.expression.id, organisation: info.organisation.id, maxValue: info.maxValue]"/>
+			<g:render template="/chart/chart" model="[data: info.expression.id, location: info.location.id, maxValue: info.maxValue]"/>
 		</div>
 	</div>
 </div>

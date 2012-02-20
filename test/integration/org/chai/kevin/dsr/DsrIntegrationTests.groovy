@@ -7,20 +7,20 @@ import org.chai.kevin.util.Utils;
 
 abstract class DsrIntegrationTests extends IntegrationTests {
 	
-	def newDsrTarget(def code, def dataElement, def format, def groups, def objective) {
+	def newDsrTarget(def code, def dataElement, def format, def types, def objective) {
 		def target = new DsrTarget(names: [:], 
 			code: code, 
 			format: format, 
 			dataElement: dataElement, 
 			objective: objective, 
-			groupUuidString: Utils.unsplit(groups)).save(failOnError: true)
+			typeCodeString: Utils.unsplit(types)).save(failOnError: true)
 			
 //		objective.targets << target
 		objective.save(failOnError: true)
 		return target
 	}
 		
-	def newDsrTarget(def code, def dataElement, def groups, def objective) {
-		return newDsrTarget(code, dataElement, null, groups, objective)
+	def newDsrTarget(def code, def dataElement, def types, def objective) {
+		return newDsrTarget(code, dataElement, null, types, objective)
 	}
 }

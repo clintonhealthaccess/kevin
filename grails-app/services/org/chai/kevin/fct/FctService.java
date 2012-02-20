@@ -32,38 +32,38 @@ public class FctService {
 	
 	@Cacheable("fctCache")
 	@Transactional(readOnly = true)
-	public FctTable getFctTable(LocationEntity entity, ReportObjective objective, Period period, LocationLevel level, Set<DataEntityType> groups) {		
+	public FctTable getFctTable(LocationEntity entity, ReportObjective objective, Period period, LocationLevel level, Set<DataEntityType> types) {		
 		if (log.isDebugEnabled()) log.debug("getFctTable(period="+period+",entity="+entity+",objective="+objective+",level="+level+")");		
 		
-		List<LocationEntity> organisations = locationService.getChildrenOfLevel(entity, level);
-		Map<LocationEntity, List<LocationEntity>> organisationMap = new HashMap<LocationEntity, List<LocationEntity>>();
+		List<LocationEntity> locations = locationService.getChildrenOfLevel(entity, level);
+		Map<LocationEntity, List<LocationEntity>> locationMap = new HashMap<LocationEntity, List<LocationEntity>>();
 		LocationLevel groupLevel = locationService.getLevelBefore(level);
-		if (groupLevel != null) organisationMap.putAll(reportService.getParents(organisations, groupLevel));
+		if (groupLevel != null) locationMap.putAll(reportService.getParents(locations, groupLevel));
 		
 		List<FctTarget> targets = reportService.getReportTargets(FctTarget.class, objective);
 		Map<FctTarget, ReportValue> totalMap = new HashMap<FctTarget, ReportValue>();				
 		for(FctTarget target : targets){			
-			totalMap.put(target, getFctValue(target, entity, period, groups));
+			totalMap.put(target, getFctValue(target, entity, period, types));
 		}
 		Map<LocationEntity, Map<FctTarget, ReportValue>> valueMap = new HashMap<LocationEntity, Map<FctTarget, ReportValue>>();
-		for (LocationEntity child : organisations) {
+		for (LocationEntity child : locations) {
 			Map<FctTarget, ReportValue> targetMap = new HashMap<FctTarget, ReportValue>();
 			for(FctTarget target : targets){
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
-				targetMap.put(target, getFctValue(target, child, period, groups));
+				targetMap.put(target, getFctValue(target, child, period, types));
 			}
 			valueMap.put(child, targetMap);
 		}
 		
-		FctTable fctTable = new FctTable(totalMap, valueMap, targets, organisationMap);
+		FctTable fctTable = new FctTable(totalMap, valueMap, targets, locationMap);
 		if (log.isDebugEnabled()) log.debug("getFctTable(...)="+fctTable);
 		return fctTable;
 	}
 
 
-	private ReportValue getFctValue(FctTarget target, CalculationEntity entity, Period period, Set<DataEntityType> groups) {
+	private ReportValue getFctValue(FctTarget target, CalculationEntity entity, Period period, Set<DataEntityType> types) {
 		String value = null;
-		CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), entity, period, groups);
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), entity, period, types);
 		if (calculationValue != null) value = calculationValue.getValue().getNumberValue().toString();
 		return new ReportValue(value);
 	}

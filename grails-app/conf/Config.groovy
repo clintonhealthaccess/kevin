@@ -147,7 +147,9 @@ security.shiro.authc.required = false
 			error  'grails.app.services.org.grails.plugin.resource',
 				   'grails.app.resourceMappers.org.grails.plugin.resource',
 				   'grails.app.taglib.org.grails.plugin.resource',
-				   'grails.app.resourceMappers.org.grails.plugin.cachedresources'
+				   'grails.app.resourceMappers.org.grails.plugin.cachedresources',
+				   'grails.app.services.grails.plugin.springcache',
+				   'grails.plugin.springcache'
 			
 			error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
 				   'org.codehaus.groovy.grails.web.pages', //  GSP
@@ -158,9 +160,7 @@ security.shiro.authc.required = false
 				   'org.codehaus.groovy.grails.plugins', // plugins
 				   'net.sf.ehcache.hibernate',
 				   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
-				   'org.chai.kevin.JaqlService',
-				   'grails.app.services.grails.plugin.springcache',
-				   'grails.plugin.springcache',
+//				   'org.chai.kevin.JaqlService',
 				   'org.springframework',
 				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.hibernate'
@@ -218,10 +218,9 @@ site.period=0
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 
-facility.checked=["District Hospital","Health Center"]
+type.checked=["District Hospital","Health Center"]
 
 dashboard.objective.root="Strategic Programs"
-dashboard.facility.checked=["District Hospital","Health Center"]
 dashboard.skip.levels=[]
 cost.skip.levels=[]
 export.skip.levels=["Country"]

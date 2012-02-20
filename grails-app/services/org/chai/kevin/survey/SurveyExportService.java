@@ -15,14 +15,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
-import org.chai.kevin.OrganisationSorter;
+import org.chai.kevin.LocationSorter;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.survey.export.SurveyExportDataPoint;
@@ -116,8 +116,8 @@ public class SurveyExportService {
 	@Transactional(readOnly=true)
 	public File getSurveyExportFile(String filename, CalculationEntity entity, SurveySection section, SurveyObjective objective, Survey survey) throws IOException { 
 		
-		List<DataEntity> facilities = locationService.getDataEntities(entity);
-		Collections.sort(facilities, OrganisationSorter.BY_NAME(languageService.getCurrentLanguage()));
+		List<DataLocationEntity> facilities = locationService.getDataEntities(entity);
+		Collections.sort(facilities, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
 		
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
 		
@@ -132,7 +132,7 @@ public class SurveyExportService {
 				writer.writeHeader(csvHeaders);
 			}
 			
-			for(DataEntity facility : facilities){	
+			for(DataLocationEntity facility : facilities){	
 				if (log.isDebugEnabled()) log.debug("getSurveyExportFile(facility="+facility+")");
 				
 				if(objective != null){
@@ -189,7 +189,7 @@ public class SurveyExportService {
 		return csvFile;
 	}
 
-	public List<SurveyExportDataPoint> getSurveyExportDataPoints(DataEntity facility, Survey survey, SurveyObjective surveyObjective, 
+	public List<SurveyExportDataPoint> getSurveyExportDataPoints(DataLocationEntity facility, Survey survey, SurveyObjective surveyObjective, 
 			SurveySection surveySection, SurveyQuestion surveyQuestion, Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap){				
 		
 		List<SurveyExportDataPoint> surveyExportDataPoints = new ArrayList<SurveyExportDataPoint>();						
@@ -235,7 +235,7 @@ public class SurveyExportService {
 		return surveyExportDataPoints;
 	}
 
-	private void addDataPoints(DataEntity facility, Survey survey, SurveyObjective surveyObjective, SurveySection surveySection, SurveyQuestion surveyQuestion,
+	private void addDataPoints(DataLocationEntity facility, Survey survey, SurveyObjective surveyObjective, SurveySection surveySection, SurveyQuestion surveyQuestion,
 			List<SurveyExportDataPoint> surveyExportDataPoints, SurveyElement surveyElement, List<String> surveyQuestionItems, Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap) {
 		if(surveyElement == null) surveyExportDataPoints.add(getBasicInfoDataPoint(facility, survey, surveyObjective, surveySection, surveyQuestion, null));
 		else{
@@ -264,7 +264,7 @@ public class SurveyExportService {
 		}
 	}
 	
-	private SurveyExportDataPoint getBasicInfoDataPoint(DataEntity facility, Survey survey, SurveyObjective surveyObjective, 
+	private SurveyExportDataPoint getBasicInfoDataPoint(DataLocationEntity facility, Survey survey, SurveyObjective surveyObjective, 
 			SurveySection surveySection, SurveyQuestion surveyQuestion, SurveyElement surveyElement){
 		
 		SurveyExportDataPoint dataPoint = new SurveyExportDataPoint();
@@ -273,7 +273,8 @@ public class SurveyExportService {
 		List<LocationLevel> levels = locationService.listLevels(getSkipLevelList().toArray(new LocationLevel[getSkipLevelList().size()]));					
 		for (LocationLevel level : levels){			
 			LocationEntity parent = locationService.getParentOfLevel(facility, level);
-			dataPoint.add(formatExportDataItem(languageService.getText(parent.getNames())));
+			if (parent != null) dataPoint.add(formatExportDataItem(languageService.getText(parent.getNames())));
+			else dataPoint.add("");
 		}
 		dataPoint.add(formatExportDataItem(languageService.getText(facility.getNames())));
 		dataPoint.add(formatExportDataItem(languageService.getText(facility.getType().getNames())));			

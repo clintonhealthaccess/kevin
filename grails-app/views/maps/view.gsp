@@ -15,20 +15,20 @@
     <body>
     	<div id="maps">
 			<div class="subnav">
-				<g:iterationFilter linkParams="${[organisation: currentOrganisation?.id, objective: currentObjective?.id]}"/>
-				<g:organisationFilter linkParams="${[period: currentPeriod.id, objective: currentObjective?.id]}"/>
+				<g:iterationFilter linkParams="${[location: currentLocation?.id, objective: currentObjective?.id]}" selected="${currentPeriod}"/>
+				<g:locationFilter linkParams="${[period: currentPeriod.id, objective: currentObjective?.id]}" selected="${currentLocation}"/>
 								
 				<!-- TODO use a filter here -->
 				<div class="filter">
 					<span class="bold">Target:</span>
-					<span class="dropdown dropdown-target subnav-dropdown">
+					<span class="js_dropdown dropdown-target dropdown">
 						<g:if test="${currentTarget != null}">
 							<a class="selected" href="#" data-target="${currentTarget.id}" data-type="target"><g:i18n field="${currentTarget.names}"/></a>
 						</g:if>
 						<g:else>
 							<a class="selected" href="#" data-type="target">no target selected</a>
 						</g:else>
-						<div class="hidden dropdown-list">
+						<div class="hidden dropdown-list js_dropdown-list">
 							<g:if test="${!targets.empty}">
 								<ul>
 									<g:each in="${targets}" var="target">
@@ -195,10 +195,10 @@
 				levelControl = new LevelControl(levelControlDiv, map);		
 				
 				google.maps.event.addListener(map, 'dblclick', function(){
-					load({organisation: getParent('organisation', $('.dropdown-organisation .selected').data('organisation')), level: levelControl.getPrevious()});
+					load({location: getParent('location', $('.dropdown-location .selected').data('location')), level: levelControl.getPrevious()});
 				});
 				
-				load({period: $.url().fparam('period'), organisation: $.url().fparam('organisation'), level: $.url().fparam('level'), target: $.url().fparam('target')});
+				load({period: $.url().fparam('period'), location: $.url().fparam('location'), level: $.url().fparam('level'), target: $.url().fparam('target')});
 				$('.parameter').bind('click', function() {
 					var options = {level: null};
 					var type = $(this).data('type');
@@ -218,15 +218,15 @@
     			$.ajax({
     				type: 'GET',
     				url: "${createLink(controller: 'maps', action: 'map')}",
-    				data: {period: parameters.period, target: parameters.target, organisation: parameters.organisation, level: parameters.level},
+    				data: {period: parameters.period, target: parameters.target, location: parameters.location, level: parameters.level},
     				success: function(data) {
     					if (data.result == 'success') {
     						clearMap();
 
-							window.location.hash = 'period='+data.map.selectedPeriod+'&organisation='+data.map.selectedOrganisation+'&level='+data.map.selectedLevel+'&target='+data.map.selectedTarget;
+							window.location.hash = 'period='+data.map.selectedPeriod+'&location='+data.map.selectedLocation+'&level='+data.map.selectedLevel+'&target='+data.map.selectedTarget;
 	
     						levelControl.setLevels(data.map.levels, data.map.selectedLevel);
-    						select('organisation', data.map.selectedOrganisation)
+    						select('location', data.map.selectedLocation)
     						select('target', data.map.selectedTarget)
     						select('period', data.map.selectedPeriod)
     					
@@ -240,12 +240,12 @@
     						
     						$.each(data.map.polygons, function(key, element){
 	    						var polygon = [];
-		    					if (element.organisation.coordinates != null) {
-		    						$.each(element.organisation.coordinates[0][0], function(key, element){
+		    					if (element.location.coordinates != null) {
+		    						$.each(element.location.coordinates[0][0], function(key, element){
 										var point = new google.maps.LatLng(element[1], element[0])
 										polygon.push(point)
 									});
-		    						var polygonBounds = getPolygonBounds(element.organisation.coordinates[0][0])
+		    						var polygonBounds = getPolygonBounds(element.location.coordinates[0][0])
 		    						
 		    						var polygon = new google.maps.Polygon({
 										paths: polygon,
@@ -255,15 +255,15 @@
 										fillColor: element.color,
 										fillOpacity: opacity
 									});
-									polygon.organisation = element.organisation;
+									polygon.location = element.location;
 									polygon.target = data.map.selectedTarget;
 									polygon.period = data.map.selectedPeriod;
-									polygon.organisation.bounds = polygonBounds;
-									polygons[element.organisation.id] = polygon;
+									polygon.location.bounds = polygonBounds;
+									polygons[element.location.id] = polygon;
 										
 									polygon.setMap(map);
 									google.maps.event.addListener(polygon, 'dblclick', function() {
-										load({organisation: polygon.organisation.id, level: levelControl.getNext()});
+										load({location: polygon.location.id, level: levelControl.getNext()});
 									});
 									google.maps.event.addListener(polygon, 'click', function(event) {
 										$.each(polygons, function(key, element) {
@@ -298,7 +298,7 @@
    				$.ajax({
     				type: 'GET',
     				url: "${createLink(controller: 'maps', action: 'explain')}",
-    				data: {period: polygon.period, target: polygon.target, organisation: polygon.organisation.id},
+    				data: {period: polygon.period, target: polygon.target, location: polygon.location.id},
     				success: function(data) {
     					$('#maps-explanation').html(data);
     				}
@@ -348,7 +348,7 @@
     			var current = {
     				period: $('.dropdown-period .selected').data('period'), 
     				target: $('.dropdown-target .selected').data('target'), 
-    				organisation: $('.dropdown-organisation .selected').data('organisation'), 
+    				location: $('.dropdown-location .selected').data('location'), 
     				level: levelControl.selectedLevel
     			}
     			drawMap($.extend({},current,options));

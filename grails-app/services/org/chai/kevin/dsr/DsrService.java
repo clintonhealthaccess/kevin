@@ -14,12 +14,12 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.location.DataEntity;
+import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportObjective;
 import org.chai.kevin.reports.ReportService;
-import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
@@ -36,19 +36,28 @@ public class DsrService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
-	private String groupLevel;
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public DsrTable getDsrTable(LocationEntity entity, ReportObjective objective, Period period, Set<DataEntityType> groups) {
-		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+entity+",objective="+objective+")");
-						
-		List<DataEntity> facilities = locationService.getDataEntities(entity, groups.toArray(new DataEntityType[groups.size()]));
-		Map<LocationEntity, List<DataEntity>> organisationMap = reportService.getParents(facilities, locationService.findLocationLevelByCode(groupLevel));
+	public DsrTable getDsrTable(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types) {
+		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",objective="+objective+",types="+types+")");
 		
-		Map<DataEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataEntity, Map<DsrTarget, ReportValue>>();
+		List<DataLocationEntity> facilities = locationService.getDataEntities(location, types.toArray(new DataEntityType[types.size()]));		
+		
+		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, objective);
-		for (DataEntity facility : facilities) {
+		
+//		List<DsrTarget> categoryTargets = new ArrayList<DsrTarget>();
+//		if(dsrTargetCategory != null){
+//			for(DsrTarget target : targets){
+//				if(target.getCategory().equals(dsrTargetCategory))
+//					categoryTargets.add(target);					
+//			}
+//			if(!categoryTargets.isEmpty())
+//				targets = categoryTargets;
+//		}
+		
+		for (DataLocationEntity facility : facilities) {
 			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
 			for (DsrTarget target : targets) {
 				targetMap.put(target, getDsrValue(target, facility, period));
@@ -56,16 +65,15 @@ public class DsrService {
 			valueMap.put(facility, targetMap);
 		}
 		
-		DsrTable dsrTable = new DsrTable(valueMap, targets, organisationMap);
+		DsrTable dsrTable = new DsrTable(valueMap, targets);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
 		return dsrTable;
 	}
 
-
-	private ReportValue getDsrValue(DsrTarget target, DataEntity facility, Period period){
+	private ReportValue getDsrValue(DsrTarget target, DataLocationEntity facility, Period period){
 		String value = null;
 		
-		Set<String> targetUuids = Utils.split(target.getGroupUuidString());
+		Set<String> targetUuids = Utils.split(target.getTypeCodeString());
 		if (targetUuids.contains(facility.getType().getCode())) {
 			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), facility, period);
 			
@@ -90,17 +98,21 @@ public class DsrService {
 						if (option != null) value = languageService.getText(option.getNames());
 						else value = dataValue.getValue().getEnumValue();
 					}
-					else value = "";
+					else value = "N/A";
 					break;
 				default:
-					value = "";
+					value = "N/A";
 					break;
 				}
 			}
+			else
+				value = "N/A";
 		}
+		else
+			value="N/A";
+		
 		return new ReportValue(value);
 	}
-
 	
 	private static String getFormat(DsrTarget target, Double value) {
 		String format = target.getFormat();
@@ -129,10 +141,6 @@ public class DsrService {
 	
 	public void setLanguageService(LanguageService languageService) {
 		this.languageService = languageService;
-	}
-	
-	public void setGroupLevel(String groupLevel) {
-		this.groupLevel = groupLevel;
 	}
 	
 }

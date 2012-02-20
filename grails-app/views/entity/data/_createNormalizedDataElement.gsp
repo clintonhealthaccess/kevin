@@ -29,7 +29,7 @@
 					</div>
 					<g:each in="${periods}" var="period" status="i">
 						<div class="expression-period ${i!=0?'hidden':''}" id="expression-period-${period.id}">
-							<g:each in="${groups}" var="group">
+							<g:each in="${types}" var="group">
 								<label for="expressionMap[${period.id}][${group.code}]">${group.code}</label> 
 								<textarea name="expressionMap[${period.id}][${group.code}]" rows="4">${normalizedDataElement.getExpression(period, group.code)}</textarea>
 							</g:each>

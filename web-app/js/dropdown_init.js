@@ -2,21 +2,32 @@
  * drop-down menus
  * TODO transform in jQuery Plugin style
  **/
-$(document).delegate('.dropdown .selected', 'click', function(e) {
-	$(this).parent(".dropdown").find("div.dropdown-list").toggle();
+$(document).delegate('.js_dropdown .selected', 'click', function(e) {
+  $("div.js_dropdown-list").hide();
+	$(this).parent(".js_dropdown").find("div.js_dropdown-list").toggle();
 	e.stopPropagation();
 	return false;
 });
-$(".dropdown-list a.dropdown-link").bind('click', function() {
-	$(this).parents('.dropdown-list').hide();
+$(".js_dropdown-list a.js_dropdown-link").bind('click', function() {
+	$(this).parents('.js_dropdown-list').hide();
 //	return false;
 });
 $(document).bind('click', function(e) {
 	var clicked = e.target;
-	$(".dropdown a.selected").each(function(){
+	$(".js_dropdown a.selected").each(function(){
 		if (clicked != this) {
-			$(this).parent(".dropdown").find("div.dropdown-list").hide();
+			$(this).parent(".js_dropdown").find("div.js_dropdown-list").hide();
 		}
 	});
 //	return false;
+});
+
+// Check all / Uncheck all
+$('#js_uncheckall').click(function() {
+	$('#js_facility_filter input').prop('checked', false);
+	return false;
+});
+$('#js_checkall').click(function() {
+	$('#js_facility_filter input').prop('checked', true);
+	return false;
 });

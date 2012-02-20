@@ -88,7 +88,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		question3.getSurveyElements(DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)).equals([])
 	}
 	
-	def "test question table number of organisation unit applicable"(){
+	def "test question table number of location unit applicable"(){
 		
 		setup:
 		def period = newPeriod()
@@ -102,7 +102,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def row = newTableRow(question, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): element])
 		
 		when:
-		def orgunitgroupList = question.getOrganisationUnitGroupApplicable(element)
+		def orgunitgroupList = question.getTypeApplicable(element)
 		
 		then:
 		orgunitgroupList.size() == 1
@@ -134,11 +134,11 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		newSurveyObjective(survey, 2, [(DISTRICT_HOSPITAL_GROUP)])
 		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = newDataEntityType(HEALTH_CENTER_GROUP)
-		def organisation = newDataEntity(KIVUYE, type)
+		def location = newDataLocationEntity(KIVUYE, type)
 		
 		
 		when:
-		new SurveyLog(event: "test", entity: organisation, timestamp: new Date(), survey: survey, objective: objective).save(failOnError: true)
+		new SurveyLog(event: "test", entity: location, timestamp: new Date(), survey: survey, objective: objective).save(failOnError: true)
 		
 		then:
 		SurveyLog.count() == 1

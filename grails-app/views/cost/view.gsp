@@ -16,9 +16,9 @@
     <body>
     	<div id="cost">
 			<div class="subnav">
-				<g:iterationFilter linkParams="${[organisation: currentOrganisation?.id, objective: currentObjective?.id]}"/>
-				<g:organisationFilter linkParams="${[period: currentPeriod.id, objective: currentObjective?.id]}"/>
-				<g:render template="/templates/objectiveFilter" model="[linkParams:[period: currentPeriod.id, organisation: currentOrganisation?.id]]"/>
+				<g:iterationFilter linkParams="${[location: currentLocation?.id, objective: currentObjective?.id]}" selected="${currentPeriod}"/>
+				<g:locationFilter linkParams="${[period: currentPeriod.id, objective: currentObjective?.id]}" selected="${currentLocation}"/>
+				<g:render template="/templates/objectiveFilter" model="[linkParams:[period: currentPeriod.id, location: currentLocation?.id]]"/>
 				
 				<shiro:hasPermission permission="admin:cost">					
 					<span>
@@ -65,7 +65,7 @@
 										<tr>
 											<td class="cell label row-${target.id}" data-row="${target.id}">
 												<span>
-													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, organisation: currentOrganisation?.id])}"><g:i18n field="${target.names}"/></a>
+													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, location: currentLocation?.id])}"><g:i18n field="${target.names}"/></a>
 												</span>
 												
 												<shiro:hasPermission permission="admin:cost">		
@@ -93,7 +93,7 @@
 					
 					</g:if>
 					<g:else>
-						<p class="help">Please select an organisation / objective</p>
+						<p class="help">Please select an location / objective</p>
 					</g:else>
 				</div>
 				<div class="clear"></div>

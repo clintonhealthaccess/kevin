@@ -240,7 +240,7 @@ public class TypeUnitSpec extends UnitSpec {
 		type.getJaqlValue(value) == "[10.0,11.0,]";
 		
 		when:
-		value = Value.NULL
+		value = Value.NULL_INSTANCE()
 		type = Type.TYPE_NUMBER()
 		
 		then:
@@ -258,7 +258,7 @@ public class TypeUnitSpec extends UnitSpec {
 	
 	def "test null value"() {
 		when:
-		def value = Value.NULL
+		def value = Value.NULL_INSTANCE()
 		
 		then:
 		value.isNull() == true
@@ -288,14 +288,31 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		when:
 		type = new Type("{\"type\":\"number\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value': null], 'value', new HashSet([]), sanitizer)
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value': ''], 'value', new HashSet([]),sanitizer)
 		
 		then:
 		value.isNull() == true
 
 		when:
+		type = new Type("{\"type\":\"number\"}");
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value': 1], 'value', new HashSet([]),sanitizer)
+		
+		then:
+		value.isNull() == false
+		value.numberValue == 1d
+		
+		when:
+		type = new Type("{\"type\":\"number\"}");
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value': 1d], 'value', new HashSet([]),sanitizer)
+		
+		then:
+		value.isNull() == false
+		value.numberValue == 1d
+		
+		when:
 		type = new Type("{\"type\":\"string\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value': ''], 'value', new HashSet([]), sanitizer)
+
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value': ''], 'value', new HashSet([]),sanitizer)
 		
 		then:
 		value.isNull() == false
@@ -303,60 +320,66 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		when:
 		type = new Type("{\"type\":\"string\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value': 'test\\'], 'value', new HashSet([]), sanitizer)
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value': 'test\\'], 'value', new HashSet([]),sanitizer)
+
 		
 		then:
 		value.getStringValue() == 'test'
 		
 		when:
 		type = new Type("{\"type\":\"bool\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value': false], 'value', new HashSet([]), sanitizer)
+
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value': '0'], 'value', new HashSet([]),sanitizer)
+
 		
 		then:
-		value.getBooleanValue() == false
+		value.getBooleanValue() == null
 		
-		// TODO move to survey test
-//		when:
-//		type = new Type("{\"type\":\"bool\"}");
-//		value = type.mergeValueFromMap(Value.NULL, ['value':["0", "1"]], 'value', new HashSet([]), sanitizer)
-//		
-//		then:
-//		value.getBooleanValue() == true
-		
-//		when:
-//		type = new Type("{\"type\":\"date\"}");
-//		value = type.mergeValueFromMap(Value.NULL, ['value':"123"], 'value', new HashSet([]), sanitizer)
-//		
-//		then:
-//		value.isNull()
+        // to be put in SurveyPageTest
+		//when:
+		//type = new Type("{\"type\":\"bool\"}");
+		//value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value':["0", "1"]], 'value', new HashSet([]),sanitizer)
+		//
+		//then:
+		//value.getBooleanValue() == true
 		
 		when:
 		type = new Type("{\"type\":\"date\"}");
-		value = type.mergeValueFromMap(Value.NULL, ['value': new Date()], 'value', new HashSet([]), sanitizer)
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value':"12-12-2012"], 'value', new HashSet([]),sanitizer)
+
+		then:
+		value.getDateValue() == null
 		
+		when:
+		type = new Type("{\"type\":\"date\"}");
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value':new Date()], 'value', new HashSet([]),sanitizer)
+
 		then:
 		value.getDateValue() != null
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.mergeValueFromMap(Value.NULL, ['value[0]':10, 'value[_]':2, 'value':['[0]', '[_]']], 'value', new HashSet([]), sanitizer)
+
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value[0]':10d, 'value[_]':2, 'value':['[0]', '[_]']], 'value', new HashSet([]),sanitizer)
 		
 		then:
 		value.equals(new Value("{\"value\":[{\"value\":10}]}"))
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.mergeValueFromMap(Value.NULL, ['value[0]':10, 'value[_]':2, 'value':['[0]', '[_]', '', '', '']], 'value', new HashSet([]), sanitizer)
+
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), ['value[0]':10d, 'value[_]':2, 'value':['[0]', '[_]', '', '', '']], 'value', new HashSet([]),sanitizer)
 		
 		then:
 		value.equals(new Value("{\"value\":[{\"value\":10}]}"))
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = type.mergeValueFromMap(Value.NULL, [:], 'value', new HashSet([]), sanitizer)
+
+		value = type.mergeValueFromMap(Value.NULL_INSTANCE(), [:], 'value', new HashSet([]),sanitizer)
 		
 		then:
-		value.equals(Value.NULL)
+		value.equals(Value.NULL_INSTANCE())
 	}
 	
 	def "test equal"() {
@@ -373,7 +396,7 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		when:
 		type = typeObject
-		value = Value.NULL
+		value = Value.NULL_INSTANCE()
 		
 		then:
 		type.getJaqlValue(value) == "null"
@@ -476,7 +499,7 @@ public class TypeUnitSpec extends UnitSpec {
 		prefixes = []
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
 		map = ['value[0]':'10', 'value':['[0]']]
-		type.mergeValueFromMap(Value.NULL, map, 'value', new HashSet(), sanitizer);
+		type.mergeValueFromMap(Value.NULL_INSTANCE(), map, 'value', new HashSet(), sanitizer);
 	
 		then:
 		genericPrefixes.equals(['value[_]'])
@@ -487,7 +510,7 @@ public class TypeUnitSpec extends UnitSpec {
 		prefixes = []
 		type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_NUMBER()]))
 		map = ['value[0].key1':'10', 'value':['[0]']]
-		type.mergeValueFromMap(Value.NULL, map, 'value', new HashSet(), sanitizer);
+		type.mergeValueFromMap(Value.NULL_INSTANCE(), map, 'value', new HashSet(), sanitizer);
 		
 		then:
 		genericPrefixes.equals(['value[_].key1'])
@@ -498,7 +521,7 @@ public class TypeUnitSpec extends UnitSpec {
 		prefixes = []
 		type = Type.TYPE_LIST(Type.TYPE_LIST(Type.TYPE_NUMBER()))
 		map = ['value[0][0]':'10', 'value':['[0]'], 'value[0]':['[0]']]
-		type.mergeValueFromMap(Value.NULL, map, 'value', new HashSet(), sanitizer);
+		type.mergeValueFromMap(Value.NULL_INSTANCE(), map, 'value', new HashSet(), sanitizer);
 		
 		then:
 		genericPrefixes.equals(['value[_][_]'])
@@ -579,11 +602,11 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		when:
 		type = Type.TYPE_NUMBER()
-		value = Value.NULL
+		value = Value.NULL_INSTANCE()
 		list = type.getPrefixes(value, new NullPrefixPredicate())
 		
 		then:
-		list.equals(["": Value.NULL])
+		list.equals(["": Value.NULL_INSTANCE()])
 		
 		when:
 		type = Type.TYPE_NUMBER()
@@ -599,15 +622,15 @@ public class TypeUnitSpec extends UnitSpec {
 		list = type.getPrefixes(value, new NullPrefixPredicate())
 		
 		then:
-		list.equals(["[0]": Value.NULL]);
+		list.equals(["[0]": Value.NULL_INSTANCE()]);
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = Value.NULL
+		value = Value.NULL_INSTANCE()
 		list = type.getPrefixes(value, new NullPrefixPredicate())
 		
 		then:
-		list.equals("": Value.NULL)
+		list.equals("": Value.NULL_INSTANCE())
 		
 	}
 		
@@ -638,7 +661,7 @@ public class TypeUnitSpec extends UnitSpec {
 
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = Value.NULL
+		value = Value.NULL_INSTANCE()
 		def attribute = type.getAttribute(value, "[0]", "attribute")
 		
 		then:
@@ -671,7 +694,7 @@ public class TypeUnitSpec extends UnitSpec {
 		
 //		when:
 //		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-//		value = Value.NULL
+//		value = Value.NULL_INSTANCE()
 //		type.setAttribute(value, "[0]", "attribute", "text")
 		
 //		then:
@@ -769,14 +792,14 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		when:
 		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = Value.NULL
+		value = Value.NULL_INSTANCE()
 		
 		then:
 		type.getValue(value, "[0]") == null
 		
 		when:
 		type = Type.TYPE_MAP(["key":Type.TYPE_NUMBER()])
-		value = Value.NULL
+		value = Value.NULL_INSTANCE()
 		
 		then:
 		type.getValue(value, ".key") == null
@@ -868,10 +891,10 @@ public class TypeUnitSpec extends UnitSpec {
 	def "test setjsonvalue"() {
 		when:
 		def value = new Value("{\"value\":10}")
-		value.setJsonValue(Value.NULL.toString())
+		value.setJsonValue(Value.NULL_INSTANCE().toString())
 		
 		then:
-		value.equals(Value.NULL)
+		value.equals(Value.NULL_INSTANCE())
 	}
 	
 	def "is valid"() {
