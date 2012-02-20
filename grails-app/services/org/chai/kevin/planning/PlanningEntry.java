@@ -6,14 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
-
 public class PlanningEntry {
 
 	private static final String BUDGET_UPDATED = "budget_updated";
+
 	private static final String SUBMITTED = "submitted";
 	private static final Set<String> ATTRIBUTES = new HashSet<String>();
 			
@@ -90,6 +89,7 @@ public class PlanningEntry {
 	
 	private void setAttribute(String attribute, Boolean value) {
 		validatable.getType().setAttribute(validatable.getValue(), getPrefix("[_]"), attribute, value.toString());
+
 	}
 	
 	public String getLineSuffix(String section) {
@@ -147,5 +147,4 @@ public class PlanningEntry {
 	public Map<String, Enum> getEnums() {
 		return enums;
 	}
-	
 }

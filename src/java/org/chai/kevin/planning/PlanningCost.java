@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.Sum;
 

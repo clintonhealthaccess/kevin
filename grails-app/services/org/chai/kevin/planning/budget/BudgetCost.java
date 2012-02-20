@@ -5,7 +5,6 @@ import org.chai.kevin.planning.PlanningEntry;
 import org.chai.kevin.value.SumValue;
 
 public class BudgetCost {
-
 	private PlanningEntry planningEntry;
 	private PlanningCost planningCost;
 	private SumValue value;
@@ -19,7 +18,6 @@ public class BudgetCost {
 	public Double getValue() {
 		return value.getValue().getNumberValue().doubleValue();
 	}
-
 	public PlanningEntry getPlanningEntry() {
 		return planningEntry;
 	}

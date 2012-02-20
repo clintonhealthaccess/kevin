@@ -6,6 +6,7 @@ import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 
+
 class PlanningControllerSpec extends PlanningIntegrationTests {
 	
 	def planningController
@@ -21,7 +22,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		then:
 		planningController.response.redirectedUrl == '/planning/summaryPage'
 	}
-	
+
 	def "accessing index page redirects to proper page - data entry user to own planning page"() {
 		setup:
 		setupLocationTree()
@@ -36,7 +37,6 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		then:
 		planningController.response.redirectedUrl == '/planning/overview/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
 	}
-	
 	def "summary page works when no params"() {
 		setup:
 		planningController = new PlanningController()

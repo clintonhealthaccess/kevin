@@ -43,6 +43,7 @@ DataEntry.prototype.initializeSurvey = function() {
 		maximizeRow($(this).parents('.element-list-row').first());
 		return false;
 	});
+
 	this.element.delegate('button[type=submit]', 'click', function(){
 		if (self.ajaxCallsInProgress()) {
 			alert(self.settings.messages['dataentry.exit.saving.alert.text']);
@@ -76,6 +77,7 @@ DataEntry.prototype.initializeSurvey = function() {
 		queue: true,
 		cacheResponse: false
 	});
+
 
 	minimizeRows(this.element.find('.element-list-row'));		
 	this.enableAfterLoading();
@@ -135,7 +137,7 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 						}
 					});
 				});
-				
+		
 				// we go through all changed elements
 				$.each(data.elements, function(index, element) {
 					
@@ -195,10 +197,10 @@ DataEntry.prototype.toggleControls = function(hide) {
 DataEntry.prototype.listRemoveClick = function(toRemove) {
 	var element = $(toRemove).parents('.element').first();
 	var index = $(toRemove).parents('.element-list-row').first().data('index');
-	
 	$(toRemove).parents('.element-list-row').find('.js_list-input').remove();
 
 	this.surveyValueChanged(element, $(element).find('.js_list-input'), function(dataEntry, data, element) {
+
 		$(toRemove).parents('.element-list-row').first().remove();	
 	});
 }
@@ -220,7 +222,7 @@ DataEntry.prototype.listAddClick = function(list, callback) {
 	$(list).prev().prev().data('index', index);
 	
 	var self = this;
-	
+
 	this.surveyValueChanged($(list).parents('.element').first(), $(list).parents('.element').first().find('.js_list-input'), function(dataEntry, data, element) {
 		$(list).prev().prev().show();
 

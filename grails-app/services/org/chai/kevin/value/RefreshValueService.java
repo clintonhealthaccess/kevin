@@ -44,7 +44,6 @@ public class RefreshValueService {
 		if (log.isDebugEnabled()) log.debug("refreshNormalizedDataElement(normalizedDataElement="+normalizedDataElement+")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
-		
 		valueService.deleteValues(normalizedDataElement, null, null);
 		for (Iterator<Object[]> iterator = getCombinations(DataLocationEntity.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
@@ -111,7 +110,6 @@ public class RefreshValueService {
 			}
 		}
 	}
-	
 	@Transactional(readOnly = false)
 	public void refreshCalculation(Calculation<?> calculation, CalculationEntity entity, Period period) {
 		valueService.deleteValues(calculation, entity, period);

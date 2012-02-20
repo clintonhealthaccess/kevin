@@ -7,7 +7,6 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
-
 class PlanningEntryUnitSpec extends UnitSpec {
 	
 	def "get value"() {
@@ -28,7 +27,6 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		then:
 		planningEntry.getValue("[_].key1") == null
 	}
-	
 	def "budget updated"() {
 		setup:
 		def planningEntry = null
@@ -112,5 +110,4 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		planningEntry.validatable.value.jsonValue.contains("budget_updated")
 		
 	}
-	
 }

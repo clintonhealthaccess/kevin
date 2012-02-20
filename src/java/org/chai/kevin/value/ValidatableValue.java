@@ -1,18 +1,18 @@
 package org.chai.kevin.value;
-
 import java.util.Collection;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.persistence.Transient;
-
+import net.sf.json.JSONNull;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
+import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.survey.SurveySkipRule;
 import org.chai.kevin.survey.SurveyValidationRule;
@@ -21,7 +21,55 @@ import org.chai.kevin.util.Utils;
 public class ValidatableValue {
 
 	private static final Log log = LogFactory.getLog(ValidatableValue.class);
-	
+	private static Sanitizer SANITIZER = new Sanitizer(){
+		
+		@Override
+		public Object sanitizeValue(Object value, Type type, String prefix, String genericPrefix) {
+			Object result = null;
+			String string = String.valueOf(value);
+			switch (type.getType()) {
+				case NUMBER:
+					if (string.trim().isEmpty()) result = null;
+					else {
+						try {
+							result = Double.parseDouble(string);
+						} catch (NumberFormatException e) {
+							result = JSONNull.getInstance();
+						}
+					}
+					break;
+				case BOOL:
+					if (value != null && string.equals("0")) result = false;
+					else if (value != null && !string.equals("") && !string.equals("0")) result = true;
+					else result = null;
+					break;
+				case STRING:
+				case TEXT:
+					if (value == null || string.equals("")) result = null;
+					else result = string;
+					break;
+				case DATE:
+					if (value == null || string.equals("")) result = null;
+					else {
+						try {
+							result = Utils.formatDate(Utils.parseDate(string));
+						} catch (ParseException e) {
+							result = null;
+						}
+					}
+					break;
+				case ENUM:
+					if (value == null || string.equals("")) result = null;
+					else result = string; 
+					break;
+				default:
+					if (value == null || string.equals("")) result = null;
+					else result = string;
+			}
+			return result;
+		}
+		
+	};
 	private final Type type;
 	private final Value value;
 	
@@ -77,7 +125,6 @@ public class ValidatableValue {
 	public boolean isValid(String prefix) {
 		return getUnacceptedErrors(prefix).isEmpty();
 	}
-	
 	public boolean isTreeValid(String prefix) {
 		for (String invalidPrefix : getReallyInvalidPrefixes()) {
 			if (invalidPrefix.startsWith(prefix)) return false;
@@ -113,7 +160,6 @@ public class ValidatableValue {
 			return false;
 		}
 	}
-	
 	/**
 	 * Returns all prefixes whose "skipped" attributes is not empty.
 	 * 
@@ -131,7 +177,6 @@ public class ValidatableValue {
 	public Set<String> getInvalidPrefixes() {
 		return getPrefixesWithAttribute("invalid").keySet();
 	}
-	
 	private Collection<String> getReallyInvalidPrefixes() {
 		// we get the list of all the invalid prefixes that
 		// have not been accepted
@@ -187,8 +232,7 @@ public class ValidatableValue {
 		// element is complete if all the non-skipped values are not-null
 		// regardless of whether they are valid or not
 		Set<String> skippedPrefixes = getSkippedPrefixes();
-		Map<String, Value> nullPrefixes = getNullPrefixesMap();
-			
+		Map<String, Value> nullPrefixes = getNullPrefixesMap();			
 		return CollectionUtils.subtract(nullPrefixes.keySet(), skippedPrefixes);
 	}
 	
@@ -264,7 +308,7 @@ public class ValidatableValue {
 		newAttributes.add("warning");
 		
 		if (log.isDebugEnabled()) log.debug("getting new value from parameters for prefix: "+prefix);
-		Value value = getType().mergeValueFromMap(getValue(), params, prefix, newAttributes);
+		Value value = getType().mergeValueFromMap(getValue(), params, prefix, newAttributes, SANITIZER);
 		
 		// reset accepted warnings for changed values
 		if (log.isDebugEnabled()) log.debug("resetting warning for modified prefix: "+prefix);

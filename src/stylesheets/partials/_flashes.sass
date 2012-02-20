@@ -147,6 +147,29 @@
     a
       color: #fff
       font-size: 11px
+      
+// Add by Jean     
+.import-error-list
+  opacity: 0.75
+  margin-top: 1px
+  li
+    background: $no
+    color: #fff
+    font-size: 11px
+    font-weight: bold
+    padding: 5px 2px 5px 3px
+    margin: 1px 3px 2px 0px
+    +box-shadow(#aaa, 1px, 1px, 3px)
+    +text-shadow($no - #444, 0, 1px, 0)
+    &:last-child
+      +border-bottom-radius
+      +border-top-radius
+      
+.import-error-list-group
+  li
+    margin: 3px 0px 3px 0px
+    
+// end added by Jean
 
 .adv-form .error-list
   position: absolute
