@@ -54,6 +54,19 @@ class SurveyController extends AbstractEntityController {
 	def getTemplate() {
 		return "/survey/admin/createSurvey"
 	}
+	
+	def saveEntity(def entity) {
+		if (entity.active) {
+			// we reset all other planning
+			Survey.list().each {
+				if (!it.equals(entity)) {
+					it.active = false
+					it.save()
+				}
+			}
+		}
+		super.saveEntity(entity)
+	}
 
 	def getModel(def entity) {
 		List<Period> periods = Period.list()

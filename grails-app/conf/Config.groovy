@@ -171,13 +171,13 @@ environments {
 
 		}
 	}
-	test {
-		log4j = {
-			root {
-				error
-			}	
-		}
-	}
+//	test {
+//		log4j = {
+//			root {
+//				error
+//			}	
+//		}
+//	}
 }
 //	production {
 //		log4j = {
