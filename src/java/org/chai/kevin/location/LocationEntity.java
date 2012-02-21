@@ -73,7 +73,7 @@ public class LocationEntity extends CalculationEntity {
 		}		
 		
 		for (LocationEntity child : children) {
-			if (skipLevels == null || skipLevels.contains(child.getLevel())) {
+			if (skipLevels != null && skipLevels.contains(child.getLevel())) {
 				result.addAll(child.getDataEntities(skipLevels, types));
 			}
 		}

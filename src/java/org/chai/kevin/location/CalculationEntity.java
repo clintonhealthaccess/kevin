@@ -81,12 +81,10 @@ public abstract class CalculationEntity {
 			result = result | child.collectLocations(locations, dataLocations, dataEntityTypes, skips);
 		}
 	
-		if (!result) {
-			List<DataLocationEntity> dataEntities = getDataEntities(skips, dataEntityTypes);
-			if (!dataEntities.isEmpty()) {
-				result = true;
-				if (dataLocations != null) dataLocations.addAll(dataEntities);
-			}
+		List<DataLocationEntity> dataEntities = getDataEntities(skips, dataEntityTypes);
+		if (!dataEntities.isEmpty()) {
+			result = true;
+			if (dataLocations != null) dataLocations.addAll(dataEntities);
 		}
 		
 		if (result && locations != null) locations.add((LocationEntity) this);
