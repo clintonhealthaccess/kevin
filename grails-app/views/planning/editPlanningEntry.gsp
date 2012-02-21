@@ -13,9 +13,9 @@
 				<div class="main">  
 	
 				<ul class="horizontal" id="tab-nav">
-					<li><a class="${selected=='undertakings'?'selected':''}" href="${createLink(controller:'planning', action:'overview', params:[planning: planningType.planning.id, location: location.id])}">Undertakings</a></li>
+					<li><a class="${selected=='undertakings'?'selected':''}" href="${createLink(controller:'editPlanning', action:'overview', params:[planning: planningType.planning.id, location: location.id])}">Undertakings</a></li>
 					<li><a class="selected" href="#">New <g:i18n field="${planningType.names}"/></a></li>
-					<li><a class="${selected=='budget'?'selected':''}" href="${createLink(controller:'planning', action:'budget', params:[planning: planningType.planning.id, location: location.id])}">Projected Budget</a></li>
+					<li><a class="${selected=='budget'?'selected':''}" href="${createLink(controller:'editPlanning', action:'budget', params:[planning: planningType.planning.id, location: location.id])}">Projected Budget</a></li>
 				</ul>
 				    
 		    	<!-- TODO tips could go into a template -->
@@ -27,13 +27,13 @@
 				</div>
 					
 				<g:if test="${planningEntry.submitted}">
-	  				<a class="next gray medium" href="${createLink(controller:'planning', action:'unsubmit', params: [location: location.id, planningType: planningType.id, lineNumber: planningEntry.lineNumber, targetURI: targetURI])}">
+	  				<a class="next gray medium" href="${createLink(controller:'editPlanning', action:'unsubmit', params: [location: location.id, planningType: planningType.id, lineNumber: planningEntry.lineNumber, targetURI: targetURI])}">
 	  					Remove from budget
 	  				</a>
 				</g:if>
 					
 				<div id="questions">
-					<g:form url="[controller:'planning', action:'submit', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
+					<g:form url="[controller:'editPlanning', action:'submit', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
 		  				<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
 		
 		  				<g:each in="${planningType.sections}" var="section" status="i">
@@ -87,7 +87,7 @@
 =======
 		<div id="planning">
 			<div class="main" id="questions">  
-				<g:form url="[controller:'planning', action:'save', params: [location: location.id, planningType: planningType.id, period: period.id]]">
+				<g:form url="[controller:'editPlanning', action:'save', params: [location: location.id, planningType: planningType.id, period: period.id]]">
   				<input class="always-send" type="hidden" name="lineNumber" value="${planningLine.lineNumber}"/>
 
   				<g:each in="${planningType.sections}" var="section">
@@ -134,14 +134,14 @@
 							else $(escape('#section-'+value.section)).addClass('invalid')
 						});
 					},
-					url: "${createLink(controller:'planning', action:'saveValue', params: [location: location.id, planningType: planningType.id])}", 
+					url: "${createLink(controller:'editPlanning', action:'saveValue', params: [location: location.id, planningType: planningType.id])}", 
 					messages: messages,
 					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
 				});
 				
 =======
 					callback: function() {},
-					url: "${createLink(controller:'planning', action:'saveValue', params: [location: location.id, planningType: planningType.id, period: period.id])}", 
+					url: "${createLink(controller:'editPlanning', action:'saveValue', params: [location: location.id, planningType: planningType.id, period: period.id])}", 
 					messages: messages,
 					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
 				});

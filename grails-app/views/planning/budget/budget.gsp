@@ -31,7 +31,7 @@
 							</h4>
 							<div class="budget">
 							 	<p id="js_budget-warning" class="context-message warning ${updatedBudget?'hidden':''}">
-							  		Some activities were changed. Please <a href="${createLink(controller:'planning', action:'updateBudget', params:[location:location.id, planning:planning.id])}">update your budget</a>.
+							  		Some activities were changed. Please <a href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location:location.id, planning:planning.id])}">update your budget</a>.
 							  	</p>
 								<div class="table-wrap left clear">
 	              
@@ -80,7 +80,7 @@
 																	<tr id="planning-${planningType.id}-${planningEntry.lineNumber}" class="tree_sign_minus active-row">
 																		<td>
 																			<span style="margin-left: 20px;">
-																				<a class="js_budget-section-link" href="${createLink(controller:'planning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.planningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
+																				<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.planningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
 																					<g:value value="${planningEntry.discriminatorValue}" type="${planningTypeBudget.planningType.discriminatorType}" enums="${budgetPlanningEntry.planningEntry.enums}"/>
 																				</a>
 																			</span>
@@ -166,7 +166,7 @@
 						if (data.budgetUpdated) $('#js_budget-warning').hide();
 						else $('#js_budget-warning').show();
 					},
-					url: "${createLink(controller:'planning', action:'saveValue', params: [location: location.id])}", 
+					url: "${createLink(controller:'editPlanning', action:'saveValue', params: [location: location.id])}", 
 					messages: messages,
 					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
 				});

@@ -8,7 +8,7 @@ import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.period.Period;
 
-class PlanningController extends AbstractController {
+class EditPlanningController extends AbstractController {
 	
 	def planningService
 	def languageService
@@ -34,11 +34,11 @@ class PlanningController extends AbstractController {
 				response.sendError(404)
 			}
 			else {
-				redirect (controller:'planning', action: 'overview', params: [planning: dataEntry?.id, location: user.dataLocation.id])
+				redirect (action: 'overview', params: [planning: dataEntry?.id, location: user.dataLocation.id])
 			}
 		}
 		else {
-			redirect (controller: 'planning', action: 'summaryPage')
+			redirect (action: 'summaryPage')
 		}
 	}
 	

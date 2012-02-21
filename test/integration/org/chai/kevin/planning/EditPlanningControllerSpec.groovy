@@ -7,14 +7,14 @@ import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 
 
-class PlanningControllerSpec extends PlanningIntegrationTests {
+class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	
 	def planningController
 	
 	def "accessing index page redirects to proper page - normal user to summary page"() {
 		setup:
 		setupSecurityManager(newUser('test', 'uuid'))
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		planningController.view()
@@ -29,7 +29,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def planning = newPlanning(period, true)
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		planningController.view()
@@ -39,7 +39,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 	}
 	def "summary page works when no params"() {
 		setup:
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		planningController.summaryPage()
@@ -58,7 +58,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
 		def planningType = newPlanningType(dataElement, "[_].key0", planning)
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		planningController.params.location = LocationEntity.findByCode(RWANDA).id
@@ -86,7 +86,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		elementValue.value.listValue[0].setAttribute("submitted", "true")
@@ -114,7 +114,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		value.listValue[0].setAttribute('budget_updated', 'true')
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO), value)
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
@@ -138,7 +138,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
 		def planningType = newPlanningType(dataElement, "[_].key0", planning)
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
@@ -165,7 +165,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		elementValue.value.listValue[0].setAttribute("submitted", "true")
@@ -193,7 +193,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		elementValue.value.listValue[0].setAttribute("submitted", "true")
@@ -220,7 +220,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		planningController.params.targetURI = '/test'
@@ -250,7 +250,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
-		planningController = new PlanningController()
+		planningController = new EditPlanningController()
 		
 		when:
 		elementValue.value.listValue[0].setAttribute("submitted", "true")

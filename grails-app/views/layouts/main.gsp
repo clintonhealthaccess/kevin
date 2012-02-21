@@ -85,7 +85,7 @@
 					<li><a class="${controllerName=='editSurvey'||controllerName=='summary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:admin">
-					<li><a class="${controllerName=='planning'?'active':''}" href="${createLink(controller: 'planning', action:'view')}"><g:message code="header.navigation.planning" default="Planning"/></a></li>
+					<li><a class="${controllerName=='editPlanning'?'active':''}" href="${createLink(controller: 'editPlanning', action:'view')}"><g:message code="header.navigation.planning" default="Planning"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:reports">
 					<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports" default="Reports"/></a></li>
@@ -103,6 +103,7 @@
 	  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label" default="DSR Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTargetCategory'?'active':''}" href="${createLink(controller: 'dsrTargetCategory', action:'list')}"><g:message code="dsr.targetcategory.label" default="DSR Target Category"/></a></li>
 	  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a></li>
+	  						<li><a class="${controllerName=='planning'?'active':''}" href="${createLink(controller: 'planning', action:'list')}"><g:message code="planning.label" default="Planning"/></a></li>
 	  						<li><a class="${controllerName=='location'?'active':''}" href="${createLink(controller: 'location', action:'list')}"><g:message code="location.label" default="Location"/></a></li>
 	  						<li><a class="${controllerName=='locationLevel'?'active':''}" href="${createLink(controller: 'locationLevel', action:'list')}"><g:message code="locationLevel.label" default="Location Level"/></a></li>
 	  						<li><a class="${controllerName=='dataLocation'?'active':''}" href="${createLink(controller: 'dataLocation', action:'list')}"><g:message code="dataLocation.label" default="Data Location"/></a></li>
