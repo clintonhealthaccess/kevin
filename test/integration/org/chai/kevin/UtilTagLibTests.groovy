@@ -23,7 +23,7 @@ class UtilTagLibTests extends GroovyPagesTestCase {
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
-		assertEquals "/kevin/test/test?targetURI=%2Ftest%2Ftest%3Ftest%3D123&test=123", url
+		assertEquals "/test/test?targetURI=%2Ftest%2Ftest%3Ftest%3D123&test=123", url
 	}
 	
 	def testLinkWithTargetURIWhenNullQuery() {
@@ -40,7 +40,7 @@ class UtilTagLibTests extends GroovyPagesTestCase {
 			'<g:createLinkWithTargetURI controller="test" action="test" params="[test: 123]"/>'
 		)
 
-		assertEquals "/kevin/test/test?targetURI=%2Ftest%2Ftest&test=123", url
+		assertEquals "/test/test?targetURI=%2Ftest%2Ftest&test=123", url
 	}
 	
 }
