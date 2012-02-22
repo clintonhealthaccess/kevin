@@ -10,20 +10,9 @@
 	<g:form url="[controller:'section', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${section}" value="${section?.names}" label="Name" field="names" />
 			
-		<div class="row">
-			<div class="${hasErrors(bean:section, field:'objective', 'errors')}">
-				<label for="objective.id"><g:message code="survey.objective.label" default="Objective"/>:</label>
-				<select class="objective-list" name="objective.id">
-					<option value="null">-- <g:message code="survey.selectanobjective.label" default="Select an Objective"/> --</option>
-					<g:each in="${objectives}" var="objective">
-						<option value="${objective.id}" ${objective.id+''==fieldValue(bean: section, field: 'objective.id')+''?'selected="selected"':''}>
-							<g:i18n field="${objective.names}"/>
-						</option>
-					</g:each>
-				</select>
-				<div class="error-list"><g:renderErrors bean="${section}" field="objective" /></div>
-			</div>
-		</div>
+		<g:selectFromList name="objective.id" label="${message(code:'survey.objective.label')}" field="objective" optionKey="id" multiple="false"
+			from="${objectives}" value="${section.objective?.id}" bean="${section}" values="${objectives.collect {i18n(field:it.names)}}" />
+			
 		<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${section}" field="typeCodeString" 
 			from="${types}" value="${section.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 

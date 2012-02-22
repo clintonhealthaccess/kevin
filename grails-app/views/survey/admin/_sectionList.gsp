@@ -36,7 +36,7 @@
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'question', action:'list',params:[surveyId:objective.survey?.id,objectiveId: objective?.id,sectionId: section.id])}">
+									<a href="${createLink(controller:'question', action:'list',params:['section.id': section.id])}">
 										<g:message code="default.list.label" args="[message(code:'survey.question.label',default:'Questions')]" />
 									</a>
 								</li>

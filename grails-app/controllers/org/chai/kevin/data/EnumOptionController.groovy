@@ -49,10 +49,7 @@ class EnumOptionController extends AbstractEntityController {
 	}
 	
 	def createEntity(){  
-		def entity = new EnumOption();
-		//FIXME find a better to do this
-		if (params['enumId']) entity.enume = Enum.get(params.int('enumId'))
-		return entity;
+		return new EnumOption();
 	}
 	
 	def getLabel() {
@@ -91,7 +88,7 @@ class EnumOptionController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList();
 		
-		Enum enume = Enum.get(params.int('enumId'));
+		Enum enume = Enum.get(params.int('enume.id'));
 		
 		List<EnumOption> options = enume.enumOptions;
 		Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
@@ -103,7 +100,6 @@ class EnumOptionController extends AbstractEntityController {
 			template: "data/enumOptionList",
 			entityCount: options.size(),
 			code: getLabel(),
-			enumeId: enume.id
 		])
 	}
 		

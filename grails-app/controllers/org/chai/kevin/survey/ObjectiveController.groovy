@@ -45,9 +45,7 @@ class ObjectiveController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		def entity = new SurveyObjective()
-		if (!params['surveyId.id']) entity.survey = Survey.get(params.surveyId)
-		return entity;
+		return new SurveyObjective()
 	}
 
 	def getLabel() {
@@ -76,7 +74,7 @@ class ObjectiveController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 
-		Survey survey = Survey.get(params.surveyId);
+		Survey survey = Survey.get(params.int('survey.id'));
 		List<SurveyObjective> objectives = survey.objectives;
 		Collections.sort(objectives)
 		

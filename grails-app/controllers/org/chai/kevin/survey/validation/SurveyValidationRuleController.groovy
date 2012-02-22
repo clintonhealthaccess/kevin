@@ -53,10 +53,7 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		def entity = new SurveyValidationRule()
-		//FIXME find a better to do this
-		if (!params['surveyElement.id']) entity.surveyElement = SurveyElement.get(params.int('elementId'));
-		return entity;
+		return new SurveyValidationRule()
 	}
 
 	def getTemplate() {
@@ -64,7 +61,13 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
+		def surveyElements = []
+		if (entity.surveyElement != null) surveyElements << entity.surveyElement
+
+		def dependencies = new ArrayList(entity.dependencies)		
 		[
+			dependencies: dependencies,
+			surveyElements: surveyElements,
 			validation: entity,
 			types: DataEntityType.list()
 		]
@@ -95,12 +98,12 @@ class SurveyValidationRuleController extends AbstractEntityController {
 		
 		List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
 		SurveyElement surveyElement = null
-		if (params.int('elementId')) {		
-			surveyElement = SurveyElement.get(params.int('elementId'))
+		if (params.int('surveyElement.id')) {		
+			surveyElement = SurveyElement.get(params.int('surveyElement.id'))
 			validationRules.addAll(surveyElement.getValidationRules());
 		}
 		else {
-			Survey survey = Survey.get(params.int('surveyId'))
+			Survey survey = Survey.get(params.int('survey.id'))
 			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(null, survey)
 			surveyElements.each { element ->
 				validationRules.addAll(element.getValidationRules())	
