@@ -38,7 +38,7 @@ class SurveyElementController {
 	def surveyService;
 	
 	def getHtmlData = {
-		Survey survey = Survey.get(params.int('surveyId'));
+		Survey survey = Survey.get(params.int('survey'));
 		List<String> allowedTypes = params.list('include');
 		Set<SurveyElement> surveyElements = surveyService.searchSurveyElements(params['searchText'], survey, allowedTypes, params);
 		
@@ -49,7 +49,7 @@ class SurveyElementController {
 	}
 
 	def getAjaxData = {
-		Survey survey = Survey.get(params.int('surveyId'));
+		Survey survey = Survey.get(params.int('survey'));
 		List<String> allowedTypes = params.list('include');
 		Set<SurveyElement> surveyElements = surveyService.searchSurveyElements(params['term'], survey, allowedTypes, params);
 
@@ -57,8 +57,8 @@ class SurveyElementController {
 			elements = array {
 				surveyElements.each { surveyElement ->
 					elem (
-						id: surveyElement.id,
-						surveyElement: g.i18n(field: surveyElement.rawDataElement.names)+' - '+ g.i18n(field: surveyElement.surveyQuestion.section.names)+' - '+ g.i18n(field: surveyElement.survey.names) + '['+surveyElement.id+']'
+						key: surveyElement.id,
+						value: g.i18n(field: surveyElement.rawDataElement.names)+' - '+ g.i18n(field: surveyElement.surveyQuestion.section.names)+' - '+ g.i18n(field: surveyElement.survey.names) + '['+surveyElement.id+']'
 					)
 				}
 			}

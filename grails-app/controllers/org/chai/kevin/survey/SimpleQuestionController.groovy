@@ -51,10 +51,7 @@ class SimpleQuestionController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		def entity = new SurveySimpleQuestion();
-		//FIXME find a better to do this
-		if (!params['sectionId.id']) entity.section = SurveySection.get(params.sectionId)
-		return entity
+		return new SurveySimpleQuestion();
 	}
 
 	def getLabel() {

@@ -43,10 +43,7 @@ class SectionController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		def entity = new SurveySection()
-		//FIXME find a better to do this
-		if (!params['objectiveId.id']) entity.objective = SurveyObjective.get(params.objectiveId)
-		return entity
+		return new SurveySection()
 	}
 
 	def getTemplate() {
@@ -77,7 +74,7 @@ class SectionController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 		
-		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
+		SurveyObjective objective = SurveyObjective.get(params.int('objective.id'))
 		List<SurveySection> sections = objective.sections;
 		Collections.sort(sections)
 
