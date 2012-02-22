@@ -134,8 +134,8 @@ environments {
 security.shiro.authc.required = false
 
 // log4j configuration
-environments {
-	development {
+//environments {
+//	development {
 		log4j = {
 			// Example of changing the log pattern for the default console
 			// appender:
@@ -170,15 +170,15 @@ environments {
 				   'org.chai.kevin'
 
 		}
-	}
-	test {
-		log4j = {
-			root {
-				error
-			}	
-		}
-	}
-}
+//	}
+////	test {
+////		log4j = {
+////			root {
+////				error
+////			}	
+////		}
+////	}
+//}
 //	production {
 //		log4j = {
 //			appenders {

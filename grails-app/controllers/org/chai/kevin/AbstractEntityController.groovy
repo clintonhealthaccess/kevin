@@ -98,16 +98,16 @@ abstract class AbstractEntityController extends AbstractController {
 	}
 	
 	def saveWithoutTokenCheck = {
-		log.debug ('saving entity with params:'+params)
+		if (log.isDebugEnabled()) log.debug ('saving entity with params:'+params)
 		
 		def entity = getEntity(params.int('id'));
 		if (entity == null) {
 			entity = createEntity()
 		}
 		bindParams(entity)
-		log.debug('bound params, entity: '+entity)
+		if (log.isDebugEnabled()) log.debug('bound params, entity: '+entity)
 		if (!validateEntity(entity)) {
-			log.info ("validation error in ${entity}: ${entity.errors}}")
+			if (log.isInfoEnabled()) log.info ("validation error in ${entity}: ${entity.errors}}")
 			
 			def model = getModel(entity)
 			model << [template: getTemplate()]
