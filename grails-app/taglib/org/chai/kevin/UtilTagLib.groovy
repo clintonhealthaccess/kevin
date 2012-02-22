@@ -38,7 +38,7 @@ class UtilTagLib {
 	def createLinkWithTargetURI = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]
 		else attrs['params'] = new HashMap(attrs['params'])
-		attrs['params'] << [targetURI: createLink(controller: controllerName, action: actionName, params: params) - request.contextPath];
+		attrs['params'] << [targetURI: request.forwardURI - request.contextPath + (request.queryString==null?'':'?'+request.queryString)];
 		
 		log.debug('creating link with attrs: '+attrs)
 		out << createLink(attrs, body)
