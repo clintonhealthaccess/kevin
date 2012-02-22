@@ -3,7 +3,6 @@ package org.chai.kevin.security
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.chai.kevin.AbstractEntityController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.spockframework.util.Nullable;
 
 class UserController extends AbstractEntityController {
 
