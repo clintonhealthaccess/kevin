@@ -18,7 +18,7 @@
 			<g:if test="${survey}">
 				<li>
 					&rarr; 
-					<a href="${createLink(controller: 'objective', action:'list', params:[surveyId: survey.id])}">
+					<a href="${createLink(controller: 'objective', action:'list', params:['survey.id': survey.id])}">
 						<g:i18n field="${survey.names}" />
 					</a>
 				</li>
@@ -26,7 +26,7 @@
 			<g:if test="${objective}">
 				<li>
 					&rarr; 
-					<a href="${createLink(controller: 'section', action:'list', params:[surveyId: survey.id, objectiveId: objective.id])}">
+					<a href="${createLink(controller: 'section', action:'list', params:['objective.id': objective.id])}">
 						<g:i18n field="${objective.names}" />
 					</a>
 				</li>
@@ -34,7 +34,7 @@
 			<g:if test="${section}">
 				<li>
 					&rarr; 
-					<a href="${createLink(controller: 'question', action:'list', params:[surveyId: survey.id, objectiveId: section.objective.id, sectionId: section.id])}">
+					<a href="${createLink(controller: 'question', action:'list', params:['section.id': section.id])}">
 						<g:i18n field="${section.names}" /> 
 					</a>
 				</li>

@@ -27,6 +27,7 @@
  */
 package org.chai.kevin.survey.validation
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
@@ -49,10 +50,7 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		return SurveySkipRule.get(id)
 	}
 	def createEntity() {
-		def entity = new SurveySkipRule()
-		//FIXME find a better to do this
-		if (!params['survey.id']) entity.survey = Survey.get(params.surveyId);
-		return entity;
+		return new SurveySkipRule()
 	}
 
 	def getTemplate() {
@@ -60,7 +58,11 @@ class SurveySkipRuleController  extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		[ skip: entity ]
+		def skippedSurveyQuestions = new ArrayList(entity.skippedSurveyQuestions)
+		[
+			skip: entity,
+			skippedSurveyQuestions: skippedSurveyQuestions
+		]
 	}
 
 	def bindParams(def entity) {
@@ -79,11 +81,14 @@ class SurveySkipRuleController  extends AbstractEntityController {
 			}
 			i++;
 		}
-						
+				
+		// we do this because automatic data binding does not work with polymorphic elements		
 		List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
 		params.list('skippedSurveyQuestions').each { id -> 
-			def question = surveyService.getSurveyQuestion(Long.parseLong(id))
-			if (question != null) questions.add(question);
+			if (NumberUtils.isDigits(id)) {
+				def question = surveyService.getSurveyQuestion(Long.parseLong(id))
+				if (question != null) questions.add(question);
+			}
 		}
 		entity.skippedSurveyQuestions = questions
 	}
@@ -91,7 +96,7 @@ class SurveySkipRuleController  extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 		
-		Survey survey = Survey.get(params.int('surveyId'))
+		Survey survey = Survey.get(params.int('survey.id'))
 		List<SurveySkipRule> skipRules = new ArrayList(survey.skipRules);
 		skipRules.sort {it.id}
 		

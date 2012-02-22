@@ -43,7 +43,7 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		surveySkipRuleController = new SurveySkipRuleController()
 		
 		when:
-		surveySkipRuleController.params.surveyId = survey.id
+		surveySkipRuleController.params['survey.id'] = survey.id
 		surveySkipRuleController.list()
 		
 		then:

@@ -41,16 +41,14 @@
 						<g:set var="dataElement" value="${surveyElement?.dataElement}"/>
 							<td class="element-${surveyElement?.id} element" data-element="${surveyElement?.id}">
 								<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
-									value: null,
-									lastValue: null,
 									type: dataElement.type, 
 									suffix: '',
-									surveyElement: surveyElement,
+									element: surveyElement,
 									enteredValue: null,
 									readonly: readonly
 								]" />
 								
-								<a href="${createLink(controller:'surveyValidationRule', action:'list', params:[elementId: surveyElement?.id])}">
+								<a href="${createLink(controller:'surveyValidationRule', action:'list', params:['surveyElement.id': surveyElement?.id])}">
 									<g:message code="survey.viewvalidationrule.label" default="View Validation Rules"/>
 								</a>
 							</td>

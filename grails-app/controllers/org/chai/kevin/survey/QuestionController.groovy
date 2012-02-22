@@ -47,7 +47,7 @@ class QuestionController extends AbstractController {
 	def search = {
 		adaptParamsForList()
 		
-		Survey survey = Survey.get(params.int('surveyId'))
+		Survey survey = Survey.get(params.int('survey'))
 		List<SurveyQuestion> questions = surveyService.searchSurveyQuestions(params['q'], survey, params);
 		
 		render (view: '/survey/admin/list', model:[
@@ -63,7 +63,7 @@ class QuestionController extends AbstractController {
 	def list = {
 		adaptParamsForList()
 		
-		SurveySection section = SurveySection.get(params.int('sectionId'))
+		SurveySection section = SurveySection.get(params.int('section.id'))
 		List<SurveyQuestion> questions = section.questions;
 		Collections.sort(questions)
 		
@@ -83,15 +83,15 @@ class QuestionController extends AbstractController {
 	
 	
 	def getAjaxData = {
-		Survey survey = Survey.get(params.int('surveyId'));
+		Survey survey = Survey.get(params.int('survey'));
 		Set<SurveyQuestion> surveyQuestions = surveyService.searchSurveyQuestions(params['term'], survey);
 
 		render(contentType:"text/json") {
-			questions = array {
+			elements = array {
 				surveyQuestions.each { question ->
 					quest (
-						id: question.id,
-						question: Utils.stripHtml(g.i18n(field: question.names).toString(), 35)+' - '+ g.i18n(field: question.section.names)
+						key: question.id,
+						value: Utils.stripHtml(g.i18n(field: question.names).toString(), 35)+' - '+ g.i18n(field: question.section.names)
 					)
 				}
 			}

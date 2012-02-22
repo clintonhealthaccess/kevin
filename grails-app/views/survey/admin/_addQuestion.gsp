@@ -4,17 +4,17 @@
 		<div class="hidden dropdown-list js_dropdown-list">
 			<ul>
 				<li>
-					<a href="${createLinkWithTargetURI(controller:'simpleQuestion', action:'create', params:[sectionId: section.id])}">
+					<a href="${createLinkWithTargetURI(controller:'simpleQuestion', action:'create', params:['section.id': section.id])}">
 						<g:message code="default.new.label" args="[message(code:'survey.simplequestion.label',default:'Simple Question')]"/>
 					</a>
 				</li>
 				<li>
-					<a href="${createLinkWithTargetURI(controller:'checkboxQuestion', action:'create', params:[sectionId: section.id])}">
+					<a href="${createLinkWithTargetURI(controller:'checkboxQuestion', action:'create', params:['section.id': section.id])}">
 						<g:message code="default.new.label" args="[message(code:'survey.checkboxquestion.label',default:'Checkbox Question')]"/>
 					</a>
 				</li>
 				<li>
-					<a href="${createLinkWithTargetURI(controller:'tableQuestion', action:'create', params:[sectionId: section.id])}">
+					<a href="${createLinkWithTargetURI(controller:'tableQuestion', action:'create', params:['section.id': section.id])}">
 						<g:message code="default.new.label" args="[message(code:'survey.tablequestion.label',default:'Table Question')]"/>
 					</a>
 				</li>

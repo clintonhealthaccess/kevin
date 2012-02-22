@@ -12,16 +12,18 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 	
 	def languageService
 	
-//	def testEachOption() {
-//		def option1 = new EnumOption(value: "1", order: IntegrationTests.o(['en':2, 'fr':1]))
-//		def option2 = new EnumOption(value: "2", order: IntegrationTests.o(['en':1, 'fr':2]))
-//		def enume = new Enum(enumOptions: [option1, option2])
-//
-//		assertEquals applyTemplate(
-//			'<g:eachOption enum="${enume}" var="option">${option.value} </g:eachOption>',
-//			['enume':enume]
-//		), '2 1 '
-//		
+	def testEachOption() {
+		def option1 = new EnumOption(value: "1", order: IntegrationTests.o(['en':2, 'fr':1]))
+		def option2 = new EnumOption(value: "2", order: IntegrationTests.o(['en':1, 'fr':2]))
+		def enume = new Enum(enumOptions: [option1, option2])
+
+		assertEquals applyTemplate(
+			'<g:eachOption enum="${enume}" var="option">${option.value} </g:eachOption>',
+			['enume':enume]
+		), '2 1 '
+		
+	}
+	// this does not work because it modifies the metaClass of languageService for all the tests
 //		languageService.metaClass.currentLanguage = { return "fr";}
 //		languageService.metaClass.getCurrentLanguage = { return "fr";}
 //		
@@ -32,7 +34,24 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 //	
 //		languageService.metaClass.remove('currentLanguage')
 //		languageService.metaClass.remove('getCurrentLanguage')
-//	}
+
+		
+	def testEachOptionWithNullEnums() {
+		assertEquals applyTemplate('<g:eachOption var="option">${option.value}</g:eachOption>'), ''
+	}
+	
+	def testValueWithNullEnums() {
+		
+		assertEquals applyTemplate(
+			'<g:value value="${value}" type="${type}" enums="${enums}"/>',
+			[
+				'value': new Value("{\"value\":\"value\"}"),
+				'type': Type.TYPE_ENUM("code"),
+				'enums': null
+			]
+		), 'value'
+
+	}
 	
 	def testValueWithNullValue() {
 		
