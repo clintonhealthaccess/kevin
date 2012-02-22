@@ -3,6 +3,7 @@ package org.chai.kevin.security
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.chai.kevin.AbstractEntityController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.spockframework.util.Nullable;
 
 class UserController extends AbstractEntityController {
 
@@ -27,7 +28,9 @@ class UserController extends AbstractEntityController {
 	}
 
 	def validateEntity(def entity) {
-		return entity.validate() && params['cmd'].validate()
+		boolean valid = entity.validate() && params['cmd'].validate()
+		if (log.isInfoEnabled()) log.info ("validation for command object ${params['cmd']}: ${params['cmd'].errors}}")
+		return valid;
 	}
 	
 	def bindParams(def entity) {
@@ -37,8 +40,10 @@ class UserController extends AbstractEntityController {
 		if(entity.id==null)
 			entity.uuid = UUID.randomUUID().toString();
 			
-		if(params['cmd']?.password != null && !params['cmd']?.password.equals(''))
+		if(params['cmd']?.password != null && !params['cmd']?.password.equals('')){
+			if (log.isDebugEnabled()) log.debug('get here test '+params)
 			entity.passwordHash = new Sha256Hash(params['cmd'].password).toHex();
+		}
 	}
 	
 	def list = {
@@ -68,8 +73,8 @@ class PasswordCommand {
 	String repeat
 
 	static constraints = {
-		password(blank: true, minSize: 4)
-		repeat(validator: {val, obj ->
+		password(blank: true,nullable:true, minSize: 4)
+		repeat(nullable:true, validator: {val, obj ->
 			val == obj.password
 		})
 	}
