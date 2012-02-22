@@ -31,13 +31,13 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()])))
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '', dataElement: dataElement).save(failOnError: true)
+		new PlanningType(planning: planning, discriminator: '[_].key', dataElement: dataElement).save(failOnError: true)
 		
 		then:
 		PlanningType.count() == 1
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '').save(failOnError: true)
+		new PlanningType(planning: planning, discriminator: '[_].key').save(failOnError: true)
 
 		then:
 		thrown ValidationException
@@ -49,11 +49,35 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		thrown ValidationException
 
 		when:
-		new PlanningType(discriminator: '', dataElement: dataElement).save(failOnError: true)
+		new PlanningType(discriminator: '[_].key', dataElement: dataElement).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 	}
 	
+	def "discriminator must be a prefix of type"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period)
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()])))
+		
+		when:
+		new PlanningType(planning: planning, discriminator: '[_]', dataElement: dataElement).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningType(planning: planning, discriminator: '[_].key2', dataElement: dataElement).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningType(planning: planning, discriminator: '[_].key', dataElement: dataElement).save(failOnError: true)
+		
+		then:
+		PlanningType.count() == 1
+	}
 	
 }

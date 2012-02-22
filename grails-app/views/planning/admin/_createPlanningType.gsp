@@ -14,7 +14,33 @@
 
 		<g:input name="discriminator" bean="${planningType}" value="${planningType.discriminator}" label="Discriminator" field="discriminator"/>
 		
+		<g:selectFromList name="dataElement.id" label="Data element" bean="${planningType}" field="dataElement" optionKey="id" multiple="false"
+			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"
+			from="${dataElements}" value="${planningType.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+	
+		<g:if test="${headerPrefixes != null && !headerPrefixes.empty}">
+			<div class="row ${hasErrors(bean:planningType, field:'headers', 'errors')}">
+				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="planning.planningType.headers.label" default="Headers"/>:</a> 
+				<div class="hidden">
+					<g:each in="${headerPrefixes}" var="headerPrefix">
+						<input type="hidden" name="headerList" value="${headerPrefix}"/>
+						<g:i18nRichTextarea name="headerList[${headerPrefix}]" bean="${planningType}" value="${planningType.headers[headerPrefix]}" label="${headerPrefix}" field="headers" height="50"/>
+					</g:each>
+				</div>
+			</div>
+		</g:if>
 		
+		<g:if test="${sections != null && !sections.empty}">
+			<div class="row ${hasErrors(bean:planningType, field:'sectionDescriptions', 'errors')}">
+				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="planning.planningType.sections.label" default="Section descriptions"/>:</a> 
+				<div class="hidden">
+					<g:each in="${sections}" var="section">
+						<input type="hidden" name="sectionList" value="${section}"/>
+						<g:i18nRichTextarea name="sectionList[${section}]" bean="${planningType}" value="${planningType.sectionDescriptions[section]}" label="${section}" field="sectionDescriptions" height="50"/>
+					</g:each>
+				</div>
+			</div>
+		</g:if>
 		
 		<g:if test="${planningType.id != null}">
 			<input type="hidden" name="id" value="${planningType.id}"></input>

@@ -34,7 +34,7 @@
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'planningCost', action:'list', params:[planningType:planningType.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningCost.label',default:'Planning Cost')]" /></a>
+									<a href="${createLink(controller:'planningCost', action:'list', params:['planningType.id':planningType.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningCost.label',default:'Planning Cost')]" /></a>
 								</li>
 							</ul>
 						</div>

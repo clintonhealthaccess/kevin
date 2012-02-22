@@ -20,7 +20,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.view()
 		
 		then:
-		planningController.response.redirectedUrl == '/planning/summaryPage'
+		planningController.response.redirectedUrl == '/editPlanning/summaryPage'
 	}
 
 	def "accessing index page redirects to proper page - data entry user to own planning page"() {
@@ -35,7 +35,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.view()
 		
 		then:
-		planningController.response.redirectedUrl == '/planning/overview/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
+		planningController.response.redirectedUrl == '/editPlanning/overview/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
 	}
 	def "summary page works when no params"() {
 		setup:
@@ -174,7 +174,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.updateBudget()
 		
 		then:
-		planningController.response.redirectedUrl == '/planning/budget/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
+		planningController.response.redirectedUrl == '/editPlanning/budget/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
 		RawDataElementValue.count() == 1
 		RawDataElementValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
 		
@@ -202,7 +202,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.updateBudget()
 		
 		then:
-		planningController.response.redirectedUrl == '/planning/budget/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
+		planningController.response.redirectedUrl == '/editPlanning/budget/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
 		RawDataElementValue.count() == 1
 		RawDataElementValue.list()[0].value.listValue[0].getAttribute("budget_updated") == 'true'
 	}

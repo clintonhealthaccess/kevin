@@ -29,12 +29,15 @@ package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.PeriodSorter
+import org.chai.kevin.Translation;
 import org.hisp.dhis.period.Period
 /**
  * @author Jean Kahigiso M.
  *
  */
 class PlanningTypeController extends AbstractEntityController {
+	
+	def languageService
 	
 	def getEntity(def id) {
 		return PlanningType.get(id)
@@ -53,7 +56,18 @@ class PlanningTypeController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		[planningType: entity]
+		def dataElements = []
+		if (entity.dataElement != null) dataElements << entity.dataElement
+		def sections = []
+		if (entity.dataElement != null) sections.addAll entity.sections
+		def headerPrefixes = []
+		if (entity.dataElement?.headerPrefixes != null) headerPrefixes.addAll entity.dataElement.headerPrefixes
+		[
+			sections: sections,
+			headerPrefixes: headerPrefixes,
+			planningType: entity,
+			dataElements: dataElements
+		]
 	}
 
 	def bindParams(def entity) {
@@ -62,21 +76,41 @@ class PlanningTypeController extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
+		if (params.namesPlural!=null) entity.namesPlural = params.namesPlural
 		
+		// headers
+		params.list('headerList').each { prefix ->
+			Translation translation = new Translation()
+			languageService.availableLanguages.each { language ->
+				translation[language] = params['headerList['+prefix+'].'+language]
+			}
+			entity.headers.put(prefix, translation)
+		}
+		// section description
+		params.list('sectionList').each { prefix ->
+			Translation translation = new Translation()
+			languageService.availableLanguages.each { language ->
+				translation[language] = params['sectionList['+prefix+'].'+language]
+			}
+			entity.sectionDescriptions.put(prefix, translation)
+		}
 	}
 
 	def list = {
 		adaptParamsForList()
 		
 		Planning planning = Planning.get(params.int('planning.id'))
-		List<PlanningType> planningTypes = planning.planningTypes
-
-		render (view: '/planning/admin/list', model:[
-			template:"planningTypeList",
-			entities: planningTypes,
-			entityCount: planningTypes.size(),
-			code: getLabel()
-		])
+		if (planning == null) response.sendError(404)
+		else {
+			List<PlanningType> planningTypes = planning.planningTypes
+	
+			render (view: '/planning/admin/list', model:[
+				template:"planningTypeList",
+				entities: planningTypes,
+				entityCount: planningTypes.size(),
+				code: getLabel()
+			])
+		}
 	}
 	
 }

@@ -14,7 +14,7 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 		planningTypeController = new PlanningTypeController()
 		
 		when:
-		planningTypeController.params['planning'] = planning.id
+		planningTypeController.params['planning.id'] = planning.id
 		planningTypeController.list()
 		
 		then:
@@ -30,24 +30,28 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 		planningTypeController.list()
 		
 		then:
-		planningTypeController.modelAndView.model.entities.equals([])
+		planningTypeController.modelAndView == null
 	}
 	
 	def "create planning type works ok"() {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period)
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()])))
 		planningTypeController = new PlanningTypeController()
 		
 		when:
-		planningTypeController.params['planning.id'] = planning
-		planningTypeController.params['dataElement.id'] = dataElement
-		planningTypeController.params['discriminator'] = '[_]'
+		planningTypeController.params['planning.id'] = planning.id
+		planningTypeController.params['dataElement.id'] = dataElement.id
+		planningTypeController.params['discriminator'] = '[_].key'
+		planningTypeController.params['namesPlural'] = ['en': 'Activities']
 		planningTypeController.saveWithoutTokenCheck()
 
 		then:
 		PlanningType.count() == 1
 		PlanningType.list()[0].period.equals(period)
+		PlanningType.list()[0].namesPlural.en.equals("Activities")
+		
 	}
 	
 }
