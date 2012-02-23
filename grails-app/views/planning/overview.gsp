@@ -55,8 +55,8 @@
 																<g:value value="${entry.discriminatorValue}" type="${planningList.planningType.discriminatorType}" enums="${entry.enums}"/>
 															</a>
 															<span class="overview-manage right">
-																<a href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">edit</a>
-																<a href="${createLinkWithTargetURI(controller:'planning', action:'deletePlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">delete</a>
+																<a class="edit-link" href="${createLinkWithTargetURI(controller:'planning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">edit</a>
+																<a class="delete-link" href="${createLinkWithTargetURI(controller:'planning', action:'deletePlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:entry.lineNumber])}">delete</a>
 															</span>
 														</li>
 													</g:each>

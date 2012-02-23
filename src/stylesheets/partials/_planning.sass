@@ -58,12 +58,12 @@
 .overview-manage
   display: none
   a
-    background: $filler
+//    background: $filler
     font-size: 10px
-    margin-left: 1px
+//    margin-left: 1px
     padding: 3px 5px
-    +border-radius(3px)
-    +box-shadow($filler - #050505 2px 2px 5px inset)
+//    +border-radius(3px)
+//    +box-shadow($filler - #050505 2px 2px 5px inset)
     +text-shadow(#fff 0 1px 0)
   
 .overview-all
@@ -240,6 +240,13 @@
     border: 1px solid $filler3 - #090909
     padding-left: 40px
     +box-shadow($filler3 2px 2px 5px inset)
+  &.success
+    background: url("../images/icons/check.png") no-repeat 8px center $filler2
+    border: 1px solid $filler2 - #111
+    padding-left: 40px
+    +box-shadow($filler2 2px 2px 5px inset)
+  &.info
+    background: url("../images/icons/check.png") no-repeat 8px center $filler3
   &.loading
     background: url("../images/ajax-loader-bar.gif") no-repeat center $filler + #030303
       

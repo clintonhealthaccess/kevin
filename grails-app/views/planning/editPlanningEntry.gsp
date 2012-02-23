@@ -25,11 +25,7 @@
 					</div>
 				</div>
 					
-				<g:if test="${planningEntry.submitted}">
-	  				<a class="next gray medium" href="${createLink(controller:'planning', action:'unsubmit', params: [location: location.id, planningType: planningType.id, lineNumber: planningEntry.lineNumber, targetURI: targetURI])}">
-	  					Remove from budget
-	  				</a>
-				</g:if>
+				
 					
 				<div id="questions">
 					<g:form url="[controller:'planning', action:'submit', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
@@ -64,23 +60,36 @@
 								</div>
 							</div>
 		  				</g:each>
-              			<div class="clearfix">
-  		  					<button type="submit" class="loading-disabled">
-  		  						<g:if test="${!planningEntry.submitted}">
-  		  							Accept in budget
-  		  						</g:if>
-  		  						<g:else>
-  		  							Update budget
-  		  						</g:else>
-  		  					</button>
-  		  					
-  		  					<button type="cancel" class="hidden">
-								<g:message code="survey.section.cancel.label" default="Cancel"/>
-							</button>
-  		  					<a class="next gray medium" href="${createLink(uri: targetURI)}">
-  		  						Return to listing
-  		  					</a>
+              	<ul class=" form-actions clearfix">
+              	  <li>
+    		  					<button type="submit" class="loading-disabled">
+    		  						<g:if test="${!planningEntry.submitted}">
+    		  							Accept in budget
+    		  						</g:if>
+    		  						<g:else>
+    		  							Update budget
+    		  						</g:else>
+    		  					</button>
+  		  					</li>
+  		  					<li>
+    		  					<button type="cancel" class="hidden">
+  								    <g:message code="survey.section.cancel.label" default="Cancel"/>
+  							    </button>
+  							  </li>
+  							  <li>
+    		  					<a class="go-back" href="${createLink(uri: targetURI)}">
+    		  						Return to listing
+    		  					</a>
+    		  				</li>
 		  				</div>
+		  				<br />
+		  				<g:if test="${planningEntry.submitted}">
+      				  <p class="context-message warning">
+      				    Message that inform the client about removing activities from the budget.
+      	  				<a class="next gray medium right pull-7" href="${createLink(controller:'planning', action:'unsubmit', params: [location: location.id, planningType: planningType.id, lineNumber: planningEntry.lineNumber, targetURI: targetURI])}">
+      	  					Remove from budget
+      	  				</a>
+      				</g:if>
 	  				</g:form>
 				</div>
 			</div>

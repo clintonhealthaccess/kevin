@@ -31,10 +31,11 @@
 							</h4>
 							<div class="budget">
 							 	<p id="js_budget-warning" class="context-message warning ${updatedBudget?'hidden':''}">
-							  		Some activities were changed. Please <a href="${createLink(controller:'planning', action:'updateBudget', params:[location:location.id, planning:planning.id])}">update your budget</a>.
-							  	</p>
+							  	Some activities were changed. Please <a href="${createLink(controller:'planning', action:'updateBudget', params:[location:location.id, planning:planning.id])}">update your budget</a>.
+							  </p>
+							  <p class="context-message warning">A message that you need to <a href="#">enter an activity</a> in order to view the budget table.</p>
 								<div class="table-wrap left clear">
-	              
+								  
 									<table class="nested budget push-top-10">
 										<thead>
 											<tr>
@@ -132,7 +133,7 @@
 								</div>
 								
 								<div class="right table-aside">
-									<p class="diff positive">TODO Budget difference: 70 Million RWD</p>
+									<p class="context-message success">TODO Budget difference: 70 Million RWD</p>
 									<div class="diff context-message hidden" id="js_budget-section-edit">
 										<div class="js_content">
 										
