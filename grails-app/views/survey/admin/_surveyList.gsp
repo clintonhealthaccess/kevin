@@ -38,16 +38,16 @@
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'objective', action:'list', params:[surveyId:survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.objective.label',default:'Objective')]" /></a>
+									<a href="${createLink(controller:'objective', action:'list', params:['survey.id':survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.objective.label',default:'Objective')]" /></a>
 								</li>
 								<li>
-									<a href="${createLink(controller:'surveySkipRule', action:'list', params:[surveyId: survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.skiprule.label',default:'Skip Rules')]" /></a>
+									<a href="${createLink(controller:'surveySkipRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.skiprule.label',default:'Skip Rules')]" /></a>
 								</li>
 								<li>
-									<a href="${createLink(controller:'surveyValidationRule', action:'list', params:[surveyId: survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.validationrule.label',default:'Validation Rules')]" /></a>
+									<a href="${createLink(controller:'surveyValidationRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.validationrule.label',default:'Validation Rules')]" /></a>
 								</li>
 								<li>
-							    	<a href="${createLink(controller:'survey', action:'copy', params:[surveyId: survey.id])}"><g:message code="survey.clone.label" default="Clone" /> </a>
+							    	<a href="${createLink(controller:'survey', action:'copy', params:[survey: survey.id])}"><g:message code="survey.clone.label" default="Clone" /> </a>
 								</li>
 							</ul>
 						</div>

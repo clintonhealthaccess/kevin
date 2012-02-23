@@ -49,10 +49,7 @@ class TableQuestionController extends AbstractEntityController {
 		return SurveyTableQuestion.get(id)
 	}
 	def createEntity() {
-		def entity = new SurveyTableQuestion();
-		//FIXME find a better to do this
-		if (!params['sectionId.id']) entity.section = SurveySection.get(params.sectionId)
-		return entity
+		return new SurveyTableQuestion();
 	}
 
 	def getLabel() {
@@ -98,10 +95,7 @@ class TableQuestionController extends AbstractEntityController {
 	}
 
 	def preview = {
-		def question = null;
-		if (NumberUtils.isNumber(params['questionId'])) {
-			question = SurveyTableQuestion.get(params['questionId'])
-		}
+		def question = SurveyTableQuestion.get(params.int('question'))
 
 		def model = getModel(question)
 		model << [template: '/survey/admin/tablePreview']

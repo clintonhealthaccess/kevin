@@ -16,7 +16,7 @@
 		<g:if test="${question.id != null}">
 			<input type="hidden" name="id" value="${question.id}"></input>
 			<div class="row">
-				<a href="${createLinkWithTargetURI(controller:'tableQuestion', action:'preview',params:[questionId: question.id])}">
+				<a href="${createLinkWithTargetURI(controller:'tableQuestion', action:'preview',params:['question': question.id])}">
 					<g:message code="survey.tablequestion.preview.label" default="Preview"/></a>
 				</a>
 			</div>
@@ -31,7 +31,7 @@
 							</li>
 						</g:each>
 					</ul>
-					<a href="${createLinkWithTargetURI(controller:'tableColumn', action:'create', params:[questionId: question.id])}">
+					<a href="${createLinkWithTargetURI(controller:'tableColumn', action:'create', params:['question.id': question.id])}">
 						<g:message code="default.add.label" args="[message(code:'survey.tablequestion.tablecolumn.label')]" />
 					</a>
 				</div>
@@ -47,7 +47,7 @@
 							</li>
 						</g:each>
 					</ul>
-					<a href="${createLinkWithTargetURI(controller:'tableRow', action:'create', params:[questionId: question.id])}">
+					<a href="${createLinkWithTargetURI(controller:'tableRow', action:'create', params:['question.id': question.id])}">
 						<g:message code="default.add.label" args="[message(code:'survey.tablequestion.tablerow.label')]" />
 					</a>
 				</div>
@@ -55,19 +55,10 @@
 		</g:if>
 		
 		<g:input name="order" label="Order" bean="${question}" field="order"/>
-		<div class="row ${hasErrors(bean:question, field:'section', 'errors')}">
-			<label for="section.id"><g:message code="survey.section.label" default="Section"/>:</label>
-			<select class="section-list" name="section.id">
-				<option value="null">-- <g:message code="default.select.label" args="[message(code:'survey.section.label')]" default="Select a Section"/> --</option>
-				<g:each in="${sections}" var="section">
-					<option value="${section.id}" ${section.id+''==fieldValue(bean: question, field: 'section.id')+''?'selected="selected"':''}>
-						<g:i18n field="${section.names}"/>
-					</option>
-				</g:each>
-			</select>
-			<div class="error-list"><g:renderErrors bean="${question}" field="section" /></div>
-		</div>
 		
+		<g:selectFromList name="section.id" label="${message(code:'survey.section.label')}" field="section" optionKey="id" multiple="false"
+			from="${sections}" value="${question.section?.id}" bean="${question}" values="${sections.collect {i18n(field:it.names)}}" />
+
 		<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${question}" field="typeCodeString" 
 			from="${types}" value="${question.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 

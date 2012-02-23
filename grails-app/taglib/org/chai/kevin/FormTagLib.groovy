@@ -8,7 +8,7 @@ class FormTagLib {
 		if (attrs["type"] == null) attrs["type"] = 'text'
 		out << render(template:"/tags/form/input", model: attrs)
 	}
-	
+		
 	def file = { attrs, body ->
 		if (attrs["type"] == null) attrs["type"] = 'file'
 		out << render(template:"/tags/form/file", model: attrs)

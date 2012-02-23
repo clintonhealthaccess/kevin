@@ -36,7 +36,7 @@
 					<div class="hidden js_dropdown-list manage-list dropdown-list">
 						<ul>
 							<li>
-								<a href="${createLink(controller:'enumOption', action:'list',params:[enumId: enumation.id])}">
+								<a href="${createLink(controller:'enumOption', action:'list', params:['enume.id': enumation.id])}">
 									<g:message code="default.list.label" args="[message(code:'enum.enumoption.label')]" />
 								</a>
 							</li>

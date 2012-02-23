@@ -43,10 +43,7 @@ class TableColumnController extends AbstractEntityController {
 		return SurveyTableColumn.get(id)
 	}
 	def createEntity() {
-		def entity = new SurveyTableColumn();
-		//FIXME find a better solution to do this
-		if (!params['question']) entity.question = SurveyTableQuestion.get(params.questionId)
-		return entity
+		return new SurveyTableColumn();
 	}
 
 	def getLabel() {

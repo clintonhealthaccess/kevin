@@ -90,7 +90,6 @@ class SurveyController extends AbstractEntityController {
 		adaptParamsForList()
 		
 		List<Survey> surveys = Survey.list(params);
-
 		if(surveys.size()>0) Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/survey/admin/list', model:[
@@ -102,7 +101,7 @@ class SurveyController extends AbstractEntityController {
 	}
 	
 	def copy = {
-		def survey = getEntity(params.int('surveyId'))
+		def survey = getEntity(params.int('survey'))
 		def clone = surveyCopyService.copySurvey(survey)
 		
 		redirect (controller: 'survey', action: 'list')	

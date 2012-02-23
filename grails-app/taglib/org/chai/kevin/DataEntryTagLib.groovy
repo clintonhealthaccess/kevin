@@ -28,10 +28,10 @@ class DataEntryTagLib {
 		if (value != null && !value.isNull()) {
 			switch (type.type) {
 				case (ValueType.ENUM):
-					def enume = enums[type.enumCode]
+					def enume = enums?.get(type.enumCode)
 					if (enume == null) result = value.enumValue
 					else {
-						def option = enume.getOptionForValue(value.enumValue)
+						def option = enume?.getOptionForValue(value.enumValue)
 						if (option == null) result = value.enumValue
 						else result = languageService.getText(option.names)
 					}
@@ -53,7 +53,7 @@ class DataEntryTagLib {
 		def enume = attrs['enum']
 		def var = attrs['var']
 		
-		def options = enume.activeEnumOptions.sort(getOrderingComparator())
+		def options = enume==null?[]:enume.activeEnumOptions?.sort(getOrderingComparator())
 
 		for (option in options) {
 			if (var) {
