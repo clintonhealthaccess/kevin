@@ -89,4 +89,51 @@ class ValidatableUnitSpec extends UnitSpec {
 		validatable.isTreeComplete("[1]") == true
 		
 	}
+	
+	def "test values get sanitized properly with merge"() {
+		setup:
+		def value
+		def type
+		def validatable
+		
+		when:
+		value = Value.NULL_INSTANCE()
+		type = Type.TYPE_DATE()
+		validatable = new ValidatableValue(value, type)
+		validatable.mergeValue(['':'01-01-1999'], '', new HashSet())
+		
+		then:
+		!value.isNull()
+		value.dateValue != null
+		
+		when:
+		value = Value.NULL_INSTANCE()
+		type = Type.TYPE_NUMBER()
+		validatable = new ValidatableValue(value, type)
+		validatable.mergeValue(['':'1'], '', new HashSet())
+		
+		then:
+		!value.isNull()
+		value.numberValue != null
+		
+		when:
+		value = Value.NULL_INSTANCE()
+		type = Type.TYPE_BOOL()
+		validatable = new ValidatableValue(value, type)
+		validatable.mergeValue(['':'0'], '', new HashSet())
+		
+		then:
+		!value.isNull()
+		value.booleanValue == false
+		
+		when:
+		value = Value.NULL_INSTANCE()
+		type = Type.TYPE_BOOL()
+		validatable = new ValidatableValue(value, type)
+		validatable.mergeValue(['':'0,1'], '', new HashSet())
+		
+		then:
+		!value.isNull()
+		value.booleanValue == true
+	}
 }

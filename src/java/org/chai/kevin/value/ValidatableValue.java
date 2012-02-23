@@ -52,7 +52,7 @@ public class ValidatableValue {
 					if (value == null || string.equals("")) result = null;
 					else {
 						try {
-							result = Utils.formatDate(Utils.parseDate(string));
+							result = Utils.parseDate(string);
 						} catch (ParseException e) {
 							result = null;
 						}
