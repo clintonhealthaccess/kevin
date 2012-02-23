@@ -79,23 +79,11 @@ class PlanningTypeController extends AbstractEntityController {
 		if (params.namesPlural!=null) entity.namesPlural = params.namesPlural
 		
 		// headers
-		params.list('headerList').each { prefix ->
-			Translation translation = new Translation()
-			languageService.availableLanguages.each { language ->
-				translation[language] = params['headerList['+prefix+'].'+language]
-			}
-			entity.headers.put(prefix, translation)
-		}
+		bindTranslationMap('headerList', entity.headers)
 		// section description
-		params.list('sectionList').each { prefix ->
-			Translation translation = new Translation()
-			languageService.availableLanguages.each { language ->
-				translation[language] = params['sectionList['+prefix+'].'+language]
-			}
-			entity.sectionDescriptions.put(prefix, translation)
-		}
+		bindTranslationMap('sectionList', entity.sectionDescriptions)
 	}
-
+	
 	def list = {
 		adaptParamsForList()
 		

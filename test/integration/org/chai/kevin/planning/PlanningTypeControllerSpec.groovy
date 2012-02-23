@@ -45,12 +45,21 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 		planningTypeController.params['dataElement.id'] = dataElement.id
 		planningTypeController.params['discriminator'] = '[_].key'
 		planningTypeController.params['namesPlural'] = ['en': 'Activities']
+		planningTypeController.params['namesPlural'] = ['en': 'Activities']	
+		planningTypeController.params['headerList'] = ['[_].key']
+		planningTypeController.params['headerList[[_].key].en'] = 'Header'
+		planningTypeController.params['headerList[[_].key]'] = ['en': 'Header'] // this is not used
+		planningTypeController.params['sectionList'] = ['[_].key']
+		planningTypeController.params['sectionList[[_].key].en'] = 'Description' 
+		planningTypeController.params['sectionList[[_].key]'] = ['en': 'Description'] // this is not used
 		planningTypeController.saveWithoutTokenCheck()
 
 		then:
 		PlanningType.count() == 1
 		PlanningType.list()[0].period.equals(period)
 		PlanningType.list()[0].namesPlural.en.equals("Activities")
+		PlanningType.list()[0].headers['[_].key'].en.equals('Header')
+		PlanningType.list()[0].sectionDescriptions['[_].key'].en.equals('Description')
 		
 	}
 	
