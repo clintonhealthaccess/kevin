@@ -78,7 +78,7 @@ class CostRampUpController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		def entities = CostRampUp.list(params)
+		List<CostRampUp> entities = CostRampUp.list(params)
 		
 		render (view: '/entity/list', model: [
 			entities: entities, 

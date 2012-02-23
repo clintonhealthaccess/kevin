@@ -120,7 +120,6 @@ class NormalizedDataElementController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		
 		List<NormalizedDataElement> normalizedDataElements = NormalizedDataElement.list(params);
 		
 		render (view: '/entity/list' , model:[

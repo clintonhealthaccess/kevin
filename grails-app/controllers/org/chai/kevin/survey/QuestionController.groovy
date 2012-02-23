@@ -64,23 +64,27 @@ class QuestionController extends AbstractController {
 		adaptParamsForList()
 		
 		SurveySection section = SurveySection.get(params.int('section.id'))
-		List<SurveyQuestion> questions = section.questions;
-		Collections.sort(questions)
-		
-		def max = Math.min(params['offset']+params['max'], questions.size())
-		
-		render (view: '/survey/admin/list', model:[
-			template:"questionList",
-			survey: section.objective.survey,
-			objective: section.objective,
-			section: section,
-			entities: questions.subList(params['offset'], max),
-			entityCount: questions.size(),
-			code: 'survey.question.label',
-			addTemplate: '/survey/admin/addQuestion'
-		])
+		if (section == null) {
+			response.sendError(404)
+		}
+		else {
+			List<SurveyQuestion> questions = section.questions;
+			Collections.sort(questions)
+			
+			def max = Math.min(params['offset']+params['max'], questions.size())
+			
+			render (view: '/survey/admin/list', model:[
+				template:"questionList",
+				survey: section.objective.survey,
+				objective: section.objective,
+				section: section,
+				entities: questions.subList(params['offset'], max),
+				entityCount: questions.size(),
+				code: 'survey.question.label',
+				addTemplate: '/survey/admin/addQuestion'
+			])
+		}
 	}
-	
 	
 	def getAjaxData = {
 		Survey survey = Survey.get(params.int('survey'));
