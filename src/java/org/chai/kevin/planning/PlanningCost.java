@@ -32,6 +32,7 @@ public class PlanningCost {
 		public String getCode() {
 			return code;
 		}
+		String getKey() { return name(); }
 	};
 
 	private Long id;

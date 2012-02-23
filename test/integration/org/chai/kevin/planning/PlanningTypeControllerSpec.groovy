@@ -23,7 +23,6 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 	
 	def "planning type list with no planning"() {
 		setup:
-		def period = newPeriod()
 		planningTypeController = new PlanningTypeController()
 		
 		when:

@@ -1,6 +1,7 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.data.Type;
+import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 
 import grails.validation.ValidationException;
 
@@ -75,6 +76,70 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		
 		when:
 		new PlanningType(planning: planning, discriminator: '[_].key', dataElement: dataElement).save(failOnError: true)
+		
+		then:
+		PlanningType.count() == 1
+	}
+	
+	def "null constraints in planning cost"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period)
+		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()]))), "[_].key", planning)
+		def sum = newSum("1", CODE(2))
+		
+		when:
+		new PlanningCost(planningType: planningType, discriminatorValue: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
+		
+		then:
+		PlanningCost.count() == 1
+		
+		when:
+		new PlanningCost(planningType: planningType, sum: sum, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
+
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningCost(planningType: planningType, discriminatorValue: 'value', type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
+
+		then:
+		thrown ValidationException
+
+		when:
+		new PlanningCost(planningType: planningType, discriminatorValue: 'value', sum: sum, section: '[_].key').save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+
+		when:
+		new PlanningCost(planningType: planningType, discriminatorValue: 'value', sum: sum, type: PlanningCostType.INCOMING).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+	}
+	
+	def "section must be a prefix of type"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period)
+		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()]))), "[_].key", planning)
+		def sum = newSum("1", CODE(2))
+		
+		when:
+		new PlanningCost(planningType: planningType, discriminatorValue: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '[_]').save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningCost(planningType: planningType, discriminatorValue: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '').save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningCost(planningType: planningType, discriminatorValue: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
 		
 		then:
 		PlanningType.count() == 1

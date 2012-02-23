@@ -24,7 +24,7 @@
 				<div class="hidden">
 					<g:each in="${headerPrefixes}" var="headerPrefix">
 						<input type="hidden" name="headerList" value="${headerPrefix}"/>
-						<g:i18nRichTextarea name="headerList['${headerPrefix}']" bean="${planningType}" value="${planningType.headers[headerPrefix]}" label="${headerPrefix}" field="headers" height="50"/>
+						<g:i18nRichTextarea name="headerList[${headerPrefix}]" bean="${planningType}" value="${planningType.headers[headerPrefix]}" label="${headerPrefix}" field="headers" height="50"/>
 					</g:each>
 				</div>
 			</div>

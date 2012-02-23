@@ -35,38 +35,32 @@ import org.hisp.dhis.period.Period
  * @author Jean Kahigiso M.
  *
  */
-class PlanningTypeController extends AbstractEntityController {
+class PlanningCostController extends AbstractEntityController {
 	
 	def languageService
 	
 	def getEntity(def id) {
-		return PlanningType.get(id)
+		return PlanningCost.get(id)
 	}
 
 	def createEntity() {
-		return new PlanningType()
+		return new PlanningCost()
 	}
 
 	def getLabel() {
-		return 'planningType.label'
+		return 'planningCost.label'
 	}
 	
 	def getTemplate() {
-		return "/planning/admin/createPlanningType"
+		return "/planning/admin/createPlanningCost"
 	}
 
 	def getModel(def entity) {
-		def dataElements = []
-		if (entity.dataElement != null) dataElements << entity.dataElement
-		def sections = []
-		if (entity.dataElement != null) sections.addAll entity.sections
-		def headerPrefixes = []
-		if (entity.dataElement?.headerPrefixes != null) headerPrefixes.addAll entity.dataElement.headerPrefixes
+		def sums = []
+		if (entity.sum != null) sums << entity.sum
 		[
-			sections: sections,
-			headerPrefixes: headerPrefixes,
-			planningType: entity,
-			dataElements: dataElements
+			planningCost: entity,
+			sums: sums
 		]
 	}
 
@@ -76,26 +70,20 @@ class PlanningTypeController extends AbstractEntityController {
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
-		if (params.namesPlural!=null) entity.namesPlural = params.namesPlural
-		
-		// headers
-		bindTranslationMap('headerList', entity.headers)
-		// section description
-		bindTranslationMap('sectionList', entity.sectionDescriptions)
 	}
 	
 	def list = {
 		adaptParamsForList()
 		
-		Planning planning = Planning.get(params.int('planning.id'))
-		if (planning == null) response.sendError(404)
+		PlanningType planningType = PlanningType.get(params.int('planningType.id'))
+		if (planningType == null) response.sendError(404)
 		else {
-			List<PlanningType> planningTypes = planning.planningTypes
+			List<PlanningCost> planningCosts = planningType.costs
 	
 			render (view: '/planning/admin/list', model:[
-				template:"planningTypeList",
-				entities: planningTypes,
-				entityCount: planningTypes.size(),
+				template:"planningCostList",
+				entities: planningCosts,
+				entityCount: planningCosts.size(),
 				code: getLabel()
 			])
 		}

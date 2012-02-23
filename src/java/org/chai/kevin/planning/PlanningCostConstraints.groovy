@@ -31,12 +31,19 @@ package org.chai.kevin.planning
  * @author Jean Kahigiso M.
  *
  */
-constraints = {
-	planning (nullable:false)
-	dataElement (nullable:false)
-	discriminator (nullable: false, blank: false, validator: {val, obj ->
-		if (obj.dataElement != null) {
-			return obj.dataElement.getValuePrefixes('').contains(val)
+constraints ={
+	sum (nullable: false)
+	type (nullable: false)
+	planningType (nullable: false)
+	section (nullable: false, blank: false, validator: { val, obj ->
+		if (obj.planningType != null) {
+			return obj.planningType.dataElement.getValuePrefixes('').contains(val)
 		}
 	})
+	groupSection (validator: { val, obj ->
+		if (val != null && obj.planningType != null) {
+			return obj.planningType.dataElement.getValuePrefixes('').contains(val)
+		}
+	})
+	discriminatorValue (nullable: false, blank: false)
 }
