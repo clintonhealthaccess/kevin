@@ -13,15 +13,18 @@
 	
 		<g:i18nInput name="names" bean="${planningCost}" value="${planningCost.names}" label="Name" field="names"/>
 
-		<g:input name="discriminatorValue" bean="${planningCost}" value="${planningCost.discriminatorValue}" label="Discriminator Value" field="discriminatorValue"/>
+		<g:selectFromList name="discriminatorValues" label="Discriminator Value" bean="${planningCost}" field="discriminatorValueString" multiple="true"
+			from="${discriminatorValues}" value="${planningCost.discriminatorValues}"/>
 		
 		<g:selectFromList name="sum.id" label="Sum" bean="${planningCost}" field="sum" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Sum'])}"
 			from="${sums}" value="${planningCost.sum?.id}" values="${sums.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 	
-		<g:input name="section" bean="${planningCost}" value="${planningCost.section}" label="Section (link)" field="section"/>
-		<g:input name="groupSection" bean="${planningCost}" value="${planningCost.groupSection}" label="Grouping section" field="groupSection"/>
-	
+		<g:selectFromList name="section" label="Section (link)" bean="${planningCost}" field="section" multiple="false"
+			from="${sections}" value="${planningCost.section}"/>
+		<g:selectFromList name="groupSection" label="Section (link)" bean="${planningCost}" field="groupSection" multiple="false"
+			from="${sections}" value="${planningCost.groupSection}"/>
+			
 		<g:selectFromEnum name="type" bean="${planningCost}" values="${PlanningCostType.values()}" field="type" label="Type"/>
 	
 		<g:if test="${planningCost.id != null}">

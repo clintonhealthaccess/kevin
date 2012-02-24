@@ -41,6 +41,7 @@
 											<thead>
 												<tr>
 													<th></th>
+													<th></th>
 													<th><g:i18n field="${planningType.names}"/></th>
 													<g:each in="${planningType.getValuePrefixes(section)}" var="prefix">
 														<th><g:i18n field="${planningType.getHeaders()[prefix]}"/></th>
@@ -55,8 +56,11 @@
 														<td class="status ${entry.submitted?'pos':'neg'}"></td>
 														<td>
 															<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">
-																<g:value value="${entry.discriminatorValue}" type="${planningType.discriminatorType}" enums="${entry.enums}"/>
+																<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="none entered"/>
 															</a>
+														</td>
+														<td>
+															<g:value value="${entry.discriminatorValue}" type="${planningType.discriminatorType}" enums="${entry.enums}" nullText="none entered"/>
 														</td>
 														<g:each in="${planningType.getValuePrefixes(section)}" var="prefix">
 															<td>

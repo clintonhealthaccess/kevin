@@ -12,7 +12,8 @@
 		<g:i18nInput name="names" bean="${planningType}" value="${planningType.names}" label="Name" field="names"/>
 		<g:i18nInput name="namesPlural" bean="${planningType}" value="${planningType.namesPlural}" label="Name (plural)" field="namesPlural"/>
 
-		<g:input name="discriminator" bean="${planningType}" value="${planningType.discriminator}" label="Discriminator" field="discriminator"/>
+		<g:selectFromList name="discriminator" label="Discriminator" bean="${planningType}" field="discriminator" multiple="false"
+			from="${valuePrefixes}" value="${planningType.discriminator}"/>
 		
 		<g:selectFromList name="dataElement.id" label="Data element" bean="${planningType}" field="dataElement" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"

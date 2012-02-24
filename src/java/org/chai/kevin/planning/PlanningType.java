@@ -39,6 +39,8 @@ public class PlanningType {
 	private Translation names = new Translation();
 	private Translation namesPlural = new Translation();
 	private String discriminator;
+	private String fixedHeader;
+	
 	private Map<String, Translation> sectionDescriptions = new HashMap<String, Translation>();
 	private Map<String, Translation> headers = new HashMap<String, Translation>();
 	
@@ -149,6 +151,15 @@ public class PlanningType {
 	public void setDiscriminator(String discriminator) {
 		this.discriminator = discriminator;
 	}
+	
+	@Basic
+	public String getFixedHeader() {
+		return fixedHeader;
+	}
+	
+	public void setFixedHeader(String fixedHeader) {
+		this.fixedHeader = fixedHeader;
+	}
 
 	@Transient
 	public Period getPeriod() {
@@ -161,6 +172,11 @@ public class PlanningType {
 	}
 	
 	@Transient
+	public Type getFixedHeaderType() {
+		return getType(getFixedHeader());
+	}
+	
+	@Transient
 	public Type getType(String section) {
 		return dataElement.getType().getType(section);
 	}
@@ -169,7 +185,7 @@ public class PlanningType {
 	public List<PlanningCost> getPlanningCosts(String discriminatorValue) {
 		List<PlanningCost> result = new ArrayList<PlanningCost>();
 		for (PlanningCost planningCost : getCosts()) {
-			if (planningCost.getDiscriminatorValue().equals(discriminatorValue)) result.add(planningCost);
+			if (planningCost.getDiscriminatorValues().contains(discriminatorValue)) result.add(planningCost);
 		}
 		return result;
 	}
@@ -189,6 +205,7 @@ public class PlanningType {
 		List<String> result = dataElement.getValuePrefixes(section);
 		// we get rid of the discriminator
 		// TODO how do we handle lists
+		result.remove(getFixedHeader());
 		result.remove(getDiscriminator());
 		return result;
 	}

@@ -28,7 +28,7 @@
 				</td>
 				<td><g:i18n field="${planningCost.names}"/></td>
 				<td>${planningCost.type}</td>
-				<td>${planningCost.discriminatorValue}</td>
+				<td>${planningCost.discriminatorValueString}</td>
 				<td>${planningCost.groupSection}</td>
 				<td><g:i18n field="${planningCost.sum.names}"/></td>
 			</tr>

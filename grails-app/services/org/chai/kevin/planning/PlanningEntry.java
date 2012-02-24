@@ -116,6 +116,10 @@ public class PlanningEntry {
 		return getValue(type.getDiscriminator());
 	}
 	
+	public Value getFixedHeaderValue() {
+		return getValue(type.getFixedHeader());
+	}
+	
 	private Value getValue() {
 		return getValue("[_]");
 	}

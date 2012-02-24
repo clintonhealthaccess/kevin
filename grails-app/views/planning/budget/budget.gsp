@@ -81,7 +81,7 @@
 																		<td>
 																			<span style="margin-left: 20px;">
 																				<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.planningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
-																					<g:value value="${planningEntry.discriminatorValue}" type="${planningTypeBudget.planningType.discriminatorType}" enums="${budgetPlanningEntry.planningEntry.enums}"/>
+																					<g:value value="${planningEntry.fixedHeaderValue}" type="${planningEntry.type.fixedHeaderType}" nullText="none entered"/>
 																				</a>
 																			</span>
 																		</td>

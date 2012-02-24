@@ -30,6 +30,7 @@ package org.chai.kevin.planning
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.PeriodSorter
 import org.chai.kevin.Translation;
+import org.chai.kevin.data.Enum;
 import org.hisp.dhis.period.Period
 /**
  * @author Jean Kahigiso M.
@@ -58,9 +59,14 @@ class PlanningCostController extends AbstractEntityController {
 	def getModel(def entity) {
 		def sums = []
 		if (entity.sum != null) sums << entity.sum
+		
+		def sections = entity.planningType.sections
+		def discriminatorValues = Enum.findByCode(entity.planningType.discriminatorType.enumCode).activeEnumOptions*.value
 		[
 			planningCost: entity,
-			sums: sums
+			sums: sums,
+			sections: sections,
+			discriminatorValues: discriminatorValues
 		]
 	}
 

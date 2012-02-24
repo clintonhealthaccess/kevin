@@ -7,7 +7,6 @@
 		<r:require module="planning"/>
 	</head>
 	<body>
-<<<<<<< HEAD
 		<div id="content" class="push"/>
 			<div id="planning">
 				<div class="main">  
@@ -84,37 +83,6 @@
 		  				</div>
 	  				</g:form>
 				</div>
-=======
-		<div id="planning">
-			<div class="main" id="questions">  
-				<g:form url="[controller:'editPlanning', action:'save', params: [location: location.id, planningType: planningType.id, period: period.id]]">
-  				<input class="always-send" type="hidden" name="lineNumber" value="${planningLine.lineNumber}"/>
-
-  				<g:each in="${planningType.sections}" var="section">
-  					<h4 class='section-title'> <span class='question-default'> 1 </span><g:i18n field="${planningType.headers[section]}"/></h4>
-
-  					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
-						value: planningLine.getValue(section),
-						lastValue: null,
-						type: planningType.getType(section), 
-						suffix: planningLine.getPrefix(section),
-						headerSuffix: section,
-						
-						// get rid of those in the templates??
-						element: planningType,
-						validatable: planningLine.validatable,
-						
-						readonly: readonly,
-						enums: planningLine.enums
-					]"/>
-					
-					<div>
-						<g:i18n field="${planningType.sectionDescriptions[section]}"/>
-					</div>
-  				</g:each>
-  				
-  			</g:form>
->>>>>>> importer
 			</div>
 		</div>
 		
@@ -124,7 +92,6 @@
 			
 				new DataEntry({
 					element: $('#planning'),
-<<<<<<< HEAD
 					callback: function(dataEntry, data, element) {
 						$.each(data.sections, function(index, value) {
 							if (value.complete == true) $(escape('#section-'+value.section)).removeClass('incomplete')
@@ -138,14 +105,6 @@
 					messages: messages,
 					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
 				});
-				
-=======
-					callback: function() {},
-					url: "${createLink(controller:'editPlanning', action:'saveValue', params: [location: location.id, planningType: planningType.id, period: period.id])}", 
-					messages: messages,
-					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
-				});
->>>>>>> importer
 			});
 		</r:script>
 	</body>

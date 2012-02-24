@@ -37,13 +37,13 @@ constraints ={
 	planningType (nullable: false)
 	section (nullable: false, blank: false, validator: { val, obj ->
 		if (obj.planningType != null) {
-			return obj.planningType.dataElement.getValuePrefixes('').contains(val)
+			return obj.planningType.sections.contains(val)
 		}
 	})
 	groupSection (validator: { val, obj ->
 		if (val != null && obj.planningType != null) {
-			return obj.planningType.dataElement.getValuePrefixes('').contains(val)
+			return obj.planningType.sections.contains(val)
 		}
 	})
-	discriminatorValue (nullable: false, blank: false)
+	discriminatorValueString (nullable: false, blank: false)
 }

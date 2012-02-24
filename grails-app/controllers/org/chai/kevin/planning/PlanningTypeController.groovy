@@ -62,11 +62,15 @@ class PlanningTypeController extends AbstractEntityController {
 		if (entity.dataElement != null) sections.addAll entity.sections
 		def headerPrefixes = []
 		if (entity.dataElement?.headerPrefixes != null) headerPrefixes.addAll entity.dataElement.headerPrefixes
+		
+		def valuePrefixes = []
+		if (entity.dataElement != null) valuePrefixes.addAll entity.dataElement.getValuePrefixes("")
 		[
 			sections: sections,
 			headerPrefixes: headerPrefixes,
 			planningType: entity,
-			dataElements: dataElements
+			dataElements: dataElements,
+			valuePrefixes: valuePrefixes
 		]
 	}
 

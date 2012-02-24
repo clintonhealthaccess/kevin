@@ -302,6 +302,7 @@ class Initializer {
 			def planningElement = new RawDataElement(names:j(["en":"Element Planning"]), descriptions:j([:]), code:"PLANNINGELEMENT",
 				type: Type.TYPE_LIST(Type.TYPE_MAP([
 					"basic": Type.TYPE_MAP([
+						"description": Type.TYPE_STRING(),
 						"activity": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 						"area": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 						"instances": Type.TYPE_NUMBER(),
@@ -1062,6 +1063,7 @@ class Initializer {
 			],
 			headers: [
 				"[_].basic": j(["en":"Basic Information"]),
+				"[_].basic.description": j(["en":"Description"]),
 				"[_].basic.activity": j(["en":"Activity"]),
 				"[_].basic.area": j(["en":"Service area"]),
 				"[_].basic.instances": j(["en":"Number of instances"]),
@@ -1112,6 +1114,7 @@ class Initializer {
 			],
 			dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
 			discriminator: '[_].basic.activity',
+			fixedHeader: '[_].basic.description',
 			planning: planning
 		).save(failOnError: true);
 		planning.planningTypes << planningType
@@ -1125,7 +1128,7 @@ class Initializer {
 		def planningCost1 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.INCOMING,
-			discriminatorValue: 'value1',
+			discriminatorValueString: 'value1',
 			sum: sumCost1,
 			section: '[_].staffing',
 			groupSection: '[_].staffing',
@@ -1140,7 +1143,7 @@ class Initializer {
 		def planningCost2 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.OUTGOING,
-			discriminatorValue: 'value1',
+			discriminatorValueString: 'value1',
 			sum: sumCost2,
 			section: '[_].consumables',
 			names: j(["en":"Patient"])

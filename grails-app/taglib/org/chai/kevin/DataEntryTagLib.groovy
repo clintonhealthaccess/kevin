@@ -23,8 +23,9 @@ class DataEntryTagLib {
 		def type = attrs['type']
 		def value = attrs['value']
 		def enums = attrs['enums']
+		def nullText = attrs['nullText']
 		
-		def result = ''
+		def result = null
 		if (value != null && !value.isNull()) {
 			switch (type.type) {
 				case (ValueType.ENUM):
@@ -44,7 +45,8 @@ class DataEntryTagLib {
 					result = value.stringValue
 			}
 		}
-		out << result
+		if (result == null && nullText != null) out << nullText
+		else out << result
 	}
 	
 	def eachOption = { attrs, body ->

@@ -1,5 +1,7 @@
 package org.chai.kevin.planning;
 
+import java.util.Set;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -17,6 +19,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.Sum;
+import org.chai.kevin.util.Utils;
 
 @Entity(name="PlanningCost")
 @Table(name="dhsst_planning_cost")
@@ -37,7 +40,7 @@ public class PlanningCost {
 
 	private Long id;
 	private PlanningCostType type;
-	private String discriminatorValue;
+	private String discriminatorValueString;
 	private Sum sum;
 	private Translation names = new Translation();
 	
@@ -117,14 +120,23 @@ public class PlanningCost {
 	}
 	
 	@Basic
-	public String getDiscriminatorValue() {
-		return discriminatorValue;
+	public String getDiscriminatorValueString() {
+		return discriminatorValueString;
 	}
 	
-	public void setDiscriminatorValue(String discriminatorValue) {
-		this.discriminatorValue = discriminatorValue;
+	public void setDiscriminatorValueString(String discriminatorValueString) {
+		this.discriminatorValueString = discriminatorValueString;
 	}
 
+	@Transient
+	public Set<String> getDiscriminatorValues() {
+		return Utils.split(discriminatorValueString);
+	}
+	
+	public void setDiscriminatorValues(Set<String> discriminatorValues) {
+		this.discriminatorValueString = Utils.unsplit(discriminatorValues);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
