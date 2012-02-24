@@ -57,16 +57,25 @@ public class JSONUtils {
 		if (jsonString != null) {
 			try {
 				JSONObject jsonObject = JSONObject.fromObject(jsonString);
-				Iterator<String> keyIterator = jsonObject.keys();
-				while (keyIterator.hasNext()) {
-					String type = (String) keyIterator.next();
-					descriptions.put(type, (Object)jsonObject.get(type));
-				}
+				return (Map<String, Object>)getObjectFromJSONObject(jsonObject);
 			} catch (JSONException e) {
 				// log
 			}
 		}
 		return descriptions;
+	}
+	
+	private static Object getObjectFromJSONObject(Object object) {
+		if (object instanceof JSONObject) {
+			Map<String, Object> descriptions = new HashMap<String, Object>();
+			Iterator<String> keyIterator = ((JSONObject)object).keys();
+			while (keyIterator.hasNext()) {
+				String type = (String) keyIterator.next();
+				descriptions.put(type, getObjectFromJSONObject(((JSONObject)object).get(type)));
+			}
+			return descriptions;
+		}
+		else return object;
 	}
 	
 }
