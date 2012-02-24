@@ -29,7 +29,7 @@ public class Planning {
 	private Translation names = new Translation();
 	// TODO add settings form page
 	
-	private Boolean active;
+	private Boolean active = false;
 	
 	@Id
 	@GeneratedValue

@@ -4,17 +4,20 @@ import java.util.List;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.planning.PlanningCost;
+import org.chai.kevin.planning.PlanningList;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 
 public class PlanningTypeBudget {
 
+	private PlanningList planningList;
 	private PlanningType planningType;
 	private List<PlanningEntryBudget> planningEntries; 
 	
-	public PlanningTypeBudget(PlanningType planningType, List<PlanningEntryBudget> planningLines) {
+	public PlanningTypeBudget(PlanningType planningType, PlanningList planningList, List<PlanningEntryBudget> planningLines) {
 		this.planningType = planningType;
 		this.planningEntries = planningLines;
+		this.planningList = planningList;
 	}
 
 	public Double getIncoming() {
@@ -23,6 +26,10 @@ public class PlanningTypeBudget {
 	
 	public PlanningType getpPlanningType() {
 		return planningType;
+	}
+	
+	public PlanningList getPlanningList() {
+		return planningList;
 	}
 
 	private Double getSum(PlanningCostType costType) {

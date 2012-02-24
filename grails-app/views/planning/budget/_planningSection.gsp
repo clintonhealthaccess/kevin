@@ -8,7 +8,7 @@
 		</h6>
 	</div>
 	
-	<g:form url="[controller:'planning', action:'save', params: [location: location.id, planningType: planningType.id]]">
+	<g:form url="[controller:'editPlanning', action:'save', params: [location: location.id, planningType: planningType.id]]">
 		<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
 		<input class="js_always-send" type="hidden" name="planningType" value="${planningType.id}"/>
 		
@@ -27,6 +27,6 @@
 			enums: planningEntry.enums
 		]"/>
 	
-		<a class="next gray medium" href="${createLink(controller:'planning', action:'updateBudget', params:[location: location.id, planningType: planningType.id])}">Update budget</a>
+		<a class="next gray medium" href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location: location.id, planningType: planningType.id])}">Update budget</a>
 	</g:form>
 </div>

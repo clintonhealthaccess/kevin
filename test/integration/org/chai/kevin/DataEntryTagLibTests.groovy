@@ -23,6 +23,7 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 		), '2 1 '
 		
 	}
+	
 	// this does not work because it modifies the metaClass of languageService for all the tests
 //		languageService.metaClass.currentLanguage = { return "fr";}
 //		languageService.metaClass.getCurrentLanguage = { return "fr";}
@@ -64,6 +65,28 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 			]
 		), ''
 		
+	}
+	
+	def testValueWithNullValueAndEmptyString() {
+		assertEquals applyTemplate(
+			'<g:value value="${value}" type="${type}" enums="${enums}" nullText="NULL_TEXT"/>',
+			[
+				'value': null,
+				'type': Type.TYPE_ENUM("code"),
+				'enums': [:]
+			]
+		), 'NULL_TEXT'
+	}
+	
+	def testValueWithValueIsNullAndEmptyString() {
+		assertEquals applyTemplate(
+			'<g:value value="${value}" type="${type}" enums="${enums}" nullText="NULL_TEXT"/>',
+			[
+				'value': Value.NULL_INSTANCE(),
+				'type': Type.TYPE_ENUM("code"),
+				'enums': [:]
+			]
+		), 'NULL_TEXT'
 	}
 	
 	def testValueWithEmptyEnum() {

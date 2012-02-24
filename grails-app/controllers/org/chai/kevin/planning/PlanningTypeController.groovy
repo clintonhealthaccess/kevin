@@ -25,79 +25,84 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey
+package org.chai.kevin.planning
 
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.LanguageService;
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.PeriodSorter
 import org.chai.kevin.Translation;
-import org.chai.kevin.util.Utils
-import org.chai.kevin.data.DataService;
-import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataEntityType;
-import org.apache.commons.lang.math.NumberUtils;
-
+import org.hisp.dhis.period.Period
 /**
  * @author Jean Kahigiso M.
  *
  */
-class SimpleQuestionController extends AbstractEntityController {
-
+class PlanningTypeController extends AbstractEntityController {
+	
 	def languageService
-	def locationService
-	def surveyService
 	
 	def getEntity(def id) {
-		return SurveySimpleQuestion.get(id)
+		return PlanningType.get(id)
 	}
-	
+
 	def createEntity() {
-		return new SurveySimpleQuestion();
+		return new PlanningType()
 	}
 
 	def getLabel() {
-		return 'survey.simplequestion.label';
+		return 'planningType.label'
 	}
 	
 	def getTemplate() {
-		return "/survey/admin/createSimpleQuestion"
+		return "/planning/admin/createPlanningType"
 	}
 
 	def getModel(def entity) {
+		def dataElements = []
+		if (entity.dataElement != null) dataElements << entity.dataElement
+		def sections = []
+		if (entity.dataElement != null) sections.addAll entity.sections
+		def headerPrefixes = []
+		if (entity.dataElement?.headerPrefixes != null) headerPrefixes.addAll entity.dataElement.headerPrefixes
+		
+		def valuePrefixes = []
+		if (entity.dataElement != null) valuePrefixes.addAll entity.dataElement.getValuePrefixes("")
 		[
-			question: entity,
-			types: DataEntityType.list(),
-			sections: (entity.section)!=null?entity.survey.sections:null,
-			headerPrefixes: entity.surveyElement!=null?entity.surveyElement.dataElement.headerPrefixes:null
+			sections: sections,
+			headerPrefixes: headerPrefixes,
+			planningType: entity,
+			dataElements: dataElements,
+			valuePrefixes: valuePrefixes
 		]
 	}
 
 	def bindParams(def entity) {
 		entity.properties = params
+
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
+		if (params.namesPlural!=null) entity.namesPlural = params.namesPlural
 		
 		// headers
-		bindTranslationMap('headerList', entity.surveyElement.headers)
-		
-		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity
+		bindTranslationMap('headerList', entity.headers)
+		// section description
+		bindTranslationMap('sectionList', entity.sectionDescriptions)
 	}
 	
-	def getDescription = {
-		def question = SurveySimpleQuestion.get(params.int('question'))
+	def list = {
+		adaptParamsForList()
 		
-		if (question == null) {
-			render(contentType:"text/json") {
-				result = 'error'
-			}
-		}
+		Planning planning = Planning.get(params.int('planning.id'))
+		if (planning == null) response.sendError(404)
 		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/survey/admin/questionDescription', model: [question: question])
-			}
+			List<PlanningType> planningTypes = planning.planningTypes
+	
+			render (view: '/planning/admin/list', model:[
+				template:"planningTypeList",
+				entities: planningTypes,
+				entityCount: planningTypes.size(),
+				code: getLabel()
+			])
 		}
 	}
-
+	
 }

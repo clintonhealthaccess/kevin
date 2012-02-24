@@ -110,4 +110,26 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		planningEntry.validatable.value.jsonValue.contains("budget_updated")
 		
 	}
+	
+	def "get fixed header value"() {
+		setup:
+		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]);
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
+		
+		when:
+		def planningType = Mock(PlanningType)
+		planningType.getFixedHeader() >> '[_].key1'
+		def planningEntry = new PlanningEntry(planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.fixedHeaderValue.equals(Value.VALUE_STRING("value"))
+		
+		when:
+		planningType = Mock(PlanningType)
+		planningType.getFixedHeader() >> '[_].key2'
+		planningEntry = new PlanningEntry(planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.fixedHeaderValue.equals(null)
+	}
 }

@@ -27,72 +27,22 @@
  */
 package org.chai.kevin.planning
 
-import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.PeriodSorter
-import org.hisp.dhis.period.Period
+import org.chai.kevin.data.Type.ValueType;
+
 /**
  * @author Jean Kahigiso M.
  *
  */
-class PlanningController extends AbstractEntityController {
-	
-	def getEntity(def id) {
-		return Planning.get(id)
-	}
-
-	def createEntity() {
-		return new Planning()
-	}
-
-	def getLabel() {
-		return 'planning.label'
-	}
-	
-	def getTemplate() {
-		return "/planning/admin/createPlanning"
-	}
-
-	def saveEntity(def entity) {
-		if (entity.active) {
-			// we reset all other planning
-			Planning.list().each {
-				if (!it.equals(entity)) {
-					it.active = false
-					it.save()
-				}
-			}
-		}
-		super.saveEntity(entity)
-	}
-	
-	def getModel(def entity) {
-		List<Period> periods = Period.list()
-		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
-		[
-			planning: entity,
-			periods: periods
-		]
-	}
-
-	def bindParams(def entity) {
-		entity.properties = params
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-	}
-
-	def list = {
-		adaptParamsForList()
-		
-		List<Planning> plannings = Planning.list(params);
-
-		render (view: '/planning/admin/list', model:[
-			template:"planningList",
-			entities: plannings,
-			entityCount: Planning.count(),
-			code: getLabel()
-		])
-	}
-	
+constraints = {
+	planning (nullable:false)
+	dataElement (nullable:false)
+	fixedHeader (nullable: false, blank: false, validator: {val, obj ->
+		if (obj.dataElement == null) return false
+		if (!obj.dataElement.getValuePrefixes('').contains(val)) return false
+	})
+	discriminator (nullable: false, blank: false, validator: {val, obj ->
+		if (obj.dataElement == null) return false 
+		if (!obj.dataElement.getValuePrefixes('').contains(val)) return false
+		if (obj.dataElement.type.getType(val).type != ValueType.ENUM) return false
+	})
 }
