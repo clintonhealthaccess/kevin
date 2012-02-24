@@ -4,7 +4,7 @@
 	<td>
 		<span style="margin-left: ${margin};">
 			<a class="js_budget-section-link" 
-				href="${createLink(controller:'planning', action:'editPlanningSection', params:[location:location.id, planningType:planningType.id, lineNumber: budgetCost.planningEntry.lineNumber, section: budgetCost.planningCost.section])}">
+				href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningType.id, lineNumber: budgetCost.planningEntry.lineNumber, section: budgetCost.planningCost.section])}">
 				<g:i18n field="${budgetCost.planningCost.names}"/>
 			</a>
 		</span>

@@ -19,7 +19,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2), 
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
-		def planningType = newPlanningType(dataElement, "[_].key0", planning)
+		def planningType = newPlanningType(dataElement, "[_].key0", "[_].key1", planning)
 		def planningList = null
 		
 		when:
@@ -50,7 +50,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
-		def planningType = newPlanningType(dataElement, "[_].key0", planning)
+		def planningType = newPlanningType(dataElement, "[_].key0", "[_].key1", planning)
 		def planningTypeBudget = null
 		
 		when:
@@ -69,7 +69,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		
 		when:
 		def sum = newSum('($'+dataElement.id+' -> filter $.key0 == "value")[0].key1 * 2', CODE(3))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, sum, "", "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, sum, "[_].key1", "value", planningType)
 		refreshCalculation()
 		planningTypeBudget = planningService.getPlanningTypeBudget(planningType, DataLocationEntity.findByCode(BUTARO))
 		
@@ -89,7 +89,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
-		def planningType = newPlanningType(dataElement, "[_].key0", planning)
+		def planningType = newPlanningType(dataElement, "[_].key0", "[_].key1", planning)
 		def elementValue = null
 		
 		when:
@@ -123,7 +123,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
-		def planningType = newPlanningType(dataElement, "[_].key0", planning)
+		def planningType = newPlanningType(dataElement, "[_].key0", "[_].key1", planning)
 		
 		when:
 		planningService.refreshBudget(planningType, DataLocationEntity.findByCode(BUTARO))
@@ -141,7 +141,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
-		def planningType = newPlanningType(dataElement, "[_].key0", planning)
+		def planningType = newPlanningType(dataElement, "[_].key0", "[_].key1", planning)
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO), 
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])	
 		)

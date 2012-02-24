@@ -5,14 +5,18 @@
 	<g:if test="${multiple}"><input type="hidden" name="${name}" value=""/></g:if>
 	<label for="${name}">${label}</label>
 	<select id="options-${random}" name="${name}" ${multiple?'multiple':''} style="min-width:300px">
-		<g:if test="${!multiple}"><option value="">-- Please select from the list --</option></g:if>
+		<g:if test="${!multiple}"><option value="null">-- Please select from the list --</option></g:if>
 		<g:each in="${from}" var="item" status="i">
-			<option value="${item[optionKey]}" ${(multiple?value?.contains(item[optionKey]):item[optionKey].equals(value))?'selected':''}>
+			<g:set value="${optionKey!=null?item[optionKey]:item}" var="option"/>
+			<option value="${option}" ${(multiple?value?.contains(option):option.equals(value))?'selected':''}>
 				<g:if test="${values!=null}">
 					${values[i]}
 				</g:if>
-				<g:else>
+				<g:elseif test="${optionValue!=null}">
 					${item[optionValue]}
+				</g:elseif>
+				<g:else>
+					${item}
 				</g:else>
 			</option>
 		</g:each>

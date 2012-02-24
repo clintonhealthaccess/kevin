@@ -38,7 +38,7 @@
 										<td>
 											<ul class="horizontal">
 												<li>
-													<a href="${createLink(controller:'planning', action:'overview', params:[location: dataEntity.id, planning: currentPlanning.id])}">
+													<a href="${createLink(controller:'editPlanning', action:'overview', params:[location: dataEntity.id, planning: currentPlanning.id])}">
 														To planning tool
 													</>
 												</li>
