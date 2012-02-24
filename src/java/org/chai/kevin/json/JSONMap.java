@@ -164,6 +164,31 @@ public class JSONMap<T> implements Map<String, T>, Serializable {
 	public String toString() {
 		return "JSONMap [jsonText=" + jsonText + "]";
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((embeddedMap == null) ? 0 : embeddedMap.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Map))
+			return false;
+		Map other = (Map) obj;
+		if (embeddedMap == null) {
+			if (other != null)
+				return false;
+		} else if (!embeddedMap.equals(other))
+			return false;
+		return true;
+	}
 	
 }

@@ -1,12 +1,14 @@
 package org.chai.kevin.value;
-import java.util.Collection;
+
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.persistence.Transient;
+
 import net.sf.json.JSONNull;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

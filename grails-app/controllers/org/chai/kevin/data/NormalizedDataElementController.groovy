@@ -92,13 +92,16 @@ class NormalizedDataElementController extends AbstractEntityController {
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		
-		// TODO bind expressions
+		// bind expression map
 		entity.expressionMap = [:]
 		Period.list().each { period ->
-			entity.expressionMap[period.id+''] = [:]
+			def periodMap = [:]
 			DataEntityType.list().each { group ->
-				entity.expressionMap[period.id+''][group.code] = params['expressionMap['+period.id+']['+group.code+']']
+				def expression = params['expressionMap['+period.id+']['+group.code+']']
+				periodMap[group.code] = expression==null?'':expression
 			}
+			// we bind the expression map last so everything is refreshed
+			entity.expressionMap[period.id+''] = periodMap
 		}
 		
 		log.debug(entity.expressionMap)
