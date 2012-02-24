@@ -202,17 +202,17 @@ class EditPlanningController extends AbstractController {
 		render (view: '/planning/budget/budget', model: [
 			planning: planning,
 			location: location,
-			updatedBudget: isBudgetUpdated(planning, location),
+//			updatedBudget: isBudgetUpdated(planning, location),
 			planningTypeBudgets: planningTypeBudgets
 		])
 	}
 	
-	def isBudgetUpdated(def planning, def location) {
-		for (def planningType : planning.planningTypes) {
-			if (!planningService.getPlanningList(planningType, location).isBudgetUpdated()) return false
-		}
-		return true
-	}
+//	def isBudgetUpdated(def planning, def location) {
+//		for (def planningType : planning.planningTypes) {
+//			if (!planningService.getPlanningList(planningType, location).isBudgetUpdated()) return false
+//		}
+//		return true
+//	}
 		
 	def planningList = {
 		def planningType = PlanningType.get(params.int('planningType'))

@@ -30,118 +30,124 @@
 								Operational Undertakings: <g:i18n field="${location.names}"/>
 							</h4>
 							<div class="budget">
-							 	<p id="js_budget-warning" class="context-message warning ${updatedBudget?'hidden':''}">
-							  		Some activities were changed. Please <a href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location:location.id, planning:planning.id])}">update your budget</a>.
-							  	</p>
-								<div class="table-wrap left clear">
-	              
-									<table class="nested budget push-top-10">
-										<thead>
-											<tr>
-												<th></th>
-												<th>Outgoing</th>
-												<th>Incoming</th>
-												<th>Difference</th>
-												<th>General Fund</th>
-												<th class="status"></th>
-											</tr>
-										</thead>
-										<tbody>
-											<!-- 
-												Each PLANNING TYPE, this should not be displayed
-											    if there is no entries in the corresponding planning type 
-											-->
-											<g:each in="${planningTypeBudgets}" var="planningTypeBudget">
-												<g:set var="planningType" value="${planningTypeBudget.planningType}"/>
-												<tr class="tree_sign_minus standout">
-													<td>
-														<span>
-															<g:i18n field="${planningTypeBudget.planningType.namesPlural}"/>
-														</span>
-													</td>
-													<td>(${planningTypeBudget.outgoing})</td>
-													<td>${planningTypeBudget.incoming}</td>
-													<td>${planningTypeBudget.difference}</td>
-													<td><input type="checkbox"></td>
+								<p id="js_budget-warning" class="context-message warning ${planningTypeBudgets.find {!it.planningList.budgetUpdated}?'':'hidden'}">
+									Some activities were changed. Please <a href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location:location.id, planning:planning.id])}">update your budget</a>.
+								</p>
+								<g:if test="${!planningTypeBudgets.find {!it.budgetPlanningEntries.empty}}">
+									<p class="context-message warning">
+										Please <a href="${createLink(controller:'editPlanning', action:'overview', params:[location:location.id, planning:planning.id])}">enter an activity</a> and come back to the budget page.
+									</p>
+								</g:if>
+								<g:else>
+									<div class="table-wrap left clear">
+										<table class="nested budget push-top-10">
+											<thead>
+												<tr>
+													<th></th>
+													<th>Outgoing</th>
+													<th>Incoming</th>
+													<th>Difference</th>
+													<th>General Fund</th>
+													<th class="status"></th>
+												</tr>
+											</thead>
+											<tbody>
+												<!-- 
+													Each PLANNING TYPE, this should not be displayed
+												    if there is no entries in the corresponding planning type 
+												-->
+												<g:each in="${planningTypeBudgets}" var="planningTypeBudget">
+													<g:set var="planningType" value="${planningTypeBudget.planningType}"/>
+													<tr class="tree_sign_minus standout">
+														<td>
+															<span>
+																<g:i18n field="${planningTypeBudget.planningType.namesPlural}"/>
+															</span>
+														</td>
+														<td>(${planningTypeBudget.outgoing})</td>
+														<td>${planningTypeBudget.incoming}</td>
+														<td>${planningTypeBudget.difference}</td>
+														<td><input type="checkbox"></td>
+														<td class="status"></td>
+													</tr>
+													<tr style="display: table-row" class="sub_tree">
+														<td colspan="7" class="bucket">
+													    <table>
+																<tbody>
+																	
+																	<!-- 
+																		Each INDIVIDUAL UNDERTAKINGS, this is always
+																		displayed because we assume there's costing for each undertaking,
+																		either OUTGOING or INCOMING or both
+																	-->
+																	<g:each in="${planningTypeBudget.budgetPlanningEntries}" var="budgetPlanningEntry">
+																		<g:set var="planningEntry" value="${budgetPlanningEntry.planningEntry}"/>
+																		<tr id="planning-${planningType.id}-${planningEntry.lineNumber}" class="tree_sign_minus active-row">
+																			<td>
+																				<span style="margin-left: 20px;">
+																					<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.planningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
+																						<g:value value="${planningEntry.fixedHeaderValue}" type="${planningEntry.type.fixedHeaderType}" nullText="none entered"/>
+																					</a>
+																				</span>
+																			</td>
+																			<td>(${budgetPlanningEntry.outgoing})</td>
+																			<td>${budgetPlanningEntry.incoming}</td>
+																			<td>${budgetPlanningEntry.difference}</td>
+																			<td><input type="checkbox"></td>
+																			<td class="status 
+																				${!planningEntry.invalidSections.empty?'invalid':''} 
+																				${!planningEntry.incompleteSections.empty?'incomplete':''}
+																				${(!planningEntry.incompleteSections.empty || !planningEntry.incompleteSections.empty)?'tooltip':''}
+																				" title="Help message"></td>
+																		</tr>
+																		<tr style="display: table-row" class="sub_tree">
+																			<td colspan="7" class="bucket">
+																				<table>
+																					<tbody>
+																						<!--
+																							OUTGOING costing formulas, only displayed if not empty
+																						-->
+																						<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.OUTGOING]"/>
+																						<!--
+																							INCOMING costing formulas, only displayed if not empty
+																						-->
+																						<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.INCOMING]"/>
+																					</tbody>
+																				</table>
+																			</td>
+																		</tr>
+																	</g:each>
+																</tbody>
+															</table>
+														</td>
+													</tr>
+												</g:each>
+												<tr class="total">
+													<td>Total:</td>
+													<td>${outgoing}</td>
+													<td>${incoming}</td>
+													<td>${difference}</td>
+													<td></td>
 													<td class="status"></td>
 												</tr>
-												<tr style="display: table-row" class="sub_tree">
-													<td colspan="7" class="bucket">
-												    <table>
-															<tbody>
-																
-																<!-- 
-																	Each INDIVIDUAL UNDERTAKINGS, this is always
-																	displayed because we assume there's costing for each undertaking,
-																	either OUTGOING or INCOMING or both
-																-->
-																<g:each in="${planningTypeBudget.budgetPlanningEntries}" var="budgetPlanningEntry">
-																	<g:set var="planningEntry" value="${budgetPlanningEntry.planningEntry}"/>
-																	<tr id="planning-${planningType.id}-${planningEntry.lineNumber}" class="tree_sign_minus active-row">
-																		<td>
-																			<span style="margin-left: 20px;">
-																				<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.planningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
-																					<g:value value="${planningEntry.fixedHeaderValue}" type="${planningEntry.type.fixedHeaderType}" nullText="none entered"/>
-																				</a>
-																			</span>
-																		</td>
-																		<td>(${budgetPlanningEntry.outgoing})</td>
-																		<td>${budgetPlanningEntry.incoming}</td>
-																		<td>${budgetPlanningEntry.difference}</td>
-																		<td><input type="checkbox"></td>
-																		<td class="status 
-																			${!planningEntry.invalidSections.empty?'invalid':''} 
-																			${!planningEntry.incompleteSections.empty?'incomplete':''}
-																			${(!planningEntry.incompleteSections.empty || !planningEntry.incompleteSections.empty)?'tooltip':''}
-																			" title="Help message"></td>
-																	</tr>
-																	<tr style="display: table-row" class="sub_tree">
-																		<td colspan="7" class="bucket">
-																			<table>
-																				<tbody>
-																					<!--
-																						OUTGOING costing formulas, only displayed if not empty
-																					-->
-																					<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.OUTGOING]"/>
-																					<!--
-																						INCOMING costing formulas, only displayed if not empty
-																					-->
-																					<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.INCOMING]"/>
-																				</tbody>
-																			</table>
-																		</td>
-																	</tr>
-																</g:each>
-															</tbody>
-														</table>
-													</td>
-												</tr>
-											</g:each>
-											<tr class="total">
-												<td>Total:</td>
-												<td>${outgoing}</td>
-												<td>${incoming}</td>
-												<td>${difference}</td>
-												<td></td>
-												<td class="status"></td>
-											</tr>
-										</tbody>
-									</table>
-									<br />
-									<input type="submit" value="Submit">
-								</div>
-								
-								<div class="right table-aside">
-									<p class="diff positive">TODO Budget difference: 70 Million RWD</p>
-									<div class="diff context-message hidden" id="js_budget-section-edit">
-										<div class="js_content">
-										
-										</div>
-										<span class="hidden js_warning-message">
-											Could not load panel
-										</span>
+											</tbody>
+										</table>
+										<br />
+										<input type="submit" value="Submit">
 									</div>
-								</div>
+								
+									<div class="right table-aside">
+										<p class="context-message success">TODO Budget difference: 70 Million RWD</p>
+										<div class="diff context-message hidden" id="js_budget-section-edit">
+											<div class="js_content">
+											
+											</div>
+											<span class="hidden js_warning-message">
+												Could not load panel
+											</span>
+										</div>
+									</div>
+								</g:else>
 							</div>
 						</div>
 					</div>

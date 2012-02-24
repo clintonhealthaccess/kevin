@@ -176,7 +176,7 @@ public class PlanningService {
 			}
 		}
 		
-		return new PlanningTypeBudget(type, planningEntryBudgets);
+		return new PlanningTypeBudget(type, planningList, planningEntryBudgets);
 	}
 	
 	public void setDataService(DataService dataService) {

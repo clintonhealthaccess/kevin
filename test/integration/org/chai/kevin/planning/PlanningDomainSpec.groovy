@@ -1,5 +1,6 @@
 package org.chai.kevin.planning
 
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 
@@ -54,6 +55,38 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		
 		then:
 		thrown ValidationException
+	}
+	
+	def "data element has to be LIST-MAP in planning type"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period)
+		
+		when:
+		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', dataElement: 
+			newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', dataElement:
+			newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()))
+		).save(failOnError: true)
+		
+		then:
+		thrown ValidationException
+		
+		when:
+		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', dataElement:
+			newRawDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))
+		).save(failOnError: true)
+		
+		then:
+		PlanningType.count() == 1
+		
+		
 	}
 	
 	def "discriminator must be a prefix of type"() {

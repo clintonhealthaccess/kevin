@@ -20,10 +20,7 @@
 		<div class="wrapper">
 		    <h1 id="logo"><a href="${createLink(controller:'home', action:'index')}">DHSST</a></h1>
 		    
-			<g:if test="${flash.message}">
-				<!-- TODO add error class if it's an error -->
-				<div class="message">${flash.message}</div>
-        	</g:if>
+			
 		    
 			<ul class="locales" id="switcher">
 				<% def languageService = grailsApplication.mainContext.getBean('languageService') %>
@@ -115,8 +112,13 @@
 	  			</shiro:hasPermission>
 	  		</ul>
 	  	</div>
-	</div>			
+	</div>
+		
 	<div id="content">
+	  <g:if test="${flash.message}">
+  		<!-- TODO add error class if it's an error -->
+  		<div class="message">${flash.message} <a href="#" class="delete-link">Turn off</a></div>
+    </g:if>
 	  <div class="wrapper">
 			<g:layoutBody />
 			<div class=clear></div>

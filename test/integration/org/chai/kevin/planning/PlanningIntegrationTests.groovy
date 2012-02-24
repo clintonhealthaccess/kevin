@@ -25,12 +25,12 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return planningType
 	}
 	
-	def newPlanningCost(def type, def sum, def section, def discriminatorValue, def planningType) {
+	def newPlanningCost(def type, def sum, def section, def discriminatorValueString, def planningType) {
 		def planningCost = new PlanningCost(
 			type: type,
 			sum: sum,
 			section: section,
-			discriminatorValue: discriminatorValue,
+			discriminatorValueString: discriminatorValueString,
 			planningType: planningType
 		).save(failOnError: true)
 		

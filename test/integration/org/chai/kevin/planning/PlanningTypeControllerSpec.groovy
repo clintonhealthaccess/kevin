@@ -10,7 +10,7 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period)
-		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()]))), "[_].key", planning)
+		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")]))), "[_].key", "[_].key", planning)
 		planningTypeController = new PlanningTypeController()
 		
 		when:
@@ -36,13 +36,14 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period)
-		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()])))
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))
 		planningTypeController = new PlanningTypeController()
 		
 		when:
 		planningTypeController.params['planning.id'] = planning.id
 		planningTypeController.params['dataElement.id'] = dataElement.id
 		planningTypeController.params['discriminator'] = '[_].key'
+		planningTypeController.params['fixedHeader'] = '[_].key'
 		planningTypeController.params['namesPlural'] = ['en': 'Activities']
 		planningTypeController.params['namesPlural'] = ['en': 'Activities']	
 		planningTypeController.params['headerList'] = ['[_].key']

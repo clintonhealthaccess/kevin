@@ -61,12 +61,12 @@ class PlanningCostController extends AbstractEntityController {
 		if (entity.sum != null) sums << entity.sum
 		
 		def sections = entity.planningType.sections
-		def discriminatorValues = Enum.findByCode(entity.planningType.discriminatorType.enumCode).activeEnumOptions*.value
+		def enume = Enum.findByCode(entity.planningType.discriminatorType.enumCode)
 		[
 			planningCost: entity,
 			sums: sums,
 			sections: sections,
-			discriminatorValues: discriminatorValues
+			enume: enume
 		]
 	}
 

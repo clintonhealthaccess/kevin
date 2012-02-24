@@ -11,7 +11,7 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period)
-		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()]))), "[_].key", planning)
+		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")]))), "[_].key", "[_].key", planning)
 		def sum = newSum("1", CODE(2))
 		def planningCost = newPlanningCost(PlanningCostType.INCOMING, sum, "[_].key", "value", planningType)
 		planningCostController = new PlanningCostController()
@@ -39,14 +39,14 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period)
-		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()]))), "[_].key", planning)
+		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")]))), "[_].key", "[_].key", planning)
 		def sum = newSum("1", CODE(2))
 		planningCostController = new PlanningCostController()
 		
 		when:
 		planningCostController.params['planningType.id'] = planningType.id
 		planningCostController.params['sum.id'] = sum.id
-		planningCostController.params['discriminatorValue'] = 'value'
+		planningCostController.params['discriminatorValues'] = 'value'
 		planningCostController.params['type'] = 'INCOMING'
 		planningCostController.params['section'] = '[_].key'
 		planningCostController.saveWithoutTokenCheck()
@@ -54,7 +54,7 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 		then:
 		PlanningCost.count() == 1
 		PlanningCost.list()[0].planningType.equals(planningType)
-		PlanningCost.list()[0].discriminatorValue.equals("value")
+		PlanningCost.list()[0].discriminatorValueString.equals("value")
 		PlanningCost.list()[0].sum.equals(sum)
 	}
 	

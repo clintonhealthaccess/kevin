@@ -13,8 +13,14 @@
 	
 		<g:i18nInput name="names" bean="${planningCost}" value="${planningCost.names}" label="Name" field="names"/>
 
-		<g:selectFromList name="discriminatorValues" label="Discriminator Value" bean="${planningCost}" field="discriminatorValueString" multiple="true"
-			from="${discriminatorValues}" value="${planningCost.discriminatorValues}"/>
+		<g:if test="${enume != null}">
+			<g:selectFromList name="discriminatorValues" label="Discriminator Value" bean="${planningCost}" field="discriminatorValueString" multiple="true"
+				from="${enume.activeEnumOptions*.value}" value="${planningCost.discriminatorValues}"/>
+		</g:if>
+		<g:else>
+			<g:input name="discriminatorValues" label="Discriminator Value - comma-separated" field="discriminatorValueString" 
+				value="${planningCost.discriminatorValueString}" bean="${planningCost}"/> 
+		</g:else>
 		
 		<g:selectFromList name="sum.id" label="Sum" bean="${planningCost}" field="sum" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Sum'])}"
