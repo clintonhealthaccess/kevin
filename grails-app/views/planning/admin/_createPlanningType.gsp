@@ -14,6 +14,9 @@
 
 		<g:selectFromList name="discriminator" label="Discriminator" bean="${planningType}" field="discriminator" multiple="false"
 			from="${valuePrefixes}" value="${planningType.discriminator}"/>
+
+		<g:selectFromList name="fixedHeader" label="Fixed Header" bean="${planningType}" field="fixedHeader" multiple="false"
+			from="${valuePrefixes}" value="${planningType.fixedHeader}"/>
 		
 		<g:selectFromList name="dataElement.id" label="Data element" bean="${planningType}" field="dataElement" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"
