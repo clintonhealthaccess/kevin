@@ -152,7 +152,6 @@ class RawDataElementController extends AbstractEntityController {
 
 	def list = {
 		adaptParamsForList()
-		
 		List<RawDataElement> rawDataElements = RawDataElement.list(params);
 		
 		render (view: '/entity/list', model:[

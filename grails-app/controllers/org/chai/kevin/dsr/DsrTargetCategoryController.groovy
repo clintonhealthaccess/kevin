@@ -92,7 +92,6 @@ class DsrTargetCategoryController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		
 		List<DsrTargetCategory> categories = DsrTargetCategory.list(params);
 		
 		render (view: '/entity/list', model:[

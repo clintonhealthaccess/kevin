@@ -51,4 +51,15 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		
 	}
 	
+	def "list skip rule when no survey 404"() {
+		setup:
+		surveySkipRuleController = new SurveySkipRuleController()
+		
+		when:
+		surveySkipRuleController.list()
+		
+		then:
+		surveySkipRuleController.modelAndView == null
+	}
+	
 }

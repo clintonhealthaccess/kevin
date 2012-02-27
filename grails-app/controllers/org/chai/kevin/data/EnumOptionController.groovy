@@ -87,20 +87,24 @@ class EnumOptionController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList();
-		
 		Enum enume = Enum.get(params.int('enume.id'));
 		
-		List<EnumOption> options = enume.enumOptions;
-		Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
-		
-		def max = Math.min(params['offset']+params['max'], options.size())
-		
-		render (view: '/entity/list', model:[
-			entities: options.subList(params['offset'], max),
-			template: "data/enumOptionList",
-			entityCount: options.size(),
-			code: getLabel(),
-		])
+		if (enume == null) {
+			response.sendError(404)
+		}
+		else {
+			List<EnumOption> options = enume.enumOptions;
+			Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
+			
+			def max = Math.min(params['offset']+params['max'], options.size())
+			
+			render (view: '/entity/list', model:[
+				entities: options.subList(params['offset'], max),
+				template: "data/enumOptionList",
+				entityCount: options.size(),
+				code: getLabel(),
+			])
+		}
 	}
 		
 }

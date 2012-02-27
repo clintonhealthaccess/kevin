@@ -75,19 +75,24 @@ class SectionController extends AbstractEntityController {
 		adaptParamsForList()
 		
 		SurveyObjective objective = SurveyObjective.get(params.int('objective.id'))
-		List<SurveySection> sections = objective.sections;
-		Collections.sort(sections)
-
-		def max = Math.min(params['offset']+params['max'], sections.size())
-		
-		render (view: '/survey/admin/list', model:[
-			template:"sectionList",
-			survey: objective.survey,
-			objective: objective,
-			entities: sections.subList(params['offset'], max),
-			entityCount: sections.size(),
-			code: getLabel()
-		])
+		if (objective == null) {
+			response.sendError(404)
+		}
+		else {
+			List<SurveySection> sections = objective.sections;
+			Collections.sort(sections)
+	
+			def max = Math.min(params['offset']+params['max'], sections.size())
+			
+			render (view: '/survey/admin/list', model:[
+				template:"sectionList",
+				survey: objective.survey,
+				objective: objective,
+				entities: sections.subList(params['offset'], max),
+				entityCount: sections.size(),
+				code: getLabel()
+			])
+		}
 	}
 
 }

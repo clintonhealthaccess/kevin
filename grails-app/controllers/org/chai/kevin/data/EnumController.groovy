@@ -68,7 +68,6 @@ class EnumController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		
 		List<Enum> enums = Enum.list(params);
 		
 		render (view: '/entity/list', model:[
