@@ -75,17 +75,22 @@ class ObjectiveController extends AbstractEntityController {
 		adaptParamsForList()
 
 		Survey survey = Survey.get(params.int('survey.id'));
-		List<SurveyObjective> objectives = survey.objectives;
-		Collections.sort(objectives)
-		
-		def max = Math.min(params['offset']+params['max'], objectives.size())
-		
-		render (view: '/survey/admin/list', model:[
-			template:"objectiveList",
-			survey:survey,
-			entities: objectives.subList(params['offset'], max),
-			entityCount: objectives.size(),
-			code: getLabel()
-		])
+		if (survey == null) {
+			response.sendError(404)
+		}
+		else {
+			List<SurveyObjective> objectives = survey.objectives;
+			Collections.sort(objectives)
+			
+			def max = Math.min(params['offset']+params['max'], objectives.size())
+			
+			render (view: '/survey/admin/list', model:[
+				template:"objectiveList",
+				survey:survey,
+				entities: objectives.subList(params['offset'], max),
+				entityCount: objectives.size(),
+				code: getLabel()
+			])
+		}
 	}
 }

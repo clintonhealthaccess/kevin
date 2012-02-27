@@ -45,7 +45,6 @@ class CalculationController extends AbstractController {
 	
 	def list = {
 		adaptParamsForList()
-
 		List<Calculation<?>> calculations = dataService.list(Calculation.class, params)
 		
 		render (view: '/entity/list', model:[

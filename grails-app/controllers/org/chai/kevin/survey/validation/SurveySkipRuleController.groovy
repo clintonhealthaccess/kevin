@@ -97,17 +97,22 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		adaptParamsForList()
 		
 		Survey survey = Survey.get(params.int('survey.id'))
-		List<SurveySkipRule> skipRules = new ArrayList(survey.skipRules);
-		skipRules.sort {it.id}
-		
-		def max = Math.min(params['offset']+params['max'], skipRules.size())
-		
-		render(view: '/survey/admin/list', model:[
-			template: "skipRuleList",
-			entities: skipRules.subList(params['offset'], max),
-			entityCount: skipRules.size(),
-			code: getLabel()
-		])
+		if (survey == null) {
+			response.sendError(404)
+		}
+		else {
+			List<SurveySkipRule> skipRules = new ArrayList(survey.skipRules);
+			skipRules.sort {it.id}
+			
+			def max = Math.min(params['offset']+params['max'], skipRules.size())
+			
+			render(view: '/survey/admin/list', model:[
+				template: "skipRuleList",
+				entities: skipRules.subList(params['offset'], max),
+				entityCount: skipRules.size(),
+				code: getLabel()
+			])
+		}
 	}
 
 }
