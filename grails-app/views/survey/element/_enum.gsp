@@ -1,5 +1,5 @@
 <g:if test="${type.enumCode != null}">
-	<g:set var="enume" value="${enums[type.enumCode]}"/>
+	<g:set var="enume" value="${enums?.get(type.enumCode)}"/>
 </g:if>
 
 <!-- Enum type question -->

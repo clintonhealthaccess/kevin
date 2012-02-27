@@ -95,7 +95,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController.view()
 		
 		then:
-		editSurveyController.response.redirectedUrl == '/summary/summaryPage'
+		editSurveyController.response.redirectedUrl == '/surveySummary/summaryPage'
 	}
 	
 	def "export survey works"() {

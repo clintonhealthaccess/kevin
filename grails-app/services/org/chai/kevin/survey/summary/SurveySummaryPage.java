@@ -1,4 +1,4 @@
-package org.chai.kevin.survey;
+package org.chai.kevin.survey.summary;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,9 +8,11 @@ import java.util.Map;
 
 import org.chai.kevin.LocationSorter;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.survey.SurveyObjective;
+import org.chai.kevin.survey.SurveySection;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 
-public class SummaryPage {
+public class SurveySummaryPage {
 
 	private static final String PROGRESS_SORT = "progress";
 	private static final String FACILITY_SORT = "facility";
@@ -33,7 +35,7 @@ public class SummaryPage {
 	private Map<SurveySection, QuestionSummary> sectionQuestionTableMap;
 
 	// for survey summary page
-	public SummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, ObjectiveSummary> objectiveSummaryMap) {
+	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, ObjectiveSummary> objectiveSummaryMap) {
 		this.summary = summary;
 		this.facilities = facilities;
 		this.questionSummaryMap = questionSummaryMap;
@@ -41,7 +43,7 @@ public class SummaryPage {
 	}
 	
 	// for objective summary page
-	public SummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, SurveyEnteredObjective> enteredObjectiveMap, boolean test) {
+	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, SurveyEnteredObjective> enteredObjectiveMap, boolean test) {
 		this.summary = summary;
 		this.facilities = facilities;
 		this.enteredObjectiveSummaryMap = enteredObjectiveMap;
@@ -49,20 +51,20 @@ public class SummaryPage {
 	}
 
 	// for section summary page
-	public SummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap) {
+	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap) {
 		this.summary = summary;
 		this.facilities = facilities;
 		this.questionSummaryMap = questionSummaryMap;
 	}
 	
 	// for objective table page
-	public SummaryPage(Map<SurveyObjective, SurveyEnteredObjective> enteredObjectiveTableMap, Map<SurveyObjective, QuestionSummary> objectiveQuestionTableMap) {
+	public SurveySummaryPage(Map<SurveyObjective, SurveyEnteredObjective> enteredObjectiveTableMap, Map<SurveyObjective, QuestionSummary> objectiveQuestionTableMap) {
 		this.enteredObjectiveTableMap = enteredObjectiveTableMap;
 		this.objectiveQuestionTableMap = objectiveQuestionTableMap;
 	}
 	
 	// for section table page
-	public SummaryPage(Map<SurveySection, QuestionSummary> sectionQuestionTableMap) {
+	public SurveySummaryPage(Map<SurveySection, QuestionSummary> sectionQuestionTableMap) {
 		this.sectionQuestionTableMap = sectionQuestionTableMap;
 	}
 	

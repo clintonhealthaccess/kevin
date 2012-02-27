@@ -161,6 +161,7 @@ security.shiro.authc.required = false
 				   'net.sf.ehcache.hibernate',
 				   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
 				   'org.chai.kevin.JaqlService',
+				   'org.chai.kevin.ExpressionService',
 				   'org.springframework',
 				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.hibernate'
@@ -170,6 +171,14 @@ security.shiro.authc.required = false
 
 		}
 //	}
+//	test {
+//		log4j = {
+//			root {
+//				error
+//			}	
+//		}
+//	}
+//}
 //	production {
 //		log4j = {
 //			appenders {
@@ -217,7 +226,7 @@ site.period=0
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 
-type.checked=["District Hospital","Health Center"]
+site.locationtype.checked=["District Hospital","Health Center"]
 
 dashboard.skip.levels=[]
 cost.skip.levels=[]

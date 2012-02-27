@@ -1,4 +1,4 @@
-package org.chai.kevin
+package org.chai.kevin.location
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -29,8 +29,8 @@ package org.chai.kevin
 */
 
 import java.sql.Types;
-
-import org.chai.kevin.location.DataLocationEntity
+import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType
 import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.location.LocationLevel;
@@ -56,27 +56,7 @@ class LocationServiceSpec extends IntegrationTests {
 		BURERA		| COUNTRY	| []
 	}
 	
-	def "get data entities for location"() {
-		setup:
-		setupLocationTree()
-		
-		expect:
-		def typeList = types.collect{DataEntityType.findByCode(it)}
-		locationService.getDataEntities(LocationEntity.findByCode(location), typeList.toArray(new DataEntityType[typeList.size()])).containsAll(expectedEntities.collect{DataLocationEntity.findByCode(it)})
-		
-		where:
-		location	| types												| expectedEntities
-		RWANDA		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]	| [BUTARO, KIVUYE]
-		RWANDA		| [DISTRICT_HOSPITAL_GROUP]							| [BUTARO]
-		NORTH		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]	| [BUTARO, KIVUYE]
-		NORTH		| [DISTRICT_HOSPITAL_GROUP]							| [BUTARO]
-	}
-	
-	def "get data entities for data entity"() {
-		
-	}
-	
-	def "get parent of level for location for location"() {
+	def "get parent of level for location"() {
 		setup:
 		setupLocationTree()
 		
@@ -90,8 +70,45 @@ class LocationServiceSpec extends IntegrationTests {
 		
 	}
 	
-	def "get parent of level for location for data entity"() {
+	def "get data entity by code"(){
+		setup:
+		setupLocationTree()
 		
+		when: 
+		def dataEntity = DataLocationEntity.findByCode(BUTARO)
+		def dataEntOne = locationService.findCalculationEntityByCode(BUTARO, DataLocationEntity.class);
+		
+		then:
+		dataEntOne != null
+		dataEntOne.equals(dataEntity) 	
+		
+		when:
+		def dataEntTwo = locationService.findCalculationEntityByCode(BUTARO, LocationEntity.class);
+		
+		then:
+		dataEntTwo == null
+		!dataEntTwo.equals(dataEntity)
+	}
+	
+	def "get location entity by code"(){
+		setup:
+		setupLocationTree()
+		
+		when:
+		def locationEntity = LocationEntity.findByCode(BURERA)
+		def locationEntOne = locationService.findCalculationEntityByCode(BURERA,LocationEntity.class)
+		
+		then:
+		locationEntOne != null
+		locationEntOne.equals(locationEntity)
+		
+		when:
+		def locationEntTwo = locationService.findCalculationEntityByCode(BURERA,DataLocationEntity.class)
+		
+		then:
+		locationEntTwo == null
+		!locationEntTwo.equals(locationEntity)
+				
 	}
 	
 	def "search location"() {
@@ -109,7 +126,5 @@ class LocationServiceSpec extends IntegrationTests {
 		"Bur"	| [BURERA]
 		"Nor"	| [NORTH]
 		"n/a"	| []
-	}
-
-		
+	}		
 }

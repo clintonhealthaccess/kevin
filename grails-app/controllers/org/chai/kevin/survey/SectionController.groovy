@@ -43,10 +43,7 @@ class SectionController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		def entity = new SurveySection()
-		//FIXME find a better to do this
-		if (!params['objectiveId.id']) entity.objective = SurveyObjective.get(params.objectiveId)
-		return entity
+		return new SurveySection()
 	}
 
 	def getTemplate() {
@@ -77,20 +74,25 @@ class SectionController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 		
-		SurveyObjective objective = SurveyObjective.get(params.objectiveId)
-		List<SurveySection> sections = objective.sections;
-		Collections.sort(sections)
-
-		def max = Math.min(params['offset']+params['max'], sections.size())
-		
-		render (view: '/survey/admin/list', model:[
-			template:"sectionList",
-			survey: objective.survey,
-			objective: objective,
-			entities: sections.subList(params['offset'], max),
-			entityCount: sections.size(),
-			code: getLabel()
-		])
+		SurveyObjective objective = SurveyObjective.get(params.int('objective.id'))
+		if (objective == null) {
+			response.sendError(404)
+		}
+		else {
+			List<SurveySection> sections = objective.sections;
+			Collections.sort(sections)
+	
+			def max = Math.min(params['offset']+params['max'], sections.size())
+			
+			render (view: '/survey/admin/list', model:[
+				template:"sectionList",
+				survey: objective.survey,
+				objective: objective,
+				entities: sections.subList(params['offset'], max),
+				entityCount: sections.size(),
+				code: getLabel()
+			])
+		}
 	}
 
 }

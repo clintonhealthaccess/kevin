@@ -115,6 +115,32 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredQuestion.list()[0].getSkippedRules().equals(new HashSet([skipRule]))
 	}
 	
+	def "test modify with skipped question referring to non existing element"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
+		
+		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		def element2 = newSurveyElement(question2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
+		def skipRule = newSkipRule(survey, "\$"+element1.id+" == 1", [(element2):""], [])
+		
+		when:
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element1], [("elements["+element1.id+"].value"): "1"])
+		
+		then:
+		SurveyEnteredValue.count() == 2
+		SurveyEnteredValue.list()[0].value.numberValue == 1
+		SurveyEnteredValue.list()[1].validatable.isSkipped("") == true
+		SurveyEnteredQuestion.count() == 2
+	}
+	
 	
 	def "test submit"() {
 		setup:

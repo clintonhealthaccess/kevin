@@ -23,15 +23,16 @@ class DataEntryTagLib {
 		def type = attrs['type']
 		def value = attrs['value']
 		def enums = attrs['enums']
+		def nullText = attrs['nullText']
 		
-		def result = ''
+		def result = null
 		if (value != null && !value.isNull()) {
 			switch (type.type) {
 				case (ValueType.ENUM):
-					def enume = enums[type.enumCode]
+					def enume = enums?.get(type.enumCode)
 					if (enume == null) result = value.enumValue
 					else {
-						def option = enume.getOptionForValue(value.enumValue)
+						def option = enume?.getOptionForValue(value.enumValue)
 						if (option == null) result = value.enumValue
 						else result = languageService.getText(option.names)
 					}
@@ -44,7 +45,8 @@ class DataEntryTagLib {
 					result = value.stringValue
 			}
 		}
-		out << result
+		if (result == null && nullText != null) out << nullText
+		else out << result
 	}
 	
 	def eachOption = { attrs, body ->
@@ -53,7 +55,7 @@ class DataEntryTagLib {
 		def enume = attrs['enum']
 		def var = attrs['var']
 		
-		def options = enume.activeEnumOptions.sort(getOrderingComparator())
+		def options = enume==null?[]:enume.activeEnumOptions?.sort(getOrderingComparator())
 
 		for (option in options) {
 			if (var) {
@@ -79,7 +81,8 @@ class DataEntryTagLib {
 		
 		if (log.isDebugEnabled()) log.debug('rendering errors for element:'+element+', validatable:'+validatable+', prefix:'+prefix)
 		
-		def rules = getRules(validatable?.getErrors(prefix));
+
+		def rules = getRules(validatable?.getErrorRules(prefix));
 		if (!rules.empty) {
 			boolean hasErrors = hasErrors(rules)
 
@@ -93,7 +96,8 @@ class DataEntryTagLib {
 				error.accepted = validatable.isAcceptedWarning(rule, prefix)
 				errors.add(error)
 			} 
-			out << g.render(template: '/dataEntry/errors', model: [errors: errors, element: element])
+			out << g.render(template: '/tags/dataEntry/errors', model: [errors: errors, element: element])
+
 		}
 	}
 	

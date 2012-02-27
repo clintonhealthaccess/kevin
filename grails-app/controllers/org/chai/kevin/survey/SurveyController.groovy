@@ -54,6 +54,19 @@ class SurveyController extends AbstractEntityController {
 	def getTemplate() {
 		return "/survey/admin/createSurvey"
 	}
+	
+	def saveEntity(def entity) {
+		if (entity.active) {
+			// we reset all other planning
+			Survey.list().each {
+				if (!it.equals(entity)) {
+					it.active = false
+					it.save()
+				}
+			}
+		}
+		super.saveEntity(entity)
+	}
 
 	def getModel(def entity) {
 		List<Period> periods = Period.list()
@@ -77,7 +90,6 @@ class SurveyController extends AbstractEntityController {
 		adaptParamsForList()
 		
 		List<Survey> surveys = Survey.list(params);
-
 		if(surveys.size()>0) Collections.sort(surveys,new SurveySorter())
 
 		render (view: '/survey/admin/list', model:[
@@ -89,7 +101,7 @@ class SurveyController extends AbstractEntityController {
 	}
 	
 	def copy = {
-		def survey = getEntity(params.int('surveyId'))
+		def survey = getEntity(params.int('survey'))
 		def clone = surveyCopyService.copySurvey(survey)
 		
 		redirect (controller: 'survey', action: 'list')	

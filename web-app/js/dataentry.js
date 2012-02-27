@@ -43,7 +43,24 @@ DataEntry.prototype.initializeSurvey = function() {
 		maximizeRow($(this).parents('.element-list-row').first());
 		return false;
 	});
-	
+
+	this.element.delegate('button[type=submit]', 'click', function(){
+		if (self.ajaxCallsInProgress()) {
+			alert(self.settings.messages['dataentry.exit.saving.alert.text']);
+			return false;
+		}
+		else if (this.element.find('.incomplete').length > 0) {
+			return confirm(self.settings.messages['dataentry.exit.incomplete.confirm.text']);
+		}
+	});
+	this.element.delegate('button[type=cancel]', 'click', function(){
+		$.manageAjax.clear(self.queueName, true);
+		$('.ajax-in-process').find('.input').removeAttr('disabled');
+		$('.ajax-in-process').addClass('ajax-error');
+		$('.ajax-in-process').removeClass('.ajax-in-process')
+		return false;
+	});
+
 	// stop all calls to external links while values are saving
 	$(document).delegate('a', 'click', function(){
 		if (self.ajaxCallsInProgress() || $('.element.ajax-error').length > 0) {
@@ -60,24 +77,7 @@ DataEntry.prototype.initializeSurvey = function() {
 		queue: true,
 		cacheResponse: false
 	});
-	
-	$('button[type=submit]').bind('click', function(){
-		if (self.ajaxCallsInProgress()) {
-			alert(self.settings.messages['dataentry.exit.saving.alert.text']);
-			return false;
-		}
-		else if ($('.question-container.incomplete').length > 0) {
-			return confirm(self.settings.messages['dataentry.exit.incomplete.confirm.text']);
-		}
-	});
-	
-	$('button[type=cancel]').bind('click', function(){
-		$.manageAjax.clear(self.queueName, true);
-		$('.ajax-in-process').find('.input').removeAttr('disabled');
-		$('.ajax-in-process').addClass('ajax-error');
-		$('.ajax-in-process').removeClass('.ajax-in-process')
-		return false;
-	});
+
 
 	minimizeRows(this.element.find('.element-list-row'));		
 	this.enableAfterLoading();
@@ -104,11 +104,11 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 		data += '&'+$(input).serialize();
 	})
 	// we send the list indexes
-	$(element).parents('.element-list').find('.list-input-indexes').each(function(i, input) {
+	$(element).parents('.element-list').find('.js_list-input-indexes').each(function(i, input) {
 		data += '&'+$(input).serialize();
 	});
 	// we send the fields that should always be sent
-	this.element.find('.always-send').each(function(i, input) {
+	this.element.find('.js_always-send').each(function(i, input) {
 		data += '&'+$(input).serialize();
 	});
 	
@@ -128,7 +128,6 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 			self.toggleControls($.queue(document, self.queueName).length > 0);
 			
 			if (data.status == 'success') {
-				
 				// we reset null elements
 				$.each(data.elements, function(elementIndex, element) {
 					$.each(element.nullPrefixes, function(prefixIndex, prefix) {
@@ -138,12 +137,32 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 						}
 					});
 				});
-				
-				callback(self, data, element);
+		
+				// we go through all changed elements
+				$.each(data.elements, function(index, element) {
+					
+					// we remove all the skips
+					$('#element-'+element.id).find('.element').removeClass('skipped').find('.input').removeAttr('disabled');
+					
+					// we add them again
+					$.each(element.skipped, function(index, skipped) {
+						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(skipped))
+						.addClass('skipped').find('.input').attr('disabled', 'disabled');
+					});
+					
+					// we remove all the errors
+					$('#element-'+element.id).find('.element').removeClass('errors');
+					$('#element-'+element.id).find('.element').children('.error-list').html('');
+					
+					// we add them again
+					$.each(element.invalid, function(index, invalid) {
+						if (!invalid.valid) $('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).addClass('errors');
+						$('#element-'+element.id).find('#element-'+element.id+'-'+escape(invalid.prefix)).children('.error-list').html(invalid.errors);
+					});
+					
+				});
 			}
-			else {
-				alert(self.settings.messages['dataentry.saving.objective.closed.text']);
-			}
+			callback(self, data, element);
 		},
 		error: function() {
 			$(element).removeClass('ajax-in-process');
@@ -178,10 +197,10 @@ DataEntry.prototype.toggleControls = function(hide) {
 DataEntry.prototype.listRemoveClick = function(toRemove) {
 	var element = $(toRemove).parents('.element').first();
 	var index = $(toRemove).parents('.element-list-row').first().data('index');
-	
-	$(toRemove).parents('.element-list-row').find('.list-input').remove();
+	$(toRemove).parents('.element-list-row').find('.js_list-input').remove();
 
-	this.surveyValueChanged(element, $(element).find('.list-input'), function(dataEntry, data, element) {
+	this.surveyValueChanged(element, $(element).find('.js_list-input'), function(dataEntry, data, element) {
+
 		$(toRemove).parents('.element-list-row').first().remove();	
 	});
 }
@@ -195,16 +214,16 @@ DataEntry.prototype.listAddClick = function(list, callback) {
 	else index = parseInt(index)+1;
 
 	// we change the html	
-	$(clone).find(".list-input").first().val('['+index+']')
-	$(clone).find(".list-input-indexes").first().val('['+index+']')
+	$(clone).find(".js_list-input").first().val('['+index+']')
+	$(clone).find(".js_list-input-indexes").first().val('['+index+']')
 	var copyHtml = clone.html().replace(RegExp(escape(suffix)+'\\[_\\]', 'g'), suffix+'['+index+']')
 
 	$(list).prev().before(copyHtml);
 	$(list).prev().prev().data('index', index);
 	
 	var self = this;
-	
-	this.surveyValueChanged($(list).parents('.element').first(), $(list).parents('.element').first().find('.list-input'), function(dataEntry, data, element) {
+
+	this.surveyValueChanged($(list).parents('.element').first(), $(list).parents('.element').first().find('.js_list-input'), function(dataEntry, data, element) {
 		$(list).prev().prev().show();
 
 		maximizeRow($(list).prev().prev());

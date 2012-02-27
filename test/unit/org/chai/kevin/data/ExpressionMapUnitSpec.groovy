@@ -17,4 +17,17 @@ class ExpressionMapUnitSpec extends UnitSpec {
 		
 	}
 	
+	def "test map with 2 periods"() {
+		when:
+		def map = new ExpressionMap()
+		map['1'] = [:]
+		map['1']['type'] = '123'
+		map['2'] = [:]
+		map['2']['type'] = '456'
+		
+		then:
+		map.equals(['1':['type':'123'],'2':['type':'456']])
+		
+	}
+	
 }

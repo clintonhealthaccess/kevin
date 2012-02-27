@@ -1,4 +1,4 @@
-<g:searchBox controller="question" action="search" params="${[surveyId: survey?.id]}" entityName="Survey Question"/>
+<g:searchBox controller="question" action="search" params="${[survey: survey?.id]}" entityName="Survey Question"/>
 <table class="listing">
 	<thead>
 		<tr>
@@ -33,11 +33,11 @@
 				<td>${objective.order}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
-						<a class="selected dropdown manage-btn" href="#" data-type="objective"><g:message code="entity.list.manage.label" default="Manage"/></a>
+						<a class="selected dropdown manage-btn" href="#"><g:message code="entity.list.manage.label" default="Manage"/></a>
 						<div class="hidden manage-list js_dropdown-list dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'section', action:'list', params:[surveyId:survey?.id,objectiveId: objective.id])}">
+									<a href="${createLink(controller:'section', action:'list', params:['objective.id': objective.id])}">
 										<g:message code="default.list.label" args="[message(code:'survey.section.label',default:'Section')]" />
 									</a>
 								</li>

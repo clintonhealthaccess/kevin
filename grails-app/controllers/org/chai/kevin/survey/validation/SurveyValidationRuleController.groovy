@@ -53,10 +53,7 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		def entity = new SurveyValidationRule()
-		//FIXME find a better to do this
-		if (!params['surveyElement.id']) entity.surveyElement = SurveyElement.get(params.int('elementId'));
-		return entity;
+		return new SurveyValidationRule()
 	}
 
 	def getTemplate() {
@@ -64,7 +61,13 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
+		def surveyElements = []
+		if (entity.surveyElement != null) surveyElements << entity.surveyElement
+
+		def dependencies = new ArrayList(entity.dependencies)		
 		[
+			dependencies: dependencies,
+			surveyElements: surveyElements,
 			validation: entity,
 			types: DataEntityType.list()
 		]
@@ -92,31 +95,37 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
+
+		SurveyElement surveyElement = SurveyElement.get(params.int('surveyElement.id'))
+		Survey survey = Survey.get(params.int('survey.id'))
 		
-		List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
-		SurveyElement surveyElement = null
-		if (params.int('elementId')) {		
-			surveyElement = SurveyElement.get(params.int('elementId'))
-			validationRules.addAll(surveyElement.getValidationRules());
+		if (surveyElement == null && survey == null) {
+			response.sendError(404)
 		}
 		else {
-			Survey survey = Survey.get(params.int('surveyId'))
-			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(null, survey)
-			surveyElements.each { element ->
-				validationRules.addAll(element.getValidationRules())	
+			List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
+			if (surveyElement != null) {		
+				surveyElement = SurveyElement.get(params.int('surveyElement.id'))
+				validationRules.addAll(surveyElement.getValidationRules());
 			}
+			else {
+				Set<SurveyElement> surveyElements = surveyService.getSurveyElements(null, survey)
+				surveyElements.each { element ->
+					validationRules.addAll(element.getValidationRules())	
+				}
+			}
+			validationRules.sort {it.id}
+	
+			def max = Math.min(params['offset']+params['max'], validationRules.size())
+			
+			render (view: '/survey/admin/list', model:[
+				template:"validationRuleList",
+				surveyElement: surveyElement,
+				entities: validationRules.subList(params['offset'], max),
+				entityCount: validationRules.size(),
+				code: getLabel()
+			])
 		}
-		validationRules.sort {it.id}
-
-		def max = Math.min(params['offset']+params['max'], validationRules.size())
-		
-		render (view: '/survey/admin/list', model:[
-			template:"validationRuleList",
-			surveyElement: surveyElement,
-			entities: validationRules.subList(params['offset'], max),
-			entityCount: validationRules.size(),
-			code: getLabel()
-		])
 	}
 	
 	def copy = {

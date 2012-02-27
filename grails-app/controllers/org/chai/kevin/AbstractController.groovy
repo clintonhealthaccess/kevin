@@ -38,11 +38,11 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.chai.kevin.reports.ReportObjective
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.security.User;
-import org.chai.kevin.survey.SummaryPage
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyObjective
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
+import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 import org.hisp.dhis.period.Period
 
@@ -57,17 +57,6 @@ public abstract class AbstractController {
 	
 	def getUser() {
 		return User.findByUuid(SecurityUtils.subject.principal)
-	}
-	
-	public List<DataEntityType> getLocationTypes() {
-		List<DataEntityType> types = null
-		if (params['locationTypes'] != null) {
-			types = params.list('locationTypes').collect {DataEntityType.get(it)}
-		}
-		else {
-			types = new ArrayList(ConfigurationHolder.config.type.checked).collect {DataEntityType.findByCode(it)}
-		}
-		return types
 	}
 
 	def getPeriod() {
@@ -86,6 +75,18 @@ public abstract class AbstractController {
 		LocationEntity location = LocationEntity.get(params.int('location'));
 		if (location == null) location = locationService.getRootLocation()
 		return location
+	}		
+	
+	public List<DataEntityType> getLocationTypes() {
+		List<DataEntityType> types = null
+		if (params.list('locationTypes') != null && !params.list('locationTypes').empty) {
+			def locationTypes = params.list('locationTypes')
+			types = locationTypes.collect{ DataEntityType.get(it) }
+		}
+		else {
+			types = new ArrayList(ConfigurationHolder.config.site.locationtype.checked).collect {DataEntityType.findByCode(it)}
+		}
+		return types
 	}
 	
 	def adaptParamsForList() {

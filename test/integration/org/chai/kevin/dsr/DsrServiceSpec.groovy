@@ -17,10 +17,11 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		def target = newDsrTarget(CODE(2), dataElement, [], objective)
 		def location = LocationEntity.findByCode(BURERA)
+		def types = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)])
 		def dsrTable = null
 		
 		when:
-		dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		dsrTable = dsrService.getDsrTable(location, objective, period, types, null)
 		
 		then:
 		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target) != null		
@@ -35,11 +36,12 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def enume = newEnume("enum")
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_ENUM("enum"))
 		def target = newDsrTarget(CODE(2), dataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
+		def types = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)])
 		def dsrTable = null
 		
 		when:
 		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO), v("\"option\""))
-		dsrTable = dsrService.getDsrTable(LocationEntity.findByCode(BURERA), objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		dsrTable = dsrService.getDsrTable(LocationEntity.findByCode(BURERA), objective, period, types, null)
 		
 		then:
 		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target).value == "option"
@@ -54,7 +56,8 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def target = newDsrTarget(CODE(3), normalizedDataElement, format, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
 		refreshNormalizedDataElement()
 		def location = LocationEntity.findByCode(BURERA)
-		def dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		def types = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)])
+		def dsrTable = dsrService.getDsrTable(location, objective, period, types, null)
 		
 		then:
 		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target).value == value
@@ -76,7 +79,8 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def target = newDsrTarget(CODE(3), normalizedDataElement, [], objective)
 		refreshNormalizedDataElement()
 		def location = LocationEntity.findByCode(BURERA)
-		def dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		def types = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)])
+		def dsrTable = dsrService.getDsrTable(location, objective, period, types, null)
 		
 		then:
 		dsrTable.getReportValue(DataLocationEntity.findByCode(locationName), target).value == "N/A"
@@ -95,12 +99,17 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def target = newDsrTarget(CODE(3), normalizedDataElement, [DISTRICT_HOSPITAL_GROUP], objective)
 		refreshNormalizedDataElement()
 		def location = LocationEntity.findByCode(BURERA)
-		def dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]))
+		def types = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)])
+		def dsrTable = dsrService.getDsrTable(location, objective, period, types, null)
 		
 		then:
 		dsrTable.getReportValue(DataLocationEntity.findByCode(BUTARO), target).value == "10"		
 		dsrTable.getReportValue(DataLocationEntity.findByCode(KIVUYE), target).value == "N/A"
 		
+	}
+	
+	def "test dsr with category"(){
+		//TODO
 	}
 	
 }

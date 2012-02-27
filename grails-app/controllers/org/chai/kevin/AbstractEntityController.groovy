@@ -98,16 +98,16 @@ abstract class AbstractEntityController extends AbstractController {
 	}
 	
 	def saveWithoutTokenCheck = {
-		log.debug ('saving entity with params:'+params)
+		if (log.isDebugEnabled()) log.debug ('saving entity with params:'+params)
 		
 		def entity = getEntity(params.int('id'));
 		if (entity == null) {
 			entity = createEntity()
 		}
 		bindParams(entity)
-		log.debug('bound params, entity: '+entity)
+		if (log.isDebugEnabled()) log.debug('bound params, entity: '+entity)
 		if (!validateEntity(entity)) {
-			log.info ("validation error in ${entity}: ${entity.errors}}")
+			if (log.isInfoEnabled()) log.info ("validation error in ${entity}: ${entity.errors}}")
 			
 			def model = getModel(entity)
 			model << [template: getTemplate()]
@@ -132,6 +132,27 @@ abstract class AbstractEntityController extends AbstractController {
 
 	def deleteEntity(def entity) {
 		entity.delete()
+	}
+	
+	
+	/**
+	 * This binds a list of i18n fields passed in the params to the map <String, Translation>
+	 * passed as parameter.
+	 * The format for the field name is the following:
+	 * - paramName: holds the <map_key> list
+	 * - paramName[<map_key>].<language>: holds the value for that particular language
+	 * 
+	 * @param paramName the name of the param in the form
+	 * @param map the map to fill
+	 */
+	def bindTranslationMap(def paramName, def map) {
+		params.list(paramName).each { prefix ->
+			Translation translation = new Translation()
+			languageService.availableLanguages.each { language ->
+				translation[language] = params[paramName+'['+prefix+'].'+language]
+			}
+			map.put(prefix, translation)
+		}
 	}
 	
 	protected abstract def bindParams(def entity);

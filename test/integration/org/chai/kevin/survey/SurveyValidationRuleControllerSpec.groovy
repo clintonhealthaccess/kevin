@@ -53,12 +53,23 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		surveyValidationRuleController = new SurveyValidationRuleController()
 		
 		when:
-		surveyValidationRuleController.params.elementId = element.id
+		surveyValidationRuleController.params['surveyElement.id'] = element.id
 		surveyValidationRuleController.list()
 		
 		then:
 		surveyValidationRuleController.modelAndView.model.entities.size() == 1
 		
+	}
+	
+	def "test list when no survey 404"() {
+		setup:
+		surveyValidationRuleController = new SurveyValidationRuleController()
+		
+		when:
+		surveyValidationRuleController.list()
+		
+		then:
+		surveyValidationRuleController.modelAndView == null
 	}
 	
 }

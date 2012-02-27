@@ -1,24 +1,16 @@
 <div class="selector">
-	<span>Report Category:</span>
 	<g:if test="${dsrTable.targetCategories != null && !dsrTable.targetCategories.empty}">
-		<select id="report-category">
+	<g:form name="dsrCategory-form" method="get"
+		url="${[controller:'dsr', action:'view',  
+		params:[period:currentPeriod.id, objective:currentObjective.id, location:currentLocation.id, locationTypes:currentLocationTypes*.id]]}">		
+		<span>Report Category:</span>
+		<select id="dsrCategory" name="dsrCategory">
 			<g:each in="${dsrTable.targetCategories}" var="category">
-				<g:if test="${category.id == currentCategory?.id}">
-					<option selected="selected" name="dsrTargetCategory" value="${category.id}">
-						<g:i18n field="${category.names}" />
-					</option>
-				</g:if>
-				<g:else>
-					<option name="dsrTargetCategory" value="${category.id}">
-						<g:i18n field="${category.names}" />
-					</option>
-				</g:else>
+				<option ${category.id == currentCategory?.id ? 'selected="selected"' : ''} value="${category.id}">
+					<g:i18n field="${category.names}" />
+				</option>
 			</g:each>
 		</select>
-	</g:if>
-	<g:else>
-		<select id="report-category" disabled="disabled">
-			<option value="0">None</option>
-		</select>
-	</g:else>
+	</g:form>	
+	</g:if>		
 </div>

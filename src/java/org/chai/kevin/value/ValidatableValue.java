@@ -1,17 +1,20 @@
 package org.chai.kevin.value;
 
+import java.text.ParseException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Transient;
+import net.sf.json.JSONNull;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
+import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.survey.SurveySkipRule;
 import org.chai.kevin.survey.SurveyValidationRule;
@@ -20,7 +23,55 @@ import org.chai.kevin.util.Utils;
 public class ValidatableValue {
 
 	private static final Log log = LogFactory.getLog(ValidatableValue.class);
-	
+	private static Sanitizer SANITIZER = new Sanitizer(){
+		
+		@Override
+		public Object sanitizeValue(Object value, Type type, String prefix, String genericPrefix) {
+			Object result = null;
+			String string = String.valueOf(value);
+			switch (type.getType()) {
+				case NUMBER:
+					if (string.trim().isEmpty()) result = null;
+					else {
+						try {
+							result = Double.parseDouble(string);
+						} catch (NumberFormatException e) {
+							result = JSONNull.getInstance();
+						}
+					}
+					break;
+				case BOOL:
+					if (value != null && string.equals("0")) result = false;
+					else if (value != null && !string.equals("") && !string.equals("0")) result = true;
+					else result = null;
+					break;
+				case STRING:
+				case TEXT:
+					if (value == null || string.equals("")) result = null;
+					else result = string;
+					break;
+				case DATE:
+					if (value == null || string.equals("")) result = null;
+					else {
+						try {
+							result = Utils.parseDate(string);
+						} catch (ParseException e) {
+							result = null;
+						}
+					}
+					break;
+				case ENUM:
+					if (value == null || string.equals("")) result = null;
+					else result = string; 
+					break;
+				default:
+					if (value == null || string.equals("")) result = null;
+					else result = string;
+			}
+			return result;
+		}
+		
+	};
 	private final Type type;
 	private final Value value;
 	
@@ -41,7 +92,17 @@ public class ValidatableValue {
 		setAttribute("invalid", validationRule.getId().toString(), prefixes);
 	}
 
-	public Set<String> getErrors(String prefix) {
+	public void setSkipped(SurveySkipRule skipRule, Set<String> prefixes) {
+		setAttribute("skipped", skipRule.getId().toString(), prefixes);
+	}
+	
+	/**
+	 * Returns a set of rule ids that are stored in the invalid attribute.
+	 * 
+	 * @param prefix a set of rule ids that are stored in the invalid attribute.
+	 * @return
+	 */
+	public Set<String> getErrorRules(String prefix) {
 		try {
 			return Utils.split(type.getAttribute(value, prefix, "invalid"));
 		}
@@ -51,7 +112,7 @@ public class ValidatableValue {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<String> getUnacceptedErrors(String prefix) {
+	private Set<String> getUnacceptedErrors(String prefix) {
 		try {
 			Set<String> invalidRules = Utils.split(type.getAttribute(value, prefix, "invalid"));
 			Set<String> acceptedRules = Utils.split(type.getAttribute(value, prefix, "warning"));
@@ -66,12 +127,21 @@ public class ValidatableValue {
 	public boolean isValid(String prefix) {
 		return getUnacceptedErrors(prefix).isEmpty();
 	}
-	
-	public void setSkipped(SurveySkipRule skipRule, Set<String> prefixes) {
-		setAttribute("skipped", skipRule.getId().toString(), prefixes);
+	public boolean isTreeValid(String prefix) {
+		for (String invalidPrefix : getReallyInvalidPrefixes()) {
+			if (invalidPrefix.startsWith(prefix)) return false;
+		}
+		return true;
 	}
 	
-	public Set<String> getSkipped(String prefix) {
+	public boolean isTreeComplete(String prefix) {
+		for (String incompletePrefix : getReallyIncompletePrefixes()) {
+			if (incompletePrefix.startsWith(prefix)) return false;
+		}
+		return true;
+	}
+	
+	private Set<String> getSkippedRules(String prefix) {
 		try {
 			return Utils.split(type.getAttribute(value, prefix, "skipped"));
 		}
@@ -81,7 +151,7 @@ public class ValidatableValue {
 	}
 	
 	public boolean isSkipped(String prefix) {
-		return !getSkipped(prefix).isEmpty();
+		return !getSkippedRules(prefix).isEmpty();
 	}
 	
 	public boolean isAcceptedWarning(SurveyValidationRule rule, String prefix) {
@@ -92,19 +162,24 @@ public class ValidatableValue {
 			return false;
 		}
 	}
-	
-	@Transient
+	/**
+	 * Returns all prefixes whose "skipped" attributes is not empty.
+	 * 
+	 * @return all prefixes whose "skipped" attributes is not empty.
+	 */
 	public Set<String> getSkippedPrefixes() {
 		return getPrefixesWithAttribute("skipped").keySet();
 	}
-	
-	@Transient
+
+	/**
+	 * Returns all prefixes whose "invalid" attributes is not empty.
+	 * 
+	 * @return all prefixes whose "invalid" attributes is not empty.
+	 */
 	public Set<String> getInvalidPrefixes() {
 		return getPrefixesWithAttribute("invalid").keySet();
 	}
-	
-	@Transient
-	public Boolean isInvalid() {
+	private Collection<String> getReallyInvalidPrefixes() {
 		// we get the list of all the invalid prefixes that
 		// have not been accepted
 		Map<String, Value> invalidPrefixes = getPrefixesWithAttribute("invalid");
@@ -124,18 +199,28 @@ public class ValidatableValue {
 		// element is invalid if those prefixes are not all skipped
 		Set<String> skippedPrefixes = getSkippedPrefixes();
 		
-		return !CollectionUtils.subtract(
-			invalidAndUnacceptedPrefixes, 
-			skippedPrefixes
-		).isEmpty();
+		return CollectionUtils.subtract(invalidAndUnacceptedPrefixes, skippedPrefixes);
 	}
 	
-	@Transient
+	/**
+	 * Returns true if this value is invalid. A value is invalid if one of the contained values
+	 * is marked as invalid, is not skipped and is not an accepted warning.
+	 * 
+	 * @return true if this value is invalid.
+	 */
+	public Boolean isInvalid() {
+		return !getReallyInvalidPrefixes().isEmpty();
+	}
+	
+	/**
+	 * Returns a set containing all the prefixes for which isNull() returns true.
+	 * 
+	 * @return a set containing all the prefixes for which isNull() returns true.
+	 */
 	public Set<String> getNullPrefixes() {
 		return getNullPrefixesMap().keySet();
 	}
 	
-	@Transient
 	private Map<String, Value> getNullPrefixesMap() {
 		return type.getPrefixes(value, new PrefixPredicate() {
 			@Override
@@ -145,14 +230,22 @@ public class ValidatableValue {
 		});
 	}
 	
-	@Transient
-	public Boolean isComplete() {
+	private Collection<String> getReallyIncompletePrefixes() {
 		// element is complete if all the non-skipped values are not-null
 		// regardless of whether they are valid or not
 		Set<String> skippedPrefixes = getSkippedPrefixes();
-		Map<String, Value> nullPrefixes = getNullPrefixesMap();
-		
-		return CollectionUtils.subtract(nullPrefixes.keySet(), skippedPrefixes).isEmpty();
+		Map<String, Value> nullPrefixes = getNullPrefixesMap();			
+		return CollectionUtils.subtract(nullPrefixes.keySet(), skippedPrefixes);
+	}
+	
+	/**
+	 * Returns true if this value is complete. A value is complete if all the containing values are
+	 * valid, or skipped, or whose invalid rules are all accepted warning. 
+	 * 
+	 * @return true if this value is valid.
+	 */
+	public Boolean isComplete() {
+		return getReallyIncompletePrefixes().isEmpty();
 	}
 	
 	private void setAttribute(final String attribute, final String id, Set<String> prefixes) {
@@ -212,12 +305,12 @@ public class ValidatableValue {
 		});
 	}
 	
-	public void mergeValue(Map<String, Object> params, String prefix) {
-		Set<String> attributes = new HashSet<String>();
-		attributes.add("warning");
+	public void mergeValue(Map<String, Object> params, String prefix, Set<String> attributes) {
+		Set<String> newAttributes = new HashSet<String>(attributes);
+		newAttributes.add("warning");
 		
 		if (log.isDebugEnabled()) log.debug("getting new value from parameters for prefix: "+prefix);
-		Value value = getType().mergeValueFromMap(getValue(), params, prefix, attributes);
+		Value value = getType().mergeValueFromMap(getValue(), params, prefix, newAttributes, SANITIZER);
 		
 		// reset accepted warnings for changed values
 		if (log.isDebugEnabled()) log.debug("resetting warning for modified prefix: "+prefix);

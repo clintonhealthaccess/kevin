@@ -10,40 +10,12 @@
 		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="Name" field="names"/>
 		<g:i18nRichTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
 		
-		<div class="row">
-			<div id="iteration-block">
-				<div class="${hasErrors(bean:survey, field:'period', 'errors')}">
-					<label for="period.id"><g:message code="period.label"default="Period"/>:</label>
-					<select class="iteration-list" name="period.id">
-						<option value="null">-- <g:message code="default.select.label" args="[message(code:'period.label')]" default="Select an Iteration"/> --</option>
-						<g:each in="${periods}" var="period">
-							<option value="${period.id}" ${period.id==survey.period?.id?'selected="selected"':''}>
-								${period.startDate} &harr; ${period.endDate}
-							</option>
-						</g:each>
-					</select>
-					<div class="error-list"><g:renderErrors bean="${survey}" field="period" /></div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div id="iteration-block">
-				<div class="${hasErrors(bean:survey, field:'period', 'errors')}">
-					<label for="lastPeriod.id"><g:message code="survey.lastperiod.label" default="Last period (for reference to old values)"/>:</label>
-					<select class="iteration-list" name="lastPeriod.id">
-						<option value="null">-- <g:message code="default.select.label" args="[message(code:'period.label')]" default="Select an Iteration"/> --</option>
-						<g:each in="${periods}" var="period">
-							<option value="${period.id}" ${period.id==survey.lastPeriod?.id?'selected="selected"':''}>
-								${period.startDate} &harr; ${period.endDate}
-							</option>
-						</g:each>
-					</select>
-					<div class="error-list"><g:renderErrors bean="${survey}" field="lastPeriod" /></div>
-				</div>
-			</div>
-		</div>
-		
+		<g:selectFromList name="period.id" label="${message(code:'period.label')}" bean="${survey}" field="period"
+			from="${periods}" value="${survey.period?.id}" values="${periods.collect{it.startDate.toString()+' - '+it.endDate.toString()}}" optionKey="id" multiple="false"/>
+	
+		<g:selectFromList name="lastPeriod.id" label="${message(code:'period.label')}" bean="${survey}" field="lastPeriod"
+			from="${periods}" value="${survey.lastPeriod?.id}" values="${periods.collect{it.startDate.toString()+' - '+it.endDate.toString()}}" optionKey="id" multiple="false"/>
+	
 		<div class="row">
 			<label><g:message code="survey.active.label" default="Active"/></label>
 			<g:checkBox name="active" value="${survey.active}" />

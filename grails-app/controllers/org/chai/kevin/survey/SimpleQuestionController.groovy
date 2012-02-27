@@ -51,10 +51,7 @@ class SimpleQuestionController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		def entity = new SurveySimpleQuestion();
-		//FIXME find a better to do this
-		if (!params['sectionId.id']) entity.section = SurveySection.get(params.sectionId)
-		return entity
+		return new SurveySimpleQuestion();
 	}
 
 	def getLabel() {
@@ -82,14 +79,8 @@ class SimpleQuestionController extends AbstractEntityController {
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		
 		// headers
-		params.list('headerList').each { prefix ->
-			Translation translation = new Translation()
-			languageService.availableLanguages.each { language -> 
-				translation[language] = params['headerList['+prefix+'].'+language]
-			}
-			entity.surveyElement.headers.put(prefix, translation)	
-		}
-				
+		bindTranslationMap('headerList', entity.surveyElement.headers)
+		
 		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity
 	}
 	

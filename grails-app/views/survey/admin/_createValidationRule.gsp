@@ -9,43 +9,27 @@
 	<div class="forms-container"">
 		<div class="data-field-column">
 			<g:form url="[controller:'surveyValidationRule', action:'save', params:[targetURI: targetURI]]" useToken="true">
-			
-				<div class="row ${hasErrors(bean:validation, field:'surveyElement', 'errors')}">
-					<label for="surveyElement.id"><g:message code="survey.surveyelement.label" default="Survey Element"/></label>
-				    <select id="elements-list" name="surveyElement.id" class="ajax-search-field">
-						<g:if test="${validation.surveyElement?.id != null}">
-							<option value="${validation.surveyElement.id}" selected>
-								<g:i18n field="${validation.surveyElement.dataElement.names}" />[${validation.surveyElement.id}]
-							</option>
-						</g:if>
-					</select>
-					<div class="error-list"><g:renderErrors bean="${validation}" field="surveyElement" /></div>
-				</div>
+
+				<g:selectFromList name="surveyElement.id" label="${message(code:'survey.surveyelement.label')}" field="surveyElement" optionKey="id" multiple="false"
+					ajaxLink="${createLink(controller:'surveyElement', action:'getAjaxData')}" from="${surveyElements}"
+					value="${validation.surveyElement?.id}" bean="${validation}"
+					values="${surveyElements.collect {i18n(field:it.dataElement.names)+' - '+i18n(field:it.surveyQuestion?.section?.names)+' - '+i18n(field:it.survey?.names)+'['+it.id+']'}}" />
 			
 				<g:input name="prefix" label="${message(code:'survey.validationrule.prefix.label')}" bean="${validation}" field="prefix"/>
 		 		<g:i18nRichTextarea name="messages" bean="${validation}" value="${validation.messages}" label="Messages" field="messages" height="150"  width="400" maxHeight="100" />
 		 		
-				<div class="row ${hasErrors(bean:validation, field:'dependencies', 'errors')}">
-					<label><g:message code="survey.validationrule.dependencies.label" default="Dependencies"/>: </label>
-				    <select id="dependencies-list" name="dependencies" multiple="true" class="ajax-search-field">
-						<g:if test="${validation.dependencies.size() != 0}">
-							<g:each in="${validation.dependencies}" var="dependency">
-								<option value="${dependency.id}" selected>
-									<g:i18n field="${dependency.dataElement.names}" />
-									[${dependency.id}]
-								</option>
-							</g:each>
-						</g:if>
-					</select>
-					<div class="error-list"><g:renderErrors bean="${validation}" field="dependencies" /></div>
-				</div>
-		
+		 		<g:selectFromList name="dependencies" label="${message(code:'survey.validationrule.dependencies.label')}" field="dependencies" optionKey="id" multiple="true"
+					ajaxLink="${createLink(controller:'surveyElement', action:'getAjaxData')}" from="${dependencies}" 
+					value="${validation.dependencies*.id}" bean="${validation}"
+					values="${dependencies.collect {i18n(field:it.dataElement.names)+' - '+i18n(field:it.surveyQuestion?.section?.names)+' - '+i18n(field:it.survey?.names)+'['+it.id+']'}}" />
+			
 				<div class="row">
 					<label><g:message code="survey.validationrule.allowoutlier.label" default="Allow Outlier"/></label>
 					<g:checkBox name="allowOutlier" value="${validation.allowOutlier}" />
 				</div>
 				
-				<g:textarea name="expression" label="Expression" bean="${validation}" field="expression" rows="5"/>
+				<g:textarea name="expression" label="Expression" bean="${validation}" field="expression" value="${validation.expression}" rows="5"/>
+				
 				<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${validation}" field="typeCodeString" 
 					from="${types}" value="${validation.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 			
@@ -76,30 +60,6 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {		
-		$("#dependencies-list").ajaxChosen({
-			type : 'GET',
-			dataType: 'json',
-			url : "${createLink(controller:'surveyElement', action:'getAjaxData')}"
-		}, function (data) {
-			var terms = {};
-			$.each(data.elements, function (i, val) {
-				terms[val.id] = val.surveyElement;
-			});
-			return terms;
-		});
-		
-		$("#elements-list").ajaxChosen({
-			type : 'GET',
-			dataType: 'json',
-			url : "${createLink(controller:'surveyElement', action:'getAjaxData')}"
-		}, function (data) {
-			var terms = {};
-			$.each(data.elements, function (i, val) {
-				terms[val.id] = val.surveyElement;
-			});
-			return terms;
-		});
-		
 		getDataElement(function(event){
 			if ($('.in-edition').size() == 1) {
 				var edition = $('.in-edition')[0]

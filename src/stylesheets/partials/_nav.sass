@@ -212,7 +212,7 @@
   padding: 5px 0 0 0
   position: absolute
   top: 25px
-  z-index: 1
+  z-index: 10
   +border-bottom-radius(3px)
   +border-top-right-radius(3px)
   +box-shadow(#ccc 2px 2px 3px, $dropdown - #111 0 0 8px 3px inset)
@@ -235,7 +235,7 @@
 
     a
       color: $primary
-      font-size: 10px
+      font-size: 11px
       font-weight: bold
       text-decoration: none
       +text-shadow(#fff, 0, 1px, 0)
@@ -366,6 +366,24 @@
   +pie-clearfix
   li
     margin-right: 0
+    &.settings
+      float: right
+      a
+        background: #fff
+        border: 1px solid #e3e3e3
+        color: primary
+        font-size: 11px
+        letter-spacing: 0.5px
+        margin: 8px
+        padding: 6px 12px 5px
+        +border-radius(3px)
+        +box-shadow(#eee 0 0 3px inset)
+        &:hover, &:focus, &.selected
+          background: #333
+          border: 1px solid #222
+          color: #fff
+          +box-shadow(#111 0 0 3px inset)
+          +text-shadow(#000 0 1px 0)
   a
     border-right: 1px solid #e3e3e3
     color: #666

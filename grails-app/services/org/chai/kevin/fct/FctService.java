@@ -55,7 +55,7 @@ public class FctService {
 			valueMap.put(child, targetMap);
 		}
 		
-		FctTable fctTable = new FctTable(totalMap, valueMap, targets, locationMap);
+		FctTable fctTable = new FctTable(totalMap, valueMap, targets);
 		if (log.isDebugEnabled()) log.debug("getFctTable(...)="+fctTable);
 		return fctTable;
 	}

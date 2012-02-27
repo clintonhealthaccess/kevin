@@ -76,7 +76,7 @@ public abstract class JSONValue {
 	}
 
 	public void setJsonObject(JSONObject object) {
-		if (this.value != object && !this.value.equals(object)) {
+		if (this.value != object) {
 			this.jsonValue = null;
 			this.value = object;
 			clearCache();

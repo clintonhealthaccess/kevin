@@ -20,10 +20,7 @@
 		<div class="wrapper">
 		    <h1 id="logo"><a href="${createLink(controller:'home', action:'index')}">DHSST</a></h1>
 		    
-			<g:if test="${flash.message}">
-				<!-- TODO add error class if it's an error -->
-				<div class="message">${flash.message}</div>
-        	</g:if>
+			
 		    
 			<ul class="locales" id="switcher">
 				<% def languageService = grailsApplication.mainContext.getBean('languageService') %>
@@ -84,8 +81,8 @@
 				<shiro:hasPermission permission="menu:survey">
 					<li><a class="${controllerName=='editSurvey'||controllerName=='summary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey" default="Survey"/></a></li>
 				</shiro:hasPermission>
-				<shiro:hasPermission permission="menu:planning">
-					<li><a class="${controllerName=='planning'?'active':''}" href="${createLink(controller: 'planning', action:'view')}"><g:message code="header.navigation.planning" default="Planning"/></a></li>
+				<shiro:hasPermission permission="menu:admin">
+					<li><a class="${controllerName=='editPlanning'?'active':''}" href="${createLink(controller: 'editPlanning', action:'view')}"><g:message code="header.navigation.planning" default="Planning"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:reports">
 					<li><a class="${controllerName=='dashboard'?'active':''}" href="${createLink(controller: 'dashboard', action:'view')}"><g:message code="header.navigation.reports" default="Reports"/></a></li>
@@ -103,19 +100,25 @@
 	  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label" default="DSR Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTargetCategory'?'active':''}" href="${createLink(controller: 'dsrTargetCategory', action:'list')}"><g:message code="dsr.targetcategory.label" default="DSR Target Category"/></a></li>
 	  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a></li>
+	  						<li><a class="${controllerName=='planning'?'active':''}" href="${createLink(controller: 'planning', action:'list')}"><g:message code="planning.label" default="Planning"/></a></li>
 	  						<li><a class="${controllerName=='location'?'active':''}" href="${createLink(controller: 'location', action:'list')}"><g:message code="location.label" default="Location"/></a></li>
 	  						<li><a class="${controllerName=='locationLevel'?'active':''}" href="${createLink(controller: 'locationLevel', action:'list')}"><g:message code="locationLevel.label" default="Location Level"/></a></li>
 	  						<li><a class="${controllerName=='dataLocation'?'active':''}" href="${createLink(controller: 'dataLocation', action:'list')}"><g:message code="dataLocation.label" default="Data Location"/></a></li>
 	  						<li><a class="${controllerName=='dataEntityType'?'active':''}" href="${createLink(controller: 'dataEntityType', action:'list')}"><g:message code="dataEntityType.label" default="Data Entity Type"/></a></li>
 	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'user', action:'list')}"><g:message code="user.label" default="User"/></a></li>
-							<li><a class="${controllerName=='importerEntity'?'active':''}" href="${createLink(controller: 'importerEntity', action:'importer')}"><g:message code="import.label" default="Import"/></a></li>
+							<li><a class="${controllerName=='importerEntity'?'active':''}" href="${createLink(controller: 'importerEntity', action:'importer')}"><g:message code="import.hrh.data.label" default="Import HRH Data"/></a></li>
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>
 	  		</ul>
 	  	</div>
-	</div>			
+	</div>
+		
 	<div id="content">
+	  <g:if test="${flash.message}">
+  		<!-- TODO add error class if it's an error -->
+  		<div class="message">${flash.message} <a href="#" class="delete-link">Turn off</a></div>
+    </g:if>
 	  <div class="wrapper">
 			<g:layoutBody />
 			<div class=clear></div>

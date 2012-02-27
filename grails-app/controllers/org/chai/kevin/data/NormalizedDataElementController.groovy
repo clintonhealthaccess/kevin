@@ -67,7 +67,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 	}
 
 	def saveEntity(def entity) {
-		if (entity.id != null) valueService.deleteValues(entity)
+		if (entity.id != null) valueService.deleteValues(entity, null, null)
 		
 		entity.setTimestamp(new Date());
 		entity.save()
@@ -79,7 +79,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 			flash.message = message(code: "normalizeddataelement.delete.hasreferencingdata", default: "Could not delete element, some other data still reference this element.")
 		}
 		else {
-			valueService.deleteValues(entity)
+			valueService.deleteValues(entity, null, null)
 			entity.delete()
 		}
 	}
@@ -92,13 +92,16 @@ class NormalizedDataElementController extends AbstractEntityController {
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		
-		// TODO bind expressions
+		// bind expression map
 		entity.expressionMap = [:]
 		Period.list().each { period ->
-			entity.expressionMap[period.id+''] = [:]
+			def periodMap = [:]
 			DataEntityType.list().each { group ->
-				entity.expressionMap[period.id+''][group.code] = params['expressionMap['+period.id+']['+group.code+']']
+				def expression = params['expressionMap['+period.id+']['+group.code+']']
+				periodMap[group.code] = expression==null?'':expression
 			}
+			// we bind the expression map last so everything is refreshed
+			entity.expressionMap[period.id+''] = periodMap
 		}
 		
 		log.debug(entity.expressionMap)
@@ -120,7 +123,6 @@ class NormalizedDataElementController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		
 		List<NormalizedDataElement> normalizedDataElements = NormalizedDataElement.list(params);
 		
 		render (view: '/entity/list' , model:[

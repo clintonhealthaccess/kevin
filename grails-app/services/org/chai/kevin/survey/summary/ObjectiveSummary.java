@@ -1,4 +1,4 @@
-package org.chai.kevin.survey;
+package org.chai.kevin.survey.summary;
 
 public class ObjectiveSummary {
 
