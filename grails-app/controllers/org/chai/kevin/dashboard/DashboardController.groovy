@@ -66,29 +66,32 @@ class DashboardController extends AbstractController {
 		}
 	}
 	
-	private def getDashboardEntity(def reportObjective) {		
-		DashboardEntity entity = dashboardService.getDashboardObjective(reportObjective)
-		if (entity == null) {
-			entity = dashboardService.getDashboardObjective(reportService.getRootObjective())
-		}
+	private def getDashboardEntity(def objective) {		
+		DashboardEntity entity = dashboardService.getDashboardObjective(objective)
 		return entity
 	}
 	
     def view = {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)
 		
+		def objective = null
+		def dashboardEntity = null
 		def programDashboard = null		
 		def locationDashboard = null
 		
-		Period period = getPeriod()							
-		ReportObjective objective = getObjective()
-		DashboardEntity dashboardEntity = getDashboardEntity(objective)		
+		Period period = getPeriod()									
+		objective = getObjective()
+		dashboardEntity = getDashboardEntity(objective)
+		if(dashboardEntity == null){
+			 objective = reportService.getRootObjective()
+			 dashboardEntity = getDashboardEntity(objective)
+		}
 		LocationEntity location = getLocation()
 		List<DataEntityType> locationTypes = getLocationTypes()
 		
 		if (period != null && objective != null && dashboardEntity != null && location != null && locationTypes != null) {			
 			if (log.isInfoEnabled()){
-				log.info("compare dashboard for period: "+period.id+
+				log.info("dashboard for period: "+period.id+
 					", location: "+location.id+
 					", objective:"+objective.id);
 			}
@@ -119,7 +122,7 @@ class DashboardController extends AbstractController {
 		
 		Period period = getPeriod()	
 		ReportObjective objective = getObjective()
-		DashboardEntity dashboardEntity = getDashboardEntity(objective)		
+		DashboardEntity dashboardEntity = getDashboardEntity(objective)	
 		LocationEntity location = getLocation()
 		List<DataEntityType> locationTypes = getLocationTypes()
 		

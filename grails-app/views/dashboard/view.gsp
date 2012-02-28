@@ -25,26 +25,30 @@
 				<ul class='clearfix' id='questions'>
   					<li class='question push-20'>
 						<g:render template="/templates/reportTableHeader" model="[table:'program']"/>						
-						<g:if test="${programDashboard.hasData()}">
+						<g:if test="${programDashboard != null && programDashboard.hasData()}">
 							<g:render template="/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard]"/>
 							<div class='horizontal-graph-wrap'>
 								<g:render template="/dashboard/reportProgramTable" model="[dashboard:programDashboard]"/>
 			                </div>
 		                </g:if>
 		                <g:else>
-		                	<g:message code="dashboard.report.table.noselection.label"/>
+		                	<div class='horizontal-graph-wrap'>
+		                		<g:message code="dashboard.report.table.noselection.label"/>
+		                	</div>
 		                </g:else>
 	                </li>
 	                <li class='question push-10'>
 		                <g:render template="/templates/reportTableHeader" model="[table:'location']"/>						
-		                <g:if test="${locationDashboard.hasData()}">
+		                <g:if test="${locationDashboard != null && locationDashboard.hasData()}">
 		                <g:render template="/dashboard/reportCompareFilter" model="[table:'location', dashboard:locationDashboard]"/>
 							<div class='horizontal-graph-wrap'>
 								<g:render template="/dashboard/reportLocationTable" model="[dashboard:locationDashboard]"/>			                  
 							</div>
 		                </g:if>
 		                <g:else>
-		                	<g:message code="dashboard.report.table.noselection.label"/>
+		                	<div class='horizontal-graph-wrap'>
+		                		<g:message code="dashboard.report.table.noselection.label"/>
+		                	</div>
 		                </g:else>
 		            </li>
 		        </ul>    
