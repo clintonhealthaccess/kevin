@@ -13,7 +13,7 @@
 		<div class="hidden dropdown-list js_dropdown-list">
 			<g:if test="${locationFilterTree != null && !locationFilterTree.empty}">
 				<ul>
-					<g:render template="/tags/filter/locationTree" 
+					<g:render template="/tags/filter/locationTree"
 						model="[
 							controller: controllerName, 
 							action: actionName,
