@@ -6,8 +6,6 @@ import javax.persistence.Embeddable;
 
 import org.chai.kevin.json.JSONMap;
 
-import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
-
 @Embeddable
 public class ExpressionMap extends JSONMap<Map<String, String>> {
 
