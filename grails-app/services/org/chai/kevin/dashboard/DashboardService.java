@@ -94,8 +94,9 @@ public class DashboardService {
 		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();
 		if(compare) locationEntities.add(location);
 		else {
-			locationEntities.addAll(location.getChildren(getSkipLocationLevels(skipLevels)));
-			locationEntities.addAll(location.getDataEntities(getSkipLocationLevels(skipLevels), types));
+			Set<LocationLevel> skips = getSkipLocationLevels(skipLevels);
+			locationEntities.addAll(location.getChildrenWithDataEntities(types, skips));
+			locationEntities.addAll(location.getDataEntities(skips, types));
 		}
 		
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		

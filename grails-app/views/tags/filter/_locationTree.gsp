@@ -3,7 +3,7 @@
 	<% def locationLinkParams = new HashMap(linkParams) %>
 	<% locationLinkParams['location'] = location.id+"" %>
 	<% linkParams = locationLinkParams %>
-	<g:if test="${location.children != null && !location.children.empty && !locationFilterTree.disjoint(location.children)}">
+	<g:if test="${location.children != null && !location.children.empty && !locationFilterTree.disjoint(location.children)}">	
 		<a class="foldable-toggle" href="#">(toggle)</a>
 	</g:if>
 	<a class="dropdown-link js_dropdown-link parameter" data-type="location"
@@ -13,7 +13,7 @@
 	</a>
 	<g:if test="${location.children != null && !location.children.empty}">		
 		<g:each in="${location.children}" var="child">
-			<g:if test="locationFilterTree.contains(child)">
+			<g:if test="${locationFilterTree.contains(child)}">
 				<ul class="location-fold" id="location-fold-${location.id}">
 					<g:render template="/tags/filter/locationTree"
 						model="[controller: controller, 
