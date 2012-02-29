@@ -16,20 +16,20 @@
 </g:if>
 <g:else>
 	<g:if test="${locationTree != null && !locationTree.empty && locationTree.contains(location)}">
-		<tr class="${first == 0 ? 'tree_sign_minus' : 'tree_sign_plus'}" >
+		<tr class="tree_sign_plus" >
 			<td><span style="margin-left: ${level*20}px;"><g:i18n field="${location.names}"/></span></td>
 			<g:each in="${dsrTable.targets}" var="target">
 				<td></td>
 			</g:each>
 		</tr>
-		<tr class="sub_tree" style="display:${first == 0 ? 'table-row' : 'none' };" >
+		<tr class="sub_tree" style="display:none;">
 			<td class="bucket" colspan="${dsrTable.targets.size()+1}">				
 				<table>
 					<tbody>
 						<g:if test="${location.children != null && !location.children.empty}">							
-							<g:each in="${location.children}" var="child" status="i">								
+							<g:each in="${location.children}" var="child">								
 								<g:render template="/dsr/reportProgramTableTree"
-								model="[location:child, first:i, level:level+1, locationTree:locationTree]"/>								
+								model="[location:child, level:level+1, locationTree:locationTree]"/>								
 							</g:each>
 						</g:if>
 						<g:if test="${location.dataLocationEntities != null && !location.dataLocationEntities.empty}">							
