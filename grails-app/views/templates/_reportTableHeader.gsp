@@ -22,4 +22,17 @@
 	</g:elseif>
 	<g:else></g:else>
 </h4>
-<a class="level-up" href="#">Level Up</a>
+	<g:if test="${controllerName == 'dashboard'}">
+		<% def levelUpLinkParams = new HashMap(linkParams) %>
+		<g:if test="${table == 'program'}">						
+			<% if(currentObjective.parent != null) levelUpLinkParams['objective'] = currentObjective.parent.id+"" %>
+			<% linkParams = levelUpLinkParams %>
+			<a class="level-up" href="${createLink(controller:'dashboard', action:actionName, params:linkParams)}">Level Up</a>	  
+	  	</g:if>
+		<g:elseif test="${table == 'location'}">
+			<% if(currentLocation.parent != null) levelUpLinkParams['location'] = currentLocation.parent?.id+"" %>
+			<% linkParams = levelUpLinkParams %>
+			<a class="level-up" href="${createLink(controller:'dashboard', action:actionName, params:linkParams)}">Level Up</a>		  
+		</g:elseif>
+		<g:else></g:else>
+	</g:if>

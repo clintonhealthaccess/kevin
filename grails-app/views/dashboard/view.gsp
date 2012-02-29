@@ -24,7 +24,7 @@
 				<g:render template="/templates/reportTabHelp"/>
 				<ul class='clearfix' id='questions'>
   					<li class='question push-20'>
-						<g:render template="/templates/reportTableHeader" model="[table:'program']"/>						
+						<g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>						
 						<g:if test="${programDashboard != null && programDashboard.hasData()}">
 							<g:render template="/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard]"/>
 							<div class='horizontal-graph-wrap'>
@@ -38,7 +38,7 @@
 		                </g:else>
 	                </li>
 	                <li class='question push-10'>
-		                <g:render template="/templates/reportTableHeader" model="[table:'location']"/>						
+		                <g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>						
 		                <g:if test="${locationDashboard != null && locationDashboard.hasData()}">
 		                <g:render template="/dashboard/reportCompareFilter" model="[table:'location', dashboard:locationDashboard]"/>
 							<div class='horizontal-graph-wrap'>
