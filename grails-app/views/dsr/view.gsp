@@ -21,7 +21,7 @@
 				<g:render template="/templates/reportTabHelp"/>			
 				<ul id='questions'>
 	              <li class='question'>
-	                <g:render template="/templates/reportTableHeader"/>	                
+	                <g:render template="/templates/reportTableHeader" model="[linkParams:params]"/>	                
 	                <g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>
 	              </li>
 	              <g:if test="${dsrTable.hasData()}">
