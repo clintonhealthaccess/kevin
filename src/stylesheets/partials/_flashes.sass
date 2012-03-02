@@ -51,7 +51,7 @@
       opacity: 1
   &.moved
     float: right
-    margin-top: -42px
+    //margin-top: -42px
     position: relative
     z-index: 11
   
@@ -196,26 +196,31 @@
   cursor: wait
   opacity: 0.5
   
+
 // Standard flash messages
+
 .message
-  background: $yes
-  border: 1px solid $yes - #111
+  background: #999
+  border: 1px solid #888
   color: #fff
   font-size: 11px
   font-weight: bold
-  margin: 0 275px
-  opacity: 0.8
-  padding: 5px 10px
-  position: absolute
+  margin: 1px 0 0
+  opacity: 0.9
+  padding: 8px 10px 7px
   text-align: center
-  top: 0
-  width: 430px
-  +border-bottom-radius(3px)
-  +box-shadow(#ccc, 0, 1px, 3px)
-  +text-shadow($yes - #222, 0, 1px, 0)
+  +box-shadow(rgba(0, 0, 0, 0.25) 0 2px 3px)
+  +text-shadow(#666, 0, 1px, 0)
+  
+  &.success
+    background: $yes
+    border: 1px solid $yes - #111
+    +text-shadow($yes - #333, 0, 1px, 0)
+    
   &.error
     background: $no
     border: 1px solid $no - #111
-    +text-shadow($no - #222, 0, 1px, 0)
+    +text-shadow($no - #333, 0, 1px, 0)
+    
   &:hover
     opacity: 1

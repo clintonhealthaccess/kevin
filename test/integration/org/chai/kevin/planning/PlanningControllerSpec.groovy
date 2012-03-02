@@ -1,37 +1,67 @@
 package org.chai.kevin.planning
 
-import org.chai.kevin.location.DataLocationEntity;
-
 class PlanningControllerSpec extends PlanningIntegrationTests {
-	
+
 	def planningController
 	
-	def "accessing index page redirects to proper page - normal user to summary page"() {
+	def "planning list"() {
 		setup:
-		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def planning = newPlanning(period)
 		planningController = new PlanningController()
 		
 		when:
-		planningController.view()
+		planningController.list()
 		
 		then:
-		planningController.response.redirectedUrl == '/planning/summaryPage'
+		planningController.modelAndView.model.entities.equals([planning])
 	}
 	
-	
-	def "accessing index page redirects to proper page - data entry user to own planning page"() {
+	def "create planning works ok"() {
 		setup:
-		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		def period = newPeriod()
+		planningController = new PlanningController()
+		
+		when:
+		planningController.params['period.id'] = period.id
+		planningController.saveWithoutTokenCheck()
+
+		then:
+		Planning.count() == 1
+		Planning.list()[0].period.equals(period)
+	}
+	
+	def "create planning with active flag resets active flag on other planning"() {
+		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period, true)
 		planningController = new PlanningController()
-		
+
 		when:
-		planningController.view()
+		planningController.params['period.id'] = period.id
+		planningController.params.active = true
+		planningController.saveWithoutTokenCheck()
 		
 		then:
-		planningController.response.redirectedUrl == '/planning/overview/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
+		Planning.count() == 2
+		Planning.list()[1].active == true
+		Planning.list()[0].active == false
+		
+	}
+	
+	def "create planning with active flag does not reset active flag on other planning if planning incomplete"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period, true)
+		planningController = new PlanningController()
+
+		when:
+		planningController.params.active = true
+		planningController.saveWithoutTokenCheck()
+		
+		then:
+		Planning.count() == 1
+		Planning.list()[0].active == true
 	}
 	
 }

@@ -32,11 +32,11 @@
 				<td>${section.order}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
-						<a class="selected manage-btn" href="#" data-type="section"><g:message code="entity.list.manage.label" default="Manage"/></a>
+						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label" default="Manage"/></a>
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'question', action:'list',params:[surveyId:objective.survey?.id,objectiveId: objective?.id,sectionId: section.id])}">
+									<a href="${createLink(controller:'question', action:'list',params:['section.id': section.id])}">
 										<g:message code="default.list.label" args="[message(code:'survey.question.label',default:'Questions')]" />
 									</a>
 								</li>

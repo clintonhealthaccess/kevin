@@ -6,7 +6,7 @@
 	<th></th>
   </tr>
 </thead>
-<g:if test="dashboard.organisations != null && !dashboard.organisations.empty}">
+<g:if test="${dashboard != null && dashboard.locations != null && !dashboard.locations.empty}">
 	<tbody>
 		<g:each in="${dashboard.locations}" var="location">
 			<tr>

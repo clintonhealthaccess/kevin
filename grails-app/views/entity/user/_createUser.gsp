@@ -6,14 +6,15 @@
 	</div>
 	<div class="data-field-column">
 		<g:form url="[controller:'user', action:'save', params: [targetURI: targetURI]]" useToken="true">
-		
 			<g:input name="username" label="Username" bean="${user}" field="username"/>
 			<g:input name="firstname" label="First name" bean="${user}" field="firstname"/>
 			<g:input name="lastname" label="Last name" bean="${user}" field="lastname"/>
 			<g:input name="location" label="Location" bean="${user}" field="location"/>
 			<g:input name="email" label="Email" bean="${user}" field="email"/>
 			<g:input name="permissionString" label="Permission" bean="${user}" field="permissionString"/>
-			
+			<g:input name="password" label="Password" type="password" bean="${cmd}" field="password"/>
+			<g:input name="repeat" label="Repeat password" type="password" bean="${cmd}"  field="repeat"/>
+						
 			<div class="row">
 				<label><g:message code="user.confirmed.label" default="Confirmed"/></label>
 				<g:checkBox name="confirmed" value="${user.confirmed}" />
@@ -28,7 +29,7 @@
 				from="${roles}" value="${user.roles*.id}" optionValue="name" optionKey="id" multiple="true"/>
 			
 			<g:if test="${user.id != null}">
-				<input type="hidden" name="id" value="${user.id}"></input>
+				<input type="hidden" name="id" value="${user.id}"/>
 			</g:if>
 			
 			<div class="row">

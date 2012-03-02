@@ -96,4 +96,23 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		normalizedDataElementController.modelAndView.model.entityCount == 1
 	}
 	
+	def "create normalized element with expressions"() {
+		setup:
+		def period1 = newPeriod()
+		def period2 = newPeriod()
+		def type1 = newDataEntityType("type1")
+		normalizedDataElementController = new NormalizedDataElementController()
+
+		when:
+		normalizedDataElementController.params.type = "{\"type\":\"number\"}"
+		normalizedDataElementController.params.code = "code"
+		normalizedDataElementController.params['expressionMap['+period1.id+']['+type1.code+']'] = '123'
+		normalizedDataElementController.params['expressionMap['+period2.id+']['+type1.code+']'] = '456'
+		normalizedDataElementController.saveWithoutTokenCheck()
+		
+		then:
+		NormalizedDataElement.count() == 1
+		NormalizedDataElement.list()[0].expressionMap.equals( [(period1.id+''):[(type1.code):'123'], (period2.id+''):[(type1.code):'456']] )
+		
+	}	
 }

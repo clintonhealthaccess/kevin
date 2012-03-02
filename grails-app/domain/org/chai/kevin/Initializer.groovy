@@ -175,7 +175,6 @@ class Initializer {
 			
 			def butaro = new DataLocationEntity(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
 			def kivuye = new DataLocationEntity(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
-
 			burera.dataEntities = [butaro, kivuye]
 			burera.save(failOnError: true)
 		}
@@ -303,6 +302,7 @@ class Initializer {
 			def planningElement = new RawDataElement(names:j(["en":"Element Planning"]), descriptions:j([:]), code:"PLANNINGELEMENT",
 				type: Type.TYPE_LIST(Type.TYPE_MAP([
 					"basic": Type.TYPE_MAP([
+						"description": Type.TYPE_STRING(),
 						"activity": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 						"area": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 						"instances": Type.TYPE_NUMBER(),
@@ -555,7 +555,6 @@ class Initializer {
 			siyelo1.save(failOnError: true, flush:true)
 			siyelo2.save(failOnError: true, flush:true)
 			siyelo3.save(failOnError: true, flush:true)
-			
 			planningElement.save(failOnError: true, flush:true)
 			
 			// data value
@@ -678,7 +677,6 @@ class Initializer {
 		}
 	}
 
-
 	static def createMaps() {
 		if (!MapsTarget.count()) {
 			def calculation1 = new Average(expression: "\$"+NormalizedDataElement.findByCode("Element 1").id, code: "Maps average 1", timestamp:new Date())
@@ -760,9 +758,7 @@ class Initializer {
 
 			def nursea1 = new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
-
 					calculation: calculation1, objective: staffing,
-
 					weight: 1, order: 1).save(failOnError: true, flush:true)
 
 			def calculation2 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Average constant 20", timestamp:new Date())
@@ -770,9 +766,7 @@ class Initializer {
 
 			def nursea2 = new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
-
 					calculation: calculation2,  objective: staffing,
-
 					weight: 1, order: 2).save(failOnError: true, flush:true)
 
 			def calculation3 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Average 1", timestamp:new Date())
@@ -780,10 +774,9 @@ class Initializer {
 
 			def target1 = new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
-
 					calculation: calculation3,  objective: staffing,
-
 					weight: 1, order: 3).save(failOnError: true, flush:true)
+
 			def calculation4 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Average 2", timestamp:new Date())
 			calculation4.save(failOnError: true)
 
@@ -807,7 +800,6 @@ class Initializer {
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
 					calculation: calculation6, objective: staffing,
 					weight: 1, order: 6).save(failOnError: true, flush:true)
-
 
 			nursea1.save(failOnError: true)
 			nursea2.save(failOnError: true)
@@ -1054,7 +1046,8 @@ class Initializer {
 		
 		def planning = new Planning(
 			period: Period.list()[0],
-			names: j(["en":"Planning 2011"])
+			names: j(["en":"Planning 2011"]),
+			active: true
 		).save(failOnError: true)
 		
 		def planningType = new PlanningType(
@@ -1062,14 +1055,15 @@ class Initializer {
 			namesPlural: j(["en":"Activities"]),
 //			sections: ["[_].key1","[_].key2"],
 			sectionDescriptions: [
-				"[_].basic": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].staffing": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].consumables": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].monthly_breakdown": j(["en":"Lorem ipsum blablablabla"]),
-				"[_].funding_sources": j(["en":"Lorem ipsum blablablabla"])
+				"[_].basic": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].staffing": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].consumables": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].monthly_breakdown": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
 			],
 			headers: [
 				"[_].basic": j(["en":"Basic Information"]),
+				"[_].basic.description": j(["en":"Description"]),
 				"[_].basic.activity": j(["en":"Activity"]),
 				"[_].basic.area": j(["en":"Service area"]),
 				"[_].basic.instances": j(["en":"Number of instances"]),
@@ -1120,64 +1114,61 @@ class Initializer {
 			],
 			dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
 			discriminator: '[_].basic.activity',
+			fixedHeader: '[_].basic.description',
 			planning: planning
 		).save(failOnError: true);
-		
 		planning.planningTypes << planningType
 		planning.save(failOnError: true)
 	
 		def sumCost1 = new Sum(
-			code: 'SUMPLANNING', 
-			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.key0 == "value1")[0].key1.key12 * 2'
+			code: 'SUMPLANNING1', 
+			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.basic.activity == "value1")[0].basic.instances * 2'
 		).save(failOnError: true);
 	
 		def planningCost1 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.INCOMING,
-			discriminatorValue: 'value1',
+			discriminatorValueString: 'value1',
 			sum: sumCost1,
-			section: '.key1',
-			groupSection: '.key1',
+			section: '[_].staffing',
+			groupSection: '[_].staffing',
 			names: j(["en":"Salaries"])
-		)
+		).save(failOnError: true)
 	
-		planningType.costs.add(planningCost1)
+		def sumCost2 = new Sum(
+			code: 'SUMPLANNING2',
+			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.basic.activity == "value1")[0].basic.instances * 10'
+		).save(failOnError: true);
+	
+		def planningCost2 = new PlanningCost(
+			planningType: planningType,
+			type: PlanningCostType.OUTGOING,
+			discriminatorValueString: 'value1',
+			sum: sumCost2,
+			section: '[_].consumables',
+			names: j(["en":"Patient"])
+		).save(failOnError: true)
+		
+		planningType.costs << planningCost1
+		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-		/* START WORKFLOW */
-		//			def wizard = new Wizard(
-		//				names: j(["en":"Wizard question"]),
-		//				descriptions: j(["en":"Help text"]),
-		//				fixedHeaderPrefix: "[_].key1",
-		//				order: 6,
-		//				typeCodeString: "District Hospital,Health Center"
-		//			)
-		//			services.addQuestion(wizard)
-		//			services.save(failOnError:true, flush:true)
-		//
-		//			def wizardElement = new SurveyElement(
-		//					dataElement: RawDataElement.findByCode("LISTMAP2"),
-		//					surveyQuestion: serviceQ6,
-		//					headers: [
-		//						"[_].key1": j(["en":"Basic Information"]),
-		//						"[_].key1.key11": j(["en":"Name"]),
-		//						"[_].key1.key12": j(["en":"Number"]),
-		//						"[_].key2": j(["en":"Supply and Maintenance"]),
-		//						"[_].key2.key21": j(["en":"Supplier Name"]),
-		//						"[_].key2.key22": j(["en":"Supplier Type"]),
-		//					]).save(failOnError: true)
-		//			wizard.surveyElement = wizardElement
-		//			wizard.save(failOnError: true, flush: true)
-		//
-		//			def step1 = new WizardStep(wizard: wizard, prefix: "[_].key1.key11").save(failOnError: true)
-		//			def step2 = new WizardStep(wizard: wizard, prefix: "[_].key1.key16").save(failOnError: true)
-		//
-		//			wizard.steps << [step1, step2]
-		//			wizard.save(failOnError: true, flush: true)
-		//			services.addQuestion(wizard)
-		/* END WORKFLOW */
+		new RawDataElementValue(
+			data: RawDataElement.findByCode("PLANNINGELEMENT"),
+			entity: DataLocationEntity.findByCode("Butaro DH"),
+			period: Period.list()[0],
+			value: Value.VALUE_LIST([
+				Value.VALUE_MAP([
+					"basic": Value.VALUE_MAP([
+						"activity": Value.VALUE_STRING("value1"), 
+						"instances": Value.VALUE_NUMBER(10)
+					])
+				])
+			]),
+			timestamp: new Date()
+		).save(failOnError: true)
 	}
-
+	
 	static def createQuestionaire(){
 		if(!Survey.count()){
 
@@ -1447,7 +1438,6 @@ class Initializer {
 
 //					order: o(["en":5]),
 					typeCodeString: "District Hospital,Health Center"
-
 					)
 			services.addQuestion(serviceQ5)
 			services.save(failOnError:true, flush:true)
@@ -1575,7 +1565,6 @@ class Initializer {
 
 //					order: o(["en":2]),
 					typeCodeString: "District Hospital,Health Center"
-
 					)
 			staffing.addQuestion(checkBoxQ)
 			staffing.save(failOnError:true, flush: true)
@@ -1590,7 +1579,6 @@ class Initializer {
 					order: 2,
 //					order: o(["en":2]),
 					typeCodeString: "District Hospital,Health Center",
-
 					surveyElement: surveyElementChecboxQ1
 					)
 			def option2 = new SurveyCheckboxOption(
@@ -1599,7 +1587,6 @@ class Initializer {
 
 //					order: o(["en":1]),
 					typeCodeString: "District Hospital",
-
 					surveyElement: surveyElementChecboxQ2
 					)
 			def option3 = new SurveyCheckboxOption(
@@ -1731,7 +1718,6 @@ class Initializer {
 
 //					order: o(["en":1]),
 					typeCodeString: "Health Center,District Hospital"
-
 					)
 			staffing.addQuestion(tableQ)
 			staffing.save(failOnError:true, flush: true)
@@ -1743,7 +1729,6 @@ class Initializer {
 
 //					order: o(["en":1]),
 					typeCodeString: "District Hospital,Health Center",
-
 					question: tableQ
 					)
 			def tabColumnTwo = new SurveyTableColumn(
@@ -1752,7 +1737,6 @@ class Initializer {
 
 //					order: o(["en":2]),
 					typeCodeString: "District Hospital,Health Center",
-
 					question: tableQ
 					)
 			def tabColumnThree = new SurveyTableColumn(
@@ -1761,7 +1745,6 @@ class Initializer {
 
 //					order: o(["en":3]),
 					typeCodeString: "Health Center",
-
 					question: tableQ
 					)
 			def tabColumnFour = new SurveyTableColumn(

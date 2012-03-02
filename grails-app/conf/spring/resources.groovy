@@ -20,11 +20,11 @@ import org.chai.kevin.export.ExportDataElementService;
 import org.chai.kevin.fct.FctService
 import org.chai.kevin.importer.ImporterService;
 import org.chai.kevin.maps.MapsService
-import org.chai.kevin.survey.SummaryService
 import org.chai.kevin.survey.SurveyCopyService
 import org.chai.kevin.survey.SurveyExportService
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveyValidationService
+import org.chai.kevin.survey.summary.SummaryService;
 import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.RefreshValueService;
 import org.chai.kevin.value.ValidationService;
@@ -81,6 +81,7 @@ beans = {
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService=ref("dataService")
+
 	}
 
 	validationService(ValidationService){
@@ -209,6 +210,8 @@ beans = {
 	planningService(PlanningService) {
 		valueService = ref("valueService")
 		dataService = ref("dataService")
+		locationService = ref("locationService")
+		sessionFactory = ref("sessionFactory")
 		refreshValueService = ref("refreshValueService")
 	}
 	

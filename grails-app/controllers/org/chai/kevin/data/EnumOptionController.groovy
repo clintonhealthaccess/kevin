@@ -49,10 +49,7 @@ class EnumOptionController extends AbstractEntityController {
 	}
 	
 	def createEntity(){  
-		def entity = new EnumOption();
-		//FIXME find a better to do this
-		if (params['enumId']) entity.enume = Enum.get(params.int('enumId'))
-		return entity;
+		return new EnumOption();
 	}
 	
 	def getLabel() {
@@ -90,21 +87,24 @@ class EnumOptionController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList();
+		Enum enume = Enum.get(params.int('enume.id'));
 		
-		Enum enume = Enum.get(params.int('enumId'));
-		
-		List<EnumOption> options = enume.enumOptions;
-		Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
-		
-		def max = Math.min(params['offset']+params['max'], options.size())
-		
-		render (view: '/entity/list', model:[
-			entities: options.subList(params['offset'], max),
-			template: "data/enumOptionList",
-			entityCount: options.size(),
-			code: getLabel(),
-			enumeId: enume.id
-		])
+		if (enume == null) {
+			response.sendError(404)
+		}
+		else {
+			List<EnumOption> options = enume.enumOptions;
+			Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
+			
+			def max = Math.min(params['offset']+params['max'], options.size())
+			
+			render (view: '/entity/list', model:[
+				entities: options.subList(params['offset'], max),
+				template: "data/enumOptionList",
+				entityCount: options.size(),
+				code: getLabel(),
+			])
+		}
 	}
 		
 }

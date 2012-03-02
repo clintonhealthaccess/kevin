@@ -45,8 +45,6 @@ class ImporterEntityController extends AbstractController {
 	ImporterService importerService;
 	final String IMPORT_FORM = "import";
 	final String IMPORT_OUTPUT = "importoutput";
-	
-
 	def importer = {
 		this.getModel(null,null,IMPORT_FORM);
 	}

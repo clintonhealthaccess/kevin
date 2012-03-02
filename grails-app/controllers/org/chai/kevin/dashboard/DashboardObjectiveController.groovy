@@ -103,7 +103,6 @@ class DashboardObjectiveController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		
 		List<DashboardObjective> objectives = DashboardObjective.list(params);
 		
 		render (view: '/entity/list', model:[

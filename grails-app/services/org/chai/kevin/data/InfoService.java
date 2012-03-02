@@ -74,7 +74,7 @@ public class InfoService {
 		CalculationInfo info = null;
 		CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, entity, period, types);
 		if (calculationValue != null) {
-			List<DataLocationEntity> facilities = locationService.getDataEntities(entity);
+			List<DataLocationEntity> facilities = entity.collectDataLocationEntities(types, null);
 			Map<String, DataElement> dataMap = expressionService.getDataInExpression(calculation.getExpression(), DataElement.class);
 			List<DataElement<?>> dataElements = new ArrayList<DataElement<?>>();
 			for (DataElement<?> value : dataMap.values()) {

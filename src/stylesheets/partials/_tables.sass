@@ -160,7 +160,31 @@
         > span
           display: inline-block
           padding-left: 20px
-          
+
+  &.budget
+    td, th
+      width: 93px
+      a
+        color: #555
+        font-size: 11px
+        text-decoration: none
+        &:hover, &:focus
+          color: $primary
+      &:first-child
+        text-align: left
+        width: 200px
+        > span
+          display: inline-block
+          padding-left: 20px
+      &.status
+        width: 20px
+        &.invalid
+          background: url("../images/icons/status_invalid.png") no-repeat center
+          height: 16px
+        &.incomplete
+          background: url("../images/icons/status_incomplete.png") no-repeat center
+          height: 16px
+
   tr.total td
     background: $filler
     border-top: 1px solid $dropdown !important

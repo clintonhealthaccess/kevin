@@ -29,7 +29,6 @@ package org.chai.kevin.location
 */
 
 import java.sql.Types;
-
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType
@@ -57,27 +56,7 @@ class LocationServiceSpec extends IntegrationTests {
 		BURERA		| COUNTRY	| []
 	}
 	
-	def "get data entities for location"() {
-		setup:
-		setupLocationTree()
-		
-		expect:
-		def typeList = types.collect{DataEntityType.findByCode(it)}
-		locationService.getDataEntities(LocationEntity.findByCode(location), typeList.toArray(new DataEntityType[typeList.size()])).containsAll(expectedEntities.collect{DataLocationEntity.findByCode(it)})
-		
-		where:
-		location	| types												| expectedEntities
-		RWANDA		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]	| [BUTARO, KIVUYE]
-		RWANDA		| [DISTRICT_HOSPITAL_GROUP]							| [BUTARO]
-		NORTH		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]	| [BUTARO, KIVUYE]
-		NORTH		| [DISTRICT_HOSPITAL_GROUP]							| [BUTARO]
-	}
-	
-	def "get data entities for data entity"() {
-		
-	}
-	
-	def "get parent of level for location for location"() {
+	def "get parent of level for location"() {
 		setup:
 		setupLocationTree()
 		
@@ -88,10 +67,6 @@ class LocationServiceSpec extends IntegrationTests {
 		entity	| level		| expectedLocation
 		NORTH	| COUNTRY	| RWANDA
 		BURERA	| COUNTRY	| RWANDA
-		
-	}
-	
-	def "get parent of level for location for data entity"() {
 		
 	}
 	
@@ -133,10 +108,9 @@ class LocationServiceSpec extends IntegrationTests {
 		then:
 		locationEntTwo == null
 		!locationEntTwo.equals(locationEntity)
-		
-		
+				
 	}
-
+	
 	def "search location"() {
 		setup:
 		setupLocationTree()
@@ -152,6 +126,5 @@ class LocationServiceSpec extends IntegrationTests {
 		"Bur"	| [BURERA]
 		"Nor"	| [NORTH]
 		"n/a"	| []
-	}
-		
+	}		
 }

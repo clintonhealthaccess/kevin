@@ -160,7 +160,8 @@ security.shiro.authc.required = false
 				   'org.codehaus.groovy.grails.plugins', // plugins
 				   'net.sf.ehcache.hibernate',
 				   'grails.app.services.org.chai.kevin.survey.SurveyElementService',
-//				   'org.chai.kevin.JaqlService',
+				   'org.chai.kevin.JaqlService',
+				   'org.chai.kevin.ExpressionService',
 				   'org.springframework',
 				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.hibernate'
@@ -170,6 +171,14 @@ security.shiro.authc.required = false
 
 		}
 //	}
+//	test {
+//		log4j = {
+//			root {
+//				error
+//			}	
+//		}
+//	}
+//}
 //	production {
 //		log4j = {
 //			appenders {
@@ -212,23 +221,19 @@ google.analytics.webPropertyID = "UA-xxxxxx-x"
 
 site.languages=["en","fr","rw"]
 site.fallback.language="en"
-site.admin=true
 site.entity.list.max=40
 site.period=0
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 
-type.checked=["District Hospital","Health Center"]
+site.locationtype.checked=["District Hospital","Health Center"]
 
-dashboard.objective.root="Strategic Programs"
 dashboard.skip.levels=[]
 cost.skip.levels=[]
 export.skip.levels=["Country"]
 
 info.group.level="District"
 dsr.group.level="District"
-
-period.type = "Monthly"
 
 /**
  * Configuration file override

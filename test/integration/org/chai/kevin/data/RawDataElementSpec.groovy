@@ -18,19 +18,20 @@ class RawDataElementSpec extends IntegrationTests {
 		thrown ValidationException
 	}
 	
-	def "data element code is unique"() {
-		when:
-		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
-		
-		then:
-		RawDataElement.count() == 1;
-		
-		when:
-		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
-		
-		then:
-		thrown ValidationException
-	}
+	// TODO uncomment when GRAILS-8615 is fixed 
+//	def "data element code is unique"() {
+//		when:
+//		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
+//		
+//		then:
+//		RawDataElement.count() == 1;
+//		
+//		when:
+//		new RawDataElement(code: CODE(1), type: Type.TYPE_NUMBER()).save(failOnError: true)
+//		
+//		then:
+//		thrown ValidationException
+//	}
 	
 	def "data element enum is present when type is enum"() {
 		when:

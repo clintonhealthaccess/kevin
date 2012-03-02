@@ -8,8 +8,9 @@
 				<g:each in="${periods}" var="period">
 					<% def periodLinkParams = new HashMap(linkParams) %>
 					<% periodLinkParams << [period:period.id] %>
+					<% linkParams = periodLinkParams %>
 					<li>
-						<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:periodLinkParams)}">
+						<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:linkParams)}">
 							<span><g:dateFormat format="yyyy" date="${period.startDate}" /></span> 
 						</a>
 					</li>

@@ -277,6 +277,7 @@ public class Type extends JSONValue {
 	}
 	
 	@Transient
+
 	// TODO write javadoc
 	public Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, Set<String> attributes, Sanitizer sanitizer) {
 		return mergeValueFromMap(oldValue, map, prefix, prefix, attributes, sanitizer);
@@ -285,6 +286,7 @@ public class Type extends JSONValue {
 	@Transient
 	// TODO write javadoc
 	private Value mergeValueFromMap(Value oldValue, Map<String, Object> map, String prefix, String genericPrefix, Set<String> attributes, Sanitizer sanitizer) {
+
 		try {
 			// first we construct the jsonobject containing the value only
 			JSONObject object = new JSONObject();
@@ -309,6 +311,7 @@ public class Type extends JSONValue {
 						// we modify existing lines
 						// we don't modify the list but merge the values inside it
 						if (!oldValue.isNull()) { 
+
 							List<Integer> indexList = Type.getIndexList(map, prefix+".indexes");
 							for (int i = 0; i < oldValue.getListValue().size(); i++) {
 								if (indexList.size() > i) array1.add(getListType().mergeValueFromMap(oldValue.getListValue().get(i), map, prefix+"["+indexList.get(i)+"]", genericPrefix+"[_]", attributes, sanitizer).getJsonObject());
@@ -774,6 +777,14 @@ public class Type extends JSONValue {
 			return genericTypes;
 		}
 		
+		/**
+		 * Visitor handle method.
+		 * 
+		 * @param type
+		 * @param value is never null, can be Value.NULL_INSTANCE
+		 * @param prefix
+		 * @param genericPrefix
+		 */
 		public abstract void handle(Type type, Value value, String prefix, String genericPrefix);
 	}
 	
@@ -783,7 +794,7 @@ public class Type extends JSONValue {
 	
 	private void visit(Value value, String prefix, String genericPrefix, ValueVisitor valueVisitor) {
 		valueVisitor.addType(prefix, genericPrefix, this);
-		valueVisitor.handle(this, value, prefix, genericPrefix);
+		if (value != null) valueVisitor.handle(this, value, prefix, genericPrefix);
 		if (value != null && !value.isNull()) {
 			switch (getType()) {
 				case NUMBER:

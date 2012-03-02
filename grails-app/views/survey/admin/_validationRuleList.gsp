@@ -43,7 +43,7 @@
 				<td><g:i18n field="${validationRule.messages}" /></td>
 				<td>
 					<div class="js_dropdown dropdown"> 
-						<a class="selected manage-btn" href="#" data-type="survey"><g:message code="entity.list.manage.label" default="Manage"/></a>
+						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label" default="Manage"/></a>
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>

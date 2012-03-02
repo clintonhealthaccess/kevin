@@ -59,7 +59,7 @@ public class LocationService {
     public LocationEntity getRootLocation() {
     	return (LocationEntity)sessionFactory.getCurrentSession().createCriteria(LocationEntity.class).add(Restrictions.isNull("parent")).uniqueResult();
     }
-    
+	
     public DataEntityType findDataEntityTypeByCode(String code) {
     	return (DataEntityType)sessionFactory.getCurrentSession().createCriteria(DataEntityType.class).add(Restrictions.eq("code", code)).uniqueResult();
     }
@@ -101,7 +101,6 @@ public class LocationService {
 		return (T) sessionFactory.getCurrentSession().createCriteria(clazz)
 				.add(Restrictions.eq("code", code)).uniqueResult();
 	}
-	
 	public Integer countLocation(Class<CalculationEntity> clazz, String text) {
 		return getSearchCriteria(clazz, text).setProjection(Projections.count("id")).uniqueResult()
 	}
@@ -138,7 +137,6 @@ public class LocationService {
 		criteria.add(textRestrictions)
 		return criteria
 	}
-
 	// TODO property of level?
 	public LocationLevel getLevelBefore(LocationLevel level) {
 		List<LocationLevel> levels = listLevels();
@@ -155,6 +153,7 @@ public class LocationService {
 		else return null;
 	}
 	
+	// TODO move to lcoation
 	public LocationEntity getParentOfLevel(CalculationEntity entity, LocationLevel level) {
 		LocationEntity tmp = entity.getParent();
 		while (tmp != null) {
@@ -179,29 +178,5 @@ public class LocationService {
 			}
 		}
 	}
-
-	public List<DataLocationEntity> getDataEntities(CalculationEntity calculationEntity, DataEntityType... types) {
-		List<DataLocationEntity> result = new ArrayList<DataLocationEntity>();
-		collectDataEntitiesForLocation(calculationEntity, result, new HashSet<DataEntityType>(Arrays.asList(types)));
-		return result;
-	}
-	
-	private void collectDataEntitiesForLocation(CalculationEntity calculationEntity, List<DataLocationEntity> dataLocationEntities, Set<DataEntityType> types) {
-		dataLocationEntities.addAll(getDataEntitiesForLocation(calculationEntity, types));
-		for (CalculationEntity child : calculationEntity.getChildren()) {
-			collectDataEntitiesForLocation(child, dataLocationEntities, types);
-		}
-	}
-	
-	private Set<DataLocationEntity> getDataEntitiesForLocation(CalculationEntity calculationEntity, Set<DataEntityType> types) {
-		Set<DataLocationEntity> result = new HashSet<DataLocationEntity>(calculationEntity.getDataEntities());
-		if (!types.isEmpty()) {
-			for (DataLocationEntity dataLocationEntity : calculationEntity.getDataEntities()) {
-				if (!types.contains(dataLocationEntity.getType())) result.remove(dataLocationEntity);
-			}
-		}
-		return result;
-	}
-	
 
 }

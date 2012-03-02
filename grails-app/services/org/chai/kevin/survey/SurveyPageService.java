@@ -30,9 +30,6 @@ package org.chai.kevin.survey;
  * @author Jean Kahigiso M.
  *
  */
-
-import java.text.ParseException;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,17 +37,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import net.sf.json.JSONNull;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
@@ -64,7 +56,6 @@ import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveyLog;
-import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
@@ -256,8 +247,8 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public void refresh(CalculationEntity entity, Survey survey, boolean closeIfComplete) {
-		List<DataLocationEntity> facilities = locationService.getDataEntities(entity);
-	
+		List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, null);
+		
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
@@ -373,7 +364,7 @@ public class SurveyPageService {
 				
 				// merge the values
 				// this modifies the value object accordingly
-				validatableValue.mergeValue(params, "elements["+element.getId()+"].value");
+				validatableValue.mergeValue(params, "elements["+element.getId()+"].value", new HashSet<String>());
 				
 				// set the value and save
 				// here, a write lock is acquired on the SurveyEnteredValue that will be kept
@@ -396,11 +387,11 @@ public class SurveyPageService {
 	
 	private ValidatableLocator getLocator() {
 		return new ValidatableLocator() {
-			
 			@Override
 			public ValidatableValue getValidatable(Long id, DataLocationEntity location) {
 				SurveyElement element = surveyService.getSurveyElement(id);
-				SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, location);
+				SurveyEnteredValue enteredValue = getSurveyEnteredValue(location, element);
+				if (enteredValue == null) return null;
 				return enteredValue.getValidatable();
 			}
 		};

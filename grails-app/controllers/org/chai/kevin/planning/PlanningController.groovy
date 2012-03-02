@@ -1,188 +1,98 @@
+/**
+ * Copyright (c) 2011, Clinton Health Access Initiative.
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the <organization> nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package org.chai.kevin.planning
 
-import java.util.Map;
-
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
-import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
-
-class PlanningController extends AbstractController {
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.PeriodSorter
+import org.hisp.dhis.period.Period
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
+class PlanningController extends AbstractEntityController {
 	
-	def planningService
-	
-	def index = {
-		redirect (action: 'planning', params: params)	
+	def getEntity(def id) {
+		return Planning.get(id)
+	}
+
+	def createEntity() {
+		return new Planning()
+	}
+
+	def getLabel() {
+		return 'planning.label'
 	}
 	
-	def view = {
-		// this action redirects to the current survey if a SurveyUser logs in
-		// or to a survey summary page if an admin logs in
-		if (log.isDebugEnabled()) log.debug("planning.view, params:"+params)
-		def user = getUser()
+	def getTemplate() {
+		return "/planning/admin/createPlanning"
+	}
 
-		if (user.hasProperty('dataLocation') && user.dataLocation != null) {
-			Planning dataEntry = Planning.get(params.int('planning'))
-
-			if (dataEntry == null) {
-				dataEntry = planningService.getDefaultPlanning()
-			}
-			if (dataEntry == null) {
-				log.info("no planning found - redirecting to 404")
-				response.sendError(404)
-			}
-			else {
-				redirect (controller:'planning', action: 'overview', params: [planning: planning?.id, location: user.dataLocation.id])
+	def saveEntity(def entity) {
+		if (entity.active) {
+			// we reset all other planning
+			Planning.list().each {
+				if (!it.equals(entity)) {
+					it.active = false
+					it.save()
+				}
 			}
 		}
-		else {
-			redirect (controller: 'planning', action: 'summaryPage')
-		}
+		super.saveEntity(entity)
 	}
 	
-	def summaryPage = {
-		
-		def location = LocationEntity.get(params.int('location'))
-		def planning = Planning.get(params.int('planning'))
-		
-		render (view: '/planning/summary/summaryPage', model: [
-			plannings: Planning.list(),
-			currentPlanning: planning,
-			currentLocation: location
-		])	
+	def getModel(def entity) {
+		List<Period> periods = Period.list()
+		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
+		[
+			planning: entity,
+			periods: periods
+		]
 	}
-	
-	def editPlanningEntry = {	
-		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
+
+	def bindParams(def entity) {
+		entity.properties = params
+
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.names!=null) entity.names = params.names
+	}
+
+	def list = {
+		adaptParamsForList()
 		
-		def newPlanningLine = planningService.getPlanningEntry(planningType, location, lineNumber)
-		
-		render (view: '/planning/editPlanningEntry', model: [
-			planningType: planningType, 
-			planningLine: newPlanningLine,
-			location: location,
-			period: period
+		List<Planning> plannings = Planning.list(params);
+
+		render (view: '/planning/admin/list', model:[
+			template:"planningList",
+			entities: plannings,
+			entityCount: Planning.count(),
+			code: getLabel()
 		])
 	}
 	
-	def deletePlanningEntry = {
-		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
-		
-		planningService.deletePlanningEntry(planningType, location, lineNumber)
-		
-		redirect (uri: getTargetURI())
-	}
-
-	def saveValue = {
-		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
-		
-		planningService.modify(planningType, location, lineNumber, params)
-		
-		def planningLine = planningService.getPlanningEntry(planningType, location, lineNumber)
-		def validatable = planningLine.validatable
-		
-		render(contentType:"text/json") {
-			status = 'success'
-			
-			elements = array {
-				elem (
-					id: planningType.id,
-					skipped: array {
-						validatable.skippedPrefixes.each { prefix -> element prefix }
-					},
-					invalid: array {
-						validatable.invalidPrefixes.each { invalidPrefix ->
-							pre (
-								prefix: invalidPrefix,
-								valid: validatable.isValid(invalidPrefix),
-								errors: g.renderUserErrors(element: planningLine, validatable: validatable, suffix: invalidPrefix, location: location)
-							)
-						}
-					},
-					nullPrefixes: array {
-						validatable.nullPrefixes.each { prefix -> element prefix }
-					}
-				)
-			}
-		}
-	}
-	
-	def budgetUpdated = {
-		// TODO returns a json 'true' if the budget is updated
-		def planning = Planning.get(params.int('planning'))
-		def location = DataLocationEntity.get(params.int('location'))
-
-		for (def planningType: planning.planningTypes) {
-			planningService.getPlanningList(planningType, location)
-		}
-	}
-	
-	def updatingBudget = {
-		// TODO waiting page that polls 'budgetUpdated' to see if the budget is updated	
-	}
-	
-	def budget = {
-		def planning = Planning.get(params.int('planning'))
-		def location = DataLocationEntity.get(params.int('location'))
-
-		// waiting logic if some budget costs must be calculated
-		// redirect to waiting page 'updatingBudget' if they must
-		for (def planningType: planning.planningTypes) {
-			if (!planningService.getPlanningList(planningType, location).isBudgetUpdated()) {
-				redirect (action: 'updatingBudget', params:[planning: planning, location: location])
-				return;
-			} 
-		}
-
-		def budgetPlanningTypes = planning.planningTypes.collect {
-			planningService.getPlanningTypeBudget(it, location, period)
-		}
-		
-		render (view: '/planning/budget', model: [
-			budgetPlanningTypes: budgetPlanningTypes
-		])
-	}
-		
-	def planningList = {
-		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
-		def sectionNumber = params.int('section')
-		if (sectionNumber == null) sectionNumber = 0
-		
-		def planningList = planningService.getPlanningList(planningType, location)
-		
-		
-		render (view: '/planning/planningList', model: [
-			location: location,
-			planning: planningList.planningType.planning,
-			planningType: planningList.planningType,
-			planningList: planningList,
-			section: planningType.sections[sectionNumber]
-		])
-	}
-	
-	def overview = {
-		def planning = Planning.get(params.int('planning'))
-		def location = DataLocationEntity.get(params.int('location'))
-		
-		def planningLists = planning.planningTypes.collect {
-			planningService.getPlanningList(it, location)
-		}
-		
-		render (view: '/planning/overview', model: [
-			location: location,
-			planning: planning,
-			planningLists: planningLists
-		])
-	}
-
-	def tmp = {}
-		
 }

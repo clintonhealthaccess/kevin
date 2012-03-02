@@ -1,4 +1,4 @@
-package org.chai.kevin.survey;
+package org.chai.kevin.survey.summary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,11 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.survey.Survey;
+import org.chai.kevin.survey.SurveyObjective;
+import org.chai.kevin.survey.SurveyQuestion;
+import org.chai.kevin.survey.SurveySection;
+import org.chai.kevin.survey.SurveyValueService;
 import org.chai.kevin.survey.validation.SurveyEnteredObjective;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +23,7 @@ public class SummaryService {
 	private SurveyValueService surveyValueService;
 	
 	@Transactional(readOnly = true)
-	public SummaryPage getSectionTable(DataLocationEntity dataLocationEntity, SurveyObjective objective) {
+	public SurveySummaryPage getSectionTable(DataLocationEntity dataLocationEntity, SurveyObjective objective) {
 		List<SurveySection> sections = objective.getSections(dataLocationEntity.getType());
 		Map<SurveySection, QuestionSummary> questionSummaryMap = new HashMap<SurveySection, QuestionSummary>();
 		
@@ -28,11 +33,11 @@ public class SummaryService {
 			
 			questionSummaryMap.put(section, new QuestionSummary(questions.size(), completedQuestions));
 		}
-		return new SummaryPage(questionSummaryMap);
+		return new SurveySummaryPage(questionSummaryMap);
 	}	
 	
 	@Transactional(readOnly = true)
-	public SummaryPage getObjectiveTable(DataLocationEntity dataLocationEntity, Survey survey) {
+	public SurveySummaryPage getObjectiveTable(DataLocationEntity dataLocationEntity, Survey survey) {
 		List<SurveyObjective> objectives = survey.getObjectives(dataLocationEntity.getType());
 		Map<SurveyObjective, QuestionSummary> questionSummaryMap = new HashMap<SurveyObjective, QuestionSummary>();
 		Map<SurveyObjective, SurveyEnteredObjective> enteredObjectiveMap = new HashMap<SurveyObjective, SurveyEnteredObjective>();
@@ -46,12 +51,12 @@ public class SummaryService {
 			enteredObjectiveMap.put(objective, enteredObjective);
 		}
 		
-		return new SummaryPage(enteredObjectiveMap, questionSummaryMap);
+		return new SurveySummaryPage(enteredObjectiveMap, questionSummaryMap);
 	}	
 	
 	@Transactional(readOnly = true)
-	public SummaryPage getSurveySummaryPage(LocationEntity location, Survey survey) {
-		List<DataLocationEntity> facilities = locationService.getDataEntities(location);
+	public SurveySummaryPage getSurveySummaryPage(LocationEntity location, Survey survey) {
+		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, null);
 		
 		Map<DataEntityType, List<SurveyObjective>> objectiveMap = new HashMap<DataEntityType, List<SurveyObjective>>();
 		Map<DataEntityType, List<SurveyQuestion>> questionMap = new HashMap<DataEntityType, List<SurveyQuestion>>();
@@ -85,12 +90,12 @@ public class SummaryService {
 			totalQuestions += questionMap.get(facility.getType()).size();
 			totalAnsweredQuestions += completedQuestions;
 		}
-		return new SummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap, objectiveSummaryMap);
+		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap, objectiveSummaryMap);
 	}
 	
 	@Transactional(readOnly = true)
-	public SummaryPage getObjectiveSummaryPage(LocationEntity location, SurveyObjective objective) {
-		List<DataLocationEntity> facilities = locationService.getDataEntities(location);
+	public SurveySummaryPage getObjectiveSummaryPage(LocationEntity location, SurveyObjective objective) {
+		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, null);
 
 		Map<DataLocationEntity, SurveyEnteredObjective> enteredObjectiveMap = new HashMap<DataLocationEntity, SurveyEnteredObjective>();
 		Map<DataLocationEntity, QuestionSummary> questionSummaryMap = new HashMap<DataLocationEntity, QuestionSummary>();
@@ -110,12 +115,12 @@ public class SummaryService {
 			totalQuestions += questions.size();
 			totalAnsweredQuestions += completedQuestions;
 		}
-		return new SummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap, enteredObjectiveMap, true);
+		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap, enteredObjectiveMap, true);
 	}
 	
 	@Transactional(readOnly = true)
-	public SummaryPage getSectionSummaryPage(LocationEntity location, SurveySection section) {
-		List<DataLocationEntity> facilities = locationService.getDataEntities(location);
+	public SurveySummaryPage getSectionSummaryPage(LocationEntity location, SurveySection section) {
+		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, null);
 
 		Map<DataLocationEntity, QuestionSummary> questionSummaryMap = new HashMap<DataLocationEntity, QuestionSummary>();
 		
@@ -131,7 +136,7 @@ public class SummaryService {
 			totalQuestions += questions.size();
 			totalAnsweredQuestions += completedQuestions;
 		}
-		return new SummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap);		
+		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap);		
 	}
 	
 	public void setLocationService(LocationService locationService) {

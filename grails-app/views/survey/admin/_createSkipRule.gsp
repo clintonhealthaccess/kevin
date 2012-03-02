@@ -10,6 +10,7 @@
 		<div class="data-field-column">
 		<g:form url="[controller:'surveySkipRule', action:'save', params:[targetURI:targetURI]]" useToken="true">
 			<input type="hidden" name="survey.id" value="${skip.survey.id}" />
+			
 			<div class="row">
 				<label><g:message code="survey.label" default="Survey"/>:</label>
 			 	<input type="text" name="survey.id" value="${i18n(field: skip.survey.names)}" class="idle-field" disabled />
@@ -53,20 +54,11 @@
 				<div class="error-list"><g:renderErrors bean="${skip}" field="skippedSurveyElements" /></div>
 			</div>
 
-			<div class="row ${hasErrors(bean:skip, field:'skippedSurveyQuestions', 'errors')}">
-				<label><g:message code="survey.skiprule.skippedquestions.label" default="Questions to Skip"/>: </label>
-				<select id="questions-list" name="skippedSurveyQuestions" multiple="true" class="ajax-search-field">
-					<g:if test="${!skip.skippedSurveyQuestions.isEmpty()}">
-						<g:each in="${skip.skippedSurveyQuestions}" var="question">
-							<option value="${question.id}" selected>
-								<g:stripHtml field="${question.names}" chars="35"/> - <g:i18n field="${question.section.names}"/>
-							</option>
-						</g:each>
-					</g:if>
-				</select>
-				<div class="error-list"><g:renderErrors bean="${skip}" field="skippedSurveyQuestions" /></div>
-			</div>
-			
+			<g:selectFromList name="skippedSurveyQuestions" label="${message(code:'survey.skiprule.skippedquestions.label')}" field="skippedSurveyQuestions" 
+					optionKey="id" multiple="true" ajaxLink="${createLink(controller:'question', action:'getAjaxData', params:[survey: skip.survey.id])}" 
+					from="${skippedSurveyQuestions}" value="${skip.skippedSurveyQuestions*.id}" bean="${skip}" 
+					values="${skippedSurveyQuestions.collect {i18n(field:it.names)+' - '+i18n(field:it.section?.names)}}" />
+
 		 	<g:textarea name="expression" label="Expression" bean="${skip}" field="expression" rows="5"/>
 		 
 			<g:if test="${skip.id != null}">
@@ -98,23 +90,11 @@
 		$(".skipped-survey-elements-list").ajaxChosen({
 			type : 'GET',
 			dataType: 'json',
-			url : "${createLink(controller:'surveyElement', action:'getAjaxData', params:[surveyId: skip.survey.id])}"
+			url : "${createLink(controller:'surveyElement', action:'getAjaxData', params:[survey: skip.survey.id])}"
 		}, function (data) {
 			var terms = {};
 			$.each(data.elements, function (i, val) {
-				terms[val.id] = val.surveyElement;
-			});
-			return terms;
-		});
-		
-		$("#questions-list").ajaxChosen({
-			type : 'GET',
-			dataType: 'json',
-			url : "${createLink(controller:'question', action:'getAjaxData', params:[surveyId: skip.survey.id])}"
-		}, function (data) {
-			var terms = {};
-			$.each(data.questions, function (i, val) {
-				terms[val.id] = val.question;
+				terms[val.key] = val.value;
 			});
 			return terms;
 		});

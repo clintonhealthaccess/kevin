@@ -45,9 +45,7 @@ class ObjectiveController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		def entity = new SurveyObjective()
-		if (!params['surveyId.id']) entity.survey = Survey.get(params.surveyId)
-		return entity;
+		return new SurveyObjective()
 	}
 
 	def getLabel() {
@@ -76,18 +74,23 @@ class ObjectiveController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 
-		Survey survey = Survey.get(params.surveyId);
-		List<SurveyObjective> objectives = survey.objectives;
-		Collections.sort(objectives)
-		
-		def max = Math.min(params['offset']+params['max'], objectives.size())
-		
-		render (view: '/survey/admin/list', model:[
-			template:"objectiveList",
-			survey:survey,
-			entities: objectives.subList(params['offset'], max),
-			entityCount: objectives.size(),
-			code: getLabel()
-		])
+		Survey survey = Survey.get(params.int('survey.id'));
+		if (survey == null) {
+			response.sendError(404)
+		}
+		else {
+			List<SurveyObjective> objectives = survey.objectives;
+			Collections.sort(objectives)
+			
+			def max = Math.min(params['offset']+params['max'], objectives.size())
+			
+			render (view: '/survey/admin/list', model:[
+				template:"objectiveList",
+				survey:survey,
+				entities: objectives.subList(params['offset'], max),
+				entityCount: objectives.size(),
+				code: getLabel()
+			])
+		}
 	}
 }

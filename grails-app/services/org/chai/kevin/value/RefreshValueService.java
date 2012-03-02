@@ -44,8 +44,7 @@ public class RefreshValueService {
 		if (log.isDebugEnabled()) log.debug("refreshNormalizedDataElement(normalizedDataElement="+normalizedDataElement+")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
-		
-		valueService.deleteValues(normalizedDataElement);
+		valueService.deleteValues(normalizedDataElement, null, null);
 		for (Iterator<Object[]> iterator = getCombinations(DataLocationEntity.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
 			DataLocationEntity dataLocationEntity = (DataLocationEntity)row[0];
@@ -67,7 +66,7 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		valueService.deleteValues(calculation);
+		valueService.deleteValues(calculation, null, null);
 		for (Iterator<Object[]> iterator = getCombinations(CalculationEntity.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
 			CalculationEntity entity = (CalculationEntity)row[0];
@@ -111,18 +110,9 @@ public class RefreshValueService {
 			}
 		}
 	}
-	
-//	@Transactional(readOnly = true)
-//	public boolean isUpToDate(Calculation<CalculationPartialValue> calculation, CalculationEntity location, Period period) {
-//		List<CalculationPartialValue> values = valueService.getPartialValues(calculation, location, period);
-//		for (CalculationPartialValue calculationPartialValue : values) {
-//			if (calculationPartialValue.getTimestamp().before(calculation.getTimestamp())) return false;
-//		}
-//		return true;
-//	}
-	
-	@Transactional(readOnly = true)
+	@Transactional(readOnly = false)
 	public void refreshCalculation(Calculation<?> calculation, CalculationEntity entity, Period period) {
+		valueService.deleteValues(calculation, entity, period);
 		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, entity, period)) {
 			valueService.save(partialValue);
 		}

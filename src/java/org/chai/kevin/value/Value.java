@@ -216,7 +216,4 @@ public class Value extends JSONValue {
 		return new Value("{\""+VALUE_STRING+"\":["+json.toString()+"]}");
 	}
 	
-	
-	
-	
 }

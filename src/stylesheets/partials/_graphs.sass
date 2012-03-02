@@ -54,6 +54,9 @@
   +transition(all 2s ease)
   &:hover, &:focus
     opacity: 1
+  &.expand-bar
+    background: url('../images/expand-bar.png') no-repeat center right $primary
+  
     
 .horizontal-bar-avg
   background: $primary
@@ -74,6 +77,8 @@
 
 .selector
   font-size: 11px
+  form
+    display: inline
   select
     background: #fff
     border: 1px solid $primary + #222
@@ -143,14 +148,16 @@
   background: $yes
 
 .horizontal-graph-wrap
+  overflow: hidden
   position: relative
+  width: 100%
 
 .horizontal-graph-average
   bottom: 1px
-  height: 233px
   position: absolute
-  right: 0
-  width: 625px
+  right: 15px
+  top: 33px
+  width: 610px
   
 .horizontal-graph-tip
   background: $primary
@@ -159,23 +166,26 @@
   font-weight: bold
   height: 10px
   left: 63%
-  margin: 10px 0 0 -7px
+  margin: 0 0 0 -8px
   opacity: 0.6
   padding: 3px
   position: absolute
   text-align: center
+  top: -18px
   width: 10px
   +border-radius(10px)
   +box-shadow(#fff 0 1px 0)
   &:hover, &:focus
     opacity: 1
+  &.expand-tick
+    background: $yes
 
 .horizontal-graph-marker
   background: #fcfcfc
   border-right: 1px solid $yes + #222
   bottom: 0
-  height: 200px
+  height: 100%
   position: relative
-  top: 33px
+  top: 0
   width: 63%
   +box-shadow(#eee -2px 0 10px inset)

@@ -45,9 +45,7 @@ class TableRowController extends AbstractEntityController {
 		return SurveyTableRow.get(id)
 	}
 	def createEntity() {
-		def entity = new SurveyTableRow();
-		if(!params["question"]) entity.question = SurveyTableQuestion.get(params.questionId)
-		return entity;
+		return new SurveyTableRow();
 	}
 
 	def getLabel() {

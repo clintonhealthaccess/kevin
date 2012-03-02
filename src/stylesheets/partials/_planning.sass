@@ -58,12 +58,12 @@
 .overview-manage
   display: none
   a
-    background: $filler
+//    background: $filler
     font-size: 10px
-    margin-left: 1px
+//    margin-left: 1px
     padding: 3px 5px
-    +border-radius(3px)
-    +box-shadow($filler - #050505 2px 2px 5px inset)
+//    +border-radius(3px)
+//    +box-shadow($filler - #050505 2px 2px 5px inset)
     +text-shadow(#fff 0 1px 0)
   
 .overview-all
@@ -152,11 +152,11 @@
       background: $filler
       color: $primary - #333
       +text-shadow(#fff 0 1px 0)
-      
 .diff
   background: #fff
   border: 1px solid $dropdown
   margin-bottom: 10px
+  +pie-clearfix
   &.positive
     background: $filler2
     border: 1px solid $yes
@@ -173,10 +173,11 @@
     background: $filler
     padding: 10px
   h5
+    border: none
     color: $primary
     font-size: 15px
     font-weight: bold
-    margin-bottom: 5px
+    margin: 5px 0
 
   h6
     color: #888
@@ -193,20 +194,73 @@
     width: 118px
     
   input[type=text]
-    width: 132px
+    margin-right: 0
+    width: 112px
   select
-    width: 100px
-    
+    margin-right: 0
+    width: 120px
+    min-width: 120px
+  input[type=submit]
+    margin: 10px
   ul
-    border-top: 1px solid $dropdown
+    margin-top: 5px
     padding: 10px
     +pie-clearfix
-    h6
-      border-bottom: 1px solid $dropdown
+    h5
+      border-bottom: 1px dotted $dropdown
+      font-size: 12px
+      padding-bottom: 5px
       margin-bottom: 7px
+    &.adv-form-0
+      border-bottom: 1px dotted $dropdown
+      margin-bottom: 0
+      > li
+        margin-right: 0
+    &.adv-form-1
+      padding: 5px 0 5px 5px
+      li:last-child
+        padding-right: 0
     
-  li
-    padding-bottom: 15px
-    &:last-child
-      padding-bottom: 0
+  .element-list-add
+    margin-top: 5px
+    
+  .adv-form-section.last ul
+    padding: 0
       
+.context-message
+  background: $filler + #030303
+  border: 1px solid $filler - #090909
+  padding: 15px 10px
+  position: relative
+  +border-radius(3px)
+  +box-shadow($filler 2px 2px 5px inset)
+  &.warning
+    background: url("../images/icons/warning2.png") no-repeat 8px center $filler3
+    border: 1px solid $filler3 - #090909
+    padding-left: 40px
+    +box-shadow($filler3 2px 2px 5px inset)
+  &.success
+    background: url("../images/icons/check.png") no-repeat 8px center $filler2
+    border: 1px solid $filler2 - #111
+    padding-left: 40px
+    +box-shadow($filler2 2px 2px 5px inset)
+  &.info
+    background: url("../images/icons/check.png") no-repeat 8px center $filler3
+  &.loading
+    background: url("../images/ajax-loader-bar.gif") no-repeat center $filler + #030303
+      
+#planning
+  .adv-form-0
+    float: left
+    width: 67%
+    input[type=text], select
+      margin-bottom: 5px
+  .adv-form-row
+    width: 95%
+  .adv-aside
+    float: right
+    margin-left: 2%
+    width: 31%
+  .question-help
+    padding-right: 10px
+

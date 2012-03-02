@@ -47,10 +47,7 @@ class CheckboxOptionController extends AbstractEntityController {
 	}
 	
 	def createEntity() {
-		def entity = new SurveyCheckboxOption();
-		//FIXME find a better to do this
-		if (!params['question']) entity.question = SurveyCheckboxQuestion.get(params.questionId)
-		return entity
+		return new SurveyCheckboxOption();
 	}
 	
 	def getLabel() {
