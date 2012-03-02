@@ -141,7 +141,8 @@ public class ImporterService {
 					if(log.isDebugEnabled()) log.debug("Value after marge "+value);	
 					rawDataElementValue.setValue(value);
 					valueService.save(rawDataElementValue);
-					manager.incrementNumberOfRowsSavedWithError(sanitizer.getNumberOfErrorInRows());
+					if(sanitizer.getNumberOfErrorInRows()>0)
+						manager.incrementNumberOfRowsSavedWithError(1);
 					manager.incrementNumberOfSavedRows();
 				}
 				values = readFileAsMap.read(headers);				
