@@ -4,6 +4,7 @@ import org.chai.kevin.data.Type
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 
 class DsrServiceSpec extends DsrIntegrationTests {
 
@@ -112,4 +113,16 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		//TODO
 	}
 	
+	def "get dsr skip levels"(){
+		setup:
+		setupLocationTree()
+		
+		when:
+		def skipLevels = dsrService.getSkipLevels()
+		def dsrSkipLevels = dsrService.getSkipLocationLevels()
+		
+		then:
+		getLocationLevels(skipLevels) == [LocationLevel.findByCode(PROVINCE), LocationLevel.findByCode(SECTOR)]
+		dsrSkipLevels == [LocationLevel.findByCode(PROVINCE), LocationLevel.findByCode(SECTOR)] 
+	}
 }

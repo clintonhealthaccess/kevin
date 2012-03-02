@@ -66,20 +66,19 @@ class DsrController extends AbstractController {
 	}
 	
 	def view = {
-		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
-		
-		def parms = params
+		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)				
 		
 		Period period = getPeriod()		
-		
 		ReportObjective objective = getObjective()		
 		LocationEntity location = getLocation()
-		List<DataEntityType> locationTypes = getLocationTypes()
+		Set<DataEntityType> locationTypes = getLocationTypes()
 		DsrTargetCategory category = getDsrTargetCategory(objective)
+		
+		def skipLevels = dsrService.getSkipLocationLevels()		
 		
 		def dsrTable = null		
 		if (period != null && objective != null && location != null && locationTypes != null) {
-			 dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet(locationTypes), category);		 			 			 
+			 dsrTable = dsrService.getDsrTable(location, objective, period, locationTypes, category);				 					 		 			 
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
@@ -88,12 +87,14 @@ class DsrController extends AbstractController {
 			dsrTable: dsrTable,
 			currentCategory: category,
 			currentPeriod: period,
-			currentObjective: objective,
+			currentObjective: objective,			
 			currentTarget: DsrTarget.class,
 			currentLocation: location,
 			locationRoot: dsrTable.getLocationRoot(),
 			locationTree: dsrTable.getLocationTree().asList(),
-			currentLocationTypes: locationTypes
+			dataLocationTree: dsrTable.getDataLocationTree().asList(),
+			currentLocationTypes: locationTypes,
+			skipLevels: skipLevels
 		]
 	}	
 }

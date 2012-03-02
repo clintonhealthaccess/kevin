@@ -54,7 +54,7 @@ public class LocationService {
 	static transactional = true
 	
 	def languageService;
-	def sessionFactory;
+	def sessionFactory;	
 	
     public LocationEntity getRootLocation() {
     	return (LocationEntity)sessionFactory.getCurrentSession().createCriteria(LocationEntity.class).add(Restrictions.isNull("parent")).uniqueResult();
@@ -63,7 +63,7 @@ public class LocationService {
     public DataEntityType findDataEntityTypeByCode(String code) {
     	return (DataEntityType)sessionFactory.getCurrentSession().createCriteria(DataEntityType.class).add(Restrictions.eq("code", code)).uniqueResult();
     }
-    
+	
     public LocationLevel findLocationLevelByCode(String code) {
     	return (LocationLevel)sessionFactory.getCurrentSession().createCriteria(LocationLevel.class).add(Restrictions.eq("code", code)).uniqueResult();
     }
@@ -153,7 +153,7 @@ public class LocationService {
 		else return null;
 	}
 	
-	// TODO move to lcoation
+	// TODO move to location
 	public LocationEntity getParentOfLevel(CalculationEntity entity, LocationLevel level) {
 		LocationEntity tmp = entity.getParent();
 		while (tmp != null) {
@@ -177,6 +177,6 @@ public class LocationService {
 				collectChildrenOfLevel(child, level, locations);
 			}
 		}
-	}
+	}	
 
 }

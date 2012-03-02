@@ -10,10 +10,10 @@
 		</tr>
 	</thead>
 	<tbody>
-		<g:if test="${currentLocation.children != null && !currentLocation.children.empty}">			
-			<g:each in="${currentLocation.children}" var="child">						
+		<g:if test="${currentLocation.children != null && !currentLocation.children.empty}">
+			<g:each in="${currentLocation.getChildrenEntities(skipLevels, currentLocationTypes)}" var="child">				
 				<g:render template="/dsr/reportProgramTableTree"
-				model="[location:child, level:0, locationTree:locationTree]"/>				
+				model="[location:child, level:0, locationTree:locationTree, dataLocationTree:dataLocationTree]"/>				
 			</g:each>
 		</g:if>
 		<g:if test="${currentLocation.dataLocationEntities != null && !currentLocation.dataLocationEntities.empty}">

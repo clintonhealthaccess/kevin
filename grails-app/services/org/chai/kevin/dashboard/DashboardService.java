@@ -53,18 +53,9 @@ public class DashboardService {
 //	private Log log = LogFactory.getLog(DashboardService.class);
 	
 	private ReportService reportService;
-	private LocationService locationService;
 	private SessionFactory sessionFactory;
-	private DashboardPercentageService dashboardPercentageService;
 	private Set<String> skipLevels;
-	
-	private Set<LocationLevel> getSkipLocationLevels(Set<String> skipLevels) {
-		Set<LocationLevel> levels = new HashSet<LocationLevel>();
-		for (String skipLevel : skipLevels) {
-			levels.add(locationService.findLocationLevelByCode(skipLevel));
-		}
-		return levels;
-	}
+	private DashboardPercentageService dashboardPercentageService;	
 	
 	@Transactional(readOnly = true)
 	public Dashboard getProgramDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types){
@@ -92,11 +83,11 @@ public class DashboardService {
 	public Dashboard getLocationDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types, boolean compare) {
 		
 		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();
-		if(compare) locationEntities.add(location);
+		if(compare) 
+			locationEntities.add(location);
 		else {
-			Set<LocationLevel> skips = getSkipLocationLevels(skipLevels);
-			locationEntities.addAll(location.getChildrenWithDataEntities(types, skips));
-			locationEntities.addAll(location.getDataEntities(skips, types));
+			Set<LocationLevel> skipLevels = getSkipLocationLevels();
+			locationEntities.addAll(location.getChildrenEntities(skipLevels, types));			
 		}
 		
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
@@ -195,12 +186,12 @@ public class DashboardService {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
-	}
-	
 	public void setSkipLevels(Set<String> skipLevels) {
 		this.skipLevels = skipLevels;
+	}
+
+	public Set<LocationLevel> getSkipLocationLevels(){
+		return reportService.getSkipLocationLevels(skipLevels);
 	}
 	
 	public void setDashboardPercentageService(DashboardPercentageService dashboardPercentageService) {

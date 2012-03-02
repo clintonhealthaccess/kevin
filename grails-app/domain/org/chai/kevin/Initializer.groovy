@@ -135,11 +135,11 @@ class Initializer {
 			def hc = new DataEntityType(names: j(["en":"Health Center"]), code: "Health Center").save(failOnError: true)
 			def dh = new DataEntityType(names: j(["en":"District Hospital"]), code: "District Hospital").save(failOnError: true)
 
-			def country = new LocationLevel(names: j(["en":"Country"]), code: "Country", order: 1).save(failOnError: true)
+			def country = new LocationLevel(names: j(["en":"National"]), code: "National", order: 1).save(failOnError: true)
 			def province = new LocationLevel(names: j(["en":"Province"]), code: "Province", order: 2).save(failOnError: true)
 			def district = new LocationLevel(names: j(["en":"District"]), code: "District", order: 3).save(failOnError: true)
 
-			def rwanda = new LocationEntity(names: j(["en":"Rwanda"]), code: "Rwanda", level: country).save(failOnError: true)
+			def rwanda = new LocationEntity(names: j(["en":"Rwanda"]), code: "Rwanda", parent: null, level: country).save(failOnError: true)
 
 			def kigali = new LocationEntity(names: j(["en":"Kigali City"]), code: "Kigali City", parent: rwanda, level: province).save(failOnError: true)
 			def north = new LocationEntity(names: j(["en":"North"]), code: "North", parent: rwanda, level: province).save(failOnError: true)
@@ -180,7 +180,7 @@ class Initializer {
 		}
 
 		if (!ReportObjective.count()) {
-			def root = new ReportObjective(names:j(["en":"Strategic Programs"]), code:"Strategic Programs", descriptions:j(["en":"Strategic Programs"]))
+			def root = new ReportObjective(names:j(["en":"Strategic Programs"]), code:"Strategic Programs", descriptions:j(["en":"Strategic Programs"]), parent: null)
 			root.save(failOnError: true)
 
 			def ga = new ReportObjective(names:j(["en":"Geographical Access"]), code:"Geographical Access", descriptions:j(["en":"Geographical Access"]), parent: root).save(failOnError: true)

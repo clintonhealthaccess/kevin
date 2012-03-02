@@ -228,9 +228,11 @@ site.from.email="no-reply@dhsst.org"
 
 site.locationtype.checked=["District Hospital","Health Center"]
 
-dashboard.skip.levels=[]
-cost.skip.levels=[]
-export.skip.levels=["Country"]
+report.skip.levels=["District", "Sector"]
+dashboard.skip.levels=["Sector"]
+dsr.skip.levels=["Sector"]
+cost.skip.levels=["Sector"]
+export.skip.levels=["National","Sector"]
 
 info.group.level="District"
 dsr.group.level="District"

@@ -78,7 +78,8 @@ class FilterTagLib {
 		LocationEntity.withTransaction {
 			def model = new HashMap(attrs)					
 			def locationFilterRoot = locationService.getRootLocation()
-			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(null, null)		
+//			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(attrs['skipLevels'], attrs['selectedTypes'])		
+			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(attrs['skipLevels'], null)
 			model << 
 				[
 					currentLocation: attrs['selected'],

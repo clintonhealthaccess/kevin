@@ -27,9 +27,11 @@
 				<table>
 					<tbody>
 						<g:if test="${location.children != null && !location.children.empty}">							
-							<g:each in="${location.children}" var="child">								
-								<g:render template="/dsr/reportProgramTableTree"
-								model="[location:child, level:level+1, locationTree:locationTree]"/>								
+							<g:each in="${location.getChildrenEntities(skipLevels, currentLocationTypes)}" var="child">	
+								<g:if test="${locationTree.contains(location) || dataLocationTree.contains(location)}">						
+									<g:render template="/dsr/reportProgramTableTree"
+									model="[location:child, level:level+1, locationTree:locationTree, dataLocationTree:dataLocationTree]"/>
+								</g:if>							
 							</g:each>
 						</g:if>
 						<g:if test="${location.dataLocationEntities != null && !location.dataLocationEntities.empty}">							

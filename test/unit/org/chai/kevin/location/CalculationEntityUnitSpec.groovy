@@ -70,15 +70,15 @@ class CalculationEntityUnitSpec extends UnitSpec {
 		then:
 		rwanda.collectTreeWithDataEntities(null, null).equals([north, rwanda])
 		rwanda.collectDataLocationEntities(null, null).equals([data1])
-		rwanda.collectTreeWithDataEntities(new HashSet([type1]), null).equals([north, rwanda])
-		rwanda.collectDataLocationEntities(new HashSet([type1]), null).equals([data1])
+		rwanda.collectTreeWithDataEntities(null, new HashSet([type1])).equals([north, rwanda])
+		rwanda.collectDataLocationEntities(null, new HashSet([type1])).equals([data1])
 		
 		when:
 		def type2 = new DataEntityType(code: 'type2')
 		
 		then:
-		rwanda.collectTreeWithDataEntities(new HashSet([type2]), null).empty
-		rwanda.collectDataLocationEntities(new HashSet([type2]), null).empty
+		rwanda.collectTreeWithDataEntities(null, new HashSet([type2])).empty
+		rwanda.collectDataLocationEntities(null, new HashSet([type2])).empty
 		
 	}
 	
@@ -105,13 +105,13 @@ class CalculationEntityUnitSpec extends UnitSpec {
 		def data1 = new DataLocationEntity(code: 'data1', type: type1);
 		
 		then:
-		data1.collectDataLocationEntities(new HashSet([type1]), null).equals([data1])
+		data1.collectDataLocationEntities(null, new HashSet([type1])).equals([data1])
 		
 		when:
 		def type2 = new DataEntityType(code: 'type2');
 		
 		then:
-		data1.collectDataLocationEntities(new HashSet([type2]), null).empty
+		data1.collectDataLocationEntities(null, new HashSet([type2])).empty
 	}
 	
 	def "get data entities on data entitiy"() {

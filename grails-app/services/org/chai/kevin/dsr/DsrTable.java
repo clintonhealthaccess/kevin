@@ -43,16 +43,17 @@ import org.chai.kevin.reports.ReportValue;
 
 public class DsrTable extends ReportTable<DsrTarget, DataLocationEntity> {
 	
-	private List<DsrTargetCategory> targetCategories;	
+	private List<DsrTargetCategory> targetCategories;		
 	
 	public DsrTable(Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap, 
 			List<DsrTarget> targets, List<DsrTargetCategory> targetCategories,
-			LocationEntity locationRoot, List<LocationEntity> locationTree) {
-		super(valueMap, targets, locationRoot, locationTree);
-		this.targetCategories = targetCategories;
+			LocationEntity locationRoot, List<LocationEntity> locationTree, List<DataLocationEntity> dataLocationTree) {
+		super(valueMap, targets, locationRoot, locationTree, dataLocationTree);
+		this.targetCategories = targetCategories;		
 	}
 	
 	public List<DsrTargetCategory> getTargetCategories(){
 		return targetCategories;
 	}
+
 }
