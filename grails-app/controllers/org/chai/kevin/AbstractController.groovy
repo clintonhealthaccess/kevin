@@ -72,19 +72,19 @@ public abstract class AbstractController {
 	}
 	
 	def getLocation(){
-		LocationEntity location = LocationEntity.get(params.int('location'));
+		LocationEntity location = LocationEntity.get(params.int('location'))
 		if (location == null) location = locationService.getRootLocation()
 		return location
 	}		
 	
-	public List<DataEntityType> getLocationTypes() {
-		List<DataEntityType> types = null
+	public Set<DataEntityType> getLocationTypes() {
+		Set<DataEntityType> types = null
 		if (params.list('locationTypes') != null && !params.list('locationTypes').empty) {
 			def locationTypes = params.list('locationTypes')
-			types = locationTypes.collect{ DataEntityType.get(it) }
+			types = new HashSet<DataEntityType>(locationTypes.collect{ DataEntityType.get(it) })
 		}
 		else {
-			types = new ArrayList(ConfigurationHolder.config.site.locationtype.checked).collect {DataEntityType.findByCode(it)}
+			types = new HashSet<DataEntityType>(ConfigurationHolder.config.site.locationtype.checked.collect {DataEntityType.findByCode(it)})
 		}
 		return types
 	}
