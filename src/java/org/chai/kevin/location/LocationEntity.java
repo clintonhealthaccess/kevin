@@ -101,18 +101,8 @@ public class LocationEntity extends CalculationEntity {
 	@Transient
 	public List<CalculationEntity> getChildrenEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
 		List<CalculationEntity> result = new ArrayList<CalculationEntity>();
-		for (LocationEntity child : children) {
-			if (skipLevels != null && skipLevels.contains(child.getLevel())) {
-				List<CalculationEntity> childrenEntities = child.getChildrenEntities(skipLevels, types);
-				if(!childrenEntities.isEmpty())
-					result.addAll(childrenEntities);
-				else
-					result.addAll(child.getDataEntities(skipLevels, types));
-			}
-			else{
-				result.add(child);	
-			}
-		}
+		result.addAll(getChildren(skipLevels));
+		result.addAll(getDataEntities(skipLevels, types));
 		return result;
 	}
 	

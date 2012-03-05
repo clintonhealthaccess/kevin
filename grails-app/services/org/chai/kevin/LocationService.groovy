@@ -68,14 +68,12 @@ public class LocationService {
     	return (LocationLevel)sessionFactory.getCurrentSession().createCriteria(LocationLevel.class).add(Restrictions.eq("code", code)).uniqueResult();
     }
 	
-	public List<LocationLevel> listLevels(LocationLevel... skipLevels) {
+	public List<LocationLevel> listLevels() {
 		List<LocationLevel> levels = sessionFactory.getCurrentSession()
 			.createCriteria(LocationLevel.class)
 			.setCacheable(true)
 			.setCacheRegion("locationLevelListQueryCache")
 			.list();
-		levels.removeAll(Arrays.asList(skipLevels));
-		Collections.sort(levels);
 		return levels;
 	}	
 	

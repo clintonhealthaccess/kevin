@@ -194,4 +194,32 @@ class CalculationEntityUnitSpec extends UnitSpec {
 		rwanda.getDataEntities(new HashSet([province, district]), null).equals([dataCountry, dataProvince, dataDistrict])
 		north.getDataEntities(new HashSet([province]), null).equals([dataProvince])
 	}
+	
+	def "test get children entity with skip"() {
+		setup:
+		def country = new LocationLevel(code: "country")
+		def province = new LocationLevel(code: "province")
+		def district = new LocationLevel(code: "district")
+		def type1 = new DataEntityType(code: 'type1')
+		def type2 = new DataEntityType(code: 'type2')
+		
+		when:
+		def rwanda = new LocationEntity(code: "rwanda", level: country)
+		def north = new LocationEntity(code: "north", parent: rwanda, level: province)
+		def burera = new LocationEntity(code: "burera", parent: north, level: district)
+		rwanda.children = [north]
+		north.children = [burera]
+		
+		def data1 = new DataLocationEntity(code: 'data1', location: north, type: type1)
+		north.dataEntities = [data1]
+		
+		def data2 = new DataLocationEntity(code: 'data2', location: burera, type: type2)
+		burera.dataEntities = [data2]
+		
+		then:
+		rwanda.getChildrenEntities(new HashSet([province]), new HashSet([type1, type2])).equals([burera, data1])
+		rwanda.getChildrenEntities(new HashSet([province, district]), new HashSet([type1, type2])).equals([data1, data2])
+		
+	}
+	
 }

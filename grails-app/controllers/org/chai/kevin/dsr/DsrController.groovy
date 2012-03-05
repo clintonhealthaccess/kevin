@@ -90,9 +90,7 @@ class DsrController extends AbstractController {
 			currentObjective: objective,			
 			currentTarget: DsrTarget.class,
 			currentLocation: location,
-			locationRoot: dsrTable.getLocationRoot(),
-			locationTree: dsrTable.getLocationTree().asList(),
-			dataLocationTree: dsrTable.getDataLocationTree().asList(),
+			locationTree: location.collectTreeWithDataEntities(skipLevels, locationTypes).asList(),
 			currentLocationTypes: locationTypes,
 			skipLevels: skipLevels
 		]

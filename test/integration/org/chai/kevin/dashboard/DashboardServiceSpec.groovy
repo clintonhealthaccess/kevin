@@ -186,12 +186,10 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setupLocationTree()
 		
 		when:
-		Set<String> skipLevels = dashboardService.getSkipLevels()
 		Set<LocationLevel> dashboardSkipLevels = dashboardService.getSkipLocationLevels()
 		
 		then:
-		getLocationLevels(skipLevels) == [LocationLevel.findByCode(COUNTRY), LocationLevel.findByCode(SECTOR)]
-		dashboardSkipLevels == [LocationLevel.findByCode(COUNTRY), LocationLevel.findByCode(SECTOR)]
+		dashboardSkipLevels.equals( s([LocationLevel.findByCode(SECTOR)]) )
 	}
 	
 	def getDashboardEntity(String code) {

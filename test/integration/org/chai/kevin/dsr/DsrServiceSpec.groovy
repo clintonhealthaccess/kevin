@@ -118,11 +118,9 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		setupLocationTree()
 		
 		when:
-		def skipLevels = dsrService.getSkipLevels()
 		def dsrSkipLevels = dsrService.getSkipLocationLevels()
 		
 		then:
-		getLocationLevels(skipLevels) == [LocationLevel.findByCode(PROVINCE), LocationLevel.findByCode(SECTOR)]
-		dsrSkipLevels == [LocationLevel.findByCode(PROVINCE), LocationLevel.findByCode(SECTOR)] 
+		dsrSkipLevels.equals(s([LocationLevel.findByCode(SECTOR)])) 
 	}
 }

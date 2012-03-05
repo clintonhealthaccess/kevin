@@ -182,16 +182,16 @@ public class DashboardService {
 		return dashboardObjective;
 	}
 	
+	public Set<LocationLevel> getSkipLocationLevels(){
+		return reportService.getSkipLocationLevels(skipLevels);
+	}
+	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
 	public void setSkipLevels(Set<String> skipLevels) {
 		this.skipLevels = skipLevels;
-	}
-
-	public Set<LocationLevel> getSkipLocationLevels(){
-		return reportService.getSkipLocationLevels(skipLevels);
 	}
 	
 	public void setDashboardPercentageService(DashboardPercentageService dashboardPercentageService) {

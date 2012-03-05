@@ -141,9 +141,12 @@ public class ReportService {
 	}
 	
 	public Set<LocationLevel> getSkipLocationLevels(Set<String> skipLevels) {
-		if(skipLevels == null) skipLevels = this.skipLevels;
+		Set<String> allSkipLevels = new HashSet<String>();
+		if (skipLevels != null) allSkipLevels.addAll(skipLevels);
+		allSkipLevels.addAll(this.skipLevels);
+		
 		Set<LocationLevel> levels = new HashSet<LocationLevel>();
-		for (String skipLevel : skipLevels) {
+		for (String skipLevel : allSkipLevels) {
 			levels.add(locationService.findLocationLevelByCode(skipLevel));
 		}
 		return levels;
