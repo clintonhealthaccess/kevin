@@ -7,7 +7,7 @@ import org.chai.kevin.util.Utils;
 
 abstract class DsrIntegrationTests extends IntegrationTests {
 	
-	def newDsrTarget(def code, def dataElement, def format, def types, def objective, def category) {
+	def newDsrTarget(def code, def dataElement, def format, def types, def objective, DsrTargetCategory category) {
 		def target = new DsrTarget(names: [:], 
 			code: code, 
 			format: format, 
@@ -23,12 +23,16 @@ abstract class DsrIntegrationTests extends IntegrationTests {
 		objective.save(failOnError: true)
 		return target
 	}
+	
+	def newDsrTarget(def code, def dataElement, def format, def types, def objective) {
+		return newDsrTarget(code, dataElement, format, types, objective, null)
+	}
 		
 	def newDsrTarget(def code, def dataElement, def types, def objective) {
 		return newDsrTarget(code, dataElement, null, types, objective, null)
 	}
 	
-	def newDsrTarget(def code, def dataElement, def types, def objective, def category) {
+	def newDsrTarget(def code, def dataElement, def types, def objective, DsrTargetCategory category) {
 		return newDsrTarget(code, dataElement, null, types, objective, category)
 	}
 	
