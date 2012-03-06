@@ -1157,7 +1157,7 @@ class Initializer {
 		
 		new RawDataElementValue(
 			data: RawDataElement.findByCode("PLANNINGELEMENT"),
-			entity: DataLocationEntity.findByCode("Butaro DH"),
+			entity: DataLocationEntity.findByCode("Kivuye HC"),
 			period: Period.list()[0],
 			value: Value.VALUE_LIST([
 				Value.VALUE_MAP([
