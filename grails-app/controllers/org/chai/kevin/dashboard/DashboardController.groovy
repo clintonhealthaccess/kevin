@@ -44,7 +44,7 @@ import org.hisp.dhis.period.Period
 
 class DashboardController extends AbstractController {
 	
-	DashboardService dashboardService;
+	DashboardService dashboardService;	
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -87,7 +87,9 @@ class DashboardController extends AbstractController {
 			 dashboardEntity = getDashboardEntity(program)
 		}
 		LocationEntity location = getLocation()
-		List<DataEntityType> locationTypes = getLocationTypes()
+		Set<DataEntityType> locationTypes = getLocationTypes()
+				
+		def skipLevels = dashboardService.getSkipLocationLevels();
 		
 		if (period != null && program != null && dashboardEntity != null && location != null && locationTypes != null) {			
 			if (log.isInfoEnabled()){
@@ -96,9 +98,10 @@ class DashboardController extends AbstractController {
 					", program:"+program.id);
 			}
 			redirectIfDifferent(period, program, location)
-			
-			programDashboard = dashboardService.getProgramDashboard(location, program, period, new HashSet(locationTypes));
-			locationDashboard = dashboardService.getLocationDashboard(location, program, period, new HashSet(locationTypes), false);
+
+			programDashboard = dashboardService.getProgramDashboard(location, objective, period, locationTypes);
+			locationDashboard = dashboardService.getLocationDashboard(location, objective, period, locationTypes, false);			
+
 		}
 		if (log.isDebugEnabled()){
 			 log.debug('program dashboard: '+programDashboard)
@@ -112,8 +115,9 @@ class DashboardController extends AbstractController {
 			dashboardEntity: dashboardEntity,
 			currentProgram: program,
 			currentTarget: DashboardTarget.class,
-			currentLocation: location,
-			currentLocationTypes: locationTypes
+			currentLocation: location,			
+			currentLocationTypes: locationTypes,
+			skipLevels: skipLevels			
 		]
 	}
 	
@@ -124,7 +128,7 @@ class DashboardController extends AbstractController {
 		ReportProgram program = getProgram()
 		DashboardEntity dashboardEntity = getDashboardEntity(program)	
 		LocationEntity location = getLocation()
-		List<DataEntityType> locationTypes = getLocationTypes()
+		Set<DataEntityType> locationTypes = getLocationTypes()
 		
 		def dashboard = null
 		if (period != null && program != null && dashboardEntity != null && location != null && locationTypes != null) {			
@@ -139,9 +143,9 @@ class DashboardController extends AbstractController {
 			
 			def table = (String) params.get("table")			
 			if(table == 'program')
-				dashboard = dashboardService.getProgramDashboard(location, program, period, new HashSet(locationTypes));
+				dashboard = dashboardService.getProgramDashboard(location, objective, period, locationTypes);
 			if(table == 'location')
-				dashboard = dashboardService.getLocationDashboard(location, program, period, new HashSet(locationTypes), true);
+				dashboard = dashboardService.getLocationDashboard(location, objective, period, locationTypes, true);
 						
 			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
 

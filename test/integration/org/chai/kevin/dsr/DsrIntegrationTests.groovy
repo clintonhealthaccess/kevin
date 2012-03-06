@@ -7,20 +7,36 @@ import org.chai.kevin.util.Utils;
 
 abstract class DsrIntegrationTests extends IntegrationTests {
 	
-	def newDsrTarget(def code, def dataElement, def format, def types, def program) {
+	def newDsrTarget(def code, def dataElement, def format, def types, def program, DsrTargetCategory category) {
 		def target = new DsrTarget(names: [:], 
 			code: code, 
 			format: format, 
 			dataElement: dataElement, 
 			program: program, 
-			typeCodeString: Utils.unsplit(types)).save(failOnError: true)
-			
-//		program.targets << target
+			category: category,
+			typeCodeString: Utils.unsplit(types)
+		).save(failOnError: true)
+		if (category != null) {
+			category.targets << target
+			category.save(failOnError: true)
+		}
 		program.save(failOnError: true)
 		return target
 	}
+	
+	def newDsrTarget(def code, def dataElement, def format, def types, def objective) {
+		return newDsrTarget(code, dataElement, format, types, objective, null)
+	}
 		
 	def newDsrTarget(def code, def dataElement, def types, def program) {
-		return newDsrTarget(code, dataElement, null, types, program)
+		return newDsrTarget(code, dataElement, null, types, program, null)
+	}
+	
+	def newDsrTarget(def code, def dataElement, def types, def program, DsrTargetCategory category) {
+		return newDsrTarget(code, dataElement, null, types, program, category)
+	}
+	
+	def newDsrTargetCategory(def code) {
+		return new DsrTargetCategory(code: code).save(failOnError: true)
 	}
 }

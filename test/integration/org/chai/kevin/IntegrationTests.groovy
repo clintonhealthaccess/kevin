@@ -109,6 +109,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 		def country = newLocationLevel(COUNTRY, 1)
 		def province = newLocationLevel(PROVINCE, 2)
 		def district = newLocationLevel(DISTRICT, 3)
+		def sector = newLocationLevel(SECTOR, 4)
 		
 		def rwanda = newLocationEntity(j(["en":RWANDA]), RWANDA, country)
 		def north = newLocationEntity(j(["en":NORTH]), NORTH, rwanda, province)
@@ -294,7 +295,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 //	static def newReportProgram(def code, def parent, def children){
 //		return new ReportProgram(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
 //	}
-	
+
 	def refresh() {
 		refreshNormalizedDataElement()
 		refreshCalculation()
@@ -328,13 +329,13 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return Utils.unsplit(types)
 	}
 	
-//	static def getLocationLevels(def levels) {
-//		def result = []
-//		for (def level : levels) {
-//			result.add LocationLevel.findByCode(level)
-//		}
-//		return result;
-//	}
+	static def getLocationLevels(def levels) {
+		def result = []
+		for (def level : levels) {
+			result.add LocationLevel.findByCode(level)
+		}
+		return result;
+	}
 	
 //	static def getLocation(def name) {
 //		return new Location(Location.findByName(name))

@@ -24,7 +24,7 @@ label { display: block; font-weight: bold; }
 /* line 39, ../../src/stylesheets/print.sass */
 #print-questions ol > li { margin-left: 10px; padding-left: 4px 4px 4px 0px; list-style: none; }
 /* line 44, ../../src/stylesheets/print.sass */
-#print-questions .objective-title { font-weight: bold; font-size: 14px; border-bottom: 3px solid black; padding-left: 5px; padding-bottom: 0px; margin: 0px 3px 0px 3px; }
+#print-questions .program-title { font-weight: bold; font-size: 14px; border-bottom: 3px solid black; padding-left: 5px; padding-bottom: 0px; margin: 0px 3px 0px 3px; }
 /* line 52, ../../src/stylesheets/print.sass */
 #print-questions .section-title { font-weight: bold; background-color: #cccccc; font-size: 13px; padding-left: 5px; margin: 2px 3px 0px 3px; }
 /* line 59, ../../src/stylesheets/print.sass */

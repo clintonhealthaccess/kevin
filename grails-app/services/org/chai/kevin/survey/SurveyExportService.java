@@ -65,13 +65,13 @@ public class SurveyExportService {
 		this.skipLevels = skipLevels;
 	}
 	
-	public List<LocationLevel> getSkipLevelList() {
-		List<LocationLevel> result = new ArrayList<LocationLevel>();
+	private List<LocationLevel> getLevels() {
+		List<LocationLevel> result = locationService.listLevels();
 		for (String level : skipLevels) {
-			result.add(locationService.findLocationLevelByCode(level));
+			result.remove(locationService.findLocationLevelByCode(level));
 		}
 		return result;
-	}		
+	}
 	
 	private final static String CSV_FILE_EXTENSION = ".csv";
 
@@ -89,8 +89,7 @@ public class SurveyExportService {
 		List<String> headers = new ArrayList<String>();
 		
 		headers.add(SURVEY_HEADER);		
-		List<LocationLevel> levels = locationService.listLevels(getSkipLevelList().toArray(new LocationLevel[getSkipLevelList().size()]));
-		for(LocationLevel level : levels){
+		for(LocationLevel level : getLevels()){
 			headers.add(languageService.getText(level.getNames()));
 		}
 		headers.add(ORGANISATION_UNIT_GROUP_HEADER);
@@ -270,8 +269,7 @@ public class SurveyExportService {
 		SurveyExportDataPoint dataPoint = new SurveyExportDataPoint();
 		dataPoint.add(formatExportDataItem(languageService.getText(survey.getNames())));
 		
-		List<LocationLevel> levels = locationService.listLevels(getSkipLevelList().toArray(new LocationLevel[getSkipLevelList().size()]));					
-		for (LocationLevel level : levels){			
+		for (LocationLevel level : getLevels()){			
 			LocationEntity parent = locationService.getParentOfLevel(facility, level);
 			if (parent != null) dataPoint.add(formatExportDataItem(languageService.getText(parent.getNames())));
 			else dataPoint.add("");

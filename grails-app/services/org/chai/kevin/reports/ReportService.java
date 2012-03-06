@@ -1,3 +1,4 @@
+
 package org.chai.kevin.reports;
 
 import java.util.ArrayList;
@@ -34,9 +35,8 @@ public class ReportService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
-//	private String groupLevel;
 	private SessionFactory sessionFactory;
-	
+	private Set<String> skipLevels;
 	
 	public <T extends CalculationEntity> Map<LocationEntity, List<T>> getParents(List<T> entities, LocationLevel level) {									
 		
@@ -132,12 +132,23 @@ public class ReportService {
 		this.languageService = languageService;
 	}
 	
-//	public void setGroupLevel(String groupLevel) {
-//		this.groupLevel = groupLevel;
-//	}
-	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
+	public void setSkipLevels(Set<String> skipLevels) {
+		this.skipLevels = skipLevels;
+	}
+	
+	public Set<LocationLevel> getSkipLocationLevels(Set<String> skipLevels) {
+		Set<String> allSkipLevels = new HashSet<String>();
+		if (skipLevels != null) allSkipLevels.addAll(skipLevels);
+		allSkipLevels.addAll(this.skipLevels);
+		
+		Set<LocationLevel> levels = new HashSet<LocationLevel>();
+		for (String skipLevel : allSkipLevels) {
+			levels.add(locationService.findLocationLevelByCode(skipLevel));
+		}
+		return levels;
+	}
 }

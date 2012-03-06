@@ -29,7 +29,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.dashboardEntity.equals(dashboardRoot)
 		model.currentPeriod.equals(period)
 		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
-		model.currentLocationTypes.equals([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)])
+		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard != null
 		model.locationDashboard != null
 	}
@@ -55,7 +55,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.dashboardEntity.equals(dashboardRoot)
 		model.currentPeriod.equals(period)
 		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
-		model.currentLocationTypes.equals([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)])
+		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard != null
 		model.locationDashboard != null
 	}
@@ -80,7 +80,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.dashboardEntity == null
 		model.currentPeriod.equals(period)
 		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
-		model.currentLocationTypes.equals([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)])
+		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard == null
 		model.locationDashboard == null
 	}

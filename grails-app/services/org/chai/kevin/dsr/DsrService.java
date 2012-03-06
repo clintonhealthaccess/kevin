@@ -2,6 +2,7 @@ package org.chai.kevin.dsr;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportValue;
@@ -38,23 +40,23 @@ public class DsrService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
+	private Set<String> skipLevels;
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
+
 	public DsrTable getDsrTable(LocationEntity location, ReportProgram program, Period period, Set<DataEntityType> types, DsrTargetCategory category) {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",program="+program+",types="+types+",category="+category+")");
-		
-		List<DataLocationEntity> facilities = location.collectDataLocationEntities(types, null);				
+				
+		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, types);		
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, program);
 		
 		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();				
 		
-		LocationEntity locationRoot = new LocationEntity();
-		List<LocationEntity> locationTree = new ArrayList<LocationEntity>();
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
 		if(facilities.isEmpty() || targets.isEmpty())
-			return new DsrTable(valueMap, targets, targetCategories, locationRoot, locationTree);		
+			return new DsrTable(valueMap, targets, targetCategories);		
 		
 		List<DsrTarget> categoryTargets = new ArrayList<DsrTarget>();
 		if(category != null){
@@ -73,12 +75,10 @@ public class DsrService {
 			}
 			valueMap.put(facility, targetMap);
 		}				
-		
-		locationRoot = locationService.getRootLocation();
-		locationTree = location.collectTreeWithDataEntities(types, null);		
+			
 		targetCategories = getTargetCategories(program);
 		
-		DsrTable dsrTable = new DsrTable(valueMap, targets, targetCategories, locationRoot, locationTree);
+		DsrTable dsrTable = new DsrTable(valueMap, targets, targetCategories);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
 		return dsrTable;
 	}
@@ -166,4 +166,11 @@ public class DsrService {
 		this.languageService = languageService;
 	}
 	
+	public void setSkipLevels(Set<String> skipLevels) {
+		this.skipLevels = skipLevels;
+	}
+
+	public Set<LocationLevel> getSkipLocationLevels(){
+		return reportService.getSkipLocationLevels(skipLevels);
+	}
 }
