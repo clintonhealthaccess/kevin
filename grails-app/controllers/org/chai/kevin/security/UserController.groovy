@@ -5,6 +5,7 @@ import org.chai.kevin.AbstractEntityController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class UserController extends AbstractEntityController {
+	def userService;
 
 	def getEntity(def id) {
 		return User.get(id)
@@ -63,6 +64,20 @@ class UserController extends AbstractEntityController {
 		params['cmd'] = cmd;
 		super.save()
 
+	}
+	def search={
+		
+		adaptParamsForList()
+		
+		List<User> users = userService.searchUser(params['q'], params);
+
+		render (view: '/entity/list', model:[
+			template:"user/userList",
+			entities: users,
+			entityCount: userService.countUser(params['q']),
+			code: getLabel()
+		])
+		
 	}
 	
 		
