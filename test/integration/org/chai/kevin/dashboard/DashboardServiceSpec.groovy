@@ -30,17 +30,18 @@ package org.chai.kevin.dashboard
 
 import java.util.List
 
-import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity
-import org.chai.kevin.value.RawDataElementValue
-import org.hisp.dhis.period.Period
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.value.RawDataElementValue;
+import org.hisp.dhis.period.Period;
+import org.chai.kevin.reports.ReportObjective;
 
 class DashboardServiceSpec extends DashboardIntegrationTests {
 
-	def dashboardService
+	def dashboardService	
 	
 	def "dashboard service works"() {
 		setup:
@@ -153,8 +154,6 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		then:
 		dashboard.dashboardEntities.containsAll expectedEntities.collect {getDashboardEntity(it)}
-//		dashboard.objectivePath.containsAll expectedObjectivePath.collect {DashboardObjective.findByCode(it)}
-		// TODO order locations
 		dashboard.locations.containsAll expectedLocations.collect {getLocationEntity(it)}
 		dashboard.locationPath.containsAll expectedLocationPath.collect {LocationEntity.findByCode(it)}
 
@@ -182,6 +181,16 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		dashboard.hasData() == false
 	}
 	
+	def "get dashboard skip levels"(){
+		setup:
+		setupLocationTree()
+		
+		when:
+		Set<LocationLevel> dashboardSkipLevels = dashboardService.getSkipLocationLevels()
+		
+		then:
+		dashboardSkipLevels.equals( s([LocationLevel.findByCode(SECTOR)]) )
+	}
 	
 	def getDashboardEntity(String code) {
 		def entity = DashboardObjective.findByCode(code);

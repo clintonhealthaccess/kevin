@@ -90,7 +90,7 @@ public class ExpressionService {
 		for (DataEntityType type : locationService.listTypes()) {
 			Set<DataEntityType> collectForType = new HashSet<DataEntityType>();
 			collectForType.add(type);
-			List<DataLocationEntity> facilities = entity.collectDataLocationEntities(collectForType, null);
+			List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, collectForType);
 			
 			if (!facilities.isEmpty()) {
 				Map<DataLocationEntity, StatusValuePair> values = new HashMap<DataLocationEntity, StatusValuePair>();

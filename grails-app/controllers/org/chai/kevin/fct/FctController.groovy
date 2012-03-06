@@ -26,12 +26,12 @@ class FctController extends AbstractController {
 		LocationEntity entity = LocationEntity.get(params.int('location'));
 		ReportObjective objective = ReportObjective.get(params.int('objective'));
 		LocationLevel level = LocationLevel.get(params.int('level'));
-		List<DataEntityType> locationTypes = getLocationTypes();
+		Set<DataEntityType> locationTypes = getLocationTypes();
 		
 		FctTable fctTable = null;
 
 		if (period != null && objective != null && entity != null && level != null) {
-			fctTable = fctService.getFctTable(entity, objective, period, level, new HashSet(locationTypes));
+			fctTable = fctService.getFctTable(entity, objective, period, level, locationTypes);
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root objective: "+objective)				
