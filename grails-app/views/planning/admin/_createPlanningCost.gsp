@@ -22,9 +22,9 @@
 				value="${planningCost.discriminatorValueString}" bean="${planningCost}"/> 
 		</g:else>
 		
-		<g:selectFromList name="sum.id" label="Sum" bean="${planningCost}" field="sum" optionKey="id" multiple="false"
-			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Sum'])}"
-			from="${sums}" value="${planningCost.sum?.id}" values="${sums.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+		<g:selectFromList name="dataElement.id" label="Data Element" bean="${planningCost}" field="dataElement" optionKey="id" multiple="false"
+			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'NormalizedDataElement'])}"
+			from="${dataElements}" value="${planningCost.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 	
 		<g:selectFromList name="section" label="Section (link)" bean="${planningCost}" field="section" multiple="false"
 			from="${sections}" value="${planningCost.section}"/>

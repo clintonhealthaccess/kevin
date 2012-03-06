@@ -163,16 +163,16 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def planning = newPlanning(period)
 		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")]))), "[_].key", "[_].key", planning)
-		def sum = newSum("1", CODE(2))
+		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
 		
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
+		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
 		
 		then:
 		PlanningCost.count() == 1
 		
 		when:
-		new PlanningCost(planningType: planningType, sum: sum, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
+		new PlanningCost(planningType: planningType, dataElement: dataElement, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
 
 		then:
 		thrown ValidationException
@@ -184,13 +184,13 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		thrown ValidationException
 
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', sum: sum, section: '[_].key').save(failOnError: true)
+		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, section: '[_].key').save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', sum: sum, type: PlanningCostType.INCOMING).save(failOnError: true)
+		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, type: PlanningCostType.INCOMING).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -201,34 +201,34 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def planning = newPlanning(period)
 		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code"), "key1":Type.TYPE_MAP(["key12":Type.TYPE_NUMBER()])]))), "[_].key", "[_].key", planning)
-		def sum = newSum("1", CODE(2))
+		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
 		
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '[_]').save(failOnError: true)
+		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, type: PlanningCostType.INCOMING, section: '[_]').save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '').save(failOnError: true)
+		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, type: PlanningCostType.INCOMING, section: '').save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '[_].key1.key12').save(failOnError: true)
+		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, type: PlanningCostType.INCOMING, section: '[_].key1.key12').save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
+		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
 		
 		then:
 		PlanningCost.count() == 1
 		
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', sum: sum, type: PlanningCostType.INCOMING, section: '[_].key1').save(failOnError: true)
+		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, type: PlanningCostType.INCOMING, section: '[_].key1').save(failOnError: true)
 		
 		then:
 		PlanningCost.count() == 2
