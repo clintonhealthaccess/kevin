@@ -47,7 +47,7 @@ import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
-import org.chai.kevin.survey.SurveyObjective
+import org.chai.kevin.survey.SurveyProgram
 import org.chai.kevin.survey.SurveySection
 import org.chai.kevin.survey.SurveyTableColumn
 import org.chai.kevin.survey.SurveyTableQuestion

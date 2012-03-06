@@ -13,7 +13,7 @@ abstract class SurveyCloner {
 
 	public Survey getSurvey(Survey survey) {return survey;}
 
-	public SurveyObjective getObjective(SurveyObjective objective) {return objective;}
+	public SurveyProgram getProgram(SurveyProgram program) {return program;}
 
 	public SurveySection getSection(SurveySection section) {return section;}
 

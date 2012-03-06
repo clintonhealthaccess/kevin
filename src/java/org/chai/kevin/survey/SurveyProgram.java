@@ -60,9 +60,9 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-@Entity(name = "SurveyObjective")
-@Table(name = "dhsst_survey_objective")
-public class SurveyObjective extends Orderable<Integer> {
+@Entity(name = "SurveyProgram")
+@Table(name = "dhsst_survey_program")
+public class SurveyProgram extends Orderable<Integer> {
 
 	private Long id;
 	private Integer order;
@@ -91,7 +91,7 @@ public class SurveyObjective extends Orderable<Integer> {
 		this.order = order;
 	}
 	
-	@OneToMany(targetEntity=SurveySection.class, mappedBy="objective")
+	@OneToMany(targetEntity=SurveySection.class, mappedBy="program")
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	@Fetch(FetchMode.SELECT)
 	public List<SurveySection> getSections() {
@@ -103,7 +103,7 @@ public class SurveyObjective extends Orderable<Integer> {
 	}
 
 	public void addSection(SurveySection section) {
-		section.setObjective(this);
+		section.setProgram(this);
 		sections.add(section);
 	}
 
@@ -145,13 +145,13 @@ public class SurveyObjective extends Orderable<Integer> {
 		this.names = names;
 	}
 	
-//	@ManyToOne(targetEntity = SurveyObjective.class, optional = true)
-//	@JoinTable(name="dhsst_survey_objective_dependencies")
-//	public SurveyObjective getDependency() {
+//	@ManyToOne(targetEntity = SurveyProgram.class, optional = true)
+//	@JoinTable(name="dhsst_survey_program_dependencies")
+//	public SurveyProgram getDependency() {
 //		return dependency;
 //	}
 //
-//	public void setDependency(SurveyObjective dependency) {
+//	public void setDependency(SurveyProgram dependency) {
 //		this.dependency = dependency;
 //	}
 
@@ -202,9 +202,9 @@ public class SurveyObjective extends Orderable<Integer> {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof SurveyObjective))
+		if (!(obj instanceof SurveyProgram))
 			return false;
-		SurveyObjective other = (SurveyObjective) obj;
+		SurveyProgram other = (SurveyProgram) obj;
 		if (getId() == null) {
 			if (other.getId() != null)
 				return false;
@@ -214,9 +214,9 @@ public class SurveyObjective extends Orderable<Integer> {
 	}
 
 	@Transient
-	protected void deepCopy(SurveyObjective copy, SurveyCloner cloner) {
+	protected void deepCopy(SurveyProgram copy, SurveyCloner cloner) {
 		copy.setNames(new Translation(getNames()));
-//		if (getDependency() != null) copy.setDependency(cloner.getObjective(getDependency()));
+//		if (getDependency() != null) copy.setDependency(cloner.getProgram(getDependency()));
 		copy.setTypeCodeString(getTypeCodeString());
 		copy.setOrder(getOrder());
 		copy.setSurvey(cloner.getSurvey(getSurvey()));

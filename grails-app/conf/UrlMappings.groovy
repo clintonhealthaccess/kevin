@@ -38,9 +38,9 @@ class UrlMappings {
 		
 		"/dashboard/$action/$period?/$location?"(controller:"dashboard")
 		
-		"/cost/$action/$period?/$objective?/$location?"(controller:"cost")
+		"/cost/$action/$period?/$program?/$location?"(controller:"cost")
 
-		"/dsr/$action/$period?/$objective?/$location?"(controller:"dsr")
+		"/dsr/$action/$period?/$program?/$location?"(controller:"dsr")
 		
 		"/maps/view"(controller:"maps", action:"view")
 		

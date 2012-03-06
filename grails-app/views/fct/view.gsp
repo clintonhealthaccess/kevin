@@ -17,13 +17,13 @@
 			<div class="subnav">
 				<g:iterationFilter linkParams="${params}" selected="${currentPeriod}"/>
 				<g:locationFilter linkParams="${params << [filter:'location']}" selected="${currentLocation}"/>
-				<g:render template="/templates/objectiveFilter" model="[linkParams:params]"/>
+				<g:render template="/templates/programFilter" model="[linkParams:params]"/>
 				<g:levelFilter linkParams="${params << [filter:'level']}" selected="${currentLevel}"/>												
 				
 				<div class="right">
 				<!-- ADMIN SECTION -->
 				<shiro:hasPermission permission="admin:fct">
-					<span> <a href="${createLinkWithTargetURI(controller:'fctObjective', action:'create')}">Add Objective</a> </span>|
+					<span> <a href="${createLinkWithTargetURI(controller:'fctProgram', action:'create')}">Add Program</a> </span>|
 					<span> <a href="${createLinkWithTargetURI(controller:'fctTarget', action:'create')}">Add Target</a> </span>
 				</shiro:hasPermission>
 				<!-- ADMIN SECTION END -->
@@ -42,15 +42,15 @@
 								<tr>
 									<th class="object-name-box" rowspan="2">
 										<div>
-											<g:i18n field="${currentObjective.names}" />
+											<g:i18n field="${currentProgram.names}" />
 										</div> <shiro:hasPermission permission="admin:fct">
 											<span> 
-												<a class="edit-link" href="${createLinkWithTargetURI(controller:'fctObjective', action:'edit', id:currentObjective.id)}">
+												<a class="edit-link" href="${createLinkWithTargetURI(controller:'fctProgram', action:'edit', id:currentProgram.id)}">
 													<g:message code="default.link.edit.label" default="Edit" />
 												</a> 
 											</span>
 											<span> 
-												<a class="delete-link" href="${createLinkWithTargetURI(controller:'fctObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+												<a class="delete-link" href="${createLinkWithTargetURI(controller:'fctProgram', action:'delete', id:currentProgram.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
 													<g:message code="default.link.edit.label" default="Delete" />
 												</a>
 											</span>
@@ -120,7 +120,7 @@
 					</g:else>
 				</g:if>
 				<g:else>
-					<div class="help">Please select an Location / Objective</div>
+					<div class="help">Please select a Location / Program</div>
 				</g:else>
 			</div>
 		</div>

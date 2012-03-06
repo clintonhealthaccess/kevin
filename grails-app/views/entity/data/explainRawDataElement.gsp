@@ -29,8 +29,8 @@
 					<g:each in="${surveyElements}" status="i" var="surveyElement"> 
 						<g:set var="question" value="${surveyElement.key.surveyQuestion}" /> 
 						<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-							<td>${question.section.objective.survey.period.startDate} &harr; ${question.section.objective.survey.period.endDate}</td>
-							<td>${i18n(field:question.section.objective.survey.names)}</td>
+							<td>${question.section.program.survey.period.startDate} &harr; ${question.section.program.survey.period.endDate}</td>
+							<td>${i18n(field:question.section.program.survey.names)}</td>
 							<td><g:stripHtml field="${question.names}" chars="100"/></a></td>
 							<td>${surveyElement.value}</td>
 						</tr>

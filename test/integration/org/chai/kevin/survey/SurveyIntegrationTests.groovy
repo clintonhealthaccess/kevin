@@ -5,7 +5,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective;
+import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
@@ -25,25 +25,25 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return new Survey(names: names, period: period, active: active).save(failOnError: true);
 	}
 	
-	def static newSurveyObjective(def survey, def order, def types) {
-		return newSurveyObjective([:], survey, order, types)
+	def static newSurveyProgram(def survey, def order, def types) {
+		return newSurveyProgram([:], survey, order, types)
 	}
 	
-	def static newSurveyObjective(def names, def survey, def order, def types) {
-		def objective = new SurveyObjective(names: names, survey: survey, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
-		survey.addObjective(objective)
+	def static newSurveyProgram(def names, def survey, def order, def types) {
+		def program = new SurveyProgram(names: names, survey: survey, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+		survey.addProgram(program)
 		survey.save(failOnError: true)
-		return objective
+		return program
 	}
 	
-	def static newSurveySection(def objective, def order, def types) {
-		def section = newSurveySection([:], objective, order, types)
+	def static newSurveySection(def program, def order, def types) {
+		def section = newSurveySection([:], program, order, types)
 	}
 	
-	def static newSurveySection(def names, def objective, def order, def types) {
-		def section = new SurveySection(names: names, objective: objective, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
-		objective.addSection(section)
-		objective.save(failOnError: true)
+	def static newSurveySection(def names, def program, def order, def types) {
+		def section = new SurveySection(names: names, program: program, order: order, typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+		program.addSection(section)
+		program.save(failOnError: true)
 		return section
 	}
 	
@@ -72,8 +72,8 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return new SurveyEnteredSection(section: section, entity: entity, invalid: invalid, complete: complete).save(failOnError: true)
 	}
 
-	def static newSurveyEnteredObjective(def objective, def period, def entity, def invalid, def complete, def closed) {
-		return new SurveyEnteredObjective(objective: objective, entity: entity, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
+	def static newSurveyEnteredProgram(def program, def period, def entity, def invalid, def complete, def closed) {
+		return new SurveyEnteredProgram(program: program, entity: entity, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
 	}
 	
 	def static newSurveyValidationRule(def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {

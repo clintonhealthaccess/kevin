@@ -11,28 +11,28 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.SurveyObjective;
+import org.chai.kevin.survey.SurveyProgram;
 import org.hibernate.annotations.NaturalId;
 
-@Entity(name="SurveyValidObjective")
-@Table(name="dhsst_survey_entered_objective", uniqueConstraints=@UniqueConstraint(
-		columnNames={"objective", "entity"})
+@Entity(name="SurveyValidProgram")
+@Table(name="dhsst_survey_entered_program", uniqueConstraints=@UniqueConstraint(
+		columnNames={"program", "entity"})
 )
-public class SurveyEnteredObjective extends SurveyEnteredEntity {
+public class SurveyEnteredProgram extends SurveyEnteredEntity {
 
 	private Long id;
-	private SurveyObjective objective;
+	private SurveyProgram program;
 	private DataLocationEntity entity;
 	
 	private Boolean complete;
 	private Boolean invalid;
 	private Boolean closed;
 	
-	public SurveyEnteredObjective() {}
+	public SurveyEnteredProgram() {}
 	
-	public SurveyEnteredObjective(SurveyObjective objective, DataLocationEntity entity, Boolean invalid, Boolean complete, Boolean closed) {
+	public SurveyEnteredProgram(SurveyProgram program, DataLocationEntity entity, Boolean invalid, Boolean complete, Boolean closed) {
 		super();
-		this.objective = objective;
+		this.program = program;
 		this.entity = entity;
 		this.complete = complete;
 		this.invalid = invalid;
@@ -50,13 +50,13 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=SurveyObjective.class, fetch=FetchType.LAZY)
-	public SurveyObjective getObjective() {
-		return objective;
+	@ManyToOne(targetEntity=SurveyProgram.class, fetch=FetchType.LAZY)
+	public SurveyProgram getProgram() {
+		return program;
 	}
 	
-	public void setObjective(SurveyObjective objective) {
-		this.objective = objective;
+	public void setProgram(SurveyProgram program) {
+		this.program = program;
 	}
 
 	@NaturalId
@@ -111,7 +111,7 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((objective == null) ? 0 : objective.hashCode());
+				+ ((program == null) ? 0 : program.hashCode());
 		result = prime
 				* result
 				+ ((entity == null) ? 0 : entity.hashCode());
@@ -126,11 +126,11 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SurveyEnteredObjective other = (SurveyEnteredObjective) obj;
-		if (objective == null) {
-			if (other.objective != null)
+		SurveyEnteredProgram other = (SurveyEnteredProgram) obj;
+		if (program == null) {
+			if (other.program != null)
 				return false;
-		} else if (!objective.equals(other.objective))
+		} else if (!program.equals(other.program))
 			return false;
 		if (entity == null) {
 			if (other.entity != null)
@@ -142,7 +142,7 @@ public class SurveyEnteredObjective extends SurveyEnteredEntity {
 
 	@Override
 	public String toString() {
-		return "SurveyEnteredObjective [complete=" + complete + ", invalid=" + invalid + ", closed=" + closed + "]";
+		return "SurveyEnteredProgram [complete=" + complete + ", invalid=" + invalid + ", closed=" + closed + "]";
 	}
 	
 }

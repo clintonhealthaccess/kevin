@@ -22,7 +22,7 @@ type="text/css" rel="stylesheet" media="screen, projection" />
 
       <div class="main">
         <ul class='horizontal' id='tab-nav'>
-          <li><a class="selected" href="/kevin/dashboard/view/1/1?objective=1&dashboardEntity=1">Undertakings</a></li>
+          <li><a class="selected" href="/kevin/dashboard/view/1/1?program=1&dashboardEntity=1">Undertakings</a></li>
           <li><a href="/kevin/dsr/view/1/1/1?dashboardEntity=1">Projected Budget</a></li>
         </ul>
         

@@ -42,7 +42,7 @@ import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
@@ -61,8 +61,8 @@ public class CostTableService {
 	private ValueService valueService;
 	private Set<String> skipLevels;
 	
-	public CostTable getCostTable(Period period, ReportObjective objective, CalculationEntity entity) {
-		List<CostTarget> targets = reportService.getReportTargets(CostTarget.class, objective);
+	public CostTable getCostTable(Period period, ReportProgram program, CalculationEntity entity) {
+		List<CostTarget> targets = reportService.getReportTargets(CostTarget.class, program);
 		return new CostTable(targets, costService.getYears(), getValues(period, targets, entity));
 	}
 
@@ -82,7 +82,7 @@ public class CostTableService {
 		for (String typeCode : Utils.split(target.getTypeCodeString())) {
 			types.add(locationService.findDataEntityTypeByCode(typeCode));
 		}
-		return new Explanation(target, types, target.getObjective(), period, new ArrayList<CalculationEntity>(explanationMap.keySet()), costService.getYears(), explanationMap);
+		return new Explanation(target, types, target.getProgram(), period, new ArrayList<CalculationEntity>(explanationMap.keySet()), costService.getYears(), explanationMap);
 	}
 	
 	private boolean appliesToLocation(CostTarget target, DataLocationEntity entity) {

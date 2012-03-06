@@ -48,11 +48,11 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		when:
 		def period = newPeriod()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
-		def costObjective = newReportObjective(CODE(2))
-		def training = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		def costProgram = newReportProgram(CODE(2))
+		def training = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costObjective, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
 
 		then:
 		costTable.getCost(training, year).value == value
@@ -74,11 +74,11 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def period = newPeriod()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
 		def dataElementEnd = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"40",(HEALTH_CENTER_GROUP):"40"]]))
-		def costObjective = newReportObjective(CODE(2))
-		def training = newCostTarget(CODE(3), dataElement, dataElementEnd, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		def costProgram = newReportProgram(CODE(2))
+		def training = newCostTarget(CODE(3), dataElement, dataElementEnd, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costObjective, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
 
 		then:
 		costTable.getCost(training, year).value == value
@@ -99,13 +99,13 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		when:
 		def period = newPeriod()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
-		def costObjective = newReportObjective(CODE(2))
+		def costProgram = newReportProgram(CODE(2))
 		def rampUp = CONSTANT_RAMP_UP()
-		def training = newCostTarget(TRAINING, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
-		def average = newCostTarget(AVERAGE, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		def training = newCostTarget(TRAINING, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
+		def average = newCostTarget(AVERAGE, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costObjective, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
 		
 		then:
 		costTable.targets.containsAll getTargets(expectedTargets)
@@ -124,11 +124,11 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		when:
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def costObjective = newReportObjective(CODE(2))
-		def target = newCostTarget(CODE(4), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		def costProgram = newReportProgram(CODE(2))
+		def target = newCostTarget(CODE(4), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costObjective, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
 		
 		then:
 		costTable.getCost(target, year).value == value
@@ -149,11 +149,11 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		when:
 		def period = newPeriod()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
-		def costObjective = newReportObjective(CODE(2))
-		def training = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		def costProgram = newReportProgram(CODE(2))
+		def training = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costObjective, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
 
 		then:
 		costTable.getCost(training, year).value == value
@@ -175,8 +175,8 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		when:
 		def period = newPeriod()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
-		def costObjective = newReportObjective(CODE(2))
-		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costObjective)
+		def costProgram = newReportProgram(CODE(2))
+		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
 		def explanation = costTableService.getExplanation(period, costTarget, LocationEntity.findByCode(entity))
@@ -217,8 +217,8 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		when:
 		def period = newPeriod()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20",(HEALTH_CENTER_GROUP):"20"]]))
-		def costObjective = newReportObjective(CODE(2))
-		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		def costProgram = newReportProgram(CODE(2))
+		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
 		def explanation = costTableService.getExplanation(period, costTarget, LocationEntity.findByCode(BURERA))

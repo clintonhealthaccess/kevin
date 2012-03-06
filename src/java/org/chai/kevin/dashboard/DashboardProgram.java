@@ -10,20 +10,20 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.hisp.dhis.period.Period;
 
-@Entity(name="DashboardObjective")
-@Table(name="dhsst_dashboard_objective")
-public class DashboardObjective extends DashboardEntity {
+@Entity(name="DashboardProgram")
+@Table(name="dhsst_dashboard_program")
+public class DashboardProgram extends DashboardEntity {
 
 	private Long id;
-	private ReportObjective objective;
+	private ReportProgram program;
 
 	@Override
 	@Transient
-	public ReportObjective getReportObjective() {
-		return getObjective();
+	public ReportProgram getReportProgram() {
+		return getProgram();
 	}
 	
 	@Id
@@ -36,18 +36,18 @@ public class DashboardObjective extends DashboardEntity {
 		this.id = id;
 	}
 	
-	@OneToOne(targetEntity=ReportObjective.class)
-	public ReportObjective getObjective() {
-		return objective;
+	@OneToOne(targetEntity=ReportProgram.class)
+	public ReportProgram getProgram() {
+		return program;
 	}
 	
-	public void setObjective(ReportObjective objective) {
-		this.objective = objective;
+	public void setProgram(ReportProgram program) {
+		this.program = program;
 	}
 
 	@Override
 	public <T> T visit(DashboardVisitor<T> visitor, CalculationEntity entity, Period period) {
-		return visitor.visitObjective(this, entity, period);
+		return visitor.visitProgram(this, entity, period);
 	}
 
 	@Override

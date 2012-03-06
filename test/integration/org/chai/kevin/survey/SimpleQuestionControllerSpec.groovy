@@ -10,8 +10,8 @@ class SimpleQuestionControllerSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_NUMBER()])))
 		simpleQuestionController = new SimpleQuestionController()
 		

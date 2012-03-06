@@ -42,62 +42,62 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	def "weight cannot be null on target"() {
 		when:
 		def calculation = newAverage("1", CODE(3))
-		def objective = newReportObjective(CODE(2))
-		new DashboardTarget(code: CODE(1), objective: objective, calculation: calculation, weight: 1).save(failOnError: true)
+		def program = newReportProgram(CODE(2))
+		new DashboardTarget(code: CODE(1), program: program, calculation: calculation, weight: 1).save(failOnError: true)
 		
 		then:
 		DashboardTarget.count() == 1
 		
 		when:
-		new DashboardTarget(code: CODE(4), objective: objective, calculation: calculation).save(failOnError: true)
+		new DashboardTarget(code: CODE(4), program: program, calculation: calculation).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 	}
 	
-	def "report objective cannot be null on target"() {
+	def "report program cannot be null on target"() {
 		when:
 		def calculation = newAverage("1", CODE(3))
-		def objective = newReportObjective(CODE(2))
-		new DashboardTarget(code: CODE(1), objective: objective, calculation: calculation, weight: 1).save(failOnError: true)
+		def program = newReportProgram(CODE(2))
+		new DashboardTarget(code: CODE(1), program: program, calculation: calculation, weight: 1).save(failOnError: true)
 		
 		then:
 		DashboardTarget.count() == 1
 		
 		when:
-		new DashboardTarget(code: CODE(4), objective: objective, weight: 1).save(failOnError: true)
+		new DashboardTarget(code: CODE(4), program: program, weight: 1).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 	}
 	
-	def "report objective cannot be null on objective"() {
+	def "report program cannot be null on program"() {
 		when:
 		def calculation = newAverage("1", CODE(3))
-		def objective = newReportObjective(CODE(2))
-		new DashboardObjective(code: CODE(1), objective: objective, weight: 1).save(failOnError: true)
+		def program = newReportProgram(CODE(2))
+		new DashboardProgram(code: CODE(1), program: program, weight: 1).save(failOnError: true)
 		
 		then:
-		DashboardObjective.count() == 1
+		DashboardProgram.count() == 1
 		
 		when:
-		new DashboardObjective(code: CODE(4), weight: 1).save(failOnError: true)
+		new DashboardProgram(code: CODE(4), weight: 1).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 	}
 	
-	def "weight cannot be null on objective"() {
+	def "weight cannot be null on program"() {
 		when:
 		def calculation = newAverage("1", CODE(3))
-		def objective = newReportObjective(CODE(2))
-		new DashboardObjective(code: CODE(1), objective: objective, weight: 1).save(failOnError: true)
+		def program = newReportProgram(CODE(2))
+		new DashboardProgram(code: CODE(1), program: program, weight: 1).save(failOnError: true)
 		
 		then:
-		DashboardObjective.count() == 1
+		DashboardProgram.count() == 1
 		
 		when:
-		new DashboardObjective(code: CODE(4), objective: objective).save(failOnError: true)
+		new DashboardProgram(code: CODE(4), program: program).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -106,8 +106,8 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	def "save target does not resave calculation"() {
 		when:
 		def calculation = newAverage("1", CODE(3))
-		def objective = newReportObjective(CODE(2))
-		def target = newDashboardTarget(CODE(1), calculation, objective, 1)
+		def program = newReportProgram(CODE(2))
+		def target = newDashboardTarget(CODE(1), calculation, program, 1)
 		
 		then:
 		Average.count() == 1
@@ -121,17 +121,17 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "get parent"() {
 		when:
-		def objective = newReportObjective(OBJECTIVE)
+		def program = newReportProgram(PROGRAM)
 		def calculation = newAverage("1", CODE(3))
-		def target1 = newDashboardTarget(TARGET1, calculation, objective, 1)
+		def target1 = newDashboardTarget(TARGET1, calculation, program, 1)
 		
 		then:
-		target1.objective != null
+		target1.program != null
 	}
 	
 	def "get parent of root"() {
 		when:
-		def root = newReportObjective(ROOT)
+		def root = newReportProgram(ROOT)
 		
 		then:
 		root.parent == null
@@ -139,7 +139,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "target calculation cannot be a sum"() {
 		when:
-		new DashboardTarget(code: OBJECTIVE, calculation: newSum("1", CODE(1))).save(failOnError: true)
+		new DashboardTarget(code: PROGRAM, calculation: newSum("1", CODE(1))).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

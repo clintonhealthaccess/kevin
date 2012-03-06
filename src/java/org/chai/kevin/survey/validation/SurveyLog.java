@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.Survey;
-import org.chai.kevin.survey.SurveyObjective;
+import org.chai.kevin.survey.SurveyProgram;
 
 @Entity(name="SurveyLog")
 @Table(name="dhsst_survey_log")
@@ -23,13 +23,13 @@ public class SurveyLog {
 	private Date timestamp;
 	private DataLocationEntity entity;
 	private Survey survey;
-	private SurveyObjective objective;
+	private SurveyProgram program;
 	
 	public SurveyLog() {}
 	
-	public SurveyLog(Survey survey, SurveyObjective objective, DataLocationEntity entity) {
+	public SurveyLog(Survey survey, SurveyProgram program, DataLocationEntity entity) {
 		this.survey = survey;
-		this.objective = objective;
+		this.program = program;
 		this.entity = entity;
 	}
 	
@@ -80,13 +80,13 @@ public class SurveyLog {
 		this.survey = survey;
 	}
 	
-	@ManyToOne(targetEntity=SurveyObjective.class)
-	public SurveyObjective getObjective() {
-		return objective;
+	@ManyToOne(targetEntity=SurveyProgram.class)
+	public SurveyProgram getProgram() {
+		return program;
 	}
 	
-	public void setObjective(SurveyObjective objective) {
-		this.objective = objective;
+	public void setProgram(SurveyProgram program) {
+		this.program = program;
 	}
 	
 }

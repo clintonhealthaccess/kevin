@@ -58,7 +58,7 @@ public class SurveyCopyService {
 		private Survey copy;
 
 		private List<SurveyElement> oldElements = new ArrayList<SurveyElement>();
-		private Map<Long, SurveyObjective> objectives = new HashMap<Long, SurveyObjective>();
+		private Map<Long, SurveyProgram> programs = new HashMap<Long, SurveyProgram>();
 		private Map<Long, SurveySection> sections = new HashMap<Long, SurveySection>();
 		private Map<Long, SurveyQuestion> questions = new HashMap<Long, SurveyQuestion>();
 		private Map<Long, SurveyElement> elements = new HashMap<Long, SurveyElement>();
@@ -170,16 +170,16 @@ public class SurveyCopyService {
 		}
 		
 		/* (non-Javadoc)
-		 * @see org.chai.kevin.survey.SurveyCloner#getObjective(org.chai.kevin.survey.SurveyObjective)
+		 * @see org.chai.kevin.survey.SurveyCloner#getProgram(org.chai.kevin.survey.SurveyProgram)
 		 */
 		@Override
-		public SurveyObjective getObjective(SurveyObjective objective) {
-			if (!objectives.containsKey(objective.getId())) {
-				SurveyObjective copy = new SurveyObjective(); 
-				objectives.put(objective.getId(), copy);
-				objective.deepCopy(copy, this);
+		public SurveyProgram getProgram(SurveyProgram program) {
+			if (!programs.containsKey(program.getId())) {
+				SurveyProgram copy = new SurveyProgram(); 
+				programs.put(program.getId(), copy);
+				program.deepCopy(copy, this);
 			}
-			return objectives.get(objective.getId());
+			return programs.get(program.getId());
 		}
 		
 		/* (non-Javadoc)

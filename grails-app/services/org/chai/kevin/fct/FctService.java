@@ -14,7 +14,7 @@ import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.value.CalculationValue;
@@ -32,15 +32,15 @@ public class FctService {
 	
 	@Cacheable("fctCache")
 	@Transactional(readOnly = true)
-	public FctTable getFctTable(LocationEntity entity, ReportObjective objective, Period period, LocationLevel level, Set<DataEntityType> types) {		
-		if (log.isDebugEnabled()) log.debug("getFctTable(period="+period+",entity="+entity+",objective="+objective+",level="+level+")");		
+	public FctTable getFctTable(LocationEntity entity, ReportProgram program, Period period, LocationLevel level, Set<DataEntityType> types) {		
+		if (log.isDebugEnabled()) log.debug("getFctTable(period="+period+",entity="+entity+",program="+program+",level="+level+")");		
 		
 		List<LocationEntity> locations = locationService.getChildrenOfLevel(entity, level);
 		Map<LocationEntity, List<LocationEntity>> locationMap = new HashMap<LocationEntity, List<LocationEntity>>();
 		LocationLevel groupLevel = locationService.getLevelBefore(level);
 		if (groupLevel != null) locationMap.putAll(reportService.getParents(locations, groupLevel));
 		
-		List<FctTarget> targets = reportService.getReportTargets(FctTarget.class, objective);
+		List<FctTarget> targets = reportService.getReportTargets(FctTarget.class, program);
 		Map<FctTarget, ReportValue> totalMap = new HashMap<FctTarget, ReportValue>();				
 		for(FctTarget target : targets){			
 			totalMap.put(target, getFctValue(target, entity, period, types));

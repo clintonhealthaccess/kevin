@@ -109,7 +109,7 @@ class SurveyService {
 		
 		if (survey != null) {
 			criteria.createAlias("section", "ss")
-			.createAlias("ss.objective", "so")
+			.createAlias("ss.program", "so")
 			.add(Restrictions.eq("so.survey", survey))
 		}
 		
@@ -149,7 +149,7 @@ class SurveyService {
 		if (survey != null) {
 			c.createAlias("surveyQuestion", "sq")
 			.createAlias("sq.section", "ss")
-			.createAlias("ss.objective", "so")
+			.createAlias("ss.program", "so")
 			.add(Restrictions.eq("so.survey", survey))
 		}
 		if (dataElement != null) {
@@ -223,7 +223,7 @@ class SurveyService {
 
 		if (survey != null) {
 			criteria.createAlias("sq.section", "ss")
-			.createAlias("ss.objective", "so")
+			.createAlias("ss.program", "so")
 			.add(Restrictions.eq("so.survey", survey))
 		}
 		

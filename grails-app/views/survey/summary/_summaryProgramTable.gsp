@@ -14,27 +14,27 @@
 			<g:each in="${summaryPage.facilities}" var="facility">
 				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(facility)}" />
 				<tr>
-					<td class="section-table-link" data-objective="${currentObjective.id}" data-location="${facility.id}">
-						<a href="${createLink(controller: 'surveySummary', action: 'sectionTable', params: [objective: currentObjective.id, location: facility.id])}">
+					<td class="section-table-link" data-program="${currentProgram.id}" data-location="${facility.id}">
+						<a href="${createLink(controller: 'surveySummary', action: 'sectionTable', params: [program: currentProgram.id, location: facility.id])}">
 							<g:i18n field="${facility.names}"/>
 						</a>
 					</td>
-					<td>${summaryPage.getSurveyEnteredObjective(facility)?.closed?'\u2713':''}</td>
+					<td>${summaryPage.getSurveyEnteredProgram(facility)?.closed?'\u2713':''}</td>
 					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
-						<a href="${createLink(controller: 'editSurvey', action: 'objectivePage', params: [objective: currentObjective.id, location: facility.id])}">
+						<a href="${createLink(controller: 'editSurvey', action: 'programPage', params: [program: currentProgram.id, location: facility.id])}">
 							<g:message code="survey.summary.viewsurvey.label" default="View Survey" />
 						</a> 
 						<shiro:hasPermission permission="editSurvey:export"> 
-							<a href="${createLink(controller: 'editSurvey', action: 'export', params: [objective: currentObjective.id, location: facility.id])}">
-								<g:message code="survey.summary.exportobjective.label" default="Export Survey Objective" />
+							<a href="${createLink(controller: 'editSurvey', action: 'export', params: [program: currentProgram.id, location: facility.id])}">
+								<g:message code="survey.summary.exportprogram.label" default="Export Survey Program" />
 							</a>
 						</shiro:hasPermission>
 					</td>					
 				</tr>
 				<tr class="explanation-row">
 					<td colspan="4">
-						<div class="explanation-cell" id="explanation-objective-${facility.id}-${currentObjective.id}"></div>
+						<div class="explanation-cell" id="explanation-program-${facility.id}-${currentProgram.id}"></div>
 					</td>
 				</tr>
 			</g:each>
@@ -43,10 +43,10 @@
 	<r:script>
 		$(document).ready(function() {
 			$('.section-table-link').bind('click', function() {
-   				var objective = $(this).data('objective');
+   				var program = $(this).data('program');
    				var location = $(this).data('location');
    				
-   				explanationClick(this, 'objective-'+location+'-'+objective, function(){progressBar();});
+   				explanationClick(this, 'program-'+location+'-'+program, function(){progressBar();});
    				return false;
    			});
 		});

@@ -4,13 +4,13 @@
    <span class="type"> 
         <g:message code="survey.label" default="Survey"/>: 
    </span> 
-   <g:i18n field="${question.section.objective.survey.names}"/>
-        [ ${question.section.objective.survey.period.startDate} &harr; 
-        ${question.section.objective.survey.period.endDate} ]
+   <g:i18n field="${question.section.program.survey.names}"/>
+        [ ${question.section.program.survey.period.startDate} &harr; 
+        ${question.section.program.survey.period.endDate} ]
 </div>
 <div class="row">
-	<span class="type"><g:message code="survey.objective.label" default="Objective"/>:</span>
-    <g:i18n field="${question.section.objective.names}"/>
+	<span class="type"><g:message code="survey.program.label" default="Program"/>:</span>
+    <g:i18n field="${question.section.program.names}"/>
 </div>
 <div class="row">
 	<span class="type"><g:message code="survey.section.label" default="Section"/>:</span> 

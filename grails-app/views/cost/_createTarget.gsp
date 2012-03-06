@@ -21,8 +21,8 @@
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"
 			from="${dataElementsEnd}" value="${target.dataElementEnd?.id}" values="${dataElementsEnd.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 
-		<g:selectFromList name="objective.id" label="Objective" bean="${target}" field="objective" optionKey="id" multiple="false"
-			from="${objectives}" value="${target.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
+		<g:selectFromList name="program.id" label="Program" bean="${target}" field="program" optionKey="id" multiple="false"
+			from="${programs}" value="${target.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
 	
 		<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${target}" field="typeCodeString" 
 			from="${types}" value="${target.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
@@ -33,8 +33,8 @@
 		<g:selectFromEnum name="costType" bean="${target}" values="${CostType.values()}" field="costType" label="Type"/>
 		<g:input name="order" label="Order" bean="${target}" field="order"/>
 		
-		<g:if test="${currentObjective != null}">
-			<input type="hidden" name="currentObjective" value="${currentObjective.id}"></input>
+		<g:if test="${currentProgram != null}">
+			<input type="hidden" name="currentProgram" value="${currentProgram.id}"></input>
 		</g:if>
 		<g:else>
 			<input type="hidden" name="id" value="${target.id}"></input>

@@ -15,8 +15,8 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
@@ -34,7 +34,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		questionSummary.completedQuestions == 0
 		
 		when:
-		summaryPage = summaryService.getObjectiveSummaryPage(LocationEntity.findByCode(RWANDA), objective)
+		summaryPage = summaryService.getProgramSummaryPage(LocationEntity.findByCode(RWANDA), program)
 		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
@@ -86,8 +86,8 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		

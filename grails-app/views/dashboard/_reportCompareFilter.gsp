@@ -2,7 +2,7 @@
 	<span>Compare</span>
 	<g:form name="${table}-form" method="get"
 		url="${[controller:'dashboard', action:'compare',
-			params:[table:table, period:currentPeriod.id, objective:currentObjective.id]]}">
+			params:[table:table, period:currentPeriod.id, program:currentProgram.id]]}">
 		<select id="${table}-compare" name="location">
 			<option value="0">Please select</option>
 			<g:if test="${dashboard != null && dashboard.locationPath != null && !dashboard.locationPath.empty}">

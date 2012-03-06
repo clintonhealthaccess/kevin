@@ -28,8 +28,59 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-constraints = {
-	code (nullable: false, blank: false, unique: true)
-	objective (nullable: false)
-	weight (nullable: false, blank: false)
+import org.chai.kevin.reports.ReportProgram
+
+class DashboardProgramControllerSpec extends DashboardIntegrationTests {
+
+	def dashboardProgramController
+	
+	def "delete program "() {
+		setup:
+		def root = newReportProgram(CODE(1))
+		def program = newDashboardProgram(CODE(2), root, 1)
+		dashboardProgramController = new DashboardProgramController()
+		
+		when:
+		dashboardProgramController.params.id = program.id
+		dashboardProgramController.delete()
+		
+		then:
+		ReportProgram.count() == 1
+		DashboardProgram.count() == 0
+	}
+	
+	def "delete program with children does not delete"() {
+		setup:
+		def root = newReportProgram(CODE(1))
+		def program = newDashboardProgram(CODE(2), root, 1)
+		def child = newReportProgram(CODE(3), root)
+		def childProgram = newDashboardProgram(CODE(4), child, 1)
+		dashboardProgramController = new DashboardProgramController()
+		
+		when:
+		dashboardProgramController.params.id = program.id
+		dashboardProgramController.delete()
+		
+		then:
+		ReportProgram.count() == 2
+		DashboardProgram.count() == 2
+	}
+
+	def "save new program"() {
+		setup:
+		def root = newReportProgram(CODE(1))
+		def program = newDashboardProgram(CODE(2), root, 1)
+		dashboardProgramController = new DashboardProgramController()
+		
+		when:
+		dashboardProgramController.params['id'] = program.id
+		dashboardProgramController.params['weight'] = 1
+		dashboardProgramController.params['code'] = "NEW"
+		dashboardProgramController.saveWithoutTokenCheck()
+		
+		then:
+		dashboardProgramController.response.redirectedUrl.equals(dashboardProgramController.getTargetURI())
+		DashboardProgram.count() == 1
+	}
+	
 }

@@ -1,28 +1,28 @@
 <r:require module="foldable" />
-<li class="${current?.id == objective?.id ? 'current':''} foldable">	
+<li class="${current?.id == program?.id ? 'current':''} foldable">	
 	<% def programLinkParams = new HashMap(linkParams) %>
 	<% programLinkParams.remove("dashboardEntity") %>		
-	<% programLinkParams['objective'] = objective.id+"" %>
+	<% programLinkParams['program'] = program.id+"" %>
 	<% linkParams = programLinkParams %>		
-	<g:if test="${objective.children != null && !objective.children.empty && !objectiveTree.disjoint(objective.children)}">
+	<g:if test="${program.children != null && !program.children.empty && !programTree.disjoint(program.children)}">
 		<a class="foldable-toggle" href="#">(toggle)</a>
 	</g:if>
-	<a class="dropdown-link js_dropdown-link parameter" data-type="objective"
-			data-location="${objective.id}"
+	<a class="dropdown-link js_dropdown-link parameter" data-type="program"
+			data-location="${program.id}"
 			href="${createLinkByFilter(controller:controller, action:action, params:linkParams)}">
-			<g:i18n field="${objective.names}"/>
+			<g:i18n field="${program.names}"/>
 	</a>
-	<g:if test="${objective.children != null || !objective.children.empty}">					
-		<g:each in="${objective.children}" var="child">
-			<g:if test="${objectiveTree.contains(child)}">
-				<ul class="location-fold" id="location-fold-${objective.id}">
+	<g:if test="${program.children != null || !program.children.empty}">					
+		<g:each in="${program.children}" var="child">
+			<g:if test="${programTree.contains(child)}">
+				<ul class="location-fold" id="location-fold-${program.id}">
 					<g:render template="/tags/filter/programTree"
 						model="[
 						controller: controller, 
 						action: action,
 						current: current, 
-						objective: child,
-						objectiveTree: objectiveTree,
+						program: child,
+						programTree: programTree,
 						linkParams:linkParams]" />
 				</ul>
 			</g:if>

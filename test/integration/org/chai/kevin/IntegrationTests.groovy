@@ -60,7 +60,7 @@ import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.hisp.dhis.period.Period
@@ -281,17 +281,21 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return enumOption
 	}
 	
-	static def newReportObjective(def code) {
-		return new ReportObjective(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
+	static def newReportProgram(def code) {
+		return new ReportProgram(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
 	}
 	
-	static def newReportObjective(def code, def parent) {
-		def reportObjective = new ReportObjective(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
-		parent.children << reportObjective
+	static def newReportProgram(def code, def parent) {
+		def reportProgram = new ReportProgram(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
+		parent.children << reportProgram
 		parent.save(failOnError: true)
-		return reportObjective
+		return reportProgram
 	}
 	
+//	static def newReportProgram(def code, def parent, def children){
+//		return new ReportProgram(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
+//	}
+
 	def refresh() {
 		refreshNormalizedDataElement()
 		refreshCalculation()

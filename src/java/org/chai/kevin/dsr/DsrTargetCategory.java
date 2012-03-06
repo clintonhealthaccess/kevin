@@ -43,7 +43,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.reports.ReportEntity;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -74,10 +74,10 @@ public class DsrTargetCategory extends ReportEntity {
 		this.targets = targets;
 	}
 
-	public List<DsrTarget> getTargetsForObjective(ReportObjective objective) {
+	public List<DsrTarget> getTargetsForProgram(ReportProgram program) {
 		List<DsrTarget> result = new ArrayList<DsrTarget>();
 		for (DsrTarget dsrTarget : getTargets()) {
-			if (dsrTarget.getObjective().equals(objective)) result.add(dsrTarget);
+			if (dsrTarget.getProgram().equals(program)) result.add(dsrTarget);
 		}
 		return result;
 	}
