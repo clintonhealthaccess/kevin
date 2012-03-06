@@ -35,7 +35,7 @@ import org.chai.kevin.location.DataLocationEntity
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
 import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataEntityType;
@@ -59,15 +59,15 @@ class FilterTagLib {
 	}
 
 	def programFilter = {attrs, body ->
-		ReportObjective.withTransaction {
+		ReportProgram.withTransaction {
 			def model = new HashMap(attrs)
-			def objective = attrs['selected']
+			def program = attrs['selected']
 			def target = attrs['selectedTarget']
 			model << 
 				[
-					currentObjective: objective,
-					objectiveRoot: reportService.getRootObjective(), 
-					objectiveTree: reportService.getObjectiveTree(target).asList()			
+					currentProgram: program,
+					programRoot: reportService.getRootProgram(), 
+					programTree: reportService.getProgramTree(target).asList()			
 				]
 			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/programFilter', model:model)

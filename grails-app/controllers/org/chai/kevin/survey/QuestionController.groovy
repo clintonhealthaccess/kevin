@@ -75,8 +75,8 @@ class QuestionController extends AbstractController {
 			
 			render (view: '/survey/admin/list', model:[
 				template:"questionList",
-				survey: section.objective.survey,
-				objective: section.objective,
+				survey: section.program.survey,
+				program: section.program,
 				section: section,
 				entities: questions.subList(params['offset'], max),
 				entityCount: questions.size(),

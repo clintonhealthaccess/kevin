@@ -18,7 +18,7 @@
 					<td>
 						<span>
 							<g:if test="${false}">
-								<a href="${createLink(controller:'cost', action:'view', params:[period: explanation.currentPeriod.id, objective: explanation.currentTarget.id, location: location.id])}">${location.name}</a>
+								<a href="${createLink(controller:'cost', action:'view', params:[period: explanation.currentPeriod.id, program: explanation.currentTarget.id, location: location.id])}">${location.name}</a>
 							</g:if>
 							<g:else>
 								${location.name}

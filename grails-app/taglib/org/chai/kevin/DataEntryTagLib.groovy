@@ -136,7 +136,7 @@ class DataEntryTagLib {
 			if (id != null) {
 				SurveyElement surveyElement = elements[id];
 				SurveySection section = surveyElement.surveyQuestion.section
-				Survey survey = section.objective.survey 
+				Survey survey = section.program.survey 
 				String replacement = 
 					'<a href="'+createLink(controller: "editSurvey", action: "sectionPage", params: [section: section.id, location: location.id], fragment: 'element-'+surveyElement.id)+'">'+
 					(text!=null?text:surveyElement.id)+'</a>'

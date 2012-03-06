@@ -30,7 +30,7 @@ package org.chai.kevin.cost
 
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.AbstractEntityController
 
 class CostTargetController extends AbstractEntityController {
@@ -57,7 +57,7 @@ class CostTargetController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			target: entity,
-			objectives: ReportObjective.list(),
+			programs: ReportProgram.list(),
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[],
 			dataElementsEnd:  entity.dataElementEnd!=null?[entity.dataElementEnd]:[],
 			costRampUps: CostRampUp.list(), 

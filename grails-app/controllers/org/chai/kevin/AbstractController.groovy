@@ -35,11 +35,11 @@ import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.LocationService
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.security.User;
 import org.chai.kevin.survey.Survey
-import org.chai.kevin.survey.SurveyObjective
+import org.chai.kevin.survey.SurveyProgram
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
 import org.chai.kevin.survey.summary.SurveySummaryPage;
@@ -65,10 +65,10 @@ public abstract class AbstractController {
 		return period
 	}
 	
-	def getObjective(){
-		ReportObjective objective = ReportObjective.get(params.int('objective'))
-		if(objective == null) objective = reportService.getRootObjective()
-		return objective
+	def getProgram(){
+		ReportProgram program = ReportProgram.get(params.int('program'))
+		if(program == null) program = reportService.getRootProgram()
+		return program
 	}
 	
 	def getLocation(){

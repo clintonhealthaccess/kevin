@@ -1,24 +1,24 @@
 <r:require module="foldable"/>
 
 <ul>
-	<g:each in="${surveyPage.getObjectives()}" var="objective">
-		<g:set var="enteredObjective" value="${surveyPage.enteredObjectives[objective]}"/>
+	<g:each in="${surveyPage.getPrograms()}" var="program">
+		<g:set var="enteredProgram" value="${surveyPage.enteredPrograms[program]}"/>
 		
-		<li id="objective-${objective.id}" class="foldable ${surveyPage.objective?.id == objective.id?'current':''}">
+		<li id="program-${program.id}" class="foldable ${surveyPage.program?.id == program.id?'current':''}">
 			<a class="foldable-toggle" href="#">(toggle)</a>
 		
-			<a class="item ${surveyPage.objective?.id == objective.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'objectivePage', params:[location: surveyPage.location.id, objective:objective.id])}">
-				<span><g:i18n field="${objective.names}" /></span>
+			<a class="item ${surveyPage.program?.id == program.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'programPage', params:[location: surveyPage.location.id, program:program.id])}">
+				<span><g:i18n field="${program.names}" /></span>
 				
 				<span class="item-status">
-					<span class="objective-status-complete objective-status ${enteredObjective.displayedStatus!='complete'?'hidden':''}"></span>
-					<span class="objective-status-invalid  objective-status ${enteredObjective.displayedStatus!='invalid'?'hidden':''}"></span>
-					<span class="objective-status-incomplete objective-status ${enteredObjective.displayedStatus!='incomplete'?'hidden':''}"></span>
-					<span class="objective-status-closed objective-status ${enteredObjective.displayedStatus!='closed'?'hidden':''}"></span>
+					<span class="program-status-complete program-status ${enteredProgram.displayedStatus!='complete'?'hidden':''}"></span>
+					<span class="program-status-invalid  program-status ${enteredProgram.displayedStatus!='invalid'?'hidden':''}"></span>
+					<span class="program-status-incomplete program-status ${enteredProgram.displayedStatus!='incomplete'?'hidden':''}"></span>
+					<span class="program-status-closed program-status ${enteredProgram.displayedStatus!='closed'?'hidden':''}"></span>
 				</span>
 			</a>
 			<ul class="survey-section">
-				<g:each in="${surveyPage.getSections(objective)}" var="section">
+				<g:each in="${surveyPage.getSections(program)}" var="section">
 					<g:set var="enteredSection" value="${surveyPage.enteredSections[section]}"/>
 
 					<li id="section-${section.id}">

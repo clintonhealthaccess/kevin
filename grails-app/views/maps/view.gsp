@@ -15,8 +15,8 @@
     <body>
     	<div id="maps">
 			<div class="subnav">
-				<g:iterationFilter linkParams="${[location: currentLocation?.id, objective: currentObjective?.id]}" selected="${currentPeriod}"/>
-				<g:locationFilter linkParams="${[period: currentPeriod.id, objective: currentObjective?.id]}" selected="${currentLocation}"/>
+				<g:iterationFilter linkParams="${[location: currentLocation?.id, program: currentProgram?.id]}" selected="${currentPeriod}"/>
+				<g:locationFilter linkParams="${[period: currentPeriod.id, program: currentProgram?.id]}" selected="${currentLocation}"/>
 								
 				<!-- TODO use a filter here -->
 				<div class="filter">

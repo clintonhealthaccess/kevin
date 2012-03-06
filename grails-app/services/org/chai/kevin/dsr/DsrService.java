@@ -20,7 +20,7 @@ import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.util.Utils;
@@ -41,11 +41,11 @@ public class DsrService {
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-	public DsrTable getDsrTable(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types, DsrTargetCategory category) {
-		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",objective="+objective+",types="+types+",category="+category+")");
+	public DsrTable getDsrTable(LocationEntity location, ReportProgram program, Period period, Set<DataEntityType> types, DsrTargetCategory category) {
+		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",program="+program+",types="+types+",category="+category+")");
 		
 		List<DataLocationEntity> facilities = location.collectDataLocationEntities(types, null);				
-		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, objective);
+		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, program);
 		
 		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();				
 		
@@ -76,7 +76,7 @@ public class DsrService {
 		
 		locationRoot = locationService.getRootLocation();
 		locationTree = location.collectTreeWithDataEntities(types, null);		
-		targetCategories = getTargetCategories(objective);
+		targetCategories = getTargetCategories(program);
 		
 		DsrTable dsrTable = new DsrTable(valueMap, targets, targetCategories, locationRoot, locationTree);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
@@ -127,9 +127,9 @@ public class DsrService {
 		return new ReportValue(value);
 	}
 	
-	public List<DsrTargetCategory> getTargetCategories(ReportObjective objective){
+	public List<DsrTargetCategory> getTargetCategories(ReportProgram program){
 		Set<DsrTargetCategory> categories = new HashSet<DsrTargetCategory>();
-		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, objective);
+		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, program);
 		for(DsrTarget target : targets)
 			if(target.getCategory() != null) categories.add(target.getCategory());
 		List<DsrTargetCategory> sortedCategories = new ArrayList<DsrTargetCategory>(categories);

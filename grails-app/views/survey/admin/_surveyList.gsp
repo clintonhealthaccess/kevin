@@ -6,7 +6,7 @@
 			<th><g:message code="survey.active.label" default="Active"/></th>
 			<th><g:message code="entity.description.label" default="Description"/></th>
 			<th><g:message code="period.label" default="Period"/></th>
-			<th><g:message code="default.number.label" args="[message(code:'survey.objective.label')]" default="Number of Objectives"/></th>
+			<th><g:message code="default.number.label" args="[message(code:'survey.program.label')]" default="Number of Programs"/></th>
 			<th><g:message code="entity.list.manage.label" default="Manage"/></th>
 		</tr>
 	</thead>
@@ -31,14 +31,14 @@
 				<td>${survey?.active?'\u2713':''}</td>
 				<td><g:i18n field="${survey.descriptions}" /></td>
 				<td>[${survey.period.startDate} - ${survey.period.startDate}]</td>
-				<td>${survey.objectives.size()}</td>
+				<td>${survey.programs.size()}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
 						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label" default="Manage"/></a>
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'objective', action:'list', params:['survey.id':survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.objective.label',default:'Objective')]" /></a>
+									<a href="${createLink(controller:'program', action:'list', params:['survey.id':survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.program.label',default:'Program')]" /></a>
 								</li>
 								<li>
 									<a href="${createLink(controller:'surveySkipRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.skiprule.label',default:'Skip Rules')]" /></a>

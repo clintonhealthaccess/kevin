@@ -11,8 +11,8 @@
 		<g:i18nTextarea name="descriptions" label="Description" bean="${entity}" value="${entity.descriptions}" field="descriptions"/>
 		<g:input name="code" label="Code" bean="${entity}" field="code"/>
 		
-		<g:selectFromList name="objective.id" label="Objective" bean="${entity}" field="objective" optionKey="id" multiple="false"
-			from="${objectives}" value="${entity.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
+		<g:selectFromList name="program.id" label="Program" bean="${entity}" field="program" optionKey="id" multiple="false"
+			from="${programs}" value="${entity.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
 		
 		<g:selectFromList name="calculation.id" label="Calculation" bean="${entity}" field="calculation" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[classes:['Average', 'Aggregation']])}"

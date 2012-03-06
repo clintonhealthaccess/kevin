@@ -21,8 +21,8 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [])
-		def section = newSurveySection(objective, 1, [])
+		def program = newSurveyProgram(survey, 1, [])
+		def section = newSurveySection(program, 1, [])
 		def question = newTableQuestion(section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
@@ -41,8 +41,8 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [])
-		def section = newSurveySection(objective, 1, [])
+		def program = newSurveyProgram(survey, 1, [])
+		def section = newSurveySection(program, 1, [])
 		def question = newSimpleQuestion(section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
@@ -67,8 +67,8 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question1 = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def column = newTableColumn(question1, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def row = newTableRow(question1, 1, [(DISTRICT_HOSPITAL_GROUP)], [(column): null])
@@ -93,8 +93,8 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
@@ -112,8 +112,8 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(objective, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def question = newTableQuestion(section, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
@@ -131,14 +131,14 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(DISTRICT_HOSPITAL_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		newSurveyProgram(survey, 2, [(DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = newDataEntityType(HEALTH_CENTER_GROUP)
 		def location = newDataLocationEntity(KIVUYE, type)
 		
 		
 		when:
-		new SurveyLog(event: "test", entity: location, timestamp: new Date(), survey: survey, objective: objective).save(failOnError: true)
+		new SurveyLog(event: "test", entity: location, timestamp: new Date(), survey: survey, program: program).save(failOnError: true)
 		
 		then:
 		SurveyLog.count() == 1

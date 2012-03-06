@@ -12,8 +12,8 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [])
-		def section = newSurveySection(objective, 1, [])
+		def program = newSurveyProgram(survey, 1, [])
+		def section = newSurveySection(program, 1, [])
 		def question = newTableQuestion(section, 1, [])
 		
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -23,7 +23,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		
 		expect:
 		Survey.count() == 1
-		SurveyObjective.count() == 1
+		SurveyProgram.count() == 1
 		SurveySection.count() == 1
 		SurveyTableQuestion.count() == 1
 		SurveyTableColumn.count() == 1
@@ -36,7 +36,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 				
 		then:
 		Survey.count() == 2
-		SurveyObjective.count() == 2
+		SurveyProgram.count() == 2
 		SurveySection.count() == 2
 		SurveyTableQuestion.count() == 2
 		SurveyTableColumn.count() == 2
@@ -46,9 +46,9 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		
 		survey != copy
 		
-		!copy.objectives[0].equals(survey.objectives[0])
-		copy.objectives[0].survey.equals(copy)
-		survey.objectives[0].survey.equals(survey)
+		!copy.programs[0].equals(survey.programs[0])
+		copy.programs[0].survey.equals(copy)
+		survey.programs[0].survey.equals(survey)
 		
 		survey.names['en']+' (copy)' == copy.names['en']
 	}
@@ -57,8 +57,8 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [])
-		def section = newSurveySection(objective, 1, [])
+		def program = newSurveyProgram(survey, 1, [])
+		def section = newSurveySection(program, 1, [])
 		def question = newSimpleQuestion(section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
@@ -80,15 +80,15 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey1 = newSurvey(period)
-		def objective1 = newSurveyObjective(survey1, 1, [])
-		def section1 = newSurveySection(objective1, 1, [])
+		def program1 = newSurveyProgram(survey1, 1, [])
+		def section1 = newSurveySection(program1, 1, [])
 		def question1 = newSimpleQuestion(section1, 1, [])
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element1 = newSurveyElement(question1, dataElement1)
 		
 		def survey2 = newSurvey(period)
-		def objective2 = newSurveyObjective(survey2, 1, [])
-		def section2 = newSurveySection(objective2, 1, [])
+		def program2 = newSurveyProgram(survey2, 1, [])
+		def section2 = newSurveySection(program2, 1, [])
 		def question2 = newSimpleQuestion(section2, 1, [])
 		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def element2 = newSurveyElement(question2, dataElement2)
@@ -110,8 +110,8 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [])
-		def section = newSurveySection(objective, 1, [])
+		def program = newSurveyProgram(survey, 1, [])
+		def section = newSurveySection(program, 1, [])
 		def question = newSimpleQuestion(section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
@@ -134,8 +134,8 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [])
-		def section = newSurveySection(objective, 1, [])
+		def program = newSurveyProgram(survey, 1, [])
+		def section = newSurveySection(program, 1, [])
 		def question = newSimpleQuestion(section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)

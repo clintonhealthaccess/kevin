@@ -30,7 +30,7 @@ package org.chai.kevin.cost
 
 import org.chai.kevin.AbstractController
 import org.chai.kevin.location.LocationEntity
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 
@@ -47,7 +47,7 @@ class CostController extends AbstractController {
 		
 		Period period = Period.get(params.int('period'))
 		LocationEntity location = LocationEntity.get(params.int('location'))
-		CostTarget target = CostTarget.get(params.int('objective'));
+		CostTarget target = CostTarget.get(params.int('program'));
 		
 		def explanation = costTableService.getExplanation(period, target, location);
 		[ explanation: explanation ]
@@ -58,22 +58,22 @@ class CostController extends AbstractController {
 		
 		Period period = getPeriod()
 		LocationEntity location = LocationEntity.get(params.int('location'))
-		ReportObjective objective = ReportObjective.get(params.int('objective'));
+		ReportProgram program = ReportProgram.get(params.int('program'));
 		
 		if (log.isInfoEnabled()) log.info("view cost for period: "+period.id);
 		
 		def costTable = null
-		if (period != null && objective != null && location != null) {
-			costTable = costTableService.getCostTable(period, objective, location);
+		if (period != null && program != null && location != null) {
+			costTable = costTableService.getCostTable(period, program, location);
 		}
 		
 		if (log.isDebugEnabled()) log.debug('costTable: '+costTable)
 		[
 			costTable: costTable,
 			currentPeriod: period,
-			currentObjective: objective,
+			currentProgram: program,
 			currentLocation: location,
-			objectives: ReportObjective.list(), 
+			programs: ReportProgram.list(), 
 		]
 	}
 	

@@ -6,14 +6,14 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class ReportTarget extends ReportEntity {
 
-	private ReportObjective objective;
+	private ReportProgram program;
 
-	@ManyToOne(targetEntity=ReportObjective.class)
-	public ReportObjective getObjective() {
-		return objective;
+	@ManyToOne(targetEntity=ReportProgram.class)
+	public ReportProgram getProgram() {
+		return program;
 	}
 
-	public void setObjective(ReportObjective objective) {
-		this.objective = objective;
+	public void setProgram(ReportProgram program) {
+		this.program = program;
 	}
 }

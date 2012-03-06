@@ -1,6 +1,6 @@
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
-		<h3 class="title">D.S.Rs Target</h3>
+		<h3 class="title">Dsr Target</h3>
 		<g:locales/>
 		<div class="clear"></div>
 	</div>
@@ -13,8 +13,7 @@
    		<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${target}" field="typeCodeString" 
 				from="${types}" value="${target.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 	
-		<g:selectFromList name="objective.id" label="Objective" bean="${target}" field="objective" optionKey="id" multiple="false"
-			from="${objectives}" value="${target.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
+		<g:selectFromList name="program.id" label="Program}" values="${programs.collect{i18n(field:it.names)}}" />
 	
 		<g:selectFromList name="category.id" label="Category" bean="${target}" field="category" optionKey="id" multiple="false"
 			from="${categories}" value="${target.category?.id}" values="${categories.collect{i18n(field:it.names)}}" />

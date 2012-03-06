@@ -5,11 +5,11 @@
 		<div class="filter">
 			<span class="js_dropdown dropdown">
 				<a class="program selected" href="#">
-					<g:if test="${objective != null}">
-						<g:i18n field="${objective.names}" />
+					<g:if test="${program != null}">
+						<g:i18n field="${program.names}" />
 					</g:if>
 					<g:else>
-					<g:message code="survey.labels.objective.select" default="Select an objective" />	
+					<g:message code="survey.labels.program.select" default="Select a program" />	
 					</g:else>
 				</a>
 				<div class="hidden dropdown-list js_dropdown-list">

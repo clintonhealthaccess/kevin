@@ -12,15 +12,15 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		def root = newReportObjective(CODE(1))
-		def dashboardRoot = newDashboardObjective(CODE(3), root)
+		def root = newReportProgram(CODE(1))
+		def dashboardRoot = newDashboardProgram(CODE(3), root)
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		dashboardController = new DashboardController()
 		
 		when:
 		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
-		dashboardController.params.objective = root.id
+		dashboardController.params.program = root.id
 		dashboardController.params.period = period.id
 		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
@@ -38,15 +38,15 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		def root = newReportObjective(CODE(1))
-		def dashboardRoot = newDashboardObjective(CODE(3), root)
+		def root = newReportProgram(CODE(1))
+		def dashboardRoot = newDashboardProgram(CODE(3), root)
 		def calculation = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, calculation, root, 1)
 		dashboardController = new DashboardController()
 		
 		when:
 		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
-		//dashboardController.params.objective = root.id	
+		//dashboardController.params.program = root.id	
 		dashboardController.params.period = period.id
 		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
@@ -60,18 +60,18 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.locationDashboard != null
 	}
 	
-	def "get dashboard with null dashboard objective for the report objective"(){
+	def "get dashboard with null dashboard program for the report program"(){
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		def objective = newReportObjective(CODE(1))
+		def program = newReportProgram(CODE(1))
 		def calculation = newAverage("1", CODE(2))
-		def target = newDashboardTarget(TARGET1, calculation, objective, 1)
+		def target = newDashboardTarget(TARGET1, calculation, program, 1)
 		dashboardController = new DashboardController()
 		
 		when:
 		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
-		dashboardController.params.objective = objective.id
+		dashboardController.params.program = program.id
 		dashboardController.params.period = period.id
 		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
@@ -85,7 +85,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		model.locationDashboard == null
 	}
 	
-	def "get dashboard with no objectives"(){
+	def "get dashboard with no programs"(){
 	}
 	
 	def "get dashboard with no locations"(){

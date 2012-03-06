@@ -11,7 +11,7 @@
 		<div>
 			<div class="subnav">
 				<g:render template="/survey/summary/surveyFilter"/>
-				<g:locationFilter linkParams="${[survey: currentSurvey?.id, objective: currentObjective?.id, section: currentSection?.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc']}" selected="${currentLocation}"/>
+				<g:locationFilter linkParams="${[survey: currentSurvey?.id, program: currentProgram?.id, section: currentSection?.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc']}" selected="${currentLocation}"/>
 			</div>
 						
 			<div class="main">			
@@ -36,7 +36,7 @@
 			${render(template:'/templates/progressImages')}
 		
 			$(document).ready(function() {
-				$('.objective-table-link').bind('click', function() {
+				$('.program-table-link').bind('click', function() {
     				var facility = $(this).data('facility');
     				explanationClick(this, facility, function(){progressBar();});
     				return false;

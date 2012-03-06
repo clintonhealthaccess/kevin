@@ -36,7 +36,7 @@ package org.chai.kevin.dsr;
 import grails.plugin.springcache.annotations.CacheFlush
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 
 import org.chai.kevin.AbstractEntityController
 
@@ -64,7 +64,7 @@ class DsrTargetController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			target: entity,
-			objectives: ReportObjective.list(),
+			programs: ReportProgram.list(),
 			types: DataEntityType.list(),
 			categories: DsrTargetCategory.list(),
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[]
@@ -76,8 +76,8 @@ class DsrTargetController extends AbstractEntityController {
 			entity.category.targets.remove(entity)
 			entity.category.save()
 		}
-		entity.objective.targets.remove(entity)
-		entity.objective.save()
+		entity.program.targets.remove(entity)
+		entity.program.save()
 		entity.delete()
 	}
 
@@ -94,10 +94,10 @@ class DsrTargetController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 		
-		List<DsrTarget> objectives = DsrTarget.list(params);
+		List<DsrTarget> programs = DsrTarget.list(params);
 		
 		render (view: '/entity/list', model:[
-			entities: objectives,
+			entities: programs,
 			template: "dsr/targetList",
 			code: getLabel(),
 			entityCount: DsrTarget.count()

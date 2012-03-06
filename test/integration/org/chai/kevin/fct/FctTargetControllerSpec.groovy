@@ -7,14 +7,14 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 	
 	def "save target"() {
 		setup:
-		def objective = newReportObjective(CODE(1))
+		def program = newReportProgram(CODE(1))
 		def sum = newSum("1", CODE(3))
 		fctTargetController = new FctTargetController()
 		fctTargetController.locationService = locationService
 		
 		when:
 		fctTargetController.params.code = CODE(2)
-		fctTargetController.params['objective.id'] = objective.id+""
+		fctTargetController.params['program.id'] = program.id+""
 		fctTargetController.params['sum.id'] = sum.id+""
 		fctTargetController.params.typeCodes = [DISTRICT_HOSPITAL_GROUP]
 		fctTargetController.saveWithoutTokenCheck()
