@@ -69,8 +69,8 @@ class NormalizedDataElementController extends AbstractEntityController {
 	def saveEntity(def entity) {
 		if (entity.id != null) valueService.deleteValues(entity, null, null)
 		
-		entity.setTimestamp(new Date());
-		entity.save()
+		entity.timestamp = new Date();
+		entity.save(flush: true)
 	}
 	
 	def deleteEntity(def entity) {
