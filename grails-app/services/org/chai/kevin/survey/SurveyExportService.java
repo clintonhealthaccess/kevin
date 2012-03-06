@@ -78,7 +78,7 @@ public class SurveyExportService {
 	// TODO refactor this to use messages.properties files
 	private final static String ORGANISATION_UNIT_GROUP_HEADER = "Facility Type";
 	private final static String SURVEY_HEADER = "Survey";
-	private final static String OBJECTIVE_HEADER = "Program";
+	private final static String PROGRAM_HEADER = "Program";
 	private final static String SECTION_HEADER = "Section";
 	private final static String QUESTION_TYPE_HEADER = "Question Type";
 	private final static String QUESTION_DATA_TYPE_HEADER = "Data Type";
@@ -93,7 +93,7 @@ public class SurveyExportService {
 			headers.add(languageService.getText(level.getNames()));
 		}
 		headers.add(ORGANISATION_UNIT_GROUP_HEADER);
-		headers.add(OBJECTIVE_HEADER);
+		headers.add(PROGRAM_HEADER);
 		headers.add(SECTION_HEADER);
 		headers.add(QUESTION_TYPE_HEADER);
 		headers.add(QUESTION_DATA_TYPE_HEADER);

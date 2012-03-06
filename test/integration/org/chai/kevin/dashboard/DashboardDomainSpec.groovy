@@ -121,7 +121,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "get parent"() {
 		when:
-		def program = newReportProgram(OBJECTIVE)
+		def program = newReportProgram(PROGRAM)
 		def calculation = newAverage("1", CODE(3))
 		def target1 = newDashboardTarget(TARGET1, calculation, program, 1)
 		
@@ -139,7 +139,7 @@ class DashboardDomainSpec extends DashboardIntegrationTests {
 	
 	def "target calculation cannot be a sum"() {
 		when:
-		new DashboardTarget(code: OBJECTIVE, calculation: newSum("1", CODE(1))).save(failOnError: true)
+		new DashboardTarget(code: PROGRAM, calculation: newSum("1", CODE(1))).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

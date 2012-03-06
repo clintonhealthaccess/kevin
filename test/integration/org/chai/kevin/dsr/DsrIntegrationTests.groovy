@@ -24,8 +24,8 @@ abstract class DsrIntegrationTests extends IntegrationTests {
 		return target
 	}
 	
-	def newDsrTarget(def code, def dataElement, def format, def types, def objective) {
-		return newDsrTarget(code, dataElement, format, types, objective, null)
+	def newDsrTarget(def code, def dataElement, def format, def types, def program) {
+		return newDsrTarget(code, dataElement, format, types, program, null)
 	}
 		
 	def newDsrTarget(def code, def dataElement, def types, def program) {

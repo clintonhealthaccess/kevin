@@ -99,8 +99,8 @@ class DashboardController extends AbstractController {
 			}
 			redirectIfDifferent(period, program, location)
 
-			programDashboard = dashboardService.getProgramDashboard(location, objective, period, locationTypes);
-			locationDashboard = dashboardService.getLocationDashboard(location, objective, period, locationTypes, false);			
+			programDashboard = dashboardService.getProgramDashboard(location, program, period, locationTypes);
+			locationDashboard = dashboardService.getLocationDashboard(location, program, period, locationTypes, false);			
 
 		}
 		if (log.isDebugEnabled()){
@@ -143,9 +143,9 @@ class DashboardController extends AbstractController {
 			
 			def table = (String) params.get("table")			
 			if(table == 'program')
-				dashboard = dashboardService.getProgramDashboard(location, objective, period, locationTypes);
+				dashboard = dashboardService.getProgramDashboard(location, program, period, locationTypes);
 			if(table == 'location')
-				dashboard = dashboardService.getLocationDashboard(location, objective, period, locationTypes, true);
+				dashboard = dashboardService.getLocationDashboard(location, program, period, locationTypes, true);
 						
 			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
 

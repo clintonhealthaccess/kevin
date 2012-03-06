@@ -8,7 +8,7 @@ import org.hisp.dhis.period.Period;
 abstract class DashboardIntegrationTests extends IntegrationTests {
 
 	static String ROOT = "Root"
-	static String OBJECTIVE = "Program"
+	static String PROGRAM = "Program"
 	static String TARGET1 = "Target 1"
 	static String TARGET2 = "Target 2"
 		
@@ -31,8 +31,8 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 		def root = newReportProgram(ROOT)
 		def dashboardRoot = newDashboardProgram(ROOT, root, 0)
 		
-		def program = newReportProgram(OBJECTIVE, root)
-		def dashboardProgram = newDashboardProgram(OBJECTIVE, program, 1)
+		def program = newReportProgram(PROGRAM, root)
+		def dashboardProgram = newDashboardProgram(PROGRAM, program, 1)
 
 		def dataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"40",(HEALTH_CENTER_GROUP):"40"]]))
 		def average1 = newAverage("\$"+dataElement1.id, CODE(2))

@@ -72,7 +72,7 @@ class DsrController extends AbstractController {
 		ReportProgram program = getProgram()				
 		LocationEntity location = getLocation()
 		Set<DataEntityType> locationTypes = getLocationTypes()
-		DsrTargetCategory category = getDsrTargetCategory(objective)
+		DsrTargetCategory category = getDsrTargetCategory(program)
 		
 		def skipLevels = dsrService.getSkipLocationLevels()		
 		

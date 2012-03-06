@@ -91,13 +91,13 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		where:
 		currentLocationName	| currentProgramName	| locationName	| programName | types										    | value
-		BURERA				| OBJECTIVE				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA				| OBJECTIVE				| BUTARO		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
-		BURERA				| OBJECTIVE				| KIVUYE		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA				| OBJECTIVE				| KIVUYE		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
-		RWANDA				| ROOT					| NORTH			| OBJECTIVE		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
-		BURERA				| OBJECTIVE				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
-		RWANDA				| ROOT					| NORTH			| OBJECTIVE		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		BURERA				| PROGRAM				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| PROGRAM				| BUTARO		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
+		BURERA				| PROGRAM				| KIVUYE		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| PROGRAM				| KIVUYE		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
+		RWANDA				| ROOT					| NORTH			| PROGRAM		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
+		BURERA				| PROGRAM				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		RWANDA				| ROOT					| NORTH			| PROGRAM		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
 	}
 
 	def "dashboard test program dashboard"() {
@@ -119,8 +119,8 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		where:
 		locationName	| programCode	| expectedLocations	| expectedEntities  | expectedLocationPath	| expectedProgramPath
-		BURERA			| OBJECTIVE		| [BURERA]			| [TARGET1, TARGET2]| [RWANDA, NORTH]		| [ROOT]
-		BURERA			| ROOT			| [BURERA]			| [OBJECTIVE]		| [RWANDA, NORTH]		| []		
+		BURERA			| PROGRAM		| [BURERA]			| [TARGET1, TARGET2]| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| ROOT			| [BURERA]			| [PROGRAM]		| [RWANDA, NORTH]		| []		
 	}
 
 	def "get program dashboard with no dashboard entities"(){
@@ -159,7 +159,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		where:
 		locationName	| programCode	| expectedLocations		| expectedEntities  | expectedLocationPath	| expectedProgramPath
-		BURERA			| OBJECTIVE		| [BUTARO, KIVUYE]		| [OBJECTIVE]		| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| PROGRAM		| [BUTARO, KIVUYE]		| [PROGRAM]		| [RWANDA, NORTH]		| [ROOT]
 		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [ROOT]			| [RWANDA, NORTH]		| []
 	}
 	
