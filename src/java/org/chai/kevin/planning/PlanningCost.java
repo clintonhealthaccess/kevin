@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 
 
 import org.chai.kevin.Translation;
+import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.util.Utils;
 
@@ -41,7 +43,7 @@ public class PlanningCost {
 	private Long id;
 	private PlanningCostType type;
 	private String discriminatorValueString;
-	private Sum sum;
+	private NormalizedDataElement dataElement;
 	private Translation names = new Translation();
 	
 	// section in which the cost is grouped (can be null)
@@ -63,13 +65,13 @@ public class PlanningCost {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=Sum.class)
-	public Sum getSum() {
-		return sum;
+	@ManyToOne(targetEntity=NormalizedDataElement.class)
+	public NormalizedDataElement getDataElement() {
+		return dataElement;
 	}
-	
-	public void setSum(Sum sum) {
-		this.sum = sum;
+
+	public void setDataElement(NormalizedDataElement dataElement) {
+		this.dataElement = dataElement;
 	}
 	
 	@Basic

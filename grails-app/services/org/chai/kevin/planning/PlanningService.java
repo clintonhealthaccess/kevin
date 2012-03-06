@@ -17,6 +17,7 @@ import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.planning.budget.BudgetCost;
 import org.chai.kevin.planning.budget.PlanningEntryBudget;
 import org.chai.kevin.planning.budget.PlanningTypeBudget;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.RefreshValueService;
 import org.chai.kevin.value.SumValue;
@@ -152,7 +153,7 @@ public class PlanningService {
 	private void refreshBudget(PlanningEntry planningEntry, DataLocationEntity location) {
 		if (planningEntry.isSubmitted() && !planningEntry.isBudgetUpdated()) {
 			for (PlanningCost cost : planningEntry.getPlanningCosts()) {
-				refreshValueService.refreshCalculation(cost.getSum(), location, cost.getPlanningType().getPeriod());
+				refreshValueService.refreshNormalizedDataElement(cost.getDataElement(), location, cost.getPlanningType().getPeriod());
 			}
 			planningEntry.setBudgetUpdated(true);
 		}
@@ -170,7 +171,8 @@ public class PlanningService {
 			if (planningEntry.isSubmitted()) {
 				Map<PlanningCost, BudgetCost> budgetCosts = new HashMap<PlanningCost, BudgetCost>();
 				for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
-					budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, (SumValue)valueService.getCalculationValue(planningCost.getSum(), location, type.getPeriod(), types)));
+					NormalizedDataElementValue value = valueService.getDataElementValue(planningCost.getDataElement(), location, type.getPeriod());
+					if (!value.getValue().isNull()) budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, value));
 				}
 				planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
 			}
