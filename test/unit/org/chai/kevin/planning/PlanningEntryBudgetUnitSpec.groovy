@@ -24,4 +24,20 @@ class PlanningEntryBudgetUnitSpec extends UnitSpec {
 		
 	}
 	
+	def "get sum when no budget cost for planning cost"() {
+		
+		when:
+		def planningCosts = [
+			new PlanningCost(groupSection: null, type: PlanningCostType.OUTGOING),
+			new PlanningCost(groupSection: "[_].key1", type: PlanningCostType.INCOMING)
+		]
+		def planningEntry = Mock(PlanningEntry)
+		planningEntry.getPlanningCosts() >> planningCosts
+		def planningEntryBudget = new PlanningEntryBudget(planningEntry, [:])
+		
+		then:
+		planningEntryBudget.getSum(PlanningCostType.OUTGOING) == 0d
+		
+	}
+	
 }

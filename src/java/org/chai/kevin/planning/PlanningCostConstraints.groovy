@@ -32,7 +32,8 @@ package org.chai.kevin.planning
  *
  */
 constraints ={
-	sum (nullable: false)
+	// TODO data element must be of type list(number)
+	dataElement (nullable: false)
 	type (nullable: false)
 	planningType (nullable: false)
 	section (nullable: false, blank: false, validator: { val, obj ->

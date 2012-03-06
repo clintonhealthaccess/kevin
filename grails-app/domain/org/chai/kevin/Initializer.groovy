@@ -1120,31 +1120,33 @@ class Initializer {
 		planning.planningTypes << planningType
 		planning.save(failOnError: true)
 	
-		def sumCost1 = new Sum(
-			code: 'SUMPLANNING1', 
-			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.basic.activity == "value1")[0].basic.instances * 2'
-		).save(failOnError: true);
-	
+		def planningElement1 = new NormalizedDataElement(
+			code: 'SUMPLANNING1',
+			type: Type.TYPE_LIST(Type.TYPE_NUMBER()),
+			expressionMap: e([(Period.list()[0].id+''):[("Health Center"): '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> transform each x (if (x.basic.activity == "value1") x.basic.instances * 2 else 0))']])
+		).save(failOnError: true)
+		
 		def planningCost1 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.INCOMING,
 			discriminatorValueString: 'value1',
-			sum: sumCost1,
+			dataElement: planningElement1,
 			section: '[_].staffing',
 			groupSection: '[_].staffing',
 			names: j(["en":"Salaries"])
 		).save(failOnError: true)
 	
-		def sumCost2 = new Sum(
+		def planningElement2 = new NormalizedDataElement(
 			code: 'SUMPLANNING2',
-			expression: '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> filter $.basic.activity == "value1")[0].basic.instances * 10'
-		).save(failOnError: true);
-	
+			type: Type.TYPE_LIST(Type.TYPE_NUMBER()),
+			expressionMap: e([(Period.list()[0].id+''):[("Health Center"): '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> transform each x (if (x.basic.activity == "value1") x.basic.instances * 10 else 0))']])
+		).save(failOnError: true)
+		
 		def planningCost2 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.OUTGOING,
 			discriminatorValueString: 'value1',
-			sum: sumCost2,
+			dataElement: planningElement2,
 			section: '[_].consumables',
 			names: j(["en":"Patient"])
 		).save(failOnError: true)

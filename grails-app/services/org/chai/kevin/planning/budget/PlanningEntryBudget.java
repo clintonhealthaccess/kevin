@@ -18,12 +18,7 @@ public class PlanningEntryBudget {
 		this.budgetCosts = budgetCosts;
 	}
 	
-//	public Translation getNames() {
-//		return names;
-//	}
-	
 	public PlanningEntry getPlanningEntry() {
-
 		return planningEntry;
 	}
 	
