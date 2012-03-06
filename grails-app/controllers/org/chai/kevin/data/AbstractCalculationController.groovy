@@ -24,7 +24,7 @@ abstract class AbstractCalculationController extends AbstractEntityController {
 		if (entity.id != null) valueService.deleteValues(entity, null, null)
 		
 		entity.setTimestamp(new Date());
-		entity.save()
+		entity.save(flush: true)
 	}
 	
 	def bindParams(def entity) {
