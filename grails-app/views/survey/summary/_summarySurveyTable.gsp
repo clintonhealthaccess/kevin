@@ -6,19 +6,19 @@
 	<table class="listing">
 		<thead>
 			<g:sortableColumn property="${SurveySummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
-			<th><g:message code="survey.summary.objectivesubmitted.label" default="Objectives Submitted" /></th>
+			<th><g:message code="survey.summary.programsubmitted.label" default="Programs Submitted" /></th>
 			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress', default: 'Overall progress')}" params="${params}" defaultOrder="desc"/>
 			<th></th>
 		</thead>
 		<tbody>
 			<g:each in="${summaryPage.facilities}" var="facility">
 				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(facility)}" />
-				<g:set var="objectiveSummary" value="${summaryPage.getObjectiveSummary(facility)}" />
+				<g:set var="programSummary" value="${summaryPage.getProgramSummary(facility)}" />
 				<tr>
-					<td class="objective-table-link" data-facility="${facility.id}">
-						<a href="${createLink(controller: 'surveySummary', action: 'objectiveTable', params: [survey: currentSurvey.id, location: facility.id])}"><g:i18n field="${facility.names}"/></a>
+					<td class="program-table-link" data-facility="${facility.id}">
+						<a href="${createLink(controller: 'surveySummary', action: 'programTable', params: [survey: currentSurvey.id, location: facility.id])}"><g:i18n field="${facility.names}"/></a>
 					</td>
-					<td>${objectiveSummary.submittedObjectives}/${objectiveSummary.objectives}</td>
+					<td>${programSummary.submittedPrograms}/${programSummary.programs}</td>
 					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
 						<ul class="horizontal">

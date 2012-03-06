@@ -11,7 +11,7 @@
 			<g:render template="/survey/header" model="[period: surveyPage.period, location: surveyPage.location]"/>
 			<div class="main">  
 				<p class="help">
-			  		<g:message code="survey.welcomemessage.label" default="Welcome to the survey, please fill in all the objectives above."/>
+			  		<g:message code="survey.welcomemessage.label" default="Welcome to the survey, please fill in all the programs above."/>
 				</p>
 			</div>
 		</div>

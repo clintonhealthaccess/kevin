@@ -1,7 +1,7 @@
-<div id="add-category-objective" class="entity-form-container togglable">
+<div id="add-category-program" class="entity-form-container togglable">
 
 	<div class="entity-form-header">
-		<h3 class="title">D.S.Rs Category</h3>
+		<h3 class="title">Dsr Target Category</h3>
 		<g:locales/>
 		<div class="clear"></div>
 	</div>

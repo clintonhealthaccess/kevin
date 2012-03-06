@@ -18,16 +18,16 @@
 			<g:if test="${survey}">
 				<li>
 					&rarr; 
-					<a href="${createLink(controller: 'objective', action:'list', params:['survey.id': survey.id])}">
+					<a href="${createLink(controller: 'program', action:'list', params:['survey.id': survey.id])}">
 						<g:i18n field="${survey.names}" />
 					</a>
 				</li>
 			</g:if>
-			<g:if test="${objective}">
+			<g:if test="${program}">
 				<li>
 					&rarr; 
-					<a href="${createLink(controller: 'section', action:'list', params:['objective.id': objective.id])}">
-						<g:i18n field="${objective.names}" />
+					<a href="${createLink(controller: 'section', action:'list', params:['program.id': program.id])}">
+						<g:i18n field="${program.names}" />
 					</a>
 				</li>
 			</g:if>

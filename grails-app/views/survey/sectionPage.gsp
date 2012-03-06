@@ -8,11 +8,11 @@
 		<r:require modules="survey"/> 
 	</head>
 	<body>
-		<g:set var="closed" value="${surveyPage.enteredObjectives[surveyPage.objective].closed}"/>
-		<g:set var="readonly" value="${surveyPage.isReadonly(surveyPage.objective)}"/>
+		<g:set var="closed" value="${surveyPage.enteredPrograms[surveyPage.program].closed}"/>
+		<g:set var="readonly" value="${surveyPage.isReadonly(surveyPage.program)}"/>
 	
 		<div>
-			<g:render template="/survey/header" model="[period: surveyPage.period, location: surveyPage.location, objective: surveyPage.objective]"/>
+			<g:render template="/survey/header" model="[period: surveyPage.period, location: surveyPage.location, program: surveyPage.program]"/>
 			
 			<div class="main">
 
@@ -57,7 +57,7 @@
 									</button>
 								</li>
 							</g:if>
-	  						<li><a href="${createLink(controller:'editSurvey', action:'objectivePage', params:[objective: surveyPage.objective.id, location: surveyPage.location.id])}" class="go-back"><g:message code="survey.section.back.label"/></a></li>
+	  						<li><a href="${createLink(controller:'editSurvey', action:'programPage', params:[program: surveyPage.program.id, location: surveyPage.location.id])}" class="go-back"><g:message code="survey.section.back.label"/></a></li>
 	  					</ul>
 					</g:form>
 				</div>
@@ -70,7 +70,7 @@
 				new DataEntry({
 					element: $('#js_survey'),
 					callback: valueChangedInSection,
-					url: "${createLink(controller:'editSurvey', action:'saveValue', params: [location: surveyPage.location.id, section: surveyPage.section?.id, objective: surveyPage.objective?.id])}", 
+					url: "${createLink(controller:'editSurvey', action:'saveValue', params: [location: surveyPage.location.id, section: surveyPage.section?.id, program: surveyPage.program?.id])}", 
 					messages: messages,
 					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
 				});
@@ -84,10 +84,10 @@
 						$('#section-'+section.id).find('.section-status-'+section.status).removeClass('hidden');
 					});
 					
-					// we go through the objectives
-					$.each(data.objectives, function(index, objective) {
-						$('#objective-'+objective.id).find('.objective-status').addClass('hidden');
-						$('#objective-'+objective.id).find('.objective-status-'+objective.status).removeClass('hidden');
+					// we go through the programs
+					$.each(data.programs, function(index, program) {
+						$('#program-'+program.id).find('.program-status').addClass('hidden');
+						$('#program-'+program.id).find('.program-status-'+program.status).removeClass('hidden');
 					});
 					
 					// we go through all the questions
@@ -103,7 +103,7 @@
 					});
 				}
 				else {
-					alert(self.settings.messages['dataentry.saving.objective.closed.text']);
+					alert(self.settings.messages['dataentry.saving.program.closed.text']);
 				}
 			}
 		</r:script>

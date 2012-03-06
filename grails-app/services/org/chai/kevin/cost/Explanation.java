@@ -33,26 +33,26 @@ import java.util.Map;
 
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.hisp.dhis.period.Period;
 
 public class Explanation {
 
-	// if this is null, it means no expression is defined for the specified objective and location
+	// if this is null, it means no expression is defined for the specified program and location
 	private Map<CalculationEntity, Map<Integer, Cost>> costs;
 	private List<CalculationEntity> locations;
 	private List<Integer> years;
 	private CostTarget currentTarget;
-	private ReportObjective currentObjective;
+	private ReportProgram currentProgram;
 	private Period currentPeriod;
 	private List<DataEntityType> types;
 	
-	public Explanation(CostTarget currentTarget, List<DataEntityType> types, ReportObjective currentObjective, Period currentPeriod, List<CalculationEntity> locations, List<Integer> years, Map<CalculationEntity, Map<Integer, Cost>> costs) {
+	public Explanation(CostTarget currentTarget, List<DataEntityType> types, ReportProgram currentProgram, Period currentPeriod, List<CalculationEntity> locations, List<Integer> years, Map<CalculationEntity, Map<Integer, Cost>> costs) {
 		this.costs = costs;
 		this.locations = locations;
 		this.years = years;
 		this.currentTarget = currentTarget;
-		this.currentObjective = currentObjective;
+		this.currentProgram = currentProgram;
 		this.currentPeriod = currentPeriod;
 		this.types = types;
 	}
@@ -61,8 +61,8 @@ public class Explanation {
 		return currentTarget;
 	}
 	
-	public ReportObjective getCurrentObjective() {
-		return currentObjective;
+	public ReportProgram getCurrentProgram() {
+		return currentProgram;
 	}
 	
 	public Period getCurrentPeriod() {

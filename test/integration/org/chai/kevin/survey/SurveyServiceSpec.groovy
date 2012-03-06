@@ -11,8 +11,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
 		
@@ -25,8 +25,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod() 
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
 		
@@ -39,8 +39,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(["en": "question"], section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(["en": "somethig"], section, 2, [(HEALTH_CENTER_GROUP)])
 		
@@ -55,14 +55,14 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = null
+		def program = null
 		def section = null
 		def question = null
 		def element = null
 		
 		when:
-		objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
 		element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -77,14 +77,14 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = null
+		def program = null
 		def section = null
 		def question = null
 		def element = null
 		
 		when:
-		objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		section = newSurveySection(objective, 1, [])
+		program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		section = newSurveySection(program, 1, [])
 		question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
 		element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -99,8 +99,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -119,8 +119,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -140,8 +140,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -161,8 +161,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 	
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -186,8 +186,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -222,8 +222,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 	
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -244,8 +244,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
@@ -264,8 +264,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 		
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())

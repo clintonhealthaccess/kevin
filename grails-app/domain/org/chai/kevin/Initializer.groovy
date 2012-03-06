@@ -45,7 +45,7 @@ import org.chai.kevin.maps.MapsTarget;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
-import org.chai.kevin.dashboard.DashboardObjective
+import org.chai.kevin.dashboard.DashboardProgram
 import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
@@ -60,7 +60,7 @@ import org.chai.kevin.planning.Planning;
 import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.planning.PlanningType;
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
@@ -95,9 +95,9 @@ class Initializer {
 		surveyAllReadonly.addToPermissions("editSurvey:view")
 		surveyAllReadonly.addToPermissions("editSurvey:summaryPage")
 		surveyAllReadonly.addToPermissions("editSurvey:sectionTable")
-		surveyAllReadonly.addToPermissions("editSurvey:objectiveTable")
+		surveyAllReadonly.addToPermissions("editSurvey:programTable")
 		surveyAllReadonly.addToPermissions("editSurvey:surveyPage")
-		surveyAllReadonly.addToPermissions("editSurvey:objectivePage")
+		surveyAllReadonly.addToPermissions("editSurvey:programPage")
 		surveyAllReadonly.addToPermissions("editSurvey:sectionPage")
 		surveyAllReadonly.addToPermissions("editSurvey:print")
 		surveyAllReadonly.save()
@@ -179,14 +179,14 @@ class Initializer {
 			burera.save(failOnError: true)
 		}
 
-		if (!ReportObjective.count()) {
-			def root = new ReportObjective(names:j(["en":"Strategic Programs"]), code:"Strategic Programs", descriptions:j(["en":"Strategic Programs"]), parent: null)
+		if (!ReportProgram.count()) {
+			def root = new ReportProgram(names:j(["en":"Strategic Programs"]), code:"Strategic Programs", descriptions:j(["en":"Strategic Programs"]), parent: null)
 			root.save(failOnError: true)
 
-			def ga = new ReportObjective(names:j(["en":"Geographical Access"]), code:"Geographical Access", descriptions:j(["en":"Geographical Access"]), parent: root).save(failOnError: true)
-			def hrh = new ReportObjective(names:j(["en":"Human Resources for Health"]), code:"Human Resources for Health", descriptions:j(["en":"Human Resources for Health"]), parent: root).save(failOnError: true)
-			def sd = new ReportObjective(names:j(["en":"Service Delivery"]), descriptions:j(["en":"Service Delivery"]), code: "Service Delivery", parent: root).save(failOnError:true)
-			def ic= new ReportObjective(names:j(["en":"Institutional Capacity"]), descriptions:j(["en":"Institutional Capacity"]), code:"Institutional Capacity", parent: root).save(failOnError:true)
+			def ga = new ReportProgram(names:j(["en":"Geographical Access"]), code:"Geographical Access", descriptions:j(["en":"Geographical Access"]), parent: root).save(failOnError: true)
+			def hrh = new ReportProgram(names:j(["en":"Human Resources for Health"]), code:"Human Resources for Health", descriptions:j(["en":"Human Resources for Health"]), parent: root).save(failOnError: true)
+			def sd = new ReportProgram(names:j(["en":"Service Delivery"]), descriptions:j(["en":"Service Delivery"]), code: "Service Delivery", parent: root).save(failOnError:true)
+			def ic= new ReportProgram(names:j(["en":"Institutional Capacity"]), descriptions:j(["en":"Institutional Capacity"]), code:"Institutional Capacity", parent: root).save(failOnError:true)
 
 			root.children << hrh
 			root.children << ga
@@ -194,7 +194,7 @@ class Initializer {
 			root.children << ic
 			root.save(failOnError: true)
 
-			def staffing = new ReportObjective(names:j(["en":"Staffing"]), code:"Staffing", descriptions:j(["en":"Staffing"]), parent: hrh).save(failOnError: true, flush: true)
+			def staffing = new ReportProgram(names:j(["en":"Staffing"]), code:"Staffing", descriptions:j(["en":"Staffing"]), parent: hrh).save(failOnError: true, flush: true)
 			hrh.children << staffing
 
 			hrh.save(failOnError: true)
@@ -671,9 +671,12 @@ class Initializer {
 			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expressionMap: e([(period1.id+''):[(hc.code):"10", (dh.code):"10"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 20", expressionMap: e([(period1.id+''):[(hc.code):"20", (dh.code):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 1", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id, (dh.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 2", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE2").id, (dh.code):"\$"+RawDataElement.findByCode("CODE2").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Element 3", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE3").id, (dh.code):"\$"+RawDataElement.findByCode("CODE3").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
+				code:"Element 1", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id, (dh.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
+				code:"Element 2", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE2").id, (dh.code):"\$"+RawDataElement.findByCode("CODE2").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
+				code:"Element 3", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE3").id, (dh.code):"\$"+RawDataElement.findByCode("CODE3").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 		}
 	}
 
@@ -697,12 +700,12 @@ class Initializer {
 					]).save(failOnError: true);
 		}
 
-		if (!ReportObjective.count()) {
-			def ga = ReportObjective.findByCode("Geographical Access")
+		if (!ReportProgram.count()) {
+			def ga = ReportProgram.findByCode("Geographical Access")
 
 			new CostTarget(
 					names:j(["en":"Annual Internet Access Cost"]), code:"Internet Cost", descriptions:j(["en":"Annual Internet Access Cost"]),
-					objective: ga,
+					program: ga,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.OPERATION,
 					costRampUp: CostRampUp.findByCode("CONST"),
@@ -711,7 +714,7 @@ class Initializer {
 
 			new CostTarget(
 					names:j(["en":"Connecting Facilities to the Internet"]), code:"Connecting Facilities", descriptions:j(["en":"Connecting Facilities to the Internet"]),
-					objective: ga,
+					program: ga,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST"),
@@ -720,18 +723,18 @@ class Initializer {
 
 			new CostTarget(
 					names:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]), code:"New Phones CHW", descriptions:j(["en":"New Phones for CHW Head Leader/Trainer & Assistant-Maintenance & Insurance"]),
-					objective: ga,
+					program: ga,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST"),
 					typeCodeString: "District Hospital,Health Center"
 					).save(failOnError: true)
 
-			def hrh = ReportObjective.findByCode("Human Resources for Health")
+			def hrh = ReportProgram.findByCode("Human Resources for Health")
 
 			new CostTarget(
 					names:j(["en":"Facility Staff Training"]), code:"Facility Staff Training", descriptions:j(["en":"Facility Staff Training"]),
-					objective: hrh,
+					program: hrh,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
 					costRampUp: CostRampUp.findByCode("CONST")
@@ -740,17 +743,17 @@ class Initializer {
 	}
 
 	static def createDashboard() {
-		if (!DashboardObjective.count()) {
+		if (!DashboardProgram.count()) {
 
-			def root = ReportObjective.findByCode('Strategic Programs');
-			def hrh = ReportObjective.findByCode('Human Resources for Health');
-			def staffing = ReportObjective.findByCode('Staffing');
+			def root = ReportProgram.findByCode('Strategic Programs');
+			def hrh = ReportProgram.findByCode('Human Resources for Health');
+			def staffing = ReportProgram.findByCode('Staffing');
 
-			def dashboardRoot = new DashboardObjective(names:j(["en":"Strategic Programs"]), weight: 0, code:"Strategic Programs", objective: root)
+			def dashboardRoot = new DashboardProgram(names:j(["en":"Strategic Programs"]), weight: 0, code:"Strategic Programs", program: root)
 			dashboardRoot.save(failOnError:true, flush: true)
-			def dashboardHrh = new DashboardObjective(names:j(["en":"Human Resources for Health"]), weight: 1, order: 1, code:"Human Resources for Health", objective: hrh)
+			def dashboardHrh = new DashboardProgram(names:j(["en":"Human Resources for Health"]), weight: 1, order: 1, code:"Human Resources for Health", program: hrh)
 			dashboardHrh.save(failOnError: true, flush: true)
-			def dashboardStaffing = new DashboardObjective(names:j(["en":"Staffing"]), weight: 1, order: 1, code: "Staffing", objective: staffing)
+			def dashboardStaffing = new DashboardProgram(names:j(["en":"Staffing"]), weight: 1, order: 1, code: "Staffing", program: staffing)
 			dashboardStaffing.save(failOnError: true, flush: true)
 
 			def calculation1 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Average constant 10", timestamp:new Date())
@@ -758,7 +761,7 @@ class Initializer {
 
 			def nursea1 = new DashboardTarget(
 					names:j(["en":"Nurse A1"]), code:"A1", descriptions:j(["en":"Nurse A1"]),
-					calculation: calculation1, objective: staffing,
+					calculation: calculation1, program: staffing,
 					weight: 1, order: 1).save(failOnError: true, flush:true)
 
 			def calculation2 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Constant 20").id, code:"Average constant 20", timestamp:new Date())
@@ -766,7 +769,7 @@ class Initializer {
 
 			def nursea2 = new DashboardTarget(
 					names:j(["en":"Nurse A2"]), code:"A2", descriptions:j(["en":"Nurse A2"]),
-					calculation: calculation2,  objective: staffing,
+					calculation: calculation2,  program: staffing,
 					weight: 1, order: 2).save(failOnError: true, flush:true)
 
 			def calculation3 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 1").id, code:"Average 1", timestamp:new Date())
@@ -774,7 +777,7 @@ class Initializer {
 
 			def target1 = new DashboardTarget(
 					names:j(["en":"Target 1"]), code:"TARGET1", descriptions:j(["en":"Target 1"]),
-					calculation: calculation3,  objective: staffing,
+					calculation: calculation3,  program: staffing,
 					weight: 1, order: 3).save(failOnError: true, flush:true)
 
 			def calculation4 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 2").id, code:"Average 2", timestamp:new Date())
@@ -782,7 +785,7 @@ class Initializer {
 
 			def missexpr = new DashboardTarget(
 					names:j(["en":"Missing Expression"]), code:"MISSING EXPRESSION", descriptions:j(["en":"Missing Expression"]),
-					calculation: calculation4,  objective: staffing,
+					calculation: calculation4,  program: staffing,
 					weight: 1, order: 4).save(failOnError: true, flush:true)
 
 			def calculation5 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 3", timestamp:new Date())
@@ -790,7 +793,7 @@ class Initializer {
 
 			def missdata = new DashboardTarget(
 					names:j(["en":"Missing Data"]), code:"MISSING DATA", descriptions:j(["en":"Missing Data"]),
-					calculation: calculation5,  objective: staffing,
+					calculation: calculation5,  program: staffing,
 					weight: 1, order: 5).save(failOnError: true, flush:true)
 
 			def calculation6 = new Average(expression:"\$"+NormalizedDataElement.findByCode("Element 3").id, code:"Average 4", timestamp:new Date())
@@ -798,7 +801,7 @@ class Initializer {
 
 			def enume = new DashboardTarget(
 					names:j(["en":"Enum"]), code:"ENUM", descriptions:j(["en":"Enum"]),
-					calculation: calculation6, objective: staffing,
+					calculation: calculation6, program: staffing,
 					weight: 1, order: 6).save(failOnError: true, flush:true)
 
 			nursea1.save(failOnError: true)
@@ -817,11 +820,11 @@ class Initializer {
 			def dh = DataEntityType.findByCode("District Hospital")
 			def hc = DataEntityType.findByCode("Health Center")
 
-			def finacss = ReportObjective.findByCode("Service Delivery")
-			def instCap = ReportObjective.findByCode("Institutional Capacity")
-			def hmr = ReportObjective.findByCode("Human Resources for Health")
+			def finacss = ReportProgram.findByCode("Service Delivery")
+			def instCap = ReportProgram.findByCode("Institutional Capacity")
+			def hmr = ReportProgram.findByCode("Human Resources for Health")
 
-			def root = ReportObjective.findByCode("Strategic Programs")
+			def root = ReportProgram.findByCode("Strategic Programs")
 			root.addChild(finacss)
 			root.addChild(instCap)
 			root.addChild(hmr)
@@ -849,7 +852,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Accountant"]), descriptions:j(["en":"Accountant"]),
-					objective: hmr,
+					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 8,
 					typeCodeString: "Health Center",
@@ -858,7 +861,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Days Of Nurse Training"]), descriptions:j(["en":"Days Of Nurse Training"]),
-					objective: hmr,
+					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 1,
 					typeCodeString: "District Hospital,Health Center",
@@ -867,7 +870,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"A1"]), descriptions:j(["en":"A1"]),
-					objective: hmr,
+					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
 					typeCodeString: "Health Center",
@@ -876,7 +879,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"A2"]), descriptions:j(["en":"A2"]),
-					objective: hmr,
+					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 5,
 					typeCodeString: "District Hospital,Health Center",
@@ -885,7 +888,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"A3"]), descriptions:j(["en":"A3"]),
-					objective: hmr,
+					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
 					typeCodeString: "District Hospital,Health Center",
@@ -894,7 +897,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Testing Category Human Resource"]), descriptions:j(["en":"Testing Category Human Resource"]),
-					objective: hmr,
+					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 4,
 					typeCodeString: "District Hospital,Health Center",
@@ -903,7 +906,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"In-Facility Birth Ratio"]), descriptions:j(["en":"In-Facility Birth Ratio"]),
-					objective: finacss,
+					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 6,
 					typeCodeString: "District Hospital,Health Center",
@@ -912,7 +915,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Mental Health Service"]), descriptions:j(["en":"Mental Health Service"]),
-					objective: finacss,
+					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
 					typeCodeString: "District Hospital,Health Center",
@@ -921,7 +924,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Malaria Rapid Test"]), descriptions:j(["en":"Malaria Rapid Test"]),
-					objective: finacss,
+					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
 					typeCodeString: "Health Center",
@@ -930,7 +933,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"HIV Rapid Test"]), descriptions:j(["en":"HIV Rapid Test"]),
-					objective: finacss,
+					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
 					typeCodeString: "District Hospital,Health Center",
@@ -939,7 +942,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"TB Stain Test"]), descriptions:j(["en":"TB Stain Test"]),
-					objective: finacss,
+					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
 					typeCodeString: "Health Center",
@@ -948,7 +951,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Catchment Population per CHW"]), descriptions:j(["en":"Catchment Population per CHW"]),
-					objective: finacss,
+					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 12,
 					typeCodeString: "District Hospital,Health Center",
@@ -957,7 +960,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Consultation Room"]), descriptions:j(["en":"Consultation Room"]),
-					objective: instCap,
+					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 1,
 					typeCodeString: "Health Center",
@@ -966,7 +969,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Facility Water Status"]), descriptions:j(["en":"Facility Water Status"]),
-					objective: instCap,
+					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
 					typeCodeString: "District Hospital,Health Center",
@@ -975,7 +978,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Incinerator Availability"]), descriptions:j(["en":"Incinerator Availability"]),
-					objective: instCap,
+					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
 					typeCodeString: "District Hospital,Health Center",
@@ -984,7 +987,7 @@ class Initializer {
 
 			new DsrTarget(
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
-					objective: instCap,
+					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					typeCodeString: "District Hospital,Health Center",
 					code: "Facility Power Status"
@@ -1011,7 +1014,7 @@ class Initializer {
 		if (!FctTarget.count()) {
 			def dh = DataEntityType.findByCode("District Hospital")
 			def hc = DataEntityType.findByCode("Health Center")
-			def hmr = ReportObjective.findByCode("Human Resources for Health")
+			def hmr = ReportProgram.findByCode("Human Resources for Health")
 
 			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Sum 1", timestamp:new Date());
 			sum1.save(failOnError: true);
@@ -1019,7 +1022,7 @@ class Initializer {
 			FctTarget fctTarget1 = new FctTarget(
 
 				names:j(["en":"Fct Target 1"]), 
-				objective: hmr,
+				program: hmr,
 				descriptions:j([:]), 
 				code:"TARGET 1",
 				sum: sum1,
@@ -1033,7 +1036,7 @@ class Initializer {
 			FctTarget fctTarget2 = new FctTarget(
 
 				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
-				objective: hmr,
+				program: hmr,
 				code:"TARGET 2",
 				sum: sum2,
 				typeCodeString: "District Hospital,Health Center"
@@ -1189,67 +1192,67 @@ class Initializer {
 					period: Period.list()[1],
 					)
 
-			//Creating Objective
-			def serviceDev = new SurveyObjective(
+			//Creating Program
+			def serviceDev = new SurveyProgram(
 
 				names: j(["en":"Service Delivery"]),
 				order: 2,
 				typeCodeString: "District Hospital,Health Center"
 			)
-			def hResourceHealth = new SurveyObjective(
+			def hResourceHealth = new SurveyProgram(
 				names: j(["en":"Human Resources for Health"]),
 				order: 4,
 				typeCodeString: "District Hospital,Health Center",
 			)
 
-			def geoAccess = new SurveyObjective(
+			def geoAccess = new SurveyProgram(
 				names: j(["en":"Geographic Access"]),
 				order: 5,
 				typeCodeString: "District Hospital,Health Center",
 			)
 
-			def institutCap = new SurveyObjective(
+			def institutCap = new SurveyProgram(
 				names: j(["en":"Institutional Capacity"]),
 				order: 3,
 				typeCodeString: "Health Center",
 			)
 
-			def coreFacId = new SurveyObjective(
+			def coreFacId = new SurveyProgram(
 				names: j(["en":"Core Facility Identify"]),
 				order: 1,
 				typeCodeString: "District Hospital,Health Center",
 			)
 
-			def finance = new SurveyObjective(
+			def finance = new SurveyProgram(
 				names: j(["en":"Finance"]),
 				order: 6,
 				typeCodeString: "District Hospital,Health Center",
 			)
 
-			def dvandC = new SurveyObjective(
+			def dvandC = new SurveyProgram(
 				names: j(["en":"Drugs, Vaccines, and Consumables"]),
 				order: 7,
 				typeCodeString: "District Hospital,Health Center",
 			)
 
 
-			surveyOne.addObjective(serviceDev)
-			surveyOne.addObjective(coreFacId)
-			surveyOne.addObjective(hResourceHealth)
-			surveyOne.addObjective(finance)
+			surveyOne.addProgram(serviceDev)
+			surveyOne.addProgram(coreFacId)
+			surveyOne.addProgram(hResourceHealth)
+			surveyOne.addProgram(finance)
 			surveyOne.save(failOnError:true)
 
-			surveyTwo.addObjective(geoAccess)
-			surveyTwo.addObjective(dvandC)
-			surveyTwo.addObjective(institutCap)
+			surveyTwo.addProgram(geoAccess)
+			surveyTwo.addProgram(dvandC)
+			surveyTwo.addProgram(institutCap)
 			surveyTwo.save(failOnError:true)
 
-			//Adding section to objective
+			//Adding section to program
 			def facilityId = new SurveySection(
 
 				names: j(["en":"Facility Identifier"]),
 				order: 1,
-				objective: coreFacId,
+				program: coreFacId,
 				typeCodeString: "District Hospital,Health Center"
 			)
 
@@ -1260,20 +1263,20 @@ class Initializer {
 
 				names: j(["en":"Services"]),
 				order: 2,
-				objective: serviceDev,
+				program: serviceDev,
 				typeCodeString: "District Hospital,Health Center"
 			)
 			def labTests= new SurveySection(
 				names: j(["en":"Lab Tests"]),
 				order: 1,
-				objective: serviceDev,
+				program: serviceDev,
 				typeCodeString: "District Hospital"
 			)
 
 			def patientReg=new SurveySection(
 				names: j(["en":"Patient Registration"]),
 				order: 3,
-				objective: serviceDev,
+				program: serviceDev,
 				typeCodeString: "District Hospital,Health Center"
 			)
 
@@ -1321,21 +1324,21 @@ class Initializer {
 
 				names: j(["en":"Staffing"]),
 				order: 1,
-				objective: hResourceHealth,
+				program: hResourceHealth,
 				typeCodeString: "District Hospital,Health Center"	
 			)
 
 			def continuingEd = new SurveySection(
 				names: j(["en":"Continuing Education"]),
 				order: 2,
-				objective: hResourceHealth,
+				program: hResourceHealth,
 				typeCodeString: "Health Center"
 			)
 
 			def openResponse = new SurveySection(
 				names: j(["en":"Open Response"]),
 				order: 3,
-				objective: hResourceHealth,
+				program: hResourceHealth,
 				typeCodeString: "District Hospital,Health Center"
 			)
 
@@ -1349,19 +1352,19 @@ class Initializer {
 
 				names: j(["en":"Infrastructure"]),
 				order: 3,
-				objective: geoAccess,
+				program: geoAccess,
 				typeCodeString: "District Hospital,Health Center"
 			)
 			def medicalEq=new SurveySection(
 				names: j(["en":"Medical Equipment"]),
 				order: 2,
-				objective: geoAccess,
+				program: geoAccess,
 				typeCodeString: "District Hospital,Health Center"	
 			)
 			def wasteMgmnt=new SurveySection(
 				names: j(["en":"Waste Management"]),
 				order: 1,
-				objective: geoAccess,
+				program: geoAccess,
 				typeCodeString: "District Hospital,Health Center"
 			)
 

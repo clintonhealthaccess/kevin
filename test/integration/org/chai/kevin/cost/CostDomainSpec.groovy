@@ -36,15 +36,15 @@ import org.chai.kevin.data.Type
 
 abstract class CostDomainSpec extends CostIntegrationTests {
 
-	def "objective constraint: code cannot be null"() {
+	def "program constraint: code cannot be null"() {
 		when:
-		newReportObjective(CODE(1))
+		newReportProgram(CODE(1))
 		
 		then:
-		ReportObjective.count() == 1
+		ReportProgram.count() == 1
 		
 		when:
-		newReportObjective(null)
+		newReportProgram(null)
 		
 		then:
 		thrown ValidationException
@@ -109,42 +109,42 @@ abstract class CostDomainSpec extends CostIntegrationTests {
 		thrown ValidationException
 	}
 	
-	def "delete objective cascade deletes target"() {
+	def "delete program cascade deletes target"() {
 		when:
-		def costObjective = newReportObjective(CODE(1))
-		newCostTarget(CODE(1), newExpression(CODE(2), Type.TYPE_NUMBER(), "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, costObjective)
-		costObjective.delete();
+		def costProgram = newReportProgram(CODE(1))
+		newCostTarget(CODE(1), newExpression(CODE(2), Type.TYPE_NUMBER(), "1"), CONSTANT_RAMP_UP(), [], CostType.INVESTMENT, costProgram)
+		costProgram.delete();
 		
 		then:
-		ReportObjective.count() == 0
+		ReportProgram.count() == 0
 		CostTarget.count() == 0
 	}
 	
-	def "save objective saves target"() {
+	def "save program saves target"() {
 		when:
 		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
-		def costObjective = newReportObjective(CODE(1))
-		costObjective.addTarget new CostTarget(names:j(["en":"Test Target"]), code:CODE(1), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT)
-		costObjective.save();
+		def costProgram = newReportProgram(CODE(1))
+		costProgram.addTarget new CostTarget(names:j(["en":"Test Target"]), code:CODE(1), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT)
+		costProgram.save();
 		
 		then:
-		ReportObjective.count() == 1
+		ReportProgram.count() == 1
 		CostTarget.count() == 1
 	}
 	
 	
 	def "save target preserves order"() {
 		when:
-		def costObjective = newReportObjective(CODE(1))
+		def costProgram = newReportProgram(CODE(1))
 		def expression = newExpression(CODE(2), Type.TYPE_NUMBER(), "1")
-		costObjective.addTarget new CostTarget(names:j(["en":"Test 4"]), code:CODE(1), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT, order: 4)
-		costObjective.addTarget new CostTarget(names:j(["en":"Test 3"]), code:CODE(2), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT, order: 3)
-		costObjective.save();
+		costProgram.addTarget new CostTarget(names:j(["en":"Test 4"]), code:CODE(1), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT, order: 4)
+		costProgram.addTarget new CostTarget(names:j(["en":"Test 3"]), code:CODE(2), expression: expression, costRampUp: CONSTANT_RAMP_UP(), costType: CostType.INVESTMENT, order: 3)
+		costProgram.save();
 		
 		then:
-		def expectedObjective = ReportObjective.findByCode("TEST");
-		expectedObjective.targets[0].order == 3
-		expectedObjective.targets[1].order == 4
+		def expectedProgram = ReportProgram.findByCode("TEST");
+		expectedProgram.targets[0].order == 3
+		expectedProgram.targets[1].order == 4
 
 	}
 	

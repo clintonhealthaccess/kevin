@@ -15,7 +15,7 @@ import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective;
+import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
@@ -27,9 +27,9 @@ public class SurveyPage {
 	
 	private DataLocationEntity entity;
 	private Survey survey;
-	private SurveyObjective objective;
+	private SurveyProgram program;
 	private SurveySection section;
-	private Map<SurveyObjective, SurveyEnteredObjective> objectives;
+	private Map<SurveyProgram, SurveyEnteredProgram> programs;
 	private Map<SurveySection, SurveyEnteredSection> sections;
 	private Map<SurveyQuestion, SurveyEnteredQuestion> questions;
 	private Map<SurveyElement, SurveyEnteredValue> elements;
@@ -37,8 +37,8 @@ public class SurveyPage {
 	private Map<String, Enum> enums;
 	
 	public SurveyPage(DataLocationEntity entity, Survey survey, 
-			SurveyObjective objective, SurveySection section,
-			Map<SurveyObjective, SurveyEnteredObjective> objectives,
+			SurveyProgram program, SurveySection section,
+			Map<SurveyProgram, SurveyEnteredProgram> programs,
 			Map<SurveySection, SurveyEnteredSection> sections,
 			Map<SurveyQuestion, SurveyEnteredQuestion> questions,
 			Map<SurveyElement, SurveyEnteredValue> elements,
@@ -47,9 +47,9 @@ public class SurveyPage {
 		super();
 		this.entity = entity;
 		this.survey = survey;
-		this.objective = objective;
+		this.program = program;
 		this.section = section;
-		this.objectives = objectives;
+		this.programs = programs;
 		this.sections = sections;
 		this.questions = questions;
 		this.elements = elements;
@@ -69,8 +69,8 @@ public class SurveyPage {
 		return survey;
 	}
 
-	public SurveyObjective getObjective() {
-		return objective;
+	public SurveyProgram getProgram() {
+		return program;
 	}
 	
 	public SurveySection getSection() {
@@ -85,8 +85,8 @@ public class SurveyPage {
 //		return enums.get(code);
 //	}
 	
-	public Map<SurveyObjective, SurveyEnteredObjective> getEnteredObjectives() {
-		return objectives;
+	public Map<SurveyProgram, SurveyEnteredProgram> getEnteredPrograms() {
+		return programs;
 	}
 
 	public Map<SurveySection, SurveyEnteredSection> getEnteredSections() {
@@ -129,16 +129,16 @@ public class SurveyPage {
 		return questions;
 	}
 	
-	public List<SurveySection> getSections(SurveyObjective objective) {
-		List<SurveySection> sections = objective.getSections(entity.getType());
+	public List<SurveySection> getSections(SurveyProgram program) {
+		List<SurveySection> sections = program.getSections(entity.getType());
 		Collections.sort(sections);
 		return sections;
 	}
 	
-	public List<SurveyObjective> getObjectives() {
-		List<SurveyObjective> objectives = survey.getObjectives(entity.getType());
-		Collections.sort(objectives);
-		return objectives;
+	public List<SurveyProgram> getPrograms() {
+		List<SurveyProgram> programs = survey.getPrograms(entity.getType());
+		Collections.sort(programs);
+		return programs;
 	}
 	
 //	public List<EnumOption> getEnumOptions(Enum enume) {
@@ -148,20 +148,20 @@ public class SurveyPage {
 //		return options;
 //	}
 
-	public List<SurveySection> getIncompleteSections(SurveyObjective objective) {
-		if (log.isDebugEnabled()) log.debug("getIncompleteSections(objective="+objective+")");
+	public List<SurveySection> getIncompleteSections(SurveyProgram program) {
+		if (log.isDebugEnabled()) log.debug("getIncompleteSections(program="+program+")");
 		List<SurveySection> result = new ArrayList<SurveySection>();
-		for (SurveySection section : objective.getSections(entity.getType())) {
+		for (SurveySection section : program.getSections(entity.getType())) {
 			if (!sections.get(section).isComplete()) result.add(section);
 		}
 		if (log.isDebugEnabled()) log.debug("getIncompleteSections(...)="+result);
 		return result;
 	}
 	
-	public List<SurveyQuestion> getInvalidQuestions(SurveyObjective objective) {
-		if (log.isDebugEnabled()) log.debug("getInvalidQuestions(objective="+objective+")");
+	public List<SurveyQuestion> getInvalidQuestions(SurveyProgram program) {
+		if (log.isDebugEnabled()) log.debug("getInvalidQuestions(program="+program+")");
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
-		for (SurveySection section : objective.getSections(entity.getType())) {
+		for (SurveySection section : program.getSections(entity.getType())) {
 			for (SurveyQuestion question : section.getQuestions(entity.getType())) {
 				if (questions.get(question).isInvalid() &&  !questions.get(question).isSkipped()) {
 					result.add(question);
@@ -174,7 +174,7 @@ public class SurveyPage {
 	
 	public List<SurveyQuestion> getListQuestions(Survey survey){
 		List<SurveyQuestion> simpleQuestions = new ArrayList<SurveyQuestion>();
-		for (SurveyObjective obj : survey.getObjectives(entity.getType()))
+		for (SurveyProgram obj : survey.getPrograms(entity.getType()))
 			for(SurveySection section: obj.getSections(entity.getType()))
 				for(SurveyQuestion question: section.getQuestions(entity.getType()))
 					//TODO this has to apply to all type questions
@@ -188,24 +188,24 @@ public class SurveyPage {
 	}
 	
 	public boolean isLastSection(SurveySection surveySection) {
-		List<SurveySection> sections = surveySection.getObjective().getSections(entity.getType());
+		List<SurveySection> sections = surveySection.getProgram().getSections(entity.getType());
 		if (sections.indexOf(surveySection) == sections.size() - 1) return true;
 		return false;
 	}
 	
 	public SurveySection getNextSection(SurveySection surveySection) {
-		List<SurveySection> sections = surveySection.getObjective().getSections(entity.getType());
+		List<SurveySection> sections = surveySection.getProgram().getSections(entity.getType());
 		int index = sections.indexOf(surveySection);
 		return sections.get(index+1);
 	}
 	
-	public boolean canSubmit(SurveyObjective surveyObjective) {
-		return !objectives.get(surveyObjective).isClosed() && objectives.get(surveyObjective).isComplete() && !objectives.get(surveyObjective).isInvalid();
+	public boolean canSubmit(SurveyProgram surveyProgram) {
+		return !programs.get(surveyProgram).isClosed() && programs.get(surveyProgram).isComplete() && !programs.get(surveyProgram).isInvalid();
 	}
 	
-	public boolean isReadonly(SurveyObjective surveyObjective) {
-		return !surveyObjective.getSurvey().isActive()
+	public boolean isReadonly(SurveyProgram surveyProgram) {
+		return !surveyProgram.getSurvey().isActive()
 		|| !SecurityUtils.getSubject().isPermitted("editSurvey:save:"+entity.getId()) 
-		|| objectives.get(objective).isClosed(); 
+		|| programs.get(program).isClosed(); 
 	}
 }

@@ -56,7 +56,7 @@ public class Dashboard {
 		return locations;
 	}
 	
-	public List<DashboardEntity> getObjectiveEntities() {
+	public List<DashboardEntity> getProgramEntities() {
 		return dashboardEntities;
 	}
 	
@@ -82,8 +82,8 @@ public class Dashboard {
 		StringBuffer buffer = new StringBuffer();
 		for (Entry<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> locationEntry : this.valueMap.entrySet()) {
 			buffer.append(locationEntry.getKey());
-			for (Entry<DashboardEntity, DashboardPercentage> objectiveEntry : locationEntry.getValue().entrySet()) {
-				buffer.append(objectiveEntry.getKey());
+			for (Entry<DashboardEntity, DashboardPercentage> programEntry : locationEntry.getValue().entrySet()) {
+				buffer.append(programEntry.getKey());
 				buffer.append(":");
 				buffer.append(locationEntry.getValue());
 				buffer.append(",");

@@ -39,7 +39,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
@@ -93,7 +93,7 @@ public abstract class DashboardEntity {
 	public abstract boolean isTarget();
 	
 	@Transient
-	public abstract ReportObjective getReportObjective();
+	public abstract ReportProgram getReportProgram();
 	
 	@Basic(fetch=FetchType.EAGER)
 	public String getCode() {

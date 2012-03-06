@@ -15,12 +15,12 @@ class SurveySummaryController extends AbstractController {
 		redirect (action: 'summaryPage', params: params)
 	}
 	
-	// TODO refactor into several actions for survey/objective/section
+	// TODO refactor into several actions for survey/program/section
 	def summaryPage = {
 		LocationEntity entity = LocationEntity.get(params.int('location'))
 
 		SurveySection section = SurveySection.get(params.int('section'))
-		SurveyObjective objective = SurveyObjective.get(params.int('objective'))
+		SurveyProgram program = SurveyProgram.get(params.int('program'))
 		Survey survey = Survey.get(params.int('survey'))
 		
 		def template = null;
@@ -31,9 +31,9 @@ class SurveySummaryController extends AbstractController {
 			summaryPage = summaryService.getSectionSummaryPage(entity, section)
 			template = '/survey/summary/summarySectionTable'
 		}
-		else if (objective != null && entity != null) {
-			summaryPage = summaryService.getObjectiveSummaryPage(entity, objective)
-			template = '/survey/summary/summaryObjectiveTable'
+		else if (program != null && entity != null) {
+			summaryPage = summaryService.getProgramSummaryPage(entity, program)
+			template = '/survey/summary/summaryProgramTable'
 		}
 		else if (survey != null && entity != null) {
 			summaryPage = summaryService.getSurveySummaryPage(entity, survey);
@@ -44,7 +44,7 @@ class SurveySummaryController extends AbstractController {
 			
 		render (view: '/survey/summary/summaryPage', model: [
 			currentSurvey: survey,
-			currentObjective: objective,
+			currentProgram: program,
 			currentSection: section,
 			currentLocation: entity,
 			summaryPage: summaryPage,
@@ -53,13 +53,13 @@ class SurveySummaryController extends AbstractController {
 		])
 	}
 
-	def objectiveTable = {
+	def programTable = {
 		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		Survey currentSurvey = Survey.get(params.int('survey'))
 
-		SurveySummaryPage summaryPage = summaryService.getObjectiveTable(entity, currentSurvey)
+		SurveySummaryPage summaryPage = summaryService.getProgramTable(entity, currentSurvey)
 
-		render (view: '/survey/summary/objectiveTable', model: [
+		render (view: '/survey/summary/programTable', model: [
 			location: entity,
 			summaryPage: summaryPage
 		])
@@ -67,9 +67,9 @@ class SurveySummaryController extends AbstractController {
 
 	def sectionTable = {
 		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
-		SurveyObjective currentObjective = SurveyObjective.get(params.int('objective'))
+		SurveyProgram currentProgram = SurveyProgram.get(params.int('program'))
 
-		SurveySummaryPage summaryPage = summaryService.getSectionTable(entity, currentObjective)
+		SurveySummaryPage summaryPage = summaryService.getSectionTable(entity, currentProgram)
 
 		render (view: '/survey/summary/sectionTable', model: [
 			location: entity,

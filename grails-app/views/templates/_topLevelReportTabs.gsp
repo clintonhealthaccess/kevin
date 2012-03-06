@@ -2,7 +2,7 @@
 	
 	<% def tabLinkParams = new HashMap(linkParams) %>
 	<% tabLinkParams.remove("dashboardEntity") %>
-	<% tabLinkParams['objective'] = currentObjective.id+"" %>
+	<% tabLinkParams['program'] = currentProgram.id+"" %>
 	<% linkParams = tabLinkParams %>
 	
 	<li><a ${controllerName == 'dashboard' ? 'class="selected"':''}

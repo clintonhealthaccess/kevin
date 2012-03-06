@@ -14,36 +14,36 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def objective = newReportObjective(CODE(2))
+		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
+		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
 		
 		when: "valid table"
 		fctController = new FctController()
 		fctController.params.period = period.id
 		fctController.params.location = LocationEntity.findByCode(RWANDA).id
-		fctController.params.objective = objective.id
+		fctController.params.program = program.id
 		fctController.params.level = LocationLevel.findByCode(DISTRICT).id
 		def model = fctController.view()
 		
 		then:
 		model.currentPeriod.equals(period)
 		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
-		model.currentObjective.equals(objective)
+		model.currentProgram.equals(program)
 		model.currentLevel.equals(LocationLevel.findByCode(DISTRICT))
 		model.fctTable != null
 	}
 	
 	
-	def "test view action with no objective"() {
+	def "test view action with no program"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def objective = newReportObjective(CODE(2))
+		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
+		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
 		
-		when: "no objective"
+		when: "no program"
 		fctController = new FctController()
 		fctController.params.period = period.id
 		fctController.params.location = LocationEntity.findByCode(RWANDA).id
@@ -59,15 +59,15 @@ class FctControllerSpec extends FctIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def objective = newReportObjective(CODE(2))
+		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], objective)
+		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
 		
 		when: "invalid parameters"
 		fctController = new FctController()
 		fctController.params.currentPeriod = period.id
 		fctController.params.location = LocationEntity.findByCode(BURERA).id
-		fctController.params.objective = objective.id
+		fctController.params.program = program.id
 		fctController.params.level = LocationLevel.findByCode(COUNTRY).id
 		fctController.params.filter = "location"
 		def model = fctController.view()

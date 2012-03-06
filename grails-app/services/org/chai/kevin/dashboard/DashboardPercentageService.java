@@ -35,17 +35,17 @@ public class DashboardPercentageService {
 		private final Log log = LogFactory.getLog(PercentageVisitor.class);
 		
 		@Override
-		public DashboardPercentage visitObjective(DashboardObjective objective, CalculationEntity entity, Period period) {
-			if (log.isDebugEnabled()) log.debug("visitObjective(objective="+objective+",entity="+entity+",period="+period+")");
+		public DashboardPercentage visitProgram(DashboardProgram program, CalculationEntity entity, Period period) {
+			if (log.isDebugEnabled()) log.debug("visitProgram(program="+program+",entity="+entity+",period="+period+")");
 			
 			Integer totalWeight = 0;
 			Double sum = 0.0d;
 
-			List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntities(objective.getObjective());
+			List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntities(program.getProgram());
 			for (DashboardEntity child : dashboardEntities) {
 				DashboardPercentage childPercentage = child.visit(this, entity, period);
 				if (childPercentage == null) {
-					if (log.isErrorEnabled()) log.error("found null percentage, objective: "+child+", entity: "+entity+", period: "+period);
+					if (log.isErrorEnabled()) log.error("found null percentage, program: "+child+", entity: "+entity+", period: "+period);
 					return null;
 				}
 				Integer weight = child.getWeight();
@@ -66,7 +66,7 @@ public class DashboardPercentageService {
 			else value = type.getValue(average);
 			DashboardPercentage percentage = new DashboardPercentage(value, entity, period);
 			
-			if (log.isDebugEnabled()) log.debug("visitObjective()="+percentage);
+			if (log.isDebugEnabled()) log.debug("visitProgram()="+percentage);
 			return percentage;
 		}
 
@@ -92,12 +92,12 @@ public class DashboardPercentageService {
 //		}
 //		
 //		@Override
-//		public Info visitObjective(DashboardObjective objective, CalculationEntity entity, Period period) {
-//			DashboardPercentage percentage = objective.visit(new PercentageVisitor(types), entity, period);
+//		public Info visitProgram(DashboardProgram program, CalculationEntity entity, Period period) {
+//			DashboardPercentage percentage = program.visit(new PercentageVisitor(types), entity, period);
 //			if (percentage == null) return null;
-//			List<DashboardEntity> dashboardEntities = getDashboardEntities(objective.getObjective());
+//			List<DashboardEntity> dashboardEntities = getDashboardEntities(program.getProgram());
 //			Map<DashboardEntity, DashboardPercentage> values = getValues(dashboardEntities, period, entity, types);
-//			return new DashboardObjectiveInfo(percentage, values);
+//			return new DashboardProgramInfo(percentage, values);
 //		}
 //
 //		@Override

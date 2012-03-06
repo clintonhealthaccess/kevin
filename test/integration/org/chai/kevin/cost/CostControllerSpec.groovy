@@ -36,24 +36,24 @@ class CostControllerSpec extends CostIntegrationTests {
 
 	def costController
 	
-	def "controller returns objective list"() {
+	def "controller returns program list"() {
 		setup:
 		costController = new CostController()
 		
 		when:
 		setupLocationTree()
 		def period = newPeriod()
-		def costObjective = newReportObjective(CODE(2))
+		def costProgram = newReportProgram(CODE(2))
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costObjective)
+		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costProgram)
 		
 		costController.params.period = period.id+''
-		costController.params.objective = costObjective.id+''
+		costController.params.program = costProgram.id+''
 		def model = costController.view()
 		
 		then:
-		def objectives = model.objectives;
-		objectives.size() == 1
+		def programs = model.programs;
+		programs.size() == 1
 	}
 	
 }

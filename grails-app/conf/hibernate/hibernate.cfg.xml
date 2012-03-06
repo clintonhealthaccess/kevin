@@ -21,7 +21,7 @@
 	    <mapping class="org.chai.kevin.value.SumPartialValue" />
 	    <mapping class="org.chai.kevin.value.AveragePartialValue" />
 	    
-	    <mapping class="org.chai.kevin.reports.ReportObjective" />	
+	    <mapping class="org.chai.kevin.reports.ReportProgram" />	
 	    <mapping class="org.chai.kevin.dsr.DsrTarget"/>	
 		<mapping class="org.chai.kevin.dsr.DsrTargetCategory"/>	
 	    <mapping class="org.chai.kevin.fct.FctTarget"/>
@@ -30,10 +30,10 @@
 	    <mapping class="org.chai.kevin.cost.CostRampUpYear" />	
 	    <mapping class="org.chai.kevin.cost.CostTarget" />	
 	    <mapping class="org.chai.kevin.dashboard.DashboardTarget" />
-	    <mapping class="org.chai.kevin.dashboard.DashboardObjective" />
+	    <mapping class="org.chai.kevin.dashboard.DashboardProgram" />
 	
         <mapping class="org.chai.kevin.survey.Survey" />
-		<mapping class="org.chai.kevin.survey.SurveyObjective" />
+		<mapping class="org.chai.kevin.survey.SurveyProgram" />
 		<mapping class="org.chai.kevin.survey.SurveySection" />
 		<mapping class="org.chai.kevin.survey.SurveyElement" />
 		<mapping class="org.chai.kevin.survey.SurveyQuestion" />
@@ -49,7 +49,7 @@
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredValue" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredQuestion" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredSection" />
-		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredObjective" />
+		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredProgram" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyLog" />
 		
 		<mapping class="org.chai.kevin.planning.Planning" />

@@ -41,7 +41,7 @@ import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.cost.CostTarget.CostType;
 import org.chai.kevin.dashboard.DashboardTarget;
-import org.chai.kevin.dashboard.DashboardObjective;
+import org.chai.kevin.dashboard.DashboardProgram;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
@@ -73,9 +73,9 @@ class BootStrap {
 				surveyAllReadonly.addToPermissions("editSurvey:view")
 				surveyAllReadonly.addToPermissions("editSurvey:summaryPage")
 				surveyAllReadonly.addToPermissions("editSurvey:sectionTable")
-				surveyAllReadonly.addToPermissions("editSurvey:objectiveTable")
+				surveyAllReadonly.addToPermissions("editSurvey:programTable")
 				surveyAllReadonly.addToPermissions("editSurvey:surveyPage")
-				surveyAllReadonly.addToPermissions("editSurvey:objectivePage")
+				surveyAllReadonly.addToPermissions("editSurvey:programPage")
 				surveyAllReadonly.addToPermissions("editSurvey:sectionPage")
 				surveyAllReadonly.addToPermissions("editSurvey:print")
 				surveyAllReadonly.save()

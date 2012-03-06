@@ -16,9 +16,9 @@
 		</div>
 		<div id="print-questions">
 		<div>
-			<g:each in="${surveyPage.survey.getObjectives(surveyPage.entity.type)}" var="objective">
-				<h3 class="objective-title"><g:i18n field="${objective.names}"/></h3>
-				<g:each in="${objective.getSections(surveyPage.entity.type)}" var="section">
+			<g:each in="${surveyPage.survey.getPrograms(surveyPage.entity.type)}" var="program">
+				<h3 class="program-title"><g:i18n field="${program.names}"/></h3>
+				<g:each in="${program.getSections(surveyPage.entity.type)}" var="section">
 					<h4 class="section-title"><g:i18n field="${section.names}"/></h4>
 					<ol id="questions-section-${section.id}">
 					<g:each in="${section.getQuestions(surveyPage.entity.type)}" var="question">
@@ -36,7 +36,7 @@
 				<g:each in="${surveyPage.getListQuestions(surveyPage.survey)}" var="question">
 					<li class="question-container">
 					<div>
-					   <h4><g:i18n field="${question.section.objective.names}"/> &rarr; 
+					   <h4><g:i18n field="${question.section.program.names}"/> &rarr; 
 					   <g:i18n field="${question.section.names}"/></h4>
 					</div>
 					<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, print: true, appendix: true, showHints: false]" />
