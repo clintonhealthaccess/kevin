@@ -110,12 +110,19 @@ public class RefreshValueService {
 			}
 		}
 	}
+	
 	@Transactional(readOnly = false)
 	public void refreshCalculation(Calculation<?> calculation, CalculationEntity entity, Period period) {
 		valueService.deleteValues(calculation, entity, period);
 		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, entity, period)) {
 			valueService.save(partialValue);
 		}
+	}
+	
+	@Transactional(readOnly = false)
+	public void refreshNormalizedDataElement(NormalizedDataElement dataElement, DataLocationEntity entity, Period period) {
+		valueService.deleteValues(dataElement, entity, period);
+		valueService.save(expressionService.calculateValue(dataElement, entity, period));
 	}
 
 	private <T extends CalculationEntity> Iterator<Object[]> getCombinations(Class<T> clazz) {
