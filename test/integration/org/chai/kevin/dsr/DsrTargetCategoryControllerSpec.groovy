@@ -28,77 +28,48 @@ package org.chai.kevin.dsr
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import grails.plugin.springcache.annotations.CacheFlush;
+import org.chai.kevin.data.Average;
+import org.chai.kevin.data.Calculation
+import org.chai.kevin.data.Type
 
-import org.chai.kevin.AbstractEntityController;
+class DsrTargetCategoryControllerSpec extends DsrIntegrationTests {
 
-class DsrTargetCategoryController extends AbstractEntityController {
+	def dsrTargetCategoryController
 	
-	def locationService
-	
-	def getEntity(def id) {
-		return DsrTargetCategory.get(id);
-	}
-	
-	def createEntity() {
-		return new DsrTargetCategory();
-	}
-	
-	def getLabel() {
-		return "dsr.targetcategory.label"
-	}
-	
-	def getTemplate() {
-		return "/entity/dsr/createTargetCategory"
-	}
-	
-	def getModel(def entity) {
-		[ category: entity ]
-	}
-	
-	def deleteEntity(def entity) {
-		//TODO delete target from category
-		for (def target : entity.targets) {
-			target.category = null
-			target.save()
-		}
-		entity.delete();
-	}
-	
-	@CacheFlush("dsrCache")
-	def edit = {
-		super.edit()	
-	}
-	
-	@CacheFlush("dsrCache")
-	def save = {
-		super.save()
-	}
-	
-	@CacheFlush("dsrCache")
-	def delete = {
-		super.delete()
-	}
-	
-	def bindParams(def entity) {
-		entity.properties = params
-	
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
-	}
-	
-	def list = {
-		adaptParamsForList()
-		List<DsrTargetCategory> categories = DsrTargetCategory.list(params);
+	def "list target with offset works"() {
+		setup:
+		def objective = newReportObjective(CODE(1))
+		def category1 = newDsrTargetCategory(CODE(1))
+		newDsrTarget(CODE(1), newRawDataElement(CODE(1), Type.TYPE_NUMBER()), [], objective, category1);
+		newDsrTarget(CODE(2), newRawDataElement(CODE(2), Type.TYPE_NUMBER()), [], objective, category1);
+		newDsrTarget(CODE(3), newRawDataElement(CODE(3), Type.TYPE_NUMBER()), [], objective, category1);
 		
-		render (view: '/entity/list', model:[
-			entities: categories,
-			template: "dsr/targetCategoryList",
-			code: getLabel(),
-			entityCount: DsrTargetCategory.count()
-		])
-	}
-
+		def category2 = newDsrTargetCategory(CODE(2))
+		def category3 = newDsrTargetCategory(CODE(3))
+		dsrTargetCategoryController = new DsrTargetCategoryController()
+		
+		when:
+		dsrTargetCategoryController.params.max = 1
+		dsrTargetCategoryController.params.offset = 0
+		dsrTargetCategoryController.list()
+		
+		then:
+		dsrTargetCategoryController.modelAndView.model.entities.equals([category1])
+		
+		when:
+		dsrTargetCategoryController.params.max = 1
+		dsrTargetCategoryController.params.offset = 1
+		dsrTargetCategoryController.list()
+		
+		then:
+		dsrTargetCategoryController.modelAndView.model.entities.equals([category2])
+		
+		when:
+		dsrTargetCategoryController.params.max = 1
+		dsrTargetCategoryController.params.offset = 2
+		dsrTargetCategoryController.list()
+		
+		then:
+		dsrTargetCategoryController.modelAndView.model.entities.equals([category3])
+	}	
 }
