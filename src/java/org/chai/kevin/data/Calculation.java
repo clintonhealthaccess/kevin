@@ -99,6 +99,12 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	}
 	
 	@Transient
+	public boolean needsRefresh() {
+		if (getCalculated() == null) return true;
+		return getCalculated().before(getTimestamp());
+	}
+	
+	@Transient
 	@Override
 	public Type getType() {
 		return Calculation.TYPE;

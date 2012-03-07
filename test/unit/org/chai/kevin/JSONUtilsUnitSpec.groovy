@@ -4,7 +4,7 @@ import org.chai.kevin.util.JSONUtils;
 import grails.plugin.spock.UnitSpec;
 import static org.junit.Assert.*;
 
-class JSONUtilsSpec extends UnitSpec {
+class JSONUtilsUnitSpec extends UnitSpec {
 
 	def "get json from map with integer returns null"() {
 		when:

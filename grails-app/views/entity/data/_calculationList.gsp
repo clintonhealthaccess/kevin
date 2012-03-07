@@ -8,6 +8,8 @@
   			<th><g:message code="entity.name.label" default="Name"/></th>
   			<g:sortableColumn property="code" title="${message(code: 'calculation.code.label', default: 'Code')}" />
   			<th><g:message code="calculation.expression.label" default="Expression"/></th>
+  			<th>Last refreshed</th>
+  			<th>Up-to-date</th>
   		</tr>
   	</thead>
   	<tbody>
@@ -32,6 +34,8 @@
   				<td data-data="${calculation.id}"><g:i18n field="${calculation.names}" /></td>
   				<td>${calculation.code}</td>
   				<td>${calculation.expression}</td>
+  				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${calculation.calculated}"/></td>
+  				<td>${calculation.needsRefresh()?'':'\u2713'}</td>
   			</tr>
   		</g:each>
   	</tbody>

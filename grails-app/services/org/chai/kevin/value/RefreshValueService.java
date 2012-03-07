@@ -87,7 +87,7 @@ public class RefreshValueService {
 		List<NormalizedDataElement> normalizedDataElements = sessionFactory.getCurrentSession().createCriteria(NormalizedDataElement.class).list();
 		
 		for (NormalizedDataElement normalizedDataElement : normalizedDataElements) {
-			if (normalizedDataElement.getCalculated() == null || normalizedDataElement.getCalculated().before(normalizedDataElement.getTimestamp())) {
+			if (normalizedDataElement.getCalculated() == null || normalizedDataElement.needsRefresh()) {
 				getMe().refreshNormalizedDataElementInTransaction(normalizedDataElement);
 				sessionFactory.getCurrentSession().clear();
 			}
@@ -104,7 +104,7 @@ public class RefreshValueService {
 		List<Calculation<?>> calculations = sessionFactory.getCurrentSession().createCriteria(Calculation.class).list();
 		
 		for (Calculation<?> calculation : calculations) {
-			if (calculation.getCalculated() == null || calculation.getCalculated().before(calculation.getTimestamp())) {
+			if (calculation.getCalculated() == null || calculation.needsRefresh()) {
 				getMe().refreshCalculationInTransaction(calculation);
 				sessionFactory.getCurrentSession().clear();
 			}

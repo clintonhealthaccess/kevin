@@ -48,7 +48,7 @@ public class JaqlService {
 	 * 
 	 * @throws {@link IllegalArgumentException} if one of the arguments is null
 	 */
-	public Value evaluate(String expression, Type type, Map<String, Value> variables, Map<String, Type> types)  throws IllegalArgumentException {
+	public Value evaluate(String expression, Type type, Map<String, Value> variables, Map<String, Type> types) throws IllegalArgumentException {
 		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+", variables="+variables+")");
 		
 		Map<String, String> jaqlVariables = new HashMap<String, String>();
@@ -64,7 +64,7 @@ public class JaqlService {
 		return type.getValueFromJaql(jsonValue.toString());
 	}
 	
-	private static JsonValue executeQuery(String expression, Map<String, JsonValue> valueMap) {
+	private static JsonValue executeQuery(String expression, Map<String, JsonValue> valueMap) throws IllegalArgumentException {
 		if (log.isDebugEnabled()) log.debug("executeQuery(expression="+expression+", valueMap="+valueMap+")");	
 		
 		JsonValue value = null;

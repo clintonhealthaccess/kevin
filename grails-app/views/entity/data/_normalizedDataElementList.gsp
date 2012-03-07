@@ -7,6 +7,8 @@
   			<th>Names</th>
   			<th>Type</th>
   			<th>Code</th>
+  			<th>Last refreshed</th>
+  			<th>Up-to-date</th>
   		</tr>
   	</thead>
   	<tbody>
@@ -28,6 +30,8 @@
   				</td>
   				<td><g:toHtml value="${normalizedDataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td>${normalizedDataElement.code}</td>
+  				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.calculated}"/></td>
+  				<td>${normalizedDataElement.needsRefresh()?'':'\u2713'}</td>
   			</tr>
   			<tr class="explanation-row">
   				<td colspan="5">
