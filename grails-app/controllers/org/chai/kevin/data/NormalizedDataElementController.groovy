@@ -140,7 +140,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 		if (normalizedDataElement != null) {
 			def periods = Period.list()
 			def valuesWithError = [:]
-			periods.each { valuesWithError.put(it, valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, period)) }
+			periods.each { valuesWithError.put(it, valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, it)) }
 			def referencingData = dataService.getReferencingData(normalizedDataElement)
 
 			render (view: '/entity/data/explainNormalizedDataElement',  model: [

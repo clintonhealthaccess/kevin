@@ -150,7 +150,7 @@ public class ExpressionService {
 						statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
 						statusValuePair.status = Status.VALID;
 					} catch (IllegalArgumentException e) {
-						expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, facility={"+facility+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}");
+						expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, facility={"+facility+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
 						log.warn("there was an error evaluating expression: "+expression, e);
 						statusValuePair.value = Value.NULL_INSTANCE();
 						statusValuePair.status = Status.ERROR;
