@@ -174,9 +174,8 @@ public class ExpressionService {
 			jaqlVariables.put(variable.getKey(), type.getJaqlValue(type.getPlaceHolderValue()));
 		}
 		
-		JsonValue value = null;
 		try {
-			value = jaqlService.getJsonValue(formula, jaqlVariables);	
+			jaqlService.getJsonValue(formula, jaqlVariables);	
 		} catch (IllegalArgumentException e) {
 			return false;
 		}

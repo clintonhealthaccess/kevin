@@ -34,7 +34,7 @@
   				<td>${normalizedDataElement.needsRefresh()?'':'\u2713'}</td>
   			</tr>
   			<tr class="explanation-row">
-  				<td colspan="5">
+  				<td colspan="7">
   					<div class="explanation-cell" id="explanation-${normalizedDataElement.id}"></div>
   				</td>
   			</tr>
