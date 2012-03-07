@@ -141,6 +141,21 @@ public class ValueService {
 	}
 	
 	@Transactional(readOnly=true)
+	public Long getNumberOfValues(Data<?> data, Status status, Period period) {
+		// TODO allow Calculation here
+		if (!(data instanceof NormalizedDataElement)) {
+			throw new IllegalArgumentException("wrong data type");
+		}
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
+			.add(Restrictions.eq("data", data))
+			.add(Restrictions.eq("status", status));
+		if (period != null) criteria.add(Restrictions.eq("period", period));
+		return (Long)criteria	
+			.setProjection(Projections.count("id"))
+			.uniqueResult();
+	}
+	
+	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
 	public <T extends DataValue> List<T> getValues(Data<T> data, Period period) {
 		return (List<T>)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())

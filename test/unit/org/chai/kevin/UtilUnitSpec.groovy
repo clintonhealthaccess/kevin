@@ -3,7 +3,7 @@ package org.chai.kevin;
 import grails.plugin.spock.UnitSpec
 import org.chai.kevin.util.Utils;
 
-public class UtilSpec extends UnitSpec {
+public class UtilUnitSpec extends UnitSpec {
 
 	def "test for strip html"(){
 		when:
