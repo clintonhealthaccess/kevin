@@ -118,9 +118,11 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 	def "get explainer"() {
 		setup:
 		setupLocationTree()
-		def period = newPeriod()
+		def period1 = newPeriod()
+		def period2 = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.ERROR, v("1"))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period1, Status.ERROR, v("1"))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period2, Status.VALID, v("1"))
 		normalizedDataElementController = new NormalizedDataElementController()
 		
 		when:
@@ -128,7 +130,8 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		normalizedDataElementController.getExplainer()
 		
 		then:
-		normalizedDataElementController.modelAndView.model.values == 1
-		normalizedDataElementController.modelAndView.model.valuesWithError[period] == 1
+		normalizedDataElementController.modelAndView.model.values == 2
+		normalizedDataElementController.modelAndView.model.valuesWithError[period1] == 1
+		normalizedDataElementController.modelAndView.model.valuesWithError[period2] == 0
 	}
 }
