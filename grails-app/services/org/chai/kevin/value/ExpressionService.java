@@ -61,6 +61,7 @@ import com.ibm.jaql.json.type.JsonValue;
 public class ExpressionService {
 
 	private static final Log log = LogFactory.getLog(ExpressionService.class);
+	private static final Log expressionLog = LogFactory.getLog("ExpressionLog");
 	
 	private DataService dataService;
 	private LocationService locationService;
@@ -149,6 +150,7 @@ public class ExpressionService {
 						statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
 						statusValuePair.status = Status.VALID;
 					} catch (IllegalArgumentException e) {
+						expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, facility={"+facility+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}");
 						log.warn("there was an error evaluating expression: "+expression, e);
 						statusValuePair.value = Value.NULL_INSTANCE();
 						statusValuePair.status = Status.ERROR;
