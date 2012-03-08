@@ -1,7 +1,35 @@
 package org.chai.kevin.security
 
-class SurveyUserController {
+import org.chai.kevin.location.DataLocationEntity;
 
-	static scaffold = true
+class SurveyUserController  extends UserAbstractController {
+
+	def getEntity(def id) {
+		return SurveyUser.get(id)
+	}
+
+	def createEntity() {
+		return new SurveyUser()
+	}
+
+	def getLabel() {
+		return 'survey.user.label'
+	}
 	
+	def getTemplate() {
+		return "/entity/user/createSurveyUser"
+	}
+	
+	def getModel(def entity) {
+		def dataLocations = []
+		if (entity.entityId != null) dataLocations << entity.entityId
+		[
+			user:entity, 
+			roles: Role.list(), 
+			dataLocations: dataLocations ,
+			cmd: params['cmd']
+			]
+	}
+
 }
+

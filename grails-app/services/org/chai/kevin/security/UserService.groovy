@@ -51,7 +51,12 @@ class UserService {
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
 		if (params['max'] != null) criteria.setMaxResults(params['max'])
 		
-		List<User> users = criteria.addOrder(Order.asc("id")).list()
+		List<User> users =[];
+		
+		if(params['order']!=null)
+			users= criteria.addOrder(Order.asc(params['sort'])).list()
+		else
+			users= criteria.addOrder(Order.asc("id")).list()
 		
 		StringUtils.split(text).each { chunk ->
 			users.retainAll { user ->

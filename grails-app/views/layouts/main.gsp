@@ -105,7 +105,7 @@
 	  						<li><a class="${controllerName=='locationLevel'?'active':''}" href="${createLink(controller: 'locationLevel', action:'list')}"><g:message code="locationLevel.label" default="Location Level"/></a></li>
 	  						<li><a class="${controllerName=='dataLocation'?'active':''}" href="${createLink(controller: 'dataLocation', action:'list')}"><g:message code="dataLocation.label" default="Data Location"/></a></li>
 	  						<li><a class="${controllerName=='dataEntityType'?'active':''}" href="${createLink(controller: 'dataEntityType', action:'list')}"><g:message code="dataEntityType.label" default="Data Entity Type"/></a></li>
-	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'user', action:'list')}"><g:message code="user.label" default="User"/></a></li>
+	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'userList', action:'list')}"><g:message code="user.label" default="User"/></a></li>
 							<li><a class="${controllerName=='importerEntity'?'active':''}" href="${createLink(controller: 'importerEntity', action:'importer')}"><g:message code="import.hrh.data.label" default="Import HRH Data"/></a></li>
 	  					</ul>
 	  				</li>

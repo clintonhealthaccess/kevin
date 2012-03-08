@@ -1,7 +1,7 @@
 <div class="entity-form-container">
 	
 	<div class="entity-form-header">
-		<h3 class="title">User</h3>
+		<h3 class="title">System User</h3>
 		<div class="clear"></div>
 	</div>
 	<div class="data-field-column">
