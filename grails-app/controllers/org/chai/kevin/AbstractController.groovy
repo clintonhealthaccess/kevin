@@ -32,6 +32,7 @@ import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.LocationService
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
@@ -87,6 +88,12 @@ public abstract class AbstractController {
 			types = new HashSet<DataEntityType>(ConfigurationHolder.config.site.locationtype.checked.collect {DataEntityType.findByCode(it)})
 		}
 		return types
+	}
+	
+	def getLevel(){
+		LocationLevel level = null
+		level = LocationLevel.get(params.int('level'));
+		return level
 	}
 	
 	def adaptParamsForList() {

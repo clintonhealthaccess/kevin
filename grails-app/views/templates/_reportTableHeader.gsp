@@ -20,6 +20,21 @@
 		</span>
 	  <g:i18n field="${currentProgram.names}"/> x <g:i18n field="${currentLocation.names}"/>
 	</g:elseif>
+		<g:if test="${controllerName == 'fct'}">
+		<g:if test="${table == 'location'}">
+		<span class='question-default'> <img
+			src="${resource(dir:'images/icons',file:'star_small.png')}" />
+		</span>
+	  <g:i18n field="${currentProgram.names}"/> x <g:i18n field="${currentLocation.names}"/>
+	  </g:if>
+		<g:elseif test="${table == 'program'}">
+			<span class='question-default'> <img
+				src="${resource(dir:'images/icons',file:'marker_small.png')}" />
+			</span>
+		  <g:i18n field="${currentProgram.names}"/>
+		</g:elseif>
+		<g:else></g:else>
+	</g:if>
 	<g:else></g:else>
 </h4>
 	<g:if test="${controllerName == 'dashboard'}">

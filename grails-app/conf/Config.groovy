@@ -231,6 +231,7 @@ site.locationtype.checked=["District Hospital","Health Center"]
 report.skip.levels=["Sector"]
 dashboard.skip.levels=[]
 dsr.skip.levels=[]
+fct.skip.levels=["Country"]
 cost.skip.levels=[]
 
 export.skip.levels=["Country", "Sector"]
