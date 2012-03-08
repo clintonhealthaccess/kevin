@@ -54,7 +54,7 @@ public class JaqlService {
 		Map<String, String> jaqlVariables = new HashMap<String, String>();
 		for (Entry<String, Value> variable : variables.entrySet()) {
 			// value can be null
-			if (variable.getValue() != null && !variable.getValue().isNull()) {
+			if (variable.getValue() != null) {
 				jaqlVariables.put("$"+variable.getKey(), types.get(variable.getKey()).getJaqlValue(variable.getValue()));
 			}
 		}
@@ -69,7 +69,9 @@ public class JaqlService {
 		
 		JsonValue value = null;
 		JaqlQuery query = new JaqlQuery();
+		
 		query.setQueryString(expression);
+		
 		for (Entry<String, JsonValue> entry : valueMap.entrySet()) {
 			query.setVar(entry.getKey(), entry.getValue());
 		}

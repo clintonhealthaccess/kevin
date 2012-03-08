@@ -460,7 +460,7 @@ public class Type extends JSONValue {
 	}
 	
 	public Value getValueFromJaql(String jaqlString) {
-		if (jaqlString == null || jaqlString.equals("null")) return Value.NULL_INSTANCE();
+		if (jaqlString == null || jaqlString.equals("null") || jaqlString.equals("{\"isNull\":true}")) return Value.NULL_INSTANCE();
 		try {
 			JSONObject object = new JSONObject();
 			switch (getType()) {
@@ -523,7 +523,7 @@ public class Type extends JSONValue {
 	
 	public String getJaqlValue(Value value) {
 		StringBuilder result = new StringBuilder();
-		if (value.isNull()) result.append("null");
+		if (value.isNull()) result.append("{\"isNull\":true}");
 		else {
 			switch (getType()) {
 				case NUMBER:
