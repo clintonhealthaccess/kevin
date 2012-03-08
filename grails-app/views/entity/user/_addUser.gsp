@@ -5,7 +5,7 @@
 			<ul>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'user', action:'create')}">
-						<g:message code="default.new.label" args="[message(code:'user.label',default:'System User')]"/>
+						<g:message code="default.new.label" args="[message(code:'user.label',default:'User')]"/>
 					</a>
 				</li>
 				<li>

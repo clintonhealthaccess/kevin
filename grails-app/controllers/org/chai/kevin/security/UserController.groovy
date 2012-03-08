@@ -15,7 +15,7 @@ class UserController extends UserAbstractController {
 	}
 	
 	def getTemplate() {
-		return "/entity/user/createSystemUser"
+		return "/entity/user/createUser"
 	}
 	
 }

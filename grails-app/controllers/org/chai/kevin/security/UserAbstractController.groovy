@@ -3,6 +3,7 @@ package org.chai.kevin.security
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.chai.kevin.AbstractEntityController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.chai.kevin.security.SurveyUser;
 
 abstract class UserAbstractController extends AbstractEntityController {
 
@@ -22,11 +23,9 @@ abstract class UserAbstractController extends AbstractEntityController {
 		
 		if(entity.id==null)
 			entity.uuid = UUID.randomUUID().toString();
-			
-		if(params['cmd']?.password != null && !params['cmd']?.password.equals('')){
-			if (log.isDebugEnabled()) log.debug('get here test '+params)
+					
+		if(params['cmd']?.password != null && !params['cmd']?.password.equals(''))
 			entity.passwordHash = new Sha256Hash(params['cmd'].password).toHex();
-		}
 	}
 	
 	

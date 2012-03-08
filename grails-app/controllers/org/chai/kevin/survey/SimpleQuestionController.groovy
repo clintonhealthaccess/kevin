@@ -79,7 +79,7 @@ class SimpleQuestionController extends AbstractEntityController {
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		
 		// headers
-		bindTranslationMap('headerList', entity.surveyElement.headers)
+		bindTranslationMap('headerList', entity.surveyElement?.headers)
 		
 		if (entity.surveyElement != null) entity.surveyElement.surveyQuestion = entity
 	}

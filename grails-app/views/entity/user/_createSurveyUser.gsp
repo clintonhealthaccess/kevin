@@ -15,9 +15,9 @@
 			<g:input name="password" label="Password" type="password" bean="${cmd}" field="password"/>
 			<g:input name="repeat" label="Repeat password" type="password" bean="${cmd}"  field="repeat"/>
 			
-			<g:selectFromList name="entityId" label="Location" bean="${surveyUser}" field="entityId" optionKey="id" multiple="false"
+			<g:selectFromList name="entityId" label="Data Location" bean="${user}" field="entityId" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'dataLocation', action:'getAjaxData')}"
-			from="${dataLocations}" value="${surveyUser?.entityId}" values="${dataLocations.collect{i18n(field:it.names)}}" />
+			from="${dataLocations}" value="${user.dataLocation?.id}" values="${dataLocations.collect{i18n(field:it.names)}}" />
 						
 			<div class="row">
 				<label><g:message code="user.confirmed.label" default="Confirmed"/></label>

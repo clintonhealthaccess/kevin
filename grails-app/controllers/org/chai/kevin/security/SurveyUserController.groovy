@@ -22,7 +22,7 @@ class SurveyUserController  extends UserAbstractController {
 	
 	def getModel(def entity) {
 		def dataLocations = []
-		if (entity.entityId != null) dataLocations << entity.entityId
+		if (entity.dataLocation != null) dataLocations << entity.dataLocation
 		[
 			user:entity, 
 			roles: Role.list(), 
