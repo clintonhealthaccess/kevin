@@ -11,9 +11,9 @@ import org.chai.kevin.dashboard.DashboardTarget
 
 class FilterTagLibTests extends GroovyPagesTestCase {
 
-	def period = IntegrationTests.newPeriod()
 	
-	def testProgramFilter() {		
+	def testProgramFilter() {
+		IntegrationTests.newPeriod()
 		DashboardIntegrationTests.setupDashboard()
 		
 		def html = applyTemplate(
@@ -45,7 +45,8 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	}
 	
 	def testIterationFilter() {
-				
+		def period = IntegrationTests.newPeriod()
+		
 		def html = applyTemplate(
 			'<g:iterationFilter selected="${period}"/>',
 			[
@@ -53,7 +54,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 			]
 		)
 		
-		assertTrue html.contains("href=\"/test?period=1\"")
+		assertTrue html.contains("href=\"/test?period="+period.id+"\"")
 		assertTrue html.contains("2005")
 	}
 	
