@@ -39,6 +39,7 @@ import org.chai.kevin.reports.ReportValue;
 public class FctTable extends ReportTable<FctTarget, LocationEntity> {
 	
 	private Map<FctTarget, ReportValue> totalMap;
+//	private List<FctTarget> targets;
 	
 	public FctTable(Map<FctTarget, ReportValue> totalMap, Map<LocationEntity, Map<FctTarget, ReportValue>> valueMap, List<FctTarget> targets) {
 		super(valueMap, targets);
@@ -52,7 +53,11 @@ public class FctTable extends ReportTable<FctTarget, LocationEntity> {
 	public Set<LocationEntity> getLocations(){
 		return valueMap.keySet();
 	}
-		
+	
+//	public List<FctTarget> getFctTargets(){
+//		return targets;
+//	}
+	
 	public boolean hasData(){
 		return (super.hasData() || !totalMap.isEmpty());
 	}

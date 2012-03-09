@@ -13,24 +13,27 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class FctController extends AbstractController {
 
-	FctService fctService;
+	def fctService;
 	
-//	public FctTargetCategory getFctTargetCategory(def program){
-//		def fctTargetCategory = null
-//		if(params.int('fctCategory') != null)
-//			fctTargetCategory = FctTargetCategory.get(params.int('fctCategory'))
-//		else{
-//			def categories = fctService.getTargetCategories(program)
-//			if(categories != null && !categories.empty)
-//				fctTargetCategory = categories.first()
-//		}
-//		return fctTargetCategory
-//	}
+	public FctTarget getFctTarget(def program){
+		def fctTarget = null
+		if(params.int('fctTarget') != null)
+			fctTarget = FctTarget.get(params.int('fctTarget'))
+		else{
+			def targets = reportService.getReportTargets(FctTarget.class, program)
+			if(targets != null && !targets.empty)
+				fctTarget = targets.first()
+		}
+		return fctTarget
+	}
 	
 //	def getLevel(){
 //		LocationLevel level = null
 //		level = LocationLevel.get(params.int('level'));
-//		if(level == null) level = LocationLevel.findByCode(ConfigurationHolder.config.site.level)
+//		if(level == null){
+//			 rootLocation = locationService.getRootLocation().getLevelAfter()
+//			 level = locationService.getLevelAfter(rootLocation.getLevel())
+//		}
 //		return level
 //	}
 	
@@ -46,6 +49,7 @@ class FctController extends AbstractController {
 		LocationEntity location = getLocation()
 		Set<DataEntityType> locationTypes = getLocationTypes()
 //		LocationLevel level = getLevel()		
+		FctTarget fctTarget = getFctTarget()		
 		
 		def skipLevels = fctService.getSkipLocationLevels()
 		
@@ -69,6 +73,8 @@ class FctController extends AbstractController {
 			currentLocation: location,
 //			currentLevel: level,
 			currentLocationTypes: locationTypes,
+			currentFctTarget: fctTarget,
+			fctTargets: reportService.getReportTargets(FctTarget.class, program),		
 			skipLevels: skipLevels			
 		]
 	}

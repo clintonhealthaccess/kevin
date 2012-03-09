@@ -52,7 +52,7 @@ public class FctTarget extends ReportTarget {
 	private Long id;
 	private Sum sum;
 	private String format;
-	private String typeCodeString; //comma-separated list of location ids
+	private String typeCodeString; //comma-separated list of location type ids
 	
 	@Id
 	@GeneratedValue

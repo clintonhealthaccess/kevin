@@ -830,12 +830,18 @@ class Initializer {
 			root.addChild(hmr)
 			root.save(failOnError: true, flush: true)
 
-			def firstCat = new DsrTargetCategory(
-					names:j(["en":"Infectious Disease Testing Offered"]),
+			def firstCat1 = new DsrTargetCategory(
+					names:j(["en":"Infectious Disease Testing Offered 1"]),
 					order: 1,
-					descriptions:j(["en":"Infectious Disease Testing Offered"]),
-					code: "Infectious Disease Testing Offered"
+					descriptions:j(["en":"Infectious Disease Testing Offered 1"]),
+					code: "Infectious Disease Testing Offered 1"
 					)
+			def firstCat2 = new DsrTargetCategory(
+					names:j(["en":"Infectious Disease Testing Offered 2"]),
+					order: 2,
+					descriptions:j(["en":"Infectious Disease Testing Offered 2"]),
+					code: "Infectious Disease Testing Offered 2"
+					)			
 			def secondCat = new DsrTargetCategory(
 					names:j(["en":"Nurses"]),
 					descriptions:j(["en":"Nurses"]),
@@ -993,11 +999,13 @@ class Initializer {
 					code: "Facility Power Status"
 					).save(failOnError:true)
 
-			firstCat.addTarget(DsrTarget.findByCode("Malaria Rapid Test"));
-			firstCat.addTarget(DsrTarget.findByCode("HIV Rapid Test"));
-			firstCat.addTarget(DsrTarget.findByCode("Mental Health Service"));
-			firstCat.addTarget(DsrTarget.findByCode("TB Stain Test"));
-			firstCat.save(failOnError:true);
+			firstCat1.addTarget(DsrTarget.findByCode("Malaria Rapid Test"));
+			firstCat1.addTarget(DsrTarget.findByCode("HIV Rapid Test"));
+			firstCat1.save(failOnError:true);
+			
+			firstCat2.addTarget(DsrTarget.findByCode("Mental Health Service"));
+			firstCat2.addTarget(DsrTarget.findByCode("TB Stain Test"));
+			firstCat2.save(failOnError:true);
 
 			secondCat.addTarget(DsrTarget.findByCode("A1"));
 			secondCat.addTarget(DsrTarget.findByCode("A2"));

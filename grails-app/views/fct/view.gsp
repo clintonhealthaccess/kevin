@@ -26,6 +26,7 @@
 	            </ul>					
 				<g:if test="${fctTable.hasData()}">
 					<div class='selector'>
+						<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
 	              		<g:render template="/fct/reportLocationTable" model="[linkParams:params]"/>
 	              	</div>
               	</g:if>	              	

@@ -54,7 +54,7 @@ public class DsrTarget extends ReportTarget {
 	private DataElement<StoredValue> dataElement;
 	private DsrTargetCategory category;
 	private String format;
-	private String typeCodeString;  //comma-separated list of location ids
+	private String typeCodeString;  //comma-separated list of location type ids
 	
 	@Id
 	@GeneratedValue

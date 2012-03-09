@@ -166,6 +166,12 @@ modules = {
 		resource url: '/js/dsr/categoryfilter_init.js'
 	}
 	
+	targetfilter {
+		dependsOn 'jquery'
+		
+		resource url: '/js/fct/targetfilter_init.js'
+	}
+	
 	// Start resources for pages
 	list {
 		dependsOn 'core,spinner,form,fieldselection,cluetip,dropdown,explanation,chosen'
@@ -190,7 +196,7 @@ modules = {
 	}
 
 	fct {
-		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,categoryfilter'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,targetfilter'
 
 		//resource url: '/css/dsr.css'
 	}
