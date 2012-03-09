@@ -43,7 +43,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.reports.ReportEntity;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "DsrTargetCategory")
 @Table(name = "dhsst_dsr_target_category")
@@ -63,6 +65,7 @@ public class DsrTargetCategory extends ReportEntity {
 	}
 
 	@OneToMany(targetEntity=DsrTarget.class, mappedBy="category", fetch=FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
 	public List<DsrTarget> getTargets() {
 		return targets;
 	}
@@ -71,10 +74,10 @@ public class DsrTargetCategory extends ReportEntity {
 		this.targets = targets;
 	}
 
-	public List<DsrTarget> getTargetsForObjective(ReportObjective objective) {
+	public List<DsrTarget> getTargetsForProgram(ReportProgram program) {
 		List<DsrTarget> result = new ArrayList<DsrTarget>();
 		for (DsrTarget dsrTarget : getTargets()) {
-			if (dsrTarget.getObjective().equals(objective)) result.add(dsrTarget);
+			if (dsrTarget.getProgram().equals(program)) result.add(dsrTarget);
 		}
 		return result;
 	}

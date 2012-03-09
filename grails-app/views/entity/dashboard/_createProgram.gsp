@@ -1,15 +1,15 @@
 <div class="entity-form-container togglable">
 	
 	<div class="entity-form-header">
-		<h3 class="title">Dashboard objective</h3>
+		<h3 class="title">Dashboard program</h3>
 		<g:locales/>
 		<div class="clear"></div>
 	</div>
 
-	<g:form url="[controller:'dashboardObjective', action:'save', params:[targetURI:targetURI]]" useToken="true">		
+	<g:form url="[controller:'dashboardProgram', action:'save', params:[targetURI:targetURI]]" useToken="true">		
 
-		<g:selectFromList name="objective.id" label="Objective" bean="${entity}" field="objective" optionKey="id" multiple="false"
-			from="${objectives}" value="${entity.objective?.id}" values="${objectives.collect{i18n(field:it.names)}}" />
+		<g:selectFromList name="program.id" label="Program" bean="${entity}" field="program" optionKey="id" multiple="false"
+			from="${programs}" value="${entity.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
 		
 		<g:input name="weight" label="Weight" bean="${entity}" field="weight"/>
 		<g:input name="order" label="Order" bean="${entity}" field="order"/>

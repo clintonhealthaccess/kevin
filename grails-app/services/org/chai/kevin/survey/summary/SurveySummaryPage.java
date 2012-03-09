@@ -8,9 +8,9 @@ import java.util.Map;
 
 import org.chai.kevin.LocationSorter;
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.SurveyObjective;
+import org.chai.kevin.survey.SurveyProgram;
 import org.chai.kevin.survey.SurveySection;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective;
+import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 
 public class SurveySummaryPage {
 
@@ -21,32 +21,32 @@ public class SurveySummaryPage {
 	private List<DataLocationEntity> facilities;
 	
 	// for survey summary page
-	private Map<DataLocationEntity, ObjectiveSummary> objectiveSummaryMap;
+	private Map<DataLocationEntity, ProgramSummary> programSummaryMap;
 	
-	// for objective summary page
-	private Map<DataLocationEntity, SurveyEnteredObjective> enteredObjectiveSummaryMap;
+	// for program summary page
+	private Map<DataLocationEntity, SurveyEnteredProgram> enteredProgramSummaryMap;
 	
-	// for survey + objective + section summary page
+	// for survey + program + section summary page
 	private Map<DataLocationEntity, QuestionSummary> questionSummaryMap;
 	
 	// for smaller information tables
-	private Map<SurveyObjective, SurveyEnteredObjective> enteredObjectiveTableMap;
-	private Map<SurveyObjective, QuestionSummary> objectiveQuestionTableMap;
+	private Map<SurveyProgram, SurveyEnteredProgram> enteredProgramTableMap;
+	private Map<SurveyProgram, QuestionSummary> programQuestionTableMap;
 	private Map<SurveySection, QuestionSummary> sectionQuestionTableMap;
 
 	// for survey summary page
-	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, ObjectiveSummary> objectiveSummaryMap) {
+	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, ProgramSummary> programSummaryMap) {
 		this.summary = summary;
 		this.facilities = facilities;
 		this.questionSummaryMap = questionSummaryMap;
-		this.objectiveSummaryMap = objectiveSummaryMap;
+		this.programSummaryMap = programSummaryMap;
 	}
 	
-	// for objective summary page
-	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, SurveyEnteredObjective> enteredObjectiveMap, boolean test) {
+	// for program summary page
+	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, SurveyEnteredProgram> enteredProgramMap, boolean test) {
 		this.summary = summary;
 		this.facilities = facilities;
-		this.enteredObjectiveSummaryMap = enteredObjectiveMap;
+		this.enteredProgramSummaryMap = enteredProgramMap;
 		this.questionSummaryMap = questionSummaryMap;
 	}
 
@@ -57,10 +57,10 @@ public class SurveySummaryPage {
 		this.questionSummaryMap = questionSummaryMap;
 	}
 	
-	// for objective table page
-	public SurveySummaryPage(Map<SurveyObjective, SurveyEnteredObjective> enteredObjectiveTableMap, Map<SurveyObjective, QuestionSummary> objectiveQuestionTableMap) {
-		this.enteredObjectiveTableMap = enteredObjectiveTableMap;
-		this.objectiveQuestionTableMap = objectiveQuestionTableMap;
+	// for program table page
+	public SurveySummaryPage(Map<SurveyProgram, SurveyEnteredProgram> enteredProgramTableMap, Map<SurveyProgram, QuestionSummary> programQuestionTableMap) {
+		this.enteredProgramTableMap = enteredProgramTableMap;
+		this.programQuestionTableMap = programQuestionTableMap;
 	}
 	
 	// for section table page
@@ -88,18 +88,18 @@ public class SurveySummaryPage {
 		}
 	}
 	
-	public List<SurveyObjective> getObjectives() {
-		List<SurveyObjective> sortedObjectives = new ArrayList<SurveyObjective>(objectiveQuestionTableMap.keySet());
-		Collections.sort(sortedObjectives, new Comparator<SurveyObjective>() {
+	public List<SurveyProgram> getPrograms() {
+		List<SurveyProgram> sortedPrograms = new ArrayList<SurveyProgram>(programQuestionTableMap.keySet());
+		Collections.sort(sortedPrograms, new Comparator<SurveyProgram>() {
 			@Override
-			public int compare(SurveyObjective arg0, SurveyObjective arg1) {
-				QuestionSummary summary0 = objectiveQuestionTableMap.get(arg0);
-				QuestionSummary summary1 = objectiveQuestionTableMap.get(arg1);
+			public int compare(SurveyProgram arg0, SurveyProgram arg1) {
+				QuestionSummary summary0 = programQuestionTableMap.get(arg0);
+				QuestionSummary summary1 = programQuestionTableMap.get(arg1);
 				return summary0.compareTo(summary1);
 			}
 		});
-		Collections.reverse(sortedObjectives);
-		return sortedObjectives;
+		Collections.reverse(sortedPrograms);
+		return sortedPrograms;
 	}	
 
 	public List<SurveySection> getSections() {
@@ -128,24 +128,24 @@ public class SurveySummaryPage {
 		return questionSummaryMap.get(location);
 	}
 
-	public ObjectiveSummary getObjectiveSummary(DataLocationEntity location) {
-		return objectiveSummaryMap.get(location);
+	public ProgramSummary getProgramSummary(DataLocationEntity location) {
+		return programSummaryMap.get(location);
 	}
 
-	public SurveyEnteredObjective getSurveyEnteredObjective(DataLocationEntity location) {
-		return enteredObjectiveSummaryMap.get(location);
+	public SurveyEnteredProgram getSurveyEnteredProgram(DataLocationEntity location) {
+		return enteredProgramSummaryMap.get(location);
 	}
 	
-	public QuestionSummary getQuestionSummary(SurveyObjective objective) {
-		return objectiveQuestionTableMap.get(objective);
+	public QuestionSummary getQuestionSummary(SurveyProgram program) {
+		return programQuestionTableMap.get(program);
 	}
 
 	public QuestionSummary getQuestionSummary(SurveySection section) {
 		return sectionQuestionTableMap.get(section);
 	}
 
-	public SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective objective) {
-		return enteredObjectiveTableMap.get(objective);
+	public SurveyEnteredProgram getSurveyEnteredProgram(SurveyProgram program) {
+		return enteredProgramTableMap.get(program);
 	}
 	
 }

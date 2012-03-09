@@ -27,8 +27,8 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(['key1':Type.TYPE_NUMBER(),'key2':Type.TYPE_NUMBER()])))
 		def element1 = newSurveyElement(question1, dataElement1)
@@ -49,8 +49,8 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
@@ -79,8 +79,8 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
@@ -110,8 +110,8 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
@@ -140,8 +140,8 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		def period = newPeriod()
 
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
 		
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])

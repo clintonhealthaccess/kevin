@@ -190,7 +190,7 @@ modules = {
 	}
 
 	fct {
-		dependsOn 'core,cluetip,dropdown,nicetable,spinner,chosen'
+		dependsOn 'core,fliptext,cluetip,dropdown,nicetable,spinner,chosen,chartanimation,categoryfilter'
 
 		//resource url: '/css/dsr.css'
 	}

@@ -64,7 +64,7 @@ public class Survey {
 	private Period lastPeriod;
 	private Period period;
 	private boolean active = false;
-	private List<SurveyObjective> objectives = new ArrayList<SurveyObjective>();
+	private List<SurveyProgram> programs = new ArrayList<SurveyProgram>();
 	private List<SurveySkipRule> skipRules = new ArrayList<SurveySkipRule>();
 	private Translation names = new Translation();
 	private Translation descriptions = new Translation();
@@ -128,21 +128,21 @@ public class Survey {
 		this.descriptions = descriptions;
 	}
 	
-	@OneToMany(targetEntity = SurveyObjective.class, mappedBy="survey")
+	@OneToMany(targetEntity = SurveyProgram.class, mappedBy="survey")
 	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
 	@Fetch(FetchMode.SELECT)
-	public List<SurveyObjective> getObjectives() {
-		return objectives;
+	public List<SurveyProgram> getPrograms() {
+		return programs;
 	}
 	
-	public void setObjectives(List<SurveyObjective> objectives) {
-		this.objectives = objectives;
+	public void setPrograms(List<SurveyProgram> programs) {
+		this.programs = programs;
 	}
 	
 	@Transient
-	public void addObjective(SurveyObjective objective){
-		objective.setSurvey(this);
-		objectives.add(objective);
+	public void addProgram(SurveyProgram program){
+		program.setSurvey(this);
+		programs.add(program);
 	}
 	
 	@OneToMany(mappedBy="survey", targetEntity=SurveySkipRule.class)
@@ -163,17 +163,17 @@ public class Survey {
 	@Transient
 	public List<SurveySection> getSections() {
 		List<SurveySection> result = new ArrayList<SurveySection>();
-		for (SurveyObjective surveyObjective : getObjectives()) {
-			result.addAll(surveyObjective.getSections());
+		for (SurveyProgram surveyProgram : getPrograms()) {
+			result.addAll(surveyProgram.getSections());
 		}
 		return result;
 	}
 	
 	@Transient
-	public List<SurveyObjective> getObjectives(DataEntityType type) {
-		List<SurveyObjective> result = new ArrayList<SurveyObjective>();
-		for (SurveyObjective surveyObjective : getObjectives()) {
-			if (Utils.split(surveyObjective.getTypeCodeString()).contains(type.getCode())) result.add(surveyObjective);
+	public List<SurveyProgram> getPrograms(DataEntityType type) {
+		List<SurveyProgram> result = new ArrayList<SurveyProgram>();
+		for (SurveyProgram surveyProgram : getPrograms()) {
+			if (Utils.split(surveyProgram.getTypeCodeString()).contains(type.getCode())) result.add(surveyProgram);
 		}
 		return result;
 	}
@@ -184,8 +184,8 @@ public class Survey {
 		copy.setDescriptions(new Translation(getDescriptions()));
 		copy.setActive(isActive());
 		copy.setPeriod(getPeriod());
-		for (SurveyObjective objective : getObjectives()) {
-			copy.getObjectives().add(cloner.getObjective(objective));
+		for (SurveyProgram program : getPrograms()) {
+			copy.getPrograms().add(cloner.getProgram(program));
 		}
 	}
 

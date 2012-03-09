@@ -114,8 +114,8 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		def survey = SurveyIntegrationTests.newSurvey(period)
-		def objective = SurveyIntegrationTests.newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = SurveyIntegrationTests.newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
 		SurveyIntegrationTests.newSurveyEnteredValue(element, period, DataLocationEntity.findByCode(BUTARO), v("1"))
@@ -144,8 +144,8 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(27), Type.TYPE_NUMBER())
 		def survey = SurveyIntegrationTests.newSurvey(period)
-		def objective = SurveyIntegrationTests.newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = SurveyIntegrationTests.newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
 		SurveyIntegrationTests.newSurveyEnteredValue(element, period, DataLocationEntity.findByCode(BUTARO), v("1"))
@@ -191,8 +191,8 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(1), Type.TYPE_NUMBER())
 		def survey = SurveyIntegrationTests.newSurvey(period)
-		def objective = SurveyIntegrationTests.newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = SurveyIntegrationTests.newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = SurveyIntegrationTests.newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
 		SurveyIntegrationTests.newSurveyEnteredValue(element, period, DataLocationEntity.findByCode(BUTARO), v("1"))

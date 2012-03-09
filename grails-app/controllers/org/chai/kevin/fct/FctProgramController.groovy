@@ -26,57 +26,55 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.chai.kevin.dsr
+package org.chai.kevin.fct
 /**
 * @author Jean Kahigiso M.
 *
 */
-import grails.plugin.springcache.annotations.CacheFlush
+import grails.plugin.springcache.annotations.CacheFlush;
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 
-class DsrObjectiveController extends AbstractEntityController{
+class FctProgramController extends AbstractEntityController {
 	
 	def locationService
 	
 	def getEntity(def id) {
-		return ReportObjective.get(id)
+		return ReportProgram.get(id)
 	}
 	
 	def createEntity() {
-		return new ReportObjective()
+		return new ReportProgram()
 	}
 	
 	def getLabel() {
-		return "dsr.objective.label"
+		return "fct.program.label"
 	}
 	
 	def getTemplate() {
-		return "/dsr/createObjective"
+		return "/fct/createProgram"
 	}
 	
 	def getModel(def entity) {
-		[ objective: entity ]
+		[ program: entity ]
 	}
 	
-	@CacheFlush("dsrCache")
-	def edit = {
-		super.edit()
+	def validateEntity(def entity) {
+		return entity.validate()
 	}
 	
-	@CacheFlush("dsrCache")
-	def save = {
-		super.save()
+	def saveEntity(def entity) {
+		entity.save()
 	}
-	
-	@CacheFlush("dsrCache")
-	def delete = {
-		super.delete()
+		
+	def deleteEntity(def entity) {
+		entity.delete();
 	}
 	
 	def bindParams(def entity) {
-		entity.properties = params	
+		entity.properties = params
+	
 	
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
@@ -84,4 +82,19 @@ class DsrObjectiveController extends AbstractEntityController{
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 
+	@CacheFlush("fctCache")
+	def save = {
+		super.save()
+	}
+	
+	@CacheFlush("fctCache")
+	def delete = {
+		super.delete()
+	}
+	
+	@CacheFlush("fctCache")
+	def edit = {
+		super.edit()
+	}
+	
 }

@@ -37,68 +37,71 @@ import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.Translation;
 import org.chai.kevin.util.JSONUtils;
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 
 class DashboardController extends AbstractController {
 	
-	DashboardService dashboardService;
+	DashboardService dashboardService;	
 	
 	def index = {
 		redirect (action: 'view', params: params)
 	}
 		
-	protected def redirectIfDifferent(def period, def objective, def location) {
-		if (period.id+'' != params['period'] || objective.id+'' != params['objective'] || location.id+'' != params['location'] ) {
+	protected def redirectIfDifferent(def period, def program, def location) {
+		if (period.id+'' != params['period'] || program.id+'' != params['program'] || location.id+'' != params['location'] ) {
 			
 			if (log.isInfoEnabled()) {
 				log.info ("redirecting to action: "+params['action']+
 					", period: "+period.id+
-					", objective: "+objective.id+
+					", program: "+program.id+
 					", location: "+location.id);
 			}
 			
 			redirect (controller: 'dashboard', action: params['action'],
-				params: [period: period.id, objective: objective.id, location: location.id]);
+				params: [period: period.id, program: program.id, location: location.id]);
 	
 		}
 	}
 	
-	private def getDashboardEntity(def objective) {		
-		DashboardEntity entity = dashboardService.getDashboardObjective(objective)
+	private def getDashboardEntity(def program) {		
+		DashboardEntity entity = dashboardService.getDashboardProgram(program)
 		return entity
 	}
 	
     def view = {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)
 		
-		def objective = null
+		def program = null
 		def dashboardEntity = null
 		def programDashboard = null		
 		def locationDashboard = null
 		
 		Period period = getPeriod()									
-		objective = getObjective()
-		dashboardEntity = getDashboardEntity(objective)
+		program = getProgram()
+		dashboardEntity = getDashboardEntity(program)
 		if(dashboardEntity == null){
-			 objective = reportService.getRootObjective()
-			 dashboardEntity = getDashboardEntity(objective)
+			 program = reportService.getRootProgram()
+			 dashboardEntity = getDashboardEntity(program)
 		}
 		LocationEntity location = getLocation()
-		List<DataEntityType> locationTypes = getLocationTypes()
+		Set<DataEntityType> locationTypes = getLocationTypes()
+				
+		def skipLevels = dashboardService.getSkipLocationLevels();
 		
-		if (period != null && objective != null && dashboardEntity != null && location != null && locationTypes != null) {			
+		if (period != null && program != null && dashboardEntity != null && location != null && locationTypes != null) {			
 			if (log.isInfoEnabled()){
 				log.info("dashboard for period: "+period.id+
 					", location: "+location.id+
-					", objective:"+objective.id);
+					", program:"+program.id);
 			}
-			redirectIfDifferent(period, objective, location)
-			
-			programDashboard = dashboardService.getProgramDashboard(location, objective, period, new HashSet(locationTypes));
-			locationDashboard = dashboardService.getLocationDashboard(location, objective, period, new HashSet(locationTypes), false);
+			redirectIfDifferent(period, program, location)
+
+			programDashboard = dashboardService.getProgramDashboard(location, program, period, locationTypes);
+			locationDashboard = dashboardService.getLocationDashboard(location, program, period, locationTypes, false);			
+
 		}
 		if (log.isDebugEnabled()){
 			 log.debug('program dashboard: '+programDashboard)
@@ -110,10 +113,11 @@ class DashboardController extends AbstractController {
 			locationDashboard: locationDashboard,			
 			currentPeriod: period,
 			dashboardEntity: dashboardEntity,
-			currentObjective: objective,
+			currentProgram: program,
 			currentTarget: DashboardTarget.class,
-			currentLocation: location,
-			currentLocationTypes: locationTypes
+			currentLocation: location,			
+			currentLocationTypes: locationTypes,
+			skipLevels: skipLevels			
 		]
 	}
 	
@@ -121,27 +125,27 @@ class DashboardController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)								
 		
 		Period period = getPeriod()	
-		ReportObjective objective = getObjective()
-		DashboardEntity dashboardEntity = getDashboardEntity(objective)	
+		ReportProgram program = getProgram()
+		DashboardEntity dashboardEntity = getDashboardEntity(program)	
 		LocationEntity location = getLocation()
-		List<DataEntityType> locationTypes = getLocationTypes()
+		Set<DataEntityType> locationTypes = getLocationTypes()
 		
 		def dashboard = null
-		if (period != null && objective != null && dashboardEntity != null && location != null && locationTypes != null) {			
+		if (period != null && program != null && dashboardEntity != null && location != null && locationTypes != null) {			
 			
 			if (log.isInfoEnabled()){
 				log.info("compare dashboard for period: "+period.id+
 					", location: "+location.id+
-					", objective:"+objective.id+
+					", program:"+program.id+
 					", dashboardEntity: " + dashboardEntity.id);
 			}
-			redirectIfDifferent(period, objective, location)
+			redirectIfDifferent(period, program, location)
 			
 			def table = (String) params.get("table")			
 			if(table == 'program')
-				dashboard = dashboardService.getProgramDashboard(location, objective, period, new HashSet(locationTypes));
+				dashboard = dashboardService.getProgramDashboard(location, program, period, locationTypes);
 			if(table == 'location')
-				dashboard = dashboardService.getLocationDashboard(location, objective, period, new HashSet(locationTypes), true);
+				dashboard = dashboardService.getLocationDashboard(location, program, period, locationTypes, true);
 						
 			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
 

@@ -3,7 +3,7 @@
 		<a class="no-link cluetip" onclick="return false;" title="${i18n(field:item.names)}"
 			href="${createLink(controller: 'data', action:'getDescription', params:[id: item.id])}"
 			rel="${createLink(controller: 'data', action:'getDescription', params:[id: item.id])}">
-			<g:i18n field="${item.names}"/>
+			<g:i18n field="${item.names}"/> [${item.code}] [${item.class.simpleName}]
 		</a>
 		<span>[${item.id}]</span>
 	</li>

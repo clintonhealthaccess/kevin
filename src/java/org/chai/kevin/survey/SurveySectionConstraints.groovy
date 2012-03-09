@@ -32,7 +32,7 @@ package org.chai.kevin.survey
  *
  */
 constraints ={
-	objective(nullable:false)
+	program(nullable:false)
 	order(nullable:false, blank:false)
 	typeCodeString(nullable:false /*, blank:false*/)
 

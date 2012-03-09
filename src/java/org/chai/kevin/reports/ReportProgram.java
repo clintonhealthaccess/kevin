@@ -10,13 +10,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@Entity(name="ReportObjective")
-@Table(name="dhsst_report_objective")
-public class ReportObjective extends ReportEntity {
+@Entity(name="ReportProgram")
+@Table(name="dhsst_report_program")
+public class ReportProgram extends ReportEntity {
 
 	private Long id;
-	private ReportObjective parent;
-	private List<ReportObjective> children = new ArrayList<ReportObjective>();
+	private ReportProgram parent;
+	private List<ReportProgram> children = new ArrayList<ReportProgram>();
 	private List<ReportTarget> targets = new ArrayList<ReportTarget>();
 	
 	@Id
@@ -28,25 +28,25 @@ public class ReportObjective extends ReportEntity {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=ReportObjective.class)
-	public ReportObjective getParent() {
+	@ManyToOne(targetEntity=ReportProgram.class)
+	public ReportProgram getParent() {
 		return parent;
 	}
 	
-	public void setParent(ReportObjective parent) {
+	public void setParent(ReportProgram parent) {
 		this.parent = parent;
 	}
 
-	@OneToMany(targetEntity=ReportObjective.class, mappedBy="parent")
-	public List<ReportObjective> getChildren() {
+	@OneToMany(targetEntity=ReportProgram.class, mappedBy="parent")
+	public List<ReportProgram> getChildren() {
 		return children;
 	}
 	
-	public void setChildren(List<ReportObjective> children) {
+	public void setChildren(List<ReportProgram> children) {
 		this.children = children;
 	}
 	
-	public void addChild(ReportObjective child){
+	public void addChild(ReportProgram child){
 		children.add(child);
 		child.setParent(this);
 	}

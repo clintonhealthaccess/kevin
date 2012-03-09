@@ -21,12 +21,12 @@ class SectionControllerSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [])
-		def section = newSurveySection(objective, 1, [])
+		def program = newSurveyProgram(survey, 1, [])
+		def section = newSurveySection(program, 1, [])
 		sectionController = new SectionController()
 		
 		when:
-		sectionController.params['objective.id'] = objective.id
+		sectionController.params['program.id'] = program.id
 		sectionController.list()
 		
 		then:

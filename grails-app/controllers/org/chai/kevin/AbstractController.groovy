@@ -32,14 +32,15 @@ import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.LocationService
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.chai.kevin.security.User;
 import org.chai.kevin.survey.Survey
-import org.chai.kevin.survey.SurveyObjective
+import org.chai.kevin.survey.SurveyProgram
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
 import org.chai.kevin.survey.summary.SurveySummaryPage;
@@ -65,28 +66,34 @@ public abstract class AbstractController {
 		return period
 	}
 	
-	def getObjective(){
-		ReportObjective objective = ReportObjective.get(params.int('objective'))
-		if(objective == null) objective = reportService.getRootObjective()
-		return objective
+	def getProgram(){
+		ReportProgram program = ReportProgram.get(params.int('program'))
+		if(program == null) program = reportService.getRootProgram()
+		return program
 	}
 	
 	def getLocation(){
-		LocationEntity location = LocationEntity.get(params.int('location'));
+		LocationEntity location = LocationEntity.get(params.int('location'))
 		if (location == null) location = locationService.getRootLocation()
 		return location
 	}		
 	
-	public List<DataEntityType> getLocationTypes() {
-		List<DataEntityType> types = null
+	public Set<DataEntityType> getLocationTypes() {
+		Set<DataEntityType> types = null
 		if (params.list('locationTypes') != null && !params.list('locationTypes').empty) {
 			def locationTypes = params.list('locationTypes')
-			types = locationTypes.collect{ DataEntityType.get(it) }
+			types = new HashSet<DataEntityType>(locationTypes.collect{ DataEntityType.get(it) })
 		}
 		else {
-			types = new ArrayList(ConfigurationHolder.config.site.locationtype.checked).collect {DataEntityType.findByCode(it)}
+			types = new HashSet<DataEntityType>(ConfigurationHolder.config.site.locationtype.checked.collect {DataEntityType.findByCode(it)})
 		}
 		return types
+	}
+	
+	def getLevel(){
+		LocationLevel level = null
+		level = LocationLevel.get(params.int('level'));
+		return level
 	}
 	
 	def adaptParamsForList() {

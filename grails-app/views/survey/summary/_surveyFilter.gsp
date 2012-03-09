@@ -6,8 +6,8 @@
 			<g:if test="${currentSection != null}">
 				<g:i18n field="${currentSection.names}" />
 			</g:if> 
-			<g:elseif test="${currentObjective != null}">
-				<g:i18n field="${currentObjective.names}" />
+			<g:elseif test="${currentProgram != null}">
+				<g:i18n field="${currentProgram.names}" />
 			</g:elseif> 
 			<g:elseif test="${currentSurvey != null}">
 				<g:i18n field="${currentSurvey.names}" />
@@ -24,15 +24,15 @@
 						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLink(controller: 'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, survey: survey.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
 							<g:i18n field="${survey.names}" />
 						</a>
-						<ul class="survey-objective">
-							<g:each in="${survey.getObjectives()}" var="objective">
-								<li class="foldable ${currentObjective?.id==objective.id?'current':''}">
+						<ul class="survey-program">
+							<g:each in="${survey.getPrograms()}" var="program">
+								<li class="foldable ${currentProgram?.id==program.id?'current':''}">
 									<a class="foldable-toggle" href="#">(toggle)</a> 
-									<a class="item ${currentObjective?.id == objective.id?'opened':''}" href="${createLink(controller:'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, objective: objective.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
-										<span><g:i18n field="${objective.names}" /></span>
+									<a class="item ${currentProgram?.id == program.id?'opened':''}" href="${createLink(controller:'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, program: program.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
+										<span><g:i18n field="${program.names}" /></span>
 									</a>
 									<ul class="survey-section">
-										<g:each in="${objective.getSections()}" var="section">
+										<g:each in="${program.getSections()}" var="section">
 											<li class="foldable ${currentSection?.id==section.id?'current':''}">
 												<a class="item ${currentSection?.id == section.id?'opened':''}" href="${createLink(controller:'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, section: section.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
 													<span><g:i18n field="${section.names}" /></span>

@@ -70,15 +70,15 @@ class CalculationEntityUnitSpec extends UnitSpec {
 		then:
 		rwanda.collectTreeWithDataEntities(null, null).equals([north, rwanda])
 		rwanda.collectDataLocationEntities(null, null).equals([data1])
-		rwanda.collectTreeWithDataEntities(new HashSet([type1]), null).equals([north, rwanda])
-		rwanda.collectDataLocationEntities(new HashSet([type1]), null).equals([data1])
+		rwanda.collectTreeWithDataEntities(null, new HashSet([type1])).equals([north, rwanda])
+		rwanda.collectDataLocationEntities(null, new HashSet([type1])).equals([data1])
 		
 		when:
 		def type2 = new DataEntityType(code: 'type2')
 		
 		then:
-		rwanda.collectTreeWithDataEntities(new HashSet([type2]), null).empty
-		rwanda.collectDataLocationEntities(new HashSet([type2]), null).empty
+		rwanda.collectTreeWithDataEntities(null, new HashSet([type2])).empty
+		rwanda.collectDataLocationEntities(null, new HashSet([type2])).empty
 		
 	}
 	
@@ -105,13 +105,13 @@ class CalculationEntityUnitSpec extends UnitSpec {
 		def data1 = new DataLocationEntity(code: 'data1', type: type1);
 		
 		then:
-		data1.collectDataLocationEntities(new HashSet([type1]), null).equals([data1])
+		data1.collectDataLocationEntities(null, new HashSet([type1])).equals([data1])
 		
 		when:
 		def type2 = new DataEntityType(code: 'type2');
 		
 		then:
-		data1.collectDataLocationEntities(new HashSet([type2]), null).empty
+		data1.collectDataLocationEntities(null, new HashSet([type2])).empty
 	}
 	
 	def "get data entities on data entitiy"() {
@@ -194,4 +194,32 @@ class CalculationEntityUnitSpec extends UnitSpec {
 		rwanda.getDataEntities(new HashSet([province, district]), null).equals([dataCountry, dataProvince, dataDistrict])
 		north.getDataEntities(new HashSet([province]), null).equals([dataProvince])
 	}
+	
+	def "test get children entity with skip"() {
+		setup:
+		def country = new LocationLevel(code: "country")
+		def province = new LocationLevel(code: "province")
+		def district = new LocationLevel(code: "district")
+		def type1 = new DataEntityType(code: 'type1')
+		def type2 = new DataEntityType(code: 'type2')
+		
+		when:
+		def rwanda = new LocationEntity(code: "rwanda", level: country)
+		def north = new LocationEntity(code: "north", parent: rwanda, level: province)
+		def burera = new LocationEntity(code: "burera", parent: north, level: district)
+		rwanda.children = [north]
+		north.children = [burera]
+		
+		def data1 = new DataLocationEntity(code: 'data1', location: north, type: type1)
+		north.dataEntities = [data1]
+		
+		def data2 = new DataLocationEntity(code: 'data2', location: burera, type: type2)
+		burera.dataEntities = [data2]
+		
+		then:
+		rwanda.getChildrenEntities(new HashSet([province]), new HashSet([type1, type2])).equals([burera, data1])
+		rwanda.getChildrenEntities(new HashSet([province, district]), new HashSet([type1, type2])).equals([data1, data2])
+		
+	}
+	
 }

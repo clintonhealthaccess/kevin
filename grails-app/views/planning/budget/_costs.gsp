@@ -13,8 +13,8 @@
 			Title row: not displayed if the section is null
 		-->
 		<g:if test="${section == null}">
-			<g:each in="${budgetPlanningEntry.getPlanningCosts(costType, section)}" var="planningCost">
-				<g:render template="/planning/budget/cost" model="[budgetCost: budgetPlanningEntry.getBudgetCost(planningCost), margin: '40px']"/>
+			<g:each in="${budgetPlanningEntry.getBudgetCosts(costType, section)}" var="budgetCost">
+				<g:render template="/planning/budget/cost" model="[budgetCost: budgetCost, margin: '40px']"/>
 			</g:each>
 		</g:if>
 		<g:else>
@@ -35,12 +35,12 @@
 				<td></td>
 				<td class="status" title="Help message"></td>
 			</tr>
-      <tr style="display: table-row" class="sub_tree">
+			<tr style="display: table-row" class="sub_tree">
 				<td colspan="7" class="bucket">
 					<table class="condensed">
 						<tbody>
-							<g:each in="${budgetPlanningEntry.getPlanningCosts(costType, section)}" var="planningCost">
-								<g:render template="/planning/budget/cost" model="[budgetCost: budgetPlanningEntry.getBudgetCost(planningCost), margin: '50px']"/>
+							<g:each in="${budgetPlanningEntry.getBudgetCosts(costType, section)}" var="budgetCost">
+								<g:render template="/planning/budget/cost" model="[budgetCost: budgetCost, margin: '50px']"/>
 							</g:each>	
 						</tbody>
 					</table>

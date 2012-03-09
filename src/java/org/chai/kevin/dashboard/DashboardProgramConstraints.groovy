@@ -1,4 +1,4 @@
-package org.chai.kevin.cost
+package org.chai.kevin.dashboard
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,41 +28,8 @@ package org.chai.kevin.cost
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.reports.ReportObjective
-
-class CostObjectiveController extends AbstractEntityController {
-	
-	def locationService
-	
-	def getEntity(def id) {
-		return ReportObjective.get(id)
-	}
-	
-	def createEntity() {
-		return new ReportObjective()
-	}
-	
-	def getLabel() {
-		return "cost.objective.label"
-	}
-	
-	def getTemplate() {
-		return "/cost/createObjective"
-	}
-	
-	def getModel(def entity) {
-		[ objective: entity ]
-	}
-	
-	def bindParams(def entity) {
-		entity.properties = params
-
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
-	}
-	
-	
+constraints = {
+	code (nullable: false, blank: false, unique: true)
+	program (nullable: false)
+	weight (nullable: false, blank: false)
 }

@@ -68,7 +68,7 @@ public class SurveySection extends Orderable<Integer> {
 
 	private Long id;
 	private Integer order;
-	private SurveyObjective objective;
+	private SurveyProgram program;
 	private String typeCodeString;
 	private List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
 	private Translation names = new Translation();
@@ -93,14 +93,14 @@ public class SurveySection extends Orderable<Integer> {
 		this.order = order;
 	}
 
-	public void setObjective(SurveyObjective objective) {
-		this.objective = objective;
+	public void setProgram(SurveyProgram program) {
+		this.program = program;
 	}
 
-	@ManyToOne(targetEntity=SurveyObjective.class, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=SurveyProgram.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
-	public SurveyObjective getObjective() {
-		return objective;
+	public SurveyProgram getProgram() {
+		return program;
 	}
 
 	@Lob
@@ -148,7 +148,7 @@ public class SurveySection extends Orderable<Integer> {
 
 	@Transient
 	public Survey getSurvey() {
-		return objective.getSurvey();
+		return program.getSurvey();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -156,7 +156,7 @@ public class SurveySection extends Orderable<Integer> {
 	public Set<String> getTypeApplicable() {
 		return new HashSet<String>(CollectionUtils.intersection(
 				Utils.split(this.typeCodeString),
-				this.objective.getTypeApplicable()));
+				this.program.getTypeApplicable()));
 	}
 
 	@Transient
@@ -207,7 +207,7 @@ public class SurveySection extends Orderable<Integer> {
 	protected void deepCopy(SurveySection copy, SurveyCloner surveyCloner) {
 		copy.setNames(new Translation(getNames()));
 		copy.setTypeCodeString(getTypeCodeString());
-		copy.setObjective(surveyCloner.getObjective(getObjective()));
+		copy.setProgram(surveyCloner.getProgram(getProgram()));
 		copy.setOrder(getOrder());
 		for (SurveyQuestion question : getQuestions()) {
 			copy.getQuestions().add(surveyCloner.getQuestion(question));

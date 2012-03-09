@@ -1,5 +1,6 @@
+package org.chai.kevin.cost
 
-/**
+/*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
@@ -26,75 +27,42 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.chai.kevin.fct
-/**
-* @author Jean Kahigiso M.
-*
-*/
-import grails.plugin.springcache.annotations.CacheFlush;
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 
-class FctObjectiveController extends AbstractEntityController {
+class CostProgramController extends AbstractEntityController {
 	
 	def locationService
 	
 	def getEntity(def id) {
-		return ReportObjective.get(id)
+		return ReportProgram.get(id)
 	}
 	
 	def createEntity() {
-		return new ReportObjective()
+		return new ReportProgram()
 	}
 	
 	def getLabel() {
-		return "fct.objective.label"
+		return "cost.program.label"
 	}
 	
 	def getTemplate() {
-		return "/fct/createObjective"
+		return "/cost/createProgram"
 	}
 	
 	def getModel(def entity) {
-		[ objective: entity ]
-	}
-	
-	def validateEntity(def entity) {
-		return entity.validate()
-	}
-	
-	def saveEntity(def entity) {
-		entity.save()
-	}
-		
-	def deleteEntity(def entity) {
-		entity.delete();
+		[ program: entity ]
 	}
 	
 	def bindParams(def entity) {
 		entity.properties = params
-	
-	
+
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
-
-	@CacheFlush("fctCache")
-	def save = {
-		super.save()
-	}
 	
-	@CacheFlush("fctCache")
-	def delete = {
-		super.delete()
-	}
-	
-	@CacheFlush("fctCache")
-	def edit = {
-		super.edit()
-	}
 	
 }

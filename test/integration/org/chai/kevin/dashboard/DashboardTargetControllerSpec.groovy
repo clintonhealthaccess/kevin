@@ -31,7 +31,7 @@ package org.chai.kevin.dashboard
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation
 import org.chai.kevin.data.Type
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 
 class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 
@@ -42,7 +42,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 	
 	def "delete target"() {
 		setup:
-		def root = newReportObjective(CODE(1))
+		def root = newReportProgram(CODE(1))
 		def average = newAverage("1", CODE(2))
 		def target = newDashboardTarget(TARGET1, average, root, 1)
 		dashboardTargetController = new DashboardTargetController();
@@ -54,7 +54,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		
 		then:
 		dashboardTargetController.response.redirectedUrl.equals(dashboardTargetController.getTargetURI())
-		ReportObjective.count() == 1
+		ReportProgram.count() == 1
 		DashboardTarget.count() == 0
 	}
 	
@@ -63,7 +63,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 		setup:
 		setupLocationTree()
 		def average = newAverage("1", CODE(2))
-		def root = newReportObjective(CODE(1))
+		def root = newReportProgram(CODE(1))
 		def target = newDashboardTarget(TARGET1, average, root, 1)
 		dashboardTargetController = new DashboardTargetController()
 		dashboardTargetController.dataService = dataService
@@ -88,7 +88,7 @@ class DashboardTargetControllerSpec extends DashboardIntegrationTests {
 	def "edit target with calculations"() {
 		setup:
 		setupLocationTree()
-		def root = newReportObjective(CODE(1))
+		def root = newReportProgram(CODE(1))
 		def average = newAverage("1", CODE(3))
 		def target = newDashboardTarget(TARGET1, average, root, 1)
 		dashboardTargetController = new DashboardTargetController()

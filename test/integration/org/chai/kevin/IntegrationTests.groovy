@@ -60,7 +60,7 @@ import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.hisp.dhis.period.Period
@@ -109,6 +109,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 		def country = newLocationLevel(COUNTRY, 1)
 		def province = newLocationLevel(PROVINCE, 2)
 		def district = newLocationLevel(DISTRICT, 3)
+		def sector = newLocationLevel(SECTOR, 4)
 		
 		def rwanda = newLocationEntity(j(["en":RWANDA]), RWANDA, country)
 		def north = newLocationEntity(j(["en":NORTH]), NORTH, rwanda, province)
@@ -179,6 +180,21 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new SurveyUser(username: username, permissionString: '', passwordHash:'', uuid: uuid, entityId: entityId).save(failOnError: true)
 	}
 	
+	static def newReportProgram(def code) {
+		return new ReportProgram(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
+	}
+	
+	static def newReportProgram(def code, def parent) {
+		def reportProgram = new ReportProgram(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
+		parent.children << reportProgram
+		parent.save(failOnError: true)
+		return reportProgram
+	}
+	
+	static def newReportProgram(def code, def parent, def children){
+		return new ReportProgram(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
+	}
+	
 	RawDataElementValue newRawDataElementValue(def rawDataElement, def period, def entity, def value) {
 		return new RawDataElementValue(data: rawDataElement, period: period, entity: entity, value: value).save(failOnError: true, flush: true)
 	}
@@ -207,21 +223,21 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new RawDataElement(names: names, code: code, type: type, info: info).save(failOnError: true, flush:true)
 	}
 
-	NormalizedDataElement newNormalizedDataElement(def names, def code, def type, def expressionMap, Map params) {
+	static def newNormalizedDataElement(def names, def code, def type, def expressionMap, Map params) {
 		params << [failOnError: true]
 		params << [flush: true]
 		return new NormalizedDataElement(names: names, code: code, type: type, expressionMap: expressionMap).save(params)
 	}
 
-	NormalizedDataElement newNormalizedDataElement(def names, String code, def type, def expressionMap) {
+	static def newNormalizedDataElement(def names, String code, def type, def expressionMap) {
 		return newNormalizedDataElement(names, code, type, expressionMap, [:])
 	}
 	
-	NormalizedDataElement newNormalizedDataElement(def code, Type type, def expressionMap) {
+	static def newNormalizedDataElement(def code, Type type, def expressionMap) {
 		return newNormalizedDataElement([:], code, type, expressionMap, [:])
 	}
 	
-	NormalizedDataElement newNormalizedDataElement(def code, Type type, def expressionMap, Map params) {
+	static def newNormalizedDataElement(def code, Type type, def expressionMap, Map params) {
 		return newNormalizedDataElement([:], code, type, expressionMap, params)
 	}
 	
@@ -237,19 +253,19 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newAggregation([:], expression, code)
 	}
 
-	Average newAverage(def names, String expression, def code, def calculated) {
+	static def newAverage(def names, String expression, def code, def calculated) {
 		return new Average(names: names, expression: expression, code: code, calculated: calculated).save(failOnError: true)
 	}
 
-	Average newAverage(def names, String expression, String code) {
+	static def newAverage(def names, String expression, String code) {
 		return newAverage(names, expression, code, null)
 	}
 
-	Average newAverage(String expression, def code) {
+	static def newAverage(String expression, def code) {
 		return newAverage([:], expression, code, null)
 	}
 	
-	Average newAverage(String expression, def code, Date calculated) {
+	static def newAverage(String expression, def code, Date calculated) {
 		return newAverage([:], expression, code, calculated)
 	}
 
@@ -275,22 +291,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 		enume.save(failOnError: true)
 		return enumOption
 	}
-	
-	static def newReportObjective(def code) {
-		return new ReportObjective(code: code, parent: null, names: [:]).save(failOnError: true, flush: true);
-	}
-	
-	static def newReportObjective(def code, def parent) {
-		def reportObjective = new ReportObjective(code: code, parent: parent, names: [:]).save(failOnError: true, flush: true);
-		parent.children << reportObjective
-		parent.save(failOnError: true)
-		return reportObjective
-	}
-	
-//	static def newReportObjective(def code, def parent, def children){
-//		return new ReportObjective(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
-//	}
-	
+
 	def refresh() {
 		refreshNormalizedDataElement()
 		refreshCalculation()
@@ -324,13 +325,13 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return Utils.unsplit(types)
 	}
 	
-//	static def getLocationLevels(def levels) {
-//		def result = []
-//		for (def level : levels) {
-//			result.add LocationLevel.findByCode(level)
-//		}
-//		return result;
-//	}
+	static def getLocationLevels(def levels) {
+		def result = []
+		for (def level : levels) {
+			result.add LocationLevel.findByCode(level)
+		}
+		return result;
+	}
 	
 //	static def getLocation(def name) {
 //		return new Location(Location.findByName(name))

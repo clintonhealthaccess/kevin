@@ -13,7 +13,7 @@
 				<g:set var="percentageValue" />
 				<td><g:if test="${!location.collectsData()}">
 						<a href="${createLink(controller:'dashboard', action:'view', 
-					params:[period: currentPeriod.id, objective: currentObjective.id, location: location.id])}">
+					params:[period: currentPeriod.id, program: currentProgram.id, location: location.id])}">
 							<g:i18n field="${location.names}" />
 						</a>
 					</g:if> <g:else>
@@ -31,21 +31,21 @@
 					<!-- percentage value --> 
 					<g:if test="${percentageValue == 'N/A'}">
 						<div class="js_bar_horizontal tooltip horizontal-bar"
-							data-entity="${currentObjective.id}"
+							data-entity="${currentProgram.id}"
 							data-percentage="${percentageValue}"
 							style="width:0%;"
 							original-title="${percentageValue}"></div>
 					</g:if>
 					<g:elseif test="${percentageValue <= 100}">
 						<div class="js_bar_horizontal tooltip horizontal-bar"
-							data-entity="${currentObjective.id}"
+							data-entity="${currentProgram.id}"
 							data-percentage="${percentageValue}"
 							style="width:${percentageValue}%;"
 							original-title="${percentageValue}%"></div>
 					</g:elseif>
 					<g:else>
 						<div class="js_bar_horizontal tooltip horizontal-bar expand-bar"
-							data-entity="${currentObjective.id}"
+							data-entity="${currentProgram.id}"
 							data-percentage="${percentageValue}"
 							style="width:100%;"
 							original-title="${percentageValue}%"></div>

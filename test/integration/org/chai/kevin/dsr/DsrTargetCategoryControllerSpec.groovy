@@ -1,4 +1,4 @@
-package org.chai.kevin.dashboard
+package org.chai.kevin.dsr
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,59 +28,48 @@ package org.chai.kevin.dashboard
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.data.Average;
+import org.chai.kevin.data.Calculation
+import org.chai.kevin.data.Type
 
-class DashboardObjectiveControllerSpec extends DashboardIntegrationTests {
+class DsrTargetCategoryControllerSpec extends DsrIntegrationTests {
 
-	def dashboardObjectiveController
+	def dsrTargetCategoryController
 	
-	def "delete objective "() {
+	def "list target with offset works"() {
 		setup:
-		def root = newReportObjective(CODE(1))
-		def objective = newDashboardObjective(CODE(2), root, 1)
-		dashboardObjectiveController = new DashboardObjectiveController()
+		def program = newReportProgram(CODE(1))
+		def category1 = newDsrTargetCategory(CODE(1))
+		newDsrTarget(CODE(1), newRawDataElement(CODE(1), Type.TYPE_NUMBER()), [], program, category1);
+		newDsrTarget(CODE(2), newRawDataElement(CODE(2), Type.TYPE_NUMBER()), [], program, category1);
+		newDsrTarget(CODE(3), newRawDataElement(CODE(3), Type.TYPE_NUMBER()), [], program, category1);
+		
+		def category2 = newDsrTargetCategory(CODE(2))
+		def category3 = newDsrTargetCategory(CODE(3))
+		dsrTargetCategoryController = new DsrTargetCategoryController()
 		
 		when:
-		dashboardObjectiveController.params.id = objective.id
-		dashboardObjectiveController.delete()
+		dsrTargetCategoryController.params.max = 1
+		dsrTargetCategoryController.params.offset = 0
+		dsrTargetCategoryController.list()
 		
 		then:
-		ReportObjective.count() == 1
-		DashboardObjective.count() == 0
-	}
-	
-	def "delete objective with children does not delete"() {
-		setup:
-		def root = newReportObjective(CODE(1))
-		def objective = newDashboardObjective(CODE(2), root, 1)
-		def child = newReportObjective(CODE(3), root)
-		def childObjective = newDashboardObjective(CODE(4), child, 1)
-		dashboardObjectiveController = new DashboardObjectiveController()
+		dsrTargetCategoryController.modelAndView.model.entities.equals([category1])
 		
 		when:
-		dashboardObjectiveController.params.id = objective.id
-		dashboardObjectiveController.delete()
+		dsrTargetCategoryController.params.max = 1
+		dsrTargetCategoryController.params.offset = 1
+		dsrTargetCategoryController.list()
 		
 		then:
-		ReportObjective.count() == 2
-		DashboardObjective.count() == 2
-	}
-
-	def "save new objective"() {
-		setup:
-		def root = newReportObjective(CODE(1))
-		def objective = newDashboardObjective(CODE(2), root, 1)
-		dashboardObjectiveController = new DashboardObjectiveController()
+		dsrTargetCategoryController.modelAndView.model.entities.equals([category2])
 		
 		when:
-		dashboardObjectiveController.params['id'] = objective.id
-		dashboardObjectiveController.params['weight'] = 1
-		dashboardObjectiveController.params['code'] = "NEW"
-		dashboardObjectiveController.saveWithoutTokenCheck()
+		dsrTargetCategoryController.params.max = 1
+		dsrTargetCategoryController.params.offset = 2
+		dsrTargetCategoryController.list()
 		
 		then:
-		dashboardObjectiveController.response.redirectedUrl.equals(dashboardObjectiveController.getTargetURI())
-		DashboardObjective.count() == 1
-	}
-	
+		dsrTargetCategoryController.modelAndView.model.entities.equals([category3])
+	}	
 }

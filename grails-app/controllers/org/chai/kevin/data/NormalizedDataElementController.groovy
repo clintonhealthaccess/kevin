@@ -30,6 +30,7 @@ package org.chai.kevin.data
 
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.value.Status;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period;
@@ -69,8 +70,8 @@ class NormalizedDataElementController extends AbstractEntityController {
 	def saveEntity(def entity) {
 		if (entity.id != null) valueService.deleteValues(entity, null, null)
 		
-		entity.setTimestamp(new Date());
-		entity.save()
+		entity.timestamp = new Date();
+		entity.save(flush: true)
 	}
 	
 	def deleteEntity(def entity) {
@@ -137,11 +138,16 @@ class NormalizedDataElementController extends AbstractEntityController {
 		def normalizedDataElement = NormalizedDataElement.get(params.int('id'))
 
 		if (normalizedDataElement != null) {
-			
-			List<Data<?>> referencingData = dataService.getReferencingData(normalizedDataElement)
+			def periods = Period.list()
+			def valuesWithError = [:]
+			periods.each { valuesWithError.put(it, valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, it)) }
+			def referencingData = dataService.getReferencingData(normalizedDataElement)
 
 			render (view: '/entity/data/explainNormalizedDataElement',  model: [
-				normalizedDataElement: normalizedDataElement, referencingData: referencingData
+				normalizedDataElement: normalizedDataElement, 
+				referencingData: referencingData,
+				values: valueService.getNumberOfValues(normalizedDataElement),
+				valuesWithError: valuesWithError
 			])
 		}
 	}

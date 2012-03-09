@@ -18,12 +18,7 @@ public class PlanningEntryBudget {
 		this.budgetCosts = budgetCosts;
 	}
 	
-//	public Translation getNames() {
-//		return names;
-//	}
-	
 	public PlanningEntry getPlanningEntry() {
-
 		return planningEntry;
 	}
 	
@@ -43,7 +38,7 @@ public class PlanningEntryBudget {
 		Double result = 0d;
 		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
 			if (planningCost.getType().equals(costType)) {
-				result += getBudgetCost(planningCost).getValue();
+				if (getBudgetCost(planningCost) != null) result += getBudgetCost(planningCost).getValue();
 			}
 		}
 		return result;
@@ -56,7 +51,7 @@ public class PlanningEntryBudget {
 					||
 					planningCost.getGroupSection().equals(groupSection)
 				)) {
-				result += getBudgetCost(planningCost).getValue();
+				if (getBudgetCost(planningCost) != null) result += getBudgetCost(planningCost).getValue();
 			}
 		}
 		return result;
@@ -72,8 +67,8 @@ public class PlanningEntryBudget {
 		return result;
 	}
 	
-	public List<PlanningCost> getPlanningCosts(PlanningCostType type, String groupSection) {
-		List<PlanningCost> result = new ArrayList<PlanningCost>();
+	public List<BudgetCost> getBudgetCosts(PlanningCostType type, String groupSection) {
+		List<BudgetCost> result = new ArrayList<BudgetCost>();
 		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
 			if (	planningCost.getType() == type 
 					&& 
@@ -82,13 +77,13 @@ public class PlanningEntryBudget {
 						planningCost.getGroupSection().equals(groupSection)
 					)
 			) {
-				result.add(planningCost);
+				if (getBudgetCost(planningCost) != null) result.add(getBudgetCost(planningCost));
 			}
 		}
 		return result;
 	}
 	
-	public BudgetCost getBudgetCost(PlanningCost planningCost) {
+	protected BudgetCost getBudgetCost(PlanningCost planningCost) {
 		return budgetCosts.get(planningCost);
 	}
 

@@ -74,4 +74,10 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 				+ getCode() + "]";
 	}
 	
+	@Transient
+	public boolean needsRefresh() {
+		if (getCalculated() == null) return true;
+		return getCalculated().before(getTimestamp());
+	}
+	
 }

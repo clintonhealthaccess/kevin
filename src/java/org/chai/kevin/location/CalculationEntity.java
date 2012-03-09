@@ -1,6 +1,7 @@
 package org.chai.kevin.location;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -74,28 +75,7 @@ public abstract class CalculationEntity {
 	
 	@Transient
 	public abstract LocationEntity getParent();		
-	
-	protected boolean collectLocations(List<LocationEntity> locations, List<DataLocationEntity> dataLocations, Set<DataEntityType> dataEntityTypes, Set<LocationLevel> skips) {
-		boolean result = false;
-		for (LocationEntity child : getChildren(skips)) {
-			result = result | child.collectLocations(locations, dataLocations, dataEntityTypes, skips);
-		}
-	
-		List<DataLocationEntity> dataEntities = getDataEntities(skips, dataEntityTypes);
-		if (!dataEntities.isEmpty()) {
-			result = true;
-			if (dataLocations != null) dataLocations.addAll(dataEntities);
-		}
-		
-		if (result && locations != null) locations.add((LocationEntity) this);
-		return result;
-	}
-	
-	public List<DataLocationEntity> collectDataLocationEntities(Set<DataEntityType> dataEntityTypes, Set<LocationLevel> skips) {
-		List<DataLocationEntity> dataLocations = new ArrayList<DataLocationEntity>();
-		collectLocations(null, dataLocations, dataEntityTypes, skips);
-		return dataLocations;
-	}
+
 	
 	@Transient
 	public abstract List<DataLocationEntity> getDataEntities();
@@ -108,6 +88,28 @@ public abstract class CalculationEntity {
 	
 	@Transient
 	public abstract List<LocationEntity> getChildren(Set<LocationLevel> skipLevels);
+
+	protected boolean collectLocations(List<LocationEntity> locations, List<DataLocationEntity> dataLocations, Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
+		boolean result = false;
+		for (LocationEntity child : getChildren(skipLevels)) {
+			result = result | child.collectLocations(locations, dataLocations, skipLevels, types);
+		}
+	
+		List<DataLocationEntity> dataEntities = getDataEntities(skipLevels, types);
+		if (!dataEntities.isEmpty()) {
+			result = true;
+			if (dataLocations != null) dataLocations.addAll(dataEntities);
+		}
+		
+		if (result && locations != null) locations.add((LocationEntity) this);
+		return result;
+	}
+	
+	public List<DataLocationEntity> collectDataLocationEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
+		List<DataLocationEntity> dataLocations = new ArrayList<DataLocationEntity>();
+		collectLocations(null, dataLocations, skipLevels, types);
+		return dataLocations;
+	}
 	
 	@Transient
 	public abstract boolean collectsData();

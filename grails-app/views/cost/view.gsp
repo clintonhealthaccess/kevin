@@ -16,13 +16,13 @@
     <body>
     	<div id="cost">
 			<div class="subnav">
-				<g:iterationFilter linkParams="${[location: currentLocation?.id, objective: currentObjective?.id]}" selected="${currentPeriod}"/>
-				<g:locationFilter linkParams="${[period: currentPeriod.id, objective: currentObjective?.id]}" selected="${currentLocation}"/>
-				<g:render template="/templates/objectiveFilter" model="[linkParams:[period: currentPeriod.id, location: currentLocation?.id]]"/>
+				<g:iterationFilter linkParams="${[location: currentLocation?.id, program: currentProgram?.id]}" selected="${currentPeriod}"/>
+				<g:locationFilter linkParams="${[period: currentPeriod.id, program: currentProgram?.id]}" selected="${currentLocation}"/>
+				<g:render template="/templates/programFilter" model="[linkParams:[period: currentPeriod.id, location: currentLocation?.id]]"/>
 				
 				<shiro:hasPermission permission="admin:cost">					
 					<span>
-						<a href="${createLinkWithTargetURI(controller:'costObjective', action:'create')}"><g:message code="costing.admin.add.objective" default="Add objective"/></a>
+						<a href="${createLinkWithTargetURI(controller:'costProgram', action:'create')}"><g:message code="costing.admin.add.program" default="Add program"/></a>
 					</span>
 					<span>
 						<a href="${createLinkWithTargetURI(controller:'costTarget', action:'create')}">Add target</a>
@@ -36,14 +36,14 @@
 							<thead>
 								<tr>
 									<th class="empty">
-										<g:i18n field="${currentObjective.names}"/>
+										<g:i18n field="${currentProgram.names}"/>
 										<span>
-											<a class="edit-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'edit', id:currentObjective.id)}">
+											<a class="edit-link" href="${createLinkWithTargetURI(controller:'costProgram', action:'edit', id:currentProgram.id)}">
 												<g:message code="default.link.edit.label" default="Edit" />
 											</a>
 										</span>
 										<span>
-											<a class="delete-link" href="${createLinkWithTargetURI(controller:'costObjective', action:'delete', id:currentObjective.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+											<a class="delete-link" href="${createLinkWithTargetURI(controller:'costProgram', action:'delete', id:currentProgram.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
 												<g:message code="default.link.delete.label" default="Delete" />
 											</a>
 										</span>
@@ -65,7 +65,7 @@
 										<tr>
 											<td class="cell label row-${target.id}" data-row="${target.id}">
 												<span>
-													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[objective: target.id, location: currentLocation?.id])}"><g:i18n field="${target.names}"/></a>
+													<a class="no-link" href="${createLink(controller:'cost', action:'explain', params:[program: target.id, location: currentLocation?.id])}"><g:i18n field="${target.names}"/></a>
 												</span>
 												
 												<shiro:hasPermission permission="admin:cost">		
@@ -93,7 +93,7 @@
 					
 					</g:if>
 					<g:else>
-						<p class="help">Please select an location / objective</p>
+						<p class="help">Please select an location / program</p>
 					</g:else>
 				</div>
 				<div class="clear"></div>

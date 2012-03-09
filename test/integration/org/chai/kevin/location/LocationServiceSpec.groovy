@@ -126,5 +126,33 @@ class LocationServiceSpec extends IntegrationTests {
 		"Bur"	| [BURERA]
 		"Nor"	| [NORTH]
 		"n/a"	| []
-	}		
+	}
+	
+	def "get list of levels with no skip levels"(){
+		setup:
+		setupLocationTree()
+		def skipLevels = null
+		
+		when:		
+		def levels = locationService.listLevels(skipLevels)
+		def noSkipLevels = locationService.listLevels()		
+		
+		then:
+		levels == noSkipLevels
+		levels.size() == 4		
+	}
+	
+	def "get list of levels with skip levels"(){
+		setup:
+		setupLocationTree()
+		def skipLevels = new HashSet([LocationLevel.findByCode(SECTOR)])
+		
+		when:
+		def levels = locationService.listLevels(skipLevels)		
+		def noSkipLevels = locationService.listLevels()
+		
+		then:
+		levels != noSkipLevels
+		levels.size() == 3
+	}
 }

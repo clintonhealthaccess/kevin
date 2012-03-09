@@ -11,8 +11,8 @@ class QuestionControllerSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [])
-		def section = newSurveySection(objective, 1, [])
+		def program = newSurveyProgram(survey, 1, [])
+		def section = newSurveySection(program, 1, [])
 		def question = newSimpleQuestion(j(['en':'element']), section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
@@ -27,7 +27,7 @@ class QuestionControllerSpec extends SurveyIntegrationTests {
 		questionController.response.contentAsString.contains('value')
 	}
 	
-	def "list when no objective 404"() {
+	def "list when no program 404"() {
 		setup:
 		questionController = new QuestionController()
 		
@@ -42,8 +42,8 @@ class QuestionControllerSpec extends SurveyIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [])
-		def section = newSurveySection(objective, 1, [])
+		def program = newSurveyProgram(survey, 1, [])
+		def section = newSurveySection(program, 1, [])
 		def question = newSimpleQuestion(section, 1, [])
 		questionController = new QuestionController()
 		

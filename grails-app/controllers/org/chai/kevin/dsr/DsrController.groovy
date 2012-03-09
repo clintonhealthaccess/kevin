@@ -40,7 +40,7 @@ import org.chai.kevin.LocationService
 import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
@@ -49,12 +49,12 @@ class DsrController extends AbstractController {
 	LanguageService languageService;
 	DsrService dsrService;
 	
-	public DsrTargetCategory getDsrTargetCategory(def objective){
+	public DsrTargetCategory getDsrTargetCategory(def program){
 		def dsrTargetCategory = null
 		if(params.int('dsrCategory') != null)
 			dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))
 		else{
-			def categories = dsrService.getTargetCategories(objective)
+			def categories = dsrService.getTargetCategories(program)
 			if(categories != null && !categories.empty)
 				dsrTargetCategory = categories.first()
 		}
@@ -66,34 +66,33 @@ class DsrController extends AbstractController {
 	}
 	
 	def view = {
-		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)
-		
-		def parms = params
+		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)				
 		
 		Period period = getPeriod()		
-		
-		ReportObjective objective = getObjective()		
+		ReportProgram program = getProgram()				
 		LocationEntity location = getLocation()
-		List<DataEntityType> locationTypes = getLocationTypes()
-		DsrTargetCategory category = getDsrTargetCategory(objective)
+		Set<DataEntityType> locationTypes = getLocationTypes()
+		DsrTargetCategory category = getDsrTargetCategory(program)
+		
+		def skipLevels = dsrService.getSkipLocationLevels()		
 		
 		def dsrTable = null		
-		if (period != null && objective != null && location != null && locationTypes != null) {
-			 dsrTable = dsrService.getDsrTable(location, objective, period, new HashSet(locationTypes), category);		 			 			 
+		if (period != null && program != null && location != null && locationTypes != null) {
+			 dsrTable = dsrService.getDsrTable(location, program, period, locationTypes, category);				 					 		 			 
 		}
 		
-		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root objective: "+objective)
+		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root program: "+program)
 		
 		[
 			dsrTable: dsrTable,
 			currentCategory: category,
 			currentPeriod: period,
-			currentObjective: objective,
+			currentProgram: program,
 			currentTarget: DsrTarget.class,
 			currentLocation: location,
-			locationRoot: dsrTable.getLocationRoot(),
-			locationTree: dsrTable.getLocationTree().asList(),
-			currentLocationTypes: locationTypes
+			locationTree: location.collectTreeWithDataEntities(skipLevels, locationTypes).asList(),
+			currentLocationTypes: locationTypes,
+			skipLevels: skipLevels
 		]
 	}	
 }

@@ -1,4 +1,6 @@
-/**
+package org.chai.kevin.dashboard;
+
+/* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -25,72 +27,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey
 
-import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataEntityType;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import java.util.Map;
 
-/**
- * @author Jean Kahigiso M.
- *
- */
-class ObjectiveController extends AbstractEntityController {
+import org.chai.kevin.data.Info;
 
-	def languageService
-	def locationService
+public class DashboardProgramInfo extends Info<DashboardPercentage> {
+
+	private DashboardPercentage percentage;
+	private Map<DashboardEntity, DashboardPercentage> values;
 	
-	def getEntity(def id) {
-		return SurveyObjective.get(id)
-	}
-	
-	def createEntity() {
-		return new SurveyObjective()
-	}
-
-	def getLabel() {
-		return 'survey.objective.label'
-	}
-	
-	def getTemplate() {
-		return "/survey/admin/createObjective"
-	}
-
-	def getModel(def entity) {
-		[
-			objective: entity,
-			types: DataEntityType.list(),
-		]
-	}
-
-	def bindParams(def entity) {
-		entity.properties = params
+	public DashboardProgramInfo(DashboardPercentage percentage, Map<DashboardEntity, DashboardPercentage> values) {
+		super(percentage);
 		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
+		this.percentage = percentage;
+		this.values = values;
 	}
 	
-	def list = {
-		adaptParamsForList()
-
-		Survey survey = Survey.get(params.int('survey.id'));
-		if (survey == null) {
-			response.sendError(404)
-		}
-		else {
-			List<SurveyObjective> objectives = survey.objectives;
-			Collections.sort(objectives)
-			
-			def max = Math.min(params['offset']+params['max'], objectives.size())
-			
-			render (view: '/survey/admin/list', model:[
-				template:"objectiveList",
-				survey:survey,
-				entities: objectives.subList(params['offset'], max),
-				entityCount: objectives.size(),
-				code: getLabel()
-			])
-		}
+	public Map<DashboardEntity, DashboardPercentage> getValues() {
+		return values;
 	}
+	
+	public Double getNumberValue() {
+		if (percentage.getValue().isNull()) return null;
+		return percentage.getValue().getNumberValue().doubleValue();
+	}
+	
+	public String getTemplate() {
+		return "/dashboard/programInfo";
+	}
+
 }

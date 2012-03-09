@@ -41,7 +41,7 @@ import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -53,27 +53,18 @@ public class DashboardService {
 //	private Log log = LogFactory.getLog(DashboardService.class);
 	
 	private ReportService reportService;
-	private LocationService locationService;
 	private SessionFactory sessionFactory;
-	private DashboardPercentageService dashboardPercentageService;
 	private Set<String> skipLevels;
-	
-	private Set<LocationLevel> getSkipLocationLevels(Set<String> skipLevels) {
-		Set<LocationLevel> levels = new HashSet<LocationLevel>();
-		for (String skipLevel : skipLevels) {
-			levels.add(locationService.findLocationLevelByCode(skipLevel));
-		}
-		return levels;
-	}
+	private DashboardPercentageService dashboardPercentageService;	
 	
 	@Transactional(readOnly = true)
-	public Dashboard getProgramDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types){
+	public Dashboard getProgramDashboard(LocationEntity location, ReportProgram program, Period period, Set<DataEntityType> types){
 
 		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();		
 		locationEntities.add(location);
 
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
-		dashboardEntities.addAll(getDashboardEntities(objective));
+		dashboardEntities.addAll(getDashboardEntities(program));
 		
 		List<LocationEntity> locationPath = new ArrayList<LocationEntity>();
 		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap = 
@@ -89,18 +80,18 @@ public class DashboardService {
 	}
 			
 	@Transactional(readOnly = true)
-	public Dashboard getLocationDashboard(LocationEntity location, ReportObjective objective, Period period, Set<DataEntityType> types, boolean compare) {
+	public Dashboard getLocationDashboard(LocationEntity location, ReportProgram program, Period period, Set<DataEntityType> types, boolean compare) {
 		
 		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();
-		if(compare) locationEntities.add(location);
+		if(compare) 
+			locationEntities.add(location);
 		else {
-			Set<LocationLevel> skips = getSkipLocationLevels(skipLevels);
-			locationEntities.addAll(location.getChildrenWithDataEntities(types, skips));
-			locationEntities.addAll(location.getDataEntities(skips, types));
+			Set<LocationLevel> skipLevels = getSkipLocationLevels();
+			locationEntities.addAll(location.getChildrenEntities(skipLevels, types));			
 		}
 		
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
-		dashboardEntities.add(getDashboardObjective(objective));		
+		dashboardEntities.add(getDashboardProgram(program));		
 		
 		List<LocationEntity> locationPath = new ArrayList<LocationEntity>();
 		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap = 
@@ -144,59 +135,59 @@ public class DashboardService {
 		return locationPath;
 	}
 	
-//	private List<DashboardObjective> getBreadcrumb(ReportObjective objective) {
-//		List<DashboardObjective> objectivePath = new ArrayList<DashboardObjective>();
-//		while (objective != null) {
-//			ReportObjective parent = objective.getParent();
+//	private List<DashboardProgram> getBreadcrumb(ReportProgram program) {
+//		List<DashboardProgram> programPath = new ArrayList<DashboardProgram>();
+//		while (program != null) {
+//			ReportProgram parent = program.getParent();
 //			if(parent != null) {
-//				DashboardObjective dashboardParent = (DashboardObjective) getDashboardObjective(parent);
-//				if(dashboardParent != null)	objectivePath.add(dashboardParent);
+//				DashboardProgram dashboardParent = (DashboardProgram) getDashboardProgram(parent);
+//				if(dashboardParent != null)	programPath.add(dashboardParent);
 //			}
-//			objective = parent;
+//			program = parent;
 //		}
-//		Collections.reverse(objectivePath);
-//		return objectivePath;
+//		Collections.reverse(programPath);
+//		return programPath;
 //	}
 	
-	public List<DashboardEntity> getDashboardEntities(ReportObjective objective) {		
+	public List<DashboardEntity> getDashboardEntities(ReportProgram program) {		
 		List<DashboardEntity> entities = new ArrayList<DashboardEntity>();				
 		
-		List<DashboardEntity> dashboardObjectives = getDashboardObjectives(objective);
-		entities.addAll(dashboardObjectives);
+		List<DashboardEntity> dashboardPrograms = getDashboardPrograms(program);
+		entities.addAll(dashboardPrograms);
 		
-		List<DashboardTarget> dashboardTargets = reportService.getReportTargets(DashboardTarget.class, objective);		
+		List<DashboardTarget> dashboardTargets = reportService.getReportTargets(DashboardTarget.class, program);		
 		entities.addAll(dashboardTargets);
 		
 		return entities;
 	}
 	
-	public List<DashboardEntity> getDashboardObjectives(ReportObjective objective){
+	public List<DashboardEntity> getDashboardPrograms(ReportProgram program){
 		List<DashboardEntity> result = new ArrayList<DashboardEntity>();
-		List<ReportObjective> children = objective.getChildren();
+		List<ReportProgram> children = program.getChildren();
 		if(children != null) {
-			for (ReportObjective child : children) {
-				DashboardEntity dashboardObjective = getDashboardObjective(child);
-				if(dashboardObjective != null)	result.add(dashboardObjective);
+			for (ReportProgram child : children) {
+				DashboardEntity dashboardProgram = getDashboardProgram(child);
+				if(dashboardProgram != null)	result.add(dashboardProgram);
 			}
 		}
 		return result;
 	}
 	
-	public DashboardEntity getDashboardObjective(ReportObjective objective) {
-		DashboardObjective dashboardObjective = (DashboardObjective) sessionFactory.getCurrentSession()
-				.createCriteria(DashboardObjective.class)
-				.add(Restrictions.eq("objective", objective))
+	public DashboardEntity getDashboardProgram(ReportProgram program) {
+		DashboardProgram dashboardProgram = (DashboardProgram) sessionFactory.getCurrentSession()
+				.createCriteria(DashboardProgram.class)
+				.add(Restrictions.eq("program", program))
 				.uniqueResult();
 		
-		return dashboardObjective;
+		return dashboardProgram;
+	}
+	
+	public Set<LocationLevel> getSkipLocationLevels(){
+		return reportService.getSkipLocationLevels(skipLevels);
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-	}
-	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
 	}
 	
 	public void setSkipLevels(Set<String> skipLevels) {

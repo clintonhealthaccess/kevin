@@ -4,8 +4,8 @@
 		<a	class="no-link cluetip" onclick="return false;" title="${i18n(field:surveyElement.dataElement.names)}"
 			href="${createLink(controller:'surveyElement', action:'getDescription', params:[surveyElement: surveyElement.id])}"
 			rel="${createLink(controller:'surveyElement', action:'getDescription', params:[surveyElement: surveyElement.id])}">
-			<g:i18n field="${question.section.objective.survey.names}" /> |
-			<g:i18n field="${question.section.objective.names}" /> |
+			<g:i18n field="${question.section.program.survey.names}" /> |
+			<g:i18n field="${question.section.program.names}" /> |
 			<g:i18n field="${question.section.names}" /> |	
 		<g:i18n field="${surveyElement.dataElement.names}"/></a> 
 		<span>[${surveyElement.id}]</span>

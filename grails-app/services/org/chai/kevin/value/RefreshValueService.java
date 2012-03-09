@@ -87,7 +87,7 @@ public class RefreshValueService {
 		List<NormalizedDataElement> normalizedDataElements = sessionFactory.getCurrentSession().createCriteria(NormalizedDataElement.class).list();
 		
 		for (NormalizedDataElement normalizedDataElement : normalizedDataElements) {
-			if (normalizedDataElement.getCalculated() == null || normalizedDataElement.getCalculated().before(normalizedDataElement.getTimestamp())) {
+			if (normalizedDataElement.getCalculated() == null || normalizedDataElement.needsRefresh()) {
 				getMe().refreshNormalizedDataElementInTransaction(normalizedDataElement);
 				sessionFactory.getCurrentSession().clear();
 			}
@@ -104,18 +104,25 @@ public class RefreshValueService {
 		List<Calculation<?>> calculations = sessionFactory.getCurrentSession().createCriteria(Calculation.class).list();
 		
 		for (Calculation<?> calculation : calculations) {
-			if (calculation.getCalculated() == null || calculation.getCalculated().before(calculation.getTimestamp())) {
+			if (calculation.getCalculated() == null || calculation.needsRefresh()) {
 				getMe().refreshCalculationInTransaction(calculation);
 				sessionFactory.getCurrentSession().clear();
 			}
 		}
 	}
+	
 	@Transactional(readOnly = false)
 	public void refreshCalculation(Calculation<?> calculation, CalculationEntity entity, Period period) {
 		valueService.deleteValues(calculation, entity, period);
 		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, entity, period)) {
 			valueService.save(partialValue);
 		}
+	}
+	
+	@Transactional(readOnly = false)
+	public void refreshNormalizedDataElement(NormalizedDataElement dataElement, DataLocationEntity entity, Period period) {
+		valueService.deleteValues(dataElement, entity, period);
+		valueService.save(expressionService.calculateValue(dataElement, entity, period));
 	}
 
 	private <T extends CalculationEntity> Iterator<Object[]> getCombinations(Class<T> clazz) {

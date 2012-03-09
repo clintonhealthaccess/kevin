@@ -1,3 +1,4 @@
+
 package org.chai.kevin.reports;
 
 import java.util.ArrayList;
@@ -34,9 +35,8 @@ public class ReportService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LanguageService languageService;
-//	private String groupLevel;
 	private SessionFactory sessionFactory;
-	
+	private Set<String> skipLevels;
 	
 	public <T extends CalculationEntity> Map<LocationEntity, List<T>> getParents(List<T> entities, LocationLevel level) {									
 		
@@ -63,28 +63,28 @@ public class ReportService {
 		return sortedEntitiesMap;
 	}
 	
-	public ReportObjective getRootObjective() {
-		ReportObjective objective = (ReportObjective)sessionFactory.getCurrentSession().createCriteria(ReportObjective.class)
+	public ReportProgram getRootProgram() {
+		ReportProgram program = (ReportProgram)sessionFactory.getCurrentSession().createCriteria(ReportProgram.class)
 			.add(Restrictions.isNull("parent")).uniqueResult();
-		return objective;
+		return program;
 	}
 
-	public List<ReportObjective> getObjectiveTree(Class clazz){
-		List<ReportObjective> objectiveTree = new ArrayList<ReportObjective>();		
-		Set<ReportObjective> targetObjectives = getReportTargetObjectives(clazz);		
-		for(ReportObjective targetObjective : targetObjectives){
-			objectiveTree.add(targetObjective);			
-			ReportObjective parent = targetObjective.getParent();
+	public List<ReportProgram> getProgramTree(Class clazz){
+		List<ReportProgram> programTree = new ArrayList<ReportProgram>();		
+		Set<ReportProgram> targetPrograms = getReportTargetPrograms(clazz);		
+		for(ReportProgram targetProgram : targetPrograms){
+			programTree.add(targetProgram);			
+			ReportProgram parent = targetProgram.getParent();
 			while(parent != null){
-				if(!objectiveTree.contains(parent)) objectiveTree.add(parent);
+				if(!programTree.contains(parent)) programTree.add(parent);
 				parent = parent.getParent();
 			}
 		}
-		return objectiveTree;
+		return programTree;
 	}
 	
-	public <T> List<T> getReportTargets(Class<T> clazz, ReportObjective objective) {
-		if(objective == null){
+	public <T> List<T> getReportTargets(Class<T> clazz, ReportProgram program) {
+		if(program == null){
 			return (List<T>)sessionFactory.getCurrentSession()
 			.createCriteria(clazz)			
 			.list();
@@ -92,28 +92,28 @@ public class ReportService {
 		else{
 			return (List<T>)sessionFactory.getCurrentSession()
 			.createCriteria(clazz)
-			.add(Restrictions.eq("objective", objective))
+			.add(Restrictions.eq("program", program))
 			.list();	
 		}
 	}
 	
-	public Set<ReportObjective> getReportTargetObjectives(Class clazz){
-		Set<ReportObjective> objectives = new HashSet<ReportObjective>();
+	public Set<ReportProgram> getReportTargetPrograms(Class clazz){
+		Set<ReportProgram> programs = new HashSet<ReportProgram>();
 		if(clazz.equals(DashboardTarget.class)){
 			List<DashboardTarget> targets = getReportTargets(clazz, null);		
 			for(DashboardTarget target : targets){
-				if(target.getObjective() != null) 
-					objectives.add(target.getObjective());
+				if(target.getProgram() != null) 
+					programs.add(target.getProgram());
 			}
 		}
 		else{
 			List<ReportTarget> targets = getReportTargets(clazz, null);		
 			for(ReportTarget target : targets){
-				if(target.getObjective() != null) 
-					objectives.add(target.getObjective());
+				if(target.getProgram() != null) 
+					programs.add(target.getProgram());
 			}	
 		}		
-		return objectives;
+		return programs;
 	}
 	
 	public void setLocationService(LocationService locationService) {
@@ -132,12 +132,23 @@ public class ReportService {
 		this.languageService = languageService;
 	}
 	
-//	public void setGroupLevel(String groupLevel) {
-//		this.groupLevel = groupLevel;
-//	}
-	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
+	public void setSkipLevels(Set<String> skipLevels) {
+		this.skipLevels = skipLevels;
+	}
+	
+	public Set<LocationLevel> getSkipLocationLevels(Set<String> skipLevels) {
+		Set<String> allSkipLevels = new HashSet<String>();
+		if (skipLevels != null) allSkipLevels.addAll(skipLevels);
+		allSkipLevels.addAll(this.skipLevels);
+		
+		Set<LocationLevel> levels = new HashSet<LocationLevel>();
+		for (String skipLevel : allSkipLevels) {
+			levels.add(locationService.findLocationLevelByCode(skipLevel));
+		}
+		return levels;
+	}
 }

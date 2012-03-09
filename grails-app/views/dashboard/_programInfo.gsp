@@ -24,11 +24,11 @@
 					</thead>
 					<tbody>
 						<g:each in="${info.values}" var="entry">
-							<g:set var="objective" value="${entry.key}"/>
+							<g:set var="program" value="${entry.key}"/>
 							<g:set var="percentage" value="${entry.value}"/>
 							<tr>
-								<th><g:i18n field="${objective.entry.names}"/></th>
-								<td>${objective.weight}</td>
+								<th><g:i18n field="${program.entry.names}"/></th>
+								<td>${program.weight}</td>
 								<td>
 									<g:if test="${percentage.valid}">
 										<g:formatNumber number="${percentage.value * 100}" format="#0.0"/>%

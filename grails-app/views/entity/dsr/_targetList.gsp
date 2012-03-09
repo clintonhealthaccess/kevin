@@ -4,7 +4,7 @@
 			<th/>
 			<th>Name</th>
 			<th>Code</th>
-			<th>Objective</th>
+			<th>Program</th>
 			<th>Data Element</th>
 			<th>Category</th>
 			<th>Order</th>
@@ -31,7 +31,7 @@
 				</td>
 				<td>${target.code}</td>
 				<td>
-					<g:i18n field="${target.objective.names}"/>
+					<g:i18n field="${target.program.names}"/>
 				</td>
 				<td>${target.dataElement.code}</td>
 				<td>

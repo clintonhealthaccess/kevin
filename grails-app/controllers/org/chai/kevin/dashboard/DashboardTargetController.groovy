@@ -32,7 +32,7 @@ import grails.plugin.springcache.annotations.CacheFlush
 
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 
 class DashboardTargetController extends AbstractEntityController {
 
@@ -62,11 +62,11 @@ class DashboardTargetController extends AbstractEntityController {
 		def calculations = []
 		if (entity.calculation != null) calculations.add(entity.calculation)
 		
-		def dashboardObjectives = DashboardObjective.list()
-		def reportObjectives = []
-		for (objective in dashboardObjectives) reportObjectives.add(objective.getObjective())
+		def dashboardPrograms = DashboardProgram.list()
+		def reportPrograms = []
+		for (program in dashboardPrograms) reportPrograms.add(program.getProgram())
 		
-		return [entity: entity, objectives: reportObjectives, calculations: calculations]
+		return [entity: entity, programs: reportPrograms, calculations: calculations]
 	}
 	
 	def bindParams(def entity) {

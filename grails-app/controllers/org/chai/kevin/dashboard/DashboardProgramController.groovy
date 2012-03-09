@@ -31,58 +31,58 @@ package org.chai.kevin.dashboard
 import grails.plugin.springcache.annotations.CacheFlush
 
 import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.reports.ReportObjective
+import org.chai.kevin.reports.ReportProgram
 
 
-class DashboardObjectiveController extends AbstractEntityController {
+class DashboardProgramController extends AbstractEntityController {
 
 	def dashboardService
 	
 	def getEntity(def id) {
-		return DashboardObjective.get(id)
+		return DashboardProgram.get(id)
 	}
 	
 	def createEntity() {
-		def entity = new DashboardObjective()
+		def entity = new DashboardProgram()
 		return entity
 	}
 	
 	def getLabel() {
-		return "dashboard.objective.label"
+		return "dashboard.program.label"
 	}
 	
 	def getTemplate() {
-		return '/entity/dashboard/createObjective';
+		return '/entity/dashboard/createProgram';
 	}
 	
 	def deleteEntity(def entity) {
-		List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntities(entity.getReportObjective());
+		List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntities(entity.getReportProgram());
 		if(dashboardEntities.size() == 0){
-			if (log.isInfoEnabled()) log.info("deleting objective entity: "+entity)
+			if (log.isInfoEnabled()) log.info("deleting program entity: "+entity)
 			entity.delete()
 		}
 		else {
-			flash.message = message(code: 'dashboard.objective.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Dashboard obejctive {0} still has associated children.')
+			flash.message = message(code: 'dashboard.program.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Dashboard obejctive {0} still has associated children.')
 		}
 	}
 	
 	def getModel(def entity) {
 		
-		def reportObjectives = ReportObjective.list()
-		def dashboardObjectives = DashboardObjective.list()
-		for (objective in dashboardObjectives) reportObjectives.remove(objective.getObjective())
-		if (entity.objective != null) reportObjectives.add(entity.objective)
+		def reportPrograms = ReportProgram.list()
+		def dashboardPrograms = DashboardProgram.list()
+		for (program in dashboardPrograms) reportPrograms.remove(program.getProgram())
+		if (entity.program != null) reportPrograms.add(entity.program)
 		
-		return [entity: entity, objectives: reportObjectives]
+		return [entity: entity, programs: reportPrograms]
 	}
 	
 	def bindParams(def entity) {		
 		entity.properties = params
 		
-		if (entity.objective) {
-			entity.names = entity.objective.names
-			entity.descriptions = entity.objective.descriptions
-			entity.code = entity.objective.code
+		if (entity.program) {
+			entity.names = entity.program.names
+			entity.descriptions = entity.program.descriptions
+			entity.code = entity.program.code
 		}
 	}
 	
@@ -103,13 +103,13 @@ class DashboardObjectiveController extends AbstractEntityController {
 	
 	def list = {
 		adaptParamsForList()
-		List<DashboardObjective> objectives = DashboardObjective.list(params);
+		List<DashboardProgram> programs = DashboardProgram.list(params);
 		
 		render (view: '/entity/list', model:[
-			entities: objectives,
-			template: "dashboard/objectiveList",
+			entities: programs,
+			template: "dashboard/programList",
 			code: getLabel(),
-			entityCount: DashboardObjective.count()
+			entityCount: DashboardProgram.count()
 		])
 	}
 	

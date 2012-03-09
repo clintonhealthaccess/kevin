@@ -1,6 +1,4 @@
-package org.chai.kevin.dashboard;
-
-/* 
+/**
  * Copyright (c) 2011, Clinton Health Access Initiative.
  *
  * All rights reserved.
@@ -27,34 +25,72 @@ package org.chai.kevin.dashboard;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.chai.kevin.survey
 
-import java.util.Map;
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.location.DataEntityType;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
-import org.chai.kevin.data.Info;
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
+class ProgramController extends AbstractEntityController {
 
-public class DashboardObjectiveInfo extends Info<DashboardPercentage> {
-
-	private DashboardPercentage percentage;
-	private Map<DashboardEntity, DashboardPercentage> values;
+	def languageService
+	def locationService
 	
-	public DashboardObjectiveInfo(DashboardPercentage percentage, Map<DashboardEntity, DashboardPercentage> values) {
-		super(percentage);
+	def getEntity(def id) {
+		return SurveyProgram.get(id)
+	}
+	
+	def createEntity() {
+		return new SurveyProgram()
+	}
+
+	def getLabel() {
+		return 'survey.program.label'
+	}
+	
+	def getTemplate() {
+		return "/survey/admin/createProgram"
+	}
+
+	def getModel(def entity) {
+		[
+			program: entity,
+			types: DataEntityType.list(),
+		]
+	}
+
+	def bindParams(def entity) {
+		entity.properties = params
 		
-		this.percentage = percentage;
-		this.values = values;
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.names!=null) entity.names = params.names
 	}
 	
-	public Map<DashboardEntity, DashboardPercentage> getValues() {
-		return values;
-	}
-	
-	public Double getNumberValue() {
-		if (percentage.getValue().isNull()) return null;
-		return percentage.getValue().getNumberValue().doubleValue();
-	}
-	
-	public String getTemplate() {
-		return "/dashboard/objectiveInfo";
-	}
+	def list = {
+		adaptParamsForList()
 
+		Survey survey = Survey.get(params.int('survey.id'));
+		if (survey == null) {
+			response.sendError(404)
+		}
+		else {
+			List<SurveyProgram> programs = survey.programs;
+			Collections.sort(programs)
+			
+			def max = Math.min(params['offset']+params['max'], programs.size())
+			
+			render (view: '/survey/admin/list', model:[
+				template:"programList",
+				survey:survey,
+				entities: programs.subList(params['offset'], max),
+				entityCount: programs.size(),
+				code: getLabel()
+			])
+		}
+	}
 }

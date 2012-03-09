@@ -36,7 +36,7 @@ import grails.plugin.springcache.annotations.CacheFlush;
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.data.Sum
 import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.Utils
 
 class FctTargetController extends AbstractEntityController {
@@ -62,9 +62,9 @@ class FctTargetController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			target: entity,
-			objectives: ReportObjective.list(),
+			programs: ReportProgram.list(),
 			types: DataEntityType.list(),
-			objectives: ReportObjective.list(),
+			programs: ReportProgram.list(),
 			sums: entity.sum!=null?[entity.sum]:[],
 			typeCodes: Utils.split(entity.typeCodeString)
 		]
@@ -79,8 +79,8 @@ class FctTargetController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		entity.objective.targets.remove(entity)
-		entity.objective.save()
+		entity.program.targets.remove(entity)
+		entity.program.save()
 		entity.delete()
 	}
 

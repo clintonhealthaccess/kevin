@@ -61,6 +61,7 @@ import com.ibm.jaql.json.type.JsonValue;
 public class ExpressionService {
 
 	private static final Log log = LogFactory.getLog(ExpressionService.class);
+	private static final Log expressionLog = LogFactory.getLog("ExpressionLog");
 	
 	private DataService dataService;
 	private LocationService locationService;
@@ -90,7 +91,7 @@ public class ExpressionService {
 		for (DataEntityType type : locationService.listTypes()) {
 			Set<DataEntityType> collectForType = new HashSet<DataEntityType>();
 			collectForType.add(type);
-			List<DataLocationEntity> facilities = entity.collectDataLocationEntities(collectForType, null);
+			List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, collectForType);
 			
 			if (!facilities.isEmpty()) {
 				Map<DataLocationEntity, StatusValuePair> values = new HashMap<DataLocationEntity, StatusValuePair>();
@@ -149,6 +150,7 @@ public class ExpressionService {
 						statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
 						statusValuePair.status = Status.VALID;
 					} catch (IllegalArgumentException e) {
+						expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, facility={"+facility+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
 						log.warn("there was an error evaluating expression: "+expression, e);
 						statusValuePair.value = Value.NULL_INSTANCE();
 						statusValuePair.status = Status.ERROR;
@@ -174,9 +176,8 @@ public class ExpressionService {
 			jaqlVariables.put(variable.getKey(), type.getJaqlValue(type.getPlaceHolderValue()));
 		}
 		
-		JsonValue value = null;
 		try {
-			value = jaqlService.getJsonValue(formula, jaqlVariables);	
+			jaqlService.getJsonValue(formula, jaqlVariables);	
 		} catch (IllegalArgumentException e) {
 			return false;
 		}

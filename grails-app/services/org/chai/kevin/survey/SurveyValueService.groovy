@@ -6,7 +6,7 @@ import org.apache.shiro.SecurityUtils
 import org.chai.kevin.LocationService
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective
+import org.chai.kevin.survey.validation.SurveyEnteredProgram
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
 import org.chai.kevin.survey.validation.SurveyEnteredValue
@@ -24,15 +24,15 @@ class SurveyValueService {
 	
 	private LocationService locationService;
 	
-	void save(SurveyEnteredObjective surveyEnteredObjective) {
-		if (log.isDebugEnabled()) log.debug("save(surveyEnteredObjective=${surveyEnteredObjective}})")
-		surveyEnteredObjective.setUserUuid(SecurityUtils.subject.principal)
-		surveyEnteredObjective.setTimestamp(new Date());
-		surveyEnteredObjective.save();
+	void save(SurveyEnteredProgram surveyEnteredProgram) {
+		if (log.isDebugEnabled()) log.debug("save(surveyEnteredProgram=${surveyEnteredProgram}})")
+		surveyEnteredProgram.setUserUuid(SecurityUtils.subject.principal)
+		surveyEnteredProgram.setTimestamp(new Date());
+		surveyEnteredProgram.save();
 	}
 
-	void delete(SurveyEnteredObjective surveyEnteredObjective) {
-		surveyEnteredObjective.delete()
+	void delete(SurveyEnteredProgram surveyEnteredProgram) {
+		surveyEnteredProgram.delete()
 	}
 	
 	void save(SurveyEnteredValue surveyEnteredValue) {
@@ -75,15 +75,15 @@ class SurveyValueService {
 		surveyEnteredSection.delete()
 	}
 	
-	Integer getNumberOfSurveyEnteredObjectives(Survey survey, DataLocationEntity entity, Boolean closed, Boolean complete, Boolean invalid) {
-		def c = SurveyEnteredObjective.createCriteria()
+	Integer getNumberOfSurveyEnteredPrograms(Survey survey, DataLocationEntity entity, Boolean closed, Boolean complete, Boolean invalid) {
+		def c = SurveyEnteredProgram.createCriteria()
 		c.add(Restrictions.eq("entity", entity))
 		
 		if (complete!=null) c.add(Restrictions.eq("complete", complete))
 		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
 		if (closed!=null) c.add(Restrictions.eq("closed", closed))
 		
-		c.createAlias("objective", "o").add(Restrictions.eq('o.survey', survey))
+		c.createAlias("program", "o").add(Restrictions.eq('o.survey', survey))
 		c.setProjection(Projections.rowCount())
 		c.setCacheable(false);
 		c.setFlushMode(FlushMode.COMMIT)
@@ -91,7 +91,7 @@ class SurveyValueService {
 	}
 	
 	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataLocationEntity entity, 
-		SurveyObjective objective, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
+		SurveyProgram program, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
 		def c = SurveyEnteredQuestion.createCriteria()
 		c.add(Restrictions.eq("entity", entity))
 		
@@ -112,11 +112,11 @@ class SurveyValueService {
 		
 		c.createAlias("question", "sq")
 		.createAlias("sq.section", "ss")
-		.createAlias("ss.objective", "so")
+		.createAlias("ss.program", "so")
 		.add(Restrictions.eq("so.survey", survey))
 		
 		if (section != null) c.add(Restrictions.eq("sq.section", section))
-		if (objective != null) c.add(Restrictions.eq("ss.objective", objective))
+		if (program != null) c.add(Restrictions.eq("ss.program", program))
 		
 		c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
 		c.setProjection(Projections.rowCount())
@@ -138,16 +138,16 @@ class SurveyValueService {
 		return result
 	}
 	
-	SurveyEnteredObjective getSurveyEnteredObjective(SurveyObjective surveyObjective, DataLocationEntity entity) {
-		def c = SurveyEnteredObjective.createCriteria()
+	SurveyEnteredProgram getSurveyEnteredProgram(SurveyProgram surveyProgram, DataLocationEntity entity) {
+		def c = SurveyEnteredProgram.createCriteria()
 		c.add(Restrictions.naturalId()
 			.set("entity", entity)
-			.set("objective", surveyObjective)
+			.set("program", surveyProgram)
 		)
 		c.setFlushMode(FlushMode.COMMIT)
 		
 		def result = c.uniqueResult();
-		if (log.isDebugEnabled()) log.debug("getSurveyEnteredObjective(...)="+result);
+		if (log.isDebugEnabled()) log.debug("getSurveyEnteredProgram(...)="+result);
 		return result
 	}
 
@@ -179,17 +179,17 @@ class SurveyValueService {
 		return result
 	}
 	
-	List<SurveyEnteredValue> getSurveyEnteredValues(DataLocationEntity entity, SurveySection section, SurveyObjective objective, Survey survey) {
+	List<SurveyEnteredValue> getSurveyEnteredValues(DataLocationEntity entity, SurveySection section, SurveyProgram program, Survey survey) {
 		def c = SurveyEnteredValue.createCriteria()
 		c.add(Restrictions.eq("entity", entity))
 		
-		if (survey != null || objective != null || section != null) c.createAlias("surveyElement", "se")
-		if (survey != null || objective != null || section != null) c.createAlias("se.surveyQuestion", "sq")
-		if (survey != null || objective != null) c.createAlias("sq.section", "ss")
-		if (survey != null) c.createAlias("ss.objective", "so")
+		if (survey != null || program != null || section != null) c.createAlias("surveyElement", "se")
+		if (survey != null || program != null || section != null) c.createAlias("se.surveyQuestion", "sq")
+		if (survey != null || program != null) c.createAlias("sq.section", "ss")
+		if (survey != null) c.createAlias("ss.program", "so")
 
 		if (section != null) c.add(Restrictions.eq("sq.section", section))
-		if (objective != null) c.add(Restrictions.eq("ss.objective", objective))
+		if (program != null) c.add(Restrictions.eq("ss.program", program))
 		if (survey != null) c.add(Restrictions.eq("so.survey", survey))
 		
 		def result = c.setFlushMode(FlushMode.COMMIT).list();

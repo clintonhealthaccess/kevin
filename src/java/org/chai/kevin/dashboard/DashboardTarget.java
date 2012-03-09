@@ -38,7 +38,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.reports.ReportObjective;
+import org.chai.kevin.reports.ReportProgram;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="DashboardTarget")
@@ -47,7 +47,7 @@ public class DashboardTarget extends DashboardEntity {
 
 	private Long id;
 	private Calculation<?> calculation;
-	private ReportObjective objective;
+	private ReportProgram program;
 	
 	@Id
 	@GeneratedValue
@@ -69,13 +69,13 @@ public class DashboardTarget extends DashboardEntity {
 		this.calculation = calculation;
 	}
 
-	@ManyToOne(targetEntity=ReportObjective.class)
-	public ReportObjective getObjective() {
-		return objective;
+	@ManyToOne(targetEntity=ReportProgram.class)
+	public ReportProgram getProgram() {
+		return program;
 	}
 	
-	public void setObjective(ReportObjective objective) {
-		this.objective = objective;
+	public void setProgram(ReportProgram program) {
+		this.program = program;
 	}
 	
 	@Override
@@ -97,9 +97,9 @@ public class DashboardTarget extends DashboardEntity {
 	
 	@Override
 	@Transient
-	public ReportObjective getReportObjective() {
-		ReportObjective reportObjective = getObjective();
-		return reportObjective;
+	public ReportProgram getReportProgram() {
+		ReportProgram reportProgram = getProgram();
+		return reportProgram;
 	}
 
 }

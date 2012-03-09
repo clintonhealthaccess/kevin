@@ -182,12 +182,39 @@ class ValueServiceSpec extends IntegrationTests {
 		valueService.getNumberOfValues(rawDataElement2, period) == 0
 	}
 	
+	def "test number of values with status and wrong type"() {
+		when:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		valueService.getNumberOfValues(rawDataElement, Status.VALID, null)
+		
+		then:
+		thrown IllegalArgumentException
+	}
+
+	def "test number of values with status"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		when:
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.ERROR, v("1"))
+		
+		then:
+		valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, null) == 1
+		valueService.getNumberOfValues(normalizedDataElement, Status.VALID, null) == 0
+		valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, period) == 1
+		
+		when:
+		def period2 = newPeriod()
+		
+		then:
+		valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, period2) == 0
+	}
+		
 	def "test number of values does not count other value types"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		
 		when:
 		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
@@ -202,8 +229,6 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocationEntity.findByCode(BUTARO), v("40"))
@@ -217,7 +242,6 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
@@ -289,7 +313,6 @@ class ValueServiceSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
 		def average = newAverage("1", CODE(1))
 		
 		when:

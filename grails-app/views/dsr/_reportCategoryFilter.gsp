@@ -2,7 +2,7 @@
 	<g:if test="${dsrTable.targetCategories != null && !dsrTable.targetCategories.empty}">
 	<g:form name="dsrCategory-form" method="get"
 		url="${[controller:'dsr', action:'view',  
-		params:[period:currentPeriod.id, objective:currentObjective.id, location:currentLocation.id, locationTypes:currentLocationTypes*.id]]}">		
+		params:[period:currentPeriod.id, program:currentProgram.id, location:currentLocation.id, locationTypes:currentLocationTypes*.id]]}">		
 		<span>Report Category:</span>
 		<select id="dsrCategory" name="dsrCategory">
 			<g:each in="${dsrTable.targetCategories}" var="category">
@@ -11,6 +11,6 @@
 				</option>
 			</g:each>
 		</select>
-	</g:form>	
-	</g:if>		
+	</g:form>
+	</g:if>
 </div>

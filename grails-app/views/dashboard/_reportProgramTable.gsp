@@ -1,7 +1,7 @@
 <table class='horizontal-graph'>
 <thead>
   <tr>
-	<th><g:i18n field="${currentObjective.names}"/></th>
+	<th><g:i18n field="${currentProgram.names}"/></th>
 	<th>Score</th>
 	<th></th>
   </tr>
@@ -13,8 +13,8 @@
 				<g:set var="percentageValue" />
 				<td><g:if test="${!entity.isTarget()}">
 						<a href="${createLink(controller:'dashboard', action:'view',
-					params:[period: currentPeriod.id, objective: entity.objective.id, location: currentLocation.id, dashboardEntity: entity.id])}">
-							<g:i18n field="${entity.objective.names}" />
+					params:[period: currentPeriod.id, program: entity.program.id, location: currentLocation.id, dashboardEntity: entity.id])}">
+							<g:i18n field="${entity.program.names}" />
 						</a>
 					</g:if> <g:else>
 						<g:i18n field="${entity.names}" />

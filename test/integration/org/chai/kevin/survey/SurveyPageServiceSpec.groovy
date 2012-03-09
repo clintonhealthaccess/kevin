@@ -3,7 +3,7 @@ package org.chai.kevin.survey
 import org.chai.kevin.LanguageService
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.validation.SurveyEnteredObjective;
+import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
@@ -23,15 +23,15 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		surveyPageService.languageService = languageService
 	}
 	
-	def "test submit objective"() {
+	def "test submit program"() {
 		setup:
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
@@ -39,21 +39,21 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		newSurveyEnteredValue(element, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
 		newSurveyEnteredQuestion(question, period, DataLocationEntity.findByCode(KIVUYE), false, true)
 		newSurveyEnteredSection(section, period, DataLocationEntity.findByCode(KIVUYE), false, true)
-		newSurveyEnteredObjective(objective, period, DataLocationEntity.findByCode(KIVUYE), false, true, false)
+		newSurveyEnteredProgram(program, period, DataLocationEntity.findByCode(KIVUYE), false, true, false)
 				
 		then:
-		surveyPageService.submit(DataLocationEntity.findByCode(KIVUYE), objective) == true
+		surveyPageService.submit(DataLocationEntity.findByCode(KIVUYE), program) == true
 	}
 	
-	def "test submit objective with skipped elemment"() {
+	def "test submit program with skipped elemment"() {
 		setup:
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(),"key2":Type.TYPE_NUMBER()])))
 		
@@ -61,10 +61,10 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		newSurveyEnteredValue(element, period, DataLocationEntity.findByCode(KIVUYE), new Value("{\"value\":[{\"map_value\":{\"skipped\":\"33\",\"value\":null},\"map_key\":\"key1\"},{\"map_value\":{\"value\":10},\"map_key\":\"key2\"}]}"))
 		newSurveyEnteredQuestion(question, period, DataLocationEntity.findByCode(KIVUYE), false, true)
 		newSurveyEnteredSection(section, period, DataLocationEntity.findByCode(KIVUYE), false, true)
-		newSurveyEnteredObjective(objective, period, DataLocationEntity.findByCode(KIVUYE), false, true, false)
+		newSurveyEnteredProgram(program, period, DataLocationEntity.findByCode(KIVUYE), false, true, false)
 				
 		then:
-		surveyPageService.submit(DataLocationEntity.findByCode(KIVUYE), objective) == true
+		surveyPageService.submit(DataLocationEntity.findByCode(KIVUYE), program) == true
 		RawDataElementValue.count() == 1
 	}
 	
@@ -74,15 +74,15 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element], [("elements["+element.id+"].value"): "10"])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "10"])
 		
 		then:
 		SurveyEnteredValue.count() == 1
@@ -95,9 +95,9 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
 		
@@ -106,7 +106,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def skipRule = newSkipRule(survey, "\$"+element1.id+" == 1", [:], [question2])
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element1], [("elements["+element1.id+"].value"): "1"])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element1], [("elements["+element1.id+"].value"): "1"])
 		
 		then:
 		SurveyEnteredValue.count() == 2
@@ -121,9 +121,9 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
 		
@@ -132,7 +132,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def skipRule = newSkipRule(survey, "\$"+element1.id+" == 1", [(element2):""], [])
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element1], [("elements["+element1.id+"].value"): "1"])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element1], [("elements["+element1.id+"].value"): "1"])
 		
 		then:
 		SurveyEnteredValue.count() == 2
@@ -148,9 +148,9 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -159,12 +159,12 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		newSurveyEnteredValue(element, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
 		newSurveyEnteredQuestion(question, period, DataLocationEntity.findByCode(KIVUYE), false, true);
 		newSurveyEnteredSection(section, period, DataLocationEntity.findByCode(KIVUYE), false, true);
-		newSurveyEnteredObjective(objective, period, DataLocationEntity.findByCode(KIVUYE), false, true, false);
-		def submitted = surveyPageService.submit(DataLocationEntity.findByCode(KIVUYE), objective)
+		newSurveyEnteredProgram(program, period, DataLocationEntity.findByCode(KIVUYE), false, true, false);
+		def submitted = surveyPageService.submit(DataLocationEntity.findByCode(KIVUYE), program)
 		
 		then:
 		submitted == true
-		SurveyEnteredObjective.list()[0].closed == true
+		SurveyEnteredProgram.list()[0].closed == true
 		RawDataElementValue.count() == 1
 		RawDataElementValue.list()[0].value.equals(v("1"))
 	}
@@ -175,16 +175,16 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		def rule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element], [("elements["+element.id+"].value"): "5"])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
 		
 		then:
 		SurveyEnteredValue.count() == 1
@@ -192,7 +192,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredValue.list()[0].value.getAttribute("invalid") == rule.id+""
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element], [("elements["+element.id+"].value"): "5", ("elements["+element.id+"].value[warning]"): ""+rule.id])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5", ("elements["+element.id+"].value[warning]"): ""+rule.id])
 		
 		then:
 		SurveyEnteredValue.count() == 1
@@ -201,7 +201,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredValue.list()[0].value.getAttribute("warning") == rule.id+""
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element], [("elements["+element.id+"].value"): "4", ("elements["+element.id+"].value[warning]"): ""+rule.id])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "4", ("elements["+element.id+"].value[warning]"): ""+rule.id])
 		
 		then:
 		SurveyEnteredValue.count() == 1
@@ -215,9 +215,9 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -225,7 +225,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def rule2 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element], [("elements["+element.id+"].value"): "5"])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
 		
 		then:
 		SurveyEnteredValue.count() == 1
@@ -240,15 +240,15 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER())))
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element], [("elements["+element.id+"].value"): ["[0]", "[1]"]])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): ["[0]", "[1]"]])
 		
 		then:
 		SurveyEnteredValue.count() == 1
@@ -257,7 +257,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredValue.list()[0].value.listValue[1].isNull()
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element], [("elements["+element.id+"].value[0]"): "5", ("elements["+element.id+"].value.indexes"): ["[0]", "[1]"]])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value[0]"): "5", ("elements["+element.id+"].value.indexes"): ["[0]", "[1]"]])
 		
 		then:
 		SurveyEnteredValue.count() == 1
@@ -266,7 +266,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredValue.list()[0].value.listValue[1].isNull()
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), objective, [element], [("elements["+element.id+"].value[1]"): "10", ("elements["+element.id+"].value.indexes"): ["[0]", "[1]"]])
+		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value[1]"): "10", ("elements["+element.id+"].value.indexes"): ["[0]", "[1]"]])
 		
 		then:
 		SurveyEnteredValue.count() == 1
@@ -281,9 +281,9 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		when:
@@ -300,8 +300,8 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP),(DISTRICT_HOSPITAL_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
@@ -318,8 +318,8 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
@@ -327,7 +327,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		newSurveyEnteredQuestion(question1, period, DataLocationEntity.findByCode(BUTARO), false, true)
 		newSurveyEnteredValue(element1, period, DataLocationEntity.findByCode(BUTARO), v("1"))
 		newSurveyEnteredSection(section, period, DataLocationEntity.findByCode(BUTARO), false, true)
-		newSurveyEnteredObjective(objective, period, DataLocationEntity.findByCode(BUTARO), false, true, false)
+		newSurveyEnteredProgram(program, period, DataLocationEntity.findByCode(BUTARO), false, true, false)
 		surveyPageService.refreshSurveyForFacility(DataLocationEntity.findByCode(BUTARO), survey, false)
 		sessionFactory.currentSession.flush()
 		
@@ -335,24 +335,24 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		SurveyEnteredQuestion.count() == 0
 		SurveyEnteredValue.count() == 0
 		SurveyEnteredSection.count() == 0
-		SurveyEnteredObjective.count() == 0
+		SurveyEnteredProgram.count() == 0
 		
 	}
 		
-	def "test objective order"() {
+	def "test program order"() {
 		setup:
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective1 = newSurveyObjective(survey, 2, [(HEALTH_CENTER_GROUP)])
-		def objective2 = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def program1 = newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program2 = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
 		
 		when:
 		def surveyPage = surveyPageService.getSurveyPage(DataLocationEntity.findByCode(KIVUYE), survey)
 		
 		then:
-		surveyPage.objectives.equals(objective2, objective1)
+		surveyPage.programs.equals(program2, program1)
 	}
 	
 	def "test checkbox option order"() {
@@ -361,8 +361,8 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		setupSecurityManager(newUser('test', 'uuid'))
 		def period = newPeriod()
 		def survey = newSurvey(period)
-		def objective = newSurveyObjective(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(objective, 1, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newCheckboxQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def option1 = newCheckboxOption(question, 2, [(HEALTH_CENTER_GROUP)], null)
 		def option2 = newCheckboxOption(question, 1, [(HEALTH_CENTER_GROUP)], null)

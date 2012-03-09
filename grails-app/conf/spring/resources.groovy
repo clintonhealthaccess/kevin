@@ -62,10 +62,12 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 def config = CH.config
 
 String facilityTypeGroup = config.facility.type.group
+Set<String> reportSkipLevels = config.report.skip.levels
 Set<String> dashboardSkipLevels = config.dashboard.skip.levels
+Set<String> dsrSkipLevels = config.dsr.skip.levels
 Set<String> costSkipLevels = config.cost.skip.levels
-String dsrGroupLevel= config.dsr.group.level
 Set<String> exportSkipLevels = config.export.skip.levels
+String dsrGroupLevel= config.dsr.group.level
 
 beans = {
 	
@@ -144,7 +146,15 @@ beans = {
 		languageService = ref("languageService")
 		locationService = ref("locationService")
 		valueService = ref("valueService")		
-		sessionFactory = ref("sessionFactory")		
+		sessionFactory = ref("sessionFactory")
+		skipLevels = reportSkipLevels		
+	}
+	
+	dashboardService(DashboardService) {
+		reportService = ref("reportService")
+		sessionFactory = ref("sessionFactory")
+		dashboardPercentageService = ref("dashboardPercentageService")
+		skipLevels = dashboardSkipLevels
 	}
 	
 	dsrService(DsrService){		
@@ -153,11 +163,11 @@ beans = {
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		languageService = ref("languageService")
+		skipLevels = dsrSkipLevels
 	}
 	
 	fctService(FctService){
 		reportService = ref("reportService")
-		locationService = ref("locationService")
 		valueService = ref("valueService")
 	}
 	
@@ -191,14 +201,6 @@ beans = {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
 		locationService = ref("locationService")
-	}
-
-	dashboardService(DashboardService) {
-		reportService = ref("reportService")
-		locationService = ref("locationService")
-		sessionFactory = ref("sessionFactory")
-		dashboardPercentageService = ref("dashboardPercentageService")
-		skipLevels = dashboardSkipLevels				
 	}
 	
 	dashboardPercentageService(DashboardPercentageService) {

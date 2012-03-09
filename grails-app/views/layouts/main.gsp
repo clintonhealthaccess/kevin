@@ -95,7 +95,7 @@
 	  						<li><a class="${controllerName=='calculation'?'active':''}" href="${createLink(controller: 'calculation', action:'list')}"><g:message code="calculation.label" default="Calculation"/></a></li>
 	  						<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="enum.label" default="Enum"/></a></li>
 	  						<li><a class="${controllerName=='iteration'?'active':''}" href="${createLink(controller: 'iteration', action:'list')}"><g:message code="period.label" default="Iterations"/></a></li>
-	  						<li><a class="${controllerName=='dashboardObjective'?'active':''}" href="${createLink(controller: 'dashboardObjective', action:'list')}"><g:message code="dashboard.objective.label" default="Dashboard Objective"/></a></li>
+	  						<li><a class="${controllerName=='dashboardProgram'?'active':''}" href="${createLink(controller: 'dashboardProgram', action:'list')}"><g:message code="dashboard.program.label" default="Dashboard Program"/></a></li>
 	  						<li><a class="${controllerName=='dashboardTarget'?'active':''}" href="${createLink(controller: 'dashboardTarget', action:'list')}"><g:message code="dashboard.target.label" default="Dashboard Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label" default="DSR Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTargetCategory'?'active':''}" href="${createLink(controller: 'dsrTargetCategory', action:'list')}"><g:message code="dsr.targetcategory.label" default="DSR Target Category"/></a></li>

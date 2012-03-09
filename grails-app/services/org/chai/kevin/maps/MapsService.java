@@ -56,7 +56,7 @@ public class MapsService {
 	private InfoService infoService;
 	
 	public Maps getMap(Period period, LocationEntity entity, LocationLevel level, MapsTarget target) {
-		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",entity="+entity+",target="+target+")");
+		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",entity="+entity+",level="+level+",target="+target+")");
 
 		List<Polygon> polygons = new ArrayList<Polygon>();
 		List<LocationLevel> levels = locationService.listLevels();

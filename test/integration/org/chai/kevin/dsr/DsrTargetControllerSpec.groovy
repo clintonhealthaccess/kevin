@@ -43,14 +43,14 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 //		dsrTargetController = new DsrTargetController()
 //		setupLocationTree()
 //		def period = newPeriod()
-//		def objective = newDsrObjective(CODE(1))
+//		def program = newDsrProgram(CODE(1))
 //		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "1")
-//		def target = newDsrTarget(CODE(2), expression, [], objective)
+//		def target = newDsrTarget(CODE(2), expression, [], program)
 //		def location = LocationEntity.findByCode(BURERA)
 //		refresh()
 //		
 //		when:
-//		def dsrTable = reportService.getDsrTable(location, objective, period)
+//		def dsrTable = reportService.getDsrTable(location, program, period)
 //		
 //		then:
 //		dsrTable.getDsrValue(DataLocationEntity.findByCode(BUTARO), target) != null
@@ -59,7 +59,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 ////		when:
 ////		dsrTargetController.params.id = target.id
 ////		dsrTargetController.delete()
-////		dsrTable = dsrService.getDsr(location, objective, period)
+////		dsrTable = dsrService.getDsr(location, program, period)
 ////		
 ////		then:
 ////		dsrTable.getDsr(DataLocationEntity.findByCode(BUTARO), target) == null
@@ -68,7 +68,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 	def "save target saves target"() {
 		setup:
 		setupLocationTree()
-		def objective = newReportObjective(CODE(1))
+		def program = newReportProgram(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
 		dsrTargetController = new DsrTargetController()
 		dsrTargetController.dataService = dataService
@@ -76,7 +76,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		when:
 		dsrTargetController.params.code = CODE(2)
 		dsrTargetController.params['dataElement.id'] = dataElement.id+""
-		dsrTargetController.params['objective.id'] = objective.id+""
+		dsrTargetController.params['program.id'] = program.id+""
 		dsrTargetController.params.typeCodes = [DISTRICT_HOSPITAL_GROUP]
 		dsrTargetController.saveWithoutTokenCheck()
 		

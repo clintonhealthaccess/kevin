@@ -17,7 +17,7 @@ class LocationLevelControllerSpec extends IntegrationTests {
 		
 		then:
 		LocationLevel.findByCode(DISTRICT) != null
-		LocationLevel.count() == 3
+		LocationLevel.count() == 4
 	}
 	
 	
