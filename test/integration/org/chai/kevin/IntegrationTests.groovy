@@ -130,13 +130,9 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def newDataEntityType(def names, def code) {
 		return new DataEntityType(names: names, code: code).save(failOnError: true)
 	}
-	
-	static def newDataLocationEntity(def code, def type) {
-		return newDataLocationEntity([:], code, null, type)
-	}
-	
-	static def newDataLocationEntity(def code, def parent, def type) {
-		return newDataLocationEntity([:], code, parent, type)
+		
+	static def newDataLocationEntity(def code, def location, def type) {
+		return newDataLocationEntity([:], code, location, type)
 	}
 	
 	static def newDataLocationEntity(def names, def code, def location, def type) {

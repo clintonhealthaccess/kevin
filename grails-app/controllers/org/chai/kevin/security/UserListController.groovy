@@ -28,7 +28,6 @@ class UserListController  extends AbstractController {
 	
 
 	def search={
-		
 		adaptParamsForList()
 		
 		List<User> users = userService.searchUser(params['q'], params);

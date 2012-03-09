@@ -38,6 +38,8 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -192,13 +194,12 @@ class DataServiceSpec extends IntegrationTests {
 		
 	}
 	
-	def "delete data element with associated values throws exception"() {
+	def "delete data element with associated values throws exception"() {		
 		when:
+		setupLocationTree()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def period = newPeriod()
-		def type = newDataEntityType(HEALTH_CENTER_GROUP)
-		def location = newDataLocationEntity(KIVUYE, type)
-		newRawDataElementValue(dataElement, period, location, Value.NULL_INSTANCE())
+		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		
 		dataService.delete(dataElement)
 		
@@ -210,11 +211,10 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "delete normalized data elements with associated values throws exception"() {
 		when:
+		setupLocationTree()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		def period = newPeriod()
-		def type = newDataEntityType(HEALTH_CENTER_GROUP)
-		def location = newDataLocationEntity(KIVUYE, type)
-		newNormalizedDataElementValue(dataElement, location, period, Status.VALID, Value.NULL_INSTANCE())
+		newNormalizedDataElementValue(dataElement, DataLocationEntity.findByCode(KIVUYE), period, Status.VALID, Value.NULL_INSTANCE())
 		
 		dataService.delete(dataElement)
 		
@@ -226,11 +226,10 @@ class DataServiceSpec extends IntegrationTests {
 	
 	def "delete calculation with associated values throws exception"() {
 		when:
+		setupLocationTree()
 		def calculation = newSum("1", CODE(1))
 		def period = newPeriod()
-		def type = newDataEntityType(HEALTH_CENTER_GROUP)
-		def location = newDataLocationEntity(KIVUYE, type)
-		newSumPartialValue(calculation, period, location, DataEntityType.findByCode(HEALTH_CENTER_GROUP), Value.NULL_INSTANCE())
+		newSumPartialValue(calculation, period, DataLocationEntity.findByCode(KIVUYE), DataEntityType.findByCode(HEALTH_CENTER_GROUP), Value.NULL_INSTANCE())
 
 		dataService.delete(calculation)
 		
