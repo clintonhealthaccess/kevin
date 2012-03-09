@@ -2,12 +2,31 @@ package org.chai.kevin
 
 import grails.test.GroovyPagesTestCase;
 
+import org.chai.kevin.dashboard.DashboardIntegrationTests
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.dashboard.DashboardTarget
 
 class FilterTagLibTests extends GroovyPagesTestCase {
 
+	
+	def testProgramFilter() {
+		IntegrationTests.newPeriod()
+		DashboardIntegrationTests.setupDashboard()
+		
+		def html = applyTemplate(
+			'<g:programFilter selected="${program}" selectedTarget="${target}"/>',
+			[
+				'program': ReportProgram.findByCode(DashboardIntegrationTests.PROGRAM),
+				'target': DashboardTarget.class
+			]
+		)
+		
+		assertTrue html.contains("href=\"/test?program=1\"")
+	}
+	
 	def testLocationFilter() {
 		def hc = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
@@ -26,16 +45,16 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	}
 	
 	def testIterationFilter() {
-		def period1 = IntegrationTests.newPeriod() 
-				
+		def period = IntegrationTests.newPeriod()
+		
 		def html = applyTemplate(
 			'<g:iterationFilter selected="${period}"/>',
 			[
-				'period': period1
+				'period': period
 			]
 		)
 		
-		assertTrue html.contains("href=\"/test?period=1\"")
+		assertTrue html.contains("href=\"/test?period="+period.id+"\"")
 		assertTrue html.contains("2005")
 	}
 	
@@ -50,7 +69,6 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 			]
 		)
 		
-//		assertTrue html.contains("href=\"/test?locationTypes=1\"")
 		assertTrue html.contains("Health Center")
 		assertTrue html.contains("District Hospital")
 	}

@@ -130,7 +130,6 @@ class FilterTagLib {
 	public Map updateParamsByFilter(Map params) {
 		if (!params.containsKey("filter")) return params;
 		String filter = (String) params.get("filter");
-
 		LocationEntity location = null;
 		if (params.get("location") != null) {
 			location = LocationEntity.get(Integer.parseInt(params.get("location")))

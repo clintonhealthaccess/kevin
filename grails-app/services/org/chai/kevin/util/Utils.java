@@ -54,6 +54,7 @@ import org.chai.kevin.location.DataEntityType;
  */
 public class Utils {
 	
+	private final static String DATE_FORMAT = "dd-MM-yyyy";
 	private final static String CSV_FILE_EXTENSION = ".csv";
 	private final static String ZIP_FILE_EXTENSION = ".zip";
 
@@ -93,15 +94,13 @@ public class Utils {
 	
 	public static String formatDate(Date date) {
 		if (date == null) return null;
-		return DATE_FORMAT.format(date);
+		return new SimpleDateFormat(DATE_FORMAT).format(date);
 	}
 	
 	public static Date parseDate(String string) throws ParseException {
-		return DATE_FORMAT.parse(string);
+		return new SimpleDateFormat(DATE_FORMAT).parse(string);
 	}
 	
-	private static DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-
 	public static boolean containsId(String string, Long id) {
 		return string.matches(".*\\$"+id+"(\\z|\\D|$).*");
 	}

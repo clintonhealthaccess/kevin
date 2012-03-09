@@ -1,5 +1,7 @@
 package org.chai.kevin;
 
+import java.text.ParseException;
+
 import grails.plugin.spock.UnitSpec
 import org.chai.kevin.util.Utils;
 
@@ -65,5 +67,14 @@ public class UtilUnitSpec extends UnitSpec {
 		Utils.containsId("\$1+\$2", 2)
 		!Utils.containsId("1+2", 2)
 		!Utils.containsId("1+2", 2)
+	}
+	
+	def "test parse date"() {
+		when:
+		Utils.parseDate("12-rr-2011")
+		
+		then:
+		thrown ParseException
+		
 	}
 }

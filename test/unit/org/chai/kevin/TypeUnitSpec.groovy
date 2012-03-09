@@ -174,7 +174,7 @@ public class TypeUnitSpec extends UnitSpec {
 		value = new Value("{\"value\": \"10-02-2009\"}")
 		
 		then:
-		value.getDateValue().equals(Utils.DATE_FORMAT.parse("10-02-2009"));
+		value.getDateValue().equals(Utils.parseDate("10-02-2009"));
 		
 		when:
 		value = new Value("{\"value\":[{\"map_value\":{\"value\":[{\"map_value\":{\"value\":[{\"map_value\":{\"value\":123},\"map_key\":\"key111\"}]},\"map_key\":\"key11\"}]},\"map_key\":\"key1\"}]}");
@@ -210,7 +210,7 @@ public class TypeUnitSpec extends UnitSpec {
 		type = new Type("{\"type\":\"date\"}")
 		
 		then:
-		type.getValue(Utils.DATE_FORMAT.parse("10-02-2009")).equals(value)
+		type.getValue(Utils.parseDate("10-02-2009")).equals(value)
 	}
 	
 	def "get jaql from value"() {
@@ -244,7 +244,7 @@ public class TypeUnitSpec extends UnitSpec {
 		type = Type.TYPE_NUMBER()
 		
 		then:
-		type.getJaqlValue(value) == "null";
+		type.getJaqlValue(value) == "\"null\"";
 		
 		when:
 		value = new Value("{\"value\": \"10-02-2009\"}")
@@ -252,6 +252,13 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		then:
 		type.getJaqlValue(value) == "\"10-02-2009\""
+		
+		when:
+		value = new Value("{\"value\": [{\"value\":10}, {\"value\":null}]}")
+		type = new Type("{\"type\":\"list\", \"list_type\":{\"type\":\"number\"}}");
+		
+		then:
+		type.getJaqlValue(value) == "[10.0,\"null\",]";
 		
 	}
 
@@ -392,7 +399,7 @@ public class TypeUnitSpec extends UnitSpec {
 		value = Value.NULL_INSTANCE()
 		
 		then:
-		type.getJaqlValue(value) == "null"
+		type.getJaqlValue(value) == "\"null\""
 		type.getValueFromJaql(type.getJaqlValue(value)).isNull()
 		
 		where:
