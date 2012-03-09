@@ -31,7 +31,7 @@ class JaqlServiceSpec extends IntegrationTests {
 		expect:
 		jaqlService.evaluate("\$1.isNull == true", Type.TYPE_BOOL(), ['1': Value.NULL_INSTANCE()], ['1': Type.TYPE_NUMBER()]).equals( Value.VALUE_BOOL(true) )
 		jaqlService.evaluate("\$1.isNull == false", Type.TYPE_BOOL(), ['1': Value.NULL_INSTANCE()], ['1': Type.TYPE_NUMBER()]).equals( Value.VALUE_BOOL(false) )
-		
+		jaqlService.evaluate("if (\$1.isNull == false) \$1.value else 0", Type.TYPE_NUMBER(), ['1': Value.VALUE_NUMBER(1)], ['1': Type.TYPE_NUMBER()]).equals( Value.VALUE_NUMBER(1) )
 	}
 	
 }
