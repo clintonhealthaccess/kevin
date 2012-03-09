@@ -19,9 +19,7 @@
 	<div id="header">
 		<div class="wrapper">
 		    <h1 id="logo"><a href="${createLink(controller:'home', action:'index')}">DHSST</a></h1>
-		    
-			
-		    
+
 			<ul class="locales" id="switcher">
 				<% def languageService = grailsApplication.mainContext.getBean('languageService') %>
 				<g:each in="${languageService.availableLanguages}" var="language" status="i">
@@ -117,7 +115,7 @@
 	<div id="content">
 	  <g:if test="${flash.message}">
   		<!-- TODO add error class if it's an error -->
-  		<div class="message">${flash.message} <a href="#" class="delete-link">Turn off</a></div>
+  		<div class="message js_help">${flash.message} <a href="#" class="delete-link js_hide-help">Turn off</a></div>
     </g:if>
 	  <div class="wrapper">
 			<g:layoutBody />

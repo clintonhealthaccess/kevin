@@ -15,7 +15,7 @@ modules = {
 
 	// modules
 	core {
-		dependsOn 'jquery'
+		dependsOn 'jquery,help'
 		
 		resource url: '/css/screen.css', bundle: 'core'
 	}
@@ -122,10 +122,10 @@ modules = {
 		resource url: '/js/explanation_init.js', bundle: 'core'
 	}
 
-	questionhelp {
+	help {
 		dependsOn 'jquery'
 
-		resource url: 'js/questionhelp_init.js', bundle: 'core'
+		resource url: 'js/help_init.js', bundle: 'core'
 	}
 
 	tipsy {
@@ -174,7 +174,7 @@ modules = {
 	}
 
 	survey {
-		dependsOn 'core,questionhelp,dataentry'
+		dependsOn 'core,dataentry'
 
 		//resource url: '/css/survey.css'
 	}
