@@ -1,8 +1,9 @@
 package org.chai.kevin.dashboard
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.reports.ReportIntegrationTests;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.reports.ReportProgram
+import org.chai.kevin.reports.ReportProgram;
 import org.hisp.dhis.period.Period;
 
 abstract class DashboardIntegrationTests extends IntegrationTests {
@@ -12,20 +13,20 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 	static String TARGET1 = "Target 1"
 	static String TARGET2 = "Target 2"
 		
-	def newDashboardProgram(def code, def program) {
+	static def newDashboardProgram(def code, def program) {
 		return new DashboardProgram(code: code, program: program, weight: 1).save(failOnError: true)
 	}
 	
-	def newDashboardProgram(def code, def program, def weight) {
+	static def newDashboardProgram(def code, def program, def weight) {
 		return new DashboardProgram(code: code, program: program, weight: weight).save(failOnError: true)
 	}
 
-	def newDashboardTarget(def code, def calculation, def parent, def weight) {
+	static def newDashboardTarget(def code, def calculation, def parent, def weight) {
 		def dashboardTarget = new DashboardTarget(code: code, calculation: calculation, program: parent, weight: weight).save(failOnError: true)	
 		return dashboardTarget
 	}
 	
-	def setupDashboard() {
+	static def setupDashboard() {
 		def period = Period.list()[0]
 		
 		def root = newReportProgram(ROOT)
