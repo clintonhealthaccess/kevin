@@ -6,6 +6,7 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.hisp.dhis.period.Period;
 
@@ -53,14 +54,14 @@ class NormalizedDataElementSpec extends IntegrationTests {
 	
 	def "normalized data element value hashcode and equals"() {
 		setup:
+		setupLocationTree()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def location = newDataLocationEntity(BUTARO, type)
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 
 		when:
-		def expr1 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, entity: location);
-		def expr2 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, entity: location);
+		def expr1 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, entity:  DataLocationEntity.findByCode(BUTARO));
+		def expr2 = new NormalizedDataElementValue(data: normalizedDataElement, period: period, entity:  DataLocationEntity.findByCode(BUTARO));
 
 		then:
 		expr1.hashCode() == expr2.hashCode();

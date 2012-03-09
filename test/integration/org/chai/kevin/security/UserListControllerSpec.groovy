@@ -13,7 +13,7 @@
  *     * Neither the name of the <organization> nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,14 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.location
+package org.chai.kevin.security
+
+import org.apache.shiro.crypto.hash.Sha256Hash
+import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.location.DataLocationEntity;
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-constraints = {
-	code (nullable: false, blank: false, unique: true)
-	type (nullable: false)
-	location (nullable: false)
+class UserListControllerSpec extends IntegrationTests{
+	
+	def userListController
+	
+	def "search and list user result test"(){
+		
+		setup:
+		setupLocationTree()
+		def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+		def user = newUser("user",UUID.randomUUID().toString());
+		def surveyUser = newSurveyUser("surveyUser",UUID.randomUUID().toString(),dataLocation.id);
+		userListController = new UserListController()
+		
+		when: 
+		userListController.params.q="survey";
+		userListController.search()
+		
+		then:
+		userListController.modelAndView.model.entities.equals([surveyUser])
+		
+		when:
+		userListController.list()
+		then:
+		userListController.modelAndView.model.entities.equals([user,surveyUser])
+		
+	}
 }

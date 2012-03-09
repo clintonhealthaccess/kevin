@@ -53,21 +53,21 @@ class ValueServiceSpec extends IntegrationTests {
 	
 	def "test get raw data element value"() {
 		setup:
+		setupLocationTree()
 		def period = newPeriod()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def entity = newDataLocationEntity(BUTARO, type)
 		
 		when: "empty value list"
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		then:
-		valueService.getDataElementValue(rawDataElement, entity, period) == null
+		valueService.getDataElementValue(rawDataElement, DataLocationEntity.findByCode(BUTARO), period) == null
 		
 		when:
-		def dataValue = newRawDataElementValue(rawDataElement, period, entity, v("1"))
+		def dataValue = newRawDataElementValue(rawDataElement, period, DataLocationEntity.findByCode(BUTARO), v("1"))
 		
 		then:
-		valueService.getDataElementValue(rawDataElement, entity, period).equals(dataValue)
+		valueService.getDataElementValue(rawDataElement, DataLocationEntity.findByCode(BUTARO), period).equals(dataValue)
 	}
 	
 	def "test get normalized data element value"() {
@@ -158,13 +158,13 @@ class ValueServiceSpec extends IntegrationTests {
 	
 	def "test number of values"() {
 		setup:
+		setupLocationTree()
 		def period = newPeriod()
 		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def location = newDataLocationEntity(BUTARO, type)
 		
 		when: 
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		newRawDataElementValue(rawDataElement, period, location, v("40"))
+		newRawDataElementValue(rawDataElement, period, DataLocationEntity.findByCode(BUTARO), v("40"))
 		
 		then:
 		valueService.getNumberOfValues(rawDataElement, period) == 1
@@ -193,13 +193,11 @@ class ValueServiceSpec extends IntegrationTests {
 
 	def "test number of values with status"() {
 		setup:
+		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def location = newDataLocationEntity(BUTARO, type)
-		
 		when:
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		newNormalizedDataElementValue(normalizedDataElement, location, period, Status.ERROR, v("1"))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.ERROR, v("1"))
 		
 		then:
 		valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, null) == 1
@@ -215,14 +213,12 @@ class ValueServiceSpec extends IntegrationTests {
 		
 	def "test number of values does not count other value types"() {
 		setup:
+		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def location = newDataLocationEntity(BUTARO, type)
-		
 		when:
 		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		newRawDataElementValue(rawDataElement1, period, location, v("40"))
+		newRawDataElementValue(rawDataElement1, period, DataLocationEntity.findByCode(BUTARO), v("40"))
 		
 		then:
 		valueService.getNumberOfValues(rawDataElement1, period) == 1
@@ -231,13 +227,11 @@ class ValueServiceSpec extends IntegrationTests {
 	def "test value list"() {
 		
 		setup:
+		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def location = newDataLocationEntity(BUTARO, type)
-		
 		when:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, location, v("40"))
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocationEntity.findByCode(BUTARO), v("40"))
 		
 		then:
 		valueService.getValues(rawDataElement, period).equals([rawDataElementValue])
@@ -246,9 +240,8 @@ class ValueServiceSpec extends IntegrationTests {
 
 	def "test delete data element values"() {
 		setup:
+		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def location = newDataLocationEntity(BUTARO, type)
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
@@ -318,9 +311,8 @@ class ValueServiceSpec extends IntegrationTests {
 		
 	def "test delete calculation values"() {
 		setup:
+		setupLocationTree()
 		def period = newPeriod()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def location = newDataLocationEntity(BUTARO, type)
 		def average = newAverage("1", CODE(1))
 		
 		when:

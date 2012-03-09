@@ -7,8 +7,8 @@
 				<th>Email</th>
 				<th>Permissions</th>
 				<th>Roles</th>
-				<g:sortableColumn property="confirmed" title="${message(code: 'user.confirmed.label', default: 'Confirmed')}" />
-				<g:sortableColumn property="active" title="${message(code: 'user.active.label', default: 'Active')}" />
+				<g:sortableColumn property="confirmed" params="[q:q]" title="${message(code: 'user.confirmed.label', default: 'Confirmed')}" />
+				<g:sortableColumn property="active" params="[q:q]" title="${message(code: 'user.active.label', default: 'Active')}" />
 				<th><g:message code="entity.list.manage.label" default="Manage"/></th>
 			</tr>
 		</thead>
@@ -18,7 +18,7 @@
 					<td>
 	            		<ul class="horizontal">
 			           		<li>
-			           			<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id: user.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
+			           			<a class="edit-link" href="${createLinkWithTargetURI(controller:user.class.simpleName, action:'edit', id: user.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
 							</li>
 			           		<li>
 			           			<a class="delete-link" href="${createLinkWithTargetURI(controller:'user', action:'delete', params:[id:user.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="default.link.delete.label" default="Delete" /></a>

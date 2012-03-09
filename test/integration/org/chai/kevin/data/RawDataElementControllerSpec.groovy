@@ -5,6 +5,7 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.RawDataElementController;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyIntegrationTests;
 import org.chai.kevin.survey.validation.SurveyEnteredValue;
@@ -41,9 +42,9 @@ class RawDataElementControllerSpec extends IntegrationTests {
 
 	def "can delete data element"() {
 		setup:
+		setupLocationTree()
 		rawDataElementController = new RawDataElementController()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def entity = newDataLocationEntity(BUTARO, type)
+		def entity = DataLocationEntity.findByCode(BUTARO)
 		def period = newPeriod()
 		def dataElement = null
 
@@ -58,9 +59,9 @@ class RawDataElementControllerSpec extends IntegrationTests {
 
 	def "cannot delete data element when it still has values"() {
 		setup:
+		setupLocationTree()
 		rawDataElementController = new RawDataElementController()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def entity = newDataLocationEntity(BUTARO, type)
+		def entity = DataLocationEntity.findByCode(BUTARO)
 		def period = newPeriod()
 		def dataElement = null
 
@@ -78,9 +79,9 @@ class RawDataElementControllerSpec extends IntegrationTests {
 
 	def "cannot change data element type if it still has values" () {
 		setup:
+		setupLocationTree()
 		rawDataElementController = new RawDataElementController()
-		def type = newDataEntityType(DISTRICT_HOSPITAL_GROUP)
-		def entity = newDataLocationEntity(BUTARO, type)
+		def entity = DataLocationEntity.findByCode(BUTARO)
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 

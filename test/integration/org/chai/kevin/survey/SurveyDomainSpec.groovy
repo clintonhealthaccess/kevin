@@ -8,8 +8,10 @@ import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.survey.validation.SurveyLog;
 import org.hisp.dhis.period.Period
+import org.chai.kevin.location.DataLocationEntity;
 
 
 class SurveyDomainSpec extends SurveyIntegrationTests {
@@ -129,17 +131,16 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 	
 	def "save surveylog"() {
 		setup:
+		setupLocationTree()
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		newSurveyProgram(survey, 2, [(DISTRICT_HOSPITAL_GROUP)])
 		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
 		def type = newDataEntityType(HEALTH_CENTER_GROUP)
-		def location = newDataLocationEntity(KIVUYE, type)
 		
 		
 		when:
-		new SurveyLog(event: "test", entity: location, timestamp: new Date(), survey: survey, program: program).save(failOnError: true)
-		
+		new SurveyLog(event: "test", entity: DataLocationEntity.findByCode(KIVUYE), timestamp: new Date(), survey: survey, program: program).save(failOnError: true)		
 		then:
 		SurveyLog.count() == 1
 	}
