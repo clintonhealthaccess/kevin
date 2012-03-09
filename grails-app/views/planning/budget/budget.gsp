@@ -13,14 +13,8 @@
 			<div class="wrapper">
 				<div class="main">
 					<g:render template="/planning/planningTabs" model="[planning: planning, location: location, selected: "budget"]"/>
-	        
-					<p class="show-question-help moved"><a href="#">Show Tips</a></p>
-					<div class="question-help-container">
-						<div class="question-help push-20">
-							<a class="hide-question-help" href="#">Close tips</a>Some help information for the Performance tab
-						</div>
-					</div>
-	        
+	        		<g:render template="/templates/help" model="[content: 'Some help information for the budget']"/>
+	        		
 					<div id="questions">
 						<div class="question push-20">
 							<h4 class="section-title">
