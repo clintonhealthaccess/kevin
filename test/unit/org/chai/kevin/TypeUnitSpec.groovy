@@ -174,7 +174,7 @@ public class TypeUnitSpec extends UnitSpec {
 		value = new Value("{\"value\": \"10-02-2009\"}")
 		
 		then:
-		value.getDateValue().equals(Utils.DATE_FORMAT.parse("10-02-2009"));
+		value.getDateValue().equals(Utils.parseDate("10-02-2009"));
 		
 		when:
 		value = new Value("{\"value\":[{\"map_value\":{\"value\":[{\"map_value\":{\"value\":[{\"map_value\":{\"value\":123},\"map_key\":\"key111\"}]},\"map_key\":\"key11\"}]},\"map_key\":\"key1\"}]}");
@@ -210,7 +210,7 @@ public class TypeUnitSpec extends UnitSpec {
 		type = new Type("{\"type\":\"date\"}")
 		
 		then:
-		type.getValue(Utils.DATE_FORMAT.parse("10-02-2009")).equals(value)
+		type.getValue(Utils.parseDate("10-02-2009")).equals(value)
 	}
 	
 	def "get jaql from value"() {
