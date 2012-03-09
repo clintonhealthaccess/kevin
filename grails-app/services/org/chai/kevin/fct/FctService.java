@@ -25,28 +25,34 @@ import org.springframework.transaction.annotation.Transactional;
 public class FctService {
 	private static final Log log = LogFactory.getLog(FctService.class);
 	
-	private ReportService reportService;
 	private LocationService locationService;
+	private ReportService reportService;
 	private ValueService valueService;
-	
+	private Set<String> skipLevels;
 	
 	@Cacheable("fctCache")
 	@Transactional(readOnly = true)
-	public FctTable getFctTable(LocationEntity entity, ReportProgram program, Period period, LocationLevel level, Set<DataEntityType> types) {		
-		if (log.isDebugEnabled()) log.debug("getFctTable(period="+period+",entity="+entity+",program="+program+",level="+level+")");		
-		
-		List<LocationEntity> locations = locationService.getChildrenOfLevel(entity, level);
-		Map<LocationEntity, List<LocationEntity>> locationMap = new HashMap<LocationEntity, List<LocationEntity>>();
-		LocationLevel groupLevel = locationService.getLevelBefore(level);
-		if (groupLevel != null) locationMap.putAll(reportService.getParents(locations, groupLevel));
+	public FctTable getFctTable(LocationEntity location, ReportProgram program, Period period, LocationLevel level, Set<DataEntityType> types) {		
+		if (log.isDebugEnabled()) 
+			log.debug("getFctTable(period="+period+",location="+location+",level="+level+",program="+program+")");				
 		
 		List<FctTarget> targets = reportService.getReportTargets(FctTarget.class, program);
-		Map<FctTarget, ReportValue> totalMap = new HashMap<FctTarget, ReportValue>();				
-		for(FctTarget target : targets){			
-			totalMap.put(target, getFctValue(target, entity, period, types));
-		}
+		
+		Map<FctTarget, ReportValue> totalMap = new HashMap<FctTarget, ReportValue>();
 		Map<LocationEntity, Map<FctTarget, ReportValue>> valueMap = new HashMap<LocationEntity, Map<FctTarget, ReportValue>>();
-		for (LocationEntity child : locations) {
+		
+		if(targets.isEmpty())
+			return new FctTable(totalMap, valueMap, targets);
+		
+		for(FctTarget target : targets){			
+			totalMap.put(target, getFctValue(target, location, period, types));
+		}
+				
+//		List<LocationEntity> children = locationService.getChildrenOfLevel(location, level);
+		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);
+		List<LocationEntity> children = location.getChildren(skips);
+		
+		for (LocationEntity child : children) {
 			Map<FctTarget, ReportValue> targetMap = new HashMap<FctTarget, ReportValue>();
 			for(FctTarget target : targets){
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
@@ -60,7 +66,6 @@ public class FctService {
 		return fctTable;
 	}
 
-
 	private ReportValue getFctValue(FctTarget target, CalculationEntity entity, Period period, Set<DataEntityType> types) {
 		String value = null;
 		CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getSum(), entity, period, types);
@@ -68,16 +73,19 @@ public class FctService {
 		return new ReportValue(value);
 	}
 
-	public void setReportService(ReportService reportService) {
-		this.reportService = reportService;
-	}
-	
 	public void setLocationService(LocationService locationService) {
 		this.locationService = locationService;
+	}
+	
+	public void setReportService(ReportService reportService) {
+		this.reportService = reportService;
 	}
 	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}
 	
+	public Set<LocationLevel> getSkipLocationLevels(){
+		return reportService.getSkipLocationLevels(skipLevels);
+	}
 }

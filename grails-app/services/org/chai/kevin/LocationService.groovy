@@ -59,7 +59,7 @@ public class LocationService {
     public LocationEntity getRootLocation() {
     	return (LocationEntity)sessionFactory.getCurrentSession().createCriteria(LocationEntity.class).add(Restrictions.isNull("parent")).uniqueResult();
     }
-	
+
     public DataEntityType findDataEntityTypeByCode(String code) {
     	return (DataEntityType)sessionFactory.getCurrentSession().createCriteria(DataEntityType.class).add(Restrictions.eq("code", code)).uniqueResult();
     }
@@ -76,6 +76,13 @@ public class LocationService {
 			.list();
 		return levels;
 	}	
+	
+	public List<LocationLevel> listLevels(Set<LocationLevel> skipLevels) {
+		List<LocationLevel> levels = listLevels();
+		if(skipLevels != null)
+			levels.removeAll(skipLevels);		
+		return levels;
+	}
 	
 	public List<DataEntityType> listTypes() {
 		return sessionFactory.getCurrentSession()

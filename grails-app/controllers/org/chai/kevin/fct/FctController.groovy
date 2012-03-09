@@ -15,6 +15,25 @@ class FctController extends AbstractController {
 
 	FctService fctService;
 	
+//	public FctTargetCategory getFctTargetCategory(def program){
+//		def fctTargetCategory = null
+//		if(params.int('fctCategory') != null)
+//			fctTargetCategory = FctTargetCategory.get(params.int('fctCategory'))
+//		else{
+//			def categories = fctService.getTargetCategories(program)
+//			if(categories != null && !categories.empty)
+//				fctTargetCategory = categories.first()
+//		}
+//		return fctTargetCategory
+//	}
+	
+//	def getLevel(){
+//		LocationLevel level = null
+//		level = LocationLevel.get(params.int('level'));
+//		if(level == null) level = LocationLevel.findByCode(ConfigurationHolder.config.site.level)
+//		return level
+//	}
+	
 	def index = {
 		redirect (action: 'view', params: params)
 	}
@@ -22,16 +41,22 @@ class FctController extends AbstractController {
 	def view = {
 		if (log.isDebugEnabled()) log.debug("fct.view, params:"+params)
 
-		Period period = getPeriod();
-		LocationEntity entity = LocationEntity.get(params.int('location'));
-		ReportProgram program = ReportProgram.get(params.int('program'));
-		LocationLevel level = LocationLevel.get(params.int('level'));
-		Set<DataEntityType> locationTypes = getLocationTypes();
+		Period period = getPeriod()
+		ReportProgram program = getProgram()
+		LocationEntity location = getLocation()
+		Set<DataEntityType> locationTypes = getLocationTypes()
+//		LocationLevel level = getLevel()		
+		
+		def skipLevels = fctService.getSkipLocationLevels()
 		
 		FctTable fctTable = null;
 
-		if (period != null && program != null && entity != null && level != null) {
-			fctTable = fctService.getFctTable(entity, program, period, level, locationTypes);
+//		if (period != null && program != null && location != null && locationTypes != null && level != null) {
+//			fctTable = fctService.getFctTable(location, program, period, level, locationTypes);
+//		}
+
+		if (period != null && program != null && location != null && locationTypes != null) {
+			fctTable = fctService.getFctTable(location, program, period, null, locationTypes);
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root program: "+program)				
@@ -40,11 +65,11 @@ class FctController extends AbstractController {
 			fctTable: fctTable,
 			currentPeriod: period,
 			currentProgram: program,
-			currentLocation: entity,
-			currentLevel: level,
+			currentTarget: FctTarget.class,
+			currentLocation: location,
+//			currentLevel: level,
 			currentLocationTypes: locationTypes,
-			locationTypes: locationService.listTypes(),
-			programs: ReportProgram.list()
+			skipLevels: skipLevels			
 		]
 	}
 }

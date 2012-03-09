@@ -11,6 +11,6 @@
 				</option>
 			</g:each>
 		</select>
-	</g:form>	
-	</g:if>		
+	</g:form>
+	</g:if>
 </div>

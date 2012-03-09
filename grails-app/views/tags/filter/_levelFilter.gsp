@@ -1,17 +1,21 @@
 <div class="filter">	
-	<g:each in="${levels}" var="level">
-		<% def levelLinkParams = new HashMap(linkParams) %>
-		<% levelLinkParams << [level:level.id+""] %>
-		<% linkParams = levelLinkParams %>
-		<g:if test="${currentLevel != null && currentLevel == level}">
-			<a class="selected" style="color:red" data-type="level" data-level="${currentLevel.id}" href="#">
-				<span><g:i18n field="${level.names}"/></span>
-			</a>
-		</g:if>
-		<g:else>
-			<a data-type="level" data-level="${currentLevel?.id}" href="${createLinkByFilter(controller:controller, action:action, params:linkParams)}">
-				<span><g:i18n field="${level.names}"/></span>
-			</a>
-		</g:else>
-	</g:each>
+	<span class="dropdown js_dropdown">
+		<a class="level selected" href="#" data-period="${currentLevel?.id}" data-type="level">
+			<g:i18n field="${currentLevel?.names}"/>
+		</a>
+		<div class="hidden dropdown-list js_dropdown-list">
+			<ul>
+				<g:each in="${levels}" var="level">
+					<% def levelLinkParams = new HashMap(linkParams) %>
+					<% levelLinkParams << [level:level.id+""] %>
+					<% linkParams = levelLinkParams %>
+					<li>
+						<a href="${createLinkByFilter(controller:controllerName, action:actionName, params:linkParams)}">
+							<span><g:i18n field="${level.names}"/></span> 
+						</a>
+					</li>
+				</g:each>
+			</ul>
+		</div> 
+	</span>
 </div>

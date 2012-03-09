@@ -168,7 +168,6 @@ beans = {
 	
 	fctService(FctService){
 		reportService = ref("reportService")
-		locationService = ref("locationService")
 		valueService = ref("valueService")
 	}
 	

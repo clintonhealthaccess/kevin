@@ -77,8 +77,7 @@ class FilterTagLib {
 	def locationFilter = {attrs, body ->
 		LocationEntity.withTransaction {
 			def model = new HashMap(attrs)					
-			def locationFilterRoot = locationService.getRootLocation()
-//			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(attrs['skipLevels'], attrs['selectedTypes'])		
+			def locationFilterRoot = locationService.getRootLocation()	
 			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(attrs['skipLevels'], null)
 			model << 
 				[
@@ -104,65 +103,71 @@ class FilterTagLib {
 		}
 	}
 	
-//	def levelFilter = {attrs, body ->
-//		LocationLevel.withTransaction {
-//			def model = new HashMap(attrs)
-//			model << [levels: LocationLevel.list(), currentLevel: attrs['selected']]
-//			if (model.linkParams == null) model << [linkParams: [:]]
-//			out << render(template:'/tags/filter/levelFilter', model:model)
-//		}
-//	}
+	def levelFilter = {attrs, body ->
+		LocationLevel.withTransaction {
+			def model = new HashMap(attrs)
+			def currentLevel = attrs['selected']
+			def levels = locationService.listLevels(attrs['skipLevels'])
+			model << 
+				[
+					currentLevel: currentLevel,
+					levels: levels
+				]
+			if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/tags/filter/levelFilter', model:model)
+		}
+	}
 	
 	def createLinkByFilter = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]
 		else{
 			Map params = new HashMap(attrs['params'])
-//			attrs['params'] = updateParamsByFilter(params);
+			attrs['params'] = updateParamsByFilter(params);
 		}
 		out << createLink(attrs, body)
 	}	
 	
-//	public Map updateParamsByFilter(Map params) {
-//		if (!params.containsKey("filter")) return params;
-//		String filter = (String) params.get("filter");
-//
-//		LocationEntity entity = null;
-//		if (params.get("location") != null) {
-//			entity = LocationEntity.get(Integer.parseInt(params.get("location")))
-//		}
-//
-//		LocationLevel level = null;
-//		if (params.get("level") != null) {
-//			level = LocationLevel.get(Integer.parseInt(params.get('level')))
-//		}
-//
-//		if (entity != null) {
-//			if (level != null) {
-//				// TODO use isAfter()
-//				if (entity.getLevel().getOrder() >= level.getOrder()) {
-//					// conflict
-//					if (filter == "level") {
-//						// adjust location to level
-//						LocationLevel levelBefore = locationService.getLevelBefore(entity.getLevel())
-//						if (levelBefore == null) entity = locationService.getRootLocation();
-//						else entity = locationService.getParentOfLevel(entity, levelBefore);
-//					}
-//					// conflict
-//					else {
-//						// adjust level to location
-//						level = locationService.getLevelAfter(entity.getLevel())
-//					}
-//				}
-//			}
-//			// conflict
-//			else {
-//				// adjust level to location
-//				level = locationService.getLevelAfter(entity.getLevel())
-//			}
-//		}
-//		if (entity != null) params.put("location", entity.id);
-//		if (level != null) params.put("level", level.id);
-//		return params;
-//	}
+	public Map updateParamsByFilter(Map params) {
+		if (!params.containsKey("filter")) return params;
+		String filter = (String) params.get("filter");
+
+		LocationEntity location = null;
+		if (params.get("location") != null) {
+			location = LocationEntity.get(Integer.parseInt(params.get("location")))
+		}
+
+		LocationLevel level = null;
+		if (params.get("level") != null) {
+			level = LocationLevel.get(Integer.parseInt(params.get('level')))
+		}
+
+		if (location != null) {
+			if (level != null) {
+				// TODO use isAfter()
+				if (location.getLevel().getOrder() >= level.getOrder()) {
+					// conflict
+					if (filter == "level") {
+						// adjust location to level
+						LocationLevel levelBefore = locationService.getLevelBefore(location.getLevel())
+						if (levelBefore == null) location = locationService.getRootLocation();
+						else location = locationService.getParentOfLevel(location, levelBefore);
+					}
+					// conflict
+					else {
+						// adjust level to location
+						level = locationService.getLevelAfter(location.getLevel())
+					}
+				}
+			}
+			// conflict
+			else {
+				// adjust level to location
+				level = locationService.getLevelAfter(location.getLevel())
+			}
+		}
+		if (location != null) params.put("location", location.id);
+		if (level != null) params.put("level", level.id);
+		return params;
+	}
 
 }
