@@ -77,7 +77,7 @@ class UserService {
 		return getSearchCriteria(text).setProjection(Projections.count("id")).uniqueResult()
 	}
 	
-	public Criteria getSearchCriteria(String text) {
+	private Criteria getSearchCriteria(String text) {
 		def criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
 		
 		def textRestrictions = Restrictions.conjunction()
