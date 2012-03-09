@@ -21,7 +21,7 @@
 			</div>
 			<div class="main">
 				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
-				<g:render template="/templates/reportTabHelp"/>
+				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>
 				<ul class='clearfix' id='questions'>
   					<li class='question push-20'>
 						<g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>						

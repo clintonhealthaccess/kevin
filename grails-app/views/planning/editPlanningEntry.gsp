@@ -16,14 +16,7 @@
 					<li><a class="selected" href="#">New <g:i18n field="${planningType.names}"/></a></li>
 					<li><a class="${selected=='budget'?'selected':''}" href="${createLink(controller:'editPlanning', action:'budget', params:[planning: planningType.planning.id, location: location.id])}">Projected Budget</a></li>
 				</ul>
-				    
-		    	<!-- TODO tips could go into a template -->
-				<p class="show-question-help moved"><a href="#">Show Tips</a></p>
-				<div class="question-help-container">
-					<div class="question-help push-20">
-						<a class="hide-question-help" href="#">Close tips</a>Some help information for the Performance tab
-					</div>
-				</div>
+		    	<g:render template="/templates/help" model="[content: 'Some help information for the planning']"/>
 					
 				<div id="questions">
 					<g:form url="[controller:'editPlanning', action:'submit', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
@@ -53,8 +46,8 @@
 									enums: planningEntry.enums
 								]"/>
 								
-								<div class="adv-aside question-help-container">
-									<div class="question-help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
+								<div class="adv-aside help-container">
+									<div class="help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
 								</div>
 							</div>
 		  				</g:each>

@@ -14,12 +14,8 @@
 					<div class="main">	
 						<g:render template="/planning/planningTabs" model="[planning: planning, location: location, selected: 'undertakings']"/>
 						<g:render template="/planning/undertakingsTabs" model="[planning: planning, location: location, selected: planningType.id]"/>
-        
-        				<!-- TODO tips could go into a template -->
-						<p class="show-question-help moved"><a href="#">Show Tips</a></p>
-						<div class="question-help-container">
-							<div class="question-help push-20"> <a class="hide-question-help" href="#">Close tips</a> Some help information for the Performance tab </div>
-						</div>
+						
+        				<g:render template="/templates/help" model="[content: 'Some help information for the planning tool']"/>
         
 						<ul class="clearfix" id="questions">
 							<li class="question push-20">
