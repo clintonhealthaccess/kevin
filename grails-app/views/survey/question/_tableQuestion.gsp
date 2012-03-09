@@ -6,10 +6,7 @@
 	</h4>
 	
 	<g:ifText field="${question.descriptions}">
-		<p class="show-question-help"><a href="#">Show tips</a></p>
-		<div class="question-help-container">
-			<div class="question-help"><g:i18n field="${question.descriptions}"/><a class="hide-question-help">Close tips</a></div>
-		</div>
+		<g:render template="/templates/help" model="[content: i18n(field: question.descriptions)]"/>
 	</g:ifText>
 	
 	<div class="question-table-container clear">

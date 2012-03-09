@@ -24,4 +24,20 @@ class FctTargetControllerSpec extends FctIntegrationTests {
 		FctTarget.list()[0].sum.equals(sum)
 	}
 	
+	def "fct target list"() {
+		setup:
+		def program = newReportProgram(CODE(1))
+		def sum = newSum("1", CODE(3))
+		def target = newFctTarget(CODE(1), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		fctTargetController = new FctTargetController()
+		
+		when:
+		fctTargetController.list()
+		
+		then:
+		fctTargetController.modelAndView.model.entities.equals([target])
+		fctTargetController.modelAndView.model.entityCount == 1
+		
+	}
+	
 }

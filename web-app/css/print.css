@@ -58,9 +58,9 @@ label { display: block; font-weight: bold; }
 /* line 112, ../../src/stylesheets/print.sass */
 #print-questions .question-checkbox ul { padding-left: 0px; }
 /* line 115, ../../src/stylesheets/print.sass */
-#print-questions .show-question-help, #print-questions .hide-question-help { display: none; }
+#print-questions .show-help, #print-questions .hide-help { display: none; }
 /* line 118, ../../src/stylesheets/print.sass */
-#print-questions .question-help-container { border: 0.5px dotted grey; padding: 4px; display: block; margin-top: 0px; margin-bottom: 4px; }
+#print-questions .help-container { border: 0.5px dotted grey; padding: 4px; display: block; margin-top: 0px; margin-bottom: 4px; }
 /* line 126, ../../src/stylesheets/print.sass */
 #print-questions .question-simple textarea { display: block; width: 600px; }
 /* line 130, ../../src/stylesheets/print.sass */

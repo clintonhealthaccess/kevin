@@ -19,9 +19,7 @@
 	<div id="header">
 		<div class="wrapper">
 		    <h1 id="logo"><a href="${createLink(controller:'home', action:'index')}">DHSST</a></h1>
-		    
-			
-		    
+
 			<ul class="locales" id="switcher">
 				<% def languageService = grailsApplication.mainContext.getBean('languageService') %>
 				<g:each in="${languageService.availableLanguages}" var="language" status="i">
@@ -99,6 +97,7 @@
 	  						<li><a class="${controllerName=='dashboardTarget'?'active':''}" href="${createLink(controller: 'dashboardTarget', action:'list')}"><g:message code="dashboard.target.label" default="Dashboard Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label" default="DSR Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTargetCategory'?'active':''}" href="${createLink(controller: 'dsrTargetCategory', action:'list')}"><g:message code="dsr.targetcategory.label" default="DSR Target Category"/></a></li>
+	  						<li><a class="${controllerName=='fctTarget'?'active':''}" href="${createLink(controller: 'fctTarget', action:'list')}"><g:message code="fct.target.label" default="FCT Target"/></a></li>
 	  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a></li>
 	  						<li><a class="${controllerName=='planning'?'active':''}" href="${createLink(controller: 'planning', action:'list')}"><g:message code="planning.label" default="Planning"/></a></li>
 	  						<li><a class="${controllerName=='location'?'active':''}" href="${createLink(controller: 'location', action:'list')}"><g:message code="location.label" default="Location"/></a></li>
@@ -117,7 +116,7 @@
 	<div id="content">
 	  <g:if test="${flash.message}">
   		<!-- TODO add error class if it's an error -->
-  		<div class="message">${flash.message} <a href="#" class="delete-link">Turn off</a></div>
+  		<div class="message js_help">${flash.message} <a href="#" class="delete-link js_hide-help">Turn off</a></div>
     </g:if>
 	  <div class="wrapper">
 			<g:layoutBody />
