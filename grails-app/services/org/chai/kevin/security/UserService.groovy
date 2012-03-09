@@ -53,7 +53,7 @@ class UserService {
 		
 		List<User> users =[];
 		
-		if(params['order']!=null)
+		if(params['sort']!=null)
 			users= criteria.addOrder(Order.asc(params['sort'])).list()
 		else
 			users= criteria.addOrder(Order.asc("id")).list()
