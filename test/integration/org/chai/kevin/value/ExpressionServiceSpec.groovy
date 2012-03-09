@@ -100,7 +100,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		then:
 		result.value == Value.NULL_INSTANCE()
-		result.status == Status.ERROR
+		result.status == Status.VALID
 	}
 	
 	def "test normalized data element with typing errors"() {
