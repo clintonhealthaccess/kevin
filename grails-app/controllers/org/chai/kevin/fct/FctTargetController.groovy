@@ -56,13 +56,12 @@ class FctTargetController extends AbstractEntityController {
 	}
 	
 	def getTemplate() {
-		return "/fct/createTarget"
+		return "/entity/fct/createTarget"
 	}
 
 	def getModel(def entity) {
 		[
 			target: entity,
-			programs: ReportProgram.list(),
 			types: DataEntityType.list(),
 			programs: ReportProgram.list(),
 			sums: entity.sum!=null?[entity.sum]:[],
@@ -106,6 +105,19 @@ class FctTargetController extends AbstractEntityController {
 	@CacheFlush("fctCache")
 	def edit = {
 		super.edit()
+	}
+	
+	def list = {
+		adaptParamsForList()
+		
+		List<FctTarget> targets = FctTarget.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: targets,
+			template: "fct/targetList",
+			code: getLabel(),
+			entityCount: FctTarget.count()
+		])
 	}
 	
 }

@@ -99,6 +99,7 @@
 	  						<li><a class="${controllerName=='dashboardTarget'?'active':''}" href="${createLink(controller: 'dashboardTarget', action:'list')}"><g:message code="dashboard.target.label" default="Dashboard Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label" default="DSR Target"/></a></li>
 	  						<li><a class="${controllerName=='dsrTargetCategory'?'active':''}" href="${createLink(controller: 'dsrTargetCategory', action:'list')}"><g:message code="dsr.targetcategory.label" default="DSR Target Category"/></a></li>
+	  						<li><a class="${controllerName=='fctTarget'?'active':''}" href="${createLink(controller: 'fctTarget', action:'list')}"><g:message code="fct.target.label" default="FCT Target"/></a></li>
 	  						<li><a class="${controllerName=='survey'?'active':''}" href="${createLink(controller: 'survey', action:'list')}"><g:message code="survey.label" default="Survey"/></a></li>
 	  						<li><a class="${controllerName=='planning'?'active':''}" href="${createLink(controller: 'planning', action:'list')}"><g:message code="planning.label" default="Planning"/></a></li>
 	  						<li><a class="${controllerName=='location'?'active':''}" href="${createLink(controller: 'location', action:'list')}"><g:message code="location.label" default="Location"/></a></li>
