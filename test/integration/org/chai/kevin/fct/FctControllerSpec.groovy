@@ -98,8 +98,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def model = fctController.view()
 		
 		then:
-		model.fctTable != null
-		model.fctTable.hasData() == false
+		model.fctTable == null
 	}
 	
 	def "get fct with invalid paramters"() {
