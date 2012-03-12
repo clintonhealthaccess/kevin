@@ -28,7 +28,7 @@
 	
 		<g:selectFromList name="section" label="Section (link)" bean="${planningCost}" field="section" multiple="false"
 			from="${sections}" value="${planningCost.section}"/>
-		<g:selectFromList name="groupSection" label="Section (link)" bean="${planningCost}" field="groupSection" multiple="false"
+		<g:selectFromList name="groupSection" label="Group Section (link)" bean="${planningCost}" field="groupSection" multiple="false"
 			from="${sections}" value="${planningCost.groupSection}"/>
 			
 		<g:selectFromEnum name="type" bean="${planningCost}" values="${PlanningCostType.values()}" field="type" label="Type"/>
