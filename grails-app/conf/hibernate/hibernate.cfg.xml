@@ -25,6 +25,7 @@
 	    <mapping class="org.chai.kevin.dsr.DsrTarget"/>	
 		<mapping class="org.chai.kevin.dsr.DsrTargetCategory"/>	
 	    <mapping class="org.chai.kevin.fct.FctTarget"/>
+	    <mapping class="org.chai.kevin.fct.FctTargetOption" />
 	    <mapping class="org.chai.kevin.maps.MapsTarget" />
 	    <mapping class="org.chai.kevin.cost.CostRampUp" />	
 	    <mapping class="org.chai.kevin.cost.CostRampUpYear" />	

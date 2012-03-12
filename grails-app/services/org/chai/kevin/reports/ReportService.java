@@ -93,7 +93,7 @@ public class ReportService {
 			return (List<T>)sessionFactory.getCurrentSession()
 			.createCriteria(clazz)
 			.add(Restrictions.eq("program", program))
-			.list();	
+			.list();
 		}
 	}
 	
