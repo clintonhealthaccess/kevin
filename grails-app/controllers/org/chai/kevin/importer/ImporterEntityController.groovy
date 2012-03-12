@@ -54,15 +54,17 @@ class ImporterEntityController extends AbstractController {
 		if (!cmd.hasErrors()) {
 			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());
 			importerService.importFile(cmd.dataElement,csvInputStreamReader, cmd.period,errorManager);
-			this.getModel(cmd,errorManager,IMPORT_FORM);
+			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}
-		this.getModel(cmd,errorManager,IMPORT_OUTPUT);
+		if(log.isInfoEnabled()) log.info("CMD==>"+cmd.period)
+		this.getModel(cmd,errorManager,IMPORT_FORM);
 	}
 
 	def getModel(def cmd,ImporterErrorManager errorManager,String view) {
 		
 		List<Period> periods = Period.list()
 		List<RawDataElement> dataElements =[]
+		if (cmd?.dataElement != null) dataElements << cmd.dataElement
 		render (view: '/import/'+view, model:[
 					periods: periods,
 					dataElements: dataElements,
