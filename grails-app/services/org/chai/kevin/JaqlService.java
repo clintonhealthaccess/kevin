@@ -55,7 +55,9 @@ public class JaqlService {
 		for (Entry<String, Value> variable : variables.entrySet()) {
 			// value can be null
 			if (variable.getValue() != null) {
-				jaqlVariables.put("$"+variable.getKey(), types.get(variable.getKey()).getJaqlValue(variable.getValue()));
+				String jaqlValue = types.get(variable.getKey()).getJaqlValue(variable.getValue());
+				if (jaqlValue.equals("null")) jaqlValue = "\"null\"";
+				jaqlVariables.put("$"+variable.getKey(), jaqlValue);
 			}
 		}
 		

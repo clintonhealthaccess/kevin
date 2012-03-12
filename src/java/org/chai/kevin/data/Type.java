@@ -523,7 +523,7 @@ public class Type extends JSONValue {
 	
 	public String getJaqlValue(Value value) {
 		StringBuilder result = new StringBuilder();
-		if (value.isNull()) result.append("\"null\"");
+		if (value.isNull()) result.append("null");
 		else {
 			switch (getType()) {
 				case NUMBER:
