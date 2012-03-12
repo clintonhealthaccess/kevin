@@ -72,4 +72,9 @@ public class Period {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Period [startDate=" + startDate + ", endDate=" + endDate + "]";
+	}
+	
 }

@@ -71,6 +71,11 @@ public class ExpressionService {
 	public static class StatusValuePair {
 		public Status status = null;
 		public Value value = null;
+		
+		@Override
+		public String toString() {
+			return "StatusValuePair [status=" + status + ", value=" + value + "]";
+		}
 	}
 	
 	@Transactional(readOnly=true)
@@ -120,6 +125,8 @@ public class ExpressionService {
 
 	// location has to be a facility
 	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataLocationEntity facility, Class<T> clazz) {
+		if (expressionLog.isInfoEnabled()) expressionLog.info("getting expression status-value for: expression={"+expression+"}, type={"+type+"}, period={"+period+"}, facility={"+facility+"}");
+		
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null) {
 			statusValuePair.status = Status.DOES_NOT_APPLY;
@@ -128,6 +135,7 @@ public class ExpressionService {
 		else {
 			Map<String, T> datas = getDataInExpression(expression, clazz);
 			if (hasNullValues(datas.values())) {
+				if (expressionLog.isInfoEnabled()) expressionLog.info("data elements are missing");
 				statusValuePair.value = Value.NULL_INSTANCE();
 				statusValuePair.status = Status.MISSING_DATA_ELEMENT;
 			}
@@ -140,17 +148,20 @@ public class ExpressionService {
 					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
 				}
+				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}, typeMap={"+typeMap+"}");
 				
 				if (hasNullValues(valueMap.values())) {
+					if (expressionLog.isInfoEnabled()) expressionLog.info("found null values");
 					statusValuePair.value = Value.NULL_INSTANCE();
 					statusValuePair.status = Status.MISSING_VALUE;
 				}
 				else {
 					try {
+						if (expressionLog.isInfoEnabled()) expressionLog.info("no null values found, evaluating expression");
 						statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
 						statusValuePair.status = Status.VALID;
 					} catch (IllegalArgumentException e) {
-						expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, facility={"+facility+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
+						if (expressionLog.isErrorEnabled()) expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, facility={"+facility+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
 						log.warn("there was an error evaluating expression: "+expression, e);
 						statusValuePair.value = Value.NULL_INSTANCE();
 						statusValuePair.status = Status.ERROR;
@@ -158,6 +169,7 @@ public class ExpressionService {
 				}
 			}
 		}
+		expressionLog.info("returning result={"+statusValuePair+"}");
 		return statusValuePair;
 	}
 
