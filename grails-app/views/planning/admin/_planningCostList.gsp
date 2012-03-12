@@ -30,7 +30,7 @@
 				<td>${planningCost.type}</td>
 				<td>${planningCost.discriminatorValueString}</td>
 				<td>${planningCost.groupSection}</td>
-				<td><g:i18n field="${planningCost.sum.names}"/></td>
+				<td><g:i18n field="${planningCost.dataElement.names}"/></td>
 			</tr>
 		</g:each>
 	</tbody>
