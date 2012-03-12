@@ -234,4 +234,18 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		PlanningCost.count() == 2
 	}
 	
+	def "group section can be null"() {
+		setup:
+		def period = newPeriod()
+		def planning = newPlanning(period)
+		def planningType = newPlanningType(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")]))), "[_].key", "[_].key", planning)
+		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
+		
+		when:
+		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, type: PlanningCostType.INCOMING, section: '[_].key').save(failOnError: true)
+		
+		then:
+		PlanningCost.count() == 1
+	}
+	
 }

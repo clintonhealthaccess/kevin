@@ -172,7 +172,10 @@ public class PlanningService {
 				Map<PlanningCost, BudgetCost> budgetCosts = new HashMap<PlanningCost, BudgetCost>();
 				for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
 					NormalizedDataElementValue value = valueService.getDataElementValue(planningCost.getDataElement(), location, type.getPeriod());
-					if (!value.getValue().isNull()) budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, value));
+					if (!value.getValue().isNull()) {
+						if (!value.getValue().getListValue().get(planningEntry.getLineNumber()).isNull())
+							budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, value));
+					}
 				}
 				planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
 			}
