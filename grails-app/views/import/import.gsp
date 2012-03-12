@@ -18,7 +18,7 @@
 					from="${dataElements}" value="${importerEntity?.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 					
 					<g:selectFromList name="period.id" label="Period" bean="${importerEntity}" field="period" optionKey="id" multiple="false"
-					from="${periods}" value="${period?.id}" optionValue="startDate" />
+					from="${periods}" value="${importerEntity?.period?.id}" optionValue="startDate" />
 					
 					<g:file name="file" label="File" bean="${importerEntity}" field="file"/>
 					<div class="row">
