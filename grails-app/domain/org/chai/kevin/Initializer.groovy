@@ -70,6 +70,7 @@ import org.chai.kevin.survey.wizard.WizardStep;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
+import org.chai.kevin.fct.FctTargetOption
 import org.hisp.dhis.period.Period;
 
 class Initializer {
@@ -855,7 +856,6 @@ class Initializer {
 					code: "Facility Water and Power Sources"
 					)
 
-
 			new DsrTarget(
 					names:j(["en":"Accountant"]), descriptions:j(["en":"Accountant"]),
 					program: hmr,
@@ -1037,18 +1037,68 @@ class Initializer {
 				typeCodeString: "District Hospital,Health Center"
 			).save(failOnError:true)
 			
-
+			FctTargetOption fctTargetOption1 = new FctTargetOption(
+				names:j(["en": "Target Option 1"]),
+				target: fctTarget1,
+				descriptions:j([:]), 
+				code:"TARGET OPTION 1",
+				sum: sum1,
+				typeCodeString: "District Hospital,Health Center"
+			).save(failOnError:true)
+			
+			FctTargetOption fctTargetOption2 = new FctTargetOption(
+				names:j(["en": "Target Option 2"]),
+				target: fctTarget1,
+				descriptions:j([:]),
+				code:"TARGET OPTION 2",
+				sum: sum1,
+				typeCodeString: "District Hospital,Health Center"
+			).save(failOnError:true)
+			
+			fctTarget1.targetOptions << [fctTargetOption1, fctTargetOption2]
+			fctTarget1.save(failOnError:true)
+			
 			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
 			sum2.save(failOnError: true);
 
 			FctTarget fctTarget2 = new FctTarget(
-
 				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
 				program: hmr,
 				code:"TARGET 2",
 				sum: sum2,
 				typeCodeString: "District Hospital,Health Center"
 			).save(failOnError:true)
+			
+			FctTargetOption fctTargetOption3 = new FctTargetOption(
+				names:j(["en": "Target Option 3"]),
+				target: fctTarget2,
+				descriptions:j([:]),
+				code:"TARGET OPTION 3",
+				sum: sum2,
+				typeCodeString: "District Hospital,Health Center"
+			).save(failOnError:true)
+			
+			FctTargetOption fctTargetOption4 = new FctTargetOption(
+				names:j(["en": "Target Option 4"]),
+				target: fctTarget1,
+				descriptions:j([:]),
+				code:"TARGET OPTION 4",
+				sum: sum2,
+				typeCodeString: "District Hospital,Health Center"
+			).save(failOnError:true)
+			
+			fctTarget2.targetOptions << [fctTargetOption3, fctTargetOption4]
+			fctTarget2.save(failOnError:true)
+			
+			FctTarget fctTarget3 = new FctTarget(
+				names:j(["en":"Fct Target 3"]), descriptions:j([:]),
+				program: hmr,
+				targetOptions: [],
+				code:"TARGET 3",
+				sum: sum2,
+				typeCodeString: "District Hospital,Health Center"
+			).save(failOnError:true)
+			
 			hmr.save(failOnError:true)
 		}
 	}	

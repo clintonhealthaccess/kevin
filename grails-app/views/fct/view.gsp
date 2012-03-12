@@ -24,7 +24,7 @@
 	                <g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>	                
 	              </li>
 	            </ul>					
-				<g:if test="${fctTable.hasData()}">
+				<g:if test="${fctTable != null && fctTable.hasData()}">
 					<div class='selector'>
 						<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
 	              		<g:render template="/fct/reportLocationTable" model="[linkParams:params]"/>
@@ -38,7 +38,7 @@
 	                <g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>	                
 	              </li>
 	            </ul>				
-				<g:if test="${fctTable.hasData()}">
+				<g:if test="${fctTable != null && fctTable.hasData()}">
 					<p>Facility types: 
 						<g:each in="${currentLocationTypes}" var="locationType" status="i">						
 							<g:i18n field="${locationType.names}" /><g:if test="${i != currentLocationTypes.size()-1}">, </g:if>

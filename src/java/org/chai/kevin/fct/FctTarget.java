@@ -30,20 +30,26 @@ package org.chai.kevin.fct;
  * @author Jean Kahigiso M.
  *
  */
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.reports.ReportTarget;
 import org.chai.kevin.util.Utils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "FctTarget")
 @Table(name = "dhsst_fct_target")
@@ -51,6 +57,7 @@ public class FctTarget extends ReportTarget {
 	
 	private Long id;
 	private Sum sum;
+	private List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
 	private String format;
 	private String typeCodeString; //comma-separated list of location type ids
 	
@@ -70,6 +77,16 @@ public class FctTarget extends ReportTarget {
 	
 	public void setSum(Sum sum){
 		this.sum = sum;
+	}
+	
+	@OneToMany(targetEntity=FctTargetOption.class, mappedBy="target", fetch=FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
+	public List<FctTargetOption> getTargetOptions() {
+		return targetOptions;
+	}
+	
+	public void setTargetOptions(List<FctTargetOption> targetOptions) {
+		this.targetOptions = targetOptions;
 	}
 	
 	@Basic

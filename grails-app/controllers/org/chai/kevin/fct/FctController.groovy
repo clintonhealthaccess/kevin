@@ -23,8 +23,19 @@ class FctController extends AbstractController {
 			def targets = reportService.getReportTargets(FctTarget.class, program)
 			if(targets != null && !targets.empty)
 				fctTarget = targets.first()
+				if(fctTarget.targetOptions.empty) fctTarget = null
 		}
 		return fctTarget
+	}
+	
+	def getFctTargets(def program){
+		def targetsWithOptions = []
+		def targets = reportService.getReportTargets(FctTarget.class, program)
+		for(FctTarget target : targets){
+			if(target.targetOptions != null && !target.targetOptions.empty)
+				targetsWithOptions.add(target)
+		}
+		return targetsWithOptions
 	}
 	
 //	def getLevel(){
@@ -59,8 +70,8 @@ class FctController extends AbstractController {
 //			fctTable = fctService.getFctTable(location, program, period, level, locationTypes);
 //		}
 
-		if (period != null && program != null && location != null && locationTypes != null) {
-			fctTable = fctService.getFctTable(location, program, period, null, locationTypes);
+		if (period != null && program != null && fctTarget != null && location != null && locationTypes != null) {
+			fctTable = fctService.getFctTable(location, program, fctTarget, period, null, locationTypes);
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root program: "+program)				
@@ -74,8 +85,8 @@ class FctController extends AbstractController {
 //			currentLevel: level,
 			currentLocationTypes: locationTypes,
 			currentFctTarget: fctTarget,
-			fctTargets: reportService.getReportTargets(FctTarget.class, program),		
-			skipLevels: skipLevels			
+			fctTargets: getFctTargets(program),		
+			skipLevels: skipLevels
 		]
 	}
 }

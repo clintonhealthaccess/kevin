@@ -2,9 +2,9 @@
 	<thead>
 		<tr>
 			<th>Location</th>
-			<g:if test="${fctTable != null && fctTable.targets != null && !fctTable.targets.empty}">
-				<g:each in="${fctTable.targets}" var="target">
-					<th><g:i18n field="${target.names}" /></th>
+			<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
+				<g:each in="${fctTable.targetOptions}" var="targetOption">
+					<th><g:i18n field="${targetOption.names}" /></th>
 				</g:each>
 			</g:if>
 		</tr>
@@ -14,10 +14,10 @@
 			<g:each in="${fctTable.locations}" var="location">
 				<tr>
 				   <td><g:i18n field="${location.names}" /></td>
-				   <g:if test="${fctTable != null && fctTable.targets != null && !fctTable.targets.empty}">
-					   <g:each in="${fctTable.targets}" var="target">
-							<g:if test="${!fctTable.getReportValue(location, target) != null}">
-								<td>${fctTable.getReportValue(location, target).value}</td>
+				   <g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
+					   <g:each in="${fctTable.targetOptions}" var="targetOption">
+							<g:if test="${!fctTable.getReportValue(location, targetOption) != null}">
+								<td>${fctTable.getReportValue(location, targetOption).value}</td>
 							</g:if>
 							<g:else>N/A</g:else>
 						</g:each>
@@ -27,10 +27,10 @@
 		</g:if>			
 		<tr>
 		   <td><g:i18n field="${currentLocation.names}" /></td>
-		   <g:if test="${fctTable != null && fctTable.targets != null && !fctTable.targets.empty}">
-			   <g:each in="${fctTable.targets}" var="target">
-					<g:if test="${!fctTable.getTotalValue(target) != null}">
-						<td>${fctTable.getTotalValue(target).value}</td>
+		   <g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
+			   <g:each in="${fctTable.targetOptions}" var="targetOption">
+					<g:if test="${!fctTable.getTotalValue(targetOption) != null}">
+						<td>${fctTable.getTotalValue(targetOption).value}</td>
 					</g:if>
 					<g:else><td>N/A</td></g:else>
 				</g:each>
