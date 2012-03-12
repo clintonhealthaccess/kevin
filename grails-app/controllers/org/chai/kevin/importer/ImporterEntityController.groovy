@@ -56,7 +56,6 @@ class ImporterEntityController extends AbstractController {
 			importerService.importFile(cmd.dataElement,csvInputStreamReader, cmd.period,errorManager);
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}
-		if(log.isInfoEnabled()) log.info("CMD==>"+cmd.period)
 		this.getModel(cmd,errorManager,IMPORT_FORM);
 	}
 
