@@ -65,6 +65,7 @@ String facilityTypeGroup = config.facility.type.group
 Set<String> reportSkipLevels = config.report.skip.levels
 Set<String> dashboardSkipLevels = config.dashboard.skip.levels
 Set<String> dsrSkipLevels = config.dsr.skip.levels
+Set<String> fctSkipLevels = config.fct.skip.levels
 Set<String> costSkipLevels = config.cost.skip.levels
 Set<String> exportSkipLevels = config.export.skip.levels
 String dsrGroupLevel= config.dsr.group.level
@@ -169,6 +170,8 @@ beans = {
 	fctService(FctService){
 		reportService = ref("reportService")
 		valueService = ref("valueService")
+		sessionFactory = ref("sessionFactory")
+		skipLevels = fctSkipLevels
 	}
 	
 	mapsService(MapsService) {
