@@ -93,7 +93,7 @@
 					
 					</g:if>
 					<g:else>
-						<p class="help">Please select an location / program</p>
+						<p class="nav-help">Please select an location / program</p>
 					</g:else>
 				</div>
 				<div class="clear"></div>
