@@ -1,11 +1,11 @@
 <r:require module="foldable" />
-<li class="${current?.id == program?.id ? 'current':''} foldable">	
+<li class="${current?.id == program?.id ? 'current':''} js_foldable foldable">	
 	<% def programLinkParams = new HashMap(linkParams) %>
 	<% programLinkParams.remove("dashboardEntity") %>		
 	<% programLinkParams['program'] = program.id+"" %>
 	<% linkParams = programLinkParams %>		
 	<g:if test="${program.children != null && !program.children.empty && !programTree.disjoint(program.children)}">
-		<a class="foldable-toggle" href="#">(toggle)</a>
+		<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
 	</g:if>
 	<a class="dropdown-link js_dropdown-link parameter" data-type="program"
 			data-location="${program.id}"
@@ -15,7 +15,7 @@
 	<g:if test="${program.children != null || !program.children.empty}">					
 		<g:each in="${program.children}" var="child">
 			<g:if test="${programTree.contains(child)}">
-				<ul class="location-fold" id="location-fold-${program.id}">
+				<ul class="js_foldable-container foldable-container">
 					<g:render template="/tags/filter/programTree"
 						model="[
 						controller: controller, 

@@ -52,8 +52,8 @@
 												-->
 												<g:each in="${planningTypeBudgets}" var="planningTypeBudget">
 													<g:set var="planningType" value="${planningTypeBudget.planningType}"/>
-													<tr class="tree_sign_minus standout">
-														<td>
+													<tr class="tree-sign js_foldable standout">
+														<td class="js_foldable-toggle">
 															<span>
 																<g:i18n field="${planningTypeBudget.planningType.namesPlural}"/>
 															</span>
@@ -64,7 +64,7 @@
 														<td><input type="checkbox"></td>
 														<td class="status"></td>
 													</tr>
-													<tr style="display: table-row" class="sub_tree">
+													<tr class="sub-tree js_foldable-container hidden">
 														<td colspan="7" class="bucket">
 													    <table>
 																<tbody>
@@ -76,8 +76,8 @@
 																	-->
 																	<g:each in="${planningTypeBudget.budgetPlanningEntries}" var="budgetPlanningEntry">
 																		<g:set var="planningEntry" value="${budgetPlanningEntry.planningEntry}"/>
-																		<tr id="planning-${planningType.id}-${planningEntry.lineNumber}" class="tree_sign_minus active-row">
-																			<td>
+																		<tr id="planning-${planningType.id}-${planningEntry.lineNumber}" class="tree-sign js_foldable">
+																			<td class="js_foldable-toggle">
 																				<span style="margin-left: 20px;">
 																					<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.planningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
 																						<g:value value="${planningEntry.fixedHeaderValue}" type="${planningEntry.type.fixedHeaderType}" nullText="none entered"/>
@@ -94,7 +94,7 @@
 																				${(!planningEntry.incompleteSections.empty || !planningEntry.incompleteSections.empty)?'tooltip':''}
 																				" title="Help message"></td>
 																		</tr>
-																		<tr style="display: table-row" class="sub_tree">
+																		<tr class="sub-tree js_foldable-container hidden">
 																			<td colspan="7" class="bucket">
 																				<table>
 																					<tbody>
@@ -182,12 +182,15 @@
 				});			
 		
 				$('.js_budget-section-link').bind('click', function(){
+					var row = $(this).parents('tr').first();
+					
 					rightPaneQueue.abort();
 					rightPaneQueue.clear();
 				
 					$.manageAjax.add(queueName, {
 						url: $(this).attr('href'),
 						beforeSend: function() {
+							$('.active-row').removeClass('active-row');
 							$('#js_budget-section-edit').show();
 							$('#js_budget-section-edit').removeClass('warning');
 							$('#js_budget-section-edit .js_warning-message').hide();
@@ -208,11 +211,13 @@
 								$('#js_budget-section-edit').addClass('warning');
 								$('#js_budget-section-edit .js_warning-message').show();
 							}
+							row.addClass('active-row');
 						},
 						error: function() {
 							$('#js_budget-section-edit').removeClass('loading');
 							$('#js_budget-section-edit').addClass('warning');
 							$('#js_budget-section-edit .js_warning-message').show();
+							row.addClass('active-row');
 						}
 					});
 					
