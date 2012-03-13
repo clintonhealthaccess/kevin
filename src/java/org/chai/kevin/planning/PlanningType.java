@@ -92,17 +92,6 @@ public class PlanningType {
 		this.dataElement = dataElement;
 	}
 	
-//	@ElementCollection(targetClass=String.class)
-//	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-//	@JoinTable(name="dhsst_planning_type_sections")
-//	public List<String> getSections() {
-//		return sections;
-//	}
-//	
-//	public void setSections(List<String> sections) {
-//		this.sections = sections;
-//	}
-	
 	@ElementCollection(targetClass=Translation.class)
 	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	@JoinTable(name="dhsst_planning_type_descriptions")	

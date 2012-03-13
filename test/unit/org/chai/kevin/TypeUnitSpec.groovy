@@ -866,6 +866,23 @@ public class TypeUnitSpec extends UnitSpec {
 		type.getType('[_].key1').equals(Type.TYPE_NUMBER())
 		type.getType('[_].key2').equals(Type.TYPE_NUMBER())
 		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["key": Type.TYPE_NUMBER(), 'key_test': Type.TYPE_NUMBER()]))
+		
+		then:
+		type.getType("[_].key_test").equals(Type.TYPE_NUMBER())
+
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["key": Type.TYPE_NUMBER(), 'key_test': Type.TYPE_MAP(["number": Type.TYPE_NUMBER()])]))
+		
+		then:
+		type.getType("[_].key_test.number").equals(Type.TYPE_NUMBER())
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["key": Type.TYPE_NUMBER(), 'key_test': Type.TYPE_LIST(Type.TYPE_NUMBER())]))
+		
+		then:
+		type.getType("[_].key_test[_]").equals(Type.TYPE_NUMBER())
 	}
 	
 	def "get displayed value"() {
