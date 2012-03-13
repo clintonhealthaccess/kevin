@@ -221,7 +221,9 @@ public class Type extends JSONValue {
 		case MAP:
 			boolean found = false;
 			for (Entry<String, Type> entry : getElementMap().entrySet()) {
-				if (prefix.startsWith("."+entry.getKey())) {
+				if (prefix.matches("\\."+entry.getKey()+"$") 
+					|| prefix.matches("\\."+entry.getKey()+"\\..*") 
+					|| prefix.matches("\\."+entry.getKey()+"\\[_\\].*")) {
 					found = true;
 					return entry.getValue().getType(prefix.substring(entry.getKey().length()+1));
 				}
