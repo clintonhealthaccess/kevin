@@ -10,12 +10,6 @@ $(function() {
 		html : true
 	});
 
-	$('.tree_sign_plus, .tree_sign_minus').live('click', function(e) {
-		var element = $(this);
-		element.toggleClass('tree_sign_plus tree_sign_minus');
-		element.next('tr.sub_tree').toggle();
-	});
-
 	// NOTE: this event is separate from input event
 	// because label click triggers input click event
 	$('.check_filter label').click(function(e) {
