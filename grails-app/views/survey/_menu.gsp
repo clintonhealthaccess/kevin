@@ -4,8 +4,8 @@
 	<g:each in="${surveyPage.getPrograms()}" var="program">
 		<g:set var="enteredProgram" value="${surveyPage.enteredPrograms[program]}"/>
 		
-		<li id="program-${program.id}" class="foldable ${surveyPage.program?.id == program.id?'current':''}">
-			<a class="foldable-toggle" href="#">(toggle)</a>
+		<li id="program-${program.id}" class="js_foldable foldable ${surveyPage.program?.id == program.id?'current':''}">
+			<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a>
 		
 			<a class="item ${surveyPage.program?.id == program.id?'opened':''}" href="${createLink(controller:'editSurvey', action:'programPage', params:[location: surveyPage.location.id, program:program.id])}">
 				<span><g:i18n field="${program.names}" /></span>
@@ -17,7 +17,7 @@
 					<span class="program-status-closed program-status ${enteredProgram.displayedStatus!='closed'?'hidden':''}"></span>
 				</span>
 			</a>
-			<ul class="survey-section">
+			<ul class="js_foldable-container foldable-container">
 				<g:each in="${surveyPage.getSections(program)}" var="section">
 					<g:set var="enteredSection" value="${surveyPage.enteredSections[section]}"/>
 

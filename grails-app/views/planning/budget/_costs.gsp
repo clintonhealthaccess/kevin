@@ -18,8 +18,8 @@
 			</g:each>
 		</g:if>
 		<g:else>
-			<tr class="tree_sign_minus">
-				<td>
+			<tr class="tree-sign js_foldable">
+				<td class="js_foldable-toggle">
 					<span style="margin-left: 40px;">
 						<g:i18n field="${planningType.headers[section]}"/>
 					</span>
@@ -35,7 +35,7 @@
 				<td></td>
 				<td class="status" title="Help message"></td>
 			</tr>
-			<tr style="display: table-row" class="sub_tree">
+			<tr class="sub-tree js_foldable-container hidden">
 				<td colspan="7" class="bucket">
 					<table class="condensed">
 						<tbody>

@@ -47,7 +47,7 @@
 								]"/>
 								
 								<div class="adv-aside help-container">
-									<div class="nav-help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
+									<div class="help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
 								</div>
 							</div>
 		  				</g:each>

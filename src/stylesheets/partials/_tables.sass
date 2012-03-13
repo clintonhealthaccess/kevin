@@ -129,7 +129,7 @@
     &.bucket
       padding: 0
       
-  .sub_tree .sub_tree tr
+  .sub-tree .sub-tree tr
     td
       border-bottom: 1px solid #eee
     &:first-child td
@@ -137,18 +137,13 @@
     &:hover, &:focus
       background: #f9f9f9
       
-  .tree_sign_plus
+  .tree-sign
     background: #f9f9f9
     border-top: 1px solid #eee
     cursor: pointer
     td:first-child span
       background: url('../images/icons/toggle_plus_large.png') no-repeat 5px center
-
-  .tree_sign_minus
-    background: #f9f9f9
-    border-top: 1px solid #eee
-    cursor: pointer
-    td:first-child span
+    td.toggled:first-child span
       background: url('../images/icons/toggle_minus_large.png') no-repeat 5px center
       
   &.col5
@@ -263,5 +258,5 @@
     top: 1px
     +box-shadow(#ccc, 0, 1px, 1px)
 
-.sub_tree
+.sub-tree
   display: none

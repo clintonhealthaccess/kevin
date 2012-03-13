@@ -19,21 +19,21 @@
 		<div class="hidden dropdown-list js_dropdown-list">
 			<ul>
 				<g:each in="${surveys}" var="survey">
-					<li class="foldable ${currentSurvey?.id==survey.id?'current':''}">
-						<a class="foldable-toggle" href="#">(toggle)</a> 
+					<li class="js_foldable foldable ${currentSurvey?.id==survey.id?'current':''}">
+						<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a> 
 						<a class="item ${currentSurvey?.id == survey.id? 'opened':''}" href="${createLink(controller: 'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, survey: survey.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
 							<g:i18n field="${survey.names}" />
 						</a>
-						<ul class="survey-program">
+						<ul class="js_foldable-container foldable-container">
 							<g:each in="${survey.getPrograms()}" var="program">
-								<li class="foldable ${currentProgram?.id==program.id?'current':''}">
-									<a class="foldable-toggle" href="#">(toggle)</a> 
+								<li class="js_foldable foldable ${currentProgram?.id==program.id?'current':''}">
+									<a class="js_foldable-toggle foldable-toggle" href="#">(toggle)</a> 
 									<a class="item ${currentProgram?.id == program.id?'opened':''}" href="${createLink(controller:'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, program: program.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
 										<span><g:i18n field="${program.names}" /></span>
 									</a>
-									<ul class="survey-section">
+									<ul class="js_foldable-container foldable-container">
 										<g:each in="${program.getSections()}" var="section">
-											<li class="foldable ${currentSection?.id==section.id?'current':''}">
+											<li class="js_foldable foldable ${currentSection?.id==section.id?'current':''}">
 												<a class="item ${currentSection?.id == section.id?'opened':''}" href="${createLink(controller:'surveySummary', action:'summaryPage', params:[location: currentLocation?.id, section: section.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc'])}">
 													<span><g:i18n field="${section.names}" /></span>
 												</a>
