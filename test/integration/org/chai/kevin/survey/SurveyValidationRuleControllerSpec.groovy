@@ -1,7 +1,8 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.data.Type
-import org.chai.kevin.survey.validation.SurveyValidationRuleController
+import org.chai.kevin.form.FormValidationRule;
+import org.chai.kevin.survey.validation.SurveyValidationRuleController;
 import org.chai.kevin.util.Utils
 
 class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
@@ -22,7 +23,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		surveyValidationRuleController = new SurveyValidationRuleController()
 		
 		when:
-		surveyValidationRuleController.params['surveyElement.id'] = element.id
+		surveyValidationRuleController.params['formElement.id'] = element.id
 		surveyValidationRuleController.params['prefix'] = ""
 		surveyValidationRuleController.params['typeCodes'] = [HEALTH_CENTER_GROUP]
 		surveyValidationRuleController.params['expression'] = "true"
@@ -32,9 +33,9 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		surveyValidationRuleController.saveWithoutTokenCheck()
 		
 		then:
-		SurveyValidationRule.count() == 1
-		SurveyValidationRule.list()[0].typeCodeString == Utils.unsplit([(HEALTH_CENTER_GROUP)])
-		SurveyValidationRule.list()[0].messages['en'] == "Validation rule"
+		FormValidationRule.count() == 1
+		FormValidationRule.list()[0].typeCodeString == Utils.unsplit([(HEALTH_CENTER_GROUP)])
+		FormValidationRule.list()[0].messages['en'] == "Validation rule"
 		
 	}
 	
@@ -49,7 +50,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
-		def validationRule = newSurveyValidationRule(element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0")
+		def validationRule = newFormValidationRule(element, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+" > 0")
 		surveyValidationRuleController = new SurveyValidationRuleController()
 		
 		when:

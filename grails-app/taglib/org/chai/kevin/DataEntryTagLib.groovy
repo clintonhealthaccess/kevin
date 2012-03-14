@@ -4,10 +4,10 @@ import org.chai.kevin.survey.SurveyElement;
 import java.util.Comparator;
 
 import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
-import org.chai.kevin.survey.SurveyValidationRule;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.survey.SurveyElement;
@@ -104,7 +104,7 @@ class DataEntryTagLib {
 	def getRules(def errors) {
 		def rules = []
 		if (errors != null) errors.each { id ->
-			rules.add(SurveyValidationRule.get(id))
+			rules.add(FormValidationRule.get(id))
 		}
 		return rules;
 	}

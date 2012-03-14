@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormSkipRule;
+import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.value.ExpressionService;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +21,13 @@ public class SurveyCopyService {
 	private LanguageService languageService;
 	
 	@Transactional(readOnly=false)
-	public SurveyCopy<SurveyValidationRule> copyValidationRule(SurveyValidationRule rule) {
+	public SurveyCopy<FormValidationRule> copyValidationRule(FormValidationRule rule) {
 		SurveyCloner cloner = new SurveyCloner() {};
-		SurveyValidationRule copy = new SurveyValidationRule();
+		FormValidationRule copy = new FormValidationRule();
 		rule.deepCopy(copy, cloner);
 		
 		sessionFactory.getCurrentSession().save(copy);
-		return new SurveyCopy<SurveyValidationRule>(copy);
+		return new SurveyCopy<FormValidationRule>(copy);
 	}
 	
 	@Transactional(readOnly=false)
@@ -34,10 +37,10 @@ public class SurveyCopyService {
 		sessionFactory.getCurrentSession().save(cloner.getSurvey());
 		
 		cloner.cloneRules();
-		for (SurveyValidationRule validationRule : cloner.getValidationRules()) {
+		for (FormValidationRule validationRule : cloner.getValidationRules()) {
 			sessionFactory.getCurrentSession().save(validationRule);
 		}
-		for (SurveySkipRule skipRule : cloner.getSkipRules()) {
+		for (FormSkipRule skipRule : cloner.getSkipRules()) {
 			sessionFactory.getCurrentSession().save(skipRule);
 		}
 		
@@ -63,10 +66,10 @@ public class SurveyCopyService {
 		private Map<Long, SurveyQuestion> questions = new HashMap<Long, SurveyQuestion>();
 		private Map<Long, SurveyElement> elements = new HashMap<Long, SurveyElement>();
 		private Map<Long, SurveySkipRule> skipRules = new HashMap<Long, SurveySkipRule>();
-		private Map<Long, SurveyValidationRule> validationRules = new HashMap<Long, SurveyValidationRule>();
+		private Map<Long, FormValidationRule> validationRules = new HashMap<Long, FormValidationRule>();
 
-		private Map<SurveyValidationRule, Long> unchangedValidationRules = new HashMap<SurveyValidationRule, Long>();
-		private Map<SurveySkipRule, Long> unchangedSkipRules = new HashMap<SurveySkipRule, Long>();
+		private Map<FormValidationRule, Long> unchangedValidationRules = new HashMap<FormValidationRule, Long>();
+		private Map<FormSkipRule, Long> unchangedSkipRules = new HashMap<FormSkipRule, Long>();
 		
 		CompleteSurveyCloner(Survey survey) {
 			this.survey = survey;
@@ -76,11 +79,11 @@ public class SurveyCopyService {
 			return copy;
 		}
 		
-		Map<SurveyValidationRule, Long> getUnchangedValidationRules() {
+		Map<FormValidationRule, Long> getUnchangedValidationRules() {
 			return unchangedValidationRules;
 		}
 
-		Map<SurveySkipRule, Long> getUnchangedSkipRules() {
+		Map<FormSkipRule, Long> getUnchangedSkipRules() {
 			return unchangedSkipRules;
 		}
 
@@ -91,12 +94,12 @@ public class SurveyCopyService {
 		void cloneRules() {
 			if (copy.getId() == null) throw new IllegalStateException();
 			survey.copyRules(copy, this);
-			for (SurveyElement element : oldElements) {
+			for (FormElement element : oldElements) {
 				element.copyRules(elements.get(element.getId()), this);
 			}
 		}
 		
-		public Collection<SurveyValidationRule> getValidationRules() {
+		public Collection<FormValidationRule> getValidationRules() {
 			return validationRules.values();
 		}
 		
@@ -105,7 +108,7 @@ public class SurveyCopyService {
 		}
 		
 		@Override
-		public void addUnchangedValidationRule(SurveyValidationRule rule, Long id) {
+		public void addUnchangedValidationRule(FormValidationRule rule, Long id) {
 			this.unchangedValidationRules.put(rule, id);
 		}
 
@@ -115,10 +118,10 @@ public class SurveyCopyService {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.chai.kevin.survey.SurveyCloner#getExpression(java.lang.String, org.chai.kevin.survey.SurveyValidationRule)
+		 * @see org.chai.kevin.survey.SurveyCloner#getExpression(java.lang.String, org.chai.kevin.survey.FormValidationRule)
 		 */
 		@Override
-		public String getExpression(String expression, SurveyValidationRule rule) {
+		public String getExpression(String expression, FormValidationRule rule) {
 			Set<String> placeholders = ExpressionService.getVariables(expression);
 			Map<String, String> mapping = new HashMap<String, String>();
 			for (String placeholder : placeholders) {
@@ -137,7 +140,7 @@ public class SurveyCopyService {
 		 * @see org.chai.kevin.survey.SurveyCloner#getExpression(java.lang.String, org.chai.kevin.survey.SurveySkipRule)
 		 */
 		@Override
-		public String getExpression(String expression, SurveySkipRule rule) {
+		public String getExpression(String expression, FormSkipRule rule) {
 			Set<String> placeholders = ExpressionService.getVariables(expression);
 			Map<String, String> mapping = new HashMap<String, String>();
 			for (String placeholder : placeholders) {
@@ -213,17 +216,24 @@ public class SurveyCopyService {
 		 * @see org.chai.kevin.survey.SurveyCloner#getElement(org.chai.kevin.survey.SurveyElement)
 		 */
 		@Override
-		public SurveyElement getElement(SurveyElement element) {
+		public <T extends FormElement> T getElement(T element) {
 			if (element == null) return null;
 			
-			if (!elements.containsKey(element.getId())) {
-				SurveyElement copy = new SurveyElement(); 
-				elements.put(element.getId(), copy);
-				element.deepCopy(copy, this);
-				oldElements.add(element);
+			if (element instanceof SurveyElement) {
+				SurveyElement surveyElement = (SurveyElement)element;
+				if (!surveyElement.getSurvey().equals(survey)) {
+					return element;
+				}
+				
+				if (!elements.containsKey(element.getId())) {
+					SurveyElement copy = new SurveyElement(); 
+					elements.put(element.getId(), copy);
+					element.deepCopy(copy, this);
+					oldElements.add(surveyElement);
+				}
 			}
 			
-			return elements.get(element.getId());
+			return (T)elements.get(element.getId());
 		}
 
 
@@ -241,12 +251,12 @@ public class SurveyCopyService {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.chai.kevin.survey.SurveyCloner#getValidationRule(org.chai.kevin.survey.SurveyValidationRule)
+		 * @see org.chai.kevin.survey.SurveyCloner#getValidationRule(org.chai.kevin.survey.FormValidationRule)
 		 */
 		@Override
-		public SurveyValidationRule getValidationRule(SurveyValidationRule validationRule) {
+		public FormValidationRule getValidationRule(FormValidationRule validationRule) {
 			if (!validationRules.containsKey(validationRule.getId())) {
-				SurveyValidationRule copy = new SurveyValidationRule(); 
+				FormValidationRule copy = new FormValidationRule(); 
 				validationRules.put(validationRule.getId(), copy);
 				validationRule.deepCopy(copy, this);
 			}

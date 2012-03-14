@@ -33,10 +33,10 @@ package org.chai.kevin.data
 import org.apache.commons.logging.Log;
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.LocationService
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyService
 import org.chai.kevin.survey.SurveyValueService;
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period

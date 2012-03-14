@@ -17,11 +17,11 @@
 		 	</div>
 		 	<g:i18nTextarea name="descriptions" bean="${skip}" value="${skip?.descriptions}" label="Descriptions" field="descriptions" />
 		 
-			<div class="row ${hasErrors(bean:skip, field:'skippedSurveyElements', 'errors')}">
+			<div class="row ${hasErrors(bean:skip, field:'skippedFormElements', 'errors')}">
 				<label><g:message code="survey.skiprule.skippedsurveyelement.label" default="Skipped Survey Elements"/>: </label>
 				
 				<!-- START SKIPPED SURVEY ELEMENTS -->
-				<g:each in="${skip.skippedSurveyElements}" var="entry">
+				<g:each in="${skip.skippedFormElements}" var="entry">
 					<div class="white-box">
 						<g:set var="surveyElement" value="${entry.key}"/>
 						<g:set var="prefixes" value="${entry.value}"/>
@@ -29,7 +29,7 @@
 						<label for="skipped.element"><g:message code="survey.surveyelement.label" default="Survey Element"/>:</label> 
 						<select name="skipped.element" class="ajax-search-field skipped-survey-elements-list">
 							<option value="${surveyElement.id}" selected>
-								<g:i18n field="${surveyElement.dataElement.names}" />[${surveyElement.id}]
+								<g:i18n field="${surveyElement.dataElement.names}" /> - <g:i18n field="${surveyElement.surveyQuestion.section.names}"/> - <g:i18n field="${surveyElement.survey.names}"/>[${surveyElement.id}]
 							</option>
 						</select>
 						<label for="skipped.prefix"><g:message code="survey.skiprule.skippedsurveyelement.prefixes.label" default="Prefixes (comma-separated)"/>:</label>
@@ -51,7 +51,7 @@
 				</a>
 				<!-- END SKIPPED SURVEY ELEMENTS -->
 				
-				<div class="error-list"><g:renderErrors bean="${skip}" field="skippedSurveyElements" /></div>
+				<div class="error-list"><g:renderErrors bean="${skip}" field="skippedFormElements" /></div>
 			</div>
 
 			<g:selectFromList name="skippedSurveyQuestions" label="${message(code:'survey.skiprule.skippedquestions.label')}" field="skippedSurveyQuestions" 

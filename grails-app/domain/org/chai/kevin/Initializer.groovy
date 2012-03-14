@@ -71,6 +71,7 @@ import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
+import org.chai.kevin.form.FormValidationRule;
 import org.hisp.dhis.period.Period;
 
 class Initializer {
@@ -1358,17 +1359,16 @@ class Initializer {
 			serviceDev.addSection(patientReg)
 			serviceDev.save(failOnError:true);
 
-			def rulePatient1 = new SurveyValidationRule(
-
-				surveyElement: surveyElementPatientQ1,
+			def rulePatient1 = new FormValidationRule(
+				formElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
 				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
-			def rulePatient2 = new SurveyValidationRule(
-				surveyElement: surveyElementPatientQ1,
+			def rulePatient2 = new FormValidationRule(
+				formElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 140",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
@@ -1570,9 +1570,8 @@ class Initializer {
 			services.addQuestion(serviceQ6)
 			services.save(failOnError:true)
 
-			def ruleQ6 = new SurveyValidationRule(
-
-				surveyElement: surveyElementServiceQ6,
+			def ruleQ6 = new FormValidationRule(
+				formElement: surveyElementServiceQ6,
 				prefix: "[_].key1.key18",
 				expression: "\$"+surveyElementServiceQ6.id+"[_].key1.key18 < 24",
 				messages: j(["en":"Validation error {0,here}"]),
@@ -1584,18 +1583,16 @@ class Initializer {
 			surveyElementServiceQ6.addValidationRule(ruleQ6)
 			surveyElementServiceQ6.save(failOnError: true)
 
-
-			def rule1 = new SurveyValidationRule(
-
-				surveyElement: surveyElementServiceQ1,
+			def rule1 = new FormValidationRule(
+				formElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementServiceQ1],
 				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
-			def rule2 = new SurveyValidationRule(
-				surveyElement: surveyElementServiceQ1,
+			def rule2 = new FormValidationRule(
+				formElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 140",
 				messages: j(["en":"Validation error {0,here}"]),
 				typeCodeString: "District Hospital,Health Center",
@@ -1835,9 +1832,8 @@ class Initializer {
 			dataElmntsLine1.put(tabColumnThree, surveyElementTable3)
 			dataElmntsLine1.put(tabColumnFour, surveyElementTable4)
 
-			def ruleTable1 = new SurveyValidationRule(
-
-				surveyElement: surveyElementTable1,
+			def ruleTable1 = new FormValidationRule(
+				formElement: surveyElementTable1,
 				expression: "\$"+surveyElementTable1.id+" < 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable1],
@@ -1882,10 +1878,8 @@ class Initializer {
 			tableQ.addRow(tabRowTwo)
 			tableQ.save(failOnError:true)
 
-
-			def ruleCheckbox = new SurveyValidationRule(
-
-				surveyElement: surveyElementChecboxQ3,
+			def ruleCheckbox = new FormValidationRule(
+				formElement: surveyElementChecboxQ3,
 				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+" else true",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable21],
@@ -1896,11 +1890,11 @@ class Initializer {
 			surveyElementChecboxQ3.addValidationRule(ruleCheckbox)
 			surveyElementChecboxQ3.save(failOnError: true)
 
-			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedSurveyElements: [(surveyElementTable2): ""]);
-			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedSurveyElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
+			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedFormElements: [(surveyElementTable2): ""]);
+			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedFormElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
 			def skipRule3 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==2", skippedSurveyQuestions: [checkBoxQ]);
-			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementPatientQ1.id+"==1000", skippedSurveyQuestions: [tableQ], skippedSurveyElements: [(surveyElementChecboxQ1): ""]);
-			def skipRule5 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementServiceQ6.id+"[_].key0.key01=='value1'", skippedSurveyQuestions: [], skippedSurveyElements: [(surveyElementServiceQ6): "[_].key0.key02"]);
+			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementPatientQ1.id+"==1000", skippedSurveyQuestions: [tableQ], skippedFormElements: [(surveyElementChecboxQ1): ""]);
+			def skipRule5 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementServiceQ6.id+"[_].key0.key01=='value1'", skippedSurveyQuestions: [], skippedFormElements: [(surveyElementServiceQ6): "[_].key0.key02"]);
 
 			surveyOne.addSkipRule(skipRule1)
 			surveyOne.addSkipRule(skipRule2)
@@ -1909,7 +1903,6 @@ class Initializer {
 			surveyOne.addSkipRule(skipRule5)
 
 			surveyOne.save()
-
 		}
 	}
 

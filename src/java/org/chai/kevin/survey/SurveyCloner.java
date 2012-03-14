@@ -1,15 +1,19 @@
 package org.chai.kevin.survey;
 
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormSkipRule;
+import org.chai.kevin.form.FormValidationRule;
 
-abstract class SurveyCloner {
 
-	public void addUnchangedValidationRule(SurveyValidationRule rule, Long id){}
+public abstract class SurveyCloner {
+
+	public void addUnchangedValidationRule(FormValidationRule rule, Long id){}
 
 	public void addUnchangedSkipRule(SurveySkipRule rule, Long id){}
 
-	public String getExpression(String expression, SurveyValidationRule rule) {return expression;}
+	public String getExpression(String expression, FormValidationRule rule) {return expression;}
 
-	public String getExpression(String expression, SurveySkipRule rule) {return expression;}
+	public String getExpression(String expression, FormSkipRule rule) {return expression;}
 
 	public Survey getSurvey(Survey survey) {return survey;}
 
@@ -19,10 +23,10 @@ abstract class SurveyCloner {
 
 	public SurveyQuestion getQuestion(SurveyQuestion question) {return question;}
 
-	public SurveyElement getElement(SurveyElement element) {return element;}
+	public <T extends FormElement> T getElement(T element) {return element;}
 
 	public SurveySkipRule getSkipRule(SurveySkipRule skipRule) {return skipRule;}
 
-	public SurveyValidationRule getValidationRule(SurveyValidationRule validationRule) {return validationRule;}
+	public FormValidationRule getValidationRule(FormValidationRule validationRule) {return validationRule;}
 
 }

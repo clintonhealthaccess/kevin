@@ -128,7 +128,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def list = null
 		
 		when:
-		def rule1 = newSkipRule(survey, "1==1", [(element): ""], [])
+		def rule1 = newSurveySkipRule(survey, "1==1", [(element): ""], [])
 		list = surveyService.searchSkipRules(element)
 		
 		then:
@@ -149,7 +149,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def list = null
 		
 		when:
-		def rule2 = newSkipRule(survey, "\$"+element.id+"==1", [(element): ""], [])
+		def rule2 = newSurveySkipRule(survey, "\$"+element.id+"==1", [(element): ""], [])
 		list = surveyService.searchSkipRules(element)
 		
 		then:
@@ -170,8 +170,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def list = null
 	
 		when:
-		def rule3 = newSkipRule(survey, "\$"+element.id+"0"+"==1", [(element): ""], [])
-		def rule4 = newSkipRule(survey, "\$"+element.id+"==1", [(element): ""], [])
+		def rule3 = newSurveySkipRule(survey, "\$"+element.id+"0"+"==1", [(element): ""], [])
+		def rule4 = newSurveySkipRule(survey, "\$"+element.id+"==1", [(element): ""], [])
 		list = surveyService.searchSkipRules(element)
 		
 		then:
@@ -201,7 +201,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		list.isEmpty()
 		
 		when:
-		def rule1 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
+		def rule1 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
 		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:
@@ -231,8 +231,8 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		def list = null
 	
 		when:
-		def rule3 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
-		def rule4 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
+		def rule3 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
+		def rule4 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
 		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:

@@ -58,7 +58,7 @@ class SurveyElementController {
 				surveyElements.each { surveyElement ->
 					elem (
 						key: surveyElement.id,
-						value: g.i18n(field: surveyElement.rawDataElement.names)+' - '+ g.i18n(field: surveyElement.surveyQuestion.section.names)+' - '+ g.i18n(field: surveyElement.survey.names) + '['+surveyElement.id+']'
+						value: g.i18n(field: surveyElement.dataElement.names)+' - '+ g.i18n(field: surveyElement.surveyQuestion.section.names)+' - '+ g.i18n(field: surveyElement.survey.names) + '['+surveyElement.id+']'
 					)
 				}
 			}

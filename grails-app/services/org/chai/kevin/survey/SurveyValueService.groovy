@@ -5,11 +5,12 @@ import javax.persistence.Entity;
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.LocationService
 import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
-import org.chai.kevin.survey.validation.SurveyEnteredValue
 import org.hibernate.Criteria
 import org.hibernate.FlushMode
 import org.hibernate.criterion.Projections
@@ -35,21 +36,10 @@ class SurveyValueService {
 		surveyEnteredProgram.delete()
 	}
 	
-	void save(SurveyEnteredValue surveyEnteredValue) {
-		if (log.isDebugEnabled()) log.debug("save(surveyEnteredValue=${surveyEnteredValue}})")
-		surveyEnteredValue.setUserUuid(SecurityUtils.subject.principal)
-		surveyEnteredValue.setTimestamp(new Date());
-		surveyEnteredValue.save();
-	}
-	
-	void delete(SurveyEnteredValue surveyEnteredValue) {
-		surveyEnteredValue.delete()
-	}
-	
-	void deleteEnteredValues(SurveyElement element) {
+	void deleteEnteredValues(FormElement element) {
 		sessionFactory.getCurrentSession()
-		.createQuery("delete from SurveyEnteredValue where surveyElement = :surveyElement")
-		.setParameter("surveyElement", element)
+		.createQuery("delete from FormEnteredValue where formElement = :formElement")
+		.setParameter("formElement", element)
 		.executeUpdate();
 	}
 	
@@ -164,26 +154,11 @@ class SurveyValueService {
 		return result
 	}
 	
-	SurveyEnteredValue getSurveyEnteredValue(SurveyElement surveyElement, DataLocationEntity entity) {
-		def c = SurveyEnteredValue.createCriteria()
-		c.add(Restrictions.naturalId()
-			.set("entity", entity)
-			.set("surveyElement", surveyElement)
-		)
-		c.setCacheable(true)
-		c.setCacheRegion("surveyEnteredValueQueryCache")
-		
-		c.setFlushMode(FlushMode.COMMIT)
-		def result = c.uniqueResult();
-		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
-		return result
-	}
-	
-	List<SurveyEnteredValue> getSurveyEnteredValues(DataLocationEntity entity, SurveySection section, SurveyProgram program, Survey survey) {
-		def c = SurveyEnteredValue.createCriteria()
+	List<FormEnteredValue> getFormEnteredValues(DataLocationEntity entity, SurveySection section, SurveyProgram program, Survey survey) {
+		def c = FormEnteredValue.createCriteria()
 		c.add(Restrictions.eq("entity", entity))
 		
-		if (survey != null || program != null || section != null) c.createAlias("surveyElement", "se")
+		if (survey != null || program != null || section != null) c.createAlias("formElement", "se")
 		if (survey != null || program != null || section != null) c.createAlias("se.surveyQuestion", "sq")
 		if (survey != null || program != null) c.createAlias("sq.section", "ss")
 		if (survey != null) c.createAlias("ss.program", "so")
@@ -194,7 +169,34 @@ class SurveyValueService {
 		
 		def result = c.setFlushMode(FlushMode.COMMIT).list();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
-		return result				
+		return result
 	}
-
+	
+	
+	void save(FormEnteredValue formEnteredValue) {
+		if (log.isDebugEnabled()) log.debug("save(formEnteredValue=${formEnteredValue}})")
+		formEnteredValue.setUserUuid(SecurityUtils.subject.principal)
+		formEnteredValue.setTimestamp(new Date());
+		formEnteredValue.save();
+	}
+	
+	void delete(FormEnteredValue formEnteredValue) {
+		formEnteredValue.delete()
+	}
+	
+	FormEnteredValue getFormEnteredValue(FormElement formElement, DataLocationEntity entity) {
+		def c = FormEnteredValue.createCriteria()
+		c.add(Restrictions.naturalId()
+			.set("entity", entity)
+			.set("formElement", formElement)
+		)
+		c.setCacheable(true)
+		c.setCacheRegion("formEnteredValueQueryCache")
+		
+		c.setFlushMode(FlushMode.COMMIT)
+		def result = c.uniqueResult();
+		if (log.isDebugEnabled()) log.debug("getFormEnteredValue(...)="+result);
+		return result
+	}
+	
 }

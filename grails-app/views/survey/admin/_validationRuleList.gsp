@@ -28,7 +28,7 @@
 						</li>
 					</ul>
 				</td>
-				<td><g:i18n field="${validationRule.surveyElement.dataElement?.names}" /></td>
+				<td><g:i18n field="${validationRule.formElement.dataElement?.names}" /></td>
 				<td>${validationRule.prefix}</td>
 				<td>${validationRule.expression}</td>
 				<td> 

@@ -30,7 +30,7 @@
 				<td><g:i18n field="${skip.descriptions}" /></td>
 				<td>${skip.expression}</td>
 				<td> 
-				   ${skip.skippedSurveyElements.size()}
+				   ${skip.skippedFormElements.size()}
 			    </td>
 				<td>
 					${skip.skippedSurveyQuestions.size()}

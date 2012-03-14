@@ -21,12 +21,12 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type.ValueVisitor;
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.survey.export.SurveyExportDataPoint;
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.hibernate.SessionFactory;
@@ -151,10 +151,10 @@ public class SurveyExportService {
 					for (SurveySection surveySection : surveySections) {
 						if (section != null && section != surveySection) continue;
 						
-						List<SurveyEnteredValue> surveyEnteredValues = surveyValueService.getSurveyEnteredValues(facility, surveySection, surveyProgram, survey);					
-						Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, SurveyEnteredValue>();
-						for(SurveyEnteredValue surveyEnteredValue : surveyEnteredValues){
-							surveyElementValueMap.put(surveyEnteredValue.getSurveyElement(), surveyEnteredValue);
+						List<FormEnteredValue> formEnteredValues = surveyValueService.getFormEnteredValues(facility, surveySection, surveyProgram, survey);					
+						Map<SurveyElement, FormEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, FormEnteredValue>();
+						for(FormEnteredValue formEnteredValue : formEnteredValues){
+							surveyElementValueMap.put((SurveyElement)formEnteredValue.getFormElement(), formEnteredValue);
 						}
 						
 						List<SurveyQuestion> surveyQuestions = surveySection.getQuestions(facility.getType());				
@@ -189,7 +189,7 @@ public class SurveyExportService {
 	}
 
 	public List<SurveyExportDataPoint> getSurveyExportDataPoints(DataLocationEntity facility, Survey survey, SurveyProgram surveyProgram, 
-			SurveySection surveySection, SurveyQuestion surveyQuestion, Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap){				
+			SurveySection surveySection, SurveyQuestion surveyQuestion, Map<SurveyElement, FormEnteredValue> surveyElementValueMap){				
 		
 		List<SurveyExportDataPoint> surveyExportDataPoints = new ArrayList<SurveyExportDataPoint>();						
 		
@@ -235,7 +235,7 @@ public class SurveyExportService {
 	}
 
 	private void addDataPoints(DataLocationEntity facility, Survey survey, SurveyProgram surveyProgram, SurveySection surveySection, SurveyQuestion surveyQuestion,
-			List<SurveyExportDataPoint> surveyExportDataPoints, SurveyElement surveyElement, List<String> surveyQuestionItems, Map<SurveyElement, SurveyEnteredValue> surveyElementValueMap) {
+			List<SurveyExportDataPoint> surveyExportDataPoints, SurveyElement surveyElement, List<String> surveyQuestionItems, Map<SurveyElement, FormEnteredValue> surveyElementValueMap) {
 		if(surveyElement == null) surveyExportDataPoints.add(getBasicInfoDataPoint(facility, survey, surveyProgram, surveySection, surveyQuestion, null));
 		else{
 			SurveyExportDataPoint dataPoint = getBasicInfoDataPoint(facility, survey, surveyProgram, surveySection, surveyQuestion, surveyElement);
@@ -244,12 +244,12 @@ public class SurveyExportService {
 			DataElement<?> dataElement = surveyElement.getDataElement();
 			Type type = dataElement.getType();
 			
-			SurveyEnteredValue surveyEnteredValue = surveyElementValueMap.get(surveyElement);
+			FormEnteredValue formEnteredValue = surveyElementValueMap.get(surveyElement);
 
-			if(surveyEnteredValue != null){			
+			if(formEnteredValue != null){			
 				Map<String, Translation> headers = surveyElement.getHeaders();
 				DataPointVisitor dataPointVisitor = new DataPointVisitor(headers, surveyQuestionItems, dataPoint);
-				type.visit(surveyEnteredValue.getValue(), dataPointVisitor);
+				type.visit(formEnteredValue.getValue(), dataPointVisitor);
 				dataPoints = dataPointVisitor.getDataPoints();	
 			}
 			else{			
@@ -257,7 +257,7 @@ public class SurveyExportService {
 				dataPoints.add(dataPoint);
 			}
 			
-			sessionFactory.getCurrentSession().evict(surveyEnteredValue);
+			sessionFactory.getCurrentSession().evict(formEnteredValue);
 			
 			surveyExportDataPoints.addAll(dataPoints);
 		}

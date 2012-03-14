@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.form.EnteredEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyProgram;
 import org.hibernate.annotations.NaturalId;
@@ -18,7 +19,7 @@ import org.hibernate.annotations.NaturalId;
 @Table(name="dhsst_survey_entered_program", uniqueConstraints=@UniqueConstraint(
 		columnNames={"program", "entity"})
 )
-public class SurveyEnteredProgram extends SurveyEnteredEntity {
+public class SurveyEnteredProgram extends EnteredEntity {
 
 	private Long id;
 	private SurveyProgram program;

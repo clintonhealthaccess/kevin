@@ -114,12 +114,12 @@
     />
     
     <!-- short term cache for survey entered values, to speed up survey save -->
-    <cache name="org.chai.kevin.survey.validation.SurveyEnteredValue"
+    <cache name="org.chai.kevin.survey.validation.FormEnteredValue"
     		maxElementsInMemory="1000"
     		timeToLiveSeconds="0"
     		timeToIdleSeconds="60"
     />
-    <cache name="surveyEnteredValueQueryCache"
+    <cache name="formEnteredValueQueryCache"
     		maxElementsInMemory="1000"
     		timeToLiveSeconds="0"
     		timeToIdleSeconds="60"

@@ -28,10 +28,10 @@
 package org.chai.kevin.survey.validation
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
-import org.chai.kevin.survey.SurveyValidationRule
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
@@ -49,11 +49,11 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	}
 	
 	def getEntity(def id) {
-		return SurveyValidationRule.get(id)
+		return FormValidationRule.get(id)
 	}
 	
 	def createEntity() {
-		return new SurveyValidationRule()
+		return new FormValidationRule()
 	}
 
 	def getTemplate() {
@@ -61,27 +61,27 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		def surveyElements = []
-		if (entity.surveyElement != null) surveyElements << entity.surveyElement
+		def formElements = []
+		if (entity.formElement != null) formElements << SurveyElement.get(entity.formElement.id)
 
 		def dependencies = new ArrayList(entity.dependencies)		
 		[
 			dependencies: dependencies,
-			surveyElements: surveyElements,
+			formElements: formElements,
 			validation: entity,
 			types: DataEntityType.list()
 		]
 	}
 
 	def saveEntity(def entity) {
-		entity.surveyElement.validationRules.add(entity)
+		entity.formElement.validationRules.add(entity)
 		entity.save()
-		entity.surveyElement.save()
+		entity.formElement.save()
 	}
 	
 	def deleteEntity(def entity) {
-		entity.surveyElement.validationRules.remove(entity);
-		entity.surveyElement.save();
+		entity.formElement.validationRules.remove(entity);
+		entity.formElement.save();
 		entity.delete()
 	}
 
@@ -96,16 +96,16 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 
-		SurveyElement surveyElement = SurveyElement.get(params.int('surveyElement.id'))
+		SurveyElement surveyElement = SurveyElement.get(params.int('formElement.id'))
 		Survey survey = Survey.get(params.int('survey.id'))
 		
 		if (surveyElement == null && survey == null) {
 			response.sendError(404)
 		}
 		else {
-			List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
+			List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();
 			if (surveyElement != null) {		
-				surveyElement = SurveyElement.get(params.int('surveyElement.id'))
+				surveyElement = SurveyElement.get(params.int('formElement.id'))
 				validationRules.addAll(surveyElement.getValidationRules());
 			}
 			else {

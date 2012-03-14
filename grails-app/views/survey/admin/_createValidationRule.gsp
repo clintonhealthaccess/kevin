@@ -10,10 +10,10 @@
 		<div class="data-field-column">
 			<g:form url="[controller:'surveyValidationRule', action:'save', params:[targetURI: targetURI]]" useToken="true">
 
-				<g:selectFromList name="surveyElement.id" label="${message(code:'survey.surveyelement.label')}" field="surveyElement" optionKey="id" multiple="false"
-					ajaxLink="${createLink(controller:'surveyElement', action:'getAjaxData')}" from="${surveyElements}"
-					value="${validation.surveyElement?.id}" bean="${validation}"
-					values="${surveyElements.collect {i18n(field:it.dataElement.names)+' - '+i18n(field:it.surveyQuestion?.section?.names)+' - '+i18n(field:it.survey?.names)+'['+it.id+']'}}" />
+				<g:selectFromList name="formElement.id" label="${message(code:'survey.surveyelement.label')}" field="formElement" optionKey="id" multiple="false"
+					ajaxLink="${createLink(controller:'surveyElement', action:'getAjaxData')}" from="${formElements}"
+					value="${validation.formElement?.id}" bean="${validation}"
+					values="${formElements.collect {i18n(field:it.dataElement.names)+' - '+i18n(field:it.surveyQuestion?.section?.names)+' - '+i18n(field:it.survey?.names)+'['+it.id+']'}}" />
 			
 				<g:input name="prefix" label="${message(code:'survey.validationrule.prefix.label')}" bean="${validation}" field="prefix"/>
 		 		<g:i18nRichTextarea name="messages" bean="${validation}" value="${validation.messages}" label="Messages" field="messages" height="150"  width="400" maxHeight="100" />
