@@ -54,7 +54,7 @@ class SurveyValidationRuleControllerSpec extends SurveyIntegrationTests {
 		surveyValidationRuleController = new SurveyValidationRuleController()
 		
 		when:
-		surveyValidationRuleController.params['surveyElement.id'] = element.id
+		surveyValidationRuleController.params['formElement.id'] = element.id
 		surveyValidationRuleController.list()
 		
 		then:
