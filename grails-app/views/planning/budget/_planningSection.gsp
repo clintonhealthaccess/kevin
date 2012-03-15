@@ -4,7 +4,7 @@
 			<g:value value="${planningEntry.discriminatorValue}" type="${planningType.discriminatorType}" enums="${planningEntry.enums}"/>
 		</h5>
 		<h6>
-			<g:i18n field="${planningType.headers[section]}"/>
+			<g:i18n field="${planningType.formElement.headers[section]}"/>
 		</h6>
 	</div>
 	
@@ -20,7 +20,7 @@
 			headerSuffix: section,
 			
 			// get rid of those in the templates??
-			element: planningType,
+			element: planningType.formElement,
 			validatable: planningEntry.validatable,
 			
 			readonly: readonly,

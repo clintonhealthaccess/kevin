@@ -61,10 +61,6 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return element;
 	}
 	
-	def static newFormEnteredValue(def element, def period, def entity, def value) {
-		return new FormEnteredValue(formElement: element, value: value, entity: entity).save(failOnError: true, flush: true)
-	}
-
 	def static newSurveyEnteredQuestion(def question, def period, def entity, def invalid, def complete) {
 		return new SurveyEnteredQuestion(question: question, entity: entity, invalid: invalid, complete: complete).save(failOnError: true, flush: true)
 	}
@@ -76,18 +72,7 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	def static newSurveyEnteredProgram(def program, def period, def entity, def invalid, def complete, def closed) {
 		return new SurveyEnteredProgram(program: program, entity: entity, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
 	}
-	
-	def static newFormValidationRule(def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		def validationRule = new FormValidationRule(expression: expression, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
-		element.addValidationRule(validationRule)
-		element.save(failOnError: true)
-		return validationRule
-	}
-	
-	def static newFormValidationRule(def element, def prefix, def types, def expression, def dependencies = []) {
-		return newFormValidationRule(element, prefix, types, expression, false, dependencies)
-	}
-	
+
 	def static newSurveySkipRule(def survey, def expression, def skippedElements, def skippedQuestions) {
 		def skipRule = new SurveySkipRule(survey: survey, expression: expression, skippedFormElements: skippedElements, skippedSurveyQuestions: skippedQuestions).save(failOnError: true)
 		survey.addSkipRule(skipRule)

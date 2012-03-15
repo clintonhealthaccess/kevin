@@ -24,7 +24,7 @@
 							<thead>
 								<g:sortableColumn property="${PlanningSummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
 								<g:each in="${summaryPage.planningTypes}" var="planningType">
-									<g:sortableColumn property="planning-${planningType.id}" title="${i18n(field:planningType.namesPlural)}" params="${params}" defaultOrder="desc"/>
+									<g:sortableColumn property="planning-${planningType.id}" title="${i18n(field:planningType.namesPlural)+' '}" params="${params}" defaultOrder="desc"/>
 								</g:each>
 								<th></th>
 							</thead>

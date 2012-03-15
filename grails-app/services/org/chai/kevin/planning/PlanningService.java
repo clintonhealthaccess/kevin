@@ -75,16 +75,16 @@ public class PlanningService {
 
 	private Map<String, Enum> getEnums(PlanningType type) {
 		Map<String, Enum> result = new HashMap<String, Enum>();
-		for (Entry<String, Type> prefix : type.getDataElement().getEnumPrefixes().entrySet()) {
+		for (Entry<String, Type> prefix : type.getFormElement().getDataElement().getEnumPrefixes().entrySet()) {
 			result.put(prefix.getValue().getEnumCode(), dataService.findEnumByCode(prefix.getValue().getEnumCode()));
 		}
 		return result;
 	}
 	
 	private RawDataElementValue getDataElementValue(PlanningType type, DataLocationEntity location) {
-		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getDataElement(), location, type.getPeriod());
+		RawDataElementValue dataElementValue = valueService.getDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod());
 		if (dataElementValue == null) {
-			dataElementValue = new RawDataElementValue(type.getDataElement(), location, type.getPeriod(), Value.NULL_INSTANCE());
+			dataElementValue = new RawDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod(), Value.NULL_INSTANCE());
 		}
 		return dataElementValue;
 	}

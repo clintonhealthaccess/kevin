@@ -27,7 +27,7 @@
 			  					<div class="section-title-wrap">
 			  						<h4 class="section-title"> 
 			  							<span class="question-default">${i+1}</span>
-			  							<g:i18n field="${planningType.headers[section]}"/>
+			  							<g:i18n field="${planningType.formElement.headers[section]}"/>
 			  						</h4>
 			  					</div>
 			
@@ -39,7 +39,7 @@
 									headerSuffix: section,
 									
 									// get rid of those in the templates??
-									element: planningType,
+									element: planningType.formElement,
 									validatable: planningEntry.validatable,
 									
 									readonly: readonly,

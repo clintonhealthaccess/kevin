@@ -26,7 +26,7 @@
 					</ul>
 				</td>
 				<td><g:i18n field="${planningType.names}"/></td>
-				<td><g:i18n field="${planningType.dataElement.names}"/></td>
+				<td><g:i18n field="${planningType.formElement.dataElement.names}"/></td>
 				<td>${planningType.costs.size()}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

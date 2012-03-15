@@ -21,7 +21,7 @@
 			<tr class="tree_sign_minus">
 				<td>
 					<span style="margin-left: 40px;">
-						<g:i18n field="${planningType.headers[section]}"/>
+						<g:i18n field="${planningType.formElement.headers[section]}"/>
 					</span>
 				</td>
 				<g:if test="${costType == PlanningCostType.INCOMING}">
