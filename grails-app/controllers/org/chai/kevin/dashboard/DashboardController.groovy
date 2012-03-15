@@ -122,7 +122,7 @@ class DashboardController extends AbstractController {
 	}
 	
 	def compare = {
-		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)								
+		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)							
 		
 		Period period = getPeriod()	
 		ReportProgram program = getProgram()
