@@ -8,18 +8,12 @@ import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.planning.PlanningEntry;
 
-public class PlanningEntryBudget {
+public class PlanningEntryBudget extends PlanningEntry {
 
-	private PlanningEntry planningEntry;
 	private Map<PlanningCost, BudgetCost> budgetCosts;
 
-	public PlanningEntryBudget(PlanningEntry planningEntry, Map<PlanningCost, BudgetCost> budgetCosts) {
-		this.planningEntry = planningEntry;
+	public PlanningEntryBudget(Map<PlanningCost, BudgetCost> budgetCosts) {
 		this.budgetCosts = budgetCosts;
-	}
-	
-	public PlanningEntry getPlanningEntry() {
-		return planningEntry;
 	}
 	
 	public Double getOutgoing() {
@@ -36,7 +30,7 @@ public class PlanningEntryBudget {
 
 	protected Double getSum(PlanningCostType costType) {
 		Double result = 0d;
-		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+		for (PlanningCost planningCost : getPlanningCosts()) {
 			if (planningCost.getType().equals(costType)) {
 				if (getBudgetCost(planningCost) != null) result += getBudgetCost(planningCost).getValue();
 			}
@@ -45,7 +39,7 @@ public class PlanningEntryBudget {
 	}
 	public Double getGroupTotal(PlanningCostType type, String groupSection) {
 		Double result = 0d;
-		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+		for (PlanningCost planningCost : getPlanningCosts()) {
 			if (planningCost.getType() == type && 
 				(	planningCost.getGroupSection() == groupSection 
 					||
@@ -59,7 +53,7 @@ public class PlanningEntryBudget {
 	
 	public List<String> getGroupSections(PlanningCostType type) {
 		List<String> result = new ArrayList<String>();
-		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+		for (PlanningCost planningCost : getPlanningCosts()) {
 			if (planningCost.getType().equals(type) && !result.contains(planningCost.getGroupSection())) {
 				result.add(planningCost.getGroupSection());
 			}
@@ -69,7 +63,7 @@ public class PlanningEntryBudget {
 	
 	public List<BudgetCost> getBudgetCosts(PlanningCostType type, String groupSection) {
 		List<BudgetCost> result = new ArrayList<BudgetCost>();
-		for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+		for (PlanningCost planningCost : getPlanningCosts()) {
 			if (	planningCost.getType() == type 
 					&& 
 					(	planningCost.getGroupSection() == groupSection 
@@ -81,6 +75,10 @@ public class PlanningEntryBudget {
 			}
 		}
 		return result;
+	}
+	
+	public List<PlanningCost> getPlanningCosts() {
+		return type.getPlanningCosts(getDiscriminatorValue().getStringValue());
 	}
 	
 	protected BudgetCost getBudgetCost(PlanningCost planningCost) {

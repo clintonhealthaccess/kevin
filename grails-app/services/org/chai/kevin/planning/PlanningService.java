@@ -26,6 +26,7 @@ import org.chai.kevin.planning.budget.PlanningEntryBudget;
 import org.chai.kevin.planning.budget.PlanningTypeBudget;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.value.NormalizedDataElementValue;
+import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.RefreshValueService;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.ValueService;
@@ -180,30 +181,6 @@ public class PlanningService {
 		}
 	}
 	
-	@Transactional(readOnly=true)
-	public PlanningTypeBudget getPlanningTypeBudget(PlanningType type, DataLocationEntity location) {
-		PlanningList planningList = getPlanningList(type, location);
-		
-		Set<DataEntityType> types = new HashSet<DataEntityType>();
-		types.add(location.getType());
-		
-		List<PlanningEntryBudget> planningEntryBudgets = new ArrayList<PlanningEntryBudget>();
-		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
-			if (planningEntry.isSubmitted()) {
-				Map<PlanningCost, BudgetCost> budgetCosts = new HashMap<PlanningCost, BudgetCost>();
-				for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
-					NormalizedDataElementValue value = valueService.getDataElementValue(planningCost.getDataElement(), location, type.getPeriod());
-					if (!value.getValue().isNull()) {
-						if (!value.getValue().getListValue().get(planningEntry.getLineNumber()).isNull())
-							budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, value));
-					}
-				}
-				planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
-			}
-		}
-		
-		return new PlanningTypeBudget(type, planningList, planningEntryBudgets);
-	}
 	
 	public void setFormValidationService(FormValidationService formValidationService) {
 		this.formValidationService = formValidationService;

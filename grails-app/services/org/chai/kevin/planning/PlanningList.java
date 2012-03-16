@@ -10,9 +10,12 @@ import org.chai.kevin.form.FormElement.ElementSubmitter;
 import org.chai.kevin.form.FormElementService;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.planning.budget.BudgetCost;
+import org.chai.kevin.planning.budget.PlanningEntryBudget;
 import org.chai.kevin.planning.budget.PlanningTypeBudget;
 import org.chai.kevin.value.RawDataElementValue;
 
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.ValueService;
 import org.hisp.dhis.period.Period;
@@ -24,13 +27,37 @@ public class PlanningList {
 	
 	private DataLocationEntity entity;
 	private List<PlanningEntry> planningEntries;
-	private ValidatableValue validatableValue;
+	private List<PlanningEntryBudget> planningBudgetEntries;
+	private FormEnteredValue formEnteredValue;
+	private RawDataElementValue rawDataElementValue;
 	
-	public PlanningList(PlanningType planningType, DataLocationEntity entity, ValidatableValue validatableValue, Map<String, Enum> enums) {
+	public PlanningList(PlanningType planningType, DataLocationEntity entity, 
+			FormEnteredValue formEnteredValue, RawDataElementValue rawDataElementValue, 
+			Map<String, Enum> enums) {
 		this.planningType = planningType;
-		this.validatableValue = validatableValue;
+		this.formEnteredValue = formEnteredValue;
+		this.rawDataElementValue = rawDataElementValue;
 		this.entity = entity;
 		this.enums = enums;
+	}
+	
+	public List<PlanningEntryBudget> getPlanningEntryBudgetList() {
+		
+		List<PlanningEntryBudget> planningEntryBudgets = new ArrayList<PlanningEntryBudget>();
+		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
+			if (planningEntry.isSubmitted()) {
+				Map<PlanningCost, BudgetCost> budgetCosts = new HashMap<PlanningCost, BudgetCost>();
+				for (PlanningCost planningCost : planningEntry.getPlanningCosts()) {
+					NormalizedDataElementValue value = valueService.getDataElementValue(planningCost.getDataElement(), location, type.getPeriod());
+					if (!value.getValue().isNull()) {
+						if (!value.getValue().getListValue().get(planningEntry.getLineNumber()).isNull())
+							budgetCosts.put(planningCost, new BudgetCost(planningEntry, planningCost, value));
+					}
+				}
+				planningEntryBudgets.add(new PlanningEntryBudget(planningEntry, budgetCosts));
+			}
+		}
+		
 	}
 	
 	public List<PlanningEntry> getPlanningEntries() {
@@ -43,10 +70,6 @@ public class PlanningList {
 			}
 		}
 		return planningEntries;
-	}
-	
-	private ValidatableValue getValidatableValue() {
-		return validatableValue;
 	}
 	
 	public PlanningEntry getOrCreatePlanningEntry(Integer lineNumber) {

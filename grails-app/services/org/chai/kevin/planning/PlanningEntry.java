@@ -16,7 +16,6 @@ import org.hisp.dhis.period.Period;
 public class PlanningEntry {
 
 	private static final String BUDGET_UPDATED = "budget_updated";
-
 	private static final String SUBMITTED = "submitted";
 	private static final Set<String> ATTRIBUTES = new HashSet<String>();
 			
@@ -25,9 +24,9 @@ public class PlanningEntry {
 		ATTRIBUTES.add(SUBMITTED);
 	}
 	
+	protected PlanningType type;
 	private DataLocationEntity entity;
 	private Integer lineNumber;
-	private PlanningType type;
 	private Map<String, Enum>  enums;
 	private ValidatableValue validatable;
 	
@@ -151,10 +150,6 @@ public class PlanningEntry {
 		return result;
 	}
 	
-	public List<PlanningCost> getPlanningCosts() {
-		return type.getPlanningCosts(getDiscriminatorValue().getStringValue());
-	}
-
 	public Map<String, Enum> getEnums() {
 		return enums;
 	}
