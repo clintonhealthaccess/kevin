@@ -19,7 +19,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		def html = applyTemplate(
 			'<g:programFilter selected="${program}" selectedTarget="${target}"/>',
 			[
-				'program': ReportProgram.findByCode(DashboardIntegrationTests.PROGRAM),
+				'program': ReportProgram.findByCode(DashboardIntegrationTests.PROGRAM1),
 				'target': DashboardTarget.class
 			]
 		)
