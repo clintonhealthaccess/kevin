@@ -43,6 +43,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 class EnumOptionController extends AbstractEntityController {
 
 	def languageService
+	def enumOptionService
 	
 	def getEntity(def id){
 		return EnumOption.get(id)
@@ -103,6 +104,29 @@ class EnumOptionController extends AbstractEntityController {
 				template: "data/enumOptionList",
 				entityCount: options.size(),
 				code: getLabel(),
+			])
+		}
+	}
+	
+	def search = {
+		adaptParamsForList();
+		Enum enume = Enum.get(params.int('enume.id'));
+		
+		if (enume == null) {
+			response.sendError(404)
+		}
+		else {
+			List<EnumOption> options = enumOptionService.searchEnumOption(enume,params["q"],params);
+			
+			if(params['sort']==null)
+				Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
+			
+			render (view: '/entity/list', model:[
+				entities: options,
+				template: "data/enumOptionList",
+				entityCount: enumOptionService.countEnumOption(enume,params['q']),
+				q:params['q'],
+				code: getLabel()
 			])
 		}
 	}

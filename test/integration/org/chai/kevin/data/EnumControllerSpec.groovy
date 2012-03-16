@@ -27,70 +27,55 @@
  */
 package org.chai.kevin.data
 
-
-import org.chai.kevin.AbstractEntityController;
-import org.chai.kevin.data.Enum as Enum;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-
 /**
- * @author Jean Kahigiso M.
+ * @author JeanKahigiso
  *
  */
-class EnumController extends AbstractEntityController {
-	def enumService
 
-	def getEntity(def id){
-		return Enum.get(id)
-	}
-	
-	def createEntity(){  
-		return new Enum();
-	}
-	
-	def getLabel() {
-		'enum.label'
-	}
-	
-	def getTemplate() {
-		return "/entity/data/createEnum"
-	}
-	
-	def getModel(def entity) {
-		[enumeration: entity]
-	}
+import org.chai.kevin.IntegrationTests;
+import org.hibernate.exception.ConstraintViolationException;
 
-	def bindParams(def entity) {
-		entity.properties = params
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = params.descriptions
-	}
-	
-	def list = {
-		adaptParamsForList()
-		List<Enum> enums = Enum.list(params);
-		
-		render (view: '/entity/list', model:[
-			entities: enums,
-			template: "data/enumList",
-			entityCount: Enum.count(),
-			code: getLabel()
-		])
-		
-	}
-	def search = {
-		
-		adaptParamsForList()
-		List<Enum> enums = enumService.searchEnum(params["q"],params);
-		render (view: '/entity/list', model:[
-			entities: enums,
-			template: "data/enumList",
-			entityCount: enumService.countEnum(params['q']),
-			q:params['q'],
-			code: getLabel()
+class EnumControllerSpec extends IntegrationTests {
+	def enumController
+	//this will fail grails 2 bug has to be fixed so this can pass
+	def "enum code has to be unique (this will fail grails bug)"(){
+		setup:
+		def enume = newEnume(CODE("code"), "My Enum two", "Enum two for test kap");
+		enumController = new EnumController();
+		when:
+		enumController.params.code="code";
+		enumController.save()
+		then:
+		thrown ConstraintViolationException 
+		Enum.count()==1
+
 			
-		])
+	}		
+	def "search and list enum"(){
+		setup:
+		def enumeTwo = newEnume(CODE("the code two"), "My Enum two", "Enum two for test kap");
+		def enumeOne = newEnume(CODE("the code one"), "My Enum one", "Enum one for test one kap");
+		def enumeThree= newEnume(CODE("the code three"), "My Enum one", "Enum one for test one");
+		enumController = new EnumController();
+		
+		when:
+		enumController.params.sort="code"
+		enumController.list()
+		then:
+		enumController.modelAndView != null
+		enumController.modelAndView.model.entities.equals([enumeOne,enumeThree,enumeTwo])
+		enumController.modelAndView.model.entityCount== 3
+		
+		when:
+		enumController.params.q="kap"
+		enumController.params.sort="code"
+		enumController.search()
+		then:
+		enumController.modelAndView != null
+		enumController.modelAndView.model.entities.equals([enumeOne,enumeTwo])
+		enumController.modelAndView.model.entityCount== 2
+		
 	}
-	
+
+
 }
