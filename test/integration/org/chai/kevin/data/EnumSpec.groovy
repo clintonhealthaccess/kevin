@@ -4,11 +4,25 @@ import java.util.Map;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Enum;
+import org.hibernate.exception.ConstraintViolationException;
 
 class EnumSpec extends IntegrationTests {
 	
 	def enumService
 	def enumOptionService
+	
+	//this will fail grails 2 bug has to be fixed so this can pass
+	def "enum code has to be unique (this will fail grails bug)"(){
+		when:
+		def enumeOne = newEnume(CODE("code"), "My Enum one", "Enum one");
+		then:
+		Enum.count()==1
+		when:
+		def enumeTwo = newEnume(CODE("code"), "My Enum two", "Enum two");
+		then:
+		thrown ConstraintViolationException
+			
+	}
 
 	def "get active options work"() {
 		setup:
