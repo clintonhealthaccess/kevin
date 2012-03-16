@@ -39,6 +39,26 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		then:
 		rawDataElementController.response.redirectedUrl.equals(rawDataElementController.getTargetURI())
 	}
+	
+	def "edit data element"() {
+		setup:
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		rawDataElementController = new RawDataElementController()
+
+		when:
+		rawDataElementController.params.id = dataElement.id
+		rawDataElementController.params.code = "new_code"
+		rawDataElementController.params.names = ['en':"new_name"]
+		rawDataElementController.params['type.jsonValue'] = Type.TYPE_NUMBER().getJsonValue()
+		rawDataElementController.saveWithoutTokenCheck()
+
+		then:
+		rawDataElementController.response.redirectedUrl.equals(rawDataElementController.getTargetURI())
+		RawDataElement.list()[0].id == dataElement.id
+		RawDataElement.list()[0].code == "new_code"
+		RawDataElement.list()[0].names['en'] == "new_name"
+		
+	}
 
 	def "can delete data element"() {
 		setup:
