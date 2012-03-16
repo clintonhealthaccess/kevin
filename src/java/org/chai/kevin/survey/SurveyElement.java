@@ -19,7 +19,10 @@ import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
+import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ValueService;
 
 @Entity(name = "SurveyElement")
 @Table(name = "dhsst_survey_element")
@@ -57,6 +60,36 @@ public class SurveyElement extends FormElement {
 	@Override
 	public String toString() {
 		return "SurveyElement [id=" + id + "]";
+	}
+	
+	@Transient
+	@Override
+	public Value getValue(DataLocationEntity entity, ElementSubmitter submitter) {
+		SurveyEnteredQuestion enteredQuestion = ((SurveyElementSubmitter)submitter).getSurveyValueService().getOrCreateSurveyEnteredQuestion(entity, this.getSurveyQuestion());
+		if (enteredQuestion.isSkipped()) {
+			// if the question is skipped we save NULL
+			return Value.NULL_INSTANCE();
+		}
+		else {
+			// else we get the value
+			return super.getValue(entity, submitter);
+		}
+	}
+	
+	public static class SurveyElementSubmitter extends ElementSubmitter {
+		
+		private SurveyValueService surveyValueService;
+	
+		public SurveyElementSubmitter(SurveyValueService surveyValueService, FormElementService formElementService, ValueService valueService) {
+			super(formElementService, valueService);
+			
+			this.surveyValueService = surveyValueService;
+		}
+
+		public SurveyValueService getSurveyValueService() {
+			return surveyValueService;
+		}
+		
 	}
 	
 	public static class SurveyElementCalculator extends ElementCalculator {

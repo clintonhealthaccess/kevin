@@ -12,6 +12,7 @@ import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormElement.ElementSubmitter;
 import org.chai.kevin.form.FormElementService;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormValidationService;
@@ -66,12 +67,12 @@ public class PlanningService {
 		return new PlanningTypeSummary(planningType, numberOfEntries);
 	}
 	
-	@Transactional(readOnly=true)
-	public PlanningList getPlanningList(PlanningType type, DataLocationEntity location) {
-		FormEnteredValue formEnteredValue = formElementService.getOrCreateFormEnteredValue(location, type.getFormElement());
-		
-		return new PlanningList(type, formEnteredValue, getEnums(type));
-	}
+//	@Transactional(readOnly=true)
+//	public PlanningList getPlanningList(PlanningType type, DataLocationEntity location) {
+//		FormEnteredValue formEnteredValue = formElementService.getOrCreateFormEnteredValue(location, type.getFormElement());
+//		
+//		return new PlanningList(type, location, formEnteredValue.getValidatable(), getEnums(type));
+//	}
 	
 	private Map<String, Enum> getEnums(PlanningType type) {
 		Map<String, Enum> result = new HashMap<String, Enum>();
@@ -128,11 +129,13 @@ public class PlanningService {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
 		
-		// TODO we create a raw data element
-		
 		// we submit the entry
 		planningEntry.setSubmitted(true);
 
+		// we refresh the corresponding raw data element
+		ElementSubmitter submitter = new ElementSubmitter(formElementService, valueService);
+		type.getFormElement().submit(location, type.getPeriod(), submitter);
+		
 		// then we recalculate the budget
 		refreshBudget(planningEntry, location);
 		
@@ -147,6 +150,13 @@ public class PlanningService {
 		
 		// we submit the entry
 		planningEntry.setSubmitted(false);
+
+		// we refresh the corresponding raw data element
+		ElementSubmitter submitter = new ElementSubmitter(formElementService, valueService);
+		type.getFormElement().submit(location, type.getPeriod(), submitter);
+		
+		// then we recalculate the budget
+		refreshBudget(planningEntry, location);
 				
 		// last we save the value
 		planningList.save(formElementService);

@@ -22,12 +22,18 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.Type;
+import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyCloner;
 import org.chai.kevin.survey.SurveyElement;
+import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ValueService;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hisp.dhis.period.Period;
 
 @Entity(name = "FormElement")
 @Table(name = "dhsst_form_element")
@@ -121,7 +127,63 @@ public class FormElement {
 			skipRule.evaluate(entity, calculator);
 		}
 	}
+	
+	@Transient
+	protected Value getValue(DataLocationEntity entity, final ElementSubmitter submitter) {
+		FormEnteredValue enteredValue = submitter.getFormElementService().getOrCreateFormEnteredValue(entity, this);
+		final Type type = enteredValue.getType();
+		Value valueToSave = new Value(enteredValue.getValue().getJsonValue());
+		type.transformValue(valueToSave, new ValuePredicate() {
+			@Override
+			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+				return submitter.transformValue(currentValue, currentType, currentPrefix);
+			}
+		});
+		return valueToSave;
+	}
+	
+	@Transient
+	public void submit(DataLocationEntity entity, Period period, ElementSubmitter submitter) {
+		Value valueToSave = getValue(entity, submitter);
+		
+		RawDataElementValue rawDataElementValue = submitter.getValueService().getDataElementValue(getDataElement(), entity, period);
+		if (rawDataElementValue == null) {
+			rawDataElementValue = new RawDataElementValue(getDataElement(), entity, period, null);
+		}
+		rawDataElementValue.setValue(valueToSave);
+		
+		submitter.getValueService().save(rawDataElementValue);
+	}
 
+	public static class ElementSubmitter {
+		private FormElementService formElementService;
+		private ValueService valueService;
+		
+		public ElementSubmitter(FormElementService formElementService, ValueService valueService) {
+			this.formElementService = formElementService;
+			this.valueService = valueService;
+		}
+		
+		public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+			// if it is skipped we return NULL
+			if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL_INSTANCE().getJsonValue());
+			// we remove the attributes
+			currentValue.setAttribute("skipped", null);
+			currentValue.setAttribute("invalid", null);
+			currentValue.setAttribute("warning", null);
+			
+			return true;
+		}	
+		
+		public ValueService getValueService() {
+			return valueService;
+		}
+		
+		public FormElementService getFormElementService() {
+			return formElementService;
+		}
+	}
+	
 	public static class ElementCalculator {
 		private FormValidationService formValidationService;
 		private FormElementService formElementService;

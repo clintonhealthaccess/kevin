@@ -30,7 +30,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		planningList.planningEntries.isEmpty()
 		
 		when:
-		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO), 
+		newFormEnteredValue(formElement, period, DataLocationEntity.findByCode(BUTARO), 
 			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
 		planningList = planningService.getPlanningList(planningType, DataLocationEntity.findByCode(BUTARO))
 		
@@ -61,7 +61,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		then:
 		planningTypeBudget.budgetPlanningEntries.size() == 0
 		when:
-		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
+		def elementValue = newFormEnteredValue(formElement, period, DataLocationEntity.findByCode(BUTARO),
 			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
 		elementValue.value.listValue[0].setAttribute("submitted", "true")
 		planningTypeBudget = planningService.getPlanningTypeBudget(planningType, DataLocationEntity.findByCode(BUTARO))
@@ -96,7 +96,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def planningTypeBudget = null
 		
 		when:
-		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
+		def elementValue = newFormEnteredValue(formElement, period, DataLocationEntity.findByCode(BUTARO),
 			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
 		elementValue.value.listValue[0].setAttribute("submitted", "true")
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
@@ -124,7 +124,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def planningTypeBudget = null
 		
 		when:
-		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
+		def elementValue = newFormEnteredValue(formElement, period, DataLocationEntity.findByCode(BUTARO),
 			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":null}}]},"+
 				"{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}"
 				+"]}"))

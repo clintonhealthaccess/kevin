@@ -56,6 +56,7 @@ import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
+import org.chai.kevin.survey.SurveyElement.SurveyElementSubmitter;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
@@ -557,41 +558,11 @@ public class SurveyPageService {
 		// we get the updated survey and work from that
 		SurveyPage surveyPage = getSurveyPage(entity, program);
 		if (surveyPage.canSubmit(program)) {
+			SurveyElementSubmitter submitter = new SurveyElementSubmitter(surveyValueService, formElementService, valueService);
+
 			// save all the values to data values
 			for (SurveyElement element : elements) {
-				FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(entity, element);
-				Value valueToSave = null;
-				// if the question is skipped we save NULL
-				SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(entity, element.getSurveyQuestion());
-				if (enteredQuestion.isSkipped()) {
-					valueToSave = Value.NULL_INSTANCE();
-				}
-				else {
-					final Type type = enteredValue.getType();
-					valueToSave = new Value(enteredValue.getValue().getJsonValue());
-					type.transformValue(valueToSave, new ValuePredicate() {
-						@Override
-						public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
-							// if it is skipped we return NULL
-							if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL_INSTANCE().getJsonValue());
-							// we remove the attributes
-							currentValue.setAttribute("skipped", null);
-							currentValue.setAttribute("invalid", null);
-							currentValue.setAttribute("warning", null);
-							
-							return true;
-						}
-					});
-				}
-				
-				RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), entity, program.getSurvey().getPeriod());
-				if (rawDataElementValue == null) {
-					rawDataElementValue = new RawDataElementValue(element.getDataElement(), entity, program.getSurvey().getPeriod(), null);
-				}
-				rawDataElementValue.setValue(valueToSave);
-				
-				rawDataElementValue.setTimestamp(new Date());
-				valueService.save(rawDataElementValue);
+				element.submit(entity, element.getSurvey().getPeriod(), submitter);
 			}
 			
 			// close the program

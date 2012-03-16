@@ -14,6 +14,7 @@ class FormElementServiceSpec extends IntegrationTests {
 	
 	def "get form element"() {
 		setup:
+		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
