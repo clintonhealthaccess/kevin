@@ -49,6 +49,7 @@ import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
@@ -310,8 +311,12 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newFormValidationRule(element, prefix, types, expression, false, dependencies)
 	}
 	
-	def newFormElement(def dataElement) {
+	def static newFormElement(def dataElement) {
 		return new FormElement(dataElement: dataElement).save(failOnError: true)
+	}
+	
+	def static newFormSkipRule(def expression, def skippedElements) {
+		return new FormSkipRule(expression: expression, skippedFormElements: skippedElements).save(failOnError: true)
 	}
 
 	def refresh() {

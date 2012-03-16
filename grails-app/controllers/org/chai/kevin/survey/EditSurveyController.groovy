@@ -31,6 +31,7 @@ import java.util.zip.ZipOutputStream
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService
+import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.security.User
@@ -41,7 +42,7 @@ class EditSurveyController extends AbstractController {
 
 	SurveyPageService surveyPageService;
 	SurveyExportService surveyExportService;
-	SurveyValidationService surveyValidationService;
+	FormValidationService formValidationService;
 	SessionFactory sessionFactory;
 	
 	def index = {

@@ -45,6 +45,8 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
@@ -115,33 +117,6 @@ class SurveyService {
 		}
 		
 		return criteria
-	}
-	
-	Set<FormValidationRule> searchValidationRules(SurveyElement surveyElement, DataEntityType type) {
-		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", type="+type+")");
-		
-		def c = FormValidationRule.createCriteria()
-		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		c.add(Restrictions.like("typeCodeString", type.code, MatchMode.ANYWHERE))
-		
-		List<FormValidationRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
-		return filter(rules, surveyElement.id);
-	}
-	
-	Set<SurveySkipRule> searchSkipRules(SurveyElement surveyElement) {
-		if (log.isDebugEnabled()) log.debug("searchSkipRules(surveyElement="+surveyElement+")");
-		
-		def c = SurveySkipRule.createCriteria()
-		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		
-		List<SurveySkipRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
-		return filter(rules, surveyElement.id);
-	}
-	
-	static def filter(def rules, Long id) {
-		return rules.findAll { rule ->
-			return Utils.containsId(rule.expression, id)
-		}
 	}
 	
 	Set<SurveyElement> getSurveyElements(RawDataElement dataElement, Survey survey) {

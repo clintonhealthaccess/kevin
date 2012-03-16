@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -21,7 +22,10 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.form.FormValidationService.ValidatableLocator;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyCloner;
+import org.chai.kevin.survey.SurveyElement;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -100,6 +104,58 @@ public class FormElement {
 		}
 	}
 
+	@Transient
+	public void validate(DataLocationEntity entity, ElementCalculator calculator) {
+		Set<FormValidationRule> validationRules = calculator.getFormElementService().searchValidationRules(this, entity.getType());
+		
+		for (FormValidationRule validationRule : validationRules) {
+			validationRule.evaluate(entity, calculator);
+		}
+	}
+	
+	@Transient
+	public void executeSkip(DataLocationEntity entity, ElementCalculator calculator) {
+		Set<FormSkipRule> skipRules = calculator.getFormElementService().searchSkipRules(this);
+		
+		for (FormSkipRule skipRule: skipRules) {
+			skipRule.evaluate(entity, calculator);
+		}
+	}
+
+	public static class ElementCalculator {
+		private FormValidationService formValidationService;
+		private FormElementService formElementService;
+		private ValidatableLocator validatableLocator;
+		private List<FormEnteredValue> affectedValues;
+		
+		public ElementCalculator(List<FormEnteredValue> affectedValues, FormValidationService formValidationService, FormElementService formElementService, ValidatableLocator validatableLocator) {
+			this.formElementService = formElementService;
+			this.formValidationService = formValidationService;
+			this.validatableLocator = validatableLocator;
+			this.affectedValues = affectedValues;
+		}
+		
+		public List<FormEnteredValue> getAffectedValues() {
+			return affectedValues;
+		}
+		
+		public ValidatableLocator getValidatableLocator() {
+			return validatableLocator;
+		}
+		
+		public FormElementService getFormElementService() {
+			return formElementService;
+		}
+		
+		public FormValidationService getFormValidationService() {
+			return formValidationService;
+		}
+		
+		public void addAffectedValue(FormEnteredValue value) {
+			this.affectedValues.add(value);
+		}
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

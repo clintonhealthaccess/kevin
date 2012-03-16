@@ -1,20 +1,21 @@
-package org.chai.kevin.survey
+package org.chai.kevin.form
 
-import org.chai.kevin.survey.SurveyValidationService.ValidatableLocator;
+import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.data.Type
 import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormValidationService.ValidatableLocator
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.value.Value
 
-class ValidationServiceSpec extends SurveyIntegrationTests {
+class FormValidationServiceSpec extends IntegrationTests {
 
-	def surveyValidationService;
+	def formValidationService;
 	
 	def getLocator() {
 		return new ValidatableLocator() {
 			public ValidatableValue getValidatable(Long id, DataLocationEntity location) {
-				SurveyElement element = SurveyElement.get(id)
+				FormElement element = FormElement.get(id)
 				FormEnteredValue enteredValue = FormEnteredValue.findByFormElementAndEntity(element, location);
 				return enteredValue.getValidatable();
 			}
@@ -25,19 +26,14 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
-
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(['key1':Type.TYPE_NUMBER(),'key2':Type.TYPE_NUMBER()])))
-		def element1 = newSurveyElement(question1, dataElement1)
+		def element1 = newFormElement(dataElement1)
 		
-		def rule = newSurveySkipRule(survey, "\$"+element1.id+"[_].key1 == 1", [(element1): "[_].key1,[_].key2"], [])
+		def rule = newFormSkipRule("\$"+element1.id+"[_].key1 == 1", [(element1): "[_].key1,[_].key2"])
 		
 		when:
 		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]},{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
-		def skipped = surveyValidationService.getSkippedPrefix(element1, rule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		def skipped = formValidationService.getSkippedPrefix(element1, rule, DataLocationEntity.findByCode(KIVUYE), getLocator())
 		
 		then:
 		skipped.equals(s(["[0].key1","[0].key2","[1].key1","[1].key2"]))
@@ -48,17 +44,10 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
-		
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def element1 = newSurveyElement(question1, dataElement1)
-		def element2 = newSurveyElement(question2, dataElement2)
+		def element1 = newFormElement(dataElement1)
+		def element2 = newFormElement(dataElement2)
 		
 		def validationRule = null
 		
@@ -67,7 +56,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		
 		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
 		newFormEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		def prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
 		
 		then:
 		prefixes.equals(new HashSet([""]))
@@ -78,17 +67,10 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
-		
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def element1 = newSurveyElement(question1, dataElement1)
-		def element2 = newSurveyElement(question2, dataElement2)
+		def element1 = newFormElement(dataElement1)
+		def element2 = newFormElement(dataElement2)
 		
 		def validationRule = null
 		
@@ -97,7 +79,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		
 		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("2"))
 		newFormEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		def prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
 		
 		then:
 		prefixes.isEmpty()
@@ -109,17 +91,10 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP)])
-		
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		def element1 = newSurveyElement(question1, dataElement1)
-		def element2 = newSurveyElement(question2, dataElement2)
+		def element1 = newFormElement(dataElement1)
+		def element2 = newFormElement(dataElement2)
 		
 		def validationRule = null
 		
@@ -128,7 +103,7 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		
 		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("0"))
 		newFormEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
-		def prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
 		
 		then:
 		prefixes.isEmpty()
@@ -139,29 +114,22 @@ class ValidationServiceSpec extends SurveyIntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		
-		def question1 = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		def question2 = newSimpleQuestion(section, 2, [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)])
-		
 		def dataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def element1 = newSurveyElement(question1, dataElement1)
+		def element1 = newFormElement(dataElement1)
 		
 		def validationRule = newFormValidationRule(element1, "", [(DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > 0")
 		def prefixes = null
 		
 		when:
 		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("0"))
-		prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
 		
 		then:
 		prefixes.isEmpty()
 		
 		when:
 		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(BUTARO), v("0"))
-		prefixes = surveyValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(BUTARO), getLocator())
+		prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(BUTARO), getLocator())
 		
 		then:
 		prefixes.equals(new HashSet([""]))

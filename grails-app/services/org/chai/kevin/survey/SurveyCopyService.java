@@ -241,7 +241,7 @@ public class SurveyCopyService {
 		 * @see org.chai.kevin.survey.SurveyCloner#getSkipRule(org.chai.kevin.survey.SurveySkipRule)
 		 */
 		@Override
-		public SurveySkipRule getSkipRule(SurveySkipRule skipRule) {
+		public FormSkipRule getSkipRule(FormSkipRule skipRule) {
 			if (!skipRules.containsKey(skipRule.getId())) {
 				SurveySkipRule copy = new SurveySkipRule();
 				skipRules.put(skipRule.getId(), copy);

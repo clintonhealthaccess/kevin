@@ -1,4 +1,4 @@
-package org.chai.kevin.survey;
+package org.chai.kevin.form;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,9 +14,9 @@ import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.ValidationService;
 import org.springframework.transaction.annotation.Transactional;
 
-public class SurveyValidationService {
+public class FormValidationService {
 	
-	private static final Log log = LogFactory.getLog(SurveyValidationService.class);
+	private static final Log log = LogFactory.getLog(FormValidationService.class);
 	
 	private ValidationService validationService;
 	
@@ -72,11 +72,9 @@ public class SurveyValidationService {
 		return result;
 	}
 
-	
 	public interface ValidatableLocator {
 		public ValidatableValue getValidatable(Long id, DataLocationEntity location);
 	}
-	
 	
 	public void setValidationService(ValidationService validationService) {
 		this.validationService = validationService;

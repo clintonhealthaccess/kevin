@@ -25,20 +25,6 @@ class SurveyValueServiceSpec extends SurveyIntegrationTests {
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		def formEnteredValue = newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		
-		then:
-		formEnteredValue.userUuid == null
-		formEnteredValue.timestamp == null
-		
-		when:
-		surveyValueService.save(formEnteredValue)
-		
-		then:
-		formEnteredValue.userUuid == 'uuid'
-		formEnteredValue.timestamp != null
-		
-		when:
 		def surveyEnteredQuestion = newSurveyEnteredQuestion(question1, period, DataLocationEntity.findByCode(KIVUYE), false, true)
 		
 		then:

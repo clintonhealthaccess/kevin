@@ -22,8 +22,13 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
+import org.chai.kevin.form.FormElement.ElementCalculator;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyCloner;
+import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "FormSkipRule")
@@ -31,6 +36,8 @@ import org.chai.kevin.util.Utils;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class FormSkipRule {
 
+	private final static Log log = LogFactory.getLog(FormSkipRule.class);
+	
 	private Long id;
 	private String expression;
 	private Translation descriptions = new Translation();
@@ -93,10 +100,23 @@ public class FormSkipRule {
 		return result;
 	}
 
-	protected void deepCopy(FormSkipRule copy, SurveyCloner surveyCloner) {
+	public void deepCopy(FormSkipRule copy, SurveyCloner surveyCloner) {
 		copy.setExpression(surveyCloner.getExpression(getExpression(), copy));
 		for (Entry<FormElement, String> entry : getSkippedFormElements().entrySet()) {
 			copy.getSkippedFormElements().put(surveyCloner.getElement(entry.getKey()), entry.getValue());
+		}
+	}
+	
+	public void evaluate(DataLocationEntity entity, ElementCalculator calculator) {
+		if (log.isDebugEnabled()) log.debug("evaluate(entity="+entity+") on "+this);
+		
+		for (FormElement formElement : getSkippedFormElements().keySet()) {
+			Set<String> prefixes = calculator.getFormValidationService().getSkippedPrefix(formElement, this, entity, calculator.getValidatableLocator());
+	
+			FormEnteredValue enteredValue = calculator.getFormElementService().getOrCreateFormEnteredValue(entity, formElement);
+			enteredValue.getValidatable().setSkipped(this, prefixes);
+			
+			calculator.addAffectedValue(enteredValue);
 		}
 	}
 	

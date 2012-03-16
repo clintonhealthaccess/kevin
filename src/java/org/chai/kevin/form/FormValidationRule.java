@@ -21,14 +21,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
+import org.chai.kevin.form.FormElement.ElementCalculator;
+import org.chai.kevin.form.FormValidationService.ValidatableLocator;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyCloner;
+import org.chai.kevin.survey.SurveyValueService;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="FormValidationRule")
 @Table(name="dhsst_form_validation_rule")
 public class FormValidationRule {
 
+	private final static Log log = LogFactory.getLog(FormValidationRule.class);
+	
 	private Long id;
 	
 	private FormElement formElement;
@@ -152,6 +160,17 @@ public class FormValidationRule {
 			}
 			copy.getDependencies().add(newElement);
 		}
+	}
+	
+	@Transient
+	public void evaluate(DataLocationEntity entity, ElementCalculator calculator) {
+		if (log.isDebugEnabled()) log.debug("evaluate(entity="+entity+") on "+this);
+		Set<String> prefixes = calculator.getFormValidationService().getInvalidPrefix(this, entity, calculator.getValidatableLocator());
+
+		FormEnteredValue enteredValue = calculator.getFormElementService().getOrCreateFormEnteredValue(entity, this.getFormElement());
+		enteredValue.getValidatable().setInvalid(this, prefixes);
+		
+		calculator.addAffectedValue(enteredValue);
 	}
 	
 	@Override

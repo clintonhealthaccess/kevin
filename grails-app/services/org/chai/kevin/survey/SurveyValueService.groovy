@@ -141,6 +141,15 @@ class SurveyValueService {
 		return result
 	}
 
+	SurveyEnteredQuestion getOrCreateSurveyEnteredQuestion(DataLocationEntity entity, SurveyQuestion surveyQuestion) {
+		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(surveyQuestion, entity);
+		if (enteredQuestion == null) {
+			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, entity, false, false);
+			save(enteredQuestion);
+		}
+		return enteredQuestion;
+	}
+	
 	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, DataLocationEntity entity) {
 		def c = SurveyEnteredQuestion.createCriteria()
 		c.add(Restrictions.naturalId()
@@ -169,33 +178,6 @@ class SurveyValueService {
 		
 		def result = c.setFlushMode(FlushMode.COMMIT).list();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
-		return result
-	}
-	
-	
-	void save(FormEnteredValue formEnteredValue) {
-		if (log.isDebugEnabled()) log.debug("save(formEnteredValue=${formEnteredValue}})")
-		formEnteredValue.setUserUuid(SecurityUtils.subject.principal)
-		formEnteredValue.setTimestamp(new Date());
-		formEnteredValue.save();
-	}
-	
-	void delete(FormEnteredValue formEnteredValue) {
-		formEnteredValue.delete()
-	}
-	
-	FormEnteredValue getFormEnteredValue(FormElement formElement, DataLocationEntity entity) {
-		def c = FormEnteredValue.createCriteria()
-		c.add(Restrictions.naturalId()
-			.set("entity", entity)
-			.set("formElement", formElement)
-		)
-		c.setCacheable(true)
-		c.setCacheRegion("formEnteredValueQueryCache")
-		
-		c.setFlushMode(FlushMode.COMMIT)
-		def result = c.uniqueResult();
-		if (log.isDebugEnabled()) log.debug("getFormEnteredValue(...)="+result);
 		return result
 	}
 	

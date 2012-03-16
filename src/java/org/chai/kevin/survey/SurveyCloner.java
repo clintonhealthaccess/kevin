@@ -25,8 +25,8 @@ public abstract class SurveyCloner {
 
 	public <T extends FormElement> T getElement(T element) {return element;}
 
-	public SurveySkipRule getSkipRule(SurveySkipRule skipRule) {return skipRule;}
+	public <T extends FormSkipRule> T getSkipRule(T skipRule) {return skipRule;}
 
-	public FormValidationRule getValidationRule(FormValidationRule validationRule) {return validationRule;}
+	public <T extends FormValidationRule> T getValidationRule(T validationRule) {return validationRule;}
 
 }
