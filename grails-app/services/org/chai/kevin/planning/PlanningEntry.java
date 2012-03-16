@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.chai.kevin.data.Enum;
+import org.chai.kevin.form.FormElement.ElementCalculator;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 public class PlanningEntry {
@@ -21,6 +23,7 @@ public class PlanningEntry {
 		ATTRIBUTES.add(SUBMITTED);
 	}
 	
+	private DataLocationEntity entity;
 	private Integer lineNumber;
 	private PlanningType type;
 	private Map<String, Enum>  enums;
@@ -28,14 +31,16 @@ public class PlanningEntry {
 	
 	public PlanningEntry() {}
 	
-	public PlanningEntry(ValidatableValue validatable, Integer lineNumber) {
+	public PlanningEntry(DataLocationEntity entity, ValidatableValue validatable, Integer lineNumber) {
+		this.entity = entity;
 		this.validatable = validatable;
 		this.lineNumber = lineNumber;
 		this.type = null;
 		this.enums = null;
 	}
 	
-	public PlanningEntry(PlanningType type, ValidatableValue validatable, Integer lineNumber, Map<String, Enum> enums) {
+	public PlanningEntry(DataLocationEntity entity, PlanningType type, ValidatableValue validatable, Integer lineNumber, Map<String, Enum> enums) {
+		this.entity = entity;
 		this.validatable = validatable;
 		this.type = type;
 		this.lineNumber = lineNumber;
@@ -150,5 +155,10 @@ public class PlanningEntry {
 
 	public Map<String, Enum> getEnums() {
 		return enums;
+	}
+
+	public void evaluateRules(ElementCalculator elementCalculator) {
+		type.getFormElement().validate(entity, elementCalculator);
+		type.getFormElement().executeSkip(entity, elementCalculator);
 	}
 }

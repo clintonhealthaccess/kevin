@@ -37,11 +37,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
@@ -49,11 +48,8 @@ import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormElement;
-import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormElementService;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.form.FormSkipRule;
-import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.CalculationEntity;
@@ -392,13 +388,12 @@ public class SurveyPageService {
 		if (log.isDebugEnabled()) log.debug("modify(...)="+surveyPage);
 		return surveyPage;
 	}
-
 	
 	private ValidatableLocator getLocator() {
 		return new ValidatableLocator() {
 			@Override
 			public ValidatableValue getValidatable(Long id, DataLocationEntity location) {
-				SurveyElement element = surveyService.getSurveyElement(id);
+				FormElement element = formElementService.getFormElement(id);
 				FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(location, element);
 				if (enteredValue == null) return null;
 				return enteredValue.getValidatable();
@@ -421,6 +416,7 @@ public class SurveyPageService {
 			element.executeSkip(entity, elementCalculator);
 		}
 		
+		// third we add the affected values in the lists
 		for (FormEnteredValue formEnteredValue : affectedEnteredValues) {
 			affectedElements.put((SurveyElement)formEnteredValue.getFormElement(), formEnteredValue);
 		}

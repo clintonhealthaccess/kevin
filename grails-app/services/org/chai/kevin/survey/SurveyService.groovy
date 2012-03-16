@@ -65,10 +65,6 @@ class SurveyService {
 	def locationService
 	def sessionFactory
 
-	SurveyElement getSurveyElement(Long id) {
-		return SurveyElement.get(id)
-	}
-
 	SurveyQuestion getSurveyQuestion(Long id) {
 		// TODO test this with Grails 2.0
 		return sessionFactory.currentSession.get(SurveyQuestion.class, id)

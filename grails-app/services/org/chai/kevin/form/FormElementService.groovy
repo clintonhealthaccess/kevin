@@ -5,6 +5,7 @@ import java.util.Set;
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.hibernate.FlushMode;
@@ -14,6 +15,12 @@ import org.hibernate.criterion.Restrictions;
 class FormElementService {
 
 	static transactional = true
+	
+	def sessionFactory
+	
+	FormElement getFormElement(Long id) {
+		return sessionFactory.currentSession.get(FormElement.class, id)
+	}
 	
 	void save(FormEnteredValue formEnteredValue) {
 		if (log.isDebugEnabled()) log.debug("save(formEnteredValue=${formEnteredValue}})")

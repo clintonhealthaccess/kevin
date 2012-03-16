@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.data.Enum;
+import org.chai.kevin.form.FormElementService;
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.value.RawDataElementValue;
 
 import org.chai.kevin.value.ValidatableValue;
@@ -14,24 +16,24 @@ import org.chai.kevin.value.ValueService;
 public class PlanningList {
 
 	private final PlanningType planningType;
-	private final RawDataElementValue dataElementValue;
+	private final FormEnteredValue formEnteredValue;
 	private final Map<String, Enum> enums;
 	
 	private List<PlanningEntry> planningEntries;
 	private ValidatableValue validatableValue;
 	
-	public PlanningList(PlanningType planningType, RawDataElementValue dataElementValue, Map<String, Enum> enums) {
+	public PlanningList(PlanningType planningType, FormEnteredValue formEnteredValue, Map<String, Enum> enums) {
 		this.planningType = planningType;
-		this.dataElementValue = dataElementValue;
+		this.formEnteredValue = formEnteredValue;
 		this.enums = enums;
 	}
 	
 	public List<PlanningEntry> getPlanningEntries() {
 		if (planningEntries == null) {
 			planningEntries = new ArrayList<PlanningEntry>();
-			if (dataElementValue != null && !dataElementValue.getValue().isNull()) {
-				for (int i = 0; i < dataElementValue.getValue().getListValue().size(); i++) {
-					planningEntries.add(new PlanningEntry(planningType, getValidatableValue(), i, enums));
+			if (formEnteredValue != null && !formEnteredValue.getValue().isNull()) {
+				for (int i = 0; i < formEnteredValue.getValue().getListValue().size(); i++) {
+					planningEntries.add(new PlanningEntry(formEnteredValue.getEntity(), planningType, getValidatableValue(), i, enums));
 				}
 			}
 		}
@@ -40,7 +42,7 @@ public class PlanningList {
 	
 	private ValidatableValue getValidatableValue() {
 		if (validatableValue == null) {
-			validatableValue = new ValidatableValue(dataElementValue.getValue(), dataElementValue.getData().getType());
+			validatableValue = new ValidatableValue(formEnteredValue.getValue(), formEnteredValue.getType());
 		}
 		return validatableValue;
 	}
@@ -48,7 +50,7 @@ public class PlanningList {
 	public PlanningEntry getOrCreatePlanningEntry(Integer lineNumber) {
 		PlanningEntry result = null;
 		if (lineNumber >= getPlanningEntries().size()) {
-			result = new PlanningEntry(planningType, getValidatableValue(), lineNumber, enums);
+			result = new PlanningEntry(formEnteredValue.getEntity(), planningType, getValidatableValue(), lineNumber, enums);
 			result.mergeValues(new HashMap<String, Object>());
 		}
 		else result = getPlanningEntries().get(lineNumber);
@@ -74,7 +76,8 @@ public class PlanningList {
 	public boolean isEmpty() {
 		return getPlanningEntries().isEmpty();
 	}
-	public void save(ValueService valueService) {
-		if (dataElementValue != null) valueService.save(dataElementValue);
+	
+	public void save(FormElementService formElementService) {
+		if (formEnteredValue != null) formElementService.save(formEnteredValue);
 	}
 }

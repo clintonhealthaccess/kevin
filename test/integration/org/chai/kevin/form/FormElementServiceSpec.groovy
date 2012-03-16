@@ -3,12 +3,61 @@ package org.chai.kevin.form
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationController;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyIntegrationTests;
 
 class FormElementServiceSpec extends IntegrationTests {
 
 	def formElementService
+	
+	def "get form element"() {
+		setup:
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		
+		when:
+		def formElement = newFormElement(dataElement)
+		
+		then:
+		formElementService.getFormElement(formElement.id).equals(formElement)
+		
+		when:
+		def survey = SurveyIntegrationTests.newSurvey(period)
+		def program = SurveyIntegrationTests.newSurveyProgram(survey, 1, [])
+		def section = SurveyIntegrationTests.newSurveySection(program, 1, [])
+		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [])
+		def surveyElement = SurveyIntegrationTests.newSurveyElement(question, dataElement)
+		
+		then:
+		formElementService.getFormElement(surveyElement.id).equals(surveyElement)
+	}
+	
+	def "get or create form entered element"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def element1 = newFormElement(newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		
+		expect:
+		FormEnteredValue.count() == 0
+		
+		when:
+		def formValue = formElementService.getOrCreateFormEnteredValue(DataLocationEntity.findByCode(KIVUYE), element1)
+		
+		then:
+		FormEnteredValue.count() == 1
+		formValue.equals(FormEnteredValue.list()[0])
+		
+		when:
+		formValue = formElementService.getOrCreateFormEnteredValue(DataLocationEntity.findByCode(KIVUYE), element1)
+		
+		then:
+		FormEnteredValue.count() == 1
+		formValue.equals(FormEnteredValue.list()[0])
+		
+	}
 	
 	def "saving entered entities saves user and timestamp"() {
 		setup:
@@ -30,7 +79,6 @@ class FormElementServiceSpec extends IntegrationTests {
 		then:
 		formEnteredValue.userUuid == 'uuid'
 		formEnteredValue.timestamp != null
-
 	}
 	
 	def "test retrieve skip rule - no rule"() {
