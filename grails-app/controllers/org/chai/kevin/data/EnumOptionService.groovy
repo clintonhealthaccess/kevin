@@ -48,7 +48,8 @@ class EnumOptionService {
 	def sessionFactory;
 	def languageService;
 	
-	public List<EnumOption> searchEnumOption(Enum enume,String text, Map<String, Object> params) {
+	public List<EnumOption> searchEnumOption(def enume, String text, def params) {
+		if(log.isDebugEnabled()) log.debug("searchEnumOption(enume="+enume+",text="+text+",params="+params+")")
 		def criteria = getSearchCriteria(enume,text)
 		
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
@@ -69,15 +70,15 @@ class EnumOptionService {
 				}
 			}
 		}
+		if(log.isDebugEnabled()) log.debug("searchEnumOption(...)="+options)
 		return options
-		
 	}
 	
-	public Integer countEnumOption(Enum enume,String text) {
+	public Integer countEnumOption(def enume, String text) {
 		return getSearchCriteria(enume,text).setProjection(Projections.count("id")).uniqueResult()
 	}
 	
-	private Criteria getSearchCriteria(Enum enume,String text) {
+	private Criteria getSearchCriteria(def enume, String text) {
 		def criteria = sessionFactory.getCurrentSession().createCriteria(EnumOption.class);
 		
 		def textRestrictions = Restrictions.conjunction()
