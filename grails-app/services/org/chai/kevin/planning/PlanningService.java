@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormElement.ElementSubmitter;
@@ -148,26 +149,6 @@ public class PlanningService {
 		formElementService.save(planningList.getFormEnteredValue());
 	}
 	
-	public static class PlanningElementSubmitter extends ElementSubmitter {
-
-		private PlanningType planningType;
-		
-		public PlanningElementSubmitter(FormElementService formElementService, ValueService valueService) {
-			super(formElementService, valueService);
-		}
-
-		public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
-			boolean modified = false;
-			
-//			if (currentType.equals(planningType.getFormElement().getDataElement().getType().getListType())) {
-				// TODO if is not submitted, do not add
-//			}
-			
-			return modified | super.transformValue(currentValue, currentType, currentPrefix);
-		}
-		
-	}
-	
 	@Transactional(readOnly=false)
 	public void unsubmit(PlanningType type, DataLocationEntity location, Integer lineNumber) {
 		PlanningList planningList = getPlanningList(type, location);
@@ -186,9 +167,41 @@ public class PlanningService {
 		// last we save the value
 		formElementService.save(planningList.getFormEnteredValue());
 	}
+	
+	public static class PlanningElementSubmitter extends ElementSubmitter {
+
+		private PlanningType planningType;
 		
+		public PlanningElementSubmitter(FormElementService formElementService, ValueService valueService) {
+			super(formElementService, valueService);
+		}
+
+		public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+			boolean modified = false;
+			
+			currentValue.setAttribute(PlanningEntry.BUDGET_UPDATED, null);
+			currentValue.setAttribute(PlanningEntry.SUBMITTED, null);
+
+//			if (currentType.getType() == ValueType.LIST) {
+//				for (Value value : currentValue.getListValue()) {
+//					if (value.getAttribute("BUD"))
+//				}
+//			}
+			
+//			if (currentType.equals(planningType.getFormElement().getDataElement().getType().getListType())) {
+				// TODO if is not submitted, do not add
+//			}
+			
+			return modified | super.transformValue(currentValue, currentType, currentPrefix);
+		}
+		
+	}
+	
 	@Transactional(readOnly=false)
 	public void refreshBudget(PlanningType type, DataLocationEntity location) {
+		ElementSubmitter submitter = new PlanningElementSubmitter(formElementService, valueService);
+		type.getFormElement().submit(location, type.getPeriod(), submitter);
+		
 		PlanningList planningList = getPlanningList(type, location);
 		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
 			refreshBudget(planningEntry, location);

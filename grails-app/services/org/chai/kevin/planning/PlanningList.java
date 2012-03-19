@@ -48,14 +48,14 @@ public class PlanningList {
 			if (rawDataElementValue != null && !rawDataElementValue.getValue().isNull()) {
 				for (int i = 0; i < rawDataElementValue.getValue().getListValue().size(); i++) {
 					PlanningEntry planningEntry = getPlanningEntry(rawDataElementValue.getValue().getListValue().get(i).getAttribute(PlanningEntry.UUID));
-					planningBudgetEntries.add(new PlanningEntryBudget(budgetValues, entity, planningType, formEnteredValue.getValidatable(), planningEntry.getLineNumber(), enums));
+					if (planningEntry != null) planningBudgetEntries.add(new PlanningEntryBudget(budgetValues, entity, planningType, formEnteredValue.getValidatable(), planningEntry.getLineNumber(), enums));
 				}
 			}
 		}
 		return planningBudgetEntries;
 	}
 	
-	private PlanningEntry getPlanningEntry(String uuid) {
+	public PlanningEntry getPlanningEntry(String uuid) {
 		for (PlanningEntry planningEntry : getPlanningEntries()) {
 			if (planningEntry.getUuid().equals(uuid)) return planningEntry;
 		}

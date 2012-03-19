@@ -75,7 +75,6 @@
 																		either OUTGOING or INCOMING or both
 																	-->
 																	<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
-																		<g:set var="planningEntry" value="${budgetPlanningEntry.planningEntry}"/>
 																		<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable">
 																			<td class="js_foldable-toggle">
 																				<span style="margin-left: 20px;">

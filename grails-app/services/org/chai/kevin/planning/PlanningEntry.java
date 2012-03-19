@@ -15,8 +15,8 @@ import org.chai.kevin.value.Value;
 
 public class PlanningEntry {
 
-	private static final String BUDGET_UPDATED = "budget_updated";
-	private static final String SUBMITTED = "submitted";
+	static final String BUDGET_UPDATED = "budget_updated";
+	static final String SUBMITTED = "submitted";
 	static final String UUID = "uuid";
 	private static final Set<String> ATTRIBUTES = new HashSet<String>();
 			

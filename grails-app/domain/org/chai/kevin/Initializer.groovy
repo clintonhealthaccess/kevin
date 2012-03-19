@@ -72,6 +72,7 @@ import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
 import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormValidationRule;
 import org.hisp.dhis.period.Period;
 
@@ -1113,18 +1114,7 @@ class Initializer {
 			active: true
 		).save(failOnError: true)
 		
-		def planningType = new PlanningType(
-			names: j(["en":"Activity"]),
-			namesPlural: j(["en":"Activities"]),
-//			sections: ["[_].key1","[_].key2"],
-			sectionDescriptions: [
-				"[_].basic": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
-				"[_].staffing": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
-				"[_].consumables": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
-				"[_].monthly_breakdown": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
-				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
-			],
-			formElement: new FormElement(
+		def formElement = new FormElement(
 				rawDataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
 				headers: [
 					"[_].basic": j(["en":"Basic Information"]),
@@ -1177,7 +1167,22 @@ class Initializer {
 					"[_].funding_sources.sources.gfatm": j(["en":"Global Fund"]),
 					"[_].funding_sources.sources.other": j(["en":"Other"])
 				]
-			).save(failOnError: true),
+			).save(failOnError: true)
+		
+		// TODO add validation and skip rules
+			
+		def planningType = new PlanningType(
+			names: j(["en":"Activity"]),
+			namesPlural: j(["en":"Activities"]),
+//			sections: ["[_].key1","[_].key2"],
+			sectionDescriptions: [
+				"[_].basic": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].staffing": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].consumables": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].monthly_breakdown": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
+				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
+			],
+			formElement: formElement,
 			discriminator: '[_].basic.activity',
 			fixedHeader: '[_].basic.description',
 			planning: planning
@@ -1220,8 +1225,8 @@ class Initializer {
 		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-		new RawDataElementValue(
-			data: RawDataElement.findByCode("PLANNINGELEMENT"),
+		new FormEnteredValue(
+			formElement: formElement,
 			entity: DataLocationEntity.findByCode("Kivuye HC"),
 			period: Period.list()[0],
 			value: Value.VALUE_LIST([
