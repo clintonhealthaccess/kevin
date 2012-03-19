@@ -68,6 +68,7 @@ class EnumControllerSpec extends IntegrationTests {
 		enumController.modelAndView.model.entityCount== 3
 		
 		when:
+		enumController.params['testParam']=["val":"value"]
 		enumController.params.q="kap"
 		enumController.params.sort="code"
 		enumController.search()
