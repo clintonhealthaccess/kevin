@@ -2,9 +2,9 @@
 	<!-- DataLocationEntity -->
 	<g:if test="${currentLocationTypes != null && !currentLocationTypes.empty && currentLocationTypes.contains(location.type)}">
 		<tr>
-		  <td>
-		    <span style='margin-left: ${level*20}px;'><g:i18n field="${location.names}"/></span>
-		  </td>
+			<td>
+				<span style='margin-left: ${level*20}px;'><g:i18n field="${location.names}"/></span>
+			</td>
 			<g:each in="${dsrTable.targets}" var="target">
 				<td>
 					<g:if test="${dsrTable.getReportValue(location, target) != null}">
@@ -18,13 +18,15 @@
 <g:else>
 	<!-- LocationEntity -->
 	<g:if test="${locationTree != null && !locationTree.empty && locationTree.contains(location)}">
-		<tr class="tree_sign_plus" >
-			<td><span style="margin-left: ${level*20}px;"><g:i18n field="${location.names}"/></span></td>
+		<tr class="tree-sign js_foldable">
+			<td class="js_foldable-toggle">
+				<span style="margin-left: ${level*20}px;"><g:i18n field="${location.names}"/></span>
+			</td>
 			<g:each in="${dsrTable.targets}" var="target">
 				<td></td>
 			</g:each>
 		</tr>
-		<tr class="sub_tree" style="display:none;">
+		<tr class="sub-tree js_foldable-container hidden">
 			<td class="bucket" colspan="${dsrTable.targets.size()+1}">				
 				<table>
 					<tbody>

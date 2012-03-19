@@ -285,6 +285,10 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new Enum(code: code).save(failOnError: true, flush: true)
 	}
 	
+	static Enum newEnume(def code, def names, def descriptions){
+		return new Enum(code: code, names:j("en":names),descriptions:j("en":descriptions)).save(failOnError: true, flush: true)
+	}
+		
 	static EnumOption newEnumOption(def enume, def value) {
 		return newEnumOption(enume, value, new Ordering())
 	}

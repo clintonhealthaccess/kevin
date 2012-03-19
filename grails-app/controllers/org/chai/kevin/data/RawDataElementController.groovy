@@ -85,7 +85,7 @@ class RawDataElementController extends AbstractEntityController {
 				surveyValueService.deleteEnteredValues(element)
 			}
 		}
-		entity.save()
+		entity.save(flush: true)
 	}
 
 	def validateEntity(def entity) {

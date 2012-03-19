@@ -267,33 +267,6 @@
         color: $primary - #444
         +text-shadow(#fff, 0, 1px, 0)
 
-  // slister start: added class to survey tree menu programs
-  .survey-program
-    border-top: 1px dotted $dropdown - #191919
-    margin-top: 5px
-    margin-left: 5px
-    +pie-clearfix
-  // slister end
-
-  .survey-section
-    border-top: 1px dotted $dropdown - #191919
-    margin-top: 5px
-    margin-left: 5px
-    +pie-clearfix
-
-    a
-      color: $primary
-      padding-right: 10px
-      +text-shadow(#fff, 0, 1px, 0)
-      &:hover, &:focus
-        background: $dropdown
-        color: $primary - #444
-        +text-shadow(#fff, 0, 1px, 0)
-
-    li
-      &:focus, &:hover
-        a
-          color: $primary - #666
           
 .dropdown-check
   background: $filler
@@ -308,10 +281,9 @@
   &:hover, &:focus
     border-color: $primary_light
 
-.location-fold
-  border-top: 1px solid $dropdown - #191919
+.foldable-container
+  border-top: 1px dotted $dropdown - #191919
   margin-top: 5px
-  padding-top: 5px
 
 .foldable
   min-width: 75px
@@ -326,12 +298,6 @@
     background-image: url('../images/icons/toggle_plus.png')
     &.toggled
       background-image: url('../images/icons/toggle_minus.png')
-
-  &.opened > span, &.opened > a
-    font-weight: bold
-
-.location-fold
-  padding: 0 5px
 
 .paginateButtons
   .step

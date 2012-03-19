@@ -16,7 +16,7 @@
 						
 			<div class="main">			
 				<g:if test="${summaryPage == null}">
-					<p class="help"><g:message code="survey.summary.selectsurveyfacility.text" default="Please select a survey and a facility to get to the respective survey."/></p>
+					<p class="nav-help"><g:message code="survey.summary.selectsurveyfacility.text" default="Please select a survey and a facility to get to the respective survey."/></p>
 				</g:if>
 				<g:else>
 					<div class="push-20">

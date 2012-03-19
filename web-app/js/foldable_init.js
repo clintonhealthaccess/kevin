@@ -2,19 +2,19 @@ $(document).ready(function(){
 	/**
 	 * foldables
 	 */
-	$('.foldable a.foldable-toggle').click(function(event) {
-		$(this).parent('.foldable').children('ul').toggle();
+	$('.js_foldable .js_foldable-toggle').click(function(event) {
+		$(this).parent('.js_foldable').children('.js_foldable-container').toggle();
+		$(this).parent('.js_foldable').next('.js_foldable-container').toggle();
 		$(this).toggleClass('toggled');
 		return false;
 	});
 	// we hide everything
-	$('.foldable ul').hide();
+	$('.js_foldable .js_foldable-container').hide();
 	// we show the current
-	var current = $('.foldable.current');
-	while (current.hasClass('foldable') && current.size() > 0) {
-		current.addClass('opened');
-		current = current.parents('li');
+	var current = $('.js_foldable.current');
+	while (current.hasClass('js_foldable') && current.size() > 0) {
+		current = current.parents('js_foldable');
 	}
-	$('.opened').children('ul').show();
-	$('.opened').children('a').addClass('toggled');
+	$('.opened').children('.js_foldable-container').show();
+	$('.opened').children('.js_foldable-toggle').addClass('toggled');
 });

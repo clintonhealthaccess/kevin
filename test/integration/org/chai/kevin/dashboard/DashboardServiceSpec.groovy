@@ -91,16 +91,16 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		where:
 		currentLocationName	| currentProgramName	| locationName	| programName | types										    | value
-		BURERA				| PROGRAM				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA				| PROGRAM				| BUTARO		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
-		BURERA				| PROGRAM				| KIVUYE		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
-		BURERA				| PROGRAM				| KIVUYE		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
-		RWANDA				| ROOT					| NORTH			| PROGRAM		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
-		BURERA				| PROGRAM				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
-		RWANDA				| ROOT					| NORTH			| PROGRAM		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		BURERA				| PROGRAM1				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| PROGRAM1				| BUTARO		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
+		BURERA				| PROGRAM1				| KIVUYE		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
+		BURERA				| PROGRAM1				| KIVUYE		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|null
+		RWANDA				| ROOT					| NORTH			| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|30.0d
+		BURERA				| PROGRAM1				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
+		RWANDA				| ROOT					| NORTH			| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
 	}
 
-	def "dashboard test program dashboard"() {
+	def "dashboard test program (compare) dashboard"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
@@ -112,20 +112,19 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		then:
 		dashboard.dashboardEntities.containsAll expectedEntities.collect {getDashboardEntity(it)}
-//		dashboard.programPath.containsAll expectedProgramPath.collect {DashboardProgram.findByCode(it)}
-		// TODO order locations
 		dashboard.locations.containsAll expectedLocations.collect {getLocationEntity(it)}
 		dashboard.locationPath.containsAll expectedLocationPath.collect {LocationEntity.findByCode(it)}
 
 		where:
 		locationName	| programCode	| expectedLocations	| expectedEntities  | expectedLocationPath	| expectedProgramPath
-		BURERA			| PROGRAM		| [BURERA]			| [TARGET1, TARGET2]| [RWANDA, NORTH]		| [ROOT]
-		BURERA			| ROOT			| [BURERA]			| [PROGRAM]		| [RWANDA, NORTH]		| []		
+		BURERA			| PROGRAM1		| [BURERA]			| [TARGET1, TARGET2]| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| ROOT			| [BURERA]			| [PROGRAM1]		| [RWANDA, NORTH]		| []		
 	}
-
+	
 	def "get program dashboard with no dashboard entities"(){
 		setup:
 		setupLocationTree()
+		refresh()
 		
 		when:
 		def burera = LocationEntity.findByCode(BURERA)
@@ -159,14 +158,37 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 
 		where:
 		locationName	| programCode	| expectedLocations		| expectedEntities  | expectedLocationPath	| expectedProgramPath
-		BURERA			| PROGRAM		| [BUTARO, KIVUYE]		| [PROGRAM]		| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| PROGRAM1		| [BUTARO, KIVUYE]		| [PROGRAM1]		| [RWANDA, NORTH]		| [ROOT]
 		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [ROOT]			| [RWANDA, NORTH]		| []
+	}
+	
+	def "dashboard test location compare dashboard"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupDashboard()
+		refresh()
+
+		when:
+		def dashboard =
+		dashboardService.getLocationDashboard(LocationEntity.findByCode(locationName), ReportProgram.findByCode(programCode), period, new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)]), true);
+
+		then:
+		dashboard.dashboardEntities.containsAll expectedEntities.collect {getDashboardEntity(it)}
+		dashboard.locations.containsAll expectedLocations.collect {getLocationEntity(it)}
+		dashboard.locationPath.containsAll expectedLocationPath.collect {LocationEntity.findByCode(it)}
+
+		where:
+		locationName	| programCode	| expectedLocations		| expectedEntities  | expectedLocationPath	| expectedProgramPath
+		BURERA			| PROGRAM1		| [BURERA]				| [PROGRAM1]		| [RWANDA, NORTH]		| [ROOT]
+		NORTH			| ROOT			| [NORTH]				| [ROOT]			| [RWANDA]				| []
 	}
 	
 	def "get location dashboard with no location entities"(){
 		setup:
 		def period = newPeriod()
 		setupDashboard()
+		refresh()
 		
 		when:
 		def country = newLocationLevel(COUNTRY, 1)

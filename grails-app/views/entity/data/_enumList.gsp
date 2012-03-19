@@ -4,7 +4,7 @@
 			<th/>
 			<th>Name</th>
 			<th>Description</th>
-			<g:sortableColumn property="code" title="${message(code: 'enum.code.label', default: 'Code')}" />
+			<g:sortableColumn property="code"  params="[q:q]" title="${message(code: 'enum.code.label', default: 'Code')}" />
 			<th>Number of Option</th>
 			<th>Manage</th>
 		</tr>
