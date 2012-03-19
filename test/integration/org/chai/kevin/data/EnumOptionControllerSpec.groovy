@@ -28,6 +28,7 @@ class EnumOptionControllerSpec extends IntegrationTests {
 		
 		when:
 		enumOptionController.params["enume.id"]=enume.id
+		enumOptionController.params["enume"]=["id":enume.id]
 		enumOptionController.params.q="on"
 		enumOptionController.params.sort="order"
 		enumOptionController.search()

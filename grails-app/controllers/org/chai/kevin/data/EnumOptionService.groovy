@@ -37,6 +37,7 @@ import org.hibernate.criterion.MatchMode
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Projections
 import org.hibernate.criterion.Restrictions
+import org.chai.kevin.data.EnumOption;
 
 /**
  * @author Jean Kahigiso M.
@@ -47,7 +48,7 @@ class EnumOptionService {
 	def sessionFactory;
 	def languageService;
 	
-	public List<EnumOption> searchEnumOption(Enum enume,String text, Map<String, String> params) {
+	public List<EnumOption> searchEnumOption(Enum enume,String text, Map<String, Object> params) {
 		def criteria = getSearchCriteria(enume,text)
 		
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])

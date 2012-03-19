@@ -46,7 +46,7 @@ class EnumService {
 	def sessionFactory;
 	def languageService;
 	
-	public List<Enum> searchEnum(String text, Map<String, String> params) {
+	public List<Enum> searchEnum(String text, Map<String, Object> params) {
 		def criteria = getSearchCriteria(text)
 		
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
