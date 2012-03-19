@@ -6,22 +6,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.form.FormElement.ElementCalculator;
-import org.chai.kevin.form.FormElement.ElementSubmitter;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
+
 public class PlanningEntry {
 
 	private static final String BUDGET_UPDATED = "budget_updated";
 	private static final String SUBMITTED = "submitted";
+	static final String UUID = "uuid";
 	private static final Set<String> ATTRIBUTES = new HashSet<String>();
 			
 	static {
 		ATTRIBUTES.add(BUDGET_UPDATED);
 		ATTRIBUTES.add(SUBMITTED);
+		ATTRIBUTES.add(UUID);
 	}
 	
 	protected PlanningType type;
@@ -30,14 +32,14 @@ public class PlanningEntry {
 	private Map<String, Enum>  enums;
 	private ValidatableValue validatable;
 	
-	public PlanningEntry() {}
+//	public PlanningEntry() {}
 	
-	public PlanningEntry(DataLocationEntity entity, ValidatableValue validatable, Integer lineNumber) {
-		this.entity = entity;
+	public PlanningEntry(ValidatableValue validatable, Integer lineNumber) {
 		this.validatable = validatable;
 		this.lineNumber = lineNumber;
 		this.type = null;
 		this.enums = null;
+		this.entity = null;
 	}
 	
 	public PlanningEntry(DataLocationEntity entity, PlanningType type, ValidatableValue validatable, Integer lineNumber, Map<String, Enum> enums) {
@@ -53,7 +55,7 @@ public class PlanningEntry {
 	}
 
 	public void setBudgetUpdated(Boolean value) {
-		setAttribute(BUDGET_UPDATED, value);
+		setAttribute(BUDGET_UPDATED, value.toString());
 	}
 
 	public boolean isSubmitted() {
@@ -61,9 +63,18 @@ public class PlanningEntry {
 	}
 	
 	public void setSubmitted(Boolean value) {
-		setAttribute(SUBMITTED, value);
+		setAttribute(SUBMITTED, value.toString());
 	}
-
+	
+	public String getUuid() {
+		return getValue().getAttribute(UUID);
+	}
+	
+	protected void setUuid(String uuid) {
+		if (getValue().getAttribute(UUID) != null) throw new IllegalStateException("uuid already set");
+		setAttribute(UUID, uuid);
+	}
+	
 	public Set<String> getInvalidSections() {
 		Set<String> result = new HashSet<String>();
 		for (String section : type.getSections()) {
@@ -80,22 +91,13 @@ public class PlanningEntry {
 		return result;
 	}
 	
-//	public boolean isValid() {
-//		return getValidatable().isTreeValid(getPrefix("[_]"));
-//	}
-//	
-//	public boolean isComplete() {
-//		return getValidatable().isTreeComplete(getPrefix("[_]"));
-//	}
-	
 	private boolean isAttributeSet(String attribute) {
 		if (getValue().getAttribute(attribute) == null) return false;
 		return getValue().getAttribute(attribute).equals(Boolean.TRUE.toString());
 	}
 	
-	private void setAttribute(String attribute, Boolean value) {
-		validatable.getType().setAttribute(validatable.getValue(), getPrefix("[_]"), attribute, value.toString());
-
+	private void setAttribute(String attribute, String value) {
+		validatable.getType().setAttribute(validatable.getValue(), getPrefix("[_]"), attribute, value);
 	}
 	
 	public String getLineSuffix(String section) {
@@ -131,14 +133,14 @@ public class PlanningEntry {
 	}
 
 	public void mergeValues(Map<String, Object> params) {
-		params.put("elements["+type.getId()+"].value", getLineNumbers(null));
-		getValidatable().mergeValue(params, "elements["+type.getId()+"].value", ATTRIBUTES);
+		params.put("elements["+type.getFormElement().getId()+"].value", getLineNumbers(null));
+		getValidatable().mergeValue(params, "elements["+type.getFormElement().getId()+"].value", ATTRIBUTES);
 	}
 
 	public void delete() {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("elements["+type.getId()+"].value", getLineNumbers(lineNumber));
-		getValidatable().mergeValue(params, "elements["+type.getId()+"].value", ATTRIBUTES);
+		params.put("elements["+type.getFormElement().getId()+"].value", getLineNumbers(lineNumber));
+		getValidatable().mergeValue(params, "elements["+type.getFormElement().getId()+"].value", ATTRIBUTES);
 	}
 	
 	private List<String> getLineNumbers(Integer skip) {
@@ -148,6 +150,10 @@ public class PlanningEntry {
 			if (skip == null || i != skip) result.add("["+i+"]");
 		}
 		return result;
+	}
+	
+	public List<PlanningCost> getPlanningCosts() {
+		return type.getPlanningCosts(getDiscriminatorValue().getStringValue());
 	}
 	
 	public Map<String, Enum> getEnums() {

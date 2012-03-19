@@ -3,8 +3,6 @@ package org.chai.kevin.planning
 import grails.plugin.spock.UnitSpec;
 
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
-import org.chai.kevin.planning.budget.BudgetCost;
-import org.chai.kevin.planning.budget.PlanningEntryBudget;
 
 class PlanningEntryBudgetUnitSpec extends UnitSpec {
 

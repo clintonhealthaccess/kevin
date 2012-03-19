@@ -1,6 +1,8 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.data.Type;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.RawDataElementValue;
@@ -10,6 +12,58 @@ import org.chai.kevin.value.Value;
 class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	
 	def planningController
+	
+	def "save value works"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		// we create 2 form elements so they don't have the same ID as the type
+		def formElement1 = newFormElement(dataElement)
+		def formElement2 = newFormElement(dataElement)
+		def planningType = newPlanningType(formElement2, "[_].key0", "[_].key1", planning)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement2.id
+		planningController.params.lineNumber = 0
+		planningController.params.suffix = '[0].key1'
+		planningController.params['elements['+formElement2.id+'].value[0].key1'] = '123'
+		planningController.saveValue()
+		
+		then:
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 123d
+		FormEnteredValue.list()[0].value.listValue[0].getAttribute('uuid') != null
+	}
+	
+	def "edit planning entry creates line and sets uuid"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		// we create 2 form elements so they don't have the same ID as the type
+		def formElement1 = newFormElement(dataElement)
+		def formElement2 = newFormElement(dataElement)
+		def planningType = newPlanningType(formElement2, "[_].key0", "[_].key1", planning)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.lineNumber = 0
+		planningController.editPlanningEntry()
+		
+		then:
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.listValue[0].getAttribute('uuid') != null
+	}
 	
 	def "accessing index page redirects to proper page - normal user to summary page"() {
 		setup:

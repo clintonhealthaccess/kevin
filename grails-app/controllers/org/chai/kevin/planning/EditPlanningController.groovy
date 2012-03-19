@@ -195,15 +195,15 @@ class EditPlanningController extends AbstractController {
 	def budget = {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocationEntity.get(params.int('location'))
-		def planningTypeBudgets = planning.planningTypes.collect {
-			planningService.getPlanningTypeBudget(it, location)
+		def planningLists = planning.planningTypes.collect {
+			planningService.getPlanningList(it, location)
 		}
 
 		render (view: '/planning/budget/budget', model: [
 			planning: planning,
 			location: location,
 //			updatedBudget: isBudgetUpdated(planning, location),
-			planningTypeBudgets: planningTypeBudgets
+			planningLists: planningLists
 		])
 	}
 	

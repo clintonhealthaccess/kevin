@@ -2,33 +2,27 @@ package org.chai.kevin.planning;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormElement.ElementSubmitter;
 import org.chai.kevin.form.FormElementService;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormValidationService;
-import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
-import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
-import org.chai.kevin.planning.budget.BudgetCost;
-import org.chai.kevin.planning.budget.PlanningEntryBudget;
-import org.chai.kevin.planning.budget.PlanningTypeBudget;
-import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.RefreshValueService;
 import org.chai.kevin.value.ValidatableValue;
+import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -68,17 +62,27 @@ public class PlanningService {
 		return new PlanningTypeSummary(planningType, numberOfEntries);
 	}
 	
-//	@Transactional(readOnly=true)
-//	public PlanningList getPlanningList(PlanningType type, DataLocationEntity location) {
-//		FormEnteredValue formEnteredValue = formElementService.getOrCreateFormEnteredValue(location, type.getFormElement());
-//		
-//		return new PlanningList(type, location, formEnteredValue.getValidatable(), getEnums(type));
-//	}
+	@Transactional(readOnly=false)
+	public PlanningList getPlanningList(PlanningType type, DataLocationEntity location) {
+		FormEnteredValue formEnteredValue = formElementService.getOrCreateFormEnteredValue(location, type.getFormElement());
+		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod());
+		if (rawDataElementValue == null) {
+			rawDataElementValue = new RawDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod(), Value.NULL_INSTANCE());
+			valueService.save(rawDataElementValue);
+		}
+		Map<PlanningCost, NormalizedDataElementValue> costValues = new HashMap<PlanningCost, NormalizedDataElementValue>();
+		for (PlanningCost planningCost : type.getCosts()) {
+			costValues.put(planningCost, valueService.getDataElementValue(planningCost.getDataElement(), location, type.getPeriod()));
+		}
+		
+		return new PlanningList(type, location, formEnteredValue, rawDataElementValue, costValues, getEnums(type));
+	}
 	
 	private Map<String, Enum> getEnums(PlanningType type) {
 		Map<String, Enum> result = new HashMap<String, Enum>();
 		for (Entry<String, Type> prefix : type.getFormElement().getDataElement().getEnumPrefixes().entrySet()) {
-			result.put(prefix.getValue().getEnumCode(), dataService.findEnumByCode(prefix.getValue().getEnumCode()));
+			Enum enume = dataService.findEnumByCode(prefix.getValue().getEnumCode());
+			result.put(prefix.getValue().getEnumCode(), enume);
 		}
 		return result;
 	}
@@ -88,7 +92,7 @@ public class PlanningService {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getPlanningEntries().get(lineNumber);
 		planningEntry.delete();
-		planningList.save(formElementService);
+		formElementService.save(planningList.getFormEnteredValue());
 	}
 	
 	private ValidatableLocator getLocator() {
@@ -121,7 +125,7 @@ public class PlanningService {
 		for (FormEnteredValue formEnteredValue : affectedValues) {
 			formElementService.save(formEnteredValue);
 		}
-		planningList.save(formElementService);
+		formElementService.save(planningList.getFormEnteredValue());
 		return planningEntry;
 	}
 	
@@ -134,14 +138,34 @@ public class PlanningService {
 		planningEntry.setSubmitted(true);
 
 		// we refresh the corresponding raw data element
-		ElementSubmitter submitter = new ElementSubmitter(formElementService, valueService);
+		ElementSubmitter submitter = new PlanningElementSubmitter(formElementService, valueService);
 		type.getFormElement().submit(location, type.getPeriod(), submitter);
 		
 		// then we recalculate the budget
 		refreshBudget(planningEntry, location);
 		
 		// last we save the value
-		planningList.save(formElementService);
+		formElementService.save(planningList.getFormEnteredValue());
+	}
+	
+	public static class PlanningElementSubmitter extends ElementSubmitter {
+
+		private PlanningType planningType;
+		
+		public PlanningElementSubmitter(FormElementService formElementService, ValueService valueService) {
+			super(formElementService, valueService);
+		}
+
+		public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+			boolean modified = false;
+			
+//			if (currentType.equals(planningType.getFormElement().getDataElement().getType().getListType())) {
+				// TODO if is not submitted, do not add
+//			}
+			
+			return modified | super.transformValue(currentValue, currentType, currentPrefix);
+		}
+		
 	}
 	
 	@Transactional(readOnly=false)
@@ -153,14 +177,14 @@ public class PlanningService {
 		planningEntry.setSubmitted(false);
 
 		// we refresh the corresponding raw data element
-		ElementSubmitter submitter = new ElementSubmitter(formElementService, valueService);
+		ElementSubmitter submitter = new PlanningElementSubmitter(formElementService, valueService);
 		type.getFormElement().submit(location, type.getPeriod(), submitter);
 		
 		// then we recalculate the budget
 		refreshBudget(planningEntry, location);
 				
 		// last we save the value
-		planningList.save(formElementService);
+		formElementService.save(planningList.getFormEnteredValue());
 	}
 		
 	@Transactional(readOnly=false)
@@ -169,7 +193,7 @@ public class PlanningService {
 		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
 			refreshBudget(planningEntry, location);
 		}
-		planningList.save(formElementService);
+		formElementService.save(planningList.getFormEnteredValue());
 	}
 	
 	private void refreshBudget(PlanningEntry planningEntry, DataLocationEntity location) {
@@ -180,7 +204,6 @@ public class PlanningService {
 			planningEntry.setBudgetUpdated(true);
 		}
 	}
-	
 	
 	public void setFormValidationService(FormValidationService formValidationService) {
 		this.formValidationService = formValidationService;

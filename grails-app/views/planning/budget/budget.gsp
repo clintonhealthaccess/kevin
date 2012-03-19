@@ -24,10 +24,10 @@
 								Operational Undertakings: <g:i18n field="${location.names}"/>
 							</h4>
 							<div class="budget">
-								<p id="js_budget-warning" class="context-message warning ${planningTypeBudgets.find {!it.planningList.budgetUpdated}?'':'hidden'}">
+								<p id="js_budget-warning" class="context-message warning ${planningLists.find {!it.budgetUpdated}?'':'hidden'}">
 									Some activities were changed. Please <a href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location:location.id, planning:planning.id])}">update your budget</a>.
 								</p>
-								<g:if test="${!planningTypeBudgets.find {!it.budgetPlanningEntries.empty}}">
+								<g:if test="${!planningLists.find {!it.planningEntryBudgetList.empty}}">
 									<p class="context-message warning">
 										Please <a href="${createLink(controller:'editPlanning', action:'overview', params:[location:location.id, planning:planning.id])}">enter an activity</a> and come back to the budget page.
 									</p>
@@ -50,7 +50,7 @@
 													Each PLANNING TYPE, this should not be displayed
 												    if there is no entries in the corresponding planning type 
 												-->
-												<g:each in="${planningTypeBudgets}" var="planningTypeBudget">
+												<g:each in="${planningLists}" var="planningTypeBudget">
 													<g:set var="planningType" value="${planningTypeBudget.planningType}"/>
 													<tr class="tree_sign_minus standout">
 														<td>
@@ -74,13 +74,12 @@
 																		displayed because we assume there's costing for each undertaking,
 																		either OUTGOING or INCOMING or both
 																	-->
-																	<g:each in="${planningTypeBudget.budgetPlanningEntries}" var="budgetPlanningEntry">
-																		<g:set var="planningEntry" value="${budgetPlanningEntry.planningEntry}"/>
-																		<tr id="planning-${planningType.id}-${planningEntry.lineNumber}" class="tree_sign_minus active-row">
+																	<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
+																		<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree_sign_minus active-row">
 																			<td>
 																				<span style="margin-left: 20px;">
-																					<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.planningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
-																						<g:value value="${planningEntry.fixedHeaderValue}" type="${planningEntry.type.fixedHeaderType}" nullText="none entered"/>
+																					<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
+																						<g:value value="${budgetPlanningEntry.fixedHeaderValue}" type="${budgetPlanningEntry.type.fixedHeaderType}" nullText="none entered"/>
 																					</a>
 																				</span>
 																			</td>
@@ -89,9 +88,9 @@
 																			<td>${budgetPlanningEntry.difference}</td>
 																			<td><input type="checkbox"></td>
 																			<td class="status 
-																				${!planningEntry.invalidSections.empty?'invalid':''} 
-																				${!planningEntry.incompleteSections.empty?'incomplete':''}
-																				${(!planningEntry.incompleteSections.empty || !planningEntry.incompleteSections.empty)?'tooltip':''}
+																				${!budgetPlanningEntry.invalidSections.empty?'invalid':''} 
+																				${!budgetPlanningEntry.incompleteSections.empty?'incomplete':''}
+																				${(!budgetPlanningEntry.incompleteSections.empty || !budgetPlanningEntry.incompleteSections.empty)?'tooltip':''}
 																				" title="Help message"></td>
 																		</tr>
 																		<tr style="display: table-row" class="sub_tree">

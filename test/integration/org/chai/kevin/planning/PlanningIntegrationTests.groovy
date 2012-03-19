@@ -5,15 +5,15 @@ import org.hibernate.loader.custom.Return;
 
 abstract class PlanningIntegrationTests extends IntegrationTests {
 
-	def newPlanning(def period) {
+	static def newPlanning(def period) {
 		return newPlanning(period, false)
 	}
 	
-	def newPlanning(def period, def active) {
+	static def newPlanning(def period, def active) {
 		return new Planning(period: period, active: active).save(failOnError: true)
 	}
 	
-	def newPlanningType(def formElement, def discriminator, def fixedHeader, def planning) {
+	static def newPlanningType(def formElement, def discriminator, def fixedHeader, def planning) {
 		def planningType = new PlanningType(
 			formElement: formElement,
 			discriminator: discriminator,
@@ -25,7 +25,7 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return planningType
 	}
 	
-	def newPlanningCost(def type, def dataElement, def section, def discriminatorValueString, def planningType) {
+	static def newPlanningCost(def type, def dataElement, def section, def discriminatorValueString, def planningType) {
 		def planningCost = new PlanningCost(
 			type: type,
 			dataElement: dataElement,
