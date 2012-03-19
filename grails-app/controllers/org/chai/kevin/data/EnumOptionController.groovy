@@ -116,7 +116,7 @@ class EnumOptionController extends AbstractEntityController {
 			response.sendError(404)
 		}
 		else {
-			List<EnumOption> options = enumOptionService.searchEnumOption(enume,params["q"],params);
+			List<EnumOption> options = enumOptionService.searchEnumOption(enume,params['q'],params);
 			
 			if(params['sort']==null)
 				Collections.sort(options, Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage))
