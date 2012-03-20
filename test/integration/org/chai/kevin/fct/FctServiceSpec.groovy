@@ -60,7 +60,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		then:
 		fctTable.getTotalValue(targetOption).value == "2.0"
-		fctTable.getReportValue(LocationEntity.findByCode("dummy"), targetOption).value == "0.0"
+		fctTable.getReportValue(LocationEntity.findByCode("dummy"), targetOption) == null
 		fctTable.getReportValue(LocationEntity.findByCode(NORTH), targetOption).value == "2.0"
 				
 	}

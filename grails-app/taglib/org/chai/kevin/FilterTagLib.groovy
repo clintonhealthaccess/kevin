@@ -30,7 +30,9 @@ package org.chai.kevin
 
 import org.chai.kevin.LocationService;
 import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dsr.DsrTarget;
+import org.chai.kevin.fct.FctTarget;
 import org.chai.kevin.location.DataLocationEntity
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
@@ -62,12 +64,15 @@ class FilterTagLib {
 		ReportProgram.withTransaction {
 			def model = new HashMap(attrs)
 			def program = attrs['selected']
-			def target = attrs['selectedTarget']
+			def programRoot = reportService.getRootProgram()
+			def programTree = reportService.getProgramTree(attrs['selectedTargetClass']).asList()
+			if(!programTree.contains(program)) 
+				program = programRoot
 			model << 
 				[
 					currentProgram: program,
-					programRoot: reportService.getRootProgram(), 
-					programTree: reportService.getProgramTree(target).asList()			
+					programRoot: programRoot,
+					programTree: programTree			
 				]
 			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/programFilter', model:model)
@@ -76,12 +81,15 @@ class FilterTagLib {
 		
 	def locationFilter = {attrs, body ->
 		LocationEntity.withTransaction {
-			def model = new HashMap(attrs)					
+			def model = new HashMap(attrs)
+			def location = attrs['selected']
 			def locationFilterRoot = locationService.getRootLocation()	
 			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(attrs['skipLevels'], null)
+			if(!locationFilterTree.contains(location))
+				location = locationFilterRoot
 			model << 
 				[
-					currentLocation: attrs['selected'],
+					currentLocation: location,
 					locationFilterRoot: locationFilterRoot, 
 					locationFilterTree: locationFilterTree
 				]
@@ -117,6 +125,24 @@ class FilterTagLib {
 			out << render(template:'/tags/filter/levelFilter', model:model)
 		}
 	}
+		
+	def linkParamFilter = {attrs, body ->
+		def model = new HashMap(attrs)
+		def linkParams = attrs['linkParams']
+		Map params = new HashMap(linkParams)		
+		attrs['linkParams'] = updateLinkParams(params)
+		out << render(template:'/templates/linkParamFilter', model:model)
+	}
+	
+	def createLinkByTab = {attrs, body ->
+		if (attrs['controller'] == null || attrs['params'] == null) attrs['params'] = [:]
+		else{
+			String tab = (String) attrs['controller']
+			Map params = new HashMap(attrs['params'])
+			attrs['params'] = updateParamsByTab(tab, params);
+		}
+		out << createLink(attrs, body)
+	}
 	
 	def createLinkByFilter = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]
@@ -125,7 +151,53 @@ class FilterTagLib {
 			attrs['params'] = updateParamsByFilter(params);
 		}
 		out << createLink(attrs, body)
-	}	
+	}		
+	
+	public Map updateLinkParams(Map params){
+		def locationTypes = params.get('locationTypes')
+		if(locationTypes != null){
+			//TODO better way to check?
+			if(locationTypes instanceof String)
+				locationTypes = [locationTypes]
+			else
+				locationTypes = locationTypes.toList()
+			params.put('locationTypes', locationTypes)
+		}
+		return params
+	}
+	
+	public Map updateParamsByTab(String tab, Map params){
+		if (tab == null || tab.empty) 
+			return params;		
+		
+		def program = null
+		if (params.get("program") != null) {
+			program = ReportProgram.get(Integer.parseInt(params.get("program")))
+		}				
+		
+		def programTargetClass = null
+		switch(tab){
+			case "dashboard":
+				programTargetClass = DashboardTarget.class
+				break;				
+			case "dsr":
+				programTargetClass = DsrTarget.class
+				break;
+			case "fct":
+				programTargetClass = FctTarget.class
+				break;
+			default:
+				break;				
+		}
+		
+		def programTree = reportService.getProgramTree(programTargetClass).asList()
+		if(!programTree.contains(program)){
+			def programRoot = reportService.getRootProgram()
+			params.put("program", programRoot.id)
+		}
+			
+		return params;
+	}
 	
 	public Map updateParamsByFilter(Map params) {
 		if (!params.containsKey("filter")) return params;

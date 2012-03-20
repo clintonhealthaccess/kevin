@@ -59,13 +59,13 @@ class FctController extends AbstractController {
 		ReportProgram program = getProgram()
 		LocationEntity location = getLocation()
 		Set<DataEntityType> locationTypes = getLocationTypes()
-		FctTarget fctTarget = getFctTarget(program)
-//		LocationLevel level = getLevel()				
-		
+
+//		LocationLevel level = getLevel()
+		FctTarget fctTarget = getFctTarget(program)			
 		def skipLevels = fctService.getSkipLocationLevels()
+		def locationTree = location.collectTreeWithDataEntities(skipLevels, locationTypes).asList()
 		
 		FctTable fctTable = null;
-
 		if (period != null && program != null && fctTarget != null && location != null && locationTypes != null) {					
 			fctTable = fctService.getFctTable(location, program, fctTarget, period, null, locationTypes);
 		}
@@ -76,11 +76,12 @@ class FctController extends AbstractController {
 			fctTable: fctTable,
 			currentPeriod: period,
 			currentProgram: program,
-			currentTarget: FctTarget.class,
+			selectedTargetClass: FctTarget.class,
 			currentLocation: location,
+			locationTree: locationTree,
 //			currentLevel: level,
 			currentLocationTypes: locationTypes,
-			currentFctTarget: fctTarget,
+			currentTarget: fctTarget,
 			fctTargets: getFctTargets(program),		
 			skipLevels: skipLevels
 		]

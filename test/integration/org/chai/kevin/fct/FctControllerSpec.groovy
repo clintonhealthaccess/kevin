@@ -33,14 +33,13 @@ class FctControllerSpec extends FctIntegrationTests {
 		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
 		model.currentProgram.equals(program)
 //		model.currentLevel.equals(LocationLevel.findByCode(DISTRICT))
-		model.currentFctTarget.equals(target)
+		model.currentTarget.equals(target)
 		model.fctTable != null		
 		model.fctTable.valueMap.isEmpty() == false
 		model.fctTable.totalMap.isEmpty() == false
 		model.fctTable.hasData() == true
 	}
-	
-	
+		
 	def "get fct with no program and no location default to root program and root location"() {
 		setup:
 		setupLocationTree()

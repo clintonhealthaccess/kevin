@@ -37,6 +37,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.chai.kevin.dashboard.DashboardProgram
+import org.chai.kevin.dashboard.DashboardTarget
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.data.Average
 import org.chai.kevin.data.Calculation;
@@ -47,6 +49,9 @@ import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
+import org.chai.kevin.dsr.DsrTarget
+import org.chai.kevin.dsr.DsrTargetCategory;
+import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.AggregationPartialValue;
@@ -94,13 +99,22 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static final Date mar01 = getDate( 2005, 3, 1 );
 	static final Date mar31 = getDate( 2005, 3, 31 );
 	
+	static String ROOT = "Root"
+	
+	static String PROGRAM1 = "Program1"
+	static String TARGET1 = "Target 1"
+	static String TARGET2 = "Target 2"
+	
+	static String PROGRAM2 = "Program2"
+	static String TARGET3 = "Target 3"
+	
 	def setup() {
 		// using cache.use_second_level_cache = false in test mode doesn't work so
 		// we flush the cache after each test
 		springcacheService.flushAll()
 	}
 	
-	def setupLocationTree() {
+	static def setupLocationTree() {
 		// for the test environment, the facility level is set to 4
 		// so we create a tree accordingly
 		def hc = newDataEntityType(j(["en":HEALTH_CENTER_GROUP]), HEALTH_CENTER_GROUP);
@@ -118,7 +132,32 @@ abstract class IntegrationTests extends IntegrationSpec {
 		newDataLocationEntity(j(["en":BUTARO]), BUTARO, burera, dh)
 		newDataLocationEntity(j(["en":KIVUYE]), KIVUYE, burera, hc)
 	}
-	
+
+	static def setupProgramTree() {
+		def period = newPeriod()
+		
+		def root = newReportProgram(ROOT)
+		def dashboardRoot = newDashboardProgram(ROOT, root, 0)
+		
+		def program1 = newReportProgram(PROGRAM1, root)
+		def dashboardProgram1 = newDashboardProgram(PROGRAM1, program1, 1)
+
+		def program2 = newReportProgram(PROGRAM2, root)
+		def dashboardProgram2 = newDashboardProgram(PROGRAM2, program2, 1)
+		
+		def dataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"40",(HEALTH_CENTER_GROUP):"40"]]))
+		def average1 = newAverage("\$"+dataElement1.id, CODE(2))
+		def target1 = newDashboardTarget(TARGET1, average1, program1, 1)
+		
+		def dataElement2 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"20"]]))
+		def average2 = newAverage("\$"+dataElement2.id, CODE(4))
+		def target2 = newDashboardTarget(TARGET2, average2, program1, 1)
+		
+		def dataElement3 = newNormalizedDataElement(CODE(5), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def average3 = newAverage("\$"+dataElement3.id, CODE(6))
+		def target3 = newDashboardTarget(TARGET2, average3, program2, 1)
+	}
+		
 	static def newPeriod() {
 		def period = new Period(startDate: mar01, endDate: mar31)
 		return period.save(failOnError: true)
@@ -172,6 +211,57 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return entity
 	}
 	
+	static def newDashboardProgram(def code, def program) {
+		return new DashboardProgram(code: code, program: program, weight: 1).save(failOnError: true)
+	}
+	
+	static def newDashboardProgram(def code, def program, def weight) {
+		return new DashboardProgram(code: code, program: program, weight: weight).save(failOnError: true)
+	}
+
+	static def newDashboardTarget(def code, def calculation, def parent, def weight) {
+		def dashboardTarget = new DashboardTarget(code: code, calculation: calculation, program: parent, weight: weight).save(failOnError: true)
+		return dashboardTarget
+	}
+
+	static def newDsrTarget(def code, def dataElement, def format, def types, def program, DsrTargetCategory category) {
+		def target = new DsrTarget(names: [:],
+			code: code,
+			format: format,
+			dataElement: dataElement,
+			program: program,
+			category: category,
+			typeCodeString: Utils.unsplit(types)
+		).save(failOnError: true)
+		if (category != null) {
+			category.targets << target
+			category.save(failOnError: true)
+		}
+		program.save(failOnError: true)
+		return target
+	}
+	
+	static def newDsrTarget(def code, def dataElement, def types, def program) {
+		return newDsrTarget(code, dataElement, null, types, program, null)
+	}
+	
+	static def newFctTarget(def code, def sum, def format, def types, def program) {
+		def target = new FctTarget(names: [:],
+			code: code,
+			format: format,
+			sum: sum,
+			program: program,
+			typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+			
+		program.targets << target
+		program.save(failOnError: true)
+		return target
+	}
+		
+	static def newFctTarget(def code, def sum, def types, def program) {
+		return newFctTarget(code, sum, null, types, program)
+	}
+			
 	static def newUser(def username, def uuid) {
 		return new User(username: username, permissionString: '', passwordHash:'', uuid: uuid).save(failOnError: true)
 	}
@@ -269,11 +359,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newAverage([:], expression, code, calculated)
 	}
 
-	Sum newSum(def names, def expression, def code) {
+	static def Sum newSum(def names, def expression, def code) {
 		return new Sum(names: names, expression: expression, code: code).save(failOnError: true, flush: true)
 	}
 	
-	Sum newSum(def expression, def code) {
+	static def Sum newSum(def expression, def code) {
 		return newSum([:], expression, code)
 	}
 	
