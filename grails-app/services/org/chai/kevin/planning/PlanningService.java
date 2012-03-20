@@ -184,12 +184,11 @@ public class PlanningService {
 
 //			if (currentType.getType() == ValueType.LIST) {
 //				for (Value value : currentValue.getListValue()) {
-//					if (value.getAttribute("BUD"))
+//					if (value.getAttribute(PlanningEntry.SUBMITTED) == "false") {
+//
+//					}
 //				}
-//			}
-			
-//			if (currentType.equals(planningType.getFormElement().getDataElement().getType().getListType())) {
-				// TODO if is not submitted, do not add
+//				 currentValue.setJsonValue(jsonValue);
 //			}
 			
 			return modified | super.transformValue(currentValue, currentType, currentPrefix);

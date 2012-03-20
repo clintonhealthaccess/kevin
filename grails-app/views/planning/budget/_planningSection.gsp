@@ -12,6 +12,7 @@
 		<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
 		<input class="js_always-send" type="hidden" name="planningType" value="${planningType.id}"/>
 		
+		<div id="element-${planningType.formElement.id}">
 		<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
 			value: planningEntry.getValue(section),
 			lastValue: null,
@@ -26,6 +27,7 @@
 			readonly: readonly,
 			enums: planningEntry.enums
 		]"/>
+		</div>
 	
 		<a class="next gray medium" href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location: location.id, planningType: planningType.id])}">Update budget</a>
 	</g:form>

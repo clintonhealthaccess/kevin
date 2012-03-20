@@ -305,7 +305,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	def static newFormValidationRule(def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		def validationRule = new FormValidationRule(expression: expression, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
+		def validationRule = new FormValidationRule(expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
 		element.addValidationRule(validationRule)
 		element.save(failOnError: true)
 		return validationRule

@@ -31,20 +31,22 @@
 			  						</h4>
 			  					</div>
 			
-			  					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
-									value: planningEntry.getValue(section),
-									lastValue: null,
-									type: planningType.getType(section), 
-									suffix: planningEntry.getPrefix(section),
-									headerSuffix: section,
-									
-									// get rid of those in the templates??
-									element: planningType.formElement,
-									validatable: planningEntry.validatable,
-									
-									readonly: readonly,
-									enums: planningEntry.enums
-								]"/>
+								<div id="element-${planningType.formElement.id}">
+				  					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
+										value: planningEntry.getValue(section),
+										lastValue: null,
+										type: planningType.getType(section), 
+										suffix: planningEntry.getPrefix(section),
+										headerSuffix: section,
+										
+										// get rid of those in the templates??
+										element: planningType.formElement,
+										validatable: planningEntry.validatable,
+										
+										readonly: readonly,
+										enums: planningEntry.enums
+									]"/>
+								</div>
 								
 								<div class="adv-aside help-container">
 									<div class="help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>

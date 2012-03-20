@@ -118,8 +118,8 @@ class EditPlanningController extends AbstractController {
 			status = 'success'
 			id = planningType.id
 			lineNumber = lineNumberParam
-			complete = planningEntry.incompleteSections.empty
-			valid = planningEntry.invalidSections.empty
+			complete = validatable.complete
+			valid = !validatable.invalid
 			budgetUpdated = planningEntry.budgetUpdated
 			sections = array {
 				planningType.sections.each { section ->
@@ -133,7 +133,7 @@ class EditPlanningController extends AbstractController {
 			}
 			elements = array {
 				elem (
-					id: planningType.id,
+					id: planningType.formElement.id,
 					skipped: array {
 						validatable.skippedPrefixes.each { prefix -> element prefix }
 					},

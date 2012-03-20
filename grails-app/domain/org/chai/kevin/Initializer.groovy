@@ -73,6 +73,7 @@ import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
 import org.hisp.dhis.period.Period;
 
@@ -1169,8 +1170,22 @@ class Initializer {
 				]
 			).save(failOnError: true)
 		
-		// TODO add validation and skip rules
+			def validationRule = new FormValidationRule(
+				formElement: formElement,
+				prefix: '[_].basic.instances',
+				expression: "\$"+formElement.id+"[_].basic.instances > 100",
+				messages: j(["en":"Validation error {0,here}"]),
+				dependencies: [formElement],
+				typeCodeString: "District Hospital,Health Center",
+				allowOutlier: false
+			).save(failOnError: true)
 			
+		formElement.addValidationRule(validationRule)
+		formElement.save(failOnError: true)
+		
+		// add validation and skip rules
+		def formSkip = new FormSkipRule(expression: "\$"+formElement.id+"[_].basic.instances == 1", skippedFormElements: [(formElement): "[_].basic.responsible"]).save(failOnError: true);
+		
 		def planningType = new PlanningType(
 			names: j(["en":"Activity"]),
 			namesPlural: j(["en":"Activities"]),
@@ -1225,20 +1240,19 @@ class Initializer {
 		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-		new FormEnteredValue(
-			formElement: formElement,
-			entity: DataLocationEntity.findByCode("Kivuye HC"),
-			period: Period.list()[0],
-			value: Value.VALUE_LIST([
-				Value.VALUE_MAP([
-					"basic": Value.VALUE_MAP([
-						"activity": Value.VALUE_STRING("value1"), 
-						"instances": Value.VALUE_NUMBER(10)
-					])
-				])
-			]),
-			timestamp: new Date()
-		).save(failOnError: true)
+//		new FormEnteredValue(
+//			formElement: formElement,
+//			entity: DataLocationEntity.findByCode("Kivuye HC"),
+//			value: Value.VALUE_LIST([
+//				Value.VALUE_MAP([
+//					"basic": Value.VALUE_MAP([
+//						"activity": Value.VALUE_STRING("value1"), 
+//						"instances": Value.VALUE_NUMBER(10)
+//					])
+//				])
+//			]),
+//			timestamp: new Date()
+//		).save(failOnError: true)
 	}
 	
 	static def createQuestionaire(){
