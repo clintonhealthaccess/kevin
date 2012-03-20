@@ -40,11 +40,11 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		def html = applyTemplate(
 			'<g:locationFilter selected="${location}"/>',
 			[
-				'location': butaro
+				'location': rwanda
 			]
 		)
 		
-		assertTrue html.contains("href=\"/test?location="+butaro.id+"\"") 
+		assertTrue html.contains("href=\"/test?location="+rwanda.id+"\"")
 		assertTrue html.contains("Rwanda")
 	}
 	
@@ -118,7 +118,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 				'location': rwanda.id,
 				'program': root.id,
 				'period': period.id,
-				'locationTypes1': hc.id,
+				'locationTypes': hc.id,
 			]
 		)
 		
@@ -170,7 +170,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 				'location': rwanda.id,
 				'program': root.id,
 				'period': period.id,
-				'locationTypes1': hc.id,
+				'locationTypes': hc.id,
 			]
 		)
 		
