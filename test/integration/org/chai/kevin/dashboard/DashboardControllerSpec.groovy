@@ -5,7 +5,7 @@ import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.Value
-
+import org.hisp.dhis.period.Period;
 
 class DashboardControllerSpec extends DashboardIntegrationTests {
 
@@ -15,7 +15,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
 		dashboardController = new DashboardController()
 		refresh()
 		
@@ -39,7 +39,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
 		dashboardController = new DashboardController()
 		refresh()
 		
@@ -86,9 +86,9 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		
 	def "get program compare dashboard"() {
 		setup:
-		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
+		def period = Period.list()[0]
 		dashboardController = new DashboardController()
 		def percentageCompareValue1 = newDashboardPercentage("30")
 		def percentageCompareValue2 = newDashboardPercentage("10")
@@ -117,9 +117,9 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 	
 	def "get location compare dashboard"() {
 		setup:
-		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
+		def period = Period.list()[0]
 		dashboardController = new DashboardController()
 		def percentageCompareValue = newDashboardPercentage("20")
 		refresh()
@@ -130,7 +130,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(ROOT).id
 		dashboardController.params.period = period.id
 		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
-		dashboardController.params.table = 'location'		
+		dashboardController.params.table = 'location'
 		dashboardController.compare()
 		def dashboardControllerResponse = dashboardController.response.contentAsString
 		def jsonResult = JSONUtils.getMapFromJSON(dashboardControllerResponse)
@@ -142,11 +142,5 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		compareValues[0].id == DashboardProgram.findByCode(ROOT).id
 		compareValues[0].value == getPercentage(percentageCompareValue)
 	}
-	
-	def getPercentage(def percentage) {
-		if(percentage != null && percentage.isValid())
-			return percentage.getRoundedValue();
-		else
-			return null;
-	}
+
 }

@@ -78,7 +78,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
 		refresh()
 
 		when:
@@ -104,7 +104,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
 		refresh()
 
 		when:
@@ -144,7 +144,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
 		refresh()
 
 		when:
@@ -166,7 +166,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
 		refresh()
 
 		when:
@@ -187,7 +187,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 	def "get location dashboard with no location entities"(){
 		setup:
 		def period = newPeriod()
-		setupDashboard()
+		setupProgramTree()
 		refresh()
 		
 		when:

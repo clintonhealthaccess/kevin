@@ -139,6 +139,7 @@ class Initializer {
 			def country = new LocationLevel(names: j(["en":"National"]), code: "National", order: 1).save(failOnError: true)
 			def province = new LocationLevel(names: j(["en":"Province"]), code: "Province", order: 2).save(failOnError: true)
 			def district = new LocationLevel(names: j(["en":"District"]), code: "District", order: 3).save(failOnError: true)
+			def sector = new LocationLevel(names: j(["en":"Sector"]), code: "Sector", order: 4).save(failOnError: true)
 
 			def rwanda = new LocationEntity(names: j(["en":"Rwanda"]), code: "Rwanda", parent: null, level: country).save(failOnError: true)
 

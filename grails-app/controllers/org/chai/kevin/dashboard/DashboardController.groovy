@@ -72,25 +72,22 @@ class DashboardController extends AbstractController {
 	}
 	
     def view = {
-		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)
-		
-		def program = null
-		def dashboardEntity = null
-		def programDashboard = null		
-		def locationDashboard = null
+		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)		
 		
 		Period period = getPeriod()									
-		program = getProgram()
-		dashboardEntity = getDashboardEntity(program)
+		ReportProgram program = getProgram()
+		LocationEntity location = getLocation()
+		Set<DataEntityType> locationTypes = getLocationTypes()
+		
+		def dashboardEntity = getDashboardEntity(program)
 		if(dashboardEntity == null){
 			 program = reportService.getRootProgram()
 			 dashboardEntity = getDashboardEntity(program)
-		}
-		LocationEntity location = getLocation()
-		Set<DataEntityType> locationTypes = getLocationTypes()
-				
+		}		
 		def skipLevels = dashboardService.getSkipLocationLevels();
 		
+		def programDashboard = null
+		def locationDashboard = null
 		if (period != null && program != null && dashboardEntity != null && location != null && locationTypes != null) {			
 			if (log.isInfoEnabled()){
 				log.info("dashboard for period: "+period.id+
@@ -114,7 +111,7 @@ class DashboardController extends AbstractController {
 			currentPeriod: period,
 			dashboardEntity: dashboardEntity,
 			currentProgram: program,
-			currentTarget: DashboardTarget.class,
+			selectedTargetClass: DashboardTarget.class,
 			currentLocation: location,			
 			currentLocationTypes: locationTypes,
 			skipLevels: skipLevels			
@@ -126,9 +123,10 @@ class DashboardController extends AbstractController {
 		
 		Period period = getPeriod()	
 		ReportProgram program = getProgram()
-		DashboardEntity dashboardEntity = getDashboardEntity(program)	
 		LocationEntity location = getLocation()
 		Set<DataEntityType> locationTypes = getLocationTypes()
+		
+		DashboardEntity dashboardEntity = getDashboardEntity(program)
 		
 		def dashboard = null
 		if (period != null && program != null && dashboardEntity != null && location != null && locationTypes != null) {			

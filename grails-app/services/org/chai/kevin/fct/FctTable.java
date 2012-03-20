@@ -28,10 +28,13 @@ package org.chai.kevin.fct;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.chai.kevin.LocationSorter;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.reports.ReportValue;
@@ -65,7 +68,7 @@ public class FctTable extends ReportTable<FctTargetOption, LocationEntity> {
 	
 	public Set<LocationEntity> getLocations(){
 		return valueMap.keySet();
-	}
+	}	
 	
 	public boolean hasData(){
 		return (super.hasData() || !totalMap.isEmpty());

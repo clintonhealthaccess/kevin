@@ -2,7 +2,7 @@
 	<g:if test="${dsrTable.targetCategories != null && !dsrTable.targetCategories.empty}">
 		<g:form name="dsrCategory-form" method="get" url="${[controller:'dsr', action:'view']}">		
 			
-			<g:render template="/templates/linkParamFilter" model="[linkParams:linkParams, filter:'dsrCategory']" />
+			<g:linkParamFilter linkParams="${linkParams}" exclude="${['dsrCategory']}" />
 			
 			<span>Report Category:</span>
 			<select id="dsrCategory" name="dsrCategory">
