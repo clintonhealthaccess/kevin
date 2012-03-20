@@ -52,14 +52,17 @@ class ImporterEntityController extends AbstractController {
 	def uploader = { ImporterEntityCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 		if (!cmd.hasErrors()) {
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
 			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());
 			importerService.importFile(cmd.dataElement,csvInputStreamReader, cmd.period,errorManager);
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
-		}
-		this.getModel(cmd,errorManager,IMPORT_FORM);
+		}else{
+			this.getModel(cmd,errorManager,IMPORT_FORM);
+		}	
 	}
 
 	def getModel(def cmd,ImporterErrorManager errorManager,String view) {
+		if(log.isDebugEnabled()) log.debug("getModel(cmd="+cmd+",errorManager="+errorManager+",view="+view+")")
 		
 		List<Period> periods = Period.list()
 		List<RawDataElement> dataElements =[]
