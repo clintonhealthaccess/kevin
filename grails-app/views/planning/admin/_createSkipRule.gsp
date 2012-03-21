@@ -13,7 +13,7 @@
 			
 		 	<g:i18nTextarea name="descriptions" bean="${skip}" value="${skip?.descriptions}" label="Descriptions" field="descriptions" />
 			<g:render template="/templates/skippedFormElements" model="[skip: skip]"/>
-		 	<g:textarea name="expression" label="Expression" bean="${skip}" field="expression" rows="5"/>
+		 	<g:textarea name="expression" label="Expression" bean="${skip}" field="expression" value="${skip.expression}" rows="5"/>
 		 
 			<g:if test="${skip.id != null}">
 				<input type="hidden" name="id" value="${skip.id}" />

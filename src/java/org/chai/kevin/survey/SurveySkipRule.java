@@ -12,14 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.chai.kevin.form.FormCloner;
-import org.chai.kevin.form.FormElement;
-import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormElement.ElementCalculator;
+import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
-
 
 @Entity(name="SurveySkipRule")
 @Table(name="dhsst_survey_skip_rule")

@@ -17,7 +17,7 @@
 					optionKey="id" multiple="true" ajaxLink="${createLink(controller:'question', action:'getAjaxData', params:[survey: skip.survey.id])}" 
 					from="${skippedSurveyQuestions}" value="${skip.skippedSurveyQuestions*.id}" bean="${skip}" 
 					values="${skippedSurveyQuestions.collect {i18n(field:it.names)+' - '+i18n(field:it.section?.names)}}" />
-		 	<g:textarea name="expression" label="Expression" bean="${skip}" field="expression" rows="5"/>
+		 	<g:textarea name="expression" label="Expression" bean="${skip}" field="expression" value="${skip.expression}" rows="5"/>
 		 
 			<g:if test="${skip.id != null}">
 				<input type="hidden" name="id" value="${skip.id}" />

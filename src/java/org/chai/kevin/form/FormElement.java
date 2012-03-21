@@ -30,8 +30,6 @@ import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.period.Period;
 
 @Entity(name = "FormElement")
