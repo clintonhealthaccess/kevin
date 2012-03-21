@@ -47,6 +47,10 @@ import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Sum
 import org.chai.kevin.data.Type;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormSkipRule;
+import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.AggregationPartialValue;
@@ -195,31 +199,31 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new ReportProgram(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
 	}
 	
-	RawDataElementValue newRawDataElementValue(def rawDataElement, def period, def entity, def value) {
+	static RawDataElementValue newRawDataElementValue(def rawDataElement, def period, def entity, def value) {
 		return new RawDataElementValue(data: rawDataElement, period: period, entity: entity, value: value).save(failOnError: true, flush: true)
 	}
 	
-	AggregationPartialValue newAggregationPartialValue(def aggregation, def period, def entity, def type, def expressionData, def value) {
+	static AggregationPartialValue newAggregationPartialValue(def aggregation, def period, def entity, def type, def expressionData, def value) {
 		return new AggregationPartialValue(data: aggregation, period: period, entity: entity, type: type, expressionData: expressionData, value: value).save(failOnError: true)
 	}
 	
-	SumPartialValue newSumPartialValue(def sum, def period, def entity, def type, def value) {
+	static SumPartialValue newSumPartialValue(def sum, def period, def entity, def type, def value) {
 		return new SumPartialValue(data: sum, period: period, entity: entity, type: type, value: value).save(failOnError: true)
 	}
 	
-	AveragePartialValue newAveragePartialValue(def average, def period, def entity, def type, def numberOfFacilities, def value) {
+	static AveragePartialValue newAveragePartialValue(def average, def period, def entity, def type, def numberOfFacilities, def value) {
 		return new AveragePartialValue(data: average, period: period, entity: entity, type: type, numberOfFacilities: numberOfFacilities, value: value).save(failOnError: true)
 	}
 	
-	RawDataElement newRawDataElement(def code, def type) {
+	static RawDataElement newRawDataElement(def code, def type) {
 		return newRawDataElement(j([:]), code, type)
 	}
 	
-	RawDataElement newRawDataElement(def names, def code, def type) {
+	static RawDataElement newRawDataElement(def names, def code, def type) {
 		return newRawDataElement(names, code, type, null)
 	}
 	
-	RawDataElement newRawDataElement(def names, def code, def type, def info) {
+	static RawDataElement newRawDataElement(def names, def code, def type, def info) {
 		return new RawDataElement(names: names, code: code, type: type, info: info).save(failOnError: true, flush:true)
 	}
 
@@ -241,15 +245,15 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newNormalizedDataElement([:], code, type, expressionMap, params)
 	}
 	
-	NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def entity, def period, def status, def value) {
+	static NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def entity, def period, def status, def value) {
 		return new NormalizedDataElementValue(data: normalizedDataElement, period: period, entity: entity, status: status, value: value).save(failOnError: true)
 	}
 	
-	Aggregation newAggregation(def names, def expression, def code) {
+	static Aggregation newAggregation(def names, def expression, def code) {
 		return new Aggregation(names: names, expression: expression, code: code).save(failOnError: true)
 	}
 
-	Aggregation newAggregation(def expression, def code) {
+	static Aggregation newAggregation(def expression, def code) {
 		return newAggregation([:], expression, code)
 	}
 
@@ -269,31 +273,54 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newAverage([:], expression, code, calculated)
 	}
 
-	Sum newSum(def names, def expression, def code) {
+	static Sum newSum(def names, def expression, def code) {
 		return new Sum(names: names, expression: expression, code: code).save(failOnError: true, flush: true)
 	}
 	
-	Sum newSum(def expression, def code) {
+	static Sum newSum(def expression, def code) {
 		return newSum([:], expression, code)
 	}
 	
-	Enum newEnume(def code) {
+	static Enum newEnume(def code) {
 		return new Enum(code: code).save(failOnError: true, flush: true)
 	}
 	
-	Enum newEnume(def code, def names, def descriptions){
+	static Enum newEnume(def code, def names, def descriptions){
 		return new Enum(code: code, names:j("en":names),descriptions:j("en":descriptions)).save(failOnError: true, flush: true)
 	}
 		
-	EnumOption newEnumOption(def enume, def value) {
+	static EnumOption newEnumOption(def enume, def value) {
 		return newEnumOption(enume, value, new Ordering())
 	}
 	
-	EnumOption newEnumOption(def enume, def value, def order) {
+	static EnumOption newEnumOption(def enume, def value, def order) {
 		def enumOption = new EnumOption(enume: enume, value: value, order: order).save(failOnError: true)
 		enume.addEnumOption(enumOption)
 		enume.save(failOnError: true)
 		return enumOption
+	}
+	
+	def static newFormEnteredValue(def element, def period, def entity, def value) {
+		return new FormEnteredValue(formElement: element, value: value, entity: entity).save(failOnError: true, flush: true)
+	}
+	
+	def static newFormValidationRule(def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
+		def validationRule = new FormValidationRule(expression: expression, prefix: prefix, messages: [:], formElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
+		element.addValidationRule(validationRule)
+		element.save(failOnError: true)
+		return validationRule
+	}
+	
+	def static newFormValidationRule(def element, def prefix, def types, def expression, def dependencies = []) {
+		return newFormValidationRule(element, prefix, types, expression, false, dependencies)
+	}
+	
+	def static newFormElement(def dataElement) {
+		return new FormElement(dataElement: dataElement).save(failOnError: true)
+	}
+	
+	def static newFormSkipRule(def expression, def skippedElements) {
+		return new FormSkipRule(expression: expression, skippedFormElements: skippedElements).save(failOnError: true)
 	}
 
 	def refresh() {

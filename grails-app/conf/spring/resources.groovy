@@ -18,12 +18,12 @@ import org.chai.kevin.reports.ReportService
 import org.chai.kevin.dsr.DsrService
 import org.chai.kevin.export.ExportDataElementService;
 import org.chai.kevin.fct.FctService
+import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.importer.ImporterService;
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.survey.SurveyCopyService
 import org.chai.kevin.survey.SurveyExportService
 import org.chai.kevin.survey.SurveyPageService
-import org.chai.kevin.survey.SurveyValidationService
 import org.chai.kevin.survey.summary.SummaryService;
 import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.RefreshValueService;
@@ -109,17 +109,17 @@ beans = {
 		grailsApplication = ref("grailsApplication")
 	}
 	
-	surveyValidationService(SurveyValidationService){
+	formValidationService(FormValidationService){
 		validationService = ref("validationService")
 	}
 	
 	surveyPageService(SurveyPageService){
 		surveyValueService = ref("surveyValueService")
+		formElementService = ref("formElementService")
 		surveyService = ref("surveyService")
-		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		surveyValidationService = ref("surveyValidationService")
+		formValidationService = ref("formValidationService")
 		sessionFactory = ref("sessionFactory")
 		grailsApplication = ref("grailsApplication")
 	}
@@ -213,9 +213,10 @@ beans = {
 	}
 
 	planningService(PlanningService) {
+		formValidationService = ref("formValidationService")
+		formElementService = ref("formElementService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		locationService = ref("locationService")
 		sessionFactory = ref("sessionFactory")
 		refreshValueService = ref("refreshValueService")
 	}

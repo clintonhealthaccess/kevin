@@ -5,17 +5,17 @@ import org.hibernate.loader.custom.Return;
 
 abstract class PlanningIntegrationTests extends IntegrationTests {
 
-	def newPlanning(def period) {
+	static def newPlanning(def period) {
 		return newPlanning(period, false)
 	}
 	
-	def newPlanning(def period, def active) {
+	static def newPlanning(def period, def active) {
 		return new Planning(period: period, active: active).save(failOnError: true)
 	}
 	
-	def newPlanningType(def dataElement, def discriminator, def fixedHeader, def planning) {
+	static def newPlanningType(def formElement, def discriminator, def fixedHeader, def planning) {
 		def planningType = new PlanningType(
-			dataElement: dataElement,
+			formElement: formElement,
 			discriminator: discriminator,
 			fixedHeader: fixedHeader,
 			planning: planning
@@ -25,7 +25,7 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return planningType
 	}
 	
-	def newPlanningCost(def type, def dataElement, def section, def discriminatorValueString, def planningType) {
+	static def newPlanningCost(def type, def dataElement, def section, def discriminatorValueString, def planningType) {
 		def planningCost = new PlanningCost(
 			type: type,
 			dataElement: dataElement,
@@ -37,6 +37,13 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		planningType.costs << planningCost
 		planningType.save(failOnError: true)
 		return planningCost
+	}
+	
+	static def newPlanningSkipRule(def planning, def expression) {
+		def skipRule = new PlanningSkipRule(planning: planning, expression: expression).save(failOnError: true)
+		planning.addSkipRule(skipRule)
+		planning.save(failOnError: true)
+		return skipRule
 	}
 	
 }

@@ -1,10 +1,11 @@
 package org.chai.kevin.value
 
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.form.FormEnteredValue;
+
 import grails.plugin.spock.UnitSpec;
 
 class ValidatableUnitSpec extends UnitSpec {

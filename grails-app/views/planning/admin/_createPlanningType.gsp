@@ -18,17 +18,17 @@
 		<g:selectFromList name="fixedHeader" label="Fixed Header" bean="${planningType}" field="fixedHeader" multiple="false"
 			from="${valuePrefixes}" value="${planningType.fixedHeader}"/>
 		
-		<g:selectFromList name="dataElement.id" label="Data element" bean="${planningType}" field="dataElement" optionKey="id" multiple="false"
+		<g:selectFromList name="formElement.dataElement.id" label="Data element" bean="${planningType}" field="formElement.dataElement" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'DataElement'])}"
-			from="${dataElements}" value="${planningType.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
+			from="${dataElements}" value="${planningType.formElement?.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 	
 		<g:if test="${headerPrefixes != null && !headerPrefixes.empty}">
-			<div class="row ${hasErrors(bean:planningType, field:'headers', 'errors')}">
+			<div class="row ${hasErrors(bean:planningType, field:'formElement.headers', 'errors')}">
 				<a href="#" onclick="$(this).next().toggle();return false;"><g:message code="planning.planningType.headers.label" default="Headers"/>:</a> 
 				<div class="hidden">
 					<g:each in="${headerPrefixes}" var="headerPrefix">
 						<input type="hidden" name="headerList" value="${headerPrefix}"/>
-						<g:i18nRichTextarea name="headerList[${headerPrefix}]" bean="${planningType}" value="${planningType.headers[headerPrefix]}" label="${headerPrefix}" field="headers" height="50"/>
+						<g:i18nRichTextarea name="headerList[${headerPrefix}]" bean="${planningType}" value="${planningType.formElement.headers[headerPrefix]}" label="${headerPrefix}" field="headers" height="50"/>
 					</g:each>
 				</div>
 			</div>
@@ -46,6 +46,9 @@
 			</div>
 		</g:if>
 		
+		<g:if test="${planningType?.formElement?.id != null}">
+			<input type="hidden" name="formElement.id" value="${planningType.formElement.id}"></input>
+		</g:if>
 		<g:if test="${planningType.id != null}">
 			<input type="hidden" name="id" value="${planningType.id}"></input>
 		</g:if>

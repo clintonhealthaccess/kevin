@@ -40,7 +40,7 @@
 													<th></th>
 													<th><g:i18n field="${planningType.names}"/></th>
 													<g:each in="${planningType.getValuePrefixes(section)}" var="prefix">
-														<th><g:i18n field="${planningType.getHeaders()[prefix]}"/></th>
+														<th><g:i18n field="${planningType.formElement.headers[prefix]}"/></th>
 													</g:each>
 													<th></th>
 												</tr>
@@ -77,7 +77,7 @@
 											<g:each in="${planningType.sections}" var="sectionIt" status="i">
 												<li>
 													<a class="${section==sectionIt?'selected':''}" href="${createLink(controller:'editPlanning', action:'planningList', params:[location:location.id, section:i, planningType: planningType.id])}">
-														<g:i18n field="${planningType.headers[sectionIt]}"/>
+														<g:i18n field="${planningType.formElement.headers[sectionIt]}"/>
 													</a>
 												</li>
 											</g:each>

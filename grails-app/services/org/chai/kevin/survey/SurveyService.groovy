@@ -27,27 +27,20 @@
  */
 package org.chai.kevin.survey
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.List
+import java.util.Map
+import java.util.Set
 
-import org.hibernate.FlushMode;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.data.Type.PrefixPredicate;
-import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.Value;
+import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang.math.NumberUtils
+import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.location.DataEntityType
+import org.chai.kevin.util.Utils
+import org.hibernate.FlushMode
+import org.hibernate.criterion.MatchMode
+import org.hibernate.criterion.Order
+import org.hibernate.criterion.Projections
+import org.hibernate.criterion.Restrictions
 
 /**
  * @author Jean Kahigiso M.
@@ -61,10 +54,6 @@ class SurveyService {
 	def dataService
 	def locationService
 	def sessionFactory
-
-	SurveyElement getSurveyElement(Long id) {
-		return SurveyElement.get(id)
-	}
 
 	SurveyQuestion getSurveyQuestion(Long id) {
 		// TODO test this with Grails 2.0
@@ -116,33 +105,6 @@ class SurveyService {
 		return criteria
 	}
 	
-	Set<SurveyValidationRule> searchValidationRules(SurveyElement surveyElement, DataEntityType type) {
-		if (log.isDebugEnabled()) log.debug("searchValidationRules(surveyElement="+surveyElement+", type="+type+")");
-		
-		def c = SurveyValidationRule.createCriteria()
-		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		c.add(Restrictions.like("typeCodeString", type.code, MatchMode.ANYWHERE))
-		
-		List<SurveyValidationRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
-		return filter(rules, surveyElement.id);
-	}
-	
-	Set<SurveySkipRule> searchSkipRules(SurveyElement surveyElement) {
-		if (log.isDebugEnabled()) log.debug("searchSkipRules(surveyElement="+surveyElement+")");
-		
-		def c = SurveySkipRule.createCriteria()
-		c.add(Restrictions.like("expression", "\$${surveyElement.id}", MatchMode.ANYWHERE))
-		
-		List<SurveySkipRule> rules = c.setFlushMode(FlushMode.COMMIT).list()
-		return filter(rules, surveyElement.id);
-	}
-	
-	static def filter(def rules, Long id) {
-		return rules.findAll { rule ->
-			return Utils.containsId(rule.expression, id)
-		}
-	}
-	
 	Set<SurveyElement> getSurveyElements(RawDataElement dataElement, Survey survey) {
 		if (log.isDebugEnabled()) log.debug("getSurveyElements(dataElement=${dataElement}, survey=${survey})")
 		def c = SurveyElement.createCriteria()
@@ -161,6 +123,7 @@ class SurveyService {
 		return result
 	}
 
+	@Deprecated
 	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes, Map<String, String> params) {
 		def criteria = getSurveyElementSearchCriteria(text, survey, allowedTypes)
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])

@@ -14,11 +14,11 @@ import org.chai.kevin.Ordering;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.hisp.dhis.period.Period;
 
 public class SurveyPage {
@@ -32,7 +32,7 @@ public class SurveyPage {
 	private Map<SurveyProgram, SurveyEnteredProgram> programs;
 	private Map<SurveySection, SurveyEnteredSection> sections;
 	private Map<SurveyQuestion, SurveyEnteredQuestion> questions;
-	private Map<SurveyElement, SurveyEnteredValue> elements;
+	private Map<SurveyElement, FormEnteredValue> elements;
 //	private Comparator<Orderable<Ordering>> comparator;
 	private Map<String, Enum> enums;
 	
@@ -41,7 +41,7 @@ public class SurveyPage {
 			Map<SurveyProgram, SurveyEnteredProgram> programs,
 			Map<SurveySection, SurveyEnteredSection> sections,
 			Map<SurveyQuestion, SurveyEnteredQuestion> questions,
-			Map<SurveyElement, SurveyEnteredValue> elements,
+			Map<SurveyElement, FormEnteredValue> elements,
 //			Comparator<Orderable<Ordering>> comparator
 			Map<String, Enum> enums) {
 		super();
@@ -97,7 +97,7 @@ public class SurveyPage {
 		return questions;
 	}
 
-	public Map<SurveyElement, SurveyEnteredValue> getElements() {
+	public Map<SurveyElement, FormEnteredValue> getElements() {
 		return elements;
 	}
 	
