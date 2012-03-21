@@ -13,9 +13,9 @@ class PlanningEntryBudgetUnitSpec extends UnitSpec {
 			new PlanningCost(groupSection: null, type: PlanningCostType.OUTGOING),
 			new PlanningCost(groupSection: "[_].key1", type: PlanningCostType.INCOMING)
 		]
-		def planningEntry = Mock(PlanningEntry)
-		planningEntry.getPlanningCosts() >> planningCosts
-		def planningEntryBudget = new PlanningEntryBudget(planningEntry, null)
+		def planningType = Mock(PlanningType)
+		planningType.getCosts() >> planningCosts
+		def planningEntryBudget = new PlanningEntryBudget(null, null, planningType, null, null, null)
 		
 		then:
 		planningEntryBudget.getGroupSections(PlanningCostType.OUTGOING) == [null]
@@ -30,9 +30,9 @@ class PlanningEntryBudgetUnitSpec extends UnitSpec {
 			new PlanningCost(groupSection: null, type: PlanningCostType.OUTGOING),
 			new PlanningCost(groupSection: "[_].key1", type: PlanningCostType.INCOMING)
 		]
-		def planningEntry = Mock(PlanningEntry)
-		planningEntry.getPlanningCosts() >> planningCosts
-		def planningEntryBudget = new PlanningEntryBudget(planningEntry, [:])
+		def planningType = Mock(PlanningType)
+		planningType.getCosts() >> planningCosts
+		def planningEntryBudget = new PlanningEntryBudget(null, null, planningType, null, null, null)
 		
 		then:
 		planningEntryBudget.getSum(PlanningCostType.OUTGOING) == 0d
@@ -46,9 +46,9 @@ class PlanningEntryBudgetUnitSpec extends UnitSpec {
 			new PlanningCost(groupSection: null, type: PlanningCostType.OUTGOING),
 			new PlanningCost(groupSection: "[_].key1", type: PlanningCostType.INCOMING)
 		]
-		def planningEntry = Mock(PlanningEntry)
-		planningEntry.getPlanningCosts() >> planningCosts
-		def planningEntryBudget = new PlanningEntryBudget(planningEntry, [:])
+		def planningType = Mock(PlanningType)
+		planningType.getCosts() >> planningCosts
+		def planningEntryBudget = new PlanningEntryBudget(null, null, planningType, null, null, null)
 		
 		then:
 		planningEntryBudget.getGroupTotal(PlanningCostType.OUTGOING, null) == 0d
@@ -61,11 +61,11 @@ class PlanningEntryBudgetUnitSpec extends UnitSpec {
 		def planningCost1 = new PlanningCost(groupSection: null, type: PlanningCostType.OUTGOING)
 		def planningCost2 = new PlanningCost(groupSection: "[_].key1", type: PlanningCostType.INCOMING)
 		def planningCosts = [planningCost1, planningCost2]
-		def planningEntry = Mock(PlanningEntry)
-		planningEntry.getPlanningCosts() >> planningCosts
+		def planningType = Mock(PlanningType)
+		planningType.getCosts() >> planningCosts
 		
 		when:
-		def planningEntryBudget = new PlanningEntryBudget(planningEntry, [:])
+		def planningEntryBudget = new PlanningEntryBudget(null, null, planningType, null, null, null)
 		
 		then:
 		planningEntryBudget.getBudgetCosts(PlanningCostType.OUTGOING, null).equals([])

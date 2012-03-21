@@ -59,6 +59,7 @@
 		<mapping class="org.chai.kevin.planning.Planning" />
 		<mapping class="org.chai.kevin.planning.PlanningType" />
 		<mapping class="org.chai.kevin.planning.PlanningCost" />
+		<mapping class="org.chai.kevin.planning.PlanningSkipRule" />
 				
 		<mapping class="org.chai.kevin.location.CalculationEntity" />
 		<mapping class="org.chai.kevin.location.DataLocationEntity" />

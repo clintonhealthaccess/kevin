@@ -25,10 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
 import org.chai.kevin.form.FormElement.ElementCalculator;
-import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.SurveyCloner;
-import org.chai.kevin.survey.SurveyValueService;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="FormValidationRule")
@@ -146,7 +143,7 @@ public class FormValidationRule {
 	}
 	
 	@Transient
-	public void deepCopy(FormValidationRule copy, SurveyCloner cloner) {
+	public void deepCopy(FormValidationRule copy, FormCloner cloner) {
 		copy.setAllowOutlier(getAllowOutlier());
 		copy.setPrefix(getPrefix());
 		copy.setExpression(cloner.getExpression(getExpression(), copy));

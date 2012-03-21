@@ -11,7 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Translation;
+import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormElementService;
 import org.chai.kevin.form.FormEnteredValue;
@@ -41,6 +43,19 @@ public class SurveyElement extends FormElement {
 	}
 	
 	@Transient
+	public String getDescriptionTemplate() {
+		return "/survey/admin/surveyElementDescription";
+	}
+	
+	@Transient
+	@Override
+	public String getLabel(LanguageService languageService) {
+		return languageService.getText(getDataElement().getNames()) 
+			+ " - " + languageService.getText(getSurveyQuestion().getSection().getNames())
+			+ " - " + languageService.getText(getSurvey().getNames());
+	}
+	
+	@Transient
 	public Survey getSurvey() {
 		return surveyQuestion.getSurvey();
 	}
@@ -52,9 +67,9 @@ public class SurveyElement extends FormElement {
 
 	@Transient
 	@Override
-	public void deepCopy(FormElement copy, SurveyCloner cloner) {
+	public void deepCopy(FormElement copy, FormCloner cloner) {
 		super.deepCopy(copy, cloner);
-		((SurveyElement)copy).setSurveyQuestion(cloner.getQuestion(getSurveyQuestion()));
+		((SurveyElement)copy).setSurveyQuestion(((SurveyCloner)cloner).getQuestion(getSurveyQuestion()));
 	}
 
 	@Override

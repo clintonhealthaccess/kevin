@@ -27,30 +27,20 @@
  */
 package org.chai.kevin.survey
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.List
+import java.util.Map
+import java.util.Set
 
-import org.hibernate.FlushMode;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.data.Type.PrefixPredicate;
-import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.form.FormElement;
-import org.chai.kevin.form.FormSkipRule;
-import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.Value;
+import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang.math.NumberUtils
+import org.chai.kevin.data.RawDataElement
+import org.chai.kevin.location.DataEntityType
+import org.chai.kevin.util.Utils
+import org.hibernate.FlushMode
+import org.hibernate.criterion.MatchMode
+import org.hibernate.criterion.Order
+import org.hibernate.criterion.Projections
+import org.hibernate.criterion.Restrictions
 
 /**
  * @author Jean Kahigiso M.
@@ -133,6 +123,7 @@ class SurveyService {
 		return result
 	}
 
+	@Deprecated
 	List<SurveyElement> searchSurveyElements(String text, Survey survey, List<String> allowedTypes, Map<String, String> params) {
 		def criteria = getSurveyElementSearchCriteria(text, survey, allowedTypes)
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])

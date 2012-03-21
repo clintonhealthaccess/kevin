@@ -27,8 +27,6 @@ import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.SurveyCloner;
-import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "FormSkipRule")
@@ -100,10 +98,10 @@ public class FormSkipRule {
 		return result;
 	}
 
-	public void deepCopy(FormSkipRule copy, SurveyCloner surveyCloner) {
-		copy.setExpression(surveyCloner.getExpression(getExpression(), copy));
+	public void deepCopy(FormSkipRule copy, FormCloner formCloner) {
+		copy.setExpression(formCloner.getExpression(getExpression(), copy));
 		for (Entry<FormElement, String> entry : getSkippedFormElements().entrySet()) {
-			copy.getSkippedFormElements().put(surveyCloner.getElement(entry.getKey()), entry.getValue());
+			copy.getSkippedFormElements().put(formCloner.getElement(entry.getKey()), entry.getValue());
 		}
 	}
 	

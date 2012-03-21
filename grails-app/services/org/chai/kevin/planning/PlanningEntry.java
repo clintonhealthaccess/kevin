@@ -32,7 +32,9 @@ public class PlanningEntry {
 	private Map<String, Enum>  enums;
 	private ValidatableValue validatable;
 	
-//	public PlanningEntry() {}
+	public PlanningEntry() {
+		// allows mocking
+	}
 	
 	public PlanningEntry(ValidatableValue validatable, Integer lineNumber) {
 		this.validatable = validatable;

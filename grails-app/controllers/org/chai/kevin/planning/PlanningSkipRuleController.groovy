@@ -25,60 +25,75 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey
+package org.chai.kevin.planning
 
-import org.chai.kevin.AbstractEntityController;
-import org.apache.commons.lang.math.NumberUtils;
+import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.form.FormElement
 /**
  * @author Jean Kahigiso M.
  *
  */
-class SurveyElementController {
+class PlanningSkipRuleController extends AbstractEntityController {
 
-	def surveyService;
+	def languageService
 	
-	def getHtmlData = {
-		Survey survey = Survey.get(params.int('survey'));
-		List<String> allowedTypes = params.list('include');
-		Set<SurveyElement> surveyElements = surveyService.searchSurveyElements(params['searchText'], survey, allowedTypes, params);
-		
-		render(contentType:"text/json") {
-			result = 'success'
-			html = g.render(template:'/survey/admin/surveyElements', model:[surveyElements: surveyElements])
-		}
+	def getLabel() {
+		return 'skiprule.label'
+	}
+	
+	def getEntity(def id) {
+		return PlanningSkipRule.get(id)
+	}
+	def createEntity() {
+		return new PlanningSkipRule()
 	}
 
-	def getAjaxData = {
-		Survey survey = Survey.get(params.int('survey'));
-		List<String> allowedTypes = params.list('include');
-		Set<SurveyElement> surveyElements = surveyService.searchSurveyElements(params['term'], survey, allowedTypes, params);
+	def getTemplate() {
+		return "/planning/admin/createSkipRule";
+	}
 
-		render(contentType:"text/json") {
-			elements = array {
-				surveyElements.each { surveyElement ->
-					elem (
-						key: surveyElement.id,
-						value: g.i18n(field: surveyElement.dataElement.names)+' - '+ g.i18n(field: surveyElement.surveyQuestion.section.names)+' - '+ g.i18n(field: surveyElement.survey.names) + '['+surveyElement.id+']'
-					)
-				}
+	def getModel(def entity) {
+		[skip: entity, languageService: languageService]
+	}
+
+	def bindParams(def entity) {
+		entity.properties = params
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
+		// binding skipped elements
+		entity.skippedFormElements.clear()
+		int i = 0;
+		params.skipped?.element?.each { skipped ->
+			def element = FormElement.get(skipped)
+			if (element != null) {
+				def prefix = params.skipped.prefix[i]
+				entity.skippedFormElements.put(element, prefix)
 			}
+			i++;
 		}
 	}
-
-	def getDescription = {
-		def surveyElement = null;
-		if (NumberUtils.isNumber(params['surveyElement'])) {
-			surveyElement = SurveyElement.get(params['surveyElement'])
-		}
-
-		if (surveyElement == null) {
-			render(contentType:"text/json") { result = 'error' }
+	
+	def list = {
+		adaptParamsForList()
+		
+		Planning planning = Planning.get(params.int('planning.id'))
+		if (planning == null) {
+			response.sendError(404)
 		}
 		else {
-			render(contentType:"text/json") {
-				result = 'success'
-				html = g.render (template: '/survey/admin/surveyElementDescription', model: [surveyElement: surveyElement])
-			}
+			List<PlanningSkipRule> skipRules = new ArrayList(planning.skipRules);
+			skipRules.sort {it.id}
+			
+			def max = Math.min(params['offset']+params['max'], skipRules.size())
+			
+			render(view: '/planning/admin/list', model:[
+				template: "skipRuleList",
+				entities: skipRules.subList(params['offset'], max),
+				entityCount: skipRules.size(),
+				code: getLabel()
+			])
 		}
 	}
+
 }

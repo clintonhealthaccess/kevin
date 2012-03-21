@@ -25,57 +25,99 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey.validation
+package org.chai.kevin.form
 
-import org.chai.kevin.AbstractController;
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.form.FormCloner;
-import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.survey.Survey
-import org.chai.kevin.survey.SurveyElement
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.chai.kevin.location.DataEntityType
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class SurveyValidationRuleController extends AbstractController {
+class FormValidationRuleController extends AbstractEntityController {
 
-	def surveyService
+	def locationService
+	def languageService
+	def formElementService
+	
+	def getLabel() {
+		return 'form.validationrule.label'
+	}
+	
+	def getEntity(def id) {
+		return FormValidationRule.get(id)
+	}
+	
+	def createEntity() {
+		return new FormValidationRule()
+	}
+
+	def getTemplate() {
+		return "/entity/form/createValidationRule";
+	}
+
+	def getModel(def entity) {
+		def formElements = []
+		if (entity.formElement != null) formElements << formElementService.getFormElement(entity.formElement.id)
+
+		def dependencies = new ArrayList(entity.dependencies)		
+		[
+			dependencies: dependencies,
+			formElements: formElements,
+			validation: entity,
+			types: DataEntityType.list(),
+			languageService: languageService
+		]
+	}
+
+	def saveEntity(def entity) {
+		entity.formElement.validationRules.add(entity)
+		entity.save()
+		entity.formElement.save()
+	}
+	
+	def deleteEntity(def entity) {
+		entity.formElement.validationRules.remove(entity);
+		entity.formElement.save();
+		entity.delete()
+	}
+
+	def bindParams(def entity) {
+		entity.properties = params
+		
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.messages!=null) entity.messages = params.messages
+	}
+	
+	def copy = {
+		def rule = FormValidationRule.get(params.int('id'))
+		
+		FormCloner cloner = new FormCloner() {};
+		FormValidationRule copy = new FormValidationRule();
+		rule.deepCopy(copy, cloner);
+		copy.save(flush: true)
+		
+		redirect (uri:getTargetURI())
+	}
 	
 	def list = {
 		adaptParamsForList()
 
-		SurveyElement surveyElement = SurveyElement.get(params.int('formElement.id'))
-		Survey survey = Survey.get(params.int('survey.id'))
-		
-		if (surveyElement == null && survey == null) {
+		def formElement = formElementService.getFormElement(params.int('formElement.id'))
+		if (formElement == null) {
 			response.sendError(404)
 		}
 		else {
-			List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();
-			if (surveyElement != null) {		
-				surveyElement = SurveyElement.get(params.int('formElement.id'))
-				validationRules.addAll(surveyElement.getValidationRules());
-			}
-			else {
-				Set<SurveyElement> surveyElements = surveyService.getSurveyElements(null, survey)
-				surveyElements.each { element ->
-					validationRules.addAll(element.getValidationRules())	
-				}
-			}
-			validationRules.sort {it.id}
-	
+			def validationRules = formElement.validationRules.sort {it.id}
 			def max = Math.min(params['offset']+params['max'], validationRules.size())
 			
 			render (view: '/entity/list', model:[
-				template: "form/validationRuleList",
+				template:"form/validationRuleList",
 				entities: validationRules.subList(params['offset'], max),
 				entityCount: validationRules.size(),
-				code: 'form.validationrule.label'
+				code: getLabel()
 			])
 		}
 	}
-	
 }

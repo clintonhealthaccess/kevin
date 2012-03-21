@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
@@ -19,16 +20,6 @@ public class SurveyCopyService {
 
 	private SessionFactory sessionFactory;
 	private LanguageService languageService;
-	
-	@Transactional(readOnly=false)
-	public SurveyCopy<FormValidationRule> copyValidationRule(FormValidationRule rule) {
-		SurveyCloner cloner = new SurveyCloner() {};
-		FormValidationRule copy = new FormValidationRule();
-		rule.deepCopy(copy, cloner);
-		
-		sessionFactory.getCurrentSession().save(copy);
-		return new SurveyCopy<FormValidationRule>(copy);
-	}
 	
 	@Transactional(readOnly=false)
 	public SurveyCopy<Survey> copySurvey(Survey survey) {
@@ -113,7 +104,7 @@ public class SurveyCopyService {
 		}
 
 		@Override
-		public void addUnchangedSkipRule(SurveySkipRule rule, Long id) {
+		public void addUnchangedSkipRule(FormSkipRule rule, Long id) {
 			this.unchangedSkipRules.put(rule, id);
 		}
 

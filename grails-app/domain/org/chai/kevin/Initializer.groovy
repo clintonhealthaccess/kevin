@@ -59,6 +59,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.planning.Planning;
 import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
+import org.chai.kevin.planning.PlanningSkipRule;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.SurveyUser;
@@ -1184,7 +1185,9 @@ class Initializer {
 		formElement.save(failOnError: true)
 		
 		// add validation and skip rules
-		def formSkip = new FormSkipRule(expression: "\$"+formElement.id+"[_].basic.instances == 1", skippedFormElements: [(formElement): "[_].basic.responsible"]).save(failOnError: true);
+		def formSkip = new PlanningSkipRule(planning: planning, expression: "\$"+formElement.id+"[_].basic.instances == 1", skippedFormElements: [(formElement): "[_].basic.responsible"]).save(failOnError: true);
+		planning.addSkipRule(formSkip)
+		planning.save(failOnError: true)
 		
 		def planningType = new PlanningType(
 			names: j(["en":"Activity"]),

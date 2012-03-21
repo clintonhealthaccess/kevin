@@ -42,9 +42,10 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 class SurveySkipRuleController  extends AbstractEntityController {
 
 	def surveyService
+	def languageService
 
 	def getLabel() {
-		return 'survey.skiprule.label'
+		return 'skiprule.label'
 	}
 	
 	def getEntity(def id) {
@@ -62,7 +63,8 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		def skippedSurveyQuestions = new ArrayList(entity.skippedSurveyQuestions)
 		[
 			skip: entity,
-			skippedSurveyQuestions: skippedSurveyQuestions
+			skippedSurveyQuestions: skippedSurveyQuestions,
+			languageService: languageService
 		]
 	}
 

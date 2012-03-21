@@ -130,25 +130,5 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		surveyCopy.getUnchangedValidationRules().size() == 0
 	}
 	
-	def "test clone validation rule"() {
-		setup:
-		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [])
-		def section = newSurveySection(program, 1, [])
-		def question = newSimpleQuestion(section, 1, [])
-		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def element = newSurveyElement(question, dataElement)
-		def validationRule = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
-		
-		when:
-		def validationCopy = surveyCopyService.copyValidationRule(validationRule)
-		def copy = validationCopy.copy
-		
-		then:
-		FormValidationRule.count() == 2
-		FormValidationRule.list()[1].expression == FormValidationRule.list()[0].expression
-		FormValidationRule.list()[1].typeCodeString == FormValidationRule.list()[0].typeCodeString
-	}
 		
 }

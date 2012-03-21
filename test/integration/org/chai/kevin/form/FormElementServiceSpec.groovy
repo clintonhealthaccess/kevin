@@ -12,6 +12,31 @@ class FormElementServiceSpec extends IntegrationTests {
 
 	def formElementService
 	
+	def "search form element"() {
+		setup:
+		def dataElement = newRawDataElement(j(["en":"test"]), "code", Type.TYPE_NUMBER())
+		def formElement = newFormElement(dataElement)
+		def formElements = null
+		
+		when:
+		formElements = formElementService.searchFormElements("test", [], [:])
+		
+		then:
+		formElements.equals([formElement])
+		
+		when:
+		formElements = formElementService.searchFormElements("test", ["bool"], [:])
+		
+		then:
+		formElements.empty
+		
+		when:
+		formElements = formElementService.searchFormElements("code", ["number"], [:])
+		
+		then:
+		formElements.equals([formElement])
+	}
+	
 	def "get form element"() {
 		setup:
 		def period = newPeriod()

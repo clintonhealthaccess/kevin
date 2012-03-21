@@ -39,4 +39,11 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return planningCost
 	}
 	
+	static def newPlanningSkipRule(def planning, def expression) {
+		def skipRule = new PlanningSkipRule(planning: planning, expression: expression).save(failOnError: true)
+		planning.addSkipRule(skipRule)
+		planning.save(failOnError: true)
+		return skipRule
+	}
+	
 }

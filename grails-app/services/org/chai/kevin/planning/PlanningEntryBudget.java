@@ -23,7 +23,6 @@ public class PlanningEntryBudget extends PlanningEntry {
 		super(entity, type, validatable, lineNumber, enums);
 		this.budgetValues = budgetValues;
 	}
-
 	
 	private Map<PlanningCost, BudgetCost> getBudgetCosts() {
 		if (budgetCosts == null) {

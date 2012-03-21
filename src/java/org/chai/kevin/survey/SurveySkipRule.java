@@ -11,6 +11,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
@@ -48,13 +49,13 @@ public class SurveySkipRule extends FormSkipRule {
 	}
 
 	@Override
-	public void deepCopy(FormSkipRule copy, SurveyCloner surveyCloner) {
+	public void deepCopy(FormSkipRule copy, FormCloner surveyCloner) {
 		super.deepCopy(copy, surveyCloner);
 		
 		SurveySkipRule surveyCopy = (SurveySkipRule)copy;
-		surveyCopy.setSurvey(surveyCloner.getSurvey(getSurvey()));
+		surveyCopy.setSurvey(((SurveyCloner)surveyCloner).getSurvey(getSurvey()));
 		for (SurveyQuestion question : getSkippedSurveyQuestions()) {
-			surveyCopy.getSkippedSurveyQuestions().add(surveyCloner.getQuestion(question));
+			surveyCopy.getSkippedSurveyQuestions().add(((SurveyCloner)surveyCloner).getQuestion(question));
 		}
 	}
 	

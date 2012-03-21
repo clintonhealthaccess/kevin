@@ -20,14 +20,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.SurveyCloner;
-import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -69,8 +68,7 @@ public class FormElement {
 		this.rawDataElement = rawDataElement;
 	}
 
-	@OneToMany(mappedBy = "formElement", targetEntity = FormValidationRule.class)
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@OneToMany(mappedBy = "formElement", targetEntity = FormValidationRule.class, orphanRemoval=true)
 	public List<FormValidationRule> getValidationRules() {
 		return validationRules;
 	}
@@ -85,7 +83,6 @@ public class FormElement {
 	}
 
 	@ElementCollection(targetClass = Translation.class)
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
 	@JoinTable(name = "dhsst_form_element_headers")
 	public Map<String, Translation> getHeaders() {
 		return headers;
@@ -96,12 +93,22 @@ public class FormElement {
 	}
 	
 	@Transient
-	public <T extends FormElement> void deepCopy(T copy, SurveyCloner cloner) {
+	public String getDescriptionTemplate() {
+		return "/entity/form/formElementDescription";
+	}
+	
+	@Transient
+	public String getLabel(LanguageService languageService) {
+		return languageService.getText(getDataElement().getNames());
+	}
+	
+	@Transient
+	public <T extends FormElement> void deepCopy(T copy, FormCloner cloner) {
 		copy.setDataElement(getDataElement());
 	}	
 	
 	@Transient
-	public void copyRules(FormElement copy, SurveyCloner cloner) {
+	public void copyRules(FormElement copy, FormCloner cloner) {
 		for (FormValidationRule rule : getValidationRules()) {
 			copy.getValidationRules().add(cloner.getValidationRule(rule));
 		}

@@ -1,22 +1,88 @@
 package org.chai.kevin.form
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 import org.hibernate.FlushMode;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 class FormElementService {
 
 	static transactional = true
 	
+	def languageService
 	def sessionFactory
+	
+	List<FormElement> searchFormElements(String text, List<String> allowedTypes, Map<String, String> params) {
+		def criteria = getFormElementSearch(text, allowedTypes)
+		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+		if (params['max'] != null) criteria.setMaxResults(params['max'])
+		else criteria.setMaxResults(500)
+		
+		List<FormElement> data = criteria.addOrder(Order.asc("id")).list()
+		
+		StringUtils.split(text).each { chunk ->
+			data.retainAll { element ->
+				// we look in "info" if it is a data element
+				Utils.matches(chunk, element.dataElement.id+"") ||
+				Utils.matches(chunk, element.dataElement.info) ||
+				Utils.matches(chunk, element.dataElement.names[languageService.getCurrentLanguage()]) ||
+				Utils.matches(chunk, element.dataElement.code) ||
+				Utils.matches(chunk, element.id+"")
+			}
+		}
+		
+		if (!allowedTypes.isEmpty()) {
+			data.retainAll { element ->
+				element.dataElement.type.type.name().toLowerCase() in allowedTypes
+			}
+		}
+		
+		return data
+	}
+	
+	private def getFormElementSearch(String text, List<String> allowedTypes) {
+		def criteria = sessionFactory.currentSession.createCriteria(FormElement.class)
+		criteria.createAlias("dataElement", "de")
+		
+		def textRestrictions = Restrictions.conjunction()
+		StringUtils.split(text).each { chunk ->
+			def disjunction = Restrictions.disjunction();
+			
+			// data element
+			disjunction.add(Restrictions.ilike("de.info", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("de.code", chunk, MatchMode.ANYWHERE))
+			disjunction.add(Restrictions.ilike("de.names.jsonText", chunk, MatchMode.ANYWHERE))
+			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("de.id", Long.parseLong(chunk)))
+			// survey element
+			if (NumberUtils.isNumber(chunk)) disjunction.add(Restrictions.eq("id", Long.parseLong(chunk)))
+			
+			textRestrictions.add(disjunction)
+		}
+		criteria.add(textRestrictions)
+		
+		if (!allowedTypes.isEmpty()) {
+			def typeRestrictions = Restrictions.disjunction()
+			allowedTypes.each { type ->
+				typeRestrictions.add(Restrictions.like("de.type.jsonValue", type, MatchMode.ANYWHERE))
+			}
+			criteria.add(typeRestrictions)
+		}
+
+		return criteria
+	}
 	
 	FormElement getFormElement(Long id) {
 		return sessionFactory.currentSession.get(FormElement.class, id)

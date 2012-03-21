@@ -25,57 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.survey.validation
-
-import org.chai.kevin.AbstractController;
-import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.form.FormCloner;
-import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.survey.Survey
-import org.chai.kevin.survey.SurveyElement
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+package org.chai.kevin.planning
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class SurveyValidationRuleController extends AbstractController {
-
-	def surveyService
-	
-	def list = {
-		adaptParamsForList()
-
-		SurveyElement surveyElement = SurveyElement.get(params.int('formElement.id'))
-		Survey survey = Survey.get(params.int('survey.id'))
-		
-		if (surveyElement == null && survey == null) {
-			response.sendError(404)
-		}
-		else {
-			List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();
-			if (surveyElement != null) {		
-				surveyElement = SurveyElement.get(params.int('formElement.id'))
-				validationRules.addAll(surveyElement.getValidationRules());
-			}
-			else {
-				Set<SurveyElement> surveyElements = surveyService.getSurveyElements(null, survey)
-				surveyElements.each { element ->
-					validationRules.addAll(element.getValidationRules())	
-				}
-			}
-			validationRules.sort {it.id}
-	
-			def max = Math.min(params['offset']+params['max'], validationRules.size())
-			
-			render (view: '/entity/list', model:[
-				template: "form/validationRuleList",
-				entities: validationRules.subList(params['offset'], max),
-				entityCount: validationRules.size(),
-				code: 'form.validationrule.label'
-			])
-		}
-	}
-	
+constraints = {
+    planning(nullable: false, blank:false)
+	expression(nullable:false, blank: false)
 }
