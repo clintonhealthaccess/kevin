@@ -56,7 +56,7 @@ class FctController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("fct.view, params:"+params)
 
 		Period period = getPeriod()
-		ReportProgram program = getProgram()
+		ReportProgram program = getProgram(FctTarget.class)
 		LocationEntity location = getLocation()
 		Set<DataEntityType> locationTypes = getLocationTypes()
 

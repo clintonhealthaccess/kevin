@@ -9,6 +9,7 @@ import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.security.UserController;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.data.Type;
 
@@ -18,6 +19,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	def testProgramFilter() {
 		def period = IntegrationTests.newPeriod()
 		IntegrationTests.setupProgramTree()
+		DashboardIntegrationTests.setupDashboardTree()
 		def program = ReportProgram.findByCode(IntegrationTests.PROGRAM1)
 		
 		def html = applyTemplate(
@@ -77,6 +79,8 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains("District Hospital")
 	}
 	
+	//TODO fix these tests
+	
 	def testLocationTypesLinkParamFilter() {
 		def period = IntegrationTests.newPeriod()
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
@@ -99,107 +103,16 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains(period.id.toString())
 	}
 
-	def testReportCategoryLinkParamFilter() {
-		def period = IntegrationTests.newPeriod()
-		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
-		def rwanda = IntegrationTests.newLocationEntity(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
-		def root = IntegrationTests.newReportProgram(IntegrationTests.ROOT)
-		def hc = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
-		def dh = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.DISTRICT_HOSPITAL_GROUP]), IntegrationTests.DISTRICT_HOSPITAL_GROUP);
+	def testLinkParamFilter() {
+		def controller = new UserController()
+		controller.request.params = ['param1': '123', 'param2': ['123','456']]
 		
-		//test for 1 location type
 		def html = applyTemplate(
-			'<input type="hidden" name="location" value="${location}"/>' +
-			'<input type="hidden" name="program" value="${program}"/>' +
-			'<input type="hidden" name="period" value="${period}"/>' +
-			'<input type="hidden" name="locationTypes" value="${locationTypes}"/>',
-			
-			[
-				'location': rwanda.id,
-				'program': root.id,
-				'period': period.id,
-				'locationTypes': hc.id,
-			]
+			'<g:linkParamFilter linkParams="${params}"/>'
 		)
-		
-		assertTrue html.contains(rwanda.id.toString())
-		assertTrue html.contains(root.id.toString())
-		assertTrue html.contains(period.id.toString())
-		assertTrue html.contains(hc.id.toString())
-		
-		//test with 2 location types
-		html = applyTemplate(
-			'<input type="hidden" name="location" value="${location}"/>' +
-			'<input type="hidden" name="program" value="${program}"/>' +
-			'<input type="hidden" name="period" value="${period}"/>' +
-			'<input type="hidden" name="locationTypes" value="${locationTypes1}"/>' +
-			'<input type="hidden" name="locationTypes" value="${locationTypes2}"/>',
-			
-			[
-				'location': rwanda.id,
-				'program': root.id,
-				'period': period.id,
-				'locationTypes1': hc.id,
-				'locationTypes2': dh.id
-			]
-		)
-		
-		assertTrue html.contains(rwanda.id.toString())
-		assertTrue html.contains(root.id.toString())
-		assertTrue html.contains(period.id.toString())
-		assertTrue html.contains(hc.id.toString())
-		assertTrue html.contains(dh.id.toString())
-	}
-	
-	def testTargetFilterLinkParamFilter() {
-		def period = IntegrationTests.newPeriod()
-		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
-		def rwanda = IntegrationTests.newLocationEntity(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
-		def root = IntegrationTests.newReportProgram(IntegrationTests.ROOT)
-		def hc = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
-		def dh = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.DISTRICT_HOSPITAL_GROUP]), IntegrationTests.DISTRICT_HOSPITAL_GROUP);
-		
-		//test for 1 location type
-		def html = applyTemplate(
-			'<input type="hidden" name="location" value="${location}"/>' +
-			'<input type="hidden" name="program" value="${program}"/>' +
-			'<input type="hidden" name="period" value="${period}"/>' +
-			'<input type="hidden" name="locationTypes" value="${locationTypes}"/>',
-			
-			[
-				'location': rwanda.id,
-				'program': root.id,
-				'period': period.id,
-				'locationTypes': hc.id,
-			]
-		)
-		
-		assertTrue html.contains(rwanda.id.toString())
-		assertTrue html.contains(root.id.toString())
-		assertTrue html.contains(period.id.toString())
-		assertTrue html.contains(hc.id.toString())
-		
-		//test with 2 location types
-		html = applyTemplate(
-			'<input type="hidden" name="location" value="${location}"/>' +
-			'<input type="hidden" name="program" value="${program}"/>' +
-			'<input type="hidden" name="period" value="${period}"/>' +
-			'<input type="hidden" name="locationTypes" value="${locationTypes1}"/>' +
-			'<input type="hidden" name="locationTypes" value="${locationTypes2}"/>',
-			
-			[
-				'location': rwanda.id,
-				'program': root.id,
-				'period': period.id,
-				'locationTypes1': hc.id,
-				'locationTypes2': dh.id
-			]
-		)
-		
-		assertTrue html.contains(rwanda.id.toString())
-		assertTrue html.contains(root.id.toString())
-		assertTrue html.contains(period.id.toString())
-		assertTrue html.contains(hc.id.toString())
-		assertTrue html.contains(dh.id.toString())
+
+		assertTrue html.contains('<input type="hidden" name="param1" value="123"/>')
+		assertTrue html.contains('<input type="hidden" name="param2" value="123"/>')
+		assertTrue html.contains('<input type="hidden" name="param2" value="456"/>')
 	}
 }

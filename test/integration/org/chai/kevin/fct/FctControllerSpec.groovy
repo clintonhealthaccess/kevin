@@ -40,7 +40,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		model.fctTable.hasData() == true
 	}
 		
-	def "get fct with no program and no location default to root program and root location"() {
+	def "get fct with no program and no location, default to root program and root location"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -100,7 +100,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		model.fctTable == null
 	}
 	
-	def "get fct with invalid paramters"() {
+	def "get fct with invalid program parameter"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -111,10 +111,11 @@ class FctControllerSpec extends FctIntegrationTests {
 		
 		when:
 		fctController = new FctController()
-		fctController.params.currentPeriod = period.id
+		fctController.params.program = program.id+1
 		def model = fctController.view()
 		
 		then:
+		model.currentProgram.id == program.id
 		model.fctTable != null
 		model.fctTable.hasData() == true
 	}

@@ -2,7 +2,6 @@ package org.chai.kevin.dsr;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,7 +16,6 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
@@ -35,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DsrService {
 	private static final Log log = LogFactory.getLog(DsrService.class);
 	
-	private LocationService locationService;
 	private ReportService reportService;
 	private ValueService valueService;
 	private DataService dataService;
@@ -148,10 +145,6 @@ public class DsrService {
 
 	public void setReportService(ReportService reportService) {
 		this.reportService = reportService;
-	}
-	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
 	}
 	
 	public void setValueService(ValueService valueService) {

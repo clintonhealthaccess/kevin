@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.reports.ReportValue;
 

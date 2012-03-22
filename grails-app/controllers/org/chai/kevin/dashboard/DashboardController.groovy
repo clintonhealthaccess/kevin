@@ -75,15 +75,11 @@ class DashboardController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("dashboard.view, params:"+params)		
 		
 		Period period = getPeriod()									
-		ReportProgram program = getProgram()
+		ReportProgram program = getProgram(DashboardTarget.class)
 		LocationEntity location = getLocation()
 		Set<DataEntityType> locationTypes = getLocationTypes()
 		
 		def dashboardEntity = getDashboardEntity(program)
-		if(dashboardEntity == null){
-			 program = reportService.getRootProgram()
-			 dashboardEntity = getDashboardEntity(program)
-		}		
 		def skipLevels = dashboardService.getSkipLocationLevels();
 		
 		def programDashboard = null
@@ -122,7 +118,7 @@ class DashboardController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("dashboard.compare, params:"+params)							
 		
 		Period period = getPeriod()	
-		ReportProgram program = getProgram()
+		ReportProgram program = getProgram(DashboardTarget.class)
 		LocationEntity location = getLocation()
 		Set<DataEntityType> locationTypes = getLocationTypes()
 		

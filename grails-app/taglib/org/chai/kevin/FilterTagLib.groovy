@@ -111,37 +111,25 @@ class FilterTagLib {
 		}
 	}
 	
-	def levelFilter = {attrs, body ->
-		LocationLevel.withTransaction {
-			def model = new HashMap(attrs)
-			def currentLevel = attrs['selected']
-			def levels = locationService.listLevels(attrs['skipLevels'])
-			model << 
-				[
-					currentLevel: currentLevel,
-					levels: levels
-				]
-			if (model.linkParams == null) model << [linkParams: [:]]
-			out << render(template:'/tags/filter/levelFilter', model:model)
-		}
-	}
+//	def levelFilter = {attrs, body ->
+//		LocationLevel.withTransaction {
+//			def model = new HashMap(attrs)
+//			def currentLevel = attrs['selected']
+//			def levels = locationService.listLevels(attrs['skipLevels'])
+//			model << 
+//				[
+//					currentLevel: currentLevel,
+//					levels: levels
+//				]
+//			if (model.linkParams == null) model << [linkParams: [:]]
+//			out << render(template:'/tags/filter/levelFilter', model:model)
+//		}
+//	}
 		
 	def linkParamFilter = {attrs, body ->
 		def model = new HashMap(attrs)
-		def linkParams = attrs['linkParams']
-		Map params = new HashMap(linkParams)		
-		attrs['linkParams'] = updateLinkParams(params)
-		out << render(template:'/templates/linkParamFilter', model:model)
-	}
-	
-	def createLinkByTab = {attrs, body ->
-		if (attrs['controller'] == null || attrs['params'] == null) attrs['params'] = [:]
-		else{
-			String tab = (String) attrs['controller']
-			Map params = new HashMap(attrs['params'])
-			attrs['params'] = updateParamsByTab(tab, params);
-		}
-		out << createLink(attrs, body)
+		if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/templates/linkParamFilter', model:model)
 	}
 	
 	def createLinkByFilter = {attrs, body ->
@@ -153,51 +141,32 @@ class FilterTagLib {
 		out << createLink(attrs, body)
 	}		
 	
-	public Map updateLinkParams(Map params){
-		def locationTypes = params.get('locationTypes')
-		if(locationTypes != null){
-			//TODO better way to check?
-			if(locationTypes instanceof String)
-				locationTypes = [locationTypes]
-			else
-				locationTypes = locationTypes.toList()
-			params.put('locationTypes', locationTypes)
-		}
-		return params
-	}
-	
-	public Map updateParamsByTab(String tab, Map params){
-		if (tab == null || tab.empty) 
-			return params;		
-		
-		def program = null
-		if (params.get("program") != null) {
-			program = ReportProgram.get(Integer.parseInt(params.get("program")))
-		}				
-		
-		def programTargetClass = null
-		switch(tab){
-			case "dashboard":
-				programTargetClass = DashboardTarget.class
-				break;				
-			case "dsr":
-				programTargetClass = DsrTarget.class
-				break;
-			case "fct":
-				programTargetClass = FctTarget.class
-				break;
-			default:
-				break;				
-		}
-		
-		def programTree = reportService.getProgramTree(programTargetClass).asList()
-		if(!programTree.contains(program)){
-			def programRoot = reportService.getRootProgram()
-			params.put("program", programRoot.id)
-		}
-			
-		return params;
-	}
+//	public Map updateLinkParams(Map params){
+//		Map newParams = new HashMap()
+//		for(def param : params){
+//			def key = param.getKey()
+//			def value = params.get(key)
+//			def newValue = null
+//			if(value != null){
+//				if (log.isDebugEnabled()) 
+//					log.debug("key:"+key+",value:"+value+",value class:"+value.getClass())
+//				//TODO better way to check?
+//				if(value instanceof String)
+//					newValue = [value]
+//				else
+//					newValue = value.toList()
+//				newParams.put(key, newValue)
+//			}
+//		}				
+//		return newParams
+//		for(def param : params){
+//			def key = (String) param.getKey()
+//			def list = params.list(key)
+//			newParams.put(key, list)
+//		}
+//		return newParams
+//	
+//	}
 	
 	public Map updateParamsByFilter(Map params) {
 		if (!params.containsKey("filter")) return params;

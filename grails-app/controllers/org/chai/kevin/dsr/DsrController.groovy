@@ -59,7 +59,7 @@ class DsrController extends AbstractController {
 				dsrTargetCategory = categories.first()
 		}
 		return dsrTargetCategory
-	}
+	}	
 	
 	def index = {
 		redirect (action: 'view', params: params)
@@ -69,13 +69,13 @@ class DsrController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("dsr.view, params:"+params)				
 		
 		Period period = getPeriod()		
-		ReportProgram program = getProgram()				
+		ReportProgram program = getProgram(DsrTarget.class)				
 		LocationEntity location = getLocation()
 		Set<DataEntityType> locationTypes = getLocationTypes()
 		
 		DsrTargetCategory category = getDsrTargetCategory(program)		
 		def skipLevels = dsrService.getSkipLocationLevels()
-		def locationTree = location.collectTreeWithDataEntities(skipLevels, locationTypes).asList()
+		def locationTree = location.collectTreeWithDataEntities(skipLevels, locationTypes).asList()				
 		
 		def dsrTable = null		
 		if (period != null && program != null && location != null && locationTypes != null) {
