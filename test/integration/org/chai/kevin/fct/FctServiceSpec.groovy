@@ -29,7 +29,6 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		then:
 		fctTable.getReportValue(LocationEntity.findByCode(NORTH), targetOption).value == "2.0"
-		fctTable.getTotalValue(targetOption).value == "2.0"
 		
 		when:
 		locationTypes = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)])
@@ -37,7 +36,6 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		then:
 		fctTable.getReportValue(LocationEntity.findByCode(NORTH), targetOption).value == "1.0"
-		fctTable.getTotalValue(targetOption).value == "1.0"		
 	}
 		
 	def "test normal fct service with dummy location"() {
@@ -59,7 +57,6 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(LocationEntity.findByCode(RWANDA), program, target, period, null, locationTypes)
 		
 		then:
-		fctTable.getTotalValue(targetOption).value == "2.0"
 		fctTable.getReportValue(LocationEntity.findByCode("dummy"), targetOption) == null
 		fctTable.getReportValue(LocationEntity.findByCode(NORTH), targetOption).value == "2.0"
 				
