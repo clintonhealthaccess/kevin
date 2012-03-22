@@ -1,6 +1,6 @@
 package org.chai.kevin.fct
 
-class FctTargetOptionOptionControllerSpec extends FctIntegrationTests {
+public class FctTargetOptionControllerSpec extends FctIntegrationTests {
 
 	def fctTargetOptionController
 	def locationService
