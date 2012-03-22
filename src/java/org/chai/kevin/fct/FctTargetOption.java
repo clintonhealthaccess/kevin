@@ -2,6 +2,7 @@ package org.chai.kevin.fct;
 
 import java.util.Set;
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,7 +22,7 @@ public class FctTargetOption extends ReportEntity {
 	private Long id;
 	private Sum sum;
 	private FctTarget target;
-	private String typeCodeString;  //comma-separated list of location type ids
+	private String format;
 	
 	@Id
 	@GeneratedValue
@@ -51,21 +52,12 @@ public class FctTargetOption extends ReportEntity {
 		this.target = target;
 	}
 	
-	@Lob
-	public String getTypeCodeString() {
-		return typeCodeString;
+	@Basic
+	public String getFormat() {
+		return format;
 	}
 
-	public void setTypeCodeString(String typeCodeString) {
-		this.typeCodeString = typeCodeString;
-	}
-	
-	@Transient
-	public Set<String> getTypeCodes() {
-		return Utils.split(typeCodeString);
-	}
-	
-	public void setTypeCodes(Set<String> typeCodes) {
-		this.typeCodeString = Utils.unsplit(typeCodes);
+	public void setFormat(String format) {
+		this.format = format;
 	}
 }

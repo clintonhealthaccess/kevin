@@ -78,9 +78,17 @@ class FctTargetController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		entity.program.targets.remove(entity)
-		entity.program.save()
-		entity.delete()
+		List<FctTargetOption> targetOptions = entity.targetOptions
+		if(targetOptions.size() == 0){
+			if (log.isInfoEnabled()) log.info("deleting entity: "+entity)
+			
+			entity.program.targets.remove(entity)
+			entity.program.save()
+			entity.delete()
+		}
+		else {
+			flash.message = message(code: 'fct.target.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Fct Target {0} still has associated children.')
+		}				
 	}
 
 	def bindParams(def entity) {
@@ -108,8 +116,7 @@ class FctTargetController extends AbstractEntityController {
 	}
 	
 	def list = {
-		adaptParamsForList()
-		
+		adaptParamsForList()		
 		List<FctTarget> targets = FctTarget.list(params);
 		
 		render (view: '/entity/list', model:[

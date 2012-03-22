@@ -6,6 +6,7 @@
 			<th>Code</th>
 			<th>Program</th>
 			<th>Sum</th>
+			<th>Number of Options</th>
 			<th>Order</th>
 		</tr>
 	</thead>
@@ -33,6 +34,7 @@
 					<g:i18n field="${target.program.names}"/>
 				</td>
 				<td>${target.sum.code}</td>
+				<td>${target.targetOptions.size()}</td>
 				<td>${target.order}</td>
 			</tr>
 		</g:each>

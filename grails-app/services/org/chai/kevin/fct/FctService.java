@@ -45,15 +45,10 @@ public class FctService {
 		
 		List<FctTargetOption> targetOptions = getTargetOptions(target);
 			
-//		Map<FctTargetOption, ReportValue> totalMap = new HashMap<FctTargetOption, ReportValue>();
 		Map<LocationEntity, Map<FctTargetOption, ReportValue>> valueMap = new HashMap<LocationEntity, Map<FctTargetOption, ReportValue>>();
 		
 		if(targetOptions.isEmpty())
-			return new FctTable(valueMap, targetOptions);
-		
-//		for(FctTargetOption targetOption : targetOptions){			
-//			totalMap.put(targetOption, getFctValue(targetOption, locationEntity, period, types));
-//		}
+			return new FctTable(valueMap, targetOptions);		
 		
 		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);
 		List<LocationEntity> locations = locationEntity.collectTreeWithDataEntities(skips, types);

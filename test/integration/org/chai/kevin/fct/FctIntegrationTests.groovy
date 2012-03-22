@@ -24,14 +24,13 @@ abstract class FctIntegrationTests extends IntegrationTests {
 		return newFctTarget(code, sum, null, types, program)
 	}
 	
-	def newFctTargetOption(def code, def target, def sum, def order, def types) {
+	def newFctTargetOption(def code, def target, def sum, def order) {
 		def targetOption = new FctTargetOption(
 		names: [:],
 		code: code,
 		target: target,		
 		sum: sum,
-		order: order,
-		typeCodeString: Utils.unsplit(types)).save(failOnError: true)
+		order: order).save(failOnError: true)
 		
 		target.targetOptions << targetOption
 		target.save(failOnError: true)

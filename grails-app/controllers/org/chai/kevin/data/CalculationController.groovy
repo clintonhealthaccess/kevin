@@ -43,6 +43,10 @@ class CalculationController extends AbstractController {
 		redirect (action: "list", params: params)
 	}
 	
+	def getLabel() {
+		return "calculation.label"
+	}
+	
 	def list = {
 		adaptParamsForList()
 		List<Calculation<?>> calculations = dataService.list(Calculation.class, params)

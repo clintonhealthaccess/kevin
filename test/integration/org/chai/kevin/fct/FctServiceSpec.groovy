@@ -18,7 +18,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		def targetOption = newFctTargetOption(CODE(4), target, sum, 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def targetOption = newFctTargetOption(CODE(4), target, sum, 1)
 //		def level = LocationLevel.findByCode(DISTRICT)
 		def locationTypes = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)])
 		def fctTable = null
@@ -46,7 +46,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("\$"+normalizedDataElement.id, CODE(2))
 		def target = newFctTarget(CODE(3), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		def targetOption = newFctTargetOption(CODE(4), target, sum, 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def targetOption = newFctTargetOption(CODE(4), target, sum, 1)
 		def level = LocationLevel.findByCode(PROVINCE)
 		def locationTypes = new HashSet([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), DataEntityType.findByCode(HEALTH_CENTER_GROUP)])
 		def fctTable = null
