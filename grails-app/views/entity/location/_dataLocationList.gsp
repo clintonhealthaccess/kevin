@@ -2,8 +2,8 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="dataLocation.name.label" default="Name"/></th>
 			<th>Code</th>
+			<th><g:message code="dataLocation.name.label" default="Name"/></th>
 			<th>Type</th>
 			<th>Location</th>
 		</tr>
