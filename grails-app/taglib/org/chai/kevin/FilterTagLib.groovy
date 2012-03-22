@@ -141,33 +141,6 @@ class FilterTagLib {
 		out << createLink(attrs, body)
 	}		
 	
-//	public Map updateLinkParams(Map params){
-//		Map newParams = new HashMap()
-//		for(def param : params){
-//			def key = param.getKey()
-//			def value = params.get(key)
-//			def newValue = null
-//			if(value != null){
-//				if (log.isDebugEnabled()) 
-//					log.debug("key:"+key+",value:"+value+",value class:"+value.getClass())
-//				//TODO better way to check?
-//				if(value instanceof String)
-//					newValue = [value]
-//				else
-//					newValue = value.toList()
-//				newParams.put(key, newValue)
-//			}
-//		}				
-//		return newParams
-//		for(def param : params){
-//			def key = (String) param.getKey()
-//			def list = params.list(key)
-//			newParams.put(key, list)
-//		}
-//		return newParams
-//	
-//	}
-	
 	public Map updateParamsByFilter(Map params) {
 		if (!params.containsKey("filter")) return params;
 		String filter = (String) params.get("filter");
