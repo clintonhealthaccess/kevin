@@ -36,7 +36,7 @@ class DataEntityTypeController extends AbstractEntityController {
 	}
 
 	def getLabel() {
-		return 'dataEntityType.label';
+		return 'dataentitytype.label';
 	}
 	
 	def list = {

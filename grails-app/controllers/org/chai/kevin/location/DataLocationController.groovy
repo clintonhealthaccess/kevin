@@ -31,7 +31,7 @@ class DataLocationController extends AbstractEntityController {
 	}
 
 	def getLabel() {
-		return 'dataLocation.label';
+		return 'datalocation.label';
 	}
 
 	def list = {

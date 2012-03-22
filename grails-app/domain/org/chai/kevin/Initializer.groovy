@@ -1048,8 +1048,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]), 
 				code:"TARGET OPTION 1",
-				sum: sum1,
-				typeCodeString: "District Hospital,Health Center"
+				sum: sum1
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption2 = new FctTargetOption(
@@ -1057,8 +1056,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 2",
-				sum: sum1,
-				typeCodeString: "District Hospital,Health Center"
+				sum: sum1
 			).save(failOnError:true)
 			
 			fctTarget1.targetOptions << [fctTargetOption1, fctTargetOption2]
@@ -1080,8 +1078,7 @@ class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 3",
-				sum: sum2,
-				typeCodeString: "District Hospital,Health Center"
+				sum: sum2
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption4 = new FctTargetOption(
@@ -1089,8 +1086,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 4",
-				sum: sum2,
-				typeCodeString: "District Hospital,Health Center"
+				sum: sum2
 			).save(failOnError:true)
 			
 			fctTarget2.targetOptions << [fctTargetOption3, fctTargetOption4]
