@@ -1,4 +1,4 @@
-package org.chai.kevin.survey.validation;
+package org.chai.kevin.form;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -16,32 +16,30 @@ import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.Survey;
-import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 
-@Entity(name="SurveyEnteredValue")
-@Table(name="dhsst_survey_entered_value", 
-		uniqueConstraints=@UniqueConstraint(columnNames={"surveyElement", "entity"}
+@Entity(name="FormEnteredValue")
+@Table(name="dhsst_form_entered_value", 
+		uniqueConstraints=@UniqueConstraint(columnNames={"formElement", "entity"}
 ))
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class SurveyEnteredValue extends SurveyEnteredEntity {
+public class FormEnteredValue extends EnteredEntity {
 
 	private Long id;
-	private SurveyElement surveyElement;
+	private FormElement formElement;
 	private Value value;
 	private Value lastValue; //last year's value
 	private DataLocationEntity entity;
 	private ValidatableValue validatable;
 	
-	public SurveyEnteredValue() {}
+	public FormEnteredValue() {}
 	
-	public SurveyEnteredValue(SurveyElement surveyElement, DataLocationEntity entity, Value value, Value lastValue) {
-		this.surveyElement = surveyElement;
+	public FormEnteredValue(FormElement formElement, DataLocationEntity entity, Value value, Value lastValue) {
+		this.formElement = formElement;
 		this.entity = entity;
 		this.value = value;
 		this.lastValue = lastValue;
@@ -58,13 +56,13 @@ public class SurveyEnteredValue extends SurveyEnteredEntity {
 	}
 	
 	@NaturalId
-	@OneToOne(targetEntity=SurveyElement.class, fetch=FetchType.LAZY)
-	public SurveyElement getSurveyElement() {
-		return surveyElement;
+	@OneToOne(targetEntity=FormElement.class, fetch=FetchType.LAZY)
+	public FormElement getFormElement() {
+		return formElement;
 	}
 	
-	public void setSurveyElement(SurveyElement surveyElement) {
-		this.surveyElement = surveyElement;
+	public void setFormElement(FormElement formElement) {
+		this.formElement = formElement;
 	}
 	
 	@Embedded
@@ -103,23 +101,18 @@ public class SurveyEnteredValue extends SurveyEnteredEntity {
 	
 	@Transient
 	public ValidatableValue getValidatable() {
-		if (validatable == null) validatable = new ValidatableValue(value, getSurveyElement().getDataElement().getType());
+		if (validatable == null) validatable = new ValidatableValue(value, formElement.getDataElement().getType());
 		return validatable;
 	}
 	
 	@Transient
-	public Survey getSurvey() {
-		return surveyElement.getSurvey();
-	}
-
-	@Transient
 	public Type getType() {
-		return surveyElement.getDataElement().getType();
+		return formElement.getDataElement().getType();
 	}
 
 	@Override
 	public String toString() {
-		return "SurveyEnteredValue [value=" + value + ", lastValue="
+		return "FormEnteredValue [value=" + value + ", lastValue="
 				+ lastValue + "]";
 	}
 

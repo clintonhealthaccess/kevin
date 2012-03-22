@@ -59,6 +59,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.planning.Planning;
 import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
+import org.chai.kevin.planning.PlanningSkipRule;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.SurveyUser;
@@ -71,6 +72,10 @@ import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormSkipRule;
+import org.chai.kevin.form.FormValidationRule;
 import org.hisp.dhis.period.Period;
 
 class Initializer {
@@ -1112,6 +1117,79 @@ class Initializer {
 			active: true
 		).save(failOnError: true)
 		
+		def formElement = new FormElement(
+				rawDataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
+				headers: [
+					"[_].basic": j(["en":"Basic Information"]),
+					"[_].basic.description": j(["en":"Description"]),
+					"[_].basic.activity": j(["en":"Activity"]),
+					"[_].basic.area": j(["en":"Service area"]),
+					"[_].basic.instances": j(["en":"Number of instances"]),
+					"[_].basic.responsible": j(["en":"Person responsible"]),
+					"[_].basic.new_structure": j(["en":"Requires new room/structure"]),
+					"[_].staffing": j(["en":"Staffing Requirements"]),
+					"[_].staffing.nurse": j(["en":"Nurse"]),
+					"[_].staffing.nurse.nurse_time": j(["en":"Time per instance"]),
+					"[_].staffing.nurse.nurse_level": j(["en":"Level of nurse"]),
+					"[_].staffing.doctor": j(["en":"Doctor"]),
+					"[_].staffing.doctor.doctor_time": j(["en":"Time per instance"]),
+					"[_].staffing.doctor.doctor_level": j(["en":"Level of doctor"]),
+					"[_].staffing.other": j(["en":"Other staff"]),
+					"[_].staffing.other.other_time": j(["en":"Time per instance"]),
+					"[_].staffing.other.other_type": j(["en":"Level of staff"]),
+					"[_].consumables": j(["en":"Consumables"]),
+					"[_].consumables.tests": j(["en":"Number of required tests"]),
+					"[_].consumables.tests.blood_sugar": j(["en":"Sugar in blood"]),
+					"[_].consumables.tests.hiv": j(["en":"HIV"]),
+					"[_].consumables.medicine": j(["en":"Drugs required"]),
+					"[_].consumables.medicine.arv": j(["en":"ARV drugs"]),
+					"[_].consumables.medicine.tb": j(["en":"TB drugs"]),
+					"[_].consumables.medicine.malaria": j(["en":"Malaria drugs"]),
+					"[_].consumables.other": j(["en":"Other"]),
+					"[_].consumables.other[_].type": j(["en":"Type"]),
+					"[_].consumables.other[_].number": j(["en":"Number required"]),
+					"[_].monthly_breakdown": j(["en":"Monthly Breakdown"]),
+					"[_].monthly_breakdown.january": j(["en":"January"]),
+					"[_].monthly_breakdown.february": j(["en":"February"]),
+					"[_].monthly_breakdown.march": j(["en":"March"]),
+					"[_].monthly_breakdown.april": j(["en":"April"]),
+					"[_].monthly_breakdown.mai": j(["en":"Mai"]),
+					"[_].monthly_breakdown.june": j(["en":"June"]),
+					"[_].monthly_breakdown.july": j(["en":"July"]),
+					"[_].monthly_breakdown.august": j(["en":"August"]),
+					"[_].monthly_breakdown.september": j(["en":"September"]),
+					"[_].monthly_breakdown.october": j(["en":"October"]),
+					"[_].monthly_breakdown.november": j(["en":"November"]),
+					"[_].monthly_breakdown.december": j(["en":"December"]),
+					"[_].funding_sources": j(["en":"Funding Sources"]),
+					"[_].funding_sources.general_fund": j(["en":"Funded by the general fund"]),
+					"[_].funding_sources.sources": j(["en":"Individual sources"]),
+					"[_].funding_sources.sources.facility": j(["en":"Facility"]),
+					"[_].funding_sources.sources.minisante": j(["en":"Minisanté"]),
+					"[_].funding_sources.sources.hospital": j(["en":"District hospital"]),
+					"[_].funding_sources.sources.gfatm": j(["en":"Global Fund"]),
+					"[_].funding_sources.sources.other": j(["en":"Other"])
+				]
+			).save(failOnError: true)
+		
+			def validationRule = new FormValidationRule(
+				formElement: formElement,
+				prefix: '[_].basic.instances',
+				expression: "\$"+formElement.id+"[_].basic.instances > 100",
+				messages: j(["en":"Validation error {0,here}"]),
+				dependencies: [formElement],
+				typeCodeString: "District Hospital,Health Center",
+				allowOutlier: false
+			).save(failOnError: true)
+			
+		formElement.addValidationRule(validationRule)
+		formElement.save(failOnError: true)
+		
+		// add validation and skip rules
+		def formSkip = new PlanningSkipRule(planning: planning, expression: "\$"+formElement.id+"[_].basic.instances == 1", skippedFormElements: [(formElement): "[_].basic.responsible"]).save(failOnError: true);
+		planning.addSkipRule(formSkip)
+		planning.save(failOnError: true)
+		
 		def planningType = new PlanningType(
 			names: j(["en":"Activity"]),
 			namesPlural: j(["en":"Activities"]),
@@ -1123,58 +1201,7 @@ class Initializer {
 				"[_].monthly_breakdown": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
 				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
 			],
-			headers: [
-				"[_].basic": j(["en":"Basic Information"]),
-				"[_].basic.description": j(["en":"Description"]),
-				"[_].basic.activity": j(["en":"Activity"]),
-				"[_].basic.area": j(["en":"Service area"]),
-				"[_].basic.instances": j(["en":"Number of instances"]),
-				"[_].basic.responsible": j(["en":"Person responsible"]),
-				"[_].basic.new_structure": j(["en":"Requires new room/structure"]),
-				"[_].staffing": j(["en":"Staffing Requirements"]),
-				"[_].staffing.nurse": j(["en":"Nurse"]),
-				"[_].staffing.nurse.nurse_time": j(["en":"Time per instance"]),
-				"[_].staffing.nurse.nurse_level": j(["en":"Level of nurse"]),
-				"[_].staffing.doctor": j(["en":"Doctor"]),
-				"[_].staffing.doctor.doctor_time": j(["en":"Time per instance"]),
-				"[_].staffing.doctor.doctor_level": j(["en":"Level of doctor"]),
-				"[_].staffing.other": j(["en":"Other staff"]),
-				"[_].staffing.other.other_time": j(["en":"Time per instance"]),
-				"[_].staffing.other.other_type": j(["en":"Level of staff"]),
-				"[_].consumables": j(["en":"Consumables"]),
-				"[_].consumables.tests": j(["en":"Number of required tests"]),
-				"[_].consumables.tests.blood_sugar": j(["en":"Sugar in blood"]),
-				"[_].consumables.tests.hiv": j(["en":"HIV"]),
-				"[_].consumables.medicine": j(["en":"Drugs required"]),
-				"[_].consumables.medicine.arv": j(["en":"ARV drugs"]),
-				"[_].consumables.medicine.tb": j(["en":"TB drugs"]),
-				"[_].consumables.medicine.malaria": j(["en":"Malaria drugs"]),
-				"[_].consumables.other": j(["en":"Other"]),
-				"[_].consumables.other[_].type": j(["en":"Type"]),
-				"[_].consumables.other[_].number": j(["en":"Number required"]),
-				"[_].monthly_breakdown": j(["en":"Monthly Breakdown"]),
-				"[_].monthly_breakdown.january": j(["en":"January"]),
-				"[_].monthly_breakdown.february": j(["en":"February"]),
-				"[_].monthly_breakdown.march": j(["en":"March"]),
-				"[_].monthly_breakdown.april": j(["en":"April"]),
-				"[_].monthly_breakdown.mai": j(["en":"Mai"]),
-				"[_].monthly_breakdown.june": j(["en":"June"]),
-				"[_].monthly_breakdown.july": j(["en":"July"]),
-				"[_].monthly_breakdown.august": j(["en":"August"]),
-				"[_].monthly_breakdown.september": j(["en":"September"]),
-				"[_].monthly_breakdown.october": j(["en":"October"]),
-				"[_].monthly_breakdown.november": j(["en":"November"]),
-				"[_].monthly_breakdown.december": j(["en":"December"]),
-				"[_].funding_sources": j(["en":"Funding Sources"]),
-				"[_].funding_sources.general_fund": j(["en":"Funded by the general fund"]),
-				"[_].funding_sources.sources": j(["en":"Individual sources"]),
-				"[_].funding_sources.sources.facility": j(["en":"Facility"]),
-				"[_].funding_sources.sources.minisante": j(["en":"Minisanté"]),
-				"[_].funding_sources.sources.hospital": j(["en":"District hospital"]),
-				"[_].funding_sources.sources.gfatm": j(["en":"Global Fund"]),
-				"[_].funding_sources.sources.other": j(["en":"Other"])
-			],
-			dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
+			formElement: formElement,
 			discriminator: '[_].basic.activity',
 			fixedHeader: '[_].basic.description',
 			planning: planning
@@ -1217,20 +1244,19 @@ class Initializer {
 		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-		new RawDataElementValue(
-			data: RawDataElement.findByCode("PLANNINGELEMENT"),
-			entity: DataLocationEntity.findByCode("Kivuye HC"),
-			period: Period.list()[0],
-			value: Value.VALUE_LIST([
-				Value.VALUE_MAP([
-					"basic": Value.VALUE_MAP([
-						"activity": Value.VALUE_STRING("value1"), 
-						"instances": Value.VALUE_NUMBER(10)
-					])
-				])
-			]),
-			timestamp: new Date()
-		).save(failOnError: true)
+//		new FormEnteredValue(
+//			formElement: formElement,
+//			entity: DataLocationEntity.findByCode("Kivuye HC"),
+//			value: Value.VALUE_LIST([
+//				Value.VALUE_MAP([
+//					"basic": Value.VALUE_MAP([
+//						"activity": Value.VALUE_STRING("value1"), 
+//						"instances": Value.VALUE_NUMBER(10)
+//					])
+//				])
+//			]),
+//			timestamp: new Date()
+//		).save(failOnError: true)
 	}
 	
 	static def createQuestionaire(){
@@ -1359,17 +1385,16 @@ class Initializer {
 			serviceDev.addSection(patientReg)
 			serviceDev.save(failOnError:true);
 
-			def rulePatient1 = new SurveyValidationRule(
-
-				surveyElement: surveyElementPatientQ1,
+			def rulePatient1 = new FormValidationRule(
+				formElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
 				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
-			def rulePatient2 = new SurveyValidationRule(
-				surveyElement: surveyElementPatientQ1,
+			def rulePatient2 = new FormValidationRule(
+				formElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 140",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
@@ -1571,9 +1596,8 @@ class Initializer {
 			services.addQuestion(serviceQ6)
 			services.save(failOnError:true)
 
-			def ruleQ6 = new SurveyValidationRule(
-
-				surveyElement: surveyElementServiceQ6,
+			def ruleQ6 = new FormValidationRule(
+				formElement: surveyElementServiceQ6,
 				prefix: "[_].key1.key18",
 				expression: "\$"+surveyElementServiceQ6.id+"[_].key1.key18 < 24",
 				messages: j(["en":"Validation error {0,here}"]),
@@ -1585,18 +1609,16 @@ class Initializer {
 			surveyElementServiceQ6.addValidationRule(ruleQ6)
 			surveyElementServiceQ6.save(failOnError: true)
 
-
-			def rule1 = new SurveyValidationRule(
-
-				surveyElement: surveyElementServiceQ1,
+			def rule1 = new FormValidationRule(
+				formElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementServiceQ1],
 				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
-			def rule2 = new SurveyValidationRule(
-				surveyElement: surveyElementServiceQ1,
+			def rule2 = new FormValidationRule(
+				formElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 140",
 				messages: j(["en":"Validation error {0,here}"]),
 				typeCodeString: "District Hospital,Health Center",
@@ -1836,9 +1858,8 @@ class Initializer {
 			dataElmntsLine1.put(tabColumnThree, surveyElementTable3)
 			dataElmntsLine1.put(tabColumnFour, surveyElementTable4)
 
-			def ruleTable1 = new SurveyValidationRule(
-
-				surveyElement: surveyElementTable1,
+			def ruleTable1 = new FormValidationRule(
+				formElement: surveyElementTable1,
 				expression: "\$"+surveyElementTable1.id+" < 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable1],
@@ -1883,10 +1904,8 @@ class Initializer {
 			tableQ.addRow(tabRowTwo)
 			tableQ.save(failOnError:true)
 
-
-			def ruleCheckbox = new SurveyValidationRule(
-
-				surveyElement: surveyElementChecboxQ3,
+			def ruleCheckbox = new FormValidationRule(
+				formElement: surveyElementChecboxQ3,
 				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+" else true",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable21],
@@ -1897,11 +1916,11 @@ class Initializer {
 			surveyElementChecboxQ3.addValidationRule(ruleCheckbox)
 			surveyElementChecboxQ3.save(failOnError: true)
 
-			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedSurveyElements: [(surveyElementTable2): ""]);
-			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedSurveyElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
+			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedFormElements: [(surveyElementTable2): ""]);
+			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedFormElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
 			def skipRule3 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==2", skippedSurveyQuestions: [checkBoxQ]);
-			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementPatientQ1.id+"==1000", skippedSurveyQuestions: [tableQ], skippedSurveyElements: [(surveyElementChecboxQ1): ""]);
-			def skipRule5 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementServiceQ6.id+"[_].key0.key01=='value1'", skippedSurveyQuestions: [], skippedSurveyElements: [(surveyElementServiceQ6): "[_].key0.key02"]);
+			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementPatientQ1.id+"==1000", skippedSurveyQuestions: [tableQ], skippedFormElements: [(surveyElementChecboxQ1): ""]);
+			def skipRule5 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementServiceQ6.id+"[_].key0.key01=='value1'", skippedSurveyQuestions: [], skippedFormElements: [(surveyElementServiceQ6): "[_].key0.key02"]);
 
 			surveyOne.addSkipRule(skipRule1)
 			surveyOne.addSkipRule(skipRule2)
@@ -1910,7 +1929,6 @@ class Initializer {
 			surveyOne.addSkipRule(skipRule5)
 
 			surveyOne.save()
-
 		}
 	}
 

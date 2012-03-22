@@ -5,7 +5,7 @@
 			<th><g:message code="survey.label" default="Survey"/></th>
 			<th><g:message code="entity.description.label" default="Description"/></th>
 			<th><g:message code="expression.label" default="Expression"/></th>
-			<th><g:message code="default.number.label" args="[message(code:'survey.surveyelement.label')]" default="Number of Survey Elements"/></th>
+			<th><g:message code="default.number.label" args="[message(code:'formelement.label')]" default="Number of Form Elements"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'survey.question.label')]" default="Number of Questions"/></th>
 		</tr>
 	</thead>
@@ -30,7 +30,7 @@
 				<td><g:i18n field="${skip.descriptions}" /></td>
 				<td>${skip.expression}</td>
 				<td> 
-				   ${skip.skippedSurveyElements.size()}
+				   ${skip.skippedFormElements.size()}
 			    </td>
 				<td>
 					${skip.skippedSurveyQuestions.size()}

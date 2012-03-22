@@ -7,6 +7,7 @@ import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Type;
+import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.survey.validation.SurveyLog;
@@ -50,7 +51,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, dataElement)
 		
 		when:
-		def skipRule = new SurveySkipRule(survey: survey, expression: "\$"+element.id+" == 1", skippedSurveyElements: [:], skippedSurveyQuestions: [])
+		def skipRule = new SurveySkipRule(survey: survey, expression: "\$"+element.id+" == 1", skippedFormElements: [:], skippedSurveyQuestions: [])
 		
 		then:
 		skipRule.id == null
@@ -121,12 +122,12 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, dataElement)
 		
 		when:
-		newSurveyValidationRule(element, "", [], "true");
-		newSurveyValidationRule(element, "", [], "true");
+		newFormValidationRule(element, "", [], "true");
+		newFormValidationRule(element, "", [], "true");
 		
 		then:
 		SurveyElement.list()[0].validationRules.size() == 2
-		SurveyValidationRule.count() == 2
+		FormValidationRule.count() == 2
 	}
 	
 	def "save surveylog"() {

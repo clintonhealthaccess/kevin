@@ -1,74 +1,36 @@
 package org.chai.kevin.survey;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.List;
 import java.util.Set;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Translation;
-import org.chai.kevin.data.RawDataElement;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.chai.kevin.form.FormCloner;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormElementService;
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormValidationRule;
+import org.chai.kevin.form.FormValidationService;
+import org.chai.kevin.form.FormElement.ElementCalculator;
+import org.chai.kevin.form.FormValidationService.ValidatableLocator;
+import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
+import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ValueService;
 
 @Entity(name = "SurveyElement")
 @Table(name = "dhsst_survey_element")
-public class SurveyElement {
+public class SurveyElement extends FormElement {
 
-	private Long id;
-	private RawDataElement rawDataElement;
 	private SurveyQuestion surveyQuestion;
-	
-	private List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
-	private Map<String, Translation> headers = new HashMap<String, Translation>();
-	
-	@Id
-	@GeneratedValue
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	@ManyToOne(targetEntity=RawDataElement.class, optional=false)
-	@JoinColumn(nullable=false)
-	public RawDataElement getDataElement() {
-		return rawDataElement;
-	}
-	
-	public void setDataElement(RawDataElement rawDataElement) {
-		this.rawDataElement = rawDataElement;
-	}
-
-	@OneToMany(mappedBy="surveyElement", targetEntity=SurveyValidationRule.class)
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	public List<SurveyValidationRule> getValidationRules() {
-		return validationRules;
-	}
-	
-	public void setValidationRules(List<SurveyValidationRule> validationRules) {
-		this.validationRules = validationRules;
-	}
-	
-	public void addValidationRule(SurveyValidationRule validationRule) {
-		validationRule.setSurveyElement(this);
-		validationRules.add(validationRule);
-	}
 	
 	@ManyToOne(targetEntity=SurveyQuestion.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
@@ -80,42 +42,19 @@ public class SurveyElement {
 		this.surveyQuestion = surveyQuestion;
 	}
 	
-	@ElementCollection(targetClass=Translation.class)
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	@JoinTable(name="dhsst_survey_element_headers")
-	public Map<String, Translation> getHeaders() {
-		return headers;
+	@Transient
+	public String getDescriptionTemplate() {
+		return "/survey/admin/surveyElementDescription";
 	}
 	
-	public void setHeaders(Map<String, Translation> headers) {
-		this.headers = headers;
+	@Transient
+	@Override
+	public String getLabel(LanguageService languageService) {
+		return languageService.getText(getDataElement().getNames()) 
+			+ " - " + languageService.getText(getSurveyQuestion().getSection().getNames())
+			+ " - " + languageService.getText(getSurvey().getNames());
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof SurveyElement))
-			return false;
-		SurveyElement other = (SurveyElement) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-
 	@Transient
 	public Survey getSurvey() {
 		return surveyQuestion.getSurvey();
@@ -127,19 +66,10 @@ public class SurveyElement {
 	}
 
 	@Transient
-	protected void deepCopy(SurveyElement copy, SurveyCloner cloner) {
-		copy.setDataElement(getDataElement());
-		copy.setSurveyQuestion(cloner.getQuestion(getSurveyQuestion()));
-	}
-	
-	@Transient
-	protected void copyRules(SurveyElement copy, SurveyCloner cloner) {
-		for (SurveyValidationRule rule : getValidationRules()) {
-			copy.getValidationRules().add(cloner.getValidationRule(rule));
-		}
-		for (Entry<String, Translation> entry : getHeaders().entrySet()) {
-			copy.getHeaders().put(entry.getKey(), entry.getValue());
-		}
+	@Override
+	public void deepCopy(FormElement copy, FormCloner cloner) {
+		super.deepCopy(copy, cloner);
+		((SurveyElement)copy).setSurveyQuestion(((SurveyCloner)cloner).getQuestion(getSurveyQuestion()));
 	}
 
 	@Override
@@ -147,4 +77,59 @@ public class SurveyElement {
 		return "SurveyElement [id=" + id + "]";
 	}
 	
+	@Transient
+	@Override
+	public Value getValue(DataLocationEntity entity, ElementSubmitter submitter) {
+		SurveyEnteredQuestion enteredQuestion = ((SurveyElementSubmitter)submitter).getSurveyValueService().getOrCreateSurveyEnteredQuestion(entity, this.getSurveyQuestion());
+		if (enteredQuestion.isSkipped()) {
+			// if the question is skipped we save NULL
+			return Value.NULL_INSTANCE();
+		}
+		else {
+			// else we get the value
+			return super.getValue(entity, submitter);
+		}
+	}
+	
+	public static class SurveyElementSubmitter extends ElementSubmitter {
+		
+		private SurveyValueService surveyValueService;
+	
+		public SurveyElementSubmitter(SurveyValueService surveyValueService, FormElementService formElementService, ValueService valueService) {
+			super(formElementService, valueService);
+			
+			this.surveyValueService = surveyValueService;
+		}
+
+		public SurveyValueService getSurveyValueService() {
+			return surveyValueService;
+		}
+		
+	}
+	
+	public static class SurveyElementCalculator extends ElementCalculator {
+
+		private SurveyValueService surveyValueService;
+		private List<SurveyEnteredQuestion> affectedQuestions;
+		
+		public SurveyElementCalculator(List<FormEnteredValue> affectedValues, List<SurveyEnteredQuestion> affectedQuestions, FormValidationService formValidationService, FormElementService formElementService, SurveyValueService surveyValueService, ValidatableLocator validatableLocator) {
+			super(affectedValues, formValidationService, formElementService, validatableLocator);
+			this.surveyValueService = surveyValueService;
+			this.affectedQuestions = affectedQuestions;
+		}
+		
+		public void addAffectedQuestion(SurveyEnteredQuestion question) {
+			this.affectedQuestions.add(question);
+		}
+		
+		public List<SurveyEnteredQuestion> getAffectedQuestions() {
+			return affectedQuestions;
+		}
+		
+		public SurveyValueService getSurveyValueService() {
+			return surveyValueService;
+		}
+		
+	}
+
 }

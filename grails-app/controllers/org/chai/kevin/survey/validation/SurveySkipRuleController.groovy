@@ -29,6 +29,7 @@ package org.chai.kevin.survey.validation
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.form.FormElement;
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyQuestion
@@ -41,9 +42,10 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 class SurveySkipRuleController  extends AbstractEntityController {
 
 	def surveyService
+	def languageService
 
 	def getLabel() {
-		return 'survey.skiprule.label'
+		return 'skiprule.label'
 	}
 	
 	def getEntity(def id) {
@@ -61,7 +63,8 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		def skippedSurveyQuestions = new ArrayList(entity.skippedSurveyQuestions)
 		[
 			skip: entity,
-			skippedSurveyQuestions: skippedSurveyQuestions
+			skippedSurveyQuestions: skippedSurveyQuestions,
+			languageService: languageService
 		]
 	}
 
@@ -71,13 +74,13 @@ class SurveySkipRuleController  extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 		// binding skipped elements
-		entity.skippedSurveyElements.clear()
+		entity.skippedFormElements.clear()
 		int i = 0;
 		params.skipped?.element?.each { skipped ->
-			def element = SurveyElement.get(skipped)
+			def element = FormElement.get(skipped)
 			if (element != null) {
 				def prefix = params.skipped.prefix[i]
-				entity.skippedSurveyElements.put(element, prefix)
+				entity.skippedFormElements.put(element, prefix)
 			}
 			i++;
 		}

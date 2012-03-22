@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.value.DataValue;
 
 @Entity(name="Data")

@@ -48,6 +48,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Translation;
+import org.chai.kevin.form.FormElement;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
@@ -173,8 +174,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Transient
-	public Set<String> getTypeApplicable(
-			SurveyElement surveyElement) {
+	public Set<String> getTypeApplicable(SurveyElement surveyElement) {
 		Set<String> columnRowOrgUnitUuIDs = new HashSet<String>();
 		
 		boolean found = false;

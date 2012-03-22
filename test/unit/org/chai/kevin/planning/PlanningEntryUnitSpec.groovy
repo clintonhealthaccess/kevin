@@ -4,6 +4,7 @@ import grails.plugin.spock.UnitSpec;
 
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.form.FormElement;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
@@ -47,6 +48,25 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		
 	}
 	
+	def "set uuid"() {
+		setup:
+		def planningEntry = null
+		
+		when:
+		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]);
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING()]))
+		planningEntry = new PlanningEntry(new ValidatableValue(value, type), 0)
+
+		then:
+		planningEntry.getUuid() == null
+		
+		when:
+		planningEntry.setUuid("uuid")
+				
+		then:
+		value.listValue[0].getAttribute("uuid") == 'uuid'
+	}
+	
 	def "set budget updated"() {
 		setup:
 		def planningEntry = null
@@ -80,14 +100,14 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		def planningType = Mock(PlanningType)
 		planningType.getSections() >> ["[_].key1", "[_].key2"]
 		value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":new Value("{\"value\":\"test\", \"invalid\":\"1\"}"), "key2":Value.VALUE_STRING("value")])]);
-		planningEntry = new PlanningEntry(planningType, new ValidatableValue(value, type), 0, null)
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
 		
 		then:
 		planningEntry.getInvalidSections().equals(new HashSet(['[_].key1']))
 		
 		when:
 		value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("test"), "key2":Value.VALUE_STRING("value")])]);
-		planningEntry = new PlanningEntry(planningType, new ValidatableValue(value, type), 0, null)
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
 		
 		then:
 		planningEntry.getInvalidSections().empty
@@ -103,7 +123,10 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		when:
 		def planningType = Mock(PlanningType)
 		planningType.getId() >> 1
-		planningEntry = new PlanningEntry(planningType, new ValidatableValue(value, type), 0, null)
+		def formElement = Mock(FormElement)
+		formElement.getId() >> 0
+		planningType.getFormElement() >> formElement
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
 		planningEntry.mergeValues(["elements[0].value[0].key1":"value", "elements[0].value":"[0]"])
 		
 		then:
@@ -119,7 +142,7 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		when:
 		def planningType = Mock(PlanningType)
 		planningType.getFixedHeader() >> '[_].key1'
-		def planningEntry = new PlanningEntry(planningType, new ValidatableValue(value, type), 0, null)
+		def planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
 		
 		then:
 		planningEntry.fixedHeaderValue.equals(Value.VALUE_STRING("value"))
@@ -127,7 +150,7 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		when:
 		planningType = Mock(PlanningType)
 		planningType.getFixedHeader() >> '[_].key2'
-		planningEntry = new PlanningEntry(planningType, new ValidatableValue(value, type), 0, null)
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
 		
 		then:
 		planningEntry.fixedHeaderValue.equals(null)

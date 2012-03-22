@@ -22,9 +22,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
-import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.TypeVisitor;
+import org.chai.kevin.form.FormElement;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hisp.dhis.period.Period;
@@ -42,13 +42,12 @@ public class PlanningType {
 	private String fixedHeader;
 	
 	private Map<String, Translation> sectionDescriptions = new HashMap<String, Translation>();
-	private Map<String, Translation> headers = new HashMap<String, Translation>();
 	
 	// TODO have that be the elements of the first MAP inside the LIST	 
 //	private List<String> sections;
 	
 	// only accepts element of LIST<MAP> type
-	private RawDataElement dataElement;
+	private FormElement formElement;
 	
 	private List<PlanningCost> costs = new ArrayList<PlanningCost>();
 	
@@ -83,13 +82,14 @@ public class PlanningType {
 	}
 	
 	@JoinColumn(nullable=false)
-	@ManyToOne(targetEntity=RawDataElement.class, optional=false)
-	public RawDataElement getDataElement() {
-		return dataElement;
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@ManyToOne(targetEntity=FormElement.class, optional=false)
+	public FormElement getFormElement() {
+		return formElement;
 	}
 	
-	public void setDataElement(RawDataElement dataElement) {
-		this.dataElement = dataElement;
+	public void setFormElement(FormElement formElement) {
+		this.formElement = formElement;
 	}
 	
 	@ElementCollection(targetClass=Translation.class)
@@ -101,17 +101,6 @@ public class PlanningType {
 	
 	public void setSectionDescriptions(Map<String, Translation> sectionDescriptions) {
 		this.sectionDescriptions = sectionDescriptions;
-	}
-	
-	@ElementCollection(targetClass=Translation.class)
-	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
-	@JoinTable(name="dhsst_planning_type_headers")
-	public Map<String, Translation> getHeaders() {
-		return headers;
-	}
-	
-	public void setHeaders(Map<String, Translation> headers) {
-		this.headers = headers;
 	}
 	
 	@OneToMany(mappedBy="planningType", targetEntity=PlanningCost.class)
@@ -167,7 +156,7 @@ public class PlanningType {
 	
 	@Transient
 	public Type getType(String section) {
-		return dataElement.getType().getType(section);
+		return formElement.getDataElement().getType().getType(section);
 	}
 	
 	@Transient
@@ -191,7 +180,7 @@ public class PlanningType {
 	 */
 	@Transient
 	public List<String> getValuePrefixes(String section) {
-		List<String> result = dataElement.getValuePrefixes(section);
+		List<String> result = formElement.getDataElement().getValuePrefixes(section);
 		// we get rid of the discriminator
 		// TODO how do we handle lists
 		result.remove(getFixedHeader());
@@ -202,7 +191,7 @@ public class PlanningType {
 	@Transient
 	public List<String> getSections() {
 		final List<String> result = new ArrayList<String>();
-		dataElement.getType().visit(new TypeVisitor() {
+		formElement.getDataElement().getType().visit(new TypeVisitor() {
 			@Override
 			public void handle(Type type, String prefix) {
 				if (getParents().size() == 3) result.add(prefix);
