@@ -23,7 +23,7 @@
 					<g:if test="${percentageValue != null}">
 						${percentageValue}%
 					</g:if><g:else>
-						<g:message code="dashboard.report.table.na"/>
+						<g:message code="report.value.na"/>
 					</g:else></td>
 				<td>
 					<!-- percentage value -->
