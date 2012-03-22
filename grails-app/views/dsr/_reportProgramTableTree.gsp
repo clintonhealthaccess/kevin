@@ -10,7 +10,7 @@
 					<g:if test="${dsrTable.getReportValue(location, target) != null}">
 						${dsrTable.getReportValue(location, target).value}
 					</g:if>
-					<g:else><g:message code="dsr.report.table.na"/></g:else>
+					<g:else><g:message code="report.value.na"/></g:else>
 				</td>
 			</g:each>
 		</tr>
