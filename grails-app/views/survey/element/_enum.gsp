@@ -22,7 +22,7 @@
 		</select>
 	</g:if>
 	<g:else>
-	<label>-- <g:message code="survey.print.selectonlyoneoption.label" default="Select only one response"/> --</label>
+	<label>-- <g:message code="survey.print.selectonlyoneoption.label"/> --</label>
 		<g:eachOption enum="${enume}" var="option">
 			<div>
 				<input class="input" type="checkbox" value="1" name="option.names" ${option?.value==value?.enumValue? 'checked="checked" ':''} disabled="disabled"/>

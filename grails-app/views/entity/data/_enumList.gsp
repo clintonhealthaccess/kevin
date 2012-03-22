@@ -4,7 +4,7 @@
 			<th/>
 			<th>Name</th>
 			<th>Description</th>
-			<g:sortableColumn property="code"  params="[q:q]" title="${message(code: 'enum.code.label', default: 'Code')}" />
+			<g:sortableColumn property="code"  params="[q:q]" title="${message(code: 'enum.code.label')}" />
 			<th>Number of Option</th>
 			<th>Manage</th>
 		</tr>
@@ -16,12 +16,12 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'enum', action:'edit', params:[id: enumation.id])}">
-								<g:message code="default.link.edit.label" default="Edit" />
+								<g:message code="default.link.edit.label" />
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'enum', action:'delete', params:[id: enumation.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="default.link.delete.label" default="Delete" />
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'enum', action:'delete', params:[id: enumation.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+								<g:message code="default.link.delete.label" />
 							</a>
 						</li>
 					</ul>

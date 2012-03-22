@@ -3,11 +3,11 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label" default="Name"/></th>
-			<th><g:message code="facility.type.label" default="Facility Groups"/></th>
-			<th><g:message code="default.number.label" args="[message(code:'survey.section.label')]" default="Number of Sections"/></th>
-			<th><g:message code="entity.order.label" default="Order"/></th>
-			<th><g:message code="entity.list.manage.label" default="Manage"/></th>
+			<th><g:message code="entity.name.label"/></th>
+			<th><g:message code="facility.type.label"/></th>
+			<th><g:message code="default.number.label" args="[message(code:'survey.section.label')]"/></th>
+			<th><g:message code="entity.order.label"/></th>
+			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -17,12 +17,12 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'program', action:'edit', params:[id: program.id])}">
-								<g:message code="default.link.edit.label" default="Edit" />
+								<g:message code="default.link.edit.label" />
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'program', action:'delete', params:[id: program.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="default.link.delete.label" default="Delete" />
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'program', action:'delete', params:[id: program.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+								<g:message code="default.link.delete.label" />
 							</a>
 						</li>
 					</ul>
@@ -33,12 +33,12 @@
 				<td>${program.order}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
-						<a class="selected dropdown manage-btn" href="#"><g:message code="entity.list.manage.label" default="Manage"/></a>
+						<a class="selected dropdown manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>
 						<div class="hidden manage-list js_dropdown-list dropdown-list">
 							<ul>
 								<li>
 									<a href="${createLink(controller:'section', action:'list', params:['program.id': program.id])}">
-										<g:message code="default.list.label" args="[message(code:'survey.section.label',default:'Section')]" />
+										<g:message code="default.list.label" args="[message(code:'survey.section.label')]" />
 									</a>
 								</li>
 							</ul>

@@ -1,10 +1,9 @@
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">
-			<g:message code="default.new.label" args="[message(code:'survey.label',default:'Survey')]"/>
+			<g:message code="default.new.label" args="[message(code:'survey.label')]"/>
 		</h3>
 		<g:locales/>
-		<div class="clear"></div>
 	</div>
 	<g:form url="[controller:'survey', action:'save', params:[targetURI: targetURI]]" useToken="true">
 		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="Name" field="names"/>
@@ -17,7 +16,7 @@
 			from="${periods}" value="${survey.lastPeriod?.id}" values="${periods.collect{it.startDate.toString()+' - '+it.endDate.toString()}}" optionKey="id" multiple="false"/>
 	
 		<div class="row">
-			<label><g:message code="survey.active.label" default="Active"/></label>
+			<label><g:message code="survey.active.label"/></label>
 			<g:checkBox name="active" value="${survey.active}" />
 		</div>
 		
@@ -26,8 +25,8 @@
 			<input type="hidden" name="id" value="${survey?.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
-			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
+			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label"/></button>
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label"/></a>
 		</div>
     </g:form>
 	<div class="clear"></div>

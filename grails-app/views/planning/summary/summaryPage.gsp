@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="survey.summaryPage.label" default="District Health System Portal" /></title>
+		<title><g:message code="survey.summaryPage.label" /></title>
 		
 		<r:require modules="progressbar,dropdown,explanation,survey"/>
 	</head>
@@ -16,13 +16,13 @@
 			</div>
 			<div class="main">			
 				<g:if test="${summaryPage == null}">
-					<p class="nav-help"><g:message code="planning.summary.selectplanningfacility.text" default="Please select a planning and a facility to get to the respective survey."/></p>
+					<p class="nav-help"><g:message code="planning.summary.selectplanningfacility.text"/></p>
 				</g:if>
 				<g:else>
 					<div>
 						<table class="listing">
 							<thead>
-								<g:sortableColumn property="${PlanningSummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
+								<g:sortableColumn property="${PlanningSummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label')}" params="${params}" defaultOrder="asc"/>
 								<g:each in="${summaryPage.planningTypes}" var="planningType">
 									<g:sortableColumn property="planning-${planningType.id}" title="${i18n(field:planningType.namesPlural)}" params="${params}" defaultOrder="desc"/>
 								</g:each>

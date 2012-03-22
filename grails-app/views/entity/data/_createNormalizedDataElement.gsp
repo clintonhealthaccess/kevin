@@ -2,21 +2,22 @@
 
 <div id="add-normalized-data-element" class="entity-form-container togglable">
 	<div class="entity-form-header">
-		<h3 class="title">Expression</h3>
+		<h3 class="title">
+			<g:message code="default.new.label" args="[message(code:'normalizeddataelement.label')]"/>
+		</h3>
 		<g:locales/>
-		<div class="clear"></div>
 	</div>
 	<div class="forms-container">
 		<div class="data-field-column">
 			<g:form url="[controller:'normalizedDataElement', action:'save', params: [targetURI: targetURI]]" useToken="true">
-				<g:i18nInput name="names" bean="${normalizedDataElement}" value="${normalizedDataElement.names}" label="Name" field="names"/>
-				<g:i18nTextarea name="descriptions" bean="${normalizedDataElement}" value="${normalizedDataElement.descriptions}" label="Description" field="descriptions"/>
-				<g:input name="code" label="Code" bean="${normalizedDataElement}" field="code"/>
+				<g:i18nInput name="names" bean="${normalizedDataElement}" value="${normalizedDataElement.names}" label="${message(code:'entity.name.label')}" field="names"/>
+				<g:i18nTextarea name="descriptions" bean="${normalizedDataElement}" value="${normalizedDataElement.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions"/>
+				<g:input name="code" label="${message(code:'entity.code.label')}" bean="${normalizedDataElement}" field="code"/>
 				
-				<g:textarea name="type.jsonValue" label="Type" bean="${normalizedDataElement}" field="type" value="${normalizedDataElement.type.jsonValue}"/>
+				<g:textarea name="type.jsonValue" label="${message(code:'entity.type.label')}" bean="${normalizedDataElement}" field="type" value="${normalizedDataElement.type.jsonValue}"/>
 				
 				<div class="row ${hasErrors(bean:normalizedDataElement, field:'expressionMap', 'errors')}">
-					<label>Expression map:</label>
+					<label><g:message code="normalizeddataelement.expressionmap.label"/></label>
 					<div>
 						<g:each in="${periods}" var="period" status="i">
 							<div>
@@ -43,19 +44,19 @@
 				</g:if>
 				
 				<div class="row">
-					<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>
-					<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
+					<button type="submit"><g:message code="default.button.save.label"/></button>
+					<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label"/></a>
 				</div>
 			</g:form>
 		</div>
 		<div class="data-search-column">
 			<g:form name="search-data-form" class="search-form" url="[controller:'data', action:'getData', params:[class:'RawDataElement']]">
 				<div class="row">
-					<label for="searchText">Search: </label>
+					<label for="searchText"><g:message code="default.button.search.label"/>: </label>
 			    	<input name="searchText" class="idle-field"></input>
 			    </div>
 				<div class="row">
-					<button type="submit">Search</button>
+					<button type="submit"><g:message code="default.button.search.label"/></button>
 					<div class="clear"></div>
 				</div>
 			</g:form>

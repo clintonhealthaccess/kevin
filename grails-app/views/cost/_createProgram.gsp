@@ -1,9 +1,10 @@
 <div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
-		<h3 class="title">Dashboard program</h3>
+		<h3 class="title">
+			<g:message code="default.new.label" args="[message(code:'cost.program.label')]"/>
+		</h3>
 		<g:locales/>
-		<div class="clear"></div>
 	</div>
 	
 	<g:form url="[controller:'costProgram', action:'save', params:[targetURI:targetURI]]" useToken="true">
@@ -17,8 +18,8 @@
 		</g:if>
 		
 		<div class="row">
-			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
-			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
+			<button type="submit"><g:message code="default.button.save.label"/></button>
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label"/></a>
 		</div>
     </g:form>
 	<div class="clear"></div>

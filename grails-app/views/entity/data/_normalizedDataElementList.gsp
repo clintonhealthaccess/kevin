@@ -3,12 +3,12 @@
   	<thead>
   		<tr>
   			<th/>
-  			<th>Id</th>
-  			<th>Names</th>
-  			<th>Type</th>
-  			<th>Code</th>
-  			<th>Last refreshed</th>
-  			<th>Up-to-date</th>
+  			<th><g:message code="entity.id.label"/></th>
+  			<th><g:message code="entity.name.label"/></th>
+  			<th><g:message code="entity.type.label"/></th>
+  			<th><g:message code="entity.code.label"/></th>
+  			<th><g:message code="normalizeddataelement.lastrefreshed.label"/></th>
+  			<th><g:message code="normalizeddataelement.uptodate.label"/></th>
   		</tr>
   	</thead>
   	<tbody>
@@ -17,10 +17,10 @@
   				<td>
   	            	<ul class="horizontal">
   			           	<li>
-  			           		<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id: normalizedDataElement.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
+  			           		<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id: normalizedDataElement.id)}"><g:message code="default.link.edit.label" /></a>
   						</li>
   			           	<li>
-  			           		<a class="delete-link" href="${createLinkWithTargetURI(controller:'normalizedDataElement', action:'delete', params:[id:normalizedDataElement.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="default.link.delete.label" default="Delete" /></a>
+  			           		<a class="delete-link" href="${createLinkWithTargetURI(controller:'normalizedDataElement', action:'delete', params:[id:normalizedDataElement.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');"><g:message code="default.link.delete.label" /></a>
   						</li>
   		           	</ul>
   				</td>

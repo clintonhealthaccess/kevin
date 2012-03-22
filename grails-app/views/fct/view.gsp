@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="fctTable.view.label" default="Facility Count Tables" /></title>
+		<title><g:message code="fctTable.view.label" /></title>
 		
 		<!-- for admin forms -->
 		<shiro:hasPermission permission="admin:fct">
@@ -39,7 +39,7 @@
 	              </li>
 	            </ul>				
 				<g:if test="${fctTable != null && fctTable.hasData()}">
-					<p>Facility types: 
+					<p><g:message code="fct.report.facilitytype"/>: 
 						<g:each in="${currentLocationTypes}" var="locationType" status="i">						
 							<g:i18n field="${locationType.names}" /><g:if test="${i != currentLocationTypes.size()-1}">, </g:if>
 						</g:each>

@@ -2,7 +2,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="ajax" />
-        <g:set var="entityName" value="${message(code: 'dashboard.explanation.label', default: 'Data element explanation')}" />
+        <g:set var="entityName" value="${message(code: 'dashboard.explanation.label')}" />
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     
@@ -10,7 +10,7 @@
 
 		<div class="box">
 			<div><g:i18n field="${rawDataElement.names}"/></div>
-			<div class="row">Type: <span class="type"><g:toHtml value="${rawDataElement.type.getDisplayedValue(2, null)}"/></span></div>
+			<div class="row"><g:message code="entity.type.label"/>: <span class="type"><g:toHtml value="${rawDataElement.type.getDisplayedValue(2, null)}"/></span></div>
 			<div><g:i18n field="${rawDataElement.descriptions}"/></div>
 			<div class="clear"></div>
 		</div>
@@ -19,10 +19,10 @@
 			<table class="listing">
 				<thead>
 					<tr>
-						<th><g:message code="period.label" default="Iteration"/></th>
-						<th><g:message code="survey.label" default="Survey"/></th>
-						<th><g:message code="survey.question.label" default="Question"/></th>
-						<th><g:message code="dataelement.surveyelement.facility.applicable.label" default="Total Number of Facility Applicable"/></th>
+						<th><g:message code="period.label"/></th>
+						<th><g:message code="survey.label"/></th>
+						<th><g:message code="survey.question.label"/></th>
+						<th><g:message code="rawdataelement.surveyelement.facility.applicable.label"/></th>
 					</tr>
 				</thead>
 				<tbod>
@@ -39,14 +39,14 @@
 			</table>
 		</g:if>
 		<g:else>
-			No Survey Element Associated to This Data Element
+			<g:message code="rawdataelement.surveyelement.notassociated"/>
 		</g:else>
 
 		<table class="listing">
 			<thead>
 				<tr>
-					<th><g:message code="period.label" default="Iteration"/></th>
-					<th><g:message code="default.number.label" args="[message(code:'datavalue.label')]" default="Number of Data Value"/></th>
+					<th><g:message code="period.label"/></th>
+					<th><g:message code="dataelement.values.number"/></th>
 				</tr>
 			</thead>
 			<tbody>

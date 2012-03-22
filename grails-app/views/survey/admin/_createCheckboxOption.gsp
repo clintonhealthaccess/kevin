@@ -1,10 +1,9 @@
 <div class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">
-			<g:message code="default.new.label" args="[message(code:'survey.checkboxquestion.checkboxoption.label',default:'Checkbox Option')]"/>
+			<g:message code="default.new.label" args="[message(code:'survey.checkboxquestion.checkboxoption.label')]"/>
 		</h3>
 		<g:locales />
-		<div class="clear"></div>
 	</div>
 	<div class="forms-container">
 		<div class="data-field-column">
@@ -15,7 +14,7 @@
 				
 				<input type="hidden" name="surveyElement.dataElement.id"  value="${option.surveyElement?.dataElement?.id}" id="data-element-id" />
 				<div class="row ${hasErrors(bean:option, field:'surveyElement', 'errors')}">
-				    <label for="survey"><g:message code="dataelement.label" default="Data Element"/>:</label> 
+				    <label for="survey"><g:message code="dataelement.label"/>:</label> 
 				    <input type="text" name="surveyElement.dataElement.name" value="${i18n(field: option.surveyElement?.dataElement?.names)}" id="data-element-name" class="idle-field" disabled />
 				    <div class="error-list"><g:renderErrors bean="${option}" field="surveyElement" /></div>
 				</div>
@@ -28,17 +27,17 @@
 					<input type="hidden" name="id" value="${option.id}"></input>
 				</g:if>
 				<div class="row">
-					<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>
-					<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
+					<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label"/></button>
+					<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label"/></a>
 				</div>
 			</g:form>
 		</div>
 		<div class="data-search-column">
 			<g:form name="search-data-form" class="search-form" url="[controller:'data', action:'getData', params:['include': ['bool'], class: 'RawDataElement']]">
 				<div class="row">
-					<label for="searchText"><g:message code="entity.search.label" default="Search"/>: </label>
+					<label for="searchText"><g:message code="entity.search.label"/>: </label>
 			    	<input name="searchText" class="idle-field"></input>
-			    	<button type="submit"><g:message code="default.button.search.label" default="Search"/></button>
+			    	<button type="submit"><g:message code="default.button.search.label"/></button>
 					<div class="clear"></div>
 				</div>
 			</g:form>

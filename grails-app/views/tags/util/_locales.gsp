@@ -5,6 +5,6 @@
 		</a>
 	</g:each>
 		<a href="#" id="show-all-language" class="toggle-link ${i==0?'no-link':''}" data-toggle="${locale}" >
-			<g:message code="entity.locales.all" default="View all languages"/>
+			<g:message code="entity.locales.all"/>
 		</a>
 </div>

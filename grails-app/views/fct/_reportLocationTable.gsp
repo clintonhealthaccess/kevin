@@ -1,7 +1,7 @@
 <table class="listing push-top-10 push-20">
 	<thead>
 		<tr>
-			<th>Location</th>
+			<th><g:message code="fct.report.table.location"/></th>
 			<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
 				<g:each in="${fctTable.targetOptions}" var="targetOption">
 					<th><g:i18n field="${targetOption.names}" /></th>
@@ -19,7 +19,9 @@
 							<g:if test="${!fctTable.getReportValue(location, targetOption) != null}">
 								<td>${fctTable.getReportValue(location, targetOption).value}</td>
 							</g:if>
-							<g:else>N/A</g:else>
+							<g:else>
+								<td><g:message code="fct.report.na"/></td>
+							</g:else>
 						</g:each>
 					</g:if>
 				 </tr>
@@ -32,7 +34,9 @@
 					<g:if test="${!fctTable.getTotalValue(targetOption) != null}">
 						<td>${fctTable.getTotalValue(targetOption).value}</td>
 					</g:if>
-					<g:else><td>N/A</td></g:else>
+					<g:else>
+						<td><g:message code="fct.report.na"/></td>
+					</g:else>
 				</g:each>
 			</g:if>
 		 </tr>		

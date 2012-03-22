@@ -2,10 +2,9 @@
 
 	<div class="entity-form-header">
 		<h3 class="title">
-			<g:message code="default.new.label" args="[message(code:'survey.tablequestion.label',default:'Table Question')]"/>
+			<g:message code="default.new.label" args="[message(code:'survey.tablequestion.label')]"/>
 		</h3>
 		<g:locales />
-		<div class="clear"></div>
 	</div>
 	
 	<g:form url="[controller:'tableQuestion', action:'save', params:[targetURI: targetURI]]" useToken="true">
@@ -17,7 +16,7 @@
 			<input type="hidden" name="id" value="${question.id}"></input>
 			<div class="row">
 				<a href="${createLinkWithTargetURI(controller:'tableQuestion', action:'preview',params:['question': question.id])}">
-					<g:message code="survey.tablequestion.preview.label" default="Preview"/></a>
+					<g:message code="survey.tablequestion.preview.label"/></a>
 				</a>
 			</div>
 			
@@ -63,8 +62,8 @@
 			from="${types}" value="${question.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<div class="row">
-			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>
-			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
+			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label"/></button>
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label"/></a>
 		</div>
 	</g:form>
 	<div class="clear"></div>

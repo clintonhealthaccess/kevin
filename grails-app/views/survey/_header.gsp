@@ -9,7 +9,7 @@
 						<g:i18n field="${program.names}" />
 					</g:if>
 					<g:else>
-					<g:message code="survey.labels.program.select" default="Select a program" />	
+					<g:message code="survey.labels.program.select" />	
 					</g:else>
 				</a>
 				<div class="hidden dropdown-list js_dropdown-list">
@@ -18,11 +18,11 @@
 			</span>
 		</div>
 		<div class="filter">
-			<span class="bold"><g:message code="facility.label" default="Facility Name" />:</span>
+			<span class="bold"><g:message code="facility.label" />:</span>
 			<span><g:i18n field="${location.names}"/></span>
 		</div>
 		<div class="filter">
-			<span class="bold"><g:message code="survey.labels.period" default="Year" />:</span>
+			<span class="bold"><g:message code="survey.labels.period" />:</span>
 			<span> 
 				<g:dateFormat format="yyyy" date="${period.startDate}" />
 			</span>

@@ -3,7 +3,7 @@
 		
 		<g:render template="/templates/linkParamFilter" model="[linkParams:linkParams, filter:'fctTarget']" />
 		
-		<span>Report Type:</span>
+		<span><g:message code="fct.report.target.selector"/>:</span>
 		<select id="fctTarget" name="fctTarget">
 			<g:each in="${fctTargets}" var="target">
 				<option ${target.id == currentFctTarget?.id ? 'selected="selected"' : ''} value="${target.id}">

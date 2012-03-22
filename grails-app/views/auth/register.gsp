@@ -10,7 +10,7 @@
     
 			<table class="listing login">
 				<tbody>
-					<tr><td><label class="login-label"><g:message code="register.firstname.label" default="First Name"/></label></td></tr>
+					<tr><td><label class="login-label"><g:message code="register.firstname.label"/></label></td></tr>
 					<tr>
 						<td>
 							<input class="login-field" type="text" name="firstname" value="${register?.firstname}" />
@@ -18,7 +18,7 @@
 						</td>
 					</tr>
 					
-					<tr><td><label class="login-label"><g:message code="register.lastname.label" default="Last Name"/></label></td></tr>
+					<tr><td><label class="login-label"><g:message code="register.lastname.label"/></label></td></tr>
 					<tr>
 						<td>
 							<input class="login-field" type="text" name="lastname" value="${register?.lastname}" />
@@ -26,7 +26,7 @@
 						</td>
 					</tr>
 					
-					<tr><td><label class="login-label"><g:message code="register.location.label" default="Location"/></label></td></tr>
+					<tr><td><label class="login-label"><g:message code="register.location.label"/></label></td></tr>
 					<tr>
 						<td>
 							<input class="login-field" type="text" name="location" value="${register?.location}" />
@@ -42,14 +42,14 @@
 						</td>
 					</tr>
 					
-					<tr><td><label class="login-label"><g:message code="register.password.label" default="Password"/></label></td></tr>
+					<tr><td><label class="login-label"><g:message code="register.password.label"/></label></td></tr>
 					<tr>
 						<td>
 							<input class="login-field" type="password" name="password" value="" />
 							<div class="error-list"><g:renderErrors bean="${register}" field="password" /></div>
 						</td>
 					</tr>
-					<tr><td><label class="login-label"><g:message code="register.repeat.label" default="Repeat password"/></label></td></tr>
+					<tr><td><label class="login-label"><g:message code="register.repeat.label"/></label></td></tr>
 					<tr>
 						<td>
 							<input class="login-field" type="password" name="repeat" value="" />

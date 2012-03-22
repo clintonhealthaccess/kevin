@@ -2,10 +2,9 @@
 
 	<div class="entity-form-header">
 		<h3 class="title">
-			<g:message code="default.new.label" args="[message(code:'survey.checkboxquestion.label',default:'Checkbox Question')]"/>
+			<g:message code="default.new.label" args="[message(code:'survey.checkboxquestion.label')]"/>
 		</h3>
 		<g:locales />
-		<div class="clear"></div>
 	</div>
 	
 	<g:form url="[controller:'checkboxQuestion', action:'save', params:[targetURI: targetURI]]" useToken="true">
@@ -26,7 +25,7 @@
 						</g:each>
 					</ul>
 					<a href="${createLinkWithTargetURI(controller:'checkboxOption', action:'create', params:['question.id': question.id])}">
-						<g:message code="default.add.label" args="[message(code:'survey.checkboxquestion.checkboxoption.label')]" default="Add Option" />
+						<g:message code="default.add.label" args="[message(code:'survey.checkboxquestion.checkboxoption.label')]" />
 					</a>
 				</div>
 			</div>
@@ -42,8 +41,8 @@
 			<input type="hidden" name="id" value="${question.id}"></input>
 		</g:if>
 		<div class="row">
-			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label" default="Save"/></button>
-			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
+			<button type="submit" class="rich-textarea-form"><g:message code="default.button.save.label"/></button>
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label"/></a>
 		</div>
 	</g:form>
 	<div class="clear"></div>

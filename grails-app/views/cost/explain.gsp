@@ -2,7 +2,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="ajax" />
-        <g:set var="entityName" value="${message(code: 'cost.explanation.label', default: 'Cost explanation')}" />
+        <g:set var="entityName" value="${message(code: 'cost.explanation.label')}" />
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>

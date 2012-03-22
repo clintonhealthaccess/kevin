@@ -2,10 +2,10 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="survey.question.label" default="Question"/></th>
-			<th><g:message code="type.label" default="Type"/></th>
-			<th><g:message code="facility.type.label" default="Facility Groups"/></th>
-			<th><g:message code="entity.order.label" default="Order"/></th>
+			<th><g:message code="survey.question.label"/></th>
+			<th><g:message code="type.label"/></th>
+			<th><g:message code="facility.type.label"/></th>
+			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -15,12 +15,12 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:question.getType().getTemplate(), action:'edit', params:[id: question.id])}">
-								<g:message code="default.link.edit.label" default="Edit" />
+								<g:message code="default.link.edit.label" />
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:question.getType().getTemplate(), action:'delete', params:[id: question.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="default.link.delete.label" default="Delete" />
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:question.getType().getTemplate(), action:'delete', params:[id: question.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+								<g:message code="default.link.delete.label" />
 							</a>
 						</li>
 					</ul>

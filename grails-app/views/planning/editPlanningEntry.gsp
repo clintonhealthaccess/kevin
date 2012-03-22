@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="planning.new.label" default="District Health System Portal" /></title>
+		<title><g:message code="planning.new.label" /></title>
 		
 		<r:require module="planning"/>
 	</head>
@@ -64,7 +64,7 @@
   		  					</li>
   		  					<li>
     		  					<button type="cancel" class="hidden">
-  								    <g:message code="survey.section.cancel.label" default="Cancel"/>
+  								    <g:message code="survey.section.cancel.label"/>
   							    </button>
   							  </li>
   							  <li>

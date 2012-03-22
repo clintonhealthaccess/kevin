@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="survey.programPage.label" default="District Health System Portal" /></title>
+		<title><g:message code="survey.programPage.label" /></title>
 		
 		<r:require modules="survey"/>
 	</head>
@@ -17,7 +17,7 @@
 				<g:if test="${closed}">
 					<div class="success-box">
 						<p class="success">
-							<g:message code="survey.program.submitted.text" default="This program has already been submitted, please go on with the other sections." />
+							<g:message code="survey.program.submitted.text" />
 							<shiro:hasPermission permission="admin:survey">
 								<a href="${createLink(controller: 'editSurvey', action: 'reopen', params: [location: surveyPage.location.id, program: surveyPage.program.id])}">
 									<g:message code="survey.program.reopen.text"/>
@@ -29,7 +29,7 @@
 				
 				<g:if test="${!closed}">
 					<div id="js_submit-program" class="${!surveyPage.canSubmit(surveyPage.program)?'hidden':''} success-box">
-						<p class="success"><g:message code="survey.program.ready.text" default="This part has been completed successfully. If you are sure that you entered the right data, please click submit." /></p>
+						<p class="success"><g:message code="survey.program.ready.text" /></p>
 						<g:form url="[controller:'editSurvey', action:'submit', params: [location: surveyPage.location.id, program: surveyPage.program.id]]">
 							<button type="submit">Submit</button>
 						</g:form>

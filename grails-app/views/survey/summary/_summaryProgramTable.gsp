@@ -5,9 +5,9 @@
 <div>
 	<table class="listing">
 		<thead>
-			<g:sortableColumn property="${SurveySummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
-			<th><g:message code="survey.summary.submitted" default="Submitted" /></th>
-			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress', default: 'Overall progress')}" params="${params}" defaultOrder="desc"/>
+			<g:sortableColumn property="${SurveySummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label')}" params="${params}" defaultOrder="asc"/>
+			<th><g:message code="survey.summary.submitted" /></th>
+			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress')}" params="${params}" defaultOrder="desc"/>
 			<th></th>
 		</thead>
 		<tbody>
@@ -23,11 +23,11 @@
 					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
 						<a href="${createLink(controller: 'editSurvey', action: 'programPage', params: [program: currentProgram.id, location: facility.id])}">
-							<g:message code="survey.summary.viewsurvey.label" default="View Survey" />
+							<g:message code="survey.summary.viewsurvey.label" />
 						</a> 
 						<shiro:hasPermission permission="editSurvey:export"> 
 							<a href="${createLink(controller: 'editSurvey', action: 'export', params: [program: currentProgram.id, location: facility.id])}">
-								<g:message code="survey.summary.exportprogram.label" default="Export Survey Program" />
+								<g:message code="survey.summary.exportprogram.label" />
 							</a>
 						</shiro:hasPermission>
 					</td>					

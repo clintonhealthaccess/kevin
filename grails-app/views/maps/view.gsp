@@ -2,7 +2,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-        <title><g:message code="maps.view.label" default="Maps" /></title>
+        <title><g:message code="maps.view.label" /></title>
         
         <!-- for admin forms -->
 		<shiro:hasPermission permission="admin:maps">
@@ -39,12 +39,12 @@
 											<shiro:hasPermission permission="admin:maps">
 												<span>
 													<a class="edit-link" href="${createLinkWithTargetURI(controller:'mapsTarget', action:'edit', id:target.id)}">
-														<g:message code="default.link.edit.label" default="Edit" />
+														<g:message code="default.link.edit.label" />
 													</a>
 												</span>
 												<span>
-													<a class="delete-link" href="${createLinkWithTargetURI(controller:'mapsTarget', action:'delete', id:target.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-														<g:message code="default.link.delete.label" default="Delete" />
+													<a class="delete-link" href="${createLinkWithTargetURI(controller:'mapsTarget', action:'delete', id:target.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+														<g:message code="default.link.delete.label" />
 													</a>
 												</span>
 											</shiro:hasPermission>

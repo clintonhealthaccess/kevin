@@ -2,7 +2,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-        <title><g:message code="about.page.label" default="About" /></title>
+        <title><g:message code="about.page.label" /></title>
     </head>
     <body>
     	<div class="subnav">
@@ -10,8 +10,8 @@
     	</div>
 		<div class="main">
 			<p class="push-20">
-				DHSST a été dévolppé par <a href="http://www.clintonhealthaccess.org">Clinton Health Access Initiative</a> en partenariat avec
-				la <a href="http://www.moh.gov.rw">Ministère de la Santé du Rwanda</a>.
+				DHSST a été développé par <a href="http://www.clintonhealthaccess.org">Clinton Health Access Initiative</a> en partenariat avec
+				le <a href="http://www.moh.gov.rw">Ministère de la Santé du Rwanda</a>.
 			</p>
 		
 			<p>

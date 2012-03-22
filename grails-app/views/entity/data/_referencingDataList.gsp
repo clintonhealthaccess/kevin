@@ -2,9 +2,9 @@
 	<thead>
 		<tr>
 			<th></th>
-			<th>Id</th>
-			<th>Type</th>
-			<th>Code</th>
+			<th><g:message code="entity.id.label"/></th>
+			<th><g:message code="entity.type.label"/></th>
+			<th><g:message code="entity.code.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -12,7 +12,7 @@
 			<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 				<td>
 					<a class="edit-link" href="${createLinkWithTargetURI(controller:data.class.simpleName, action:'edit', params:[id: data.id])}">
-						<g:message code="default.link.edit.label" default="Edit" />
+						<g:message code="default.link.edit.label" />
 					</a>
 				</td>
 				<td>${data.id}</td>

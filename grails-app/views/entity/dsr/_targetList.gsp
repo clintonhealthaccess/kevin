@@ -2,12 +2,12 @@
 	<thead>
 		<tr>
 			<th/>
-			<th>Name</th>
-			<th>Code</th>
-			<th>Program</th>
-			<th>Data Element</th>
-			<th>Category</th>
-			<th>Order</th>
+			<th><g:message code="entity.name.label"/></th>
+			<th><g:message code="entity.code.label"/></th>
+			<th><g:message code="dsr.target.program.label"/></th>
+			<th><g:message code="dsr.target.dataelement.label"/></th>
+			<th><g:message code="dsr.target.category.label"/></th>
+			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -17,11 +17,11 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'edit', params:[id: target.id])}">
-								<g:message code="default.link.edit.label" default="Edit" />
+								<g:message code="default.link.edit.label" />
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', params:[id: target.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');"><g:message code="default.link.delete.label" default="Delete" /></a>
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'dsrTarget', action:'delete', params:[id: target.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');"><g:message code="default.link.delete.label" /></a>
 						</li>
 						
 					</ul>

@@ -2,7 +2,7 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label" default="Name"/></th>
+			<th><g:message code="entity.name.label"/></th>
 			<th>Type</th>
 			<th>Discriminator value</th>
 			<th>Grouping section</th>
@@ -16,12 +16,12 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'planningCost', action:'edit', params:[id: planningCost.id])}">
-								<g:message code="default.link.edit.label" default="Edit" /> 
+								<g:message code="default.link.edit.label" /> 
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'planningCost', action:'delete', params:[id: planningCost.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="default.link.delete.label" default="Delete" /> 
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'planningCost', action:'delete', params:[id: planningCost.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+								<g:message code="default.link.delete.label" /> 
 							</a>
 						</li>
 					</ul>
