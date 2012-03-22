@@ -1,4 +1,4 @@
-<table class='nested push-top-10'>
+<table class="nested push-top-10">
 	<thead>
 		<tr>
 			<th>Facility</th>

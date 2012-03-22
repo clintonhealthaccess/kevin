@@ -36,7 +36,6 @@ class FctControllerSpec extends FctIntegrationTests {
 		model.currentTarget.equals(target)
 		model.fctTable != null		
 		model.fctTable.valueMap.isEmpty() == false
-		model.fctTable.totalMap.isEmpty() == false
 		model.fctTable.hasData() == true
 	}
 		
@@ -59,7 +58,6 @@ class FctControllerSpec extends FctIntegrationTests {
 		then:
 		model.fctTable != null		
 		model.fctTable.valueMap.isEmpty() == false
-		model.fctTable.totalMap.isEmpty() == false
 		model.fctTable.hasData() == true
 		
 	}

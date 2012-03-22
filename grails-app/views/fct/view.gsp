@@ -38,7 +38,7 @@
 								</g:each>
 							</p>
 							<br />
-	              			<g:render template="/fct/reportProgramLocationBarChart" model="[linkParams:params]"/>
+	              			<g:render template="/fct/reportLocationBarChart" model="[linkParams:params]"/>
 	              		</g:if>
 	              		<g:else><div><g:message code="fct.report.table.noselection.label"/></div></g:else>
 			    	</li>			    	

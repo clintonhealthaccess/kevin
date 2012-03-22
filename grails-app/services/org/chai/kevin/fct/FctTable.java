@@ -39,12 +39,12 @@ import org.chai.kevin.reports.ReportValue;
 public class FctTable extends ReportTable<FctTargetOption, LocationEntity> {
 	
 	protected List<FctTargetOption> targetOptions;
-	private Map<FctTargetOption, ReportValue> totalMap;
+//	private Map<FctTargetOption, ReportValue> totalMap;
 	
-	public FctTable(Map<FctTargetOption, ReportValue> totalMap, Map<LocationEntity, Map<FctTargetOption, ReportValue>> valueMap, List<FctTargetOption> targetOptions) {
+	public FctTable(Map<LocationEntity, Map<FctTargetOption, ReportValue>> valueMap, List<FctTargetOption> targetOptions) {
 		super(valueMap);
 		this.targetOptions = targetOptions;
-		this.totalMap = totalMap;
+//		this.totalMap = totalMap;
 	}
 
 	public ReportValue getReportValue(LocationEntity location, FctTargetOption targetOption){
@@ -55,9 +55,9 @@ public class FctTable extends ReportTable<FctTargetOption, LocationEntity> {
 		return reportValue;
 	}
 	
-	public ReportValue getTotalValue(FctTargetOption targetOption) {
-		return totalMap.get(targetOption);
-	}
+//	public ReportValue getTotalValue(FctTargetOption targetOption) {
+//		return totalMap.get(targetOption);
+//	}
 
 	public List<FctTargetOption> getTargetOptions(){
 		return targetOptions;
@@ -68,6 +68,6 @@ public class FctTable extends ReportTable<FctTargetOption, LocationEntity> {
 	}	
 	
 	public boolean hasData(){
-		return (super.hasData() || !totalMap.isEmpty());
+		return (super.hasData());
 	}
 }
