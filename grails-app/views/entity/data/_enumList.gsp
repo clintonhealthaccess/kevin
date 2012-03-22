@@ -2,11 +2,11 @@
 	<thead>
 		<tr>
 			<th/>
-			<th>Name</th>
-			<th>Description</th>
-			<g:sortableColumn property="code"  params="[q:q]" title="${message(code: 'enum.code.label')}" />
-			<th>Number of Option</th>
-			<th>Manage</th>
+			<th><g:message code="entity.name.label"/></th>
+			<th><g:message code="entity.description.label"/></th>
+			<g:sortableColumn property="code"  params="[q:q]" title="${message(code: 'entity.code.label')}" />
+			<th><g:message code="default.number.label" args="[message(code:'enumoption.label')]"/></th>
+			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
 	<tbody>

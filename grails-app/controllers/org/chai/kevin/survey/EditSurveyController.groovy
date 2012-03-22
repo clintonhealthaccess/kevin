@@ -91,7 +91,6 @@ class EditSurveyController extends AbstractController {
 	def sectionPage = {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
 
-		// TODO make sure this is a facility
 		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		SurveySection currentSection =  SurveySection.get(params.int('section'));
 
@@ -105,7 +104,6 @@ class EditSurveyController extends AbstractController {
 	def programPage = {
 		if (log.isDebugEnabled()) log.debug("survey.program, params:"+params)
 
-		// TODO make sure this is a facility
 		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 		SurveyProgram currentProgram = SurveyProgram.get(params.int('program'));
 
@@ -119,7 +117,6 @@ class EditSurveyController extends AbstractController {
 	def surveyPage = {
 		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
 
-		// TODO make sure this is a facility
 		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
 
 		if (validateParameters(entity, null)) {
@@ -134,7 +131,6 @@ class EditSurveyController extends AbstractController {
 	def refresh = {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
 
-		// TODO make sure this is a facility
 		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
 		Survey survey = Survey.get(params.int('survey'))
 		

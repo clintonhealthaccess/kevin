@@ -2,7 +2,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-        <title><g:message code="maps.view.label" /></title>
+        <title><g:message code="maps.title" /></title>
         
         <!-- for admin forms -->
 		<shiro:hasPermission permission="admin:maps">
@@ -15,7 +15,7 @@
     <body>
     	<div id="maps">
 			<div class="subnav">
-				<g:iterationFilter linkParams="${[location: currentLocation?.id, program: currentProgram?.id]}" selected="${currentPeriod}"/>
+				<g:periodFilter linkParams="${[location: currentLocation?.id, program: currentProgram?.id]}" selected="${currentPeriod}"/>
 				<g:locationFilter linkParams="${[period: currentPeriod.id, program: currentProgram?.id]}" selected="${currentLocation}"/>
 								
 				<!-- TODO use a filter here -->

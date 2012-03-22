@@ -10,7 +10,7 @@ import org.chai.kevin.location.DataLocationEntity;
 
 public class PlanningSummaryPage {
 
-	public final static String FACILITY_SORT = "facility";
+	public final static String LOCATION_SORT = "location";
 	
 	private final List<PlanningType> planningTypes;
 	private final List<DataLocationEntity> dataEntities;
@@ -36,7 +36,7 @@ public class PlanningSummaryPage {
 	
 	public void sort(String parameter, String order, String language) {
 		if (parameter == null || order == null) return;
-		if (parameter.equals(FACILITY_SORT)) {
+		if (parameter.equals(LOCATION_SORT)) {
 			Collections.sort(dataEntities, LocationSorter.BY_NAME(language));
 		}
 		else {

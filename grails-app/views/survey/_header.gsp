@@ -18,7 +18,7 @@
 			</span>
 		</div>
 		<div class="filter">
-			<span class="bold"><g:message code="facility.label" />:</span>
+			<span class="bold"><g:message code="datalocation.label" />:</span>
 			<span><g:i18n field="${location.names}"/></span>
 		</div>
 		<div class="filter">

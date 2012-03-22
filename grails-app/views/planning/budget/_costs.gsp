@@ -33,7 +33,7 @@
 				</g:if>
 				<td>-</td>
 				<td></td>
-				<td class="status" title="Help message"></td>
+				<td class="status"></td>
 			</tr>
 			<tr class="sub-tree js_foldable-container hidden">
 				<td colspan="7" class="bucket">

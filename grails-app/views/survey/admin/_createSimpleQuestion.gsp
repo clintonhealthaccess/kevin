@@ -10,15 +10,15 @@
 	<div class="forms-container">
 		<div class="data-field-column">
 			<g:form url="[controller:'simpleQuestion', action:'save', params:[targetURI: targetURI]]" useToken="true">
-				<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="Question" field="names" height="100" width="400" maxHeight="150" />
-				<g:i18nRichTextarea name="descriptions" bean="${question}" value="${question.descriptions}" label="Help Text" field="descriptions" height="250" width="400" maxHeight="150" />
+				<g:i18nRichTextarea name="names" bean="${question}" value="${question.names}" label="${message(code:'survey.question.label')}" field="names" height="100" width="400" maxHeight="150" />
+				<g:i18nRichTextarea name="descriptions" bean="${question}" value="${question.descriptions}" label="${message(code:'survey.question.description.label')}" field="descriptions" height="250" width="400" maxHeight="150" />
 
 				<input type="hidden" name="surveyElement.dataElement.id" value="${question.surveyElement?.dataElement?.id}" id="data-element-id" />
 				<div class="row ${hasErrors(bean:question, field:'surveyElement', 'errors')}">
 					<label for="surveyElement.dataElement.name"><g:message code="dataelement.label"/>:</label>
 					<input type="text" name="surveyElement.dataElement.name" value="${i18n(field: question.surveyElement?.dataElement?.names)}" id="data-element-name" class="idle-field" disabled />
 					<g:if test="${question.surveyElement?.id != null}">
-						<span><a href="${createLink(controller:'surveyValidationRule', action:'list', params:['formElement.id': question.surveyElement?.id])}"> <g:message code="default.list.label" args="[message(code:'survey.validationrule.label')]" /></a> </span>
+						<span><a href="${createLink(controller:'surveyValidationRule', action:'list', params:['formElement.id': question.surveyElement?.id])}"> <g:message code="default.list.label" args="[message(code:'formelement.validationrule.label')]" /></a> </span>
 					</g:if>
 					<div class="error-list">
 						<g:renderErrors bean="${question}" field="surveyElement" />
@@ -37,12 +37,12 @@
 					</div>
 				</g:if>
 
-				<g:input name="order" label="Order" bean="${question}" field="order" />
+				<g:input name="order" label="${message(code:'entity.order.label')}" bean="${question}" field="order" />
 
 				<g:selectFromList name="section.id" label="${message(code:'survey.section.label')}" field="section" optionKey="id" multiple="false"
 					from="${sections}" value="${question.section?.id}" bean="${question}" values="${sections.collect {i18n(field:it.names)}}" />
 			
-				<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${question}" field="typeCodeString" 
+				<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${question}" field="typeCodeString" 
 					from="${types}" value="${question.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 				<g:if test="${question.id != null}">

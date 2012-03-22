@@ -5,7 +5,7 @@
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="survey.active.label"/></th>
 			<th><g:message code="entity.description.label"/></th>
-			<th><g:message code="period.label"/></th>
+			<th><g:message code="survey.period.label"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'survey.program.label')]"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
@@ -41,10 +41,10 @@
 									<a href="${createLink(controller:'program', action:'list', params:['survey.id':survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.program.label')]" /></a>
 								</li>
 								<li>
-									<a href="${createLink(controller:'surveySkipRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'skiprule.label')]" /></a>
+									<a href="${createLink(controller:'surveySkipRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.skiprule.label')]" /></a>
 								</li>
 								<li>
-									<a href="${createLink(controller:'surveyValidationRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.validationrule.label')]" /></a>
+									<a href="${createLink(controller:'surveyValidationRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'formelement.validationrule.label')]" /></a>
 								</li>
 								<li>
 							    	<a href="${createLink(controller:'survey', action:'copy', params:[survey: survey.id])}"><g:message code="survey.clone.label" /> </a>

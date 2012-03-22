@@ -25,7 +25,7 @@
 		<g:selectFromList name="program.id" label="Program" bean="${target}" field="program" optionKey="id" multiple="false"
 			from="${programs}" value="${target.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />
 	
-		<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${target}" field="typeCodeString" 
+		<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${target}" field="typeCodeString" 
 			from="${types}" value="${target.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<g:selectFromList name="costRampUp.id" label="Cost Ramp Up" bean="${target}" field="costRampUp" optionKey="id" multiple="false"

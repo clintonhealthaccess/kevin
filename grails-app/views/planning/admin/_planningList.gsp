@@ -3,9 +3,9 @@
 		<tr>
 			<th/>
 			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="survey.active.label"/></th>
+			<th><g:message code="planning.active.label"/></th>
 			<th><g:message code="period.label"/></th>
-			<th><g:message code="default.number.label" args="[message(code:'planning.planningType.label')]"/></th>
+			<th><g:message code="default.number.label" args="[message(code:'planning.planningtype.label')]"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
@@ -36,10 +36,10 @@
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'planningType', action:'list', params:['planning.id':planning.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningType.label')]" /></a>
+									<a href="${createLink(controller:'planningType', action:'list', params:['planning.id':planning.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningtype.label')]" /></a>
 								</li>
 								<li>
-									<a href="${createLink(controller:'planningSkipRule', action:'list', params:['planning.id': planning?.id])}"><g:message code="default.list.label" args="[message(code:'skiprule.label',default:'Skip Rules')]" /></a>
+									<a href="${createLink(controller:'planningSkipRule', action:'list', params:['planning.id': planning?.id])}"><g:message code="default.list.label" args="[message(code:'planning.skiprule.label')]" /></a>
 								</li>
 							</ul>
 						</div>

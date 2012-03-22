@@ -22,7 +22,7 @@
 						<th><g:message code="period.label"/></th>
 						<th><g:message code="survey.label"/></th>
 						<th><g:message code="survey.question.label"/></th>
-						<th><g:message code="rawdataelement.surveyelement.facility.applicable.label"/></th>
+						<th><g:message code="rawdataelement.surveyelement.location.applicable.label"/></th>
 					</tr>
 				</thead>
 				<tbod>

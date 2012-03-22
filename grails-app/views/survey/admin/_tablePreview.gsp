@@ -49,7 +49,7 @@
 								]" />
 								
 								<a href="${createLink(controller:'surveyValidationRule', action:'list', params:['formElement.id': surveyElement?.id])}">
-									<g:message code="survey.viewvalidationrule.label"/>
+									<g:message code="default.list.label" args="[message(code:'formelement.validationrule.label')]" />
 								</a>
 							</td>
 						</g:if>

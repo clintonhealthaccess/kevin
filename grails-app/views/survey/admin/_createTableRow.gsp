@@ -15,7 +15,7 @@
 
 				<input type="hidden" name="question.id" value="${row.question?.id}" />
 				
-				<g:i18nRichTextarea name="names" bean="${row}" value="${row.names}" label="Option" field="names" height="150" width="300" maxHeight="150" />
+				<g:i18nRichTextarea name="names" bean="${row}" value="${row.names}" label="${message(code:'survey.tablequestion.tablerow.name.label')}" field="names" height="150" width="300" maxHeight="150" />
 
 				<div class="row ${hasErrors(bean:row, field:'surveyElements', 'errors')}">
 					<input type="hidden" name="surveyElement" value="_" />
@@ -36,9 +36,9 @@
 				</div>
 
 				<div class="clear"></div>
-				<g:input name="order" label="Order" bean="${row}" field="order" />
+				<g:input name="order" label="${message(code:'entity.order.label')}" bean="${row}" field="order" />
 
-				<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${row}" field="typeCodeString" 
+				<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${row}" field="typeCodeString" 
 					from="${types}" value="${row.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 

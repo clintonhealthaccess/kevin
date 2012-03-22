@@ -9,8 +9,8 @@
 
 	<g:form url="[controller:'dashboardTarget', action:'save', params:[targetURI:targetURI]]" useToken="true">
 		<g:i18nInput name="names" label="${message(code:'entity.name.label')}" bean="${entity}" value="${entity.names}" field="names"/>
-		<g:i18nTextarea name="descriptions" label="entity.description.label" bean="${entity}" value="${entity.descriptions}" field="descriptions"/>
-		<g:input name="code" label="entity.code.label" bean="${entity}" field="code"/>
+		<g:i18nTextarea name="descriptions" label="${message(code:'entity.description.label')}" bean="${entity}" value="${entity.descriptions}" field="descriptions"/>
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${entity}" field="code"/>
 		
 		<g:selectFromList name="program.id" label="${message(code:'dashboard.target.program.label')}" bean="${entity}" field="program" optionKey="id" multiple="false"
 			from="${programs}" value="${entity.program?.id}" values="${programs.collect{i18n(field:it.names)}}" />

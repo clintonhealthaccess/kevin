@@ -10,7 +10,7 @@
 			<g:form url="[controller:'checkboxOption', action:'save', params:[targetURI: targetURI]]" useToken="true">
 				<input type="hidden" name="question.id"  value="${option.question?.id}" />
 				
-				<g:i18nRichTextarea name="names" bean="${option}" value="${option.names}" label="Option" field="names" height="150"  width="300" maxHeight="150" />
+				<g:i18nRichTextarea name="names" bean="${option}" value="${option.names}" label="${message(code:'survey.checkboxquestion.checkboxoption.label')}" field="names" height="150"  width="300" maxHeight="150" />
 				
 				<input type="hidden" name="surveyElement.dataElement.id"  value="${option.surveyElement?.dataElement?.id}" id="data-element-id" />
 				<div class="row ${hasErrors(bean:option, field:'surveyElement', 'errors')}">
@@ -19,8 +19,8 @@
 				    <div class="error-list"><g:renderErrors bean="${option}" field="surveyElement" /></div>
 				</div>
 	
-				<g:input name="order" label="Order" bean="${option}" field="order"/>
-				<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${option}" field="typeCodeString" 
+				<g:input name="order" label="${message(code:'entity.order.label')}" bean="${option}" field="order"/>
+				<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${option}" field="typeCodeString" 
 					from="${types}" value="${option.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 	
 				<g:if test="${option.id != null}">

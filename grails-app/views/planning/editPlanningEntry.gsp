@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="planning.new.label" /></title>
+		<title><g:message code="planning.new.title" /></title>
 		
 		<r:require module="planning"/>
 	</head>
@@ -12,11 +12,12 @@
 				<div class="main">  
 	
 				<ul class="horizontal" id="tab-nav">
-					<li><a class="${selected=='undertakings'?'selected':''}" href="${createLink(controller:'editPlanning', action:'overview', params:[planning: planningType.planning.id, location: location.id])}">Undertakings</a></li>
-					<li><a class="selected" href="#">New <g:i18n field="${planningType.names}"/></a></li>
-					<li><a class="${selected=='budget'?'selected':''}" href="${createLink(controller:'editPlanning', action:'budget', params:[planning: planningType.planning.id, location: location.id])}">Projected Budget</a></li>
+					<li><a class="${selected=='undertakings'?'selected':''}" href="${createLink(controller:'editPlanning', action:'overview', params:[planning: planningType.planning.id, location: location.id])}"><g:message code="planning.tabs.undertakings"/></a></li>
+					<li><a class="selected" href="#"><g:message code="planning.tabs.new" args="[i18n(field:planningType.names)]"/></a></li>
+					<li><a class="${selected=='budget'?'selected':''}" href="${createLink(controller:'editPlanning', action:'budget', params:[planning: planningType.planning.id, location: location.id])}"><g:message code="planning.tabs.budget"/></a></li>
+					<li class="settings"><a href="#"><g:message code="planning.tabs.settings"/></a></li>
 				</ul>
-		    	<g:render template="/templates/help" model="[content: 'Some help information for the planning']"/>
+		    	<g:render template="/templates/help" model="[content: message(code:'planning.new.help')]"/>
 					
 				<div id="questions">
 					<g:form url="[controller:'editPlanning', action:'submit', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
@@ -57,10 +58,10 @@
 							<li>
     		  					<button type="submit" class="loading-disabled">
     		  						<g:if test="${!planningEntry.submitted}">
-    		  							Accept in budget
+    		  							<g:message code="planning.new.acceptinbudget"/>
     		  						</g:if>
     		  						<g:else>
-    		  							Update budget
+    		  							<g:message code="planning.new.updatebudget"/>
     		  						</g:else>
     		  					</button>
   		  					</li>
@@ -71,16 +72,16 @@
   							  </li>
   							  <li>
     		  					<a class="go-back" href="${createLink(uri: targetURI)}">
-    		  						Return to listing
+    		  						<g:message code="planning.new.backtolisting"/>
     		  					</a>
     		  				</li>
 		  				</div>
 		  				<br />
 		  				<g:if test="${planningEntry.submitted}">
 							<p class="context-message warning">
-								Message that inform the client about removing activities from the budget.
+								<g:message code="planning.new.removefrombudget.help"/>
 								<a class="next gray medium right pull-7" href="${createLink(controller:'editPlanning', action:'unsubmit', params: [location: location.id, planningType: planningType.id, lineNumber: planningEntry.lineNumber, targetURI: targetURI])}">
-									Remove from budget
+									<g:message code="planning.new.removefrombudget"/>
 								</a>
 							</p>
 						</g:if>

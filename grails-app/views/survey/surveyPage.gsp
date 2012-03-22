@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="survey.surveyPage.label" /></title>
+		<title><g:message code="survey.survey.title" /></title>
 		
 		<r:require module="survey"/>
 	</head>

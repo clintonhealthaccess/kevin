@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="fctTable.view.label" /></title>
+		<title><g:message code="fct.title" /></title>
 		
 		<!-- for admin forms -->
 		<shiro:hasPermission permission="admin:fct">
@@ -31,7 +31,7 @@
 	              	<li class="question push-10">
 	                	<g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>
 	                	<g:if test="${fctTable != null && fctTable.hasData()}">	                	              								
-							<p><g:message code="fct.report.facilitytype"/>: 
+							<p><g:message code="fct.report.locationtype"/>: 
 								<g:each in="${currentLocationTypes}" var="locationType" status="i">						
 									<g:i18n field="${locationType.names}" />
 									<g:if test="${i != currentLocationTypes.size()-1}">, </g:if>

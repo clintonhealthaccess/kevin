@@ -11,7 +11,7 @@
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${target}" field="code"/>
 		<g:input name="format" label="${message(code:'dsr.target.format.label')}" bean="${target}" field="format"/>
 		
-   		<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${target}" field="typeCodeString" 
+   		<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${target}" field="typeCodeString" 
 				from="${types}" value="${target.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 	
 		<g:selectFromList name="program.id" label="${message(code:'dsr.target.program.label')}" bean="${target}" field="program" optionKey="id" multiple="false"

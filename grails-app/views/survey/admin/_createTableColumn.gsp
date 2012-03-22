@@ -14,11 +14,11 @@
 		</div>
 		<input type="hidden" name="question.id"  value="${column.question?.id}" />
 		
-		<g:i18nRichTextarea name="names" bean="${column}" value="${column.names}" label="Option" field="names" height="150"  width="300" maxHeight="150" />
+		<g:i18nRichTextarea name="names" bean="${column}" value="${column.names}" label="${message(code:'survey.tablequestion.tablecolumn.name.label')}" field="names" height="150"  width="300" maxHeight="150" />
 		
-		<g:input name="order" label="Order" bean="${column}" field="order"/>
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${column}" field="order"/>
 		
-		<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${column}" field="typeCodeString" 
+		<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${column}" field="typeCodeString" 
 			from="${types}" value="${column.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<g:if test="${column.id != null}">

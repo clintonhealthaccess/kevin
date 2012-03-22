@@ -45,7 +45,7 @@ class SurveySkipRuleController  extends AbstractEntityController {
 	def languageService
 
 	def getLabel() {
-		return 'skiprule.label'
+		return 'survey.skiprule.label'
 	}
 	
 	def getEntity(def id) {

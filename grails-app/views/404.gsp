@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Ooops</title>
+		<title><g:message code="pages.404.title"/></title>
 		<meta name="layout" content="main">
 		
 	</head>
 	<body>
 		<div class="subnav"/>
 		<div class="main">
-			Oooops, the page you are looking for could not be found.
+			<g:message code="pages.404.content"/>
 		</div>
 	</body>
 </html>

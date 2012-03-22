@@ -11,7 +11,7 @@
 				<g:i18nInput name="names" bean="${calculation}" value="${calculation.names}" label="${message(code:'entity.name.label')}" field="names" />
 				<g:i18nTextarea name="descriptions" bean="${calculation}" value="${calculation.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" height="150" width="300" maxHeight="150" />
 				
-				<g:input name="code" label="Code" bean="${calculation}" field="${message(code:'entity.code.label')}" />
+				<g:input name="code" label="${message(code:'entity.code.label')}" bean="${calculation}" field="code" />
 				<g:textarea name="expression" label="${message(code:'calculation.expression.label')}" bean="${calculation}" field="expression" value="${calculation.expression}" rows="5"/>
 				
 				<g:if test="${calculation.id != null}">

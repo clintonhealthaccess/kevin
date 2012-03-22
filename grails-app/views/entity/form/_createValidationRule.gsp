@@ -29,7 +29,7 @@
 				
 				<g:textarea name="expression" label="Expression" bean="${validation}" field="expression" value="${validation.expression}" rows="5"/>
 				
-				<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${validation}" field="typeCodeString" 
+				<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${validation}" field="typeCodeString" 
 					from="${types}" value="${validation.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 			
 				<g:if test="${validation.id != null}">

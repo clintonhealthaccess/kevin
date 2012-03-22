@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="new.password.view.label"/></title>
+		<title><g:message code="new.password.title"/></title>
 	</head>
 	<body>
 		<h3 class="subnav center"><g:message code="new.password.header.label"/></h3>

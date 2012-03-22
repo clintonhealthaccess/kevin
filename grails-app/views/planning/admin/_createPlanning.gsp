@@ -6,9 +6,9 @@
 		<g:locales/>
 	</div>
 	<g:form url="[controller:'planning', action:'save', params:[targetURI: targetURI]]" useToken="true">
-		<g:i18nInput name="names" bean="${planning}" value="${planning?.names}" label="Name" field="names"/>
+		<g:i18nInput name="names" bean="${planning}" value="${planning?.names}" label="${message(code:'entity.name.label')}" field="names"/>
 		
-		<g:selectFromList name="period.id" label="${message(code:'period.label')}" bean="${planning}" field="period"
+		<g:selectFromList name="period.id" label="${message(code:'planning.period.label')}" bean="${planning}" field="period"
 			from="${periods}" value="${planning.period?.id}" values="${periods.collect{it.startDate.toString()+' - '+it.endDate.toString()}}" optionKey="id" multiple="false"/>
 	
 		<div class="row">

@@ -73,7 +73,7 @@ class SurveyValidationRuleController extends AbstractController {
 				template: "form/validationRuleList",
 				entities: validationRules.subList(params['offset'], max),
 				entityCount: validationRules.size(),
-				code: 'form.validationrule.label'
+				code: 'formelement.validationrule.label'
 			])
 		}
 	}

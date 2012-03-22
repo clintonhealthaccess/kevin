@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="import.result.label" /></title>
+		<title><g:message code="import.result.title" /></title>
 		<!-- for admin forms -->
         <r:require modules="form,chosen"/>
 	</head>

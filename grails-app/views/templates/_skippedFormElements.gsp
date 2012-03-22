@@ -1,5 +1,5 @@
 <div class="row ${hasErrors(bean:skip, field:'skippedFormElements', 'errors')}">
-	<label><g:message code="skiprule.skippedformelement.label" default="Skipped Elements"/>: </label>
+	<label><g:message code="skiprule.skippedformelement.label"/>: </label>
 			
 	<!-- START SKIPPED ELEMENTS -->
 	<g:each in="${skip.skippedFormElements}" var="entry">
@@ -7,28 +7,28 @@
 			<g:set var="formElement" value="${entry.key}"/>
 			<g:set var="prefixes" value="${entry.value}"/>
 			
-			<label for="skipped.element"><g:message code="formelement.label" default="Form Element"/>:</label> 
+			<label for="skipped.element"><g:message code="skiprule.skippedformelement.label"/>:</label> 
 			<select name="skipped.element" class="ajax-search-field skipped-form-elements-list">
 				<option value="${formElement.id}" selected>
 					${formElement.getLabel(languageService)}[${formElement.id}]
 				</option>
 			</select>
-			<label for="skipped.prefix"><g:message code="skiprule.skippedformelement.prefixes.label" default="Prefixes (comma-separated)"/>:</label>
+			<label for="skipped.prefix"><g:message code="skiprule.skippedformelement.prefixes.label"/>:</label>
 			<input type="text" value="${prefixes}" name="skipped.prefix"/> 
-			<a href="#" onclick="$(this).parent().remove();return false;"><g:message code="default.link.delete.label" default="Delete"/></a>
+			<a href="#" onclick="$(this).parent().remove();return false;"><g:message code="default.link.delete.label"/></a>
 		</div>
 	</g:each>
 	<div class="white-box hidden">
-		<label for=""><g:message code="formelement.label" default="Form Element"/>:</label> 
+		<label for=""><g:message code="skiprule.skippedformelement.label"/>:</label> 
 		<select name="skipped.element" class="ajax-search-field skipped-form-elements-list">
 			<option value="" selected></option>
 		</select>
-		<label for="skipped.prefix"><g:message code="skiprule.skippedformelement.prefixes.label" default="Prefixes (comma-separated)"/>:</label>
+		<label for="skipped.prefix"><g:message code="skiprule.skippedformelement.prefixes.label"/>:</label>
 		<input type="text" value="${prefixes}" name="skipped.prefix"/> 
-		<a href="#" onclick="$(this).parent().remove();return false;"><g:message code="default.link.delete.label" default="Delete"/></a>
+		<a href="#" onclick="$(this).parent().remove();return false;"><g:message code="default.link.delete.label"/></a>
 	</div>
 	<a href="#" onclick="$(this).before($(this).prev().clone()); $(this).prev().prev().show(); return false;">
-		<g:message code="skiprule.skippedformelement.add.label" default="Add"/>
+		<g:message code="skiprule.skippedformelement.add.label"/>
 	</a>
 	<!-- END SKIPPED ELEMENTS -->
 	

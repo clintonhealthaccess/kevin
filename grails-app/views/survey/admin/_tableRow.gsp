@@ -7,11 +7,11 @@
 	</a>
 </div>
 <div>
-	<span class="bold"><g:message code="facility.type.label"/>:</span>
+	<span class="bold"><g:message code="entity.locationtype.label"/>:</span>
 	<span> ${row.typeCodeString}</span>
 </div>
 <div>
-	<span class="bold"><g:message code="survey.tablequestion.tablerow.order.label"/>:</span>
+	<span class="bold"><g:message code="entity.order.label"/>:</span>
 	<span>${row.order}</span>
 </div>
 <input type="hidden" name="rowNames" value="${index}"/>

@@ -4,7 +4,7 @@
 			<th/>
 			<th><g:message code="survey.label"/></th>
 			<th><g:message code="entity.description.label"/></th>
-			<th><g:message code="expression.label"/></th>
+			<th><g:message code="skiprule.expression.label"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'formelement.label')]"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'survey.question.label')]"/></th>
 		</tr>

@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="login.view.label"/></title>
+		<title><g:message code="login.title"/></title>
 	</head>
 	<body>
 		<h3 class="subnav center"><g:message code="login.header.label"/></h3>

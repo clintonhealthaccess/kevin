@@ -3,8 +3,8 @@
 		<tr>
 			<th/>
 			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="rawdataelement.label"/></th>
-			<th><g:message code="default.number.label" args="[message(code:'planning.planningCost.label')]"/></th>
+			<th><g:message code="planning.planningtype.rawdataelement.label"/></th>
+			<th><g:message code="default.number.label" args="[message(code:'planning.planningcost.label')]"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>
 	</thead>
@@ -34,10 +34,10 @@
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
 								<li>
-									<a href="${createLink(controller:'formValidationRule', action:'list', params:['formElement.id': planningType.formElement?.id])}"><g:message code="default.list.label" args="[message(code:'survey.validationrule.label')]" /></a>
+									<a href="${createLink(controller:'formValidationRule', action:'list', params:['formElement.id': planningType.formElement?.id])}"><g:message code="default.list.label" args="[message(code:'formelement.validationrule.label')]" /></a>
 								</li>
 								<li>
-									<a href="${createLink(controller:'planningCost', action:'list', params:['planningType.id':planningType.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningCost.label')]" /></a>
+									<a href="${createLink(controller:'planningCost', action:'list', params:['planningType.id':planningType.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningcost.label')]" /></a>
 								</li>
 							</ul>
 						</div>

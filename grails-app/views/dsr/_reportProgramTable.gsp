@@ -1,7 +1,7 @@
 <table class="nested push-top-10">
 	<thead>
 		<tr>
-			<th>Facility</th>
+			<th><g:message code="dsr.report.table.location"/></th>
 			<g:if test="${dsrTable.targets != null && !dsrTable.targets.empty}">
 				<g:each in="${dsrTable.targets}" var="target">
 					<th><g:i18n field="${target.names}" /></th>

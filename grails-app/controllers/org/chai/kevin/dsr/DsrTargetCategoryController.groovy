@@ -45,7 +45,7 @@ class DsrTargetCategoryController extends AbstractEntityController {
 	}
 	
 	def getLabel() {
-		return "dsr.targetcategory.label"
+		return "dsr.category.label"
 	}
 	
 	def getTemplate() {

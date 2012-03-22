@@ -94,7 +94,7 @@
 	  						<li><a class="${controllerName=='normalizedDataElement'?'active':''}" href="${createLink(controller: 'normalizedDataElement', action:'list')}"><g:message code="normalizeddataelement.label"/></a></li>
 	  						<li><a class="${controllerName=='calculation'?'active':''}" href="${createLink(controller: 'calculation', action:'list')}"><g:message code="calculation.label"/></a></li>
 	  						<li><a class="${controllerName=='enum'?'active':''}" href="${createLink(controller: 'enum', action:'list')}"><g:message code="enum.label"/></a></li>
-	  						<li><a class="${controllerName=='iteration'?'active':''}" href="${createLink(controller: 'iteration', action:'list')}"><g:message code="period.label"/></a></li>
+	  						<li><a class="${controllerName=='period'?'active':''}" href="${createLink(controller: 'period', action:'list')}"><g:message code="period.label"/></a></li>
 	  						<li><a class="${controllerName=='dashboardProgram'?'active':''}" href="${createLink(controller: 'dashboardProgram', action:'list')}"><g:message code="dashboard.program.label"/></a></li>
 	  						<li><a class="${controllerName=='dashboardTarget'?'active':''}" href="${createLink(controller: 'dashboardTarget', action:'list')}"><g:message code="dashboard.target.label"/></a></li>
 	  						<li><a class="${controllerName=='dsrTarget'?'active':''}" href="${createLink(controller: 'dsrTarget', action:'list')}"><g:message code="dsr.target.label"/></a></li>

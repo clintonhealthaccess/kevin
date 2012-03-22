@@ -50,11 +50,11 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains("Rwanda")
 	}
 	
-	def testIterationFilter() {
+	def testPeriodFilter() {
 		def period = IntegrationTests.newPeriod()
 		
 		def html = applyTemplate(
-			'<g:iterationFilter selected="${period}"/>',
+			'<g:periodFilter selected="${period}"/>',
 			[
 				'period': period
 			]

@@ -10,7 +10,7 @@
 				</li>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'surveyUser', action:'create')}">
-						<g:message code="default.new.label" args="[message(code:'survey.user.label')]"/>
+						<g:message code="default.new.label" args="[message(code:'surveyuser.label')]"/>
 					</a>
 				</li>
 			</ul>

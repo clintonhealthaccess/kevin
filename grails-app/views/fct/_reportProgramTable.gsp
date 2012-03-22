@@ -1,7 +1,7 @@
 <table class='nested push-top-10'>
 	<thead>
 		<tr>
-			<th>Facility</th>
+			<th><g:message code="fct.report.table.location"/></th>
 			<g:if test="${fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
 				<g:each in="${fctTable.targetOptions}" var="targetOption">
 					<th><g:i18n field="${targetOption.names}" /></th>

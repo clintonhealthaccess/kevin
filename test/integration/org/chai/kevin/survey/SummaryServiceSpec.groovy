@@ -51,23 +51,23 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
-		summaryPage.sort(SurveySummaryPage.FACILITY_SORT, 'desc', 'en')
+		summaryPage.sort(SurveySummaryPage.LOCATION_SORT, 'desc', 'en')
 		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		questionSummary.questions == 2
 		questionSummary.completedQuestions == 0
-		summaryPage.facilities.equals([DataLocationEntity.findByCode(KIVUYE), DataLocationEntity.findByCode(BUTARO)])
+		summaryPage.locations.equals([DataLocationEntity.findByCode(KIVUYE), DataLocationEntity.findByCode(BUTARO)])
 		
 		when:
 		summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
-		summaryPage.sort(SurveySummaryPage.FACILITY_SORT, 'asc', 'en')
+		summaryPage.sort(SurveySummaryPage.LOCATION_SORT, 'asc', 'en')
 		questionSummary = summaryPage.getQuestionSummary(DataLocationEntity.findByCode(KIVUYE))
 		
 		then:
 		questionSummary.questions == 2
 		questionSummary.completedQuestions == 0
-		summaryPage.facilities.equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
+		summaryPage.locations.equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
 		
 		when:
 		newSurveyEnteredQuestion(question1, period, DataLocationEntity.findByCode(KIVUYE), false, true)
@@ -78,7 +78,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		then:
 		questionSummary.questions == 2
 		questionSummary.completedQuestions == 1
-		summaryPage.facilities.equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
+		summaryPage.locations.equals([DataLocationEntity.findByCode(BUTARO), DataLocationEntity.findByCode(KIVUYE)])
 	}
 	
 	def "test counted questions does not apply to group"() {
@@ -112,7 +112,7 @@ class SummaryServiceSpec extends SurveyIntegrationTests {
 		def summaryPage = summaryService.getSurveySummaryPage(LocationEntity.findByCode(RWANDA), survey)
 		
 		then:
-		s(summaryPage.facilities*.code).equals(s([BUTARO, KIVUYE, "DP"]))
+		s(summaryPage.locations*.code).equals(s([BUTARO, KIVUYE, "DP"]))
 		
 	}
 	

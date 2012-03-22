@@ -7,15 +7,15 @@
 	</div>
 
 	<g:form url="[controller:'program', action:'save', params:[targetURI:targetURI]]" useToken="true">
-		<g:i18nInput name="names" bean="${program}" value="${program?.names}" label="Name" field="names" />
-		<g:input name="order" label="Order" bean="${program}" field="order"/>
+		<g:i18nInput name="names" bean="${program}" value="${program?.names}" label="${message(code:'entity.name.label')}" field="names" />
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${program}" field="order"/>
 		
 		<div class="row">
 			<input type="hidden" name="survey.id" value="${program.survey.id}" />
 			<label><g:message code="survey.label"/>:</label> <g:i18n field="${program.survey.names}"/>
 		</div>
 		
-		<g:selectFromList name="typeCodes" label="${message(code:'facility.type.label')}" bean="${program}" field="typeCodeString" 
+		<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${program}" field="typeCodeString" 
 			from="${types}" value="${program.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<g:if test="${program.id != null}">

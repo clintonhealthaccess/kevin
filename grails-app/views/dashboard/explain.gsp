@@ -12,7 +12,7 @@
 				<g:render template="${info.template}" model="[info: info, types: types]"/>
 			</g:if>
 			<g:else>
-				<div class="red bold">No expression available for this facility type.</div>
+				<div class="red bold"><g:message code="dashboard.explanation.noexpression"/></div>
 			</g:else>
 		</div>
     </body>

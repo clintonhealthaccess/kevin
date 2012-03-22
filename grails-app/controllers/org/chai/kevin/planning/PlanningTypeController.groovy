@@ -48,7 +48,7 @@ class PlanningTypeController extends AbstractEntityController {
 	}
 
 	def getLabel() {
-		return 'planningType.label'
+		return 'planning.planningtype.label'
 	}
 	
 	def getTemplate() {

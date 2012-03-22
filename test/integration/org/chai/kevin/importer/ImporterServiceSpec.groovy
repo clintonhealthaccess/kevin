@@ -194,9 +194,7 @@ class ImporterServiceSpec extends IntegrationTests {
 		//check if the first row was skipped and the second was taken as the first and an error was save
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_LIST([Value.VALUE_MAP(["string":Value.VALUE_STRING("best String")])]))
 		//please change this error msg code if it is changed in ImporterService
-		importerErrorManagerCode.errors[0].messageCode.equals("error.message.unknown.location");
+		importerErrorManagerCode.errors[0].messageCode.equals("import.error.message.unknown.location");
 	}
-	
-
 		
 }

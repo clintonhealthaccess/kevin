@@ -6,8 +6,8 @@
 		<g:locales/>
 	</div>
 	<g:form url="[controller:'survey', action:'save', params:[targetURI: targetURI]]" useToken="true">
-		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="Name" field="names"/>
-		<g:i18nRichTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="Descriptions" field="descriptions" height="100"  width="300" maxHeight="100" />
+		<g:i18nInput name="names" bean="${survey}" value="${survey?.names}" label="${message(code:'entity.name.label')}" field="names"/>
+		<g:i18nRichTextarea name="descriptions" bean="${survey}" value="${survey?.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" height="100"  width="300" maxHeight="100" />
 		
 		<g:selectFromList name="period.id" label="${message(code:'period.label')}" bean="${survey}" field="period"
 			from="${periods}" value="${survey.period?.id}" values="${periods.collect{it.startDate.toString()+' - '+it.endDate.toString()}}" optionKey="id" multiple="false"/>
