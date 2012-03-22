@@ -160,7 +160,6 @@ beans = {
 	
 	dsrService(DsrService){		
 		reportService = ref("reportService")
-		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		languageService = ref("languageService")

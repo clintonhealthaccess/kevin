@@ -79,6 +79,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		setupProgramTree()
+		setupDashboardTree()
 		refresh()
 
 		when:
@@ -105,6 +106,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		setupProgramTree()
+		setupDashboardTree()
 		refresh()
 
 		when:
@@ -145,6 +147,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		setupProgramTree()
+		setupDashboardTree()
 		refresh()
 
 		when:
@@ -167,6 +170,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		setupProgramTree()
+		setupDashboardTree()
 		refresh()
 
 		when:
@@ -188,6 +192,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupProgramTree()
+		setupDashboardTree()
 		refresh()
 		
 		when:

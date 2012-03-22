@@ -36,34 +36,7 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 
 	def dsrTargetController
 	def dataService
-	def dsrService
-	
-//	def "delete target refreshes cache"() {
-//		setup:
-//		dsrTargetController = new DsrTargetController()
-//		setupLocationTree()
-//		def period = newPeriod()
-//		def program = newDsrProgram(CODE(1))
-//		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "1")
-//		def target = newDsrTarget(CODE(2), expression, [], program)
-//		def location = LocationEntity.findByCode(BURERA)
-//		refresh()
-//		
-//		when:
-//		def dsrTable = reportService.getDsrTable(location, program, period)
-//		
-//		then:
-//		dsrTable.getDsrValue(DataLocationEntity.findByCode(BUTARO), target) != null
-//		
-//		// TODO can't work because controller class is not instrumented 
-////		when:
-////		dsrTargetController.params.id = target.id
-////		dsrTargetController.delete()
-////		dsrTable = dsrService.getDsr(location, program, period)
-////		
-////		then:
-////		dsrTable.getDsr(DataLocationEntity.findByCode(BUTARO), target) == null
-//	}
+	def dsrService	
 	
 	def "save target saves target"() {
 		setup:

@@ -16,6 +16,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		setupProgramTree()
+		setupDashboardTree()
 		dashboardController = new DashboardController()
 		refresh()
 		
@@ -40,6 +41,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		def period = newPeriod()
 		setupLocationTree()
 		setupProgramTree()
+		setupDashboardTree()
 		dashboardController = new DashboardController()
 		refresh()
 		
@@ -78,6 +80,34 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:
 		model.dashboardEntity == null
 		model.currentPeriod.equals(period)
+		model.currentProgram.equals(program)
+		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))		
+		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.programDashboard == null
+		model.locationDashboard == null
+	}
+	
+	def "get dashboard with invalid program parameter"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		def program = newReportProgram(PROGRAM1)
+		def calculation = newAverage("1", CODE(2))
+		def target = newDashboardTarget(TARGET1, calculation, program, 1)
+		dashboardController = new DashboardController()
+		refresh()
+		
+		when:
+		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
+		dashboardController.params.program = program.id+1
+		dashboardController.params.period = period.id
+		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		def model = dashboardController.view()
+		
+		then:
+		model.dashboardEntity == null
+		model.currentPeriod.equals(period)
+		model.currentProgram.equals(program)
 		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard == null
@@ -86,9 +116,10 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		
 	def "get program compare dashboard"() {
 		setup:
+		def period = newPeriod()
 		setupLocationTree()
 		setupProgramTree()
-		def period = Period.list()[0]
+		setupDashboardTree()
 		dashboardController = new DashboardController()
 		def percentageCompareValue1 = newDashboardPercentage("30")
 		def percentageCompareValue2 = newDashboardPercentage("10")
@@ -117,9 +148,10 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 	
 	def "get location compare dashboard"() {
 		setup:
+		def period = newPeriod()
 		setupLocationTree()
 		setupProgramTree()
-		def period = Period.list()[0]
+		setupDashboardTree()
 		dashboardController = new DashboardController()
 		def percentageCompareValue = newDashboardPercentage("20")
 		refresh()
