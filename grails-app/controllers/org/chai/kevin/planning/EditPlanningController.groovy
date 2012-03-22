@@ -118,8 +118,8 @@ class EditPlanningController extends AbstractController {
 			status = 'success'
 			id = planningType.id
 			lineNumber = lineNumberParam
-			complete = planningEntry.incompleteSections.empty
-			valid = planningEntry.invalidSections.empty
+			complete = validatable.complete
+			valid = !validatable.invalid
 			budgetUpdated = planningEntry.budgetUpdated
 			sections = array {
 				planningType.sections.each { section ->
@@ -133,7 +133,7 @@ class EditPlanningController extends AbstractController {
 			}
 			elements = array {
 				elem (
-					id: planningType.id,
+					id: planningType.formElement.id,
 					skipped: array {
 						validatable.skippedPrefixes.each { prefix -> element prefix }
 					},
@@ -195,15 +195,15 @@ class EditPlanningController extends AbstractController {
 	def budget = {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocationEntity.get(params.int('location'))
-		def planningTypeBudgets = planning.planningTypes.collect {
-			planningService.getPlanningTypeBudget(it, location)
+		def planningLists = planning.planningTypes.collect {
+			planningService.getPlanningList(it, location)
 		}
 
 		render (view: '/planning/budget/budget', model: [
 			planning: planning,
 			location: location,
 //			updatedBudget: isBudgetUpdated(planning, location),
-			planningTypeBudgets: planningTypeBudgets
+			planningLists: planningLists
 		])
 	}
 	

@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.form.EnteredEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.SurveyQuestion;
 import org.chai.kevin.survey.SurveySkipRule;
@@ -24,7 +25,7 @@ import org.hibernate.annotations.NaturalId;
 @Table(name="dhsst_survey_entered_question", uniqueConstraints=@UniqueConstraint(
 		columnNames={"question", "entity"})
 )
-public class SurveyEnteredQuestion extends SurveyEnteredEntity {
+public class SurveyEnteredQuestion extends EnteredEntity {
 	
 	private Long id;
 	private SurveyQuestion question;

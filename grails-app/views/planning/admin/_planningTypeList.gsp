@@ -26,13 +26,16 @@
 					</ul>
 				</td>
 				<td><g:i18n field="${planningType.names}"/></td>
-				<td><g:i18n field="${planningType.dataElement.names}"/></td>
+				<td><g:i18n field="${planningType.formElement.dataElement.names}"/></td>
 				<td>${planningType.costs.size()}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 
 						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label" default="Manage"/></a>
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
+								<li>
+									<a href="${createLink(controller:'formValidationRule', action:'list', params:['formElement.id': planningType.formElement?.id])}"><g:message code="default.list.label" args="[message(code:'survey.validationrule.label',default:'Validation Rules')]" /></a>
+								</li>
 								<li>
 									<a href="${createLink(controller:'planningCost', action:'list', params:['planningType.id':planningType.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningCost.label',default:'Planning Cost')]" /></a>
 								</li>

@@ -53,6 +53,7 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
+import org.chai.kevin.form.FormElement;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.util.Utils;
 

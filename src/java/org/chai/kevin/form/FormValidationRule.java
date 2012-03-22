@@ -1,4 +1,4 @@
-package org.chai.kevin.survey;
+package org.chai.kevin.form;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,23 +21,29 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
+import org.chai.kevin.form.FormElement.ElementCalculator;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.util.Utils;
 
-@Entity(name="SurveyValidationRule")
-@Table(name="dhsst_survey_validation_rule")
-public class SurveyValidationRule {
+@Entity(name="FormValidationRule")
+@Table(name="dhsst_form_validation_rule")
+public class FormValidationRule {
 
+	private final static Log log = LogFactory.getLog(FormValidationRule.class);
+	
 	private Long id;
 	
-	private SurveyElement surveyElement;
+	private FormElement formElement;
 	private String prefix = "";
 	
 	private String expression;
 	private Boolean allowOutlier;
 
 	private Translation messages = new Translation();
-	private List<SurveyElement> dependencies = new ArrayList<SurveyElement>();
+	private List<FormElement> dependencies = new ArrayList<FormElement>();
 	private String typeCodeString;
 	
 	@Id
@@ -45,17 +51,19 @@ public class SurveyValidationRule {
 	public Long getId() {
 		return id;
 	}
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=SurveyElement.class, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=FormElement.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
-	public SurveyElement getSurveyElement() {
-		return surveyElement;
+	public FormElement getFormElement() {
+		return formElement;
 	}
-	public void setSurveyElement(SurveyElement surveyElement) {
-		this.surveyElement = surveyElement;
+	
+	public void setFormElement(FormElement formElement) {
+		this.formElement = formElement;
 	}
 	
 	@Lob
@@ -63,6 +71,7 @@ public class SurveyValidationRule {
 	public String getExpression() {
 		return expression;
 	}
+	
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
@@ -79,13 +88,13 @@ public class SurveyValidationRule {
 		this.messages = messages;
 	}
 	
-	@ManyToMany(targetEntity=SurveyElement.class)
-	@JoinTable(name="dhsst_survey_validation_dependencies")
-	public List<SurveyElement> getDependencies() {
+	@ManyToMany(targetEntity=FormElement.class)
+	@JoinTable(name="dhsst_form_validation_dependencies")
+	public List<FormElement> getDependencies() {
 		return dependencies;
 	}
 	
-	public void setDependencies(List<SurveyElement> dependencies) {
+	public void setDependencies(List<FormElement> dependencies) {
 		this.dependencies = dependencies;
 	}
 	
@@ -129,29 +138,36 @@ public class SurveyValidationRule {
 
 	@Override
 	public String toString() {
-		return "SurveyValidationRule [surveyElement=" + surveyElement
+		return "FormValidationRule [formElement=" + formElement
 				+ ", expression=" + expression + "]";
 	}
 	
 	@Transient
-	protected void deepCopy(SurveyValidationRule copy, SurveyCloner cloner) {
+	public void deepCopy(FormValidationRule copy, FormCloner cloner) {
 		copy.setAllowOutlier(getAllowOutlier());
 		copy.setPrefix(getPrefix());
 		copy.setExpression(cloner.getExpression(getExpression(), copy));
-		copy.setSurveyElement(cloner.getElement(getSurveyElement()));
+		copy.setFormElement(cloner.getElement(getFormElement()));
 		copy.setMessages(getMessages());
 		copy.setTypeCodeString(getTypeCodeString());
-		for (SurveyElement element : getDependencies()) {
-			SurveyElement newElement = null;
-			if (!element.getSurvey().equals(getSurveyElement().getSurvey())) {
+		for (FormElement element : getDependencies()) {
+			FormElement newElement = cloner.getElement(element);
+			if (newElement.equals(element)) {
 				cloner.addUnchangedValidationRule(this, element.getId());
-				newElement = element;
-			}
-			else {
-				newElement = cloner.getElement(element);
 			}
 			copy.getDependencies().add(newElement);
 		}
+	}
+	
+	@Transient
+	public void evaluate(DataLocationEntity entity, ElementCalculator calculator) {
+		if (log.isDebugEnabled()) log.debug("evaluate(entity="+entity+") on "+this);
+		Set<String> prefixes = calculator.getFormValidationService().getInvalidPrefix(this, entity, calculator.getValidatableLocator());
+
+		FormEnteredValue enteredValue = calculator.getFormElementService().getOrCreateFormEnteredValue(entity, this.getFormElement());
+		enteredValue.getValidatable().setInvalid(this, prefixes);
+		
+		calculator.addAffectedValue(enteredValue);
 	}
 	
 	@Override
@@ -168,9 +184,9 @@ public class SurveyValidationRule {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof SurveyValidationRule))
+		if (!(obj instanceof FormValidationRule))
 			return false;
-		SurveyValidationRule other = (SurveyValidationRule) obj;
+		FormValidationRule other = (FormValidationRule) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

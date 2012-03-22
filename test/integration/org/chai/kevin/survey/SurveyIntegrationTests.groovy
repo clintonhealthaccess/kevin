@@ -5,10 +5,11 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.util.Utils;
 
 abstract class SurveyIntegrationTests extends IntegrationTests {
@@ -60,10 +61,6 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return element;
 	}
 	
-	def static newSurveyEnteredValue(def element, def period, def entity, def value) {
-		return new SurveyEnteredValue(surveyElement: element, value: value, entity: entity).save(failOnError: true, flush: true)
-	}
-
 	def static newSurveyEnteredQuestion(def question, def period, def entity, def invalid, def complete) {
 		return new SurveyEnteredQuestion(question: question, entity: entity, invalid: invalid, complete: complete).save(failOnError: true, flush: true)
 	}
@@ -75,20 +72,9 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 	def static newSurveyEnteredProgram(def program, def period, def entity, def invalid, def complete, def closed) {
 		return new SurveyEnteredProgram(program: program, entity: entity, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
 	}
-	
-	def static newSurveyValidationRule(def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
-		def validationRule = new SurveyValidationRule(expression: expression, messages: [:], surveyElement: element, typeCodeString: Utils.unsplit(types), dependencies: dependencies, allowOutlier: allowOutlier).save(failOnError: true)
-		element.addValidationRule(validationRule)
-		element.save(failOnError: true)
-		return validationRule
-	}
-	
-	def static newSurveyValidationRule(def element, def prefix, def types, def expression, def dependencies = []) {
-		return newSurveyValidationRule(element, prefix, types, expression, false, dependencies)
-	}
-	
-	def static newSkipRule(def survey, def expression, def skippedElements, def skippedQuestions) {
-		def skipRule = new SurveySkipRule(survey: survey, expression: expression, skippedSurveyElements: skippedElements, skippedSurveyQuestions: skippedQuestions).save(failOnError: true)
+
+	def static newSurveySkipRule(def survey, def expression, def skippedElements, def skippedQuestions) {
+		def skipRule = new SurveySkipRule(survey: survey, expression: expression, skippedFormElements: skippedElements, skippedSurveyQuestions: skippedQuestions).save(failOnError: true)
 		survey.addSkipRule(skipRule)
 		survey.save(failOnError: true, flush: true)
 		return skipRule

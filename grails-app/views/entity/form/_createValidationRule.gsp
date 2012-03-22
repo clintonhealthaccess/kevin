@@ -1,30 +1,30 @@
 <div id="add-validation-rule" class="entity-form-container togglable">
 	<div class="entity-form-header">
 		<h3 class="title">
-			<g:message code="default.new.label" args="[message(code:'survey.validationrule.label',default:'Validation Rule')]"/>
+			<g:message code="default.new.label" args="[message(code:'formelement.validationrule.label',default:'Validation Rule')]"/>
 		</h3>
 		<g:locales />
 		<div class="clear"></div>
 	</div>
 	<div class="forms-container"">
 		<div class="data-field-column">
-			<g:form url="[controller:'surveyValidationRule', action:'save', params:[targetURI: targetURI]]" useToken="true">
+			<g:form url="[controller:'formValidationRule', action:'save', params:[targetURI: targetURI]]" useToken="true">
 
-				<g:selectFromList name="surveyElement.id" label="${message(code:'survey.surveyelement.label')}" field="surveyElement" optionKey="id" multiple="false"
-					ajaxLink="${createLink(controller:'surveyElement', action:'getAjaxData')}" from="${surveyElements}"
-					value="${validation.surveyElement?.id}" bean="${validation}"
-					values="${surveyElements.collect {i18n(field:it.dataElement.names)+' - '+i18n(field:it.surveyQuestion?.section?.names)+' - '+i18n(field:it.survey?.names)+'['+it.id+']'}}" />
+				<g:selectFromList name="formElement.id" label="${message(code:'formelement.label')}" field="formElement" optionKey="id" multiple="false"
+					ajaxLink="${createLink(controller:'formElement', action:'getAjaxData')}" from="${formElements}"
+					value="${validation.formElement?.id}" bean="${validation}"
+					values="${formElements.collect {it.getLabel(languageService)+'['+it.id+']'}}" />
 			
-				<g:input name="prefix" label="${message(code:'survey.validationrule.prefix.label')}" bean="${validation}" field="prefix"/>
+				<g:input name="prefix" label="${message(code:'formelement.validationrule.prefix.label')}" bean="${validation}" field="prefix"/>
 		 		<g:i18nRichTextarea name="messages" bean="${validation}" value="${validation.messages}" label="Messages" field="messages" height="150"  width="400" maxHeight="100" />
 		 		
-		 		<g:selectFromList name="dependencies" label="${message(code:'survey.validationrule.dependencies.label')}" field="dependencies" optionKey="id" multiple="true"
-					ajaxLink="${createLink(controller:'surveyElement', action:'getAjaxData')}" from="${dependencies}" 
+		 		<g:selectFromList name="dependencies" label="${message(code:'formelement.validationrule.dependencies.label')}" field="dependencies" optionKey="id" multiple="true"
+					ajaxLink="${createLink(controller:'formElement', action:'getAjaxData')}" from="${dependencies}" 
 					value="${validation.dependencies*.id}" bean="${validation}"
-					values="${dependencies.collect {i18n(field:it.dataElement.names)+' - '+i18n(field:it.surveyQuestion?.section?.names)+' - '+i18n(field:it.survey?.names)+'['+it.id+']'}}" />
+					values="${dependencies.collect {it.getLabel(languageService)+'['+it.id+']'}}" />
 			
 				<div class="row">
-					<label><g:message code="survey.validationrule.allowoutlier.label" default="Allow Outlier"/></label>
+					<label><g:message code="formelement.validationrule.allowoutlier.label" default="Allow Outlier"/></label>
 					<g:checkBox name="allowOutlier" value="${validation.allowOutlier}" />
 				</div>
 				
@@ -44,7 +44,7 @@
 		</div>
 		
 		<div class="data-search-column">
-			<g:form name="search-data-form" class="search-form" url="[controller:'surveyElement', action:'getHtmlData']">
+			<g:form name="search-data-form" class="search-form" url="[controller:'formElement', action:'getHtmlData']">
 				<div class="row">
 					<label for="searchText"><g:message code="entity.search.label" default="Search"/>:</label>
 			    	<input name="searchText" class="idle-field"/>

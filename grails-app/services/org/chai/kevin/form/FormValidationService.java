@@ -1,24 +1,27 @@
-package org.chai.kevin.survey;
+package org.chai.kevin.form;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormSkipRule;
+import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.ValidationService;
 import org.springframework.transaction.annotation.Transactional;
 
-public class SurveyValidationService {
+public class FormValidationService {
 	
-	private static final Log log = LogFactory.getLog(SurveyValidationService.class);
+	private static final Log log = LogFactory.getLog(FormValidationService.class);
 	
 	private ValidationService validationService;
 	
 	@Transactional(readOnly=true)
-	public Set<String> getSkippedPrefix(SurveyElement element, SurveySkipRule rule, DataLocationEntity entity, ValidatableLocator locator) {
+	public Set<String> getSkippedPrefix(FormElement element, FormSkipRule rule, DataLocationEntity entity, ValidatableLocator locator) {
 		if (log.isDebugEnabled()) log.debug("getSkippedPrefix(surveyElement="+element+", rule="+rule+", entity="+entity+")");
 		
 		ValidatableValue validatable = locator.getValidatable(element.getId(), entity);
@@ -36,7 +39,7 @@ public class SurveyValidationService {
 	}
 	
 	@Transactional(readOnly=true)
-	public boolean isSkipped(SurveySkipRule skipRule, DataLocationEntity entity, ValidatableLocator locator) {
+	public boolean isSkipped(FormSkipRule skipRule, DataLocationEntity entity, ValidatableLocator locator) {
 		if (log.isDebugEnabled()) log.debug("isSkipped(surveyQuestion="+skipRule+", entity="+entity+")");
 		
 		boolean result = false;
@@ -50,13 +53,13 @@ public class SurveyValidationService {
 	}
 	
 	@Transactional(readOnly=true)
-	public Set<String> getInvalidPrefix(SurveyValidationRule validationRule, DataLocationEntity entity, ValidatableLocator locator) {
+	public Set<String> getInvalidPrefix(FormValidationRule validationRule, DataLocationEntity entity, ValidatableLocator locator) {
 		if (log.isDebugEnabled()) log.debug("getInvalidPrefix(validationRule="+validationRule+", entity="+entity+")");
 
 		Set<String> result = new HashSet<String>();
 		if (Utils.split(validationRule.getTypeCodeString()).contains(entity.getType().getCode())) {
 			// we validate only if that rule applies to the group
-			ValidatableValue validatable = locator.getValidatable(validationRule.getSurveyElement().getId(), entity);
+			ValidatableValue validatable = locator.getValidatable(validationRule.getFormElement().getId(), entity);
 	
 			String prefix = validationRule.getPrefix();
 			String expression = validationRule.getExpression();
@@ -69,11 +72,9 @@ public class SurveyValidationService {
 		return result;
 	}
 
-	
 	public interface ValidatableLocator {
 		public ValidatableValue getValidatable(Long id, DataLocationEntity location);
 	}
-	
 	
 	public void setValidationService(ValidationService validationService) {
 		this.validationService = validationService;

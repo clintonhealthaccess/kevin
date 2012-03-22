@@ -41,7 +41,7 @@
 									<a href="${createLink(controller:'program', action:'list', params:['survey.id':survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.program.label',default:'Program')]" /></a>
 								</li>
 								<li>
-									<a href="${createLink(controller:'surveySkipRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.skiprule.label',default:'Skip Rules')]" /></a>
+									<a href="${createLink(controller:'surveySkipRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'skiprule.label',default:'Skip Rules')]" /></a>
 								</li>
 								<li>
 									<a href="${createLink(controller:'surveyValidationRule', action:'list', params:['survey.id': survey?.id])}"><g:message code="default.list.label" args="[message(code:'survey.validationrule.label',default:'Validation Rules')]" /></a>
