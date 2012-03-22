@@ -2,15 +2,15 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="layout" content="print" />
-	<title><g:message code="surveyPage.survey.label" default="District Health System Portal" /></title>
+	<title><g:message code="survey.print.title" /></title>
 	
 </head>
 <body>
 	<div>
 		<div id="print-header">
-			<div><g:message code="survey.print.district.health.system.label" default="District Health System"/></div> 
-			<div><g:message code="survey.print.strengthening.framework.tool.label" default="Strengthening Framework Tool"/></div> 
-			<div><g:message code="survey.print.questionnaire.label" default="Questionnaire"/></div>
+			<div><g:message code="survey.print.district.health.system.label"/></div> 
+			<div><g:message code="survey.print.strengthening.framework.tool.label"/></div> 
+			<div><g:message code="survey.print.questionnaire.label"/></div>
 			<div><g:i18n field="${surveyPage.entity.type.names}"/></div>
 			<div><g:i18n field="${surveyPage.entity.names}"/></div>
 		</div>
@@ -31,7 +31,7 @@
 			</g:each>
 		</div>
 		<div class="appendix-content">
-			<h3 class="appendix-title"><g:message code="survey.print.appendix" default="Appendix"/></h3>
+			<h3 class="appendix-title"><g:message code="survey.print.appendix"/></h3>
 			<ol>
 				<g:each in="${surveyPage.getListQuestions(surveyPage.survey)}" var="question">
 					<li class="question-container">

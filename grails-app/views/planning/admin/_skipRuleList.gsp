@@ -4,7 +4,7 @@
 			<th/>
 			<th><g:message code="planning.label" default="Planning"/></th>
 			<th><g:message code="entity.description.label" default="Description"/></th>
-			<th><g:message code="expression.label" default="Expression"/></th>
+			<th><g:message code="skiprule.expression.label" default="Expression"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'formelement.label')]" default="Number of Form Elements"/></th>
 		</tr>
 	</thead>
@@ -19,7 +19,7 @@
 							</a>
 						</li>
 						<li>
-			    			<a class="delete-link" href="${createLinkWithTargetURI(controller:'planningSkipRule', action:'delete', params:[id: skip.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
+			    			<a class="delete-link" href="${createLinkWithTargetURI(controller:'planningSkipRule', action:'delete', params:[id: skip.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
 				        		<g:message code="default.link.delete.label" default="Delete" /> 
 							</a>
 						</li>

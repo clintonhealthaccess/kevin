@@ -4,7 +4,7 @@
 			
 			<g:linkParamFilter linkParams="${linkParams}" exclude="${['dsrCategory']}" />
 			
-			<span>Report Category:</span>
+			<span><g:message code="dsr.report.category.selector"/>:</span>
 			<select id="dsrCategory" name="dsrCategory">
 				<g:each in="${dsrTable.targetCategories}" var="category">
 					<option ${category.id == currentCategory?.id ? 'selected="selected"' : ''} value="${category.id}">

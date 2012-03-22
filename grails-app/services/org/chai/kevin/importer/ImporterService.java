@@ -86,7 +86,7 @@ public class ImporterService {
 						types.put("[_]."+header,rawDataElement.getType().getType("[_]."+header));
 				} catch(IllegalArgumentException e){
 					if(log.isWarnEnabled()) log.warn("Column type not found for header"+header, e);
-					manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),header,"error.message.unknowm.column.type"));
+					manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),header,"import.error.message.unknowm.column.type"));
 				}
 			}
 			Value value = null;
@@ -113,7 +113,7 @@ public class ImporterService {
 					// 3 update the location
 					dataEntity = locationService.findCalculationEntityByCode(code, DataLocationEntity.class);
 					if(dataEntity==null){
-						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"error.message.unknown.location"));
+						manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.location"));
 					}else{
 						// 4 update the rawDataElementValue
 						rawDataElementValue = valueService.getDataElementValue(rawDataElement, dataEntity, period);
@@ -200,7 +200,7 @@ public class ImporterService {
 			case DATE:
 				return validateImportDate(genericPrefix, value);
 			default:
-				errors.add(new ImporterError(lineNumber, prefix, "error.message.unknown.type")); 
+				errors.add(new ImporterError(lineNumber, prefix, "import.error.message.unknown.type")); 
 				return null;
 			}
 		}
@@ -217,7 +217,7 @@ public class ImporterService {
 						
 			}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(lineNumber, header,"error.message.enume"));
+			errors.add(new ImporterError(lineNumber, header,"import.error.message.enume"));
 			return null;
 		}
 
@@ -240,7 +240,7 @@ public class ImporterService {
 				if (log.isDebugEnabled()) log.debug("Value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Number"+ value, e);
 			}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(lineNumber, header,"error.message.number"));
+			errors.add(new ImporterError(lineNumber, header,"import.error.message.number"));
 			return null;
 		}
 		
@@ -248,7 +248,7 @@ public class ImporterService {
 			if(value instanceof String || value.equals(""))
 				return (String) value;
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(lineNumber, header, "error.message.string.text")); 
+			errors.add(new ImporterError(lineNumber, header, "import.error.message.string.text")); 
 			return null;
 		}
 		
@@ -260,7 +260,7 @@ public class ImporterService {
 					if (log.isDebugEnabled()) log.debug("Value in this cell [Line: " + lineNumber+ ",Column: " + header + "] has to be a Date (dd-MM-yyyy)"+ value, e);
 				}
 			this.setNumberOfErrorInRows(this.getNumberOfErrorInRows()+1);
-			errors.add(new ImporterError(lineNumber, header, "error.message.date")); 
+			errors.add(new ImporterError(lineNumber, header, "import.error.message.date")); 
 			return null;
 		}
 		

@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-        <title><g:message code="cost.view.label" default="Costing" /></title>
+        <title><g:message code="cost.title" /></title>
         
         <!-- for admin forms -->
         <shiro:hasPermission permission="cost:admin">
@@ -16,13 +16,13 @@
     <body>
     	<div id="cost">
 			<div class="subnav">
-				<g:iterationFilter linkParams="${[location: currentLocation?.id, program: currentProgram?.id]}" selected="${currentPeriod}"/>
+				<g:periodFilter linkParams="${[location: currentLocation?.id, program: currentProgram?.id]}" selected="${currentPeriod}"/>
 				<g:locationFilter linkParams="${[period: currentPeriod.id, program: currentProgram?.id]}" selected="${currentLocation}"/>
 				<g:render template="/templates/programFilter" model="[linkParams:[period: currentPeriod.id, location: currentLocation?.id]]"/>
 				
 				<shiro:hasPermission permission="admin:cost">					
 					<span>
-						<a href="${createLinkWithTargetURI(controller:'costProgram', action:'create')}"><g:message code="costing.admin.add.program" default="Add program"/></a>
+						<a href="${createLinkWithTargetURI(controller:'costProgram', action:'create')}"><g:message code="costing.admin.add.program"/></a>
 					</span>
 					<span>
 						<a href="${createLinkWithTargetURI(controller:'costTarget', action:'create')}">Add target</a>
@@ -39,12 +39,12 @@
 										<g:i18n field="${currentProgram.names}"/>
 										<span>
 											<a class="edit-link" href="${createLinkWithTargetURI(controller:'costProgram', action:'edit', id:currentProgram.id)}">
-												<g:message code="default.link.edit.label" default="Edit" />
+												<g:message code="default.link.edit.label" />
 											</a>
 										</span>
 										<span>
-											<a class="delete-link" href="${createLinkWithTargetURI(controller:'costProgram', action:'delete', id:currentProgram.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-												<g:message code="default.link.delete.label" default="Delete" />
+											<a class="delete-link" href="${createLinkWithTargetURI(controller:'costProgram', action:'delete', id:currentProgram.id)}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+												<g:message code="default.link.delete.label" />
 											</a>
 										</span>
 									</th>

@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="survey.sectionPage.label" default="District Health System Portal" /></title>
+		<title><g:message code="survey.section.title" /></title>
 		
 		<r:require modules="survey"/> 
 	</head>
@@ -19,7 +19,7 @@
 				<g:if test="${closed}">
 					<div class="success-box">
 						<p class="success">
-							<g:message code="survey.section.submitted.text" default="This section has been submitted, you can view your answer here but you cannot change them."/>
+							<g:message code="survey.section.submitted.text"/>
 						</p>
 					</div>
 				</g:if>
@@ -44,16 +44,16 @@
 								<li>
 									<button type="submit" class="loading-disabled">
 										<g:if test="${surveyPage.isLastSection(surveyPage.section)}">
-											<g:message code="survey.section.finish.label" default="Finish"/>
+											<g:message code="survey.section.finish.label"/>
 										</g:if>
 										<g:else>
-											<g:message code="survey.section.next.label" default="Next"/>
+											<g:message code="survey.section.next.label"/>
 										</g:else>
 									</button>
 								</li>
 								<li>
 									<button type="cancel" class="hidden">
-										<g:message code="survey.section.cancel.label" default="Cancel"/>
+										<g:message code="survey.section.cancel.label"/>
 									</button>
 								</li>
 							</g:if>

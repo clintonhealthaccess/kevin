@@ -166,12 +166,12 @@ class RawDataElementController extends AbstractEntityController {
 		def rawDataElement = RawDataElement.get(params.int('id'))
 
 		if (rawDataElement != null) {
-			List<Period> iterations = Period.list();
+			List<Period> periods = Period.list();
 			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(rawDataElement, null);
 
 			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
-			for(Period iteration : iterations) {
-				periodValues.put(iteration, valueService.getNumberOfValues(rawDataElement, iteration));
+			for(Period period : periods) {
+				periodValues.put(period, valueService.getNumberOfValues(rawDataElement, period));
 			}
 
 			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();

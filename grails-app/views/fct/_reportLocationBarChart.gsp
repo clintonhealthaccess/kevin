@@ -21,7 +21,7 @@
 								</g:if>
 								<g:else>
 									<div class="js_bar_vertical tooltip bar${i+1}"
-										data-percentage="N/A" title="N/A" 
+										data-percentage="N/A" title="${message(code:'fct.report.table.na')}" 
 										style="height: 0%;"></div>
 								</g:else>
 							</g:each>

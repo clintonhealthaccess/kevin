@@ -47,7 +47,7 @@ class FilterTagLib {
 	def locationService;
 	def reportService;
 
-	def iterationFilter = {attrs, body ->
+	def periodFilter = {attrs, body ->
 		Period.withTransaction {
 			def model = new HashMap(attrs)
 			model << 
@@ -56,7 +56,7 @@ class FilterTagLib {
 					periods: Period.list()
 				]
 			if (model.linkParams == null) model << [linkParams: [:]]
-			out << render(template:'/tags/filter/iterationFilter', model:model)
+			out << render(template:'/tags/filter/periodFilter', model:model)
 		}
 	}
 

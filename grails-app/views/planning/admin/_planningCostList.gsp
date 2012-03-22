@@ -2,11 +2,11 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label" default="Name"/></th>
-			<th>Type</th>
-			<th>Discriminator value</th>
-			<th>Grouping section</th>
-			<th>Sum</th>
+			<th><g:message code="entity.name.label"/></th>
+			<th><g:message code="planning.planningcost.type.label"/></th>
+			<th><g:message code="planning.planningcost.discriminatorvalue.label"/></th>
+			<th><g:message code="planning.planningcost.groupsection.label"/></th>
+			<th><g:message code="planning.planningcost.dataelement.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -16,12 +16,12 @@
 					<ul class="horizontal">
 						<li>
 							<a class="edit-link" href="${createLinkWithTargetURI(controller:'planningCost', action:'edit', params:[id: planningCost.id])}">
-								<g:message code="default.link.edit.label" default="Edit" /> 
+								<g:message code="default.link.edit.label" /> 
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'planningCost', action:'delete', params:[id: planningCost.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="default.link.delete.label" default="Delete" /> 
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'planningCost', action:'delete', params:[id: planningCost.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+								<g:message code="default.link.delete.label" /> 
 							</a>
 						</li>
 					</ul>
@@ -30,7 +30,7 @@
 				<td>${planningCost.type}</td>
 				<td>${planningCost.discriminatorValueString}</td>
 				<td>${planningCost.groupSection}</td>
-				<td><g:i18n field="${planningCost.dataElement.names}"/></td>
+				<td><g:i18n field="${planningCost.dataElement.names}"/>[${planningCost.dataElement.id}]</td>
 			</tr>
 		</g:each>
 	</tbody>

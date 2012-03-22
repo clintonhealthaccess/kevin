@@ -49,7 +49,7 @@ class PlanningCostController extends AbstractEntityController {
 	}
 
 	def getLabel() {
-		return 'planningCost.label'
+		return 'planning.planningcost.label'
 	}
 	
 	def getTemplate() {

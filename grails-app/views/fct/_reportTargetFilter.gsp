@@ -4,7 +4,7 @@
 			
 			<g:linkParamFilter linkParams="${linkParams}" exclude="${['fctTarget']}" />
 			
-			<span>Report Type:</span>
+			<span><g:message code="fct.report.target.selector"/>:</span>
 			<select id="fctTarget" name="fctTarget">
 				<g:each in="${fctTargets}" var="target">
 					<option ${target.id == currentTarget?.id ? 'selected="selected"' : ''} value="${target.id}">

@@ -2,7 +2,7 @@
 <%@ page import="org.chai.kevin.data.Type.ValueType" %>
 
 <div class="row">
-	<span class="type"><g:message code="type.label" default="Type"/>:</span>
+	<span class="type"><g:message code="entity.type.label"/>:</span>
 	<g:toHtml value="${data.type.getDisplayedValue(2, null)}"/>
 </div>
 

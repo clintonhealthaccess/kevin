@@ -2,10 +2,10 @@
 	<thead>
 		<tr>
 			<th/>
-			<th>Name</th>
-			<th>Inactive</th>
-			<th>Value</th>
-			<th>Order (language dependent)</th>
+			<th><g:message code="entity.name.label"/></th>
+			<th><g:message code="enumoption.inactive.label"/></th>
+			<th><g:message code="enumoption.value.label"/></th>
+			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -15,12 +15,12 @@
 					<ul class="horizontal">
 						<li>
 				        	<a class="edit-link" href="${createLinkWithTargetURI(controller:'enumOption', action:'edit', params:[id: option.id])}">
-								<g:message code="default.link.edit.label" default="Edit" />
+								<g:message code="default.link.edit.label" />
 							</a>
 						</li>
 						<li>
-							<a class="delete-link" href="${createLinkWithTargetURI(controller:'enumOption', action:'delete', params:[id: option.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');">
-								<g:message code="default.link.delete.label" default="Delete" />
+							<a class="delete-link" href="${createLinkWithTargetURI(controller:'enumOption', action:'delete', params:[id: option.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+								<g:message code="default.link.delete.label" />
 							</a>
 						</li>
 					</ul>

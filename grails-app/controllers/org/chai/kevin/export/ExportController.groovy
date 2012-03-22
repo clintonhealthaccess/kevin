@@ -41,7 +41,6 @@ class ExportController extends AbstractController {
 	
 	def export ={
 		List<Period> periods = Period.list()
-//		List<Location> locations = locationService.getLocationsOfLevel(ConfigurationHolder.config.facility.level)
 		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		
 		render (view: '/export/export', model:[

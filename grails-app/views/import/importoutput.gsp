@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="import.form.label" default="Data Import" /></title>
+		<title><g:message code="import.result.title" /></title>
 		<!-- for admin forms -->
         <r:require modules="form,chosen"/>
 	</head>
@@ -10,9 +10,9 @@
 		<div class="main">
 			<div class="main">
 				<ul>
-					<li><g:message code="result.message.saved.rows" default="Number of saved rows" />: ${errorManager.numberOfSavedRows}</li>
-					<li><g:message code="result.message.unsaved.rows" default="Number of unsaved rows" />: ${errorManager.numberOfUnsavedRows}</li>
-					<li><g:message code="result.message.error.saved.rows" default="Number of rows saved with error" />: ${errorManager.numberOfRowsSavedWithError}</li>
+					<li><g:message code="import.result.message.saved.rows" />: ${errorManager.numberOfSavedRows}</li>
+					<li><g:message code="import.result.message.unsaved.rows" />: ${errorManager.numberOfUnsavedRows}</li>
+					<li><g:message code="import.result.message.error.saved.rows" />: ${errorManager.numberOfRowsSavedWithError}</li>
 				</ul>
 			</div>	
 			<div class="main">
@@ -21,11 +21,11 @@
 					<g:each in="${errorManager.errors}" var="error" status="i">
 						<g:if test="${j!=error.lineNumber}">
 							<g:set var="j" value="${error.lineNumber}"/>
-							<li><g:message code="label.line.number" default="Line Number" />: ${error.lineNumber}<li>
+							<li><g:message code="import.result.line" />: ${error.lineNumber}<li>
 						</g:if> 
 						<li>
 							<ul class="import-error-list">
-								<li><g:message code="${error.messageCode}"/> <g:message code="label.column" default="Column" />: ${error.header}</li>
+								<li><g:message code="${error.messageCode}"/><g:message code="import.result.column" />: ${error.header}</li>
 							</ul>
 						</li>	
 					</g:each>

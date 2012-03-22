@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="dsrTable.view.label" default="District Summary Reports" /></title>
+		<title><g:message code="dsr.title" /></title>
 		
 		<!-- for admin forms -->
 		<shiro:hasPermission permission="admin:dsr">

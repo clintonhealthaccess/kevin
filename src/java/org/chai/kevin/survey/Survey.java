@@ -89,7 +89,7 @@ public class Survey {
 	}
 	
 	@ManyToOne(targetEntity=Period.class)
-	@JoinColumn(name="iteration", nullable= false)
+	@JoinColumn(name="period", nullable= false)
 	public Period getPeriod() {
 		return period;
 	}
@@ -99,7 +99,7 @@ public class Survey {
 	}
 	
 	@ManyToOne(targetEntity=Period.class)
-	@JoinColumn(name="last_iteration")
+	@JoinColumn(name="last_period")
 	public Period getLastPeriod() {
 		return lastPeriod;
 	}

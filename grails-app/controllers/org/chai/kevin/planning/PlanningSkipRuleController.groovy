@@ -38,7 +38,7 @@ class PlanningSkipRuleController extends AbstractEntityController {
 	def languageService
 	
 	def getLabel() {
-		return 'skiprule.label'
+		return 'planning.skiprule.label'
 	}
 	
 	def getEntity(def id) {

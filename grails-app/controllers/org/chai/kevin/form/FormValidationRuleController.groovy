@@ -41,7 +41,7 @@ class FormValidationRuleController extends AbstractEntityController {
 	def formElementService
 	
 	def getLabel() {
-		return 'form.validationrule.label'
+		return 'formelement.validationrule.label'
 	}
 	
 	def getEntity(def id) {

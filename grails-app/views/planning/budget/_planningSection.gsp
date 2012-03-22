@@ -29,6 +29,6 @@
 		]"/>
 		</div>
 	
-		<a class="next gray medium" href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location: location.id, planningType: planningType.id])}">Update budget</a>
+		<a class="next gray medium" href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location: location.id, planningType: planningType.id])}"><g:message code="planning.budget.panel.update"/></a>
 	</g:form>
 </div>

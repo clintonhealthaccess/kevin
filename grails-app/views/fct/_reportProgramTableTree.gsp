@@ -9,7 +9,7 @@
 					<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
 						${fctTable.getReportValue(location, targetOption).value}
 					</g:if>
-					<g:else>N/A</g:else>
+					<g:else><g:message code="fct.report.table.na"/></g:else>
 				</td>
 			</g:each>
 		</tr>
@@ -24,7 +24,7 @@
 					<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
 						${fctTable.getReportValue(location, targetOption).value}
 					</g:if>
-					<g:else>N/A</g:else>
+					<g:else><g:message code="fct.report.table.na"/></g:else>
 				</td>
 			</g:each>
 		</tr>

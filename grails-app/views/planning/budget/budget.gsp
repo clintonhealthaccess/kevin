@@ -4,7 +4,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="planning.new.label" default="District Health System Portal" /></title>
+		<title><g:message code="planning.budget.title" /></title>
 		
 		<r:require module="planning"/>
 	</head>
@@ -13,7 +13,7 @@
 			<div class="wrapper">
 				<div class="main">
 					<g:render template="/planning/planningTabs" model="[planning: planning, location: location, selected: "budget"]"/>
-	        		<g:render template="/templates/help" model="[content: 'Some help information for the budget']"/>
+	        		<g:render template="/templates/help" model="[content: message(code:'planning.budget.help')]"/>
 	        		
 					<div id="questions">
 						<div class="question push-20">
@@ -21,15 +21,15 @@
 								<span class="question-default">
 									<r:img uri="/images/icons/star_small.png"/>
 								</span>
-								Operational Undertakings: <g:i18n field="${location.names}"/>
+								<g:message code="planning.budget.budget"/>: <g:i18n field="${location.names}"/>
 							</h4>
 							<div class="budget">
 								<p id="js_budget-warning" class="context-message warning ${planningLists.find {!it.budgetUpdated}?'':'hidden'}">
-									Some activities were changed. Please <a href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location:location.id, planning:planning.id])}">update your budget</a>.
+									<g:message code="planning.budget.update"/> <a href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location:location.id, planning:planning.id])}"><g:message code="planning.budget.update.link"/></a>.
 								</p>
 								<g:if test="${!planningLists.find {!it.planningEntryBudgetList.empty}}">
 									<p class="context-message warning">
-										Please <a href="${createLink(controller:'editPlanning', action:'overview', params:[location:location.id, planning:planning.id])}">enter an activity</a> and come back to the budget page.
+										<a href="${createLink(controller:'editPlanning', action:'overview', params:[location:location.id, planning:planning.id])}"><g:message code="planning.budget.enteractivity.link"/></a> <g:message code="planning.budget.enteractivity.instructions"/>
 									</p>
 								</g:if>
 								<g:else>
@@ -38,10 +38,10 @@
 											<thead>
 												<tr>
 													<th></th>
-													<th>Outgoing</th>
-													<th>Incoming</th>
-													<th>Difference</th>
-													<th>General Fund</th>
+													<th><g:message code="planning.budget.table.outgoing"/></th>
+													<th><g:message code="planning.budget.table.outgoing"/></th>
+													<th><g:message code="planning.budget.table.difference"/></th>
+													<th><g:message code="planning.budget.table.generalfund"/></th>
 													<th class="status"></th>
 												</tr>
 											</thead>
@@ -61,7 +61,7 @@
 														<td>(${planningTypeBudget.outgoing})</td>
 														<td>${planningTypeBudget.incoming}</td>
 														<td>${planningTypeBudget.difference}</td>
-														<td><input type="checkbox"></td>
+														<td></td>
 														<td class="status"></td>
 													</tr>
 													<tr class="sub-tree js_foldable-container hidden">
@@ -86,12 +86,12 @@
 																			<td>(${budgetPlanningEntry.outgoing})</td>
 																			<td>${budgetPlanningEntry.incoming}</td>
 																			<td>${budgetPlanningEntry.difference}</td>
-																			<td><input type="checkbox"></td>
+																			<td><input type="checkbox" disabled="disabled"></td>
 																			<td class="status 
 																				${!budgetPlanningEntry.invalidSections.empty?'invalid':''} 
 																				${!budgetPlanningEntry.incompleteSections.empty?'incomplete':''}
-																				${(!budgetPlanningEntry.incompleteSections.empty || !budgetPlanningEntry.incompleteSections.empty)?'tooltip':''}
-																				" title="Help message"></td>
+																				${(!budgetPlanningEntry.incompleteSections.empty || !budgetPlanningEntry.incompleteSections.empty)?'tooltip-TODO':''}
+																				" title=""></td>
 																		</tr>
 																		<tr class="sub-tree js_foldable-container hidden">
 																			<td colspan="7" class="bucket">
@@ -116,7 +116,7 @@
 													</tr>
 												</g:each>
 												<tr class="total">
-													<td>Total:</td>
+													<td><g:message code="planning.budget.table.total"/>:</td>
 													<td>${outgoing}</td>
 													<td>${incoming}</td>
 													<td>${difference}</td>
@@ -126,17 +126,15 @@
 											</tbody>
 										</table>
 										<br />
-										<input type="submit" value="Submit">
 									</div>
 								
 									<div class="right table-aside">
-										<p class="context-message success">TODO Budget difference: 70 Million RWD</p>
+										<p class="context-message success push-20"><g:message code="planning.budget.balance" args="['xx']"/></p>
 										<div class="diff context-message hidden" id="js_budget-section-edit">
 											<div class="js_content">
-											
 											</div>
 											<span class="hidden js_warning-message">
-												Could not load panel
+												<g:message code="planning.budget.panel.error"/>
 											</span>
 										</div>
 									</div>

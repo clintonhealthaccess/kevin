@@ -61,7 +61,6 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 
 def config = CH.config
 
-String facilityTypeGroup = config.facility.type.group
 Set<String> reportSkipLevels = config.report.skip.levels
 Set<String> dashboardSkipLevels = config.dashboard.skip.levels
 Set<String> dsrSkipLevels = config.dsr.skip.levels
@@ -77,7 +76,6 @@ beans = {
 //		locationService = ref("locationService")
 //		valueService = ref("valueService")
 //		infoService = ref("infoService")
-//		facilityLevel = locationLevel
 //	}
 	
 	importerService(ImporterService){
@@ -125,7 +123,6 @@ beans = {
 	}
 	
 	summaryService(SummaryService){
-		locationService = ref("locationService")
 		surveyValueService = ref("surveyValueService")
 	}
 

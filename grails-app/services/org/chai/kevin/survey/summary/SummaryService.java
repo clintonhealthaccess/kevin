@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class SummaryService {
 
-	private LocationService locationService;
 	private SurveyValueService surveyValueService;
 	
 	@Transactional(readOnly = true)
@@ -137,10 +136,6 @@ public class SummaryService {
 			totalAnsweredQuestions += completedQuestions;
 		}
 		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap);		
-	}
-	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
 	}
 	
 	public void setSurveyValueService(SurveyValueService surveyValueService) {

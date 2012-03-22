@@ -11,7 +11,7 @@
 	<div class="clear"></div>
 
 	<g:if test="${print}">
-		<label>-- <g:message code="survey.print.selectallthatapply.label" default="Select all that apply"/> --</label>
+		<label>-- <g:message code="survey.print.selectallthatapply.label"/> --</label>
 	</g:if>
 	
 	<ul>

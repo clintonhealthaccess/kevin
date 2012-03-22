@@ -45,7 +45,7 @@ class SurveyUserController  extends UserAbstractController {
 	}
 
 	def getLabel() {
-		return 'survey.user.label'
+		return 'surveyuser.label'
 	}
 	
 	def getTemplate() {

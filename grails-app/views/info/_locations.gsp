@@ -8,7 +8,7 @@
 					<g:formatNumber number="${calculationValue.value?.numberValue * 100}" format="#0.0"/>%
 				</g:if>
 				<g:else>
-					N/A
+					<g:message code="info.location.na"/>
 				</g:else>
 			</span>
 		</li>

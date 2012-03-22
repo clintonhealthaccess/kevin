@@ -5,8 +5,8 @@
     <thead>
         <tr>
         	<th/>
-            <g:sortableColumn property="name" title="${message(code: 'costRampUp.name.label', default: 'Name')}" />
-            <th><g:message code="costRampUp.years.label" default="Years" /></th>
+            <g:sortableColumn property="name" title="${message(code: 'entity.name.label')}" />
+            <th><g:message code="costrampup.years.label" /></th>
         </tr>
     </thead>
     <tbody>
@@ -15,10 +15,10 @@
             <td>
             	<ul class="horizontal">
 	            	<li>
-	            		<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id:costRampUp.id)}"><g:message code="default.link.edit.label" default="Edit" /></a>
+	            		<a class="edit-link" href="${createLinkWithTargetURI(action:'edit', id:costRampUp.id)}"><g:message code="default.link.edit.label" /></a>
 	            	</li>
 	            	<li>
-	            		<a class="delete-link" href="${createLinkWithTargetURI(action:'delete', id:costRampUp.id)}"><g:message code="default.link.delete.label" default="Delete" /></a>
+	            		<a class="delete-link" href="${createLinkWithTargetURI(action:'delete', id:costRampUp.id)}"><g:message code="default.link.delete.label" /></a>
 	            	</li>
             	</ul>
             </td>

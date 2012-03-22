@@ -5,17 +5,17 @@
 			<ul>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'average', action:'create')}">
-						<g:message code="default.new.label" args="[message(code:'average.label',default:'Average')]"/>
+						<g:message code="default.new.label" args="[message(code:'average.label')]"/>
 					</a>
 				</li>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'sum', action:'create')}">
-						<g:message code="default.new.label" args="[message(code:'sum.label',default:'Sum')]"/>
+						<g:message code="default.new.label" args="[message(code:'sum.label')]"/>
 					</a>
 				</li>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'aggregation', action:'create')}">
-						<g:message code="default.new.label" args="[message(code:'aggregation.label',default:'Aggregation')]"/>
+						<g:message code="default.new.label" args="[message(code:'aggregation.label')]"/>
 					</a>
 				</li>
 			</ul>

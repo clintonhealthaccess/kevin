@@ -7,7 +7,7 @@
 		</g:if> 
 		<g:else>
 			<a href="#" class="program selected" data-type="program"> 
-				<g:message code="filter.program.noselection.label" default="Please select a program" />
+				<g:message code="filter.program.noselection.label" />
 			</a>
 		</g:else>		
 		<div class="hidden dropdown-list js_dropdown-list">

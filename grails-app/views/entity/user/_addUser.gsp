@@ -5,12 +5,12 @@
 			<ul>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'user', action:'create')}">
-						<g:message code="default.new.label" args="[message(code:'user.label',default:'User')]"/>
+						<g:message code="default.new.label" args="[message(code:'user.label')]"/>
 					</a>
 				</li>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'surveyUser', action:'create')}">
-						<g:message code="default.new.label" args="[message(code:'survey.user.label',default:'Survey User')]"/>
+						<g:message code="default.new.label" args="[message(code:'surveyuser.label')]"/>
 					</a>
 				</li>
 			</ul>

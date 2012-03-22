@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-        <title><g:message code="dashboard.view.label" default="Dashboard" /></title>
+        <title><g:message code="dashboard.title" /></title>
         
         <!-- for admin forms -->
         <shiro:hasPermission permission="admin:dashboard">
@@ -12,7 +12,6 @@
         </shiro:hasPermission>        
         <r:require module="dashboard"/>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        
     </head>
     <body>
 		<div id="report">

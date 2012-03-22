@@ -13,7 +13,7 @@
 				<g:i18n field="${currentSurvey.names}" />
 			</g:elseif> 
 			<g:else>
-				<g:message code="default.select.label" args="[message(code:'survey.label')]" default="Select a survey" />
+				<g:message code="default.select.label" args="[message(code:'survey.label')]" />
 			</g:else>
 		</a>
 		<div class="hidden dropdown-list js_dropdown-list">

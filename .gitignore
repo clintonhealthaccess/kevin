@@ -15,3 +15,5 @@ bin/
 *.hprof
 *.hprof.index
 build.info
+*.sql
+*.gz

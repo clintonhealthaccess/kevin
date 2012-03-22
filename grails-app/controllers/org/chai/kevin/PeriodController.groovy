@@ -3,12 +3,12 @@ package org.chai.kevin
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hisp.dhis.period.Period
 
-class IterationController extends AbstractEntityController  {
+class PeriodController extends AbstractEntityController  {
 
 	def periodService
 
 	def getLabel() {
-		return 'iteration.label'
+		return 'period.label'
 	}
 	
 	def getEntity(def id) {
@@ -23,11 +23,11 @@ class IterationController extends AbstractEntityController  {
 	}
 
 	def getTemplate() {
-		return "/entity/iteration/createIteration";
+		return "/entity/period/createPeriod";
 	}
 
 	def getModel(def entity) {
-		return [iteration: entity]
+		return [period: entity]
 	}
 
 	def bindParams(def entity) {
@@ -37,14 +37,14 @@ class IterationController extends AbstractEntityController  {
 	def list = {
 		adaptParamsForList()
 		
-		def iterations = Period.list(params)
-		Collections.sort(iterations,new PeriodSorter())
+		def periods = Period.list(params)
+		Collections.sort(periods,new PeriodSorter())
 		
 		render(view:'/entity/list', model: [
-			entities: iterations, 
+			entities: periods, 
 			entityCount: Period.count(),
 			code: getLabel(),
-			template: 'iteration/iterationList'
+			template: 'period/periodList'
 		])
 	}
 }

@@ -24,10 +24,10 @@ $(document).bind('click', function(e) {
 
 // Check all / Uncheck all
 $('#js_uncheckall').click(function() {
-	$('#js_facility_filter input').prop('checked', false);
+	$('#js_location-type-filter input').prop('checked', false);
 	return false;
 });
 $('#js_checkall').click(function() {
-	$('#js_facility_filter input').prop('checked', true);
+	$('#js_location-type-filter input').prop('checked', true);
 	return false;
 });

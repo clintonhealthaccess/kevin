@@ -5,17 +5,17 @@
 			<ul>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'simpleQuestion', action:'create', params:['section.id': section.id])}">
-						<g:message code="default.new.label" args="[message(code:'survey.simplequestion.label',default:'Simple Question')]"/>
+						<g:message code="default.new.label" args="[message(code:'survey.simplequestion.label')]"/>
 					</a>
 				</li>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'checkboxQuestion', action:'create', params:['section.id': section.id])}">
-						<g:message code="default.new.label" args="[message(code:'survey.checkboxquestion.label',default:'Checkbox Question')]"/>
+						<g:message code="default.new.label" args="[message(code:'survey.checkboxquestion.label')]"/>
 					</a>
 				</li>
 				<li>
 					<a href="${createLinkWithTargetURI(controller:'tableQuestion', action:'create', params:['section.id': section.id])}">
-						<g:message code="default.new.label" args="[message(code:'survey.tablequestion.label',default:'Table Question')]"/>
+						<g:message code="default.new.label" args="[message(code:'survey.tablequestion.label')]"/>
 					</a>
 				</li>
 			</ul>
