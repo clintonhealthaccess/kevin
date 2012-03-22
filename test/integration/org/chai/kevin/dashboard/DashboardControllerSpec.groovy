@@ -5,7 +5,7 @@ import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.Value
-
+import org.hisp.dhis.period.Period;
 
 class DashboardControllerSpec extends DashboardIntegrationTests {
 
@@ -15,7 +15,8 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
+		setupDashboardTree()
 		dashboardController = new DashboardController()
 		refresh()
 		
@@ -39,7 +40,8 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
+		setupDashboardTree()
 		dashboardController = new DashboardController()
 		refresh()
 		
@@ -78,6 +80,34 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		then:
 		model.dashboardEntity == null
 		model.currentPeriod.equals(period)
+		model.currentProgram.equals(program)
+		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))		
+		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.programDashboard == null
+		model.locationDashboard == null
+	}
+	
+	def "get dashboard with invalid program parameter"() {
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		def program = newReportProgram(PROGRAM1)
+		def calculation = newAverage("1", CODE(2))
+		def target = newDashboardTarget(TARGET1, calculation, program, 1)
+		dashboardController = new DashboardController()
+		refresh()
+		
+		when:
+		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
+		dashboardController.params.program = program.id+1
+		dashboardController.params.period = period.id
+		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		def model = dashboardController.view()
+		
+		then:
+		model.dashboardEntity == null
+		model.currentPeriod.equals(period)
+		model.currentProgram.equals(program)
 		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
 		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard == null
@@ -88,7 +118,8 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
+		setupDashboardTree()
 		dashboardController = new DashboardController()
 		def percentageCompareValue1 = newDashboardPercentage("30")
 		def percentageCompareValue2 = newDashboardPercentage("10")
@@ -119,7 +150,8 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
-		setupDashboard()
+		setupProgramTree()
+		setupDashboardTree()
 		dashboardController = new DashboardController()
 		def percentageCompareValue = newDashboardPercentage("20")
 		refresh()
@@ -130,7 +162,7 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(ROOT).id
 		dashboardController.params.period = period.id
 		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
-		dashboardController.params.table = 'location'		
+		dashboardController.params.table = 'location'
 		dashboardController.compare()
 		def dashboardControllerResponse = dashboardController.response.contentAsString
 		def jsonResult = JSONUtils.getMapFromJSON(dashboardControllerResponse)
@@ -142,11 +174,5 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		compareValues[0].id == DashboardProgram.findByCode(ROOT).id
 		compareValues[0].value == getPercentage(percentageCompareValue)
 	}
-	
-	def getPercentage(def percentage) {
-		if(percentage != null && percentage.isValid())
-			return percentage.getRoundedValue();
-		else
-			return null;
-	}
+
 }

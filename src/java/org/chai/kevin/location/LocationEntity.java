@@ -13,8 +13,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-
 @Entity(name="LocationEntity")
 @Table(name="dhsst_entity_location")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)

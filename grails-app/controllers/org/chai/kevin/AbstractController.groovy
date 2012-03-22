@@ -66,9 +66,16 @@ public abstract class AbstractController {
 		return period
 	}
 	
-	def getProgram(){
-		ReportProgram program = ReportProgram.get(params.int('program'))
-		if(program == null) program = reportService.getRootProgram()
+	def getProgram(def clazz){		
+		ReportProgram program = ReportProgram.get(params.int('program'))		
+		if(program == null)
+			program = reportService.getRootProgram()			
+		if(clazz != null){
+			def programTree = reportService.getProgramTree(clazz).asList()
+			if(!programTree.contains(program))
+				program = reportService.getRootProgram()
+		}
+			
 		return program
 	}
 	

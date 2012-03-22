@@ -38,6 +38,9 @@
 								<li>
 									<a href="${createLink(controller:'planningType', action:'list', params:['planning.id':planning.id])}"><g:message code="default.list.label" args="[message(code:'planning.planningType.label')]" /></a>
 								</li>
+								<li>
+									<a href="${createLink(controller:'planningSkipRule', action:'list', params:['planning.id': planning?.id])}"><g:message code="default.list.label" args="[message(code:'skiprule.label',default:'Skip Rules')]" /></a>
+								</li>
 							</ul>
 						</div>
 					</div> 		

@@ -6,7 +6,7 @@
 		<g:message code="default.link.delete.label" />
 	</a>
 	<g:if test="${option.surveyElement != null}">
-        <a href="${createLink(controller:'surveyValidationRule', action:'list', params:['surveyElement.id': option.surveyElement.id])}">
+        <a href="${createLink(controller:'surveyValidationRule', action:'list', params:['formElement.id': option.surveyElement.id])}">
         <g:message code="survey.viewvalidationrule.label" />
         </a> 
 	</g:if>

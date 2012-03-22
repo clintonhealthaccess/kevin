@@ -29,20 +29,21 @@ package org.chai.kevin.planning
 
 import org.chai.kevin.data.Type.ValueType;
 
+
 /**
  * @author Jean Kahigiso M.
  *
  */
 constraints = {
 	planning (nullable:false)
-	dataElement (nullable:false)
+	formElement (nullable:false)
 	fixedHeader (nullable: false, blank: false, validator: {val, obj ->
-		if (obj.dataElement == null) return false
-		if (!obj.dataElement.getValuePrefixes('').contains(val)) return false
+		if (obj.formElement?.dataElement == null) return false
+		if (!obj.formElement.dataElement.getValuePrefixes('').contains(val)) return false
 	})
 	discriminator (nullable: false, blank: false, validator: {val, obj ->
-		if (obj.dataElement == null) return false 
-		if (!obj.dataElement.getValuePrefixes('').contains(val)) return false
-		if (obj.dataElement.type.getType(val).type != ValueType.ENUM) return false
+		if (obj.formElement?.dataElement == null) return false 
+		if (!obj.formElement.dataElement.getValuePrefixes('').contains(val)) return false
+		if (obj.formElement.dataElement.type.getType(val).type != ValueType.ENUM) return false
 	})
 }

@@ -22,8 +22,8 @@
 			<div class="main">
 				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
 				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>
-				<ul class='clearfix' id='questions'>
-  					<li class='question push-20'>
+				<ul class="clearfix" id="questions">
+  					<li class="question push-20">
 						<g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>						
 						<g:if test="${programDashboard != null && programDashboard.hasData()}">
 							<g:render template="/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard]"/>
@@ -32,21 +32,21 @@
 			                </div>
 		                </g:if>
 		                <g:else>
-		                	<div class='horizontal-graph-wrap'>
+		                	<div class="horizontal-graph-wrap">
 		                		<g:message code="dashboard.report.table.noselection.label"/>
 		                	</div>
 		                </g:else>
 	                </li>
-	                <li class='question push-10'>
+	                <li class="question push-10">
 		                <g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>						
 		                <g:if test="${locationDashboard != null && locationDashboard.hasData()}">
 		                <g:render template="/dashboard/reportCompareFilter" model="[table:'location', dashboard:locationDashboard]"/>
-							<div class='horizontal-graph-wrap'>
+							<div class="horizontal-graph-wrap">
 								<g:render template="/dashboard/reportLocationTable" model="[dashboard:locationDashboard]"/>			                  
 							</div>
 		                </g:if>
 		                <g:else>
-		                	<div class='horizontal-graph-wrap'>
+		                	<div class="horizontal-graph-wrap">
 		                		<g:message code="dashboard.report.table.noselection.label"/>
 		                	</div>
 		                </g:else>

@@ -1,4 +1,4 @@
-<table class='horizontal-graph'>
+<table class="horizontal-graph">
 <thead>
   <tr>
 	<th><g:i18n field="${currentLocation.names}"/></th>
@@ -13,7 +13,7 @@
 				<g:set var="percentageValue" />
 				<td><g:if test="${!location.collectsData()}">
 						<a href="${createLink(controller:'dashboard', action:'view', 
-					params:[period: currentPeriod.id, program: currentProgram.id, location: location.id])}">
+						params:[period: currentPeriod.id, program: currentProgram.id, location: location.id])}">
 							<g:i18n field="${location.names}" />
 						</a>
 					</g:if> <g:else>

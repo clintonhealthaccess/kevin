@@ -19,8 +19,8 @@
 			<div class="main">
 				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
 				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>			
-				<ul id='questions'>
-	              <li class='question'>
+				<ul id="questions">
+	              <li class="question">
 	                <g:render template="/templates/reportTableHeader" model="[linkParams:params]"/>	                
 	                <g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>
 	              </li>

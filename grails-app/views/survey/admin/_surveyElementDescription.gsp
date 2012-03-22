@@ -1,4 +1,4 @@
-<g:set var="question" value="${surveyElement.surveyQuestion}"/>
+<g:set var="question" value="${formElement.surveyQuestion}"/>
 
 <div class="row">
    <span class="type"> 
@@ -26,9 +26,9 @@
 
 <div class="row">
 	<span class="type"><g:message code="dataelement.label"/>:</span> 
-	<g:i18n field="${surveyElement.dataElement.names}"/>
+	<g:i18n field="${formElement.dataElement.names}"/>
 </div>
 
-<g:render template="/entity/data/dataElementDescription" model="${[dataElement: surveyElement.dataElement]}"/>
+<g:render template="/entity/data/dataDescription" model="${[data: formElement.dataElement]}"/>
 
 

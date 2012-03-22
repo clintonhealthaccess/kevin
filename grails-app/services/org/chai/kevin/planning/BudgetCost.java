@@ -1,7 +1,6 @@
-package org.chai.kevin.planning.budget;
+package org.chai.kevin.planning;
 
 import org.chai.kevin.planning.PlanningCost;
-import org.chai.kevin.planning.PlanningEntry;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;

@@ -16,8 +16,8 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.PrefixPredicate;
 import org.chai.kevin.data.Type.Sanitizer;
 import org.chai.kevin.data.Type.ValuePredicate;
-import org.chai.kevin.survey.SurveySkipRule;
-import org.chai.kevin.survey.SurveyValidationRule;
+import org.chai.kevin.form.FormSkipRule;
+import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.util.Utils;
 
 public class ValidatableValue {
@@ -88,11 +88,11 @@ public class ValidatableValue {
 		return value;
 	}
 	
-	public void setInvalid(SurveyValidationRule validationRule, Set<String> prefixes) {
+	public void setInvalid(FormValidationRule validationRule, Set<String> prefixes) {
 		setAttribute("invalid", validationRule.getId().toString(), prefixes);
 	}
 
-	public void setSkipped(SurveySkipRule skipRule, Set<String> prefixes) {
+	public void setSkipped(FormSkipRule skipRule, Set<String> prefixes) {
 		setAttribute("skipped", skipRule.getId().toString(), prefixes);
 	}
 	
@@ -154,7 +154,7 @@ public class ValidatableValue {
 		return !getSkippedRules(prefix).isEmpty();
 	}
 	
-	public boolean isAcceptedWarning(SurveyValidationRule rule, String prefix) {
+	public boolean isAcceptedWarning(FormValidationRule rule, String prefix) {
 		try {
 			return Utils.split(type.getAttribute(value, prefix, "warning")).contains(rule.getId().toString());
 		}

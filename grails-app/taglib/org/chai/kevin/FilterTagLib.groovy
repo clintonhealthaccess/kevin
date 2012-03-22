@@ -30,7 +30,9 @@ package org.chai.kevin
 
 import org.chai.kevin.LocationService;
 import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dsr.DsrTarget;
+import org.chai.kevin.fct.FctTarget;
 import org.chai.kevin.location.DataLocationEntity
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
@@ -62,12 +64,15 @@ class FilterTagLib {
 		ReportProgram.withTransaction {
 			def model = new HashMap(attrs)
 			def program = attrs['selected']
-			def target = attrs['selectedTarget']
+			def programRoot = reportService.getRootProgram()
+			def programTree = reportService.getProgramTree(attrs['selectedTargetClass']).asList()
+			if(!programTree.contains(program)) 
+				program = programRoot
 			model << 
 				[
 					currentProgram: program,
-					programRoot: reportService.getRootProgram(), 
-					programTree: reportService.getProgramTree(target).asList()			
+					programRoot: programRoot,
+					programTree: programTree			
 				]
 			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/programFilter', model:model)
@@ -76,12 +81,15 @@ class FilterTagLib {
 		
 	def locationFilter = {attrs, body ->
 		LocationEntity.withTransaction {
-			def model = new HashMap(attrs)					
+			def model = new HashMap(attrs)
+			def location = attrs['selected']
 			def locationFilterRoot = locationService.getRootLocation()	
 			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(attrs['skipLevels'], null)
+			if(!locationFilterTree.contains(location))
+				location = locationFilterRoot
 			model << 
 				[
-					currentLocation: attrs['selected'],
+					currentLocation: location,
 					locationFilterRoot: locationFilterRoot, 
 					locationFilterTree: locationFilterTree
 				]
@@ -103,19 +111,25 @@ class FilterTagLib {
 		}
 	}
 	
-	def levelFilter = {attrs, body ->
-		LocationLevel.withTransaction {
-			def model = new HashMap(attrs)
-			def currentLevel = attrs['selected']
-			def levels = locationService.listLevels(attrs['skipLevels'])
-			model << 
-				[
-					currentLevel: currentLevel,
-					levels: levels
-				]
-			if (model.linkParams == null) model << [linkParams: [:]]
-			out << render(template:'/tags/filter/levelFilter', model:model)
-		}
+//	def levelFilter = {attrs, body ->
+//		LocationLevel.withTransaction {
+//			def model = new HashMap(attrs)
+//			def currentLevel = attrs['selected']
+//			def levels = locationService.listLevels(attrs['skipLevels'])
+//			model << 
+//				[
+//					currentLevel: currentLevel,
+//					levels: levels
+//				]
+//			if (model.linkParams == null) model << [linkParams: [:]]
+//			out << render(template:'/tags/filter/levelFilter', model:model)
+//		}
+//	}
+		
+	def linkParamFilter = {attrs, body ->
+		def model = new HashMap(attrs)
+		if (model.linkParams == null) model << [linkParams: [:]]
+			out << render(template:'/templates/linkParamFilter', model:model)
 	}
 	
 	def createLinkByFilter = {attrs, body ->
@@ -125,7 +139,7 @@ class FilterTagLib {
 			attrs['params'] = updateParamsByFilter(params);
 		}
 		out << createLink(attrs, body)
-	}	
+	}		
 	
 	public Map updateParamsByFilter(Map params) {
 		if (!params.containsKey("filter")) return params;

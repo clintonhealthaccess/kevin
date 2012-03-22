@@ -1,4 +1,4 @@
-package org.chai.kevin.survey.validation;
+package org.chai.kevin.form;
 
 import java.util.Date;
 
@@ -8,12 +8,12 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 
 @MappedSuperclass
-public class SurveyEnteredEntity {
+public class EnteredEntity {
 
 	private String userUuid;
 	private Date timestamp;
 
-	public SurveyEnteredEntity() {
+	public EnteredEntity() {
 		super();
 	}
 

@@ -5,7 +5,7 @@
 			<th><g:message code="survey.label"/></th>
 			<th><g:message code="entity.description.label"/></th>
 			<th><g:message code="expression.label"/></th>
-			<th><g:message code="default.number.label" args="[message(code:'survey.surveyelement.label')]"/></th>
+			<th><g:message code="default.number.label" args="[message(code:'formelement.label')]"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'survey.question.label')]"/></th>
 		</tr>
 	</thead>
@@ -30,7 +30,7 @@
 				<td><g:i18n field="${skip.descriptions}" /></td>
 				<td>${skip.expression}</td>
 				<td> 
-				   ${skip.skippedSurveyElements.size()}
+				   ${skip.skippedFormElements.size()}
 			    </td>
 				<td>
 					${skip.skippedSurveyQuestions.size()}

@@ -2,8 +2,8 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.code.label"/></th>
+			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="datalocation.type.label"/></th>
 			<th><g:message code="datalocation.location.label"/></th>
 		</tr>

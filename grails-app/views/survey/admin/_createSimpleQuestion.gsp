@@ -18,7 +18,7 @@
 					<label for="surveyElement.dataElement.name"><g:message code="dataelement.label"/>:</label>
 					<input type="text" name="surveyElement.dataElement.name" value="${i18n(field: question.surveyElement?.dataElement?.names)}" id="data-element-name" class="idle-field" disabled />
 					<g:if test="${question.surveyElement?.id != null}">
-						<span><a href="${createLink(controller:'surveyValidationRule', action:'list', params:['surveyElement.id': question.surveyElement?.id])}"> <g:message code="default.list.label" args="[message(code:'survey.validationrule.label')]" /></a> </span>
+						<span><a href="${createLink(controller:'surveyValidationRule', action:'list', params:['formElement.id': question.surveyElement?.id])}"> <g:message code="default.list.label" args="[message(code:'survey.validationrule.label')]" /></a> </span>
 					</g:if>
 					<div class="error-list">
 						<g:renderErrors bean="${question}" field="surveyElement" />

@@ -65,7 +65,7 @@ public class FctTable extends ReportTable<FctTargetOption, LocationEntity> {
 	
 	public Set<LocationEntity> getLocations(){
 		return valueMap.keySet();
-	}
+	}	
 	
 	public boolean hasData(){
 		return (super.hasData() || !totalMap.isEmpty());
