@@ -26,7 +26,7 @@
 						<g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>						
 						<g:if test="${programDashboard != null && programDashboard.hasData()}">
 							<g:render template="/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard]"/>
-							<div class='horizontal-graph-wrap'>
+							<div class="horizontal-graph-wrap">
 								<g:render template="/dashboard/reportProgramTable" model="[dashboard:programDashboard]"/>
 			                </div>
 		                </g:if>
@@ -41,7 +41,12 @@
 		                <g:if test="${locationDashboard != null && locationDashboard.hasData()}">
 		                <g:render template="/dashboard/reportCompareFilter" model="[table:'location', dashboard:locationDashboard]"/>
 							<div class="horizontal-graph-wrap">
-								<g:render template="/dashboard/reportLocationTable" model="[dashboard:locationDashboard]"/>			                  
+								<g:render template="/dashboard/reportLocationTable" model="[dashboard:locationDashboard]"/>
+								<!-- comparison value -->
+								<div class="horizontal-graph-average" data-entity="${dashboardEntity.id}">
+									<div class="horizontal-graph-tip tooltip" style="left: 63%;" title="63%" data-percentage="63">?</div>
+									<div class="horizontal-graph-marker"></div>
+								</div>			                  
 							</div>
 		                </g:if>
 		                <g:else>
