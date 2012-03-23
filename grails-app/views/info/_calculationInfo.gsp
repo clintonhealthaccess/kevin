@@ -19,7 +19,7 @@
 					<a href="#" onclick="$(this).next().slideToggle(); return false;">
 						${groupLocation.name}
 					</a>
-					<g:render template="/info/locations" model="[info: info, locations: info.getLocationsOfGroup(groupLocation)]"/>
+					<g:render template="/info/locations" model="[info: info, locations: info.getDataLocationsOfLocation(groupLocation)]"/>
 					<div class="clear"></div>
 				</g:each>
 			</g:if>

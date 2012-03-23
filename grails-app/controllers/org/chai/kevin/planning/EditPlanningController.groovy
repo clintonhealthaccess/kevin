@@ -62,9 +62,9 @@ class EditPlanningController extends AbstractController {
 	
 	def editPlanningEntry = {	
 		def planningType = PlanningType.get(params.int('planningType'))
-		def dataLocation = DataLocation.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
-		def planningList = planningService.getPlanningList(planningType, dataLocation)
+		def planningList = planningService.getPlanningList(planningType, location)
 		def newPlanningEntry = planningList.getOrCreatePlanningEntry(lineNumber)
 		
 		render (view: '/planning/editPlanningEntry', model: [

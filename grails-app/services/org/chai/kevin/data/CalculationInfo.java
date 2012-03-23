@@ -70,7 +70,7 @@ public class CalculationInfo extends Info<CalculationValue<?>> {
 		return dataElements;
 	}
 	
-	public Set<DataLocation> getLocationsOfGroup(Location location) {
+	public Set<DataLocation> getDataLocationsOfLocation(Location location) {
 		Set<DataLocation> result = new HashSet<DataLocation>();
 		for (DataLocation child : values.keySet()) {
 			if (location.getDataLocations().contains(child)) result.add(child);
