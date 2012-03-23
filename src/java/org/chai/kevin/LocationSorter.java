@@ -39,7 +39,7 @@ import org.chai.kevin.location.LocationEntity;
  */
 public class LocationSorter {
 
-	public static final Comparator<DataLocationEntity> BY_FACILITY_TYPE(final String language) {
+	public static final Comparator<DataLocationEntity> BY_DATA_ENTITY_TYPE(final String language) {
 		return new Comparator<DataLocationEntity>() {
 			public int compare(DataLocationEntity org1, DataLocationEntity org2) {			
 				if(org1 == null || org2 == null) return 0;

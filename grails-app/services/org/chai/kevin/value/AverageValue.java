@@ -27,7 +27,7 @@ public class AverageValue extends CalculationValue<AveragePartialValue> {
 		for (AveragePartialValue averagePartialValue : getCalculationPartialValues()) {
 			if (!averagePartialValue.getValue().isNull()) {
 				sum += averagePartialValue.getValue().getNumberValue().doubleValue();
-				num += averagePartialValue.getNumberOfFacilities();
+				num += averagePartialValue.getNumberOfDataEntities();
 			}
 		}
 		Double average = sum / num;

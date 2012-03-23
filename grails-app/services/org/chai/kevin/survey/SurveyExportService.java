@@ -76,7 +76,7 @@ public class SurveyExportService {
 	private final static String CSV_FILE_EXTENSION = ".csv";
 
 	// TODO refactor this to use messages.properties files
-	private final static String ORGANISATION_UNIT_GROUP_HEADER = "Facility Type";
+	private final static String ORGANISATION_UNIT_GROUP_HEADER = "Data Entity Type";
 	private final static String SURVEY_HEADER = "Survey";
 	private final static String PROGRAM_HEADER = "Program";
 	private final static String SECTION_HEADER = "Section";
@@ -115,8 +115,8 @@ public class SurveyExportService {
 	@Transactional(readOnly=true)
 	public File getSurveyExportFile(String filename, CalculationEntity entity, SurveySection section, SurveyProgram program, Survey survey) throws IOException { 
 				
-		List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, null);
-		Collections.sort(facilities, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
+		List<DataLocationEntity> dataEntities = entity.collectDataLocationEntities(null, null);
+		Collections.sort(dataEntities, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
 		
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
 		
@@ -131,8 +131,8 @@ public class SurveyExportService {
 				writer.writeHeader(csvHeaders);
 			}
 			
-			for(DataLocationEntity facility : facilities){	
-				if (log.isDebugEnabled()) log.debug("getSurveyExportFile(facility="+facility+")");
+			for(DataLocationEntity dataEntity : dataEntities){	
+				if (log.isDebugEnabled()) log.debug("getSurveyExportFile(dataEntity="+dataEntity+")");
 				
 				if(program != null){
 					survey = program.getSurvey();
@@ -142,22 +142,22 @@ public class SurveyExportService {
 					survey = section.getSurvey();
 				}
 				
-				List<SurveyProgram> surveyPrograms = survey.getPrograms(facility.getType());
+				List<SurveyProgram> surveyPrograms = survey.getPrograms(dataEntity.getType());
 				Collections.sort(surveyPrograms);
 				for (SurveyProgram surveyProgram : surveyPrograms) {
 					if (program != null && program != surveyProgram) continue;						
-					List<SurveySection> surveySections = surveyProgram.getSections(facility.getType());
+					List<SurveySection> surveySections = surveyProgram.getSections(dataEntity.getType());
 					Collections.sort(surveySections);
 					for (SurveySection surveySection : surveySections) {
 						if (section != null && section != surveySection) continue;
 						
-						List<FormEnteredValue> formEnteredValues = surveyValueService.getFormEnteredValues(facility, surveySection, surveyProgram, survey);					
+						List<FormEnteredValue> formEnteredValues = surveyValueService.getFormEnteredValues(dataEntity, surveySection, surveyProgram, survey);					
 						Map<SurveyElement, FormEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, FormEnteredValue>();
 						for(FormEnteredValue formEnteredValue : formEnteredValues){
 							surveyElementValueMap.put((SurveyElement)formEnteredValue.getFormElement(), formEnteredValue);
 						}
 						
-						List<SurveyQuestion> surveyQuestions = surveySection.getQuestions(facility.getType());				
+						List<SurveyQuestion> surveyQuestions = surveySection.getQuestions(dataEntity.getType());				
 						Collections.sort(surveyQuestions);
 						for (SurveyQuestion surveyQuestion : surveyQuestions) {
 							if (log.isDebugEnabled()){
@@ -165,10 +165,10 @@ public class SurveyExportService {
 											" question="+languageService.getText(surveyQuestion.getNames()) +
 											" section="+languageService.getText(surveySection.getNames()) +
 											" program="+languageService.getText(surveyProgram.getNames()) + 
-											" facility="+facility + ")");
+											" dataEntity="+dataEntity + ")");
 							}
 							List<SurveyExportDataPoint> surveyExportDataPoints = 
-									getSurveyExportDataPoints(facility, survey, surveyProgram, surveySection, surveyQuestion, surveyElementValueMap);
+									getSurveyExportDataPoints(dataEntity, survey, surveyProgram, surveySection, surveyQuestion, surveyElementValueMap);
 							
 							// data points
 							for (SurveyExportDataPoint dataPoint : surveyExportDataPoints){
@@ -188,7 +188,7 @@ public class SurveyExportService {
 		return csvFile;
 	}
 
-	public List<SurveyExportDataPoint> getSurveyExportDataPoints(DataLocationEntity facility, Survey survey, SurveyProgram surveyProgram, 
+	public List<SurveyExportDataPoint> getSurveyExportDataPoints(DataLocationEntity dataEntity, Survey survey, SurveyProgram surveyProgram, 
 			SurveySection surveySection, SurveyQuestion surveyQuestion, Map<SurveyElement, FormEnteredValue> surveyElementValueMap){				
 		
 		List<SurveyExportDataPoint> surveyExportDataPoints = new ArrayList<SurveyExportDataPoint>();						
@@ -197,8 +197,8 @@ public class SurveyExportService {
 		
 			case TABLE:
 				SurveyTableQuestion surveyTableQuestion = (SurveyTableQuestion) surveyQuestion;
-				List<SurveyTableRow> surveyTableRows = surveyTableQuestion.getRows(facility.getType());
-				List<SurveyTableColumn> surveyTableColumns = surveyTableQuestion.getColumns(facility.getType());
+				List<SurveyTableRow> surveyTableRows = surveyTableQuestion.getRows(dataEntity.getType());
+				List<SurveyTableColumn> surveyTableColumns = surveyTableQuestion.getColumns(dataEntity.getType());
 				
 				for (SurveyTableRow surveyTableRow : surveyTableRows) {
 					for(SurveyTableColumn surveyTableColumn : surveyTableColumns){						
@@ -208,25 +208,25 @@ public class SurveyExportService {
 						String surveyQuestionColumn = languageService.getText(surveyTableColumn.getNames());											
 						surveyQuestionItems.add(surveyQuestionRow);
 						surveyQuestionItems.add(surveyQuestionColumn);						
-						addDataPoints(facility, survey, surveyProgram, surveySection, surveyQuestion, surveyExportDataPoints, surveyElement, surveyQuestionItems, surveyElementValueMap);
+						addDataPoints(dataEntity, survey, surveyProgram, surveySection, surveyQuestion, surveyExportDataPoints, surveyElement, surveyQuestionItems, surveyElementValueMap);
 					}
 				}
 				break;
 			case CHECKBOX:
 				SurveyCheckboxQuestion surveyCheckboxQuestion = (SurveyCheckboxQuestion) surveyQuestion;
-				List<SurveyCheckboxOption> surveyCheckboxOptions = surveyCheckboxQuestion.getOptions(facility.getType());
+				List<SurveyCheckboxOption> surveyCheckboxOptions = surveyCheckboxQuestion.getOptions(dataEntity.getType());
 				for(SurveyCheckboxOption surveyCheckboxOption : surveyCheckboxOptions){
 					SurveyElement surveyElement = surveyCheckboxOption.getSurveyElement();					
 					List<String> surveyQuestionItems = new ArrayList<String>();						
 					String surveyCheckboxName = languageService.getText(surveyCheckboxOption.getNames());																	
 					surveyQuestionItems.add(surveyCheckboxName);						
-					addDataPoints(facility, survey, surveyProgram, surveySection, surveyQuestion, surveyExportDataPoints, surveyElement, surveyQuestionItems, surveyElementValueMap);						
+					addDataPoints(dataEntity, survey, surveyProgram, surveySection, surveyQuestion, surveyExportDataPoints, surveyElement, surveyQuestionItems, surveyElementValueMap);						
 				}
 				break;
 			case SIMPLE:
 				SurveySimpleQuestion surveySimpleQuestion = (SurveySimpleQuestion) surveyQuestion;
 				SurveyElement surveyElement = surveySimpleQuestion.getSurveyElement();				
-				addDataPoints(facility, survey, surveyProgram, surveySection, surveyQuestion, surveyExportDataPoints, surveyElement, null, surveyElementValueMap);
+				addDataPoints(dataEntity, survey, surveyProgram, surveySection, surveyQuestion, surveyExportDataPoints, surveyElement, null, surveyElementValueMap);
 				break;
 			default:
 				throw new NotImplementedException();	
@@ -234,11 +234,11 @@ public class SurveyExportService {
 		return surveyExportDataPoints;
 	}
 
-	private void addDataPoints(DataLocationEntity facility, Survey survey, SurveyProgram surveyProgram, SurveySection surveySection, SurveyQuestion surveyQuestion,
+	private void addDataPoints(DataLocationEntity dataEntity, Survey survey, SurveyProgram surveyProgram, SurveySection surveySection, SurveyQuestion surveyQuestion,
 			List<SurveyExportDataPoint> surveyExportDataPoints, SurveyElement surveyElement, List<String> surveyQuestionItems, Map<SurveyElement, FormEnteredValue> surveyElementValueMap) {
-		if(surveyElement == null) surveyExportDataPoints.add(getBasicInfoDataPoint(facility, survey, surveyProgram, surveySection, surveyQuestion, null));
+		if(surveyElement == null) surveyExportDataPoints.add(getBasicInfoDataPoint(dataEntity, survey, surveyProgram, surveySection, surveyQuestion, null));
 		else{
-			SurveyExportDataPoint dataPoint = getBasicInfoDataPoint(facility, survey, surveyProgram, surveySection, surveyQuestion, surveyElement);
+			SurveyExportDataPoint dataPoint = getBasicInfoDataPoint(dataEntity, survey, surveyProgram, surveySection, surveyQuestion, surveyElement);
 			List<SurveyExportDataPoint> dataPoints = new ArrayList<SurveyExportDataPoint>();
 						
 			DataElement<?> dataElement = surveyElement.getDataElement();
@@ -263,19 +263,19 @@ public class SurveyExportService {
 		}
 	}
 	
-	private SurveyExportDataPoint getBasicInfoDataPoint(DataLocationEntity facility, Survey survey, SurveyProgram surveyProgram, 
+	private SurveyExportDataPoint getBasicInfoDataPoint(DataLocationEntity dataEntity, Survey survey, SurveyProgram surveyProgram, 
 			SurveySection surveySection, SurveyQuestion surveyQuestion, SurveyElement surveyElement){
 		
 		SurveyExportDataPoint dataPoint = new SurveyExportDataPoint();
 		dataPoint.add(formatExportDataItem(languageService.getText(survey.getNames())));
 		
 		for (LocationLevel level : getLevels()){			
-			LocationEntity parent = locationService.getParentOfLevel(facility, level);
+			LocationEntity parent = locationService.getParentOfLevel(dataEntity, level);
 			if (parent != null) dataPoint.add(formatExportDataItem(languageService.getText(parent.getNames())));
 			else dataPoint.add("");
 		}
-		dataPoint.add(formatExportDataItem(languageService.getText(facility.getNames())));
-		dataPoint.add(formatExportDataItem(languageService.getText(facility.getType().getNames())));			
+		dataPoint.add(formatExportDataItem(languageService.getText(dataEntity.getNames())));
+		dataPoint.add(formatExportDataItem(languageService.getText(dataEntity.getType().getNames())));			
 		dataPoint.add(formatExportDataItem(languageService.getText(surveyProgram.getNames())));
 		dataPoint.add(formatExportDataItem(languageService.getText(surveySection.getNames())));		
 		dataPoint.add(formatExportDataItem(surveyQuestion.getType().toString()));

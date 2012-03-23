@@ -88,7 +88,6 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static final String PROVINCE = "Province"
 	static final String DISTRICT = "District"
 	static final String SECTOR = "Sector"
-	static final String FACILITY = "Facility"
 	
 	static final String RWANDA = "Rwanda"
 	static final String KIGALI_CITY = "Kigali City"
@@ -116,7 +115,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def setupLocationTree() {
-		// for the test environment, the facility level is set to 4
+		// for the test environment, the location level is set to 4
 		// so we create a tree accordingly
 		def hc = newDataEntityType(j(["en":HEALTH_CENTER_GROUP]), HEALTH_CENTER_GROUP);
 		def dh = newDataEntityType(j(["en":DISTRICT_HOSPITAL_GROUP]), DISTRICT_HOSPITAL_GROUP);
@@ -228,8 +227,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new SumPartialValue(data: sum, period: period, entity: entity, type: type, value: value).save(failOnError: true)
 	}
 	
-	static AveragePartialValue newAveragePartialValue(def average, def period, def entity, def type, def numberOfFacilities, def value) {
-		return new AveragePartialValue(data: average, period: period, entity: entity, type: type, numberOfFacilities: numberOfFacilities, value: value).save(failOnError: true)
+	static AveragePartialValue newAveragePartialValue(def average, def period, def entity, def type, def numberOfDataEntities, def value) {
+		return new AveragePartialValue(data: average, period: period, entity: entity, type: type, numberOfDataEntities: numberOfDataEntities, value: value).save(failOnError: true)
 	}
 	
 	static RawDataElement newRawDataElement(def code, def type) {

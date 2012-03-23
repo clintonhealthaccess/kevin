@@ -45,7 +45,6 @@ import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.TypeVisitor;
-import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormElementService;
@@ -79,7 +78,6 @@ public class SurveyPageService {
 	
 	private static Log log = LogFactory.getLog(SurveyPageService.class);
 	
-	private SurveyService surveyService;
 	private FormElementService formElementService;
 	private SurveyValueService surveyValueService;
 	private ValueService valueService;
@@ -253,91 +251,86 @@ public class SurveyPageService {
 	
 	@Transactional(readOnly = false)
 	public void refresh(CalculationEntity entity, Survey survey, boolean closeIfComplete) {
-		List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, null);
+		List<DataLocationEntity> dataEntities = entity.collectDataLocationEntities(null, null);
 		
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		for (DataLocationEntity facility : facilities) {
+		for (DataLocationEntity dataEntity : dataEntities) {
 			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
-			facility = (DataLocationEntity)sessionFactory.getCurrentSession().get(DataLocationEntity.class, facility.getId());
+			dataEntity = (DataLocationEntity)sessionFactory.getCurrentSession().get(DataLocationEntity.class, dataEntity.getId());
 
-			getMe().refreshSurveyForFacilityWithNewTransaction(facility, survey, closeIfComplete);
+			getMe().refreshSurveyForDataEntityWithNewTransaction(dataEntity, survey, closeIfComplete);
 			sessionFactory.getCurrentSession().clear();
 		}
 	}
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshSurveyForFacilityWithNewTransaction(DataLocationEntity facility, Survey survey, boolean closeIfComplete) {
-		refreshSurveyForFacility(facility, survey, closeIfComplete);
+	public void refreshSurveyForDataEntityWithNewTransaction(DataLocationEntity dataEntity, Survey survey, boolean closeIfComplete) {
+		refreshSurveyForDataEntity(dataEntity, survey, closeIfComplete);
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshSurveyForFacility(DataLocationEntity facility, Survey survey, boolean closeIfComplete) {
+	public void refreshSurveyForDataEntity(DataLocationEntity dataEntity, Survey survey, boolean closeIfComplete) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		Set<SurveyProgram> validPrograms = new HashSet<SurveyProgram>(survey.getPrograms(facility.getType()));
+		Set<SurveyProgram> validPrograms = new HashSet<SurveyProgram>(survey.getPrograms(dataEntity.getType()));
 		for (SurveyProgram program : survey.getPrograms()) {
-			if (validPrograms.contains(program)) refreshProgramForFacility(facility, program, closeIfComplete);
-			else deleteSurveyEnteredProgram(program, facility);
+			if (validPrograms.contains(program)) refreshProgramForDataEntity(dataEntity, program, closeIfComplete);
+			else deleteSurveyEnteredProgram(program, dataEntity);
 		}
 	}
 	
-	private void refreshProgramForFacility(DataLocationEntity facility, SurveyProgram program, boolean closeIfComplete) {
-		Set<SurveySection> validSections = new HashSet<SurveySection>(program.getSections(facility.getType()));
+	private void refreshProgramForDataEntity(DataLocationEntity dataEntity, SurveyProgram program, boolean closeIfComplete) {
+		Set<SurveySection> validSections = new HashSet<SurveySection>(program.getSections(dataEntity.getType()));
 		for (SurveySection section : program.getSections()) {
-			if (validSections.contains(section)) refreshSectionForFacility(facility, section);
-			else deleteSurveyEnteredSection(section, facility);
+			if (validSections.contains(section)) refreshSectionForDataEntity(dataEntity, section);
+			else deleteSurveyEnteredSection(section, dataEntity);
 		}
 		
-		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(facility, program);
-		setProgramStatus(enteredProgram, facility);
+		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataEntity, program);
+		setProgramStatus(enteredProgram, dataEntity);
 		if (closeIfComplete && enteredProgram.isComplete() && !enteredProgram.isInvalid()) enteredProgram.setClosed(true); 
 		surveyValueService.save(enteredProgram);
 	}
 	
-//	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
-//	public void refreshSectionForFacilityWithNewTransaction(DataLocationEntity facility, SurveySection section) {
-//		refreshSectionForFacility(facility, section);
-//	}
-	
 	@Transactional(readOnly = false)
-	public void refreshSectionForFacility(DataLocationEntity facility, SurveySection section) {
+	public void refreshSectionForDataEntity(DataLocationEntity dataEntity, SurveySection section) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(facility.getType()));
+		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(dataEntity.getType()));
 		for (SurveyQuestion question : section.getQuestions()) {
-			if (validQuestions.contains(question)) refreshQuestionForFacility(facility, question);
-			else deleteSurveyEnteredQuestion(question, facility);
+			if (validQuestions.contains(question)) refreshQuestionForDataEntity(dataEntity, question);
+			else deleteSurveyEnteredQuestion(question, dataEntity);
 		}
-		SurveyEnteredSection enteredSection = getSurveyEnteredSection(facility, section);
-		setSectionStatus(enteredSection, facility);
+		SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataEntity, section);
+		setSectionStatus(enteredSection, dataEntity);
 		surveyValueService.save(enteredSection);
 	}
 	
-	private void refreshQuestionForFacility(DataLocationEntity facility, SurveyQuestion question) {
-		Set<FormElement> validElements = new HashSet<FormElement>(question.getSurveyElements(facility.getType()));
+	private void refreshQuestionForDataEntity(DataLocationEntity dataEntity, SurveyQuestion question) {
+		Set<FormElement> validElements = new HashSet<FormElement>(question.getSurveyElements(dataEntity.getType()));
 		for (SurveyElement element : question.getSurveyElements()) {
-			if (validElements.contains(element)) refreshElementForFacility(facility, element);
-			else deleteSurveyEnteredValue(element, facility);
+			if (validElements.contains(element)) refreshElementForDataEntity(dataEntity, element);
+			else deleteSurveyEnteredValue(element, dataEntity);
 		}
 		
-		SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(facility, question);
-		setQuestionStatus(enteredQuestion, facility);
+		SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataEntity, question);
+		setQuestionStatus(enteredQuestion, dataEntity);
 		surveyValueService.save(enteredQuestion);
 	}
 	
-	private void refreshElementForFacility(DataLocationEntity facility, SurveyElement element) {
+	private void refreshElementForDataEntity(DataLocationEntity dataEntity, SurveyElement element) {
 		Survey survey = element.getSurvey();
 		
-		FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(facility, element);
-		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), facility, survey.getPeriod());
+		FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataEntity, element);
+		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), dataEntity, survey.getPeriod());
 		if (rawDataElementValue != null) enteredValue.setValue(rawDataElementValue.getValue());
 		else enteredValue.setValue(Value.NULL_INSTANCE());
 		if (survey.getLastPeriod() != null) {
-			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), facility, survey.getLastPeriod());
+			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), dataEntity, survey.getLastPeriod());
 			if (lastDataValue != null) enteredValue.setLastValue(lastDataValue.getValue());
 			else enteredValue.setLastValue(Value.NULL_INSTANCE());
 		}
@@ -665,10 +658,6 @@ public class SurveyPageService {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public void setSurveyService(SurveyService surveyService) {
-		this.surveyService = surveyService;
-	}
-
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;
 	}

@@ -53,7 +53,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	def expressionService;
 	def valueService;
 	
-	def "test normalized data elements at facility level"() {
+	def "test normalized data elements at data entity level"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -69,7 +69,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result.value == Value.NULL_INSTANCE()
 		result.status == Status.MISSING_DATA_ELEMENT
 		
-		when: "value is missing for facility"
+		when: "value is missing for data entity"
 		normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
 		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period)
 		
@@ -77,7 +77,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		result.value == Value.NULL_INSTANCE()
 		result.status == Status.MISSING_VALUE
 
-		when: "expression is missing for facility type"
+		when: "expression is missing for data entity type"
 		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(KIVUYE), period)
 				
 		then:
@@ -167,7 +167,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		s(result*.value).equals(s([v("2"), v("1")]))
 	}
 	
-	def "test sum with missing facility type"() {
+	def "test sum with missing data entity type"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()

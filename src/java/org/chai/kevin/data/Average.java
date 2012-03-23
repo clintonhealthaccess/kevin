@@ -68,11 +68,11 @@ public class Average extends Calculation<AveragePartialValue> {
 	@Override
 	public AveragePartialValue getCalculationPartialValue(String expression, Map<DataLocationEntity, StatusValuePair> values, CalculationEntity entity, Period period, DataEntityType type) {
 		Value value = getValue(values.values());
-		Integer numberOfFacilities = getNumberOfFacilities(values);
-		return new AveragePartialValue(this, entity, period, type, numberOfFacilities, value);
+		Integer numberOfDataEntities = getNumberOfDataEntities(values);
+		return new AveragePartialValue(this, entity, period, type, numberOfDataEntities, value);
 	}
 
-	private Integer getNumberOfFacilities(Map<DataLocationEntity, StatusValuePair> values) {
+	private Integer getNumberOfDataEntities(Map<DataLocationEntity, StatusValuePair> values) {
 		Integer result = 0;
 		for (Entry<DataLocationEntity, StatusValuePair> entry : values.entrySet()) {
 			if (!entry.getValue().value.isNull()) result++;

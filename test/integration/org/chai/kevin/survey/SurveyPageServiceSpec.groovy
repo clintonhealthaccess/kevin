@@ -287,7 +287,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		when:
-		surveyPageService.refreshSectionForFacility(DataLocationEntity.findByCode(KIVUYE), section)
+		surveyPageService.refreshSectionForDataEntity(DataLocationEntity.findByCode(KIVUYE), section)
 		
 		then:
 		FormEnteredValue.count() == 0
@@ -307,7 +307,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		
 		when:
 		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		surveyPageService.refreshSectionForFacility(DataLocationEntity.findByCode(KIVUYE), section)
+		surveyPageService.refreshSectionForDataEntity(DataLocationEntity.findByCode(KIVUYE), section)
 		
 		then:
 		FormEnteredValue.list()[0].value.equals(Value.NULL_INSTANCE())
@@ -328,7 +328,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(BUTARO), v("1"))
 		newSurveyEnteredSection(section, period, DataLocationEntity.findByCode(BUTARO), false, true)
 		newSurveyEnteredProgram(program, period, DataLocationEntity.findByCode(BUTARO), false, true, false)
-		surveyPageService.refreshSurveyForFacility(DataLocationEntity.findByCode(BUTARO), survey, false)
+		surveyPageService.refreshSurveyForDataEntity(DataLocationEntity.findByCode(BUTARO), survey, false)
 		sessionFactory.currentSession.flush()
 		
 		then:

@@ -364,7 +364,7 @@ class Initializer {
 					"funding_sources": Type.TYPE_MAP([
 						"general_fund": Type.TYPE_BOOL(),
 						"sources": Type.TYPE_MAP([
-							"facility": Type.TYPE_NUMBER(),
+							"location": Type.TYPE_NUMBER(),
 							"minisante": Type.TYPE_NUMBER(),
 							"hospital": Type.TYPE_NUMBER(),
 							"gfatm": Type.TYPE_NUMBER(),
@@ -720,7 +720,7 @@ class Initializer {
 					).save(failOnError: true)
 
 			new CostTarget(
-					names:j(["en":"Connecting Facilities to the Internet"]), code:"Connecting Facilities", descriptions:j(["en":"Connecting Facilities to the Internet"]),
+					names:j(["en":"Connecting Centers to the Internet"]), code:"Connecting Centers", descriptions:j(["en":"Connecting Facilities to the Internet"]),
 					program: ga,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
@@ -1160,7 +1160,7 @@ class Initializer {
 					"[_].funding_sources": j(["en":"Funding Sources"]),
 					"[_].funding_sources.general_fund": j(["en":"Funded by the general fund"]),
 					"[_].funding_sources.sources": j(["en":"Individual sources"]),
-					"[_].funding_sources.sources.facility": j(["en":"Facility"]),
+					"[_].funding_sources.sources.location": j(["en":"Facility"]),
 					"[_].funding_sources.sources.minisante": j(["en":"Minisanté"]),
 					"[_].funding_sources.sources.hospital": j(["en":"District hospital"]),
 					"[_].funding_sources.sources.gfatm": j(["en":"Global Fund"]),

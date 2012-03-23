@@ -51,12 +51,10 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationEntity;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.ibm.jaql.json.type.JsonValue;
 
 public class ExpressionService {
 
@@ -96,13 +94,13 @@ public class ExpressionService {
 		for (DataEntityType type : locationService.listTypes()) {
 			Set<DataEntityType> collectForType = new HashSet<DataEntityType>();
 			collectForType.add(type);
-			List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, collectForType);
+			List<DataLocationEntity> dataEntities = entity.collectDataLocationEntities(null, collectForType);
 			
-			if (!facilities.isEmpty()) {
+			if (!dataEntities.isEmpty()) {
 				Map<DataLocationEntity, StatusValuePair> values = new HashMap<DataLocationEntity, StatusValuePair>();
-				for (DataLocationEntity facility : facilities) {
-					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, facility, DataElement.class);
-					values.put(facility, statusValuePair);
+				for (DataLocationEntity dataEntity : dataEntities) {
+					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, dataEntity, DataElement.class);
+					values.put(dataEntity, statusValuePair);
 				}
 				result.add(calculation.getCalculationPartialValue(expression, values, entity, period, type));
 			}
@@ -111,21 +109,21 @@ public class ExpressionService {
 	}
 	
 	@Transactional(readOnly=true)
-	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, DataLocationEntity facility, Period period) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",facility="+facility+")");
+	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, DataLocationEntity dataEntity, Period period) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",dataEntity="+dataEntity+")");
 		
-		String expression = normalizedDataElement.getExpression(period, facility.getType().getCode());
+		String expression = normalizedDataElement.getExpression(period, dataEntity.getType().getCode());
 		
-		StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, facility, RawDataElement.class);
-		NormalizedDataElementValue expressionValue = new NormalizedDataElementValue(statusValuePair.value, statusValuePair.status, facility, normalizedDataElement, period);
+		StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, dataEntity, RawDataElement.class);
+		NormalizedDataElementValue expressionValue = new NormalizedDataElementValue(statusValuePair.value, statusValuePair.status, dataEntity, normalizedDataElement, period);
 		
 		if (log.isDebugEnabled()) log.debug("getValue()="+expressionValue);
 		return expressionValue;
 	}
 
-	// location has to be a facility
-	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataLocationEntity facility, Class<T> clazz) {
-		if (expressionLog.isInfoEnabled()) expressionLog.info("getting expression status-value for: expression={"+expression+"}, type={"+type+"}, period={"+period+"}, facility={"+facility+"}");
+	// location has to be a dataEntity
+	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataLocationEntity dataEntity, Class<T> clazz) {
+		if (expressionLog.isInfoEnabled()) expressionLog.info("getting expression status-value for: expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataEntity={"+dataEntity+"}");
 		
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null) {
@@ -144,7 +142,7 @@ public class ExpressionService {
 				Map<String, Type> typeMap = new HashMap<String, Type>();
 				
 				for (Entry<String, T> entry : datas.entrySet()) {
-					DataValue dataValue = valueService.getDataElementValue(entry.getValue(), facility, period);
+					DataValue dataValue = valueService.getDataElementValue(entry.getValue(), dataEntity, period);
 					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
 				}
@@ -161,7 +159,7 @@ public class ExpressionService {
 						statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
 						statusValuePair.status = Status.VALID;
 					} catch (IllegalArgumentException e) {
-						if (expressionLog.isErrorEnabled()) expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, facility={"+facility+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
+						if (expressionLog.isErrorEnabled()) expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataEntity={"+dataEntity+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
 						log.warn("there was an error evaluating expression: "+expression, e);
 						statusValuePair.value = Value.NULL_INSTANCE();
 						statusValuePair.status = Status.ERROR;

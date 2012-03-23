@@ -51,17 +51,16 @@ public class InfoService {
 
 	private ValueService valueService;
 	private ExpressionService expressionService;
-	private LocationService locationService;
 	
-	public NormalizedDataElementInfo getNormalizedDataElementInfo(NormalizedDataElement normalizedDataElement, DataLocationEntity facility, Period period) {
+	public NormalizedDataElementInfo getNormalizedDataElementInfo(NormalizedDataElement normalizedDataElement, DataLocationEntity dataEntity, Period period) {
 		NormalizedDataElementInfo info = null;
-		NormalizedDataElementValue expressionValue = valueService.getDataElementValue(normalizedDataElement, facility, period);
+		NormalizedDataElementValue expressionValue = valueService.getDataElementValue(normalizedDataElement, dataEntity, period);
 		if (expressionValue != null) {
 			Map<RawDataElement, RawDataElementValue> dataValues = new HashMap<RawDataElement, RawDataElementValue>();
 			List<RawDataElement> dataElements = new ArrayList<RawDataElement>();
-			for (Entry<String, RawDataElement> entry : expressionService.getDataInExpression(normalizedDataElement.getExpression(period, facility.getType().getCode()), RawDataElement.class).entrySet()) {
+			for (Entry<String, RawDataElement> entry : expressionService.getDataInExpression(normalizedDataElement.getExpression(period, dataEntity.getType().getCode()), RawDataElement.class).entrySet()) {
 				if (entry.getValue() != null) {
-					dataValues.put(entry.getValue(), valueService.getDataElementValue(entry.getValue(), facility, period));
+					dataValues.put(entry.getValue(), valueService.getDataElementValue(entry.getValue(), dataEntity, period));
 					dataElements.add(entry.getValue());
 				}
 			}
@@ -74,7 +73,7 @@ public class InfoService {
 		CalculationInfo info = null;
 		CalculationValue<?> calculationValue = valueService.getCalculationValue(calculation, entity, period, types);
 		if (calculationValue != null) {
-			List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, types);
+			List<DataLocationEntity> dataEntities = entity.collectDataLocationEntities(null, types);
 			Map<String, DataElement> dataMap = expressionService.getDataInExpression(calculation.getExpression(), DataElement.class);
 			List<DataElement<?>> dataElements = new ArrayList<DataElement<?>>();
 			for (DataElement<?> value : dataMap.values()) {
@@ -83,17 +82,17 @@ public class InfoService {
 			
 			Map<CalculationEntity, CalculationValue<?>> calculationValues = new HashMap<CalculationEntity, CalculationValue<?>>();
 			Map<DataLocationEntity, Map<DataElement<?>, DataValue>> values = new HashMap<DataLocationEntity, Map<DataElement<?>,DataValue>>();
-			for (DataLocationEntity facility : facilities) {
-				if (types.contains(facility.getType())) {
-					calculationValues.put(facility, valueService.getCalculationValue(calculation, facility, period, types));
+			for (DataLocationEntity dataEntity : dataEntities) {
+				if (types.contains(dataEntity.getType())) {
+					calculationValues.put(dataEntity, valueService.getCalculationValue(calculation, dataEntity, period, types));
 					Map<DataElement<?>, DataValue> data = new HashMap<DataElement<?>, DataValue>();
 					for (DataElement<?> dataElement : dataElements) {
-						data.put(dataElement, valueService.getDataElementValue(dataElement, facility, period));
+						data.put(dataElement, valueService.getDataElementValue(dataElement, dataEntity, period));
 					}
-					values.put(facility, data);
+					values.put(dataEntity, data);
 				}
 			}
-			info = new CalculationInfo(calculation, calculationValue, facilities, dataElements, values, calculationValues);
+			info = new CalculationInfo(calculation, calculationValue, dataEntities, dataElements, values, calculationValues);
 		}
 		
 		return info;
@@ -105,10 +104,6 @@ public class InfoService {
 	
 	public void setExpressionService(ExpressionService expressionService) {
 		this.expressionService = expressionService;
-	}
-	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
 	}
 	
 }

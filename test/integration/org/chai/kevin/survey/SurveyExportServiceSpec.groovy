@@ -80,7 +80,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","NUMBER","question","10.0"])
 	}
 	
-	def "test for export survey with facility not attached to lowest level"(){
+	def "test for export survey with data entity not attached to lowest level"(){
 		setup:
 		setupLocationTree()
 		def dataLocation = newDataLocationEntity(j(["en":"Test"]), "TEST", LocationEntity.findByCode(NORTH), DataEntityType.findByCode(HEALTH_CENTER_GROUP))

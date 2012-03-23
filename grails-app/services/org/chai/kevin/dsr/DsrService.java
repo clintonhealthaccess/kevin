@@ -12,12 +12,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
@@ -45,14 +44,14 @@ public class DsrService {
 	public DsrTable getDsrTable(LocationEntity location, ReportProgram program, Period period, Set<DataEntityType> types, DsrTargetCategory category) {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",program="+program+",types="+types+",category="+category+")");
 				
-		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, types);		
+		List<DataLocationEntity> dataEntities = location.collectDataLocationEntities(null, types);		
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, program);
 		
 		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();				
 		
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
-		if(facilities.isEmpty() || targets.isEmpty())
+		if(dataEntities.isEmpty() || targets.isEmpty())
 			return new DsrTable(valueMap, targets, targetCategories);		
 		
 		List<DsrTarget> categoryTargets = new ArrayList<DsrTarget>();
@@ -65,12 +64,12 @@ public class DsrService {
 				targets = categoryTargets;
 		}				
 		
-		for (DataLocationEntity facility : facilities) {
+		for (DataLocationEntity dataEntity : dataEntities) {
 			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
 			for (DsrTarget target : targets) {
-				targetMap.put(target, getDsrValue(target, facility, period));
+				targetMap.put(target, getDsrValue(target, dataEntity, period));
 			}
-			valueMap.put(facility, targetMap);
+			valueMap.put(dataEntity, targetMap);
 		}				
 			
 		targetCategories = getTargetCategories(program);
@@ -80,12 +79,12 @@ public class DsrService {
 		return dsrTable;
 	}
 
-	private ReportValue getDsrValue(DsrTarget target, DataLocationEntity facility, Period period){
+	private ReportValue getDsrValue(DsrTarget target, DataLocationEntity dataEntity, Period period){
 		String value = null;
 		
 		Set<String> targetUuids = Utils.split(target.getTypeCodeString());
-		if (targetUuids.contains(facility.getType().getCode())) {
-			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), facility, period);
+		if (targetUuids.contains(dataEntity.getType().getCode())) {
+			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), dataEntity, period);
 			
 			if (dataValue != null && !dataValue.getValue().isNull()) {
 				// TODO put this in templates ?

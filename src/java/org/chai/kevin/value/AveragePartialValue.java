@@ -23,25 +23,25 @@ import org.hisp.dhis.period.Period;
 )
 public class AveragePartialValue extends CalculationPartialValue {
 
-	private Integer numberOfFacilities;
+	private Integer numberOfDataEntities;
 	private Average data;
 	
 	public AveragePartialValue() {
 		super();
 	}
 
-	public AveragePartialValue(Average data, CalculationEntity entity, Period period, DataEntityType type, Integer numberOfFacilities, Value value) {
+	public AveragePartialValue(Average data, CalculationEntity entity, Period period, DataEntityType type, Integer numberOfDataEntities, Value value) {
 		super(entity, period, type, value);
 		
 		this.data = data;
-		this.numberOfFacilities = numberOfFacilities;
+		this.numberOfDataEntities = numberOfDataEntities;
 	}
 
-	public AveragePartialValue(Average data, CalculationEntity entity, Period period, DataEntityType type, Integer numberOfFacilities) {
+	public AveragePartialValue(Average data, CalculationEntity entity, Period period, DataEntityType type, Integer numberOfDataEntities) {
 		super(entity, period, type);
 		
 		this.data = data;
-		this.numberOfFacilities = numberOfFacilities;
+		this.numberOfDataEntities = numberOfDataEntities;
 	}
 
 	@Override
@@ -58,12 +58,12 @@ public class AveragePartialValue extends CalculationPartialValue {
 	
 	@Basic
 	@Column(nullable=false)
-	public Integer getNumberOfFacilities() {
-		return numberOfFacilities;
+	public Integer getNumberOfDataEntities() {
+		return numberOfDataEntities;
 	}
 	
-	public void setNumberOfFacilities(Integer numberOfFacilities) {
-		this.numberOfFacilities = numberOfFacilities;
+	public void setNumberOfDataEntities(Integer numberOfDataEntities) {
+		this.numberOfDataEntities = numberOfDataEntities;
 	}
 
 	@Override

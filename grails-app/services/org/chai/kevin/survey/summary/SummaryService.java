@@ -55,7 +55,7 @@ public class SummaryService {
 	
 	@Transactional(readOnly = true)
 	public SurveySummaryPage getSurveySummaryPage(LocationEntity location, Survey survey) {
-		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, null);
+		List<DataLocationEntity> dataEntities = location.collectDataLocationEntities(null, null);
 		
 		Map<DataEntityType, List<SurveyProgram>> programMap = new HashMap<DataEntityType, List<SurveyProgram>>();
 		Map<DataEntityType, List<SurveyQuestion>> questionMap = new HashMap<DataEntityType, List<SurveyQuestion>>();
@@ -65,77 +65,77 @@ public class SummaryService {
 		
 		Integer totalQuestions = 0;
 		Integer totalAnsweredQuestions = 0;
-		for (DataLocationEntity facility : facilities) {
-			if (!programMap.containsKey(facility.getType())) {
-				programMap.put(facility.getType(), survey.getPrograms(facility.getType()));
+		for (DataLocationEntity dataEntity : dataEntities) {
+			if (!programMap.containsKey(dataEntity.getType())) {
+				programMap.put(dataEntity.getType(), survey.getPrograms(dataEntity.getType()));
 			}
-			Integer submittedPrograms = surveyValueService.getNumberOfSurveyEnteredPrograms(survey, facility, true, null, null);
+			Integer submittedPrograms = surveyValueService.getNumberOfSurveyEnteredPrograms(survey, dataEntity, true, null, null);
 			
-			if (!questionMap.containsKey(facility.getType())) {
+			if (!questionMap.containsKey(dataEntity.getType())) {
 				List<SurveyQuestion> questions = new ArrayList<SurveyQuestion>();
-				for (SurveyProgram program : programMap.get(facility.getType())) {
-					questions.addAll(program.getQuestions(facility.getType()));				
+				for (SurveyProgram program : programMap.get(dataEntity.getType())) {
+					questions.addAll(program.getQuestions(dataEntity.getType()));				
 				}
-				questionMap.put(facility.getType(), questions);
+				questionMap.put(dataEntity.getType(), questions);
 			}
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, facility, null, null, true, false, true);
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(survey, dataEntity, null, null, true, false, true);
 			
-			QuestionSummary questionSummary = new QuestionSummary(questionMap.get(facility.getType()).size(), completedQuestions);
-			ProgramSummary programSummary = new ProgramSummary(programMap.get(facility.getType()).size(), submittedPrograms);
+			QuestionSummary questionSummary = new QuestionSummary(questionMap.get(dataEntity.getType()).size(), completedQuestions);
+			ProgramSummary programSummary = new ProgramSummary(programMap.get(dataEntity.getType()).size(), submittedPrograms);
 			
-			questionSummaryMap.put(facility, questionSummary);
-			programSummaryMap.put(facility, programSummary);
+			questionSummaryMap.put(dataEntity, questionSummary);
+			programSummaryMap.put(dataEntity, programSummary);
 			
-			totalQuestions += questionMap.get(facility.getType()).size();
+			totalQuestions += questionMap.get(dataEntity.getType()).size();
 			totalAnsweredQuestions += completedQuestions;
 		}
-		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap, programSummaryMap);
+		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), dataEntities, questionSummaryMap, programSummaryMap);
 	}
 	
 	@Transactional(readOnly = true)
 	public SurveySummaryPage getProgramSummaryPage(LocationEntity location, SurveyProgram program) {
-		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, null);
+		List<DataLocationEntity> dataEntities = location.collectDataLocationEntities(null, null);
 
 		Map<DataLocationEntity, SurveyEnteredProgram> enteredProgramMap = new HashMap<DataLocationEntity, SurveyEnteredProgram>();
 		Map<DataLocationEntity, QuestionSummary> questionSummaryMap = new HashMap<DataLocationEntity, QuestionSummary>();
 		
 		Integer totalQuestions = 0;
 		Integer totalAnsweredQuestions = 0;
-		for (DataLocationEntity facility : facilities) {
-			SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, facility);
-			List<SurveyQuestion> questions = program.getQuestions(facility.getType());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(program.getSurvey(), facility, program, null, true, false, true);
+		for (DataLocationEntity dataEntity : dataEntities) {
+			SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, dataEntity);
+			List<SurveyQuestion> questions = program.getQuestions(dataEntity.getType());
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(program.getSurvey(), dataEntity, program, null, true, false, true);
 			
 			QuestionSummary questionSummary = new QuestionSummary(questions.size(), completedQuestions);
 			
-			enteredProgramMap.put(facility, enteredProgram);
-			questionSummaryMap.put(facility, questionSummary);
+			enteredProgramMap.put(dataEntity, enteredProgram);
+			questionSummaryMap.put(dataEntity, questionSummary);
 			
 			totalQuestions += questions.size();
 			totalAnsweredQuestions += completedQuestions;
 		}
-		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap, enteredProgramMap, true);
+		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), dataEntities, questionSummaryMap, enteredProgramMap, true);
 	}
 	
 	@Transactional(readOnly = true)
 	public SurveySummaryPage getSectionSummaryPage(LocationEntity location, SurveySection section) {
-		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, null);
+		List<DataLocationEntity> dataEntities = location.collectDataLocationEntities(null, null);
 
 		Map<DataLocationEntity, QuestionSummary> questionSummaryMap = new HashMap<DataLocationEntity, QuestionSummary>();
 		
 		Integer totalQuestions = 0;
 		Integer totalAnsweredQuestions = 0;
-		for (DataLocationEntity facility : facilities) {
-			List<SurveyQuestion> questions = section.getQuestions(facility.getType());
-			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(section.getSurvey(), facility, null, section, true, false, true);
+		for (DataLocationEntity dataEntity : dataEntities) {
+			List<SurveyQuestion> questions = section.getQuestions(dataEntity.getType());
+			Integer completedQuestions = surveyValueService.getNumberOfSurveyEnteredQuestions(section.getSurvey(), dataEntity, null, section, true, false, true);
 			
 			QuestionSummary questionSummary = new QuestionSummary(questions.size(), completedQuestions);
-			questionSummaryMap.put(facility, questionSummary);
+			questionSummaryMap.put(dataEntity, questionSummary);
 			
 			totalQuestions += questions.size();
 			totalAnsweredQuestions += completedQuestions;
 		}
-		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), facilities, questionSummaryMap);		
+		return new SurveySummaryPage(new QuestionSummary(totalQuestions, totalAnsweredQuestions), dataEntities, questionSummaryMap);		
 	}
 	
 	public void setSurveyValueService(SurveyValueService surveyValueService) {

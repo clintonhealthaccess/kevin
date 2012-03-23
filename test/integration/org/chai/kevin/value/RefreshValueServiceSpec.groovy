@@ -90,7 +90,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		!normalizedDataElement.calculated.equals(calculated)
 	}
 	
-	def "test normalized data elements not calculated at non-facility level"() {
+	def "test normalized data elements not calculated at non-data-entity level"() {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
