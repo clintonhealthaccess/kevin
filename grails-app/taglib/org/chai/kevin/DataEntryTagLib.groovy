@@ -136,7 +136,7 @@ class DataEntryTagLib {
 			if (id != null) {
 				FormElement element = elements[id];
 				String replacement =
-					'<a href="'+createLink(controller: "formElement", action: "view", params: [id:element.id, dataLocation:location.id])+'">'+(text!=null?text:element.id)+'</a>'
+					'<a href="'+createLink(controller: "formElement", action: "view", params: [id:element.id,location:location.id])+'">'+(text!=null?text:element.id)+'</a>'
 				result = StringUtils.replace(result, "{"+placeholder+"}", replacement);
 			}
 		}

@@ -12,7 +12,7 @@ class ChartController extends AbstractController {
 	def chart = {
 		if (log.isDebugEnabled()) log.debug("chart.chart, params:"+params)
 	
-		DataLocation dataLocation = DataLocation.int('dataLocation')
+		DataLocation dataLocation = DataLocation.int('location')
 		Data data = dataService.getData(params.long('data'))
 		
 		Chart chart = chartService.getChart(data, location)
