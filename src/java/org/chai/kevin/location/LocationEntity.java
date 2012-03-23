@@ -62,7 +62,7 @@ public class LocationEntity extends CalculationEntity {
 		this.dataLocationEntities = dataLocationEntities;
 	}			
 	
-	//gets all location entity children
+	//gets all location children
 	@Override
 	public List<LocationEntity> getChildren(Set<LocationLevel> skipLevels) {		
 		List<LocationEntity> result = new ArrayList<LocationEntity>();
@@ -75,9 +75,9 @@ public class LocationEntity extends CalculationEntity {
 		return result;
 	}
 
-	//gets all data location entities
+	//gets all data locations
 	@Override
-	public List<DataLocationEntity> getDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
+	public List<DataLocationEntity> getDataLocations(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
 		List<DataLocationEntity> result = new ArrayList<DataLocationEntity>();
 		
 		List<DataLocationEntity> dataEntities = getDataEntities();
@@ -88,25 +88,25 @@ public class LocationEntity extends CalculationEntity {
 		
 		for (LocationEntity child : children) {
 			if (skipLevels != null && skipLevels.contains(child.getLevel())) {
-				result.addAll(child.getDataEntities(skipLevels, types));
+				result.addAll(child.getDataLocations(skipLevels, types));
 			}
 		}
 		
 		return result;				
 	}
 			
-	//gets all location entity children and data location entities
+	//gets all location children and data locations
 	@Transient
 	public List<CalculationEntity> getChildrenEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
 		List<CalculationEntity> result = new ArrayList<CalculationEntity>();
 		result.addAll(getChildren(skipLevels));
-		result.addAll(getDataEntities(skipLevels, types));
+		result.addAll(getDataLocations(skipLevels, types));
 		return result;
 	}
 	
-	//gets all location entity children and data location entities (that have data entities)
+	//gets all location children and data locations (that have data locations)
 	@Transient
-	public List<CalculationEntity> getChildrenEntitiesWithDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
+	public List<CalculationEntity> getChildrenEntitiesWithDataLocations(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
 		List<CalculationEntity> result = new ArrayList<CalculationEntity>();
 		
 		List<LocationEntity> locationChildren = getChildren(skipLevels);
@@ -116,11 +116,11 @@ public class LocationEntity extends CalculationEntity {
 				result.add(locationChild);	
 		}
 		
-		result.addAll(getDataEntities(skipLevels, types));
+		result.addAll(getDataLocations(skipLevels, types));
 		return result;
 	}
 	
-	//gets all location entity children, grandchildren, etc (that have data entities)
+	//gets all location children, grandchildren, etc (that have data locations)
 	public List<LocationEntity> collectTreeWithDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
 		List<LocationEntity> locations = new ArrayList<LocationEntity>();
 		collectLocations(locations, null, skipLevels, types);

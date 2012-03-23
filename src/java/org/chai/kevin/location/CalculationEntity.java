@@ -80,7 +80,7 @@ public abstract class CalculationEntity {
 	public abstract List<DataLocationEntity> getDataEntities();
 	
 	@Transient
-	public abstract List<DataLocationEntity> getDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types);		
+	public abstract List<DataLocationEntity> getDataLocations(Set<LocationLevel> skipLevels, Set<DataEntityType> types);		
 	
 	@Transient
 	public abstract List<LocationEntity> getChildren();
@@ -94,7 +94,7 @@ public abstract class CalculationEntity {
 			result = result | child.collectLocations(locations, dataLocations, skipLevels, types);
 		}
 	
-		List<DataLocationEntity> dataEntities = getDataEntities(skipLevels, types);
+		List<DataLocationEntity> dataEntities = getDataLocations(skipLevels, types);
 		if (!dataEntities.isEmpty()) {
 			result = true;
 			if (dataLocations != null) dataLocations.addAll(dataEntities);
