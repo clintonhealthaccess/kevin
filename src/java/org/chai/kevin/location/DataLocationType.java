@@ -1,8 +1,5 @@
 package org.chai.kevin.location;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -11,24 +8,20 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name="LocationLevel")
-@Table(name="dhsst_location_location_level")
+@Entity(name="DataLocationType")
+@Table(name="dhsst_location_data_location_type")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class LocationLevel extends Orderable<Integer> {
+public class DataLocationType {
 
 	private Long id;
 	private String code;
-	private Integer order;
 	private Translation names = new Translation();
-	private List<Location> locations = new ArrayList<Location>();
 	
 	@Id
 	@GeneratedValue
@@ -38,6 +31,15 @@ public class LocationLevel extends Orderable<Integer> {
 	
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@Basic
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	@Embedded
@@ -50,35 +52,6 @@ public class LocationLevel extends Orderable<Integer> {
 	
 	public void setNames(Translation names) {
 		this.names = names;
-	}
-	
-	@Basic
-	public String getCode() {
-		return code;
-	}
-	
-	public void setCode(String code) {
-		this.code = code;
-	}
-	
-	@OneToMany(targetEntity=Location.class, mappedBy="level")
-	public List<Location> getLocations() {
-		return locations;
-	}
-	
-	public void setLocations(List<Location> locations) {
-		this.locations = locations;
-	}
-
-	@Basic
-	@Override
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	
-	public void setOrder(Integer order) {
-		this.order = order;
 	}
 
 	@Override
@@ -95,9 +68,9 @@ public class LocationLevel extends Orderable<Integer> {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof LocationLevel))
+		if (!(obj instanceof DataLocationType))
 			return false;
-		LocationLevel other = (LocationLevel) obj;
+		DataLocationType other = (DataLocationType) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;
@@ -108,7 +81,7 @@ public class LocationLevel extends Orderable<Integer> {
 
 	@Override
 	public String toString() {
-		return "LocationLevel [code=" + code + "]";
+		return "DataLocationType [code=" + code + "]";
 	}
 	
 }

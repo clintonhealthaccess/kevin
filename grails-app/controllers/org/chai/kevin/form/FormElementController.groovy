@@ -14,7 +14,7 @@ class FormElementController {
 		// TODO make this method generic, it shouldn't contain any reference to SurveyElement
 		
 		def element = formElementService.getFormElement(params.int('id'))
-		def location = DataLocation.get(params.int('location'))
+		def dataLocation = DataLocation.get(params.int('dataLocation'))
 
 		// TODO make this better the survey element should generate it's own link?
 		// then we can make a PlanningElement that links to a planning form		
