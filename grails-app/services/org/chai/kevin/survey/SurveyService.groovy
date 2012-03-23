@@ -34,7 +34,7 @@ import java.util.Set
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataEntityType
+import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.util.Utils
 import org.hibernate.FlushMode
 import org.hibernate.criterion.MatchMode
@@ -193,12 +193,12 @@ class SurveyService {
 		return criteria
 	}
 	
-	Integer getNumberOfApplicableDataEntityTypes(SurveyElement surveyElement) {
+	Integer getNumberOfApplicableDataLocationTypes(SurveyElement surveyElement) {
 		Set<String> typeCodes = surveyElement.getTypeApplicable();
 		int number = 0;
 		for (String typeCode : typeCodes) {
-			DataEntityType type = locationService.findDataEntityTypeByCode(typeCode);
-			if (type != null) number += locationService.getNumberOfDataEntitiesForType(type)
+			DataLocationType type = locationService.findDataLocationTypeByCode(typeCode);
+			if (type != null) number += locationService.getNumberOfDataLocationsForType(type)
 		}
 		return number;
 	}

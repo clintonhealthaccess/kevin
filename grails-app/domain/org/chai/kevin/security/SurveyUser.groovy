@@ -1,19 +1,19 @@
 package org.chai.kevin.security
 
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 
 class SurveyUser extends User {
 
 	// TODO assign several surveys to a user
 	// instead of an location unit
-	Long entityId;
+	Long dataLocationId;
 
 	def getDataLocation () {
-		return DataLocationEntity.get(entityId)
+		return DataLocation.get(dataLocationId)
 	}
 	
 	static constraints = {
-		entityId (nullable: false)	
+		dataLocationId (nullable: false)	
 	}
 	
 }

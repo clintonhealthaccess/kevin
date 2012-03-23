@@ -27,7 +27,7 @@
  */
 package org.chai.kevin.survey
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
@@ -58,7 +58,7 @@ class SectionController extends AbstractEntityController {
 		[
 			section: entity,
 			programs: entity.program.survey.programs,
-			types: DataEntityType.list()
+			types: DataLocationType.list()
 		]
 	}
 

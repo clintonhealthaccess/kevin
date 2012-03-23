@@ -4,8 +4,8 @@ import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.NormalizedDataElementController;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
 
@@ -22,7 +22,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		normalizedDataElementController = new NormalizedDataElementController()
 		
 		when:
-		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.VALID, v("1"))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		normalizedDataElementController.params.id = normalizedDataElement.id
 		normalizedDataElementController.delete()
 		
@@ -54,7 +54,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.VALID, v("1"))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		normalizedDataElementController = new NormalizedDataElementController()
 		
 		when:
@@ -100,7 +100,7 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		setup:
 		def period1 = newPeriod()
 		def period2 = newPeriod()
-		def type1 = newDataEntityType("type1")
+		def type1 = newDataLocationType("type1")
 		normalizedDataElementController = new NormalizedDataElementController()
 
 		when:
@@ -121,8 +121,8 @@ class NormalizedDataElementControllerSpec extends IntegrationTests {
 		def period1 = newPeriod()
 		def period2 = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
-		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period1, Status.ERROR, v("1"))
-		newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period2, Status.VALID, v("1"))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period1, Status.ERROR, v("1"))
+		newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period2, Status.VALID, v("1"))
 		normalizedDataElementController = new NormalizedDataElementController()
 		
 		when:

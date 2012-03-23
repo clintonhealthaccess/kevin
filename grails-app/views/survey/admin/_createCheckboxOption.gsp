@@ -20,7 +20,7 @@
 				</div>
 	
 				<g:input name="order" label="${message(code:'entity.order.label')}" bean="${option}" field="order"/>
-				<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${option}" field="typeCodeString" 
+				<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${option}" field="typeCodeString" 
 					from="${types}" value="${option.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 	
 				<g:if test="${option.id != null}">

@@ -1,11 +1,11 @@
 package org.chai.kevin.value;
 
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.CalculationLocation;
 import org.hisp.dhis.period.Period;
 
 public interface DataValue {
 
-	public abstract CalculationEntity getEntity();
+	public abstract CalculationLocation getLocation();
 
 	public abstract Period getPeriod();
 

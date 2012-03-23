@@ -42,14 +42,14 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.Data;
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.CalculationLocation;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
 public abstract class StoredValue implements DataValue {
 
-	protected CalculationEntity entity;
+	protected CalculationLocation location;
 	protected Period period;
 	protected Value value;
 
@@ -59,8 +59,8 @@ public abstract class StoredValue implements DataValue {
 		// default constructor for hibernate
 	}
 	
-	public StoredValue(CalculationEntity entity, Period period, Value value) {
-		this.entity = entity;
+	public StoredValue(CalculationLocation location, Period period, Value value) {
+		this.location = location;
 		this.period = period;
 		this.value = value;
 	}
@@ -70,14 +70,14 @@ public abstract class StoredValue implements DataValue {
 	 */
 	@Override
 	@NaturalId
-	@ManyToOne(targetEntity=CalculationEntity.class, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=CalculationLocation.class, fetch=FetchType.LAZY)
 	@JoinColumn(nullable=false)
-	public CalculationEntity getEntity() {
-		return entity;
+	public CalculationLocation getLocation() {
+		return location;
 	}
 	
-	public void setEntity(CalculationEntity entity) {
-		this.entity = entity;
+	public void setLocation(CalculationLocation location) {
+		this.location = location;
 	}
 	
 	/* (non-Javadoc)
@@ -136,7 +136,7 @@ public abstract class StoredValue implements DataValue {
 		int result = 1;
 		result = prime
 				* result
-				+ ((getEntity() == null) ? 0 : getEntity().hashCode());
+				+ ((getLocation() == null) ? 0 : getLocation().hashCode());
 		result = prime * result + ((getPeriod() == null) ? 0 : getPeriod().getId().intValue());
 		return result;
 	}
@@ -150,10 +150,10 @@ public abstract class StoredValue implements DataValue {
 		if (!(obj instanceof StoredValue))
 			return false;
 		DataValue other = (DataValue) obj;
-		if (getEntity() == null) {
-			if (other.getEntity() != null)
+		if (getLocation() == null) {
+			if (other.getLocation() != null)
 				return false;
-		} else if (!getEntity().equals(other.getEntity()))
+		} else if (!getLocation().equals(other.getLocation()))
 			return false;
 		if (getPeriod() == null) {
 			if (other.getPeriod() != null)

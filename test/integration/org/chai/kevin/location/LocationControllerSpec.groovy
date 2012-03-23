@@ -12,41 +12,41 @@ class LocationControllerSpec extends IntegrationTests {
 		locationController = new LocationController()
 		
 		when:
-		locationController.params.id = LocationEntity.findByCode(RWANDA).id
+		locationController.params.id = Location.findByCode(RWANDA).id
 		locationController.delete()
 		
 		then:
-		LocationEntity.findByCode(RWANDA) != null
-		LocationEntity.count() == 3
+		Location.findByCode(RWANDA) != null
+		Location.count() == 3
 	}
 	
-	def "test cannot delete when data entities"() {
+	def "test cannot delete when data locations"() {
 		setup:
 		setupLocationTree()
 		locationController = new LocationController()
 		
 		when:
-		locationController.params.id = LocationEntity.findByCode(BURERA).id
+		locationController.params.id = Location.findByCode(BURERA).id
 		locationController.delete()
 		
 		then:
-		LocationEntity.findByCode(BURERA) != null
-		LocationEntity.count() == 3
+		Location.findByCode(BURERA) != null
+		Location.count() == 3
 	}
 	
 	def "test can delete when no children"() {
 		setup:
 		def country = newLocationLevel(COUNTRY, 1)
-		newLocationEntity(RWANDA, country)
+		newLocation(RWANDA, country)
 		locationController = new LocationController()
 		
 		when:
-		locationController.params.id = LocationEntity.findByCode(RWANDA).id
+		locationController.params.id = Location.findByCode(RWANDA).id
 		locationController.delete()
 		
 		then:
-		LocationEntity.findByCode(RWANDA) == null
-		LocationEntity.count() == 0
+		Location.findByCode(RWANDA) == null
+		Location.count() == 0
 	}
 	
 }

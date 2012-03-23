@@ -34,9 +34,9 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.CalculationPartialValue;
@@ -75,7 +75,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def calculated = new Date()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
-		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period, Status.VALID, Value.NULL_INSTANCE())
+		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.NULL_INSTANCE())
 		def timestamp = normalizedDataElementValue.timestamp
 		
 		then:
@@ -90,7 +90,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		!normalizedDataElement.calculated.equals(calculated)
 	}
 	
-	def "test normalized data elements not calculated at non-facility level"() {
+	def "test normalized data elements not calculated at non-data-location level"() {
 		when:
 		setupLocationTree()
 		def period = newPeriod()
@@ -126,7 +126,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def period = newPeriod()
 		def calculated = new Date()
 		def average = newAverage("1", CODE(2), calculated)
-		def partialValue = newAveragePartialValue(average, period, LocationEntity.findByCode(BURERA), DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
+		def partialValue = newAveragePartialValue(average, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		def timestamp = partialValue.timestamp
 		
 		then:

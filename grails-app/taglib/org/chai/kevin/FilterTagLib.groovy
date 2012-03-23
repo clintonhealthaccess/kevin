@@ -29,18 +29,18 @@ package org.chai.kevin
  */
 
 import org.chai.kevin.LocationService;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.fct.FctTarget;
-import org.chai.kevin.location.DataLocationEntity
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.hisp.dhis.period.Period;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 
 class FilterTagLib {
 
@@ -78,11 +78,11 @@ class FilterTagLib {
 	}
 		
 	def locationFilter = {attrs, body ->
-		LocationEntity.withTransaction {
+		Location.withTransaction {
 			def model = new HashMap(attrs)
 			def location = attrs['selected']
 			def locationFilterRoot = locationService.getRootLocation()	
-			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(attrs['skipLevels'], null)
+			def locationFilterTree = locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], null)
 			model << 
 				[
 					currentLocation: location,
@@ -94,16 +94,16 @@ class FilterTagLib {
 		}
 	}
 	
-	def locationTypeFilter = {attrs, body ->
-		DataEntityType.withTransaction {
+	def dataLocationTypeFilter = {attrs, body ->
+		DataLocationType.withTransaction {
 			def model = new HashMap(attrs)
 			model << 
 				[
 					currentLocationTypes: attrs['selected'],
-					locationTypes: DataEntityType.list()					
+					dataLocationTypes: DataLocationType.list()					
 				]
 			if (model.linkParams == null) model << [linkParams: [:]]
-			out << render(template:'/tags/filter/locationTypeFilter', model:model)
+			out << render(template:'/tags/filter/dataLocationTypeFilter', model:model)
 		}
 	}
 	
@@ -140,9 +140,9 @@ class FilterTagLib {
 	public Map updateParamsByFilter(Map params) {
 		if (!params.containsKey("filter")) return params;
 		String filter = (String) params.get("filter");
-		LocationEntity location = null;
+		Location location = null;
 		if (params.get("location") != null) {
-			location = LocationEntity.get(Integer.parseInt(params.get("location")))
+			location = Location.get(Integer.parseInt(params.get("location")))
 		}
 
 		LocationLevel level = null;

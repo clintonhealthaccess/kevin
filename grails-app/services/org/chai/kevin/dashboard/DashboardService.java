@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
@@ -56,44 +56,44 @@ public class DashboardService {
 	private DashboardPercentageService dashboardPercentageService;	
 	
 	@Transactional(readOnly = true)
-	public Dashboard getProgramDashboard(LocationEntity location, ReportProgram program, Period period, Set<DataEntityType> types){
+	public Dashboard getProgramDashboard(Location location, ReportProgram program, Period period, Set<DataLocationType> types){
 
-		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();		
-		locationEntities.add(location);
+		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();		
+		locations.add(location);
 
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
 		dashboardEntities.addAll(getDashboardEntities(program));
 		
-		List<LocationEntity> locationPath = new ArrayList<LocationEntity>();
-		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap = 
-				new HashMap<CalculationEntity, Map<DashboardEntity, DashboardPercentage>>();
+		List<Location> locationPath = new ArrayList<Location>();
+		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = 
+				new HashMap<CalculationLocation, Map<DashboardEntity, DashboardPercentage>>();
 		
 		if(dashboardEntities.isEmpty())
-			return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
+			return new Dashboard(locations, dashboardEntities, locationPath, valueMap);
 		
 		locationPath = calculateLocationPath(location);
-		valueMap = getValues(locationEntities, dashboardEntities, period, types);
+		valueMap = getValues(locations, dashboardEntities, period, types);
 		
-		return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
+		return new Dashboard(locations, dashboardEntities, locationPath, valueMap);
 	}
 			
 	@Transactional(readOnly = true)
-	public Dashboard getLocationDashboard(LocationEntity location, ReportProgram program, Period period, Set<DataEntityType> types, boolean compare) {
+	public Dashboard getLocationDashboard(Location location, ReportProgram program, Period period, Set<DataLocationType> types, boolean compare) {
 		
-		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();
+		List<CalculationLocation> locationEntities = new ArrayList<CalculationLocation>();
 		if(compare) 
 			locationEntities.add(location);
 		else {
 			Set<LocationLevel> skipLevels = getSkipLocationLevels();
-			locationEntities.addAll(location.getChildrenEntities(skipLevels, types));			
+			locationEntities.addAll(location.getChildrenLocations(skipLevels, types));			
 		}
 		
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
 		dashboardEntities.add(getDashboardProgram(program));		
 		
-		List<LocationEntity> locationPath = new ArrayList<LocationEntity>();
-		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap = 
-				new HashMap<CalculationEntity, Map<DashboardEntity, DashboardPercentage>>();
+		List<Location> locationPath = new ArrayList<Location>();
+		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = 
+				new HashMap<CalculationLocation, Map<DashboardEntity, DashboardPercentage>>();
 		
 		if(locationEntities.isEmpty())
 			return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
@@ -104,17 +104,17 @@ public class DashboardService {
 		return new Dashboard(locationEntities, dashboardEntities, locationPath, valueMap);
 	}
 	
-	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> getValues(List<CalculationEntity> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataEntityType> types) {
-		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap = new HashMap<CalculationEntity, Map<DashboardEntity, DashboardPercentage>>();
+	private Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> getValues(List<CalculationLocation> locations, List<DashboardEntity> dashboardEntities, Period period, Set<DataLocationType> types) {
+		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = new HashMap<CalculationLocation, Map<DashboardEntity, DashboardPercentage>>();
 
-		for (CalculationEntity location : locations) {
+		for (CalculationLocation location : locations) {
 			Map<DashboardEntity, DashboardPercentage> locationMap = getValues(dashboardEntities, period, location, types);
 			valueMap.put(location, locationMap);
 		}
 		return valueMap;
 	}
 
-	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationEntity location, Set<DataEntityType> types) {
+	private Map<DashboardEntity, DashboardPercentage> getValues(List<DashboardEntity> dashboardEntities, Period period, CalculationLocation location, Set<DataLocationType> types) {
 		Map<DashboardEntity, DashboardPercentage> entityMap = new HashMap<DashboardEntity, DashboardPercentage>();
 		for (DashboardEntity dashboardEntity : dashboardEntities) {
 			DashboardPercentage percentage = dashboardPercentageService.getDashboardValue(period, location, types, dashboardEntity);
@@ -123,9 +123,9 @@ public class DashboardService {
 		return entityMap;
 	}
 
-	private List<LocationEntity> calculateLocationPath(LocationEntity entity) {
-		List<LocationEntity> locationPath = new ArrayList<LocationEntity>();
-		LocationEntity parent = entity;
+	private List<Location> calculateLocationPath(Location location) {
+		List<Location> locationPath = new ArrayList<Location>();
+		Location parent = location;
 		while ((parent = parent.getParent()) != null) {
 			locationPath.add(parent);
 		}

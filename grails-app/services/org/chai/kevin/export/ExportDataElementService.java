@@ -39,11 +39,8 @@ public class ExportDataElementService {
 
 	private ValueService dataValueService;
 //	private LocationService locationService;
-	int facilityLevel;
 	
 	public ExportDataElement getDataElementExport(Period period,DataElement<?> dataElement){
-//		List<Location> locations = locationService.getLocationsOfLevel(facilityLevel);
-//		
 //		Map<Location, DataValue> values = new HashMap<Location,DataValue>();
 //		for(Location location: locations){
 //			Map<Location, DataValue> dataValue =new HashMap<Location,DataValue>();

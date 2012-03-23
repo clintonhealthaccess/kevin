@@ -10,9 +10,9 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -53,7 +53,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 	def expressionService;
 	def valueService;
 	
-	def "test normalized data elements at facility level"() {
+	def "test normalized data elements at data location level"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -63,40 +63,40 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		when: "data element is missing"
 		normalizedDataElement = new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$0"]])).save(validate: false)
-		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period)
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
 		
 		then:
 		result.value == Value.NULL_INSTANCE()
 		result.status == Status.MISSING_DATA_ELEMENT
 		
-		when: "value is missing for facility"
+		when: "value is missing for data location"
 		normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id]]))
-		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period)
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
 		
 		then:
 		result.value == Value.NULL_INSTANCE()
 		result.status == Status.MISSING_VALUE
 
-		when: "expression is missing for facility type"
-		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(KIVUYE), period)
+		when: "expression is missing for data location type"
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period)
 				
 		then:
 		result.value == Value.NULL_INSTANCE()
 		result.status == Status.DOES_NOT_APPLY
 		
 		when: "everything is fine"
-		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO), v("40"))
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("40"))
 		normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+dataElement.id+" * 2"]]))
-		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period)
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
 		
 		then:
 		result.value.numberValue == 80d
 		result.status == Status.VALID
 			
 		when: "null value"
-		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		normalizedDataElement = newNormalizedDataElement(CODE(4), Type.TYPE_NUMBER(), e([(period.id+''):[(HEALTH_CENTER_GROUP):"\$"+dataElement.id]]))
-		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(KIVUYE), period)
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period)
 		
 		then:
 		result.value == Value.NULL_INSTANCE()
@@ -112,7 +112,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		when:
 		normalizedDataElement = newNormalizedDataElement(CODE(2), type, [(period.id+''):[(DISTRICT_HOSPITAL_GROUP):formula]])
-		result = expressionService.calculateValue(normalizedDataElement, DataLocationEntity.findByCode(BUTARO), period)
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
 		
 		then:
 		result.status == Status.ERROR
@@ -135,39 +135,39 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		refreshNormalizedDataElement()
 		
 		when:
-		result = expressionService.calculatePartialValues(sum, DataLocationEntity.findByCode(BUTARO), period)
+		result = expressionService.calculatePartialValues(sum, DataLocation.findByCode(BUTARO), period)
 		
 		then:
 		result.size() == 1
 		result*.value.equals([v("1")])
 
 		when:
-		result = expressionService.calculatePartialValues(sum, LocationEntity.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
 		result*.value.equals([v("1"), v("1")])
 		
 		when:
-		result = expressionService.calculatePartialValues(sum, LocationEntity.findByCode(NORTH), period)
+		result = expressionService.calculatePartialValues(sum, Location.findByCode(NORTH), period)
 		
 		then:
 		result.size() == 2
 		result*.value.equals([v("1"), v("1")])
 		
 		when:
-		def burera = LocationEntity.findByCode(BURERA)
-		def dh = DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)
-		newDataLocationEntity("dummy", burera, dh)
+		def burera = Location.findByCode(BURERA)
+		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
+		newDataLocation("dummy", burera, dh)
 		refreshNormalizedDataElement()
-		result = expressionService.calculatePartialValues(sum, LocationEntity.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
 		s(result*.value).equals(s([v("2"), v("1")]))
 	}
 	
-	def "test sum with missing facility type"() {
+	def "test sum with missing data location type"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -177,32 +177,32 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		refreshNormalizedDataElement()
 		
 		when:
-		result = expressionService.calculatePartialValues(sum, DataLocationEntity.findByCode(BUTARO), period)
+		result = expressionService.calculatePartialValues(sum, DataLocation.findByCode(BUTARO), period)
 		
 		then:
 		result.size() == 1
 		result*.value.equals([v("1")])
 
 		when:
-		result = expressionService.calculatePartialValues(sum, DataLocationEntity.findByCode(KIVUYE), period)
+		result = expressionService.calculatePartialValues(sum, DataLocation.findByCode(KIVUYE), period)
 		
 		then:
 		result.size() == 1
 		result*.value.equals([v("0")])
 		
 		when:
-		result = expressionService.calculatePartialValues(sum, LocationEntity.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
 		s(result*.value).equals(s([v("0"), v("1")]))
 		
 		when:
-		def burera = LocationEntity.findByCode(BURERA)
-		def dh = DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)
-		newDataLocationEntity("dummy", burera, dh)
+		def burera = Location.findByCode(BURERA)
+		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
+		newDataLocation("dummy", burera, dh)
 		refreshNormalizedDataElement()
-		result = expressionService.calculatePartialValues(sum, LocationEntity.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
@@ -219,32 +219,32 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		refreshNormalizedDataElement()
 		
 		when:
-		result = expressionService.calculatePartialValues(average, DataLocationEntity.findByCode(BUTARO), period)
+		result = expressionService.calculatePartialValues(average, DataLocation.findByCode(BUTARO), period)
 		
 		then:
 		result.size() == 1
 		result*.value.equals([v("1")])
 
 		when:
-		result = expressionService.calculatePartialValues(average, LocationEntity.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(average, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
 		result*.value.equals([v("1"), v("1")])
 		
 		when:
-		result = expressionService.calculatePartialValues(average, LocationEntity.findByCode(NORTH), period)
+		result = expressionService.calculatePartialValues(average, Location.findByCode(NORTH), period)
 		
 		then:
 		result.size() == 2
 		result*.value.equals([v("1"), v("1")])
 		
 		when:
-		def burera = LocationEntity.findByCode(BURERA)
-		def dh = DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)
-		newDataLocationEntity("dummy", burera, dh)
+		def burera = Location.findByCode(BURERA)
+		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
+		newDataLocation("dummy", burera, dh)
 		refreshNormalizedDataElement()
-		result = expressionService.calculatePartialValues(average, LocationEntity.findByCode(BURERA), period)
+		result = expressionService.calculatePartialValues(average, Location.findByCode(BURERA), period)
 		
 		then:
 		result.size() == 2
@@ -275,8 +275,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		setupLocationTree()
 //		def period = newPeriod()
 //		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-//		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-//		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO), v("2"))
+//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), v("1"))
+//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("2"))
 //		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 //		refreshNormalizedDataElement()
 //		
@@ -303,7 +303,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		setupLocationTree()
 //		def period = newPeriod()
 //		def dataElement = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
-//		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
+//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), v("1"))
 //		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 //		refreshNormalizedDataElement()
 //		
@@ -330,8 +330,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		setup:
 //		setupLocationTree()
 //		def period = newPeriod()
-//		def kivuye = DataLocationEntity.findByCode(KIVUYE)
-//		def butaro = DataLocationEntity.findByCode(BUTARO)
+//		def kivuye = DataLocation.findByCode(KIVUYE)
+//		def butaro = DataLocation.findByCode(BUTARO)
 //		def expression = newExpression(CODE(1), Type.TYPE_NUMBER(), "1")
 //		refreshNormalizedDataElement()
 //		
@@ -376,8 +376,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		setupLocationTree()
 //		def period = newPeriod()
 //		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-//		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-//		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO), v("2"))
+//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), v("1"))
+//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("2"))
 //		def expression = newExpression(CODE(3), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 //		refreshNormalizedDataElement()
 //		
@@ -404,7 +404,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 //		setupLocationTree()
 //		def period = newPeriod()
 //		def dataElement = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
-//		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
+//		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), v("1"))
 //		def expression = newExpression(CODE(5), Type.TYPE_NUMBER(), "\$"+dataElement.id)
 //		refreshNormalizedDataElement()
 //		

@@ -11,13 +11,13 @@ class LocationSpec extends IntegrationTests {
 		setupLocationTree()
 		
 		when:
-		new DataLocationEntity(names:j([:]), code: CODE(1), type: DataEntityType.findByCode(HEALTH_CENTER_GROUP), location: LocationEntity.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:j([:]), code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
-		DataLocationEntity.count() == 3
+		DataLocation.count() == 3
 		
 		when:
-		new DataLocationEntity(names:j([:]), code: CODE(2), location: LocationEntity.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:j([:]), code: CODE(2), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -28,13 +28,13 @@ class LocationSpec extends IntegrationTests {
 //		setupLocationTree()
 //		
 //		when:
-//		new DataLocationEntity(names:j([:]), code: CODE(1), type: DataEntityType.findByCode(HEALTH_CENTER_GROUP), location: LocationEntity.findByCode(BURERA)).save(failOnError: true)
+//		new DataLocation(names:j([:]), code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 //		
 //		then:
-//		DataLocationEntity.count() == 3
+//		DataLocation.count() == 3
 //		
 //		when:
-//		new DataLocationEntity(names:j([:]), code: CODE(2), type: DataEntityType.findByCode(HEALTH_CENTER_GROUP)).save(failOnError: true)
+//		new DataLocation(names:j([:]), code: CODE(2), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP)).save(failOnError: true)
 //		
 //		then:
 //		thrown ValidationException
@@ -45,13 +45,13 @@ class LocationSpec extends IntegrationTests {
 		setupLocationTree()
 		
 		when:
-		new DataLocationEntity(names:j([:]), code: CODE(1), type: DataEntityType.findByCode(HEALTH_CENTER_GROUP), location: LocationEntity.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:j([:]), code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
-		DataLocationEntity.count() == 3
+		DataLocation.count() == 3
 		
 		when:
-		new DataLocationEntity(names:j([:]), type: DataEntityType.findByCode(HEALTH_CENTER_GROUP), location: LocationEntity.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:j([:]), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -62,13 +62,13 @@ class LocationSpec extends IntegrationTests {
 		setupLocationTree()
 		
 		when:
-		new DataLocationEntity(names:j([:]), code: CODE(1), type: DataEntityType.findByCode(HEALTH_CENTER_GROUP), location: LocationEntity.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:j([:]), code: CODE(1), type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
-		DataLocationEntity.count() == 3
+		DataLocation.count() == 3
 		
 		when:
-		new DataLocationEntity(names:j([:]), code: "", type: DataEntityType.findByCode(HEALTH_CENTER_GROUP), location: LocationEntity.findByCode(BURERA)).save(failOnError: true)
+		new DataLocation(names:j([:]), code: "", type: DataLocationType.findByCode(HEALTH_CENTER_GROUP), location: Location.findByCode(BURERA)).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

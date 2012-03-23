@@ -31,23 +31,23 @@ package org.chai.kevin.cost;
 import java.util.List;
 import java.util.Map;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram;
 import org.hisp.dhis.period.Period;
 
 public class Explanation {
 
 	// if this is null, it means no expression is defined for the specified program and location
-	private Map<CalculationEntity, Map<Integer, Cost>> costs;
-	private List<CalculationEntity> locations;
+	private Map<CalculationLocation, Map<Integer, Cost>> costs;
+	private List<CalculationLocation> locations;
 	private List<Integer> years;
 	private CostTarget currentTarget;
 	private ReportProgram currentProgram;
 	private Period currentPeriod;
-	private List<DataEntityType> types;
+	private List<DataLocationType> types;
 	
-	public Explanation(CostTarget currentTarget, List<DataEntityType> types, ReportProgram currentProgram, Period currentPeriod, List<CalculationEntity> locations, List<Integer> years, Map<CalculationEntity, Map<Integer, Cost>> costs) {
+	public Explanation(CostTarget currentTarget, List<DataLocationType> types, ReportProgram currentProgram, Period currentPeriod, List<CalculationLocation> locations, List<Integer> years, Map<CalculationLocation, Map<Integer, Cost>> costs) {
 		this.costs = costs;
 		this.locations = locations;
 		this.years = years;
@@ -69,15 +69,15 @@ public class Explanation {
 		return currentPeriod;
 	}
 	
-	public List<CalculationEntity> getLocations() {
+	public List<CalculationLocation> getLocations() {
 		return locations;
 	}
 	
-	public Cost getCost(CalculationEntity location, Integer year) {
+	public Cost getCost(CalculationLocation location, Integer year) {
 		return costs.get(location).get(year);
 	}
 	
-	public List<DataEntityType> getGroups() {
+	public List<DataLocationType> getGroups() {
 		return types;
 	}
 	

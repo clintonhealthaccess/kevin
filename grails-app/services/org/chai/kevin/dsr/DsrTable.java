@@ -3,8 +3,8 @@ package org.chai.kevin.dsr;
 import java.util.List;
 import java.util.Map;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.reports.ReportValue;
 
@@ -36,19 +36,19 @@ import org.chai.kevin.reports.ReportValue;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class DsrTable extends ReportTable<DsrTarget, DataLocationEntity> {
+public class DsrTable extends ReportTable<DsrTarget, DataLocation> {
 	
 	protected List<DsrTarget> targets;
 	private List<DsrTargetCategory> targetCategories;		
 	
-	public DsrTable(Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap, 
+	public DsrTable(Map<DataLocation, Map<DsrTarget, ReportValue>> valueMap, 
 			List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
 		super(valueMap);
 		this.targets = targets;
 		this.targetCategories = targetCategories;		
 	}
 	
-	public ReportValue getReportValue(CalculationEntity location, DsrTarget target){
+	public ReportValue getReportValue(CalculationLocation location, DsrTarget target){
 		ReportValue reportValue = null;
 		Map<DsrTarget, ReportValue> reportValues = valueMap.get(location);
 		if(reportValues != null) 

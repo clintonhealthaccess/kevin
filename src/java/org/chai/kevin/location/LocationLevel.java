@@ -28,7 +28,7 @@ public class LocationLevel extends Orderable<Integer> {
 	private String code;
 	private Integer order;
 	private Translation names = new Translation();
-	private List<LocationEntity> locations = new ArrayList<LocationEntity>();
+	private List<Location> locations = new ArrayList<Location>();
 	
 	@Id
 	@GeneratedValue
@@ -61,12 +61,12 @@ public class LocationLevel extends Orderable<Integer> {
 		this.code = code;
 	}
 	
-	@OneToMany(targetEntity=LocationEntity.class, mappedBy="level")
-	public List<LocationEntity> getLocations() {
+	@OneToMany(targetEntity=Location.class, mappedBy="level")
+	public List<Location> getLocations() {
 		return locations;
 	}
 	
-	public void setLocations(List<LocationEntity> locations) {
+	public void setLocations(List<Location> locations) {
 		this.locations = locations;
 	}
 

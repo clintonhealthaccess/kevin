@@ -55,7 +55,7 @@ import javax.persistence.Transient;
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -160,7 +160,7 @@ public class SurveySection extends Orderable<Integer> {
 	}
 
 	@Transient
-	public List<SurveyElement> getSurveyElements(DataEntityType type) {
+	public List<SurveyElement> getSurveyElements(DataLocationType type) {
 		List<SurveyElement> result = new ArrayList<SurveyElement>();
 		for (SurveyQuestion question : getQuestions(type)) {
 			result.addAll(question.getSurveyElements(type));
@@ -169,7 +169,7 @@ public class SurveySection extends Orderable<Integer> {
 	}
 
 	@Transient
-	public List<SurveyQuestion> getQuestions(DataEntityType type) {
+	public List<SurveyQuestion> getQuestions(DataLocationType type) {
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
 		for (SurveyQuestion surveyQuestion : getQuestions()) {
 			if (Utils.split(surveyQuestion.getTypeCodeString()).contains(type.getCode())) {

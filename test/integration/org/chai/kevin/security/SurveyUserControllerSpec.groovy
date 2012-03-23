@@ -29,7 +29,7 @@ package org.chai.kevin.security
 
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 
 /**
  * @author Jean Kahigiso M.
@@ -43,7 +43,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		
 		setup:
 		setupLocationTree()
-		def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+		def dataLocation = DataLocation.findByCode(KIVUYE);
 		userController = new SurveyUserController();
 		
 		when: 
@@ -52,7 +52,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.params.password = "exemple";
 		userController.params.repeat = "exemple";
 		userController.params.permissionString = "*";
-		userController.params.entityId=dataLocation.id;
+		userController.params.dataLocationId=dataLocation.id;
 		userController.params.confirmed = true
 		userController.params.active = true
 		userController.save()
@@ -68,7 +68,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		
 		setup:
 		setupLocationTree()
-		def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+		def dataLocation = DataLocation.findByCode(KIVUYE);
 		userController = new SurveyUserController();
 		
 		when:
@@ -77,7 +77,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.params.password = "exemple";
 		userController.params.repeat = "exemple1";
 		userController.params.permissionString = "*";
-		userController.params.entityId=dataLocation.id;
+		userController.params.dataLocation=dataLocation.id;
 		userController.params.confirmed = true
 		userController.params.active = true
 		userController.save()
@@ -92,7 +92,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		
 		setup:
 		setupLocationTree()
-		def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+		def dataLocation = DataLocation.findByCode(KIVUYE);
 		userController = new SurveyUserController();
 		def user = newSurveyUser("myuser1",UUID.randomUUID().toString(),dataLocation.id);
 
@@ -101,7 +101,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.params.uuid = user.uuid;
 		userController.params.email = "exemple@exemple.com";
 		userController.params.username ="exemple1";
-		userController.params.entityId=dataLocation.id;
+		userController.params.dataLocation=dataLocation.id;
 		userController.save();
 		
 		then:
@@ -116,7 +116,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		
 		setup:
 		setupLocationTree()
-		def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+		def dataLocation = DataLocation.findByCode(KIVUYE);
 		userController = new SurveyUserController();
 		def user = newSurveyUser("myuser2",UUID.randomUUID().toString(),dataLocation.id);
 		
@@ -127,7 +127,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 		userController.params.username ="exemple2";
 		userController.params.password = "exemple2";
 		userController.params.repeat = "exemple2";
-		userController.params.entityId=dataLocation.id;
+		userController.params.dataLocation=dataLocation.id;
 		userController.save();
 		
 		then:
@@ -142,7 +142,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 	def "cannot change uuid"(){
 		setup:
 		setupLocationTree()
-		def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+		def dataLocation = DataLocation.findByCode(KIVUYE);
 		userController = new SurveyUserController();
 		def uuid = UUID.randomUUID().toString();
 		def user = newSurveyUser("myuser1",uuid,dataLocation.id);
@@ -161,7 +161,7 @@ class SurveyUserControllerSpec extends IntegrationTests{
 	def "cannot change password hash"(){
 		setup:
 		setupLocationTree()
-		def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+		def dataLocation = DataLocation.findByCode(KIVUYE);
 		userController = new SurveyUserController();
 		def user = newSurveyUser("myuser1",UUID.randomUUID().toString(),dataLocation.id);
 

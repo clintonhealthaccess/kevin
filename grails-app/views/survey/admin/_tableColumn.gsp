@@ -7,7 +7,7 @@
 	</a>
 </div>
 <div>
-	<span class="bold"><g:message code="entity.locationtype.label"/>:</span>
+	<span class="bold"><g:message code="entity.datalocationtype.label"/>:</span>
 	<span>${column.typeCodeString}</span>
 </div>
 <div>

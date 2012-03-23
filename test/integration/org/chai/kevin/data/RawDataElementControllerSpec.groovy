@@ -5,8 +5,8 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.RawDataElementController;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyIntegrationTests;
 import org.chai.kevin.value.RawDataElementValue;
@@ -64,7 +64,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		rawDataElementController = new RawDataElementController()
-		def entity = DataLocationEntity.findByCode(BUTARO)
+		def dataLocation = DataLocation.findByCode(BUTARO)
 		def period = newPeriod()
 		def dataElement = null
 
@@ -81,13 +81,13 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		rawDataElementController = new RawDataElementController()
-		def entity = DataLocationEntity.findByCode(BUTARO)
+		def dataLocation = DataLocation.findByCode(BUTARO)
 		def period = newPeriod()
 		def dataElement = null
 
 		when:
 		dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
-		newRawDataElementValue(dataElement, period, entity, Value.NULL_INSTANCE())
+		newRawDataElementValue(dataElement, period, dataLocation, Value.NULL_INSTANCE())
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.delete()
 
@@ -101,7 +101,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		setup:
 		setupLocationTree()
 		rawDataElementController = new RawDataElementController()
-		def entity = DataLocationEntity.findByCode(BUTARO)
+		def dataLocation = DataLocation.findByCode(BUTARO)
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 
@@ -116,7 +116,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		dataElement.type.equals(Type.TYPE_BOOL())
 
 		when:
-		newRawDataElementValue(dataElement, period, entity, Value.NULL_INSTANCE())
+		newRawDataElementValue(dataElement, period, dataLocation, Value.NULL_INSTANCE())
 		rawDataElementController.params.id = dataElement.id
 		rawDataElementController.params.code = dataElement.code
 		rawDataElementController.params['type.jsonValue'] = Type.TYPE_STRING().getJsonValue()
@@ -138,7 +138,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		def section = SurveyIntegrationTests.newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
-		SurveyIntegrationTests.newFormEnteredValue(element, period, DataLocationEntity.findByCode(BUTARO), v("1"))
+		SurveyIntegrationTests.newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("1"))
 
 		expect:
 		RawDataElement.count() == 1
@@ -168,7 +168,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		def section = SurveyIntegrationTests.newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
-		SurveyIntegrationTests.newFormEnteredValue(element, period, DataLocationEntity.findByCode(BUTARO), v("1"))
+		SurveyIntegrationTests.newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("1"))
 
 		expect:
 		RawDataElement.count() == 1
@@ -215,7 +215,7 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		def section = SurveyIntegrationTests.newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = SurveyIntegrationTests.newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
-		SurveyIntegrationTests.newFormEnteredValue(element, period, DataLocationEntity.findByCode(BUTARO), v("1"))
+		SurveyIntegrationTests.newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("1"))
 		rawDataElementController = new RawDataElementController()
 
 		expect:

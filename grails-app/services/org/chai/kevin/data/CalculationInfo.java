@@ -33,22 +33,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.DataValue;
 
 public class CalculationInfo extends Info<CalculationValue<?>> {
 
 	private Calculation<?> calculation;
-	private List<DataLocationEntity> locations;
+	private List<DataLocation> locations;
 	private List<DataElement<?>> dataElements;
-	private Map<DataLocationEntity, Map<DataElement<?>, DataValue>> values;
-	private Map<CalculationEntity, CalculationValue<?>> calculationValues;
+	private Map<DataLocation, Map<DataElement<?>, DataValue>> values;
+	private Map<CalculationLocation, CalculationValue<?>> calculationValues;
 	
-	public CalculationInfo(Calculation<?> calculation, CalculationValue<?> calculationValue, List<DataLocationEntity> locations, List<DataElement<?>> dataElements, 
-			Map<DataLocationEntity, Map<DataElement<?>, DataValue>> values, Map<CalculationEntity, CalculationValue<?>> calculationValues) {
+	public CalculationInfo(Calculation<?> calculation, CalculationValue<?> calculationValue, List<DataLocation> locations, List<DataElement<?>> dataElements, 
+			Map<DataLocation, Map<DataElement<?>, DataValue>> values, Map<CalculationLocation, CalculationValue<?>> calculationValues) {
 		super(calculationValue);
 
 		this.calculation = calculation;
@@ -62,7 +62,7 @@ public class CalculationInfo extends Info<CalculationValue<?>> {
 		return calculation;
 	}
 	
-	public List<DataLocationEntity> getLocations() {
+	public List<DataLocation> getLocations() {
 		return locations;
 	}
 	
@@ -70,19 +70,19 @@ public class CalculationInfo extends Info<CalculationValue<?>> {
 		return dataElements;
 	}
 	
-	public Set<DataLocationEntity> getLocationsOfGroup(LocationEntity location) {
-		Set<DataLocationEntity> result = new HashSet<DataLocationEntity>();
-		for (DataLocationEntity child : values.keySet()) {
-			if (location.getDataEntities().contains(child)) result.add(child);
+	public Set<DataLocation> getLocationsOfGroup(Location location) {
+		Set<DataLocation> result = new HashSet<DataLocation>();
+		for (DataLocation child : values.keySet()) {
+			if (location.getDataLocations().contains(child)) result.add(child);
 		}
 		return result;
 	}
 	
-	public CalculationValue<?> getValue(CalculationEntity location) {
+	public CalculationValue<?> getValue(CalculationLocation location) {
 		return calculationValues.get(location);
 	}
 	
-	public DataValue getValue(CalculationEntity location, DataElement<?> dataElement) {
+	public DataValue getValue(CalculationLocation location, DataElement<?> dataElement) {
 		return values.get(location).get(dataElement);
 	}
 	

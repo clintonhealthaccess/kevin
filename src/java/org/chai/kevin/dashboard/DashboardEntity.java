@@ -38,7 +38,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportProgram;
 import org.hisp.dhis.period.Period;
 
@@ -84,7 +84,7 @@ public abstract class DashboardEntity {
 		this.weight = weight;
 	}
 	
-	public abstract <T> T visit(DashboardVisitor<T> visitor, CalculationEntity entity, Period period);
+	public abstract <T> T visit(DashboardVisitor<T> visitor, CalculationLocation location, Period period);
 	
 	@Transient
 	public abstract boolean hasChildren();

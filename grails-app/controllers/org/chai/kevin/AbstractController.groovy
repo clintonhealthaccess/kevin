@@ -30,8 +30,8 @@ package org.chai.kevin;
 
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.LocationService
 
@@ -80,19 +80,19 @@ public abstract class AbstractController {
 	}
 	
 	def getLocation(){
-		LocationEntity location = LocationEntity.get(params.int('location'))
+		Location location = Location.get(params.int('location'))
 		if (location == null) location = locationService.getRootLocation()
 		return location
 	}		
 	
-	public Set<DataEntityType> getLocationTypes() {
-		Set<DataEntityType> types = null
-		if (params.list('locationTypes') != null && !params.list('locationTypes').empty) {
-			def locationTypes = params.list('locationTypes')
-			types = new HashSet<DataEntityType>(locationTypes.collect{ DataEntityType.get(it) })
+	public Set<DataLocationType> getLocationTypes() {
+		Set<DataLocationType> types = null
+		if (params.list('dataLocationTypes') != null && !params.list('dataLocationTypes').empty) {
+			def dataLocationTypes = params.list('dataLocationTypes')
+			types = new HashSet<DataLocationType>(dataLocationTypes.collect{ DataLocationType.get(it) })
 		}
 		else {
-			types = new HashSet<DataEntityType>(ConfigurationHolder.config.site.locationtype.checked.collect {DataEntityType.findByCode(it)})
+			types = new HashSet<DataLocationType>(ConfigurationHolder.config.site.datalocationtype.checked.collect {DataLocationType.findByCode(it)})
 		}
 		return types
 	}

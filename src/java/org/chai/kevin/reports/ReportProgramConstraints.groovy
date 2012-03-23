@@ -1,4 +1,4 @@
-package org.chai.kevin.cost
+package org.chai.kevin.reports
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -28,54 +28,7 @@ package org.chai.kevin.cost
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.reports.ReportProgram;
-import org.chai.kevin.AbstractEntityController
-
-class CostTargetController extends AbstractEntityController {
-	
-	def locationService
-	def dataService
-	
-	def getEntity(def id) {
-		return CostTarget.get(id)
-	}
-	
-	def createEntity() {
-		return new CostTarget()
-	}
-	
-	def getLabel() {
-		return "cost.target.label"
-	}
-	
-	def getTemplate() {
-		return "/cost/createTarget"
-	}
-	
-	def getModel(def entity) {
-		[
-			target: entity,
-			programs: ReportProgram.list(),
-			dataElements: entity.dataElement!=null?[entity.dataElement]:[],
-			dataElementsEnd:  entity.dataElementEnd!=null?[entity.dataElementEnd]:[],
-			costRampUps: CostRampUp.list(), 
-			types: DataLocationType.list()
-		]
-	}
-	
-	def bindParams(def entity) {
-		entity.properties = params
-		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)
-		if (params.int('dataElementEnd.id')) entity.dataElementEnd = dataService.getData(params.int('dataElementEnd.id'), DataElement.class)
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.names!=null) entity.names = params.names
-		if (params.descriptions!=null) entity.descriptions = entity.descriptions
-
-	}
-	
+constraints = {
+	code (nullable: false, blank: false, unique: true)
 	
 }

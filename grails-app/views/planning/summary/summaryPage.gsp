@@ -29,16 +29,16 @@
 								<th></th>
 							</thead>
 							<tbody>
-								<g:each in="${summaryPage.dataEntities}" var="dataEntity">
+								<g:each in="${summaryPage.dataLocations}" var="dataLocation">
 									<tr>
-										<td><g:i18n field="${dataEntity.names}"/></td>
+										<td><g:i18n field="${dataLocation.names}"/></td>
 										<g:each in="${summaryPage.planningTypes}" var="planningType">
-											<td>${summaryPage.getNumberOfEntries(dataEntity, planningType)}</td>
+											<td>${summaryPage.getNumberOfEntries(dataLocation, planningType)}</td>
 										</g:each>
 										<td>
 											<ul class="horizontal">
 												<li>
-													<a href="${createLink(controller:'editPlanning', action:'overview', params:[location: dataEntity.id, planning: currentPlanning.id])}">
+													<a href="${createLink(controller:'editPlanning', action:'overview', params:[location: dataLocation.id, planning: currentPlanning.id])}">
 														<g:message code="planning.summary.link"/>
 													</a>
 												</li>
