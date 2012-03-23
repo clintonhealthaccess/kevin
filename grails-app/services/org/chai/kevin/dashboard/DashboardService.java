@@ -61,8 +61,7 @@ public class DashboardService {
 		List<CalculationEntity> locationEntities = new ArrayList<CalculationEntity>();		
 		locationEntities.add(location);
 
-		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
-		dashboardEntities.addAll(getDashboardEntities(program));
+		List<DashboardEntity> dashboardEntities = getDashboardEntities(program);				
 		
 		List<LocationEntity> locationPath = new ArrayList<LocationEntity>();
 		Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap = 
@@ -85,7 +84,7 @@ public class DashboardService {
 			locationEntities.add(location);
 		else {
 			Set<LocationLevel> skipLevels = getSkipLocationLevels();
-			locationEntities.addAll(location.getChildrenEntities(skipLevels, types));			
+			locationEntities.addAll(location.getChildrenEntitiesWithDataEntities(skipLevels, types));			
 		}
 		
 		List<DashboardEntity> dashboardEntities = new ArrayList<DashboardEntity>();		
@@ -146,12 +145,26 @@ public class DashboardService {
 //		Collections.reverse(programPath);
 //		return programPath;
 //	}
+
+	public List<DashboardEntity> getDashboardProgramTree(){
+		List<ReportProgram> programTree = reportService.getProgramTree(DashboardTarget.class);
+		List<DashboardEntity> dashboardProgramTree = new ArrayList<DashboardEntity>();
+		for(ReportProgram program : programTree){
+			DashboardEntity dashboardProgram = getDashboardProgram(program);
+			if(dashboardProgram != null)
+				dashboardProgramTree.add(getDashboardProgram(program));
+		}		
+		return dashboardProgramTree;
+	}
 	
 	public List<DashboardEntity> getDashboardEntities(ReportProgram program) {		
 		List<DashboardEntity> entities = new ArrayList<DashboardEntity>();				
 		
-		List<DashboardEntity> dashboardPrograms = getDashboardPrograms(program);
-		entities.addAll(dashboardPrograms);
+		List<DashboardEntity> dashboardChildren = getDashboardChildren(program);
+		List<DashboardEntity> dashboardProgramTree = getDashboardProgramTree();
+		for(DashboardEntity dashboardChild : dashboardChildren)
+			if(dashboardProgramTree.contains(dashboardChild))
+				entities.add(dashboardChild);
 		
 		List<DashboardTarget> dashboardTargets = reportService.getReportTargets(DashboardTarget.class, program);		
 		entities.addAll(dashboardTargets);
@@ -159,13 +172,14 @@ public class DashboardService {
 		return entities;
 	}
 	
-	public List<DashboardEntity> getDashboardPrograms(ReportProgram program){
+	public List<DashboardEntity> getDashboardChildren(ReportProgram program){
 		List<DashboardEntity> result = new ArrayList<DashboardEntity>();
 		List<ReportProgram> children = program.getChildren();
 		if(children != null) {
 			for (ReportProgram child : children) {
 				DashboardEntity dashboardProgram = getDashboardProgram(child);
-				if(dashboardProgram != null)	result.add(dashboardProgram);
+				if(dashboardProgram != null)	
+					result.add(dashboardProgram);
 			}
 		}
 		return result;

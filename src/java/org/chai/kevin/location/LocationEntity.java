@@ -104,6 +104,22 @@ public class LocationEntity extends CalculationEntity {
 		return result;
 	}
 	
+	//gets all location entity children and data location entities (that have data entities)
+	@Transient
+	public List<CalculationEntity> getChildrenEntitiesWithDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
+		List<CalculationEntity> result = new ArrayList<CalculationEntity>();
+		
+		List<LocationEntity> locationChildren = getChildren(skipLevels);
+		List<LocationEntity> locationTree = collectTreeWithDataEntities(skipLevels, types);
+		for(LocationEntity locationChild : locationChildren){
+			if(locationTree.contains(locationChild))
+				result.add(locationChild);	
+		}
+		
+		result.addAll(getDataEntities(skipLevels, types));
+		return result;
+	}
+	
 	//gets all location entity children, grandchildren, etc (that have data entities)
 	public List<LocationEntity> collectTreeWithDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
 		List<LocationEntity> locations = new ArrayList<LocationEntity>();
