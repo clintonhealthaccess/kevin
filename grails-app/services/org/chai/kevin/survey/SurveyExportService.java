@@ -76,7 +76,7 @@ public class SurveyExportService {
 	private final static String CSV_FILE_EXTENSION = ".csv";
 
 	// TODO refactor this to use messages.properties files
-	private final static String ORGANISATION_UNIT_GROUP_HEADER = "Data Entity Type";
+	private final static String DATA_ENTITY_TYPE_HEADER = "Location Type";
 	private final static String SURVEY_HEADER = "Survey";
 	private final static String PROGRAM_HEADER = "Program";
 	private final static String SECTION_HEADER = "Section";
@@ -92,7 +92,7 @@ public class SurveyExportService {
 		for(LocationLevel level : getLevels()){
 			headers.add(languageService.getText(level.getNames()));
 		}
-		headers.add(ORGANISATION_UNIT_GROUP_HEADER);
+		headers.add(DATA_ENTITY_TYPE_HEADER);
 		headers.add(PROGRAM_HEADER);
 		headers.add(SECTION_HEADER);
 		headers.add(QUESTION_TYPE_HEADER);

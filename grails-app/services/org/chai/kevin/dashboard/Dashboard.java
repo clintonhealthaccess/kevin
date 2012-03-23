@@ -64,9 +64,9 @@ public class Dashboard {
 		return locationPath;
 	}
 	
-	public Integer getPercentage(CalculationEntity organisation, DashboardEntity dashboardEntity) {		
+	public Integer getPercentage(CalculationEntity calculationEntity, DashboardEntity dashboardEntity) {		
 		DashboardPercentage percentage = null;
-		percentage = valueMap.get(organisation).get(dashboardEntity);
+		percentage = valueMap.get(calculationEntity).get(dashboardEntity);
 		if(percentage != null && percentage.isValid())
 			return percentage.getRoundedValue();
 		else
