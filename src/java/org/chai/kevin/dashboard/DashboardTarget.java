@@ -36,11 +36,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="DashboardTarget")
 @Table(name="dhsst_dashboard_target")

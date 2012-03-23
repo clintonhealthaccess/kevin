@@ -5,7 +5,9 @@
 
 <hibernate-configuration>
 
-	<session-factory>
+	<session-factory>	
+		<mapping class="org.chai.kevin.Period" />
+	
 	    <mapping class="org.chai.kevin.data.NormalizedDataElement" />
 	    <mapping class="org.chai.kevin.data.Calculation" />
 	    <mapping class="org.chai.kevin.data.Average" />
@@ -66,9 +68,6 @@
 		<mapping class="org.chai.kevin.location.DataEntityType" />
 		<mapping class="org.chai.kevin.location.LocationEntity" />
 		<mapping class="org.chai.kevin.location.LocationLevel" />
-		
-		<mapping class="org.hisp.dhis.period.Period" />
-		
 	</session-factory>
 
 </hibernate-configuration>

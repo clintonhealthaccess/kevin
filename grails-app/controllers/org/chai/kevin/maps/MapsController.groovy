@@ -29,11 +29,11 @@ package org.chai.kevin.maps
 */
 
 import org.chai.kevin.AbstractController
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 
 class MapsController extends AbstractController {
 

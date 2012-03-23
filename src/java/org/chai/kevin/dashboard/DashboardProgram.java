@@ -7,9 +7,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.reports.ReportProgram;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="DashboardProgram")
 @Table(name="dhsst_dashboard_program")

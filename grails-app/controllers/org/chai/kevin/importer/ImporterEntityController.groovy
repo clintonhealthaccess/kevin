@@ -30,10 +30,10 @@ package org.chai.kevin.importer
 import java.io.InputStreamReader
 
 import org.chai.kevin.AbstractController
+import org.chai.kevin.Period;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.value.RawDataElementValue;
-import org.hisp.dhis.period.Period
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 

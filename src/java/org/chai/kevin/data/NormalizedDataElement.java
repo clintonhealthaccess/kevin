@@ -13,8 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="NormalizedDataElement")
 @Table(name="dhsst_data_normalized_element")

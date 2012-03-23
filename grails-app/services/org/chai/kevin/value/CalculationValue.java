@@ -6,10 +6,10 @@ import java.util.Set;
 
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntityType;
-import org.hisp.dhis.period.Period;
 
 public abstract class CalculationValue<T extends CalculationPartialValue> implements DataValue {
 

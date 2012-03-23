@@ -21,13 +21,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.form.FormElement;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="PlanningType")
 @Table(name="dhsst_planning_type")

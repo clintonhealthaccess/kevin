@@ -1,5 +1,5 @@
+import org.chai.kevin.Period;
 import org.chai.kevin.data.RawDataElement;
-import org.hisp.dhis.period.Period;
 
 class ExpressionMapValidConstraint {
 

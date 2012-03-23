@@ -71,7 +71,7 @@
             timeToLiveSeconds="86400"
     />
     
-    <cache name="org.hisp.dhis.period.Period"
+    <cache name="org.chai.kevin.Period"
            maxElementsInMemory="10"
             timeToLiveSeconds="86400"
     />

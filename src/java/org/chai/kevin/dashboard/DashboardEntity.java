@@ -37,10 +37,10 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.reports.ReportProgram;
-import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
 public abstract class DashboardEntity {

@@ -1,11 +1,11 @@
 package org.chai.kevin.dashboard
 
+import org.chai.kevin.Period;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.Value
-import org.hisp.dhis.period.Period;
 
 class DashboardControllerSpec extends DashboardIntegrationTests {
 

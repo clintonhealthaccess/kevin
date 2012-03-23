@@ -28,10 +28,10 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.Period;
 import org.chai.kevin.PeriodSorter
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.Enum;
-import org.hisp.dhis.period.Period
 /**
  * @author Jean Kahigiso M.
  *

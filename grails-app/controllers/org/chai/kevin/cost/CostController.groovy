@@ -29,10 +29,10 @@ package org.chai.kevin.cost
 */
 
 import org.chai.kevin.AbstractController
+import org.chai.kevin.Period;
 import org.chai.kevin.location.LocationEntity
 import org.chai.kevin.reports.ReportProgram
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 
 class CostController extends AbstractController {
 

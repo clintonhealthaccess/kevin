@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
@@ -19,7 +20,6 @@ import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
-import org.hisp.dhis.period.Period;
 
 public class SurveyPage {
 
