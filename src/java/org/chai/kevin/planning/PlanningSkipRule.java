@@ -34,8 +34,8 @@ public class PlanningSkipRule extends FormSkipRule {
 	}
 	
 	@Override
-	public void evaluate(DataLocation datLocation, ElementCalculator calculator) {
-		super.evaluate(datLocation, calculator);
+	public void evaluate(DataLocation dataLocation, ElementCalculator calculator) {
+		super.evaluate(dataLocation, calculator);
 	}
 
 }
