@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.chai.kevin.data.Average;
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.CalculationLocation;
 import org.hisp.dhis.period.Period;
 
 public class AverageValue extends CalculationValue<AveragePartialValue> {
 
-	public AverageValue(Set<AveragePartialValue> calculationPartialValues, Average calculation, Period period, CalculationEntity entity) {
-		super(new ArrayList<AveragePartialValue>(calculationPartialValues), calculation, period, entity);
+	public AverageValue(Set<AveragePartialValue> calculationPartialValues, Average calculation, Period period, CalculationLocation location) {
+		super(new ArrayList<AveragePartialValue>(calculationPartialValues), calculation, period, location);
 	}
 	
-	public AverageValue(List<AveragePartialValue> calculationPartialValues, Average calculation, Period period, CalculationEntity entity) {
-		super(calculationPartialValues, calculation, period, entity);
+	public AverageValue(List<AveragePartialValue> calculationPartialValues, Average calculation, Period period, CalculationLocation location) {
+		super(calculationPartialValues, calculation, period, location);
 	}
 	
 
@@ -27,7 +27,7 @@ public class AverageValue extends CalculationValue<AveragePartialValue> {
 		for (AveragePartialValue averagePartialValue : getCalculationPartialValues()) {
 			if (!averagePartialValue.getValue().isNull()) {
 				sum += averagePartialValue.getValue().getNumberValue().doubleValue();
-				num += averagePartialValue.getNumberOfFacilities();
+				num += averagePartialValue.getNumberOfDataLocations();
 			}
 		}
 		Double average = sum / num;

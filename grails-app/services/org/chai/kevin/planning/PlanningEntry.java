@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.form.FormElement.ElementCalculator;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 
@@ -27,7 +27,7 @@ public class PlanningEntry {
 	}
 	
 	protected PlanningType type;
-	private DataLocationEntity entity;
+	private DataLocation dataLocation;
 	private Integer lineNumber;
 	private Map<String, Enum>  enums;
 	private ValidatableValue validatable;
@@ -41,11 +41,11 @@ public class PlanningEntry {
 		this.lineNumber = lineNumber;
 		this.type = null;
 		this.enums = null;
-		this.entity = null;
+		this.dataLocation = null;
 	}
 	
-	public PlanningEntry(DataLocationEntity entity, PlanningType type, ValidatableValue validatable, Integer lineNumber, Map<String, Enum> enums) {
-		this.entity = entity;
+	public PlanningEntry(DataLocation dataLocation, PlanningType type, ValidatableValue validatable, Integer lineNumber, Map<String, Enum> enums) {
+		this.dataLocation = dataLocation;
 		this.validatable = validatable;
 		this.type = type;
 		this.lineNumber = lineNumber;
@@ -163,8 +163,8 @@ public class PlanningEntry {
 	}
 
 	public void evaluateRules(ElementCalculator elementCalculator) {
-		type.getFormElement().validate(entity, elementCalculator);
-		type.getFormElement().executeSkip(entity, elementCalculator);
+		type.getFormElement().validate(dataLocation, elementCalculator);
+		type.getFormElement().executeSkip(dataLocation, elementCalculator);
 	}
 
 }

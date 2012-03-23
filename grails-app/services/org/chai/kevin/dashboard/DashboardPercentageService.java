@@ -8,8 +8,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
@@ -26,26 +26,26 @@ public class DashboardPercentageService {
 
 	private class PercentageVisitor implements DashboardVisitor<DashboardPercentage> {
 		
-		private Set<DataEntityType> types;
+		private Set<DataLocationType> types;
 		
-		public PercentageVisitor(Set<DataEntityType> types) {
+		public PercentageVisitor(Set<DataLocationType> types) {
 			this.types = types;
 		}
 
 		private final Log log = LogFactory.getLog(PercentageVisitor.class);
 		
 		@Override
-		public DashboardPercentage visitProgram(DashboardProgram program, CalculationEntity entity, Period period) {
-			if (log.isDebugEnabled()) log.debug("visitProgram(program="+program+",entity="+entity+",period="+period+")");
+		public DashboardPercentage visitProgram(DashboardProgram program, CalculationLocation location, Period period) {
+			if (log.isDebugEnabled()) log.debug("visitProgram(program="+program+",location="+location+",period="+period+")");
 			
 			Integer totalWeight = 0;
 			Double sum = 0.0d;
 
 			List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntitiesWithTargets(program.getProgram());
 			for (DashboardEntity child : dashboardEntities) {
-				DashboardPercentage childPercentage = child.visit(this, entity, period);
+				DashboardPercentage childPercentage = child.visit(this, location, period);
 				if (childPercentage == null) {
-					if (log.isErrorEnabled()) log.error("found null percentage, program: "+child+", entity: "+entity+", period: "+period);
+					if (log.isErrorEnabled()) log.error("found null percentage, program: "+child+", location: "+location+", period: "+period);
 					return null;
 				}
 				Integer weight = child.getWeight();
@@ -64,19 +64,19 @@ public class DashboardPercentageService {
 			Value value = null;
 			if (average.isNaN() || average.isInfinite()) value = Value.NULL_INSTANCE();
 			else value = type.getValue(average);
-			DashboardPercentage percentage = new DashboardPercentage(value, entity, period);
+			DashboardPercentage percentage = new DashboardPercentage(value, location, period);
 			
 			if (log.isDebugEnabled()) log.debug("visitProgram()="+percentage);
 			return percentage;
 		}
 
 		@Override
-		public DashboardPercentage visitTarget(DashboardTarget target, CalculationEntity entity, Period period) {
-			if (log.isDebugEnabled()) log.debug("visitTarget(target="+target+",entity="+entity+",period="+period+")");
+		public DashboardPercentage visitTarget(DashboardTarget target, CalculationLocation location, Period period) {
+			if (log.isDebugEnabled()) log.debug("visitTarget(target="+target+",location="+location+",period="+period+")");
 			
-			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), entity, period, types);
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), location, period, types);
 			if (calculationValue == null) return null;
-			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), entity, period);
+			DashboardPercentage percentage = new DashboardPercentage(calculationValue.getValue(), location, period);
 
 			if (log.isDebugEnabled()) log.debug("visitTarget(...)="+percentage);
 			return percentage;
@@ -85,24 +85,24 @@ public class DashboardPercentageService {
 	
 //	private class ExplanationVisitor implements DashboardVisitor<Info> {
 //
-//		private Set<DataEntityType> types;
+//		private Set<DataLocationType> types;
 //		
-//		public ExplanationVisitor(Set<DataEntityType> types) {
+//		public ExplanationVisitor(Set<DataLocationType> types) {
 //			this.types = types;
 //		}
 //		
 //		@Override
-//		public Info visitProgram(DashboardProgram program, CalculationEntity entity, Period period) {
-//			DashboardPercentage percentage = program.visit(new PercentageVisitor(types), entity, period);
+//		public Info visitProgram(DashboardProgram program, CalculationLocation location, Period period) {
+//			DashboardPercentage percentage = program.visit(new PercentageVisitor(types), location, period);
 //			if (percentage == null) return null;
 //			List<DashboardEntity> dashboardEntities = getDashboardEntities(program.getProgram());
-//			Map<DashboardEntity, DashboardPercentage> values = getValues(dashboardEntities, period, entity, types);
+//			Map<DashboardEntity, DashboardPercentage> values = getValues(dashboardEntities, period, location, types);
 //			return new DashboardProgramInfo(percentage, values);
 //		}
 //
 //		@Override
-//		public Info visitTarget(DashboardTarget target, CalculationEntity entity, Period period) {
-//			return infoService.getCalculationInfo(target.getCalculation(), entity, period, types);
+//		public Info visitTarget(DashboardTarget target, CalculationLocation location, Period period) {
+//			return infoService.getCalculationInfo(target.getCalculation(), location, period, types);
 //		}
 //		
 //	}
@@ -110,7 +110,7 @@ public class DashboardPercentageService {
 	
 	@Transactional(readOnly = true)
 	@Cacheable(cache="dashboardCache")
-	public DashboardPercentage getDashboardValue(Period period, CalculationEntity location, Set<DataEntityType> types, DashboardEntity dashboardEntity) {
+	public DashboardPercentage getDashboardValue(Period period, CalculationLocation location, Set<DataLocationType> types, DashboardEntity dashboardEntity) {
 		return dashboardEntity.visit(new PercentageVisitor(types), location, period);
 	}
 	

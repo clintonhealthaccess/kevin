@@ -16,20 +16,20 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.form.EnteredEntity;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.SurveyQuestion;
 import org.chai.kevin.survey.SurveySkipRule;
 import org.hibernate.annotations.NaturalId;
 
 @Entity(name="SurveyValidQuestion")
 @Table(name="dhsst_survey_entered_question", uniqueConstraints=@UniqueConstraint(
-		columnNames={"question", "entity"})
+		columnNames={"question", "dataLocation"})
 )
 public class SurveyEnteredQuestion extends EnteredEntity {
 	
 	private Long id;
 	private SurveyQuestion question;
-	private DataLocationEntity entity;
+	private DataLocation dataLocation;
 	
 	private Boolean complete;
 	private Boolean invalid;
@@ -37,10 +37,10 @@ public class SurveyEnteredQuestion extends EnteredEntity {
 	
 	public SurveyEnteredQuestion() {}
 	
-	public SurveyEnteredQuestion(SurveyQuestion question, DataLocationEntity entity, Boolean invalid, Boolean complete) {
+	public SurveyEnteredQuestion(SurveyQuestion question, DataLocation dataLocation, Boolean invalid, Boolean complete) {
 		super();
 		this.question = question;
-		this.entity = entity;
+		this.dataLocation = dataLocation;
 		this.complete = complete;
 		this.invalid = invalid;
 	}
@@ -66,13 +66,13 @@ public class SurveyEnteredQuestion extends EnteredEntity {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=DataLocationEntity.class, fetch=FetchType.LAZY)
-	public DataLocationEntity getEntity() {
-		return entity;
+	@ManyToOne(targetEntity=DataLocation.class, fetch=FetchType.LAZY)
+	public DataLocation getDataLocation() {
+		return dataLocation;
 	}
 	
-	public void setEntity(DataLocationEntity entity) {
-		this.entity = entity;
+	public void setDataLocation(DataLocation dataLocation) {
+		this.dataLocation = dataLocation;
 	}
 	
 	@OneToMany(targetEntity=SurveySkipRule.class)
@@ -114,7 +114,7 @@ public class SurveyEnteredQuestion extends EnteredEntity {
 		int result = 1;
 		result = prime
 				* result
-				+ ((entity == null) ? 0 : entity.hashCode());
+				+ ((dataLocation == null) ? 0 : dataLocation.hashCode());
 		result = prime * result
 				+ ((question == null) ? 0 : question.hashCode());
 		return result;
@@ -129,10 +129,10 @@ public class SurveyEnteredQuestion extends EnteredEntity {
 		if (!(obj instanceof SurveyEnteredQuestion))
 			return false;
 		SurveyEnteredQuestion other = (SurveyEnteredQuestion) obj;
-		if (entity == null) {
-			if (other.entity != null)
+		if (dataLocation == null) {
+			if (other.dataLocation != null)
 				return false;
-		} else if (!entity.equals(other.entity))
+		} else if (!dataLocation.equals(other.dataLocation))
 			return false;
 		if (question == null) {
 			if (other.question != null)

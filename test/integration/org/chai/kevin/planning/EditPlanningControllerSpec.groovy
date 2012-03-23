@@ -3,8 +3,8 @@ package org.chai.kevin.planning
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
@@ -17,7 +17,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	def "save value works"() {
 		setup:
 		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
@@ -28,7 +28,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController = new EditPlanningController()
 		
 		when:
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement2.id
 		planningController.params.lineNumber = 0
@@ -52,7 +52,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	def "validation works when false"() {
 		setup:
 		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
@@ -63,7 +63,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def jsonResult
 		
 		when:
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
@@ -82,7 +82,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	def "validation works when true"() {
 		setup:
 		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
@@ -93,7 +93,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def jsonResult
 		
 		when:
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
@@ -111,7 +111,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	def "skip works"() {
 		setup:
 		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
@@ -122,7 +122,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def jsonResult
 		
 		when:
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
 		planningController.params.element = formElement.id
 		planningController.params.lineNumber = 0
@@ -141,7 +141,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	def "edit planning entry creates line and sets uuid"() {
 		setup:
 		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period)
@@ -152,7 +152,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController = new EditPlanningController()
 		
 		when:
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
 		planningController.params.lineNumber = 0
 		planningController.editPlanningEntry()
@@ -177,7 +177,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	def "accessing index page redirects to proper page - data entry user to own planning page"() {
 		setup:
 		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def planning = newPlanning(period, true)
 		planningController = new EditPlanningController()
@@ -186,7 +186,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.view()
 		
 		then:
-		planningController.response.redirectedUrl == '/editPlanning/overview/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
+		planningController.response.redirectedUrl == '/editPlanning/overview/'+DataLocation.findByCode(BUTARO).id+'?planning='+planning.id
 	}
 	def "summary page works when no params"() {
 		setup:
@@ -213,12 +213,12 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController = new EditPlanningController()
 		
 		when:
-		planningController.params.location = LocationEntity.findByCode(RWANDA).id
+		planningController.params.location = Location.findByCode(RWANDA).id
 		planningController.params.planning = planning.id
 		planningController.summaryPage() 
 		
 		then:
-		planningController.modelAndView.model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
+		planningController.modelAndView.model.currentLocation.equals(Location.findByCode(RWANDA))
 		planningController.modelAndView.model.currentPlanning.equals(planning)
 		planningController.modelAndView.model.summaryPage != null
 		
@@ -236,14 +236,14 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period)
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO),
+		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
 		planningController = new EditPlanningController()
 		
 		when:
 		elementValue.value.listValue[0].setAttribute("submitted", "true")
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planning = planning.id
 		planningController.budget()
 		
@@ -267,11 +267,11 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		value.listValue[0].setAttribute('budget_updated', 'true')
-		def elementValue = newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(BUTARO), value)
+		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
 		planningController = new EditPlanningController()
 		
 		when:
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planning = planning.id
 		planningController.budget()
 		
@@ -296,14 +296,14 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController = new EditPlanningController()
 		
 		when:
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planning = planning.id
 		planningController.budget()
 		
 		then:
 		planningController.response.redirectedUrl == null
 		planningController.modelAndView.model.planning.equals (planning)
-		planningController.modelAndView.model.location.equals (DataLocationEntity.findByCode(BUTARO))
+		planningController.modelAndView.model.location.equals (DataLocation.findByCode(BUTARO))
 		
 	}
 	
@@ -318,19 +318,19 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period)
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def elementValue = newFormEnteredValue(formElement, period, DataLocationEntity.findByCode(BUTARO),
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
 		planningController = new EditPlanningController()
 		
 		when:
 		elementValue.value.listValue[0].setAttribute("submitted", "true")
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planning = planning.id
 		planningController.updateBudget()
 		
 		then:
-		planningController.response.redirectedUrl == '/editPlanning/budget/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
+		planningController.response.redirectedUrl == '/editPlanning/budget/'+DataLocation.findByCode(BUTARO).id+'?planning='+planning.id
 		RawDataElementValue.count() == 1
 		FormEnteredValue.count() == 1
 		RawDataElementValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 10d
@@ -349,19 +349,19 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period)
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def elementValue = newFormEnteredValue(formElement, period, DataLocationEntity.findByCode(BUTARO),
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
 		planningController = new EditPlanningController()
 		
 		when:
 		elementValue.value.listValue[0].setAttribute("submitted", "true")
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
 		planningController.updateBudget()
 		
 		then:
-		planningController.response.redirectedUrl == '/editPlanning/budget/'+DataLocationEntity.findByCode(BUTARO).id+'?planning='+planning.id
+		planningController.response.redirectedUrl == '/editPlanning/budget/'+DataLocation.findByCode(BUTARO).id+'?planning='+planning.id
 		RawDataElementValue.count() == 1
 		FormEnteredValue.count() == 1
 		RawDataElementValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 10d
@@ -379,14 +379,14 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period)
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def elementValue = newFormEnteredValue(formElement, period, DataLocationEntity.findByCode(BUTARO),
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
 		planningController = new EditPlanningController()
 		
 		when:
 		planningController.params.targetURI = '/test'
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
 		planningController.params.lineNumber = 0
 		planningController.submit()
@@ -412,7 +412,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period)
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		def elementValue = newFormEnteredValue(formElement, period, DataLocationEntity.findByCode(BUTARO),
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
 		planningController = new EditPlanningController()
@@ -421,7 +421,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		elementValue.value.listValue[0].setAttribute("submitted", "true")
 		elementValue.value.listValue[0].setAttribute("budget_updated", "true")
 		planningController.params.targetURI = '/test'
-		planningController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
 		planningController.params.planningType = planningType.id
 		planningController.params.lineNumber = 0
 		planningController.unsubmit()

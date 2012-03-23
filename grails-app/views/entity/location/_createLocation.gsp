@@ -10,6 +10,8 @@
 	<g:form url="[controller:'dataLocation', action:'save', params:[targetURI: targetURI]]" useToken="true">
 		<g:i18nTextarea name="names" bean="${location}" value="${location?.names}" label="${message(code:'entity.name.label')}" field="names" height="150" width="300" maxHeight="150" />
 		
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${location}" field="code"/>
+		
 		<g:selectFromList name="level.id" label="${message(code:'location.level.label')}" bean="${location}" field="level" 
 			from="${levels}" value="${location.level?.id}" values="${levels.collect{i18n(field:it.names)}}" optionKey="id"/>
 

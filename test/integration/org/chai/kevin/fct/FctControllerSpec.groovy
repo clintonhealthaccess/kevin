@@ -2,8 +2,8 @@ package org.chai.kevin.fct
 
 import org.chai.kevin.LocationService
 import org.chai.kevin.IntegrationTests
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 
 class FctControllerSpec extends FctIntegrationTests {
@@ -22,7 +22,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		when: "valid table"
 		fctController = new FctController()
 		fctController.params.period = period.id
-		fctController.params.location = LocationEntity.findByCode(RWANDA).id
+		fctController.params.location = Location.findByCode(RWANDA).id
 		fctController.params.program = program.id		
 //		fctController.params.level = LocationLevel.findByCode(DISTRICT).id
 		fctController.params.fctTarget = target.id
@@ -30,7 +30,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		
 		then:
 		model.currentPeriod.equals(period)
-		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
+		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentProgram.equals(program)
 //		model.currentLevel.equals(LocationLevel.findByCode(DISTRICT))
 		model.currentTarget.equals(target)
@@ -71,7 +71,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		when:
 		fctController = new FctController()
 		fctController.params.period = period.id
-		fctController.params.location = LocationEntity.findByCode(BURERA).id
+		fctController.params.location = Location.findByCode(BURERA).id
 		fctController.params.program = program.id
 		def model = fctController.view()
 		
@@ -90,7 +90,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		when:
 		fctController = new FctController()
 		fctController.params.period = period.id
-		fctController.params.location = LocationEntity.findByCode(BURERA).id
+		fctController.params.location = Location.findByCode(BURERA).id
 		fctController.params.program = program.id
 		def model = fctController.view()
 		

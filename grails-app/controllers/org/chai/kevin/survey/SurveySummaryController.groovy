@@ -1,8 +1,8 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractController;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
@@ -17,7 +17,7 @@ class SurveySummaryController extends AbstractController {
 	
 	// TODO refactor into several actions for survey/program/section
 	def summaryPage = {
-		LocationEntity entity = LocationEntity.get(params.int('location'))
+		Location entity = Location.get(params.int('location'))
 
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyProgram program = SurveyProgram.get(params.int('program'))
@@ -54,7 +54,7 @@ class SurveySummaryController extends AbstractController {
 	}
 
 	def programTable = {
-		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
+		DataLocation entity = DataLocation.get(params.int('location'))
 		Survey currentSurvey = Survey.get(params.int('survey'))
 
 		SurveySummaryPage summaryPage = summaryService.getProgramTable(entity, currentSurvey)
@@ -66,7 +66,7 @@ class SurveySummaryController extends AbstractController {
 	}
 
 	def sectionTable = {
-		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
+		DataLocation entity = DataLocation.get(params.int('location'))
 		SurveyProgram currentProgram = SurveyProgram.get(params.int('program'))
 
 		SurveySummaryPage summaryPage = summaryService.getSectionTable(entity, currentProgram)

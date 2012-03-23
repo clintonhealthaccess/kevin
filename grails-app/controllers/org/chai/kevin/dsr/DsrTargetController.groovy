@@ -35,7 +35,7 @@ package org.chai.kevin.dsr;
 
 import grails.plugin.springcache.annotations.CacheFlush
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram;
 
 import org.chai.kevin.AbstractEntityController
@@ -65,7 +65,7 @@ class DsrTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			programs: ReportProgram.list(),
-			types: DataEntityType.list(),
+			types: DataLocationType.list(),
 			categories: DsrTargetCategory.list(),
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[]
 		]

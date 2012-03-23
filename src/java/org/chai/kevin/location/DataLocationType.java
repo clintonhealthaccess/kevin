@@ -14,10 +14,10 @@ import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name="DataEntityType")
-@Table(name="dhsst_entity_data_type")
+@Entity(name="DataLocationType")
+@Table(name="dhsst_location_data_location_type")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DataEntityType {
+public class DataLocationType {
 
 	private Long id;
 	private String code;
@@ -68,9 +68,9 @@ public class DataEntityType {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof DataEntityType))
+		if (!(obj instanceof DataLocationType))
 			return false;
-		DataEntityType other = (DataEntityType) obj;
+		DataLocationType other = (DataLocationType) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;
@@ -81,7 +81,7 @@ public class DataEntityType {
 
 	@Override
 	public String toString() {
-		return "DataEntityType [code=" + code + "]";
+		return "DataLocationType [code=" + code + "]";
 	}
 	
 }

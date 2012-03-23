@@ -1,7 +1,7 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 
 class SurveyServiceSpec extends SurveyIntegrationTests {
 
@@ -69,7 +69,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		
 		then:
 		element.getTypeApplicable().equals(new HashSet([(HEALTH_CENTER_GROUP)]))
-		surveyService.getNumberOfApplicableDataEntityTypes(element) == 1
+		surveyService.getNumberOfApplicableDataLocationTypes(element) == 1
 	}
 	
 	def "test number of location applicable with empty group"() {
@@ -91,7 +91,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		element.getTypeApplicable().equals(new HashSet([]))
-		surveyService.getNumberOfApplicableDataEntityTypes(element) == 0
+		surveyService.getNumberOfApplicableDataLocationTypes(element) == 0
 	}
 	
 	

@@ -32,20 +32,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.reports.ReportValue;
 
-public class FctTable extends ReportTable<FctTargetOption, LocationEntity> {
+public class FctTable extends ReportTable<FctTargetOption, Location> {
 	
 	protected List<FctTargetOption> targetOptions;
 	
-	public FctTable(Map<LocationEntity, Map<FctTargetOption, ReportValue>> valueMap, List<FctTargetOption> targetOptions) {
+	public FctTable(Map<Location, Map<FctTargetOption, ReportValue>> valueMap, List<FctTargetOption> targetOptions) {
 		super(valueMap);
 		this.targetOptions = targetOptions;
 	}
 
-	public ReportValue getReportValue(LocationEntity location, FctTargetOption targetOption){
+	public ReportValue getReportValue(Location location, FctTargetOption targetOption){
 		ReportValue reportValue = null;
 		Map<FctTargetOption, ReportValue> reportValues = valueMap.get(location);
 		if(reportValues != null) 
@@ -57,7 +57,7 @@ public class FctTable extends ReportTable<FctTargetOption, LocationEntity> {
 		return targetOptions;
 	}
 	
-	public Set<LocationEntity> getLocations(){
+	public Set<Location> getLocations(){
 		return valueMap.keySet();
 	}	
 	

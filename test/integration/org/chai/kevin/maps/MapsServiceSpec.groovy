@@ -28,7 +28,7 @@
 package org.chai.kevin.maps
 
 import org.chai.kevin.data.Type
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.hisp.dhis.period.Period
 
@@ -45,7 +45,7 @@ class MapsServiceSpec extends MapsIntegrationTests {
 		refresh()
 		
 		when:
-		def maps = mapsService.getMap(period, LocationEntity.findByCode(RWANDA), LocationLevel.findByCode(PROVINCE), mapsTarget)
+		def maps = mapsService.getMap(period, Location.findByCode(RWANDA), LocationLevel.findByCode(PROVINCE), mapsTarget)
 		
 		then:
 		maps.polygons.size() == 1

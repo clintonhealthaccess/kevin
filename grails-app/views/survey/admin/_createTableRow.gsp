@@ -38,7 +38,7 @@
 				<div class="clear"></div>
 				<g:input name="order" label="${message(code:'entity.order.label')}" bean="${row}" field="order" />
 
-				<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${row}" field="typeCodeString" 
+				<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${row}" field="typeCodeString" 
 					from="${types}" value="${row.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 

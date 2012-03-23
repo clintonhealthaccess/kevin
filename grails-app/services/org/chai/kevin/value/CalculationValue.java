@@ -7,22 +7,22 @@ import java.util.Set;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.hisp.dhis.period.Period;
 
 public abstract class CalculationValue<T extends CalculationPartialValue> implements DataValue {
 
-	private CalculationEntity entity;
+	private CalculationLocation location;
 	private Period period;
 	private List<T> calculationPartialValues;
 	private Calculation<T> calculation;
 	
-	public CalculationValue(List<T> calculationPartialValues, Calculation<T> calculation, Period period, CalculationEntity entity) {
+	public CalculationValue(List<T> calculationPartialValues, Calculation<T> calculation, Period period, CalculationLocation location) {
 		this.calculationPartialValues = calculationPartialValues;
 		this.calculation = calculation;
 		this.period = period;
-		this.entity = entity;
+		this.location = location;
 	}
 	
 	@Transient
@@ -34,8 +34,8 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 	}
 	
 	@Override
-	public CalculationEntity getEntity() {
-		return entity;
+	public CalculationLocation getLocation() {
+		return location;
 	}
 	
 	public boolean isComplete() {
@@ -46,8 +46,8 @@ public abstract class CalculationValue<T extends CalculationPartialValue> implem
 		return calculation;
 	}
 	
-	public List<DataEntityType> getTypeCodes() {
-		List<DataEntityType> result = new ArrayList<DataEntityType>();
+	public List<DataLocationType> getTypeCodes() {
+		List<DataLocationType> result = new ArrayList<DataLocationType>();
 		for (T calculationPartialValue : calculationPartialValues) {
 			result.add(calculationPartialValue.getType());
 		}

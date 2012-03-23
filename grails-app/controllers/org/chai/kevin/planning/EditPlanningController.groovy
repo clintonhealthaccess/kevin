@@ -3,8 +3,8 @@ package org.chai.kevin.planning
 import java.util.Map;
 
 import org.chai.kevin.AbstractController;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.value.Value;
 import org.hisp.dhis.period.Period;
 
@@ -43,7 +43,7 @@ class EditPlanningController extends AbstractController {
 	}
 	
 	def summaryPage = {
-		def location = LocationEntity.get(params.int('location'))
+		def location = Location.get(params.int('location'))
 		def planning = Planning.get(params.int('planning'))
 		
 		def summaryPage = null
@@ -62,7 +62,7 @@ class EditPlanningController extends AbstractController {
 	
 	def editPlanningEntry = {	
 		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		def planningList = planningService.getPlanningList(planningType, location)
 		def newPlanningEntry = planningList.getOrCreatePlanningEntry(lineNumber)
@@ -78,7 +78,7 @@ class EditPlanningController extends AbstractController {
 	def editPlanningSection = {
 		
 		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		def section = params.section
 		
@@ -98,7 +98,7 @@ class EditPlanningController extends AbstractController {
 	
 	def deletePlanningEntry = {
 		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		
 		planningService.deletePlanningEntry(planningType, location, lineNumber)
@@ -108,7 +108,7 @@ class EditPlanningController extends AbstractController {
 
 	def saveValue = {
 		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def lineNumberParam = params.int('lineNumber')
 		
 		def planningEntry = planningService.modify(planningType, location, lineNumberParam, params)
@@ -157,7 +157,7 @@ class EditPlanningController extends AbstractController {
 
 	def submit = {
 		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		
 		planningService.submit(planningType, location, lineNumber)
@@ -167,7 +167,7 @@ class EditPlanningController extends AbstractController {
 	
 	def unsubmit = {
 		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def lineNumber = params.int('lineNumber')
 		
 		planningService.unsubmit(planningType, location, lineNumber)
@@ -178,7 +178,7 @@ class EditPlanningController extends AbstractController {
 	def updateBudget = {
 		def planning = Planning.get(params.int('planning'))
 		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		
 		if (planning != null) planning.planningTypes.each {
 			planningService.refreshBudget(it, location)
@@ -194,7 +194,7 @@ class EditPlanningController extends AbstractController {
 	
 	def budget = {
 		def planning = Planning.get(params.int('planning'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def planningLists = planning.planningTypes.collect {
 			planningService.getPlanningList(it, location)
 		}
@@ -216,7 +216,7 @@ class EditPlanningController extends AbstractController {
 		
 	def planningList = {
 		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def sectionNumber = params.int('section')
 		if (sectionNumber == null) sectionNumber = 0
 		
@@ -234,7 +234,7 @@ class EditPlanningController extends AbstractController {
 	
 	def overview = {
 		def planning = Planning.get(params.int('planning'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		
 		def planningLists = planning.planningTypes.collect {
 			planningService.getPlanningList(it, location)

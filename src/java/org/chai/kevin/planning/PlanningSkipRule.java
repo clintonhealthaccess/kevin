@@ -10,7 +10,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormSkipRule;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 
 @Entity(name="PlanningSkipRule")
 @Table(name="dhsst_planning_skip_rule")
@@ -34,8 +34,8 @@ public class PlanningSkipRule extends FormSkipRule {
 	}
 	
 	@Override
-	public void evaluate(DataLocationEntity entity, ElementCalculator calculator) {
-		super.evaluate(entity, calculator);
+	public void evaluate(DataLocation dataLocation, ElementCalculator calculator) {
+		super.evaluate(dataLocation, calculator);
 	}
 
 }

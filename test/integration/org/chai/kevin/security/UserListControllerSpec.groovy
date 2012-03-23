@@ -29,7 +29,7 @@ package org.chai.kevin.security
 
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 
 /**
  * @author Jean Kahigiso M.
@@ -43,7 +43,7 @@ class UserListControllerSpec extends IntegrationTests{
 		
 		setup:
 		setupLocationTree()
-		def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+		def dataLocation = DataLocation.findByCode(KIVUYE);
 		def user = newUser("user",UUID.randomUUID().toString());
 		def surveyUser = newSurveyUser("surveyUser",UUID.randomUUID().toString(),dataLocation.id);
 		userListController = new UserListController()

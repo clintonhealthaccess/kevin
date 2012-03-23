@@ -11,28 +11,28 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.form.EnteredEntity;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.SurveySection;
 import org.hibernate.annotations.NaturalId;
 
 @Entity(name="SurveyValidSection")
 @Table(name="dhsst_survey_entered_section", uniqueConstraints=@UniqueConstraint(
-		columnNames={"section", "entity"})
+		columnNames={"section", "dataLocation"})
 )
 public class SurveyEnteredSection extends EnteredEntity {
 	
 	private Long id;
 	private SurveySection section;
-	private DataLocationEntity entity;
+	private DataLocation dataLocation;
 	private Boolean invalid;
 	private Boolean complete;
 	
 	public SurveyEnteredSection() {}
 	
-	public SurveyEnteredSection(SurveySection section, DataLocationEntity entity, Boolean invalid, Boolean complete) {
+	public SurveyEnteredSection(SurveySection section, DataLocation dataLocation, Boolean invalid, Boolean complete) {
 		super();
 		this.section = section;
-		this.entity = entity;
+		this.dataLocation = dataLocation;
 		this.invalid = invalid;
 		this.complete = complete;
 	}
@@ -58,13 +58,13 @@ public class SurveyEnteredSection extends EnteredEntity {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=DataLocationEntity.class, fetch=FetchType.LAZY)
-	public DataLocationEntity getEntity() {
-		return entity;
+	@ManyToOne(targetEntity=DataLocation.class, fetch=FetchType.LAZY)
+	public DataLocation getDataLocation() {
+		return dataLocation;
 	}
 	
-	public void setEntity(DataLocationEntity entity) {
-		this.entity = entity;
+	public void setDataLocation(DataLocation dataLocation) {
+		this.dataLocation = dataLocation;
 	}
 	
 	@Basic
@@ -102,7 +102,7 @@ public class SurveyEnteredSection extends EnteredEntity {
 				+ ((section == null) ? 0 : section.hashCode());
 		result = prime
 				* result
-				+ ((entity == null) ? 0 : entity.hashCode());
+				+ ((dataLocation == null) ? 0 : dataLocation.hashCode());
 		return result;
 	}
 
@@ -120,10 +120,10 @@ public class SurveyEnteredSection extends EnteredEntity {
 				return false;
 		} else if (!section.equals(other.section))
 			return false;
-		if (entity == null) {
-			if (other.entity != null)
+		if (dataLocation == null) {
+			if (other.dataLocation != null)
 				return false;
-		} else if (!entity.equals(other.entity))
+		} else if (!dataLocation.equals(other.dataLocation))
 			return false;
 		return true;
 	}

@@ -3,7 +3,7 @@
 		<tr>
 			<th/>
 			<th><g:message code="entity.name.label"/></th>
-			<th><g:message code="entity.locationtype.label"/></th>
+			<th><g:message code="entity.datalocationtype.label"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'survey.question.label')]"/></th>
 			<th><g:message code="entity.order.label"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>

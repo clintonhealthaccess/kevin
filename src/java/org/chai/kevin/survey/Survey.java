@@ -48,7 +48,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -170,7 +170,7 @@ public class Survey {
 	}
 	
 	@Transient
-	public List<SurveyProgram> getPrograms(DataEntityType type) {
+	public List<SurveyProgram> getPrograms(DataLocationType type) {
 		List<SurveyProgram> result = new ArrayList<SurveyProgram>();
 		for (SurveyProgram surveyProgram : getPrograms()) {
 			if (Utils.split(surveyProgram.getTypeCodeString()).contains(type.getCode())) result.add(surveyProgram);

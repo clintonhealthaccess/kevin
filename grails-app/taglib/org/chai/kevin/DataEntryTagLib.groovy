@@ -6,7 +6,7 @@ import java.util.Comparator;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
 import org.apache.commons.lang.StringUtils;
@@ -116,7 +116,7 @@ class DataEntryTagLib {
 	}
 	
 	
-	def replacePlaceHolders(String message, List<SurveyElement> elements, DataLocationEntity location) {
+	def replacePlaceHolders(String message, List<SurveyElement> elements, DataLocation location) {
 		if (log.isDebugEnabled()) log.debug('replacePlaceHolders(${message}, ${elements}, ${location})')
 		
 		String[] placeholders = StringUtils.substringsBetween(message, "{", "}")
@@ -136,7 +136,7 @@ class DataEntryTagLib {
 			if (id != null) {
 				FormElement element = elements[id];
 				String replacement =
-					'<a href="'+createLink(controller: "formElement", action: "view", params: [id:element.id, location:location.id])+'">'+(text!=null?text:element.id)+'</a>'
+					'<a href="'+createLink(controller: "formElement", action: "view", params: [id:element.id,location:location.id])+'">'+(text!=null?text:element.id)+'</a>'
 				result = StringUtils.replace(result, "{"+placeholder+"}", replacement);
 			}
 		}

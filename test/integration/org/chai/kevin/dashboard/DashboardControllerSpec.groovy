@@ -1,7 +1,7 @@
 package org.chai.kevin.dashboard
 
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.Value
@@ -21,17 +21,17 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
+		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT)
 		dashboardController.params.period = period.id
-		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
 		then:
 		model.dashboardEntity.equals(DashboardProgram.findByCode(ROOT))
 		model.currentPeriod.equals(period)
-		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
-		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.currentLocation.equals(Location.findByCode(RWANDA))
+		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard.hasData() == true
 		model.locationDashboard.hasData() == true
 	}		
@@ -46,16 +46,16 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
+		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.period = period.id
-		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
 		then:
 		model.dashboardEntity.equals(DashboardProgram.findByCode(ROOT))
 		model.currentPeriod.equals(period)
-		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
-		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.currentLocation.equals(Location.findByCode(RWANDA))
+		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard.hasData() == true
 		model.locationDashboard.hasData() == true
 	}
@@ -71,18 +71,18 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
+		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = program.id
 		dashboardController.params.period = period.id
-		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
 		then:
 		model.dashboardEntity == null
 		model.currentPeriod.equals(period)
 		model.currentProgram.equals(program)
-		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))		
-		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.currentLocation.equals(Location.findByCode(RWANDA))		
+		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard == null
 		model.locationDashboard == null
 	}
@@ -98,18 +98,18 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
+		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = program.id+1
 		dashboardController.params.period = period.id
-		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		def model = dashboardController.view()
 		
 		then:
 		model.dashboardEntity == null
 		model.currentPeriod.equals(period)
 		model.currentProgram.equals(program)
-		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
-		model.currentLocationTypes.equals(s([DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
+		model.currentLocation.equals(Location.findByCode(RWANDA))
+		model.currentLocationTypes.equals(s([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)]))
 		model.programDashboard == null
 		model.locationDashboard == null
 	}
@@ -126,11 +126,11 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
+		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
 		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(ROOT).id
 		dashboardController.params.period = period.id
-		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		dashboardController.params.table = 'program'
 		dashboardController.compare()
 		def dashboardControllerResponse = dashboardController.response.contentAsString
@@ -157,11 +157,11 @@ class DashboardControllerSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		dashboardController.params.location = LocationEntity.findByCode(RWANDA).id
+		dashboardController.params.location = Location.findByCode(RWANDA).id
 		dashboardController.params.program = ReportProgram.findByCode(ROOT).id
 		dashboardController.params.dashboardEntity = DashboardProgram.findByCode(ROOT).id
 		dashboardController.params.period = period.id
-		dashboardController.params.locationTypes = [DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
+		dashboardController.params.dataLocationTypes = [DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP).id]
 		dashboardController.params.table = 'location'
 		dashboardController.compare()
 		def dashboardControllerResponse = dashboardController.response.contentAsString
