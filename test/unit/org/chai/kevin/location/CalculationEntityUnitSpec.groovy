@@ -202,12 +202,14 @@ class CalculationEntityUnitSpec extends UnitSpec {
 		def district = new LocationLevel(code: "district")
 		def type1 = new DataEntityType(code: 'type1')
 		def type2 = new DataEntityType(code: 'type2')
+		def types = new HashSet([type1, type2])
 		
 		when:
 		def rwanda = new LocationEntity(code: "rwanda", level: country)
+		def south = new LocationEntity(code: "south", parent: rwanda, level: province)
 		def north = new LocationEntity(code: "north", parent: rwanda, level: province)
 		def burera = new LocationEntity(code: "burera", parent: north, level: district)
-		rwanda.children = [north]
+		rwanda.children = [north, south]
 		north.children = [burera]
 		
 		def data1 = new DataLocationEntity(code: 'data1', location: north, type: type1)
@@ -217,9 +219,42 @@ class CalculationEntityUnitSpec extends UnitSpec {
 		burera.dataEntities = [data2]
 		
 		then:
-		rwanda.getChildrenEntities(new HashSet([province]), new HashSet([type1, type2])).equals([burera, data1])
-		rwanda.getChildrenEntities(new HashSet([province, district]), new HashSet([type1, type2])).equals([data1, data2])
+		rwanda.getChildrenEntities(null, types).equals([north, south])
+		rwanda.getChildrenEntities(new HashSet([province]), types).equals([burera, data1])
+		rwanda.getChildrenEntities(new HashSet([province, district]), types).equals([data1, data2])
 		
+	}
+	
+	def "test get children entities with data locations"() {
+		setup:
+		def country = new LocationLevel(code: "country")
+		def province = new LocationLevel(code: "province")
+		def district = new LocationLevel(code: "district")
+		def type1 = new DataEntityType(code: 'type1')
+		def type2 = new DataEntityType(code: 'type2')
+		def types = new HashSet([type1, type2])
+		
+		when:
+		def rwanda = new LocationEntity(code: "rwanda", level: country)
+		def south = new LocationEntity(code: "south", parent: rwanda, level: province)
+		def north = new LocationEntity(code: "north", parent: rwanda, level: province)
+		def burera = new LocationEntity(code: "burera", parent: north, level: district)
+		
+		def data1 = new DataLocationEntity(code: 'data1', location: rwanda, type: type1)
+		north.dataEntities = [data1]
+		
+		def data2 = new DataLocationEntity(code: 'data2', location: burera, type: type2)
+		burera.dataEntities = [data2]
+		
+		rwanda.children = [north, south]
+		rwanda.dataEntities[data1]
+		north.children = [burera]			
+		burera.dataEntities = [data2]				
+		
+		then:
+		rwanda.getChildrenEntitiesWithDataLocations(null, types).equals([north, data1])
+		rwanda.getChildrenEntitiesWithDataLocations(new HashSet([province]), types).equals([burera, data1])
+		rwanda.getChildrenEntitiesWithDataLocations(new HashSet([province, district]), types).equals([data2, data1])
 	}
 	
 }
