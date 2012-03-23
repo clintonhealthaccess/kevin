@@ -91,7 +91,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		else percentage.value == value
 
 		where:
-		currentLocationName	| currentProgramName	| locationName	| programName | types										    | value
+		currentLocationName	| currentProgramName	| locationName	| programName 	| types										    | value
 		BURERA				| PROGRAM1				| BUTARO		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
 		BURERA				| PROGRAM1				| BUTARO		| TARGET2		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|20.0d
 		BURERA				| PROGRAM1				| KIVUYE		| TARGET1		| [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP]|40.0d
@@ -118,9 +118,10 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		dashboard.locationPath.containsAll expectedLocationPath.collect {LocationEntity.findByCode(it)}
 
 		where:
-		locationName	| programCode	| expectedLocations	| expectedEntities  | expectedLocationPath	| expectedProgramPath
-		BURERA			| PROGRAM1		| [BURERA]			| [TARGET1, TARGET2]| [RWANDA, NORTH]		| [ROOT]
-		BURERA			| ROOT			| [BURERA]			| [PROGRAM1]		| [RWANDA, NORTH]		| []		
+		locationName	| programCode	| expectedLocations	| expectedEntities  	| expectedLocationPath	| expectedProgramPath
+		RWANDA			| ROOT			| [RWANDA]			| [PROGRAM1, PROGRAM2]	| []					| []
+		BURERA			| PROGRAM1		| [BURERA]			| [TARGET1, TARGET2]	| [RWANDA, NORTH]		| [ROOT]
+		BURERA			| ROOT			| [BURERA]			| [PROGRAM1, PROGRAM2]	| [RWANDA, NORTH]		| []		
 	}
 	
 	def "get program dashboard with no dashboard entities"(){
@@ -163,6 +164,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		locationName	| programCode	| expectedLocations		| expectedEntities  | expectedLocationPath	| expectedProgramPath
 		BURERA			| PROGRAM1		| [BUTARO, KIVUYE]		| [PROGRAM1]		| [RWANDA, NORTH]		| [ROOT]
 		BURERA			| ROOT			| [BUTARO, KIVUYE]		| [ROOT]			| [RWANDA, NORTH]		| []
+		RWANDA			| ROOT			| [NORTH]				| [ROOT]			| []					| []
 	}
 	
 	def "dashboard test location compare dashboard"() {

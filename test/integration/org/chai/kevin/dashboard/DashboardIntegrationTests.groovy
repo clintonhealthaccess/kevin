@@ -16,10 +16,12 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 		def root = ReportProgram.findByCode(ROOT)
 		def program1 = ReportProgram.findByCode(PROGRAM1)
 		def program2 = ReportProgram.findByCode(PROGRAM2)
+		def program3 = ReportProgram.findByCode(PROGRAM3)
 		
 		def dashboardRoot = newDashboardProgram(ROOT, root, 0)		
 		def dashboardProgram1 = newDashboardProgram(PROGRAM1, program1, 1)
 		def dashboardProgram2 = newDashboardProgram(PROGRAM2, program2, 1)
+		def dashboardProgram3 = newDashboardProgram(PROGRAM3, program3, 1)
 		
 		def dataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"40",(HEALTH_CENTER_GROUP):"40"]]))
 		def average1 = newAverage("\$"+dataElement1.id, CODE(2))

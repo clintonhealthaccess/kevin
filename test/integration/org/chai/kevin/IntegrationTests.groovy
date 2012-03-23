@@ -109,6 +109,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static String PROGRAM2 = "Program2"
 	static String TARGET3 = "Target 3"
 	
+	static String PROGRAM3 = "Program3"
+	
 	def setup() {
 		// using cache.use_second_level_cache = false in test mode doesn't work so
 		// we flush the cache after each test
@@ -137,7 +139,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def setupProgramTree() {
 		def root = newReportProgram(ROOT)		
 		def program1 = newReportProgram(PROGRAM1, root)
-		def program2 = newReportProgram(PROGRAM2, root)		
+		def program2 = newReportProgram(PROGRAM2, root)
+		def program3 = newReportProgram(PROGRAM3, root)	
 	}
 		
 	static def newPeriod() {
@@ -399,7 +402,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return result
 	}
 	
-	static def getDataEntities(def codes) {
+	static def getDataLocations(def codes) {
 		def result = []
 		for (String code : codes) {
 			result.add(DataLocationEntity.findByCode(code))

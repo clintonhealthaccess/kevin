@@ -41,7 +41,7 @@ public class DashboardPercentageService {
 			Integer totalWeight = 0;
 			Double sum = 0.0d;
 
-			List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntities(program.getProgram());
+			List<DashboardEntity> dashboardEntities = dashboardService.getDashboardEntitiesWithTargets(program.getProgram());
 			for (DashboardEntity child : dashboardEntities) {
 				DashboardPercentage childPercentage = child.visit(this, entity, period);
 				if (childPercentage == null) {

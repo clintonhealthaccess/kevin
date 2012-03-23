@@ -26,7 +26,7 @@
 						<g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>						
 						<g:if test="${programDashboard != null && programDashboard.hasData()}">
 							<g:render template="/dashboard/reportCompareFilter" model="[table:'program', dashboard:programDashboard]"/>
-							<div class='horizontal-graph-wrap'>
+							<div class="horizontal-graph-wrap">
 								<g:render template="/dashboard/reportProgramTable" model="[dashboard:programDashboard]"/>
 			                </div>
 		                </g:if>
