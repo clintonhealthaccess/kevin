@@ -36,8 +36,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.period.Period;
 
@@ -45,21 +45,21 @@ import org.hisp.dhis.period.Period;
 public abstract class CalculationPartialValue extends StoredValue {
 
 	private Long id;
-	private DataEntityType type;
+	private DataLocationType type;
 
 	public CalculationPartialValue() {}
 	
-	public CalculationPartialValue(CalculationEntity entity, Period period, DataEntityType type, Value value) {
-		super(entity, period, value);
+	public CalculationPartialValue(CalculationLocation location, Period period, DataLocationType type, Value value) {
+		super(location, period, value);
 		
 		this.type = type;
 	}
 	
-	public CalculationPartialValue(CalculationEntity entity, Period period, DataEntityType type) {
+	public CalculationPartialValue(CalculationLocation location, Period period, DataLocationType type) {
 		super();
 		
 		this.type = type;
-		this.entity = entity;
+		this.location = location;
 		this.period = period;
 	}
 	
@@ -76,12 +76,12 @@ public abstract class CalculationPartialValue extends StoredValue {
 	@Basic
 	@NaturalId
 	@JoinColumn(nullable=false)
-	@ManyToOne(targetEntity=DataEntityType.class, optional=false, fetch=FetchType.LAZY)
-	public DataEntityType getType() {
+	@ManyToOne(targetEntity=DataLocationType.class, optional=false, fetch=FetchType.LAZY)
+	public DataLocationType getType() {
 		return type;
 	}
 	
-	public void setType(DataEntityType type) {
+	public void setType(DataLocationType type) {
 		this.type = type;
 	}
 	

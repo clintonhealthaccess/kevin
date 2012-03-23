@@ -14,9 +14,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationSorter;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
@@ -39,34 +39,34 @@ public class FctService {
 	
 	@Cacheable("fctCache")
 	@Transactional(readOnly = true)
-	public FctTable getFctTable(LocationEntity locationEntity, ReportProgram program, FctTarget target, Period period, LocationLevel level, Set<DataEntityType> types) {		
+	public FctTable getFctTable(Location location, ReportProgram program, FctTarget target, Period period, LocationLevel level, Set<DataLocationType> types) {		
 		if (log.isDebugEnabled()) 
-			log.debug("getFctTable(period="+period+",location="+locationEntity+",level="+level+",program="+program+",target="+target+")");				
+			log.debug("getFctTable(period="+period+",location="+location+",level="+level+",program="+program+",target="+target+")");				
 		
 		List<FctTargetOption> targetOptions = getTargetOptions(target);
 			
-		Map<LocationEntity, Map<FctTargetOption, ReportValue>> valueMap = new HashMap<LocationEntity, Map<FctTargetOption, ReportValue>>();
+		Map<Location, Map<FctTargetOption, ReportValue>> valueMap = new HashMap<Location, Map<FctTargetOption, ReportValue>>();
 		
 		if(targetOptions.isEmpty())
 			return new FctTable(valueMap, targetOptions);		
 		
 		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);
-		List<LocationEntity> locations = locationEntity.collectTreeWithDataEntities(skips, types);
+		List<Location> childLocations = location.collectTreeWithDataLocations(skips, types);
 		
-		for (LocationEntity location : locations) {
+		for (Location child : childLocations) {
 			Map<FctTargetOption, ReportValue> targetMap = new HashMap<FctTargetOption, ReportValue>();
 			for(FctTargetOption targetOption : targetOptions){
 				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
-				targetMap.put(targetOption, getFctValue(targetOption, location, period, types));
+				targetMap.put(targetOption, getFctValue(targetOption, child, period, types));
 			}
-			valueMap.put(location, targetMap);
+			valueMap.put(child, targetMap);
 		}
 		
 		//sort location map keys
-		List<LocationEntity> sortedLocations = new ArrayList<LocationEntity>(valueMap.keySet());
+		List<Location> sortedLocations = new ArrayList<Location>(valueMap.keySet());
 		Collections.sort(sortedLocations, LocationSorter.BY_LEVEL(languageService.getCurrentLanguage()));		
-		Map<LocationEntity, Map<FctTargetOption, ReportValue>> sortedValueMap = new LinkedHashMap<LocationEntity, Map<FctTargetOption, ReportValue>>();		
-		for (LocationEntity sortedLocation : sortedLocations){		
+		Map<Location, Map<FctTargetOption, ReportValue>> sortedValueMap = new LinkedHashMap<Location, Map<FctTargetOption, ReportValue>>();		
+		for (Location sortedLocation : sortedLocations){		
 			sortedValueMap.put(sortedLocation, valueMap.get(sortedLocation));
 		}
 		
@@ -82,9 +82,9 @@ public class FctService {
 				.list();
 	}
 
-	private ReportValue getFctValue(FctTargetOption targetOption, CalculationEntity entity, Period period, Set<DataEntityType> types) {
+	private ReportValue getFctValue(FctTargetOption targetOption, CalculationLocation location, Period period, Set<DataLocationType> types) {
 		String value = null;
-		CalculationValue<?> calculationValue = valueService.getCalculationValue(targetOption.getSum(), entity, period, types);
+		CalculationValue<?> calculationValue = valueService.getCalculationValue(targetOption.getSum(), location, period, types);
 		if (calculationValue != null) value = calculationValue.getValue().getNumberValue().toString();
 		return new ReportValue(value);
 	}

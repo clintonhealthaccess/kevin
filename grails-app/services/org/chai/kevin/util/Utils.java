@@ -46,7 +46,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 
 /**
  * @author Jean Kahigiso M.
@@ -84,9 +84,9 @@ public class Utils {
 		return value.matches("(?i).*"+text+".*");
 	}
 
-	public static Set<String> getUuids(List<DataEntityType> types) {
+	public static Set<String> getUuids(List<DataLocationType> types) {
 		Set<String> result = new HashSet<String>();
-		for (DataEntityType type : types) {
+		for (DataLocationType type : types) {
 			result.add(type.getCode());
 		}
 		return result;

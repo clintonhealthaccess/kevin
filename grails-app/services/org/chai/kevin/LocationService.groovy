@@ -37,10 +37,10 @@ import java.util.Map
 import java.util.Set
 
 import org.apache.commons.lang.StringUtils
-import org.chai.kevin.location.CalculationEntity
-import org.chai.kevin.location.DataEntityType
-import org.chai.kevin.location.DataLocationEntity
-import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.CalculationLocation
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.util.Utils
 import org.hibernate.Criteria;
@@ -56,12 +56,12 @@ public class LocationService {
 	def languageService;
 	def sessionFactory;	
 	
-    public LocationEntity getRootLocation() {
-    	return (LocationEntity)sessionFactory.getCurrentSession().createCriteria(LocationEntity.class).add(Restrictions.isNull("parent")).uniqueResult();
+    public Location getRootLocation() {
+    	return (Location)sessionFactory.getCurrentSession().createCriteria(Location.class).add(Restrictions.isNull("parent")).uniqueResult();
     }
 
-    public DataEntityType findDataEntityTypeByCode(String code) {
-    	return (DataEntityType)sessionFactory.getCurrentSession().createCriteria(DataEntityType.class).add(Restrictions.eq("code", code)).uniqueResult();
+    public DataLocationType findDataLocationTypeByCode(String code) {
+    	return (DataLocationType)sessionFactory.getCurrentSession().createCriteria(DataLocationType.class).add(Restrictions.eq("code", code)).uniqueResult();
     }
 	
     public LocationLevel findLocationLevelByCode(String code) {
@@ -84,33 +84,33 @@ public class LocationService {
 		return levels;
 	}
 	
-	public List<DataEntityType> listTypes() {
+	public List<DataLocationType> listTypes() {
 		return sessionFactory.getCurrentSession()
-			.createCriteria(DataEntityType.class)
+			.createCriteria(DataLocationType.class)
 			.setCacheable(true)
-			.setCacheRegion("dataEntityTypeListQueryCache")
+			.setCacheRegion("dataLocationTypeListQueryCache")
 			.list();
 	}
 	
-	public Long getNumberOfDataEntitiesForType(DataEntityType dataEntityType){
-		return (Long)sessionFactory.getCurrentSession().createCriteria(DataLocationEntity.class)
-		.add(Restrictions.eq("type", dataEntityType))
+	public Long getNumberOfDataLocationsForType(DataLocationType dataLocationType){
+		return (Long)sessionFactory.getCurrentSession().createCriteria(DataLocation.class)
+		.add(Restrictions.eq("type", dataLocationType))
 		.setProjection(Projections.rowCount()).uniqueResult();
 	}
 		
-	public <T extends CalculationEntity> T getCalculationEntity(Long id, Class<T> clazz) {
+	public <T extends CalculationLocation> T getCalculationLocation(Long id, Class<T> clazz) {
 		return (T)sessionFactory.getCurrentSession().get(clazz, id);
 	}
 	
-	public <T extends CalculationEntity> T findCalculationEntityByCode(String code, Class<T> clazz) {
+	public <T extends CalculationLocation> T findCalculationLocationByCode(String code, Class<T> clazz) {
 		return (T) sessionFactory.getCurrentSession().createCriteria(clazz)
 				.add(Restrictions.eq("code", code)).uniqueResult();
 	}
-	public Integer countLocation(Class<CalculationEntity> clazz, String text) {
+	public Integer countLocation(Class<CalculationLocation> clazz, String text) {
 		return getSearchCriteria(clazz, text).setProjection(Projections.count("id")).uniqueResult()
 	}
 	
-	public <T extends CalculationEntity> List<T> searchLocation(Class<T> clazz, String text, Map<String, String> params) {
+	public <T extends CalculationLocation> List<T> searchLocation(Class<T> clazz, String text, Map<String, String> params) {
 		def criteria = getSearchCriteria(clazz, text)
 		
 		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
@@ -127,7 +127,7 @@ public class LocationService {
 		return locations
 	}
 	
-	private <T extends CalculationEntity> Criteria getSearchCriteria(Class<T> clazz, String text) {
+	private <T extends CalculationLocation> Criteria getSearchCriteria(Class<T> clazz, String text) {
 		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz);
 		
 		def textRestrictions = Restrictions.conjunction()
@@ -159,8 +159,8 @@ public class LocationService {
 	}
 	
 	// TODO move to location
-	public LocationEntity getParentOfLevel(CalculationEntity entity, LocationLevel level) {
-		LocationEntity tmp = entity.getParent();
+	public Location getParentOfLevel(CalculationLocation location, LocationLevel level) {
+		Location tmp = location.getParent();
 		while (tmp != null) {
 			if (tmp.getLevel().equals(level)) return tmp;
 			tmp = tmp.getParent();
@@ -168,17 +168,17 @@ public class LocationService {
 		return null;
 	}
 	
-	// TODO move to LocationEntity
-	public List<LocationEntity> getChildrenOfLevel(LocationEntity location, LocationLevel level) {
-		List<LocationEntity> result = new ArrayList<LocationEntity>();
+	// TODO move to Location
+	public List<Location> getChildrenOfLevel(Location location, LocationLevel level) {
+		List<Location> result = new ArrayList<Location>();
 		collectChildrenOfLevel(location, level, result);
 		return result;
 	}
 	
-	private void collectChildrenOfLevel(LocationEntity location, LocationLevel level, List<LocationEntity> locations) {
+	private void collectChildrenOfLevel(Location location, LocationLevel level, List<Location> locations) {
 		if (location.getLevel().equals(level)) locations.add(location);
 		else {
-			for (LocationEntity child : location.getChildren()) {
+			for (Location child : location.getChildren()) {
 				collectChildrenOfLevel(child, level, locations);
 			}
 		}

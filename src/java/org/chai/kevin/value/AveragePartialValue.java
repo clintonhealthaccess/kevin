@@ -10,38 +10,38 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Average;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
 import org.hisp.dhis.period.Period;
 
 @Entity(name="AveragePartialValue")
 @Table(name="dhsst_value_partial_average",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"data", "entity", "period", "type"})
+		@UniqueConstraint(columnNames={"data", "location", "period", "type"})
 	}
 )
 public class AveragePartialValue extends CalculationPartialValue {
 
-	private Integer numberOfDataEntities;
+	private Integer numberOfDataLocations;
 	private Average data;
 	
 	public AveragePartialValue() {
 		super();
 	}
 
-	public AveragePartialValue(Average data, CalculationEntity entity, Period period, DataEntityType type, Integer numberOfDataEntities, Value value) {
-		super(entity, period, type, value);
+	public AveragePartialValue(Average data, CalculationLocation location, Period period, DataLocationType type, Integer numberOfDataLocations, Value value) {
+		super(location, period, type, value);
 		
 		this.data = data;
-		this.numberOfDataEntities = numberOfDataEntities;
+		this.numberOfDataLocations = numberOfDataLocations;
 	}
 
-	public AveragePartialValue(Average data, CalculationEntity entity, Period period, DataEntityType type, Integer numberOfDataEntities) {
-		super(entity, period, type);
+	public AveragePartialValue(Average data, CalculationLocation location, Period period, DataLocationType type, Integer numberOfDataLocations) {
+		super(location, period, type);
 		
 		this.data = data;
-		this.numberOfDataEntities = numberOfDataEntities;
+		this.numberOfDataLocations = numberOfDataLocations;
 	}
 
 	@Override
@@ -58,12 +58,12 @@ public class AveragePartialValue extends CalculationPartialValue {
 	
 	@Basic
 	@Column(nullable=false)
-	public Integer getNumberOfDataEntities() {
-		return numberOfDataEntities;
+	public Integer getNumberOfDataLocations() {
+		return numberOfDataLocations;
 	}
 	
-	public void setNumberOfDataEntities(Integer numberOfDataEntities) {
-		this.numberOfDataEntities = numberOfDataEntities;
+	public void setNumberOfDataLocations(Integer numberOfDataLocations) {
+		this.numberOfDataLocations = numberOfDataLocations;
 	}
 
 	@Override

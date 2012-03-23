@@ -50,9 +50,9 @@ import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.DataLocation;
 import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,53 +77,53 @@ public class ExpressionService {
 	}
 	
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> List<T> calculatePartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",entity="+entity+")");
+	public <T extends CalculationPartialValue> List<T> calculatePartialValues(Calculation<T> calculation, CalculationLocation location, Period period) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(calculation="+calculation+",period="+period+",location="+location+")");
 		
 		List<T> result = new ArrayList<T>();
 		for (String expression : calculation.getPartialExpressions()) {
-			result.addAll(calculatePartialValues(calculation, expression, entity, period));
+			result.addAll(calculatePartialValues(calculation, expression, location, period));
 		}
 		return result;
 	}
 	
-	private <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, String expression, CalculationEntity entity, Period period) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",entity="+entity+")");
+	private <T extends CalculationPartialValue> Set<T> calculatePartialValues(Calculation<T> calculation, String expression, CalculationLocation location, Period period) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(expression="+expression+",period="+period+",location="+location+")");
 		
 		Set<T> result = new HashSet<T>();
-		for (DataEntityType type : locationService.listTypes()) {
-			Set<DataEntityType> collectForType = new HashSet<DataEntityType>();
+		for (DataLocationType type : locationService.listTypes()) {
+			Set<DataLocationType> collectForType = new HashSet<DataLocationType>();
 			collectForType.add(type);
-			List<DataLocationEntity> dataEntities = entity.collectDataLocationEntities(null, collectForType);
+			List<DataLocation> dataLocations = location.collectDataLocations(null, collectForType);
 			
-			if (!dataEntities.isEmpty()) {
-				Map<DataLocationEntity, StatusValuePair> values = new HashMap<DataLocationEntity, StatusValuePair>();
-				for (DataLocationEntity dataEntity : dataEntities) {
-					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, dataEntity, DataElement.class);
-					values.put(dataEntity, statusValuePair);
+			if (!dataLocations.isEmpty()) {
+				Map<DataLocation, StatusValuePair> values = new HashMap<DataLocation, StatusValuePair>();
+				for (DataLocation dataLocation : dataLocations) {
+					StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, Calculation.TYPE, period, dataLocation, DataElement.class);
+					values.put(dataLocation, statusValuePair);
 				}
-				result.add(calculation.getCalculationPartialValue(expression, values, entity, period, type));
+				result.add(calculation.getCalculationPartialValue(expression, values, location, period, type));
 			}
 		}
 		return result;
 	}
 	
 	@Transactional(readOnly=true)
-	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, DataLocationEntity dataEntity, Period period) {
-		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",dataEntity="+dataEntity+")");
+	public NormalizedDataElementValue calculateValue(NormalizedDataElement normalizedDataElement, DataLocation dataLocation, Period period) {
+		if (log.isDebugEnabled()) log.debug("calculateValue(normalizedDataElement="+normalizedDataElement+",period="+period+",dataLocation="+dataLocation+")");
 		
-		String expression = normalizedDataElement.getExpression(period, dataEntity.getType().getCode());
+		String expression = normalizedDataElement.getExpression(period, dataLocation.getType().getCode());
 		
-		StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, dataEntity, RawDataElement.class);
-		NormalizedDataElementValue expressionValue = new NormalizedDataElementValue(statusValuePair.value, statusValuePair.status, dataEntity, normalizedDataElement, period);
+		StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, dataLocation, RawDataElement.class);
+		NormalizedDataElementValue expressionValue = new NormalizedDataElementValue(statusValuePair.value, statusValuePair.status, dataLocation, normalizedDataElement, period);
 		
 		if (log.isDebugEnabled()) log.debug("getValue()="+expressionValue);
 		return expressionValue;
 	}
 
-	// location has to be a dataEntity
-	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataLocationEntity dataEntity, Class<T> clazz) {
-		if (expressionLog.isInfoEnabled()) expressionLog.info("getting expression status-value for: expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataEntity={"+dataEntity+"}");
+	// location has to be a dataLocation
+	private <T extends DataElement<S>, S extends DataValue> StatusValuePair getExpressionStatusValuePair(String expression, Type type, Period period, DataLocation dataLocation, Class<T> clazz) {
+		if (expressionLog.isInfoEnabled()) expressionLog.info("getting expression status-value for: expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataLocation={"+dataLocation+"}");
 		
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null) {
@@ -142,7 +142,7 @@ public class ExpressionService {
 				Map<String, Type> typeMap = new HashMap<String, Type>();
 				
 				for (Entry<String, T> entry : datas.entrySet()) {
-					DataValue dataValue = valueService.getDataElementValue(entry.getValue(), dataEntity, period);
+					DataValue dataValue = valueService.getDataElementValue(entry.getValue(), dataLocation, period);
 					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
 				}
@@ -159,7 +159,7 @@ public class ExpressionService {
 						statusValuePair.value = jaqlService.evaluate(expression, type, valueMap, typeMap);
 						statusValuePair.status = Status.VALID;
 					} catch (IllegalArgumentException e) {
-						if (expressionLog.isErrorEnabled()) expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataEntity={"+dataEntity+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
+						if (expressionLog.isErrorEnabled()) expressionLog.error("expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataLocation={"+dataLocation+"}, valueMap={"+valueMap+"}, typeMap={"+typeMap+"}", e);
 						log.warn("there was an error evaluating expression: "+expression, e);
 						statusValuePair.value = Value.NULL_INSTANCE();
 						statusValuePair.status = Status.ERROR;

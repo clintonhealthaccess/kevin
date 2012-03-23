@@ -52,9 +52,9 @@ class CalculationValueUnitSpec extends UnitSpec {
 	
 	def "test average"() {
 		setup:
-		def partialValue1 = new AveragePartialValue(value: v("1"), numberOfDataEntities: 1)
-		def partialValue2 = new AveragePartialValue(value: v("14"), numberOfDataEntities: 2)
-		def partialValue3 = new AveragePartialValue(value: v("27"), numberOfDataEntities: 3)
+		def partialValue1 = new AveragePartialValue(value: v("1"), numberOfDataLocations: 1)
+		def partialValue2 = new AveragePartialValue(value: v("14"), numberOfDataLocations: 2)
+		def partialValue3 = new AveragePartialValue(value: v("27"), numberOfDataLocations: 3)
 		def average = new Average()
 		def value = null
 		
@@ -128,14 +128,14 @@ class CalculationValueUnitSpec extends UnitSpec {
 		def average = new Average()
 		
 		when:
-		partialValue = new AveragePartialValue(value: v("1"), numberOfDataEntities: 0)
+		partialValue = new AveragePartialValue(value: v("1"), numberOfDataLocations: 0)
 		value = new AverageValue([partialValue], average, null, null)
 		
 		then:
 		value.getValue().equals(Value.NULL_INSTANCE())
 		
 		when:
-		partialValue = new AveragePartialValue(value: v("0"), numberOfDataEntities: 0)
+		partialValue = new AveragePartialValue(value: v("0"), numberOfDataLocations: 0)
 		value = new AverageValue([partialValue], average, null, null)
 
 		then:

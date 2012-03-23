@@ -37,9 +37,9 @@ import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostRampUpYear;
 import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.cost.CostTarget.CostType;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.maps.MapsTarget;
 import org.chai.kevin.util.JSONUtils;
@@ -66,8 +66,6 @@ import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
-import org.chai.kevin.survey.wizard.Wizard;
-import org.chai.kevin.survey.wizard.WizardStep;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
@@ -118,9 +116,9 @@ class Initializer {
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def kivuye = new SurveyUser(username: "kivuye", entityId: DataLocationEntity.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
+		def kivuye = new SurveyUser(username: "kivuye", dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
 		kivuye.addToPermissions("editSurvey:view")
-		kivuye.addToPermissions("editSurvey:*:"+DataLocationEntity.findByCode("Kivuye HC").id)
+		kivuye.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Kivuye HC").id)
 		kivuye.addToPermissions("menu:survey")
 		kivuye.save(failOnError: true)
 	}
@@ -136,25 +134,25 @@ class Initializer {
 			period2.save(failOnError: true, flush: true)
 		}
 
-		if (!LocationEntity.count()) {
+		if (!Location.count()) {
 
-			def hc = new DataEntityType(names: j(["en":"Health Center"]), code: "Health Center").save(failOnError: true)
-			def dh = new DataEntityType(names: j(["en":"District Hospital"]), code: "District Hospital").save(failOnError: true)
+			def hc = new DataLocationType(names: j(["en":"Health Center"]), code: "Health Center").save(failOnError: true)
+			def dh = new DataLocationType(names: j(["en":"District Hospital"]), code: "District Hospital").save(failOnError: true)
 
 			def country = new LocationLevel(names: j(["en":"National"]), code: "National", order: 1).save(failOnError: true)
 			def province = new LocationLevel(names: j(["en":"Province"]), code: "Province", order: 2).save(failOnError: true)
 			def district = new LocationLevel(names: j(["en":"District"]), code: "District", order: 3).save(failOnError: true)
 			def sector = new LocationLevel(names: j(["en":"Sector"]), code: "Sector", order: 4).save(failOnError: true)
 
-			def rwanda = new LocationEntity(names: j(["en":"Rwanda"]), code: "Rwanda", parent: null, level: country).save(failOnError: true)
+			def rwanda = new Location(names: j(["en":"Rwanda"]), code: "Rwanda", parent: null, level: country).save(failOnError: true)
 
-			def kigali = new LocationEntity(names: j(["en":"Kigali City"]), code: "Kigali City", parent: rwanda, level: province).save(failOnError: true)
-			def north = new LocationEntity(names: j(["en":"North"]), code: "North", parent: rwanda, level: province).save(failOnError: true)
-			def south = new LocationEntity(names: j(["en":"South"]), code: "South", parent: rwanda, level: province).save(failOnError: true)
-			def east = new LocationEntity(names: j(["en":"East"]), code: "East", parent: rwanda, level: province).save(failOnError: true)
-			def west = new LocationEntity(names: j(["en":"West"]), code: "West", parent: rwanda, level: province).save(failOnError: true)
+			def kigali = new Location(names: j(["en":"Kigali City"]), code: "Kigali City", parent: rwanda, level: province).save(failOnError: true)
+			def north = new Location(names: j(["en":"North"]), code: "North", parent: rwanda, level: province).save(failOnError: true)
+			def south = new Location(names: j(["en":"South"]), code: "South", parent: rwanda, level: province).save(failOnError: true)
+			def east = new Location(names: j(["en":"East"]), code: "East", parent: rwanda, level: province).save(failOnError: true)
+			def west = new Location(names: j(["en":"West"]), code: "West", parent: rwanda, level: province).save(failOnError: true)
 
-			def burera = new LocationEntity(names: j(["en":"Burera"]), code: "Burera", parent: north, level: district).save(failOnError: true)
+			def burera = new Location(names: j(["en":"Burera"]), code: "Burera", parent: north, level: district).save(failOnError: true)
 
 			rwanda.children = [
 				kigali,
@@ -180,9 +178,9 @@ class Initializer {
 			province.save(failOnError: true)
 			district.save(failOnError: true)
 			
-			def butaro = new DataLocationEntity(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
-			def kivuye = new DataLocationEntity(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
-			burera.dataEntities = [butaro, kivuye]
+			def butaro = new DataLocation(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
+			def kivuye = new DataLocation(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
+			burera.dataLocations = [butaro, kivuye]
 			burera.save(failOnError: true)
 		}
 
@@ -568,7 +566,7 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Butaro DH"),
+					location: DataLocation.findByCode("Butaro DH"),
 					value: v("30"),
 					timestamp: new Date(),
 					).save(failOnError: true)
@@ -576,7 +574,7 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("40"),
 					timestamp: new Date(),
 					).save(failOnError: true)
@@ -584,77 +582,77 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE3"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"value1\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE4"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("true"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE6"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("false"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE8"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("10"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE9"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("31"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE10"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"NGO or Partner\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE11"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"2011-06-29\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE81"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("44"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE91"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("33"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE101"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"Ministry of Health\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE111"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"2011-06-30\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
@@ -662,7 +660,7 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE12"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
@@ -671,8 +669,8 @@ class Initializer {
 
 		if (!NormalizedDataElement.count()) {
 			def period1 = Period.list()[0]
-			def dh = DataEntityType.findByCode('District Hospital')
-			def hc = DataEntityType.findByCode('Health Center')
+			def dh = DataLocationType.findByCode('District Hospital')
+			def hc = DataLocationType.findByCode('Health Center')
 
 			// indicators
 			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
@@ -824,8 +822,8 @@ class Initializer {
 
 	static def createDsr() {
 		if (!DsrTarget.count()) {
-			def dh = DataEntityType.findByCode("District Hospital")
-			def hc = DataEntityType.findByCode("Health Center")
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
 
 			def finacss = ReportProgram.findByCode("Service Delivery")
 			def instCap = ReportProgram.findByCode("Institutional Capacity")
@@ -1026,8 +1024,8 @@ class Initializer {
 
 	static def createFct() {
 		if (!FctTarget.count()) {
-			def dh = DataEntityType.findByCode("District Hospital")
-			def hc = DataEntityType.findByCode("Health Center")
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
 			def hmr = ReportProgram.findByCode("Human Resources for Health")
 
 			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Sum 1", timestamp:new Date());
@@ -1242,7 +1240,7 @@ class Initializer {
 		
 //		new FormEnteredValue(
 //			formElement: formElement,
-//			entity: DataLocationEntity.findByCode("Kivuye HC"),
+//			dataLocation: DataLocation.findByCode("Kivuye HC"),
 //			value: Value.VALUE_LIST([
 //				Value.VALUE_MAP([
 //					"basic": Value.VALUE_MAP([
@@ -1258,8 +1256,8 @@ class Initializer {
 	static def createQuestionaire(){
 		if(!Survey.count()){
 
-			def dh = DataEntityType.findByCode("District Hospital")
-			def hc = DataEntityType.findByCode("Health Center")
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
 
 			//Creating Survey
 			def surveyOne = new Survey(

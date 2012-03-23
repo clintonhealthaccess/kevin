@@ -15,7 +15,7 @@
 			<label><g:message code="survey.label"/>:</label> <g:i18n field="${program.survey.names}"/>
 		</div>
 		
-		<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${program}" field="typeCodeString" 
+		<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${program}" field="typeCodeString" 
 			from="${types}" value="${program.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<g:if test="${program.id != null}">

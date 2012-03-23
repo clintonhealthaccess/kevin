@@ -31,7 +31,7 @@ package org.chai.kevin.value
 constraints = {
 	
 	data(nullable: false)
-	entity(nullable: false)
+	location(nullable: false)
 	period(nullable: false)
 	value(nullable: false, validator: {val, obj ->
 		return true;

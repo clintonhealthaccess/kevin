@@ -11,17 +11,17 @@
 			<div><g:message code="survey.print.district.health.system.label"/></div> 
 			<div><g:message code="survey.print.strengthening.framework.tool.label"/></div> 
 			<div><g:message code="survey.print.questionnaire.label"/></div>
-			<div><g:i18n field="${surveyPage.entity.type.names}"/></div>
-			<div><g:i18n field="${surveyPage.entity.names}"/></div>
+			<div><g:i18n field="${surveyPage.dataLocation.type.names}"/></div>
+			<div><g:i18n field="${surveyPage.dataLocation.names}"/></div>
 		</div>
 		<div id="print-questions">
 		<div>
-			<g:each in="${surveyPage.survey.getPrograms(surveyPage.entity.type)}" var="program">
+			<g:each in="${surveyPage.survey.getPrograms(surveyPage.dataLocation.type)}" var="program">
 				<h3 class="program-title"><g:i18n field="${program.names}"/></h3>
-				<g:each in="${program.getSections(surveyPage.entity.type)}" var="section">
+				<g:each in="${program.getSections(surveyPage.dataLocation.type)}" var="section">
 					<h4 class="section-title"><g:i18n field="${section.names}"/></h4>
 					<ol id="questions-section-${section.id}">
-					<g:each in="${section.getQuestions(surveyPage.entity.type)}" var="question">
+					<g:each in="${section.getQuestions(surveyPage.dataLocation.type)}" var="question">
 						<li class="question-container">
 							<g:render template="/survey/question/${question.getType().getTemplate()}" model="[surveyPage: surveyPage, question: question, readonly: readonly, print: true, showHints: false]" />
 						</li>

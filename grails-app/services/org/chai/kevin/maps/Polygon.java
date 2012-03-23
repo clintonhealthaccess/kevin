@@ -29,20 +29,20 @@ package org.chai.kevin.maps;
  */
 
 import org.chai.kevin.data.Gradient;
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.CalculationLocation;
 
 public class Polygon extends Gradient {
 
-	private CalculationEntity entity;
+	private CalculationLocation location;
 	private Double value;
 	
-	public Polygon(CalculationEntity entity, Double value) {
-		this.entity = entity;
+	public Polygon(CalculationLocation location, Double value) {
+		this.location = location;
 		this.value = value;
 	}
 	
-	public CalculationEntity getLocation() {
-		return entity;
+	public CalculationLocation getLocation() {
+		return location;
 	}
 	
 	public Double getGradientValue() {
@@ -52,14 +52,14 @@ public class Polygon extends Gradient {
 	public String toJson() {
 		return 
 			"{" +
-				"\"location\":"+entity.toJson()+",\n"+
+				"\"location\":"+location.toJson()+",\n"+
 				"\"color\":\""+getColor()+"\""+
 			"}";
 	}
 
 	@Override
 	public String toString() {
-		return "Polygon [location=" + entity + ", value=" + value
+		return "Polygon [location=" + location + ", value=" + value
 				+ "]";
 	}
 	

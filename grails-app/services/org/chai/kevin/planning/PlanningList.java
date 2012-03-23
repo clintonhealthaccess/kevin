@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -18,7 +18,7 @@ public class PlanningList {
 	private final PlanningType planningType;
 	private final Map<String, Enum> enums;
 	
-	private DataLocationEntity entity;
+	private DataLocation dataLocation;
 	private List<PlanningEntry> planningEntries;
 	private List<PlanningEntryBudget> planningBudgetEntries;
 	
@@ -26,14 +26,14 @@ public class PlanningList {
 	private RawDataElementValue rawDataElementValue;
 	private Map<PlanningCost, NormalizedDataElementValue> budgetValues;
 	
-	public PlanningList(PlanningType planningType, DataLocationEntity entity, 
+	public PlanningList(PlanningType planningType, DataLocation dataLocation, 
 			FormEnteredValue formEnteredValue, RawDataElementValue rawDataElementValue,
 			Map<PlanningCost, NormalizedDataElementValue> budgetValues,
 			Map<String, Enum> enums) {
 		this.planningType = planningType;
 		this.formEnteredValue = formEnteredValue;
 		this.rawDataElementValue = rawDataElementValue;
-		this.entity = entity;
+		this.dataLocation = dataLocation;
 		this.budgetValues = budgetValues;
 		this.enums = enums;
 	}
@@ -48,7 +48,7 @@ public class PlanningList {
 			if (rawDataElementValue != null && !rawDataElementValue.getValue().isNull()) {
 				for (int i = 0; i < rawDataElementValue.getValue().getListValue().size(); i++) {
 					PlanningEntry planningEntry = getPlanningEntry(rawDataElementValue.getValue().getListValue().get(i).getAttribute(PlanningEntry.UUID));
-					if (planningEntry != null) planningBudgetEntries.add(new PlanningEntryBudget(budgetValues, entity, planningType, formEnteredValue.getValidatable(), planningEntry.getLineNumber(), enums));
+					if (planningEntry != null) planningBudgetEntries.add(new PlanningEntryBudget(budgetValues, dataLocation, planningType, formEnteredValue.getValidatable(), planningEntry.getLineNumber(), enums));
 				}
 			}
 		}
@@ -67,7 +67,7 @@ public class PlanningList {
 			planningEntries = new ArrayList<PlanningEntry>();
 			if (formEnteredValue != null && !formEnteredValue.getValue().isNull()) {
 				for (int i = 0; i < formEnteredValue.getValue().getListValue().size(); i++) {
-					planningEntries.add(new PlanningEntry(entity, planningType, formEnteredValue.getValidatable(), i, enums));
+					planningEntries.add(new PlanningEntry(dataLocation, planningType, formEnteredValue.getValidatable(), i, enums));
 				}
 			}
 		}
@@ -77,7 +77,7 @@ public class PlanningList {
 	public PlanningEntry getOrCreatePlanningEntry(Integer lineNumber) {
 		PlanningEntry result = null;
 		if (lineNumber >= getPlanningEntries().size()) {
-			result = new PlanningEntry(entity, planningType, formEnteredValue.getValidatable(), lineNumber, enums);
+			result = new PlanningEntry(dataLocation, planningType, formEnteredValue.getValidatable(), lineNumber, enums);
 			result.mergeValues(new HashMap<String, Object>());
 			result.setUuid(UUID.randomUUID().toString());
 		}

@@ -1,7 +1,7 @@
 package org.chai.kevin.survey
 
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 
 class EditSurveyControllerSpec extends SurveyIntegrationTests {
 
@@ -26,7 +26,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController = new EditSurveyController()
 		
 		when:
-		editSurveyController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		editSurveyController.params.location = DataLocation.findByCode(BUTARO).id
 		editSurveyController.params.section = section.id
 		editSurveyController.sectionPage()
 		
@@ -44,7 +44,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController = new EditSurveyController()
 		
 		when:
-		editSurveyController.params.location = DataLocationEntity.findByCode(BUTARO).id
+		editSurveyController.params.location = DataLocation.findByCode(BUTARO).id
 		editSurveyController.params.survey = survey.id
 		editSurveyController.surveyPage()
 		
@@ -56,7 +56,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 	def "access to view action redirects to active survey if SurveyUser"() {
 		setup:
 		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def survey = newSurvey([:], period, true)
 		editSurveyController = new EditSurveyController()
@@ -65,13 +65,13 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController.view()
 		
 		then:
-		editSurveyController.response.redirectedUrl == '/editSurvey/surveyPage/'+DataLocationEntity.findByCode(BUTARO).id+'?survey='+survey.id
+		editSurveyController.response.redirectedUrl == '/editSurvey/surveyPage/'+DataLocation.findByCode(BUTARO).id+'?survey='+survey.id
 	}
 	
 	def "access to view action redirects to 404 if no active survey with SurveyUser"() {
 		setup:
 		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocationEntity.findByCode(BUTARO).id))
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def survey = newSurvey(period)
 		editSurveyController = new EditSurveyController()
@@ -109,7 +109,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 		editSurveyController = new EditSurveyController()
 		
 		when:
-		editSurveyController.params.location = LocationEntity.findByCode(RWANDA).id
+		editSurveyController.params.location = Location.findByCode(RWANDA).id
 		editSurveyController.params.survey = survey.id
 		editSurveyController.export()
 		
@@ -128,7 +128,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 //		editSurveyController = new EditSurveyController()
 //		
 //		when:
-//		editSurveyController.params.location = LocationEntity.findByCode(RWANDA).id
+//		editSurveyController.params.location = Location.findByCode(RWANDA).id
 //		editSurveyController.params.survey = survey.id
 //		editSurveyController.refresh()
 //		
@@ -136,7 +136,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 //		editSurveyController.redirectedUrl.contains('editSurvey/surveyPage')
 //	}
 	
-//	def "refresh survey works with data entity"() {
+//	def "refresh survey works with data location"() {
 //		setup:
 //		setupLocationTree()
 //		def period = newPeriod()
@@ -147,7 +147,7 @@ class EditSurveyControllerSpec extends SurveyIntegrationTests {
 //		editSurveyController = new EditSurveyController()
 //		
 //		when:
-//		editSurveyController.params.location = DataLocationEntity.findByCode(BUTARO).id
+//		editSurveyController.params.location = DataLocation.findByCode(BUTARO).id
 //		editSurveyController.params.survey = survey.id
 //		editSurveyController.refresh()
 //		

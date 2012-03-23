@@ -25,7 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
 import org.chai.kevin.form.FormElement.ElementCalculator;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="FormValidationRule")
@@ -160,11 +160,11 @@ public class FormValidationRule {
 	}
 	
 	@Transient
-	public void evaluate(DataLocationEntity entity, ElementCalculator calculator) {
-		if (log.isDebugEnabled()) log.debug("evaluate(entity="+entity+") on "+this);
-		Set<String> prefixes = calculator.getFormValidationService().getInvalidPrefix(this, entity, calculator.getValidatableLocator());
+	public void evaluate(DataLocation dataLocation, ElementCalculator calculator) {
+		if (log.isDebugEnabled()) log.debug("evaluate(location="+dataLocation+") on "+this);
+		Set<String> prefixes = calculator.getFormValidationService().getInvalidPrefix(this, dataLocation, calculator.getValidatableLocator());
 
-		FormEnteredValue enteredValue = calculator.getFormElementService().getOrCreateFormEnteredValue(entity, this.getFormElement());
+		FormEnteredValue enteredValue = calculator.getFormElementService().getOrCreateFormEnteredValue(dataLocation, this.getFormElement());
 		enteredValue.getValidatable().setInvalid(this, prefixes);
 		
 		calculator.addAffectedValue(enteredValue);

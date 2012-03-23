@@ -19,18 +19,18 @@ class LocationController extends AbstractEntityController {
 	}
 
 	def getEntity(def id) {
-		return LocationEntity.get(id);
+		return Location.get(id);
 	}
 
 	def createEntity() {
-		return new LocationEntity();
+		return new Location();
 	}
 
 	def deleteEntity(def entity) {
 		if (entity.children.size() != 0) {
 			flash.message = message(code: 'location.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Location {0} still has associated children.')
 		}
-		else if (entity.dataEntities.size() != 0) {
+		else if (entity.dataLocations.size() != 0) {
 			flash.message = message(code: 'location.hasdataentities', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Location {0} still has associated data entities.')
 		}
 		else {
@@ -49,18 +49,18 @@ class LocationController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 		
-		List<LocationEntity> locations = LocationEntity.list(params);
+		List<Location> locations = Location.list(params);
 
 		render (view: '/entity/list', model:[
 			template:"location/locationList",
 			entities: locations,
-			entityCount: LocationEntity.count(),
+			entityCount: Location.count(),
 			code: getLabel()
 		])
 	}
 	
 	def getAjaxData = {
-		def locations = locationService.searchLocation(LocationEntity.class, params['term'], [:])
+		def locations = locationService.searchLocation(Location.class, params['term'], [:])
 		
 		render(contentType:"text/json") {
 			elements = array {
@@ -77,12 +77,12 @@ class LocationController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<LocationEntity> locations = locationService.searchLocation(LocationEntity.class, params['q'], params)
+		List<Location> locations = locationService.searchLocation(Location.class, params['q'], params)
 				
 		render (view: '/entity/list', model:[
 			template:"location/locationList",
 			entities: locations,
-			entityCount: locationService.countLocation(LocationEntity.class, params['q']),
+			entityCount: locationService.countLocation(Location.class, params['q']),
 			code: getLabel()
 		])
 	}

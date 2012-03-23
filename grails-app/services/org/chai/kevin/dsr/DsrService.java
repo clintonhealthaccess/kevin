@@ -15,9 +15,9 @@ import org.chai.kevin.LanguageService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
@@ -41,17 +41,17 @@ public class DsrService {
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
 
-	public DsrTable getDsrTable(LocationEntity location, ReportProgram program, Period period, Set<DataEntityType> types, DsrTargetCategory category) {
-		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",program="+program+",types="+types+",category="+category+")");
+	public DsrTable getDsrTable(Location location, ReportProgram program, Period period, Set<DataLocationType> types, DsrTargetCategory category) {
+		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",location="+location+",program="+program+",types="+types+",category="+category+")");
 				
-		List<DataLocationEntity> dataEntities = location.collectDataLocationEntities(null, types);		
+		List<DataLocation> dataLocations = location.collectDataLocations(null, types);		
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, program);
 		
-		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();				
+		Map<DataLocation, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocation, Map<DsrTarget, ReportValue>>();				
 		
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
-		if(dataEntities.isEmpty() || targets.isEmpty())
+		if(dataLocations.isEmpty() || targets.isEmpty())
 			return new DsrTable(valueMap, targets, targetCategories);		
 		
 		List<DsrTarget> categoryTargets = new ArrayList<DsrTarget>();
@@ -64,12 +64,12 @@ public class DsrService {
 				targets = categoryTargets;
 		}				
 		
-		for (DataLocationEntity dataEntity : dataEntities) {
+		for (DataLocation dataLocation : dataLocations) {
 			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
 			for (DsrTarget target : targets) {
-				targetMap.put(target, getDsrValue(target, dataEntity, period));
+				targetMap.put(target, getDsrValue(target, dataLocation, period));
 			}
-			valueMap.put(dataEntity, targetMap);
+			valueMap.put(dataLocation, targetMap);
 		}				
 			
 		targetCategories = getTargetCategories(program);
@@ -79,12 +79,12 @@ public class DsrService {
 		return dsrTable;
 	}
 
-	private ReportValue getDsrValue(DsrTarget target, DataLocationEntity dataEntity, Period period){
+	private ReportValue getDsrValue(DsrTarget target, DataLocation dataLocation, Period period){
 		String value = null;
 		
 		Set<String> targetUuids = Utils.split(target.getTypeCodeString());
-		if (targetUuids.contains(dataEntity.getType().getCode())) {
-			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), dataEntity, period);
+		if (targetUuids.contains(dataLocation.getType().getCode())) {
+			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), dataLocation, period);
 			
 			if (dataValue != null && !dataValue.getValue().isNull()) {
 				// TODO put this in templates ?

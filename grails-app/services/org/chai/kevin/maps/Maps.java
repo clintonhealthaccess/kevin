@@ -31,13 +31,13 @@ package org.chai.kevin.maps;
 import java.util.List;
 
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.hisp.dhis.period.Period;
 
 public class Maps {
 
-	private LocationEntity entity;
+	private Location location;
 	private LocationLevel level;
 	private Period period;
 	private MapsTarget target;
@@ -45,11 +45,11 @@ public class Maps {
 	private List<Polygon> polygons;
 	private List<LocationLevel> levels;
 	
-	public Maps(Period period, MapsTarget target, LocationEntity entity, LocationLevel level, List<Polygon> polygons, List<LocationLevel> levels) {
+	public Maps(Period period, MapsTarget target, Location location, LocationLevel level, List<Polygon> polygons, List<LocationLevel> levels) {
 		this.period = period;
 		this.target = target;
 		this.polygons = polygons;
-		this.entity = entity;
+		this.location = location;
 		this.levels = levels;
 		this.level = level;
 	}
@@ -62,8 +62,8 @@ public class Maps {
 		return target;
 	}
 	
-	public LocationEntity getLocation() {
-		return entity;
+	public Location getLocation() {
+		return location;
 	}
 	
 	public LocationLevel getLevel() {
@@ -98,10 +98,10 @@ public class Maps {
 		if (levels.size() != 0) builder.deleteCharAt(builder.length()-1);
 		builder.append("]");
 		builder.append(",");
-		builder.append("\"selectedLocation\":"+entity.getId());
+		builder.append("\"selectedLocation\":"+location.getId());
 		builder.append(",");
-		if (entity.getCoordinates() != null) {
-			builder.append("\"selectedCoordinates\":"+entity.getCoordinates());
+		if (location.getCoordinates() != null) {
+			builder.append("\"selectedCoordinates\":"+location.getCoordinates());
 			builder.append(",");
 		}
 		builder.append("\"selectedLevel\":"+level.getId());

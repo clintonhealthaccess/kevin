@@ -61,10 +61,10 @@
 		<mapping class="org.chai.kevin.planning.PlanningCost" />
 		<mapping class="org.chai.kevin.planning.PlanningSkipRule" />
 				
-		<mapping class="org.chai.kevin.location.CalculationEntity" />
-		<mapping class="org.chai.kevin.location.DataLocationEntity" />
-		<mapping class="org.chai.kevin.location.DataEntityType" />
-		<mapping class="org.chai.kevin.location.LocationEntity" />
+		<mapping class="org.chai.kevin.location.CalculationLocation" />
+		<mapping class="org.chai.kevin.location.DataLocation" />
+		<mapping class="org.chai.kevin.location.DataLocationType" />
+		<mapping class="org.chai.kevin.location.Location" />
 		<mapping class="org.chai.kevin.location.LocationLevel" />
 		
 		<mapping class="org.hisp.dhis.period.Period" />

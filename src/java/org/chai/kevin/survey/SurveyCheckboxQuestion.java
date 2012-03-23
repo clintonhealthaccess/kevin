@@ -45,7 +45,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.form.FormElement;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -84,7 +84,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
-	public List<SurveyElement> getSurveyElements(DataEntityType type) {
+	public List<SurveyElement> getSurveyElements(DataLocationType type) {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
 		for (SurveyCheckboxOption option : getOptions(type)) {
 			if (option.getSurveyElement() != null) dataElements.add(option.getSurveyElement());
@@ -111,7 +111,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	}
 
 	@Transient
-	public List<SurveyCheckboxOption> getOptions(DataEntityType type) {
+	public List<SurveyCheckboxOption> getOptions(DataLocationType type) {
 		List<SurveyCheckboxOption> result = new ArrayList<SurveyCheckboxOption>();
 		for (SurveyCheckboxOption surveyCheckboxOption : getOptions()) {
 			if (Utils.split(surveyCheckboxOption.getTypeCodeString())

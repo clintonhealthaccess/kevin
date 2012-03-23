@@ -29,9 +29,9 @@ package org.chai.kevin;
 
 import java.util.Comparator;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 
 /**
  * @author Jean Kahigiso M.
@@ -39,9 +39,9 @@ import org.chai.kevin.location.LocationEntity;
  */
 public class LocationSorter {
 
-	public static final Comparator<DataLocationEntity> BY_DATA_ENTITY_TYPE(final String language) {
-		return new Comparator<DataLocationEntity>() {
-			public int compare(DataLocationEntity org1, DataLocationEntity org2) {			
+	public static final Comparator<DataLocation> BY_DATA_LOCATION_TYPE(final String language) {
+		return new Comparator<DataLocation>() {
+			public int compare(DataLocation org1, DataLocation org2) {			
 				if(org1 == null || org2 == null) return 0;
 				
 				if (org1.getType().getNames().get(language).equals(org2.getType().getNames().get(language)))
@@ -52,9 +52,9 @@ public class LocationSorter {
 		};
 	}
 
-	public static final Comparator<LocationEntity> BY_LEVEL(final String language) {
-		return new Comparator<LocationEntity>() {
-			public int compare(LocationEntity org1, LocationEntity org2) {			
+	public static final Comparator<Location> BY_LEVEL(final String language) {
+		return new Comparator<Location>() {
+			public int compare(Location org1, Location org2) {			
 				if(org1 == null || org2 == null) return 0;
 				
 				if (org1.getLevel().equals(org2.getLevel()))
@@ -65,9 +65,9 @@ public class LocationSorter {
 		};
 	}
 
-	public static final Comparator<CalculationEntity> BY_NAME(final String language) {
-		return new Comparator<CalculationEntity>() {
-			public int compare(CalculationEntity org1, CalculationEntity org2) {
+	public static final Comparator<CalculationLocation> BY_NAME(final String language) {
+		return new Comparator<CalculationLocation>() {
+			public int compare(CalculationLocation org1, CalculationLocation org2) {
 				if(org1 == null || org2 == null) return 0;
 				
 				return compareTranslations(org1.getNames(), org2.getNames(), language);

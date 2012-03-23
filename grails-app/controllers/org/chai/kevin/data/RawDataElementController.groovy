@@ -176,7 +176,7 @@ class RawDataElementController extends AbstractEntityController {
 
 			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();
 			for(SurveyElement surveyElement: surveyElements) {
-				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataEntityTypes(surveyElement));
+				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataLocationTypes(surveyElement));
 			}
 			
 			List<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)

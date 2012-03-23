@@ -61,16 +61,16 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return element;
 	}
 	
-	def static newSurveyEnteredQuestion(def question, def period, def entity, def invalid, def complete) {
-		return new SurveyEnteredQuestion(question: question, entity: entity, invalid: invalid, complete: complete).save(failOnError: true, flush: true)
+	def static newSurveyEnteredQuestion(def question, def period, def dataLocation, def invalid, def complete) {
+		return new SurveyEnteredQuestion(question: question, dataLocation: dataLocation, invalid: invalid, complete: complete).save(failOnError: true, flush: true)
 	}
 		
-	def static newSurveyEnteredSection(def section, def period, def entity, def invalid, def complete) {
-		return new SurveyEnteredSection(section: section, entity: entity, invalid: invalid, complete: complete).save(failOnError: true)
+	def static newSurveyEnteredSection(def section, def period, def dataLocation, def invalid, def complete) {
+		return new SurveyEnteredSection(section: section, dataLocation: dataLocation, invalid: invalid, complete: complete).save(failOnError: true)
 	}
 
-	def static newSurveyEnteredProgram(def program, def period, def entity, def invalid, def complete, def closed) {
-		return new SurveyEnteredProgram(program: program, entity: entity, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
+	def static newSurveyEnteredProgram(def program, def period, def dataLocation, def invalid, def complete, def closed) {
+		return new SurveyEnteredProgram(program: program, dataLocation: dataLocation, invalid: invalid, complete: complete, closed: closed).save(failOnError: true)
 	}
 
 	def static newSurveySkipRule(def survey, def expression, def skippedElements, def skippedQuestions) {

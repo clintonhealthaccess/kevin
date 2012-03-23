@@ -62,9 +62,9 @@ import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.NormalizedDataElementValue
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.SurveyUser;
@@ -117,20 +117,20 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static def setupLocationTree() {
 		// for the test environment, the location level is set to 4
 		// so we create a tree accordingly
-		def hc = newDataEntityType(j(["en":HEALTH_CENTER_GROUP]), HEALTH_CENTER_GROUP);
-		def dh = newDataEntityType(j(["en":DISTRICT_HOSPITAL_GROUP]), DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(j(["en":HEALTH_CENTER_GROUP]), HEALTH_CENTER_GROUP);
+		def dh = newDataLocationType(j(["en":DISTRICT_HOSPITAL_GROUP]), DISTRICT_HOSPITAL_GROUP);
 		
 		def country = newLocationLevel(COUNTRY, 1)
 		def province = newLocationLevel(PROVINCE, 2)
 		def district = newLocationLevel(DISTRICT, 3)
 		def sector = newLocationLevel(SECTOR, 4)
 		
-		def rwanda = newLocationEntity(j(["en":RWANDA]), RWANDA, country)
-		def north = newLocationEntity(j(["en":NORTH]), NORTH, rwanda, province)
-		def burera = newLocationEntity(j(["en":BURERA]), BURERA, north, district)
+		def rwanda = newLocation(j(["en":RWANDA]), RWANDA, country)
+		def north = newLocation(j(["en":NORTH]), NORTH, rwanda, province)
+		def burera = newLocation(j(["en":BURERA]), BURERA, north, district)
 		
-		newDataLocationEntity(j(["en":BUTARO]), BUTARO, burera, dh)
-		newDataLocationEntity(j(["en":KIVUYE]), KIVUYE, burera, hc)
+		newDataLocation(j(["en":BUTARO]), BUTARO, burera, dh)
+		newDataLocation(j(["en":KIVUYE]), KIVUYE, burera, hc)
 	}
 
 	static def setupProgramTree() {
@@ -144,60 +144,60 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return period.save(failOnError: true)
 	} 
 	
-	static def newDataEntityType(def code) {
-		return newDataEntityType([:], code)
+	static def newDataLocationType(def code) {
+		return newDataLocationType([:], code)
 	}
 	
-	static def newDataEntityType(def names, def code) {
-		return new DataEntityType(names: names, code: code).save(failOnError: true)
+	static def newDataLocationType(def names, def code) {
+		return new DataLocationType(names: names, code: code).save(failOnError: true)
 	}
 		
-	static def newDataLocationEntity(def code, def location, def type) {
-		return newDataLocationEntity([:], code, location, type)
+	static def newDataLocation(def code, def location, def type) {
+		return newDataLocation([:], code, location, type)
 	}
 	
-	static def newDataLocationEntity(def names, def code, def location, def type) {
-		def entity = new DataLocationEntity(names: names, code: code, location: location, type: type).save(failOnError: true)
+	static def newDataLocation(def names, def code, def location, def type) {
+		def dataLocation = new DataLocation(names: names, code: code, location: location, type: type).save(failOnError: true)
 		if (location != null) {
-			 location.dataEntities << entity
+			 location.dataLocations << dataLocation
 			 location.save(failOnError: true)
 		}
-		return entity
+		return dataLocation
 	}
 	
 	static def newLocationLevel(String code, def order) {
 		return new LocationLevel(code: code, order: order).save(failOnError: true)
 	}
 	
-	static def newLocationEntity(String code, def level) {
-		return newLocationEntity([:], code, null, level)
+	static def newLocation(String code, def level) {
+		return newLocation([:], code, null, level)
 	}
 
-	static def newLocationEntity(def names, def code, def level) {
-		return newLocationEntity(names, code, null, level)
+	static def newLocation(def names, def code, def level) {
+		return newLocation(names, code, null, level)
 	}
 		
-	static def newLocationEntity(String code, def parent, def level) {
-		return newLocationEntity([:], code, parent, level)
+	static def newLocation(String code, def parent, def level) {
+		return newLocation([:], code, parent, level)
 	}
 	
-	static def newLocationEntity(def names, def code, def parent, def level) {
-		def entity = new LocationEntity(names: names, code: code, parent: parent, level: level).save(failOnError: true)
-		level.locations << entity
+	static def newLocation(def names, def code, def parent, def level) {
+		def location = new Location(names: names, code: code, parent: parent, level: level).save(failOnError: true)
+		level.locations << location
 		level.save(failOnError: true)
 		if (parent != null) {
-			parent.children << entity
+			parent.children << location
 			parent.save(failOnError: true)
 		}
-		return entity
+		return location
 	}	
 			
 	static def newUser(def username, def uuid) {
 		return new User(username: username, permissionString: '', passwordHash:'', uuid: uuid).save(failOnError: true)
 	}
 	
-	static def newSurveyUser(def username, def uuid, def entityId) {
-		return new SurveyUser(username: username, permissionString: '', passwordHash:'', uuid: uuid, entityId: entityId).save(failOnError: true)
+	static def newSurveyUser(def username, def uuid, def dataLocationId) {
+		return new SurveyUser(username: username, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {
@@ -215,20 +215,20 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return new ReportProgram(code: code, parent: parent, children: children, names: [:]).save(failOnError: true, flush: true);
 	}
 	
-	static RawDataElementValue newRawDataElementValue(def rawDataElement, def period, def entity, def value) {
-		return new RawDataElementValue(data: rawDataElement, period: period, entity: entity, value: value).save(failOnError: true, flush: true)
+	static RawDataElementValue newRawDataElementValue(def rawDataElement, def period, def location, def value) {
+		return new RawDataElementValue(data: rawDataElement, period: period, location: location, value: value).save(failOnError: true, flush: true)
 	}
 	
-	static AggregationPartialValue newAggregationPartialValue(def aggregation, def period, def entity, def type, def expressionData, def value) {
-		return new AggregationPartialValue(data: aggregation, period: period, entity: entity, type: type, expressionData: expressionData, value: value).save(failOnError: true)
+	static AggregationPartialValue newAggregationPartialValue(def aggregation, def period, def location, def type, def expressionData, def value) {
+		return new AggregationPartialValue(data: aggregation, period: period, location: location, type: type, expressionData: expressionData, value: value).save(failOnError: true)
 	}
 	
-	static SumPartialValue newSumPartialValue(def sum, def period, def entity, def type, def value) {
-		return new SumPartialValue(data: sum, period: period, entity: entity, type: type, value: value).save(failOnError: true)
+	static SumPartialValue newSumPartialValue(def sum, def period, def location, def type, def value) {
+		return new SumPartialValue(data: sum, period: period, location: location, type: type, value: value).save(failOnError: true)
 	}
 	
-	static AveragePartialValue newAveragePartialValue(def average, def period, def entity, def type, def numberOfDataEntities, def value) {
-		return new AveragePartialValue(data: average, period: period, entity: entity, type: type, numberOfDataEntities: numberOfDataEntities, value: value).save(failOnError: true)
+	static AveragePartialValue newAveragePartialValue(def average, def period, def location, def type, def numberOfDataLocations, def value) {
+		return new AveragePartialValue(data: average, period: period, location: location, type: type, numberOfDataLocations: numberOfDataLocations, value: value).save(failOnError: true)
 	}
 	
 	static RawDataElement newRawDataElement(def code, def type) {
@@ -261,8 +261,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newNormalizedDataElement([:], code, type, expressionMap, params)
 	}
 	
-	static NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def entity, def period, def status, def value) {
-		return new NormalizedDataElementValue(data: normalizedDataElement, period: period, entity: entity, status: status, value: value).save(failOnError: true)
+	static NormalizedDataElementValue newNormalizedDataElementValue(def normalizedDataElement, def location, def period, def status, def value) {
+		return new NormalizedDataElementValue(data: normalizedDataElement, period: period, location: location, status: status, value: value).save(failOnError: true)
 	}
 	
 	static Aggregation newAggregation(def names, def expression, def code) {
@@ -316,8 +316,8 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return enumOption
 	}
 	
-	def static newFormEnteredValue(def element, def period, def entity, def value) {
-		return new FormEnteredValue(formElement: element, value: value, entity: entity).save(failOnError: true, flush: true)
+	def static newFormEnteredValue(def element, def period, def dataLocation, def value) {
+		return new FormEnteredValue(formElement: element, value: value, dataLocation: dataLocation).save(failOnError: true, flush: true)
 	}
 	
 	def static newFormValidationRule(def element, def prefix, def types, def expression, boolean allowOutlier, def dependencies = []) {
@@ -384,24 +384,24 @@ abstract class IntegrationTests extends IntegrationSpec {
 //		return new Location(Location.findByName(name))
 //	}
 	
-	static def getCalculationEntity(def code) {
-		def entity = LocationEntity.findByCode(code)
-		if (entity == null) entity = DataLocationEntity.findByCode(code)
-		return entity
+	static def getCalculationLocation(def code) {
+		def location = Location.findByCode(code)
+		if (location == null) location = DataLocation.findByCode(code)
+		return location
 	}
 	
 	static def getLocations(def codes) {
 		def result = []
 		for (String code : codes) {
-			result.add(LocationEntity.findByCode(code))
+			result.add(Location.findByCode(code))
 		}
 		return result
 	}
 	
-	static def getDataEntities(def codes) {
+	static def getDataLocations(def codes) {
 		def result = []
 		for (String code : codes) {
-			result.add(DataLocationEntity.findByCode(code))
+			result.add(DataLocation.findByCode(code))
 		}
 		return result
 	}

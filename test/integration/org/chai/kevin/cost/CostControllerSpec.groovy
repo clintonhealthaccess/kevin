@@ -30,7 +30,7 @@ package org.chai.kevin.cost
 
 import org.chai.kevin.cost.CostTarget.CostType
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 
 class CostControllerSpec extends CostIntegrationTests {
 

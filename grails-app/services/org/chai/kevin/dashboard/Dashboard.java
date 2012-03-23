@@ -32,19 +32,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.Location;
 
 public class Dashboard {
 	
-	private List<CalculationEntity> locations;
+	private List<CalculationLocation> locations;
 	private List<DashboardEntity> dashboardEntities;
 	
-	private List<LocationEntity> locationPath;
-	private Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap;
+	private List<Location> locationPath;
+	private Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap;
 	
-	public Dashboard(List<CalculationEntity> locations, List<DashboardEntity> dashboardEntities,
-			List<LocationEntity> locationPath, Map<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> valueMap
+	public Dashboard(List<CalculationLocation> locations, List<DashboardEntity> dashboardEntities,
+			List<Location> locationPath, Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap
 	) {
 		this.locations = locations;
 		this.dashboardEntities = dashboardEntities;
@@ -52,7 +52,7 @@ public class Dashboard {
 		this.valueMap = valueMap;
 	}
 	
-	public List<CalculationEntity> getLocations() {
+	public List<CalculationLocation> getLocations() {
 		return locations;
 	}
 	
@@ -60,13 +60,13 @@ public class Dashboard {
 		return dashboardEntities;
 	}
 	
-	public List<LocationEntity> getLocationPath() {
+	public List<Location> getLocationPath() {
 		return locationPath;
 	}
 	
-	public Integer getPercentage(CalculationEntity calculationEntity, DashboardEntity dashboardEntity) {		
+	public Integer getPercentage(CalculationLocation location, DashboardEntity dashboardEntity) {		
 		DashboardPercentage percentage = null;
-		percentage = valueMap.get(calculationEntity).get(dashboardEntity);
+		percentage = valueMap.get(location).get(dashboardEntity);
 		if(percentage != null && percentage.isValid())
 			return percentage.getRoundedValue();
 		else
@@ -80,7 +80,7 @@ public class Dashboard {
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		for (Entry<CalculationEntity, Map<DashboardEntity, DashboardPercentage>> locationEntry : this.valueMap.entrySet()) {
+		for (Entry<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> locationEntry : this.valueMap.entrySet()) {
 			buffer.append(locationEntry.getKey());
 			for (Entry<DashboardEntity, DashboardPercentage> programEntry : locationEntry.getValue().entrySet()) {
 				buffer.append(programEntry.getKey());

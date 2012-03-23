@@ -32,8 +32,8 @@ import org.apache.shiro.SecurityUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService
 import org.chai.kevin.form.FormValidationService;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.security.User
 import org.chai.kevin.util.Utils;
 import org.hibernate.SessionFactory;
@@ -91,11 +91,11 @@ class EditSurveyController extends AbstractController {
 	def sectionPage = {
 		if (log.isDebugEnabled()) log.debug("survey.section, params:"+params)
 
-		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
+		DataLocation dataLocation = DataLocation.get(params.int('location'))
 		SurveySection currentSection =  SurveySection.get(params.int('section'));
 
-		if (validateParameters(entity, Utils.split(currentSection?.typeCodeString))) {
-			def surveyPage = surveyPageService.getSurveyPage(entity,currentSection)
+		if (validateParameters(dataLocation, Utils.split(currentSection?.typeCodeString))) {
+			def surveyPage = surveyPageService.getSurveyPage(dataLocation,currentSection)
 
 			render (view: '/survey/sectionPage', model: [surveyPage: surveyPage])
 		}
@@ -104,11 +104,11 @@ class EditSurveyController extends AbstractController {
 	def programPage = {
 		if (log.isDebugEnabled()) log.debug("survey.program, params:"+params)
 
-		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
+		DataLocation dataLocation = DataLocation.get(params.int('location'))
 		SurveyProgram currentProgram = SurveyProgram.get(params.int('program'));
 
-		if (validateParameters(entity, Utils.split(currentProgram?.typeCodeString))) {
-			def surveyPage = surveyPageService.getSurveyPage(entity, currentProgram)
+		if (validateParameters(dataLocation, Utils.split(currentProgram?.typeCodeString))) {
+			def surveyPage = surveyPageService.getSurveyPage(dataLocation, currentProgram)
 
 			render (view: '/survey/programPage', model: [surveyPage: surveyPage])
 		}
@@ -117,12 +117,12 @@ class EditSurveyController extends AbstractController {
 	def surveyPage = {
 		if (log.isDebugEnabled()) log.debug("survey.survey, params:"+params)
 
-		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
+		DataLocation dataLocation = DataLocation.get(params.int('location'))
 
-		if (validateParameters(entity, null)) {
+		if (validateParameters(dataLocation, null)) {
 			Survey survey = Survey.get(params.int('survey'))
 
-			def surveyPage = surveyPageService.getSurveyPage(entity, survey)
+			def surveyPage = surveyPageService.getSurveyPage(dataLocation, survey)
 
 			render (view: '/survey/surveyPage', model: [surveyPage: surveyPage])
 		}
@@ -131,35 +131,35 @@ class EditSurveyController extends AbstractController {
 	def refresh = {
 		if (log.isDebugEnabled()) log.debug("survey.refresh, params:"+params)
 
-		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
+		CalculationLocation location = locationService.getCalculationLocation(params.int('location'), CalculationLocation.class)
 		Survey survey = Survey.get(params.int('survey'))
 		
-		surveyPageService.refresh(entity, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
+		surveyPageService.refresh(location, survey, params.boolean('closeIfComplete')==null?false:params.boolean('closeIfComplete'));
 
-		redirect (action: "surveyPage", params: [location: entity.id, survey: survey.id])
+		redirect (action: "surveyPage", params: [location: location.id, survey: survey.id])
 	}
 
 	def reopen = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
-		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
+		DataLocation dataLocation = DataLocation.get(params.int('location'))
 		SurveyProgram currentProgram = SurveyProgram.get(params.int('program'));
 
-		if (validateParameters(entity, Utils.split(currentProgram?.typeCodeString))) {
-			surveyPageService.reopen(entity, currentProgram);
+		if (validateParameters(dataLocation, Utils.split(currentProgram?.typeCodeString))) {
+			surveyPageService.reopen(dataLocation, currentProgram);
 
-			redirect (action: "programPage", params: [location: entity.id, program: currentProgram.id])
+			redirect (action: "programPage", params: [location: dataLocation.id, program: currentProgram.id])
 		}
 	}
 
 	def submit = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
-		DataLocationEntity entity = DataLocationEntity.get(params.int('location'))
+		DataLocation dataLocation = DataLocation.get(params.int('location'))
 		SurveyProgram currentProgram = SurveyProgram.get(params.int('program'));
 
-		if (validateParameters(entity, Utils.split(currentProgram?.typeCodeString))) {
-			boolean success = surveyPageService.submit(entity, currentProgram);
+		if (validateParameters(dataLocation, Utils.split(currentProgram?.typeCodeString))) {
+			boolean success = surveyPageService.submit(dataLocation, currentProgram);
 
 			if (success) {
 				flash.message = message(code: "survey.program.submitted", default: "Thanks for submitting.");
@@ -168,14 +168,14 @@ class EditSurveyController extends AbstractController {
 				flash.message = message(code: "survey.program.review", default: "The survey could not be submitted, please review the sections.");
 			}
 
-			redirect (action: "programPage", params: [location: entity.id, program: currentProgram.id])
+			redirect (action: "programPage", params: [location: dataLocation.id, program: currentProgram.id])
 		}
 	}
 
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 		def currentSection = SurveySection.get(params.int('section'))
 		def currentProgram = SurveyProgram.get(params.int('program'))
 		def surveyElements = [SurveyElement.get(params.int('element'))]
@@ -191,7 +191,7 @@ class EditSurveyController extends AbstractController {
 
 			if (currentSection == null) {
 				sessionFactory.currentSession.clear()
-				location = DataLocationEntity.get(params.int('location'))
+				location = DataLocation.get(params.int('location'))
 				currentProgram = SurveyProgram.get(params.int('program'))
 				
 				def completeSurveyPage = surveyPageService.getSurveyPage(location, currentProgram)
@@ -247,7 +247,7 @@ class EditSurveyController extends AbstractController {
 									pre (
 										prefix: invalidPrefix,
 										valid: enteredValue.validatable.isValid(invalidPrefix),
-										errors: g.renderUserErrors(element: surveyElement, validatable: enteredValue.validatable, suffix: invalidPrefix, location: enteredValue.entity)
+										errors: g.renderUserErrors(element: surveyElement, validatable: enteredValue.validatable, suffix: invalidPrefix, location: enteredValue.dataLocation)
 									)
 								}
 							},
@@ -265,7 +265,7 @@ class EditSurveyController extends AbstractController {
 	def save = {
 		if (log.isDebugEnabled()) log.debug("survey.save, params:"+params)
 
-		DataLocationEntity currentLocation = DataLocationEntity.get(params.int('location'))
+		DataLocation currentLocation = DataLocation.get(params.int('location'))
 		def currentSection = SurveySection.get(params.int('section'));
 
 		if (validateParameters(currentLocation, Utils.split(currentSection?.typeCodeString))) {
@@ -301,7 +301,7 @@ class EditSurveyController extends AbstractController {
 
 	def print = {
 		Survey survey = Survey.get(params.int('survey'));
-		DataLocationEntity location = DataLocationEntity.get(params.int('location'))
+		DataLocation location = DataLocation.get(params.int('location'))
 
 		SurveyPage surveyPage = surveyPageService.getSurveyPagePrint(location, survey);
 
@@ -309,7 +309,7 @@ class EditSurveyController extends AbstractController {
 	}
 
 	def export = {
-		CalculationEntity location = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class)
+		CalculationLocation location = locationService.getCalculationLocation(params.int('location'), CalculationLocation.class)
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyProgram program = SurveyProgram.get(params.int('program'))
 		Survey survey = Survey.get(params.int('survey'))	
