@@ -1,9 +1,8 @@
 package org.chai.kevin.fct
 
 import org.chai.kevin.AbstractController
+import org.chai.kevin.Period;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
-import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;

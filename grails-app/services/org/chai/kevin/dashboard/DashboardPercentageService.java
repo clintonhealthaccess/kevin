@@ -7,13 +7,13 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataEntityType;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DashboardPercentageService {

@@ -3,12 +3,12 @@ package org.chai.kevin.data
 import grails.validation.ValidationException;
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.hisp.dhis.period.Period;
 
 class NormalizedDataElementSpec extends IntegrationTests {
 

@@ -35,6 +35,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
 import org.chai.kevin.location.CalculationEntity;
@@ -43,7 +44,6 @@ import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly=true)

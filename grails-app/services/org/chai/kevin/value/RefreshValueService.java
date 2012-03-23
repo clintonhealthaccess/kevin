@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
@@ -21,7 +22,6 @@ import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 

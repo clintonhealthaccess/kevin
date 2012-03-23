@@ -1,11 +1,11 @@
 package org.chai.kevin.dashboard
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportIntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.value.Value
-import org.hisp.dhis.period.Period;
 
 abstract class DashboardIntegrationTests extends IntegrationTests {
 	

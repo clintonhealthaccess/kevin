@@ -31,6 +31,7 @@ package org.chai.kevin.dashboard
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
@@ -40,7 +41,6 @@ import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 
 class DashboardController extends AbstractController {
 	

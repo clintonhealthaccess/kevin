@@ -45,7 +45,6 @@ import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
 import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.hisp.dhis.period.Period
 
 public abstract class AbstractController {
 

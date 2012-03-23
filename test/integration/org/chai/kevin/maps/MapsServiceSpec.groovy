@@ -27,10 +27,10 @@
  */
 package org.chai.kevin.maps
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Type
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
-import org.hisp.dhis.period.Period
 
 class MapsServiceSpec extends MapsIntegrationTests {
 

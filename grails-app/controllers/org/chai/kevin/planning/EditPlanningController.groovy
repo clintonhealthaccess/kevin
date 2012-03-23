@@ -3,10 +3,10 @@ package org.chai.kevin.planning
 import java.util.Map;
 
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.Period;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 class EditPlanningController extends AbstractController {
 	

@@ -40,10 +40,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.DataLocationEntity;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="NormalizedDataElementValue")
 @Table(name="dhsst_value_normalized_data_element",

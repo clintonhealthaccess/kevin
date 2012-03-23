@@ -43,6 +43,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
@@ -53,7 +54,6 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.jaql.json.type.JsonValue;

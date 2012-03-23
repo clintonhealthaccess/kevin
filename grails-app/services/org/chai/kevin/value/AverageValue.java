@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.location.CalculationEntity;
-import org.hisp.dhis.period.Period;
 
 public class AverageValue extends CalculationValue<AveragePartialValue> {
 

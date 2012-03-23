@@ -29,7 +29,6 @@ package org.chai.kevin;
 
 import java.util.Comparator;
 
-import org.hisp.dhis.period.Period;
 
 
 /**

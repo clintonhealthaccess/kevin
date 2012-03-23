@@ -1,6 +1,5 @@
 package org.chai.kevin
 
-import org.hisp.dhis.period.Period;
 
 class PeriodService {
 

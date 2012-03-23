@@ -42,6 +42,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationEntity;
 import org.chai.kevin.location.DataLocationEntity;
 import org.chai.kevin.location.DataEntityType;
@@ -49,7 +50,6 @@ import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="Calculation")
 @Table(name="dhsst_data_calculation")

@@ -69,7 +69,6 @@ import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
-import org.hisp.dhis.period.Period
 
 abstract class IntegrationTests extends IntegrationSpec {
 	

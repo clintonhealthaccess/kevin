@@ -4,7 +4,6 @@ import org.chai.kevin.data.Type
 import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
-import org.hisp.dhis.period.Period;
 
 class FilterTagLibSpec extends IntegrationTests {
 
