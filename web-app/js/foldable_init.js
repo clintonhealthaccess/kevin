@@ -12,8 +12,9 @@ $(document).ready(function(){
 	$('.js_foldable .js_foldable-container').hide();
 	// we show the current
 	var current = $('.js_foldable.current');
-	while (current.hasClass('js_foldable') && current.size() > 0) {
-		current = current.parents('js_foldable');
+	while (current.size() > 0) {
+		current.addClass('opened');
+		current = current.parents('.js_foldable').first();
 	}
 	$('.opened').children('.js_foldable-container').show();
 	$('.opened').children('.js_foldable-toggle').addClass('toggled');
