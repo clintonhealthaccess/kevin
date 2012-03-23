@@ -38,7 +38,7 @@ import org.chai.kevin.location.LocationEntity;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportProgram;
-import org.chai.kevin.reports.ReportTarget;
+import org.chai.kevin.reports.AbstractReportTarget;
 import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataEntityType;
 
@@ -66,8 +66,6 @@ class FilterTagLib {
 			def program = attrs['selected']
 			def programRoot = reportService.getRootProgram()
 			def programTree = reportService.getProgramTree(attrs['selectedTargetClass']).asList()
-			if(!programTree.contains(program)) 
-				program = programRoot
 			model << 
 				[
 					currentProgram: program,
@@ -85,8 +83,6 @@ class FilterTagLib {
 			def location = attrs['selected']
 			def locationFilterRoot = locationService.getRootLocation()	
 			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(attrs['skipLevels'], null)
-			if(!locationFilterTree.contains(location))
-				location = locationFilterRoot
 			model << 
 				[
 					currentLocation: location,
