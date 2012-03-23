@@ -69,12 +69,12 @@ public class ReportService {
 		return program;
 	}
 
-	public List<ReportProgram> getProgramTree(Class clazz){
+	public <T extends ReportTarget> List<ReportProgram> getProgramTree(Class<T> clazz){
 		List<ReportProgram> programTree = new ArrayList<ReportProgram>();		
-		Set<ReportProgram> targetPrograms = getReportTargetPrograms(clazz);		
-		for(ReportProgram targetProgram : targetPrograms){
-			programTree.add(targetProgram);			
-			ReportProgram parent = targetProgram.getParent();
+		List<T> targets = getReportTargets(clazz, null);		
+		for(ReportTarget target : targets){
+			programTree.add(target.getProgram());			
+			ReportProgram parent = target.getProgram().getParent();
 			while(parent != null){
 				if(!programTree.contains(parent)) programTree.add(parent);
 				parent = parent.getParent();
@@ -83,7 +83,7 @@ public class ReportService {
 		return programTree;
 	}
 	
-	public <T> List<T> getReportTargets(Class<T> clazz, ReportProgram program) {
+	public <T extends ReportTarget> List<T> getReportTargets(Class<T> clazz, ReportProgram program) {
 		if(program == null){
 			return (List<T>)sessionFactory.getCurrentSession()
 			.createCriteria(clazz)			
@@ -95,25 +95,6 @@ public class ReportService {
 			.add(Restrictions.eq("program", program))
 			.list();
 		}
-	}
-	
-	public Set<ReportProgram> getReportTargetPrograms(Class clazz){
-		Set<ReportProgram> programs = new HashSet<ReportProgram>();
-		if(clazz.equals(DashboardTarget.class)){
-			List<DashboardTarget> targets = getReportTargets(clazz, null);		
-			for(DashboardTarget target : targets){
-				if(target.getProgram() != null) 
-					programs.add(target.getProgram());
-			}
-		}
-		else{
-			List<ReportTarget> targets = getReportTargets(clazz, null);		
-			for(ReportTarget target : targets){
-				if(target.getProgram() != null) 
-					programs.add(target.getProgram());
-			}	
-		}		
-		return programs;
 	}
 	
 	public void setLocationService(LocationService locationService) {

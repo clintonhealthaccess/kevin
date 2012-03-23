@@ -79,6 +79,29 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 		assertTrue html.contains("District Hospital")
 	}
 	
+	def testLocationFilterDisplaysNothingWhenNothingSelected() {
+		def hc = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
+		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
+		def rwanda = IntegrationTests.newLocationEntity(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
+		def butaro = IntegrationTests.newDataLocationEntity(IntegrationTests.j(["en":IntegrationTests.BUTARO]), IntegrationTests.BUTARO, rwanda, hc)
+		
+		def html = applyTemplate('<g:locationFilter />')
+		assertTrue html.contains('select ')
+	}
+	
+	def testProgramFilterDisplaysNothingWhenNothingSelected() {
+		def period = IntegrationTests.newPeriod()
+		IntegrationTests.setupProgramTree()
+		DashboardIntegrationTests.setupDashboardTree()
+		
+		def html = applyTemplate('<g:programFilter selectedTargetClass="${target}"/>',
+			[
+				'target': DashboardTarget.class	
+			]	
+		)
+		assertTrue html.contains('select ')
+	}
+	
 	//TODO fix these tests
 	
 	def testLocationTypesLinkParamFilter() {
