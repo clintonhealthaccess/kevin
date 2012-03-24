@@ -1,15 +1,11 @@
 package org.chai.kevin.fct
 
 import org.chai.kevin.AbstractController
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.Period
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.reports.ReportService;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.reports.ReportService
 
 class FctController extends AbstractController {
 

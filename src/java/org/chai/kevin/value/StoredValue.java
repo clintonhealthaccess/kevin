@@ -41,10 +41,10 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.location.CalculationLocation;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
 public abstract class StoredValue implements DataValue {

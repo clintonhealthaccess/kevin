@@ -9,11 +9,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Average;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="AveragePartialValue")
 @Table(name="dhsst_value_partial_average",

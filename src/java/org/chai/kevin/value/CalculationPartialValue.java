@@ -36,10 +36,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.period.Period;
 
 @MappedSuperclass
 public abstract class CalculationPartialValue extends StoredValue {

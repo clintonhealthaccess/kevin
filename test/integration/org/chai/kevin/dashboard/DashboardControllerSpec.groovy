@@ -2,10 +2,10 @@ package org.chai.kevin.dashboard
 
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.value.Value
-import org.hisp.dhis.period.Period;
 
 class DashboardControllerSpec extends DashboardIntegrationTests {
 

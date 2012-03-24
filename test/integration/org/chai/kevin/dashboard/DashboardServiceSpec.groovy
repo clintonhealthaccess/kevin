@@ -30,13 +30,13 @@ package org.chai.kevin.dashboard
 
 import java.util.List
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.RawDataElementValue;
-import org.hisp.dhis.period.Period;
 import org.chai.kevin.reports.ReportProgram;
 
 class DashboardServiceSpec extends DashboardIntegrationTests {

@@ -27,9 +27,9 @@
  */
 package org.chai.kevin.export;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 
 /**
  * @author Jean Kahigiso M.

@@ -37,17 +37,16 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.AverageValue;
-import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="Average")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

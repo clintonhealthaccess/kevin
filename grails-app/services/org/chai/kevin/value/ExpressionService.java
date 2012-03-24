@@ -43,6 +43,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
@@ -51,9 +52,8 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocation;
-import org.hisp.dhis.period.Period;
+import org.chai.kevin.location.DataLocationType;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ExpressionService {

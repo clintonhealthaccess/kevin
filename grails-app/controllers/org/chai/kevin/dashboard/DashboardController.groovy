@@ -34,12 +34,12 @@ import org.chai.kevin.LocationService
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 
 class DashboardController extends AbstractController {
 	

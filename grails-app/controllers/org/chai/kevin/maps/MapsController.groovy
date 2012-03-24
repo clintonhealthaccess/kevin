@@ -29,12 +29,11 @@ package org.chai.kevin.maps
 */
 
 import org.chai.kevin.AbstractController
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocationType;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
+import org.chai.kevin.Period
+import org.chai.kevin.location.CalculationLocation
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
+import org.chai.kevin.location.LocationLevel
 
 class MapsController extends AbstractController {
 

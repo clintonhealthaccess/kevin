@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
@@ -30,7 +31,6 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 
 @Entity(name = "FormElement")
 @Table(name = "dhsst_form_element")

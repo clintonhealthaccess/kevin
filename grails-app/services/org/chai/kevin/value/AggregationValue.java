@@ -10,11 +10,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.JaqlService;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Aggregation;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 import com.ibm.jaql.json.type.JsonValue;
 

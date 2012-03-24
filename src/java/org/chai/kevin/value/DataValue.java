@@ -1,7 +1,7 @@
 package org.chai.kevin.value;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
-import org.hisp.dhis.period.Period;
 
 public interface DataValue {
 

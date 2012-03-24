@@ -30,16 +30,15 @@ package org.chai.kevin.dsr
 
 import org.chai.kevin.AbstractController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 import java.util.Collections;
 
 import org.apache.jasper.compiler.Node.ParamsAction;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.LanguageService
 import org.chai.kevin.LocationService
-import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;

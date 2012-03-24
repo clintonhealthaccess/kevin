@@ -1,10 +1,10 @@
 package org.chai.kevin.fct
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
-import org.hisp.dhis.period.Period;
 
 class FctServiceSpec extends FctIntegrationTests { 
 

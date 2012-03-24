@@ -1,6 +1,7 @@
 package org.chai.kevin.value;
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
@@ -18,7 +19,6 @@ import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.

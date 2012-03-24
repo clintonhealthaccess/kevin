@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationSorter;
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
@@ -25,7 +26,6 @@ import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ValueService;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class FctService {

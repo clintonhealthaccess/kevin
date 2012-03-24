@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.DataValue;
-import org.hisp.dhis.period.Period;
 
 public class Chart {
 

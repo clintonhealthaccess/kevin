@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.value.SumPartialValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 public class SumValue extends CalculationValue<SumPartialValue> {
 

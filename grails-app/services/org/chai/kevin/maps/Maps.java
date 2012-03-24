@@ -31,9 +31,9 @@ package org.chai.kevin.maps;
 import java.util.List;
 
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.Period;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
-import org.hisp.dhis.period.Period;
 
 public class Maps {
 

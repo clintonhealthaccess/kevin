@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -45,7 +45,6 @@ import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 
 public class InfoService {
 

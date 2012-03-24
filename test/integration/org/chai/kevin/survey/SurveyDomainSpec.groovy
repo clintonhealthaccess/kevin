@@ -3,6 +3,7 @@ package org.chai.kevin.survey
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.chai.kevin.IntegrationTests
+import org.chai.kevin.Period;
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
@@ -11,10 +12,8 @@ import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.survey.validation.SurveyLog;
-import org.hisp.dhis.period.Period
 import org.chai.kevin.location.DataLocation;
-
-
+	
 class SurveyDomainSpec extends SurveyIntegrationTests {
 
 	private static final Log log = LogFactory.getLog(SurveyDomainSpec.class)

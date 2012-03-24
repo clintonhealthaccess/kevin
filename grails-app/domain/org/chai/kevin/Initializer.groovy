@@ -74,7 +74,6 @@ import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
-import org.hisp.dhis.period.Period;
 
 class Initializer {
 

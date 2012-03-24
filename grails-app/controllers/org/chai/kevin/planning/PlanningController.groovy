@@ -28,8 +28,8 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.Period;
 import org.chai.kevin.PeriodSorter
-import org.hisp.dhis.period.Period
 /**
  * @author Jean Kahigiso M.
  *

@@ -1,7 +1,6 @@
 package org.chai.kevin
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 
 class PeriodController extends AbstractEntityController  {
 

@@ -2,14 +2,13 @@ package org.chai.kevin.value;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
-import org.hisp.dhis.period.Period;
 
 public abstract class CalculationValue<T extends CalculationPartialValue> implements DataValue {
 

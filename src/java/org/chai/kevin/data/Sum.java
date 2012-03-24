@@ -36,6 +36,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -45,7 +46,6 @@ import org.chai.kevin.value.SumValue;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="Summ")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

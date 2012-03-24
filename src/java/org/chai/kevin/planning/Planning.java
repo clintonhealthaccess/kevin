@@ -15,10 +15,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="Planning")
 @Table(name="dhsst_planning")

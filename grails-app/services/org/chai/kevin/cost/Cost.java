@@ -28,8 +28,6 @@ package org.chai.kevin.cost;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.chai.kevin.location.DataLocation;
-import org.hisp.dhis.period.Period;
 
 public class Cost {
 

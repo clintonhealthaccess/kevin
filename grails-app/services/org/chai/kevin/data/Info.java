@@ -1,9 +1,9 @@
 package org.chai.kevin.data;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.

@@ -39,7 +39,6 @@ import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.AbstractReportTarget;
-import org.hisp.dhis.period.Period;
 import org.chai.kevin.location.DataLocationType;
 
 class FilterTagLib {

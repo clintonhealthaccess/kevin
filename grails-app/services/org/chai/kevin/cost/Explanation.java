@@ -31,10 +31,10 @@ package org.chai.kevin.cost;
 import java.util.List;
 import java.util.Map;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.reports.ReportProgram;
-import org.hisp.dhis.period.Period;
 
 public class Explanation {
 

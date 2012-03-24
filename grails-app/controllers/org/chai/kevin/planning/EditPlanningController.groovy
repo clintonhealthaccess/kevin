@@ -5,8 +5,8 @@ import java.util.Map;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.Period;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 class EditPlanningController extends AbstractController {
 	
