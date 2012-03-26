@@ -186,7 +186,7 @@ modules = {
 	}
 	
 	planning {
-		dependsOn 'core,dataentry'
+		dependsOn 'core,dataentry,foldable'
 	}
 
 	dsr {
