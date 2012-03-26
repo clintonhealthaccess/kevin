@@ -64,12 +64,19 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=false)
+	public PlanningEntry getOrCreatePlanningEntry(PlanningType type, DataLocation location, Integer lineNumber) {
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry entry = planningList.getOrCreatePlanningEntry(lineNumber);
+		formElementService.save(planningList.getFormEnteredValue());
+		return entry;
+	}
+	
+	@Transactional(readOnly=true)
 	public PlanningList getPlanningList(PlanningType type, DataLocation location) {
 		FormEnteredValue formEnteredValue = formElementService.getOrCreateFormEnteredValue(location, type.getFormElement());
 		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod());
 		if (rawDataElementValue == null) {
 			rawDataElementValue = new RawDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod(), Value.NULL_INSTANCE());
-			valueService.save(rawDataElementValue);
 		}
 		Map<PlanningCost, NormalizedDataElementValue> costValues = new HashMap<PlanningCost, NormalizedDataElementValue>();
 		for (PlanningCost planningCost : type.getCosts()) {
@@ -116,6 +123,7 @@ public class PlanningService {
 		// first we merge the values to create a new value
 		planningEntry.mergeValues(params);
 		planningEntry.setBudgetUpdated(false);
+		formElementService.save(planningList.getFormEnteredValue());
 		
 		// second we run the validation/skip rules
 		List<FormEnteredValue> affectedValues = new ArrayList<FormEnteredValue>();
@@ -126,7 +134,6 @@ public class PlanningService {
 		for (FormEnteredValue formEnteredValue : affectedValues) {
 			formElementService.save(formEnteredValue);
 		}
-		formElementService.save(planningList.getFormEnteredValue());
 		return planningEntry;
 	}
 	

@@ -117,8 +117,8 @@ class FormElementService {
 	FormEnteredValue getOrCreateFormEnteredValue(DataLocation dataLocation, FormElement element) {
 		FormEnteredValue enteredValue = getFormEnteredValue(element, dataLocation);
 		if (enteredValue == null) {
+			// TODO get raw data element
 			enteredValue = new FormEnteredValue(element, dataLocation, Value.NULL_INSTANCE(), null);
-			save(enteredValue);
 		}
 		return enteredValue;
 	}

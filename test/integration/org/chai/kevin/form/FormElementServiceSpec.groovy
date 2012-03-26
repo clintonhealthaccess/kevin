@@ -73,16 +73,7 @@ class FormElementServiceSpec extends IntegrationTests {
 		def formValue = formElementService.getOrCreateFormEnteredValue(DataLocation.findByCode(KIVUYE), element1)
 		
 		then:
-		FormEnteredValue.count() == 1
-		formValue.equals(FormEnteredValue.list()[0])
-		
-		when:
-		formValue = formElementService.getOrCreateFormEnteredValue(DataLocation.findByCode(KIVUYE), element1)
-		
-		then:
-		FormEnteredValue.count() == 1
-		formValue.equals(FormEnteredValue.list()[0])
-		
+		FormEnteredValue.count() == 0
 	}
 	
 	def "saving entered entities saves user and timestamp"() {

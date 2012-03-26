@@ -116,4 +116,37 @@ public class FormEnteredValue extends EnteredEntity {
 				+ lastValue + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((dataLocation == null) ? 0 : dataLocation.hashCode());
+		result = prime * result
+				+ ((formElement == null) ? 0 : formElement.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof FormEnteredValue))
+			return false;
+		FormEnteredValue other = (FormEnteredValue) obj;
+		if (dataLocation == null) {
+			if (other.dataLocation != null)
+				return false;
+		} else if (!dataLocation.equals(other.dataLocation))
+			return false;
+		if (formElement == null) {
+			if (other.formElement != null)
+				return false;
+		} else if (!formElement.equals(other.formElement))
+			return false;
+		return true;
+	}
+
 }
