@@ -127,26 +127,28 @@ class FilterTagLib {
 			out << render(template:'/templates/linkParamFilter', model:model)
 	}
 	
+	// attrs['skipLevels'] is only needed for reports with both top-level locationFilter & levelFilter
 	def createLinkByFilter = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]
 		else{
 			Map params = new HashMap(attrs['params'])
-			attrs['params'] = updateParamsByFilter(params);
+			def skipLevels = attrs['skipLevels']
+			if(skipLevels == null) skipLevels = new HashSet<LocationLevel>()
+			attrs['params'] = updateParamsByFilter(params, skipLevels);
 		}
 		out << createLink(attrs, body)
 	}		
 	
-	public Map updateParamsByFilter(Map params) {
+	public Map updateParamsByFilter(Map params, Set<LocationLevel> skipLevels) {
 		if (!params.containsKey("filter")) return params;
 		String filter = (String) params.get("filter");
 		Location location = null;
 		if (params.get("location") != null) {
 			location = Location.get(Integer.parseInt(params.get("location")))
 		}
-
 		LocationLevel level = null;
 		if (params.get("level") != null) {
-			level = LocationLevel.get(Integer.parseInt(params.get('level')))
+			level = LocationLevel.get(Integer.parseInt(params.get("level")))
 		}
 
 		if (location != null) {
@@ -156,23 +158,24 @@ class FilterTagLib {
 					// conflict
 					if (filter == "level") {
 						// adjust location to level
-						LocationLevel levelBefore = locationService.getLevelBefore(location.getLevel())
-						if (levelBefore == null) location = locationService.getRootLocation();
-						else location = locationService.getParentOfLevel(location, levelBefore);
+						LocationLevel levelBefore = locationService.getLevelBefore(location.getLevel(), skipLevels)
+						if (levelBefore != null)
+							location = locationService.getParentOfLevel(location, levelBefore);
 					}
 					// conflict
 					else {
 						// adjust level to location
-						level = locationService.getLevelAfter(location.getLevel())
+						level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 					}
 				}
 			}
 			// conflict
 			else {
 				// adjust level to location
-				level = locationService.getLevelAfter(location.getLevel())
+				level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 			}
 		}
+		
 		if (location != null) params.put("location", location.id);
 		if (level != null) params.put("level", level.id);
 		return params;
