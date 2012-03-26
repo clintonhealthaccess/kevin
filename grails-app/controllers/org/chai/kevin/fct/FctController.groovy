@@ -4,6 +4,7 @@ import org.chai.kevin.AbstractController
 import org.chai.kevin.Period
 import org.chai.kevin.location.DataLocationType
 import org.chai.kevin.location.Location
+import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 
@@ -56,14 +57,14 @@ class FctController extends AbstractController {
 		Location location = getLocation()
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 
-//		LocationLevel level = getLevel()
 		FctTarget fctTarget = getFctTarget(program)			
 		def skipLevels = fctService.getSkipLocationLevels()
 		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()
+		LocationLevel level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 		
 		FctTable fctTable = null;
 		if (period != null && program != null && fctTarget != null && location != null && dataLocationTypes != null) {					
-			fctTable = fctService.getFctTable(location, program, fctTarget, period, null, dataLocationTypes);
+			fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root program: "+program)				
@@ -75,11 +76,11 @@ class FctController extends AbstractController {
 			selectedTargetClass: FctTarget.class,
 			currentLocation: location,
 			locationTree: locationTree,
-//			currentLevel: level,
 			currentLocationTypes: dataLocationTypes,
 			currentTarget: fctTarget,
 			fctTargets: getFctTargets(program),		
-			skipLevels: skipLevels
+			skipLevels: skipLevels,
+			currentChildLevel: level
 		]
 	}
 }
