@@ -155,4 +155,68 @@ class LocationServiceSpec extends IntegrationTests {
 		levels != noSkipLevels
 		levels.size() == 3
 	}
+	
+	def "get level before with skip levels"(){
+		setup:
+		setupLocationTree()
+		
+		//levelBefore == null
+		when:
+		def level = LocationLevel.findByCode(PROVINCE)
+		def skipLevels = new HashSet([LocationLevel.findByCode(COUNTRY)])
+		def levelBefore = locationService.getLevelBefore(level, skipLevels)		
+		
+		then:
+		levelBefore == null
+		
+		//levelBefore skips 1 level
+		when:
+		level = LocationLevel.findByCode(DISTRICT)
+		skipLevels = new HashSet([LocationLevel.findByCode(PROVINCE)])
+		levelBefore = locationService.getLevelBefore(level, skipLevels)
+		
+		then:
+		levelBefore.equals(LocationLevel.findByCode(COUNTRY))
+		
+		//levelBefore skips 2 levels
+		when:
+		level = LocationLevel.findByCode(SECTOR)
+		skipLevels = new HashSet([LocationLevel.findByCode(PROVINCE), LocationLevel.findByCode(DISTRICT)])
+		levelBefore = locationService.getLevelBefore(level, skipLevels)
+		
+		then:
+		levelBefore.equals(LocationLevel.findByCode(COUNTRY))
+	}
+	
+	def "get level after with skip levels"(){
+		setup:
+		setupLocationTree()
+		
+		//levelAfter == null
+		when:
+		def level = LocationLevel.findByCode(DISTRICT)
+		def skipLevels = new HashSet([LocationLevel.findByCode(SECTOR)])
+		def levelAfter = locationService.getLevelAfter(level, skipLevels)
+		
+		then:
+		levelAfter == null
+		
+		//levelAfter skips 1 level
+		when:
+		level = LocationLevel.findByCode(PROVINCE)
+		skipLevels = new HashSet([LocationLevel.findByCode(DISTRICT)])
+		levelAfter = locationService.getLevelAfter(level, skipLevels)
+		
+		then:
+		levelAfter.equals(LocationLevel.findByCode(SECTOR))
+		
+		//levelAfter skips 2 levels
+		when:
+		level = LocationLevel.findByCode(COUNTRY)
+		skipLevels = new HashSet([LocationLevel.findByCode(PROVINCE), LocationLevel.findByCode(DISTRICT)])
+		levelAfter = locationService.getLevelAfter(level, skipLevels)
+		
+		then:
+		levelAfter.equals(LocationLevel.findByCode(SECTOR))
+	}
 }

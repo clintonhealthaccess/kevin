@@ -142,20 +142,39 @@ public class LocationService {
 		criteria.add(textRestrictions)
 		return criteria
 	}
+	
 	// TODO property of level?
-	public LocationLevel getLevelBefore(LocationLevel level) {
+	public LocationLevel getLevelBefore(LocationLevel level, Set<LocationLevel> skipLevels) {
 		List<LocationLevel> levels = listLevels();
 		Integer intLevel = levels.indexOf(level);
-		if (intLevel-1 >= 0) return levels.get(levels.indexOf(level)-1);
-		else return null;
+		if(skipLevels != null){
+			List<Integer> intSkipLevels = new ArrayList<Integer>();
+			for(LocationLevel skipLevel : skipLevels)
+				intSkipLevels.add(levels.indexOf(skipLevel));
+			while(intLevel-1 >= 0 && intSkipLevels.contains(intLevel-1)){
+				intLevel--;
+			}
+		}
+		if (intLevel-1 >= 0) 
+			return levels.get(intLevel-1);
+		else return null;		
 	}
 	
 	// TODO property of level?	
-	public LocationLevel getLevelAfter(LocationLevel level) {
+	public LocationLevel getLevelAfter(LocationLevel level, Set<LocationLevel> skipLevels) {
 		List<LocationLevel> levels = listLevels();
 		Integer intLevel = levels.indexOf(level);
-		if (intLevel+1 < levels.size()) return levels.get(levels.indexOf(level)+1);
-		else return null;
+		if(skipLevels != null){
+			List<Integer> intSkipLevels = new ArrayList<Integer>();
+			for(LocationLevel skipLevel : skipLevels)
+				intSkipLevels.add(levels.indexOf(skipLevel));
+			while(intLevel+1 < levels.size() && intSkipLevels.contains(intLevel+1)){
+				intLevel++;
+			}
+		}
+		if (intLevel+1 < levels.size())
+			return levels.get(intLevel+1);
+		else return null;		
 	}
 	
 	// TODO move to location
