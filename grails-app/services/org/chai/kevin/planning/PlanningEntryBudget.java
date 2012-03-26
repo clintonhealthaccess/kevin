@@ -77,7 +77,7 @@ public class PlanningEntryBudget extends PlanningEntry {
 	public List<String> getGroupSections(PlanningCostType type) {
 		List<String> result = new ArrayList<String>();
 		for (PlanningCost planningCost : getPlanningCosts()) {
-			if (planningCost.getType().equals(type) && !result.contains(planningCost.getGroupSection())) {
+			if (getBudgetCost(planningCost) != null && planningCost.getType().equals(type) && !result.contains(planningCost.getGroupSection())) {
 				result.add(planningCost.getGroupSection());
 			}
 		}
