@@ -241,9 +241,9 @@ class CalculationLocationUnitSpec extends UnitSpec {
 		def data2 = new DataLocation(code: 'data2', location: burera, type: type2)
 		
 		rwanda.children = [north, south]
-		rwanda.dataLocationEntities = [data1]
+		rwanda.dataLocations = [data1]
 		north.children = [burera]
-		burera.dataLocationEntities = [data2]
+		burera.dataLocations = [data2]
 		
 		then:
 		rwanda.getChildrenEntitiesWithDataLocations(null, types).equals([north, data1])

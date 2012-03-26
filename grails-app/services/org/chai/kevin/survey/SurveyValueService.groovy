@@ -145,7 +145,6 @@ class SurveyValueService {
 		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(surveyQuestion, dataLocation);
 		if (enteredQuestion == null) {
 			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, dataLocation, false, false);
-			save(enteredQuestion);
 		}
 		return enteredQuestion;
 	}

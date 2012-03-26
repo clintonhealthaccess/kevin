@@ -4,7 +4,9 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocationController;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 
@@ -113,6 +115,38 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		planningTypeBudget.planningEntryBudgetList[0].getBudgetCost(planningCost).value == 2.0d
 	}
 	
+	def "get budget lines when data element has null value"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
+			e([(period.id+''):[(HEALTH_CENTER_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "[_].key1", "value", planningType)
+		def planningTypeBudget = null
+		
+		when:
+		def value = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":null}}],\"uuid\":\"uuid\"}]}")
+		value.listValue[0].setAttribute("submitted", "true")
+		newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO), value)
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
+		
+		refreshNormalizedDataElement()
+		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
+		
+		then:
+		planningTypeBudget.planningEntryBudgetList.size() == 1
+		planningTypeBudget.planningEntryBudgetList[0].budgetCosts.size() == 0
+		planningTypeBudget.planningEntryBudgetList[0].getGroupSections(PlanningCostType.OUTGOING).size() == 0
+	}
+	
 	def "get budget lines when normalized data element does not apply"() {
 		setup:
 		setupLocationTree()
@@ -192,26 +226,49 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def formValue = null
 		
 		when:
-		planningService.modify(planningType, DataLocation.findByCode(BUTARO), 0, ["elements":['[0]'], "elements[0].key0":"value", "elements[0].key1":'123'])
-		dataElementValue = RawDataElementValue.list()[0]
+		planningService.modify(planningType, DataLocation.findByCode(BUTARO), 0, [("elements["+formElement.id+"].value"):['[0]'], ("elements["+formElement.id+"].value[0].key0"):"value", ("elements["+formElement.id+"].value[0].key1"):'123'])
 		formValue = FormEnteredValue.list()[0]
 		
 		then:
-		dataElementValue.value.isNull() == true
 		formValue.value.listValue.size() == 1
+		formValue.value.listValue[0].mapValue['key0'].stringValue == 'value'
+		formValue.value.listValue[0].mapValue['key1'].numberValue == 123d
 		formValue.value.listValue[0].getAttribute('budget_updated') == "false"
 		
 		when: 'budget updated set to false when saving existing value'
 		formValue.value.listValue[0].setAttribute('budget_updated', 'true')
 		formValue.save()
 		planningService.modify(planningType, DataLocation.findByCode(BUTARO), 0, ["elements":['[0]'], "elements[0].key0":"value", "elements[0].key1":'123'])
-		dataElementValue = RawDataElementValue.list()[0]
 		formValue = FormEnteredValue.list()[0]
 		
 		then:
-		dataElementValue.value.isNull() == true
 		formValue.list()[0].value.listValue.size() == 1
 		formValue.list()[0].value.listValue[0].getAttribute('budget_updated') == "false"
+		
+	}
+	
+	def "validation works"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def validationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
+		def formValue = null
+		
+		when:
+		planningService.modify(planningType, DataLocation.findByCode(BUTARO), 0, [("elements["+formElement.id+"].value"):['[0]'], ("elements["+formElement.id+"].value[0].key0"):"value", ("elements["+formElement.id+"].value[0].key1"):'123'])
+		formValue = FormEnteredValue.list()[0]
+		
+		then:
+		formValue.value.listValue.size() == 1
+		formValue.getValidatable().getInvalidPrefixes().equals(s(['[0].key1']))
 		
 	}
 	
@@ -294,6 +351,36 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		RawDataElementValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 1d
 	}
 	
+	def "refresh budget with missing value for calculation"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
+			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "[_].key1", "value", planningType)
+		
+		when:
+		def value = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":null}}],\"uuid\":\"uuid\"}]}")
+		value.listValue[0].setAttribute("submitted", "true")
+		newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO), value)
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
+		planningService.refreshBudget(planningType, DataLocation.findByCode(BUTARO))
+		
+		then:
+		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.list()[0].value.listValue[0].isNull()	
+	}
+	
+	
+	
 	def "submit creates raw data element value"() {
 		setup:
 		setupLocationTree()
@@ -314,6 +401,36 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		then:
 		RawDataElementValue.count() == 1
 		RawDataElementValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 1d
+	}
+	
+	def "get planning summary"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period)
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningSummary = null
+		
+		when:
+		planningSummary = planningService.getSummaryPage(planning, Location.findByCode(RWANDA))
+		
+		then:
+		planningSummary.dataLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+		planningSummary.getNumberOfEntries(DataLocation.findByCode(BUTARO), planningType) == 0
+		
+		when:
+		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
+			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}"))
+		planningSummary = planningService.getSummaryPage(planning, Location.findByCode(RWANDA))
+		
+		then:
+		planningSummary.dataLocations.equals([DataLocation.findByCode(BUTARO), DataLocation.findByCode(KIVUYE)])
+		planningSummary.getNumberOfEntries(DataLocation.findByCode(BUTARO), planningType) == 1
+		
 	}
 	
 //	TODO think about how to make that test pass

@@ -109,10 +109,10 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element1], [("elements["+element1.id+"].value"): "1"])
 		
 		then:
-		FormEnteredValue.count() == 2
+		FormEnteredValue.count() == 1
 		FormEnteredValue.list()[0].value.numberValue == 1
 		SurveyEnteredQuestion.count() == 2
-		SurveyEnteredQuestion.list()[0].getSkippedRules().equals(new HashSet([skipRule]))
+		SurveyEnteredQuestion.list()[1].getSkippedRules().equals(new HashSet([skipRule]))
 	}
 	
 	def "test modify with skipped question referring to non existing element"() {

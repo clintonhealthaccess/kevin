@@ -51,69 +51,71 @@
 												    if there is no entries in the corresponding planning type 
 												-->
 												<g:each in="${planningLists}" var="planningTypeBudget">
-													<g:set var="planningType" value="${planningTypeBudget.planningType}"/>
-													<tr class="tree-sign js_foldable standout">
-														<td class="js_foldable-toggle">
-															<span>
-																<g:i18n field="${planningTypeBudget.planningType.namesPlural}"/>
-															</span>
-														</td>
-														<td>(${planningTypeBudget.outgoing})</td>
-														<td>${planningTypeBudget.incoming}</td>
-														<td>${planningTypeBudget.difference}</td>
-														<td></td>
-														<td class="status"></td>
-													</tr>
-													<tr class="sub-tree js_foldable-container hidden">
-														<td colspan="7" class="bucket">
-													    <table>
-																<tbody>
-																	
-																	<!-- 
-																		Each INDIVIDUAL UNDERTAKINGS, this is always
-																		displayed because we assume there's costing for each undertaking,
-																		either OUTGOING or INCOMING or both
-																	-->
-																	<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
-																		<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable">
-																			<td class="js_foldable-toggle">
-																				<span style="margin-left: 20px;">
-																					<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
-																						<g:value value="${budgetPlanningEntry.fixedHeaderValue}" type="${budgetPlanningEntry.type.fixedHeaderType}" nullText="none entered"/>
-																					</a>
-																				</span>
-																			</td>
-																			<td>(${budgetPlanningEntry.outgoing})</td>
-																			<td>${budgetPlanningEntry.incoming}</td>
-																			<td>${budgetPlanningEntry.difference}</td>
-																			<td><input type="checkbox" disabled="disabled"></td>
-																			<td class="status 
-																				${!budgetPlanningEntry.invalidSections.empty?'invalid':''} 
-																				${!budgetPlanningEntry.incompleteSections.empty?'incomplete':''}
-																				${(!budgetPlanningEntry.incompleteSections.empty || !budgetPlanningEntry.incompleteSections.empty)?'tooltip-TODO':''}
-																				" title=""></td>
-																		</tr>
-																		<tr class="sub-tree js_foldable-container hidden">
-																			<td colspan="7" class="bucket">
-																				<table>
-																					<tbody>
-																						<!--
-																							OUTGOING costing formulas, only displayed if not empty
-																						-->
-																						<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.OUTGOING]"/>
-																						<!--
-																							INCOMING costing formulas, only displayed if not empty
-																						-->
-																						<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.INCOMING]"/>
-																					</tbody>
-																				</table>
-																			</td>
-																		</tr>
-																	</g:each>
-																</tbody>
-															</table>
-														</td>
-													</tr>
+													<g:if test="${!planningTypeBudget.planningEntryBudgetList.empty}">
+														<g:set var="planningType" value="${planningTypeBudget.planningType}"/>
+														<tr class="tree-sign js_foldable standout">
+															<td class="js_foldable-toggle">
+																<span>
+																	<g:i18n field="${planningTypeBudget.planningType.namesPlural}"/>
+																</span>
+															</td>
+															<td>(${planningTypeBudget.outgoing})</td>
+															<td>${planningTypeBudget.incoming}</td>
+															<td>${planningTypeBudget.difference}</td>
+															<td></td>
+															<td class="status"></td>
+														</tr>
+														<tr class="sub-tree js_foldable-container hidden">
+															<td colspan="7" class="bucket">
+														    <table>
+																	<tbody>
+																		
+																		<!-- 
+																			Each INDIVIDUAL UNDERTAKINGS, this is always
+																			displayed because we assume there's costing for each undertaking,
+																			either OUTGOING or INCOMING or both
+																		-->
+																		<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
+																			<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable">
+																				<td class="js_foldable-toggle">
+																					<span style="margin-left: 20px;">
+																						<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
+																							<g:value value="${budgetPlanningEntry.fixedHeaderValue}" type="${budgetPlanningEntry.type.fixedHeaderType}" nullText="none entered"/>
+																						</a>
+																					</span>
+																				</td>
+																				<td>(${budgetPlanningEntry.outgoing})</td>
+																				<td>${budgetPlanningEntry.incoming}</td>
+																				<td>${budgetPlanningEntry.difference}</td>
+																				<td><input type="checkbox" disabled="disabled"></td>
+																				<td class="status 
+																					${!budgetPlanningEntry.invalidSections.empty?'invalid':''} 
+																					${!budgetPlanningEntry.incompleteSections.empty?'incomplete':''}
+																					${(!budgetPlanningEntry.incompleteSections.empty || !budgetPlanningEntry.incompleteSections.empty)?'tooltip-TODO':''}
+																					" title=""></td>
+																			</tr>
+																			<tr class="sub-tree js_foldable-container hidden">
+																				<td colspan="7" class="bucket">
+																					<table>
+																						<tbody>
+																							<!--
+																								OUTGOING costing formulas, only displayed if not empty
+																							-->
+																							<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.OUTGOING]"/>
+																							<!--
+																								INCOMING costing formulas, only displayed if not empty
+																							-->
+																							<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.INCOMING]"/>
+																						</tbody>
+																					</table>
+																				</td>
+																			</tr>
+																		</g:each>
+																	</tbody>
+																</table>
+															</td>
+														</tr>
+													</g:if>
 												</g:each>
 												<tr class="total">
 													<td><g:message code="planning.budget.table.total"/>:</td>
