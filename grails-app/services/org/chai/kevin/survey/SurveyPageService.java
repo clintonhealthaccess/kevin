@@ -369,6 +369,7 @@ public class SurveyPageService {
 				// here, a write lock is acquired on the FormEnteredValue that will be kept
 				// till the end of the transaction, if in READ_COMMITTED isolation mode, a timeout
 				// is likely to occur because the transaction is quite long
+				formElementService.save(enteredValue);
 				affectedElements.put(element, enteredValue);
 				
 				// if it is a checkbox question, we need to reset the values to null
@@ -498,6 +499,7 @@ public class SurveyPageService {
 					enteredValueForElementInQuestion.getValue().setJsonObject(enteredValueForElementInQuestion.getType().getValue(false).getJsonObject());
 				}
 				
+				formElementService.save(enteredValueForElementInQuestion);
 				affectedElements.put(elementInQuestion, enteredValueForElementInQuestion);
 			}
 		}
