@@ -15,7 +15,7 @@ modules = {
 
 	// modules
 	core {
-		dependsOn 'jquery,help'
+		dependsOn 'jquery,help,foldable'
 		
 		resource url: '/css/screen.css', bundle: 'core'
 	}
