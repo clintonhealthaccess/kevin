@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,7 +69,104 @@ public class ImporterService {
 	private ValueService valueService;	
 	private DataService dataService;
 	private static final String CODE_HEADER = "code";
-	public void importFile(RawDataElement rawDataElement, Reader reader, Period period,ImporterErrorManager manager) throws IOException{
+	private static final String DATA_ELEMENT_HEADER = "raw_data_element";
+	private static final String VALUE_HEADER = "data_value";
+	
+	public void importGeneralData(Reader reader, Period period,ImporterErrorManager manager) throws IOException {
+		
+		if (log.isDebugEnabled()) log.debug("importGeneralData(Reader:" + reader + " Period:"+ period + "ImporterErrorManager: " + manager + ")");
+		ICsvMapReader readFileAsMap = new CsvMapReader(reader,CsvPreference.EXCEL_PREFERENCE);
+
+		try {
+			final String[] headers = readFileAsMap.getCSVHeader(true);
+			Map<String, String> rows = readFileAsMap.read(headers);
+			manager.setNumberOfSavedRows(0);
+			manager.setNumberOfUnsavedRows(0); 
+			manager.setNumberOfRowsSavedWithError(0);
+			Map<DataLocationEntity, Set<RawDataElement>> savedData = new HashMap<DataLocationEntity, Set<RawDataElement>>();
+
+			
+			if(!Arrays.asList(headers).contains(CODE_HEADER) || !Arrays.asList(headers).contains(DATA_ELEMENT_HEADER) || !Arrays.asList(headers).contains(VALUE_HEADER))
+				manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"error.message.unknowm.header"));
+			else{
+				
+				while (rows != null) {
+					if (log.isDebugEnabled()) log.debug("code: " + rows.get(CODE_HEADER)+ " raw_data_element: "+ rows.get(DATA_ELEMENT_HEADER) + " data_value "+ rows.get(VALUE_HEADER));
+					
+					Value value = null;
+					Set<String> attributes = new HashSet<String>();
+					Map<String, Object> map = new HashMap<String, Object>();
+					Map<String, Type> types = new HashMap<String, Type>();
+					
+					DataLocationEntity dataEntity =locationService.findCalculationEntityByCode(rows.get(CODE_HEADER), DataLocationEntity.class);
+					RawDataElement rawDataElement = dataService.getDataByCode(rows.get(DATA_ELEMENT_HEADER), RawDataElement.class);
+					RawDataElementValue rawDataElementValue = null;
+					
+					if (log.isDebugEnabled()) log.debug(" DataLocationEntity=>: " + dataEntity+ " RawDataElement: "+ rawDataElement);
+					
+					if (dataEntity != null && rawDataElement != null) {
+						
+						if (log.isDebugEnabled()) log.debug("checking if dataElement: "+rawDataElement+"and location: "+dataEntity+"is in savedData : "+savedData+" errors: "+manager.getErrors());
+						//Check if data is going to be override and save the error message
+						if (savedData.get(dataEntity)==null || !savedData.get(dataEntity).contains(rawDataElement)) {
+							// not imported yet
+							if (!savedData.containsKey(dataEntity)) {
+								savedData.put(dataEntity, new HashSet<RawDataElement>());
+							}
+							savedData.get(dataEntity).add(rawDataElement);
+							if (log.isDebugEnabled()) log.debug(" savedData : "+savedData+" errors: "+manager.getErrors());
+						} else {
+							// already imported
+							manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"error.message.data.duplicated"));
+						}
+						
+						
+						types.put("", rawDataElement.getType());
+						ImportSanitizer sanitizer = new ImportSanitizer(manager.getErrors(), types);
+						sanitizer.setLineNumber(readFileAsMap.getLineNumber());
+						sanitizer.setNumberOfErrorInRows(0);
+						
+						rawDataElementValue = valueService.getDataElementValue(rawDataElement, dataEntity, period);
+	                    //Check raw data element has a value associate to it otherwise create one
+						if (rawDataElementValue != null) value = rawDataElementValue.getValue();
+						else {
+							value = new Value("");
+							rawDataElementValue = new RawDataElementValue(rawDataElement, dataEntity, period, value);
+						}
+						map.put("", rows.get(VALUE_HEADER));
+						
+						if (log.isDebugEnabled()) log.debug("Marging with data from map of header and data "+ map + " Value before marge" + value);
+						value = rawDataElement.getType().mergeValueFromMap(value,map, "", attributes, sanitizer);
+						if (log.isDebugEnabled()) log.debug("Value after marge " + value);
+	
+						rawDataElementValue.setValue(value);
+						valueService.save(rawDataElementValue);
+						
+						if (log.isDebugEnabled()) log.debug("The saved rawDataElementValue: "+ rawDataElementValue.getValue());
+	
+						if (sanitizer.getNumberOfErrorInRows() > 0)
+							manager.incrementNumberOfRowsSavedWithError(1);
+						manager.incrementNumberOfSavedRows();
+					} else {
+						if(dataEntity==null) manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"error.message.unknown.data.location"));
+						if(rawDataElement==null) manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),DATA_ELEMENT_HEADER,"error.message.unknown.raw.data.element"));	
+						manager.incrementNumberOfUnsavedRows();
+					}
+					rows = readFileAsMap.read(headers);
+				}
+			}
+
+		} catch (IOException ioe) {
+			// TODO Please through something meaningful
+			throw ioe;
+		} finally {
+			readFileAsMap.close();
+		}
+		
+		
+	}
+	
+	public void importNormalizedData(RawDataElement rawDataElement, Reader reader, Period period,ImporterErrorManager manager) throws IOException{
 
 		
 		ICsvMapReader readFileAsMap = new CsvMapReader(reader, CsvPreference.EXCEL_PREFERENCE);
@@ -104,7 +202,9 @@ public class ImporterService {
 				sanitizer.setLineNumber(readFileAsMap.getLineNumber());
 				sanitizer.setNumberOfErrorInRows(0);
 				
-				if(!values.get(CODE_HEADER).equals(code)){
+				if(log.isWarnEnabled()) log.warn("Current facility code: "+values.get(CODE_HEADER));
+				
+				if(values.get(CODE_HEADER)!=null && !values.get(CODE_HEADER).equals(code)){
 					// The location changes, we need to update the code, location, position, rawDataElementValue
 					// 1 update the code
 					code = values.get(CODE_HEADER);
@@ -130,9 +230,12 @@ public class ImporterService {
 						map.put("[" + positions.get(code) + "]."+ header, values.get(header));
 					}		
 				}
-					
-				map.put("", getLineNumberString(positions.get(code)));
-				positions.put(code, positions.get(code) + 1);
+				
+				if(positions.get(code)!=null){
+					map.put("", getLineNumberString(positions.get(code)));
+					positions.put(code, positions.get(code) + 1);	
+				}
+				
 				
 				if (dataEntity == null)
 					manager.incrementNumberOfUnsavedRows();
@@ -143,6 +246,7 @@ public class ImporterService {
 					if(log.isDebugEnabled()) log.debug("Value after marge "+value);	
 					rawDataElementValue.setValue(value);
 					valueService.save(rawDataElementValue);
+					if(log.isDebugEnabled()) log.debug("The saved rawDataElementValue: "+rawDataElementValue.getValue());
 					if(sanitizer.getNumberOfErrorInRows()>0)
 						manager.incrementNumberOfRowsSavedWithError(1);
 					manager.incrementNumberOfSavedRows();

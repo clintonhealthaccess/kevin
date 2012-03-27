@@ -105,7 +105,9 @@
 	  						<li><a class="${controllerName=='dataLocation'?'active':''}" href="${createLink(controller: 'dataLocation', action:'list')}"><g:message code="dataLocation.label" default="Data Location"/></a></li>
 	  						<li><a class="${controllerName=='dataEntityType'?'active':''}" href="${createLink(controller: 'dataEntityType', action:'list')}"><g:message code="dataEntityType.label" default="Data Entity Type"/></a></li>
 	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'userList', action:'list')}"><g:message code="user.label" default="User"/></a></li>
-							<li><a class="${controllerName=='importerEntity'?'active':''}" href="${createLink(controller: 'importerEntity', action:'importer')}"><g:message code="import.hrh.data.label" default="Import HRH Data"/></a></li>
+							<li><a class="${controllerName=='normailizedImporterEntity'?'active':''}" href="${createLink(controller: 'normalizedImporterEntity', action:'importer')}"><g:message code="import.hrh.data.label" default="Import HRH Data"/></a></li>
+							<li><a class="${controllerName=='generalImporterEntity'?'active':''}" href="${createLink(controller: 'generalImporterEntity', action:'importer')}"><g:message code="import.general.data.label" default="General Data Import"/></a></li>
+	  					
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>
