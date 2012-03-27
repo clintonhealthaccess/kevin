@@ -23,16 +23,16 @@
 					<g:form url="[controller:'editPlanning', action:'submit', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
 		  				<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
 		
-		  				<g:each in="${planningType.sections}" var="section" status="i">
-		  					<div id="section-${section}" class="${planningEntry.invalidSections.contains(section)?'invalid':''} ${planningEntry.incompleteSections.contains(section)?'incomplete':''}">
-			  					<div class="section-title-wrap">
-			  						<h4 class="section-title"> 
-			  							<span class="question-default">${i+1}</span>
-			  							<g:i18n field="${planningType.formElement.headers[section]}"/>
-			  						</h4>
-			  					</div>
-			
-								<div id="element-${planningType.formElement.id}">
+						<div id="element-${planningType.formElement.id}">
+			  				<g:each in="${planningType.sections}" var="section" status="i">
+			  					<div id="section-${section}" class="${planningEntry.invalidSections.contains(section)?'invalid':''} ${planningEntry.incompleteSections.contains(section)?'incomplete':''}">
+				  					<div class="section-title-wrap">
+				  						<h4 class="section-title"> 
+				  							<span class="question-default">${i+1}</span>
+				  							<g:i18n field="${planningType.formElement.headers[section]}"/>
+				  						</h4>
+				  					</div>
+									
 				  					<g:render template="/survey/element/${planningType.getType(section).type.name().toLowerCase()}"  model="[
 										value: planningEntry.getValue(section),
 										lastValue: null,
@@ -47,13 +47,13 @@
 										readonly: readonly,
 										enums: planningEntry.enums
 									]"/>
+									
+									<div class="adv-aside help-container">
+										<div class="help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
+									</div>
 								</div>
-								
-								<div class="adv-aside help-container">
-									<div class="help"><g:i18n field="${planningType.sectionDescriptions[section]}"/></div>
-								</div>
-							</div>
-		  				</g:each>
+			  				</g:each>
+		  				</div>
 						<ul class=" form-actions clearfix">
 							<li>
     		  					<button type="submit" class="loading-disabled">
