@@ -10,18 +10,18 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.DataLocation;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,11 +45,11 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		valueService.deleteValues(normalizedDataElement, null, null);
-		for (Iterator<Object[]> iterator = getCombinations(DataLocationEntity.class); iterator.hasNext();) {
+		for (Iterator<Object[]> iterator = getCombinations(DataLocation.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
-			DataLocationEntity dataLocationEntity = (DataLocationEntity)row[0];
+			DataLocation dataLocation = (DataLocation)row[0];
 			Period period = (Period)row[1];
-			NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, dataLocationEntity, period);				
+			NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, dataLocation, period);				
 			valueService.save(value);
 		}
 		normalizedDataElement.setCalculated(new Date());
@@ -67,11 +67,11 @@ public class RefreshValueService {
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
 		valueService.deleteValues(calculation, null, null);
-		for (Iterator<Object[]> iterator = getCombinations(CalculationEntity.class); iterator.hasNext();) {
+		for (Iterator<Object[]> iterator = getCombinations(CalculationLocation.class); iterator.hasNext();) {
 			Object[] row = (Object[]) iterator.next();
-			CalculationEntity entity = (CalculationEntity)row[0];
+			CalculationLocation location = (CalculationLocation)row[0];
 			Period period = (Period)row[1];
-			refreshCalculation(calculation, entity, period);
+			refreshCalculation(calculation, location, period);
 		}
 		calculation.setCalculated(new Date());
 		dataService.save(calculation);
@@ -112,23 +112,23 @@ public class RefreshValueService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshCalculation(Calculation<?> calculation, CalculationEntity entity, Period period) {
-		valueService.deleteValues(calculation, entity, period);
-		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, entity, period)) {
+	public void refreshCalculation(Calculation<?> calculation, CalculationLocation location, Period period) {
+		valueService.deleteValues(calculation, location, period);
+		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, location, period)) {
 			valueService.save(partialValue);
 		}
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshNormalizedDataElement(NormalizedDataElement dataElement, DataLocationEntity entity, Period period) {
-		valueService.deleteValues(dataElement, entity, period);
-		valueService.save(expressionService.calculateValue(dataElement, entity, period));
+	public void refreshNormalizedDataElement(NormalizedDataElement dataElement, DataLocation dataLocation, Period period) {
+		valueService.deleteValues(dataElement, dataLocation, period);
+		valueService.save(expressionService.calculateValue(dataElement, dataLocation, period));
 	}
 
-	private <T extends CalculationEntity> Iterator<Object[]> getCombinations(Class<T> clazz) {
+	private <T extends CalculationLocation> Iterator<Object[]> getCombinations(Class<T> clazz) {
 		Query query = sessionFactory.getCurrentSession().createQuery(
-				"select entity, period " +
-				"from "+clazz.getSimpleName()+" entity, Period period"
+				"select location, period " +
+				"from "+clazz.getSimpleName()+" location, Period period"
 		).setCacheable(false);
 		return query.iterate();
 	}

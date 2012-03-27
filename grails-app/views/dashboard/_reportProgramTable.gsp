@@ -1,8 +1,8 @@
-<table class='horizontal-graph'>
+<table class="horizontal-graph">
 <thead>
   <tr>
 	<th><g:i18n field="${currentProgram.names}"/></th>
-	<th>Score</th>
+	<th><g:message code="dashboard.report.table.score"/></th>
 	<th></th>
   </tr>
 </thead>
@@ -13,7 +13,7 @@
 				<g:set var="percentageValue" />
 				<td><g:if test="${!entity.isTarget()}">
 						<a href="${createLink(controller:'dashboard', action:'view',
-					params:[period: currentPeriod.id, program: entity.program.id, location: currentLocation.id, dashboardEntity: entity.id])}">
+						params:[period: currentPeriod.id, program: entity.program.id, location: currentLocation.id, dashboardEntity: entity.id])}">
 							<g:i18n field="${entity.program.names}" />
 						</a>
 					</g:if> <g:else>
@@ -21,14 +21,13 @@
 					</g:else></td>
 				<td><g:set var="percentageValue" value="${dashboard.getPercentage(currentLocation, entity)}" />
 					<g:if test="${percentageValue != null}">
-							${percentageValue}%
+						${percentageValue}%
 					</g:if><g:else>
-						<g:set var="percentageValue" value="N/A" />
-						${percentageValue}
+						<g:message code="report.value.na"/>
 					</g:else></td>
 				<td>
 					<!-- percentage value -->
-					<g:if test="${percentageValue == 'N/A'}">
+					<g:if test="${percentageValue == null}">
 						<div class="js_bar_horizontal tooltip horizontal-bar" 
 							data-percentage="${percentageValue}"
 							style="width:0%"							 

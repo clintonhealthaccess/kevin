@@ -16,18 +16,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-
 import org.chai.kevin.Translation;
-import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.Sum;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="PlanningCost")
 @Table(name="dhsst_planning_cost")
 public class PlanningCost {
 
-	public enum PlanningCostType {OUTGOING("planning.cost.type.outgoing"), INCOMING("planning.cost.type.incoming");
+	public enum PlanningCostType {OUTGOING("planning.planningcost.type.outgoing"), INCOMING("planning.planningcost.type.incoming");
 		private String code;
 	
 		PlanningCostType(String code) {

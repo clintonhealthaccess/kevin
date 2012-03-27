@@ -16,7 +16,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-
 import org.chai.kevin.Translation;
 import org.chai.kevin.value.DataValue;
 

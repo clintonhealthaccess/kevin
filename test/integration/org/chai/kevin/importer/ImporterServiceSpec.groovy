@@ -39,9 +39,9 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationEntity
-import org.chai.kevin.location.DataEntityType
-import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
@@ -67,7 +67,7 @@ class ImporterServiceSpec extends IntegrationTests {
 			
 		then:
 		RawDataElementValue.count() == 1
-		RawDataElementValue.list()[0].entity.equals(DataLocationEntity.findByCode(BUTARO))
+		RawDataElementValue.list()[0].location.equals(DataLocation.findByCode(BUTARO))
 		RawDataElementValue.list()[0].data.equals(RawDataElement.findByCode(CODE(1)))
 		RawDataElementValue.list()[0].period.equals(period)
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]))
@@ -194,7 +194,7 @@ class ImporterServiceSpec extends IntegrationTests {
 		//check if the first row was skipped and the second was taken as the first and an error was saved
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_LIST([Value.VALUE_MAP(["string":Value.VALUE_STRING("best String")])]))
 		//please change this error msg code if it is changed in ImporterService
-		importerErrorManagerCode.errors[0].messageCode.equals("error.message.unknown.location");
+		importerErrorManagerCode.errors[0].messageCode.equals("import.error.message.unknown.location");
 	}
 	
 	def "get general import string data from csv"(){
@@ -375,6 +375,5 @@ class ImporterServiceSpec extends IntegrationTests {
 		//please change this error msg code if it is changed in ImporterService
 		importerErrorManager.errors[0].messageCode.equals("error.message.data.duplicated");
 	}
-		
 		
 }

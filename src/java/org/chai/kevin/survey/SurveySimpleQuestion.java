@@ -42,7 +42,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -74,7 +75,7 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
-	public List<SurveyElement> getSurveyElements(DataEntityType type) {
+	public List<SurveyElement> getSurveyElements(DataLocationType type) {
 		List<SurveyElement> elements = new ArrayList<SurveyElement>();
 		if (surveyElement != null) elements.add(surveyElement);
 		return elements;

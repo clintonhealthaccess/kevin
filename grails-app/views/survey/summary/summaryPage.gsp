@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="survey.summaryPage.label" default="District Health System Portal" /></title>
+		<title><g:message code="survey.summary.title" /></title>
 		
 		<r:require modules="progressbar,dropdown,explanation,survey"/>
 	</head>
@@ -16,7 +16,7 @@
 						
 			<div class="main">			
 				<g:if test="${summaryPage == null}">
-					<p class="nav-help"><g:message code="survey.summary.selectsurveyfacility.text" default="Please select a survey and a facility to get to the respective survey."/></p>
+					<p class="nav-help"><g:message code="survey.summary.selectsurveylocation.text"/></p>
 				</g:if>
 				<g:else>
 					<div class="push-20">
@@ -37,8 +37,8 @@
 		
 			$(document).ready(function() {
 				$('.program-table-link').bind('click', function() {
-    				var facility = $(this).data('facility');
-    				explanationClick(this, facility, function(){progressBar();});
+    				var location = $(this).data('location');
+    				explanationClick(this, location, function(){progressBar();});
     				return false;
     			});
 			});

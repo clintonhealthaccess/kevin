@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<g:set var="entityName" value="\${message(code: '${domainClass.propertyName}.label', default: '${className}')}" />
+		<g:set var="entityName" value="\${message(code: '${domainClass.propertyName}.label')}" />
 		<title><g:message code="default.edit.label" args="[entityName]" /></title>
 	</head>
 	<body>
@@ -34,8 +34,8 @@
 					<g:render template="form"/>
 				</fieldset>
 				<fieldset class="buttons">
-					<g:actionSubmit class="save" action="update" value="\${message(code: 'default.button.update.label', default: 'Update')}" />
-					<g:actionSubmit class="delete" action="delete" value="\${message(code: 'default.button.delete.label', default: 'Delete')}" formnovalidate="" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message', default: 'Are you sure?')}');" />
+					<g:actionSubmit class="save" action="update" value="\${message(code: 'default.button.update.label')}" />
+					<g:actionSubmit class="delete" action="delete" value="\${message(code: 'default.button.delete.label')}" formnovalidate="" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');" />
 				</fieldset>
 			</g:form>
 		</div>

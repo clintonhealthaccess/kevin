@@ -21,7 +21,7 @@
 			<tr class="tree-sign js_foldable">
 				<td class="js_foldable-toggle">
 					<span style="margin-left: 40px;">
-						<g:i18n field="${planningType.headers[section]}"/>
+						<g:i18n field="${planningType.formElement.headers[section]}"/>
 					</span>
 				</td>
 				<g:if test="${costType == PlanningCostType.INCOMING}">
@@ -33,7 +33,7 @@
 				</g:if>
 				<td>-</td>
 				<td></td>
-				<td class="status" title="Help message"></td>
+				<td class="status"></td>
 			</tr>
 			<tr class="sub-tree js_foldable-container hidden">
 				<td colspan="7" class="bucket">

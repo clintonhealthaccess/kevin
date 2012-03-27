@@ -1,7 +1,5 @@
 package org.chai.kevin.dashboard;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -9,9 +7,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="DashboardProgram")
 @Table(name="dhsst_dashboard_program")
@@ -46,8 +44,8 @@ public class DashboardProgram extends DashboardEntity {
 	}
 
 	@Override
-	public <T> T visit(DashboardVisitor<T> visitor, CalculationEntity entity, Period period) {
-		return visitor.visitProgram(this, entity, period);
+	public <T> T visit(DashboardVisitor<T> visitor, CalculationLocation location, Period period) {
+		return visitor.visitProgram(this, location, period);
 	}
 
 	@Override

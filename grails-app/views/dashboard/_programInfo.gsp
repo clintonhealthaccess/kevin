@@ -1,12 +1,12 @@
 <div class="info">	
 	<div>		
 		<div class="average">
-			<span class="bold">Average value:</span>
+			<span class="bold"><g:message code="dashboard.info.program.average"/>:</span>
 			<span class="value">
 				<g:if test="${info.numberValue != null}">
 					<g:formatNumber number="${info.numberValue * 100}" format="#0.0"/>%
 				</g:if>
-				<g:else>N/A</g:else>
+				<g:else><g:message code="report.value.na"/></g:else>
 			</span>
 			<div class="clear"></div>
 		</div>
@@ -18,8 +18,8 @@
 					<thead>
 						<tr>
 							<th>&nbsp;</th>
-							<th>Weight</th>
-							<th>Score</th>
+							<th><g:message code="dashboard.info.program.weight"/></th>
+							<th><g:message code="dashboard.info.program.score"/></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -34,7 +34,7 @@
 										<g:formatNumber number="${percentage.value * 100}" format="#0.0"/>%
 									</g:if>
 									<g:else>
-										N/A
+										<g:message code="report.value.na"/>
 									</g:else>
 								</td>
 							</tr>

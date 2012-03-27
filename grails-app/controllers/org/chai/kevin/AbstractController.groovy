@@ -30,8 +30,8 @@ package org.chai.kevin;
 
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.LocationService
 
@@ -45,7 +45,6 @@ import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
 import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.hisp.dhis.period.Period
 
 public abstract class AbstractController {
 
@@ -66,26 +65,33 @@ public abstract class AbstractController {
 		return period
 	}
 	
-	def getProgram(){
-		ReportProgram program = ReportProgram.get(params.int('program'))
-		if(program == null) program = reportService.getRootProgram()
+	def getProgram(def clazz){		
+		ReportProgram program = ReportProgram.get(params.int('program'))		
+		if(program == null)
+			program = reportService.getRootProgram()			
+		if(clazz != null){
+			def programTree = reportService.getProgramTree(clazz).asList()
+			if(!programTree.contains(program))
+				program = reportService.getRootProgram()
+		}
+			
 		return program
 	}
 	
 	def getLocation(){
-		LocationEntity location = LocationEntity.get(params.int('location'))
+		Location location = Location.get(params.int('location'))
 		if (location == null) location = locationService.getRootLocation()
 		return location
 	}		
 	
-	public Set<DataEntityType> getLocationTypes() {
-		Set<DataEntityType> types = null
-		if (params.list('locationTypes') != null && !params.list('locationTypes').empty) {
-			def locationTypes = params.list('locationTypes')
-			types = new HashSet<DataEntityType>(locationTypes.collect{ DataEntityType.get(it) })
+	public Set<DataLocationType> getLocationTypes() {
+		Set<DataLocationType> types = null
+		if (params.list('dataLocationTypes') != null && !params.list('dataLocationTypes').empty) {
+			def dataLocationTypes = params.list('dataLocationTypes')
+			types = new HashSet<DataLocationType>(dataLocationTypes.collect{ DataLocationType.get(it) })
 		}
 		else {
-			types = new HashSet<DataEntityType>(ConfigurationHolder.config.site.locationtype.checked.collect {DataEntityType.findByCode(it)})
+			types = new HashSet<DataLocationType>(ConfigurationHolder.config.site.datalocationtype.checked.collect {DataLocationType.findByCode(it)})
 		}
 		return types
 	}

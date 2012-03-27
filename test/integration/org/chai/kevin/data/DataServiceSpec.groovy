@@ -37,9 +37,9 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -245,7 +245,7 @@ class DataServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def period = newPeriod()
-		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		
 		dataService.delete(dataElement)
 		
@@ -260,7 +260,7 @@ class DataServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		def period = newPeriod()
-		newNormalizedDataElementValue(dataElement, DataLocationEntity.findByCode(KIVUYE), period, Status.VALID, Value.NULL_INSTANCE())
+		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, Value.NULL_INSTANCE())
 		
 		dataService.delete(dataElement)
 		
@@ -275,7 +275,7 @@ class DataServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def calculation = newSum("1", CODE(1))
 		def period = newPeriod()
-		newSumPartialValue(calculation, period, DataLocationEntity.findByCode(KIVUYE), DataEntityType.findByCode(HEALTH_CENTER_GROUP), Value.NULL_INSTANCE())
+		newSumPartialValue(calculation, period, DataLocation.findByCode(KIVUYE), DataLocationType.findByCode(HEALTH_CENTER_GROUP), Value.NULL_INSTANCE())
 
 		dataService.delete(calculation)
 		

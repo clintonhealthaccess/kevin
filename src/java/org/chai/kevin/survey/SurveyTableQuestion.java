@@ -48,7 +48,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -129,7 +130,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 
 	@Transient
 	@Override
-	public List<SurveyElement> getSurveyElements(DataEntityType type) {
+	public List<SurveyElement> getSurveyElements(DataLocationType type) {
 		List<SurveyElement> dataElements = new ArrayList<SurveyElement>();
 		for (SurveyTableRow row : getRows(type)) {
 			for (SurveyTableColumn column : getColumns(type)) {
@@ -152,7 +153,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	}
 	
 	@Transient
-	public List<SurveyTableRow> getRows(DataEntityType type) {
+	public List<SurveyTableRow> getRows(DataLocationType type) {
 		List<SurveyTableRow> result = new ArrayList<SurveyTableRow>();
 		for (SurveyTableRow surveyTableRow : getRows()) {
 			if (Utils.split(surveyTableRow.getTypeCodeString()).contains(type.getCode()))
@@ -162,7 +163,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 	}
 
 	@Transient
-	public List<SurveyTableColumn> getColumns(DataEntityType type) {
+	public List<SurveyTableColumn> getColumns(DataLocationType type) {
 		List<SurveyTableColumn> result = new ArrayList<SurveyTableColumn>();
 		for (SurveyTableColumn surveyTableColumn : getColumns()) {
 			if (Utils.split(surveyTableColumn.getTypeCodeString()).contains(type.getCode()))
@@ -173,8 +174,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Transient
-	public Set<String> getTypeApplicable(
-			SurveyElement surveyElement) {
+	public Set<String> getTypeApplicable(SurveyElement surveyElement) {
 		Set<String> columnRowOrgUnitUuIDs = new HashSet<String>();
 		
 		boolean found = false;

@@ -2,6 +2,7 @@ package org.chai.kevin.survey
 
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.util.JSONUtils;
 
 class SurveyCopyServiceSpec extends SurveyIntegrationTests {
@@ -62,7 +63,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
-		def skipRule = newSkipRule(survey, "\$"+element.id+" == 1", [:], [])
+		def skipRule = newSurveySkipRule(survey, "\$"+element.id+" == 1", [:], [])
 		
 		when:
 		def surveyCopy = surveyCopyService.copySurvey(survey)
@@ -92,14 +93,14 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		def question2 = newSimpleQuestion(section2, 1, [])
 		def dataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
 		def element2 = newSurveyElement(question2, dataElement2)
-		def validationRule = newSurveyValidationRule(element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", [element1])
+		def validationRule = newFormValidationRule(element2, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1+" == 1", [element1])
 		
 		when:
 		def surveyCopy = surveyCopyService.copySurvey(survey2)
 		def copy = surveyCopy.copy
 		
 		then:
-		SurveyValidationRule.count() == 2
+		FormValidationRule.count() == 2
 		def element3 = SurveyElement.list()[2]
 		element3.validationRules.size() == 1
 		element3.validationRules.iterator().next().expression == element2.validationRules.iterator().next().expression
@@ -115,7 +116,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(section, 1, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def element = newSurveyElement(question, dataElement)
-		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
+		def validationRule = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
 		
 		when:
 		def surveyCopy = surveyCopyService.copySurvey(survey)
@@ -127,29 +128,7 @@ class SurveyCopyServiceSpec extends SurveyIntegrationTests {
 		elementCopy.validationRules.iterator().next().dependencies.size() == 1
 		elementCopy.validationRules.iterator().next().dependencies[0].equals(elementCopy)
 		surveyCopy.getUnchangedValidationRules().size() == 0
-		
 	}
 	
-	def "test clone validation rule"() {
-		setup:
-		def period = newPeriod()
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [])
-		def section = newSurveySection(program, 1, [])
-		def question = newSimpleQuestion(section, 1, [])
-		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def element = newSurveyElement(question, dataElement)
-		def validationRule = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "1 == 1", [element])
-		
-		when:
-		def validationCopy = surveyCopyService.copyValidationRule(validationRule)
-		def copy = validationCopy.copy
-		
-		then:
-		SurveyValidationRule.count() == 2
-		SurveyValidationRule.list()[1].expression == SurveyValidationRule.list()[0].expression
-		SurveyValidationRule.list()[1].typeCodeString == SurveyValidationRule.list()[0].typeCodeString
-		
-	}
 		
 }

@@ -7,7 +7,7 @@
 		</g:if>
 		<g:else>
 			<a class="survey selected" href="#" data-type="planning">
-				<g:message code="filter.planning.noselection.label" default="Please select a planning"/>
+				<g:message code="default.select.label" args="[message(code:'planning.label')]" />
 			</a>
 		</g:else> 
 		<div class="hidden dropdown-list js_dropdown-list">

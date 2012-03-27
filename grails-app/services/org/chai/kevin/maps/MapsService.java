@@ -35,15 +35,15 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Info;
 import org.chai.kevin.data.InfoService;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly=true)
@@ -55,19 +55,19 @@ public class MapsService {
 	private ValueService valueService;
 	private InfoService infoService;
 	
-	public Maps getMap(Period period, LocationEntity entity, LocationLevel level, MapsTarget target) {
-		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",entity="+entity+",level="+level+",target="+target+")");
+	public Maps getMap(Period period, Location location, LocationLevel level, MapsTarget target) {
+		if (log.isDebugEnabled()) log.debug("getMap(period="+period+",location="+location+",level="+level+",target="+target+")");
 
 		List<Polygon> polygons = new ArrayList<Polygon>();
 		List<LocationLevel> levels = locationService.listLevels();
 		
-		if (target == null) return new Maps(period, target, entity, level, polygons, levels);
-		List<LocationEntity> locations = locationService.getChildrenOfLevel(entity, level);
+		if (target == null) return new Maps(period, target, location, level, polygons, levels);
+		List<Location> locations = locationService.getChildrenOfLevel(location, level);
 
-		for (CalculationEntity child : locations) {
+		for (CalculationLocation child : locations) {
 			Double value = null;
 			// TODO types
-			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child, period, new HashSet<DataEntityType>(locationService.listTypes()));
+			CalculationValue<?> calculationValue = valueService.getCalculationValue(target.getCalculation(), child, period, new HashSet<DataLocationType>(locationService.listTypes()));
 			if (calculationValue != null) {
 				if (!calculationValue.getValue().isNull()) {
 					value = calculationValue.getValue().getNumberValue().doubleValue();
@@ -77,12 +77,12 @@ public class MapsService {
 			polygons.add(new Polygon(child, value));
 		}
 
-		return new Maps(period, target, entity, level, polygons, levels);
+		return new Maps(period, target, location, level, polygons, levels);
 	}
 
-	public Info<?> getExplanation(Period period, CalculationEntity entity, MapsTarget target) {
+	public Info<?> getExplanation(Period period, CalculationLocation location, MapsTarget target) {
 		// TODO types
-		return infoService.getCalculationInfo(target.getCalculation(), entity, period, new HashSet<DataEntityType>(locationService.listTypes()));
+		return infoService.getCalculationInfo(target.getCalculation(), location, period, new HashSet<DataLocationType>(locationService.listTypes()));
 	}
 	
 	public void setValueService(ValueService valueService) {

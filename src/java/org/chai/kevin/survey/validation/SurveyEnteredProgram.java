@@ -10,19 +10,20 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.form.EnteredEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.SurveyProgram;
 import org.hibernate.annotations.NaturalId;
 
 @Entity(name="SurveyValidProgram")
 @Table(name="dhsst_survey_entered_program", uniqueConstraints=@UniqueConstraint(
-		columnNames={"program", "entity"})
+		columnNames={"program", "dataLocation"})
 )
-public class SurveyEnteredProgram extends SurveyEnteredEntity {
+public class SurveyEnteredProgram extends EnteredEntity {
 
 	private Long id;
 	private SurveyProgram program;
-	private DataLocationEntity entity;
+	private DataLocation dataLocation;
 	
 	private Boolean complete;
 	private Boolean invalid;
@@ -30,10 +31,10 @@ public class SurveyEnteredProgram extends SurveyEnteredEntity {
 	
 	public SurveyEnteredProgram() {}
 	
-	public SurveyEnteredProgram(SurveyProgram program, DataLocationEntity entity, Boolean invalid, Boolean complete, Boolean closed) {
+	public SurveyEnteredProgram(SurveyProgram program, DataLocation dataLocation, Boolean invalid, Boolean complete, Boolean closed) {
 		super();
 		this.program = program;
-		this.entity = entity;
+		this.dataLocation = dataLocation;
 		this.complete = complete;
 		this.invalid = invalid;
 		this.closed = closed;
@@ -60,13 +61,13 @@ public class SurveyEnteredProgram extends SurveyEnteredEntity {
 	}
 
 	@NaturalId
-	@ManyToOne(targetEntity=DataLocationEntity.class, fetch=FetchType.LAZY)
-	public DataLocationEntity getEntity() {
-		return entity;
+	@ManyToOne(targetEntity=DataLocation.class, fetch=FetchType.LAZY)
+	public DataLocation getDataLocation() {
+		return dataLocation;
 	}
 	
-	public void setEntity(DataLocationEntity entity) {
-		this.entity = entity;
+	public void setDataLocation(DataLocation dataLocation) {
+		this.dataLocation = dataLocation;
 	}
 	
 	@Basic
@@ -114,7 +115,7 @@ public class SurveyEnteredProgram extends SurveyEnteredEntity {
 				+ ((program == null) ? 0 : program.hashCode());
 		result = prime
 				* result
-				+ ((entity == null) ? 0 : entity.hashCode());
+				+ ((dataLocation == null) ? 0 : dataLocation.hashCode());
 		return result;
 	}
 
@@ -132,10 +133,10 @@ public class SurveyEnteredProgram extends SurveyEnteredEntity {
 				return false;
 		} else if (!program.equals(other.program))
 			return false;
-		if (entity == null) {
-			if (other.entity != null)
+		if (dataLocation == null) {
+			if (other.dataLocation != null)
 				return false;
-		} else if (!entity.equals(other.entity))
+		} else if (!dataLocation.equals(other.dataLocation))
 			return false;
 		return true;
 	}

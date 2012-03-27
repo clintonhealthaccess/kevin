@@ -38,7 +38,7 @@ class LocationLevelController extends AbstractEntityController {
 	}
 
 	def getLabel() {
-		return 'locationLevel.label';
+		return 'locationlevel.label';
 	}
 
 	def list = {

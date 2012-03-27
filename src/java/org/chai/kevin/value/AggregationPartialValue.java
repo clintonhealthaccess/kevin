@@ -9,16 +9,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="AggregationPartialValue")
 @Table(name="dhsst_value_partial_aggregation",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"data", "entity", "period", "type", "expressionData"})
+		@UniqueConstraint(columnNames={"data", "location", "period", "type", "expressionData"})
 	}
 )
 public class AggregationPartialValue extends CalculationPartialValue {
@@ -30,15 +30,15 @@ public class AggregationPartialValue extends CalculationPartialValue {
 		super();
 	}
 
-	public AggregationPartialValue(Aggregation data, CalculationEntity entity, Period period, DataEntityType type, String expressionData, Value value) {
-		super(entity, period, type, value);
+	public AggregationPartialValue(Aggregation data, CalculationLocation location, Period period, DataLocationType type, String expressionData, Value value) {
+		super(location, period, type, value);
 
 		this.expressionData = expressionData;
 		this.data = data;
 	}
 
-	public AggregationPartialValue(Aggregation data, CalculationEntity entity, Period period, DataEntityType type, String expressionData) {
-		super(entity, period, type);
+	public AggregationPartialValue(Aggregation data, CalculationLocation location, Period period, DataLocationType type, String expressionData) {
+		super(location, period, type);
 		
 		this.expressionData = expressionData;
 		this.data = data;

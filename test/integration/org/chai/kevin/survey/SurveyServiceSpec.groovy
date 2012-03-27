@@ -1,7 +1,7 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 
 class SurveyServiceSpec extends SurveyIntegrationTests {
 
@@ -69,7 +69,7 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 		
 		then:
 		element.getTypeApplicable().equals(new HashSet([(HEALTH_CENTER_GROUP)]))
-		surveyService.getNumberOfApplicableDataEntityTypes(element) == 1
+		surveyService.getNumberOfApplicableDataLocationTypes(element) == 1
 	}
 	
 	def "test number of location applicable with empty group"() {
@@ -91,153 +91,9 @@ class SurveyServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		element.getTypeApplicable().equals(new HashSet([]))
-		surveyService.getNumberOfApplicableDataEntityTypes(element) == 0
+		surveyService.getNumberOfApplicableDataLocationTypes(element) == 0
 	}
 	
-	def "test retrieve skip rule - no rule"() {
-		setup:
-		def period = newPeriod()
-		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-
-		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-
-		def list = null
-		
-		when:
-		list = surveyService.searchSkipRules(element)
-		
-		then:
-		list.isEmpty()
-	}
-		
-	def "test retrieve skip rule - no element in expression"() {
-		setup:
-		def period = newPeriod()
-		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-
-		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-
-		def list = null
-		
-		when:
-		def rule1 = newSkipRule(survey, "1==1", [(element): ""], [])
-		list = surveyService.searchSkipRules(element)
-		
-		then:
-		list.isEmpty()
-	}
-		
-	def "test retrieve skip rule - element in expression"() {
-		setup:
-		def period = newPeriod()
-		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-
-		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-
-		def list = null
-		
-		when:
-		def rule2 = newSkipRule(survey, "\$"+element.id+"==1", [(element): ""], [])
-		list = surveyService.searchSkipRules(element)
-		
-		then:
-		list.equals(new HashSet([rule2]))
-	}
-	
-	def "test retrieve skip rule - several rules"() {
-		setup:
-		def period = newPeriod()
-		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-	
-		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-	
-		def list = null
-	
-		when:
-		def rule3 = newSkipRule(survey, "\$"+element.id+"0"+"==1", [(element): ""], [])
-		def rule4 = newSkipRule(survey, "\$"+element.id+"==1", [(element): ""], [])
-		list = surveyService.searchSkipRules(element)
-		
-		then:
-		list.equals(new HashSet([rule4]))
-	}
-	
-	def "test retrieve validation rules"() {
-		setup:
-		def hc = newDataEntityType(HEALTH_CENTER_GROUP);
-		def dh = newDataEntityType(DISTRICT_HOSPITAL_GROUP);
-		
-		def period = newPeriod()
-		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-
-		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-
-		def list = null
-		
-		when:
-		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
-		
-		then:
-		list.isEmpty()
-		
-		when:
-		def rule1 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
-		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
-		
-		then:
-		list.equals(new HashSet([rule1]))
-		
-		when:
-		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (DISTRICT_HOSPITAL_GROUP) ))
-		
-		then:
-		list.isEmpty()
-	}
-	
-	def "test retrieve validation rule - several rules"() {
-		setup:
-		def hc = newDataEntityType(HEALTH_CENTER_GROUP);
-		def dh = newDataEntityType(DISTRICT_HOSPITAL_GROUP);
-		
-		def period = newPeriod()
-		
-		def survey = newSurvey(period)
-		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
-		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
-	
-		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
-	
-		def list = null
-	
-		when:
-		def rule3 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
-		def rule4 = newSurveyValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
-		list = surveyService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
-		
-		then:
-		list.equals(new HashSet([rule4]))
-	}
 	
 	def "test get survey elements for data element"() {
 		setup:

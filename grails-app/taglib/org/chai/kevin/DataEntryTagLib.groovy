@@ -4,10 +4,11 @@ import org.chai.kevin.survey.SurveyElement;
 import java.util.Comparator;
 
 import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormValidationRule;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
-import org.chai.kevin.survey.SurveyValidationRule;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.survey.SurveyElement;
@@ -16,7 +17,6 @@ class DataEntryTagLib {
 
 	def languageService
 	
-	// TODO test
 	def value = {attrs, body ->
 		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')
 		
@@ -71,8 +71,8 @@ class DataEntryTagLib {
 		return Ordering.getOrderableComparator(languageService.currentLanguage, languageService.fallbackLanguage);
 	}
 	
-	def renderUserErrors = {attrs, body ->
-		if (log.isDebugEnabled()) log.debug('renderUserErrors(attrs='+attrs+',body='+body+')')
+	def renderUserErrors = { attrs, body ->
+		if (log.isDebugEnabled()) log.debug('renderErrors(attrs='+attrs+',body='+body+')')
 		
 		def element = attrs['element']
 		def validatable = attrs['validatable']
@@ -86,7 +86,7 @@ class DataEntryTagLib {
 		if (!rules.empty) {
 			boolean hasErrors = hasErrors(rules)
 
-			def errors = []			
+			def errors = []
 			rules.each { rule ->
 				def error = [:]
 				error.displayed = (hasErrors && !rule.allowOutlier) || (!hasErrors && rule.allowOutlier)
@@ -95,16 +95,15 @@ class DataEntryTagLib {
 				error.suffix = prefix
 				error.accepted = validatable.isAcceptedWarning(rule, prefix)
 				errors.add(error)
-			} 
+			}
 			out << g.render(template: '/tags/dataEntry/errors', model: [errors: errors, element: element])
-
 		}
 	}
 	
 	def getRules(def errors) {
 		def rules = []
 		if (errors != null) errors.each { id ->
-			rules.add(SurveyValidationRule.get(id))
+			rules.add(FormValidationRule.get(id))
 		}
 		return rules;
 	}
@@ -116,7 +115,8 @@ class DataEntryTagLib {
 		return false
 	}
 	
-	def replacePlaceHolders(String message, List<SurveyElement> elements, DataLocationEntity location) {
+	
+	def replacePlaceHolders(String message, List<SurveyElement> elements, DataLocation location) {
 		if (log.isDebugEnabled()) log.debug('replacePlaceHolders(${message}, ${elements}, ${location})')
 		
 		String[] placeholders = StringUtils.substringsBetween(message, "{", "}")
@@ -134,12 +134,9 @@ class DataEntryTagLib {
 			}
 			
 			if (id != null) {
-				SurveyElement surveyElement = elements[id];
-				SurveySection section = surveyElement.surveyQuestion.section
-				Survey survey = section.program.survey 
-				String replacement = 
-					'<a href="'+createLink(controller: "editSurvey", action: "sectionPage", params: [section: section.id, location: location.id], fragment: 'element-'+surveyElement.id)+'">'+
-					(text!=null?text:surveyElement.id)+'</a>'
+				FormElement element = elements[id];
+				String replacement =
+					'<a href="'+createLink(controller: "formElement", action: "view", params: [id:element.id,location:location.id])+'">'+(text!=null?text:element.id)+'</a>'
 				result = StringUtils.replace(result, "{"+placeholder+"}", replacement);
 			}
 		}

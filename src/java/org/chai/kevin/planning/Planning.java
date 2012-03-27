@@ -15,8 +15,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
-import org.hisp.dhis.period.Period;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity(name="Planning")
 @Table(name="dhsst_planning")
@@ -26,6 +28,7 @@ public class Planning {
 	
 	private Period period;
 	private List<PlanningType> planningTypes = new ArrayList<PlanningType>();
+	private List<PlanningSkipRule> skipRules = new ArrayList<PlanningSkipRule>(); 
 	private Translation names = new Translation();
 	// TODO add settings form page
 	
@@ -39,6 +42,21 @@ public class Planning {
 	
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@OneToMany(mappedBy="planning", targetEntity=PlanningSkipRule.class)
+	@Cascade({CascadeType.ALL, CascadeType.DELETE_ORPHAN})
+	public List<PlanningSkipRule> getSkipRules() {
+		return skipRules;
+	}
+	
+	public void setSkipRules(List<PlanningSkipRule> skipRules) {
+		this.skipRules = skipRules;
+	}
+	
+	public void addSkipRule(PlanningSkipRule skipRule) {
+		skipRule.setPlanning(this);
+		skipRules.add(skipRule);
 	}
 	
 	@OneToMany(mappedBy="planning", targetEntity=PlanningType.class)

@@ -11,41 +11,41 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
-import org.hisp.dhis.period.Period;
 
 public class SurveyPage {
 
 	private final static Log log = LogFactory.getLog(SurveyPage.class);
 	
-	private DataLocationEntity entity;
+	private DataLocation dataLocation;
 	private Survey survey;
 	private SurveyProgram program;
 	private SurveySection section;
 	private Map<SurveyProgram, SurveyEnteredProgram> programs;
 	private Map<SurveySection, SurveyEnteredSection> sections;
 	private Map<SurveyQuestion, SurveyEnteredQuestion> questions;
-	private Map<SurveyElement, SurveyEnteredValue> elements;
+	private Map<SurveyElement, FormEnteredValue> elements;
 //	private Comparator<Orderable<Ordering>> comparator;
 	private Map<String, Enum> enums;
 	
-	public SurveyPage(DataLocationEntity entity, Survey survey, 
+	public SurveyPage(DataLocation dataLocation, Survey survey, 
 			SurveyProgram program, SurveySection section,
 			Map<SurveyProgram, SurveyEnteredProgram> programs,
 			Map<SurveySection, SurveyEnteredSection> sections,
 			Map<SurveyQuestion, SurveyEnteredQuestion> questions,
-			Map<SurveyElement, SurveyEnteredValue> elements,
+			Map<SurveyElement, FormEnteredValue> elements,
 //			Comparator<Orderable<Ordering>> comparator
 			Map<String, Enum> enums) {
 		super();
-		this.entity = entity;
+		this.dataLocation = dataLocation;
 		this.survey = survey;
 		this.program = program;
 		this.section = section;
@@ -61,8 +61,8 @@ public class SurveyPage {
 		return survey.getPeriod();
 	}
 	
-	public DataLocationEntity getLocation() {
-		return entity;
+	public DataLocation getLocation() {
+		return dataLocation;
 	}
 
 	public Survey getSurvey() {
@@ -97,7 +97,7 @@ public class SurveyPage {
 		return questions;
 	}
 
-	public Map<SurveyElement, SurveyEnteredValue> getElements() {
+	public Map<SurveyElement, FormEnteredValue> getElements() {
 		return elements;
 	}
 	
@@ -106,37 +106,37 @@ public class SurveyPage {
 	}
 
 	public List<SurveyCheckboxOption> getOptions(SurveyCheckboxQuestion question) {
-		List<SurveyCheckboxOption> options = question.getOptions(entity.getType());
+		List<SurveyCheckboxOption> options = question.getOptions(dataLocation.getType());
 		Collections.sort(options);
 		return options;
 	}
 	
 	public List<SurveyTableColumn> getColumns(SurveyTableQuestion question) {
-		List<SurveyTableColumn> columns = question.getColumns(entity.getType());
+		List<SurveyTableColumn> columns = question.getColumns(dataLocation.getType());
 		Collections.sort(columns);
 		return columns;
 	}
 	
 	public List<SurveyTableRow> getRows(SurveyTableQuestion question) {
-		List<SurveyTableRow> rows = question.getRows(entity.getType());
+		List<SurveyTableRow> rows = question.getRows(dataLocation.getType());
 		Collections.sort(rows);
 		return rows;
 	}
 	
 	public List<SurveyQuestion> getQuestions(SurveySection section) {
-		List<SurveyQuestion> questions = section.getQuestions(entity.getType());
+		List<SurveyQuestion> questions = section.getQuestions(dataLocation.getType());
 		Collections.sort(questions);
 		return questions;
 	}
 	
 	public List<SurveySection> getSections(SurveyProgram program) {
-		List<SurveySection> sections = program.getSections(entity.getType());
+		List<SurveySection> sections = program.getSections(dataLocation.getType());
 		Collections.sort(sections);
 		return sections;
 	}
 	
 	public List<SurveyProgram> getPrograms() {
-		List<SurveyProgram> programs = survey.getPrograms(entity.getType());
+		List<SurveyProgram> programs = survey.getPrograms(dataLocation.getType());
 		Collections.sort(programs);
 		return programs;
 	}
@@ -151,7 +151,7 @@ public class SurveyPage {
 	public List<SurveySection> getIncompleteSections(SurveyProgram program) {
 		if (log.isDebugEnabled()) log.debug("getIncompleteSections(program="+program+")");
 		List<SurveySection> result = new ArrayList<SurveySection>();
-		for (SurveySection section : program.getSections(entity.getType())) {
+		for (SurveySection section : program.getSections(dataLocation.getType())) {
 			if (!sections.get(section).isComplete()) result.add(section);
 		}
 		if (log.isDebugEnabled()) log.debug("getIncompleteSections(...)="+result);
@@ -161,8 +161,8 @@ public class SurveyPage {
 	public List<SurveyQuestion> getInvalidQuestions(SurveyProgram program) {
 		if (log.isDebugEnabled()) log.debug("getInvalidQuestions(program="+program+")");
 		List<SurveyQuestion> result = new ArrayList<SurveyQuestion>();
-		for (SurveySection section : program.getSections(entity.getType())) {
-			for (SurveyQuestion question : section.getQuestions(entity.getType())) {
+		for (SurveySection section : program.getSections(dataLocation.getType())) {
+			for (SurveyQuestion question : section.getQuestions(dataLocation.getType())) {
 				if (questions.get(question).isInvalid() &&  !questions.get(question).isSkipped()) {
 					result.add(question);
 				}
@@ -174,9 +174,9 @@ public class SurveyPage {
 	
 	public List<SurveyQuestion> getListQuestions(Survey survey){
 		List<SurveyQuestion> simpleQuestions = new ArrayList<SurveyQuestion>();
-		for (SurveyProgram obj : survey.getPrograms(entity.getType()))
-			for(SurveySection section: obj.getSections(entity.getType()))
-				for(SurveyQuestion question: section.getQuestions(entity.getType()))
+		for (SurveyProgram obj : survey.getPrograms(dataLocation.getType()))
+			for(SurveySection section: obj.getSections(dataLocation.getType()))
+				for(SurveyQuestion question: section.getQuestions(dataLocation.getType()))
 					//TODO this has to apply to all type questions
 					if(question instanceof SurveySimpleQuestion) {
 						SurveySimpleQuestion simpleQuestion = (SurveySimpleQuestion)question;
@@ -188,13 +188,13 @@ public class SurveyPage {
 	}
 	
 	public boolean isLastSection(SurveySection surveySection) {
-		List<SurveySection> sections = surveySection.getProgram().getSections(entity.getType());
+		List<SurveySection> sections = surveySection.getProgram().getSections(dataLocation.getType());
 		if (sections.indexOf(surveySection) == sections.size() - 1) return true;
 		return false;
 	}
 	
 	public SurveySection getNextSection(SurveySection surveySection) {
-		List<SurveySection> sections = surveySection.getProgram().getSections(entity.getType());
+		List<SurveySection> sections = surveySection.getProgram().getSections(dataLocation.getType());
 		int index = sections.indexOf(surveySection);
 		return sections.get(index+1);
 	}
@@ -205,7 +205,7 @@ public class SurveyPage {
 	
 	public boolean isReadonly(SurveyProgram surveyProgram) {
 		return !surveyProgram.getSurvey().isActive()
-		|| !SecurityUtils.getSubject().isPermitted("editSurvey:save:"+entity.getId()) 
+		|| !SecurityUtils.getSubject().isPermitted("editSurvey:save:"+dataLocation.getId()) 
 		|| programs.get(program).isClosed(); 
 	}
 }

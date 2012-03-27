@@ -2,7 +2,6 @@ package org.chai.kevin.dsr;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,14 +12,13 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
@@ -28,14 +26,12 @@ import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DsrService {
 	private static final Log log = LogFactory.getLog(DsrService.class);
 	
-	private LocationService locationService;
 	private ReportService reportService;
 	private ValueService valueService;
 	private DataService dataService;
@@ -45,17 +41,17 @@ public class DsrService {
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
 
-	public DsrTable getDsrTable(LocationEntity location, ReportProgram program, Period period, Set<DataEntityType> types, DsrTargetCategory category) {
-		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",entity="+location+",program="+program+",types="+types+",category="+category+")");
+	public DsrTable getDsrTable(Location location, ReportProgram program, Period period, Set<DataLocationType> types, DsrTargetCategory category) {
+		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",location="+location+",program="+program+",types="+types+",category="+category+")");
 				
-		List<DataLocationEntity> facilities = location.collectDataLocationEntities(null, types);		
+		List<DataLocation> dataLocations = location.collectDataLocations(null, types);		
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, program);
 		
-		Map<DataLocationEntity, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocationEntity, Map<DsrTarget, ReportValue>>();				
+		Map<DataLocation, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocation, Map<DsrTarget, ReportValue>>();				
 		
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
-		if(facilities.isEmpty() || targets.isEmpty())
+		if(dataLocations.isEmpty() || targets.isEmpty())
 			return new DsrTable(valueMap, targets, targetCategories);		
 		
 		List<DsrTarget> categoryTargets = new ArrayList<DsrTarget>();
@@ -68,12 +64,12 @@ public class DsrService {
 				targets = categoryTargets;
 		}				
 		
-		for (DataLocationEntity facility : facilities) {
+		for (DataLocation dataLocation : dataLocations) {
 			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
 			for (DsrTarget target : targets) {
-				targetMap.put(target, getDsrValue(target, facility, period));
+				targetMap.put(target, getDsrValue(target, dataLocation, period));
 			}
-			valueMap.put(facility, targetMap);
+			valueMap.put(dataLocation, targetMap);
 		}				
 			
 		targetCategories = getTargetCategories(program);
@@ -83,12 +79,12 @@ public class DsrService {
 		return dsrTable;
 	}
 
-	private ReportValue getDsrValue(DsrTarget target, DataLocationEntity facility, Period period){
+	private ReportValue getDsrValue(DsrTarget target, DataLocation dataLocation, Period period){
 		String value = null;
 		
 		Set<String> targetUuids = Utils.split(target.getTypeCodeString());
-		if (targetUuids.contains(facility.getType().getCode())) {
-			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), facility, period);
+		if (targetUuids.contains(dataLocation.getType().getCode())) {
+			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), dataLocation, period);
 			
 			if (dataValue != null && !dataValue.getValue().isNull()) {
 				// TODO put this in templates ?
@@ -148,10 +144,6 @@ public class DsrService {
 
 	public void setReportService(ReportService reportService) {
 		this.reportService = reportService;
-	}
-	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
 	}
 	
 	public void setValueService(ValueService valueService) {

@@ -3,15 +3,16 @@
 <div class="entity-form-container togglable">
 
 	<div class="entity-form-header">
-		<h3 class="title">Costing ramp-up</h3>
+		<h3 class="title">
+			<g:message code="default.new.label" args="[message(code:'costrampup.label')]"/>
+		</h3>
 		<g:locales/>
-		<div class="clear"></div>
 	</div>
 	
 	<g:form url="[controller:'costRampUp', action:'save', params:[targetURI:targetURI]]" useToken="true">
-		<g:i18nInput name="names" bean="${rampUp}" value="${rampUp.names}" label="Name" field="names"/>
-		<g:i18nTextarea name="descriptions" bean="${rampUp}" value="${rampUp.descriptions}" label="Description" field="descriptions"/>
-		<g:input name="code" label="Code" bean="${rampUp}" field="code"/>
+		<g:i18nInput name="names" bean="${rampUp}" value="${rampUp.names}" label="${message(code:'entity.name.label')}" field="names"/>
+		<g:i18nTextarea name="descriptions" bean="${rampUp}" value="${rampUp.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions"/>
+		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${rampUp}" field="code"/>
 		
 		<g:if test="${rampUp != null}">
 			<input type="hidden" name="id" value="${rampUp.id}"></input>
@@ -30,8 +31,8 @@
 		</g:each>
 		
 		<div class="row">
-			<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>&nbsp;&nbsp;
-			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
+			<button type="submit"><g:message code="default.button.save.label"/></button>&nbsp;&nbsp;
+			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label"/></a>
 		</div>
     </g:form>
 	<div class="clear"></div>

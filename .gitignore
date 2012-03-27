@@ -10,7 +10,10 @@ classes
 .settings
 eclipse_workspace_settings.epf
 userScripts/**
+scripts/**
 bin/
 *.hprof
 *.hprof.index
 build.info
+*.sql
+*.gz

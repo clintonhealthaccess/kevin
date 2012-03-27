@@ -3,17 +3,17 @@ package org.chai.kevin.survey
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.chai.kevin.IntegrationTests
+import org.chai.kevin.Period;
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.data.Enum
 import org.chai.kevin.data.EnumOption
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.form.FormValidationRule;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.survey.validation.SurveyLog;
-import org.hisp.dhis.period.Period
-import org.chai.kevin.location.DataLocationEntity;
-
-
+import org.chai.kevin.location.DataLocation;
+	
 class SurveyDomainSpec extends SurveyIntegrationTests {
 
 	private static final Log log = LogFactory.getLog(SurveyDomainSpec.class)
@@ -50,7 +50,7 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, dataElement)
 		
 		when:
-		def skipRule = new SurveySkipRule(survey: survey, expression: "\$"+element.id+" == 1", skippedSurveyElements: [:], skippedSurveyQuestions: [])
+		def skipRule = new SurveySkipRule(survey: survey, expression: "\$"+element.id+" == 1", skippedFormElements: [:], skippedSurveyQuestions: [])
 		
 		then:
 		skipRule.id == null
@@ -85,9 +85,9 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		question2.getSurveyElements().equals([])
 		question3.getSurveyElements().equals([])
 		
-		question1.getSurveyElements(DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)).equals([])
-		question2.getSurveyElements(DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)).equals([])
-		question3.getSurveyElements(DataEntityType.findByCode(DISTRICT_HOSPITAL_GROUP)).equals([])
+		question1.getSurveyElements(DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)).equals([])
+		question2.getSurveyElements(DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)).equals([])
+		question3.getSurveyElements(DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)).equals([])
 	}
 	
 	def "test question table number of location unit applicable"(){
@@ -121,12 +121,12 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, dataElement)
 		
 		when:
-		newSurveyValidationRule(element, "", [], "true");
-		newSurveyValidationRule(element, "", [], "true");
+		newFormValidationRule(element, "", [], "true");
+		newFormValidationRule(element, "", [], "true");
 		
 		then:
 		SurveyElement.list()[0].validationRules.size() == 2
-		SurveyValidationRule.count() == 2
+		FormValidationRule.count() == 2
 	}
 	
 	def "save surveylog"() {
@@ -136,11 +136,11 @@ class SurveyDomainSpec extends SurveyIntegrationTests {
 		def survey = newSurvey(period)
 		newSurveyProgram(survey, 2, [(DISTRICT_HOSPITAL_GROUP)])
 		def program = newSurveyProgram(survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
-		def type = newDataEntityType(HEALTH_CENTER_GROUP)
+		def type = newDataLocationType(HEALTH_CENTER_GROUP)
 		
 		
 		when:
-		new SurveyLog(event: "test", entity: DataLocationEntity.findByCode(KIVUYE), timestamp: new Date(), survey: survey, program: program).save(failOnError: true)		
+		new SurveyLog(event: "test", dataLocation: DataLocation.findByCode(KIVUYE), timestamp: new Date(), survey: survey, program: program).save(failOnError: true)		
 		then:
 		SurveyLog.count() == 1
 	}

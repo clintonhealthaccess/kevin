@@ -41,12 +41,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.DataElement;
-import org.chai.kevin.reports.ReportTarget;
+import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="CostTarget")
 @Table(name="dhsst_cost_target")
-public class CostTarget extends ReportTarget {
+public class CostTarget extends AbstractReportTarget {
 
 	private Long id;
 	

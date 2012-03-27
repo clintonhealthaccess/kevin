@@ -57,7 +57,7 @@ class MapsTargetController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		[ target: entity, calculations: entity.calculation!=null?[entity.calculation]:[], types: DataEntityType.list()]
+		[ target: entity, calculations: entity.calculation!=null?[entity.calculation]:[], types: DataLocationType.list()]
 	}
 	
 	def bindParams(def entity) {

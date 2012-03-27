@@ -15,15 +15,15 @@ class DataLocationController extends AbstractEntityController {
 	def getModel(def entity) {
 		def locations = []
 		if (entity.location != null) locations << entity.location
-		[location: entity, types: DataEntityType.list(), locations: locations]
+		[location: entity, types: DataLocationType.list(), locations: locations]
 	}
 
 	def getEntity(def id) {
-		return DataLocationEntity.get(id);
+		return DataLocation.get(id);
 	}
 
 	def createEntity() {
-		return new DataLocationEntity();
+		return new DataLocation();
 	}
 
 	def getTemplate() {
@@ -31,18 +31,18 @@ class DataLocationController extends AbstractEntityController {
 	}
 
 	def getLabel() {
-		return 'dataLocation.label';
+		return 'datalocation.label';
 	}
 
 	def list = {
 		adaptParamsForList()
 		
-		List<DataLocationEntity> locations = DataLocationEntity.list(params);
+		List<DataLocation> locations = DataLocation.list(params);
 
 		render (view: '/entity/list', model:[
 			template:"location/dataLocationList",
 			entities: locations,
-			entityCount: DataLocationEntity.count(),
+			entityCount: DataLocation.count(),
 			code: getLabel()
 		])
 	}
@@ -50,18 +50,18 @@ class DataLocationController extends AbstractEntityController {
 	def search = {
 		adaptParamsForList()
 		
-		List<DataLocationEntity> locations = locationService.searchLocation(DataLocationEntity.class, params['q'], params)
+		List<DataLocation> locations = locationService.searchLocation(DataLocation.class, params['q'], params)
 				
 		render (view: '/entity/list', model:[
 			template:"location/dataLocationList",
 			entities: locations,
-			entityCount: locationService.countLocation(DataLocationEntity.class, params['q']),
+			entityCount: locationService.countLocation(DataLocation.class, params['q']),
 			code: getLabel()
 		])
 	}
 	
 	def getAjaxData = {
-		def dataLocations = locationService.searchLocation(DataLocationEntity.class, params['term'], [:])
+		def dataLocations = locationService.searchLocation(DataLocation.class, params['term'], [:])
 		
 		render(contentType:"text/json") {
 			elements = array {

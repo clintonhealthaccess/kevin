@@ -1,5 +1,5 @@
 <div class="selector right">
-	<span>Compare</span>
+	<span><g:message code="dashboard.report.compare.selector"/></span>
 	<g:form name="${table}-form" method="get"
 		url="${[controller:'dashboard', action:'compare',
 			params:[table:table, period:currentPeriod.id, program:currentProgram.id]]}">

@@ -7,16 +7,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Sum;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="SumValue")
 @Table(name="dhsst_value_partial_sum",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"data", "entity", "period", "type"})
+		@UniqueConstraint(columnNames={"data", "location", "period", "type"})
 	}
 )
 public class SumPartialValue extends CalculationPartialValue {
@@ -27,14 +27,14 @@ public class SumPartialValue extends CalculationPartialValue {
 		super();
 	}
 
-	public SumPartialValue(Sum data, CalculationEntity entity, Period period, DataEntityType type, Value value) {
-		super(entity, period, type, value);
+	public SumPartialValue(Sum data, CalculationLocation location, Period period, DataLocationType type, Value value) {
+		super(location, period, type, value);
 		
 		this.data = data;
 	}
 
-	public SumPartialValue(Sum data, CalculationEntity entity, Period period, DataEntityType type) {
-		super(entity, period, type);
+	public SumPartialValue(Sum data, CalculationLocation location, Period period, DataLocationType type) {
+		super(location, period, type);
 		
 		this.data = data;
 	}

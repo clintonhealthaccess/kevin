@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.LocationSorter;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 
 public class PlanningSummaryPage {
 
-	public final static String FACILITY_SORT = "facility";
+	public final static String LOCATION_SORT = "location";
 	
 	private final List<PlanningType> planningTypes;
-	private final List<DataLocationEntity> dataEntities;
+	private final List<DataLocation> dataLocations;
 	private final Map<PlanningType, PlanningTypeSummary> summaries;
 	
-	public PlanningSummaryPage(List<PlanningType> planningTypes, List<DataLocationEntity> dataEntities, Map<PlanningType, PlanningTypeSummary> summaries) {
-		this.dataEntities = dataEntities;
+	public PlanningSummaryPage(List<PlanningType> planningTypes, List<DataLocation> dataLocations, Map<PlanningType, PlanningTypeSummary> summaries) {
+		this.dataLocations = dataLocations;
 		this.summaries = summaries;
 		this.planningTypes = planningTypes;
 	}
@@ -26,18 +26,18 @@ public class PlanningSummaryPage {
 		return planningTypes;
 	}
 	
-	public List<DataLocationEntity> getDataEntities() {
-		return dataEntities;
+	public List<DataLocation> getDataLocations() {
+		return dataLocations;
 	}
 	
-	public Integer getNumberOfEntries(DataLocationEntity dataEntity, PlanningType type) {
-		return summaries.get(type).getNumberOfEntries(dataEntity);
+	public Integer getNumberOfEntries(DataLocation dataLocation, PlanningType type) {
+		return summaries.get(type).getNumberOfEntries(dataLocation);
 	}
 	
 	public void sort(String parameter, String order, String language) {
 		if (parameter == null || order == null) return;
-		if (parameter.equals(FACILITY_SORT)) {
-			Collections.sort(dataEntities, LocationSorter.BY_NAME(language));
+		if (parameter.equals(LOCATION_SORT)) {
+			Collections.sort(dataLocations, LocationSorter.BY_NAME(language));
 		}
 		else {
 			Long planningTypeId = null;
@@ -55,16 +55,16 @@ public class PlanningSummaryPage {
 			
 			if (sortPlanningType != null) {
 				final PlanningType comparePlanningType = sortPlanningType; 
-				Collections.sort(dataEntities, new Comparator<DataLocationEntity>() {
+				Collections.sort(dataLocations, new Comparator<DataLocation>() {
 					@Override
-					public int compare(DataLocationEntity l1, DataLocationEntity l2) {
+					public int compare(DataLocation l1, DataLocation l2) {
 						return summaries.get(comparePlanningType).getNumberOfEntries(l1)
 							.compareTo(summaries.get(comparePlanningType).getNumberOfEntries(l2));
 					}
 				});
 			}
 		}
-		if (order.equals("desc")) Collections.reverse(dataEntities);
+		if (order.equals("desc")) Collections.reverse(dataLocations);
 	}
 	
 }

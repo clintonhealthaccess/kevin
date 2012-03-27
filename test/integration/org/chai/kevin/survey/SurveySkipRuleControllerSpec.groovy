@@ -39,7 +39,7 @@ class SurveySkipRuleControllerSpec extends SurveyIntegrationTests {
 		def survey = newSurvey(period)
 		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
 		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
-		def skipRule = newSkipRule(survey, "1 == 1", [:], [])
+		def skipRule = newSurveySkipRule(survey, "1 == 1", [:], [])
 		surveySkipRuleController = new SurveySkipRuleController()
 		
 		when:

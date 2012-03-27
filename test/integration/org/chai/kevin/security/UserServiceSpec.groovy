@@ -28,7 +28,7 @@
 package org.chai.kevin.security
 
 import org.chai.kevin.IntegrationTests;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 
 /**
  * @author Jean Kahigiso M.
@@ -40,7 +40,7 @@ class UserServiceSpec extends IntegrationTests{
   def "search user test"(){
 	  setup:
 	  setupLocationTree()
-	  def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+	  def dataLocation = DataLocation.findByCode(KIVUYE);
 	  def userOne = newUser("userOne",UUID.randomUUID().toString());
 	  def userTwo = newUser("userTwo",UUID.randomUUID().toString());
 	  def surveyUserOne = newSurveyUser("surveyUserOne",UUID.randomUUID().toString(),dataLocation.id);
@@ -61,7 +61,7 @@ class UserServiceSpec extends IntegrationTests{
   def "count searched user test"(){
 	  setup:
 	  setupLocationTree()
-	  def dataLocation = DataLocationEntity.findByCode(KIVUYE);
+	  def dataLocation = DataLocation.findByCode(KIVUYE);
 	  def userOne = newUser("userOne",UUID.randomUUID().toString());
 	  def userTwo = newUser("userTwo",UUID.randomUUID().toString());
 	  def surveyUserOne = newSurveyUser("surveyUserOne",UUID.randomUUID().toString(),dataLocation.id);

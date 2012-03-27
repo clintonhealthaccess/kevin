@@ -1,7 +1,7 @@
 <div class="info">
 	
 	<div class="average">
-		<span class="bold">Average value:</span>
+		<span class="bold"><g:message code="info.calculation.average"/>:</span>
 		<span class="value">
 			<g:if test="${info.value.numberValue}">
 				<g:formatNumber number="${info.value.numberValue * 100}" format="#0.0"/>%
@@ -12,14 +12,14 @@
 	</div>
 	
 	<div>
-		<span class="bold"><a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Scores</a></span>
+		<span class="bold"><a href="#" onclick="$(this).parent().next().slideToggle(); return false;"><g:message code="info.calculation.scores"/></a></span>
 		<div class="box span ${info.locations.size()>10?'hidden':''}">
 			<g:if test="${groupLocations != null}">
 				<g:each in="${groupLocations}" var="groupLocation">
 					<a href="#" onclick="$(this).next().slideToggle(); return false;">
 						${groupLocation.name}
 					</a>
-					<g:render template="/info/locations" model="[info: info, locations: info.getLocationsOfGroup(groupLocation)]"/>
+					<g:render template="/info/locations" model="[info: info, locations: info.getDataLocationsOfLocation(groupLocation)]"/>
 					<div class="clear"></div>
 				</g:each>
 			</g:if>
@@ -33,7 +33,7 @@
 	
 	<div>
 		<span class="bold">
-			<a href="#" onclick="$(this).parent().next().slideToggle(); return false;">Trend</a>
+			<a href="#" onclick="$(this).parent().next().slideToggle(); return false;"><g:message code="info.calculation.trend"/></a>
 		</span>
 		<div class="span box hidden">
 			<g:render template="/chart/chart" model="[data: info.calculation.id, location: info.location.id]"/>

@@ -1,9 +1,9 @@
 package org.chai.kevin.data;
 
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.Period;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -48,13 +48,8 @@ public abstract class Info<T extends DataValue> {
 		return value.getValue();
 	}
 	
-	public CalculationEntity getEntity() {
-		return value.getEntity();
-	}
-	
-	@Deprecated
-	public CalculationEntity getLocation() {
-		return value.getEntity();
+	public CalculationLocation getLocation() {
+		return value.getLocation();
 	}
 	
 	public Period getPeriod() {

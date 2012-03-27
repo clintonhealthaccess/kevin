@@ -5,46 +5,46 @@
 <div>
 	<table class="listing">
 		<thead>
-			<g:sortableColumn property="${SurveySummaryPage.FACILITY_SORT}" title="${message(code: 'facility.label', default: 'Facility')}" params="${params}" defaultOrder="asc"/>
-			<th><g:message code="survey.summary.programsubmitted.label" default="Programs Submitted" /></th>
-			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress', default: 'Overall progress')}" params="${params}" defaultOrder="desc"/>
+			<g:sortableColumn property="${SurveySummaryPage.LOCATION_SORT}" title="${message(code: 'location.label')}" params="${params}" defaultOrder="asc"/>
+			<th><g:message code="survey.summary.programsubmitted.label" /></th>
+			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress')}" params="${params}" defaultOrder="desc"/>
 			<th></th>
 		</thead>
 		<tbody>
-			<g:each in="${summaryPage.facilities}" var="facility">
-				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(facility)}" />
-				<g:set var="programSummary" value="${summaryPage.getProgramSummary(facility)}" />
+			<g:each in="${summaryPage.locations}" var="location">
+				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(location)}" />
+				<g:set var="programSummary" value="${summaryPage.getProgramSummary(location)}" />
 				<tr>
-					<td class="program-table-link" data-facility="${facility.id}">
-						<a href="${createLink(controller: 'surveySummary', action: 'programTable', params: [survey: currentSurvey.id, location: facility.id])}"><g:i18n field="${facility.names}"/></a>
+					<td class="program-table-link" data-location="${location.id}">
+						<a href="${createLink(controller: 'surveySummary', action: 'programTable', params: [survey: currentSurvey.id, location: location.id])}"><g:i18n field="${location.names}"/></a>
 					</td>
 					<td>${programSummary.submittedPrograms}/${programSummary.programs}</td>
 					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
 						<ul class="horizontal">
 							<li>
-								<a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: currentSurvey.id, location: facility.id])}">
-									<g:message code="survey.summary,viewsurvey.label" default="View Survey" />
+								<a href="${createLink(controller: 'editSurvey', action: 'surveyPage', params: [survey: currentSurvey.id, location: location.id])}">
+									<g:message code="survey.summary.viewsurvey.label" />
 								</a>
 							</li>
 							<shiro:hasPermission permission="editSurvey:refresh">
 								<li style="display:none;">
-									<a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: currentSurvey.id, location: facility.id])}" onclick="return confirm('\${message(code: 'survey.summary.refresh.confirm.message', default: 'Are you sure?')}');">
-										<g:message code="survey.summary.refreshsurvey.label" default="Reset Survey" />
+									<a href="${createLink(controller: 'editSurvey', action: 'refresh', params: [survey: currentSurvey.id, location: location.id])}" onclick="return confirm('\${message(code: 'survey.summary.refresh.confirm.message')}');">
+										<g:message code="survey.summary.refreshsurvey.label" />
 									</a>
 								</li>
 							</shiro:hasPermission>
 							<shiro:hasPermission permission="editSurvey:print">
 								<li>
-									<a href="${createLink(controller: 'editSurvey', action: 'print', params: [survey: currentSurvey.id, location: facility.id])}" target="_blank">
+									<a href="${createLink(controller: 'editSurvey', action: 'print', params: [survey: currentSurvey.id, location: location.id])}" target="_blank">
 										<g:message code="survey.summary.printsurvey.label"	default="Print Survey" />
 									</a>
 								</li>
 							</shiro:hasPermission>
 							<shiro:hasPermission permission="editSurvey:export">
 								<li>
-									<a href="${createLink(controller: 'editSurvey', action: 'export', params: [survey: currentSurvey.id, location: facility.id])}">
-										<g:message code="survey.summary.exportsurvey.label" default="Export Survey" />
+									<a href="${createLink(controller: 'editSurvey', action: 'export', params: [survey: currentSurvey.id, location: location.id])}">
+										<g:message code="survey.summary.exportsurvey.label" />
 									</a>
 								</li>
 							</shiro:hasPermission>
@@ -53,7 +53,7 @@
 				</tr>			
 				<tr class="explanation-row">
 					<td colspan="6">
-						<div class="explanation-cell" id="explanation-${facility.id}"></div>
+						<div class="explanation-cell" id="explanation-${location.id}"></div>
 					</td>
 				</tr>
 			</g:each>

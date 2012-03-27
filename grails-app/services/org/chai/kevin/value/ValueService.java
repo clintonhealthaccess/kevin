@@ -37,20 +37,20 @@ import javax.persistence.Entity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ValueService {
@@ -85,38 +85,38 @@ public class ValueService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataLocationEntity entity, Period period) {
-		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", entity="+entity+")");
+	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataLocation dataLocation, Period period) {
+		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", dataLocation="+dataLocation+")");
 		T result = (T)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
 		.add(Restrictions.eq("period", period))
-		.add(Restrictions.eq("entity", entity))
+		.add(Restrictions.eq("location", dataLocation))
 		.add(Restrictions.eq("data", data)).uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(...)="+result);
 		return result;
 	}
 	
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
-		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", entity="+entity+", types="+types+")");
-		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, entity, period, types), period, entity);
+	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
+		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", location="+location+", types="+types+")");
+		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, location, period, types), period, location);
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(...)="+result);
 		return result;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
-	public <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period) {
+	public <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationLocation location, Period period) {
 		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
 		.add(Restrictions.eq("period", period))
-		.add(Restrictions.eq("entity", entity))
+		.add(Restrictions.eq("location", location))
 		.add(Restrictions.eq("data", calculation)).list();
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationEntity entity, Period period, Set<DataEntityType> types) {
+	private <T extends CalculationPartialValue> List<T> getPartialValues(Calculation<T> calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
 		return (List<T>)sessionFactory.getCurrentSession().createCriteria(calculation.getValueClass())
 		.add(Restrictions.eq("period", period))
-		.add(Restrictions.eq("entity", entity))
+		.add(Restrictions.eq("location", location))
 		.add(Restrictions.eq("data", calculation))
 		.add(Restrictions.in("type", types)).list();
 	}
@@ -165,14 +165,14 @@ public class ValueService {
 	}
 	
 	@Transactional(readOnly=false)
-	public void deleteValues(Data<?> data, CalculationEntity entity, Period period) {
+	public void deleteValues(Data<?> data, CalculationLocation location, Period period) {
 		String queryString = "delete from "+data.getValueClass().getAnnotation(Entity.class).name()+" where data = :data";
-		if (entity != null) queryString += " and entity = :entity";
+		if (location != null) queryString += " and location = :location";
 		if (period != null) queryString += " and period = :period";
 		Query query = sessionFactory.getCurrentSession()
 		.createQuery(queryString)
 		.setParameter("data", data);
-		if (entity != null) query.setParameter("entity", entity);
+		if (location != null) query.setParameter("location", location);
 		if (period != null) query.setParameter("period", period);
 		query.executeUpdate();
 	}

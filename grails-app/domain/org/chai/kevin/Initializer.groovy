@@ -37,9 +37,9 @@ import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostRampUpYear;
 import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.cost.CostTarget.CostType;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.maps.MapsTarget;
 import org.chai.kevin.util.JSONUtils;
@@ -59,19 +59,21 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.planning.Planning;
 import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
+import org.chai.kevin.planning.PlanningSkipRule;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
-import org.chai.kevin.survey.wizard.Wizard;
-import org.chai.kevin.survey.wizard.WizardStep;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
-import org.hisp.dhis.period.Period;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormSkipRule;
+import org.chai.kevin.form.FormValidationRule;
 
 class Initializer {
 
@@ -113,9 +115,9 @@ class Initializer {
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def kivuye = new SurveyUser(username: "kivuye", entityId: DataLocationEntity.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
+		def kivuye = new SurveyUser(username: "kivuye", dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
 		kivuye.addToPermissions("editSurvey:view")
-		kivuye.addToPermissions("editSurvey:*:"+DataLocationEntity.findByCode("Kivuye HC").id)
+		kivuye.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Kivuye HC").id)
 		kivuye.addToPermissions("menu:survey")
 		kivuye.save(failOnError: true)
 	}
@@ -131,24 +133,25 @@ class Initializer {
 			period2.save(failOnError: true, flush: true)
 		}
 
-		if (!LocationEntity.count()) {
+		if (!Location.count()) {
 
-			def hc = new DataEntityType(names: j(["en":"Health Center"]), code: "Health Center").save(failOnError: true)
-			def dh = new DataEntityType(names: j(["en":"District Hospital"]), code: "District Hospital").save(failOnError: true)
+			def hc = new DataLocationType(names: j(["en":"Health Center"]), code: "Health Center").save(failOnError: true)
+			def dh = new DataLocationType(names: j(["en":"District Hospital"]), code: "District Hospital").save(failOnError: true)
 
 			def country = new LocationLevel(names: j(["en":"National"]), code: "National", order: 1).save(failOnError: true)
 			def province = new LocationLevel(names: j(["en":"Province"]), code: "Province", order: 2).save(failOnError: true)
 			def district = new LocationLevel(names: j(["en":"District"]), code: "District", order: 3).save(failOnError: true)
+			def sector = new LocationLevel(names: j(["en":"Sector"]), code: "Sector", order: 4).save(failOnError: true)
 
-			def rwanda = new LocationEntity(names: j(["en":"Rwanda"]), code: "Rwanda", parent: null, level: country).save(failOnError: true)
+			def rwanda = new Location(names: j(["en":"Rwanda"]), code: "Rwanda", parent: null, level: country).save(failOnError: true)
 
-			def kigali = new LocationEntity(names: j(["en":"Kigali City"]), code: "Kigali City", parent: rwanda, level: province).save(failOnError: true)
-			def north = new LocationEntity(names: j(["en":"North"]), code: "North", parent: rwanda, level: province).save(failOnError: true)
-			def south = new LocationEntity(names: j(["en":"South"]), code: "South", parent: rwanda, level: province).save(failOnError: true)
-			def east = new LocationEntity(names: j(["en":"East"]), code: "East", parent: rwanda, level: province).save(failOnError: true)
-			def west = new LocationEntity(names: j(["en":"West"]), code: "West", parent: rwanda, level: province).save(failOnError: true)
+			def kigali = new Location(names: j(["en":"Kigali City"]), code: "Kigali City", parent: rwanda, level: province).save(failOnError: true)
+			def north = new Location(names: j(["en":"North"]), code: "North", parent: rwanda, level: province).save(failOnError: true)
+			def south = new Location(names: j(["en":"South"]), code: "South", parent: rwanda, level: province).save(failOnError: true)
+			def east = new Location(names: j(["en":"East"]), code: "East", parent: rwanda, level: province).save(failOnError: true)
+			def west = new Location(names: j(["en":"West"]), code: "West", parent: rwanda, level: province).save(failOnError: true)
 
-			def burera = new LocationEntity(names: j(["en":"Burera"]), code: "Burera", parent: north, level: district).save(failOnError: true)
+			def burera = new Location(names: j(["en":"Burera"]), code: "Burera", parent: north, level: district).save(failOnError: true)
 
 			rwanda.children = [
 				kigali,
@@ -174,9 +177,9 @@ class Initializer {
 			province.save(failOnError: true)
 			district.save(failOnError: true)
 			
-			def butaro = new DataLocationEntity(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
-			def kivuye = new DataLocationEntity(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
-			burera.dataEntities = [butaro, kivuye]
+			def butaro = new DataLocation(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
+			def kivuye = new DataLocation(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
+			burera.dataLocations = [butaro, kivuye]
 			burera.save(failOnError: true)
 		}
 
@@ -358,7 +361,7 @@ class Initializer {
 					"funding_sources": Type.TYPE_MAP([
 						"general_fund": Type.TYPE_BOOL(),
 						"sources": Type.TYPE_MAP([
-							"facility": Type.TYPE_NUMBER(),
+							"location": Type.TYPE_NUMBER(),
 							"minisante": Type.TYPE_NUMBER(),
 							"hospital": Type.TYPE_NUMBER(),
 							"gfatm": Type.TYPE_NUMBER(),
@@ -562,7 +565,7 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Butaro DH"),
+					location: DataLocation.findByCode("Butaro DH"),
 					value: v("30"),
 					timestamp: new Date(),
 					).save(failOnError: true)
@@ -570,7 +573,7 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("40"),
 					timestamp: new Date(),
 					).save(failOnError: true)
@@ -578,77 +581,77 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE3"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"value1\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE4"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("true"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE6"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("false"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE8"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("10"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE9"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("31"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE10"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"NGO or Partner\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE11"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"2011-06-29\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE81"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("44"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE91"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("33"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE101"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"Ministry of Health\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE111"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"2011-06-30\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
@@ -656,7 +659,7 @@ class Initializer {
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE12"),
 					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
@@ -665,8 +668,8 @@ class Initializer {
 
 		if (!NormalizedDataElement.count()) {
 			def period1 = Period.list()[0]
-			def dh = DataEntityType.findByCode('District Hospital')
-			def hc = DataEntityType.findByCode('Health Center')
+			def dh = DataLocationType.findByCode('District Hospital')
+			def hc = DataLocationType.findByCode('Health Center')
 
 			// indicators
 			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
@@ -714,7 +717,7 @@ class Initializer {
 					).save(failOnError: true)
 
 			new CostTarget(
-					names:j(["en":"Connecting Facilities to the Internet"]), code:"Connecting Facilities", descriptions:j(["en":"Connecting Facilities to the Internet"]),
+					names:j(["en":"Connecting Centers to the Internet"]), code:"Connecting Centers", descriptions:j(["en":"Connecting Facilities to the Internet"]),
 					program: ga,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
@@ -818,8 +821,8 @@ class Initializer {
 
 	static def createDsr() {
 		if (!DsrTarget.count()) {
-			def dh = DataEntityType.findByCode("District Hospital")
-			def hc = DataEntityType.findByCode("Health Center")
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
 
 			def finacss = ReportProgram.findByCode("Service Delivery")
 			def instCap = ReportProgram.findByCode("Institutional Capacity")
@@ -1020,8 +1023,8 @@ class Initializer {
 
 	static def createFct() {
 		if (!FctTarget.count()) {
-			def dh = DataEntityType.findByCode("District Hospital")
-			def hc = DataEntityType.findByCode("Health Center")
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
 			def hmr = ReportProgram.findByCode("Human Resources for Health")
 
 			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Sum 1", timestamp:new Date());
@@ -1042,8 +1045,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]), 
 				code:"TARGET OPTION 1",
-				sum: sum1,
-				typeCodeString: "District Hospital,Health Center"
+				sum: sum1
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption2 = new FctTargetOption(
@@ -1051,8 +1053,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 2",
-				sum: sum1,
-				typeCodeString: "District Hospital,Health Center"
+				sum: sum1
 			).save(failOnError:true)
 			
 			fctTarget1.targetOptions << [fctTargetOption1, fctTargetOption2]
@@ -1074,8 +1075,7 @@ class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 3",
-				sum: sum2,
-				typeCodeString: "District Hospital,Health Center"
+				sum: sum2
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption4 = new FctTargetOption(
@@ -1083,8 +1083,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 4",
-				sum: sum2,
-				typeCodeString: "District Hospital,Health Center"
+				sum: sum2
 			).save(failOnError:true)
 			
 			fctTarget2.targetOptions << [fctTargetOption3, fctTargetOption4]
@@ -1111,6 +1110,79 @@ class Initializer {
 			active: true
 		).save(failOnError: true)
 		
+		def formElement = new FormElement(
+				rawDataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
+				headers: [
+					"[_].basic": j(["en":"Basic Information"]),
+					"[_].basic.description": j(["en":"Description"]),
+					"[_].basic.activity": j(["en":"Activity"]),
+					"[_].basic.area": j(["en":"Service area"]),
+					"[_].basic.instances": j(["en":"Number of instances"]),
+					"[_].basic.responsible": j(["en":"Person responsible"]),
+					"[_].basic.new_structure": j(["en":"Requires new room/structure"]),
+					"[_].staffing": j(["en":"Staffing Requirements"]),
+					"[_].staffing.nurse": j(["en":"Nurse"]),
+					"[_].staffing.nurse.nurse_time": j(["en":"Time per instance"]),
+					"[_].staffing.nurse.nurse_level": j(["en":"Level of nurse"]),
+					"[_].staffing.doctor": j(["en":"Doctor"]),
+					"[_].staffing.doctor.doctor_time": j(["en":"Time per instance"]),
+					"[_].staffing.doctor.doctor_level": j(["en":"Level of doctor"]),
+					"[_].staffing.other": j(["en":"Other staff"]),
+					"[_].staffing.other.other_time": j(["en":"Time per instance"]),
+					"[_].staffing.other.other_type": j(["en":"Level of staff"]),
+					"[_].consumables": j(["en":"Consumables"]),
+					"[_].consumables.tests": j(["en":"Number of required tests"]),
+					"[_].consumables.tests.blood_sugar": j(["en":"Sugar in blood"]),
+					"[_].consumables.tests.hiv": j(["en":"HIV"]),
+					"[_].consumables.medicine": j(["en":"Drugs required"]),
+					"[_].consumables.medicine.arv": j(["en":"ARV drugs"]),
+					"[_].consumables.medicine.tb": j(["en":"TB drugs"]),
+					"[_].consumables.medicine.malaria": j(["en":"Malaria drugs"]),
+					"[_].consumables.other": j(["en":"Other"]),
+					"[_].consumables.other[_].type": j(["en":"Type"]),
+					"[_].consumables.other[_].number": j(["en":"Number required"]),
+					"[_].monthly_breakdown": j(["en":"Monthly Breakdown"]),
+					"[_].monthly_breakdown.january": j(["en":"January"]),
+					"[_].monthly_breakdown.february": j(["en":"February"]),
+					"[_].monthly_breakdown.march": j(["en":"March"]),
+					"[_].monthly_breakdown.april": j(["en":"April"]),
+					"[_].monthly_breakdown.mai": j(["en":"Mai"]),
+					"[_].monthly_breakdown.june": j(["en":"June"]),
+					"[_].monthly_breakdown.july": j(["en":"July"]),
+					"[_].monthly_breakdown.august": j(["en":"August"]),
+					"[_].monthly_breakdown.september": j(["en":"September"]),
+					"[_].monthly_breakdown.october": j(["en":"October"]),
+					"[_].monthly_breakdown.november": j(["en":"November"]),
+					"[_].monthly_breakdown.december": j(["en":"December"]),
+					"[_].funding_sources": j(["en":"Funding Sources"]),
+					"[_].funding_sources.general_fund": j(["en":"Funded by the general fund"]),
+					"[_].funding_sources.sources": j(["en":"Individual sources"]),
+					"[_].funding_sources.sources.location": j(["en":"Facility"]),
+					"[_].funding_sources.sources.minisante": j(["en":"Minisanté"]),
+					"[_].funding_sources.sources.hospital": j(["en":"District hospital"]),
+					"[_].funding_sources.sources.gfatm": j(["en":"Global Fund"]),
+					"[_].funding_sources.sources.other": j(["en":"Other"])
+				]
+			).save(failOnError: true)
+		
+			def validationRule = new FormValidationRule(
+				formElement: formElement,
+				prefix: '[_].basic.instances',
+				expression: "\$"+formElement.id+"[_].basic.instances > 100",
+				messages: j(["en":"Validation error {0,here}"]),
+				dependencies: [formElement],
+				typeCodeString: "District Hospital,Health Center",
+				allowOutlier: false
+			).save(failOnError: true)
+			
+		formElement.addValidationRule(validationRule)
+		formElement.save(failOnError: true)
+		
+		// add validation and skip rules
+		def formSkip = new PlanningSkipRule(planning: planning, expression: "\$"+formElement.id+"[_].basic.instances == 1", skippedFormElements: [(formElement): "[_].basic.responsible,[_].consumables"]).save(failOnError: true);
+		planning.addSkipRule(formSkip)
+		planning.save(failOnError: true)
+		
 		def planningType = new PlanningType(
 			names: j(["en":"Activity"]),
 			namesPlural: j(["en":"Activities"]),
@@ -1122,58 +1194,7 @@ class Initializer {
 				"[_].monthly_breakdown": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."]),
 				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
 			],
-			headers: [
-				"[_].basic": j(["en":"Basic Information"]),
-				"[_].basic.description": j(["en":"Description"]),
-				"[_].basic.activity": j(["en":"Activity"]),
-				"[_].basic.area": j(["en":"Service area"]),
-				"[_].basic.instances": j(["en":"Number of instances"]),
-				"[_].basic.responsible": j(["en":"Person responsible"]),
-				"[_].basic.new_structure": j(["en":"Requires new room/structure"]),
-				"[_].staffing": j(["en":"Staffing Requirements"]),
-				"[_].staffing.nurse": j(["en":"Nurse"]),
-				"[_].staffing.nurse.nurse_time": j(["en":"Time per instance"]),
-				"[_].staffing.nurse.nurse_level": j(["en":"Level of nurse"]),
-				"[_].staffing.doctor": j(["en":"Doctor"]),
-				"[_].staffing.doctor.doctor_time": j(["en":"Time per instance"]),
-				"[_].staffing.doctor.doctor_level": j(["en":"Level of doctor"]),
-				"[_].staffing.other": j(["en":"Other staff"]),
-				"[_].staffing.other.other_time": j(["en":"Time per instance"]),
-				"[_].staffing.other.other_type": j(["en":"Level of staff"]),
-				"[_].consumables": j(["en":"Consumables"]),
-				"[_].consumables.tests": j(["en":"Number of required tests"]),
-				"[_].consumables.tests.blood_sugar": j(["en":"Sugar in blood"]),
-				"[_].consumables.tests.hiv": j(["en":"HIV"]),
-				"[_].consumables.medicine": j(["en":"Drugs required"]),
-				"[_].consumables.medicine.arv": j(["en":"ARV drugs"]),
-				"[_].consumables.medicine.tb": j(["en":"TB drugs"]),
-				"[_].consumables.medicine.malaria": j(["en":"Malaria drugs"]),
-				"[_].consumables.other": j(["en":"Other"]),
-				"[_].consumables.other[_].type": j(["en":"Type"]),
-				"[_].consumables.other[_].number": j(["en":"Number required"]),
-				"[_].monthly_breakdown": j(["en":"Monthly Breakdown"]),
-				"[_].monthly_breakdown.january": j(["en":"January"]),
-				"[_].monthly_breakdown.february": j(["en":"February"]),
-				"[_].monthly_breakdown.march": j(["en":"March"]),
-				"[_].monthly_breakdown.april": j(["en":"April"]),
-				"[_].monthly_breakdown.mai": j(["en":"Mai"]),
-				"[_].monthly_breakdown.june": j(["en":"June"]),
-				"[_].monthly_breakdown.july": j(["en":"July"]),
-				"[_].monthly_breakdown.august": j(["en":"August"]),
-				"[_].monthly_breakdown.september": j(["en":"September"]),
-				"[_].monthly_breakdown.october": j(["en":"October"]),
-				"[_].monthly_breakdown.november": j(["en":"November"]),
-				"[_].monthly_breakdown.december": j(["en":"December"]),
-				"[_].funding_sources": j(["en":"Funding Sources"]),
-				"[_].funding_sources.general_fund": j(["en":"Funded by the general fund"]),
-				"[_].funding_sources.sources": j(["en":"Individual sources"]),
-				"[_].funding_sources.sources.facility": j(["en":"Facility"]),
-				"[_].funding_sources.sources.minisante": j(["en":"Minisanté"]),
-				"[_].funding_sources.sources.hospital": j(["en":"District hospital"]),
-				"[_].funding_sources.sources.gfatm": j(["en":"Global Fund"]),
-				"[_].funding_sources.sources.other": j(["en":"Other"])
-			],
-			dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
+			formElement: formElement,
 			discriminator: '[_].basic.activity',
 			fixedHeader: '[_].basic.description',
 			planning: planning
@@ -1216,27 +1237,26 @@ class Initializer {
 		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-		new RawDataElementValue(
-			data: RawDataElement.findByCode("PLANNINGELEMENT"),
-			entity: DataLocationEntity.findByCode("Kivuye HC"),
-			period: Period.list()[0],
-			value: Value.VALUE_LIST([
-				Value.VALUE_MAP([
-					"basic": Value.VALUE_MAP([
-						"activity": Value.VALUE_STRING("value1"), 
-						"instances": Value.VALUE_NUMBER(10)
-					])
-				])
-			]),
-			timestamp: new Date()
-		).save(failOnError: true)
+//		new FormEnteredValue(
+//			formElement: formElement,
+//			dataLocation: DataLocation.findByCode("Kivuye HC"),
+//			value: Value.VALUE_LIST([
+//				Value.VALUE_MAP([
+//					"basic": Value.VALUE_MAP([
+//						"activity": Value.VALUE_STRING("value1"), 
+//						"instances": Value.VALUE_NUMBER(10)
+//					])
+//				])
+//			]),
+//			timestamp: new Date()
+//		).save(failOnError: true)
 	}
 	
 	static def createQuestionaire(){
 		if(!Survey.count()){
 
-			def dh = DataEntityType.findByCode("District Hospital")
-			def hc = DataEntityType.findByCode("Health Center")
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
 
 			//Creating Survey
 			def surveyOne = new Survey(
@@ -1358,17 +1378,16 @@ class Initializer {
 			serviceDev.addSection(patientReg)
 			serviceDev.save(failOnError:true);
 
-			def rulePatient1 = new SurveyValidationRule(
-
-				surveyElement: surveyElementPatientQ1,
+			def rulePatient1 = new FormValidationRule(
+				formElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
 				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
-			def rulePatient2 = new SurveyValidationRule(
-				surveyElement: surveyElementPatientQ1,
+			def rulePatient2 = new FormValidationRule(
+				formElement: surveyElementPatientQ1,
 				expression: "\$"+surveyElementPatientQ1.id+" > 140",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementPatientQ1],
@@ -1570,9 +1589,8 @@ class Initializer {
 			services.addQuestion(serviceQ6)
 			services.save(failOnError:true)
 
-			def ruleQ6 = new SurveyValidationRule(
-
-				surveyElement: surveyElementServiceQ6,
+			def ruleQ6 = new FormValidationRule(
+				formElement: surveyElementServiceQ6,
 				prefix: "[_].key1.key18",
 				expression: "\$"+surveyElementServiceQ6.id+"[_].key1.key18 < 24",
 				messages: j(["en":"Validation error {0,here}"]),
@@ -1584,18 +1602,16 @@ class Initializer {
 			surveyElementServiceQ6.addValidationRule(ruleQ6)
 			surveyElementServiceQ6.save(failOnError: true)
 
-
-			def rule1 = new SurveyValidationRule(
-
-				surveyElement: surveyElementServiceQ1,
+			def rule1 = new FormValidationRule(
+				formElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementServiceQ1],
 				typeCodeString: "District Hospital,Health Center",
 				allowOutlier: false
 			).save(failOnError: true)
-			def rule2 = new SurveyValidationRule(
-				surveyElement: surveyElementServiceQ1,
+			def rule2 = new FormValidationRule(
+				formElement: surveyElementServiceQ1,
 				expression: "\$"+surveyElementServiceQ1.id+" > 140",
 				messages: j(["en":"Validation error {0,here}"]),
 				typeCodeString: "District Hospital,Health Center",
@@ -1835,9 +1851,8 @@ class Initializer {
 			dataElmntsLine1.put(tabColumnThree, surveyElementTable3)
 			dataElmntsLine1.put(tabColumnFour, surveyElementTable4)
 
-			def ruleTable1 = new SurveyValidationRule(
-
-				surveyElement: surveyElementTable1,
+			def ruleTable1 = new FormValidationRule(
+				formElement: surveyElementTable1,
 				expression: "\$"+surveyElementTable1.id+" < 100",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable1],
@@ -1882,10 +1897,8 @@ class Initializer {
 			tableQ.addRow(tabRowTwo)
 			tableQ.save(failOnError:true)
 
-
-			def ruleCheckbox = new SurveyValidationRule(
-
-				surveyElement: surveyElementChecboxQ3,
+			def ruleCheckbox = new FormValidationRule(
+				formElement: surveyElementChecboxQ3,
 				expression: "if(\$"+surveyElementTable21.id+" < 100) \$"+surveyElementChecboxQ3.id+" else true",
 				messages: j(["en":"Validation error {0,here}"]),
 				dependencies: [surveyElementTable21],
@@ -1896,11 +1909,11 @@ class Initializer {
 			surveyElementChecboxQ3.addValidationRule(ruleCheckbox)
 			surveyElementChecboxQ3.save(failOnError: true)
 
-			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedSurveyElements: [(surveyElementTable2): ""]);
-			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedSurveyElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
+			def skipRule1 = new SurveySkipRule(survey: surveyOne, expression: "1==1", skippedFormElements: [(surveyElementTable2): ""]);
+			def skipRule2 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==1", skippedFormElements: [(surveyElementTable22): "", (surveyElementTable3): ""]);
 			def skipRule3 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementTable1.id+"==2", skippedSurveyQuestions: [checkBoxQ]);
-			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementPatientQ1.id+"==1000", skippedSurveyQuestions: [tableQ], skippedSurveyElements: [(surveyElementChecboxQ1): ""]);
-			def skipRule5 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementServiceQ6.id+"[_].key0.key01=='value1'", skippedSurveyQuestions: [], skippedSurveyElements: [(surveyElementServiceQ6): "[_].key0.key02"]);
+			def skipRule4 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementPatientQ1.id+"==1000", skippedSurveyQuestions: [tableQ], skippedFormElements: [(surveyElementChecboxQ1): ""]);
+			def skipRule5 = new SurveySkipRule(survey: surveyOne, expression: "\$"+surveyElementServiceQ6.id+"[_].key0.key01=='value1'", skippedSurveyQuestions: [], skippedFormElements: [(surveyElementServiceQ6): "[_].key0.key02"]);
 
 			surveyOne.addSkipRule(skipRule1)
 			surveyOne.addSkipRule(skipRule2)
@@ -1909,7 +1922,6 @@ class Initializer {
 			surveyOne.addSkipRule(skipRule5)
 
 			surveyOne.save()
-
 		}
 	}
 

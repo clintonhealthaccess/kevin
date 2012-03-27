@@ -1,35 +1,37 @@
 <div class="entity-form-container">
 	
 	<div class="entity-form-header">
-		<h3 class="title">Survey User</h3>
-		<div class="clear"></div>
+		<h3 class="title">
+			<g:message code="default.new.label" args="[message(code:'surveyuser.label')]"/>
+		</h3>
+		<g:locales/>
 	</div>
 	<div class="data-field-column">
 		<g:form url="[controller:'surveyUser', action:'save', params: [targetURI: targetURI]]" useToken="true">
-			<g:input name="username" label="Username" bean="${user}" field="username"/>
-			<g:input name="firstname" label="First name" bean="${user}" field="firstname"/>
-			<g:input name="lastname" label="Last name" bean="${user}" field="lastname"/>
-			<g:input name="location" label="Location" bean="${user}" field="location"/>
-			<g:input name="email" label="Email" bean="${user}" field="email"/>
-			<g:input name="permissionString" label="Permission" bean="${user}" field="permissionString"/>
-			<g:input name="password" label="Password" type="password" bean="${cmd}" field="password"/>
-			<g:input name="repeat" label="Repeat password" type="password" bean="${cmd}"  field="repeat"/>
+			<g:input name="username" label="${message(code:'user.username.label')}" bean="${user}" field="username"/>
+			<g:input name="firstname" label="${message(code:'user.firstname.label')}" bean="${user}" field="firstname"/>
+			<g:input name="lastname" label="${message(code:'user.lastname.label')}" bean="${user}" field="lastname"/>
+			<g:input name="location" label="${message(code:'user.location.label')}" bean="${user}" field="location"/>
+			<g:input name="email" label="${message(code:'user.email.label')}" bean="${user}" field="email"/>
+			<g:input name="permissionString" label="${message(code:'user.permission.label')}" bean="${user}" field="permissionString"/>
+			<g:input name="password" label="${message(code:'user.password.label')}" type="password" bean="${cmd}" field="password"/>
+			<g:input name="repeat" label="${message(code:'user.repeatpassword.label')}" type="password" bean="${cmd}"  field="repeat"/>
 			
-			<g:selectFromList name="entityId" label="Data Location" bean="${user}" field="entityId" optionKey="id" multiple="false"
-			ajaxLink="${createLink(controller:'dataLocation', action:'getAjaxData')}"
-			from="${dataLocations}" value="${user.dataLocation?.id}" values="${dataLocations.collect{i18n(field:it.names)}}" />
+			<g:selectFromList name="dataLocationId" label="${message(code:'surveyuser.datalocation.label')}" bean="${user}" field="dataLocationId" optionKey="id" multiple="false"
+				ajaxLink="${createLink(controller:'dataLocation', action:'getAjaxData')}"
+				from="${dataLocations}" value="${user.dataLocation?.id}" values="${dataLocations.collect{i18n(field:it.names)}}" />
 						
 			<div class="row">
-				<label><g:message code="user.confirmed.label" default="Confirmed"/></label>
+				<label><g:message code="user.confirmed.label"/></label>
 				<g:checkBox name="confirmed" value="${user.confirmed}" />
 			</div>
 			
 			<div class="row">
-				<label><g:message code="user.active.label" default="Active"/></label>
+				<label><g:message code="user.active.label"/></label>
 				<g:checkBox name="active" value="${user.active}" />
 			</div>
 			
-			<g:selectFromList name="roles" label="${message(code:'user.roles.label', default: 'Roles')}" bean="${user}" field="roles" 
+			<g:selectFromList name="roles" label="${message(code:'user.roles.label')}" bean="${user}" field="roles" 
 				from="${roles}" value="${user.roles*.id}" optionValue="name" optionKey="id" multiple="true"/>
 			
 			<g:if test="${user.id != null}">
@@ -37,8 +39,8 @@
 			</g:if>
 			
 			<div class="row">
-				<button type="submit"><g:message code="default.button.save.label" default="Save"/></button>
-				<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>
+				<button type="submit"><g:message code="default.button.save.label"/></button>
+				<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label"/></a>
 			</div>
 		</g:form>
 	</div>

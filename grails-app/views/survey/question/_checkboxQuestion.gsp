@@ -1,4 +1,4 @@
-<g:set var="type" value="${surveyPage.entity.type}"/>
+<g:set var="type" value="${surveyPage.dataLocation.type}"/>
 
 <div id="question-${question.id}" class="question question-checkbox" data-question="${question.id}">
 	<h4>
@@ -11,7 +11,7 @@
 	<div class="clear"></div>
 
 	<g:if test="${print}">
-		<label>-- <g:message code="survey.print.selectallthatapply.label" default="Select all that apply"/> --</label>
+		<label>-- <g:message code="survey.print.selectallthatapply.label"/> --</label>
 	</g:if>
 	
 	<ul>
@@ -24,7 +24,7 @@
 					<g:set var="enteredValue" value="${surveyPage.elements[surveyElement]}" />
 				
 					<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}" model="[
-						location: enteredValue.entity,
+						location: enteredValue.dataLocation,
 						value: enteredValue.value, 
 						lastValue: enteredValue.lastValue,
 						type: dataElement.type, 

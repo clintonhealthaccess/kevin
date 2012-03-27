@@ -46,14 +46,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.data.Sum;
-import org.chai.kevin.reports.ReportTarget;
+import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "FctTarget")
 @Table(name = "dhsst_fct_target")
-public class FctTarget extends ReportTarget {
+public class FctTarget extends AbstractReportTarget {
 	
 	private Long id;
 	private Sum sum;

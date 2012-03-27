@@ -72,7 +72,7 @@
 					<div class="clear"></div>
 				</li>
 			</div>
-			<a class="element-list-add ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.addline.label" default="Add Line"/></a>
+			<a class="element-list-add ${!readonly?'loading-disabled':''}" href="#"><g:message code="survey.addline.label"/></a>
 		</g:if>
 	</g:else>
 

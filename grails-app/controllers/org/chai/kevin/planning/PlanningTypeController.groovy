@@ -28,9 +28,9 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.Period;
 import org.chai.kevin.PeriodSorter
 import org.chai.kevin.Translation;
-import org.hisp.dhis.period.Period
 /**
  * @author Jean Kahigiso M.
  *
@@ -48,7 +48,7 @@ class PlanningTypeController extends AbstractEntityController {
 	}
 
 	def getLabel() {
-		return 'planningType.label'
+		return 'planning.planningtype.label'
 	}
 	
 	def getTemplate() {
@@ -57,14 +57,14 @@ class PlanningTypeController extends AbstractEntityController {
 
 	def getModel(def entity) {
 		def dataElements = []
-		if (entity.dataElement != null) dataElements << entity.dataElement
+		if (entity.formElement != null) dataElements << entity.formElement.dataElement
 		def sections = []
-		if (entity.dataElement != null) sections.addAll entity.sections
+		if (entity.formElement != null) sections.addAll entity.sections
 		def headerPrefixes = []
-		if (entity.dataElement?.headerPrefixes != null) headerPrefixes.addAll entity.dataElement.headerPrefixes
+		if (entity.formElement?.dataElement?.headerPrefixes != null) headerPrefixes.addAll entity.formElement.dataElement.headerPrefixes
 		
 		def valuePrefixes = []
-		if (entity.dataElement != null) valuePrefixes.addAll entity.dataElement.getValuePrefixes("")
+		if (entity.formElement != null) valuePrefixes.addAll entity.formElement.dataElement.getValuePrefixes("")
 		[
 			sections: sections,
 			headerPrefixes: headerPrefixes,
@@ -83,7 +83,7 @@ class PlanningTypeController extends AbstractEntityController {
 		if (params.namesPlural!=null) entity.namesPlural = params.namesPlural
 		
 		// headers
-		bindTranslationMap('headerList', entity.headers)
+		bindTranslationMap('headerList', entity.formElement?.headers)
 		// section description
 		bindTranslationMap('sectionList', entity.sectionDescriptions)
 	}

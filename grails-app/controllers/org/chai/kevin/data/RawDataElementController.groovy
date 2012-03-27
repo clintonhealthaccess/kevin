@@ -33,13 +33,13 @@ package org.chai.kevin.data
 import org.apache.commons.logging.Log;
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.LocationService
+import org.chai.kevin.Period;
+import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyService
 import org.chai.kevin.survey.SurveyValueService;
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 
 
 class RawDataElementController extends AbstractEntityController {
@@ -166,17 +166,17 @@ class RawDataElementController extends AbstractEntityController {
 		def rawDataElement = RawDataElement.get(params.int('id'))
 
 		if (rawDataElement != null) {
-			List<Period> iterations = Period.list();
+			List<Period> periods = Period.list();
 			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(rawDataElement, null);
 
 			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
-			for(Period iteration : iterations) {
-				periodValues.put(iteration, valueService.getNumberOfValues(rawDataElement, iteration));
+			for(Period period : periods) {
+				periodValues.put(period, valueService.getNumberOfValues(rawDataElement, period));
 			}
 
 			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();
 			for(SurveyElement surveyElement: surveyElements) {
-				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataEntityTypes(surveyElement));
+				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataLocationTypes(surveyElement));
 			}
 			
 			List<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)

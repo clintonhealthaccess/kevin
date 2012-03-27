@@ -11,8 +11,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.JaqlService;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.survey.SurveyValidationService.ValidatableLocator;
+import org.chai.kevin.form.FormValidationService.ValidatableLocator;
+import org.chai.kevin.location.DataLocation;
 
 public class ValidationService {
 	
@@ -20,7 +20,7 @@ public class ValidationService {
 	
 	public JaqlService jaqlService;
 
-	public Set<String> getPrefixes(String expression, Set<String> prefixes, ValidatableValue validatable, DataLocationEntity location, ValidatableLocator locator, Boolean evaluateTo) {
+	public Set<String> getPrefixes(String expression, Set<String> prefixes, ValidatableValue validatable, DataLocation location, ValidatableLocator locator, Boolean evaluateTo) {
 		Set<String> result = new HashSet<String>();
 		Set<List<String>> combinations = new HashSet<List<String>>();
 		
@@ -38,7 +38,7 @@ public class ValidationService {
 		return result;
 	}
 	
-	public Boolean evaluate(String expression, DataLocationEntity location, ValidatableLocator locator) {
+	public Boolean evaluate(String expression, DataLocation location, ValidatableLocator locator) {
 		if (log.isDebugEnabled()) log.debug("evaluate(expression="+expression+")");
 		
 		Map<String, Value> valueMap = new HashMap<String, Value>();

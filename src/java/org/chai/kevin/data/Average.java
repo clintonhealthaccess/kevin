@@ -37,17 +37,16 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.Period;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.AveragePartialValue;
 import org.chai.kevin.value.AverageValue;
-import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="Average")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -55,8 +54,8 @@ import org.hisp.dhis.period.Period;
 public class Average extends Calculation<AveragePartialValue> {
 
 	@Override
-	public AverageValue getCalculationValue(List<AveragePartialValue> partialValues, Period period, CalculationEntity entity) {
-		return new AverageValue(partialValues, this, period, entity);
+	public AverageValue getCalculationValue(List<AveragePartialValue> partialValues, Period period, CalculationLocation location) {
+		return new AverageValue(partialValues, this, period, location);
 	}
 
 	@Override
@@ -66,15 +65,15 @@ public class Average extends Calculation<AveragePartialValue> {
 	}
 
 	@Override
-	public AveragePartialValue getCalculationPartialValue(String expression, Map<DataLocationEntity, StatusValuePair> values, CalculationEntity entity, Period period, DataEntityType type) {
+	public AveragePartialValue getCalculationPartialValue(String expression, Map<DataLocation, StatusValuePair> values, CalculationLocation location, Period period, DataLocationType type) {
 		Value value = getValue(values.values());
-		Integer numberOfFacilities = getNumberOfFacilities(values);
-		return new AveragePartialValue(this, entity, period, type, numberOfFacilities, value);
+		Integer numberOfDataLocations = getNumberOfDataLocations(values);
+		return new AveragePartialValue(this, location, period, type, numberOfDataLocations, value);
 	}
 
-	private Integer getNumberOfFacilities(Map<DataLocationEntity, StatusValuePair> values) {
+	private Integer getNumberOfDataLocations(Map<DataLocation, StatusValuePair> values) {
 		Integer result = 0;
-		for (Entry<DataLocationEntity, StatusValuePair> entry : values.entrySet()) {
+		for (Entry<DataLocation, StatusValuePair> entry : values.entrySet()) {
 			if (!entry.getValue().value.isNull()) result++;
 		}
 		return result;

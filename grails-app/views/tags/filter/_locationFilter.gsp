@@ -7,7 +7,7 @@
 		</g:if>
 		<g:else>
 			<a class="location selected" href="#" data-type="location">
-				<g:message code="filter.location.noselection.label" default="no location selected"/>
+				<g:message code="filter.location.noselection.label"/>
 			</a>
 		</g:else> 
 		<div class="hidden dropdown-list js_dropdown-list">

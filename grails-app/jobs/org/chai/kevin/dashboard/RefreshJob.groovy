@@ -34,9 +34,10 @@ import org.quartz.InterruptableJob;
 
 class RefreshJob implements InterruptableJob {
 
-	static triggers = {
-		cron name: 'trigger', startDelay: 10000, cronExpression: "0 0 0 * * ?"
-	}
+	// commented out, we use the system cron
+//	static triggers = {
+//		cron name: 'trigger', startDelay: 10000, cronExpression: "0 0 0 * * ?"
+//	}
 	
 	def sessionRequired = true
 	def concurrent = false

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.LocationSorter;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.SurveyProgram;
 import org.chai.kevin.survey.SurveySection;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
@@ -15,19 +15,19 @@ import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 public class SurveySummaryPage {
 
 	private static final String PROGRESS_SORT = "progress";
-	private static final String FACILITY_SORT = "facility";
+	private static final String LOCATION_SORT = "location";
 	
 	private QuestionSummary summary;
-	private List<DataLocationEntity> facilities;
+	private List<DataLocation> locations;
 	
 	// for survey summary page
-	private Map<DataLocationEntity, ProgramSummary> programSummaryMap;
+	private Map<DataLocation, ProgramSummary> programSummaryMap;
 	
 	// for program summary page
-	private Map<DataLocationEntity, SurveyEnteredProgram> enteredProgramSummaryMap;
+	private Map<DataLocation, SurveyEnteredProgram> enteredProgramSummaryMap;
 	
 	// for survey + program + section summary page
-	private Map<DataLocationEntity, QuestionSummary> questionSummaryMap;
+	private Map<DataLocation, QuestionSummary> questionSummaryMap;
 	
 	// for smaller information tables
 	private Map<SurveyProgram, SurveyEnteredProgram> enteredProgramTableMap;
@@ -35,25 +35,25 @@ public class SurveySummaryPage {
 	private Map<SurveySection, QuestionSummary> sectionQuestionTableMap;
 
 	// for survey summary page
-	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, ProgramSummary> programSummaryMap) {
+	public SurveySummaryPage(QuestionSummary summary, List<DataLocation> locations, Map<DataLocation, QuestionSummary> questionSummaryMap, Map<DataLocation, ProgramSummary> programSummaryMap) {
 		this.summary = summary;
-		this.facilities = facilities;
+		this.locations = locations;
 		this.questionSummaryMap = questionSummaryMap;
 		this.programSummaryMap = programSummaryMap;
 	}
 	
 	// for program summary page
-	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap, Map<DataLocationEntity, SurveyEnteredProgram> enteredProgramMap, boolean test) {
+	public SurveySummaryPage(QuestionSummary summary, List<DataLocation> locations, Map<DataLocation, QuestionSummary> questionSummaryMap, Map<DataLocation, SurveyEnteredProgram> enteredProgramMap, boolean test) {
 		this.summary = summary;
-		this.facilities = facilities;
+		this.locations = locations;
 		this.enteredProgramSummaryMap = enteredProgramMap;
 		this.questionSummaryMap = questionSummaryMap;
 	}
 
 	// for section summary page
-	public SurveySummaryPage(QuestionSummary summary, List<DataLocationEntity> facilities, Map<DataLocationEntity, QuestionSummary> questionSummaryMap) {
+	public SurveySummaryPage(QuestionSummary summary, List<DataLocation> locations, Map<DataLocation, QuestionSummary> questionSummaryMap) {
 		this.summary = summary;
-		this.facilities = facilities;
+		this.locations = locations;
 		this.questionSummaryMap = questionSummaryMap;
 	}
 	
@@ -70,21 +70,21 @@ public class SurveySummaryPage {
 	
 	
 	public void sort(String parameter, String order, String language) {
-		if (facilities == null || parameter == null || order == null) return;
-		if (parameter.equals(FACILITY_SORT)) {
-			Collections.sort(facilities, LocationSorter.BY_NAME(language));
-			if (order.equals("desc")) Collections.reverse(facilities); 
+		if (locations == null || parameter == null || order == null) return;
+		if (parameter.equals(LOCATION_SORT)) {
+			Collections.sort(locations, LocationSorter.BY_NAME(language));
+			if (order.equals("desc")) Collections.reverse(locations); 
 		}
 		else if (parameter.equals(PROGRESS_SORT)) {
-			Collections.sort(facilities, new Comparator<DataLocationEntity>() {
+			Collections.sort(locations, new Comparator<DataLocation>() {
 				@Override
-				public int compare(DataLocationEntity arg0, DataLocationEntity arg1) {
+				public int compare(DataLocation arg0, DataLocation arg1) {
 					QuestionSummary summary0 = questionSummaryMap.get(arg0);
 					QuestionSummary summary1 = questionSummaryMap.get(arg1);
 					return summary0.compareTo(summary1);
 				}
 			});
-			if (order.equals("desc")) Collections.reverse(facilities);
+			if (order.equals("desc")) Collections.reverse(locations);
 		}
 	}
 	
@@ -120,19 +120,19 @@ public class SurveySummaryPage {
 		return summary;
 	}
 	
-	public List<DataLocationEntity> getFacilities() {
-		return facilities;
+	public List<DataLocation> getLocations() {
+		return locations;
 	}
 
-	public QuestionSummary getQuestionSummary(DataLocationEntity location) {
+	public QuestionSummary getQuestionSummary(DataLocation location) {
 		return questionSummaryMap.get(location);
 	}
 
-	public ProgramSummary getProgramSummary(DataLocationEntity location) {
+	public ProgramSummary getProgramSummary(DataLocation location) {
 		return programSummaryMap.get(location);
 	}
 
-	public SurveyEnteredProgram getSurveyEnteredProgram(DataLocationEntity location) {
+	public SurveyEnteredProgram getSurveyEnteredProgram(DataLocation location) {
 		return enteredProgramSummaryMap.get(location);
 	}
 	

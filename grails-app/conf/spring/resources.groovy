@@ -18,12 +18,12 @@ import org.chai.kevin.reports.ReportService
 import org.chai.kevin.dsr.DsrService
 import org.chai.kevin.export.ExportDataElementService;
 import org.chai.kevin.fct.FctService
+import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.importer.ImporterService;
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.survey.SurveyCopyService
 import org.chai.kevin.survey.SurveyExportService
 import org.chai.kevin.survey.SurveyPageService
-import org.chai.kevin.survey.SurveyValidationService
 import org.chai.kevin.survey.summary.SummaryService;
 import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.RefreshValueService;
@@ -61,7 +61,6 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 
 def config = CH.config
 
-String facilityTypeGroup = config.facility.type.group
 Set<String> reportSkipLevels = config.report.skip.levels
 Set<String> dashboardSkipLevels = config.dashboard.skip.levels
 Set<String> dsrSkipLevels = config.dsr.skip.levels
@@ -77,7 +76,6 @@ beans = {
 //		locationService = ref("locationService")
 //		valueService = ref("valueService")
 //		infoService = ref("infoService")
-//		facilityLevel = locationLevel
 //	}
 	
 	importerService(ImporterService){
@@ -109,23 +107,21 @@ beans = {
 		grailsApplication = ref("grailsApplication")
 	}
 	
-	surveyValidationService(SurveyValidationService){
+	formValidationService(FormValidationService){
 		validationService = ref("validationService")
 	}
 	
 	surveyPageService(SurveyPageService){
 		surveyValueService = ref("surveyValueService")
-		surveyService = ref("surveyService")
-		locationService = ref("locationService")
+		formElementService = ref("formElementService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		surveyValidationService = ref("surveyValidationService")
+		formValidationService = ref("formValidationService")
 		sessionFactory = ref("sessionFactory")
 		grailsApplication = ref("grailsApplication")
 	}
 	
 	summaryService(SummaryService){
-		locationService = ref("locationService")
 		surveyValueService = ref("surveyValueService")
 	}
 
@@ -160,7 +156,6 @@ beans = {
 	
 	dsrService(DsrService){		
 		reportService = ref("reportService")
-		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		languageService = ref("languageService")
@@ -168,6 +163,7 @@ beans = {
 	}
 	
 	fctService(FctService){
+		languageService = ref("languageService")
 		reportService = ref("reportService")
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
@@ -203,7 +199,6 @@ beans = {
 	infoService(InfoService) {
 		expressionService = ref("expressionService")
 		valueService = ref("valueService")
-		locationService = ref("locationService")
 	}
 	
 	dashboardPercentageService(DashboardPercentageService) {
@@ -213,9 +208,10 @@ beans = {
 	}
 
 	planningService(PlanningService) {
+		formValidationService = ref("formValidationService")
+		formElementService = ref("formElementService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
-		locationService = ref("locationService")
 		sessionFactory = ref("sessionFactory")
 		refreshValueService = ref("refreshValueService")
 	}

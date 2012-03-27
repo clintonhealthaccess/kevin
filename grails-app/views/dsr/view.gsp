@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="dsrTable.view.label" default="District Summary Reports" /></title>
+		<title><g:message code="dsr.title" /></title>
 		
 		<!-- for admin forms -->
 		<shiro:hasPermission permission="admin:dsr">
@@ -19,8 +19,8 @@
 			<div class="main">
 				<g:render template="/templates/topLevelReportTabs" model="[linkParams:params]"/>
 				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>			
-				<ul id='questions'>
-	              <li class='question'>
+				<ul id="questions">
+	              <li class="question">
 	                <g:render template="/templates/reportTableHeader" model="[linkParams:params]"/>	                
 	                <g:render template="/dsr/reportCategoryFilter" model="[linkParams:params]"/>
 	              </li>

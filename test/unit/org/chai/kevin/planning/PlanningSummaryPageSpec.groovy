@@ -1,6 +1,6 @@
 package org.chai.kevin.planning
 
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 
 import grails.plugin.spock.UnitSpec;
 
@@ -12,30 +12,30 @@ class PlanningSummaryPageSpec extends UnitSpec {
 		def planningTypes = [
 			new PlanningType(id: 1)
 		]
-		def dataEntities = [
-			new DataLocationEntity(code: "entity1"),
-			new DataLocationEntity(code: "entity2")
+		def dataLocations = [
+			new DataLocation(code: "dataLocation1"),
+			new DataLocation(code: "dataLocation2")
 		]
 		def summaries = [
 			(planningTypes[0]): new PlanningTypeSummary(planningTypes[0], 
-				[(dataEntities[0]):2,
-				(dataEntities[1]):1]
+				[(dataLocations[0]):2,
+				(dataLocations[1]):1]
 			)	
 		]
-		def summaryPage = new PlanningSummaryPage(planningTypes, dataEntities, summaries)
-		def originalDataEntities = new ArrayList(dataEntities)
+		def summaryPage = new PlanningSummaryPage(planningTypes, dataLocations, summaries)
+		def originalDataLocations = new ArrayList(dataLocations)
 		
 		when:
 		summaryPage.sort("1", "asc", null)
 		
 		then:
-		summaryPage.dataEntities.equals( [originalDataEntities[1], originalDataEntities[0]] )
+		summaryPage.dataLocations.equals( [originalDataLocations[1], originalDataLocations[0]] )
 		
 		when:
 		summaryPage.sort("1", "desc", null)
 		
 		then:
-		summaryPage.dataEntities.equals( [originalDataEntities[0], originalDataEntities[1]] )
+		summaryPage.dataLocations.equals( [originalDataLocations[0], originalDataLocations[1]] )
 		
 	}
 	

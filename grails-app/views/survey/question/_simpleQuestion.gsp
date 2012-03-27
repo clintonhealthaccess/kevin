@@ -1,4 +1,4 @@
-<g:set var="type" value="${surveyPage.entity.type}"/>
+<g:set var="type" value="${surveyPage.dataLocation.type}"/>
 
 <div id="question-${question.id}" class="question question-simple" data-question="${question.id}">
 	<h4>
@@ -13,7 +13,7 @@
     <g:set var="surveyElement" value="${question.surveyElement}"/>
     
 	<g:if test="${print && surveyElement?.dataElement.type.type.name().toLowerCase()=='list' && !appendix}">
-		<label>-- <g:message code="survey.print.see.appendix" default="See Appendix"/> --</label>
+		<label>-- <g:message code="survey.print.see.appendix"/> --</label>
 	</g:if>
 	<g:else>
 		<div id="element-${surveyElement?.id}" class="survey-element">
@@ -22,7 +22,7 @@
 				<g:set var="enteredValue" value="${surveyPage.elements[surveyElement]}" />
 			
 				<g:render template="/survey/element/${dataElement.type.type.name().toLowerCase()}"  model="[
-					location: enteredValue.entity,
+					location: enteredValue.dataLocation,
 					value: enteredValue.value,
 					lastValue: enteredValue.lastValue,
 					type: dataElement.type, 

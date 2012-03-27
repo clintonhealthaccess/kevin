@@ -32,7 +32,7 @@ package org.chai.kevin.security
  *
  */
 
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 
 class SurveyUserController  extends UserAbstractController {
 
@@ -45,7 +45,7 @@ class SurveyUserController  extends UserAbstractController {
 	}
 
 	def getLabel() {
-		return 'survey.user.label'
+		return 'surveyuser.label'
 	}
 	
 	def getTemplate() {
@@ -60,7 +60,7 @@ class SurveyUserController  extends UserAbstractController {
 			roles: Role.list(), 
 			dataLocations: dataLocations ,
 			cmd: params['cmd']
-			]
+		]
 	}
 
 }

@@ -5,7 +5,9 @@
 
 <hibernate-configuration>
 
-	<session-factory>
+	<session-factory>	
+		<mapping class="org.chai.kevin.Period" />
+	
 	    <mapping class="org.chai.kevin.data.NormalizedDataElement" />
 	    <mapping class="org.chai.kevin.data.Calculation" />
 	    <mapping class="org.chai.kevin.data.Average" />
@@ -33,6 +35,11 @@
 	    <mapping class="org.chai.kevin.dashboard.DashboardTarget" />
 	    <mapping class="org.chai.kevin.dashboard.DashboardProgram" />
 	
+		<mapping class="org.chai.kevin.form.FormValidationRule" />
+		<mapping class="org.chai.kevin.form.FormSkipRule" />
+		<mapping class="org.chai.kevin.form.FormElement" />
+		<mapping class="org.chai.kevin.form.FormEnteredValue" />
+	
         <mapping class="org.chai.kevin.survey.Survey" />
 		<mapping class="org.chai.kevin.survey.SurveyProgram" />
 		<mapping class="org.chai.kevin.survey.SurveySection" />
@@ -44,10 +51,8 @@
 		<mapping class="org.chai.kevin.survey.SurveyTableQuestion" />
 		<mapping class="org.chai.kevin.survey.SurveyTableColumn" />
 		<mapping class="org.chai.kevin.survey.SurveyTableRow" />
-		<mapping class="org.chai.kevin.survey.SurveyValidationRule" />
 		<mapping class="org.chai.kevin.survey.SurveySkipRule" />
 	
-		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredValue" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredQuestion" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredSection" />
 		<mapping class="org.chai.kevin.survey.validation.SurveyEnteredProgram" />
@@ -56,18 +61,13 @@
 		<mapping class="org.chai.kevin.planning.Planning" />
 		<mapping class="org.chai.kevin.planning.PlanningType" />
 		<mapping class="org.chai.kevin.planning.PlanningCost" />
+		<mapping class="org.chai.kevin.planning.PlanningSkipRule" />
 				
-		<!-- mapping class="org.chai.kevin.survey.wizard.Wizard" / -->
-		<!-- mapping class="org.chai.kevin.survey.wizard.WizardStep" / -->
-		
-		<mapping class="org.chai.kevin.location.CalculationEntity" />
-		<mapping class="org.chai.kevin.location.DataLocationEntity" />
-		<mapping class="org.chai.kevin.location.DataEntityType" />
-		<mapping class="org.chai.kevin.location.LocationEntity" />
+		<mapping class="org.chai.kevin.location.CalculationLocation" />
+		<mapping class="org.chai.kevin.location.DataLocation" />
+		<mapping class="org.chai.kevin.location.DataLocationType" />
+		<mapping class="org.chai.kevin.location.Location" />
 		<mapping class="org.chai.kevin.location.LocationLevel" />
-		
-		<mapping class="org.hisp.dhis.period.Period" />
-		
 	</session-factory>
 
 </hibernate-configuration>

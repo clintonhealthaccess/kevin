@@ -5,11 +5,12 @@ import javax.persistence.Entity;
 import org.apache.shiro.SecurityUtils
 import org.chai.kevin.LocationService
 import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
-import org.chai.kevin.survey.validation.SurveyEnteredValue
 import org.hibernate.Criteria
 import org.hibernate.FlushMode
 import org.hibernate.criterion.Projections
@@ -35,21 +36,10 @@ class SurveyValueService {
 		surveyEnteredProgram.delete()
 	}
 	
-	void save(SurveyEnteredValue surveyEnteredValue) {
-		if (log.isDebugEnabled()) log.debug("save(surveyEnteredValue=${surveyEnteredValue}})")
-		surveyEnteredValue.setUserUuid(SecurityUtils.subject.principal)
-		surveyEnteredValue.setTimestamp(new Date());
-		surveyEnteredValue.save();
-	}
-	
-	void delete(SurveyEnteredValue surveyEnteredValue) {
-		surveyEnteredValue.delete()
-	}
-	
-	void deleteEnteredValues(SurveyElement element) {
+	void deleteEnteredValues(FormElement element) {
 		sessionFactory.getCurrentSession()
-		.createQuery("delete from SurveyEnteredValue where surveyElement = :surveyElement")
-		.setParameter("surveyElement", element)
+		.createQuery("delete from FormEnteredValue where formElement = :formElement")
+		.setParameter("formElement", element)
 		.executeUpdate();
 	}
 	
@@ -75,9 +65,9 @@ class SurveyValueService {
 		surveyEnteredSection.delete()
 	}
 	
-	Integer getNumberOfSurveyEnteredPrograms(Survey survey, DataLocationEntity entity, Boolean closed, Boolean complete, Boolean invalid) {
+	Integer getNumberOfSurveyEnteredPrograms(Survey survey, DataLocation dataLocation, Boolean closed, Boolean complete, Boolean invalid) {
 		def c = SurveyEnteredProgram.createCriteria()
-		c.add(Restrictions.eq("entity", entity))
+		c.add(Restrictions.eq("dataLocation", dataLocation))
 		
 		if (complete!=null) c.add(Restrictions.eq("complete", complete))
 		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
@@ -90,10 +80,10 @@ class SurveyValueService {
 		c.uniqueResult();
 	}
 	
-	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataLocationEntity entity, 
+	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataLocation dataLocation, 
 		SurveyProgram program, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
 		def c = SurveyEnteredQuestion.createCriteria()
-		c.add(Restrictions.eq("entity", entity))
+		c.add(Restrictions.eq("dataLocation", dataLocation))
 		
 		if (complete!=null) {
 			if (skippedAsComplete!=null) {
@@ -125,10 +115,10 @@ class SurveyValueService {
 		c.uniqueResult();
 	}
 	
-	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, DataLocationEntity entity) {
+	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, DataLocation dataLocation) {
 		def c = SurveyEnteredSection.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("entity", entity)
+			.set("dataLocation", dataLocation)
 			.set("section", surveySection)
 		)
 		
@@ -138,10 +128,10 @@ class SurveyValueService {
 		return result
 	}
 	
-	SurveyEnteredProgram getSurveyEnteredProgram(SurveyProgram surveyProgram, DataLocationEntity entity) {
+	SurveyEnteredProgram getSurveyEnteredProgram(SurveyProgram surveyProgram, DataLocation dataLocation) {
 		def c = SurveyEnteredProgram.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("entity", entity)
+			.set("dataLocation", dataLocation)
 			.set("program", surveyProgram)
 		)
 		c.setFlushMode(FlushMode.COMMIT)
@@ -151,10 +141,18 @@ class SurveyValueService {
 		return result
 	}
 
-	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, DataLocationEntity entity) {
+	SurveyEnteredQuestion getOrCreateSurveyEnteredQuestion(DataLocation dataLocation, SurveyQuestion surveyQuestion) {
+		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(surveyQuestion, dataLocation);
+		if (enteredQuestion == null) {
+			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, dataLocation, false, false);
+		}
+		return enteredQuestion;
+	}
+	
+	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, DataLocation dataLocation) {
 		def c = SurveyEnteredQuestion.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("entity", entity)
+			.set("dataLocation", dataLocation)
 			.set("question", surveyQuestion)
 		)
 		
@@ -164,26 +162,11 @@ class SurveyValueService {
 		return result
 	}
 	
-	SurveyEnteredValue getSurveyEnteredValue(SurveyElement surveyElement, DataLocationEntity entity) {
-		def c = SurveyEnteredValue.createCriteria()
-		c.add(Restrictions.naturalId()
-			.set("entity", entity)
-			.set("surveyElement", surveyElement)
-		)
-		c.setCacheable(true)
-		c.setCacheRegion("surveyEnteredValueQueryCache")
+	List<FormEnteredValue> getFormEnteredValues(DataLocation dataLocation, SurveySection section, SurveyProgram program, Survey survey) {
+		def c = FormEnteredValue.createCriteria()
+		c.add(Restrictions.eq("dataLocation", dataLocation))
 		
-		c.setFlushMode(FlushMode.COMMIT)
-		def result = c.uniqueResult();
-		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
-		return result
-	}
-	
-	List<SurveyEnteredValue> getSurveyEnteredValues(DataLocationEntity entity, SurveySection section, SurveyProgram program, Survey survey) {
-		def c = SurveyEnteredValue.createCriteria()
-		c.add(Restrictions.eq("entity", entity))
-		
-		if (survey != null || program != null || section != null) c.createAlias("surveyElement", "se")
+		if (survey != null || program != null || section != null) c.createAlias("formElement", "se")
 		if (survey != null || program != null || section != null) c.createAlias("se.surveyQuestion", "sq")
 		if (survey != null || program != null) c.createAlias("sq.section", "ss")
 		if (survey != null) c.createAlias("ss.program", "so")
@@ -194,7 +177,7 @@ class SurveyValueService {
 		
 		def result = c.setFlushMode(FlushMode.COMMIT).list();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
-		return result				
+		return result
 	}
-
+	
 }

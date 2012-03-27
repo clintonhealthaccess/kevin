@@ -27,85 +27,36 @@
  */
 package org.chai.kevin.survey.validation
 
+import org.chai.kevin.AbstractController;
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.form.FormCloner;
+import org.chai.kevin.form.FormValidationRule;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.survey.Survey
 import org.chai.kevin.survey.SurveyElement
-import org.chai.kevin.survey.SurveyValidationRule
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-class SurveyValidationRuleController extends AbstractEntityController {
+class SurveyValidationRuleController extends AbstractController {
 
-	def locationService
 	def surveyService
-	def surveyCopyService
-	
-	def getLabel() {
-		return 'survey.validationrule.label'
-	}
-	
-	def getEntity(def id) {
-		return SurveyValidationRule.get(id)
-	}
-	
-	def createEntity() {
-		return new SurveyValidationRule()
-	}
-
-	def getTemplate() {
-		return "/survey/admin/createValidationRule";
-	}
-
-	def getModel(def entity) {
-		def surveyElements = []
-		if (entity.surveyElement != null) surveyElements << entity.surveyElement
-
-		def dependencies = new ArrayList(entity.dependencies)		
-		[
-			dependencies: dependencies,
-			surveyElements: surveyElements,
-			validation: entity,
-			types: DataEntityType.list()
-		]
-	}
-
-	def saveEntity(def entity) {
-		entity.surveyElement.validationRules.add(entity)
-		entity.save()
-		entity.surveyElement.save()
-	}
-	
-	def deleteEntity(def entity) {
-		entity.surveyElement.validationRules.remove(entity);
-		entity.surveyElement.save();
-		entity.delete()
-	}
-
-	def bindParams(def entity) {
-		entity.properties = params
-		
-		// FIXME GRAILS-6967 makes this necessary
-		// http://jira.grails.org/browse/GRAILS-6967
-		if (params.messages!=null) entity.messages = params.messages
-	}
 	
 	def list = {
 		adaptParamsForList()
 
-		SurveyElement surveyElement = SurveyElement.get(params.int('surveyElement.id'))
+		SurveyElement surveyElement = SurveyElement.get(params.int('formElement.id'))
 		Survey survey = Survey.get(params.int('survey.id'))
 		
 		if (surveyElement == null && survey == null) {
 			response.sendError(404)
 		}
 		else {
-			List<SurveyValidationRule> validationRules = new ArrayList<SurveyValidationRule>();
+			List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();
 			if (surveyElement != null) {		
-				surveyElement = SurveyElement.get(params.int('surveyElement.id'))
+				surveyElement = SurveyElement.get(params.int('formElement.id'))
 				validationRules.addAll(surveyElement.getValidationRules());
 			}
 			else {
@@ -118,20 +69,13 @@ class SurveyValidationRuleController extends AbstractEntityController {
 	
 			def max = Math.min(params['offset']+params['max'], validationRules.size())
 			
-			render (view: '/survey/admin/list', model:[
-				template:"validationRuleList",
-				surveyElement: surveyElement,
+			render (view: '/entity/list', model:[
+				template: "form/validationRuleList",
 				entities: validationRules.subList(params['offset'], max),
 				entityCount: validationRules.size(),
-				code: getLabel()
+				code: 'formelement.validationrule.label'
 			])
 		}
 	}
 	
-	def copy = {
-		def rule = getEntity(params.int('id'))
-		def clone = surveyCopyService.copyValidationRule(rule)
-		
-		redirect (uri:getTargetURI())
-	}
 }

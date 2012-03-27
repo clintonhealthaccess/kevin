@@ -29,11 +29,11 @@ package org.chai.kevin.data
 */
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.Period;
 import org.chai.kevin.value.Status;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period;
 
 class NormalizedDataElementController extends AbstractEntityController {
 
@@ -63,7 +63,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 		return [
 			normalizedDataElement: entity,
 			periods: Period.list(),
-			types: DataEntityType.list()
+			types: DataLocationType.list()
 		]
 	}
 
@@ -97,7 +97,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 		entity.expressionMap = [:]
 		Period.list().each { period ->
 			def periodMap = [:]
-			DataEntityType.list().each { group ->
+			DataLocationType.list().each { group ->
 				def expression = params['expressionMap['+period.id+']['+group.code+']']
 				periodMap[group.code] = expression==null?'':expression
 			}

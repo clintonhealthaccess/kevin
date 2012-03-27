@@ -2,7 +2,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="planning.new.label" default="District Health System Portal" /></title>
+		<title><g:message code="planning.list.title" /></title>
 		
 		<r:require module="planning"/>
 	</head>
@@ -15,18 +15,18 @@
 						<g:render template="/planning/planningTabs" model="[planning: planning, location: location, selected: 'undertakings']"/>
 						<g:render template="/planning/undertakingsTabs" model="[planning: planning, location: location, selected: planningType.id]"/>
 						
-        				<g:render template="/templates/help" model="[content: 'Some help information for the planning tool']"/>
+        				<g:render template="/templates/help" model="[content: message(code:'planning.list.help')]"/>
         
 						<ul class="clearfix" id="questions">
 							<li class="question push-20">
 								<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[planningType: planningType.id, location: location.id, lineNumber: planningList.nextLineNumber])}" class="next medium gray right">
-									Create New <g:i18n field="${planningType.names}"/>
+									<g:message code="planning.createnew" args="[i18n(field: planningType.names)]"/>
 								</a>
 								<h4 class="section-title">
 									<span class="question-default">
 										<r:img uri="/images/icons/star_small.png"/>
 									</span>
-									Manage <g:i18n field="${planningType.namesPlural}"/>
+									<g:message code="planning.list.manage" args="[i18n(field: planningType.namesPlural)]"/>
 								</h4>
 								
 								<g:if test="${!planningList.empty}">
@@ -40,7 +40,7 @@
 													<th></th>
 													<th><g:i18n field="${planningType.names}"/></th>
 													<g:each in="${planningType.getValuePrefixes(section)}" var="prefix">
-														<th><g:i18n field="${planningType.getHeaders()[prefix]}"/></th>
+														<th><g:i18n field="${planningType.formElement.headers[prefix]}"/></th>
 													</g:each>
 													<th></th>
 												</tr>
@@ -65,8 +65,8 @@
 														</g:each>
 														
 														<td>
-															<a class="edit-link" href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">edit</a>
-															<a class="delete-link" href="${createLinkWithTargetURI(controller:'editPlanning', action:'deletePlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">delete</a>
+															<a class="edit-link" href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}"><g:message code="default.link.edit.label"/></a>
+															<a class="delete-link" href="${createLinkWithTargetURI(controller:'editPlanning', action:'deletePlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}"><g:message code="default.link.delete.label"/></a>
 														</td>
 													</tr>
 												</g:each>
@@ -77,7 +77,7 @@
 											<g:each in="${planningType.sections}" var="sectionIt" status="i">
 												<li>
 													<a class="${section==sectionIt?'selected':''}" href="${createLink(controller:'editPlanning', action:'planningList', params:[location:location.id, section:i, planningType: planningType.id])}">
-														<g:i18n field="${planningType.headers[sectionIt]}"/>
+														<g:i18n field="${planningType.formElement.headers[sectionIt]}"/>
 													</a>
 												</li>
 											</g:each>
@@ -86,9 +86,9 @@
 									</div>
 								</g:if>
 								<g:else>
-									<p class="context-message">You haven't added any <g:i18n field="${planningList.planningType.namesPlural}"/> yet. 
+									<p class="context-message"><g:message code="planning.nothingyet" args="[i18n(field: planningList.planningType.namesPlural)]"/> 
 		        						<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:planningList.nextLineNumber])}">
-		        							Add your first <g:i18n field="${planningList.planningType.names}"/>
+		        							<g:message code="planning.addfirst" args="[i18n(field: planningType.names)]"/>
 		        						</a>
 	        						</p>
 								</g:else>

@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 
-public abstract class ReportTable<T, S extends CalculationEntity> {
+public abstract class ReportTable<T, S extends CalculationLocation> {
 
 	protected Map<S, Map<T, ReportValue>> valueMap;
 	

@@ -2,7 +2,7 @@ package org.chai.kevin.chart
 
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 
 class ChartController extends AbstractController {
 
@@ -12,7 +12,7 @@ class ChartController extends AbstractController {
 	def chart = {
 		if (log.isDebugEnabled()) log.debug("chart.chart, params:"+params)
 	
-		DataLocationEntity entity = DataLocationEntity.int('entity')
+		DataLocation dataLocation = DataLocation.int('location')
 		Data data = dataService.getData(params.long('data'))
 		
 		Chart chart = chartService.getChart(data, location)

@@ -2,16 +2,14 @@
   <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
       <meta name="layout" content="ajax" />
-      <g:set var="entityName" value="${message(code: 'dashboard.explanation.label', default: 'Dashboard explanation')}" />
-      <title><g:message code="default.create.label" args="[entityName]" /></title>
   </head>
   <body>
     <div class="main">
   		<table class="listing">
   			<thead>
-  				<th><g:message code="survey.program.label" default="Program" /></th>
-				<th><g:message code="survey.summary.submitted" default="Submitted" /></th>
-				<th><g:message code="survey.summary.progress" default="Overall Progress" /></th>
+  				<th><g:message code="survey.program.label" /></th>
+				<th><g:message code="survey.summary.submitted" /></th>
+				<th><g:message code="survey.summary.progress" /></th>
   				<th></th>
   			</thead>
   			<tbody>
@@ -26,10 +24,10 @@
   						<td>${summaryPage.getSurveyEnteredProgram(program)?.closed?'\u2713':''}</td>
   						<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
   						<td>
-  							<a href="${createLink(controller: 'editSurvey', action: 'programPage', params: [program: program.id, location: location.id])}"><g:message code="survey.summary.viewsurvey.label" default="View Survey"/></a>
+  							<a href="${createLink(controller: 'editSurvey', action: 'programPage', params: [program: program.id, location: location.id])}"><g:message code="survey.summary.viewsurvey.label"/></a>
   							<shiro:hasPermission permission="editSurvey:export"> 
 								<a href="${createLink(controller: 'editSurvey', action: 'export', params: [program: program.id, location: location.id])}">
-									<g:message code="survey.summary.exportprogram.label" default="Export Survey Program" />
+									<g:message code="survey.summary.exportprogram.label" />
 								</a>
 							</shiro:hasPermission>
 						</td>

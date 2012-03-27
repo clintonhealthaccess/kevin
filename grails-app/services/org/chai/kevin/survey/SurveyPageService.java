@@ -30,6 +30,7 @@ package org.chai.kevin.survey;
  * @author Jean Kahigiso M.
  *
  */
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,24 +38,28 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.TypeVisitor;
-import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.form.FormElement;
+import org.chai.kevin.form.FormElementService;
+import org.chai.kevin.form.FormEnteredValue;
+import org.chai.kevin.form.FormValidationService;
+import org.chai.kevin.form.FormValidationService.ValidatableLocator;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
+import org.chai.kevin.survey.SurveyElement.SurveyElementSubmitter;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
-import org.chai.kevin.survey.SurveyValidationService.ValidatableLocator;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
-import org.chai.kevin.survey.validation.SurveyEnteredValue;
 import org.chai.kevin.survey.validation.SurveyLog;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
@@ -73,12 +78,11 @@ public class SurveyPageService {
 	
 	private static Log log = LogFactory.getLog(SurveyPageService.class);
 	
-	private SurveyService surveyService;
+	private FormElementService formElementService;
 	private SurveyValueService surveyValueService;
-	private LocationService locationService;
 	private ValueService valueService;
 	private DataService dataService;
-	private SurveyValidationService surveyValidationService;
+	private FormValidationService formValidationService;
 	private SessionFactory sessionFactory;
 	private GrailsApplication grailsApplication;
 	
@@ -88,7 +92,7 @@ public class SurveyPageService {
 			.createCriteria(Survey.class).add(Restrictions.eq("active", true)).uniqueResult();
 	}
 	
-	private void collectEnums(SurveyElement element, final Map<String, Enum> enums) {
+	private void collectEnums(FormElement element, final Map<String, Enum> enums) {
 		element.getDataElement().getType().visit(new TypeVisitor() {
 			@Override
 			public void handle(Type type, String prefix) {
@@ -102,29 +106,29 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPage(DataLocationEntity entity, SurveyQuestion currentQuestion) {
-		if (log.isDebugEnabled()) log.debug("getSurveyPage(entity="+entity+", currentQuestion="+currentQuestion+")");
+	public SurveyPage getSurveyPage(DataLocation dataLocation, SurveyQuestion currentQuestion) {
+		if (log.isDebugEnabled()) log.debug("getSurveyPage(dataLocation="+dataLocation+", currentQuestion="+currentQuestion+")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
-		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
+		Map<SurveyElement, FormEnteredValue> elements = new HashMap<SurveyElement, FormEnteredValue>();
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		Map<String, Enum> enums = new HashMap<String, Enum>();
 		
-		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, currentQuestion);
+		SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, currentQuestion);
 		questions.put(currentQuestion, enteredQuestion);
-		for (SurveyElement element : currentQuestion.getSurveyElements(entity.getType())) {
-			SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
+		for (SurveyElement element : currentQuestion.getSurveyElements(dataLocation.getType())) {
+			FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
 			elements.put(element, enteredValue);
 			collectEnums(element, enums);
 		}
 		
-		SurveyPage page = new SurveyPage(entity, currentQuestion.getSurvey(), null, null, null, null, questions, elements, enums);
+		SurveyPage page = new SurveyPage(dataLocation, currentQuestion.getSurvey(), null, null, null, null, questions, elements, enums);
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
 	}
 	
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPage(DataLocationEntity entity, SurveySection currentSection) {
+	public SurveyPage getSurveyPage(DataLocation dataLocation, SurveySection currentSection) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		SurveyProgram currentProgram = currentSection.getProgram();
@@ -132,90 +136,90 @@ public class SurveyPageService {
 		
 		Map<SurveyProgram, SurveyEnteredProgram> programs = new HashMap<SurveyProgram, SurveyEnteredProgram>();
 		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
-		for (SurveyProgram program : survey.getPrograms(entity.getType())) {
-			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(entity, program);
+		for (SurveyProgram program : survey.getPrograms(dataLocation.getType())) {
+			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
 			programs.put(program, enteredProgram);
 			
-			for (SurveySection section : program.getSections(entity.getType())) {
-				SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
+			for (SurveySection section : program.getSections(dataLocation.getType())) {
+				SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
 				sections.put(section, enteredSection);
 			}
 		}
 		
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
-		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
+		Map<SurveyElement, FormEnteredValue> elements = new HashMap<SurveyElement, FormEnteredValue>();
 		Map<String, Enum> enums = new HashMap<String, Enum>();
-		for (SurveyQuestion question : currentSection.getQuestions(entity.getType())) {
-			SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
+		for (SurveyQuestion question : currentSection.getQuestions(dataLocation.getType())) {
+			SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, question);
 			questions.put(question, enteredQuestion);
 			
-			for (SurveyElement element : question.getSurveyElements(entity.getType())) {
-				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
+			for (SurveyElement element : question.getSurveyElements(dataLocation.getType())) {
+				FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
 				elements.put(element, enteredValue);
 				collectEnums(element, enums);
 			}
 		}
 		
-		SurveyPage page = new SurveyPage(entity, survey, currentProgram, currentSection, programs, sections, questions, elements, enums);
+		SurveyPage page = new SurveyPage(dataLocation, survey, currentProgram, currentSection, programs, sections, questions, elements, enums);
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
 	}
 	
 	
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPage(DataLocationEntity entity, SurveyProgram currentProgram) {
+	public SurveyPage getSurveyPage(DataLocation dataLocation, SurveyProgram currentProgram) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		Survey survey = currentProgram.getSurvey();
 		
 		Map<SurveyProgram, SurveyEnteredProgram> programs = new HashMap<SurveyProgram, SurveyEnteredProgram>();
 		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
-		for (SurveyProgram program : survey.getPrograms(entity.getType())) {
-			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(entity, program);
+		for (SurveyProgram program : survey.getPrograms(dataLocation.getType())) {
+			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
 			programs.put(program, enteredProgram);
 			
-			for (SurveySection section : program.getSections(entity.getType())) {
-				SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
+			for (SurveySection section : program.getSections(dataLocation.getType())) {
+				SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
 				sections.put(section, enteredSection);
 			}
 		}
 
 		Map<SurveyQuestion, SurveyEnteredQuestion> questions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
-		Map<SurveyElement, SurveyEnteredValue> elements = new HashMap<SurveyElement, SurveyEnteredValue>();
+		Map<SurveyElement, FormEnteredValue> elements = new HashMap<SurveyElement, FormEnteredValue>();
 		Map<String, Enum> enums = new HashMap<String, Enum>();
-		for (SurveySection section : currentProgram.getSections(entity.getType())) {
+		for (SurveySection section : currentProgram.getSections(dataLocation.getType())) {
 			section = (SurveySection)sessionFactory.getCurrentSession().get(SurveySection.class, section.getId());
-			for (SurveyQuestion question : section.getQuestions(entity.getType())) {
-				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
+			for (SurveyQuestion question : section.getQuestions(dataLocation.getType())) {
+				SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, question);
 				questions.put(question, enteredQuestion);
 				
-				for (SurveyElement element : question.getSurveyElements(entity.getType())) {
-					SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
+				for (SurveyElement element : question.getSurveyElements(dataLocation.getType())) {
+					FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
 					elements.put(element, enteredValue);
 					collectEnums(element, enums);
 				}
 			}
 		}
 		
-		SurveyPage page = new SurveyPage(entity, survey, currentProgram, null, programs, sections, questions, elements, enums);
+		SurveyPage page = new SurveyPage(dataLocation, survey, currentProgram, null, programs, sections, questions, elements, enums);
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
 	}
 	
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPagePrint(DataLocationEntity entity,Survey survey) {
+	public SurveyPage getSurveyPagePrint(DataLocation dataLocation,Survey survey) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
-		DataEntityType entityUnitGroup = entity.getType();
+		DataLocationType dataLocationType = dataLocation.getType();
 		
-		Map<SurveyElement, SurveyEnteredValue> elements = new LinkedHashMap<SurveyElement, SurveyEnteredValue>();
+		Map<SurveyElement, FormEnteredValue> elements = new LinkedHashMap<SurveyElement, FormEnteredValue>();
 		Map<String, Enum> enums = new HashMap<String, Enum>();
 		
-		for (SurveyProgram program : survey.getPrograms(entityUnitGroup)) {
-			for (SurveySection section : program.getSections(entityUnitGroup)) {
-				for (SurveyQuestion question : section.getQuestions(entityUnitGroup)) {
-					for (SurveyElement element : question.getSurveyElements(entityUnitGroup)) {
-						SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
+		for (SurveyProgram program : survey.getPrograms(dataLocationType)) {
+			for (SurveySection section : program.getSections(dataLocationType)) {
+				for (SurveyQuestion question : section.getQuestions(dataLocationType)) {
+					for (SurveyElement element : question.getSurveyElements(dataLocationType)) {
+						FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
 						elements.put(element, enteredValue);
 						collectEnums(element, enums);
 					}
@@ -223,119 +227,114 @@ public class SurveyPageService {
 			}
 
 		}
-		return new SurveyPage(entity, survey, null, null, null, null,null, elements, enums);
+		return new SurveyPage(dataLocation, survey, null, null, null, null,null, elements, enums);
 	}
 	
 
 	@Transactional(readOnly = false)
-	public SurveyPage getSurveyPage(DataLocationEntity entity, Survey survey) {
+	public SurveyPage getSurveyPage(DataLocation dataLocation, Survey survey) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
 		Map<SurveyProgram, SurveyEnteredProgram> programs = new HashMap<SurveyProgram, SurveyEnteredProgram>();
 		Map<SurveySection, SurveyEnteredSection> sections = new HashMap<SurveySection, SurveyEnteredSection>();
-		for (SurveyProgram program : survey.getPrograms(entity.getType())) {
-			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(entity, program);
+		for (SurveyProgram program : survey.getPrograms(dataLocation.getType())) {
+			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
 			programs.put(program, enteredProgram);
 			
-			for (SurveySection section : program.getSections(entity.getType())) {
-				SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
+			for (SurveySection section : program.getSections(dataLocation.getType())) {
+				SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
 				sections.put(section, enteredSection);
 			}
 		}
-		return new SurveyPage(entity, survey, null, null, programs, sections, null, null, null);
+		return new SurveyPage(dataLocation, survey, null, null, programs, sections, null, null, null);
 	}
 	
 	@Transactional(readOnly = false)
-	public void refresh(CalculationEntity entity, Survey survey, boolean closeIfComplete) {
-		List<DataLocationEntity> facilities = entity.collectDataLocationEntities(null, null);
+	public void refresh(CalculationLocation location, Survey survey, boolean closeIfComplete) {
+		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
 		
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		for (DataLocationEntity facility : facilities) {
+		for (DataLocation dataLocation : dataLocations) {
 			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
-			facility = (DataLocationEntity)sessionFactory.getCurrentSession().get(DataLocationEntity.class, facility.getId());
+			dataLocation = (DataLocation)sessionFactory.getCurrentSession().get(DataLocation.class, dataLocation.getId());
 
-			getMe().refreshSurveyForFacilityWithNewTransaction(facility, survey, closeIfComplete);
+			getMe().refreshSurveyForDataLocationWithNewTransaction(dataLocation, survey, closeIfComplete);
 			sessionFactory.getCurrentSession().clear();
 		}
 	}
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshSurveyForFacilityWithNewTransaction(DataLocationEntity facility, Survey survey, boolean closeIfComplete) {
-		refreshSurveyForFacility(facility, survey, closeIfComplete);
+	public void refreshSurveyForDataLocationWithNewTransaction(DataLocation dataLocation, Survey survey, boolean closeIfComplete) {
+		refreshSurveyForDataLocation(dataLocation, survey, closeIfComplete);
 	}
 	
 	@Transactional(readOnly = false)
-	public void refreshSurveyForFacility(DataLocationEntity facility, Survey survey, boolean closeIfComplete) {
+	public void refreshSurveyForDataLocation(DataLocation dataLocation, Survey survey, boolean closeIfComplete) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		Set<SurveyProgram> validPrograms = new HashSet<SurveyProgram>(survey.getPrograms(facility.getType()));
+		Set<SurveyProgram> validPrograms = new HashSet<SurveyProgram>(survey.getPrograms(dataLocation.getType()));
 		for (SurveyProgram program : survey.getPrograms()) {
-			if (validPrograms.contains(program)) refreshProgramForFacility(facility, program, closeIfComplete);
-			else deleteSurveyEnteredProgram(program, facility);
+			if (validPrograms.contains(program)) refreshProgramForDataLocation(dataLocation, program, closeIfComplete);
+			else deleteSurveyEnteredProgram(program, dataLocation);
 		}
 	}
 	
-	private void refreshProgramForFacility(DataLocationEntity facility, SurveyProgram program, boolean closeIfComplete) {
-		Set<SurveySection> validSections = new HashSet<SurveySection>(program.getSections(facility.getType()));
+	private void refreshProgramForDataLocation(DataLocation dataLocation, SurveyProgram program, boolean closeIfComplete) {
+		Set<SurveySection> validSections = new HashSet<SurveySection>(program.getSections(dataLocation.getType()));
 		for (SurveySection section : program.getSections()) {
-			if (validSections.contains(section)) refreshSectionForFacility(facility, section);
-			else deleteSurveyEnteredSection(section, facility);
+			if (validSections.contains(section)) refreshSectionForDataLocation(dataLocation, section);
+			else deleteSurveyEnteredSection(section, dataLocation);
 		}
 		
-		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(facility, program);
-		setProgramStatus(enteredProgram, facility);
+		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
+		setProgramStatus(enteredProgram, dataLocation);
 		if (closeIfComplete && enteredProgram.isComplete() && !enteredProgram.isInvalid()) enteredProgram.setClosed(true); 
 		surveyValueService.save(enteredProgram);
 	}
 	
-//	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
-//	public void refreshSectionForFacilityWithNewTransaction(DataLocationEntity facility, SurveySection section) {
-//		refreshSectionForFacility(facility, section);
-//	}
-	
 	@Transactional(readOnly = false)
-	public void refreshSectionForFacility(DataLocationEntity facility, SurveySection section) {
+	public void refreshSectionForDataLocation(DataLocation dataLocation, SurveySection section) {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 //		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
 		
-		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(facility.getType()));
+		Set<SurveyQuestion> validQuestions = new HashSet<SurveyQuestion>(section.getQuestions(dataLocation.getType()));
 		for (SurveyQuestion question : section.getQuestions()) {
-			if (validQuestions.contains(question)) refreshQuestionForFacility(facility, question);
-			else deleteSurveyEnteredQuestion(question, facility);
+			if (validQuestions.contains(question)) refreshQuestionForDataLocation(dataLocation, question);
+			else deleteSurveyEnteredQuestion(question, dataLocation);
 		}
-		SurveyEnteredSection enteredSection = getSurveyEnteredSection(facility, section);
-		setSectionStatus(enteredSection, facility);
+		SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
+		setSectionStatus(enteredSection, dataLocation);
 		surveyValueService.save(enteredSection);
 	}
 	
-	private void refreshQuestionForFacility(DataLocationEntity facility, SurveyQuestion question) {
-		Set<SurveyElement> validElements = new HashSet<SurveyElement>(question.getSurveyElements(facility.getType()));
+	private void refreshQuestionForDataLocation(DataLocation dataLocation, SurveyQuestion question) {
+		Set<FormElement> validElements = new HashSet<FormElement>(question.getSurveyElements(dataLocation.getType()));
 		for (SurveyElement element : question.getSurveyElements()) {
-			if (validElements.contains(element)) refreshElementForFacility(facility, element);
-			else deleteSurveyEnteredValue(element, facility);
+			if (validElements.contains(element)) refreshElementForDataLocation(dataLocation, element);
+			else deleteSurveyEnteredValue(element, dataLocation);
 		}
 		
-		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(facility, question);
-		setQuestionStatus(enteredQuestion, facility);
+		SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, question);
+		setQuestionStatus(enteredQuestion, dataLocation);
 		surveyValueService.save(enteredQuestion);
 	}
 	
-	private void refreshElementForFacility(DataLocationEntity facility, SurveyElement element) {
+	private void refreshElementForDataLocation(DataLocation dataLocation, SurveyElement element) {
 		Survey survey = element.getSurvey();
 		
-		SurveyEnteredValue enteredValue = getSurveyEnteredValue(facility, element);
-		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), facility, survey.getPeriod());
+		FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
+		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), dataLocation, survey.getPeriod());
 		if (rawDataElementValue != null) enteredValue.setValue(rawDataElementValue.getValue());
 		else enteredValue.setValue(Value.NULL_INSTANCE());
 		if (survey.getLastPeriod() != null) {
-			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), facility, survey.getLastPeriod());
+			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), dataLocation, survey.getLastPeriod());
 			if (lastDataValue != null) enteredValue.setLastValue(lastDataValue.getValue());
 			else enteredValue.setLastValue(Value.NULL_INSTANCE());
 		}
-		surveyValueService.save(enteredValue);
+		formElementService.save(enteredValue);
 	}
 	
 	// returns the list of modified elements/questions/sections/programs (skip, validation, etc..)
@@ -343,23 +342,23 @@ public class SurveyPageService {
 	// mode, a write lock is acquired at the beginning and never released till this method terminates
 	// which causes other sessions calling this method to timeout
 	@Transactional(readOnly = false)
-	public SurveyPage modify(DataLocationEntity entity, SurveyProgram program, List<SurveyElement> elements, Map<String, Object> params) {
-		if (log.isDebugEnabled()) log.debug("modify(entity="+entity+", elements="+elements+")");
+	public SurveyPage modify(DataLocation dataLocation, SurveyProgram program, List<SurveyElement> elements, Map<String, Object> params) {
+		if (log.isDebugEnabled()) log.debug("modify(dataLocation="+dataLocation+", elements="+elements+")");
 		
 		// we acquire a write lock on the program
 		// this won't change anything for MyISAM tables
-		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(entity, program);
+		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
 		sessionFactory.getCurrentSession().buildLockRequest(LockOptions.NONE).setLockMode(LockMode.PESSIMISTIC_WRITE).lock(enteredProgram);
 		
 		SurveyPage surveyPage = null;
 		// if the program is not closed, we go on with the save
 		if (!enteredProgram.isClosed()) {
-			Map<SurveyElement, SurveyEnteredValue> affectedElements = new HashMap<SurveyElement, SurveyEnteredValue>();
+			Map<SurveyElement, FormEnteredValue> affectedElements = new HashMap<SurveyElement, FormEnteredValue>();
 			// first we save the values
 			for (SurveyElement element : elements) {
 				if (log.isDebugEnabled()) log.debug("setting new value for element: "+element);
 				
-				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
+				FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
 				ValidatableValue validatableValue = enteredValue.getValidatable();
 				
 				// merge the values
@@ -367,91 +366,66 @@ public class SurveyPageService {
 				validatableValue.mergeValue(params, "elements["+element.getId()+"].value", new HashSet<String>());
 				
 				// set the value and save
-				// here, a write lock is acquired on the SurveyEnteredValue that will be kept
+				// here, a write lock is acquired on the FormEnteredValue that will be kept
 				// till the end of the transaction, if in READ_COMMITTED isolation mode, a timeout
 				// is likely to occur because the transaction is quite long
+				formElementService.save(enteredValue);
 				affectedElements.put(element, enteredValue);
 				
 				// if it is a checkbox question, we need to reset the values to null
 				// FIXME THIS IS A HACK
-				resetCheckboxQuestion(entity, element, affectedElements);
+				resetCheckboxQuestion(dataLocation, element, affectedElements);
 			}
 			// we evaluate the rules
-			surveyPage = evaluateRulesAndSave(entity, elements, affectedElements);
+			surveyPage = evaluateRulesAndSave(dataLocation, elements, affectedElements);
 		}
 
 		if (log.isDebugEnabled()) log.debug("modify(...)="+surveyPage);
 		return surveyPage;
 	}
-
 	
 	private ValidatableLocator getLocator() {
 		return new ValidatableLocator() {
 			@Override
-			public ValidatableValue getValidatable(Long id, DataLocationEntity location) {
-				SurveyElement element = surveyService.getSurveyElement(id);
-				SurveyEnteredValue enteredValue = getSurveyEnteredValue(location, element);
+			public ValidatableValue getValidatable(Long id, DataLocation location) {
+				FormElement element = formElementService.getFormElement(id);
+				FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(location, element);
 				if (enteredValue == null) return null;
 				return enteredValue.getValidatable();
 			}
 		};
 	}
-
-	private SurveyPage evaluateRulesAndSave(DataLocationEntity entity, List<SurveyElement> elements, Map<SurveyElement, SurveyEnteredValue> affectedElements) {  
-		if (log.isDebugEnabled()) log.debug("evaluateRulesAndSave(entity="+entity+", elements="+elements+")");
+	
+	private SurveyPage evaluateRulesAndSave(DataLocation dataLocation, List<? extends FormElement> elements, Map<SurveyElement, FormEnteredValue> affectedElements) {  
+		if (log.isDebugEnabled()) log.debug("evaluateRulesAndSave(dataLocation="+dataLocation+", elements="+elements+")");
 		
 		// second we get the rules that could be affected by the changes
-		Set<SurveyValidationRule> validationRules = new HashSet<SurveyValidationRule>();
-		Set<SurveySkipRule> skipRules = new HashSet<SurveySkipRule>();
-		for (SurveyElement element : elements) {
+		List<FormEnteredValue> affectedEnteredValues = new ArrayList<FormEnteredValue>();
+		List<SurveyEnteredQuestion> affectedEnteredQuestions = new ArrayList<SurveyEnteredQuestion>();
+		SurveyElementCalculator elementCalculator = new SurveyElementCalculator(affectedEnteredValues, affectedEnteredQuestions, formValidationService, formElementService, surveyValueService, getLocator());
+		
+		for (FormElement element : elements) {
 			if (log.isDebugEnabled()) log.debug("getting skip and validation rules for element: "+element);
 
-			validationRules.addAll(surveyService.searchValidationRules(element, entity.getType()));
-			skipRules.addAll(surveyService.searchSkipRules(element));
+			element.validate(dataLocation, elementCalculator);
+			element.executeSkip(dataLocation, elementCalculator);
 		}
 		
-		// third we evaluate those rules
+		// third we add the affected values in the lists
+		for (FormEnteredValue formEnteredValue : affectedEnteredValues) {
+			affectedElements.put((SurveyElement)formEnteredValue.getFormElement(), formEnteredValue);
+		}
 		Map<SurveyQuestion, SurveyEnteredQuestion> affectedQuestions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
-		for (SurveyValidationRule validationRule : validationRules) {
-			if (log.isDebugEnabled()) log.debug("getting invalid prefixes for validation rule: "+validationRule);
-			
-			Set<String> prefixes = surveyValidationService.getInvalidPrefix(validationRule, entity, getLocator());
-
-			SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, validationRule.getSurveyElement());
-			enteredValue.getValidatable().setInvalid(validationRule, prefixes);
-			
-			affectedElements.put(validationRule.getSurveyElement(), enteredValue);
-		}
-		
-		for (SurveySkipRule surveySkipRule : skipRules) {
-			for (SurveyElement element : surveySkipRule.getSkippedSurveyElements().keySet()) {
-				if (log.isDebugEnabled()) log.debug("getting skipped prefixes for skip rule: "+surveySkipRule+", element: "+element);
-				
-				Set<String> prefixes = surveyValidationService.getSkippedPrefix(element, surveySkipRule, entity, getLocator());
-
-				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
-				enteredValue.getValidatable().setSkipped(surveySkipRule, prefixes);
-				
-				affectedElements.put(element, enteredValue);
-			}
-
-			boolean skipped = surveyValidationService.isSkipped(surveySkipRule, entity, getLocator());
-			for (SurveyQuestion question : surveySkipRule.getSkippedSurveyQuestions()) {
-				
-				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
-				if (skipped) enteredQuestion.getSkippedRules().add(surveySkipRule);
-				else enteredQuestion.getSkippedRules().remove(surveySkipRule);
-				
-				affectedQuestions.put(question, enteredQuestion);
-			}
+		for (SurveyEnteredQuestion surveyEnteredQuestion : affectedEnteredQuestions) {
+			affectedQuestions.put(surveyEnteredQuestion.getQuestion(), surveyEnteredQuestion);
 		}
 		
 		// fourth we propagate the affected changes up the survey tree and save
 		if (log.isDebugEnabled()) log.debug("propagating changes up the survey tree");
-		for (SurveyEnteredValue element : affectedElements.values()) {
-			SurveyQuestion question = element.getSurveyElement().getSurveyQuestion();
+		for (FormElement element : affectedElements.keySet()) {
+			SurveyQuestion question = ((SurveyElement)element).getSurveyQuestion();
 			if (!affectedQuestions.containsKey(question)) {
-				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
+				SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, question);
 				affectedQuestions.put(question, enteredQuestion);
 			}
 		}
@@ -459,11 +433,11 @@ public class SurveyPageService {
 		Map<SurveySection, SurveyEnteredSection> affectedSections = new HashMap<SurveySection, SurveyEnteredSection>();
 		for (SurveyEnteredQuestion question : affectedQuestions.values()) {
 			// we set the question status correctly and save
-			setQuestionStatus(question, entity);
+			setQuestionStatus(question, dataLocation);
 			
 			SurveySection section = question.getQuestion().getSection();
 			if (!affectedSections.containsKey(section)) {
-				SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
+				SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
 				affectedSections.put(section, enteredSection);
 			}
 			
@@ -472,11 +446,11 @@ public class SurveyPageService {
 		Map<SurveyProgram, SurveyEnteredProgram> affectedPrograms = new HashMap<SurveyProgram, SurveyEnteredProgram>();
 		for (SurveyEnteredSection section : affectedSections.values()) {
 			// we set the section status correctly and save
-			setSectionStatus(section, entity);
+			setSectionStatus(section, dataLocation);
 			
 			SurveyProgram program = section.getSection().getProgram();
 			if (!affectedPrograms.containsKey(program)) {
-				SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(entity, program);
+				SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
 				affectedPrograms.put(program, enteredProgram);
 			}
 		}
@@ -484,12 +458,12 @@ public class SurveyPageService {
 		for (SurveyEnteredProgram program : affectedPrograms.values()) {
 			// if the program is not closed and available
 			// we set the program status correctly and save
-			setProgramStatus(program, entity);
+			setProgramStatus(program, dataLocation);
 		}
 		
 		// fifth we save all the values
-		for (SurveyEnteredValue surveyEnteredValue : affectedElements.values()) {
-			surveyValueService.save(surveyEnteredValue);
+		for (FormEnteredValue formEnteredValue : affectedElements.values()) {
+			formElementService.save(formEnteredValue);
 		}
 		for (SurveyEnteredQuestion surveyEnteredQuestion : affectedQuestions.values()) {
 			surveyValueService.save(surveyEnteredQuestion);
@@ -501,40 +475,41 @@ public class SurveyPageService {
 			surveyValueService.save(surveyEnteredProgram);
 		}
 		
-		return new SurveyPage(entity, null, null, null, affectedPrograms, affectedSections, affectedQuestions, affectedElements, null);
+		return new SurveyPage(dataLocation, null, null, null, affectedPrograms, affectedSections, affectedQuestions, affectedElements, null);
 	}
 
 	// FIXME HACK 
 	// TODO get rid of this
-	private void resetCheckboxQuestion(DataLocationEntity entity, SurveyElement element, Map<SurveyElement, SurveyEnteredValue> affectedElements) {
+	private void resetCheckboxQuestion(DataLocation dataLocation, SurveyElement element, Map<SurveyElement, FormEnteredValue> affectedElements) {
 		if (log.isDebugEnabled()) log.debug("question is of type: "+element.getSurveyQuestion().getType());
 		if (element.getSurveyQuestion().getType() == QuestionType.CHECKBOX) {
 			if (log.isDebugEnabled()) log.debug("checking if checkbox question needs to be reset");
 			boolean reset = true;
-			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(entity.getType())) {
-				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(entity, elementInQuestion);
+			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(dataLocation.getType())) {
+				FormEnteredValue enteredValueForElementInQuestion = formElementService.getOrCreateFormEnteredValue(dataLocation, elementInQuestion);
 
 				if (enteredValueForElementInQuestion.getValue().getBooleanValue() == Boolean.TRUE) reset = false;
 			}
 			if (log.isDebugEnabled()) log.debug("resetting checkbox question: "+reset);
-			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(entity.getType())) {
-				SurveyEnteredValue enteredValueForElementInQuestion = getSurveyEnteredValue(entity, elementInQuestion);
+			for (SurveyElement elementInQuestion : element.getSurveyQuestion().getSurveyElements(dataLocation.getType())) {
+				FormEnteredValue enteredValueForElementInQuestion = formElementService.getOrCreateFormEnteredValue(dataLocation, elementInQuestion);
 
 				if (reset) enteredValueForElementInQuestion.getValue().setJsonObject(Value.NULL_INSTANCE().getJsonObject());
 				else if (enteredValueForElementInQuestion.getValue().isNull()) {
 					enteredValueForElementInQuestion.getValue().setJsonObject(enteredValueForElementInQuestion.getType().getValue(false).getJsonObject());
 				}
 				
+				formElementService.save(enteredValueForElementInQuestion);
 				affectedElements.put(elementInQuestion, enteredValueForElementInQuestion);
 			}
 		}
 	}
 	
-	private void setProgramStatus(SurveyEnteredProgram program, DataLocationEntity entity) {
+	private void setProgramStatus(SurveyEnteredProgram program, DataLocation dataLocation) {
 		Boolean complete = true;
 		Boolean invalid = false;
-		for (SurveySection section : program.getProgram().getSections(entity.getType())) {
-			SurveyEnteredSection enteredSection = getSurveyEnteredSection(entity, section);
+		for (SurveySection section : program.getProgram().getSections(dataLocation.getType())) {
+			SurveyEnteredSection enteredSection = getSurveyEnteredSection(dataLocation, section);
 			if (!enteredSection.isComplete()) complete = false;
 			if (enteredSection.isInvalid()) invalid = true;
 		}
@@ -542,11 +517,11 @@ public class SurveyPageService {
 		program.setInvalid(invalid);
 	}
 	
-	private void setSectionStatus(SurveyEnteredSection section, DataLocationEntity entity) {
+	private void setSectionStatus(SurveyEnteredSection section, DataLocation dataLocation) {
 		Boolean complete = true;
 		Boolean invalid = false;
-		for (SurveyQuestion question : section.getSection().getQuestions(entity.getType())) {
-			SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, question);
+		for (SurveyQuestion question : section.getSection().getQuestions(dataLocation.getType())) {
+			SurveyEnteredQuestion enteredQuestion = surveyValueService.getOrCreateSurveyEnteredQuestion(dataLocation, question);
 			if (!enteredQuestion.isComplete() && !enteredQuestion.isSkipped()) complete = false;
 			if (enteredQuestion.isInvalid() && !enteredQuestion.isSkipped()) invalid = true;
 		}
@@ -554,13 +529,13 @@ public class SurveyPageService {
 		section.setComplete(complete);
 	}
 	
-	private void setQuestionStatus(SurveyEnteredQuestion question, DataLocationEntity entity) {
+	private void setQuestionStatus(SurveyEnteredQuestion question, DataLocation dataLocation) {
 		Boolean complete = true;
 		Boolean invalid = false;
 		
 		// TODO replace this method by a call to the survey element service
-		for (SurveyElement element : question.getQuestion().getSurveyElements(entity.getType())) {
-			SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
+		for (SurveyElement element : question.getQuestion().getSurveyElements(dataLocation.getType())) {
+			FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
 			if (!enteredValue.getValidatable().isComplete()) complete = false;
 			if (enteredValue.getValidatable().isInvalid()) invalid = true;
 		}
@@ -569,178 +544,122 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public boolean submit(DataLocationEntity entity, SurveyProgram program) {
+	public boolean submit(DataLocation dataLocation, SurveyProgram program) {
 		
 		// first we make sure that the program is valid and complete, so we revalidate it
-		List<SurveyElement> elements = program.getElements(entity.getType());
-		evaluateRulesAndSave(entity, elements, new HashMap<SurveyElement, SurveyEnteredValue>());
+		List<SurveyElement> elements = program.getElements(dataLocation.getType());
+		evaluateRulesAndSave(dataLocation, elements, new HashMap<SurveyElement, FormEnteredValue>());
 		
 		// we get the updated survey and work from that
-		SurveyPage surveyPage = getSurveyPage(entity, program);
+		SurveyPage surveyPage = getSurveyPage(dataLocation, program);
 		if (surveyPage.canSubmit(program)) {
+			SurveyElementSubmitter submitter = new SurveyElementSubmitter(surveyValueService, formElementService, valueService);
+
 			// save all the values to data values
 			for (SurveyElement element : elements) {
-				SurveyEnteredValue enteredValue = getSurveyEnteredValue(entity, element);
-				Value valueToSave = null;
-				// if the question is skipped we save NULL
-				SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(entity, element.getSurveyQuestion());
-				if (enteredQuestion.isSkipped()) {
-					valueToSave = Value.NULL_INSTANCE();
-				}
-				else {
-					final Type type = enteredValue.getType();
-					valueToSave = new Value(enteredValue.getValue().getJsonValue());
-					type.transformValue(valueToSave, new ValuePredicate() {
-						@Override
-						public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
-							// if it is skipped we return NULL
-							if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL_INSTANCE().getJsonValue());
-							// we remove the attributes
-							currentValue.setAttribute("skipped", null);
-							currentValue.setAttribute("invalid", null);
-							currentValue.setAttribute("warning", null);
-							
-							return true;
-						}
-					});
-				}
-				
-				RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), entity, program.getSurvey().getPeriod());
-				if (rawDataElementValue == null) {
-					rawDataElementValue = new RawDataElementValue(element.getDataElement(), entity, program.getSurvey().getPeriod(), null);
-				}
-				rawDataElementValue.setValue(valueToSave);
-				
-				rawDataElementValue.setTimestamp(new Date());
-				valueService.save(rawDataElementValue);
+				element.submit(dataLocation, element.getSurvey().getPeriod(), submitter);
 			}
 			
 			// close the program
-			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(entity, program);
+			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
 			enteredProgram.setClosed(true);
 			surveyValueService.save(enteredProgram);
 	
 			// log the event
-			logSurveyEvent(entity, program, "submit");
+			logSurveyEvent(dataLocation, program, "submit");
 			
 			return true;
 		}
 		else return false;
 	}
 
-	private void logSurveyEvent(DataLocationEntity entity, SurveyProgram program, String event) {
-		SurveyLog surveyLog = new SurveyLog(program.getSurvey(), program, entity);
+	private void logSurveyEvent(DataLocation dataLocation, SurveyProgram program, String event) {
+		SurveyLog surveyLog = new SurveyLog(program.getSurvey(), program, dataLocation);
 		surveyLog.setEvent(event);
 		surveyLog.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().save(surveyLog);
 	}
 	
-	public void reopen(DataLocationEntity entity, SurveyProgram program) {
-		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(entity, program); 
+	public void reopen(DataLocation dataLocation, SurveyProgram program) {
+		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program); 
 		enteredProgram.setClosed(false);
 		surveyValueService.save(enteredProgram);
 	}
 	
-	private SurveyEnteredProgram getSurveyEnteredProgram(DataLocationEntity entity, SurveyProgram surveyProgram) {
-		SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(surveyProgram, entity);
+	private SurveyEnteredProgram getSurveyEnteredProgram(DataLocation dataLocation, SurveyProgram surveyProgram) {
+		SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(surveyProgram, dataLocation);
 		if (enteredProgram == null) {
-			enteredProgram = new SurveyEnteredProgram(surveyProgram, entity, false, false, false);
-//			setProgramStatus(enteredProgram, entity);
+			enteredProgram = new SurveyEnteredProgram(surveyProgram, dataLocation, false, false, false);
+//			setProgramStatus(enteredProgram, dataLocation);
 			surveyValueService.save(enteredProgram);
 		}
 		return enteredProgram;
 	}
 	
-	private SurveyEnteredSection getSurveyEnteredSection(DataLocationEntity entity, SurveySection surveySection) {
-		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(surveySection, entity);
+	private SurveyEnteredSection getSurveyEnteredSection(DataLocation dataLocation, SurveySection surveySection) {
+		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(surveySection, dataLocation);
 		if (enteredSection == null) {
-			enteredSection = new SurveyEnteredSection(surveySection, entity, false, false);
-//			setSectionStatus(enteredSection, entity);
+			enteredSection = new SurveyEnteredSection(surveySection, dataLocation, false, false);
+//			setSectionStatus(enteredSection, dataLocation);
 			surveyValueService.save(enteredSection);
 		}
 		return enteredSection;
 	}
 	
-	private SurveyEnteredQuestion getSurveyEnteredQuestion(DataLocationEntity entity, SurveyQuestion surveyQuestion) {
-		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(surveyQuestion, entity);
-		if (enteredQuestion == null) {
-			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, entity, false, false);
-//			setQuestionStatus(enteredQuestion, entity);
-			surveyValueService.save(enteredQuestion);
-		}
-		return enteredQuestion;
-	}
 	
-	private SurveyEnteredValue getSurveyEnteredValue(DataLocationEntity entity, SurveyElement element) {
-		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, entity);
-		if (enteredValue == null) {
-//			Value lastValue = null;
-//			if (element.getSurvey().getLastPeriod() != null) {
-//				RawDataElementValue lastDataValue = valueService.getValue(element.getDataElement(), entity(), element.getSurvey().getLastPeriod());
-//				if (lastDataValue != null) lastValue = lastDataValue.getValue();
-//			}
-			enteredValue = new SurveyEnteredValue(element, entity, Value.NULL_INSTANCE(), null);
-			surveyValueService.save(enteredValue);
-		}
-		return enteredValue;
-	}
 
-	private void deleteSurveyEnteredProgram(SurveyProgram program, DataLocationEntity entity) {
-		SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, entity);
+	private void deleteSurveyEnteredProgram(SurveyProgram program, DataLocation dataLocation) {
+		SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, dataLocation);
 		if (enteredProgram != null) surveyValueService.delete(enteredProgram); 
 		
 		for (SurveySection section : program.getSections()) {
-			deleteSurveyEnteredSection(section, entity);
+			deleteSurveyEnteredSection(section, dataLocation);
 		}
 	}
 
-	private void deleteSurveyEnteredSection(SurveySection section, DataLocationEntity entity) {
-		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(section, entity);
+	private void deleteSurveyEnteredSection(SurveySection section, DataLocation dataLocation) {
+		SurveyEnteredSection enteredSection = surveyValueService.getSurveyEnteredSection(section, dataLocation);
 		if (enteredSection != null) surveyValueService.delete(enteredSection);
 		
 		for (SurveyQuestion question : section.getQuestions()) {
-			deleteSurveyEnteredQuestion(question, entity);
+			deleteSurveyEnteredQuestion(question, dataLocation);
 		}
 	}
 
-	private void deleteSurveyEnteredQuestion(SurveyQuestion question, DataLocationEntity entity) {
-		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(question, entity);
+	private void deleteSurveyEnteredQuestion(SurveyQuestion question, DataLocation dataLocation) {
+		SurveyEnteredQuestion enteredQuestion = surveyValueService.getSurveyEnteredQuestion(question, dataLocation);
 		if (enteredQuestion != null) surveyValueService.delete(enteredQuestion);
 		
-		for (SurveyElement element : question.getSurveyElements()) {
-			deleteSurveyEnteredValue(element, entity);
+		for (FormElement element : question.getSurveyElements()) {
+			deleteSurveyEnteredValue(element, dataLocation);
 		}
 	}
 
-	private void deleteSurveyEnteredValue(SurveyElement element, DataLocationEntity entity) {
-		SurveyEnteredValue enteredValue = surveyValueService.getSurveyEnteredValue(element, entity);
-		if (enteredValue != null) surveyValueService.delete(enteredValue);
-	}
-	
-	public void setLocationService(LocationService locationService) {
-		this.locationService = locationService;
+	private void deleteSurveyEnteredValue(FormElement element, DataLocation dataLocation) {
+		FormEnteredValue enteredValue = formElementService.getFormEnteredValue(element, dataLocation);
+		if (enteredValue != null) formElementService.delete(enteredValue);
 	}
 	
 	public void setSurveyValueService(SurveyValueService surveyValueService) {
 		this.surveyValueService = surveyValueService;
 	}
 	
+	public void setFormElementService(FormElementService formElementService) {
+		this.formElementService = formElementService;
+	}
+	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}
 	
-	public void setSurveyValidationService(SurveyValidationService surveyValidationService) {
-		this.surveyValidationService = surveyValidationService;
+	public void setFormValidationService(FormValidationService formValidationService) {
+		this.formValidationService = formValidationService;
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public void setSurveyService(SurveyService surveyService) {
-		this.surveyService = surveyService;
-	}
-
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;
 	}
