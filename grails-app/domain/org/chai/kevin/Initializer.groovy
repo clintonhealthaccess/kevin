@@ -1179,7 +1179,7 @@ class Initializer {
 		formElement.save(failOnError: true)
 		
 		// add validation and skip rules
-		def formSkip = new PlanningSkipRule(planning: planning, expression: "\$"+formElement.id+"[_].basic.instances == 1", skippedFormElements: [(formElement): "[_].basic.responsible"]).save(failOnError: true);
+		def formSkip = new PlanningSkipRule(planning: planning, expression: "\$"+formElement.id+"[_].basic.instances == 1", skippedFormElements: [(formElement): "[_].basic.responsible,[_].consumables"]).save(failOnError: true);
 		planning.addSkipRule(formSkip)
 		planning.save(failOnError: true)
 		
