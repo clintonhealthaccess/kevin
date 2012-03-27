@@ -40,7 +40,7 @@ class FormElementController {
 	}
 	
 	def getHtmlData = {
-		def formElements = formElementService.searchFormElements(params['term'], params.list('include'), params);
+		def formElements = formElementService.searchFormElements(params['searchText'], params.list('include'), params);
 		
 		render(contentType:"text/json") {
 			result = 'success'
