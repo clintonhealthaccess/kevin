@@ -24,6 +24,40 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 		
 	}
 	
+	def testAdminValue() {
+		assertEquals applyTemplate(
+			'<g:adminValue value="${value}" type="${type}"/>',
+			[
+				'value': Value.VALUE_NUMBER(10),
+				'type': Type.TYPE_NUMBER()
+			]
+		), '10.0'
+	
+		assertEquals applyTemplate(
+			'<g:adminValue value="${value}" type="${type}"/>',
+			[
+				'value': Value.VALUE_LIST([Value.VALUE_NUMBER(10)]),
+				'type': Type.TYPE_LIST(Type.TYPE_NUMBER())
+			]
+		), '[<a href="#" onclick="$(this).next().toggle();return false;">0</a><div class="hidden">10.0</div>,]'
+	
+		assertEquals applyTemplate(
+			'<g:adminValue value="${value}" type="${type}"/>',
+			[
+				'value': Value.VALUE_LIST([Value.VALUE_NUMBER(10), Value.VALUE_NUMBER(20)]),
+				'type': Type.TYPE_LIST(Type.TYPE_NUMBER())
+			]
+		), '[<a href="#" onclick="$(this).next().toggle();return false;">0</a><div class="hidden">10.0</div>,<a href="#" onclick="$(this).next().toggle();return false;">1</a><div class="hidden">20.0</div>,]'
+	
+		assertEquals applyTemplate(
+			'<g:adminValue value="${value}" type="${type}"/>',
+			[
+				'value': Value.VALUE_MAP(['key1': Value.VALUE_NUMBER(10), 'key2': Value.VALUE_NUMBER(20)]),
+				'type': Type.TYPE_MAP(['key1': Type.TYPE_NUMBER(), 'key2': Type.TYPE_NUMBER()])
+			]
+		), '<ul class="value-map"><li class="value-map-entry"><span class="value-map-key">key1</span>: <span class="value-map-value">10.0</span></li><li class="value-map-entry"><span class="value-map-key">key2</span>: <span class="value-map-value">20.0</span></li></ul>'
+	}
+	
 	// this does not work because it modifies the metaClass of languageService for all the tests
 //		languageService.metaClass.currentLanguage = { return "fr";}
 //		languageService.metaClass.getCurrentLanguage = { return "fr";}

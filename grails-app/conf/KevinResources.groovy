@@ -55,7 +55,7 @@ modules = {
 	}
 
 	form {
-		dependsOn 'jquery,cluetip'
+		dependsOn 'jquery,cluetip,fieldselection'
 
 		resource url: '/js/jquery/form/jquery.form.js', bundle: 'core'
 		resource url: '/js/form-util.js', bundle: 'core'
