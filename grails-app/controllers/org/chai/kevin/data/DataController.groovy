@@ -1,11 +1,16 @@
 package org.chai.kevin.data
 
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.Period;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.Value;
 import org.codehaus.groovy.grails.commons.ApplicationHolder;
 
 class DataController extends AbstractController {
 	
 	def dataService
+	def valueService
 	
 	def getDescription = {
 		def data = dataService.getData(params.int('id'), Data.class)
@@ -53,4 +58,35 @@ class DataController extends AbstractController {
 		}
 	}
 
+	def dataElementValueList = {
+		adaptParamsForList()
+		def data = dataService.getData(params.int('data'), DataElement.class)
+		if (data == null) {
+			response.sendError(404)
+		}
+		else {
+			List<Period> periods = []
+			if (params.get('period')) periods << Period.get(params.int('period'))
+			else periods.addAll Period.list()
+			
+			Map<Period, DataValue> valueMap = new HashMap<Period, DataValue>()
+			periods.each { period ->
+				valueMap.put(period, valueService.listDataElementValues(
+					data,
+					DataLocation.get(params.int('location')),
+					period
+				))
+			}
+			
+			render (view: '/entity/list', model:[
+				data: data,
+				periods: periods,
+				entities: valueMap,
+				template: "value/data"+data.class.simpleName+"List",
+				code: 'dataelementvalue.label',
+				search: true
+			])
+		}
+	}
+	
 }

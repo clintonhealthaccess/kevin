@@ -80,9 +80,9 @@ class EnumController extends AbstractEntityController {
 		
 	}
 	def search = {
-		
 		adaptParamsForList()
 		List<Enum> enums = enumService.searchEnum(params["q"],params);
+		
 		render (view: '/entity/list', model:[
 			entities: enums,
 			template: "data/enumList",

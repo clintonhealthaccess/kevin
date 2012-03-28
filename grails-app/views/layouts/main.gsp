@@ -109,6 +109,7 @@
 	  						<li><a class="${controllerName=='dataLocationType'?'active':''}" href="${createLink(controller: 'dataLocationType', action:'list')}"><g:message code="datalocationtype.label"/></a></li>
 	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'userList', action:'list')}"><g:message code="user.label"/></a></li>
 							<li><a class="${controllerName=='importerEntity'?'active':''}" href="${createLink(controller: 'importerEntity', action:'importer')}"><g:message code="import.label"/></a></li>
+							<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'test')}"><g:message code="expression.test.label"/></a></li>
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>

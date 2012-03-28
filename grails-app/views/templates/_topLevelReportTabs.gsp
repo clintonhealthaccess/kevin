@@ -1,4 +1,4 @@
-<ul class='horizontal' id='tab-nav'>
+<ul class="horizontal tab-navigation">
 	
 	<li><a ${controllerName == 'dashboard' ? 'class="selected"':''}
 		href="${createLink(controller:'dashboard', action:actionName, params:linkParams)}">
