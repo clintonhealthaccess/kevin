@@ -58,7 +58,7 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(null, DataElement.class) == null
 	}
 	
-	def "get data element"() {
+	def "get data element by id"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
@@ -101,6 +101,52 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(rawDataElement.id, Average.class) == null
 		dataService.getData(rawDataElement.id, NormalizedDataElement.class) == null
 		dataService.getData(rawDataElement.id, Sum.class) == null
+		
+	}
+	
+	def "get data element by code"() {
+		setup:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def average = newAverage("1", CODE(3))
+		def sum = newSum("1", CODE(4))
+		def aggregation = newAggregation("1", CODE(5))
+		def result = null
+		
+		when:
+		result = dataService.getDataByCode(rawDataElement.code, RawDataElement.class)
+		
+		then:
+		result.equals(rawDataElement)
+		
+		when:
+		result = dataService.getDataByCode(normalizedDataElement.code, NormalizedDataElement.class)
+		
+		then:
+		result.equals(normalizedDataElement)
+
+		when:
+		result = dataService.getDataByCode(average.code, Average.class)
+		
+		then:
+		result.equals(average)
+
+		when:
+		result = dataService.getDataByCode(sum.code, Sum.class)
+		
+		then:
+		result.equals(sum)
+	
+		expect:
+		dataService.getDataByCode(average.code, Sum.class) == null
+		dataService.getDataByCode(average.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(average.code, RawDataElement.class) == null
+		dataService.getDataByCode(sum.code, Average.class) == null
+		dataService.getDataByCode(sum.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(sum.code, RawDataElement.class) == null
+		dataService.getDataByCode(rawDataElement.code, Average.class) == null
+		dataService.getDataByCode(rawDataElement.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(rawDataElement.code, Sum.class) == null
 		
 	}
 	
@@ -304,6 +350,5 @@ class DataServiceSpec extends IntegrationTests {
 		then:
 		dataService.getReferencingCalculations(rawDataElement).equals([sum])
 	}
-
 	
 }

@@ -91,7 +91,7 @@ public class DsrService {
 				switch (target.getDataElement().getType().getType()) {
 				case BOOL:
 					if (dataValue.getValue().getBooleanValue()) value = "&#10003;";
-					else value = "";
+					else value = "&#10007;";
 					break;
 				case STRING:
 					value = dataValue.getValue().getStringValue();

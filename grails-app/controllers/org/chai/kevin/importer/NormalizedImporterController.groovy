@@ -27,6 +27,7 @@
  */
 package org.chai.kevin.importer
 
+
 import java.io.InputStreamReader
 
 import org.chai.kevin.AbstractController
@@ -37,24 +38,26 @@ import org.chai.kevin.value.RawDataElementValue;
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
+
 /**
  * @author Jean Kahigiso M.
  *
  */
-class ImporterEntityController extends AbstractController {
+class NormalizedImporterController extends AbstractController {
 	ImporterService importerService;
-	final String IMPORT_FORM = "import";
-	final String IMPORT_OUTPUT = "importoutput";
+	final String IMPORT_FORM = "normalizedImport";
+	final String IMPORT_OUTPUT = "importOutput";
+	
 	def importer = {
 		this.getModel(null,null,IMPORT_FORM);
 	}
 	
-	def uploader = { ImporterEntityCommand cmd ->
+	def uploader = { NormalizedImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 		if (!cmd.hasErrors()) {
 			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
 			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());
-			importerService.importFile(cmd.dataElement,csvInputStreamReader, cmd.period,errorManager);
+			importerService.importNormalizedData(cmd.dataElement,csvInputStreamReader, cmd.period,errorManager);
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
@@ -70,13 +73,13 @@ class ImporterEntityController extends AbstractController {
 		render (view: '/import/'+view, model:[
 					periods: periods,
 					dataElements: dataElements,
-					importerEntity: cmd,
+					normalizedImporter: cmd,
 					errorManager: errorManager
 				])
 	}
 }
 
-class ImporterEntityCommand {
+class NormalizedImporterCommand {
 
 	Period period;
 	CommonsMultipartFile file;
