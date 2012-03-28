@@ -15,9 +15,9 @@
 			<g:else>
 				<thead>
 					<tr>
-						<th>Data Location</th>
-						<th>Status</th>
-						<th>Value</th>
+						<th><g:message code="dataelementvalue.location.label"/></th>
+						<th><g:message code="dataelementvalue.status.label"/></th>
+						<th><g:message code="dataelementvalue.value.label"/></th>
 					</tr>
 				</thead>
 				<tbody>

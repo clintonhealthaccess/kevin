@@ -1,6 +1,6 @@
 <g:if test="${data!=null}">
 	<div class="push-10">
-		<g:message code="dataelement.label"/>: <g:i18n field="${data.names}"/> - ${data.code
+		<g:message code="dataelement.label"/>: <g:i18n field="${data.names}"/> - ${data.code}
 	</div>
 </g:if>
 <div class="main">
@@ -15,8 +15,8 @@
 			<g:else>	
 				<thead>
 					<tr>
-						<th>Data Location</th>
-						<th>Value</th>
+						<th><g:message code="dataelementvalue.location.label"/></th>
+						<th><g:message code="dataelementvalue.value.label"/></th>
 					</tr>
 				</thead>
 				<tbody>
