@@ -56,9 +56,7 @@ import org.hibernate.annotations.FetchMode;
 public class FctTarget extends AbstractReportTarget {
 	
 	private Long id;
-	private Sum sum;
 	private List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
-	private String format;
 	private String typeCodeString; //comma-separated list of location type ids
 	
 	@Id
@@ -70,15 +68,6 @@ public class FctTarget extends AbstractReportTarget {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=Sum.class)
-	public Sum getSum() {
-		return sum;		
-	}
-	
-	public void setSum(Sum sum){
-		this.sum = sum;
-	}
-	
 	@OneToMany(targetEntity=FctTargetOption.class, mappedBy="target", fetch=FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	public List<FctTargetOption> getTargetOptions() {
@@ -87,15 +76,6 @@ public class FctTarget extends AbstractReportTarget {
 	
 	public void setTargetOptions(List<FctTargetOption> targetOptions) {
 		this.targetOptions = targetOptions;
-	}
-	
-	@Basic
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
 	}
 
     @Lob
@@ -118,7 +98,7 @@ public class FctTarget extends AbstractReportTarget {
 
 	@Override
 	public String toString() {
-		return "FctTarget [sum=" + sum + "]";
+		return "FctTarget [code=" + code + "]";
 	}
 
 }
