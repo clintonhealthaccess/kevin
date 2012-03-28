@@ -3,19 +3,87 @@ package org.chai.kevin
 import org.chai.kevin.survey.SurveyElement;
 import java.util.Comparator;
 
+import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.survey.SurveyElement;
+import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.Value;
 
 class DataEntryTagLib {
 
 	def languageService
+	
+	def adminValue = {attrs, body ->
+		def type = attrs['type']
+		def value = attrs['value']
+		
+		def printableValue = new StringBuffer()
+		prettyPrint(type, value, printableValue)
+		
+		out << printableValue.toString()
+	}
+	
+	def prettyPrint(Type type, Value value, StringBuffer printableValue) {
+		if (value == null || value.isNull()) printableValue.append 'null'
+		else {
+			switch (type.type) {
+				case (ValueType.ENUM):
+				case (ValueType.STRING):
+				case (ValueType.TEXT):
+					printableValue.append '"'
+					printableValue.append  value.stringValue
+					printableValue.append '"'
+					break;
+				case (ValueType.DATE):
+					printableValue.append '"'
+					printableValue.append  Utils.formatDate(value.dateValue)
+					printableValue.append '"'
+					break;
+				case (ValueType.NUMBER):
+					printableValue.append  value.numberValue
+					break;
+				case (ValueType.BOOL):
+					printableValue.append  value.booleanValue
+					break;
+				case (ValueType.LIST):
+					printableValue.append  '['
+					int i = 0
+					for (Value listValue : value.listValue) {
+						printableValue.append '<a href="#" onclick="$(this).next().toggle();return false;">'
+						printableValue.append i++
+						printableValue.append '</a>'
+						printableValue.append '<div class="hidden">'
+						prettyPrint(type.listType, listValue, printableValue)
+						printableValue.append '</div>'
+						printableValue.append ','
+					}
+					printableValue.append ']'
+					break;
+				case (ValueType.MAP):
+					printableValue.append '{'
+					for (def entry : type.elementMap) {
+						printableValue.append '"'
+						printableValue.append entry.key
+						printableValue.append '":'
+						prettyPrint(entry.value, value.mapValue[entry.key], printableValue)
+						printableValue.append ''
+						printableValue.append ','
+					}
+					printableValue.append '}'
+					break;
+				default:
+					throw new NotImplementedException()
+			}
+		}
+	}
 	
 	def value = {attrs, body ->
 		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')

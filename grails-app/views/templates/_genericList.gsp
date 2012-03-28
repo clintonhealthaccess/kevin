@@ -26,7 +26,9 @@
 			</div>
 			<!-- End of template -->
 			<div class="paginateButtons main">
-				<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>
+				<g:if test="${entityCount != null}">
+					<g:paginate total="${entityCount}" params="${params}" action="${actionName}"/>
+				</g:if>
 			</div>
 		</g:if>
 		<g:else>
