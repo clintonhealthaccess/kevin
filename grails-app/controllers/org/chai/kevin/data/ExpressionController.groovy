@@ -11,12 +11,12 @@ class ExpressionController {
 	def expressionService
 	
 	def test = {
-		render (view: 'test', model: [periods: Period.list()])
+		render (view: 'builder', model: [periods: Period.list()])
 	}
 	
 	def doTest = { ExpressionTestCommand cmd ->
 		if (cmd.hasErrors()) {
-			render (view: 'test', model: [cmd: cmd, periods: Period.list()])
+			render (view: 'builder', model: [cmd: cmd, periods: Period.list()])
 		}
 		else {
 			def periods = cmd.periodIds.findAll {it!=null} collect {Period.get(it)}
