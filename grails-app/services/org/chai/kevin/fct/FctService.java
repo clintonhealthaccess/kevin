@@ -56,7 +56,7 @@ public class FctService {
 		for (Location child : childLocations) {
 			Map<FctTargetOption, ReportValue> targetMap = new HashMap<FctTargetOption, ReportValue>();
 			for(FctTargetOption targetOption : targetOptions){
-				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
+				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+targetOption.getSum());
 				targetMap.put(targetOption, getFctValue(targetOption, child, period, types));
 			}
 			valueMap.put(child, targetMap);
