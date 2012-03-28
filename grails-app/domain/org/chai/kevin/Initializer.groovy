@@ -672,9 +672,11 @@ class Initializer {
 			def hc = DataLocationType.findByCode('Health Center')
 
 			// indicators
-			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expressionMap: e([(period1.id+''):[(hc.code):"10", (dh.code):"10"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 20", expressionMap: e([(period1.id+''):[(hc.code):"20", (dh.code):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expressionMap: e([(period1.id+''):[(hc.code):"20", (dh.code):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 30"]), descriptions:j([:]), code:"Constant 30", expressionMap: e([(period1.id+''):[(hc.code):"30", (dh.code):"30"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 40"]), descriptions:j([:]), code:"Constant 40", expressionMap: e([(period1.id+''):[(hc.code):"40", (dh.code):"40"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
 				code:"Element 1", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id, (dh.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
@@ -1029,14 +1031,19 @@ class Initializer {
 
 			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Sum 1", timestamp:new Date());
 			sum1.save(failOnError: true);
-
+			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
+			sum2.save(failOnError: true);
+			def sum3 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 30").id, code: "Sum 3", timestamp:new Date());
+			sum3.save(failOnError: true);
+			def sum4 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 40").id, code: "Sum 4", timestamp:new Date());
+			sum4.save(failOnError: true);
+						
 			FctTarget fctTarget1 = new FctTarget(
 
 				names:j(["en":"Fct Target 1"]), 
 				program: hmr,
 				descriptions:j([:]), 
 				code:"TARGET 1",
-				sum: sum1,
 				typeCodeString: "District Hospital,Health Center"
 			).save(failOnError:true)
 			
@@ -1053,20 +1060,16 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 2",
-				sum: sum1
+				sum: sum2
 			).save(failOnError:true)
 			
 			fctTarget1.targetOptions << [fctTargetOption1, fctTargetOption2]
-			fctTarget1.save(failOnError:true)
-			
-			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
-			sum2.save(failOnError: true);
+			fctTarget1.save(failOnError:true)						
 
 			FctTarget fctTarget2 = new FctTarget(
 				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
 				program: hmr,
 				code:"TARGET 2",
-				sum: sum2,
 				typeCodeString: "District Hospital,Health Center"
 			).save(failOnError:true)
 			
@@ -1075,7 +1078,7 @@ class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 3",
-				sum: sum2
+				sum: sum3
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption4 = new FctTargetOption(
@@ -1083,7 +1086,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 4",
-				sum: sum2
+				sum: sum4
 			).save(failOnError:true)
 			
 			fctTarget2.targetOptions << [fctTargetOption3, fctTargetOption4]
@@ -1094,7 +1097,6 @@ class Initializer {
 				program: hmr,
 				targetOptions: [],
 				code:"TARGET 3",
-				sum: sum2,
 				typeCodeString: "District Hospital,Health Center"
 			).save(failOnError:true)
 			

@@ -5,7 +5,6 @@
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="entity.code.label"/></th>
 			<th><g:message code="fct.target.program.label"/></th>
-			<th><g:message code="fct.target.sum.label"/></th>
 			<th><g:message code="default.number.label" args="[message(code:'fct.targetoption.label')]"/></th>
 			<th><g:message code="entity.order.label"/></th>
 		</tr>
@@ -33,7 +32,6 @@
 				<td>
 					<g:i18n field="${target.program.names}"/>
 				</td>
-				<td>${target.sum.code}</td>
 				<td>${target.targetOptions.size()}</td>
 				<td>${target.order}</td>
 			</tr>
