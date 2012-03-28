@@ -134,7 +134,7 @@
 			&copy; <g:message code="footer.labels.chai"/> <br /><a href="${createLink(controller:'home', action:'about')}"><g:message code="footer.labels.about"/></a> | <a href="${createLink(controller:'home', action:'contact')}"><g:message code="footer.labels.contact"/></a> | <a href="${createLink(controller:'home', action:'helpdesk')}"><g:message code="footer.labels.helpdesk"/></a>
 		</div>
 		<div style="opacity: 0.6">
-			<g:buildInfo/>
+			<build:buildInfo/>
 		</div>
 	</div>
 

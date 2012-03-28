@@ -121,6 +121,7 @@ grails.project.dependency.resolution = {
 		compile ":svn:1.0.1"
 		compile ":cdn-resources:0.2"
 		compile ":mail:1.0"
+		compile ":build-info-tag:0.1"
 		
 		test (":spock:0.6-SNAPSHOT") {changing = false}
 	}
