@@ -65,4 +65,37 @@ class FctServiceSpec extends FctIntegrationTests {
 				
 	}
 	
+	def "test fct get max report value"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()		
+		def program = newReportProgram(CODE(1))		
+		def location = Location.findByCode(RWANDA)
+		def level = locationService.getLevelAfter(location.getLevel(), new HashSet([LocationLevel.findByCode(SECTOR)]))
+		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def fctTable = null
+		refresh()
+		
+		when:
+		def lessThan100 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
+		def sum = newSum("\$"+lessThan100.id, CODE(3))
+		def target = newFctTarget(CODE(4), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def targetOption = newFctTargetOption(CODE(5), target, sum, 1)
+		refresh()
+		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
+		
+		then:
+		fctTable.getMaxReportValue() == 100
+		
+		when:
+		def moreThan100 = newNormalizedDataElement(CODE(6), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"100", (HEALTH_CENTER_GROUP):"101"]]))
+		sum = newSum("\$"+moreThan100.id, CODE(7))
+		target = newFctTarget(CODE(8), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		targetOption = newFctTargetOption(CODE(9), target, sum, 1)
+		refresh()
+		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
+		
+		then:
+		fctTable.getMaxReportValue() == 201
+	}
 }
