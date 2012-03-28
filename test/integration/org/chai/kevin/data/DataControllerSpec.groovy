@@ -1,6 +1,9 @@
 package org.chai.kevin.data;
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.value.Status;
+import org.chai.kevin.value.Value;
 
 class DataControllerSpec extends IntegrationTests {
 	
@@ -35,5 +38,63 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.response.contentAsString.contains("number")
 	}
 
+	def "get data element values - 404 when no data"() {
+		setup:
+		dataController = new DataController()
+		
+		when:
+		dataController.dataElementValueList()
+		
+		then:
+		dataController.modelAndView == null
+	}
+	
+	def "get data element values - raw data element"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		dataController = new DataController()
+		
+		when:
+		dataController.params.data = dataElement.id
+		dataController.dataElementValueList()
+		
+		then:
+		dataController.modelAndView.model.periods.equals([period1])
+		dataController.modelAndView.model.entities.equals([(period1):[]])
+		
+		when:
+		def dataElementValue = newRawDataElementValue(dataElement, period1, DataLocation.findByCode(BUTARO), Value.NULL_INSTANCE())
+		dataController.dataElementValueList()
+		
+		then:
+		dataController.modelAndView.model.periods.equals([period1])
+		dataController.modelAndView.model.entities.equals([(period1):[dataElementValue]])
+	}
+	
+	def "get data element values - normalized data element"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		dataController = new DataController()
+		
+		when:
+		dataController.params.data = dataElement.id
+		dataController.dataElementValueList()
+		
+		then:
+		dataController.modelAndView.model.periods.equals([period1])
+		dataController.modelAndView.model.entities.equals([(period1):[]])
+		
+		when:
+		def dataElementValue = newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.MISSING_VALUE, Value.NULL_INSTANCE())
+		dataController.dataElementValueList()
+		
+		then:
+		dataController.modelAndView.model.periods.equals([period1])
+		dataController.modelAndView.model.entities.equals([(period1):[dataElementValue]])
+	}
 	
 }

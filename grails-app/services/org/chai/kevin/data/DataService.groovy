@@ -78,6 +78,7 @@ class DataService {
 	}
 	
 	public <T extends Data<?>> T getData(Long id, Class<T> clazz) {
+		if (id == null) return null;
 		return (Data)sessionFactory.getCurrentSession().get(clazz, id);
 	}
 	
