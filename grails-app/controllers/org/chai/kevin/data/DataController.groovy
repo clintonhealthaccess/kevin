@@ -79,6 +79,7 @@ class DataController extends AbstractController {
 			}
 			
 			render (view: '/entity/list', model:[
+				data: data,
 				periods: periods,
 				entities: valueMap,
 				template: "value/data"+data.class.simpleName+"List",

@@ -1,3 +1,8 @@
+<g:if test="${data!=null}">
+	<div class="push-10">
+		<g:message code="dataelement.label"/>: <g:i18n field="${data.names}"/> - ${data.code
+	</div>
+</g:if>
 <div class="main">
 	<g:render template="/entity/value/periodTabs"/>
 	<g:each in="${periods}" var="period" status="periodIndex">
