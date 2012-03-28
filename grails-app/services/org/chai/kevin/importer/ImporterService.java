@@ -83,11 +83,11 @@ public class ImporterService {
 			manager.setNumberOfSavedRows(0);
 			manager.setNumberOfUnsavedRows(0); 
 			manager.setNumberOfRowsSavedWithError(0);
-			Map<DataLocationEntity, Set<RawDataElement>> savedData = new HashMap<DataLocationEntity, Set<RawDataElement>>();
+			Map<DataLocation, Set<RawDataElement>> savedData = new HashMap<DataLocation, Set<RawDataElement>>();
 
 			
 			if(!Arrays.asList(headers).contains(CODE_HEADER) || !Arrays.asList(headers).contains(DATA_ELEMENT_HEADER) || !Arrays.asList(headers).contains(VALUE_HEADER))
-				manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"error.message.unknowm.header"));
+				manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"import.error.message.unknowm.header"));
 			else{
 				
 				while (rows != null) {
@@ -98,7 +98,7 @@ public class ImporterService {
 					Map<String, Object> map = new HashMap<String, Object>();
 					Map<String, Type> types = new HashMap<String, Type>();
 					
-					DataLocationEntity dataEntity =locationService.findCalculationEntityByCode(rows.get(CODE_HEADER), DataLocationEntity.class);
+					DataLocation dataEntity =locationService.findCalculationLocationByCode(rows.get(CODE_HEADER), DataLocation.class);
 					RawDataElement rawDataElement = dataService.getDataByCode(rows.get(DATA_ELEMENT_HEADER), RawDataElement.class);
 					RawDataElementValue rawDataElementValue = null;
 					
@@ -117,7 +117,7 @@ public class ImporterService {
 							if (log.isDebugEnabled()) log.debug(" savedData : "+savedData+" errors: "+manager.getErrors());
 						} else {
 							// already imported
-							manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"error.message.data.duplicated"));
+							manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"import.error.message.data.duplicated"));
 						}
 						
 						
@@ -148,8 +148,8 @@ public class ImporterService {
 							manager.incrementNumberOfRowsSavedWithError(1);
 						manager.incrementNumberOfSavedRows();
 					} else {
-						if(dataEntity==null) manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"error.message.unknown.data.location"));
-						if(rawDataElement==null) manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),DATA_ELEMENT_HEADER,"error.message.unknown.raw.data.element"));	
+						if(dataEntity==null) manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.data.location"));
+						if(rawDataElement==null) manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),DATA_ELEMENT_HEADER,"import.error.message.unknown.raw.data.element"));	
 						manager.incrementNumberOfUnsavedRows();
 					}
 					rows = readFileAsMap.read(headers);

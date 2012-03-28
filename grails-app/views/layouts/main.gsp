@@ -108,8 +108,9 @@
 	  						<li><a class="${controllerName=='dataLocation'?'active':''}" href="${createLink(controller: 'dataLocation', action:'list')}"><g:message code="datalocation.label"/></a></li>
 	  						<li><a class="${controllerName=='dataLocationType'?'active':''}" href="${createLink(controller: 'dataLocationType', action:'list')}"><g:message code="datalocationtype.label"/></a></li>
 	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'userList', action:'list')}"><g:message code="user.label"/></a></li>
-							<li><a class="${controllerName=='normailizedImporterEntity'?'active':''}" href="${createLink(controller: 'normalizedImporterEntity', action:'importer')}"><g:message code="import.genaral.data.label" /></a></li>
-							<li><a class="${controllerName=='generalImporterEntity'?'active':''}" href="${createLink(controller: 'generalImporterEntity', action:'importer')}"><g:message code="import.normalized.data.label" /></a></li>
+							<li><a class="${controllerName=='generalImporter'?'active':''}" href="${createLink(controller: 'generalImporter', action:'importer')}"><g:message code="import.general.data.label" /></a></li>
+							<li><a class="${controllerName=='normailizedImporter'?'active':''}" href="${createLink(controller: 'normalizedImporter', action:'importer')}"><g:message code="import.normalized.data.label" /></a></li>
+	  					
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>

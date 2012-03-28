@@ -25,7 +25,7 @@
 						</g:if> 
 						<li>
 							<ul class="import-error-list">
-								<li><g:message code="${error.messageCode}"/><g:message code="import.result.column" />: ${error.header}</li>
+								<li><g:message code="${error.messageCode}"/> <g:message code="import.result.column" />: ${error.header}</li>
 							</ul>
 						</li>	
 					</g:each>

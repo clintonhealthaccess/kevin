@@ -25,58 +25,71 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.importer;
+package org.chai.kevin.importer
 
-import org.chai.kevin.AbstractController;
+
+import java.io.InputStreamReader
+
+import org.chai.kevin.AbstractController
+import org.chai.kevin.Period;
 import org.chai.kevin.data.RawDataElement;
-import org.hisp.dhis.period.Period;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.chai.kevin.data.Type;
+import org.chai.kevin.value.RawDataElementValue;
+import org.springframework.web.multipart.MultipartHttpServletRequest
+import org.springframework.web.multipart.commons.CommonsMultipartFile
+
 
 /**
- * @author JeanKahigiso
+ * @author Jean Kahigiso M.
  *
  */
-class GeneralImporterEntityController extends AbstractController {
+class NormalizedImporterController extends AbstractController {
 	ImporterService importerService;
-	final String IMPORT_FORM = "generalImport";
+	final String IMPORT_FORM = "normalizedImport";
 	final String IMPORT_OUTPUT = "importOutput";
 	
 	def importer = {
 		this.getModel(null,null,IMPORT_FORM);
 	}
 	
-	def uploader = { GeneralImporterEntityCommand cmd ->
+	def uploader = { NormalizedImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",period="+cmd.period+")")
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
 			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());
-			importerService.importGeneralData(csvInputStreamReader, cmd.period,errorManager);
+			importerService.importNormalizedData(cmd.dataElement,csvInputStreamReader, cmd.period,errorManager);
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
-		}
+		}	
 	}
-	
+
 	def getModel(def cmd,ImporterErrorManager errorManager,String view) {
 		if(log.isDebugEnabled()) log.debug("getModel(cmd="+cmd+",errorManager="+errorManager+",view="+view+")")
+		
 		List<Period> periods = Period.list()
+		List<RawDataElement> dataElements =[]
+		if (cmd?.dataElement != null) dataElements << cmd.dataElement
 		render (view: '/import/'+view, model:[
 					periods: periods,
-					importerEntity: cmd,
+					dataElements: dataElements,
+					normalizedImporter: cmd,
 					errorManager: errorManager
 				])
 	}
-
 }
 
-class GeneralImporterEntityCommand {
+class NormalizedImporterCommand {
 
 	Period period;
 	CommonsMultipartFile file;
+	RawDataElement dataElement;
 
 	static constraints = {
 		period(blank:false,nullable:false)
+		dataElement(blank:false,nullable:false)
 		file(blank:false,nullable:false, validator: { val, obj ->
+
 			final String FILE_TYPE = "text/csv";
 			boolean valid = true;
 			if(val != null)

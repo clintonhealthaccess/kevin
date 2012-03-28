@@ -213,7 +213,7 @@ class ImporterServiceSpec extends IntegrationTests {
 			
 		then:
 		RawDataElementValue.count() == 1
-		RawDataElementValue.list()[0].entity.equals(DataLocationEntity.findByCode(BUTARO))
+		RawDataElementValue.list()[0].location.equals(DataLocation.findByCode(BUTARO))
 		RawDataElementValue.list()[0].data.equals(RawDataElement.findByCode(CODE(1)))
 		RawDataElementValue.list()[0].period.equals(period)
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_STRING("value"))
@@ -346,8 +346,8 @@ class ImporterServiceSpec extends IntegrationTests {
 		//check if the first row was skipped and the second was taken as the first and an error was saved
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_STRING("Text2"))
 		//please change this error msg code if it is changed in ImporterService
-		importerErrorManager.errors[0].messageCode.equals("error.message.unknown.data.location");
-		importerErrorManager.errors[1].messageCode.equals("error.message.unknown.raw.data.element");
+		importerErrorManager.errors[0].messageCode.equals("import.error.message.unknown.data.location");
+		importerErrorManager.errors[1].messageCode.equals("import.error.message.unknown.raw.data.element");
 	}
 	
 	def "get general import data being override from csv"(){
@@ -373,7 +373,7 @@ class ImporterServiceSpec extends IntegrationTests {
 		//check if the first element was override
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_STRING("overrideStringTwo"))
 		//please change this error msg code if it is changed in ImporterService
-		importerErrorManager.errors[0].messageCode.equals("error.message.data.duplicated");
+		importerErrorManager.errors[0].messageCode.equals("import.error.message.data.duplicated");
 	}
 		
 }
