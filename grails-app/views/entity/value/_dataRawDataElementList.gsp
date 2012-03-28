@@ -10,7 +10,6 @@
 			<g:else>	
 				<thead>
 					<tr>
-						<th>Data Element</th>
 						<th>Data Location</th>
 						<th>Value</th>
 					</tr>
@@ -18,7 +17,6 @@
 				<tbody>
 					<g:each in="${entities[period]}" status="i" var="value"> 
 						<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-							<td><g:i18n field="${value.data.names}"/></td>
 							<td><g:i18n field="${value.location.names}"/></td>
 							<td><g:adminValue value="${value.value}" type="${value.data.type}"/></td>
 						</tr>
