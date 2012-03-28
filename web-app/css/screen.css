@@ -787,6 +787,12 @@ form.search-form input:hover, form.search-form input:focus { background: #ecf7ff
 /* line 463, ../../src/stylesheets/partials/_forms.sass */
 .admin-hint { display: none; font-size: 9px; color: red; margin-top: 4px; margin-bottom: 8px; }
 
+/* line 472, ../../src/stylesheets/partials/_forms.sass */
+.value-map { position: relative; left: 8px; }
+
+/* line 476, ../../src/stylesheets/partials/_forms.sass */
+.value-map-key { color: #258cd5; }
+
 /* line 2, ../../src/stylesheets/partials/_flashes.sass */
 .nav-help { background: url("../images/icons/point.png") no-repeat 0 0; padding: 10px 10px 10px 42px; }
 

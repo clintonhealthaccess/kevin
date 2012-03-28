@@ -55,7 +55,7 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 				'value': Value.VALUE_MAP(['key1': Value.VALUE_NUMBER(10), 'key2': Value.VALUE_NUMBER(20)]),
 				'type': Type.TYPE_MAP(['key1': Type.TYPE_NUMBER(), 'key2': Type.TYPE_NUMBER()])
 			]
-		), '{"key1":10.0,"key2":20.0,}'
+		), '<ul class="value-map"><li class="value-map-entry"><span class="value-map-key">key1</span>: <span class="value-map-value">10.0</span></li><li class="value-map-entry"><span class="value-map-key">key2</span>: <span class="value-map-value">20.0</span></li></ul>'
 	}
 	
 	// this does not work because it modifies the metaClass of languageService for all the tests

@@ -14,7 +14,7 @@ class ExpressionControllerSpec extends IntegrationTests {
 		expressionController = new ExpressionController()
 		
 		when:
-		ExpressionTestCommand cmd = new ExpressionTestCommand(type: new Type("{\"type\":\"number\"}"), expression: '123')
+		ExpressionTestCommand cmd = new ExpressionTestCommand(type: new Type("{\"type\":\"number\"}"), expression: '123', periodIds: [period.id])
 		expressionController.doTest(cmd)
 		
 		then:

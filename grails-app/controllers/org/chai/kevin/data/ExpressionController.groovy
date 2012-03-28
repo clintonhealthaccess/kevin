@@ -1,5 +1,7 @@
 package org.chai.kevin.data
 
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.ListUtils;
 import org.chai.kevin.Period;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -9,15 +11,15 @@ class ExpressionController {
 	def expressionService
 	
 	def test = {
-		render (view: 'test')
+		render (view: 'test', model: [periods: Period.list()])
 	}
 	
 	def doTest = { ExpressionTestCommand cmd ->
 		if (cmd.hasErrors()) {
-			render (view: 'test', model: [cmd: cmd])
+			render (view: 'test', model: [cmd: cmd, periods: Period.list()])
 		}
 		else {
-			def periods = Period.list()
+			def periods = cmd.periodIds.findAll {it!=null} collect {Period.get(it)}
 			def dataLocationTypes = DataLocationType.list()
 			
 			NormalizedDataElement dataElement = new NormalizedDataElement()
@@ -58,11 +60,13 @@ class ExpressionController {
 class ExpressionTestCommand {
 	String expression
 	Type type
+	List<Long> periodIds
 	
 	static constraints = {
 		expression (blank: false, expressionValid: true)
 		type (blank: false, nullable: false, validator: {val, obj ->
 			return val.isValid();
 		})
+		periodIds (blank: false)
 	}
 }

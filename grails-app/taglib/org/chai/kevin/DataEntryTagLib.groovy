@@ -26,12 +26,12 @@ class DataEntryTagLib {
 		def value = attrs['value']
 		
 		def printableValue = new StringBuffer()
-		prettyPrint(type, value, printableValue)
+		prettyPrint(type, value, printableValue, 0)
 		
 		out << printableValue.toString()
 	}
 	
-	def prettyPrint(Type type, Value value, StringBuffer printableValue) {
+	def prettyPrint(Type type, Value value, StringBuffer printableValue, Integer level) {
 		if (value == null || value.isNull()) printableValue.append 'null'
 		else {
 			switch (type.type) {
@@ -61,23 +61,25 @@ class DataEntryTagLib {
 						printableValue.append i++
 						printableValue.append '</a>'
 						printableValue.append '<div class="hidden">'
-						prettyPrint(type.listType, listValue, printableValue)
+						prettyPrint(type.listType, listValue, printableValue, level+1)
 						printableValue.append '</div>'
 						printableValue.append ','
 					}
 					printableValue.append ']'
 					break;
 				case (ValueType.MAP):
-					printableValue.append '{'
+					printableValue.append '<ul class="value-map">'
 					for (def entry : type.elementMap) {
-						printableValue.append '"'
+						printableValue.append '<li class="value-map-entry">'
+						printableValue.append '<span class="value-map-key">'
 						printableValue.append entry.key
-						printableValue.append '":'
-						prettyPrint(entry.value, value.mapValue[entry.key], printableValue)
-						printableValue.append ''
-						printableValue.append ','
+						printableValue.append '</span>: '
+						printableValue.append '<span class="value-map-value">'
+						prettyPrint(entry.value, value.mapValue[entry.key], printableValue, level+1)
+						printableValue.append '</span>'
+						printableValue.append '</li>'
 					}
-					printableValue.append '}'
+					printableValue.append '</ul>'
 					break;
 				default:
 					throw new NotImplementedException()
