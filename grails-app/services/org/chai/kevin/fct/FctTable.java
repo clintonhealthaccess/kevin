@@ -28,6 +28,7 @@ package org.chai.kevin.fct;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +46,25 @@ public class FctTable extends ReportTable<FctTargetOption, Location> {
 		this.targetOptions = targetOptions;
 	}
 
+	public Integer getMaxReportValue(){
+		Integer maxValue = 0;
+		Collection<Map<FctTargetOption, ReportValue>> targetMaps = valueMap.values();
+		for(Map<FctTargetOption, ReportValue> targetMap : targetMaps){
+			Collection<ReportValue> reportValues = targetMap.values();
+			for(ReportValue reportValue : reportValues){
+				String value = reportValue.getValue();
+				if(value != null && !value.isEmpty()){
+					Double doubleValue = Double.parseDouble(value);					
+					if(doubleValue > maxValue)
+						maxValue = doubleValue.intValue();
+				}
+			}
+		}
+		if(maxValue < 100)
+			maxValue = 100;
+		return maxValue;
+	}
+	
 	public ReportValue getReportValue(Location location, FctTargetOption targetOption){
 		ReportValue reportValue = null;
 		Map<FctTargetOption, ReportValue> reportValues = valueMap.get(location);
