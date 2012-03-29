@@ -40,7 +40,7 @@ class ExportController extends AbstractController {
 //	LocationService locationService;
 	
 	def export ={
-		List<Period> periods = Period.list()
+		List<Period> periods = Period.list([cache: true])
 		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		
 		render (view: '/export/export', model:[

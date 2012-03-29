@@ -67,7 +67,7 @@ class DataController extends AbstractController {
 		else {
 			List<Period> periods = []
 			if (params.get('period')) periods << Period.get(params.int('period'))
-			else periods.addAll Period.list()
+			else periods.addAll Period.list([cache: true])
 			
 			Map<Period, DataValue> valueMap = new HashMap<Period, DataValue>()
 			periods.each { period ->

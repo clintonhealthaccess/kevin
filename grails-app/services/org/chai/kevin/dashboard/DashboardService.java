@@ -207,8 +207,8 @@ public class DashboardService {
 		DashboardProgram dashboardProgram = (DashboardProgram) sessionFactory.getCurrentSession()
 				.createCriteria(DashboardProgram.class)
 				.add(Restrictions.eq("program", program))
+				.setCacheable(true)
 				.uniqueResult();
-		
 		return dashboardProgram;
 	}
 	

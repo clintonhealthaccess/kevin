@@ -44,8 +44,11 @@ public class DsrService {
 	public DsrTable getDsrTable(Location location, ReportProgram program, Period period, Set<DataLocationType> types, DsrTargetCategory category) {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",location="+location+",program="+program+",types="+types+",category="+category+")");
 				
-		List<DataLocation> dataLocations = location.collectDataLocations(null, types);		
-		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, program);
+		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
+		
+		List<DsrTarget> targets = new ArrayList<DsrTarget>();
+		if(category != null) targets.addAll(category.getTargets());
+		else targets.addAll(reportService.getReportTargets(DsrTarget.class, program));
 		
 		Map<DataLocation, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocation, Map<DsrTarget, ReportValue>>();				
 		
@@ -53,16 +56,6 @@ public class DsrService {
 		
 		if(dataLocations.isEmpty() || targets.isEmpty())
 			return new DsrTable(valueMap, targets, targetCategories);		
-		
-		List<DsrTarget> categoryTargets = new ArrayList<DsrTarget>();
-		if(category != null){
-			for(DsrTarget target : targets){
-				if(category.equals(target.getCategory()))
-					categoryTargets.add(target);					
-			}
-			if(!categoryTargets.isEmpty())
-				targets = categoryTargets;
-		}				
 		
 		for (DataLocation dataLocation : dataLocations) {
 			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			

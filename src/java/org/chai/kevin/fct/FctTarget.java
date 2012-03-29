@@ -48,11 +48,14 @@ import javax.persistence.Transient;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "FctTarget")
 @Table(name = "dhsst_fct_target")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class FctTarget extends AbstractReportTarget {
 	
 	private Long id;
@@ -68,8 +71,7 @@ public class FctTarget extends AbstractReportTarget {
 		this.id = id;
 	}
 	
-	@OneToMany(targetEntity=FctTargetOption.class, mappedBy="target", fetch=FetchType.EAGER)
-	@Fetch(FetchMode.SELECT)
+	@OneToMany(targetEntity=FctTargetOption.class, mappedBy="target")
 	public List<FctTargetOption> getTargetOptions() {
 		return targetOptions;
 	}

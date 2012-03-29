@@ -59,7 +59,7 @@ class TableRowController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			row: entity,
-			types: DataLocationType.list()
+			types: DataLocationType.list([cache: true])
 		]
 	}
 

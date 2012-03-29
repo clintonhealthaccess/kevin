@@ -14,9 +14,12 @@ import javax.persistence.Transient;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.util.Utils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name = "FctTargetOption")
 @Table(name = "dhsst_fct_target_option")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class FctTargetOption extends ReportEntity {
 
 	private Long id;

@@ -15,7 +15,7 @@ class DataLocationController extends AbstractEntityController {
 	def getModel(def entity) {
 		def locations = []
 		if (entity.location != null) locations << entity.location
-		[location: entity, types: DataLocationType.list(), locations: locations]
+		[location: entity, types: DataLocationType.list([cache: true]), locations: locations]
 	}
 
 	def getEntity(def id) {

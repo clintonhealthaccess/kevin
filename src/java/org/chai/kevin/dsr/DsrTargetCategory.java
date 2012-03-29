@@ -44,11 +44,14 @@ import javax.persistence.Transient;
 
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "DsrTargetCategory")
 @Table(name = "dhsst_dsr_target_category")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTargetCategory extends ReportEntity {
 
 	private Long id;
@@ -64,8 +67,7 @@ public class DsrTargetCategory extends ReportEntity {
 		this.id = id;
 	}
 
-	@OneToMany(targetEntity=DsrTarget.class, mappedBy="category", fetch=FetchType.EAGER)
-	@Fetch(FetchMode.SELECT)
+	@OneToMany(targetEntity=DsrTarget.class, mappedBy="category")
 	public List<DsrTarget> getTargets() {
 		return targets;
 	}
