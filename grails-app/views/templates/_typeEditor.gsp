@@ -29,7 +29,7 @@
 			</li>
 			<li>
 				<a href="#">map</a>
-				<span class="hidden">{"type":"list","elements":{"name":"","element_type":""}}</span>
+				<span class="hidden">{"type":"map","elements":{"name":"","element_type":""}}</span>
 			</li>
 		</ul>
 	</div>
