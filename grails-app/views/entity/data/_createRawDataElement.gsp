@@ -12,8 +12,9 @@
 		<g:i18nTextarea name="descriptions" bean="${rawDataElement}" value="${rawDataElement.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" height="150"  width="300" maxHeight="150" />
 		
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${rawDataElement}" field="code" />
-		<g:textarea name="type.jsonValue" label="${message(code:'entity.type.label')}" bean="${rawDataElement}" field="type" value="${rawDataElement.type?.jsonValue}" readonly="${hasValues}"/>
 		
+		<g:render template="/templates/typeEditor" model="[bean: rawDataElement, name: 'type.jsonValue']"/>
+
 		<g:input name="info" label="${message(code:'rawdataelement.info.label')}" bean="${rawDataElement}" field="info"/>
 		
 		<g:if test="${rawDataElement.id != null}">
