@@ -62,7 +62,7 @@ class FctTargetController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			target: entity,
-			types: DataLocationType.list(),
+			types: DataLocationType.list([cache: true]),
 			programs: ReportProgram.list(),
 			sums: entity.sum!=null?[entity.sum]:[],
 			typeCodes: Utils.split(entity.typeCodeString)

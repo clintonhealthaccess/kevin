@@ -59,7 +59,7 @@ class ProgramController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			program: entity,
-			types: DataLocationType.list(),
+			types: DataLocationType.list([cache: true]),
 		]
 	}
 

@@ -45,9 +45,12 @@ import org.chai.kevin.data.DataElement;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.StoredValue;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name = "DsrTarget")
 @Table(name = "dhsst_dsr_target")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DsrTarget extends AbstractReportTarget {
 	
 	private Long id;

@@ -12,7 +12,7 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 	public static final String VALUE_STRING = "value";
 	
 	static def setupDashboardTree(){
-		def period = Period.list()[0]
+		def period = Period.list([cache: true])[0]
 		def root = ReportProgram.findByCode(ROOT)
 		def program1 = ReportProgram.findByCode(PROGRAM1)
 		def program2 = ReportProgram.findByCode(PROGRAM2)

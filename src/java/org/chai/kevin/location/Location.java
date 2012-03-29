@@ -15,7 +15,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="Location")
 @Table(name="dhsst_location_location")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Location extends CalculationLocation {
 
 	private Location parent;

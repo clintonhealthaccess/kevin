@@ -42,4 +42,8 @@ class User {
 		location(nullable: true)
 		uuid(nullable: false, blank: false, unique: true)
     }
+	
+	static mapping = {
+		cache true
+	}
 }

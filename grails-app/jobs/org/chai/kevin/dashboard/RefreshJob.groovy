@@ -34,10 +34,11 @@ import org.quartz.InterruptableJob;
 
 class RefreshJob implements InterruptableJob {
 
-	// commented out, we use the system cron
-//	static triggers = {
-//		cron name: 'trigger', startDelay: 10000, cronExpression: "0 0 0 * * ?"
-//	}
+	// we have to have this otherwise the job seems
+	// to be executed at each request
+	static triggers = {
+		cron name: 'trigger', startDelay: 10000, cronExpression: "0 0 0 * * ?"
+	}
 	
 	def sessionRequired = true
 	def concurrent = false
@@ -52,6 +53,7 @@ class RefreshJob implements InterruptableJob {
 		refreshValueService.refreshNormalizedDataElements()
 		refreshValueService.refreshCalculations()
 		
+		refreshValueService.flushCaches()
 	}
 	
 	void interrupt() {}

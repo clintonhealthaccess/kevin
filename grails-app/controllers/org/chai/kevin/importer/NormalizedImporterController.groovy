@@ -67,7 +67,7 @@ class NormalizedImporterController extends AbstractController {
 	def getModel(def cmd,ImporterErrorManager errorManager,String view) {
 		if(log.isDebugEnabled()) log.debug("getModel(cmd="+cmd+",errorManager="+errorManager+",view="+view+")")
 		
-		List<Period> periods = Period.list()
+		List<Period> periods = Period.list([cache: true])
 		List<RawDataElement> dataElements =[]
 		if (cmd?.dataElement != null) dataElements << cmd.dataElement
 		render (view: '/import/'+view, model:[

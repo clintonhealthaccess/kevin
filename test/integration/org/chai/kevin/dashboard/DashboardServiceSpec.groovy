@@ -133,7 +133,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def root = newReportProgram(ROOT)
 		def dashboardRoot = newDashboardProgram(ROOT, root, 0)
-		def period = Period.list()[0]				
+		def period = Period.list([cache: true])[0]				
 		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
 		
 		then:

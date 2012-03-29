@@ -61,7 +61,7 @@ class CostTargetController extends AbstractEntityController {
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[],
 			dataElementsEnd:  entity.dataElementEnd!=null?[entity.dataElementEnd]:[],
 			costRampUps: CostRampUp.list(), 
-			types: DataLocationType.list()
+			types: DataLocationType.list([cache: true])
 		]
 	}
 	

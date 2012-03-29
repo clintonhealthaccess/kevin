@@ -56,7 +56,7 @@ public abstract class AbstractController {
 	}
 	
 	def getUser() {
-		return User.findByUuid(SecurityUtils.subject.principal)
+		return User.findByUuid(SecurityUtils.subject.principal, [cache: true])
 	}
 
 	def getPeriod() {

@@ -21,6 +21,7 @@ import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.ValueService;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,7 +66,7 @@ public class ReportService {
 	
 	public ReportProgram getRootProgram() {
 		ReportProgram program = (ReportProgram)sessionFactory.getCurrentSession().createCriteria(ReportProgram.class)
-			.add(Restrictions.isNull("parent")).uniqueResult();
+			.add(Restrictions.isNull("parent")).setCacheable(true).uniqueResult();
 		return program;
 	}
 
@@ -83,18 +84,13 @@ public class ReportService {
 		return programTree;
 	}
 	
+	// TODO check this
 	public <T extends ReportTarget> List<T> getReportTargets(Class<T> clazz, ReportProgram program) {
-		if(program == null){
-			return (List<T>)sessionFactory.getCurrentSession()
-			.createCriteria(clazz)			
-			.list();
-		}
-		else{
-			return (List<T>)sessionFactory.getCurrentSession()
+		Criteria criteria = sessionFactory.getCurrentSession()
 			.createCriteria(clazz)
-			.add(Restrictions.eq("program", program))
-			.list();
-		}
+			.setCacheable(true);
+		if(program != null) criteria.add(Restrictions.eq("program", program));
+		return (List<T>)criteria.list();			
 	}
 	
 	public void setLocationService(LocationService locationService) {

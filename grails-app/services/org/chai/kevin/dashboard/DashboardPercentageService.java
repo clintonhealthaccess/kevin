@@ -107,7 +107,7 @@ public class DashboardPercentageService {
 //		
 //	}
 	
-	
+	// TODO check this
 	@Transactional(readOnly = true)
 	@Cacheable(cache="dashboardCache")
 	public DashboardPercentage getDashboardValue(Period period, CalculationLocation location, Set<DataLocationType> types, DashboardEntity dashboardEntity) {

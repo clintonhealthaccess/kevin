@@ -57,39 +57,29 @@ public class LocationService {
 	def sessionFactory;	
 	
     public Location getRootLocation() {
-    	return (Location)sessionFactory.getCurrentSession().createCriteria(Location.class).add(Restrictions.isNull("parent")).uniqueResult();
+    	return Location.findByParent(null, [cache: true])
     }
 
-    public DataLocationType findDataLocationTypeByCode(String code) {
-    	return (DataLocationType)sessionFactory.getCurrentSession().createCriteria(DataLocationType.class).add(Restrictions.eq("code", code)).uniqueResult();
-    }
-	
-    public LocationLevel findLocationLevelByCode(String code) {
-    	return (LocationLevel)sessionFactory.getCurrentSession().createCriteria(LocationLevel.class).add(Restrictions.eq("code", code)).uniqueResult();
-    }
-	
 	public List<LocationLevel> listLevels() {
-		List<LocationLevel> levels = sessionFactory.getCurrentSession()
-			.createCriteria(LocationLevel.class)
-			.setCacheable(true)
-			.setCacheRegion("locationLevelListQueryCache")
-			.list();
-		return levels;
-	}	
-	
-	public List<LocationLevel> listLevels(Set<LocationLevel> skipLevels) {
-		List<LocationLevel> levels = listLevels();
-		if(skipLevels != null)
-			levels.removeAll(skipLevels);		
-		return levels;
+		return LocationLevel.list([cache: true])
 	}
 	
 	public List<DataLocationType> listTypes() {
-		return sessionFactory.getCurrentSession()
-			.createCriteria(DataLocationType.class)
-			.setCacheable(true)
-			.setCacheRegion("dataLocationTypeListQueryCache")
-			.list();
+		return DataLocationType.list([cache: true])
+	}
+	
+	public LocationLevel findLocationLevelByCode(String code) {
+		return LocationLevel.findByCode(code, [cache: true])
+	}
+	
+    public DataLocationType findDataLocationTypeByCode(String code) {
+    	return DataLocationType.findByCode(code, [cache: true])
+    }
+	
+	public List<LocationLevel> listLevels(Set<LocationLevel> skipLevels) {
+		List<LocationLevel> levels = listLevels();
+		if(skipLevels != null) levels.removeAll(skipLevels);		
+		return levels;
 	}
 	
 	public Long getNumberOfDataLocationsForType(DataLocationType dataLocationType){
@@ -193,7 +183,7 @@ public class LocationService {
 		collectChildrenOfLevel(location, level, result);
 		return result;
 	}
-	
+
 	private void collectChildrenOfLevel(Location location, LocationLevel level, List<Location> locations) {
 		if (location.getLevel().equals(level)) locations.add(location);
 		else {
@@ -201,6 +191,5 @@ public class LocationService {
 				collectChildrenOfLevel(child, level, locations);
 			}
 		}
-	}	
-
+	}
 }
