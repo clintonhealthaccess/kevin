@@ -38,7 +38,7 @@
 											<thead>
 												<tr>
 													<th></th>
-													<th><g:message code="planning.budget.table.outgoing"/></th>
+													<th><g:message code="planning.budget.table.incoming"/></th>
 													<th><g:message code="planning.budget.table.outgoing"/></th>
 													<th><g:message code="planning.budget.table.difference"/></th>
 													<th><g:message code="planning.budget.table.generalfund"/></th>
