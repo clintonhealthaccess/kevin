@@ -191,6 +191,10 @@ public class Value extends JSONValue {
 		return mapValue;
 	}
 
+	public static Value VALUE_DATE(Date value) {
+		return new Value("{\""+VALUE_STRING+"\":"+Utils.formatDate(value)+"}");
+	}
+	
 	public static Value VALUE_BOOL(Boolean value) {
 		return new Value("{\""+VALUE_STRING+"\":"+value.toString()+"}");
 	}
