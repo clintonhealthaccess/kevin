@@ -14,11 +14,11 @@
 				<g:i18nTextarea name="descriptions" bean="${normalizedDataElement}" value="${normalizedDataElement.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions"/>
 				<g:input name="code" label="${message(code:'entity.code.label')}" bean="${normalizedDataElement}" field="code"/>
 				
-				<g:textarea name="type.jsonValue" label="${message(code:'entity.type.label')}" bean="${normalizedDataElement}" field="type" value="${normalizedDataElement.type.jsonValue}"/>
+				<g:render template="/templates/typeEditor" model="[bean: normalizedDataElement, name: 'type.jsonValue']"/>
 				
 				<div class="row ${hasErrors(bean:normalizedDataElement, field:'expressionMap', 'errors')}">
 					<label><g:message code="normalizeddataelement.expressionmap.label"/></label>
-					<div>
+					<div class="push-10">
 						<g:each in="${periods}" var="period" status="i">
 							<div>
 								<a class="${i==0?'no-link':''} expression-period-link" href="#" 
