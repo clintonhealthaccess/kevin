@@ -66,7 +66,7 @@ class CheckboxQuestionController extends AbstractEntityController {
 		[
 			question: entity,
 			options: options,
-			types: DataLocationType.list(),
+			types: DataLocationType.list([cache: true]),
 			sections: (entity.section)!=null?entity.survey.sections:null
 		]
 	}

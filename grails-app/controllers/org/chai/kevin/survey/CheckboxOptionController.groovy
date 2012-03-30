@@ -61,7 +61,7 @@ class CheckboxOptionController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			option: entity,
-			types: DataLocationType.list()
+			types: DataLocationType.list([cache: true])
 		]
 	}
 	

@@ -65,7 +65,7 @@ class SimpleQuestionController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			question: entity,
-			types: DataLocationType.list(),
+			types: DataLocationType.list([cache: true]),
 			sections: (entity.section)!=null?entity.survey.sections:null,
 			headerPrefixes: entity.surveyElement!=null?entity.surveyElement.dataElement.headerPrefixes:null
 		]

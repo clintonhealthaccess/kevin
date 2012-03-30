@@ -41,9 +41,12 @@ import org.chai.kevin.data.Calculation;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DashboardTarget")
 @Table(name="dhsst_dashboard_target")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DashboardTarget extends DashboardEntity implements ReportTarget {
 
 	private Long id;

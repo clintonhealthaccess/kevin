@@ -58,7 +58,7 @@ class SectionController extends AbstractEntityController {
 		[
 			section: entity,
 			programs: entity.program.survey.programs,
-			types: DataLocationType.list()
+			types: DataLocationType.list([cache: true])
 		]
 	}
 

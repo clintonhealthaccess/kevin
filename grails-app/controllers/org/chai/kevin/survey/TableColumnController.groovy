@@ -57,7 +57,7 @@ class TableColumnController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			column: entity,
-			types: DataLocationType.list()
+			types: DataLocationType.list([cache: true])
 		]
 	}
 

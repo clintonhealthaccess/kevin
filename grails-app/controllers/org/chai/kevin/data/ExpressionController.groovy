@@ -11,16 +11,16 @@ class ExpressionController {
 	def expressionService
 	
 	def test = {
-		render (view: 'builder', model: [periods: Period.list()])
+		render (view: 'builder', model: [periods: Period.list([cache: true])])
 	}
 	
 	def doTest = { ExpressionTestCommand cmd ->
 		if (cmd.hasErrors()) {
-			render (view: 'builder', model: [cmd: cmd, periods: Period.list()])
+			render (view: 'builder', model: [cmd: cmd, periods: Period.list([cache: true])])
 		}
 		else {
 			def periods = cmd.periodIds.findAll {it!=null} collect {Period.get(it)}
-			def dataLocationTypes = DataLocationType.list()
+			def dataLocationTypes = DataLocationType.list([cache: true])
 			
 			NormalizedDataElement dataElement = new NormalizedDataElement()
 			dataElement.type = cmd.type

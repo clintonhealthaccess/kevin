@@ -65,7 +65,7 @@ class FormValidationRuleController extends AbstractEntityController {
 			dependencies: dependencies,
 			formElements: formElements,
 			validation: entity,
-			types: DataLocationType.list(),
+			types: DataLocationType.list([cache: true]),
 			languageService: languageService
 		]
 	}

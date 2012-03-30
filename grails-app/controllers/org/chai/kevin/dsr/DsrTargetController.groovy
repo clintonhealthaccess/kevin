@@ -65,7 +65,7 @@ class DsrTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			programs: ReportProgram.list(),
-			types: DataLocationType.list(),
+			types: DataLocationType.list([cache: true]),
 			categories: DsrTargetCategory.list(),
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[]
 		]

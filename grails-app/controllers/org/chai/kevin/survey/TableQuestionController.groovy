@@ -69,7 +69,7 @@ class TableQuestionController extends AbstractEntityController {
 			columns: columns,
 			rows: rows,
 			question: entity,
-			types: DataLocationType.list(),
+			types: DataLocationType.list([cache: true]),
 			sections: (entity.section)!=null?entity.survey.sections:null
 		]
 	}

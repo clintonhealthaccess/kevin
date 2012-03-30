@@ -270,7 +270,7 @@ class AuthController {
 				token.delete()
 			}
 			else if (SecurityUtils.subject?.principal != null) {
-				user = User.findByUuid(SecurityUtils.subject.principal)
+				user = User.findByUuid(SecurityUtils.subject.principal, [cache: true])
 			}
 			
 			if (user != null) {
