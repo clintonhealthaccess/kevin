@@ -16,7 +16,7 @@
 							<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
 								<g:each in="${fctTable.targetOptions}" var="targetOption" status="i">
 									<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
-										<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).value}" />
+										<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).numberValue}" />
 										<div class="js_bar_vertical tooltip bar${i+1}"
 											data-percentage="${reportValue}" title="${reportValue}"
 											style="height: ${reportValue}%;"></div>
