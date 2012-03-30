@@ -85,7 +85,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
 		
 		then:
-		fctTable.getMaxReportValue() == 100
+		fctTable.getMaxReportValue() == 2.0
 		
 		when:
 		def moreThan100 = newNormalizedDataElement(CODE(6), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"50", (HEALTH_CENTER_GROUP):"51"]]))
@@ -96,6 +96,6 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
 		
 		then:
-		fctTable.getMaxReportValue() == 101
+		fctTable.getMaxReportValue() == 101.0
 	}
 }
