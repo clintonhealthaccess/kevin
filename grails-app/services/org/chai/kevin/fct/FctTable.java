@@ -46,8 +46,9 @@ public class FctTable extends ReportTable<FctTargetOption, Location> {
 		this.targetOptions = targetOptions;
 	}
 
-	public Integer getMaxReportValue(){
-		Integer maxValue = 0;
+	public Double getMaxReportValue(){
+//		Integer intMaxValue = 0;
+		Double dblMaxValue = 0d;
 		Collection<Map<FctTargetOption, ReportValue>> targetMaps = valueMap.values();
 		for(Map<FctTargetOption, ReportValue> targetMap : targetMaps){
 			Collection<ReportValue> reportValues = targetMap.values();
@@ -55,14 +56,15 @@ public class FctTable extends ReportTable<FctTargetOption, Location> {
 				String value = reportValue.getValue();
 				if(value != null && !value.isEmpty()){
 					Double doubleValue = Double.parseDouble(value);					
-					if(doubleValue > maxValue)
-						maxValue = doubleValue.intValue();
+					if(doubleValue > dblMaxValue)
+						dblMaxValue = doubleValue;
 				}
 			}
 		}
-		if(maxValue < 100)
-			maxValue = 100;
-		return maxValue;
+//		dblMaxValue = dblMaxValue + dblMaxValue/4d;
+//		intMaxValue = dblMaxValue.intValue();
+//		return intMaxValue;
+		return dblMaxValue;
 	}
 	
 	public ReportValue getReportValue(Location location, FctTargetOption targetOption){
