@@ -27,11 +27,15 @@ class JaqlServiceSpec extends IntegrationTests {
 	}
 		
 	def "evaluate with null values"() {
-		
 		expect:
 		jaqlService.evaluate("\$1 == \"null\"", Type.TYPE_BOOL(), ['1': Value.NULL_INSTANCE()], ['1': Type.TYPE_NUMBER()]).equals( Value.VALUE_BOOL(true) )
 		jaqlService.evaluate("\$1 != \"null\"", Type.TYPE_BOOL(), ['1': Value.NULL_INSTANCE()], ['1': Type.TYPE_NUMBER()]).equals( Value.VALUE_BOOL(false) )
 		jaqlService.evaluate("if (\$1 == \"null\") 0 else \$1", Type.TYPE_NUMBER(), ['1': Value.VALUE_NUMBER(1)], ['1': Type.TYPE_NUMBER()]).equals( Value.VALUE_NUMBER(1) )
+	}
+	
+	def "evaluate with end-of-line"() {
+		expect:
+		jaqlService.evaluate("1==\n1", Type.TYPE_BOOL(), [:], [:]).equals(Value.VALUE_BOOL(true))
 	}
 	
 }

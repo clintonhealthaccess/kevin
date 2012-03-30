@@ -72,7 +72,7 @@ public class JaqlService {
 		JsonValue value = null;
 		JaqlQuery query = new JaqlQuery();
 		
-		query.setQueryString(expression);
+		query.setQueryString(expression.replaceAll("\\s", " "));
 		
 		for (Entry<String, JsonValue> entry : valueMap.entrySet()) {
 			query.setVar(entry.getKey(), entry.getValue());

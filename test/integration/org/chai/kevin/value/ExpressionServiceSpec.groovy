@@ -491,6 +491,13 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		dataElements.size() == 0
 	}
 	
+	def "expressions with end-of-line are valid"() {
+		when:
+		def formula = "1\n+1"
+		
+		then:
+		expressionService.expressionIsValid(formula, Data.class)
+	}
 
 	def "test expression validation"() {
 
@@ -527,12 +534,6 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		
 		then: // this changed, there is no more type check
 		expressionService.expressionIsValid(formula, Data.class)
-		
-		when:
-		formula = "1\n+1"
-		
-		then:
-		!expressionService.expressionIsValid(formula, Data.class)
 		
 		when:
 		formula = "\$0"
