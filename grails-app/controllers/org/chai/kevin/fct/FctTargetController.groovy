@@ -64,7 +64,7 @@ class FctTargetController extends AbstractEntityController {
 			target: entity,
 			types: DataLocationType.list(),
 			programs: ReportProgram.list(),
-			sums: entity.sum!=null?[entity.sum]:[],
+//			sums: entity.sum!=null?[entity.sum]:[],
 			typeCodes: Utils.split(entity.typeCodeString)
 		]
 	}

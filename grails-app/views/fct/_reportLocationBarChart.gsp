@@ -1,8 +1,8 @@
 <!-- chart scale -->
-<g:set var="yMax" value="${fctTable.getMaxReportValue()}"/>
+<g:set var="yMax" value="${fctTable.getMaxReportValue().intValue()}"/>
 <ul class="chart">
-	<li>${yMax}</li>
-	<li>${yMax/2}</li>
+	<li>${yMax + yMax/4}</li>
+	<li>${(yMax + yMax/4)/2}</li>
 	<li>0</li>
 </ul>
 <!-- chart -->
