@@ -48,17 +48,18 @@ import javax.persistence.Transient;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.reports.AbstractReportTarget;
 import org.chai.kevin.util.Utils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "FctTarget")
 @Table(name = "dhsst_fct_target")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class FctTarget extends AbstractReportTarget {
 	
 	private Long id;
-	private Sum sum;
 	private List<FctTargetOption> targetOptions = new ArrayList<FctTargetOption>();
-	private String format;
 	private String typeCodeString; //comma-separated list of location type ids
 	
 	@Id
@@ -70,32 +71,13 @@ public class FctTarget extends AbstractReportTarget {
 		this.id = id;
 	}
 	
-	@ManyToOne(targetEntity=Sum.class)
-	public Sum getSum() {
-		return sum;		
-	}
-	
-	public void setSum(Sum sum){
-		this.sum = sum;
-	}
-	
-	@OneToMany(targetEntity=FctTargetOption.class, mappedBy="target", fetch=FetchType.EAGER)
-	@Fetch(FetchMode.SELECT)
+	@OneToMany(targetEntity=FctTargetOption.class, mappedBy="target")
 	public List<FctTargetOption> getTargetOptions() {
 		return targetOptions;
 	}
 	
 	public void setTargetOptions(List<FctTargetOption> targetOptions) {
 		this.targetOptions = targetOptions;
-	}
-	
-	@Basic
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
 	}
 
     @Lob
@@ -118,7 +100,7 @@ public class FctTarget extends AbstractReportTarget {
 
 	@Override
 	public String toString() {
-		return "FctTarget [sum=" + sum + "]";
+		return "FctTarget [code=" + code + "]";
 	}
 
 }

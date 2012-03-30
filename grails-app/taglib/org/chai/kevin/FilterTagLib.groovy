@@ -29,18 +29,17 @@ package org.chai.kevin
  */
 
 import org.chai.kevin.LocationService;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.fct.FctTarget;
-import org.chai.kevin.location.DataLocationEntity
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.AbstractReportTarget;
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 
 class FilterTagLib {
 
@@ -53,7 +52,7 @@ class FilterTagLib {
 			model << 
 				[
 					currentPeriod: attrs['selected'],
-					periods: Period.list()
+					periods: Period.list([cache: true])
 				]
 			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/periodFilter', model:model)
@@ -78,11 +77,11 @@ class FilterTagLib {
 	}
 		
 	def locationFilter = {attrs, body ->
-		LocationEntity.withTransaction {
+		Location.withTransaction {
 			def model = new HashMap(attrs)
 			def location = attrs['selected']
 			def locationFilterRoot = locationService.getRootLocation()	
-			def locationFilterTree = locationFilterRoot.collectTreeWithDataEntities(attrs['skipLevels'], null)
+			def locationFilterTree = locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], null)
 			model << 
 				[
 					currentLocation: location,
@@ -94,16 +93,16 @@ class FilterTagLib {
 		}
 	}
 	
-	def locationTypeFilter = {attrs, body ->
-		DataEntityType.withTransaction {
+	def dataLocationTypeFilter = {attrs, body ->
+		DataLocationType.withTransaction {
 			def model = new HashMap(attrs)
 			model << 
 				[
 					currentLocationTypes: attrs['selected'],
-					locationTypes: DataEntityType.list()					
+					dataLocationTypes: DataLocationType.list([cache: true])					
 				]
 			if (model.linkParams == null) model << [linkParams: [:]]
-			out << render(template:'/tags/filter/locationTypeFilter', model:model)
+			out << render(template:'/tags/filter/dataLocationTypeFilter', model:model)
 		}
 	}
 	
@@ -128,26 +127,28 @@ class FilterTagLib {
 			out << render(template:'/templates/linkParamFilter', model:model)
 	}
 	
+	// attrs['skipLevels'] is only needed for reports with both top-level locationFilter & levelFilter
 	def createLinkByFilter = {attrs, body ->
 		if (attrs['params'] == null) attrs['params'] = [:]
 		else{
 			Map params = new HashMap(attrs['params'])
-			attrs['params'] = updateParamsByFilter(params);
+			def skipLevels = attrs['skipLevels']
+			if(skipLevels == null) skipLevels = new HashSet<LocationLevel>()
+			attrs['params'] = updateParamsByFilter(params, skipLevels);
 		}
 		out << createLink(attrs, body)
 	}		
 	
-	public Map updateParamsByFilter(Map params) {
+	public Map updateParamsByFilter(Map params, Set<LocationLevel> skipLevels) {
 		if (!params.containsKey("filter")) return params;
 		String filter = (String) params.get("filter");
-		LocationEntity location = null;
+		Location location = null;
 		if (params.get("location") != null) {
-			location = LocationEntity.get(Integer.parseInt(params.get("location")))
+			location = Location.get(Integer.parseInt(params.get("location")))
 		}
-
 		LocationLevel level = null;
 		if (params.get("level") != null) {
-			level = LocationLevel.get(Integer.parseInt(params.get('level')))
+			level = LocationLevel.get(Integer.parseInt(params.get("level")))
 		}
 
 		if (location != null) {
@@ -157,23 +158,24 @@ class FilterTagLib {
 					// conflict
 					if (filter == "level") {
 						// adjust location to level
-						LocationLevel levelBefore = locationService.getLevelBefore(location.getLevel())
-						if (levelBefore == null) location = locationService.getRootLocation();
-						else location = locationService.getParentOfLevel(location, levelBefore);
+						LocationLevel levelBefore = locationService.getLevelBefore(location.getLevel(), skipLevels)
+						if (levelBefore != null)
+							location = locationService.getParentOfLevel(location, levelBefore);
 					}
 					// conflict
 					else {
 						// adjust level to location
-						level = locationService.getLevelAfter(location.getLevel())
+						level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 					}
 				}
 			}
 			// conflict
 			else {
 				// adjust level to location
-				level = locationService.getLevelAfter(location.getLevel())
+				level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 			}
 		}
+		
 		if (location != null) params.put("location", location.id);
 		if (level != null) params.put("level", level.id);
 		return params;

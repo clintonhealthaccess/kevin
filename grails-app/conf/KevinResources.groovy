@@ -15,7 +15,7 @@ modules = {
 
 	// modules
 	core {
-		dependsOn 'jquery,help'
+		dependsOn 'jquery,help,foldable'
 		
 		resource url: '/css/screen.css', bundle: 'core'
 	}
@@ -55,7 +55,7 @@ modules = {
 	}
 
 	form {
-		dependsOn 'jquery,cluetip'
+		dependsOn 'jquery,cluetip,fieldselection'
 
 		resource url: '/js/jquery/form/jquery.form.js', bundle: 'core'
 		resource url: '/js/form-util.js', bundle: 'core'
@@ -150,26 +150,26 @@ modules = {
 	chartanimation {
 		dependsOn 'jquery,tipsy'
 		
-		resource url: '/js/chartanimation_init.js'
+		resource url: '/js/chartanimation_init.js', bundle: 'core'
 	}
 	
 	comparefilter {
 		dependsOn 'jquery'
 		
 		resource url: '/js/jquery/comparefilter/jquery.form.js', bundle: 'core'
-		resource url: '/js/dashboard/comparefilter_init.js'
+		resource url: '/js/dashboard/comparefilter_init.js', bundle: 'core'
 	}
 	
 	categoryfilter {
 		dependsOn 'jquery'
 		
-		resource url: '/js/dsr/categoryfilter_init.js'
+		resource url: '/js/dsr/categoryfilter_init.js', bundle: 'core'
 	}
 	
 	targetfilter {
 		dependsOn 'jquery'
 		
-		resource url: '/js/fct/targetfilter_init.js'
+		resource url: '/js/fct/targetfilter_init.js', bundle: 'core'
 	}
 	
 	// Start resources for pages

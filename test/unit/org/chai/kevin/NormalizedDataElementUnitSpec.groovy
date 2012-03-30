@@ -3,7 +3,6 @@ package org.chai.kevin;
 import org.chai.kevin.data.ExpressionMap;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.util.JSONUtils;
-import org.hisp.dhis.period.Period;
 
 import grails.plugin.spock.UnitSpec;
 

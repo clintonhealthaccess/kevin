@@ -6,20 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.DataValue;
-import org.hisp.dhis.period.Period;
 
 public class Chart {
 
-	private DataLocationEntity entity;
+	private DataLocation dataLocation;
 	private Data<?> data;
 	private List<Period> periods;
 	private Map<Period, DataValue> values;
 	
-	public Chart(DataLocationEntity entity, Data<?> data, List<Period> periods, Map<Period, DataValue> values) {
-		this.entity = entity;
+	public Chart(DataLocation dataLocation, Data<?> data, List<Period> periods, Map<Period, DataValue> values) {
+		this.dataLocation = dataLocation;
 		this.data = data;
 		this.periods = periods;
 		this.values = values;
@@ -33,8 +33,8 @@ public class Chart {
 		return values.get(period);
 	}
 	
-	public DataLocationEntity getDataLocationEntity() {
-		return entity;
+	public DataLocation getDataLocation() {
+		return dataLocation;
 	}
 	
 	public Data<?> getData() {
@@ -47,7 +47,7 @@ public class Chart {
 		StringBuilder result = new StringBuilder();
 		result.append("{");
 		result.append("\"location\":");
-		result.append("\""+entity.getNames()+"\"");
+		result.append("\""+dataLocation.getNames()+"\"");
 		result.append(",\"values\":{");
 		for (Entry<Period, DataValue> entry : values.entrySet()) {
 			result.append("\""+format.format(entry.getKey().getStartDate())+"\"");

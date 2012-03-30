@@ -37,17 +37,17 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.Period;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
@@ -61,43 +61,43 @@ public class CostTableService {
 	private ValueService valueService;
 	private Set<String> skipLevels;
 	
-	public CostTable getCostTable(Period period, ReportProgram program, CalculationEntity entity) {
+	public CostTable getCostTable(Period period, ReportProgram program, CalculationLocation location) {
 		List<CostTarget> targets = reportService.getReportTargets(CostTarget.class, program);
-		return new CostTable(targets, costService.getYears(), getValues(period, targets, entity));
+		return new CostTable(targets, costService.getYears(), getValues(period, targets, location));
 	}
 
-	public Explanation getExplanation(Period period, CostTarget target, LocationEntity entity) {
-		Map<CalculationEntity, Map<Integer, Cost>> explanationMap = new HashMap<CalculationEntity, Map<Integer,Cost>>();
+	public Explanation getExplanation(Period period, CostTarget target, Location location) {
+		Map<CalculationLocation, Map<Integer, Cost>> explanationMap = new HashMap<CalculationLocation, Map<Integer,Cost>>();
 		
-		for (CalculationEntity child : entity.getChildren()) {
+		for (CalculationLocation child : location.getChildren()) {
 			explanationMap.put(child, getCost(target, child, period));
 		}
-		for (DataLocationEntity child : entity.getDataEntities()) {
+		for (DataLocation child : location.getDataLocations()) {
 			if (appliesToLocation(target, child)) {
 				explanationMap.put(child, getCost(target, child, period));
 			}
 		}
 
-		List<DataEntityType> types = new ArrayList<DataEntityType>();
+		List<DataLocationType> types = new ArrayList<DataLocationType>();
 		for (String typeCode : Utils.split(target.getTypeCodeString())) {
-			types.add(locationService.findDataEntityTypeByCode(typeCode));
+			types.add(locationService.findDataLocationTypeByCode(typeCode));
 		}
-		return new Explanation(target, types, target.getProgram(), period, new ArrayList<CalculationEntity>(explanationMap.keySet()), costService.getYears(), explanationMap);
+		return new Explanation(target, types, target.getProgram(), period, new ArrayList<CalculationLocation>(explanationMap.keySet()), costService.getYears(), explanationMap);
 	}
 	
-	private boolean appliesToLocation(CostTarget target, DataLocationEntity entity) {
-		return Utils.split(target.getTypeCodeString()).contains(entity.getType().getCode());
+	private boolean appliesToLocation(CostTarget target, DataLocation dataLocation) {
+		return Utils.split(target.getTypeCodeString()).contains(dataLocation.getType().getCode());
 	}
 	
-	private Map<Integer, Cost> getCost(CostTarget target, CalculationEntity entity, Period period) {
+	private Map<Integer, Cost> getCost(CostTarget target, CalculationLocation location, Period period) {
 		Map<Integer, Cost> result = new HashMap<Integer, Cost>();
 
 		for (Integer year : costService.getYears()) {
 			result.put(year, new Cost());
 		}
-		for (DataLocationEntity dataLocationEntity : entity.getDataEntities()) {
-			if (appliesToLocation(target, dataLocationEntity)) {
-				Map<Integer, Cost> costs = getCostForLeafLocation(target, dataLocationEntity, period);
+		for (DataLocation dataLocation : location.getDataLocations()) {
+			if (appliesToLocation(target, dataLocation)) {
+				Map<Integer, Cost> costs = getCostForLeafLocation(target, dataLocation, period);
 				
 				for (Integer year : costService.getYears()) {
 					if (costs.containsKey(year)) {
@@ -107,8 +107,8 @@ public class CostTableService {
 				}
 			}
 		}
-		for (LocationEntity locationEntity : entity.getChildren()) {
-			Map<Integer, Cost> costs = getCost(target, locationEntity, period);
+		for (Location child : location.getChildren()) {
+			Map<Integer, Cost> costs = getCost(target, child, period);
 			
 			for (Integer year : costService.getYears()) {
 				if (costs.containsKey(year)) {
@@ -120,20 +120,20 @@ public class CostTableService {
 		return result;
 	}
 	
-	private Map<Integer, Cost> getCostForLeafLocation(CostTarget target, DataLocationEntity entity, Period period) {
-		if (log.isDebugEnabled()) log.debug("getCostForLeafLocation(target="+target+", entity:"+entity+", period:"+period+")");
+	private Map<Integer, Cost> getCostForLeafLocation(CostTarget target, DataLocation dataLocation, Period period) {
+		if (log.isDebugEnabled()) log.debug("getCostForLeafLocation(target="+target+", dataLocation:"+dataLocation+", period:"+period+")");
 		
 		Map<Integer, Cost> result = new HashMap<Integer, Cost>();
-		if (appliesToLocation(target, entity)) {
+		if (appliesToLocation(target, dataLocation)) {
 			boolean hasMissingValues = false;
 
-			if (log.isDebugEnabled()) log.debug("target "+target+" applies to entity "+entity);
+			if (log.isDebugEnabled()) log.debug("target "+target+" applies to data location "+dataLocation);
 			List<Integer> years = costService.getYears();
 
 			
-			DataValue expressionValue = valueService.getDataElementValue(target.getDataElement(), entity, period);
+			DataValue expressionValue = valueService.getDataElementValue(target.getDataElement(), dataLocation, period);
 			DataValue expressionEndValue = null;
-			if (target.isAverage()) expressionEndValue = valueService.getDataElementValue(target.getDataElementEnd(), entity, period);
+			if (target.isAverage()) expressionEndValue = valueService.getDataElementValue(target.getDataElementEnd(), dataLocation, period);
 			if (expressionValue != null && expressionValue.getValue().getNumberValue() != null && (!target.isAverage() || (expressionEndValue != null && expressionEndValue.getValue().getNumberValue() != null))) { 
 				Double baseCost = expressionValue.getValue().getNumberValue().doubleValue();
 
@@ -163,18 +163,18 @@ public class CostTableService {
 			}
 		}
 		else {
-			if (log.isDebugEnabled()) log.debug("skipping location: "+entity);
+			if (log.isDebugEnabled()) log.debug("skipping location: "+dataLocation);
 		}
 		
 		if (log.isDebugEnabled()) log.debug("getCostForLeafTarget(): "+result);
 		return result;
 	}
 	
-	private Map<CostTarget, Map<Integer, Cost>> getValues(Period period, List<CostTarget> targets, CalculationEntity entity) {
+	private Map<CostTarget, Map<Integer, Cost>> getValues(Period period, List<CostTarget> targets, CalculationLocation location) {
 		Map<CostTarget, Map<Integer, Cost>> result = new HashMap<CostTarget, Map<Integer,Cost>>();
 		
 		for (CostTarget target : targets) {
-			result.put(target, getCost(target, entity, period));
+			result.put(target, getCost(target, location, period));
 		}
 		return result;
 	}

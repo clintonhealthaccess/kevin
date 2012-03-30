@@ -47,14 +47,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="Survey")
 @Table(name="dhsst_survey")
@@ -170,7 +170,7 @@ public class Survey {
 	}
 	
 	@Transient
-	public List<SurveyProgram> getPrograms(DataEntityType type) {
+	public List<SurveyProgram> getPrograms(DataLocationType type) {
 		List<SurveyProgram> result = new ArrayList<SurveyProgram>();
 		for (SurveyProgram surveyProgram : getPrograms()) {
 			if (Utils.split(surveyProgram.getTypeCodeString()).contains(type.getCode())) result.add(surveyProgram);

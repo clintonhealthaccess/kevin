@@ -7,7 +7,7 @@ import org.chai.kevin.LocationService
 import org.chai.kevin.data.RawDataElement
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion
 import org.chai.kevin.survey.validation.SurveyEnteredSection
@@ -65,9 +65,9 @@ class SurveyValueService {
 		surveyEnteredSection.delete()
 	}
 	
-	Integer getNumberOfSurveyEnteredPrograms(Survey survey, DataLocationEntity entity, Boolean closed, Boolean complete, Boolean invalid) {
+	Integer getNumberOfSurveyEnteredPrograms(Survey survey, DataLocation dataLocation, Boolean closed, Boolean complete, Boolean invalid) {
 		def c = SurveyEnteredProgram.createCriteria()
-		c.add(Restrictions.eq("entity", entity))
+		c.add(Restrictions.eq("dataLocation", dataLocation))
 		
 		if (complete!=null) c.add(Restrictions.eq("complete", complete))
 		if (invalid!=null) c.add(Restrictions.eq("invalid", invalid))
@@ -80,10 +80,10 @@ class SurveyValueService {
 		c.uniqueResult();
 	}
 	
-	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataLocationEntity entity, 
+	Integer getNumberOfSurveyEnteredQuestions(Survey survey, DataLocation dataLocation, 
 		SurveyProgram program, SurveySection section, Boolean complete, Boolean invalid, Boolean skippedAsComplete) {
 		def c = SurveyEnteredQuestion.createCriteria()
-		c.add(Restrictions.eq("entity", entity))
+		c.add(Restrictions.eq("dataLocation", dataLocation))
 		
 		if (complete!=null) {
 			if (skippedAsComplete!=null) {
@@ -115,10 +115,10 @@ class SurveyValueService {
 		c.uniqueResult();
 	}
 	
-	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, DataLocationEntity entity) {
+	SurveyEnteredSection getSurveyEnteredSection(SurveySection surveySection, DataLocation dataLocation) {
 		def c = SurveyEnteredSection.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("entity", entity)
+			.set("dataLocation", dataLocation)
 			.set("section", surveySection)
 		)
 		
@@ -128,10 +128,10 @@ class SurveyValueService {
 		return result
 	}
 	
-	SurveyEnteredProgram getSurveyEnteredProgram(SurveyProgram surveyProgram, DataLocationEntity entity) {
+	SurveyEnteredProgram getSurveyEnteredProgram(SurveyProgram surveyProgram, DataLocation dataLocation) {
 		def c = SurveyEnteredProgram.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("entity", entity)
+			.set("dataLocation", dataLocation)
 			.set("program", surveyProgram)
 		)
 		c.setFlushMode(FlushMode.COMMIT)
@@ -141,19 +141,18 @@ class SurveyValueService {
 		return result
 	}
 
-	SurveyEnteredQuestion getOrCreateSurveyEnteredQuestion(DataLocationEntity entity, SurveyQuestion surveyQuestion) {
-		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(surveyQuestion, entity);
+	SurveyEnteredQuestion getOrCreateSurveyEnteredQuestion(DataLocation dataLocation, SurveyQuestion surveyQuestion) {
+		SurveyEnteredQuestion enteredQuestion = getSurveyEnteredQuestion(surveyQuestion, dataLocation);
 		if (enteredQuestion == null) {
-			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, entity, false, false);
-			save(enteredQuestion);
+			enteredQuestion = new SurveyEnteredQuestion(surveyQuestion, dataLocation, false, false);
 		}
 		return enteredQuestion;
 	}
 	
-	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, DataLocationEntity entity) {
+	SurveyEnteredQuestion getSurveyEnteredQuestion(SurveyQuestion surveyQuestion, DataLocation dataLocation) {
 		def c = SurveyEnteredQuestion.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("entity", entity)
+			.set("dataLocation", dataLocation)
 			.set("question", surveyQuestion)
 		)
 		
@@ -163,9 +162,9 @@ class SurveyValueService {
 		return result
 	}
 	
-	List<FormEnteredValue> getFormEnteredValues(DataLocationEntity entity, SurveySection section, SurveyProgram program, Survey survey) {
+	List<FormEnteredValue> getFormEnteredValues(DataLocation dataLocation, SurveySection section, SurveyProgram program, Survey survey) {
 		def c = FormEnteredValue.createCriteria()
-		c.add(Restrictions.eq("entity", entity))
+		c.add(Restrictions.eq("dataLocation", dataLocation))
 		
 		if (survey != null || program != null || section != null) c.createAlias("formElement", "se")
 		if (survey != null || program != null || section != null) c.createAlias("se.surveyQuestion", "sq")

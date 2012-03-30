@@ -36,14 +36,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportTarget;
-import org.hisp.dhis.period.Period;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DashboardTarget")
 @Table(name="dhsst_dashboard_target")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DashboardTarget extends DashboardEntity implements ReportTarget {
 
 	private Long id;
@@ -80,7 +83,7 @@ public class DashboardTarget extends DashboardEntity implements ReportTarget {
 	}
 	
 	@Override
-	public <T> T visit(DashboardVisitor<T> visitor, CalculationEntity location, Period period) {
+	public <T> T visit(DashboardVisitor<T> visitor, CalculationLocation location, Period period) {
 		return visitor.visitTarget(this, location, period);
 	}
 	

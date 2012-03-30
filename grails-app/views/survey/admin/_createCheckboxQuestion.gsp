@@ -34,7 +34,7 @@
 		<g:selectFromList name="section.id" label="${message(code:'survey.section.label')}" field="section" optionKey="id" multiple="false"
 			from="${sections}" value="${question.section?.id}" bean="${question}" values="${sections.collect {i18n(field:it.names)}}" />
 		
-		<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${question}" field="typeCodeString" 
+		<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${question}" field="typeCodeString" 
 			from="${types}" value="${question.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 
 		<g:if test="${question.id != null}">

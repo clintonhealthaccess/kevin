@@ -81,7 +81,7 @@ class DbRealm {
         //
         // First find all the permissions that the user has that match
         // the required permission's type and project code.
-        def user = User.findByUuid(principal)
+        def user = User.findByUuid(principal, [cache: true])
 		if (user == null || !user.active || !user.confirmed) return false;
 		
         def permissions = user.permissions

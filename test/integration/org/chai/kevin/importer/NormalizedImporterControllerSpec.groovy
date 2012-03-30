@@ -25,14 +25,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.period
+package org.chai.kevin.importer
 
+import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.data.Type;
+import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.Value;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-constraints =  {
-    startDate(nullable: false, blank: false)
-	endDate(nullable: false, blank: false, , validator: { val, obj -> return val.after(obj.startDate)})
+class NormalizedImporterControllerSpec extends IntegrationTests {
+	
+	def normalizedImporterController;
+	
+	//TODO find a way to test a controller using  CommonsMultipartFile
+/*
+	def "get uploader"(){
+	
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["marital_status": Type.TYPE_BOOL()]))
+		def dataElement = newRawDataElement(CODE(1), type)
+		def importerErrorManager = new ImporterErrorManager();
+		
+		def csvString =
+		"code,marital_status\n"+
+		BUTARO+",0\n"+
+		BUTARO+",1\n"+
+		BUTARO+",N\n"
+		
+		MockMultipartFile file = new MockMultipartFile("data.csv",csvString.getBytes());
+		def cmd = new NormalizedImporterCommand();
+		cmd.dataElement = dataElement;
+		cmd.period = period;
+		cmd.file = file;
+		when:
+		normalizedImporterController = new NormalizedImporterController()
+		normalizedImporterController.uploader(cmd)
+		then:
+		normalizedImporterController.modelAndView.model.errorManager.errors.size()==1
+		}
+*/
 }

@@ -106,9 +106,11 @@
 	  						<li><a class="${controllerName=='location'?'active':''}" href="${createLink(controller: 'location', action:'list')}"><g:message code="location.label"/></a></li>
 	  						<li><a class="${controllerName=='locationLevel'?'active':''}" href="${createLink(controller: 'locationLevel', action:'list')}"><g:message code="locationlevel.label"/></a></li>
 	  						<li><a class="${controllerName=='dataLocation'?'active':''}" href="${createLink(controller: 'dataLocation', action:'list')}"><g:message code="datalocation.label"/></a></li>
-	  						<li><a class="${controllerName=='dataEntityType'?'active':''}" href="${createLink(controller: 'dataEntityType', action:'list')}"><g:message code="dataentitytype.label"/></a></li>
+	  						<li><a class="${controllerName=='dataLocationType'?'active':''}" href="${createLink(controller: 'dataLocationType', action:'list')}"><g:message code="datalocationtype.label"/></a></li>
 	  						<li><a class="${controllerName=='user'?'active':''}" href="${createLink(controller: 'userList', action:'list')}"><g:message code="user.label"/></a></li>
-							<li><a class="${controllerName=='importerEntity'?'active':''}" href="${createLink(controller: 'importerEntity', action:'importer')}"><g:message code="import.label"/></a></li>
+							<li><a class="${controllerName=='expression'?'active':''}" href="${createLink(controller: 'expression', action:'test')}"><g:message code="expression.test.label"/></a></li>
+							<li><a class="${controllerName=='generalImporter'?'active':''}" href="${createLink(controller: 'generalImporter', action:'importer')}"><g:message code="import.general.data.label" /></a></li>
+							<li><a class="${controllerName=='normalizedImporter'?'active':''}" href="${createLink(controller: 'normalizedImporter', action:'importer')}"><g:message code="import.normalized.data.label" /></a></li>
 	  					</ul>
 	  				</li>
 	  			</shiro:hasPermission>
@@ -132,7 +134,7 @@
 			&copy; <g:message code="footer.labels.chai"/> <br /><a href="${createLink(controller:'home', action:'about')}"><g:message code="footer.labels.about"/></a> | <a href="${createLink(controller:'home', action:'contact')}"><g:message code="footer.labels.contact"/></a> | <a href="${createLink(controller:'home', action:'helpdesk')}"><g:message code="footer.labels.helpdesk"/></a>
 		</div>
 		<div style="opacity: 0.6">
-			<g:buildInfo/>
+			<build:buildInfo/>
 		</div>
 	</div>
 

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.data.Enum;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.planning.PlanningType;
@@ -18,9 +18,9 @@ public class PlanningEntryBudget extends PlanningEntry {
 	private Map<PlanningCost, BudgetCost> budgetCosts;
 	private Map<PlanningCost, NormalizedDataElementValue> budgetValues;
 	
-	public PlanningEntryBudget(Map<PlanningCost, NormalizedDataElementValue> budgetValues, DataLocationEntity entity, PlanningType type,
+	public PlanningEntryBudget(Map<PlanningCost, NormalizedDataElementValue> budgetValues, DataLocation dataLocation, PlanningType type,
 			ValidatableValue validatable, Integer lineNumber, Map<String, Enum> enums) {
-		super(entity, type, validatable, lineNumber, enums);
+		super(dataLocation, type, validatable, lineNumber, enums);
 		this.budgetValues = budgetValues;
 	}
 	
@@ -29,7 +29,7 @@ public class PlanningEntryBudget extends PlanningEntry {
 			budgetCosts = new HashMap<PlanningCost, BudgetCost>();
 			for (PlanningCost planningCost : getPlanningCosts()) {
 				NormalizedDataElementValue value = budgetValues.get(planningCost);
-				if (!value.getValue().isNull()) {
+				if (value != null && !value.getValue().isNull()) {
 					if (!value.getValue().getListValue().get(getLineNumber()).isNull()) {
 						budgetCosts.put(planningCost, new BudgetCost(this, planningCost, value));
 					}
@@ -77,7 +77,7 @@ public class PlanningEntryBudget extends PlanningEntry {
 	public List<String> getGroupSections(PlanningCostType type) {
 		List<String> result = new ArrayList<String>();
 		for (PlanningCost planningCost : getPlanningCosts()) {
-			if (planningCost.getType().equals(type) && !result.contains(planningCost.getGroupSection())) {
+			if (getBudgetCost(planningCost) != null && planningCost.getType().equals(type) && !result.contains(planningCost.getGroupSection())) {
 				result.add(planningCost.getGroupSection());
 			}
 		}

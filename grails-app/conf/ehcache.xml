@@ -17,76 +17,81 @@
     />
 
     <cache name="org.hibernate.cache.UpdateTimestampsCache"
-           maxElementsInMemory="10000"
+			maxElementsInMemory="10000"
             timeToLiveSeconds="86400"
     />
 
     <cache name="org.hibernate.cache.StandardQueryCache"
-           maxElementsInMemory="500"
+			maxElementsInMemory="2000"
             timeToLiveSeconds="86400"
     />
     
-   	<cache name="org.chai.kevin.location.CalculationEntity"
-           maxElementsInMemory="5000"
-           timeToLiveSeconds="86400"
+    <cache name="org.chai.kevin.Period"
+			maxElementsInMemory="20"
+			timeToLiveSeconds="86400"
     />
     
-   	<!-- cache name="org.chai.kevin.location.LocationEntity"
-           maxElementsInMemory="5000"
-           timeToLiveSeconds="86400"
-    / -->
-    
-    <!-- cache name="org.chai.kevin.location.DataLocationEntity"
-           maxElementsInMemory="5000"
-           timeToLiveSeconds="86400"
-    / -->
+   	<cache name="org.chai.kevin.location.CalculationLocation"
+			maxElementsInMemory="5000"
+			timeToLiveSeconds="86400"
+    />
     
     <cache name="org.chai.kevin.location.LocationLevel"
-           maxElementsInMemory="100"
+			maxElementsInMemory="100"
             timeToLiveSeconds="86400"
     />
     
-    <cache name="locationLevelListQueryCache"
-           maxElementsInMemory="100"
-            timeToLiveSeconds="86400"
+    <cache name="org.chai.kevin.location.DataLocationType"
+			maxElementsInMemory="100"
+			timeToLiveSeconds="86400"
     />
     
-    <cache name="org.chai.kevin.location.DataEntityType"
-           maxElementsInMemory="100"
-           timeToLiveSeconds="86400"
+    <cache name="org.chai.kevin.location.Location.children"
+			maxElementsInMemory="5000"
+			timeToLiveSeconds="86400"
     />
     
-    <cache name="dataEntityTypeListQueryCache"
-           maxElementsInMemory="100"
-            timeToLiveSeconds="86400"
+    <cache name="org.chai.kevin.location.Location.dataLocations"
+			maxElementsInMemory="2000"
+			timeToLiveSeconds="86400"
     />
     
-    <cache name="org.chai.kevin.location.LocationEntity.children"
-           maxElementsInMemory="5000"
-            timeToLiveSeconds="86400"
-    />
-    
-    <cache name="org.chai.kevin.location.LocationEntity.dataEntities"
-           maxElementsInMemory="2000"
-            timeToLiveSeconds="86400"
-    />
-    
-    <cache name="org.hisp.dhis.period.Period"
-           maxElementsInMemory="10"
-            timeToLiveSeconds="86400"
-    />
-    
-    <cache name="org.chai.kevin.data.RawDataElement"
-           maxElementsInMemory="4000"
-            timeToIdleSeconds="60"
-    />
-    
-    <cache name="org.chai.kevin.data.Expression"
-			maxElementsInMemory="4000"
-            timeToIdleSeconds="60"
-    />
-    
-    <cache name="org.chai.kevin.data.Calculation"
+    <cache name="org.chai.kevin.reports.ReportProgram"
+    		maxElementsInMemory="200"
+			timeToLiveSeconds="86400"
+	/>
+    	
+    <cache name="org.chai.kevin.reports.ReportProgram.children"
+    		maxElementsInMemory="200"
+			timeToLiveSeconds="86400"
+	/>	
+
+	<cache name="org.chai.kevin.dashboard.DashboardTarget"
+			maxElementsInMemory="500"
+			timeToLiveSeconds="86400"
+	/>	
+	
+	<cache name="org.chai.kevin.dsr.DsrTarget"
+			maxElementsInMemory="500"
+			timeToLiveSeconds="86400"
+	/>	
+	
+	<cache name="org.chai.kevin.dsr.DsrTargetCategory"
+			maxElementsInMemory="200"
+			timeToLiveSeconds="86400"
+	/>	
+	
+	<cache name="org.chai.kevin.fct.FctTarget"
+			maxElementsInMemory="200"
+			timeToLiveSeconds="86400"
+	/>	
+	
+	<cache name="org.chai.kevin.fct.FctTargetOption"
+			maxElementsInMemory="500"
+			timeToLiveSeconds="86400"
+	/>	
+	
+    <cache name="org.chai.kevin.data.Data"
 			maxElementsInMemory="4000"
 			timeToIdleSeconds="60"
     />
@@ -105,7 +110,7 @@
     		maxElementsInMemory="4000"
     		timeToIdleSeconds="86400"
     />
-
+    
 	<!-- short term cache for json values, to speed up survey save -->
     <cache name="jsonValueCache"
     		maxElementsInMemory="100"

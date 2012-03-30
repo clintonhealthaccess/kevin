@@ -1,6 +1,6 @@
 package org.chai.kevin.form
 
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
@@ -14,7 +14,7 @@ class FormElementController {
 		// TODO make this method generic, it shouldn't contain any reference to SurveyElement
 		
 		def element = formElementService.getFormElement(params.int('id'))
-		def location = DataLocationEntity.get(params.int('location'))
+		def location = DataLocation.get(params.int('location'))
 
 		// TODO make this better the survey element should generate it's own link?
 		// then we can make a PlanningElement that links to a planning form		
@@ -40,7 +40,7 @@ class FormElementController {
 	}
 	
 	def getHtmlData = {
-		def formElements = formElementService.searchFormElements(params['term'], params.list('include'), params);
+		def formElements = formElementService.searchFormElements(params['searchText'], params.list('include'), params);
 		
 		render(contentType:"text/json") {
 			result = 'success'

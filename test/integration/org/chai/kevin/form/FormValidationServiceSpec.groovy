@@ -5,7 +5,7 @@ import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.data.Type
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.Value
 
 class FormValidationServiceSpec extends IntegrationTests {
@@ -14,9 +14,9 @@ class FormValidationServiceSpec extends IntegrationTests {
 	
 	def getLocator() {
 		return new ValidatableLocator() {
-			public ValidatableValue getValidatable(Long id, DataLocationEntity location) {
+			public ValidatableValue getValidatable(Long id, DataLocation location) {
 				FormElement element = FormElement.get(id)
-				FormEnteredValue enteredValue = FormEnteredValue.findByFormElementAndEntity(element, location);
+				FormEnteredValue enteredValue = FormEnteredValue.findByFormElementAndDataLocation(element, location);
 				return enteredValue.getValidatable();
 			}
 		};
@@ -32,8 +32,8 @@ class FormValidationServiceSpec extends IntegrationTests {
 		def rule = newFormSkipRule("\$"+element1.id+"[_].key1 == 1", [(element1): "[_].key1,[_].key2"])
 		
 		when:
-		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]},{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
-		def skipped = formValidationService.getSkippedPrefix(element1, rule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), new Value("{\"value\": [{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]},{\"value\":[{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}]}]}"))
+		def skipped = formValidationService.getSkippedPrefix(element1, rule, DataLocation.findByCode(KIVUYE), getLocator())
 		
 		then:
 		skipped.equals(s(["[0].key1","[0].key2","[1].key1","[1].key2"]))
@@ -54,9 +54,9 @@ class FormValidationServiceSpec extends IntegrationTests {
 		when:
 		validationRule = newFormValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id)
 		
-		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		newFormEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newFormEnteredValue(element2, period, DataLocation.findByCode(KIVUYE), v("1"))
+		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocation.findByCode(KIVUYE), getLocator())
 		
 		then:
 		prefixes.equals(new HashSet([""]))
@@ -77,9 +77,9 @@ class FormValidationServiceSpec extends IntegrationTests {
 		when:
 		validationRule = newFormValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element1.id+" > \$"+element2.id)
 		
-		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("2"))
-		newFormEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("2"))
+		newFormEnteredValue(element2, period, DataLocation.findByCode(KIVUYE), v("1"))
+		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocation.findByCode(KIVUYE), getLocator())
 		
 		then:
 		prefixes.isEmpty()
@@ -101,9 +101,9 @@ class FormValidationServiceSpec extends IntegrationTests {
 		when:
 		validationRule = newFormValidationRule(element1, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "if (\$"+element1.id+" == 0) \$"+element2.id+" == null else false")
 		
-		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("0"))
-		newFormEnteredValue(element2, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
-		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("0"))
+		newFormEnteredValue(element2, period, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
+		def prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocation.findByCode(KIVUYE), getLocator())
 		
 		then:
 		prefixes.isEmpty()
@@ -121,15 +121,15 @@ class FormValidationServiceSpec extends IntegrationTests {
 		def prefixes = null
 		
 		when:
-		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("0"))
-		prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(KIVUYE), getLocator())
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("0"))
+		prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocation.findByCode(KIVUYE), getLocator())
 		
 		then:
 		prefixes.isEmpty()
 		
 		when:
-		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(BUTARO), v("0"))
-		prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocationEntity.findByCode(BUTARO), getLocator())
+		newFormEnteredValue(element1, period, DataLocation.findByCode(BUTARO), v("0"))
+		prefixes = formValidationService.getInvalidPrefix(validationRule, DataLocation.findByCode(BUTARO), getLocator())
 		
 		then:
 		prefixes.equals(new HashSet([""]))

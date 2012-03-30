@@ -17,10 +17,11 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.LocationSorter;
 import org.chai.kevin.dashboard.DashboardTarget;
 import org.chai.kevin.data.DataService;
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.ValueService;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,34 +39,34 @@ public class ReportService {
 	private SessionFactory sessionFactory;
 	private Set<String> skipLevels;
 	
-	public <T extends CalculationEntity> Map<LocationEntity, List<T>> getParents(List<T> entities, LocationLevel level) {									
+	public <T extends CalculationLocation> Map<Location, List<T>> getParents(List<T> locations, LocationLevel level) {									
 		
-		Map<LocationEntity, List<T>> locationMap = new HashMap<LocationEntity, List<T>>();
+		Map<Location, List<T>> locationMap = new HashMap<Location, List<T>>();
 		
-		for (T entity : entities){			
-			LocationEntity parentLocation = locationService.getParentOfLevel(entity, level);
+		for (T location : locations){			
+			Location parentLocation = locationService.getParentOfLevel(location, level);
 			if(!locationMap.containsKey(parentLocation)) locationMap.put(parentLocation, new ArrayList<T>());
-			locationMap.get(parentLocation).add(entity);
+			locationMap.get(parentLocation).add(location);
 		}
 				
 		//sort location map keys
-		List<LocationEntity> sortedEntities = new ArrayList<LocationEntity>(locationMap.keySet());
-		Collections.sort(sortedEntities, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
+		List<Location> sortedLocations = new ArrayList<Location>(locationMap.keySet());
+		Collections.sort(sortedLocations, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
 		
 		//sort location map values
-		Map<LocationEntity, List<T>> sortedEntitiesMap = new LinkedHashMap<LocationEntity, List<T>>();		
-		for (LocationEntity entity : sortedEntities){
-			List<T> sortedList = locationMap.get(entity);
+		Map<Location, List<T>> sortedLocationsMap = new LinkedHashMap<Location, List<T>>();		
+		for (Location location : sortedLocations){
+			List<T> sortedList = locationMap.get(location);
 			Collections.sort(sortedList, LocationSorter.BY_NAME(languageService.getCurrentLanguage()));
-			sortedEntitiesMap.put(entity, sortedList);
+			sortedLocationsMap.put(location, sortedList);
 		}
 		
-		return sortedEntitiesMap;
+		return sortedLocationsMap;
 	}
 	
 	public ReportProgram getRootProgram() {
 		ReportProgram program = (ReportProgram)sessionFactory.getCurrentSession().createCriteria(ReportProgram.class)
-			.add(Restrictions.isNull("parent")).uniqueResult();
+			.add(Restrictions.isNull("parent")).setCacheable(true).uniqueResult();
 		return program;
 	}
 
@@ -83,18 +84,13 @@ public class ReportService {
 		return programTree;
 	}
 	
+	// TODO check this
 	public <T extends ReportTarget> List<T> getReportTargets(Class<T> clazz, ReportProgram program) {
-		if(program == null){
-			return (List<T>)sessionFactory.getCurrentSession()
-			.createCriteria(clazz)			
-			.list();
-		}
-		else{
-			return (List<T>)sessionFactory.getCurrentSession()
+		Criteria criteria = sessionFactory.getCurrentSession()
 			.createCriteria(clazz)
-			.add(Restrictions.eq("program", program))
-			.list();
-		}
+			.setCacheable(true);
+		if(program != null) criteria.add(Restrictions.eq("program", program));
+		return (List<T>)criteria.list();			
 	}
 	
 	public void setLocationService(LocationService locationService) {

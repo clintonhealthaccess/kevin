@@ -30,16 +30,15 @@ package org.chai.kevin.dsr
 
 import org.chai.kevin.AbstractController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 import java.util.Collections;
 
 import org.apache.jasper.compiler.Node.ParamsAction;
 import org.chai.kevin.AbstractController;
 import org.chai.kevin.LanguageService
 import org.chai.kevin.LocationService
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
+import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
@@ -70,16 +69,16 @@ class DsrController extends AbstractController {
 		
 		Period period = getPeriod()		
 		ReportProgram program = getProgram(DsrTarget.class)				
-		LocationEntity location = getLocation()
-		Set<DataEntityType> locationTypes = getLocationTypes()
+		Location location = getLocation()
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		
 		DsrTargetCategory category = getDsrTargetCategory(program)		
 		def skipLevels = dsrService.getSkipLocationLevels()
-		def locationTree = location.collectTreeWithDataEntities(skipLevels, locationTypes).asList()				
+		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()				
 		
 		def dsrTable = null		
-		if (period != null && program != null && location != null && locationTypes != null) {
-			 dsrTable = dsrService.getDsrTable(location, program, period, locationTypes, category);				 					 		 			 
+		if (period != null && program != null && location != null && dataLocationTypes != null) {
+			 dsrTable = dsrService.getDsrTable(location, program, period, dataLocationTypes, category);				 					 		 			 
 		}
 		
 		if (log.isDebugEnabled()) log.debug('dsr: '+dsrTable+"root program: "+program)
@@ -92,7 +91,7 @@ class DsrController extends AbstractController {
 			selectedTargetClass: DsrTarget.class,
 			currentLocation: location,
 			locationTree: locationTree,
-			currentLocationTypes: locationTypes,
+			currentLocationTypes: dataLocationTypes,
 			skipLevels: skipLevels
 		]
 	}	

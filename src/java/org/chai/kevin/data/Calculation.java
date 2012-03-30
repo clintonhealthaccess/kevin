@@ -42,14 +42,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.Period;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="Calculation")
 @Table(name="dhsst_data_calculation")
@@ -65,10 +65,10 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	@Transient
 	public abstract List<String> getPartialExpressions();
 	
-	public abstract T getCalculationPartialValue(String expression, Map<DataLocationEntity, StatusValuePair> values, 
-			CalculationEntity location, Period period, DataEntityType type);
+	public abstract T getCalculationPartialValue(String expression, Map<DataLocation, StatusValuePair> values, 
+			CalculationLocation location, Period period, DataLocationType type);
 	
-	public abstract CalculationValue<T> getCalculationValue(List<T> partialValues, Period period, CalculationEntity entity);
+	public abstract CalculationValue<T> getCalculationValue(List<T> partialValues, Period period, CalculationLocation location);
 	
 	protected Value getValue(Collection<StatusValuePair> statusValuePairs) {
 		Double value = 0d;

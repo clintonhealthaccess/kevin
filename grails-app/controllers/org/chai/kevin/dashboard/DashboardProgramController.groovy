@@ -62,7 +62,7 @@ class DashboardProgramController extends AbstractEntityController {
 			entity.delete()
 		}
 		else {
-			flash.message = message(code: 'dashboard.program.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Dashboard obejctive {0} still has associated children.')
+			flash.message = message(code: 'dashboard.program.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Dashboard program {0} still has associated children.')
 		}
 	}
 	

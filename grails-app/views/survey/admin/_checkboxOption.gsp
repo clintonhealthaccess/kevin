@@ -16,7 +16,7 @@
 	<span>${i18n(field:option.surveyElement?.dataElement?.names)}</span>
 </div>
 <div>
-	<span class="bold"><g:message code="entity.locationtype.label"/>:</span>
+	<span class="bold"><g:message code="entity.datalocationtype.label"/>:</span>
 	<span>${option.typeCodeString}</span>
 </div>
 <div>

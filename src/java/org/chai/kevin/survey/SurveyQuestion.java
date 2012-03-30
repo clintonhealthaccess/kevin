@@ -54,7 +54,7 @@ import javax.persistence.Transient;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 import org.chai.kevin.form.FormElement;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "SurveyQuestion")
@@ -155,7 +155,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 	public abstract QuestionType getType();
 
 	@Transient
-	public abstract List<SurveyElement> getSurveyElements(DataEntityType type);
+	public abstract List<SurveyElement> getSurveyElements(DataLocationType type);
 	
 	@Transient
 	public abstract void removeSurveyElement(SurveyElement surveyElement);

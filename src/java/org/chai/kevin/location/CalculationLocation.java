@@ -21,11 +21,11 @@ import org.chai.kevin.Translation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name="CalculationEntity")
-@Table(name="dhsst_entity_calculation")
+@Entity(name="CalculationLocation")
+@Table(name="dhsst_location_abstract")
 @Inheritance(strategy=InheritanceType.JOINED)
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public abstract class CalculationEntity {
+public abstract class CalculationLocation {
 
 	private Long id;
 	private Translation names = new Translation();
@@ -73,39 +73,39 @@ public abstract class CalculationEntity {
 	}
 	
 	@Transient
-	public abstract LocationEntity getParent();		
+	public abstract Location getParent();		
 
 	
 	@Transient
-	public abstract List<DataLocationEntity> getDataEntities();
+	public abstract List<DataLocation> getDataLocations();
 	
 	@Transient
-	public abstract List<DataLocationEntity> getDataEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types);		
+	public abstract List<DataLocation> getDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types);		
 	
 	@Transient
-	public abstract List<LocationEntity> getChildren();
+	public abstract List<Location> getChildren();
 	
 	@Transient
-	public abstract List<LocationEntity> getChildren(Set<LocationLevel> skipLevels);
+	public abstract List<Location> getChildren(Set<LocationLevel> skipLevels);
 
-	protected boolean collectLocations(List<LocationEntity> locations, List<DataLocationEntity> dataLocations, Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
+	protected boolean collectLocations(List<Location> locations, List<DataLocation> dataLocations, Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
 		boolean result = false;
-		for (LocationEntity child : getChildren(skipLevels)) {
+		for (Location child : getChildren(skipLevels)) {
 			result = result | child.collectLocations(locations, dataLocations, skipLevels, types);
 		}
 	
-		List<DataLocationEntity> dataEntities = getDataEntities(skipLevels, types);
-		if (!dataEntities.isEmpty()) {
+		List<DataLocation> dataLocationsChildren = getDataLocations(skipLevels, types);
+		if (!dataLocationsChildren.isEmpty()) {
 			result = true;
-			if (dataLocations != null) dataLocations.addAll(dataEntities);
+			if (dataLocations != null) dataLocations.addAll(dataLocationsChildren);
 		}
 		
-		if (result && locations != null) locations.add((LocationEntity) this);
+		if (result && locations != null) locations.add((Location) this);
 		return result;
 	}
 	
-	public List<DataLocationEntity> collectDataLocationEntities(Set<LocationLevel> skipLevels, Set<DataEntityType> types) {
-		List<DataLocationEntity> dataLocations = new ArrayList<DataLocationEntity>();
+	public List<DataLocation> collectDataLocations(Set<LocationLevel> skipLevels, Set<DataLocationType> types) {
+		List<DataLocation> dataLocations = new ArrayList<DataLocation>();
 		collectLocations(null, dataLocations, skipLevels, types);
 		return dataLocations;
 	}
@@ -132,9 +132,9 @@ public abstract class CalculationEntity {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof CalculationEntity))
+		if (!(obj instanceof CalculationLocation))
 			return false;
-		CalculationEntity other = (CalculationEntity) obj;
+		CalculationLocation other = (CalculationLocation) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;

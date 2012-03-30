@@ -29,10 +29,10 @@ package org.chai.kevin.cost
 */
 
 import org.chai.kevin.AbstractController
-import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.Location
+import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 
 class CostController extends AbstractController {
 
@@ -46,7 +46,7 @@ class CostController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("cost.explain, params:"+params)
 		
 		Period period = Period.get(params.int('period'))
-		LocationEntity location = LocationEntity.get(params.int('location'))
+		Location location = Location.get(params.int('location'))
 		CostTarget target = CostTarget.get(params.int('program'));
 		
 		def explanation = costTableService.getExplanation(period, target, location);
@@ -57,7 +57,7 @@ class CostController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("cost.view, params:"+params)
 		
 		Period period = getPeriod()
-		LocationEntity location = LocationEntity.get(params.int('location'))
+		Location location = Location.get(params.int('location'))
 		ReportProgram program = ReportProgram.get(params.int('program'));
 		
 		if (log.isInfoEnabled()) log.info("view cost for period: "+period.id);

@@ -39,9 +39,9 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationEntity
-import org.chai.kevin.location.DataEntityType
-import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.DataLocation
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
@@ -51,7 +51,7 @@ class ImporterServiceSpec extends IntegrationTests {
 
 	def importerService;
 	
-	def "get import hrh string data from csv"(){
+	def "get normalized import string data from csv"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -63,18 +63,18 @@ class ImporterServiceSpec extends IntegrationTests {
 			BUTARO+",value\n"
 		def dataElement = newRawDataElement(CODE(1), type)
 		def importerErrorManager = new ImporterErrorManager();
-		importerService.importFile(dataElement, new StringReader(csvString), period,importerErrorManager)
+		importerService.importNormalizedData(dataElement, new StringReader(csvString), period,importerErrorManager)
 			
 		then:
 		RawDataElementValue.count() == 1
-		RawDataElementValue.list()[0].entity.equals(DataLocationEntity.findByCode(BUTARO))
+		RawDataElementValue.list()[0].location.equals(DataLocation.findByCode(BUTARO))
 		RawDataElementValue.list()[0].data.equals(RawDataElement.findByCode(CODE(1)))
 		RawDataElementValue.list()[0].period.equals(period)
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]))
 		importerErrorManager.errors.size() == 0 
 	}
 	
-	def "get import hrh bool data from csv"(){
+	def "get normalized import bool data from csv"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -90,7 +90,7 @@ class ImporterServiceSpec extends IntegrationTests {
 		
 		def dataBoolElement = newRawDataElement(CODE(1), typeBool)
 		def importerErrorManagerBool = new ImporterErrorManager();
-		importerService.importFile(dataBoolElement, new StringReader(csvBoolString), period, importerErrorManagerBool)
+		importerService.importNormalizedData(dataBoolElement, new StringReader(csvBoolString), period, importerErrorManagerBool)
 			
 		then:
 		importerErrorManagerBool.errors.size() == 1
@@ -100,7 +100,7 @@ class ImporterServiceSpec extends IntegrationTests {
 				
 	}
 	
-	def "get import hrh date data from csv"(){
+	def "get normalized import date data from csv"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -112,14 +112,14 @@ class ImporterServiceSpec extends IntegrationTests {
 		BUTARO+",15-08-1971\n"
 		def dataDateElement = newRawDataElement(CODE(1), typeDate)
 		def importerErrorManagerDate = new ImporterErrorManager();
-		importerService.importFile(dataDateElement, new StringReader(csvDateString), period, importerErrorManagerDate)
+		importerService.importNormalizedData(dataDateElement, new StringReader(csvDateString), period, importerErrorManagerDate)
 			
 		then:
 		importerErrorManagerDate.errors.size() == 0
 		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
 	}
 	
-	def "get import hrh number data from csv"(){
+	def "get normalized import number data from csv"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -135,7 +135,7 @@ class ImporterServiceSpec extends IntegrationTests {
 		
 		def dataNumberElement = newRawDataElement(CODE(1), typeNumber)
 		def importerErrorManagerNumber = new ImporterErrorManager();
-		importerService.importFile(dataNumberElement, new StringReader(csvNumberString), period, importerErrorManagerNumber)
+		importerService.importNormalizedData(dataNumberElement, new StringReader(csvNumberString), period, importerErrorManagerNumber)
 			
 		then:
 		importerErrorManagerNumber.errors.size() == 1
@@ -145,7 +145,7 @@ class ImporterServiceSpec extends IntegrationTests {
 	
 	
 	
-	def "get import hrh enum data from csv"(){
+	def "get normalized import enum data from csv"(){
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -163,7 +163,7 @@ class ImporterServiceSpec extends IntegrationTests {
 		
 		def dataEnumElement = newRawDataElement(CODE(1), typeEnum)
 		def importerErrorManagerEnum = new ImporterErrorManager();
-		importerService.importFile(dataEnumElement, new StringReader(csvEnumString), period, importerErrorManagerEnum)
+		importerService.importNormalizedData(dataEnumElement, new StringReader(csvEnumString), period, importerErrorManagerEnum)
 			
 		then:
 		importerErrorManagerEnum.errors.size() == 1
@@ -171,7 +171,7 @@ class ImporterServiceSpec extends IntegrationTests {
 		Enum.findByCode("gender").enumOptions.contains(EnumOption.findByValue(typeEnum.getValue(RawDataElementValue.list()[0].value, "[1].gender").getEnumValue()))
 	}
 	
-	def "get import hrh wrong code from csv"(){
+	def "get normalized import wrong code from csv"(){
 		
 		setup:
 		setupLocationTree()
@@ -187,14 +187,193 @@ class ImporterServiceSpec extends IntegrationTests {
 		
 		def dataCodeElement = newRawDataElement(CODE(1), typeCode)
 		def importerErrorManagerCode = new ImporterErrorManager();
-		importerService.importFile(dataCodeElement, new StringReader(csvCodeString), period, importerErrorManagerCode)
+		importerService.importNormalizedData(dataCodeElement, new StringReader(csvCodeString), period, importerErrorManagerCode)
 			
 		then:
 		importerErrorManagerCode.errors.size() == 1
-		//check if the first row was skipped and the second was taken as the first and an error was save
+		//check if the first row was skipped and the second was taken as the first and an error was saved
 		RawDataElementValue.list()[0].value.equals(Value.VALUE_LIST([Value.VALUE_MAP(["string":Value.VALUE_STRING("best String")])]))
 		//please change this error msg code if it is changed in ImporterService
 		importerErrorManagerCode.errors[0].messageCode.equals("import.error.message.unknown.location");
+	}
+	
+	def "get general import string data from csv"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		
+		when:
+		def type = Type.TYPE_STRING()
+		def dataElement = newRawDataElement(CODE(1), type)
+		def csvString =
+			"code,raw_data_element,data_value\n"+
+			BUTARO+","+dataElement.code+",value\n"
+		def importerErrorManager = new ImporterErrorManager();
+		importerService.importGeneralData(new StringReader(csvString), period,importerErrorManager)
+			
+		then:
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].location.equals(DataLocation.findByCode(BUTARO))
+		RawDataElementValue.list()[0].data.equals(RawDataElement.findByCode(CODE(1)))
+		RawDataElementValue.list()[0].period.equals(period)
+		RawDataElementValue.list()[0].value.equals(Value.VALUE_STRING("value"))
+		importerErrorManager.errors.size() == 0
+	}
+	
+	def "get general import bool data from csv"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		
+		when:
+		def type = Type.TYPE_BOOL()
+		def dataElementOne = newRawDataElement(CODE(1), type)
+		def dataElementTwo = newRawDataElement(CODE(2), type)
+		def dataElementThree = newRawDataElement(CODE(3), type)
+		def csvString =
+			"code,raw_data_element,data_value\n"+
+			BUTARO+","+dataElementOne.code+",1\n"+
+			BUTARO+","+dataElementTwo.code+",0\n"+
+			BUTARO+","+dataElementThree.code+",N\n"
+		def importerErrorManager = new ImporterErrorManager();
+		importerService.importGeneralData(new StringReader(csvString), period,importerErrorManager)
+			
+		then:
+		RawDataElementValue.count() == 3
+		type.getValue(RawDataElementValue.list()[0].value, "").getBooleanValue().equals(true)
+		type.getValue(RawDataElementValue.list()[1].value, "").getBooleanValue().equals(false)
+		type.getValue(RawDataElementValue.list()[2].value, "").getBooleanValue()==null
+		importerErrorManager.errors.size() == 1
+	}
+		
+	def "get general import enum data from csv"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+			
+		when:
+		def enumeGender = newEnume("gender");
+		def enumGenderOption1 = newEnumOption(enumeGender,"male");
+		def enumGenderOption2 = newEnumOption(enumeGender,"female");
+		def type = Type.TYPE_ENUM("gender")
+		def dataElementOne = newRawDataElement(CODE(1), type)
+		def dataElementTwo = newRawDataElement(CODE(2), type)
+		def csvString =
+		"code,raw_data_element,data_value\n"+
+		BUTARO+","+dataElementOne.code+",female\n"+
+		BUTARO+","+dataElementTwo.code+",Male\n"
+
+		def importerErrorManager = new ImporterErrorManager();
+		importerService.importGeneralData(new StringReader(csvString), period,importerErrorManager)
+			
+		then:
+		importerErrorManager.errors.size() == 1
+		EnumOption.findByValue(type.getValue(RawDataElementValue.list()[0].value, "").getEnumValue())!=null
+		EnumOption.findByValue(type.getValue(RawDataElementValue.list()[1].value, "").getEnumValue())==null
+		Enum.findByCode("gender").enumOptions.contains(EnumOption.findByValue(type.getValue(RawDataElementValue.list()[0].value, "").getEnumValue()))
+	}
+	
+	def "get general import number data from csv"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		
+		when:
+		def type = Type.TYPE_NUMBER()
+		def dataElementOne = newRawDataElement(CODE(1), type)
+		def dataElementTwo = newRawDataElement(CODE(2), type)
+		def csvNumberString =
+		"code,raw_data_element,data_value\n"+
+		BUTARO+","+dataElementOne.code+",zz\n"+
+		BUTARO+","+dataElementTwo.code+",44\n"
+	
+		
+		def importerErrorManager = new ImporterErrorManager();
+		importerService.importGeneralData(new StringReader(csvNumberString), period, importerErrorManager)
+			
+		then:
+		importerErrorManager.errors.size() == 1
+		RawDataElementValue.list().size()==2
+		type.getValue(RawDataElementValue.list()[0].value, "").getNumberValue()==null
+		type.getValue(RawDataElementValue.list()[1].value, "").getNumberValue()==44;
+	}
+	
+	def "get general import date data from csv"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		
+		when:
+		def type = Type.TYPE_DATE()
+		def dataElementOne = newRawDataElement(CODE(1), type)
+		def dataElementTwo = newRawDataElement(CODE(2), type)
+		def csvDateString =
+		"code,raw_data_element,data_value\n"+
+		BUTARO+","+dataElementOne.code+",15-08-1971\n"+
+		BUTARO+","+dataElementTwo.code+",44\n"
+		
+		def importerErrorManager = new ImporterErrorManager();
+		importerService.importGeneralData( new StringReader(csvDateString), period, importerErrorManager)
+			
+		then:
+		importerErrorManager.errors.size() == 1
+		type.getValue(RawDataElementValue.list()[0].value, "").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
+		type.getValue(RawDataElementValue.list()[1].value, "").getDateValue()==null
+	}
+	
+	def "get general import wrong code and raw_data_element from csv"(){
+		
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		
+		when:
+		def type = Type.TYPE_STRING()
+		def dataElement = newRawDataElement(CODE(1), type)
+		def csvCodeString =
+		"code,raw_data_element,data_value\n"+
+		"BUTERO,"+dataElement.code+",Text1\n"+
+		BUTARO+","+dataElement.code+",Text2\n"+
+		BUTARO+","+"Code"+",Text2\n"
+		
+		
+		def importerErrorManager = new ImporterErrorManager();
+		importerService.importGeneralData(new StringReader(csvCodeString), period, importerErrorManager)
+			
+		then:
+		importerErrorManager.errors.size() == 2
+		RawDataElementValue.list().size()==1
+		//check if the first row was skipped and the second was taken as the first and an error was saved
+		RawDataElementValue.list()[0].value.equals(Value.VALUE_STRING("Text2"))
+		//please change this error msg code if it is changed in ImporterService
+		importerErrorManager.errors[0].messageCode.equals("import.error.message.unknown.data.location");
+		importerErrorManager.errors[1].messageCode.equals("import.error.message.unknown.raw.data.element");
+	}
+	
+	def "get general import data being override from csv"(){
+		
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		
+		when:
+		def type = Type.TYPE_STRING()
+		def dataElement = newRawDataElement(CODE(1), type)
+		def csvCodeString =
+		"code,raw_data_element,data_value\n"+
+		BUTARO+","+dataElement.code+",overrideStringOne\n"+
+		BUTARO+","+dataElement.code+",overrideStringTwo\n"
+		
+		def importerErrorManager = new ImporterErrorManager();
+		importerService.importGeneralData(new StringReader(csvCodeString), period, importerErrorManager)
+			
+		then:
+		importerErrorManager.errors.size() == 1
+		RawDataElementValue.list().size()==1
+		//check if the first element was override
+		RawDataElementValue.list()[0].value.equals(Value.VALUE_STRING("overrideStringTwo"))
+		//please change this error msg code if it is changed in ImporterService
+		importerErrorManager.errors[0].messageCode.equals("import.error.message.data.duplicated");
 	}
 		
 }

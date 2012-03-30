@@ -31,9 +31,9 @@
 	              	<li class="question push-10">
 	                	<g:render template="/templates/reportTableHeader" model="[table:'location', linkParams:params]"/>
 	                	<g:if test="${fctTable != null && fctTable.hasData()}">	                	              								
-							<p><g:message code="fct.report.locationtype"/>: 
-								<g:each in="${currentLocationTypes}" var="locationType" status="i">						
-									<g:i18n field="${locationType.names}" />
+							<p><g:message code="fct.report.datalocationtype"/>: 
+								<g:each in="${currentLocationTypes}" var="dataLocationType" status="i">						
+									<g:i18n field="${dataLocationType.names}" />
 									<g:if test="${i != currentLocationTypes.size()-1}">, </g:if>
 								</g:each>
 							</p>

@@ -37,14 +37,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="RawDataElementValue")
 @Table(name="dhsst_value_raw_data_element",
-		uniqueConstraints=@UniqueConstraint(columnNames={"data", "period", "entity"})
+		uniqueConstraints=@UniqueConstraint(columnNames={"data", "period", "location"})
 )
 //@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class RawDataElementValue extends StoredValue {
@@ -54,8 +54,8 @@ public class RawDataElementValue extends StoredValue {
 	
 	public RawDataElementValue() {}
 
-	public RawDataElementValue(RawDataElement data, DataLocationEntity entity, Period period, Value value) {
-		super(entity, period, value);
+	public RawDataElementValue(RawDataElement data, DataLocation dataLocation, Period period, Value value) {
+		super(dataLocation, period, value);
 		
 		this.data = data;
 	}

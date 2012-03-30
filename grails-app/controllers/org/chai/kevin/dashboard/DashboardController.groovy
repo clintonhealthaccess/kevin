@@ -31,16 +31,15 @@ package org.chai.kevin.dashboard
 import org.apache.commons.lang.math.NumberUtils
 import org.chai.kevin.AbstractController
 import org.chai.kevin.LocationService
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.util.JSONUtils;
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.reports.ReportService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 
 class DashboardController extends AbstractController {
 	
@@ -76,15 +75,15 @@ class DashboardController extends AbstractController {
 		
 		Period period = getPeriod()									
 		ReportProgram program = getProgram(DashboardTarget.class)
-		LocationEntity location = getLocation()
-		Set<DataEntityType> locationTypes = getLocationTypes()
+		Location location = getLocation()
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		
 		def dashboardEntity = getDashboardEntity(program)
 		def skipLevels = dashboardService.getSkipLocationLevels();
 		
 		def programDashboard = null
 		def locationDashboard = null
-		if (period != null && program != null && dashboardEntity != null && location != null && locationTypes != null) {			
+		if (period != null && program != null && dashboardEntity != null && location != null && dataLocationTypes != null) {			
 			if (log.isInfoEnabled()){
 				log.info("dashboard for period: "+period.id+
 					", location: "+location.id+
@@ -92,8 +91,8 @@ class DashboardController extends AbstractController {
 			}
 			redirectIfDifferent(period, program, location)
 
-			programDashboard = dashboardService.getProgramDashboard(location, program, period, locationTypes);
-			locationDashboard = dashboardService.getLocationDashboard(location, program, period, locationTypes, false);			
+			programDashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
+			locationDashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, false);			
 
 		}
 		if (log.isDebugEnabled()){
@@ -109,7 +108,7 @@ class DashboardController extends AbstractController {
 			currentProgram: program,
 			selectedTargetClass: DashboardTarget.class,
 			currentLocation: location,			
-			currentLocationTypes: locationTypes,
+			currentLocationTypes: dataLocationTypes,
 			skipLevels: skipLevels			
 		]
 	}
@@ -119,13 +118,13 @@ class DashboardController extends AbstractController {
 		
 		Period period = getPeriod()	
 		ReportProgram program = getProgram(DashboardTarget.class)
-		LocationEntity location = getLocation()
-		Set<DataEntityType> locationTypes = getLocationTypes()
+		Location location = getLocation()
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		
 		DashboardEntity dashboardEntity = getDashboardEntity(program)
 		
 		def dashboard = null
-		if (period != null && program != null && dashboardEntity != null && location != null && locationTypes != null) {			
+		if (period != null && program != null && dashboardEntity != null && location != null && dataLocationTypes != null) {			
 			
 			if (log.isInfoEnabled()){
 				log.info("compare dashboard for period: "+period.id+
@@ -137,9 +136,9 @@ class DashboardController extends AbstractController {
 			
 			def table = (String) params.get("table")			
 			if(table == 'program')
-				dashboard = dashboardService.getProgramDashboard(location, program, period, locationTypes);
+				dashboard = dashboardService.getProgramDashboard(location, program, period, dataLocationTypes);
 			if(table == 'location')
-				dashboard = dashboardService.getLocationDashboard(location, program, period, locationTypes, true);
+				dashboard = dashboardService.getLocationDashboard(location, program, period, dataLocationTypes, true);
 						
 			if (log.isDebugEnabled()) log.debug('compare dashboard: '+dashboard)
 

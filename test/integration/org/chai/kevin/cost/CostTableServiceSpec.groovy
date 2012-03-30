@@ -30,9 +30,9 @@ package org.chai.kevin.cost
 
 import org.chai.kevin.cost.CostTarget.CostType
 import org.chai.kevin.data.Type
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 
 class CostTableServiceSpec extends CostIntegrationTests {
 
@@ -52,7 +52,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def training = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, Location.findByCode(RWANDA))
 
 		then:
 		costTable.getCost(training, year).value == value
@@ -78,7 +78,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def training = newCostTarget(CODE(3), dataElement, dataElementEnd, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, Location.findByCode(RWANDA))
 
 		then:
 		costTable.getCost(training, year).value == value
@@ -105,7 +105,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def average = newCostTarget(AVERAGE, dataElement, rampUp, CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, Location.findByCode(RWANDA))
 		
 		then:
 		costTable.targets.containsAll getTargets(expectedTargets)
@@ -128,7 +128,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def target = newCostTarget(CODE(4), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, Location.findByCode(RWANDA))
 		
 		then:
 		costTable.getCost(target, year).value == value
@@ -153,7 +153,7 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def training = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def costTable = costTableService.getCostTable(period, costProgram, LocationEntity.findByCode(RWANDA))
+		def costTable = costTableService.getCostTable(period, costProgram, Location.findByCode(RWANDA))
 
 		then:
 		costTable.getCost(training, year).value == value
@@ -179,14 +179,14 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def explanation = costTableService.getExplanation(period, costTarget, LocationEntity.findByCode(entity))
-		def cost = explanation.getCost(getCalculationEntity(expectedEntity), year)
+		def explanation = costTableService.getExplanation(period, costTarget, Location.findByCode(location))
+		def cost = explanation.getCost(getCalculationLocation(expectedLocation), year)
 		
 		then:
 		cost.value == expectedValue
 		
 		where:
-		entity		| expectedEntity	| year	| expectedValue
+		location	| expectedLocation	| year	| expectedValue
 		RWANDA		| NORTH				| 1		| 8.0d
 		RWANDA		| NORTH				| 2		| 8.0d
 		RWANDA		| NORTH				| 3		| 8.0d
@@ -221,10 +221,10 @@ class CostTableServiceSpec extends CostIntegrationTests {
 		def costTarget = newCostTarget(CODE(3), dataElement, CONSTANT_RAMP_UP(), CostType.INVESTMENT, [DISTRICT_HOSPITAL_GROUP], costProgram)
 		refreshNormalizedDataElement()
 		
-		def explanation = costTableService.getExplanation(period, costTarget, LocationEntity.findByCode(BURERA))
+		def explanation = costTableService.getExplanation(period, costTarget, Location.findByCode(BURERA))
 		
 		then:
-		explanation.locations.containsAll([DataLocationEntity.findByCode(BUTARO)])
+		explanation.locations.containsAll([DataLocation.findByCode(BUTARO)])
 		explanation.locations.size() == 1
 		
 	}

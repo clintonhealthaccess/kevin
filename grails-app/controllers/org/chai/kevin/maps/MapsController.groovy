@@ -29,11 +29,11 @@ package org.chai.kevin.maps
 */
 
 import org.chai.kevin.AbstractController
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.LocationEntity;
-import org.chai.kevin.location.LocationLevel;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
+import org.chai.kevin.Period
+import org.chai.kevin.location.CalculationLocation
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
+import org.chai.kevin.location.LocationLevel
 
 class MapsController extends AbstractController {
 
@@ -49,13 +49,13 @@ class MapsController extends AbstractController {
 		
 		Period period = getPeriod()
 		MapsTarget target = MapsTarget.get(params.int('target'));
-		LocationEntity entity = LocationEntity.get(params.int('location'));
+		Location location = Location.get(params.int('location'));
 		
 		[
 			targets: MapsTarget.list(),
 			currentPeriod: period, 
 			currentTarget: target,
-			currentLocation: entity
+			currentLocation: location
 		]
 	}
 	
@@ -63,26 +63,26 @@ class MapsController extends AbstractController {
 		if (log.isDebugEnabled()) log.debug("maps.infos, params:"+params)
 		
 		Period period = Period.get(params.int('period'))
-		CalculationEntity entity = locationService.getCalculationEntity(params.int('location'), CalculationEntity.class);
+		CalculationLocation location = locationService.getCalculationLocation(params.int('location'), CalculationLocation.class);
 		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
 		def info = mapsService.getExplanation(period, location, target);
 		
-		[info: info, target: target, types: DataEntityType.list()]
+		[info: info, target: target, types: DataLocationType.list([cache: true])]
 	}
 	
 	def map = {
 		if (log.isDebugEnabled()) log.debug("maps.map, params:"+params)
 		
 		Period period = getPeriod()
-		LocationEntity entity = LocationEntity.get(params.int('location'));
-		if (entity == null) entity = locationService.getRootLocation();
+		Location location = Location.get(params.int('location'));
+		if (entity == null) location = locationService.getRootLocation();
 		LocationLevel level = LocationLevel.get(params.int('level'))
-		if (level == null) level = entity.getLevel()
+		if (level == null) level = location.getLevel()
 		
 		MapsTarget target =  MapsTarget.get(params.int('target'));
 		
-		def map = mapsService.getMap(period, entity, level, target);
+		def map = mapsService.getMap(period, location, level, target);
 		
 		if (log.isDebugEnabled()) log.debug("displaying map: "+map)		
 		render(contentType:"text/json", text:'{"result":"success","map":'+map.toJson(languageService)+'}');

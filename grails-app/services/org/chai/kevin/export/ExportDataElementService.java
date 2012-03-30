@@ -27,9 +27,9 @@
  */
 package org.chai.kevin.export;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 
 /**
  * @author Jean Kahigiso M.
@@ -39,11 +39,8 @@ public class ExportDataElementService {
 
 	private ValueService dataValueService;
 //	private LocationService locationService;
-	int facilityLevel;
 	
 	public ExportDataElement getDataElementExport(Period period,DataElement<?> dataElement){
-//		List<Location> locations = locationService.getLocationsOfLevel(facilityLevel);
-//		
 //		Map<Location, DataValue> values = new HashMap<Location,DataValue>();
 //		for(Location location: locations){
 //			Map<Location, DataValue> dataValue =new HashMap<Location,DataValue>();

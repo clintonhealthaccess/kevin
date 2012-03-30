@@ -29,7 +29,7 @@
 				
 				<g:textarea name="expression" label="Expression" bean="${validation}" field="expression" value="${validation.expression}" rows="5"/>
 				
-				<g:selectFromList name="typeCodes" label="${message(code:'entity.locationtype.label')}" bean="${validation}" field="typeCodeString" 
+				<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${validation}" field="typeCodeString" 
 					from="${types}" value="${validation.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 			
 				<g:if test="${validation.id != null}">
@@ -41,42 +41,6 @@
 				</div>
 			</g:form>
 		</div>
-		
-		<div class="data-search-column">
-			<g:form name="search-data-form" class="search-form" url="[controller:'formElement', action:'getHtmlData']">
-				<div class="row">
-					<label for="searchText"><g:message code="entity.search.label"/>:</label>
-			    	<input name="searchText" class="idle-field"/>
-			    	<button type="submit"><g:message code="default.button.search.label"/></button>
-					<div class="clear"></div>
-				</div>
-			</g:form>
-		    <ul class="filtered idle-field" id="data" ></ul>
-		</div>
+		<g:render template="/templates/searchDataElement" model="[element: 'textarea[name="expression"]', formUrl: [controller:'formElement', action:'getHtmlData']]"/>
 	</div>
-	<div class="clear"></div>
 </div>
-
-<script type="text/javascript">
-	$(document).ready(function() {		
-		getDataElement(function(event){
-			if ($('.in-edition').size() == 1) {
-				var edition = $('.in-edition')[0]
-				$(edition).replaceSelection('$'+$(this).data('code'));
-			}
-		});
-		$('#add-validation-rule textarea')
-		.bind('click keypress focus',
-			function(){
-				$(this).addClass('in-edition');
-			}
-		)
-		.bind('blur',
-			function(){
-				$(this).removeClass('in-edition');
-			}
-		);
-			 
-		getRichTextContent();
-	});					
-</script>

@@ -37,9 +37,9 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.value.CalculationPartialValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.NormalizedDataElementValue;
@@ -53,7 +53,12 @@ class DataServiceSpec extends IntegrationTests {
 
 	def dataService;
 	
-	def "get data element"() {
+	def "get data returns null when id is null"() {
+		expect:
+		dataService.getData(null, DataElement.class) == null
+	}
+	
+	def "get data element by id"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
@@ -96,6 +101,52 @@ class DataServiceSpec extends IntegrationTests {
 		dataService.getData(rawDataElement.id, Average.class) == null
 		dataService.getData(rawDataElement.id, NormalizedDataElement.class) == null
 		dataService.getData(rawDataElement.id, Sum.class) == null
+		
+	}
+	
+	def "get data element by code"() {
+		setup:
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
+		def average = newAverage("1", CODE(3))
+		def sum = newSum("1", CODE(4))
+		def aggregation = newAggregation("1", CODE(5))
+		def result = null
+		
+		when:
+		result = dataService.getDataByCode(rawDataElement.code, RawDataElement.class)
+		
+		then:
+		result.equals(rawDataElement)
+		
+		when:
+		result = dataService.getDataByCode(normalizedDataElement.code, NormalizedDataElement.class)
+		
+		then:
+		result.equals(normalizedDataElement)
+
+		when:
+		result = dataService.getDataByCode(average.code, Average.class)
+		
+		then:
+		result.equals(average)
+
+		when:
+		result = dataService.getDataByCode(sum.code, Sum.class)
+		
+		then:
+		result.equals(sum)
+	
+		expect:
+		dataService.getDataByCode(average.code, Sum.class) == null
+		dataService.getDataByCode(average.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(average.code, RawDataElement.class) == null
+		dataService.getDataByCode(sum.code, Average.class) == null
+		dataService.getDataByCode(sum.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(sum.code, RawDataElement.class) == null
+		dataService.getDataByCode(rawDataElement.code, Average.class) == null
+		dataService.getDataByCode(rawDataElement.code, NormalizedDataElement.class) == null
+		dataService.getDataByCode(rawDataElement.code, Sum.class) == null
 		
 	}
 	
@@ -199,7 +250,7 @@ class DataServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		def period = newPeriod()
-		newRawDataElementValue(dataElement, period, DataLocationEntity.findByCode(KIVUYE), Value.NULL_INSTANCE())
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(KIVUYE), Value.NULL_INSTANCE())
 		
 		dataService.delete(dataElement)
 		
@@ -214,7 +265,7 @@ class DataServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
 		def period = newPeriod()
-		newNormalizedDataElementValue(dataElement, DataLocationEntity.findByCode(KIVUYE), period, Status.VALID, Value.NULL_INSTANCE())
+		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, Value.NULL_INSTANCE())
 		
 		dataService.delete(dataElement)
 		
@@ -229,7 +280,7 @@ class DataServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def calculation = newSum("1", CODE(1))
 		def period = newPeriod()
-		newSumPartialValue(calculation, period, DataLocationEntity.findByCode(KIVUYE), DataEntityType.findByCode(HEALTH_CENTER_GROUP), Value.NULL_INSTANCE())
+		newSumPartialValue(calculation, period, DataLocation.findByCode(KIVUYE), DataLocationType.findByCode(HEALTH_CENTER_GROUP), Value.NULL_INSTANCE())
 
 		dataService.delete(calculation)
 		
@@ -299,6 +350,5 @@ class DataServiceSpec extends IntegrationTests {
 		then:
 		dataService.getReferencingCalculations(rawDataElement).equals([sum])
 	}
-
 	
 }

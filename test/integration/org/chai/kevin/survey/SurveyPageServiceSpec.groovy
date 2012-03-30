@@ -3,7 +3,7 @@ package org.chai.kevin.survey
 import org.chai.kevin.LanguageService
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
@@ -36,13 +36,13 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		newFormEnteredValue(element, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		newSurveyEnteredQuestion(question, period, DataLocationEntity.findByCode(KIVUYE), false, true)
-		newSurveyEnteredSection(section, period, DataLocationEntity.findByCode(KIVUYE), false, true)
-		newSurveyEnteredProgram(program, period, DataLocationEntity.findByCode(KIVUYE), false, true, false)
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false)
 				
 		then:
-		surveyPageService.submit(DataLocationEntity.findByCode(KIVUYE), program) == true
+		surveyPageService.submit(DataLocation.findByCode(KIVUYE), program) == true
 	}
 	
 	def "test submit program with skipped elemment"() {
@@ -58,13 +58,13 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_MAP(["key1":Type.TYPE_NUMBER(),"key2":Type.TYPE_NUMBER()])))
 		
 		when:
-		newFormEnteredValue(element, period, DataLocationEntity.findByCode(KIVUYE), new Value("{\"value\":[{\"map_value\":{\"skipped\":\"33\",\"value\":null},\"map_key\":\"key1\"},{\"map_value\":{\"value\":10},\"map_key\":\"key2\"}]}"))
-		newSurveyEnteredQuestion(question, period, DataLocationEntity.findByCode(KIVUYE), false, true)
-		newSurveyEnteredSection(section, period, DataLocationEntity.findByCode(KIVUYE), false, true)
-		newSurveyEnteredProgram(program, period, DataLocationEntity.findByCode(KIVUYE), false, true, false)
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), new Value("{\"value\":[{\"map_value\":{\"skipped\":\"33\",\"value\":null},\"map_key\":\"key1\"},{\"map_value\":{\"value\":10},\"map_key\":\"key2\"}]}"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false)
 				
 		then:
-		surveyPageService.submit(DataLocationEntity.findByCode(KIVUYE), program) == true
+		surveyPageService.submit(DataLocation.findByCode(KIVUYE), program) == true
 		RawDataElementValue.count() == 1
 	}
 	
@@ -82,7 +82,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "10"])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "10"])
 		
 		then:
 		FormEnteredValue.count() == 1
@@ -106,13 +106,13 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def skipRule = newSurveySkipRule(survey, "\$"+element1.id+" == 1", [:], [question2])
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element1], [("elements["+element1.id+"].value"): "1"])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element1], [("elements["+element1.id+"].value"): "1"])
 		
 		then:
-		FormEnteredValue.count() == 2
+		FormEnteredValue.count() == 1
 		FormEnteredValue.list()[0].value.numberValue == 1
 		SurveyEnteredQuestion.count() == 2
-		SurveyEnteredQuestion.list()[0].getSkippedRules().equals(new HashSet([skipRule]))
+		SurveyEnteredQuestion.list()[1].getSkippedRules().equals(new HashSet([skipRule]))
 	}
 	
 	def "test modify with skipped question referring to non existing element"() {
@@ -132,7 +132,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def skipRule = newSurveySkipRule(survey, "\$"+element1.id+" == 1", [(element2):""], [])
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element1], [("elements["+element1.id+"].value"): "1"])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element1], [("elements["+element1.id+"].value"): "1"])
 		
 		then:
 		FormEnteredValue.count() == 2
@@ -156,11 +156,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		newFormEnteredValue(element, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		newSurveyEnteredQuestion(question, period, DataLocationEntity.findByCode(KIVUYE), false, true);
-		newSurveyEnteredSection(section, period, DataLocationEntity.findByCode(KIVUYE), false, true);
-		newSurveyEnteredProgram(program, period, DataLocationEntity.findByCode(KIVUYE), false, true, false);
-		def submitted = surveyPageService.submit(DataLocationEntity.findByCode(KIVUYE), program)
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true);
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true);
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false);
+		def submitted = surveyPageService.submit(DataLocation.findByCode(KIVUYE), program)
 		
 		then:
 		submitted == true
@@ -184,7 +184,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def rule = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
 		
 		then:
 		FormEnteredValue.count() == 1
@@ -192,7 +192,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		FormEnteredValue.list()[0].value.getAttribute("invalid") == rule.id+""
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5", ("elements["+element.id+"].value[warning]"): ""+rule.id])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5", ("elements["+element.id+"].value[warning]"): ""+rule.id])
 		
 		then:
 		FormEnteredValue.count() == 1
@@ -201,7 +201,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		FormEnteredValue.list()[0].value.getAttribute("warning") == rule.id+""
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "4", ("elements["+element.id+"].value[warning]"): ""+rule.id])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "4", ("elements["+element.id+"].value[warning]"): ""+rule.id])
 		
 		then:
 		FormEnteredValue.count() == 1
@@ -225,7 +225,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def rule2 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
 		
 		then:
 		FormEnteredValue.count() == 1
@@ -248,7 +248,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_NUMBER())))
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): ["[0]", "[1]"]])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): ["[0]", "[1]"]])
 		
 		then:
 		FormEnteredValue.count() == 1
@@ -257,7 +257,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		FormEnteredValue.list()[0].value.listValue[1].isNull()
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value[0]"): "5", ("elements["+element.id+"].value.indexes"): ["[0]", "[1]"]])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value[0]"): "5", ("elements["+element.id+"].value.indexes"): ["[0]", "[1]"]])
 		
 		then:
 		FormEnteredValue.count() == 1
@@ -266,7 +266,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		FormEnteredValue.list()[0].value.listValue[1].isNull()
 		
 		when:
-		surveyPageService.modify(DataLocationEntity.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value[1]"): "10", ("elements["+element.id+"].value.indexes"): ["[0]", "[1]"]])
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value[1]"): "10", ("elements["+element.id+"].value.indexes"): ["[0]", "[1]"]])
 		
 		then:
 		FormEnteredValue.count() == 1
@@ -287,7 +287,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
 		when:
-		surveyPageService.refreshSectionForFacility(DataLocationEntity.findByCode(KIVUYE), section)
+		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section)
 		
 		then:
 		FormEnteredValue.count() == 0
@@ -306,8 +306,8 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
-		surveyPageService.refreshSectionForFacility(DataLocationEntity.findByCode(KIVUYE), section)
+		newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
+		surveyPageService.refreshSectionForDataLocation(DataLocation.findByCode(KIVUYE), section)
 		
 		then:
 		FormEnteredValue.list()[0].value.equals(Value.NULL_INSTANCE())
@@ -324,11 +324,11 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def element1 = newSurveyElement(question1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		newSurveyEnteredQuestion(question1, period, DataLocationEntity.findByCode(BUTARO), false, true)
-		newFormEnteredValue(element1, period, DataLocationEntity.findByCode(BUTARO), v("1"))
-		newSurveyEnteredSection(section, period, DataLocationEntity.findByCode(BUTARO), false, true)
-		newSurveyEnteredProgram(program, period, DataLocationEntity.findByCode(BUTARO), false, true, false)
-		surveyPageService.refreshSurveyForFacility(DataLocationEntity.findByCode(BUTARO), survey, false)
+		newSurveyEnteredQuestion(question1, period, DataLocation.findByCode(BUTARO), false, true)
+		newFormEnteredValue(element1, period, DataLocation.findByCode(BUTARO), v("1"))
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(BUTARO), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(BUTARO), false, true, false)
+		surveyPageService.refreshSurveyForDataLocation(DataLocation.findByCode(BUTARO), survey, false)
 		sessionFactory.currentSession.flush()
 		
 		then:
@@ -349,7 +349,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def program2 = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
 		
 		when:
-		def surveyPage = surveyPageService.getSurveyPage(DataLocationEntity.findByCode(KIVUYE), survey)
+		def surveyPage = surveyPageService.getSurveyPage(DataLocation.findByCode(KIVUYE), survey)
 		
 		then:
 		surveyPage.programs.equals(program2, program1)
@@ -368,7 +368,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		def option2 = newCheckboxOption(question, 1, [(HEALTH_CENTER_GROUP)], null)
 		
 		when:
-		def surveyPage = surveyPageService.getSurveyPage(DataLocationEntity.findByCode(KIVUYE), section)
+		def surveyPage = surveyPageService.getSurveyPage(DataLocation.findByCode(KIVUYE), section)
 		
 		then:
 		surveyPage.getOptions(question).equals([option2, option1])

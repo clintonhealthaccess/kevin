@@ -1,4 +1,4 @@
-package org.hisp.dhis.period;
+package org.chai.kevin;
 
 import java.util.Date;
 
@@ -9,8 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity(name="Period")
 @Table(name="dhsst_period")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Period {
 
 	private Long id;

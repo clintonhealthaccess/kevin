@@ -28,7 +28,7 @@
 package org.chai.kevin.form
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataEntityType
+import org.chai.kevin.location.DataLocationType
 
 /**
  * @author Jean Kahigiso M.
@@ -65,7 +65,7 @@ class FormValidationRuleController extends AbstractEntityController {
 			dependencies: dependencies,
 			formElements: formElements,
 			validation: entity,
-			types: DataEntityType.list(),
+			types: DataLocationType.list([cache: true]),
 			languageService: languageService
 		]
 	}

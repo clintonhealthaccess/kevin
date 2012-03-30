@@ -1,6 +1,5 @@
 package org.chai.kevin
 
-import org.hisp.dhis.period.Period;
 
 class PeriodService {
 
@@ -9,7 +8,7 @@ class PeriodService {
 	def sessionFactory
 	
 	List<Period> getPeriods() {
-		List<Period> periods = new ArrayList(Period.list())
+		List<Period> periods = new ArrayList(Period.list([cache: true]))
 		return periods.sort {
 			a, b -> a.startDate.compareTo b.startDate
 		}

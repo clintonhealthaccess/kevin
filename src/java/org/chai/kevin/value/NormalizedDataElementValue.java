@@ -40,15 +40,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.hibernate.annotations.NaturalId;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="NormalizedDataElementValue")
 @Table(name="dhsst_value_normalized_data_element",
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames={"data", "entity", "period"})
+		@UniqueConstraint(columnNames={"data", "location", "period"})
 	}
 )
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -60,13 +60,12 @@ public class NormalizedDataElementValue extends StoredValue {
 	
 	public NormalizedDataElementValue() {}
 	
-	public NormalizedDataElementValue(Value value, Status status, DataLocationEntity dataLocationEntity, NormalizedDataElement data, Period period) {
-		super(dataLocationEntity, period, value);
+	public NormalizedDataElementValue(Value value, Status status, DataLocation dataLocation, NormalizedDataElement data, Period period) {
+		super(dataLocation, period, value);
 
 		this.status = status;
 		this.data = data;
 	}
-	
 
 	@Id
 	@GeneratedValue

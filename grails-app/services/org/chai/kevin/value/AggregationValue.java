@@ -10,22 +10,22 @@ import java.util.Set;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.JaqlService;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Aggregation;
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 import com.ibm.jaql.json.type.JsonValue;
 
 public class AggregationValue extends CalculationValue<AggregationPartialValue> {
 
-	public AggregationValue(Set<AggregationPartialValue> calculationPartialValues, Aggregation calculation, Period period, CalculationEntity entity) {
-		super(new ArrayList<AggregationPartialValue>(calculationPartialValues), calculation, period, entity);
+	public AggregationValue(Set<AggregationPartialValue> calculationPartialValues, Aggregation calculation, Period period, CalculationLocation location) {
+		super(new ArrayList<AggregationPartialValue>(calculationPartialValues), calculation, period, location);
 	}
 	
-	public AggregationValue(List<AggregationPartialValue> calculationPartialValues, Aggregation calculation, Period period, CalculationEntity entity) {
-		super(calculationPartialValues, calculation, period, entity);
+	public AggregationValue(List<AggregationPartialValue> calculationPartialValues, Aggregation calculation, Period period, CalculationLocation location) {
+		super(calculationPartialValues, calculation, period, location);
 	}
 
 	@Override

@@ -28,22 +28,22 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Gradient;
-import org.chai.kevin.location.CalculationEntity;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.Value;
-import org.hisp.dhis.period.Period;
 
 public class DashboardPercentage extends Gradient implements DataValue {
 
-	private CalculationEntity entity;
+	private CalculationLocation location;
 	private Period period;
 	private Value value;
 	
-	public DashboardPercentage(Value value, CalculationEntity entity, Period period) {
+	public DashboardPercentage(Value value, CalculationLocation location, Period period) {
 		this.value = value;
 		this.period = period;
-		this.entity = entity;
+		this.location = location;
 	}
 	
 	@Override
@@ -52,8 +52,8 @@ public class DashboardPercentage extends Gradient implements DataValue {
 	}
 
 	@Override
-	public CalculationEntity getEntity() {
-		return entity;
+	public CalculationLocation getLocation() {
+		return location;
 	}
 
 	@Override

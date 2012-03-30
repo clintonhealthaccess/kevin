@@ -100,7 +100,6 @@ grails.project.dependency.resolution = {
 //		test 'org.gmock:gmock:0.8.1'
 		
 		// those are for the migration script to work
-//		compile 'org.hisp.dhis:dhis-service-importexport:2.2-SNAPSHOT'
 		compile 'org.supercsv:SuperCSV:1.52'
     }
 
@@ -122,6 +121,7 @@ grails.project.dependency.resolution = {
 		compile ":svn:1.0.1"
 		compile ":cdn-resources:0.2"
 		compile ":mail:1.0"
+		compile ":build-info-tag:0.1"
 		
 		test (":spock:0.6-SNAPSHOT") {changing = false}
 	}

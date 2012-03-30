@@ -28,8 +28,8 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.AbstractEntityController
+import org.chai.kevin.Period;
 import org.chai.kevin.PeriodSorter
-import org.hisp.dhis.period.Period
 /**
  * @author Jean Kahigiso M.
  *
@@ -66,7 +66,7 @@ class PlanningController extends AbstractEntityController {
 	}
 	
 	def getModel(def entity) {
-		List<Period> periods = Period.list()
+		List<Period> periods = Period.list([cache: true])
 		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		[
 			planning: entity,

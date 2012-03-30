@@ -6,7 +6,7 @@
 			<th><g:message code="formelement.validationrule.prefix.label"/></th>
 			<th><g:message code="formelement.validationrule.expression.label"/></th>
 			<th><g:message code="formelement.validationrule.allowoutlier.label"/></th>
-			<th><g:message code="entity.locationtype.label"/></th>
+			<th><g:message code="entity.datalocationtype.label"/></th>
 			<th><g:message code="formelement.validationrule.message.label"/></th>
 			<th><g:message code="entity.list.manage.label"/></th>
 		</tr>

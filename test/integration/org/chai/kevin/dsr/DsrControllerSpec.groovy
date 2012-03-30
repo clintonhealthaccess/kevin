@@ -1,7 +1,7 @@
 package org.chai.kevin.dsr
 
 import org.chai.kevin.data.Type
-import org.chai.kevin.location.LocationEntity
+import org.chai.kevin.location.Location
 import org.chai.kevin.reports.ReportProgram
 
 class DsrControllerSpec extends DsrIntegrationTests {
@@ -19,13 +19,13 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		when: "valid table"
 		dsrController = new DsrController()
 		dsrController.params.period = period.id
-		dsrController.params.location = LocationEntity.findByCode(RWANDA).id
+		dsrController.params.location = Location.findByCode(RWANDA).id
 		dsrController.params.program = program.id
 		def model = dsrController.view()
 		
 		then:
 		model.currentPeriod.equals(period)
-		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
+		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentProgram.equals(program)
 		model.dsrTable != null		
 		model.dsrTable.valueMap.isEmpty() == false
@@ -47,7 +47,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		
 		then:
 		model.currentPeriod.equals(period)
-		model.currentLocation.equals(LocationEntity.findByCode(RWANDA))
+		model.currentLocation.equals(Location.findByCode(RWANDA))
 		model.currentProgram.equals(ReportProgram.findByCode(ROOT))
 		model.dsrTable != null		
 		model.dsrTable.valueMap.isEmpty() == false
@@ -64,7 +64,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		when:
 		dsrController = new DsrController()
 		dsrController.params.period = period.id
-		dsrController.params.location = LocationEntity.findByCode(BURERA).id
+		dsrController.params.location = Location.findByCode(BURERA).id
 		dsrController.params.program = program.id
 		def model = dsrController.view()
 		

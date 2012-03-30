@@ -33,13 +33,13 @@ package org.chai.kevin.data
 import org.apache.commons.logging.Log;
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.LocationService
+import org.chai.kevin.Period;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.survey.SurveyElement
 import org.chai.kevin.survey.SurveyService
 import org.chai.kevin.survey.SurveyValueService;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
 
 
 class RawDataElementController extends AbstractEntityController {
@@ -166,7 +166,7 @@ class RawDataElementController extends AbstractEntityController {
 		def rawDataElement = RawDataElement.get(params.int('id'))
 
 		if (rawDataElement != null) {
-			List<Period> periods = Period.list();
+			List<Period> periods = Period.list([cache: true]);
 			Set<SurveyElement> surveyElements = surveyService.getSurveyElements(rawDataElement, null);
 
 			Map<Period, Long> periodValues = new HashMap<Period,Integer>();
@@ -176,7 +176,7 @@ class RawDataElementController extends AbstractEntityController {
 
 			Map<SurveyElement, Integer> surveyElementMap = new HashMap<SurveyElement,Integer>();
 			for(SurveyElement surveyElement: surveyElements) {
-				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataEntityTypes(surveyElement));
+				surveyElementMap.put(surveyElement, surveyService.getNumberOfApplicableDataLocationTypes(surveyElement));
 			}
 			
 			List<Data<?>> referencingData = dataService.getReferencingData(rawDataElement)

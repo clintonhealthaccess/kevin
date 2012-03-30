@@ -226,7 +226,7 @@ site.period=0
 site.contact.email="contact@dhsst.org"
 site.from.email="no-reply@dhsst.org"
 
-site.locationtype.checked=["District Hospital","Health Center"]
+site.datalocationtype.checked=["District Hospital","Health Center"]
 
 report.skip.levels=["Sector"]
 dashboard.skip.levels=[]

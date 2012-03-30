@@ -2,9 +2,9 @@ package org.chai.kevin.form
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocationController;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyIntegrationTests;
 
@@ -70,19 +70,10 @@ class FormElementServiceSpec extends IntegrationTests {
 		FormEnteredValue.count() == 0
 		
 		when:
-		def formValue = formElementService.getOrCreateFormEnteredValue(DataLocationEntity.findByCode(KIVUYE), element1)
+		def formValue = formElementService.getOrCreateFormEnteredValue(DataLocation.findByCode(KIVUYE), element1)
 		
 		then:
-		FormEnteredValue.count() == 1
-		formValue.equals(FormEnteredValue.list()[0])
-		
-		when:
-		formValue = formElementService.getOrCreateFormEnteredValue(DataLocationEntity.findByCode(KIVUYE), element1)
-		
-		then:
-		FormEnteredValue.count() == 1
-		formValue.equals(FormEnteredValue.list()[0])
-		
+		FormEnteredValue.count() == 0
 	}
 	
 	def "saving entered entities saves user and timestamp"() {
@@ -93,7 +84,7 @@ class FormElementServiceSpec extends IntegrationTests {
 		def element1 = newFormElement(newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		
 		when:
-		def formEnteredValue = newFormEnteredValue(element1, period, DataLocationEntity.findByCode(KIVUYE), v("1"))
+		def formEnteredValue = newFormEnteredValue(element1, period, DataLocation.findByCode(KIVUYE), v("1"))
 		
 		then:
 		formEnteredValue.userUuid == null
@@ -183,8 +174,8 @@ class FormElementServiceSpec extends IntegrationTests {
 	
 	def "test retrieve validation rules"() {
 		setup:
-		def hc = newDataEntityType(HEALTH_CENTER_GROUP);
-		def dh = newDataEntityType(DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(HEALTH_CENTER_GROUP);
+		def dh = newDataLocationType(DISTRICT_HOSPITAL_GROUP);
 		
 		def period = newPeriod()
 		def element = newFormElement(newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
@@ -192,20 +183,20 @@ class FormElementServiceSpec extends IntegrationTests {
 		def list = null
 		
 		when:
-		list = formElementService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
+		list = formElementService.searchValidationRules(element, DataLocationType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.isEmpty()
 		
 		when:
 		def rule1 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+"==1")
-		list = formElementService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
+		list = formElementService.searchValidationRules(element, DataLocationType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.equals(new HashSet([rule1]))
 		
 		when:
-		list = formElementService.searchValidationRules(element, DataEntityType.findByCode( (DISTRICT_HOSPITAL_GROUP) ))
+		list = formElementService.searchValidationRules(element, DataLocationType.findByCode( (DISTRICT_HOSPITAL_GROUP) ))
 		
 		then:
 		list.isEmpty()
@@ -213,8 +204,8 @@ class FormElementServiceSpec extends IntegrationTests {
 	
 	def "test retrieve validation rule - several rules"() {
 		setup:
-		def hc = newDataEntityType(HEALTH_CENTER_GROUP);
-		def dh = newDataEntityType(DISTRICT_HOSPITAL_GROUP);
+		def hc = newDataLocationType(HEALTH_CENTER_GROUP);
+		def dh = newDataLocationType(DISTRICT_HOSPITAL_GROUP);
 		
 		def period = newPeriod()
 		
@@ -225,7 +216,7 @@ class FormElementServiceSpec extends IntegrationTests {
 		when:
 		def rule3 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"0"+"==1")
 		def rule4 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP), (DISTRICT_HOSPITAL_GROUP)], "\$"+element.id+"==1")
-		list = formElementService.searchValidationRules(element, DataEntityType.findByCode( (HEALTH_CENTER_GROUP) ))
+		list = formElementService.searchValidationRules(element, DataLocationType.findByCode( (HEALTH_CENTER_GROUP) ))
 		
 		then:
 		list.equals(new HashSet([rule4]))

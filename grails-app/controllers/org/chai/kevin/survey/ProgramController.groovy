@@ -28,7 +28,7 @@
 package org.chai.kevin.survey
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 /**
@@ -59,7 +59,7 @@ class ProgramController extends AbstractEntityController {
 	def getModel(def entity) {
 		[
 			program: entity,
-			types: DataEntityType.list(),
+			types: DataLocationType.list([cache: true]),
 		]
 	}
 

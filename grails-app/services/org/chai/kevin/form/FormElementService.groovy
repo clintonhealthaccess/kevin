@@ -7,8 +7,8 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shiro.SecurityUtils;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.util.Utils;
@@ -99,10 +99,10 @@ class FormElementService {
 		formEnteredValue.delete()
 	}
 	
-	FormEnteredValue getFormEnteredValue(FormElement formElement, DataLocationEntity entity) {
+	FormEnteredValue getFormEnteredValue(FormElement formElement, DataLocation dataLocation) {
 		def c = FormEnteredValue.createCriteria()
 		c.add(Restrictions.naturalId()
-			.set("entity", entity)
+			.set("dataLocation", dataLocation)
 			.set("formElement", formElement)
 		)
 		c.setCacheable(true)
@@ -114,16 +114,16 @@ class FormElementService {
 		return result
 	}
 	
-	FormEnteredValue getOrCreateFormEnteredValue(DataLocationEntity entity, FormElement element) {
-		FormEnteredValue enteredValue = getFormEnteredValue(element, entity);
+	FormEnteredValue getOrCreateFormEnteredValue(DataLocation dataLocation, FormElement element) {
+		FormEnteredValue enteredValue = getFormEnteredValue(element, dataLocation);
 		if (enteredValue == null) {
-			enteredValue = new FormEnteredValue(element, entity, Value.NULL_INSTANCE(), null);
-			save(enteredValue);
+			// TODO get raw data element
+			enteredValue = new FormEnteredValue(element, dataLocation, Value.NULL_INSTANCE(), null);
 		}
 		return enteredValue;
 	}
 	
-	Set<FormValidationRule> searchValidationRules(FormElement formElement, DataEntityType type) {
+	Set<FormValidationRule> searchValidationRules(FormElement formElement, DataLocationType type) {
 		if (log.isDebugEnabled()) log.debug("searchValidationRules(formElement="+formElement+", type="+type+")");
 		
 		def c = FormValidationRule.createCriteria()

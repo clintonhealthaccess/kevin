@@ -5,8 +5,8 @@ import grails.test.GroovyPagesTestCase;
 import org.chai.kevin.IntegrationTests
 import org.chai.kevin.dashboard.DashboardIntegrationTests
 import org.chai.kevin.dsr.DsrIntegrationTests
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.security.UserController;
@@ -34,10 +34,10 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	}
 	
 	def testLocationFilter() {
-		def hc = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
+		def hc = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
-		def rwanda = IntegrationTests.newLocationEntity(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
-		def butaro = IntegrationTests.newDataLocationEntity(IntegrationTests.j(["en":IntegrationTests.BUTARO]), IntegrationTests.BUTARO, rwanda, hc)
+		def rwanda = IntegrationTests.newLocation(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
+		def butaro = IntegrationTests.newDataLocation(IntegrationTests.j(["en":IntegrationTests.BUTARO]), IntegrationTests.BUTARO, rwanda, hc)
 		
 		def html = applyTemplate(
 			'<g:locationFilter selected="${location}"/>',
@@ -65,13 +65,13 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	}
 	
 	def testLocationTypeFilter() {
-		def hc = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
-		def dh = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.DISTRICT_HOSPITAL_GROUP]), IntegrationTests.DISTRICT_HOSPITAL_GROUP);
+		def hc = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
+		def dh = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.DISTRICT_HOSPITAL_GROUP]), IntegrationTests.DISTRICT_HOSPITAL_GROUP);
 		
 		def html = applyTemplate(
-			'<g:locationTypeFilter selected="${locationTypes}"/>',
+			'<g:dataLocationTypeFilter selected="${dataLocationTypes}"/>',
 			[
-				'locationTypes': [hc, dh]
+				'dataLocationTypes': [hc, dh]
 			]
 		)
 		
@@ -80,10 +80,10 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	}
 	
 	def testLocationFilterDisplaysNothingWhenNothingSelected() {
-		def hc = IntegrationTests.newDataEntityType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
+		def hc = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
-		def rwanda = IntegrationTests.newLocationEntity(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
-		def butaro = IntegrationTests.newDataLocationEntity(IntegrationTests.j(["en":IntegrationTests.BUTARO]), IntegrationTests.BUTARO, rwanda, hc)
+		def rwanda = IntegrationTests.newLocation(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
+		def butaro = IntegrationTests.newDataLocation(IntegrationTests.j(["en":IntegrationTests.BUTARO]), IntegrationTests.BUTARO, rwanda, hc)
 		
 		def html = applyTemplate('<g:locationFilter />')
 		assertTrue html.contains('select ')
@@ -107,7 +107,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	def testLocationTypesLinkParamFilter() {
 		def period = IntegrationTests.newPeriod()
 		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
-		def rwanda = IntegrationTests.newLocationEntity(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
+		def rwanda = IntegrationTests.newLocation(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
 		def program = IntegrationTests.newReportProgram(IntegrationTests.ROOT)
 		
 		def html = applyTemplate(

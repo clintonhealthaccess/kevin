@@ -21,16 +21,16 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.LanguageService;
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValuePredicate;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
-import org.hisp.dhis.period.Period;
 
 @Entity(name = "FormElement")
 @Table(name = "dhsst_form_element")
@@ -116,26 +116,26 @@ public class FormElement {
 	}
 
 	@Transient
-	public void validate(DataLocationEntity entity, ElementCalculator calculator) {
-		Set<FormValidationRule> validationRules = calculator.getFormElementService().searchValidationRules(this, entity.getType());
+	public void validate(DataLocation dataLocation, ElementCalculator calculator) {
+		Set<FormValidationRule> validationRules = calculator.getFormElementService().searchValidationRules(this, dataLocation.getType());
 		
 		for (FormValidationRule validationRule : validationRules) {
-			validationRule.evaluate(entity, calculator);
+			validationRule.evaluate(dataLocation, calculator);
 		}
 	}
 	
 	@Transient
-	public void executeSkip(DataLocationEntity entity, ElementCalculator calculator) {
+	public void executeSkip(DataLocation dataLocation, ElementCalculator calculator) {
 		Set<FormSkipRule> skipRules = calculator.getFormElementService().searchSkipRules(this);
 		
 		for (FormSkipRule skipRule: skipRules) {
-			skipRule.evaluate(entity, calculator);
+			skipRule.evaluate(dataLocation, calculator);
 		}
 	}
 	
 	@Transient
-	protected Value getValue(DataLocationEntity entity, final ElementSubmitter submitter) {
-		FormEnteredValue enteredValue = submitter.getFormElementService().getOrCreateFormEnteredValue(entity, this);
+	protected Value getValue(DataLocation dataLocation, final ElementSubmitter submitter) {
+		FormEnteredValue enteredValue = submitter.getFormElementService().getOrCreateFormEnteredValue(dataLocation, this);
 		final Type type = enteredValue.getType();
 		Value valueToSave = new Value(enteredValue.getValue().getJsonValue());
 		type.transformValue(valueToSave, new ValuePredicate() {
@@ -148,12 +148,12 @@ public class FormElement {
 	}
 	
 	@Transient
-	public void submit(DataLocationEntity entity, Period period, ElementSubmitter submitter) {
-		Value valueToSave = getValue(entity, submitter);
+	public void submit(DataLocation dataLocation, Period period, ElementSubmitter submitter) {
+		Value valueToSave = getValue(dataLocation, submitter);
 		
-		RawDataElementValue rawDataElementValue = submitter.getValueService().getDataElementValue(getDataElement(), entity, period);
+		RawDataElementValue rawDataElementValue = submitter.getValueService().getDataElementValue(getDataElement(), dataLocation, period);
 		if (rawDataElementValue == null) {
-			rawDataElementValue = new RawDataElementValue(getDataElement(), entity, period, null);
+			rawDataElementValue = new RawDataElementValue(getDataElement(), dataLocation, period, null);
 		}
 		rawDataElementValue.setValue(valueToSave);
 		

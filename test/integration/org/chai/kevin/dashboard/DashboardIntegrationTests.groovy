@@ -1,25 +1,27 @@
 package org.chai.kevin.dashboard
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportIntegrationTests;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.value.Value
-import org.hisp.dhis.period.Period;
 
 abstract class DashboardIntegrationTests extends IntegrationTests {
 	
 	public static final String VALUE_STRING = "value";
 	
 	static def setupDashboardTree(){
-		def period = Period.list()[0]
+		def period = Period.list([cache: true])[0]
 		def root = ReportProgram.findByCode(ROOT)
 		def program1 = ReportProgram.findByCode(PROGRAM1)
 		def program2 = ReportProgram.findByCode(PROGRAM2)
+		def program3 = ReportProgram.findByCode(PROGRAM3)
 		
 		def dashboardRoot = newDashboardProgram(ROOT, root, 0)		
 		def dashboardProgram1 = newDashboardProgram(PROGRAM1, program1, 1)
 		def dashboardProgram2 = newDashboardProgram(PROGRAM2, program2, 1)
+		def dashboardProgram3 = newDashboardProgram(PROGRAM3, program3, 1)
 		
 		def dataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"40",(HEALTH_CENTER_GROUP):"40"]]))
 		def average1 = newAverage("\$"+dataElement1.id, CODE(2))

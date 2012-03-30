@@ -33,7 +33,7 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.util.Utils
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
 import org.apache.commons.lang.math.NumberUtils
 
 /**
@@ -69,7 +69,7 @@ class TableQuestionController extends AbstractEntityController {
 			columns: columns,
 			rows: rows,
 			question: entity,
-			types: DataEntityType.list(),
+			types: DataLocationType.list([cache: true]),
 			sections: (entity.section)!=null?entity.survey.sections:null
 		]
 	}

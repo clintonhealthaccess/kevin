@@ -1,5 +1,5 @@
 <g:if test="${location.collectsData()}">
-	<!-- DataLocationEntity -->
+	<!-- DataLocations -->
 	<g:if test="${currentLocationTypes != null && !currentLocationTypes.empty && currentLocationTypes.contains(location.type)}">
 		<tr>
 			<td>
@@ -17,7 +17,7 @@
 	</g:if>
 </g:if>
 <g:else>
-	<!-- LocationEntity -->
+	<!-- Locations -->
 	<g:if test="${locationTree != null && !locationTree.empty && locationTree.contains(location)}">
 		<tr class="tree-sign js_foldable">
 			<td class="js_foldable-toggle ${location.id == currentLocation.id ? 'toggled': ''}">
@@ -32,7 +32,7 @@
 			<td class="bucket" colspan="${dsrTable.targets.size()+1}">				
 				<table>
 					<tbody>
-						<g:each in="${location.getChildrenEntities(skipLevels, currentLocationTypes)}" var="child">	
+						<g:each in="${location.getChildrenLocations(skipLevels, currentLocationTypes)}" var="child">	
 							<g:render template="/dsr/reportProgramTableTree" model="[location:child, level:level+1]"/>
 						</g:each>
 					</tbody>

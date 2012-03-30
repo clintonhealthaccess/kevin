@@ -78,7 +78,13 @@ class DataService {
 	}
 	
 	public <T extends Data<?>> T getData(Long id, Class<T> clazz) {
+		if (id == null) return null;
 		return (Data)sessionFactory.getCurrentSession().get(clazz, id);
+	}
+	
+	public <T extends Data<?>> T getDataByCode(String code, Class<T> clazz) {		
+		return (T) sessionFactory.getCurrentSession().createCriteria(clazz)
+		.add(Restrictions.eq("code", code)).uniqueResult();
 	}
 	
 	public <T extends Data<?>> T save(T data) {
@@ -183,5 +189,5 @@ class DataService {
 		
 		return criteria
 	}
-    
+	    
 }

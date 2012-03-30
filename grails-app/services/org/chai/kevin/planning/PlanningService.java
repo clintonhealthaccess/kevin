@@ -17,8 +17,8 @@ import org.chai.kevin.form.FormElementService;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.RefreshValueService;
@@ -44,32 +44,39 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=true)
-	public PlanningSummaryPage getSummaryPage(Planning planning, LocationEntity location) {
-		List<DataLocationEntity> dataEntities = location.collectDataLocationEntities(null, null);
+	public PlanningSummaryPage getSummaryPage(Planning planning, Location location) {
+		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
 		Map<PlanningType, PlanningTypeSummary> summaries = new HashMap<PlanningType, PlanningTypeSummary>();
 		for (PlanningType planningType : planning.getPlanningTypes()) {
-			summaries.put(planningType, getPlanningTypeSummary(planningType, dataEntities));
+			summaries.put(planningType, getPlanningTypeSummary(planningType, dataLocations));
 		}
 		
-		return new PlanningSummaryPage(planning.getPlanningTypes(), dataEntities, summaries);
+		return new PlanningSummaryPage(planning.getPlanningTypes(), dataLocations, summaries);
 	}
 	
 	// TODO move to planning type
-	private PlanningTypeSummary getPlanningTypeSummary(PlanningType planningType, List<DataLocationEntity> dataEntities) {
-		Map<DataLocationEntity, Integer> numberOfEntries = new HashMap<DataLocationEntity, Integer>();
-		for (DataLocationEntity entity : dataEntities) {
-			numberOfEntries.put(entity, getPlanningList(planningType, entity).getPlanningEntries().size());
+	private PlanningTypeSummary getPlanningTypeSummary(PlanningType planningType, List<DataLocation> dataLocations) {
+		Map<DataLocation, Integer> numberOfEntries = new HashMap<DataLocation, Integer>();
+		for (DataLocation dataLocation : dataLocations) {
+			numberOfEntries.put(dataLocation, getPlanningList(planningType, dataLocation).getPlanningEntries().size());
 		}
 		return new PlanningTypeSummary(planningType, numberOfEntries);
 	}
 	
 	@Transactional(readOnly=false)
-	public PlanningList getPlanningList(PlanningType type, DataLocationEntity location) {
+	public PlanningEntry getOrCreatePlanningEntry(PlanningType type, DataLocation location, Integer lineNumber) {
+		PlanningList planningList = getPlanningList(type, location);
+		PlanningEntry entry = planningList.getOrCreatePlanningEntry(lineNumber);
+		formElementService.save(planningList.getFormEnteredValue());
+		return entry;
+	}
+	
+	@Transactional(readOnly=true)
+	public PlanningList getPlanningList(PlanningType type, DataLocation location) {
 		FormEnteredValue formEnteredValue = formElementService.getOrCreateFormEnteredValue(location, type.getFormElement());
 		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod());
 		if (rawDataElementValue == null) {
 			rawDataElementValue = new RawDataElementValue(type.getFormElement().getDataElement(), location, type.getPeriod(), Value.NULL_INSTANCE());
-			valueService.save(rawDataElementValue);
 		}
 		Map<PlanningCost, NormalizedDataElementValue> costValues = new HashMap<PlanningCost, NormalizedDataElementValue>();
 		for (PlanningCost planningCost : type.getCosts()) {
@@ -89,7 +96,7 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=false)
-	public void deletePlanningEntry(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+	public void deletePlanningEntry(PlanningType type, DataLocation location, Integer lineNumber) {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getPlanningEntries().get(lineNumber);
 		planningEntry.delete();
@@ -99,7 +106,7 @@ public class PlanningService {
 	private ValidatableLocator getLocator() {
 		return new ValidatableLocator() {
 			@Override
-			public ValidatableValue getValidatable(Long id, DataLocationEntity location) {
+			public ValidatableValue getValidatable(Long id, DataLocation location) {
 				FormElement element = formElementService.getFormElement(id);
 				FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(location, element);
 				if (enteredValue == null) return null;
@@ -109,13 +116,14 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=false)
-	public PlanningEntry modify(PlanningType type, DataLocationEntity location, Integer lineNumber, Map<String, Object> params) {
+	public PlanningEntry modify(PlanningType type, DataLocation location, Integer lineNumber, Map<String, Object> params) {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
 		
 		// first we merge the values to create a new value
 		planningEntry.mergeValues(params);
 		planningEntry.setBudgetUpdated(false);
+		formElementService.save(planningList.getFormEnteredValue());
 		
 		// second we run the validation/skip rules
 		List<FormEnteredValue> affectedValues = new ArrayList<FormEnteredValue>();
@@ -126,12 +134,11 @@ public class PlanningService {
 		for (FormEnteredValue formEnteredValue : affectedValues) {
 			formElementService.save(formEnteredValue);
 		}
-		formElementService.save(planningList.getFormEnteredValue());
 		return planningEntry;
 	}
 	
 	@Transactional(readOnly=false)
-	public void submit(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+	public void submit(PlanningType type, DataLocation location, Integer lineNumber) {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
 		
@@ -150,7 +157,7 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=false)
-	public void unsubmit(PlanningType type, DataLocationEntity location, Integer lineNumber) {
+	public void unsubmit(PlanningType type, DataLocation location, Integer lineNumber) {
 		PlanningList planningList = getPlanningList(type, location);
 		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
 		
@@ -197,7 +204,7 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=false)
-	public void refreshBudget(PlanningType type, DataLocationEntity location) {
+	public void refreshBudget(PlanningType type, DataLocation location) {
 		ElementSubmitter submitter = new PlanningElementSubmitter(formElementService, valueService);
 		type.getFormElement().submit(location, type.getPeriod(), submitter);
 		
@@ -208,7 +215,7 @@ public class PlanningService {
 		formElementService.save(planningList.getFormEnteredValue());
 	}
 	
-	private void refreshBudget(PlanningEntry planningEntry, DataLocationEntity location) {
+	private void refreshBudget(PlanningEntry planningEntry, DataLocation location) {
 		if (planningEntry.isSubmitted() && !planningEntry.isBudgetUpdated()) {
 			for (PlanningCost cost : planningEntry.getPlanningCosts()) {
 				refreshValueService.refreshNormalizedDataElement(cost.getDataElement(), location, cost.getPlanningType().getPeriod());

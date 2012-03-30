@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormSkipRule;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 
@@ -57,14 +57,14 @@ public class SurveySkipRule extends FormSkipRule {
 	}
 	
 	@Override
-	public void evaluate(DataLocationEntity entity, ElementCalculator calculator) {
-		super.evaluate(entity, calculator);
+	public void evaluate(DataLocation dataLocation, ElementCalculator calculator) {
+		super.evaluate(dataLocation, calculator);
 		
 		SurveyElementCalculator surveyCalculator = (SurveyElementCalculator)calculator;
-		boolean skipped = surveyCalculator.getFormValidationService().isSkipped(this, entity, calculator.getValidatableLocator());
+		boolean skipped = surveyCalculator.getFormValidationService().isSkipped(this, dataLocation, calculator.getValidatableLocator());
 		for (SurveyQuestion question : getSkippedSurveyQuestions()) {
 
-			SurveyEnteredQuestion enteredQuestion = surveyCalculator.getSurveyValueService().getOrCreateSurveyEnteredQuestion(entity, question);
+			SurveyEnteredQuestion enteredQuestion = surveyCalculator.getSurveyValueService().getOrCreateSurveyEnteredQuestion(dataLocation, question);
 			if (skipped) enteredQuestion.getSkippedRules().add(this);
 			else enteredQuestion.getSkippedRules().remove(this);
 			

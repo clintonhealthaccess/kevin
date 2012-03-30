@@ -26,7 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Translation;
 import org.chai.kevin.form.FormElement.ElementCalculator;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.Utils;
 
 @Entity(name = "FormSkipRule")
@@ -105,13 +105,13 @@ public class FormSkipRule {
 		}
 	}
 	
-	public void evaluate(DataLocationEntity entity, ElementCalculator calculator) {
-		if (log.isDebugEnabled()) log.debug("evaluate(entity="+entity+") on "+this);
+	public void evaluate(DataLocation dataLocation, ElementCalculator calculator) {
+		if (log.isDebugEnabled()) log.debug("evaluate(dataLocation="+dataLocation+") on "+this);
 		
 		for (FormElement formElement : getSkippedFormElements().keySet()) {
-			Set<String> prefixes = calculator.getFormValidationService().getSkippedPrefix(formElement, this, entity, calculator.getValidatableLocator());
+			Set<String> prefixes = calculator.getFormValidationService().getSkippedPrefix(formElement, this, dataLocation, calculator.getValidatableLocator());
 	
-			FormEnteredValue enteredValue = calculator.getFormElementService().getOrCreateFormEnteredValue(entity, formElement);
+			FormEnteredValue enteredValue = calculator.getFormElementService().getOrCreateFormEnteredValue(dataLocation, formElement);
 			enteredValue.getValidatable().setSkipped(this, prefixes);
 			
 			calculator.addAffectedValue(enteredValue);

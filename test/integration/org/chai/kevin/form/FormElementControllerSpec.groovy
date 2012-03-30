@@ -18,8 +18,10 @@ class FormElementControllerSpec extends SurveyIntegrationTests {
 		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
 		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
 		
-		def dataElement = newRawDataElement(j(["en": "element"]),CODE(1), Type.TYPE_NUMBER())
-		def element = newSurveyElement(question, dataElement)
+		def dataElement1 = newRawDataElement(j(["en": "element"]), CODE(1), Type.TYPE_NUMBER())
+		def dataElement2 = newRawDataElement(j(["en": "test"]), CODE(2), Type.TYPE_NUMBER())
+		newSurveyElement(question, dataElement1)
+		newSurveyElement(question, dataElement2)
 		
 		formElementController = new FormElementController()
 		
@@ -29,6 +31,7 @@ class FormElementControllerSpec extends SurveyIntegrationTests {
 		
 		then:
 		formElementController.response.contentAsString.contains('element')
+		!formElementController.response.contentAsString.contains('test')
 		
 	}
 	

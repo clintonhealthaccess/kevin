@@ -37,9 +37,9 @@ import org.chai.kevin.cost.CostRampUp;
 import org.chai.kevin.cost.CostRampUpYear;
 import org.chai.kevin.cost.CostTarget;
 import org.chai.kevin.cost.CostTarget.CostType;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.maps.MapsTarget;
 import org.chai.kevin.util.JSONUtils;
@@ -66,8 +66,6 @@ import org.chai.kevin.security.SurveyUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
-import org.chai.kevin.survey.wizard.Wizard;
-import org.chai.kevin.survey.wizard.WizardStep;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
 import org.chai.kevin.fct.FctTarget
@@ -76,7 +74,6 @@ import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
-import org.hisp.dhis.period.Period;
 
 class Initializer {
 
@@ -118,9 +115,9 @@ class Initializer {
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def kivuye = new SurveyUser(username: "kivuye", entityId: DataLocationEntity.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
+		def kivuye = new SurveyUser(username: "kivuye", dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
 		kivuye.addToPermissions("editSurvey:view")
-		kivuye.addToPermissions("editSurvey:*:"+DataLocationEntity.findByCode("Kivuye HC").id)
+		kivuye.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Kivuye HC").id)
 		kivuye.addToPermissions("menu:survey")
 		kivuye.save(failOnError: true)
 	}
@@ -136,25 +133,25 @@ class Initializer {
 			period2.save(failOnError: true, flush: true)
 		}
 
-		if (!LocationEntity.count()) {
+		if (!Location.count()) {
 
-			def hc = new DataEntityType(names: j(["en":"Health Center"]), code: "Health Center").save(failOnError: true)
-			def dh = new DataEntityType(names: j(["en":"District Hospital"]), code: "District Hospital").save(failOnError: true)
+			def hc = new DataLocationType(names: j(["en":"Health Center"]), code: "Health Center").save(failOnError: true)
+			def dh = new DataLocationType(names: j(["en":"District Hospital"]), code: "District Hospital").save(failOnError: true)
 
 			def country = new LocationLevel(names: j(["en":"National"]), code: "National", order: 1).save(failOnError: true)
 			def province = new LocationLevel(names: j(["en":"Province"]), code: "Province", order: 2).save(failOnError: true)
 			def district = new LocationLevel(names: j(["en":"District"]), code: "District", order: 3).save(failOnError: true)
 			def sector = new LocationLevel(names: j(["en":"Sector"]), code: "Sector", order: 4).save(failOnError: true)
 
-			def rwanda = new LocationEntity(names: j(["en":"Rwanda"]), code: "Rwanda", parent: null, level: country).save(failOnError: true)
+			def rwanda = new Location(names: j(["en":"Rwanda"]), code: "Rwanda", parent: null, level: country).save(failOnError: true)
 
-			def kigali = new LocationEntity(names: j(["en":"Kigali City"]), code: "Kigali City", parent: rwanda, level: province).save(failOnError: true)
-			def north = new LocationEntity(names: j(["en":"North"]), code: "North", parent: rwanda, level: province).save(failOnError: true)
-			def south = new LocationEntity(names: j(["en":"South"]), code: "South", parent: rwanda, level: province).save(failOnError: true)
-			def east = new LocationEntity(names: j(["en":"East"]), code: "East", parent: rwanda, level: province).save(failOnError: true)
-			def west = new LocationEntity(names: j(["en":"West"]), code: "West", parent: rwanda, level: province).save(failOnError: true)
+			def kigali = new Location(names: j(["en":"Kigali City"]), code: "Kigali City", parent: rwanda, level: province).save(failOnError: true)
+			def north = new Location(names: j(["en":"North"]), code: "North", parent: rwanda, level: province).save(failOnError: true)
+			def south = new Location(names: j(["en":"South"]), code: "South", parent: rwanda, level: province).save(failOnError: true)
+			def east = new Location(names: j(["en":"East"]), code: "East", parent: rwanda, level: province).save(failOnError: true)
+			def west = new Location(names: j(["en":"West"]), code: "West", parent: rwanda, level: province).save(failOnError: true)
 
-			def burera = new LocationEntity(names: j(["en":"Burera"]), code: "Burera", parent: north, level: district).save(failOnError: true)
+			def burera = new Location(names: j(["en":"Burera"]), code: "Burera", parent: north, level: district).save(failOnError: true)
 
 			rwanda.children = [
 				kigali,
@@ -180,9 +177,9 @@ class Initializer {
 			province.save(failOnError: true)
 			district.save(failOnError: true)
 			
-			def butaro = new DataLocationEntity(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
-			def kivuye = new DataLocationEntity(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
-			burera.dataEntities = [butaro, kivuye]
+			def butaro = new DataLocation(names: j(["en":"Butaro"]), code: "Butaro DH", location: burera, type: dh).save(failOnError: true)
+			def kivuye = new DataLocation(names: j(["en":"Kivuye"]), code: "Kivuye HC", location: burera, type: hc).save(failOnError: true)
+			burera.dataLocations = [butaro, kivuye]
 			burera.save(failOnError: true)
 		}
 
@@ -364,7 +361,7 @@ class Initializer {
 					"funding_sources": Type.TYPE_MAP([
 						"general_fund": Type.TYPE_BOOL(),
 						"sources": Type.TYPE_MAP([
-							"facility": Type.TYPE_NUMBER(),
+							"location": Type.TYPE_NUMBER(),
 							"minisante": Type.TYPE_NUMBER(),
 							"hospital": Type.TYPE_NUMBER(),
 							"gfatm": Type.TYPE_NUMBER(),
@@ -567,102 +564,102 @@ class Initializer {
 			// data value
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Butaro DH"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Butaro DH"),
 					value: v("30"),
 					timestamp: new Date(),
 					).save(failOnError: true)
 			// data value
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE1"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("40"),
 					timestamp: new Date(),
 					).save(failOnError: true)
 			// data value
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE3"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"value1\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE4"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("true"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE6"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("false"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE8"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("10"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE9"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("31"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE10"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"NGO or Partner\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE11"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"2011-06-29\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE81"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("44"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE91"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("33"),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE101"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"Ministry of Health\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE111"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"2011-06-30\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
 
 			new RawDataElementValue(
 					data: RawDataElement.findByCode("CODE12"),
-					period: Period.list()[0],
-					entity: DataLocationEntity.findByCode("Kivuye HC"),
+					period: Period.list([cache: true])[0],
+					location: DataLocation.findByCode("Kivuye HC"),
 					value: v("\"I can not get into the Settings menu at all, when the phone is unlocked there is a blank screen.\""),
 					timestamp: new Date(),
 					).save(failOnError: true, flush:true)
@@ -670,14 +667,16 @@ class Initializer {
 
 
 		if (!NormalizedDataElement.count()) {
-			def period1 = Period.list()[0]
-			def dh = DataEntityType.findByCode('District Hospital')
-			def hc = DataEntityType.findByCode('Health Center')
+			def period1 = Period.list([cache: true])[0]
+			def dh = DataLocationType.findByCode('District Hospital')
+			def hc = DataLocationType.findByCode('Health Center')
 
 			// indicators
-			//		new IndicatorType(names:j(["en":"one"]), factor: 100).save(failOnError: true)
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 10", expressionMap: e([(period1.id+''):[(hc.code):"10", (dh.code):"10"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), code:"Constant 20", expressionMap: e([(period1.id+''):[(hc.code):"20", (dh.code):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 20"]), descriptions:j([:]), code:"Constant 20", expressionMap: e([(period1.id+''):[(hc.code):"20", (dh.code):"20"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 30"]), descriptions:j([:]), code:"Constant 30", expressionMap: e([(period1.id+''):[(hc.code):"30", (dh.code):"30"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"Constant 40"]), descriptions:j([:]), code:"Constant 40", expressionMap: e([(period1.id+''):[(hc.code):"40", (dh.code):"40"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
 				code:"Element 1", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id, (dh.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
@@ -720,7 +719,7 @@ class Initializer {
 					).save(failOnError: true)
 
 			new CostTarget(
-					names:j(["en":"Connecting Facilities to the Internet"]), code:"Connecting Facilities", descriptions:j(["en":"Connecting Facilities to the Internet"]),
+					names:j(["en":"Connecting Centers to the Internet"]), code:"Connecting Centers", descriptions:j(["en":"Connecting Facilities to the Internet"]),
 					program: ga,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					costType: CostType.INVESTMENT,
@@ -824,8 +823,8 @@ class Initializer {
 
 	static def createDsr() {
 		if (!DsrTarget.count()) {
-			def dh = DataEntityType.findByCode("District Hospital")
-			def hc = DataEntityType.findByCode("Health Center")
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
 
 			def finacss = ReportProgram.findByCode("Service Delivery")
 			def instCap = ReportProgram.findByCode("Institutional Capacity")
@@ -1026,20 +1025,25 @@ class Initializer {
 
 	static def createFct() {
 		if (!FctTarget.count()) {
-			def dh = DataEntityType.findByCode("District Hospital")
-			def hc = DataEntityType.findByCode("Health Center")
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
 			def hmr = ReportProgram.findByCode("Human Resources for Health")
 
 			def sum1 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 10").id, code:"Sum 1", timestamp:new Date());
 			sum1.save(failOnError: true);
-
+			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
+			sum2.save(failOnError: true);
+			def sum3 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 30").id, code: "Sum 3", timestamp:new Date());
+			sum3.save(failOnError: true);
+			def sum4 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 40").id, code: "Sum 4", timestamp:new Date());
+			sum4.save(failOnError: true);
+						
 			FctTarget fctTarget1 = new FctTarget(
 
 				names:j(["en":"Fct Target 1"]), 
 				program: hmr,
 				descriptions:j([:]), 
 				code:"TARGET 1",
-				sum: sum1,
 				typeCodeString: "District Hospital,Health Center"
 			).save(failOnError:true)
 			
@@ -1056,20 +1060,16 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 2",
-				sum: sum1
+				sum: sum2
 			).save(failOnError:true)
 			
 			fctTarget1.targetOptions << [fctTargetOption1, fctTargetOption2]
-			fctTarget1.save(failOnError:true)
-			
-			def sum2 = new Sum(expression: "\$"+NormalizedDataElement.findByCode("Constant 20").id, code: "Sum 2", timestamp:new Date());
-			sum2.save(failOnError: true);
+			fctTarget1.save(failOnError:true)						
 
 			FctTarget fctTarget2 = new FctTarget(
 				names:j(["en":"Fct Target 2"]), descriptions:j([:]),
 				program: hmr,
 				code:"TARGET 2",
-				sum: sum2,
 				typeCodeString: "District Hospital,Health Center"
 			).save(failOnError:true)
 			
@@ -1078,7 +1078,7 @@ class Initializer {
 				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 3",
-				sum: sum2
+				sum: sum3
 			).save(failOnError:true)
 			
 			FctTargetOption fctTargetOption4 = new FctTargetOption(
@@ -1086,7 +1086,7 @@ class Initializer {
 				target: fctTarget1,
 				descriptions:j([:]),
 				code:"TARGET OPTION 4",
-				sum: sum2
+				sum: sum4
 			).save(failOnError:true)
 			
 			fctTarget2.targetOptions << [fctTargetOption3, fctTargetOption4]
@@ -1097,7 +1097,6 @@ class Initializer {
 				program: hmr,
 				targetOptions: [],
 				code:"TARGET 3",
-				sum: sum2,
 				typeCodeString: "District Hospital,Health Center"
 			).save(failOnError:true)
 			
@@ -1108,7 +1107,7 @@ class Initializer {
 	static def createPlanning() {
 		
 		def planning = new Planning(
-			period: Period.list()[0],
+			period: Period.list([cache: true])[0],
 			names: j(["en":"Planning 2011"]),
 			active: true
 		).save(failOnError: true)
@@ -1160,7 +1159,7 @@ class Initializer {
 					"[_].funding_sources": j(["en":"Funding Sources"]),
 					"[_].funding_sources.general_fund": j(["en":"Funded by the general fund"]),
 					"[_].funding_sources.sources": j(["en":"Individual sources"]),
-					"[_].funding_sources.sources.facility": j(["en":"Facility"]),
+					"[_].funding_sources.sources.location": j(["en":"Facility"]),
 					"[_].funding_sources.sources.minisante": j(["en":"Minisanté"]),
 					"[_].funding_sources.sources.hospital": j(["en":"District hospital"]),
 					"[_].funding_sources.sources.gfatm": j(["en":"Global Fund"]),
@@ -1182,7 +1181,7 @@ class Initializer {
 		formElement.save(failOnError: true)
 		
 		// add validation and skip rules
-		def formSkip = new PlanningSkipRule(planning: planning, expression: "\$"+formElement.id+"[_].basic.instances == 1", skippedFormElements: [(formElement): "[_].basic.responsible"]).save(failOnError: true);
+		def formSkip = new PlanningSkipRule(planning: planning, expression: "\$"+formElement.id+"[_].basic.instances == 1", skippedFormElements: [(formElement): "[_].basic.responsible,[_].consumables"]).save(failOnError: true);
 		planning.addSkipRule(formSkip)
 		planning.save(failOnError: true)
 		
@@ -1208,7 +1207,7 @@ class Initializer {
 		def planningElement1 = new NormalizedDataElement(
 			code: 'SUMPLANNING1',
 			type: Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			expressionMap: e([(Period.list()[0].id+''):[("Health Center"): '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> transform each x (if (x.basic.activity == "value1") x.basic.instances * 2 else 0))']])
+			expressionMap: e([(Period.list([cache: true])[0].id+''):[("Health Center"): '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> transform each x (if (x.basic.activity == "value1") x.basic.instances * 2 else 0))']])
 		).save(failOnError: true)
 		
 		def planningCost1 = new PlanningCost(
@@ -1224,7 +1223,7 @@ class Initializer {
 		def planningElement2 = new NormalizedDataElement(
 			code: 'SUMPLANNING2',
 			type: Type.TYPE_LIST(Type.TYPE_NUMBER()),
-			expressionMap: e([(Period.list()[0].id+''):[("Health Center"): '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> transform each x (if (x.basic.activity == "value1") x.basic.instances * 10 else 0))']])
+			expressionMap: e([(Period.list([cache: true])[0].id+''):[("Health Center"): '($'+RawDataElement.findByCode("PLANNINGELEMENT").id+' -> transform each x (if (x.basic.activity == "value1") x.basic.instances * 10 else 0))']])
 		).save(failOnError: true)
 		
 		def planningCost2 = new PlanningCost(
@@ -1242,7 +1241,7 @@ class Initializer {
 		
 //		new FormEnteredValue(
 //			formElement: formElement,
-//			entity: DataLocationEntity.findByCode("Kivuye HC"),
+//			dataLocation: DataLocation.findByCode("Kivuye HC"),
 //			value: Value.VALUE_LIST([
 //				Value.VALUE_MAP([
 //					"basic": Value.VALUE_MAP([
@@ -1258,21 +1257,21 @@ class Initializer {
 	static def createQuestionaire(){
 		if(!Survey.count()){
 
-			def dh = DataEntityType.findByCode("District Hospital")
-			def hc = DataEntityType.findByCode("Health Center")
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
 
 			//Creating Survey
 			def surveyOne = new Survey(
 					names: j(["en":"Survey Number 1"]),
 					descriptions: j(["en":"Survey Number 1 Description"]),
-					period: Period.list()[1],
-					lastPeriod: Period.list()[0],
+					period: Period.list([cache: true])[1],
+					lastPeriod: Period.list([cache: true])[0],
 					active: true,
 					)
 			def surveyTwo = new Survey(
 					names: j(["en":"Survey Number 2"]),
 					descriptions: j(["en":"Survey Number 2 Description"]),
-					period: Period.list()[1],
+					period: Period.list([cache: true])[1],
 					)
 
 			//Creating Program

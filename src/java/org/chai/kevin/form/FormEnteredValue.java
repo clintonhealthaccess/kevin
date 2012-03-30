@@ -15,7 +15,7 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.data.Type;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.ValidatableValue;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
@@ -24,7 +24,7 @@ import org.hibernate.annotations.NaturalId;
 
 @Entity(name="FormEnteredValue")
 @Table(name="dhsst_form_entered_value", 
-		uniqueConstraints=@UniqueConstraint(columnNames={"formElement", "entity"}
+		uniqueConstraints=@UniqueConstraint(columnNames={"formElement", "dataLocation"}
 ))
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class FormEnteredValue extends EnteredEntity {
@@ -33,14 +33,14 @@ public class FormEnteredValue extends EnteredEntity {
 	private FormElement formElement;
 	private Value value;
 	private Value lastValue; //last year's value
-	private DataLocationEntity entity;
+	private DataLocation dataLocation;
 	private ValidatableValue validatable;
 	
 	public FormEnteredValue() {}
 	
-	public FormEnteredValue(FormElement formElement, DataLocationEntity entity, Value value, Value lastValue) {
+	public FormEnteredValue(FormElement formElement, DataLocation dataLocation, Value value, Value lastValue) {
 		this.formElement = formElement;
-		this.entity = entity;
+		this.dataLocation = dataLocation;
 		this.value = value;
 		this.lastValue = lastValue;
 	}
@@ -90,13 +90,13 @@ public class FormEnteredValue extends EnteredEntity {
 	}
 	
 	@NaturalId
-	@ManyToOne(targetEntity=DataLocationEntity.class, fetch=FetchType.LAZY)
-	public DataLocationEntity getEntity() {
-		return entity;
+	@ManyToOne(targetEntity=DataLocation.class, fetch=FetchType.LAZY)
+	public DataLocation getDataLocation() {
+		return dataLocation;
 	}
 	
-	public void setEntity(DataLocationEntity entity) {
-		this.entity = entity;
+	public void setDataLocation(DataLocation dataLocation) {
+		this.dataLocation = dataLocation;
 	}
 	
 	@Transient
@@ -114,6 +114,39 @@ public class FormEnteredValue extends EnteredEntity {
 	public String toString() {
 		return "FormEnteredValue [value=" + value + ", lastValue="
 				+ lastValue + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((dataLocation == null) ? 0 : dataLocation.hashCode());
+		result = prime * result
+				+ ((formElement == null) ? 0 : formElement.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof FormEnteredValue))
+			return false;
+		FormEnteredValue other = (FormEnteredValue) obj;
+		if (dataLocation == null) {
+			if (other.dataLocation != null)
+				return false;
+		} else if (!dataLocation.equals(other.dataLocation))
+			return false;
+		if (formElement == null) {
+			if (other.formElement != null)
+				return false;
+		} else if (!formElement.equals(other.formElement))
+			return false;
+		return true;
 	}
 
 }

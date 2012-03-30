@@ -8,18 +8,17 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.chai.kevin.location.CalculationEntity;
-import org.chai.kevin.location.DataLocationEntity;
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.Period;
+import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.AggregationPartialValue;
 import org.chai.kevin.value.AggregationValue;
-import org.chai.kevin.value.CalculationValue;
 import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.ExpressionService.StatusValuePair;
 import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hisp.dhis.period.Period;
 
 @Entity(name="Aggregation")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -27,8 +26,8 @@ import org.hisp.dhis.period.Period;
 public class Aggregation extends Calculation<AggregationPartialValue> {
 
 	@Override
-	public AggregationValue getCalculationValue(List<AggregationPartialValue> partialValues, Period period, CalculationEntity entity) {
-		return new AggregationValue(partialValues, this, period, entity);
+	public AggregationValue getCalculationValue(List<AggregationPartialValue> partialValues, Period period, CalculationLocation location) {
+		return new AggregationValue(partialValues, this, period, location);
 	}
 
 	@Override
@@ -38,9 +37,9 @@ public class Aggregation extends Calculation<AggregationPartialValue> {
 	}
 
 	@Override
-	public AggregationPartialValue getCalculationPartialValue(String expression, Map<DataLocationEntity, StatusValuePair> values, CalculationEntity entity, Period period, DataEntityType type) {
+	public AggregationPartialValue getCalculationPartialValue(String expression, Map<DataLocation, StatusValuePair> values, CalculationLocation location, Period period, DataLocationType type) {
 		Value value = getValue(values.values());
-		return new AggregationPartialValue(this, entity, period, type, expression, value);
+		return new AggregationPartialValue(this, location, period, type, expression, value);
 	}
 
 	@Override

@@ -1,15 +1,12 @@
 package org.chai.kevin.fct
 
 import org.chai.kevin.AbstractController
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period
-import org.hisp.dhis.period.Period;
-import org.chai.kevin.location.DataEntityType;
-import org.chai.kevin.location.LocationEntity;
-import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.Period
+import org.chai.kevin.location.DataLocationType
+import org.chai.kevin.location.Location
+import org.chai.kevin.location.LocationLevel
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.reports.ReportService;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
+import org.chai.kevin.reports.ReportService
 
 class FctController extends AbstractController {
 
@@ -57,17 +54,17 @@ class FctController extends AbstractController {
 
 		Period period = getPeriod()
 		ReportProgram program = getProgram(FctTarget.class)
-		LocationEntity location = getLocation()
-		Set<DataEntityType> locationTypes = getLocationTypes()
+		Location location = getLocation()
+		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 
-//		LocationLevel level = getLevel()
 		FctTarget fctTarget = getFctTarget(program)			
 		def skipLevels = fctService.getSkipLocationLevels()
-		def locationTree = location.collectTreeWithDataEntities(skipLevels, locationTypes).asList()
+		def locationTree = location.collectTreeWithDataLocations(skipLevels, dataLocationTypes).asList()
+		LocationLevel level = locationService.getLevelAfter(location.getLevel(), skipLevels)
 		
 		FctTable fctTable = null;
-		if (period != null && program != null && fctTarget != null && location != null && locationTypes != null) {					
-			fctTable = fctService.getFctTable(location, program, fctTarget, period, null, locationTypes);
+		if (period != null && program != null && fctTarget != null && location != null && dataLocationTypes != null) {					
+			fctTable = fctService.getFctTable(location, program, fctTarget, period, level, dataLocationTypes);
 		}
 		
 		if (log.isDebugEnabled()) log.debug('fct: '+fctTable+" root program: "+program)				
@@ -79,11 +76,11 @@ class FctController extends AbstractController {
 			selectedTargetClass: FctTarget.class,
 			currentLocation: location,
 			locationTree: locationTree,
-//			currentLevel: level,
-			currentLocationTypes: locationTypes,
+			currentLocationTypes: dataLocationTypes,
 			currentTarget: fctTarget,
 			fctTargets: getFctTargets(program),		
-			skipLevels: skipLevels
+			skipLevels: skipLevels,
+			currentChildLevel: level
 		]
 	}
 }

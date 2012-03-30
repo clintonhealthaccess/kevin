@@ -27,7 +27,7 @@
  */
 package org.chai.kevin.export;
 
-import org.hisp.dhis.period.Period;
+import org.chai.kevin.Period;
 
 /**
  * @author Jean Kahigiso M.

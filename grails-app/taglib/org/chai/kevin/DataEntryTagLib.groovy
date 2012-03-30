@@ -3,19 +3,89 @@ package org.chai.kevin
 import org.chai.kevin.survey.SurveyElement;
 import java.util.Comparator;
 
+import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormValidationRule;
-import org.chai.kevin.location.DataLocationEntity;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.Survey;
 import org.chai.kevin.survey.SurveySection;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.survey.SurveyElement;
+import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.Value;
 
 class DataEntryTagLib {
 
 	def languageService
+	
+	def adminValue = {attrs, body ->
+		def type = attrs['type']
+		def value = attrs['value']
+		
+		def printableValue = new StringBuffer()
+		prettyPrint(type, value, printableValue, 0)
+		
+		out << printableValue.toString()
+	}
+	
+	def prettyPrint(Type type, Value value, StringBuffer printableValue, Integer level) {
+		if (value == null || value.isNull()) printableValue.append 'null'
+		else {
+			switch (type.type) {
+				case (ValueType.ENUM):
+				case (ValueType.STRING):
+				case (ValueType.TEXT):
+					printableValue.append '"'
+					printableValue.append  value.stringValue
+					printableValue.append '"'
+					break;
+				case (ValueType.DATE):
+					printableValue.append '"'
+					printableValue.append  Utils.formatDate(value.dateValue)
+					printableValue.append '"'
+					break;
+				case (ValueType.NUMBER):
+					printableValue.append  value.numberValue
+					break;
+				case (ValueType.BOOL):
+					printableValue.append  value.booleanValue
+					break;
+				case (ValueType.LIST):
+					printableValue.append  '['
+					int i = 0
+					for (Value listValue : value.listValue) {
+						printableValue.append '<a href="#" onclick="$(this).next().toggle();return false;">'
+						printableValue.append i++
+						printableValue.append '</a>'
+						printableValue.append '<div class="hidden">'
+						prettyPrint(type.listType, listValue, printableValue, level+1)
+						printableValue.append '</div>'
+						printableValue.append ','
+					}
+					printableValue.append ']'
+					break;
+				case (ValueType.MAP):
+					printableValue.append '<ul class="value-map">'
+					for (def entry : type.elementMap) {
+						printableValue.append '<li class="value-map-entry">'
+						printableValue.append '<span class="value-map-key">'
+						printableValue.append entry.key
+						printableValue.append '</span>: '
+						printableValue.append '<span class="value-map-value">'
+						prettyPrint(entry.value, value.mapValue[entry.key], printableValue, level+1)
+						printableValue.append '</span>'
+						printableValue.append '</li>'
+					}
+					printableValue.append '</ul>'
+					break;
+				default:
+					throw new NotImplementedException()
+			}
+		}
+	}
 	
 	def value = {attrs, body ->
 		if (log.isDebugEnabled()) log.debug('value(attrs='+attrs+',body='+body+')')
@@ -116,7 +186,7 @@ class DataEntryTagLib {
 	}
 	
 	
-	def replacePlaceHolders(String message, List<SurveyElement> elements, DataLocationEntity location) {
+	def replacePlaceHolders(String message, List<SurveyElement> elements, DataLocation location) {
 		if (log.isDebugEnabled()) log.debug('replacePlaceHolders(${message}, ${elements}, ${location})')
 		
 		String[] placeholders = StringUtils.substringsBetween(message, "{", "}")
@@ -136,7 +206,7 @@ class DataEntryTagLib {
 			if (id != null) {
 				FormElement element = elements[id];
 				String replacement =
-					'<a href="'+createLink(controller: "formElement", action: "view", params: [id:element.id, location:location.id])+'">'+(text!=null?text:element.id)+'</a>'
+					'<a href="'+createLink(controller: "formElement", action: "view", params: [id:element.id,location:location.id])+'">'+(text!=null?text:element.id)+'</a>'
 				result = StringUtils.replace(result, "{"+placeholder+"}", replacement);
 			}
 		}

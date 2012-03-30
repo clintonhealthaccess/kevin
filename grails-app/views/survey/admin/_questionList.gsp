@@ -4,7 +4,7 @@
 			<th/>
 			<th><g:message code="survey.question.label"/></th>
 			<th><g:message code="survey.question.type.label"/></th>
-			<th><g:message code="entity.locationtype.label"/></th>
+			<th><g:message code="entity.datalocationtype.label"/></th>
 			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>

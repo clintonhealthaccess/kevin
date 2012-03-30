@@ -29,11 +29,11 @@ package org.chai.kevin.data
 */
 
 import org.chai.kevin.AbstractEntityController
-import org.chai.kevin.location.DataEntityType;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.Period;
 import org.chai.kevin.value.Status;
 import org.chai.kevin.value.ValueService;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.hisp.dhis.period.Period;
 
 class NormalizedDataElementController extends AbstractEntityController {
 
@@ -62,8 +62,8 @@ class NormalizedDataElementController extends AbstractEntityController {
 	def getModel(def entity) {
 		return [
 			normalizedDataElement: entity,
-			periods: Period.list(),
-			types: DataEntityType.list()
+			periods: Period.list([cache: true]),
+			types: DataLocationType.list([cache: true])
 		]
 	}
 
@@ -95,9 +95,9 @@ class NormalizedDataElementController extends AbstractEntityController {
 		
 		// bind expression map
 		entity.expressionMap = [:]
-		Period.list().each { period ->
+		Period.list([cache: true]).each { period ->
 			def periodMap = [:]
-			DataEntityType.list().each { group ->
+			DataLocationType.list([cache: true]).each { group ->
 				def expression = params['expressionMap['+period.id+']['+group.code+']']
 				periodMap[group.code] = expression==null?'':expression
 			}
@@ -138,7 +138,7 @@ class NormalizedDataElementController extends AbstractEntityController {
 		def normalizedDataElement = NormalizedDataElement.get(params.int('id'))
 
 		if (normalizedDataElement != null) {
-			def periods = Period.list()
+			def periods = Period.list([cache: true])
 			def valuesWithError = [:]
 			periods.each { valuesWithError.put(it, valueService.getNumberOfValues(normalizedDataElement, Status.ERROR, it)) }
 			def referencingData = dataService.getReferencingData(normalizedDataElement)
