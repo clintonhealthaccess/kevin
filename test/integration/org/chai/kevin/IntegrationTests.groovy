@@ -308,11 +308,19 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 		
 	static EnumOption newEnumOption(def enume, def value) {
-		return newEnumOption(enume, value, new Ordering())
+		return newEnumOption([:], enume, value, new Ordering())
 	}
 	
-	static EnumOption newEnumOption(def enume, def value, def order) {
-		def enumOption = new EnumOption(enume: enume, value: value, order: order).save(failOnError: true)
+	static EnumOption newEnumOption(def names, Enum enume, def value) {
+		return newEnumOption(names, enume, value, new Ordering())
+	}
+	
+	static EnumOption newEnumOption(Enum enume, def value, def order) {
+		return newEnumOption([:], enume, value, order)
+	}
+	
+	static EnumOption newEnumOption(def names, Enum enume, def value, def order) {
+		def enumOption = new EnumOption(names: names, enume: enume, value: value, order: order).save(failOnError: true)
 		enume.addEnumOption(enumOption)
 		enume.save(failOnError: true)
 		return enumOption

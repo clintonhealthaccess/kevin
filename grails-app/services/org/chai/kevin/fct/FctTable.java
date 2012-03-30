@@ -35,13 +35,13 @@ import java.util.Set;
 
 import org.chai.kevin.location.Location;
 import org.chai.kevin.reports.ReportTable;
-import org.chai.kevin.reports.ReportValue;
+import org.chai.kevin.value.Value;
 
 public class FctTable extends ReportTable<FctTargetOption, Location> {
 	
 	protected List<FctTargetOption> targetOptions;
 	
-	public FctTable(Map<Location, Map<FctTargetOption, ReportValue>> valueMap, List<FctTargetOption> targetOptions) {
+	public FctTable(Map<Location, Map<FctTargetOption, Value>> valueMap, List<FctTargetOption> targetOptions) {
 		super(valueMap);
 		this.targetOptions = targetOptions;
 	}
@@ -49,13 +49,12 @@ public class FctTable extends ReportTable<FctTargetOption, Location> {
 	public Double getMaxReportValue(){
 //		Integer intMaxValue = 0;
 		Double dblMaxValue = 0d;
-		Collection<Map<FctTargetOption, ReportValue>> targetMaps = valueMap.values();
-		for(Map<FctTargetOption, ReportValue> targetMap : targetMaps){
-			Collection<ReportValue> reportValues = targetMap.values();
-			for(ReportValue reportValue : reportValues){
-				String value = reportValue.getValue();
-				if(value != null && !value.isEmpty()){
-					Double doubleValue = Double.parseDouble(value);					
+		Collection<Map<FctTargetOption, Value>> targetMaps = valueMap.values();
+		for(Map<FctTargetOption, Value> targetMap : targetMaps){
+			Collection<Value> reportValues = targetMap.values();
+			for(Value reportValue : reportValues){
+				if (reportValue != null && !reportValue.isNull()) {
+					Double doubleValue = reportValue.getNumberValue().doubleValue();					
 					if(doubleValue > dblMaxValue)
 						dblMaxValue = doubleValue;
 				}
@@ -67,14 +66,6 @@ public class FctTable extends ReportTable<FctTargetOption, Location> {
 		return dblMaxValue;
 	}
 	
-	public ReportValue getReportValue(Location location, FctTargetOption targetOption){
-		ReportValue reportValue = null;
-		Map<FctTargetOption, ReportValue> reportValues = valueMap.get(location);
-		if(reportValues != null) 
-			reportValue = reportValues.get(targetOption);
-		return reportValue;
-	}
-
 	public List<FctTargetOption> getTargetOptions(){
 		return targetOptions;
 	}

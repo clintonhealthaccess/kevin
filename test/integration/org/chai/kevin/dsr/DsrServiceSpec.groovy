@@ -5,10 +5,12 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.value.Value;
 
 class DsrServiceSpec extends DsrIntegrationTests {
 
 	def dsrService
+	
 	
 	def "test normal dsr service"() {
 		setup:
@@ -16,7 +18,7 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(2), dataElement, [], program)
+		def target = newDsrTarget(CODE(2), dataElement, [DISTRICT_HOSPITAL_GROUP], program)
 		def location = Location.findByCode(BURERA)
 		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
 		def dsrTable = null
@@ -25,70 +27,15 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		dsrTable = dsrService.getDsrTable(location, program, period, types, null)
 		
 		then:
-		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target) != null		
+		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target) == null
+		
+		when:
+		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), Value.VALUE_NUMBER(10d))
+		dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		
+		then:
+		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d	
 
-	}
-	
-	def "test dsr with non-existing enum option"() {
-		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def program = newReportProgram(CODE(1))
-		def enume = newEnume("enum")
-		def dataElement = newRawDataElement(CODE(3), Type.TYPE_ENUM("enum"))
-		def target = newDsrTarget(CODE(2), dataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def dsrTable = null
-		
-		when:
-		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("\"option\""))
-		dsrTable = dsrService.getDsrTable(Location.findByCode(BURERA), program, period, types, null)
-		
-		then:
-		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).value == "option"
-	}
-	
-	def "test dsr formatting"() {
-		when:
-		setupLocationTree()
-		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
-		def program = newReportProgram(CODE(2))
-		def target = newDsrTarget(CODE(3), normalizedDataElement, format, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		refreshNormalizedDataElement()
-		def location = Location.findByCode(BURERA)
-		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
-		
-		then:
-		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).value == value
-		
-		where:
-		format	| value
-		"#"		| "10"
-		""		| "10"
-		"#.0"	| "10.0"
-		
-	}
-
-	def "test dsr with no types should return no value"() {
-		when:
-		setupLocationTree()
-		def period = newPeriod()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
-		def program = newReportProgram(CODE(2))
-		def target = newDsrTarget(CODE(3), normalizedDataElement, [], program)
-		refreshNormalizedDataElement()
-		def location = Location.findByCode(BURERA)
-		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
-		
-		then:
-		dsrTable.getReportValue(DataLocation.findByCode(locationName), target).value == "N/A"
-		
-		where:
-		locationName << [BUTARO, KIVUYE]
-		
 	}
 	
 	def "test dsr with types"() {
@@ -104,8 +51,26 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
 		
 		then:
-		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).value == "10"		
-		dsrTable.getReportValue(DataLocation.findByCode(KIVUYE), target).value == "N/A"
+		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d	
+		dsrTable.getReportValue(DataLocation.findByCode(KIVUYE), target) == null
+		
+	}
+	
+	def "test dsr with normalized data element and no expression"() {
+		when:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10"]]))
+		def program = newReportProgram(CODE(2))
+		def target = newDsrTarget(CODE(3), normalizedDataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		refreshNormalizedDataElement()
+		def location = Location.findByCode(BURERA)
+		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		
+		then:
+		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d
+		dsrTable.getReportValue(DataLocation.findByCode(KIVUYE), target).isNull()
 		
 	}
 	
