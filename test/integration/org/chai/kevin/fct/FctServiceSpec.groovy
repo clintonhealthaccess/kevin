@@ -30,14 +30,14 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
 		
 		then:
-		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).value == "2.0"
+		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).numberValue == 2d
 		
 		when:
 		dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)])
 		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
 		
 		then:
-		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).value == "1.0"
+		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).numberValue == 1d
 	}
 		
 	def "test normal fct service with dummy location"() {
@@ -61,7 +61,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		
 		then:
 		fctTable.getReportValue(Location.findByCode("dummy"), targetOption) == null
-		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).value == "2.0"
+		fctTable.getReportValue(Location.findByCode(NORTH), targetOption).numberValue == 2d
 				
 	}
 	
@@ -85,7 +85,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
 		
 		then:
-		fctTable.getMaxReportValue() == 100
+		fctTable.getMaxReportValue() == 2d
 		
 		when:
 		def moreThan100 = newNormalizedDataElement(CODE(6), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"50", (HEALTH_CENTER_GROUP):"51"]]))
@@ -96,6 +96,6 @@ class FctServiceSpec extends FctIntegrationTests {
 		fctTable = fctService.getFctTable(location, program, target, period, level, dataLocationTypes)
 		
 		then:
-		fctTable.getMaxReportValue() == 101
+		fctTable.getMaxReportValue() == 101d
 	}
 }

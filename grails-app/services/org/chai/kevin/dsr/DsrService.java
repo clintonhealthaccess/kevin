@@ -22,9 +22,9 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
-import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +50,7 @@ public class DsrService {
 		if(category != null) targets.addAll(category.getTargets());
 		else targets.addAll(reportService.getReportTargets(DsrTarget.class, program));
 		
-		Map<DataLocation, Map<DsrTarget, ReportValue>> valueMap = new HashMap<DataLocation, Map<DsrTarget, ReportValue>>();				
+		Map<DataLocation, Map<DsrTarget, Value>> valueMap = new HashMap<DataLocation, Map<DsrTarget, Value>>();				
 		
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
@@ -58,7 +58,7 @@ public class DsrService {
 			return new DsrTable(valueMap, targets, targetCategories);		
 		
 		for (DataLocation dataLocation : dataLocations) {
-			Map<DsrTarget, ReportValue> targetMap = new HashMap<DsrTarget, ReportValue>();			
+			Map<DsrTarget, Value> targetMap = new HashMap<DsrTarget, Value>();			
 			for (DsrTarget target : targets) {
 				targetMap.put(target, getDsrValue(target, dataLocation, period));
 			}
@@ -72,48 +72,16 @@ public class DsrService {
 		return dsrTable;
 	}
 
-	private ReportValue getDsrValue(DsrTarget target, DataLocation dataLocation, Period period){
-		String value = null;
+	private Value getDsrValue(DsrTarget target, DataLocation dataLocation, Period period){
+		Value value = null;
 		
 		Set<String> targetUuids = Utils.split(target.getTypeCodeString());
 		if (targetUuids.contains(dataLocation.getType().getCode())) {
 			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), dataLocation, period);
-			
-			if (dataValue != null && !dataValue.getValue().isNull()) {
-				// TODO put this in templates ?
-				switch (target.getDataElement().getType().getType()) {
-				case BOOL:
-					if (dataValue.getValue().getBooleanValue()) value = "&#10003;";
-					else value = "&#10007;";
-					break;
-				case STRING:
-					value = dataValue.getValue().getStringValue();
-					break;
-				case NUMBER:
-					value = getFormat(target, dataValue.getValue().getNumberValue().doubleValue());
-					break;
-				case ENUM:
-					String code = target.getDataElement().getType().getEnumCode();
-					Enum enume = dataService.findEnumByCode(code);
-					if (enume != null) {
-						EnumOption option = enume.getOptionForValue(dataValue.getValue().getEnumValue());
-						if (option != null) value = languageService.getText(option.getNames());
-						else value = dataValue.getValue().getEnumValue();
-					}
-					else value = "N/A";
-					break;
-				default:
-					value = "N/A";
-					break;
-				}
-			}
-			else
-				value = "N/A";
+			if (dataValue != null) value = dataValue.getValue();
 		}
-		else
-			value="N/A";
 		
-		return new ReportValue(value);
+		return value;
 	}
 	
 	public List<DsrTargetCategory> getTargetCategories(ReportProgram program){
@@ -124,15 +92,6 @@ public class DsrService {
 		List<DsrTargetCategory> sortedCategories = new ArrayList<DsrTargetCategory>(categories);
 		Collections.sort(sortedCategories);
 		return sortedCategories;	
-	}
-	
-	private static String getFormat(DsrTarget target, Double value) {
-		String format = target.getFormat();
-		if (format == null) format = "#";
-		
-		DecimalFormat frmt = new DecimalFormat(format);
-		return frmt.format(value).toString();
-
 	}
 
 	public void setReportService(ReportService reportService) {

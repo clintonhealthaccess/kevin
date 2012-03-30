@@ -7,9 +7,11 @@
 			<g:each in="${fctTable.targetOptions}" var="targetOption">
 				<td>
 					<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
-						${fctTable.getReportValue(location, targetOption).value}
+						<g:reportValue value="${fctTable.getReportValue(location, targetOption)}" type="${targetOption.sum.type}" format="${targetOption.format}"/>
 					</g:if>
-					<g:else><g:message code="report.value.na"/></g:else>
+					<g:else>
+						<div class="report-value-na"><g:message code="report.value.na"/></div>
+					</g:else>
 				</td>
 			</g:each>
 		</tr>
@@ -24,7 +26,9 @@
 					<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
 						${fctTable.getReportValue(location, targetOption).value}
 					</g:if>
-					<g:else><g:message code="report.value.na"/></g:else>
+					<g:else>
+						<div class="report-value-na"><g:message code="report.value.na"/></div>
+					</g:else>
 				</td>
 			</g:each>
 		</tr>

@@ -683,6 +683,9 @@ class Initializer {
 				code:"Element 2", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE2").id, (dh.code):"\$"+RawDataElement.findByCode("CODE2").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
 				code:"Element 3", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE3").id, (dh.code):"\$"+RawDataElement.findByCode("CODE3").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+				
+			new NormalizedDataElement(names:j(["en":"TRUE"]), descriptions:j([:]), code:"TRUE", expressionMap: e([(period1.id+''):[(hc.code):"true", (dh.code):"true"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)
+			new NormalizedDataElement(names:j(["en":"FALSE"]), descriptions:j([:]), code:"FALSE", expressionMap: e([(period1.id+''):[(hc.code):"false", (dh.code):"false"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)
 		}
 	}
 
@@ -882,7 +885,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A1"]), descriptions:j(["en":"A1"]),
 					program: hmr,
-					dataElement: NormalizedDataElement.findByCode("Constant 10"),
+					dataElement: NormalizedDataElement.findByCode("TRUE"),
 					order: 2,
 					typeCodeString: "Health Center",
 					code: "A1"
@@ -891,7 +894,7 @@ class Initializer {
 			new DsrTarget(
 					names:j(["en":"A2"]), descriptions:j(["en":"A2"]),
 					program: hmr,
-					dataElement: NormalizedDataElement.findByCode("Constant 20"),
+					dataElement: NormalizedDataElement.findByCode("FALSE"),
 					order: 5,
 					typeCodeString: "District Hospital,Health Center",
 					code:"A2"

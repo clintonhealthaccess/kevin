@@ -166,7 +166,6 @@ beans = {
 		languageService = ref("languageService")
 		reportService = ref("reportService")
 		valueService = ref("valueService")
-		sessionFactory = ref("sessionFactory")
 		skipLevels = fctSkipLevels
 	}
 	

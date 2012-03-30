@@ -1045,6 +1045,15 @@ table.nice-table .cell { cursor: default; }
 /* line 55, ../../src/stylesheets/partials/_report.sass */
 #report .delete-link:hover, #report .delete-link:focus { color: #d30000; }
 
+/* line 59, ../../src/stylesheets/partials/_report.sass */
+.report-value-na, .report-value-null { color: lightgray; }
+
+/* line 62, ../../src/stylesheets/partials/_report.sass */
+.report-value-true { color: #258cd5; }
+
+/* line 65, ../../src/stylesheets/partials/_report.sass */
+.report-value-false { color: #444444; }
+
 /* line 1, ../../src/stylesheets/partials/_graphs.sass */
 .horizontal-graph { font-size: 11px; width: 970px; }
 /* line 4, ../../src/stylesheets/partials/_graphs.sass */
