@@ -50,8 +50,7 @@ public class DsrService {
 		if(category != null) targets.addAll(category.getTargets());
 		else targets.addAll(reportService.getReportTargets(DsrTarget.class, program));
 		
-		Map<DataLocation, Map<DsrTarget, Value>> valueMap = new HashMap<DataLocation, Map<DsrTarget, Value>>();				
-		
+		Map<DataLocation, Map<DsrTarget, Value>> valueMap = new HashMap<DataLocation, Map<DsrTarget, Value>>();		
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
 		if(dataLocations.isEmpty() || targets.isEmpty())
