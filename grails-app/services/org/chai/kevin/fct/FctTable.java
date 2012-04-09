@@ -28,31 +28,44 @@ package org.chai.kevin.fct;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.chai.kevin.location.Location;
 import org.chai.kevin.reports.ReportTable;
-import org.chai.kevin.reports.ReportValue;
+import org.chai.kevin.value.Value;
 
 public class FctTable extends ReportTable<FctTargetOption, Location> {
 	
 	protected List<FctTargetOption> targetOptions;
 	
-	public FctTable(Map<Location, Map<FctTargetOption, ReportValue>> valueMap, List<FctTargetOption> targetOptions) {
+	public FctTable(Map<Location, Map<FctTargetOption, Value>> valueMap, List<FctTargetOption> targetOptions) {
 		super(valueMap);
 		this.targetOptions = targetOptions;
 	}
 
-	public ReportValue getReportValue(Location location, FctTargetOption targetOption){
-		ReportValue reportValue = null;
-		Map<FctTargetOption, ReportValue> reportValues = valueMap.get(location);
-		if(reportValues != null) 
-			reportValue = reportValues.get(targetOption);
-		return reportValue;
+	public Double getMaxReportValue(){
+//		Integer intMaxValue = 0;
+		Double dblMaxValue = 0d;
+		Collection<Map<FctTargetOption, Value>> targetMaps = valueMap.values();
+		for(Map<FctTargetOption, Value> targetMap : targetMaps){
+			Collection<Value> reportValues = targetMap.values();
+			for(Value reportValue : reportValues){
+				if (reportValue != null && !reportValue.isNull()) {
+					Double doubleValue = reportValue.getNumberValue().doubleValue();					
+					if(doubleValue > dblMaxValue)
+						dblMaxValue = doubleValue;
+				}
+			}
+		}
+//		dblMaxValue = dblMaxValue + dblMaxValue/4d;
+//		intMaxValue = dblMaxValue.intValue();
+//		return intMaxValue;
+		return dblMaxValue;
 	}
-
+	
 	public List<FctTargetOption> getTargetOptions(){
 		return targetOptions;
 	}

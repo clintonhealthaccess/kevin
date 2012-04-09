@@ -77,8 +77,12 @@ public class RefreshValueService {
 		dataService.save(calculation);
 	}
 
+	@CacheFlush(caches={"dsrCache", "dashboardCache", "fctCache"})
+	public void flushCaches() {
+		
+	}
+	
 	@Transactional(readOnly = true)
-	@CacheFlush({"dsrCache", "dashboardCache", "fctCache"})
 	public void refreshNormalizedDataElements() {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -95,7 +99,6 @@ public class RefreshValueService {
 	}
 	
 	@Transactional(readOnly = true)
-	@CacheFlush({"dsrCache", "dashboardCache", "fctCache"})
 	public void refreshCalculations() {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);

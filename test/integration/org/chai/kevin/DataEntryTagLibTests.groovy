@@ -24,6 +24,7 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 		
 	}
 	
+	
 	// this does not work because it modifies the metaClass of languageService for all the tests
 //		languageService.metaClass.currentLanguage = { return "fr";}
 //		languageService.metaClass.getCurrentLanguage = { return "fr";}
@@ -41,91 +42,5 @@ class DataEntryTagLibTests extends GroovyPagesTestCase {
 		assertEquals applyTemplate('<g:eachOption var="option">${option.value}</g:eachOption>'), ''
 	}
 	
-	def testValueWithNullEnums() {
-		
-		assertEquals applyTemplate(
-			'<g:value value="${value}" type="${type}" enums="${enums}"/>',
-			[
-				'value': new Value("{\"value\":\"value\"}"),
-				'type': Type.TYPE_ENUM("code"),
-				'enums': null
-			]
-		), 'value'
 
-	}
-	
-	def testValueWithNullValue() {
-		
-		assertEquals applyTemplate(
-			'<g:value value="${value}" type="${type}" enums="${enums}"/>',
-			[
-				'value': null,
-				'type': Type.TYPE_ENUM("code"),
-				'enums': [:]
-			]
-		), ''
-		
-	}
-	
-	def testValueWithNullValueAndEmptyString() {
-		assertEquals applyTemplate(
-			'<g:value value="${value}" type="${type}" enums="${enums}" nullText="NULL_TEXT"/>',
-			[
-				'value': null,
-				'type': Type.TYPE_ENUM("code"),
-				'enums': [:]
-			]
-		), 'NULL_TEXT'
-	}
-	
-	def testValueWithValueIsNullAndEmptyString() {
-		assertEquals applyTemplate(
-			'<g:value value="${value}" type="${type}" enums="${enums}" nullText="NULL_TEXT"/>',
-			[
-				'value': Value.NULL_INSTANCE(),
-				'type': Type.TYPE_ENUM("code"),
-				'enums': [:]
-			]
-		), 'NULL_TEXT'
-	}
-	
-	def testValueWithEmptyEnum() {
-		
-		assertEquals applyTemplate(
-			'<g:value value="${value}" type="${type}" enums="${enums}"/>',
-			[
-				'value': new Value("{\"value\":\"value\"}"),
-				'type': Type.TYPE_ENUM("code"),
-				'enums': [:]
-			]
-		), 'value'
-		
-	}
-	
-	def testValueWithExistingEnumButNoOption() {
-		
-		assertEquals applyTemplate(
-			'<g:value value="${value}" type="${type}" enums="${enums}"/>',
-			[
-				'value': new Value("{\"value\":\"value\"}"),
-				'type': Type.TYPE_ENUM("code"),
-				'enums': ['code': new Enum()]
-			]
-		), 'value'
-		
-	}
-	
-	def testValueWithExistingEnumAndExistingOption() {
-		
-		assertEquals applyTemplate(
-			'<g:value value="${value}" type="${type}" enums="${enums}"/>',
-			[
-				'value': new Value("{\"value\":\"value\"}"),
-				'type': Type.TYPE_ENUM("code"),
-				'enums': ['code': new Enum(enumOptions: [new EnumOption(value: 'value', names: IntegrationTests.j(['en':'VALUE_EN']))])]
-			]
-		), 'VALUE_EN'
-		
-	}
-	
 }

@@ -83,15 +83,26 @@ public class ValueService {
 		return value;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Transactional(readOnly=true)
 	public <T extends DataValue> T getDataElementValue(DataElement<T> data, DataLocation dataLocation, Period period) {
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(data="+data+", period="+period+", dataLocation="+dataLocation+")");
-		T result = (T)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
-		.add(Restrictions.eq("period", period))
-		.add(Restrictions.eq("location", dataLocation))
-		.add(Restrictions.eq("data", data)).uniqueResult();
+		List<T> values = listDataElementValues(data, dataLocation, period);
+		T result = null;
+		if (values.size() > 0) result = values.get(0);
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(...)="+result);
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=true)
+	public <T extends DataValue> List<T> listDataElementValues(DataElement<T> data, DataLocation dataLocation, Period period) {
+		if (log.isDebugEnabled()) log.debug("listDataElementValues(data="+data+", period="+period+", dataLocation="+dataLocation+")");
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(data.getValueClass());
+		criteria.add(Restrictions.eq("data", data));
+		if (period != null) criteria.add(Restrictions.eq("period", period));
+		if (dataLocation != null) criteria.add(Restrictions.eq("location", dataLocation));
+		List<T> result = criteria.list();
+		if (log.isDebugEnabled()) log.debug("listDataElementValues(...)=");
 		return result;
 	}
 	
@@ -153,15 +164,6 @@ public class ValueService {
 		return (Long)criteria	
 			.setProjection(Projections.count("id"))
 			.uniqueResult();
-	}
-	
-	@Transactional(readOnly=true)
-	@SuppressWarnings("unchecked")
-	public <T extends DataValue> List<T> getValues(Data<T> data, Period period) {
-		return (List<T>)sessionFactory.getCurrentSession().createCriteria(data.getValueClass())
-		.add(Restrictions.eq("data", data))
-		.add(Restrictions.eq("period", period))
-		.list();
 	}
 	
 	@Transactional(readOnly=false)

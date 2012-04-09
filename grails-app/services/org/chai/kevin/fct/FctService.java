@@ -21,11 +21,9 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram;
 import org.chai.kevin.reports.ReportService;
-import org.chai.kevin.reports.ReportValue;
 import org.chai.kevin.value.CalculationValue;
+import org.chai.kevin.value.Value;
 import org.chai.kevin.value.ValueService;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
 public class FctService {
@@ -34,7 +32,6 @@ public class FctService {
 	private LanguageService languageService;
 	private ReportService reportService;
 	private ValueService valueService;
-	private SessionFactory sessionFactory;
 	private Set<String> skipLevels;
 	
 	@Cacheable("fctCache")
@@ -43,9 +40,8 @@ public class FctService {
 		if (log.isDebugEnabled()) 
 			log.debug("getFctTable(period="+period+",location="+location+",level="+level+",program="+program+",target="+target+")");				
 		
-		List<FctTargetOption> targetOptions = getTargetOptions(target);
-			
-		Map<Location, Map<FctTargetOption, ReportValue>> valueMap = new HashMap<Location, Map<FctTargetOption, ReportValue>>();
+		List<FctTargetOption> targetOptions = target.getTargetOptions();
+		Map<Location, Map<FctTargetOption, Value>> valueMap = new HashMap<Location, Map<FctTargetOption, Value>>();
 		
 		if(targetOptions.isEmpty())
 			return new FctTable(valueMap, targetOptions);		
@@ -54,9 +50,9 @@ public class FctService {
 		List<Location> childLocations = location.collectTreeWithDataLocations(skips, types);
 		
 		for (Location child : childLocations) {
-			Map<FctTargetOption, ReportValue> targetMap = new HashMap<FctTargetOption, ReportValue>();
+			Map<FctTargetOption, Value> targetMap = new HashMap<FctTargetOption, Value>();
 			for(FctTargetOption targetOption : targetOptions){
-				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+target.getSum());
+				if (log.isDebugEnabled()) log.debug("getting values for sum fct with calculation: "+targetOption.getSum());
 				targetMap.put(targetOption, getFctValue(targetOption, child, period, types));
 			}
 			valueMap.put(child, targetMap);
@@ -65,7 +61,7 @@ public class FctService {
 		//sort location map keys
 		List<Location> sortedLocations = new ArrayList<Location>(valueMap.keySet());
 		Collections.sort(sortedLocations, LocationSorter.BY_LEVEL(languageService.getCurrentLanguage()));		
-		Map<Location, Map<FctTargetOption, ReportValue>> sortedValueMap = new LinkedHashMap<Location, Map<FctTargetOption, ReportValue>>();		
+		Map<Location, Map<FctTargetOption, Value>> sortedValueMap = new LinkedHashMap<Location, Map<FctTargetOption, Value>>();		
 		for (Location sortedLocation : sortedLocations){		
 			sortedValueMap.put(sortedLocation, valueMap.get(sortedLocation));
 		}
@@ -75,18 +71,11 @@ public class FctService {
 		return fctTable;
 	}
 
-	private List<FctTargetOption> getTargetOptions(FctTarget target) {
-		return (List<FctTargetOption>)sessionFactory.getCurrentSession()
-				.createCriteria(FctTargetOption.class)
-				.add(Restrictions.eq("target", target))
-				.list();
-	}
-
-	private ReportValue getFctValue(FctTargetOption targetOption, CalculationLocation location, Period period, Set<DataLocationType> types) {
-		String value = null;
+	private Value getFctValue(FctTargetOption targetOption, CalculationLocation location, Period period, Set<DataLocationType> types) {
+		Value value = null;
 		CalculationValue<?> calculationValue = valueService.getCalculationValue(targetOption.getSum(), location, period, types);
-		if (calculationValue != null) value = calculationValue.getValue().getNumberValue().toString();
-		return new ReportValue(value);
+		if (calculationValue != null) value = calculationValue.getValue();
+		return value;
 	}
 
 	public void setLanguageService(LanguageService languageService) {
@@ -99,10 +88,6 @@ public class FctService {
 	
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
-	}
-	
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
 	}
 	
 	public void setSkipLevels(Set<String> skipLevels) {

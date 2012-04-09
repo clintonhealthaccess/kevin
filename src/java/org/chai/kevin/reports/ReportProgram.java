@@ -10,8 +10,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity(name="ReportProgram")
 @Table(name="dhsst_report_program")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class ReportProgram extends ReportEntity {
 
 	private Long id;
@@ -38,6 +42,7 @@ public class ReportProgram extends ReportEntity {
 	}
 
 	@OneToMany(targetEntity=ReportProgram.class, mappedBy="parent")
+	@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 	public List<ReportProgram> getChildren() {
 		return children;
 	}

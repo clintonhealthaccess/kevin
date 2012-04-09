@@ -6,13 +6,19 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.Period;
 import org.chai.kevin.reports.ReportProgram;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DashboardProgram")
-@Table(name="dhsst_dashboard_program")
+@Table(name="dhsst_dashboard_program", uniqueConstraints = {
+	@UniqueConstraint(columnNames={"program"})
+})
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class DashboardProgram extends DashboardEntity {
 
 	private Long id;

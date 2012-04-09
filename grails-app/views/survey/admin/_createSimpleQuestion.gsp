@@ -67,9 +67,7 @@
 			</g:form>
 			<ul class="filtered idle-field" id="data"></ul>
 		</div>
-		<div class="clear"></div>
 	</div>
-	<div class="clear"></div>
 </div>
 
 <script type="text/javascript">

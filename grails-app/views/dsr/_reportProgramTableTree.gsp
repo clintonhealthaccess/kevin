@@ -8,9 +8,11 @@
 			<g:each in="${dsrTable.targets}" var="target">
 				<td>
 					<g:if test="${dsrTable.getReportValue(location, target) != null}">
-						${dsrTable.getReportValue(location, target).value}
+						<g:reportValue value="${dsrTable.getReportValue(location, target)}" type="${target.dataElement.type}" format="${target.format}"/>
 					</g:if>
-					<g:else><g:message code="report.value.na"/></g:else>
+					<g:else>
+						<div class="report-value-na"><g:message code="report.value.na"/></div>
+					</g:else>
 				</td>
 			</g:each>
 		</tr>

@@ -175,7 +175,6 @@ public class ExpressionService {
 	// TODO do this for validation rules
 	@Transactional(readOnly=true)
 	public <T extends Data<?>> boolean expressionIsValid(String formula, Class<T> allowedClazz) {
-		if (formula.contains("\n")) return false;
 		Map<String, T> variables = getDataInExpression(formula, allowedClazz);
 		
 		if (hasNullValues(variables.values())) return false;

@@ -68,7 +68,7 @@ class MapsController extends AbstractController {
 		
 		def info = mapsService.getExplanation(period, location, target);
 		
-		[info: info, target: target, types: DataLocationType.list()]
+		[info: info, target: target, types: DataLocationType.list([cache: true])]
 	}
 	
 	def map = {

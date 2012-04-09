@@ -69,7 +69,7 @@ class SurveyController extends AbstractEntityController {
 	}
 
 	def getModel(def entity) {
-		List<Period> periods = Period.list()
+		List<Period> periods = Period.list([cache: true])
 		if(periods.size()>0) Collections.sort(periods,new PeriodSorter());
 		[
 			survey: entity,

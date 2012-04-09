@@ -7,6 +7,7 @@
   			<th><g:message code="entity.name.label"/></th>
   			<th><g:message code="entity.type.label"/></th>
   			<g:sortableColumn property="code" title="${message(code: 'entity.code.label')}" />
+  			<th></th>
   		</tr>
   	</thead>
   	<tbody>
@@ -32,9 +33,12 @@
   				</td>
   				<td><g:toHtml value="${rawDataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td>${rawDataElement.code}</td>
+  				<td><a href="${createLink(controller:'data', action:'dataElementValueList', params:[data: rawDataElement.id])}">
+  					<g:message code="dataelement.viewvalues.label"/>
+  				</a></td>
   			</tr>
   			<tr class="explanation-row">
-  				<td colspan="5">
+  				<td colspan="6">
   					<div class="explanation-cell" id="explanation-${rawDataElement.id}"></div>
   				</td>
   			</tr>

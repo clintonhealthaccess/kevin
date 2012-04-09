@@ -18,9 +18,12 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import org.chai.kevin.Translation;
 import org.chai.kevin.value.DataValue;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="Data")
 @Table(name="dhsst_data", uniqueConstraints={@UniqueConstraint(columnNames="code")})
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Inheritance(strategy=InheritanceType.JOINED)
 abstract public class Data<T extends DataValue> {
 	

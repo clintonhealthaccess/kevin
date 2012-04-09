@@ -1,7 +1,8 @@
 <!-- chart scale -->
+<g:set var="yMax" value="${fctTable.getMaxReportValue().intValue()}"/>
 <ul class="chart">
-	<li>100</li>
-	<li>50</li>
+	<li>${yMax + yMax/4}</li>
+	<li>${(yMax + yMax/4)/2}</li>
 	<li>0</li>
 </ul>
 <!-- chart -->
@@ -10,14 +11,14 @@
 		<tr>
 			<g:if test="${fctTable != null && fctTable.locations != null && !fctTable.locations.empty}">
 				<g:each in="${fctTable.locations}" var="location">
-					<g:if test="${location == currentLocation || location.level.id == currentChildLevel.id}">
+					<g:if test="${location.level.id == currentChildLevel.id}">
 						<td>
 							<g:if test="${fctTable != null && fctTable.targetOptions != null && !fctTable.targetOptions.empty}">
 								<g:each in="${fctTable.targetOptions}" var="targetOption" status="i">
 									<g:if test="${fctTable.getReportValue(location, targetOption) != null}">
-										<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).value}" />
+										<g:set var="reportValue" value="${fctTable.getReportValue(location, targetOption).numberValue}" />
 										<div class="js_bar_vertical tooltip bar${i+1}"
-											data-percentage="${reportValue}" title="${reportValue}%"
+											data-percentage="${reportValue}" title="${reportValue}"
 											style="height: ${reportValue}%;"></div>
 									</g:if>
 									<g:else>
@@ -35,7 +36,7 @@
 		<tr>
 			<g:if test="${fctTable != null && fctTable.locations != null && !fctTable.locations.empty}">
 				<g:each in="${fctTable.locations}" var="location">
-					<g:if test="${location == currentLocation || location.level.id == currentChildLevel.id}">
+					<g:if test="${location.level.id == currentChildLevel.id}">
 						<td><g:i18n field="${location.names}" /></td>
 					</g:if>
 				</g:each>

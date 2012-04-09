@@ -9,7 +9,7 @@ public class FctTargetOptionControllerSpec extends FctIntegrationTests {
 		setup:
 		def program = newReportProgram(CODE(1))
 		def sum = newSum("1", CODE(3))		
-		def target = newFctTarget(CODE(4), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(4), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
 		
 		fctTargetOptionController = new FctTargetOptionController()
 		
@@ -28,7 +28,7 @@ public class FctTargetOptionControllerSpec extends FctIntegrationTests {
 		setup:
 		def program = newReportProgram(CODE(1))
 		def sum = newSum("1", CODE(3))
-		def target = newFctTarget(CODE(4), sum, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(4), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
 		def targetOption = newFctTargetOption(CODE(5), target, sum, 1)
 		fctTargetOptionController = new FctTargetOptionController()
 		

@@ -15,7 +15,7 @@ class LocationController extends AbstractEntityController {
 	def getModel(def entity) {
 		def locations = []
 		if (entity.parent != null) locations << entity.parent
-		[location: entity, locations: locations, levels: LocationLevel.list()]
+		[location: entity, locations: locations, levels: LocationLevel.list([cache: true])]
 	}
 
 	def getEntity(def id) {

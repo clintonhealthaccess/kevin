@@ -66,7 +66,6 @@ public class NormalizedDataElementValue extends StoredValue {
 		this.status = status;
 		this.data = data;
 	}
-	
 
 	@Id
 	@GeneratedValue

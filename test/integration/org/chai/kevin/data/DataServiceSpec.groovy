@@ -53,6 +53,11 @@ class DataServiceSpec extends IntegrationTests {
 
 	def dataService;
 	
+	def "get data returns null when id is null"() {
+		expect:
+		dataService.getData(null, DataElement.class) == null
+	}
+	
 	def "get data element by id"() {
 		setup:
 		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())

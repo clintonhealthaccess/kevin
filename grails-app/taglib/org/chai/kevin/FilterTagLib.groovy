@@ -52,7 +52,7 @@ class FilterTagLib {
 			model << 
 				[
 					currentPeriod: attrs['selected'],
-					periods: Period.list()
+					periods: Period.list([cache: true])
 				]
 			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/periodFilter', model:model)
@@ -99,7 +99,7 @@ class FilterTagLib {
 			model << 
 				[
 					currentLocationTypes: attrs['selected'],
-					dataLocationTypes: DataLocationType.list()					
+					dataLocationTypes: DataLocationType.list([cache: true])					
 				]
 			if (model.linkParams == null) model << [linkParams: [:]]
 			out << render(template:'/tags/filter/dataLocationTypeFilter', model:model)

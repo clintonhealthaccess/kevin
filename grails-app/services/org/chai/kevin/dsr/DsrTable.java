@@ -6,7 +6,7 @@ import java.util.Map;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.reports.ReportTable;
-import org.chai.kevin.reports.ReportValue;
+import org.chai.kevin.value.Value;
 
 /* 
  * Copyright (c) 2011, Clinton Health Access Initiative.
@@ -41,20 +41,13 @@ public class DsrTable extends ReportTable<DsrTarget, DataLocation> {
 	protected List<DsrTarget> targets;
 	private List<DsrTargetCategory> targetCategories;		
 	
-	public DsrTable(Map<DataLocation, Map<DsrTarget, ReportValue>> valueMap, 
+	public DsrTable(Map<DataLocation, Map<DsrTarget, Value>> valueMap, 
 			List<DsrTarget> targets, List<DsrTargetCategory> targetCategories) {
 		super(valueMap);
 		this.targets = targets;
 		this.targetCategories = targetCategories;		
 	}
 	
-	public ReportValue getReportValue(CalculationLocation location, DsrTarget target){
-		ReportValue reportValue = null;
-		Map<DsrTarget, ReportValue> reportValues = valueMap.get(location);
-		if(reportValues != null) 
-			reportValue = reportValues.get(target);
-		return reportValue;
-	}
 	
 	public List<DsrTarget> getTargets(){
 		return targets;
