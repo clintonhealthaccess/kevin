@@ -13,7 +13,7 @@
  *     * Neither the name of the <organization> nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,9 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.security
+package org.chai.kevin.export
 
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
+import org.chai.kevin.data.Data;
+import org.chai.kevin.data.DataService;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
+import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.ValueService;
 
 import org.apache.commons.lang.StringUtils
 import org.hibernate.Criteria;
@@ -41,58 +53,57 @@ import org.hibernate.criterion.Restrictions
  * @author Jean Kahigiso M.
  *
  */
-class UserService {
+class ExporterService {
+	
 	static transactional = true
+	def languageService;
+	def locationService;
+	def valueService;
+	def dataService;
 	def sessionFactory;
+		
+	public void exportData(Location location,List<Period> periods,List<DataLocationType> dataLocationTypes, List<Data<DataValue>> data){
+		if (log.isDebugEnabled()) log.debug(" exportData(location: " + location + " List<Period>: "+ periods + " List<DataLocationType>: " + dataLocationTypes + " List<DataLocationType>: " + dataLocationTypes +")");
+		
+		
+	}
+
 	
-	public List<User> searchUser(String text, Map<String, String> params) {
-		def criteria = getSearchCriteria(text)
-		
-		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-		if (params['max'] != null) criteria.setMaxResults(params['max'])
-		
-		List<User> users =[];
-		
-		if(params['sort']!=null)
-			users= criteria.addOrder(Order.asc(params['sort'])).list()
-		else
-			users= criteria.addOrder(Order.asc("id")).list()
-		
-		StringUtils.split(text).each { chunk ->
-			users.retainAll { user ->
-				Utils.matches(chunk, user.username) ||
-				Utils.matches(chunk, user.email) ||
-				Utils.matches(chunk, user.firstname) ||
-				Utils.matches(chunk, user.lastname) ||
-				Utils.matches(chunk, user.location)
+	public Integer countExporter(Class<Exporter> clazz, String text) {
+		return getSearchCriteria(clazz,text).setProjection(Projections.count("id")).uniqueResult()
+	}
+	
+	public <T extends Exporter> List<T>  searchExporter(Class<T> clazz, String text, Map<String, String> params) {
+		    def exporters=[]
+			def criteria = getSearchCriteria(clazz,text)
+			
+			if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+			if (params['max'] != null) criteria.setMaxResults(params['max'])
+			
+			if(params['sort']!=null)
+				exporters= criteria.addOrder(Order.asc(params['sort'])).list()
+			else
+				exporters= criteria.addOrder(Order.asc("id")).list()
+				
+			StringUtils.split(text).each { chunk ->
+				exporters.retainAll { exporter ->
+					Utils.matches(chunk, exporter.names[languageService.getCurrentLanguage()]);		
+				}
 			}
-		}
-		return users
-		
+			
+			return exporters;
 	}
 	
-	public Integer countUser(String text) {
-		return getSearchCriteria(text).setProjection(Projections.count("id")).uniqueResult()
-	}
-	
-	private Criteria getSearchCriteria(String text) {
-		def criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
-		
+	private Criteria getSearchCriteria(Class<Exporter> clazz, String text) {
+		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz);
 		def textRestrictions = Restrictions.conjunction()
 		StringUtils.split(text).each { chunk ->
 			def disjunction = Restrictions.disjunction();
-			disjunction.add(Restrictions.ilike("username", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("email", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("firstname", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("lastname", chunk, MatchMode.ANYWHERE))
-			disjunction.add(Restrictions.ilike("location", chunk, MatchMode.ANYWHERE))
-			
+			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
 			textRestrictions.add(disjunction)
 		}
 		criteria.add(textRestrictions)
 		return criteria
-		
 	}
-	
-	
+
 }

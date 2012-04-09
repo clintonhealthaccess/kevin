@@ -68,12 +68,16 @@ import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
+import org.chai.kevin.export.ExporterRawDataElement;
+import org.chai.kevin.export.Exporter;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
+
+
 
 class Initializer {
 
@@ -1251,6 +1255,7 @@ class Initializer {
 //			timestamp: new Date()
 //		).save(failOnError: true)
 	}
+	
 	
 	static def createQuestionaire(){
 		if(!Survey.count()){

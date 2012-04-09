@@ -1,3 +1,7 @@
+import javax.media.jai.operator.PeriodicShiftDescriptor;
+
+import org.chai.kevin.Period;
+
 /*
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
