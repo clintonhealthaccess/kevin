@@ -50,4 +50,7 @@ class UserController extends UserAbstractController {
 		return "/entity/user/createUser"
 	}
 	
+	def exportEntity(){
+		return User.class;
+	}
 }

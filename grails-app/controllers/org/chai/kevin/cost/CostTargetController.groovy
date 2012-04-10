@@ -65,6 +65,10 @@ class CostTargetController extends AbstractEntityController {
 		]
 	}
 	
+	def exportEntity(){
+		return CostTarget.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 		if (params.int('dataElement.id')) entity.dataElement = dataService.getData(params.int('dataElement.id'), DataElement.class)

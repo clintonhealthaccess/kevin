@@ -69,6 +69,10 @@ class FctTargetController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return FctTarget.class;
+	}
+	
 	def validateEntity(def entity) {
 		return entity.validate()
 	}

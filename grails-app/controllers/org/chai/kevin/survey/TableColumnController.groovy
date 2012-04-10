@@ -61,6 +61,10 @@ class TableColumnController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return SurveyTableColumn.class;
+	}
+	
 	def deleteEntity(def entity) {
 		for(SurveyTableRow row : entity.question.rows){
 			if(row.surveyElements[entity])

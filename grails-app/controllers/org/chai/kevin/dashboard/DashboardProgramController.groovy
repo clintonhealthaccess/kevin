@@ -76,6 +76,10 @@ class DashboardProgramController extends AbstractEntityController {
 		return [entity: entity, programs: reportPrograms]
 	}
 	
+	def exportEntity(){
+		return DashboardProgram.class;
+	}
+	
 	def bindParams(def entity) {		
 		entity.properties = params
 		

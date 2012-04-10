@@ -62,6 +62,10 @@ class SectionController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return SurveySection.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 		

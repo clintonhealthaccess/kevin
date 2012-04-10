@@ -69,6 +69,10 @@ class DashboardTargetController extends AbstractEntityController {
 		return [entity: entity, programs: reportPrograms, calculations: calculations]
 	}
 	
+	def exportEntity(){
+		return DashboardTarget.class;
+	}
+	
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'calculation.id'])
 		if (params.int('calculation.id') != null) entity.calculation = dataService.getData(params.int('calculation.id'), Calculation.class)

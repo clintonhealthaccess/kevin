@@ -63,6 +63,10 @@ class TableRowController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return SurveyTableRow.class;
+	}
+	
 	def deleteEntity(def entity) {
 		for(Map.Entry<SurveyTableColumn, SurveyElement> surveyElement: entity.surveyElements)
 			if(surveyElement.getValue())

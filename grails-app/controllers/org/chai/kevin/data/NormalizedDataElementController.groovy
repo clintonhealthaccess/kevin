@@ -67,6 +67,15 @@ class NormalizedDataElementController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return NormalizedDataElement.class;
+	}
+	
+	@Override
+	protected def exportsData(){
+		return false;
+	}
+	
 	def saveEntity(def entity) {
 		if (entity.id != null) valueService.deleteValues(entity, null, null)
 		

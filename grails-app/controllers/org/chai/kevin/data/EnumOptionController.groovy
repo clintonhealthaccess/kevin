@@ -65,6 +65,10 @@ class EnumOptionController extends AbstractEntityController {
 		[option: entity]
 	}
 	
+	def exportEntity(){
+		return EnumOption.class;
+	}
+	
 	def validateEntity(def entity) {
 		return entity.validate()
 	}

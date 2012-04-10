@@ -76,7 +76,16 @@ class RawDataElementController extends AbstractEntityController {
 			code: getLabel()
 		]
 	}
+
+	def exportEntity(){
+		return RawDataElement.class;
+	}
 	
+	@Override
+	protected def exportsData(){
+		return false;
+	}
+		
 	def saveEntity(def entity) {
 		if (entity.id != null && !params['oldType'].equals(new Type(params['type.jsonValue']))) {
 			def surveyElements = surveyService.getSurveyElements(entity, null);
