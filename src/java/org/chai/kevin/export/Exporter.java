@@ -119,7 +119,7 @@ public class Exporter {
 	}
 	
 	@OneToMany
-	@JoinTable(name="dhsst_export_periods")
+	@JoinTable(name="dhsst_export_periods",joinColumns=@JoinColumn(name="exporter"),uniqueConstraints=@UniqueConstraint(columnNames={"exporter","periods"}))
 	public Set<Period> getPeriods() {
 		return periods;
 	}
