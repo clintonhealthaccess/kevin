@@ -28,7 +28,6 @@
 package org.chai.kevin.export;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -39,19 +38,24 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.Utils;
+import org.chai.kevin.value.DataValue;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * @author Jean Kahigiso M.
@@ -59,14 +63,14 @@ import org.chai.kevin.util.Utils;
  */
 @Entity(name="Exporter")
 @Table(name="dhsst_export")
-@Inheritance(strategy=InheritanceType.JOINED)
-public abstract class Exporter {
+public class Exporter {
 	private Long id;
 	private Translation names = new Translation();
 	private Date date;
 	private String typeCodeString;
-	private List<DataLocation> dataLocations; 
-	private List<Period> periods;
+	private Set<DataLocation> dataLocations; 
+	private Set<Period> periods;
+	private Set<Data<DataValue>> data;
 	
 	@Id
 	@GeneratedValue
@@ -114,22 +118,31 @@ public abstract class Exporter {
 		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 	
-	@OneToMany(targetEntity=DataLocation.class)
-	@JoinColumn(nullable= false)
-	public List<DataLocation> getDataLocations() {
-		return dataLocations;
+	@OneToMany
+	@JoinTable(name="dhsst_export_periods")
+	public Set<Period> getPeriods() {
+		return periods;
 	}
-	public void setDataLocations(List<DataLocation> dataLocations) {
+	public void setPeriods(Set<Period> periods) {
+		this.periods = periods;
+	}
+	@OneToMany
+	@JoinTable(name="dhsst_export_data",joinColumns=@JoinColumn(name="exporter"),uniqueConstraints=@UniqueConstraint(columnNames={"exporter","data"}))
+	public Set<Data<DataValue>> getData() {
+		return data;
+	}
+	public void setData(Set<Data<DataValue>> data) {
+		this.data = data;
+	}
+	
+	public void setDataLocations(Set<DataLocation> dataLocations) {
 		this.dataLocations = dataLocations;
 	}
 	
-	@OneToMany(targetEntity=Period.class)
-	@JoinColumn(nullable= false)
-	public List<Period> getPeriods() {
-		return periods;
-	}
-	public void setPeriods(List<Period> periods) {
-		this.periods = periods;
+	@OneToMany
+	@JoinTable(name="dhsst_export_data_locations",joinColumns=@JoinColumn(name="exporter"),uniqueConstraints=@UniqueConstraint(columnNames={"exporter","dataLocations"}))
+	public Set<DataLocation> getDataLocations() {
+		return dataLocations;
 	}
 	
 	@Override

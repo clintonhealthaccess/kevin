@@ -36,6 +36,7 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataService;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.value.DataValue;
@@ -61,9 +62,13 @@ class ExporterService {
 	def valueService;
 	def dataService;
 	def sessionFactory;
+	
+	public void exportData(Exporter export){
+		this.exportData(export.dataLocations,export.periods,export.typeCodeString, export.data);
+	}
 		
-	public void exportData(Location location,List<Period> periods,List<DataLocationType> dataLocationTypes, List<Data<DataValue>> data){
-		if (log.isDebugEnabled()) log.debug(" exportData(location: " + location + " List<Period>: "+ periods + " List<DataLocationType>: " + dataLocationTypes + " List<DataLocationType>: " + dataLocationTypes +")");
+	public void exportData(List<DataLocation> dataLocations,List<Period> periods,String typeCodeString, List<Data<DataValue>> data){
+		if (log.isDebugEnabled()) log.debug(" exportData(List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " typeCodeString: " + typeCodeString + ")");
 		
 		
 	}

@@ -7,6 +7,8 @@
 				<th>Data Locations</th>
 				<th>Periods</th>
 				<th>Data Location Types</th>
+				<th>Data Elements</th>
+				<th>Created On</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -23,12 +25,32 @@
 							</li>
 		           		</ul>
 					</td>
-					<td>${export.names}</td>
-	  				<td>${export.email}</td>
-	  				<td>${export.permissionString}</td>
-	  				<td>${export.roles}</td>
+					<td><g:i18n field="${export.names}"/></td>
+					<td>
+					<g:each in="${export.dataLocations}" status="e" var="location">
+						<g:i18n field="${location.names}"/>
+						${(e < export.dataLocations.size()-1)? ',' : ''}
+					</g:each>
+					</td>
 	  				<td>
-  						<a href="${createLinkWithTargetURI(controller:'exporter', action:'export', params:[id:user.id])}">download</a>
+	  				<g:each in="${export.periods}" status="p" var="period">
+						[${period.startDate} - ${period.endDate}]
+						${(p < export.periods.size()-1)? ',' : ''}
+					</g:each>
+	  				</td>
+	  				<td>
+	  					${export.typeCodeString}
+	  				</td>
+	  				<td>
+	  				<g:each in="${export.data}" status="d" var="data">
+	  				 	<g:i18n field="${data.names}"/>
+						${(d < export.data.size()-1)? ',' : ''}
+					</g:each>
+
+	  				</td>
+	  				<td>${export.date}</td>
+	  				<td>
+  						<a href="${createLinkWithTargetURI(controller:'exporter', action:'export', params:[id: export.id, method: method])}">Download</a>
 	  				</td>
 				</tr>
 			</g:each>

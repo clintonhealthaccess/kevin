@@ -68,7 +68,6 @@ import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
-import org.chai.kevin.export.ExporterRawDataElement;
 import org.chai.kevin.export.Exporter;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
@@ -76,8 +75,6 @@ import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormSkipRule;
 import org.chai.kevin.form.FormValidationRule;
-
-
 
 class Initializer {
 
@@ -1260,6 +1257,45 @@ class Initializer {
 //			timestamp: new Date()
 //		).save(failOnError: true)
 	}
+	
+	
+	static def createExporter(){
+		if(!Exporter.count()){
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
+			def periodOne = Period.list()[0];
+			def periodTwo = Period.list()[1];
+			def dEtwo = RawDataElement.findByCode("CODE2");
+			def dEthree = RawDataElement.findByCode("CODE3");
+			def dEfour = RawDataElement.findByCode("CODE4");
+			def dEfive = RawDataElement.findByCode("CODE11");
+			def dEsix = RawDataElement.findByCode("CODE12");
+			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
+			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
+			
+			def exporterTwo = new Exporter(
+				names: j(["en":"Exporter Raw Data Element Two"]),
+				date: getDate( 2012, 4, 9),
+				dataLocations:[dataLocationOne],
+				typeCodeString:"Health Center",
+				data:[dEtwo,dEthree],
+				periods: [periodOne]
+				).save(failOnError: true)
+				
+			def exporterOne = new Exporter(
+				names: j(["en":"Exporter Raw Data Element One"]),
+				date: getDate( 2012, 4, 10 ),
+				dataLocations:[dataLocationOne,dataLocationTwo],
+				typeCodeString:"District Hospital,Health Center",
+				data:[dEtwo,dEthree,dEfour,dEfive,dEsix],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+				
+			//exporterOne.save(failOnError: true)
+			//exporterTwo.save(failOnError: true)
+		}
+	}
+	
 	
 	
 	static def createQuestionaire(){

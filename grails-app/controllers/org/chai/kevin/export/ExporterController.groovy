@@ -40,7 +40,7 @@ import org.chai.kevin.value.DataValue;
  * @author Jean Kahigiso M.
  *
  */
-class ExportRawDataController extends AbstractEntityController {
+class ExporterController extends AbstractEntityController {
 	def dataLocationService;
 	def exporterService;
 	
@@ -48,11 +48,11 @@ class ExportRawDataController extends AbstractEntityController {
 	}
 
 	def getEntity(def id) {
-		return ExporterRawDataElement.get(id);
+		return Exporter.get(id);
 	}
 
 	def createEntity() {
-		return new ExporterRawDataElement();
+		return new Exporter();
 	}
 
 	def getTemplate() {
@@ -68,53 +68,39 @@ class ExportRawDataController extends AbstractEntityController {
 	}
 		
 	def export ={
-		Location location = getLocation()
-		Set<DataLocationType> dataLocationTypes = getLocationTypes()
-		List<DataLocation> dataLocations = location.collectDataLocations(null, dataLocationTypes)
-		
-		render (view: '/exporter/exporter', model:[
-			locations: Location.list(),
-			periods: Period.list(),
-			locationsTypes: DataLocationType.list(),
-			dataLocations: dataLocations,
-			currentLocation: location,
-			currentPeriods: getPeriod(),
-			currentLocationTypes: dataLocationTypes
-
-		])
-		
+		Exporter export= Exporter.get(params.int('id'));
+		if(log.isDebugEnabled()) log.debug("export(export="+export+")")
+		if(export)
+			exporterService.exportData(export)	
+		if(params['method'].equals("search")) search()
+		else list()	
 	}
+	
 	
 	def list={
 		adaptParamsForList()
-		List<ExporterRawDataElement> exports = ExporterRawDataElement.list();
-		
-		render (view: '/entity/list', model:[
-			template:"exporter/exporterList",
-			entities: exports,
-			entityCount: exporterService.countExporter(ExporterRawDataElement.class, params['q']),
-			code: 'exporter.label',
-			q:params['q']
-		])
-		
+		List<Exporter> exports = Exporter.list();
+		getExporterListModel(exports,exporterService,list)
 	}
 	
 	def search = {
-		List<ExporterRawDataElement> exports = exporterService.searchExporter(ExporterRawDataElement.class, params['q'],params);
-		
+		adaptParamsForList()
+		List<Exporter> exports = exporterService.searchExporter(Exporter.class, params['q'],params);
+		getExporterListModel(exports,exporterService,search)
+	}
+	
+	def getExporterListModel(def exports, def exporterService, def method){
+		if(log.isDebugEnabled()) log.debug("getExporterModel(exports="+exports+",exporterService="+exporterService+")")
 		render (view: '/entity/list', model:[
 			template:"exporter/exporterList",
 			entities: exports,
-			entityCount: exporterService.countExporter(ExporterRawDataElement.class, params['q']),
+			entityCount: exporterService.countExporter(Exporter.class, params['q']),
 			code: 'exporter.label',
+			method: method,
 			q:params['q']
 		])
-		
 	}
 
-	
-
-	
 }
 
 

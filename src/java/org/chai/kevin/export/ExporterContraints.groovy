@@ -34,7 +34,7 @@ package org.chai.kevin.export
 constraints = {
 	dataLocations(nullable:false,minSize: 1)
 	periods(nullable:false,minSize: 1)
-	dataElements(nullable:false, minSize: 1)
+	data(nullable:false, minSize: 1)
 	typeCodeString(nullable:false)
 
 }
