@@ -16,8 +16,8 @@ class FctControllerSpec extends FctIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		def targetOption1 = newFctTargetOption(CODE(4), target, sum, 1)
+		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
 		when: "valid table"
 		fctController = new FctController()
@@ -45,8 +45,8 @@ class FctControllerSpec extends FctIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		def targetOption1 = newFctTargetOption(CODE(4), target, sum, 1)
+		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
 		when: "no program"
 		fctController = new FctController()
@@ -86,7 +86,7 @@ class FctControllerSpec extends FctIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
 		
 		when:
 		fctController = new FctController()
@@ -106,8 +106,8 @@ class FctControllerSpec extends FctIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		def targetOption1 = newFctTargetOption(CODE(4), target, sum, 1)
+		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
 		when:
 		fctController = new FctController()
@@ -126,8 +126,8 @@ class FctControllerSpec extends FctIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		def targetOption1 = newFctTargetOption(CODE(4), target, sum, 1)
+		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
 		when:
 		fctController = new FctController()
@@ -147,8 +147,8 @@ class FctControllerSpec extends FctIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(CODE(2))
 		def sum = newSum("1", CODE(2))
-		def target = newFctTarget(CODE(3), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		def targetOption1 = newFctTargetOption(CODE(4), target, sum, 1)
+		def target = newFctTarget(CODE(3), 1, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def targetOption1 = newFctTargetOption(CODE(4), 1, target, sum)
 		
 		when:
 		fctController = new FctController()

@@ -37,43 +37,17 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Orderable;
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
 import org.chai.kevin.location.CalculationLocation;
+import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
 
 @MappedSuperclass
-public abstract class DashboardEntity {
+public abstract class DashboardEntity extends ReportEntity {
 	
-	protected Translation names = new Translation();
-	protected Translation descriptions = new Translation();
 	protected Integer weight;
-	protected String code;
-	protected Integer order;
-	
-	@Embedded
-	@AttributeOverrides({
-		@AttributeOverride(name="jsonText", column=@Column(name="jsonNames", nullable=false))
-	})
-	public Translation getNames() {
-		return names;
-	}
-
-	public void setNames(Translation names) {
-		this.names = names;
-	}
-	
-	@Embedded
-	@AttributeOverrides({
-        @AttributeOverride(name="jsonText", column=@Column(name="jsonDescriptions", nullable=false))
-	})
-	public Translation getDescriptions() {
-		return descriptions;
-	}
-
-	public void setDescriptions(Translation descriptions) {
-		this.descriptions = descriptions;
-	}
 	
 	@Basic
 	public Integer getWeight() {
@@ -84,6 +58,9 @@ public abstract class DashboardEntity {
 		this.weight = weight;
 	}
 	
+	@Transient
+	public abstract ReportProgram getReportProgram();
+	
 	public abstract <T> T visit(DashboardVisitor<T> visitor, CalculationLocation location, Period period);
 	
 	@Transient
@@ -91,28 +68,6 @@ public abstract class DashboardEntity {
 	
 	@Transient
 	public abstract boolean isTarget();
-	
-	@Transient
-	public abstract ReportProgram getReportProgram();
-	
-	@Basic(fetch=FetchType.EAGER)
-	public String getCode() {
-		return code;
-	}
-	
-	public void setCode(String code) {
-		this.code = code;
-	}
-	
-	@Basic
-	@Column(name="ordering")
-	public Integer getOrder() {
-		return order;
-	}
-	
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
 
 	@Override
 	public int hashCode() {

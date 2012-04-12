@@ -64,7 +64,6 @@ class FctTargetController extends AbstractEntityController {
 			target: entity,
 			types: DataLocationType.list([cache: true]),
 			programs: ReportProgram.list(),
-//			sums: entity.sum!=null?[entity.sum]:[],
 			typeCodes: Utils.split(entity.typeCodeString)
 		]
 	}
@@ -82,10 +81,8 @@ class FctTargetController extends AbstractEntityController {
 	}
 
 	def deleteEntity(def entity) {
-		List<FctTargetOption> targetOptions = entity.targetOptions
-		if(targetOptions.size() == 0){
-			if (log.isInfoEnabled()) log.info("deleting location: "+entity)
-			
+		if(entity.targetOptions.size() == 0){
+			if (log.isInfoEnabled()) log.info("deleting target: "+entity)			
 			entity.program.targets.remove(entity)
 			entity.program.save()
 			entity.delete()
@@ -94,7 +91,7 @@ class FctTargetController extends AbstractEntityController {
 			flash.message = message(code: 'fct.target.haschildren', args: [message(code: getLabel(), default: 'entity'), params.id], default: 'Fct Target {0} still has associated children.')
 		}				
 	}
-
+	
 	def bindParams(def entity) {
 		entity.properties = params
 

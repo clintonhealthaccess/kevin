@@ -18,6 +18,9 @@
 
 		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${target}" field="order"/>
 		
+		<g:if test="${target != null}">
+			<input type="hidden" name="id" value="${target.id}"/>
+		</g:if>
 		<div class="row">
 			<button type="submit"><g:message code="default.button.save.label"/></button>
 			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label"/></a>

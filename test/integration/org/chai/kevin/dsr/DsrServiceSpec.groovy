@@ -9,22 +9,20 @@ import org.chai.kevin.value.Value;
 
 class DsrServiceSpec extends DsrIntegrationTests {
 
-	def dsrService
+	def dsrService	
 	
-	
-	def "test normal dsr service"() {
+	def "normal dsr service"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
 		def program = newReportProgram(CODE(1))
-		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(2), dataElement, [DISTRICT_HOSPITAL_GROUP], program)
-		def location = Location.findByCode(BURERA)
-		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def dsrTable = null
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def target = newDsrTarget(CODE(3), 1, dataElement, [DISTRICT_HOSPITAL_GROUP], program)		
 		
 		when:
-		dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		def location = Location.findByCode(BURERA)
+		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
 		
 		then:
 		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target) == null
@@ -38,16 +36,80 @@ class DsrServiceSpec extends DsrIntegrationTests {
 
 	}
 	
-	def "test dsr with types"() {
+	def "get dsr with sorted targets"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(ROOT)
+		def dataElement1 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def target1 = newDsrTarget(CODE(3), 1, dataElement1, [DISTRICT_HOSPITAL_GROUP], program)
+		def dataElement2 = newRawDataElement(CODE(4), Type.TYPE_NUMBER())
+		def target2 = newDsrTarget(CODE(5), 2, dataElement2, [DISTRICT_HOSPITAL_GROUP], program)
+		refresh()
+		
 		when:
+		def location = Location.findByCode(BURERA)
+		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		
+		then:
+		dsrTable.targets[0].equals(DsrTarget.findByCode(CODE(3)))
+		dsrTable.targets[1].equals(DsrTarget.findByCode(CODE(5)))
+		
+		when:
+		DsrTarget.findByCode(CODE(3)).order = 2
+		DsrTarget.findByCode(CODE(5)).order = 1
+		dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		
+		then:
+		dsrTable.targets[0].equals(DsrTarget.findByCode(CODE(5)))
+		dsrTable.targets[1].equals(DsrTarget.findByCode(CODE(3)))
+	}
+	
+	def "get dsr with sorted target categories"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def program = newReportProgram(ROOT)
+		def cat1 = newDsrTargetCategory(CODE(2), 1)
+		def dataElement1 = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
+		def target1 = newDsrTarget(CODE(4), 1, dataElement1, [DISTRICT_HOSPITAL_GROUP], program, cat1)
+		def cat2 = newDsrTargetCategory(CODE(5), 2)
+		def dataElement2 = newRawDataElement(CODE(6), Type.TYPE_NUMBER())
+		def target2 = newDsrTarget(CODE(7), 2, dataElement2, [DISTRICT_HOSPITAL_GROUP], program, cat2)
+		refresh()
+		
+		when:
+		def location = Location.findByCode(BURERA)
+		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		
+		then:
+		dsrTable.targetCategories[0].equals(DsrTargetCategory.findByCode(CODE(2)))
+		dsrTable.targetCategories[1].equals(DsrTargetCategory.findByCode(CODE(5)))
+		
+		when:
+		DsrTargetCategory.findByCode(CODE(2)).order = 2
+		DsrTargetCategory.findByCode(CODE(5)).order = 1
+		dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		
+		then:
+		dsrTable.targetCategories[0].equals(DsrTargetCategory.findByCode(CODE(5)))
+		dsrTable.targetCategories[1].equals(DsrTargetCategory.findByCode(CODE(2)))
+	}
+	
+	def "get dsr with types"() {
+		setup:
 		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def program = newReportProgram(CODE(2))
-		def target = newDsrTarget(CODE(3), normalizedDataElement, [DISTRICT_HOSPITAL_GROUP], program)
+		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, [DISTRICT_HOSPITAL_GROUP], program)	
 		refreshNormalizedDataElement()
 		def location = Location.findByCode(BURERA)
 		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
+		
+		when:
 		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
 		
 		then:
@@ -56,26 +118,24 @@ class DsrServiceSpec extends DsrIntegrationTests {
 		
 	}
 	
-	def "test dsr with normalized data element and no expression"() {
-		when:
+	def "get dsr with normalized data element and no expression"() {
+		setup:
 		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10"]]))
 		def program = newReportProgram(CODE(2))
-		def target = newDsrTarget(CODE(3), normalizedDataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newDsrTarget(CODE(3), 1, normalizedDataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
 		refreshNormalizedDataElement()
 		def location = Location.findByCode(BURERA)
 		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
-		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)
+		
+		when:
+		def dsrTable = dsrService.getDsrTable(location, program, period, types, null)		
 		
 		then:
 		dsrTable.getReportValue(DataLocation.findByCode(BUTARO), target).getNumberValue() == 10d
 		dsrTable.getReportValue(DataLocation.findByCode(KIVUYE), target).isNull()
 		
-	}
-	
-	def "test dsr with category"(){
-		//TODO
 	}
 	
 	def "get dsr skip levels"(){

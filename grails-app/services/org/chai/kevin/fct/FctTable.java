@@ -33,36 +33,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.chai.kevin.location.Location;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.reports.ReportTable;
 import org.chai.kevin.value.Value;
 
-public class FctTable extends ReportTable<FctTargetOption, Location> {
+public class FctTable extends ReportTable<FctTargetOption, CalculationLocation> {
 	
 	protected List<FctTargetOption> targetOptions;
+	private List<FctTarget> targets;
+	protected List<CalculationLocation> topLevelLocations;
 	
-	public FctTable(Map<Location, Map<FctTargetOption, Value>> valueMap, List<FctTargetOption> targetOptions) {
+	public FctTable(Map<CalculationLocation, Map<FctTargetOption, Value>> valueMap, List<FctTargetOption> targetOptions, List<FctTarget> targets, List<CalculationLocation> topLevelLocations) {
 		super(valueMap);
 		this.targetOptions = targetOptions;
+		this.targets = targets;
+		this.topLevelLocations = topLevelLocations;
 	}
 
 	public Double getMaxReportValue(){
-//		Integer intMaxValue = 0;
 		Double dblMaxValue = 0d;
-		Collection<Map<FctTargetOption, Value>> targetMaps = valueMap.values();
-		for(Map<FctTargetOption, Value> targetMap : targetMaps){
+		for(CalculationLocation topLevelLocation : topLevelLocations){
+			Map<FctTargetOption, Value> targetMap = valueMap.get(topLevelLocation);
 			Collection<Value> reportValues = targetMap.values();
 			for(Value reportValue : reportValues){
-				if (reportValue != null && !reportValue.isNull()) {
-					Double doubleValue = reportValue.getNumberValue().doubleValue();					
-					if(doubleValue > dblMaxValue)
-						dblMaxValue = doubleValue;
-				}
+				if (reportValue != null){
+					if(!reportValue.isNull()) {
+						Double doubleValue = reportValue.getNumberValue().doubleValue();					
+						if(doubleValue > dblMaxValue)
+							dblMaxValue = doubleValue;
+					}	
+				}					
 			}
 		}
-//		dblMaxValue = dblMaxValue + dblMaxValue/4d;
-//		intMaxValue = dblMaxValue.intValue();
-//		return intMaxValue;
 		return dblMaxValue;
 	}
 	
@@ -70,7 +72,11 @@ public class FctTable extends ReportTable<FctTargetOption, Location> {
 		return targetOptions;
 	}
 	
-	public Set<Location> getLocations(){
+	public List<FctTarget> getTargets(){
+		return targets;
+	}
+	
+	public Set<CalculationLocation> getLocations(){
 		return valueMap.keySet();
 	}	
 	

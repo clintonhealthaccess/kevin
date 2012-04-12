@@ -11,6 +11,7 @@ import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.Type.ValueType;
 
 import org.chai.kevin.data.Type;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
 
 class ValueTagLib {
@@ -23,7 +24,7 @@ class ValueTagLib {
 		def value = attrs['value']
 		def format = attrs['format']
 		
-		if (value.isNull()) {
+		if (value == null || value.isNull()) {
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else {

@@ -5,9 +5,6 @@
 		<div class="clear"></div>
 	</div>
 	<g:form url="[controller:'fctTargetOption', action:'save', params:[targetURI:targetURI]]" useToken="true">
-	    <g:if test="${targetOption != null}">
-			<input type="hidden" name="id" value="${targetOption.id}"/>
-		</g:if>
 		<g:i18nInput name="names" bean="${targetOption}" value="${targetOption.names}" label="${message(code:'entity.name.label')}" field="names"/>
 		<g:i18nTextarea name="descriptions" bean="${targetOption}" value="${targetOption.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions"/>
 		<g:input name="code" label="${message(code:'entity.code.label')}" bean="${targetOption}" field="code"/>
@@ -20,7 +17,11 @@
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'Sum'])}"
 			from="${sums}" value="${targetOption.sum?.id}" values="${sums.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 		
-		<g:input name="order" label="Order" bean="${targetOption}" field="order"/>
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${targetOption}" field="order"/>
+		
+		<g:if test="${targetOption != null}">
+			<input type="hidden" name="id" value="${targetOption.id}"/>
+		</g:if>
 		<div class="row">
 			<button type="submit">Save Target Option</button>
 			<a href="${createLink(uri: targetURI)}"><g:message code="default.link.cancel.label" default="Cancel"/></a>

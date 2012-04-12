@@ -33,19 +33,28 @@ abstract class DashboardIntegrationTests extends IntegrationTests {
 		
 		def dataElement3 = newNormalizedDataElement(CODE(5), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
 		def average3 = newAverage("\$"+dataElement3.id, CODE(6))
-		def target3 = newDashboardTarget(TARGET2, average3, program2, 1)
+		def target3 = newDashboardTarget(TARGET3, average3, program2, 1)
 	}
 	
 	static def newDashboardProgram(def code, def program) {
 		return new DashboardProgram(code: code, program: program, weight: 1).save(failOnError: true)
 	}
-	
+
 	static def newDashboardProgram(def code, def program, def weight) {
 		return new DashboardProgram(code: code, program: program, weight: weight).save(failOnError: true)
 	}
-
-	static def newDashboardTarget(def code, def calculation, def parent, def weight) {
-		def dashboardTarget = new DashboardTarget(code: code, calculation: calculation, program: parent, weight: weight).save(failOnError: true)
+	
+	static def newDashboardProgram(def code, def program, def weight, def order) {
+		return new DashboardProgram(code: code, program: program, weight: weight, order: order).save(failOnError: true)
+	}
+	
+	static def newDashboardTarget(def code, def calculation, def program, def weight) {
+		def dashboardTarget = new DashboardTarget(code: code, calculation: calculation, program: program, weight: weight).save(failOnError: true)
+		return dashboardTarget
+	}
+	
+	static def newDashboardTarget(def code, def calculation, def program, def weight, def order) {
+		def dashboardTarget = new DashboardTarget(code: code, calculation: calculation, program: program, weight: weight, order: order).save(failOnError: true)
 		return dashboardTarget
 	}
 	
