@@ -2,11 +2,11 @@
 	<thead>
 		<tr>
 			<th/>
-			<th>Name</th>
-			<th>Code</th>
-			<th>Target</th>
-			<th>Sum</th>
-			<th>Order</th>
+			<th><g:message code="entity.name.label"/></th>
+			<th><g:message code="entity.code.label"/></th>
+			<th><g:message code="fct.targetoption.target.label"/></th>
+			<th><g:message code="fct.targetoption.sum.label"/></th>
+			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
 	<tbody>

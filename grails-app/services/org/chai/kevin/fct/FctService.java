@@ -41,10 +41,13 @@ public class FctService {
 			log.debug("getFctTable(period="+period+",location="+location+",level="+level+",program="+program+",target="+target+")");				
 		
 		List<FctTargetOption> targetOptions = target.getTargetOptions();
+		
 		Map<Location, Map<FctTargetOption, Value>> valueMap = new HashMap<Location, Map<FctTargetOption, Value>>();
+		List<FctTarget> targets = new ArrayList<FctTarget>();
 		
 		if(targetOptions.isEmpty())
-			return new FctTable(valueMap, targetOptions);		
+			return new FctTable(valueMap, targetOptions, targets);
+		Collections.sort(targetOptions);
 		
 		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);
 		List<Location> childLocations = location.collectTreeWithDataLocations(skips, types);
@@ -66,7 +69,10 @@ public class FctService {
 			sortedValueMap.put(sortedLocation, valueMap.get(sortedLocation));
 		}
 		
-		FctTable fctTable = new FctTable(sortedValueMap, targetOptions);
+		targets = getFctTargets(program);		
+		Collections.sort(targets);
+		
+		FctTable fctTable = new FctTable(sortedValueMap, targetOptions, targets);
 		if (log.isDebugEnabled()) log.debug("getFctTable(...)="+fctTable);
 		return fctTable;
 	}
@@ -78,6 +84,17 @@ public class FctService {
 		return value;
 	}
 
+	public List<FctTarget> getFctTargets(ReportProgram program){
+		List<FctTarget> targets = new ArrayList<FctTarget>();
+		List<FctTarget> result = new ArrayList<FctTarget>();
+		targets = reportService.getReportTargets(FctTarget.class, program);
+		for(FctTarget target : targets){
+			if(target.getTargetOptions() != null && !target.getTargetOptions().isEmpty())
+				result.add(target);
+		}
+		return result;
+	}
+	
 	public void setLanguageService(LanguageService languageService) {
 		this.languageService = languageService;
 	}

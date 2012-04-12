@@ -25,10 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin;
+package org.chai.kevin.dashboard;
 
 import java.util.Comparator;
 
+import org.chai.kevin.Translation;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
@@ -37,40 +38,19 @@ import org.chai.kevin.location.Location;
  * @author Jean Kahigiso M.
  * 
  */
-public class LocationSorter {
+public class DashboardEntitySorter {
 
-	public static final Comparator<DataLocation> BY_DATA_LOCATION_TYPE(final String language) {
-		return new Comparator<DataLocation>() {
-			public int compare(DataLocation dataLoc1, DataLocation dataLoc2) {			
-				if(dataLoc1 == null || dataLoc2 == null) 
-					return 0;				
-				if (dataLoc1.getType().getNames().get(language).equals(dataLoc2.getType().getNames().get(language)))
-					return compareTranslations(dataLoc1.getNames(), dataLoc2.getNames(), language);
+	public static final Comparator<DashboardEntity> BY_ENTITY() {
+		return new Comparator<DashboardEntity>() {			
+			public int compare(DashboardEntity entity1, DashboardEntity entity2) {			
+				if (entity1 == null || entity2 == null) 
+					return 0;
+				else if(!entity1.isTarget() && entity2.isTarget()) 
+					return -1;
+				else if(entity1.isTarget() && !entity2.isTarget()) 
+					return 1;
 				else
-					return compareTranslations(dataLoc1.getType().getNames(), dataLoc2.getType().getNames(), language);
-			}
-		};
-	}
-
-	public static final Comparator<Location> BY_LEVEL(final String language) {
-		return new Comparator<Location>() {
-			public int compare(Location loc1, Location loc2) {			
-				if(loc1 == null || loc2 == null) 
-					return 0;				
-				if (loc1.getLevel().equals(loc2.getLevel()))
-					return compareTranslations(loc1.getNames(), loc2.getNames(), language);
-				else
-					return loc1.getLevel().compareTo(loc2.getLevel());
-			}
-		};
-	}
-
-	public static final Comparator<CalculationLocation> BY_NAME(final String language) {
-		return new Comparator<CalculationLocation>() {
-			public int compare(CalculationLocation org1, CalculationLocation org2) {
-				if(org1 == null || org2 == null) return 0;
-				
-				return compareTranslations(org1.getNames(), org2.getNames(), language);
+					return entity1.compareTo(entity2);				
 			}
 		};
 	}

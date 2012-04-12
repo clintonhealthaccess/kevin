@@ -32,7 +32,7 @@ class ReportServiceSpec extends ReportIntegrationTests {
 		
 		when:
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_STRING())
-		DsrIntegrationTests.newDsrTarget(CODE(1), dataElement, [], ReportProgram.findByCode(PROGRAM1))
+		DsrIntegrationTests.newDsrTarget(CODE(1), 1, dataElement, [], ReportProgram.findByCode(PROGRAM1))
 		
 		then:
 		reportService.getProgramTree(DsrTarget.class).equals([ReportProgram.findByCode(PROGRAM1), ReportProgram.findByCode(ROOT)])
