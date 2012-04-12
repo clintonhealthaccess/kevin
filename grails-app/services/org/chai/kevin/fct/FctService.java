@@ -3,6 +3,7 @@ package org.chai.kevin.fct;
 import grails.plugin.springcache.annotations.Cacheable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,12 +44,15 @@ public class FctService {
 		if (log.isDebugEnabled()) 
 			log.debug("getFctTable(period="+period+",location="+location+",level="+level+",program="+program+",target="+target+")");				
 		
-		List<CalculationLocation> topLevelLocations = new ArrayList<CalculationLocation>();
 		List<FctTargetOption> targetOptions = target.getTargetOptions();
+		
 		Map<CalculationLocation, Map<FctTargetOption, Value>> valueMap = new HashMap<CalculationLocation, Map<FctTargetOption, Value>>();
+		List<FctTarget> targets = new ArrayList<FctTarget>();
+		List<CalculationLocation> topLevelLocations = new ArrayList<CalculationLocation>();
 		
 		if(targetOptions.isEmpty())
-			return new FctTable(valueMap, targetOptions, topLevelLocations);
+			return new FctTable(valueMap, targetOptions, targets, topLevelLocations);
+		Collections.sort(targetOptions);
 		
 		Set<LocationLevel> skips = reportService.getSkipLocationLevels(skipLevels);
 		List<Location> treeLocations = location.collectTreeWithDataLocations(skips, types);
@@ -61,9 +65,6 @@ public class FctService {
 				targetMap.put(targetOption, getFctValue(targetOption, treeLocation, period, types));
 			}
 			valueMap.put(treeLocation, targetMap);
-			
-//			if(level != null && treeLocation.getLevel().equals(level))
-//				topLevelLocations.add(treeLocation);
 		}
 		
 		for (DataLocation dataLocation : dataLocations) {
@@ -79,17 +80,10 @@ public class FctService {
 		
 		topLevelLocations.addAll(location.getChildrenEntitiesWithDataLocations(skips, types));
 		
-		//TODO sort location map keys
-//		List<CalculationLocation> sortedLocations = new ArrayList<CalculationLocation>(valueMap.keySet());
-//		Collections.sort(sortedLocations, LocationSorter.BY_LEVEL(languageService.getCurrentLanguage()));		
-//		Map<Location, Map<FctTargetOption, Value>> sortedValueMap = new LinkedHashMap<Location, Map<FctTargetOption, Value>>();		
-//		for (Location sortedLocation : sortedLocations){		
-//			sortedValueMap.put(sortedLocation, valueMap.get(sortedLocation));
-//		}
-//		
-//		FctTable fctTable = new FctTable(sortedValueMap, targetOptions);
+		targets = getFctTargets(program);		
+		Collections.sort(targets);
 		
-		FctTable fctTable = new FctTable(valueMap, targetOptions, topLevelLocations);
+		FctTable fctTable = new FctTable(valueMap, targetOptions, targets, topLevelLocations);
 		if (log.isDebugEnabled()) log.debug("getFctTable(...)="+fctTable);
 		return fctTable;
 	}
@@ -101,17 +95,17 @@ public class FctService {
 			value = calculationValue.getValue();
 		return value;
 	}
-	
-//	private Value getFctValue2(FctTargetOption targetOption, CalculationLocation location, Period period, Set<DataLocationType> types) {
-//		Value value = null;
-//		targetOption.getSum().getExpression();
-//		RawDataElementValue rawDataElementValue = null;
-//		rawDataElementValue = valueService.getDataElementValue(data, location, period);
-//		CalculationValue<?> calculationValue = valueService.getCalculationValue(targetOption.getSum(), location, period, types);
-//		if (calculationValue != null) 
-//			value = calculationValue.getValue();
-//		return value;
-//	}
+
+	public List<FctTarget> getFctTargets(ReportProgram program){
+		List<FctTarget> targets = new ArrayList<FctTarget>();
+		List<FctTarget> result = new ArrayList<FctTarget>();
+		targets = reportService.getReportTargets(FctTarget.class, program);
+		for(FctTarget target : targets){
+			if(target.getTargetOptions() != null && !target.getTargetOptions().isEmpty())
+				result.add(target);
+		}
+		return result;
+	}
 	
 	public void setLanguageService(LanguageService languageService) {
 		this.languageService = languageService;

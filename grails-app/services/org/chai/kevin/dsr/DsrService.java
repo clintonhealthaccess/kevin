@@ -40,7 +40,6 @@ public class DsrService {
 	
 	@Cacheable("dsrCache")
 	@Transactional(readOnly = true)
-
 	public DsrTable getDsrTable(Location location, ReportProgram program, Period period, Set<DataLocationType> types, DsrTargetCategory category) {
 		if (log.isDebugEnabled())  log.debug("getDsrTable(period="+period+",location="+location+",program="+program+",types="+types+",category="+category+")");
 				
@@ -54,7 +53,8 @@ public class DsrService {
 		List<DsrTargetCategory> targetCategories = new ArrayList<DsrTargetCategory>();
 		
 		if(dataLocations.isEmpty() || targets.isEmpty())
-			return new DsrTable(valueMap, targets, targetCategories);		
+			return new DsrTable(valueMap, targets, targetCategories);
+		Collections.sort(targets);
 		
 		for (DataLocation dataLocation : dataLocations) {
 			Map<DsrTarget, Value> targetMap = new HashMap<DsrTarget, Value>();			
@@ -62,9 +62,10 @@ public class DsrService {
 				targetMap.put(target, getDsrValue(target, dataLocation, period));
 			}
 			valueMap.put(dataLocation, targetMap);
-		}				
+		}	
 			
 		targetCategories = getTargetCategories(program);
+		Collections.sort(targetCategories);
 		
 		DsrTable dsrTable = new DsrTable(valueMap, targets, targetCategories);
 		if (log.isDebugEnabled()) log.debug("getDsrTable(...)="+dsrTable);
@@ -88,9 +89,7 @@ public class DsrService {
 		List<DsrTarget> targets = reportService.getReportTargets(DsrTarget.class, program);
 		for(DsrTarget target : targets)
 			if(target.getCategory() != null) categories.add(target.getCategory());
-		List<DsrTargetCategory> sortedCategories = new ArrayList<DsrTargetCategory>(categories);
-		Collections.sort(sortedCategories);
-		return sortedCategories;	
+		return new ArrayList<DsrTargetCategory>(categories);	
 	}
 
 	public void setReportService(ReportService reportService) {

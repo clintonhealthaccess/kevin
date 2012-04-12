@@ -40,11 +40,13 @@ import org.chai.kevin.value.Value;
 public class FctTable extends ReportTable<FctTargetOption, CalculationLocation> {
 	
 	protected List<FctTargetOption> targetOptions;
+	private List<FctTarget> targets;
 	protected List<CalculationLocation> topLevelLocations;
 	
-	public FctTable(Map<CalculationLocation, Map<FctTargetOption, Value>> valueMap, List<FctTargetOption> targetOptions, List<CalculationLocation> topLevelLocations) {
+	public FctTable(Map<CalculationLocation, Map<FctTargetOption, Value>> valueMap, List<FctTargetOption> targetOptions, List<FctTarget> targets, List<CalculationLocation> topLevelLocations) {
 		super(valueMap);
 		this.targetOptions = targetOptions;
+		this.targets = targets;
 		this.topLevelLocations = topLevelLocations;
 	}
 
@@ -62,13 +64,16 @@ public class FctTable extends ReportTable<FctTargetOption, CalculationLocation> 
 					}	
 				}					
 			}
-			
-		}	
+		}
 		return dblMaxValue;
 	}
 	
 	public List<FctTargetOption> getTargetOptions(){
 		return targetOptions;
+	}
+	
+	public List<FctTarget> getTargets(){
+		return targets;
 	}
 	
 	public Set<CalculationLocation> getLocations(){

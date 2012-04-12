@@ -2,14 +2,16 @@ package org.chai.kevin.dsr
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.dsr.DsrTargetCategory
 import org.chai.kevin.reports.ReportProgram
 import org.chai.kevin.util.Utils;
 
 abstract class DsrIntegrationTests extends IntegrationTests {
 	
-	static def newDsrTarget(def code, def dataElement, def format, def types, def program, DsrTargetCategory category) {
+	static def newDsrTarget(def code, def order, def dataElement, def format, def types, def program, def category) {
 		def target = new DsrTarget(names: [:],
 			code: code,
+			order: order,
 			format: format,
 			dataElement: dataElement,
 			program: program,
@@ -25,18 +27,18 @@ abstract class DsrIntegrationTests extends IntegrationTests {
 	}
 	
 	static def newDsrTarget(def code, def dataElement, def types, def program) {
-		return newDsrTarget(code, dataElement, null, types, program, null)
+		return newDsrTarget(code, null, dataElement, null, types, program, null)
 	}
 	
-	static def newDsrTarget(def code, def dataElement, def format, def types, def program) {
-		return newDsrTarget(code, dataElement, format, types, program, null)
-	}	
-	
-	static def newDsrTarget(def code, def dataElement, def types, def program, DsrTargetCategory category) {
-		return newDsrTarget(code, dataElement, null, types, program, category)
+	static def newDsrTarget(def code, def order, def dataElement, def types, def program) {
+		return newDsrTarget(code, order, dataElement, null, types, program, null)
 	}
 	
-	static def newDsrTargetCategory(def code) {
-		return new DsrTargetCategory(code: code).save(failOnError: true)
+	static def newDsrTarget(def code, def order, def dataElement, def types, def program, def category) {
+		return newDsrTarget(code, order, dataElement, null, types, program, category)
+	}
+	
+	static def newDsrTargetCategory(def code, def order) {
+		return new DsrTargetCategory(code: code, order: order).save(failOnError: true)
 	}
 }

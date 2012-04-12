@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.chai.kevin.LanguageService;
 import org.chai.kevin.Period;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -51,6 +52,7 @@ public class DashboardService {
 //	private Log log = LogFactory.getLog(DashboardService.class);
 	
 	private ReportService reportService;
+	private LanguageService languageService;
 	private SessionFactory sessionFactory;
 	private Set<String> skipLevels;
 	private DashboardPercentageService dashboardPercentageService;	
@@ -61,7 +63,7 @@ public class DashboardService {
 		List<CalculationLocation> locations = new ArrayList<CalculationLocation>();		
 		locations.add(location);
 
-		List<DashboardEntity> dashboardEntities = getDashboardEntitiesWithTargets(program);				
+		List<DashboardEntity> dashboardEntities = getDashboardEntitiesWithTargets(program);
 		
 		List<Location> locationPath = new ArrayList<Location>();
 		Map<CalculationLocation, Map<DashboardEntity, DashboardPercentage>> valueMap = 
@@ -69,8 +71,10 @@ public class DashboardService {
 		
 		if(dashboardEntities.isEmpty())
 			return new Dashboard(locations, dashboardEntities, locationPath, valueMap);
+		Collections.sort(dashboardEntities, DashboardEntitySorter.BY_ENTITY());
 		
 		locationPath = calculateLocationPath(location);
+		
 		valueMap = getValues(locations, dashboardEntities, period, types);
 		
 		return new Dashboard(locations, dashboardEntities, locationPath, valueMap);
@@ -230,5 +234,9 @@ public class DashboardService {
 	
 	public void setReportService(ReportService reportService) {
 		this.reportService = reportService;
+	}
+	
+	public void setLanguageService(LanguageService languageService) {
+		this.languageService = languageService;
 	}
 }

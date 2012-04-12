@@ -38,12 +38,13 @@ import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.data.Type;
 
 class DashboardServiceSpec extends DashboardIntegrationTests {
 
 	def dashboardService	
 	
-	def "dashboard service works"() {
+	def "normal dashboard service"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
@@ -74,7 +75,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		
 	}
 	
-	def "test dashboard with correct values"() {
+	def "dashboard with correct values"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
@@ -101,7 +102,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		RWANDA				| ROOT					| NORTH			| PROGRAM1		| [DISTRICT_HOSPITAL_GROUP]						|20.0d
 	}
 
-	def "dashboard test program (compare) dashboard"() {
+	def "get program (compare) dashboard"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
@@ -124,6 +125,95 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		BURERA			| ROOT			| [BURERA]			| [PROGRAM1, PROGRAM2]	| [RWANDA, NORTH]		| []		
 	}
 	
+	def "get program dashboard with sorted dashboard program entities"(){
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupProgramTree()
+		setupDashboardTree()
+		refresh()
+
+		when:
+		def dashboard = dashboardService.getProgramDashboard(Location.findByCode(RWANDA), ReportProgram.findByCode(ROOT), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
+
+		then:
+		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM1))
+		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM2))
+		
+		when:
+		DashboardProgram.findByCode(PROGRAM1).order = 2
+		DashboardProgram.findByCode(PROGRAM2).order = 1		
+		dashboard = dashboardService.getProgramDashboard(Location.findByCode(RWANDA), ReportProgram.findByCode(ROOT), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
+		
+		then:
+		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM2))
+		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM1))
+		
+	}
+	
+	def "get program dashboard with sorted dashboard target entities"(){
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupProgramTree()
+		setupDashboardTree()
+		refresh()
+		
+		when:
+		def dashboard = dashboardService.getProgramDashboard(Location.findByCode(BURERA), ReportProgram.findByCode(PROGRAM1), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
+
+		then:
+		dashboard.dashboardEntities[0].equals(DashboardTarget.findByCode(TARGET1))
+		dashboard.dashboardEntities[1].equals(DashboardTarget.findByCode(TARGET2))
+		
+		when:
+		DashboardTarget.findByCode(TARGET1).order = 2
+		DashboardTarget.findByCode(TARGET2).order = 1
+		dashboard = dashboardService.getProgramDashboard(Location.findByCode(BURERA), ReportProgram.findByCode(PROGRAM1), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
+		
+		then:
+		dashboard.dashboardEntities[0].equals(DashboardTarget.findByCode(TARGET2))
+		dashboard.dashboardEntities[1].equals(DashboardTarget.findByCode(TARGET1))
+		
+	}
+	
+	def "get program dashboard with sorted dashboard program and target entities"(){
+		setup:
+		def period = newPeriod()
+		setupLocationTree()
+		setupProgramTree()
+		setupDashboardTree()
+		def dataElement4 = newNormalizedDataElement(CODE(7), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def average4 = newAverage("\$"+dataElement4.id, CODE(8))
+		def target4 = newDashboardTarget("Target 4", average4, ReportProgram.findByCode(ROOT), 1)
+		def dataElement5 = newNormalizedDataElement(CODE(9), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"10",(HEALTH_CENTER_GROUP):"10"]]))
+		def average5 = newAverage("\$"+dataElement5.id, CODE(10))
+		def target5 = newDashboardTarget("Target 5", average5, ReportProgram.findByCode(ROOT), 1)
+		refresh()
+
+		when:
+		def dashboard = dashboardService.getProgramDashboard(Location.findByCode(RWANDA), ReportProgram.findByCode(ROOT), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
+
+		then:
+		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM1))
+		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM2))
+		dashboard.dashboardEntities[2].equals(DashboardTarget.findByCode("Target 4"))
+		dashboard.dashboardEntities[3].equals(DashboardTarget.findByCode("Target 5"))
+		when:
+		DashboardProgram.findByCode(PROGRAM1).order = 2
+		DashboardProgram.findByCode(PROGRAM2).order = 1
+		DashboardTarget.findByCode("Target 4").order = 2
+		DashboardTarget.findByCode("Target 5").order = 1
+		dashboard = dashboardService.getProgramDashboard(Location.findByCode(RWANDA), ReportProgram.findByCode(ROOT), period, new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)]));
+		
+		then:
+		dashboard.dashboardEntities[0].equals(DashboardProgram.findByCode(PROGRAM2))
+		dashboard.dashboardEntities[1].equals(DashboardProgram.findByCode(PROGRAM1))
+		dashboard.dashboardEntities[2].equals(DashboardTarget.findByCode("Target 5"))
+		dashboard.dashboardEntities[3].equals(DashboardTarget.findByCode("Target 4"))
+		
+	}
+	
 	def "get program dashboard with no dashboard entities"(){
 		setup:
 		setupLocationTree()
@@ -143,7 +233,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		dashboard.hasData() == false
 	}
 	
-	def "dashboard test location dashboard"() {
+	def "get dashboard location dashboard"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()
@@ -167,7 +257,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		RWANDA			| ROOT			| [NORTH]				| [ROOT]			| []					| []
 	}
 	
-	def "dashboard test location compare dashboard"() {
+	def "get location compare dashboard"() {
 		setup:
 		def period = newPeriod()
 		setupLocationTree()

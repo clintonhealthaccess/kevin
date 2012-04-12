@@ -149,6 +149,7 @@ beans = {
 	
 	dashboardService(DashboardService) {
 		reportService = ref("reportService")
+		languageService = ref("languageService")
 		sessionFactory = ref("sessionFactory")
 		dashboardPercentageService = ref("dashboardPercentageService")
 		skipLevels = dashboardSkipLevels
