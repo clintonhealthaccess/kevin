@@ -24,7 +24,7 @@ class ValueTagLib {
 		def value = attrs['value']
 		def format = attrs['format']
 		
-		if (value.isNull()) {
+		if (value == null || value.isNull()) {
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else {

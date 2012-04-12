@@ -1086,7 +1086,7 @@ class Initializer {
 			
 			FctTargetOption fctTargetOption4 = new FctTargetOption(
 				names:j(["en": "Target Option 4"]),
-				target: fctTarget1,
+				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 4",
 				sum: sum4

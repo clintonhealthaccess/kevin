@@ -109,7 +109,8 @@ public class ValueService {
 	@Transactional(readOnly=true)
 	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", location="+location+", types="+types+")");
-		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, location, period, types), period, location);
+		List<T> partialValues = getPartialValues(calculation, location, period, types);
+		CalculationValue<T> result = calculation.getCalculationValue(partialValues, period, location);
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(...)="+result);
 		return result;
 	}

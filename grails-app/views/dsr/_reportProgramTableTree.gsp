@@ -1,6 +1,5 @@
 <g:if test="${location.collectsData()}">
 	<!-- DataLocations -->
-	<g:if test="${currentLocationTypes != null && !currentLocationTypes.empty && currentLocationTypes.contains(location.type)}">
 		<tr>
 			<td>
 				<span style="margin-left: ${level*20}px;"><g:i18n field="${location.names}"/></span>
@@ -16,7 +15,6 @@
 				</td>
 			</g:each>
 		</tr>
-	</g:if>
 </g:if>
 <g:else>
 	<!-- Locations -->
