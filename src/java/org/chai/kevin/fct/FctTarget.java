@@ -87,6 +87,12 @@ public class FctTarget extends AbstractReportTarget {
 	public Set<String> getTypeCodes() {
 		return Utils.split(typeCodeString);
 	}
+    
+	@Transient
+	public void addTargetOption(FctTargetOption targetOption) {
+		targetOption.setTarget(this);
+		targetOptions.add(targetOption);
+	}
 	
 	public void setTypeCodes(Set<String> typeCodes) {
 		this.typeCodeString = Utils.unsplit(typeCodes);

@@ -1,5 +1,7 @@
 package org.chai.kevin.fct
 
+import java.util.Collections;
+
 import org.chai.kevin.AbstractController
 import org.chai.kevin.Period
 import org.chai.kevin.location.DataLocationType
@@ -17,22 +19,12 @@ class FctController extends AbstractController {
 		if(params.int('fctTarget') != null)
 			fctTarget = FctTarget.get(params.int('fctTarget'))
 		else{
-			def targets = reportService.getReportTargets(FctTarget.class, program)
-			if(targets != null && !targets.empty && 
-				targets.first().targetOptions != null && !targets.first().targetOptions.empty)
+			def targets = fctService.getFctTargets(program)
+			Collections.sort(targets);
+			if(targets != null && !targets.empty)
 				fctTarget = targets.first()				
 		}
 		return fctTarget
-	}
-	
-	def getFctTargets(def program){
-		def targetsWithOptions = []
-		def targets = reportService.getReportTargets(FctTarget.class, program)
-		for(FctTarget target : targets){
-			if(target.targetOptions != null && !target.targetOptions.empty)
-				targetsWithOptions.add(target)
-		}
-		return targetsWithOptions
 	}
 	
 //	def getLevel(){
@@ -71,14 +63,13 @@ class FctController extends AbstractController {
 		
 		[
 			fctTable: fctTable,
+			currentTarget: fctTarget,
 			currentPeriod: period,
 			currentProgram: program,
 			selectedTargetClass: FctTarget.class,
 			currentLocation: location,
 			locationTree: locationTree,
-			currentLocationTypes: dataLocationTypes,
-			currentTarget: fctTarget,
-			fctTargets: getFctTargets(program),		
+			currentLocationTypes: dataLocationTypes,		
 			skipLevels: skipLevels,
 			currentChildLevel: level
 		]

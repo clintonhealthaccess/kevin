@@ -54,6 +54,7 @@ class DsrController extends AbstractController {
 			dsrTargetCategory = DsrTargetCategory.get(params.int('dsrCategory'))
 		else{
 			def categories = dsrService.getTargetCategories(program)
+			Collections.sort(categories);
 			if(categories != null && !categories.empty)
 				dsrTargetCategory = categories.first()
 		}
