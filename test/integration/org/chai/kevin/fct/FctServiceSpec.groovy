@@ -176,7 +176,7 @@ class FctServiceSpec extends FctIntegrationTests {
 		def lessThan100 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1", (HEALTH_CENTER_GROUP):"1"]]))
 		def sum = newSum("\$"+lessThan100.id, CODE(3))
 		def target = newFctTarget(CODE(4), [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
-		def targetOption = newFctTargetOption(CODE(5), target, sum, 1)
+		def targetOption = newFctTargetOption(CODE(5), 1, target, sum)
 		def level = locationService.getLevelAfter(location.getLevel(), new HashSet([LocationLevel.findByCode(SECTOR)]))
 		def dataLocationTypes = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
 		def fctTable = null
