@@ -45,4 +45,9 @@ public class Translation extends JSONMap<String> {
 		super(jsonMap);
 	}
 	
+	@Override
+	public String toString() {
+		return "Translation [getJsonText()=" + getJsonText() + "]";
+	}
+	
 }

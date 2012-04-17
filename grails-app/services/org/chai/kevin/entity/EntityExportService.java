@@ -18,7 +18,10 @@ import org.chai.kevin.LanguageService;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.LocationSorter;
 import org.chai.kevin.Translation;
+import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataElement;
+import org.chai.kevin.data.NormalizedDataElement;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type.ValueVisitor;
@@ -27,6 +30,7 @@ import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.survey.export.SurveyExportDataPoint;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.Value;
@@ -60,36 +64,35 @@ public class EntityExportService {
 	}
 	
 	@Transactional(readOnly=true)
-	public File getExportFile(String filename, Class clazz) throws IOException { 				
+	public File getExportFile(String filename, Class<?> clazz) throws IOException { 				
 		
 		File csvFile = File.createTempFile(filename, CSV_FILE_EXTENSION);
 		
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
-		try {
-			
+		try {			
 			// headers
 			String[] csvHeaders = null;
 			List<String> entityHeaders = new ArrayList<String>();			
-			Class headerFieldClass = clazz;
-			while(headerFieldClass != null){
-				Field[] classFields = headerFieldClass.getDeclaredFields();
+			Class headerClass = clazz;
+			while(headerClass != null && headerClass != Object.class){				
+				Field[] classFields = headerClass.getDeclaredFields();
 				entityHeaders.addAll(getEntityHeaders(classFields));
-				headerFieldClass = clazz.getSuperclass();				
-			}
+				headerClass = headerClass.getSuperclass();
+			}			
 			if(entityHeaders.toArray(new String[0]) != null)
 				writer.writeHeader(entityHeaders.toArray(new String[0]));
 			
 			//entities
-			List<Object> entities = getEntities(clazz);			
+			List<Object> entities = getEntities(clazz);
 			for(Object entity : entities){
 				if (log.isDebugEnabled()) log.debug("getExportFile(entity="+entity+")");				
 				List<String> entityData = new ArrayList<String>();			
-				Class dataFieldClass = clazz;				
-				while(dataFieldClass != null){
-					Field[] classFields = dataFieldClass.getDeclaredFields();
-					entityData.addAll(getEntityData(entity, dataFieldClass, classFields));
-					dataFieldClass = clazz.getSuperclass();
+				Class dataClass = clazz;
+				while(dataClass != null && dataClass != Object.class){
+					Field[] classFields = dataClass.getDeclaredFields();
+					entityData.addAll(getEntityData(entity, dataClass, classFields));
+					dataClass = dataClass.getSuperclass();
 				}				
 				if(entityData != null && !entityData.isEmpty())
 					writer.write(entityData);
@@ -130,8 +133,15 @@ public class EntityExportService {
 					isNotAccessible = true;
 				}
 				value = field.get(entity);
-				if(value != null)
-					csvData.add(value.toString());
+				if(value != null){
+					Class valueClass = value.getClass();
+					if(value.toString() != null && !value.toString().isEmpty())
+						csvData.add(value.toString());
+					else
+						csvData.add("");
+				}
+				else
+					csvData.add(null);
 				if(isNotAccessible)
 					field.setAccessible(false);	
 			} catch (IllegalArgumentException e) {

@@ -92,12 +92,13 @@ abstract public class Data<T extends DataValue> {
 	
 	@Transient
 	public abstract Class<T> getValueClass();
-	
+
 	@Override
 	public String toString() {
-		return "Data [code=" + code + "]";
+		return "Data [getId()=" + getId() + ", getCode()="
+				+ getCode() + "]";
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

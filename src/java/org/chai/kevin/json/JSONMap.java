@@ -67,8 +67,7 @@ public class JSONMap<T> implements Map<String, T>, Serializable {
 		if (this.jsonText.isEmpty()) this.jsonText = " ";
 		reloadMap();
 	}
-	
-	
+		
 	private Map<String, T> embeddedMap = new HashMap<String, T>();
 	
 	@SuppressWarnings("unchecked")
@@ -162,7 +161,7 @@ public class JSONMap<T> implements Map<String, T>, Serializable {
 
 	@Override
 	public String toString() {
-		return "JSONMap [jsonText=" + jsonText + "]";
+		return "JSONMap [getJsonText()=" + getJsonText() + "]";
 	}
 
 	@Override
