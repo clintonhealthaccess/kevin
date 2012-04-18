@@ -122,7 +122,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		dataPoints.size() == 1		
-		!dataPoints.get(0).equals(["survey",COUNTRY,NORTH,BURERA,SECTOR,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","NUMBER","question","10.0"])
+		!dataPoints.get(0).equals(["survey",NATIONAL,NORTH,BURERA,SECTOR,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","NUMBER","question","10.0"])
 		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","NUMBER","question","10.0"])
 	}
 	

@@ -677,12 +677,26 @@ class Initializer {
 			new NormalizedDataElement(names:j(["en":"Constant 30"]), descriptions:j([:]), code:"Constant 30", expressionMap: e([(period1.id+''):[(hc.code):"30", (dh.code):"30"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"Constant 40"]), descriptions:j([:]), code:"Constant 40", expressionMap: e([(period1.id+''):[(hc.code):"40", (dh.code):"40"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
-				code:"Element 1", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id, (dh.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
-				code:"Element 2", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE2").id, (dh.code):"\$"+RawDataElement.findByCode("CODE2").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
-				code:"Element 3", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE3").id, (dh.code):"\$"+RawDataElement.findByCode("CODE3").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			def rd1 = RawDataElement.findByCode("CODE1").id
+			new NormalizedDataElement(names:j(["en":"Element 1"]), descriptions:j([:]), 
+				code:"Element 1", 
+				expressionMap: e([(period1.id+''):[(hc.code):"\$"+rd1+"+\$"+rd1, (dh.code):"\$"+rd1+"+\$"+rd1]]), 
+				type: Type.TYPE_NUMBER(), 
+				timestamp:new Date()).save(failOnError: true, flush: true)
+				
+			def rd2 = RawDataElement.findByCode("CODE2").id
+			new NormalizedDataElement(names:j(["en":"Element 2"]), descriptions:j([:]), 
+				code:"Element 2", 
+				expressionMap: e([(period1.id+''):[(hc.code):"\$"+rd2, (dh.code):"\$"+rd2]]), 
+				type: Type.TYPE_NUMBER(), 
+				timestamp:new Date()).save(failOnError: true, flush: true)
+				
+			def rd3 = RawDataElement.findByCode("CODE3").id
+			new NormalizedDataElement(names:j(["en":"Element 3"]), descriptions:j([:]), 
+				code:"Element 3", 
+				expressionMap: e([(period1.id+''):[(hc.code):"\$"+rd3, (dh.code):"\$"+rd3]]), 
+				type: Type.TYPE_NUMBER(), 
+				timestamp:new Date()).save(failOnError: true, flush: true)
 				
 			new NormalizedDataElement(names:j(["en":"TRUE"]), descriptions:j([:]), code:"TRUE", expressionMap: e([(period1.id+''):[(hc.code):"true", (dh.code):"true"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"FALSE"]), descriptions:j([:]), code:"FALSE", expressionMap: e([(period1.id+''):[(hc.code):"false", (dh.code):"false"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)

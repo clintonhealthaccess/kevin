@@ -20,7 +20,6 @@ import org.chai.kevin.Translation;
 import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.EnumOptionService;
 import org.chai.kevin.data.EnumService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;

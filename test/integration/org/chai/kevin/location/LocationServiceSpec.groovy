@@ -48,12 +48,12 @@ class LocationServiceSpec extends IntegrationTests {
 		
 		where:
 		location	| level		| expectedLocations
-		RWANDA		| COUNTRY	| [RWANDA]
+		RWANDA		| NATIONAL	| [RWANDA]
 		RWANDA		| PROVINCE	| [NORTH]
 		RWANDA		| DISTRICT	| [BURERA]
 		NORTH		| DISTRICT	| [BURERA]
 		BURERA		| DISTRICT	| [BURERA]
-		BURERA		| COUNTRY	| []
+		BURERA		| NATIONAL	| []
 	}
 	
 	def "get parent of level for location"() {
@@ -65,8 +65,8 @@ class LocationServiceSpec extends IntegrationTests {
 
 		where:
 		location| level		| expectedLocation
-		NORTH	| COUNTRY	| RWANDA
-		BURERA	| COUNTRY	| RWANDA
+		NORTH	| NATIONAL	| RWANDA
+		BURERA	| NATIONAL	| RWANDA
 		
 	}
 	
@@ -163,7 +163,7 @@ class LocationServiceSpec extends IntegrationTests {
 		//levelBefore == null
 		when:
 		def level = LocationLevel.findByCode(PROVINCE)
-		def skipLevels = new HashSet([LocationLevel.findByCode(COUNTRY)])
+		def skipLevels = new HashSet([LocationLevel.findByCode(NATIONAL)])
 		def levelBefore = locationService.getLevelBefore(level, skipLevels)		
 		
 		then:
@@ -176,7 +176,7 @@ class LocationServiceSpec extends IntegrationTests {
 		levelBefore = locationService.getLevelBefore(level, skipLevels)
 		
 		then:
-		levelBefore.equals(LocationLevel.findByCode(COUNTRY))
+		levelBefore.equals(LocationLevel.findByCode(NATIONAL))
 		
 		//levelBefore skips 2 levels
 		when:
@@ -185,7 +185,7 @@ class LocationServiceSpec extends IntegrationTests {
 		levelBefore = locationService.getLevelBefore(level, skipLevels)
 		
 		then:
-		levelBefore.equals(LocationLevel.findByCode(COUNTRY))
+		levelBefore.equals(LocationLevel.findByCode(NATIONAL))
 	}
 	
 	def "get level after with skip levels"(){
@@ -212,7 +212,7 @@ class LocationServiceSpec extends IntegrationTests {
 		
 		//levelAfter skips 2 levels
 		when:
-		level = LocationLevel.findByCode(COUNTRY)
+		level = LocationLevel.findByCode(NATIONAL)
 		skipLevels = new HashSet([LocationLevel.findByCode(PROVINCE), LocationLevel.findByCode(DISTRICT)])
 		levelAfter = locationService.getLevelAfter(level, skipLevels)
 		
