@@ -129,6 +129,7 @@ beans = {
 		locationService = ref("locationService")
 		surveyValueService = ref("surveyValueService")
 		languageService = ref("languageService")
+		enumService = ref("enumService")
 		sessionFactory = ref("sessionFactory")
 		skipLevels = exportSkipLevels
 	}

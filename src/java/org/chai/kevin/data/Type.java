@@ -253,8 +253,7 @@ public class Type extends JSONValue {
 		}
 		return filteredIndexList;
 	}
-	
-	
+		
 	public interface Sanitizer {
 		
 		/**
@@ -787,11 +786,18 @@ public class Type extends JSONValue {
 		 * @param prefix
 		 * @param genericPrefix
 		 */
-		public abstract void handle(Type type, Value value, String prefix, String genericPrefix);
+		public abstract void handle(Type type, Value value, String prefix, String genericPrefix);		
 	}
 	
 	public void visit(Value value, ValueVisitor valueVisitor) {
 		visit(value, "", "", valueVisitor);
+	}	
+	
+	public void listVisit(int i, Value listValue, ValueVisitor valueVisitor) {
+		String prefix = "";
+		String genericPrefix = "";
+		valueVisitor.addType(prefix, genericPrefix, this);
+		visit(listValue, prefix+"["+i+"]", genericPrefix+"[_]", valueVisitor);
 	}
 	
 	private void visit(Value value, String prefix, String genericPrefix, ValueVisitor valueVisitor) {

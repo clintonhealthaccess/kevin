@@ -90,6 +90,8 @@ class EnumService {
 		return criteria
 		
 	}
-	
 
+	public Enum getEnum(String code){
+		return Enum.findByCode(code)
+	}
 }
