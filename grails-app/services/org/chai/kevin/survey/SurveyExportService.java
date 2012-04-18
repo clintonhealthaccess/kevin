@@ -283,7 +283,7 @@ public class SurveyExportService {
 				dataPoint.add(formatExportDataItem(null));
 				if(type.getType().equals(ValueType.ENUM)){
 					String enumCode = type.getEnumCode();
-					Enum enume = enumService.getEnum(enumCode);
+					Enum enume = enumService.getEnumByCode(enumCode);
 					List<EnumOption> enumOptions = enume.getEnumOptions();
 					for(EnumOption enumOption : enumOptions)
 						surveyQuestionItems.add(languageService.getText(enumOption.getNames()));
@@ -359,7 +359,7 @@ public class SurveyExportService {
 			case ENUM:
 				value = dataValue.getEnumValue();
 				String enumCode = dataType.getEnumCode();
-				Enum enume = enumService.getEnum(enumCode);
+				Enum enume = enumService.getEnumByCode(enumCode);
 				if(enume != null){
 					EnumOption enumOption = enume.getOptionForValue(value);
 					value = languageService.getText(enumOption.getNames());
@@ -426,7 +426,7 @@ public class SurveyExportService {
 				}				
 				if(type.getType().equals(ValueType.ENUM)){
 					String enumCode = type.getEnumCode();
-					Enum enume = enumService.getEnum(enumCode);
+					Enum enume = enumService.getEnumByCode(enumCode);
 					if(enume != null){
 						List<EnumOption> enumOptions = enume.getEnumOptions();
 						for(EnumOption enumOption : enumOptions){
