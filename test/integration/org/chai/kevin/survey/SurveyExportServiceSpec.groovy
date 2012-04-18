@@ -146,7 +146,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		then:
 		dataPoints.size() == 1
 		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","LIST","question",
-			"10.0", "header1"])
+			"10.0", "Line 1", "header1"])
 	}
 	
 	def "test for get zip file"(){
