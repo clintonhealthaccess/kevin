@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils
 import org.hibernate.Criteria;
+import org.chai.kevin.data.Enum
 import org.chai.kevin.util.Utils
 import org.hibernate.criterion.MatchMode
 import org.hibernate.criterion.Order
@@ -90,6 +91,8 @@ class EnumService {
 		return criteria
 		
 	}
-	
 
+	public Enum getEnumByCode(String code){
+		return Enum.findByCode(code)
+	}
 }

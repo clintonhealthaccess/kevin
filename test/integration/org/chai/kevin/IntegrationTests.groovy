@@ -83,7 +83,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 	static final String HEALTH_CENTER_GROUP = "Health Center"
 	static final String DISTRICT_HOSPITAL_GROUP = "District Hospital"
 	
-	static final String COUNTRY = "Country"
+	static final String NATIONAL = "National"
 	static final String PROVINCE = "Province"
 	static final String DISTRICT = "District"
 	static final String SECTOR = "Sector"
@@ -121,7 +121,7 @@ abstract class IntegrationTests extends IntegrationSpec {
 		def hc = newDataLocationType(j(["en":HEALTH_CENTER_GROUP]), HEALTH_CENTER_GROUP);
 		def dh = newDataLocationType(j(["en":DISTRICT_HOSPITAL_GROUP]), DISTRICT_HOSPITAL_GROUP);
 		
-		def country = newLocationLevel(COUNTRY, 1)
+		def country = newLocationLevel(NATIONAL, 1)
 		def province = newLocationLevel(PROVINCE, 2)
 		def district = newLocationLevel(DISTRICT, 3)
 		def sector = newLocationLevel(SECTOR, 4)

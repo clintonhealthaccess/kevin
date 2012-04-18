@@ -288,7 +288,7 @@ class DashboardServiceSpec extends DashboardIntegrationTests {
 		refresh()
 		
 		when:
-		def country = newLocationLevel(COUNTRY, 1)
+		def country = newLocationLevel(NATIONAL, 1)
 		def rwanda = newLocation(j(["en":RWANDA]), RWANDA, country)		
 		def root = ReportProgram.findByCode(ROOT)	
 		def types = new HashSet([DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), DataLocationType.findByCode(HEALTH_CENTER_GROUP)])
