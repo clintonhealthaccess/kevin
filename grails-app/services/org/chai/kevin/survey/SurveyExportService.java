@@ -263,21 +263,21 @@ public class SurveyExportService {
 			
 			if(formEnteredValue != null){
 				Value value = formEnteredValue.getValue();
-				if(type.getType().equals(ValueType.LIST)){
-					Type listType = type.getListType();
-					for (int i = 0; i < value.getListValue().size(); i++) {
-						Map<String, Translation> headers = surveyElement.getHeaders();
-						DataPointVisitor dataPointVisitor = new DataPointVisitor(i+1, headers, surveyQuestionItems, dataPoint);
-						listType.listVisit(i, value.getListValue().get(i), dataPointVisitor);
-						dataPoints.addAll(dataPointVisitor.getDataPoints());
-					}
-				}
-				else{
+//				if(type.getType().equals(ValueType.LIST)){
+//					Type listType = type.getListType();
+//					for (int i = 0; i < value.getListValue().size(); i++) {
+//						Map<String, Translation> headers = surveyElement.getHeaders();
+//						DataPointVisitor dataPointVisitor = new DataPointVisitor(i+1, headers, surveyQuestionItems, dataPoint);
+//						listType.listVisit(i, value.getListValue().get(i), dataPointVisitor);
+//						dataPoints.addAll(dataPointVisitor.getDataPoints());
+//					}
+//				}
+//				else{
 					Map<String, Translation> headers = surveyElement.getHeaders();
 					DataPointVisitor dataPointVisitor = new DataPointVisitor(headers, surveyQuestionItems, dataPoint);
 					type.visit(value, dataPointVisitor);
 					dataPoints = dataPointVisitor.getDataPoints();
-				}				
+//				}				
 			}
 			else{
 				dataPoint.add(formatExportDataItem(null));

@@ -793,12 +793,12 @@ public class Type extends JSONValue {
 		visit(value, "", "", valueVisitor);
 	}	
 	
-	public void listVisit(int i, Value listValue, ValueVisitor valueVisitor) {
-		String prefix = "";
-		String genericPrefix = "";
-		valueVisitor.addType(prefix, genericPrefix, this);
-		visit(listValue, prefix+"["+i+"]", genericPrefix+"[_]", valueVisitor);
-	}
+//	public void listVisit(int i, Value listValue, ValueVisitor valueVisitor) {
+//		String prefix = "";
+//		String genericPrefix = "";
+////		valueVisitor.addType(prefix, genericPrefix, this);
+//		visit(listValue, prefix+"["+i+"]", genericPrefix+"[_]", valueVisitor);
+//	}
 	
 	private void visit(Value value, String prefix, String genericPrefix, ValueVisitor valueVisitor) {
 		valueVisitor.addType(prefix, genericPrefix, this);
