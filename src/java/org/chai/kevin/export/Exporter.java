@@ -63,6 +63,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity(name="Exporter")
 @Table(name="dhsst_export")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Exporter {
 	private Long id;
 	private Translation names = new Translation();
@@ -118,7 +119,7 @@ public class Exporter {
 		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 	
-	@OneToMany
+	@OneToMany(targetEntity=Period.class)
 	@JoinTable(name="dhsst_export_periods",joinColumns=@JoinColumn(name="exporter"),uniqueConstraints=@UniqueConstraint(columnNames={"exporter","periods"}))
 	public Set<Period> getPeriods() {
 		return periods;
@@ -126,7 +127,7 @@ public class Exporter {
 	public void setPeriods(Set<Period> periods) {
 		this.periods = periods;
 	}
-	@OneToMany
+	@OneToMany(targetEntity=Data.class)
 	@JoinTable(name="dhsst_export_data",joinColumns=@JoinColumn(name="exporter"),uniqueConstraints=@UniqueConstraint(columnNames={"exporter","data"}))
 	public Set<Data<DataValue>> getData() {
 		return data;
@@ -139,11 +140,12 @@ public class Exporter {
 		this.dataLocations = dataLocations;
 	}
 	
-	@OneToMany
+	@OneToMany(targetEntity=DataLocation.class)
 	@JoinTable(name="dhsst_export_data_locations",joinColumns=@JoinColumn(name="exporter"),uniqueConstraints=@UniqueConstraint(columnNames={"exporter","dataLocations"}))
 	public Set<DataLocation> getDataLocations() {
 		return dataLocations;
 	}
+	
 	
 	@Override
 	public int hashCode() {

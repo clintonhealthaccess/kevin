@@ -35,6 +35,7 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 /**
  * @author Jean Kahigiso M.
@@ -43,6 +44,7 @@ import org.chai.kevin.value.DataValue;
 class ExporterController extends AbstractEntityController {
 	def dataLocationService;
 	def exporterService;
+	def languageService;
 	
 	def getModel(def entity) {
 	}
@@ -70,8 +72,18 @@ class ExporterController extends AbstractEntityController {
 	def export ={
 		Exporter export= Exporter.get(params.int('id'));
 		if(log.isDebugEnabled()) log.debug("export(export="+export+")")
-		if(export)
-			exporterService.exportData(export)	
+		
+		if(export){
+			File csvFile = exporterService.exportData(export);
+			def zipFile = Utils.getZipFile(csvFile, export.names[languageService.getCurrentLanguage()])
+			
+			if(zipFile.exists()){
+				response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
+				response.setContentType("application/zip");
+				response.setHeader("Content-length", zipFile.length().toString());
+				response.outputStream << zipFile.newInputStream()
+				}
+		}	
 		if(params['method'].equals("search")) search()
 		else list()	
 	}

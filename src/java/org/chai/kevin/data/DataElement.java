@@ -18,8 +18,6 @@ import javax.persistence.Transient;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.value.DataValue;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="DataElement")
 @Table(name="dhsst_data_element")

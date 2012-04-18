@@ -65,7 +65,7 @@ public class SurveyExportService {
 		this.skipLevels = skipLevels;
 	}
 	
-	private List<LocationLevel> getLevels() {
+	public List<LocationLevel> getLevels() {
 		List<LocationLevel> result = locationService.listLevels();
 		for (String level : skipLevels) {
 			result.remove(locationService.findLocationLevelByCode(level));

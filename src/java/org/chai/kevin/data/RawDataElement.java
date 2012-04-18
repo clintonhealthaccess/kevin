@@ -34,8 +34,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.value.RawDataElementValue;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="RawDataElement")
 @Table(name="dhsst_data_raw_element")

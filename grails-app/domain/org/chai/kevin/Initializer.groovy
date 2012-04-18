@@ -1273,14 +1273,14 @@ class Initializer {
 			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
 			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
 			
-			def exporterTwo = new Exporter(
-				names: j(["en":"Exporter Raw Data Element Two"]),
-				date: getDate( 2012, 4, 9),
-				dataLocations:[dataLocationOne],
-				typeCodeString:"Health Center",
-				data:[dEtwo,dEthree],
-				periods: [periodOne]
-				).save(failOnError: true)
+			//def exporterTwo = new Exporter(
+				//names: j(["en":"Exporter Raw Data Element Two"]),
+				//date: getDate( 2012, 4, 9),
+				//dataLocations:[dataLocationOne],
+				//typeCodeString:"Health Center",
+				//data:[dEtwo,dEthree],
+				//periods: [periodOne]
+				//).save(failOnError: true)
 				
 			def exporterOne = new Exporter(
 				names: j(["en":"Exporter Raw Data Element One"]),
