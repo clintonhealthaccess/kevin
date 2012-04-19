@@ -58,11 +58,11 @@ public class FormElement {
 
 	@ManyToOne(targetEntity = RawDataElement.class, optional = false)
 	@JoinColumn(nullable = false)
-	public RawDataElement getDataElement() {
+	public RawDataElement getRawDataElement() {
 		return rawDataElement;
 	}
 
-	public void setDataElement(RawDataElement rawDataElement) {
+	public void setRawDataElement(RawDataElement rawDataElement) {
 		this.rawDataElement = rawDataElement;
 	}
 
@@ -97,12 +97,12 @@ public class FormElement {
 	
 	@Transient
 	public String getLabel(LanguageService languageService) {
-		return languageService.getText(getDataElement().getNames());
+		return languageService.getText(getRawDataElement().getNames());
 	}
 	
 	@Transient
 	public <T extends FormElement> void deepCopy(T copy, FormCloner cloner) {
-		copy.setDataElement(getDataElement());
+		copy.setRawDataElement(getRawDataElement());
 	}	
 	
 	@Transient
@@ -151,9 +151,9 @@ public class FormElement {
 	public void submit(DataLocation dataLocation, Period period, ElementSubmitter submitter) {
 		Value valueToSave = getValue(dataLocation, submitter);
 		
-		RawDataElementValue rawDataElementValue = submitter.getValueService().getDataElementValue(getDataElement(), dataLocation, period);
+		RawDataElementValue rawDataElementValue = submitter.getValueService().getDataElementValue(getRawDataElement(), dataLocation, period);
 		if (rawDataElementValue == null) {
-			rawDataElementValue = new RawDataElementValue(getDataElement(), dataLocation, period, null);
+			rawDataElementValue = new RawDataElementValue(getRawDataElement(), dataLocation, period, null);
 		}
 		rawDataElementValue.setValue(valueToSave);
 		
