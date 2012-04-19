@@ -63,7 +63,7 @@ class ExporterController extends AbstractEntityController {
 	}
 
 	def getTemplate() {
-		return "/exporter/createExport"
+		return "/exporter/createExporter"
 	}
 	
 	def getLabel() {
@@ -97,7 +97,7 @@ class ExporterController extends AbstractEntityController {
 	def list={
 		adaptParamsForList()
 		List<Exporter> exports = Exporter.list();
-		getExporterListModel(exports,exporterService,list)
+		this.getExporterListModel(exports,exporterService,list)
 	}
 	
 	def search = {
@@ -112,7 +112,7 @@ class ExporterController extends AbstractEntityController {
 			template:"exporter/exporterList",
 			entities: exports,
 			entityCount: exporterService.countExporter(Exporter.class, params['q']),
-			code: 'exporter.label',
+			code: 'export.label',
 			method: method,
 			q:params['q']
 		])

@@ -1291,8 +1291,6 @@ class Initializer {
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
 				
-			//exporterOne.save(failOnError: true)
-			//exporterTwo.save(failOnError: true)
 		}
 	}
 	
