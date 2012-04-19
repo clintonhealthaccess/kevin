@@ -1,10 +1,41 @@
 package org.chai.kevin.location;
 
 import org.chai.kevin.AbstractEntityController;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.AbstractController;
+import org.chai.kevin.LanguageService;
+import org.chai.kevin.LocationService;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
+import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.value.DataValue;
+import org.chai.kevin.util.Utils
+import org.supercsv.io.CsvListWriter;
+import org.supercsv.io.ICsvListWriter;
+import org.supercsv.prefs.CsvPreference;
 
 class LocationController extends AbstractEntityController {
 
 	def locationService
+	def languageService;
+	def surveyExportService;
+	final String COUNTRY = "Country"
+	final String PROVINCE = "Province"
+	final String DISTRICT= "District"
+	final String SECTOR = "Sector"
+	final String FACILITY ="Facility"
+	final String CODE ="Code"
+	final String TYPE="Type"
+	final String FILENAME="DataLocation"
+	final String FILETYPE=".csv"
 	
 	def bindParams(def entity) {
 		entity.properties = params
@@ -86,5 +117,57 @@ class LocationController extends AbstractEntityController {
 			code: getLabel()
 		])
 	}
+	
+	def exportDataLocation = {
+		File csvFile = File.createTempFile(FILENAME, FILETYPE);
+		FileWriter csvFileWriter = new FileWriter(csvFile);
+		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
+		List<DataLocation> locations = DataLocation.list();
+		try{
+			String[] csvHeaders = null;
+			if(csvHeaders == null)
+				csvHeaders = this.getExportDataHeaders();
+			writer.writeHeader(csvHeaders);
+	
+			for(DataLocation location: locations){
+				def line = []
+				for (LocationLevel level : surveyExportService.getLevels()){
+					Location parent = locationService.getParentOfLevel(location, level);
+					if (parent != null) line.add(languageService.getText(parent.getNames()));
+					else line.add("");
+				}
+				line.add(languageService.getText(location.getNames()))
+				line.add(location.code)
+				line.add(languageService.getText(location.type.getNames()))
+				writer.write(line);
+				line = []
+			}
+		} catch (IOException ioe){
+			// TODO throw something that make sense
+			throw ioe;
+		} finally {
+			writer.close();
+		}
+		def zipFile = Utils.getZipFile(csvFile, FILENAME)
+		
+		if(zipFile.exists()){
+			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
+			response.setContentType("application/zip");
+			response.setHeader("Content-length", zipFile.length().toString());
+			response.outputStream << zipFile.newInputStream()
+			}
+	}
+	private List getExportDataHeaders() {
+		List<String> headers = new ArrayList<String>();
+		headers.add(COUNTRY);
+		headers.add(PROVINCE);
+		headers.add(DISTRICT);
+		headers.add(SECTOR);
+		headers.add(FACILITY);
+		headers.add(CODE);
+		headers.add(TYPE);
+		return headers;
+	}
+
 	
 }
