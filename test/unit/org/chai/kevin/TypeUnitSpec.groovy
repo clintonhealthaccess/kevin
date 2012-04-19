@@ -586,32 +586,32 @@ public class TypeUnitSpec extends UnitSpec {
 		expectedVisitedTypes.equals(visitedTypeMap)
 	}
 	
-	def "test value list visit"() {
-		setup:
-		def type = null
-		def value = null
-		
-		when:
-		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
-		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}")
-		def expectedVisitedValues = [new Value("{\"value\":null}"), new Value("{\"value\":11}]}")]
-		def expectedVisitedTypes = [["[0]":Type.TYPE_NUMBER()],["[1]":Type.TYPE_NUMBER()]]
-		def visitedValues = []
-		def visitedTypeMap = []
-		def listType = type.getListType()		
-		for (int i = 0; i < value.getListValue().size(); i++) {
-			listType.listVisit(i, value.getListValue().get(i), new ValueVisitor() {
-				public void handle(Type currentType, Value currentListValue, String prefix, String genericPrefix) {
-					visitedValues << currentListValue
-					visitedTypeMap << new TreeMap(getTypes())
-				}
-			})
-		}
-		
-		then:
-		expectedVisitedValues.equals(visitedValues)
-		expectedVisitedTypes.equals(visitedTypeMap)
-	}
+//	def "test value list visit"() {
+//		setup:
+//		def type = null
+//		def value = null
+//		
+//		when:
+//		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+//		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}")
+//		def expectedVisitedValues = [new Value("{\"value\":null}"), new Value("{\"value\":11}]}")]
+//		def expectedVisitedTypes = [["[0]":Type.TYPE_NUMBER()],["[1]":Type.TYPE_NUMBER()]]
+//		def visitedValues = []
+//		def visitedTypeMap = []
+//		def listType = type.getListType()		
+//		for (int i = 0; i < value.getListValue().size(); i++) {
+//			listType.listVisit(i, value.getListValue().get(i), new ValueVisitor() {
+//				public void handle(Type currentType, Value currentListValue, String prefix, String genericPrefix) {
+//					visitedValues << currentListValue
+//					visitedTypeMap << new TreeMap(getTypes())
+//				}
+//			})
+//		}
+//		
+//		then:
+//		expectedVisitedValues.equals(visitedValues)
+//		expectedVisitedTypes.equals(visitedTypeMap)
+//	}
 		
 	def "test value visit when value not complete"() {
 		setup:
