@@ -41,6 +41,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -119,16 +120,23 @@ public class Exporter {
 		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 	
-	@OneToMany(targetEntity=Period.class)
-	@JoinTable(name="dhsst_export_periods",joinColumns=@JoinColumn(name="exporter"),uniqueConstraints=@UniqueConstraint(columnNames={"exporter","periods"}))
+	@ManyToMany(targetEntity=Period.class)
+	@JoinTable(name="dhsst_export_periods",
+		joinColumns=@JoinColumn(name="exporter"),
+		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","periods"})
+	)
 	public Set<Period> getPeriods() {
 		return periods;
 	}
 	public void setPeriods(Set<Period> periods) {
 		this.periods = periods;
 	}
-	@OneToMany(targetEntity=Data.class)
-	@JoinTable(name="dhsst_export_data",joinColumns=@JoinColumn(name="exporter"),uniqueConstraints=@UniqueConstraint(columnNames={"exporter","data"}))
+	
+	@ManyToMany(targetEntity=Data.class)
+	@JoinTable(name="dhsst_export_data",
+		joinColumns=@JoinColumn(name="exporter"),
+		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","data"})
+	)
 	public Set<Data<DataValue>> getData() {
 		return data;
 	}
@@ -140,8 +148,11 @@ public class Exporter {
 		this.dataLocations = dataLocations;
 	}
 	
-	@OneToMany(targetEntity=DataLocation.class)
-	@JoinTable(name="dhsst_export_data_locations",joinColumns=@JoinColumn(name="exporter"),uniqueConstraints=@UniqueConstraint(columnNames={"exporter","dataLocations"}))
+	@ManyToMany(targetEntity=DataLocation.class)
+	@JoinTable(name="dhsst_export_data_locations",
+		joinColumns=@JoinColumn(name="exporter"),
+		uniqueConstraints=@UniqueConstraint(columnNames={"exporter","dataLocations"})
+	)
 	public Set<DataLocation> getDataLocations() {
 		return dataLocations;
 	}
