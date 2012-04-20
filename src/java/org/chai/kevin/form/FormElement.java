@@ -38,7 +38,7 @@ import org.chai.kevin.value.ValueService;
 public class FormElement {
 
 	protected Long id;
-	private RawDataElement rawDataElement;
+	private RawDataElement dataElement;
 	private List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();
 	private Map<String, Translation> headers = new HashMap<String, Translation>();
 
@@ -58,12 +58,12 @@ public class FormElement {
 
 	@ManyToOne(targetEntity = RawDataElement.class, optional = false)
 	@JoinColumn(nullable = false)
-	public RawDataElement getRawDataElement() {
-		return rawDataElement;
+	public RawDataElement getDataElement() {
+		return dataElement;
 	}
 
-	public void setRawDataElement(RawDataElement rawDataElement) {
-		this.rawDataElement = rawDataElement;
+	public void setDataElement(RawDataElement dataElement) {
+		this.dataElement = dataElement;
 	}
 
 	@OneToMany(mappedBy = "formElement", targetEntity = FormValidationRule.class, orphanRemoval=true)
@@ -97,12 +97,12 @@ public class FormElement {
 	
 	@Transient
 	public String getLabel(LanguageService languageService) {
-		return languageService.getText(getRawDataElement().getNames());
+		return languageService.getText(getDataElement().getNames());
 	}
 	
 	@Transient
 	public <T extends FormElement> void deepCopy(T copy, FormCloner cloner) {
-		copy.setRawDataElement(getRawDataElement());
+		copy.setDataElement(getDataElement());
 	}	
 	
 	@Transient
@@ -151,9 +151,9 @@ public class FormElement {
 	public void submit(DataLocation dataLocation, Period period, ElementSubmitter submitter) {
 		Value valueToSave = getValue(dataLocation, submitter);
 		
-		RawDataElementValue rawDataElementValue = submitter.getValueService().getDataElementValue(getRawDataElement(), dataLocation, period);
+		RawDataElementValue rawDataElementValue = submitter.getValueService().getDataElementValue(getDataElement(), dataLocation, period);
 		if (rawDataElementValue == null) {
-			rawDataElementValue = new RawDataElementValue(getRawDataElement(), dataLocation, period, null);
+			rawDataElementValue = new RawDataElementValue(getDataElement(), dataLocation, period, null);
 		}
 		rawDataElementValue.setValue(valueToSave);
 		
