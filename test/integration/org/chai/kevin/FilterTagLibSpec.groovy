@@ -46,7 +46,7 @@ class FilterTagLibSpec extends IntegrationTests {
 		filterTagLib.createLinkByFilter([
 			controller:'controller',
 			action:'action',
-			params: [location:Location.findByCode(RWANDA).id+'', level:LocationLevel.findByCode(COUNTRY).id+'', filter: 'location'],
+			params: [location:Location.findByCode(RWANDA).id+'', level:LocationLevel.findByCode(NATIONAL).id+'', filter: 'location'],
 			skipLevels: new HashSet([LocationLevel.findByCode(PROVINCE)])], null) == 
 		"/controller/action?level="+LocationLevel.findByCode(DISTRICT).id+"&location="+Location.findByCode(RWANDA).id+"&filter=location"
 	}

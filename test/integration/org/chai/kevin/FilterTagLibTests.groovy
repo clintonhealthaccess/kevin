@@ -35,7 +35,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	
 	def testLocationFilter() {
 		def hc = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
-		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
+		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
 		def rwanda = IntegrationTests.newLocation(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
 		def butaro = IntegrationTests.newDataLocation(IntegrationTests.j(["en":IntegrationTests.BUTARO]), IntegrationTests.BUTARO, rwanda, hc)
 		
@@ -81,7 +81,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	
 	def testLocationFilterDisplaysNothingWhenNothingSelected() {
 		def hc = IntegrationTests.newDataLocationType(IntegrationTests.j(["en":IntegrationTests.HEALTH_CENTER_GROUP]), IntegrationTests.HEALTH_CENTER_GROUP);
-		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
+		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
 		def rwanda = IntegrationTests.newLocation(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
 		def butaro = IntegrationTests.newDataLocation(IntegrationTests.j(["en":IntegrationTests.BUTARO]), IntegrationTests.BUTARO, rwanda, hc)
 		
@@ -106,7 +106,7 @@ class FilterTagLibTests extends GroovyPagesTestCase {
 	
 	def testLocationTypesLinkParamFilter() {
 		def period = IntegrationTests.newPeriod()
-		def country = IntegrationTests.newLocationLevel(IntegrationTests.COUNTRY, 1)
+		def country = IntegrationTests.newLocationLevel(IntegrationTests.NATIONAL, 1)
 		def rwanda = IntegrationTests.newLocation(IntegrationTests.j(["en":IntegrationTests.RWANDA]), IntegrationTests.RWANDA, country)
 		def program = IntegrationTests.newReportProgram(IntegrationTests.ROOT)
 		

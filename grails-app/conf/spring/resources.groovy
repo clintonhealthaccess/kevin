@@ -67,7 +67,7 @@ Set<String> dashboardSkipLevels = config.dashboard.skip.levels
 Set<String> dsrSkipLevels = config.dsr.skip.levels
 Set<String> fctSkipLevels = config.fct.skip.levels
 Set<String> costSkipLevels = config.cost.skip.levels
-Set<String> exportSkipLevels = config.export.skip.levels
+Set<String> surveyExportSkipLevels = config.survey.export.skip.levels
 String dsrGroupLevel= config.dsr.group.level
 
 beans = {
@@ -130,8 +130,9 @@ beans = {
 		locationService = ref("locationService")
 		surveyValueService = ref("surveyValueService")
 		languageService = ref("languageService")
+		enumService = ref("enumService")
 		sessionFactory = ref("sessionFactory")
-		skipLevels = exportSkipLevels
+		skipLevels = surveyExportSkipLevels
 	}
 	
 	entityExportService(EntityExportService){
