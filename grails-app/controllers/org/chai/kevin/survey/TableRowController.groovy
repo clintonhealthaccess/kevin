@@ -81,6 +81,7 @@ class TableRowController extends AbstractEntityController {
 		params.surveyElement.each { columnId ->
 			if (columnId != '_') {
 				def column = SurveyTableColumn.get(columnId)
+				def dataElement = RawDataElement.get(params.int('surveyElement['+columnId+'].dataElement.id'))
 				if (dataElement != null) {
 					def surveyElement = SurveyElement.get(params.int('surveyElement['+columnId+'].id'))
 					if (surveyElement == null) surveyElement = new SurveyElement();
