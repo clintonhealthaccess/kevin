@@ -78,7 +78,7 @@ public class Period {
 
 	@Override
 	public String toString() {
-		return "Period [startDate=" + startDate + ", endDate=" + endDate + "]";
+		return "Period [getId()=" + getId() + ", startDate=" + startDate + ", endDate=" + endDate + "]";
 	}
 	
 }

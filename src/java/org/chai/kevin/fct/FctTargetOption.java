@@ -63,4 +63,10 @@ public class FctTargetOption extends ReportEntity {
 	public void setFormat(String format) {
 		this.format = format;
 	}
+
+	@Override
+	public String toString() {
+		return "FctTargetOption [getId()=" + getId() + ", getCode()="
+				+ getCode() + "]";
+	}
 }

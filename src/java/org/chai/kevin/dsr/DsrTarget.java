@@ -113,4 +113,9 @@ public class DsrTarget extends AbstractReportTarget {
 		this.typeCodeString = Utils.unsplit(typeCodes);
 	}
 	
+	@Override
+	public String toString() {
+		return "DsrTarget [getId()=" + getId() + ", getCode()="
+				+ getCode() + "]";
+	}
 }

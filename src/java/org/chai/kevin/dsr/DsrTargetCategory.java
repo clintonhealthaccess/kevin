@@ -89,4 +89,10 @@ public class DsrTargetCategory extends ReportEntity {
 		target.setCategory(this);
 		targets.add(target);
 	}
+
+	@Override
+	public String toString() {
+		return "DsrCategory [getId()=" + getId() + ", getCode()="
+				+ getCode() + "]";
+	}
 }
