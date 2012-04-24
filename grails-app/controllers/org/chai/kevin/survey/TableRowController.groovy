@@ -88,9 +88,8 @@ class TableRowController extends AbstractEntityController {
 					if (log.isInfoEnabled()) log.info ("binding SurveyElement "+surveyElement)
 					surveyElement.setSurveyQuestion(entity.question)
 					surveyElement.dataElement = dataElement
-					if (log.isInfoEnabled()) log.info ("binding dataElement "+dataElement)
+					if (log.isInfoEnabled()) log.info ("binding RawDataElement "+dataElement)
 					entity.surveyElements[column] = surveyElement
-					
 				}
 			}
 		}
