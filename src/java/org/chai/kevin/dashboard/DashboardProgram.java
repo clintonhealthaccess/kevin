@@ -68,8 +68,7 @@ public class DashboardProgram extends DashboardEntity {
 	
 	@Override
 	public String toString() {
-		return "DashboardProgram [getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
+		return "DashboardProgram[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 	
 }

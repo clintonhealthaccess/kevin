@@ -67,17 +67,15 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 	public Class<NormalizedDataElementValue> getValueClass() {
 		return NormalizedDataElementValue.class;
 	}
-
-	@Override
-	public String toString() {
-		return "NormalizedDataElement [getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
-	}
 	
 	@Transient
 	public boolean needsRefresh() {
 		if (getCalculated() == null) return true;
 		return getCalculated().before(getTimestamp());
 	}
-	
+
+	@Override
+	public String toString() {
+		return "NormalizedDataElement[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
 }

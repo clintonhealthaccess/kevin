@@ -82,5 +82,6 @@ public abstract class DataElement<T extends DataValue> extends Data<T> {
 		});
 		return result;
 	}
-	
+
+	public abstract String toString();
 }

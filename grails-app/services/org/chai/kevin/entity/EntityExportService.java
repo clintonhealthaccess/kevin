@@ -5,8 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +27,7 @@ import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type.ValueVisitor;
+import org.chai.kevin.entity.export.EntityHeaderSorter;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
@@ -70,33 +73,34 @@ public class EntityExportService {
 		
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
-		try {			
+		try {
 			// headers
-			String[] csvHeaders = null;
-			List<String> entityHeaders = new ArrayList<String>();			
-			Class headerClass = clazz;
+			List<Field> entityFieldHeaders = new ArrayList<Field>();			
+			Class<?> headerClass = clazz;
 			while(headerClass != null && headerClass != Object.class){				
 				Field[] classFields = headerClass.getDeclaredFields();
-				entityHeaders.addAll(getEntityHeaders(classFields));
+				for(Field field : classFields){
+					entityFieldHeaders.add(field);
+				}
 				headerClass = headerClass.getSuperclass();
 			}			
+			Collections.sort(entityFieldHeaders, EntityHeaderSorter.BY_FIELD());			
+			List<String> entityHeaders = new ArrayList<String>();
+			for(Field field : entityFieldHeaders){
+				entityHeaders.add(field.getName());
+			}			
 			if(entityHeaders.toArray(new String[0]) != null)
-				writer.writeHeader(entityHeaders.toArray(new String[0]));
+				writer.writeHeader(entityHeaders.toArray(new String[0]));									
 			
 			//entities
 			List<Object> entities = getEntities(clazz);
 			for(Object entity : entities){
 				if (log.isDebugEnabled()) log.debug("getExportFile(entity="+entity+")");				
-				List<String> entityData = new ArrayList<String>();			
-				Class dataClass = clazz;
-				while(dataClass != null && dataClass != Object.class){
-					Field[] classFields = dataClass.getDeclaredFields();
-					entityData.addAll(getEntityData(entity, dataClass, classFields));
-					dataClass = dataClass.getSuperclass();
-				}				
+				List<String> entityData = getEntityData(entity, entityFieldHeaders);
 				if(entityData != null && !entityData.isEmpty())
 					writer.write(entityData);
 			}
+			
 		} catch (IOException ioe){
 			// TODO is this good ?
 			throw ioe;
@@ -105,25 +109,16 @@ public class EntityExportService {
 		}
 		
 		return csvFile;
-	}
+	}	
 	
-	public List<String> getEntityHeaders(Field[] fields){
-		List<String> headers = new ArrayList<String>();
-		for(Field field : fields){
-			String fieldName = field.getName();
-			headers.add(fieldName);
-		}
-		return headers;
-	}
-	
-	public List getEntities(Class clazz){
+	public List<Object> getEntities(Class clazz){
 		List<Object> entities = new ArrayList<Object>();
 		entities = (List<Object>) sessionFactory.getCurrentSession().createCriteria(clazz).list();
 		return entities;
 	}
 	
-	public List<String> getEntityData(Object entity, Class clazz, Field[] fields){
-		List<String> csvData = new ArrayList<String>();
+	public List<String> getEntityData(Object entity, List<Field> fields){
+		List<String> entityData = new ArrayList<String>();
 		for(Field field : fields){
 			Object value = null;			
 			try {
@@ -134,14 +129,13 @@ public class EntityExportService {
 				}
 				value = field.get(entity);
 				if(value != null){
-					Class valueClass = value.getClass();
 					if(value.toString() != null && !value.toString().isEmpty())
-						csvData.add(value.toString());
+						entityData.add(value.toString());
 					else
-						csvData.add("");
+						entityData.add("null");
 				}
 				else
-					csvData.add(null);
+					entityData.add("null");
 				if(isNotAccessible)
 					field.setAccessible(false);	
 			} catch (IllegalArgumentException e) {
@@ -150,6 +144,6 @@ public class EntityExportService {
 				e.printStackTrace();
 			}			
 		}
-		return csvData;
+		return entityData;
 	}
 }

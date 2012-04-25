@@ -38,4 +38,7 @@ public class PlanningSkipRule extends FormSkipRule {
 		super.evaluate(dataLocation, calculator);
 	}
 
+	public String toString(){
+		return "PlanningSkipRule[getId()=" + getId() + ", getExpression()='" + getExpression() + "']";
+	}
 }

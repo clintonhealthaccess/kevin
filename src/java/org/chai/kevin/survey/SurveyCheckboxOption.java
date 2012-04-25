@@ -146,5 +146,10 @@ public class SurveyCheckboxOption extends Orderable<Integer> {
 		copy.setQuestion((SurveyCheckboxQuestion)cloner.getQuestion(getQuestion()));
 		return copy;
 	}
+	
+	@Override
+	public String toString() {
+		return "SurveyCheckboxOption[getId()=" + getId() + ", getNames()=" + getNames() + "]";
+	}
 
 }

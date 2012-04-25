@@ -58,15 +58,8 @@ public class RawDataElement extends DataElement<RawDataElementValue> {
 		return RawDataElementValue.class;
 	}
 
-//	@Override
-//	public String toString() {
-//		return "RawDataElement [info=" + info + ", getId()=" + getId()
-//				+ ", getCode()=" + getCode() + "]";
-//	}
-
 	@Override
 	public String toString() {
-		return "RawDataElement [getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
+		return "RawDataElement[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 }

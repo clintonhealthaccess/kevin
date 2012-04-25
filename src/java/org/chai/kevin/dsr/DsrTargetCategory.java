@@ -92,7 +92,7 @@ public class DsrTargetCategory extends ReportEntity {
 
 	@Override
 	public String toString() {
-		return "DsrCategory [getId()=" + getId() + ", getCode()="
+		return "DsrTargetCategory[getId()=" + getId() + ", getCode()="
 				+ getCode() + "]";
 	}
 }

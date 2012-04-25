@@ -135,5 +135,10 @@ public class SurveyTableColumn extends Orderable<Integer> {
 		copy.setQuestion((SurveyTableQuestion)cloner.getQuestion(getQuestion()));
 		return copy;
 	}
+	
+	@Override
+	public String toString() {
+		return "SurveyTableColumn[getId()=" + getId() + ", getNames()=" + getNames() + "]";
+	}
 
 }

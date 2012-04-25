@@ -66,7 +66,6 @@ public class FctTargetOption extends ReportEntity {
 
 	@Override
 	public String toString() {
-		return "FctTargetOption [getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
+		return "FctTargetOption[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 }

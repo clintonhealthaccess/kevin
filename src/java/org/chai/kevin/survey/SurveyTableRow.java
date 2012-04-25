@@ -160,5 +160,10 @@ public class SurveyTableRow extends Orderable<Integer> {
 		}
     	return copy;
 	}
+    
+	@Override
+	public String toString() {
+		return "SurveyTableRow[getId()=" + getId() + ", getNames()=" + getNames() + "]";
+	}
 
 }

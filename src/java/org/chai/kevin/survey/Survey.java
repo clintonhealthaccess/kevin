@@ -198,12 +198,6 @@ public class Survey {
 
 	@Override
 	public String toString() {
-		return "Survey [getId()=" + getId() + "]";
-	}
-	
-//	@Override
-//	public String toString() {
-//		return "Survey [getId()=" + getId() + ", getCode()="
-//				+ getCode() + "]";
-//	}
+		return "Survey[getId()=" + getId() + "]";
+	}	
 }

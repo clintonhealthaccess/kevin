@@ -134,13 +134,7 @@ public class FormValidationRule {
 	
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
-	}
-
-	@Override
-	public String toString() {
-		return "FormValidationRule [formElement=" + formElement
-				+ ", expression=" + expression + "]";
-	}
+	}	
 	
 	@Transient
 	public void deepCopy(FormValidationRule copy, FormCloner cloner) {
@@ -195,4 +189,7 @@ public class FormValidationRule {
 		return true;
 	}
 	
+	public String toString() {
+		return "FormValidationRule[getId()=" + getId() + ", getExpression()='" + getExpression() + "']";
+		}
 }

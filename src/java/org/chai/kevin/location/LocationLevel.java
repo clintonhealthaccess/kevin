@@ -108,7 +108,7 @@ public class LocationLevel extends Orderable<Integer> {
 
 	@Override
 	public String toString() {
-		return "LocationLevel [getId()=" + getId() + ", getCode()=" + getCode() + "]";
+		return "LocationLevel[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 	
 }

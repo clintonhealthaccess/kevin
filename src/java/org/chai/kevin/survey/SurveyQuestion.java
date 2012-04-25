@@ -206,8 +206,6 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 	}
 
 	@Override
-	public String toString() {
-		return "SurveyQuestion [getId()=" + getId() + "]";
-	}
+	public abstract String toString();
 	
 }

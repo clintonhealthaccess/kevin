@@ -72,4 +72,8 @@ public class SurveySkipRule extends FormSkipRule {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "SurveySkipRule[getId()=" + getId() + ", getExpression()='" + getExpression() + "']";
+	}
 }

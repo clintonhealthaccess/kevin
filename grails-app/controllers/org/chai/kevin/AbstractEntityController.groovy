@@ -33,12 +33,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.entity.EntityExportService
-import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
-abstract class AbstractEntityController extends AbstractController {
-	
-	EntityExportService entityExportService;
+abstract class AbstractEntityController extends AbstractController {		
 	
 	def index = {
         redirect(action: "list", params: params)
@@ -124,21 +121,7 @@ abstract class AbstractEntityController extends AbstractController {
 			flash.message = message(code: 'default.saved.message', args: [message(code: getLabel(), default: 'entity'), params.id])
 			redirect(url: getTargetURI())
 		}
-	}
-	
-	def export = {
-		def clazz = exportEntity();
-		String filename = entityExportService.getExportFilename(clazz);
-		File csvFile = entityExportService.getExportFile(filename, clazz);
-		def zipFile = Utils.getZipFile(csvFile, filename)
-			
-		if(zipFile.exists()){
-			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
-			response.setContentType("application/zip");
-			response.setHeader("Content-length", zipFile.length().toString());
-			response.outputStream << zipFile.newInputStream()
-		}
-	}
+	}	
 	
 	def validateEntity(def entity) {
 		return entity.validate()
@@ -185,9 +168,5 @@ abstract class AbstractEntityController extends AbstractController {
 	protected abstract def getLabel();
 	
 	protected abstract def exportEntity();
-	
-	protected def exportsData(){
-		return true;
-	}
 	
 }

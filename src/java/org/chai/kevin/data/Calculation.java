@@ -111,9 +111,6 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	}
 	
 	@Override
-	public String toString() {
-		return "Calculation [getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
-	}
+	public abstract String toString();
 	
 }

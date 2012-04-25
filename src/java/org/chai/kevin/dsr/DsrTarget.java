@@ -115,7 +115,6 @@ public class DsrTarget extends AbstractReportTarget {
 	
 	@Override
 	public String toString() {
-		return "DsrTarget [getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
+		return "DsrTarget[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 }

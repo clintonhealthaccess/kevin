@@ -216,6 +216,6 @@ public class SurveySection extends Orderable<Integer> {
 
 	@Override
 	public String toString() {
-		return "SurveySection [getId()=" + getId() + "]";
+		return "SurveySection[getId()=" + getId() + "]";
 	}
 }

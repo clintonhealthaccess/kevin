@@ -153,7 +153,7 @@ public class EnumOption extends Orderable<Ordering> {
 
 	@Override
 	public String toString() {
-		return "EnumOption [id=" + id + ", value=" + value + "]";
+		return "EnumOption[getId()=" + getId() + ", getValue()=" + getValue() + "]";
 	}
 	
 }

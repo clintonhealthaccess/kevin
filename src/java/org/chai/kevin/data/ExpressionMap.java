@@ -13,7 +13,7 @@ public class ExpressionMap extends JSONMap<Map<String, String>> {
 	
 	@Override
 	public String toString() {
-		return "ExpressionMap [getJsonText()=" + getJsonText() + "]";
+		return "ExpressionMap[getJsonMap()='" + getJsonText() + "']";
 	}
 
 }

@@ -58,8 +58,7 @@ public class ReportProgram extends ReportEntity {
 	
 	@Override
 	public String toString() {
-		return "ReportProgram [getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
+		return "ReportProgram[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 	
 }
