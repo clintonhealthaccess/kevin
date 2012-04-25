@@ -20,6 +20,11 @@ public class EntityHeaderSorter {
 						&& field2.getName().toLowerCase() != "id"
 						&& field2.getName().toLowerCase() != "code")
 					return -1;
+				if (field1.getName().toLowerCase() == "order"
+						&& field2.getName().toLowerCase() != "id"
+						&& field2.getName().toLowerCase() != "code"
+						&& field2.getName().toLowerCase() != "names")
+					return -1;
 				
 				if (field2.getName().toLowerCase() == "id")
 					return 1;
@@ -30,6 +35,11 @@ public class EntityHeaderSorter {
 						&& field1.getName().toLowerCase() != "id"
 						&& field1.getName().toLowerCase() != "code")
 					return 1;
+				if (field2.getName().toLowerCase() == "order"
+						&& field1.getName().toLowerCase() != "id"
+						&& field1.getName().toLowerCase() != "code"
+						&& field1.getName().toLowerCase() != "names")
+					return -1;
 
 				else
 					return 0;
