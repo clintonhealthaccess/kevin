@@ -374,7 +374,6 @@ public class ImporterService {
 		this.locationService = locationService;
 	}
 
-
 	public void setValueService(ValueService valueService) {
 		this.valueService = valueService;
 	}
@@ -382,8 +381,6 @@ public class ImporterService {
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;
 	}
-
-
 
 	private static List<String> getLineNumberString(Integer lineNumber) {
 		List<String> result = new ArrayList<String>();

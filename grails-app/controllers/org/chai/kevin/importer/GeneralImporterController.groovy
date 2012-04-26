@@ -39,7 +39,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 class GeneralImporterController extends AbstractController {
 	ImporterService importerService;
 	final String IMPORT_FORM = "generalImport";
-	final String IMPORT_OUTPUT = "importOutput";
+	final String IMPORT_OUTPUT = "importOutput";	
 	
 	def importer = {
 		this.getModel(null,null,IMPORT_FORM);

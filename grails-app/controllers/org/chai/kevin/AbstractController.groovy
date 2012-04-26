@@ -108,10 +108,9 @@ public abstract class AbstractController {
 	def adaptParamsForList() {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
-	}
-	
-	def export = {
-		def clazz = exportEntity();
+	}				
+
+	def exportEntities(def clazz){
 		String filename = entityExportService.getExportFilename(clazz);
 		File csvFile = entityExportService.getExportFile(filename, clazz);
 		def zipFile = Utils.getZipFile(csvFile, filename)
@@ -123,5 +122,4 @@ public abstract class AbstractController {
 			response.outputStream << zipFile.newInputStream()
 		}
 	}
-
 }

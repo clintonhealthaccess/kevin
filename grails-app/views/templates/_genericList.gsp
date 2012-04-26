@@ -10,13 +10,19 @@
 		  				</a>
 		  				&nbsp;
 		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'export')+(request.queryString==null?'':'&'+request.queryString)}">
-		  					<g:message code="default.export.label" args="[entityName]"/>
+		  					<g:message code="default.export.label" />
+		  				</a>/
+		  				<a href="${createLinkWithTargetURI(controller: entityImporter, action:'importer', params:[entityClass: exportEntity()])+(request.queryString==null?'':'&'+request.queryString)}">
+		  					<g:message code="default.import.label" />
 		  				</a>
 		  			</g:if>
 		  			<g:else>
 		  				<g:render template="${addTemplate}"/>
 		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'export')+(request.queryString==null?'':'&'+request.queryString)}">
-		  					<g:message code="default.export.label" args="[entityName]"/>
+		  					<g:message code="default.export.label" />
+		  				</a>/
+		  				<a href="${createLinkWithTargetURI(controller: entityImporter, action:'importer', params:[entityClass: exportEntity()])+(request.queryString==null?'':'&'+request.queryString)}">
+		  					<g:message code="default.import.label" />
 		  				</a>
 		  			</g:else>
 		     	</span>

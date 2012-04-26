@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.entity.EntityExportService
+import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 abstract class AbstractEntityController extends AbstractController {		
@@ -122,6 +123,15 @@ abstract class AbstractEntityController extends AbstractController {
 			redirect(url: getTargetURI())
 		}
 	}	
+	
+	def export = {
+		def clazz = exportEntity();
+		exportEntities(clazz);		
+	}
+	
+//	def importEntity = {
+//		def clazz = exportEntity();		
+//	}
 	
 	def validateEntity(def entity) {
 		return entity.validate()

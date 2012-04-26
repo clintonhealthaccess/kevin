@@ -28,6 +28,7 @@
 package org.chai.kevin.data
 
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
