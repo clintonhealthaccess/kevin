@@ -38,7 +38,7 @@ import org.chai.kevin.value.ValueService;
 public class FormElement {
 
 	protected Long id;
-	private RawDataElement rawDataElement;
+	private RawDataElement dataElement;
 	private List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();
 	private Map<String, Translation> headers = new HashMap<String, Translation>();
 
@@ -59,11 +59,11 @@ public class FormElement {
 	@ManyToOne(targetEntity = RawDataElement.class, optional = false)
 	@JoinColumn(nullable = false)
 	public RawDataElement getDataElement() {
-		return rawDataElement;
+		return dataElement;
 	}
 
-	public void setDataElement(RawDataElement rawDataElement) {
-		this.rawDataElement = rawDataElement;
+	public void setDataElement(RawDataElement dataElement) {
+		this.dataElement = dataElement;
 	}
 
 	@OneToMany(mappedBy = "formElement", targetEntity = FormValidationRule.class, orphanRemoval=true)

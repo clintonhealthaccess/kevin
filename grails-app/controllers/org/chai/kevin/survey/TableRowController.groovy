@@ -89,9 +89,12 @@ class TableRowController extends AbstractEntityController {
 				if (dataElement != null) {
 					def surveyElement = SurveyElement.get(params.int('surveyElement['+columnId+'].id'))
 					if (surveyElement == null) surveyElement = new SurveyElement();
+					if (log.isInfoEnabled()) log.info ("binding SurveyElement "+surveyElement)
 					surveyElement.setSurveyQuestion(entity.question)
-					surveyElement.rawDataElement = dataElement
+					surveyElement.dataElement = dataElement
+					if (log.isInfoEnabled()) log.info ("binding dataElement "+dataElement)
 					entity.surveyElements[column] = surveyElement
+					
 				}
 			}
 		}

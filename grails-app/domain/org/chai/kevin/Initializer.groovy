@@ -1130,7 +1130,7 @@ class Initializer {
 		).save(failOnError: true)
 		
 		def formElement = new FormElement(
-				rawDataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
+				dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
 				headers: [
 					"[_].basic": j(["en":"Basic Information"]),
 					"[_].basic.description": j(["en":"Description"]),
