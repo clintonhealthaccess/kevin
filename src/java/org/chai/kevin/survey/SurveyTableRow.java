@@ -162,11 +162,6 @@ public class SurveyTableRow extends Orderable<Integer> {
 	}
     
 	@Override
-	public String toString() {
-		return "SurveyTableRow[getId()=" + getId() + ", getNames()=" + getNames() + "]";
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -199,11 +194,7 @@ public class SurveyTableRow extends Orderable<Integer> {
 
 	@Override
 	public String toString() {
-		return "SurveyTableRow [id=" + id + ", order=" + order
-				+ ", typeCodeString=" + typeCodeString + ", question="
-				+ question + ", surveyElements=" + surveyElements + ", names="
-				+ names + "]";
-	}
-    
+		return "SurveyTableRow[getId()=" + getId() + ", getNames()=" + getNames() + "]";
+	}    
 
 }

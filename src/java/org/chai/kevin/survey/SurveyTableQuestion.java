@@ -232,7 +232,7 @@ public class SurveyTableQuestion extends SurveyQuestion {
 
 	@Override
 	public String toString() {
-		return "SurveyTableQuestion [getId()=" + getId() + ", getNames()=" + getNames() + "]";
+		return "SurveyTableQuestion[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}
 
 

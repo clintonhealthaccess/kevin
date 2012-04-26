@@ -81,7 +81,7 @@ public class DataLocationType {
 
 	@Override
 	public String toString() {
-		return "DataLocationType [getId()=" + getId() + ", getCode()=" + getCode() + "]";
+		return "DataLocationType[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 	
 }
