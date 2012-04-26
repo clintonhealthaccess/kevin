@@ -5,40 +5,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.LocationService;
-import org.chai.kevin.LocationSorter;
-import org.chai.kevin.Translation;
-import org.chai.kevin.data.Data;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.data.NormalizedDataElement;
-import org.chai.kevin.data.RawDataElement;
-import org.chai.kevin.data.Type;
-import org.chai.kevin.data.Type.ValueType;
-import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.entity.export.EntityHeaderSorter;
-import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.location.Location;
-import org.chai.kevin.location.LocationLevel;
-import org.chai.kevin.reports.ReportEntity;
-import org.chai.kevin.survey.export.SurveyExportDataPoint;
-import org.chai.kevin.util.Utils;
-import org.chai.kevin.value.Value;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
@@ -73,7 +47,8 @@ public class EntityExportService {
 		
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
-		try {
+		try {			
+			
 			// headers
 			List<Field> entityFieldHeaders = new ArrayList<Field>();			
 			Class<?> headerClass = clazz;

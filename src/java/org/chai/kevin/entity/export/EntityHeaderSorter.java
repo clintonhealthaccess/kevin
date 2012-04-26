@@ -39,7 +39,7 @@ public class EntityHeaderSorter {
 						&& field1.getName().toLowerCase() != "id"
 						&& field1.getName().toLowerCase() != "code"
 						&& field1.getName().toLowerCase() != "names")
-					return -1;
+					return 1;
 
 				else
 					return 0;

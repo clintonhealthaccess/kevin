@@ -12,7 +12,6 @@ import org.chai.kevin.util.Utils;
 class SurveyExportServiceSpec extends SurveyIntegrationTests {
 
 	def surveyExportService
-//	def surveyValueService
 		
 	def "test for export section"(){
 		setup:

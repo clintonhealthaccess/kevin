@@ -126,7 +126,4 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return option
 	}
 
-//
-//	
-//	def static newCheckboxOption(def question)
 }
