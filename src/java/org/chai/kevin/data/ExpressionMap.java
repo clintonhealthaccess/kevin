@@ -10,5 +10,10 @@ import org.chai.kevin.json.JSONMap;
 public class ExpressionMap extends JSONMap<Map<String, String>> {
 
 	private static final long serialVersionUID = 6260432376582051031L;
+	
+	@Override
+	public String toString() {
+		return "ExpressionMap[getJsonMap()='" + getJsonText() + "']";
+	}
 
 }

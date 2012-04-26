@@ -60,6 +60,10 @@ class MapsTargetController extends AbstractEntityController {
 		[ target: entity, calculations: entity.calculation!=null?[entity.calculation]:[], types: DataLocationType.list([cache: true])]
 	}
 	
+	def exportEntity(){
+		return MapsTarget.class;
+	}
+	
 	def bindParams(def entity) {
 		bindData(entity, params, [exclude:'calculation.id'])
 		if (params.int('calculation.id')) entity.calculation = dataService.getData(params.int('calculation.id'), Calculation.class)

@@ -161,5 +161,7 @@ public class PlanningCost {
 		return true;
 	}
 	
-	
+	public String toString(){
+		return "PlanningCost[getId()=" + getId() + ", getNames()=" + getNames() + ", getType()=" + getType() + "]";
+	}
 }

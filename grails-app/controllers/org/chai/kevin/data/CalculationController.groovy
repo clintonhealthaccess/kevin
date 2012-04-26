@@ -47,6 +47,10 @@ class CalculationController extends AbstractController {
 		return "calculation.label"
 	}
 	
+	def exportEntity(){
+		return Calculation.class;
+	}
+	
 	def list = {
 		adaptParamsForList()
 		List<Calculation<?>> calculations = dataService.list(Calculation.class, params)

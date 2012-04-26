@@ -74,6 +74,10 @@ class TableQuestionController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return SurveyTableQuestion.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary

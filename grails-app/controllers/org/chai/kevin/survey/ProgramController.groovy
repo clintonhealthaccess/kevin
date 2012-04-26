@@ -63,6 +63,10 @@ class ProgramController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return SurveyProgram.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 		

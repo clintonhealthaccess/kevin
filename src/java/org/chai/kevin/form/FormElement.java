@@ -248,4 +248,7 @@ public class FormElement {
 		return true;
 	}
 
+	public String toString(){
+		return "FormElement[getId()=" + getId() + ", getDataElement()=" + getDataElement() + "]";
+	}
 }

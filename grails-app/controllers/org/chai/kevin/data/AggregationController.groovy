@@ -14,4 +14,7 @@ class AggregationController extends AbstractCalculationController {
 		return 'aggregation.label'
 	}
 	
+	def exportEntity(){
+		return Aggregation.class;
+	}
 }

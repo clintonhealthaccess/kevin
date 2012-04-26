@@ -5,6 +5,7 @@ import org.chai.kevin.RefreshValueService
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.entity.EntityExportService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LocationService
@@ -132,6 +133,11 @@ beans = {
 		enumService = ref("enumService")
 		sessionFactory = ref("sessionFactory")
 		skipLevels = surveyExportSkipLevels
+	}
+	
+	entityExportService(EntityExportService){
+		languageService = ref("languageService")
+		sessionFactory = ref("sessionFactory")
 	}
 	
 	chartService(ChartService){

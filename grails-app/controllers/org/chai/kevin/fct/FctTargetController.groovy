@@ -67,7 +67,19 @@ class FctTargetController extends AbstractEntityController {
 			typeCodes: Utils.split(entity.typeCodeString)
 		]
 	}
+
+	def exportEntity(){
+		return FctTarget.class;
+	}
 	
+	def validateEntity(def entity) {
+		return entity.validate()
+	}
+
+	def saveEntity(def entity) {
+		entity.save();
+	}
+
 	def deleteEntity(def entity) {
 		if(entity.targetOptions.size() == 0){
 			if (log.isInfoEnabled()) log.info("deleting target: "+entity)			

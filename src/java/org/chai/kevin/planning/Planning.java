@@ -96,4 +96,7 @@ public class Planning {
 		this.names = names;
 	}
 	
+	public String toString(){
+		return "Planning[getId()=" + getId() + ", getNames()=" + getNames() + "]";
+	}
 }

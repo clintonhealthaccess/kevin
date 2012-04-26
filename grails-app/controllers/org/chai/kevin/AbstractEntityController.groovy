@@ -32,9 +32,10 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.entity.EntityExportService
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
-abstract class AbstractEntityController extends AbstractController {
+abstract class AbstractEntityController extends AbstractController {		
 	
 	def index = {
         redirect(action: "list", params: params)
@@ -96,7 +97,7 @@ abstract class AbstractEntityController extends AbstractController {
 //			log.warn("clicked twice");
 //		}
 	}
-	
+			
 	def saveWithoutTokenCheck = {
 		if (log.isDebugEnabled()) log.debug ('saving entity with params:'+params)
 		
@@ -120,7 +121,7 @@ abstract class AbstractEntityController extends AbstractController {
 			flash.message = message(code: 'default.saved.message', args: [message(code: getLabel(), default: 'entity'), params.id])
 			redirect(url: getTargetURI())
 		}
-	}
+	}	
 	
 	def validateEntity(def entity) {
 		return entity.validate()
@@ -133,7 +134,6 @@ abstract class AbstractEntityController extends AbstractController {
 	def deleteEntity(def entity) {
 		entity.delete()
 	}
-	
 	
 	/**
 	 * This binds a list of i18n fields passed in the params to the map <String, Translation>
@@ -166,5 +166,7 @@ abstract class AbstractEntityController extends AbstractController {
 	protected abstract def getTemplate();
 	
 	protected abstract def getLabel();
+	
+	protected abstract def exportEntity();
 	
 }

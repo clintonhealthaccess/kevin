@@ -18,6 +18,10 @@ class LocationController extends AbstractEntityController {
 		[location: entity, locations: locations, levels: LocationLevel.list([cache: true])]
 	}
 
+	def exportEntity(){
+		return Location.class;
+	}
+	
 	def getEntity(def id) {
 		return Location.get(id);
 	}

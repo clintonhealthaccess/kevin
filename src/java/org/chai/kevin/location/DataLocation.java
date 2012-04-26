@@ -70,15 +70,13 @@ public class DataLocation extends CalculationLocation {
 	}
 
 	@Override
-	public String toString() {
-		return "DataLocation [type=" + type + ", getNames()="
-				+ getNames() + ", getCode()=" + getCode() + "]";
-	}
-
-	@Override
 	@Transient
 	public Location getParent() {
 		return location;
 	}
 
+	@Override
+	public String toString() {
+		return "DataLocation[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
 }

@@ -196,4 +196,8 @@ public class Survey {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "Survey[getId()=" + getId() + "]";
+	}	
 }

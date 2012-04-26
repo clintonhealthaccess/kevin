@@ -142,4 +142,5 @@ public abstract class CalculationLocation {
 		return true;
 	}
 	
+	public abstract String toString();
 }

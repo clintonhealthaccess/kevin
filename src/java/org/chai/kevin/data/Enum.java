@@ -170,4 +170,8 @@ public class Enum {
 		return false;
 	}
 	
+	@Override
+	public String toString() {
+		return "Enum[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
 }

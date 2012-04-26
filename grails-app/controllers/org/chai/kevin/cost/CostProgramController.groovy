@@ -55,6 +55,10 @@ class CostProgramController extends AbstractEntityController {
 		[ program: entity ]
 	}
 	
+	def exportEntity(){
+		return ReportProgram.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 
@@ -63,6 +67,4 @@ class CostProgramController extends AbstractEntityController {
 		if (params.names!=null) entity.names = params.names
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
-	
-	
 }

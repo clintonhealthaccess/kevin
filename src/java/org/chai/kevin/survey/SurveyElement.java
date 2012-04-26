@@ -67,11 +67,6 @@ public class SurveyElement extends FormElement {
 		super.deepCopy(copy, cloner);
 		((SurveyElement)copy).setSurveyQuestion(((SurveyCloner)cloner).getQuestion(getSurveyQuestion()));
 	}
-
-	@Override
-	public String toString() {
-		return "SurveyElement [id=" + id + "]";
-	}
 	
 	@Transient
 	@Override
@@ -128,4 +123,8 @@ public class SurveyElement extends FormElement {
 		
 	}
 
+	@Override
+	public String toString() {
+		return "SurveyElement[getId()=" + getId() + ", getDataElement()=" + getDataElement() + "]";
+	}
 }

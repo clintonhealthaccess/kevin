@@ -16,6 +16,10 @@ class LocationLevelController extends AbstractEntityController {
 		[locationLevel: entity]
 	}
 
+	def exportEntity(){
+		return LocationLevel.class;
+	}
+	
 	def getEntity(def id) {
 		return LocationLevel.get(id);
 	}

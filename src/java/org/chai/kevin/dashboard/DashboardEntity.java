@@ -96,7 +96,7 @@ public abstract class DashboardEntity extends ReportEntity {
 	
 	@Override
 	public String toString() {
-		return "DashboardEntity [code=" + code + "]";
+		return "DashboardEntity[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 
 }

@@ -56,4 +56,9 @@ public class ReportProgram extends ReportEntity {
 		child.setParent(this);
 	}
 	
+	@Override
+	public String toString() {
+		return "ReportProgram[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
+	
 }

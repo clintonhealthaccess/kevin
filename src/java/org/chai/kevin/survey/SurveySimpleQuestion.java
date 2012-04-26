@@ -121,7 +121,7 @@ public class SurveySimpleQuestion extends SurveyQuestion {
 
 	@Override
 	public String toString() {
-		return "SurveySimpleQuestion [getNames()=" + getNames() + "]";
+		return "SurveySimpleQuestion[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}
 
 }

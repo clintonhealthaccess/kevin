@@ -100,7 +100,7 @@ public class FctTarget extends AbstractReportTarget {
 
 	@Override
 	public String toString() {
-		return "FctTarget [code=" + code + "]";
+		return "FctTarget[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 
 }

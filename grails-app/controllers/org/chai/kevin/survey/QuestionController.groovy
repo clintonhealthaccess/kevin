@@ -60,6 +60,10 @@ class QuestionController extends AbstractController {
 		])
 	}
 	
+	def exportEntity(){
+		return SurveyQuestion.class;
+	}
+	
 	def list = {
 		adaptParamsForList()
 		

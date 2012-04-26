@@ -205,5 +205,7 @@ public abstract class SurveyQuestion extends Orderable<Integer> {
 		copy.setSection(surveyCloner.getSection(getSection()));
 	}
 
-
+	@Override
+	public abstract String toString();
+	
 }

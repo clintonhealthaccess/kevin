@@ -60,6 +60,10 @@ class DsrProgramController extends AbstractEntityController{
 		[ program: entity ]
 	}
 	
+	def exportEntity(){
+		return ReportProgram.class;
+	}
+	
 	@CacheFlush("dsrCache")
 	def edit = {
 		super.edit()

@@ -64,6 +64,11 @@ public class DashboardProgram extends DashboardEntity {
 	@Transient
 	public boolean isTarget() {
 		return false;
-	}	
+	}
+	
+	@Override
+	public String toString() {
+		return "DashboardProgram[getId()=" + getId() + ", getCode()=" + getCode() + "]";
+	}
 	
 }

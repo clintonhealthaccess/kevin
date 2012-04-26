@@ -70,6 +70,10 @@ class PlanningCostController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return PlanningCost.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 
