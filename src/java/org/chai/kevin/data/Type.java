@@ -683,7 +683,8 @@ public class Type extends JSONValue {
 						
 						Map<String, Value> mapValues = currentValue.getMapValue();
 						for (Entry<String, Value> entry : mapValues.entrySet()) {
-							changed = changed | typeMap.get(entry.getKey()).transformValue(entry.getValue(), currentPrefix+"."+entry.getKey(), predicate);
+							Type type = typeMap.get(entry.getKey());
+							if (type != null) changed = changed | typeMap.get(entry.getKey()).transformValue(entry.getValue(), currentPrefix+"."+entry.getKey(), predicate);
 						}
 						
 						if (changed) {
