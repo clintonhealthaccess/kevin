@@ -413,7 +413,7 @@ public class SurveyPageService {
 		
 		// third we add the affected values in the lists
 		for (FormEnteredValue formEnteredValue : affectedEnteredValues) {
-			affectedElements.put((SurveyElement)formEnteredValue.getFormElement(), formEnteredValue);
+			affectedElements.put((SurveyElement)formElementService.getFormElement(formEnteredValue.getFormElement().getId(), SurveyElement.class), formEnteredValue);
 		}
 		Map<SurveyQuestion, SurveyEnteredQuestion> affectedQuestions = new HashMap<SurveyQuestion, SurveyEnteredQuestion>();
 		for (SurveyEnteredQuestion surveyEnteredQuestion : affectedEnteredQuestions) {
