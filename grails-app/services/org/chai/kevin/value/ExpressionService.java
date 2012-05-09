@@ -174,7 +174,7 @@ public class ExpressionService {
 
 	// TODO do this for validation rules
 	@Transactional(readOnly=true)
-	public <T extends Data<?>> boolean expressionIsValid(String formula, Class<T> allowedClazz) {
+	public <T extends Data<?>> boolean expressionIsValid(String formula, Class<T> allowedClazz) throws IllegalArgumentException {
 		Map<String, T> variables = getDataInExpression(formula, allowedClazz);
 		
 		if (hasNullValues(variables.values())) return false;
@@ -185,11 +185,7 @@ public class ExpressionService {
 			jaqlVariables.put(variable.getKey(), type.getJaqlValue(type.getPlaceHolderValue()));
 		}
 		
-		try {
-			jaqlService.getJsonValue(formula, jaqlVariables);	
-		} catch (IllegalArgumentException e) {
-			return false;
-		}
+		jaqlService.getJsonValue(formula, jaqlVariables);
 		return true;
     }
 	

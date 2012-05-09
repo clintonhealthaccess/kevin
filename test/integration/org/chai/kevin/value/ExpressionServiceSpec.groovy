@@ -507,15 +507,17 @@ public class ExpressionServiceSpec extends IntegrationTests {
 				
 		when:
 		formula = "(1"
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		then:
-		!expressionService.expressionIsValid(formula, Data.class)
+		thrown IllegalArgumentException
 		
 		when:
 		formula = "if((10,1,0)"
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		then:
-		!expressionService.expressionIsValid(formula, Data.class)
+		thrown IllegalArgumentException
 		
 		when:
 		formula = "123"
