@@ -16,6 +16,16 @@ class ExpressionController {
 	
 	def doTest = { ExpressionTestCommand cmd ->
 		if (cmd.hasErrors()) {
+			def exception = null
+
+			if (cmd.errors.hasFieldErrors("expression")) {
+				try {
+					expressionService.expressionIsValid(cmd.expression, DataElement.class)
+				} catch (IllegalArgumentException e) {
+					flash.message = message(code:'expression.invalid.exception', args:[e.getCause().getMessage()]);
+				}
+			}
+			
 			render (view: 'builder', model: [cmd: cmd, periods: Period.list([cache: true])])
 		}
 		else {

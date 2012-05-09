@@ -6,7 +6,7 @@
         <meta name="layout" content="main" />
         <title><g:message code="expression.test.page.title" /></title>
         
-        <r:require module="form"/>
+        <r:require modules="form,error"/>
     </head>
     <body>
     
