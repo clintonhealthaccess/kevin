@@ -953,6 +953,27 @@ public class TypeUnitSpec extends UnitSpec {
 		
 	}
 	
+	def "test transform with type mismatch"() {
+		setup:
+		def predicate = null
+		def type = null
+		def value = null
+		
+		when:
+		type = Type.TYPE_MAP("test": Type.TYPE_NUMBER())
+		value = Value.VALUE_MAP(["test1": Value.VALUE_NUMBER(2)])
+		predicate = new ValuePredicate() {
+			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+				currentValue.setAttribute("attribute", "test");
+			}
+		}
+		type.transformValue(value, predicate);
+		
+		then:
+		type.getValue(value, "").getAttribute("attribute") == "test"
+		
+	}
+	
 	def "test setjsonvalue"() {
 		when:
 		def value = new Value("{\"value\":10}")

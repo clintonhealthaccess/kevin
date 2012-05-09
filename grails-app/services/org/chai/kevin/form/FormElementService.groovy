@@ -84,8 +84,8 @@ class FormElementService {
 		return criteria
 	}
 	
-	FormElement getFormElement(Long id) {
-		return sessionFactory.currentSession.get(FormElement.class, id)
+	FormElement getFormElement(Long id, Class<?> clazz = FormElement.class) {
+		return sessionFactory.currentSession.get(clazz, id)
 	}
 	
 	void save(FormEnteredValue formEnteredValue) {
