@@ -103,10 +103,6 @@ DataEntry.prototype.surveyValueChanged = function(element, inputs, callback) {
 	$.each(inputs, function(i, input) {
 		data += '&'+$(input).serialize();
 	})
-	// we send the list indexes
-	$(element).parents('.element-list').find('.js_list-input-indexes').each(function(i, input) {
-		data += '&'+$(input).serialize();
-	});
 	// we send the fields that should always be sent
 	this.element.find('.js_always-send').each(function(i, input) {
 		data += '&'+$(input).serialize();
