@@ -14,6 +14,8 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.NormalizedDataElementValue;
 
 @Entity(name="NormalizedDataElement")
@@ -78,4 +80,5 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 	public String toString() {
 		return "NormalizedDataElement[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
+
 }

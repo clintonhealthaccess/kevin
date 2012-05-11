@@ -1,6 +1,7 @@
 package org.chai.kevin.data;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -16,8 +17,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.ExpressionService;
+import org.chai.kevin.value.ValueService;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 

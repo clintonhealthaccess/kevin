@@ -91,10 +91,19 @@ class NormalizedDataElementSpec extends IntegrationTests {
 		]
 	}
 	
-	def "expressions in map only contain data elements"() {
+	def "expressions in map only can contain normalized data elements"() {
 		when:
 		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([:]))
 		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e(["1":["DH":"\$"+dataElement.id]])).save(failOnError: true)
+		
+		then:
+		NormalizedDataElement.count() == 2
+	}
+	
+	def "expressions in map cannot contain calculation"() {
+		when:
+		def calculation = newSum("1", CODE(2))
+		new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e(["1":["DH":"\$"+calculation.id]])).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

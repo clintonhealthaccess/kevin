@@ -105,7 +105,6 @@ beans = {
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
 		dataService = ref("dataService")
-		grailsApplication = ref("grailsApplication")
 	}
 	
 	formValidationService(FormValidationService){

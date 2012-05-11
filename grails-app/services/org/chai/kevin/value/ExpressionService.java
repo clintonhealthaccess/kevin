@@ -114,7 +114,7 @@ public class ExpressionService {
 		
 		String expression = normalizedDataElement.getExpression(period, dataLocation.getType().getCode());
 		
-		StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, dataLocation, RawDataElement.class);
+		StatusValuePair statusValuePair = getExpressionStatusValuePair(expression, normalizedDataElement.getType(), period, dataLocation, DataElement.class);
 		NormalizedDataElementValue expressionValue = new NormalizedDataElementValue(statusValuePair.value, statusValuePair.status, dataLocation, normalizedDataElement, period);
 		
 		if (log.isDebugEnabled()) log.debug("getValue()="+expressionValue);
