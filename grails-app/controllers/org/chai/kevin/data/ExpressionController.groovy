@@ -9,6 +9,7 @@ import org.chai.kevin.location.DataLocationType;
 class ExpressionController {
 
 	def expressionService
+	def sessionFactory
 	
 	def test = {
 		render (view: 'builder', model: [periods: Period.list([cache: true])])
@@ -51,6 +52,7 @@ class ExpressionController {
 				def valueList = []
 				for (def location : locations) {
 					valueList.add(expressionService.calculateValue(dataElement, location, period))
+					sessionFactory.currentSession.clear()
 				}
 				valueMap.put(period, valueList)
 			}

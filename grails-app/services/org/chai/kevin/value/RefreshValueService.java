@@ -51,7 +51,6 @@ public class RefreshValueService {
 			Period period = (Period)row[1];
 			NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, dataLocation, period);				
 			valueService.save(value);
-			sessionFactory.getCurrentSession().evict(value);
 		}
 		normalizedDataElement.setCalculated(new Date());
 		dataService.save(normalizedDataElement);
@@ -94,14 +93,13 @@ public class RefreshValueService {
 				List<NormalizedDataElement> dependencies = getOrderedDependencies(normalizedDataElement);
 				for (NormalizedDataElement dependentElement : dependencies) {
 					refreshNormalizedDataElementOnly(dependentElement);
-					sessionFactory.getCurrentSession().evict(dependentElement);
 					
 					// we remove the element from the original list since it already has been updated
 					normalizedDataElements.remove(dependentElement);
 				}
+				sessionFactory.getCurrentSession().clear();
 			}
 			normalizedDataElements.remove(normalizedDataElement);
-			sessionFactory.getCurrentSession().evict(normalizedDataElement);
 		}
 	}
 	
@@ -129,7 +127,7 @@ public class RefreshValueService {
 		for (Calculation<?> calculation : calculations) {
 			if (calculation.getCalculated() == null || calculation.needsRefresh()) {
 				refreshCalculationInTransaction(calculation);
-				sessionFactory.getCurrentSession().evict(calculation);
+				sessionFactory.getCurrentSession().clear();
 			}
 		}
 	}
@@ -139,7 +137,6 @@ public class RefreshValueService {
 		valueService.deleteValues(calculation, location, period);
 		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, location, period)) {
 			valueService.save(partialValue);
-			sessionFactory.getCurrentSession().evict(partialValue);
 		}
 	}
 	
