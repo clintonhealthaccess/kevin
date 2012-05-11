@@ -311,7 +311,8 @@ class Initializer {
 						"area": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 						"instances": Type.TYPE_NUMBER(),
 						"responsible": Type.TYPE_STRING(),
-						"new_structure": Type.TYPE_BOOL()
+						"new_structure": Type.TYPE_BOOL(),
+						"test": Type.TYPE_LIST(Type.TYPE_NUMBER()),
 					]),
 					"staffing": Type.TYPE_MAP([
 						"nurse": Type.TYPE_MAP([
