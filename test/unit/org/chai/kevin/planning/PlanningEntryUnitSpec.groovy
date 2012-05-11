@@ -154,5 +154,57 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		
 		then:
 		planningEntry.fixedHeaderValue.equals(null)
+		
+		when:
+		planningType = Mock(PlanningType)
+		planningType.getFixedHeader() >> '[_].key3'
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.fixedHeaderValue.equals(null)
+	}
+	
+	def "get discriminator value"() {
+		setup:
+		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]);
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
+		
+		when:
+		def planningType = Mock(PlanningType)
+		planningType.getDiscriminator() >> '[_].key1'
+		def planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.discriminatorValue.equals(Value.VALUE_STRING("value"))
+		
+		when:
+		planningType = Mock(PlanningType)
+		planningType.getDiscriminator() >> '[_].key2'
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.discriminatorValue.equals(null)
+		
+		when:
+		planningType = Mock(PlanningType)
+		planningType.getDiscriminator() >> '[_].key3'
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.discriminatorValue.equals(null)
+	}
+	
+	def "get planning costs does not break when discriminator value is null"() {
+		setup:
+		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]);
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
+		
+		when:
+		def planningType = Mock(PlanningType)
+		planningType.getDiscriminator() >> '[_].key3'
+		def planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.getPlanningCosts().empty
 	}
 }

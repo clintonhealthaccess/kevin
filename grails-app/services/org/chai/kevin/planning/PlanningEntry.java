@@ -155,7 +155,9 @@ public class PlanningEntry {
 	}
 	
 	public List<PlanningCost> getPlanningCosts() {
-		return type.getPlanningCosts(getDiscriminatorValue().getStringValue());
+		Value value = getDiscriminatorValue();
+		if (value != null) return type.getPlanningCosts(getDiscriminatorValue().getStringValue());
+		return new ArrayList<PlanningCost>();
 	}
 	
 	public Map<String, Enum> getEnums() {

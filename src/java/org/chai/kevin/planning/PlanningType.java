@@ -156,7 +156,11 @@ public class PlanningType {
 	
 	@Transient
 	public Type getType(String section) {
-		return formElement.getDataElement().getType().getType(section);
+		try {
+			return formElement.getDataElement().getType().getType(section);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 	
 	@Transient
