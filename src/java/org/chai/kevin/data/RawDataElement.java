@@ -33,6 +33,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.RawDataElementValue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -62,4 +65,5 @@ public class RawDataElement extends DataElement<RawDataElementValue> {
 	public String toString() {
 		return "RawDataElement[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
+
 }

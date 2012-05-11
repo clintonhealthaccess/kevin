@@ -2,27 +2,25 @@ package org.chai.kevin.value;
 
 import grails.plugin.springcache.annotations.CacheFlush;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationLocation;
-import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocation;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 public class RefreshValueService {
@@ -33,14 +31,16 @@ public class RefreshValueService {
 	private SessionFactory sessionFactory;
 	private ExpressionService expressionService;
 	private ValueService valueService;
-	private GrailsApplication grailsApplication;
 	
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshNormalizedDataElementInTransaction(NormalizedDataElement normalizedDataElement) {
-		refreshNormalizedDataElement(normalizedDataElement);
+	@Transactional(readOnly = false)
+	public void refreshNormalizedDataElement(NormalizedDataElement normalizedDataElement) {
+		List<NormalizedDataElement> dependencies = getOrderedDependencies(normalizedDataElement);
+		for (NormalizedDataElement dependency : dependencies) {
+			refreshNormalizedDataElementOnly(dependency);
+		}
 	}
 	
-	public void refreshNormalizedDataElement(NormalizedDataElement normalizedDataElement) {
+	private void refreshNormalizedDataElementOnly(NormalizedDataElement normalizedDataElement) {
 		if (log.isDebugEnabled()) log.debug("refreshNormalizedDataElement(normalizedDataElement="+normalizedDataElement+")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -51,13 +51,13 @@ public class RefreshValueService {
 			Period period = (Period)row[1];
 			NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, dataLocation, period);				
 			valueService.save(value);
+			sessionFactory.getCurrentSession().evict(value);
 		}
 		normalizedDataElement.setCalculated(new Date());
 		dataService.save(normalizedDataElement);
 	}
 	
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshCalculationInTransaction(Calculation<?> calculation) {
+	private void refreshCalculationInTransaction(Calculation<?> calculation) {
 		refreshCalculation(calculation);
 	}
 	
@@ -78,9 +78,7 @@ public class RefreshValueService {
 	}
 
 	@CacheFlush(caches={"dsrCache", "dashboardCache", "fctCache"})
-	public void flushCaches() {
-		
-	}
+	public void flushCaches() { }
 	
 	@Transactional(readOnly = true)
 	public void refreshNormalizedDataElements() {
@@ -89,15 +87,37 @@ public class RefreshValueService {
 		
 		// TODO get only those who need to be refreshed
 		List<NormalizedDataElement> normalizedDataElements = sessionFactory.getCurrentSession().createCriteria(NormalizedDataElement.class).list();
-		
-		for (NormalizedDataElement normalizedDataElement : normalizedDataElements) {
+ 		
+		while (!normalizedDataElements.isEmpty()) {
+			NormalizedDataElement normalizedDataElement = normalizedDataElements.remove(0);
 			if (normalizedDataElement.getCalculated() == null || normalizedDataElement.needsRefresh()) {
-				getMe().refreshNormalizedDataElementInTransaction(normalizedDataElement);
-				sessionFactory.getCurrentSession().clear();
+				List<NormalizedDataElement> dependencies = getOrderedDependencies(normalizedDataElement);
+				for (NormalizedDataElement dependentElement : dependencies) {
+					refreshNormalizedDataElementOnly(dependentElement);
+					sessionFactory.getCurrentSession().evict(dependentElement);
+					
+					// we remove the element from the original list since it already has been updated
+					normalizedDataElements.remove(dependentElement);
+				}
 			}
+			normalizedDataElements.remove(normalizedDataElement);
+			sessionFactory.getCurrentSession().evict(normalizedDataElement);
 		}
 	}
 	
+	private List<NormalizedDataElement> getOrderedDependencies(NormalizedDataElement normalizedDataElement) {
+		List<NormalizedDataElement> elements = new ArrayList<NormalizedDataElement>();
+		elements.add(normalizedDataElement);
+		for (String expression : normalizedDataElement.getExpressions()) {
+			Map<String, NormalizedDataElement> dependencies = expressionService.getDataInExpression(expression, NormalizedDataElement.class);
+			for (NormalizedDataElement dependency : dependencies.values()) {
+				if (dependency != null && !elements.contains(dependency)) elements.add(dependency);
+			}
+		}
+		Collections.reverse(elements);
+		return elements;
+	}
+
 	@Transactional(readOnly = true)
 	public void refreshCalculations() {
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
@@ -108,8 +128,8 @@ public class RefreshValueService {
 		
 		for (Calculation<?> calculation : calculations) {
 			if (calculation.getCalculated() == null || calculation.needsRefresh()) {
-				getMe().refreshCalculationInTransaction(calculation);
-				sessionFactory.getCurrentSession().clear();
+				refreshCalculationInTransaction(calculation);
+				sessionFactory.getCurrentSession().evict(calculation);
 			}
 		}
 	}
@@ -119,20 +139,24 @@ public class RefreshValueService {
 		valueService.deleteValues(calculation, location, period);
 		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, location, period)) {
 			valueService.save(partialValue);
+			sessionFactory.getCurrentSession().evict(partialValue);
 		}
 	}
 	
 	@Transactional(readOnly = false)
 	public void refreshNormalizedDataElement(NormalizedDataElement dataElement, DataLocation dataLocation, Period period) {
 		valueService.deleteValues(dataElement, dataLocation, period);
-		valueService.save(expressionService.calculateValue(dataElement, dataLocation, period));
+		List<NormalizedDataElement> dependencies = getOrderedDependencies(dataElement);
+		for (NormalizedDataElement dependency : dependencies) {
+			valueService.save(expressionService.calculateValue(dependency, dataLocation, period));	
+		}
 	}
 
 	private <T extends CalculationLocation> Iterator<Object[]> getCombinations(Class<T> clazz) {
 		Query query = sessionFactory.getCurrentSession().createQuery(
 				"select location, period " +
 				"from "+clazz.getSimpleName()+" location, Period period"
-		).setCacheable(false);
+		).setCacheable(true).setReadOnly(true);
 		return query.iterate();
 	}
 	
@@ -152,13 +176,5 @@ public class RefreshValueService {
 		this.dataService = dataService;
 	}
 	
-	public void setGrailsApplication(GrailsApplication grailsApplication) {
-		this.grailsApplication = grailsApplication;
-	}
-	
-	// for internal call through transactional proxy
-	public RefreshValueService getMe() {
-		return grailsApplication.getMainContext().getBean(RefreshValueService.class);
-	}
 	
 }

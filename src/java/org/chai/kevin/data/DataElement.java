@@ -15,9 +15,12 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Type.TypeVisitor;
 import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.ExpressionService;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -83,5 +86,4 @@ public abstract class DataElement<T extends DataValue> extends Data<T> {
 		return result;
 	}
 
-	public abstract String toString();
 }
