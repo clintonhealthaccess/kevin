@@ -90,7 +90,7 @@ class DataService {
 	public <T extends Data<?>> T save(T data) {
 		// we bypass validation in case there's something
 		// it should be saved anyway
-		data.save(validate: false)
+		data.save(validate: false, flush: true)
 	}
 	
 	/**
