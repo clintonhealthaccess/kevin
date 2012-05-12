@@ -17,10 +17,13 @@ import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.validator.util.privilegedactions.GetMethod;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 public class RefreshValueService {
@@ -31,6 +34,7 @@ public class RefreshValueService {
 	private SessionFactory sessionFactory;
 	private ExpressionService expressionService;
 	private ValueService valueService;
+	private GrailsApplication grailsApplication;
 	
 	@Transactional(readOnly = false)
 	public void refreshNormalizedDataElement(NormalizedDataElement normalizedDataElement) {
@@ -40,7 +44,8 @@ public class RefreshValueService {
 		}
 	}
 	
-	private void refreshNormalizedDataElementOnly(NormalizedDataElement normalizedDataElement) {
+	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshNormalizedDataElementOnly(NormalizedDataElement normalizedDataElement) {
 		if (log.isDebugEnabled()) log.debug("refreshNormalizedDataElement(normalizedDataElement="+normalizedDataElement+")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
@@ -51,16 +56,17 @@ public class RefreshValueService {
 			Period period = (Period)row[1];
 			NormalizedDataElementValue value = expressionService.calculateValue(normalizedDataElement, dataLocation, period);				
 			valueService.save(value);
-			sessionFactory.getCurrentSession().evict(value);
 		}
 		normalizedDataElement.setCalculated(new Date());
 		dataService.save(normalizedDataElement);
 	}
 	
-	private void refreshCalculationInTransaction(Calculation<?> calculation) {
+	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
+	public void refreshCalculationInTransaction(Calculation<?> calculation) {
 		refreshCalculation(calculation);
 	}
 	
+	@Transactional(readOnly = false)
 	public void refreshCalculation(Calculation<?> calculation) {
 		if (log.isDebugEnabled()) log.debug("refreshCalculation(calculation="+calculation+")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
@@ -93,15 +99,14 @@ public class RefreshValueService {
 			if (normalizedDataElement.getCalculated() == null || normalizedDataElement.needsRefresh()) {
 				List<NormalizedDataElement> dependencies = getOrderedDependencies(normalizedDataElement);
 				for (NormalizedDataElement dependentElement : dependencies) {
-					refreshNormalizedDataElementOnly(dependentElement);
-					sessionFactory.getCurrentSession().evict(dependentElement);
+					getMe().refreshNormalizedDataElementOnly(dependentElement);
 					
 					// we remove the element from the original list since it already has been updated
 					normalizedDataElements.remove(dependentElement);
+					sessionFactory.getCurrentSession().clear();
 				}
 			}
 			normalizedDataElements.remove(normalizedDataElement);
-			sessionFactory.getCurrentSession().evict(normalizedDataElement);
 		}
 	}
 	
@@ -128,8 +133,8 @@ public class RefreshValueService {
 		
 		for (Calculation<?> calculation : calculations) {
 			if (calculation.getCalculated() == null || calculation.needsRefresh()) {
-				refreshCalculationInTransaction(calculation);
-				sessionFactory.getCurrentSession().evict(calculation);
+				getMe().refreshCalculationInTransaction(calculation);
+				sessionFactory.getCurrentSession().clear();
 			}
 		}
 	}
@@ -139,7 +144,6 @@ public class RefreshValueService {
 		valueService.deleteValues(calculation, location, period);
 		for (CalculationPartialValue partialValue : expressionService.calculatePartialValues(calculation, location, period)) {
 			valueService.save(partialValue);
-			sessionFactory.getCurrentSession().evict(partialValue);
 		}
 	}
 	
@@ -176,5 +180,16 @@ public class RefreshValueService {
 		this.dataService = dataService;
 	}
 	
+	public GrailsApplication getGrailsApplication() {
+		return grailsApplication;
+	}
+	
+	public void setGrailsApplication(GrailsApplication grailsApplication) {
+		this.grailsApplication = grailsApplication;
+	}
+	
+	public RefreshValueService getMe() {
+		return grailsApplication.getMainContext().getBean(RefreshValueService.class);
+	}
 	
 }
