@@ -1233,8 +1233,6 @@ class Initializer {
 			type: PlanningCostType.INCOMING,
 			discriminatorValueString: 'value1',
 			dataElement: planningElement1,
-			section: '[_].staffing',
-			groupSection: '[_].staffing',
 			names: j(["en":"Salaries"])
 		).save(failOnError: true)
 	
@@ -1249,7 +1247,6 @@ class Initializer {
 			type: PlanningCostType.OUTGOING,
 			discriminatorValueString: 'value1',
 			dataElement: planningElement2,
-			section: '[_].consumables',
 			names: j(["en":"Patient"])
 		).save(failOnError: true)
 		
@@ -1257,19 +1254,19 @@ class Initializer {
 		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-//		new FormEnteredValue(
-//			formElement: formElement,
-//			dataLocation: DataLocation.findByCode("Kivuye HC"),
-//			value: Value.VALUE_LIST([
-//				Value.VALUE_MAP([
-//					"basic": Value.VALUE_MAP([
-//						"activity": Value.VALUE_STRING("value1"), 
-//						"instances": Value.VALUE_NUMBER(10)
-//					])
-//				])
-//			]),
-//			timestamp: new Date()
-//		).save(failOnError: true)
+		new FormEnteredValue(
+			formElement: formElement,
+			dataLocation: DataLocation.findByCode("Kivuye HC"),
+			value: Value.VALUE_LIST([
+				Value.VALUE_MAP([
+					"basic": Value.VALUE_MAP([
+						"activity": Value.VALUE_STRING("value1"), 
+						"instances": Value.VALUE_NUMBER(10)
+					])
+				])
+			]),
+			timestamp: new Date()
+		).save(failOnError: true)
 	}
 	
 	static def createQuestionaire(){
