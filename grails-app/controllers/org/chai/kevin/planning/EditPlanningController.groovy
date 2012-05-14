@@ -74,27 +74,6 @@ class EditPlanningController extends AbstractController {
 		])
 	}
 	
-	def editPlanningSection = {
-		
-		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocation.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
-		def section = params.section
-		
-		def planningList = planningService.getPlanningList(planningType, location)
-		def planningEntry = planningList.planningEntries[lineNumber]
-		
-		render(contentType:"text/json") {
-			status = 'success'
-			html = g.render (template: '/planning/budget/planningSection', model:[
-				planningType: planningType,
-				planningEntry: planningEntry,
-				location: location,
-				section: section
-			])
-		}
-	}
-	
 	def deletePlanningEntry = {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocation.get(params.int('location'))

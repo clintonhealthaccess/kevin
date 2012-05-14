@@ -1,15 +1,11 @@
 package org.chai.kevin.planning;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.location.DataLocation;
-import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.planning.PlanningCost.PlanningCostType;
-import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.ValidatableValue;
 
@@ -56,45 +52,6 @@ public class PlanningEntryBudget extends PlanningEntry {
 		for (PlanningCost planningCost : getPlanningCosts()) {
 			if (planningCost.getType().equals(costType)) {
 				if (getBudgetCost(planningCost) != null) result += getBudgetCost(planningCost).getValue();
-			}
-		}
-		return result;
-	}
-	public Double getGroupTotal(PlanningCostType type, String groupSection) {
-		Double result = 0d;
-		for (PlanningCost planningCost : getPlanningCosts()) {
-			if (planningCost.getType() == type && 
-				(	planningCost.getGroupSection() == groupSection 
-					||
-					planningCost.getGroupSection().equals(groupSection)
-				)) {
-				if (getBudgetCost(planningCost) != null) result += getBudgetCost(planningCost).getValue();
-			}
-		}
-		return result;
-	}
-	
-	public List<String> getGroupSections(PlanningCostType type) {
-		List<String> result = new ArrayList<String>();
-		for (PlanningCost planningCost : getPlanningCosts()) {
-			if (getBudgetCost(planningCost) != null && planningCost.getType().equals(type) && !result.contains(planningCost.getGroupSection())) {
-				result.add(planningCost.getGroupSection());
-			}
-		}
-		return result;
-	}
-	
-	public List<BudgetCost> getBudgetCosts(PlanningCostType type, String groupSection) {
-		List<BudgetCost> result = new ArrayList<BudgetCost>();
-		for (PlanningCost planningCost : getPlanningCosts()) {
-			if (	planningCost.getType() == type 
-					&& 
-					(	planningCost.getGroupSection() == groupSection 
-						||
-						planningCost.getGroupSection().equals(groupSection)
-					)
-			) {
-				if (getBudgetCost(planningCost) != null) result.add(getBudgetCost(planningCost));
 			}
 		}
 		return result;

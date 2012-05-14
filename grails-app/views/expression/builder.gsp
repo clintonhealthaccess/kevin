@@ -24,6 +24,9 @@
 						
 						<g:render template="/templates/typeEditor" model="[bean: cmd, name: 'type']"/>
 						
+						<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${cmd}" field="typeCodeString" 
+							from="${types}" value="${cmd==null?types*.code:cmd*.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
+						
 						<g:selectFromList name="periodIds" label="${message(code:'expression.test.periods.label')}" bean="${cmd}" field="periodIds" 
 							from="${periods}" value="${cmd==null || cmd.periodIds.empty?periods*.id:cmd?.periodIds}" values="${periods.collect{Utils.formatDate(it.startDate)+' to '+Utils.formatDate(it.endDate)}}" optionKey="id" multiple="true"/>
 						

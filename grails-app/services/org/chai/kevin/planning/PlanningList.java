@@ -80,9 +80,9 @@ public class PlanningList {
 		if (lineNumber >= getPlanningEntries().size()) {
 			result = new PlanningEntry(dataLocation, planningType, formEnteredValue.getValidatable(), lineNumber, enums);
 			result.mergeValues(new HashMap<String, Object>());
-			result.setUuid(UUID.randomUUID().toString());
 		}
 		else result = getPlanningEntries().get(lineNumber);
+		if (result.getUuid() == null) result.setUuid(UUID.randomUUID().toString());
 		return result;
 	}
 	

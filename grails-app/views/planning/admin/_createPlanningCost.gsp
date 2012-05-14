@@ -25,13 +25,9 @@
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'NormalizedDataElement'])}"
 			from="${dataElements}" value="${planningCost.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 	
-		<g:selectFromList name="section" label="${message(code:'planning.planningcost.section.label')}" bean="${planningCost}" field="section" multiple="false"
-			from="${sections}" value="${planningCost.section}"/>
-			
-		<g:selectFromList name="groupSection" label="${message(code:'planning.planningcost.groupsection.label')}" bean="${planningCost}" field="groupSection" multiple="false"
-			from="${sections}" value="${planningCost.groupSection}"/>
-			
 		<g:selectFromEnum name="type" bean="${planningCost}" values="${PlanningCostType.values()}" field="type" label="${message(code:'planning.planningcost.type.label')}"/>
+	
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${target}" field="order"/>
 	
 		<g:if test="${planningCost.id != null}">
 			<input type="hidden" name="id" value="${planningCost.id}"></input>
