@@ -16,13 +16,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Orderable;
 import org.chai.kevin.Translation;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.util.Utils;
 
 @Entity(name="PlanningCost")
 @Table(name="dhsst_planning_cost")
-public class PlanningCost {
+public class PlanningCost extends Orderable<Integer> {
 
 	public enum PlanningCostType {OUTGOING("planning.planningcost.type.outgoing"), INCOMING("planning.planningcost.type.incoming");
 		private String code;
@@ -38,19 +39,14 @@ public class PlanningCost {
 	};
 
 	private Long id;
-	private PlanningCostType type;
+	private Integer order;
 	private String discriminatorValueString;
+	
+	private PlanningCostType type;
+	private PlanningType planningType;
+
 	private NormalizedDataElement dataElement;
 	private Translation names = new Translation();
-	
-	// section in which the cost is grouped (can be null)
-	private String groupSection;
-	
-	// corresponding section in PlanningType (cannot be null)
-	// this is the section that will open when clicking on the line
-	private String section;
-	
-	private PlanningType planningType;
 	
 	@Id
 	@GeneratedValue
@@ -60,6 +56,16 @@ public class PlanningCost {
 	
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@Basic
+	@Column(name="ordering")
+	public Integer getOrder() {
+		return order;
+	}
+	
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 	
 	@ManyToOne(targetEntity=NormalizedDataElement.class)
@@ -89,24 +95,6 @@ public class PlanningCost {
 	
 	public void setNames(Translation names) {
 		this.names = names;
-	}
-	
-	@Basic
-	public String getGroupSection() {
-		return groupSection;
-	}
-	
-	public void setGroupSection(String groupSection) {
-		this.groupSection = groupSection;
-	}
-	
-	@Basic
-	public String getSection() {
-		return section;
-	}
-	
-	public void setSection(String section) {
-		this.section = section;
 	}
 	
 	@ManyToOne(targetEntity=PlanningType.class)
@@ -164,4 +152,5 @@ public class PlanningCost {
 	public String toString(){
 		return "PlanningCost[getId()=" + getId() + ", getNames()=" + getNames() + ", getType()=" + getType() + "]";
 	}
+
 }
