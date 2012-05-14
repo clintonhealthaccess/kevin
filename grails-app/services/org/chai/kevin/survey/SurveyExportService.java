@@ -362,7 +362,7 @@ public class SurveyExportService {
 				Enum enume = enumService.getEnumByCode(enumCode);
 				if(enume != null){
 					EnumOption enumOption = enume.getOptionForValue(value);
-					value = languageService.getText(enumOption.getNames());
+					if (enumOption != null) value = languageService.getText(enumOption.getNames());
 				}
 				break;
 			default:
