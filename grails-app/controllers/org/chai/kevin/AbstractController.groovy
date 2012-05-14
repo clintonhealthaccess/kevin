@@ -47,11 +47,6 @@ import org.chai.kevin.survey.SurveySection
 import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.jsefa.Serializer
-import org.jsefa.csv.CsvIOFactory
-import org.jsefa.csv.annotation.CsvDataType;
-import org.jsefa.csv.annotation.CsvField;
-import org.jsefa.csv.config.CsvConfiguration
 
 public abstract class AbstractController {
 
@@ -133,42 +128,4 @@ public abstract class AbstractController {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
 	}
-	
-//	def export = {
-//
-//		String name = "name";
-//		Date date = new Date();
-//		List<Person> people = new ArrayList<Person>();
-//		for (int i = 0; i < 100; i++){
-//			def p = new Person()
-//			p.name = name + i
-//			p.birthDate = date
-//			people.add(p);
-//		}
-//
-//		def clazz = getEntityClass()
-//		def entities = clazz.list()
-//
-//		Serializer serializer = CsvIOFactory.createFactory(clazz).createSerializer();
-//		StringWriter writer = new StringWriter();
-//
-//		serializer.open(writer);
-//		for (def entity : entities) {
-//			serializer.write(entity);
-//		}
-//		serializer.close(true);
-//
-//		response.setHeader("Content-disposition", "attachment; filename=" + clazz.name + ".csv");
-//		response.setContentType("text/plain");
-//		response.setHeader("Content-length", writer.toString().length());
-//		response.outputStream << writer.toString() //.newInputStream()
-//	}
-//
-//	@CsvDataType()
-//	public class Person {
-//		@CsvField(pos = 1)
-//		public String name;
-//		@CsvField(pos = 2, format = "dd.MM.yyyy")
-//		public Date birthDate;
-//	}
 }
