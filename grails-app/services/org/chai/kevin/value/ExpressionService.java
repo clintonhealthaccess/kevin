@@ -146,7 +146,7 @@ public class ExpressionService {
 					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
 				}
-				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}, typeMap={"+typeMap+"}");
+				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}"/*, typeMap={"+typeMap+"}"*/);
 				
 				if (hasNullValues(valueMap.values())) {
 					if (expressionLog.isInfoEnabled()) expressionLog.info("found null values");
