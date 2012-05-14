@@ -65,7 +65,7 @@ class CostTargetController extends AbstractEntityController {
 		]
 	}
 	
-	def exportEntity(){
+	def getEntityClass(){
 		return CostTarget.class;
 	}
 	

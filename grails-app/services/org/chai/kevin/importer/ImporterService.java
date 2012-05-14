@@ -87,7 +87,7 @@ public class ImporterService {
 
 			
 			if(!Arrays.asList(headers).contains(CODE_HEADER) || !Arrays.asList(headers).contains(DATA_ELEMENT_HEADER) || !Arrays.asList(headers).contains(VALUE_HEADER))
-				manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"import.error.message.unknowm.header"));
+				manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),Arrays.asList(headers).toString(),"import.error.message.unknown.header"));
 			else{
 				
 				while (rows != null) {
@@ -98,22 +98,22 @@ public class ImporterService {
 					Map<String, Object> map = new HashMap<String, Object>();
 					Map<String, Type> types = new HashMap<String, Type>();
 					
-					DataLocation dataEntity =locationService.findCalculationLocationByCode(rows.get(CODE_HEADER), DataLocation.class);
+					DataLocation dataLocation =locationService.findCalculationLocationByCode(rows.get(CODE_HEADER), DataLocation.class);
 					RawDataElement rawDataElement = dataService.getDataByCode(rows.get(DATA_ELEMENT_HEADER), RawDataElement.class);
 					RawDataElementValue rawDataElementValue = null;
 					
-					if (log.isDebugEnabled()) log.debug(" DataLocationEntity=>: " + dataEntity+ " RawDataElement: "+ rawDataElement);
+					if (log.isDebugEnabled()) log.debug(" DataLocationEntity=>: " + dataLocation+ " RawDataElement: "+ rawDataElement);
 					
-					if (dataEntity != null && rawDataElement != null) {
+					if (dataLocation != null && rawDataElement != null) {
 						
-						if (log.isDebugEnabled()) log.debug("checking if dataElement: "+rawDataElement+"and location: "+dataEntity+"is in savedData : "+savedData+" errors: "+manager.getErrors());
+						if (log.isDebugEnabled()) log.debug("checking if dataElement: "+rawDataElement+"and location: "+dataLocation+"is in savedData : "+savedData+" errors: "+manager.getErrors());
 						//Check if data is going to be override and save the error message
-						if (savedData.get(dataEntity)==null || !savedData.get(dataEntity).contains(rawDataElement)) {
+						if (savedData.get(dataLocation)==null || !savedData.get(dataLocation).contains(rawDataElement)) {
 							// not imported yet
-							if (!savedData.containsKey(dataEntity)) {
-								savedData.put(dataEntity, new HashSet<RawDataElement>());
+							if (!savedData.containsKey(dataLocation)) {
+								savedData.put(dataLocation, new HashSet<RawDataElement>());
 							}
-							savedData.get(dataEntity).add(rawDataElement);
+							savedData.get(dataLocation).add(rawDataElement);
 							if (log.isDebugEnabled()) log.debug(" savedData : "+savedData+" errors: "+manager.getErrors());
 						} else {
 							// already imported
@@ -126,12 +126,12 @@ public class ImporterService {
 						sanitizer.setLineNumber(readFileAsMap.getLineNumber());
 						sanitizer.setNumberOfErrorInRows(0);
 						
-						rawDataElementValue = valueService.getDataElementValue(rawDataElement, dataEntity, period);
+						rawDataElementValue = valueService.getDataElementValue(rawDataElement, dataLocation, period);
 	                    //Check raw data element has a value associate to it otherwise create one
 						if (rawDataElementValue != null) value = rawDataElementValue.getValue();
 						else {
 							value = new Value("");
-							rawDataElementValue = new RawDataElementValue(rawDataElement, dataEntity, period, value);
+							rawDataElementValue = new RawDataElementValue(rawDataElement, dataLocation, period, value);
 						}
 						map.put("", rows.get(VALUE_HEADER));
 						
@@ -148,8 +148,10 @@ public class ImporterService {
 							manager.incrementNumberOfRowsSavedWithError(1);
 						manager.incrementNumberOfSavedRows();
 					} else {
-						if(dataEntity==null) manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.data.location"));
-						if(rawDataElement==null) manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),DATA_ELEMENT_HEADER,"import.error.message.unknown.raw.data.element"));	
+						if(dataLocation==null) 
+							manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),CODE_HEADER,"import.error.message.unknown.data.location"));
+						if(rawDataElement==null) 
+							manager.getErrors().add(new ImporterError(readFileAsMap.getLineNumber(),DATA_ELEMENT_HEADER,"import.error.message.unknown.raw.data.element"));	
 						manager.incrementNumberOfUnsavedRows();
 					}
 					rows = readFileAsMap.read(headers);
@@ -289,7 +291,7 @@ public class ImporterService {
 		}
 	
 		@Override
-		public Object sanitizeValue(Object value, Type type, String prefix,String genericPrefix) {
+		public Object sanitizeValue(Object value, Type type, String prefix, String genericPrefix) {
 			switch (type.getType()) {
 			case ENUM:
 				return validateImportEnum(genericPrefix, value);
@@ -298,7 +300,6 @@ public class ImporterService {
 			case NUMBER:
 				return validateImportNumber(genericPrefix, value);
 			case TEXT:
-				return validateImportString(genericPrefix, value);
 			case STRING:
 				return validateImportString(genericPrefix, value);
 			case DATE:

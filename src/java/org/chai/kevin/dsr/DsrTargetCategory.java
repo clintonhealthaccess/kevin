@@ -42,8 +42,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.entity.export.Importable;
 import org.chai.kevin.reports.ReportEntity;
 import org.chai.kevin.reports.ReportProgram;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -52,7 +55,7 @@ import org.hibernate.annotations.FetchMode;
 @Entity(name = "DsrTargetCategory")
 @Table(name = "dhsst_dsr_target_category")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class DsrTargetCategory extends ReportEntity {
+public class DsrTargetCategory extends ReportEntity implements Exportable, Importable {
 
 	private Long id;
 	private List<DsrTarget> targets = new ArrayList<DsrTarget>();
@@ -89,10 +92,14 @@ public class DsrTargetCategory extends ReportEntity {
 		target.setCategory(this);
 		targets.add(target);
 	}
-
+	
 	@Override
-	public String toString() {
-		return "DsrTargetCategory[getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getId().toString()) + ", " + getCode() + "]";
+	}
+	
+	@Override
+	public DsrTargetCategory fromExportString(Object value) {
+		return (DsrTargetCategory) value;
 	}
 }

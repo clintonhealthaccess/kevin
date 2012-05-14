@@ -76,13 +76,13 @@ class GeneralImporterCommand {
 	
 	static constraints = {
 		period(blank:false,nullable:false)
-		file(blank:false,nullable:false, validator: { val, obj ->
-			final String FILE_TYPE = "text/csv";
-			boolean valid = true;
-			if(val != null)
-				if(!val.contentType.equals(FILE_TYPE))
-					return valid=false;
-			return valid;
-		})
+//		file(blank:false,nullable:false, validator: { val, obj ->
+//			final String FILE_TYPE = "text/csv";
+//			boolean valid = true;
+//			if(val != null)
+//				if(!val.contentType.equals(FILE_TYPE))
+//					return valid=false;
+//			return valid;
+//		})
 	}
 }

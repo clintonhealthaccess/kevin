@@ -85,7 +85,8 @@ class QuestionController extends AbstractController {
 				entities: questions.subList(params['offset'], max),
 				entityCount: questions.size(),
 				code: 'survey.question.label',
-				addTemplate: '/survey/admin/addQuestion'
+				addTemplate: '/survey/admin/addQuestion',
+				entityClass: exportEntity()
 			])
 		}
 	}

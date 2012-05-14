@@ -16,4 +16,9 @@ public class ExpressionMap extends JSONMap<Map<String, String>> {
 		return "ExpressionMap[getJsonMap()='" + getJsonText() + "']";
 	}
 
+	public Object fromString(String value) {
+		ExpressionMap expressionMap = new ExpressionMap();
+		expressionMap.setJsonText(value);
+		return expressionMap;
+	}
 }

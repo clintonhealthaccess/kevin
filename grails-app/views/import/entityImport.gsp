@@ -13,7 +13,7 @@
 				<div class="clear"></div>
 			</div>
 				<g:form url="[controller:'entityImporter', action:'uploader']" useToken="true" method="post" enctype="multipart/form-data">
-					<input type="hidden" name="entityClass" value="${entityClass}" />
+					<input type="hidden" name="entityClass" value="${entityClass}" field="entityClass" />
 					
 					<g:file name="file" label="${message(code:'import.file.label')}" bean="${entityImporter}" field="file"/>
 					<div class="row">

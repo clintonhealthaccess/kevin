@@ -19,6 +19,8 @@ abstract class AbstractCalculationController extends AbstractEntityController {
 	def getModel(def entity) {
 		[calculation: entity]
 	}
+	
+//	protected abstract def getEntityClass();
 
 	def saveEntity(def entity) {
 		if (entity.id != null) valueService.deleteValues(entity, null, null)

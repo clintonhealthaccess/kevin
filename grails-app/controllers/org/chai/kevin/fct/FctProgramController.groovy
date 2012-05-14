@@ -60,7 +60,7 @@ class FctProgramController extends AbstractEntityController {
 		[ program: entity ]
 	}
 	
-	def exportEntity(){
+	def getEntityClass(){
 		return ReportProgram.class;
 	}
 	

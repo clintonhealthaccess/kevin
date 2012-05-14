@@ -9,19 +9,21 @@
 		  					<g:message code="default.new.label" args="[entityName]"/>
 		  				</a>
 		  				&nbsp;
-		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'export')+(request.queryString==null?'':'&'+request.queryString)}">
+		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
 		  					<g:message code="default.export.label" />
-		  				</a>/
-		  				<a href="${createLinkWithTargetURI(controller: entityImporter, action:'importer', params:[entityClass: exportEntity()])+(request.queryString==null?'':'&'+request.queryString)}">
+		  				</a>
+		  				&nbsp;
+		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'importer')+(request.queryString==null?'':'&'+request.queryString)}">
 		  					<g:message code="default.import.label" />
 		  				</a>
 		  			</g:if>
 		  			<g:else>
 		  				<g:render template="${addTemplate}"/>
-		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'export')+(request.queryString==null?'':'&'+request.queryString)}">
+		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'exporter')+(request.queryString==null?'':'&'+request.queryString)}">
 		  					<g:message code="default.export.label" />
-		  				</a>/
-		  				<a href="${createLinkWithTargetURI(controller: entityImporter, action:'importer', params:[entityClass: exportEntity()])+(request.queryString==null?'':'&'+request.queryString)}">
+		  				</a>
+		  				&nbsp;
+		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'importer')+(request.queryString==null?'':'&'+request.queryString)}">
 		  					<g:message code="default.import.label" />
 		  				</a>
 		  			</g:else>

@@ -43,13 +43,16 @@ import javax.persistence.Table;
 import org.chai.kevin.Orderable;
 import org.chai.kevin.Ordering;
 import org.chai.kevin.Translation;
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.entity.export.Importable;
+import org.chai.kevin.util.Utils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity(name="EnumOption")
 @Table(name="dhsst_enum_option")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class EnumOption extends Orderable<Ordering> {
+public class EnumOption extends Orderable<Ordering> implements Exportable, Importable {
 
 	private Long id;
 	private String value;
@@ -149,11 +152,15 @@ public class EnumOption extends Orderable<Ordering> {
 		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
-	}
-
+	}	
+	
 	@Override
-	public String toString() {
-		return "EnumOption[getId()=" + getId() + ", getValue()=" + getValue() + "]";
+	public String toExportString() {
+		return "[" + Utils.formatExportCode(getId().toString()) + ", " + getValue() + "]";
 	}
 	
+	@Override
+	public EnumOption fromExportString(Object value) {
+		return (EnumOption) value;
+	}
 }

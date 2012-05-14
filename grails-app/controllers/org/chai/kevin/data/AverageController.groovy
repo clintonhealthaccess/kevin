@@ -14,7 +14,7 @@ class AverageController extends AbstractCalculationController {
 		return 'average.label'
 	}
 	
-	def exportEntity(){
+	def getEntityClass(){
 		return Average.class;
 	}
 	

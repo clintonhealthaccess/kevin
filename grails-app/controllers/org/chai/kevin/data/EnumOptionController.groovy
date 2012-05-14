@@ -65,7 +65,7 @@ class EnumOptionController extends AbstractEntityController {
 		[option: entity]
 	}
 	
-	def exportEntity(){
+	def getEntityClass(){
 		return EnumOption.class;
 	}
 	
@@ -107,7 +107,7 @@ class EnumOptionController extends AbstractEntityController {
 				entities: options.subList(params['offset'], max),
 				template: "data/enumOptionList",
 				entityCount: options.size(),
-				code: getLabel(),
+				code: getLabel()
 			])
 		}
 	}

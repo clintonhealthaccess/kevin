@@ -33,7 +33,7 @@ class FctTargetOptionController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return FctTargetOption.class;
 	}
 	
@@ -85,7 +85,8 @@ class FctTargetOptionController extends AbstractEntityController {
 			entities: targetOptions,
 			template: "fct/targetOptionList",
 			code: getLabel(),
-			entityCount: FctTargetOption.count()
+			entityCount: FctTargetOption.count(),
+			entityClass: getEntityClass()
 		])
 	}
 	

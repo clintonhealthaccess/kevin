@@ -69,7 +69,7 @@ class DashboardTargetController extends AbstractEntityController {
 		return [entity: entity, programs: reportPrograms, calculations: calculations]
 	}
 	
-	def exportEntity(){
+	def getEntityClass(){
 		return DashboardTarget.class;
 	}
 	
@@ -106,7 +106,8 @@ class DashboardTargetController extends AbstractEntityController {
 			entities: targets,
 			template: "dashboard/targetList",
 			code: getLabel(),
-			entityCount: DashboardTarget.count()
+			entityCount: DashboardTarget.count(),
+			entityClass: getEntityClass()
 		])
 	}
 }

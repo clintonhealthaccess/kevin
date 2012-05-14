@@ -49,17 +49,24 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.jsefa.csv.annotation.CsvDataType;
+import org.jsefa.csv.annotation.CsvField;
 
+@CsvDataType()
 @Entity(name="Enum")
 @Table(name="dhsst_enum")
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Enum {
 
+	@CsvField(pos = 1)
 	private Long id;
-
+	@CsvField(pos = 2)
 	private List<EnumOption> enumOptions = new ArrayList<EnumOption>();
+	@CsvField(pos = 3)
 	private String code;
+	@CsvField(pos = 4)
 	private Translation names = new Translation();
+	@CsvField(pos = 5)
 	private Translation descriptions = new Translation();
 
 	@Id
@@ -173,5 +180,5 @@ public class Enum {
 	@Override
 	public String toString() {
 		return "Enum[getId()=" + getId() + ", getCode()=" + getCode() + "]";
-	}
+	}		
 }

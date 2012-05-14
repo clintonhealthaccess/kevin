@@ -13,46 +13,49 @@ class EntityImporterController extends AbstractController {
 	final String IMPORT_OUTPUT = "importOutput";
 	
 	def importer = {
-		def clazz = (Class) params.get("entityClass");
-		this.getModel(null, null, ENTITY_IMPORT);
+		def entityClass = (String) params.get("entityClass");
+		def clazz = Class.forName(entityClass, true, this.getClass().getClassLoader());
+		this.getModel(clazz, null, null, ENTITY_IMPORT);
 	}
 	
 	def uploader = { EntityImporterCommand cmd ->
+		if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",class="+cmd.entityClass+")")
 		ImporterErrorManager errorManager = new ImporterErrorManager();
-		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",class="+cmd.clazz+")")
+		def clazz = Class.forName(cmd.entityClass, true, this.getClass().getClassLoader());
+		if (!cmd.hasErrors()) {			
 			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());			
-			entityImportService.importEntityData(csvInputStreamReader, cmd.clazz,errorManager);			
-			this.getModel(cmd, errorManager, IMPORT_OUTPUT);
+			entityImportService.importEntityData(csvInputStreamReader, clazz, errorManager);			
+			this.getModel(clazz, cmd, errorManager, IMPORT_OUTPUT);
 		}else{
-			this.getModel(cmd, errorManager, ENTITY_IMPORT);
+			this.getModel(clazz, cmd, errorManager, ENTITY_IMPORT);
 		}
 	}
 	
-	def getModel(EntityImporterCommand cmd, ImporterErrorManager errorManager, String view) {
-		if(log.isDebugEnabled()) log.debug("getModel(cmd="+cmd+",errorManager="+errorManager+",view="+view+")")
+	def getModel(Class clazz, EntityImporterCommand cmd, ImporterErrorManager errorManager, String view) {
+		if(log.isDebugEnabled()) 
+			log.debug("getModel(cmd="+cmd+",entityClass="+clazz.name+",errorManager="+errorManager+",view="+view+")")
 		render (view: '/import/'+view, model:[
-					entityClass: clazz,
+					entityClass: clazz.name,
 					entityImporter: cmd,
 					errorManager: errorManager
 				])
-	}	
+	}
 }
 
 class EntityImporterCommand {
 
-	Class clazz;
+	String entityClass;
 	CommonsMultipartFile file;
 	
 	static constraints = {
-		clazz(blank:false,nullable:false)
-		file(blank:false,nullable:false, validator: { val, obj ->
-			final String FILE_TYPE = "text/csv";
-			boolean valid = true;
-			if(val != null)
-				if(!val.contentType.equals(FILE_TYPE))
-					return valid=false;
-			return valid;
-		})
+		entityClass(blank:false,nullable:false)
+//		file(blank:false,nullable:false, validator: { val, obj ->
+//			final String FILE_TYPE = "text/csv";
+//			boolean valid = true;
+//			if(val != null)
+//				if(!val.contentType.equals(FILE_TYPE))
+//					return valid=false;
+//			return valid;
+//		})
 	}
 }

@@ -77,7 +77,7 @@ class RawDataElementController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return RawDataElement.class;
 	}
 		
@@ -162,7 +162,8 @@ class RawDataElementController extends AbstractEntityController {
 			entities: rawDataElements,
 			template: "data/rawDataElementList",
 			code: getLabel(),
-			entityCount: RawDataElement.count()
+			entityCount: RawDataElement.count(),
+			entityClass: getEntityClass()
 		])
 	}
 

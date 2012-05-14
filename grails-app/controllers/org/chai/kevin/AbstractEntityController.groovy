@@ -124,15 +124,6 @@ abstract class AbstractEntityController extends AbstractController {
 		}
 	}	
 	
-	def export = {
-		def clazz = exportEntity();
-		exportEntities(clazz);		
-	}
-	
-//	def importEntity = {
-//		def clazz = exportEntity();		
-//	}
-	
 	def validateEntity(def entity) {
 		return entity.validate()
 	}
@@ -177,6 +168,6 @@ abstract class AbstractEntityController extends AbstractController {
 	
 	protected abstract def getLabel();
 	
-	protected abstract def exportEntity();
+	protected abstract def getEntityClass();
 	
 }

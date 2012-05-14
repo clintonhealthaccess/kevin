@@ -77,7 +77,7 @@ class SurveyController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return Survey.class;
 	}
 	
@@ -100,7 +100,8 @@ class SurveyController extends AbstractEntityController {
 			template:"surveyList",
 			entities: surveys,
 			entityCount: Survey.count(),
-			code: getLabel()
+			code: getLabel(),
+			entityClass: getEntityClass()
 		])
 	}
 	

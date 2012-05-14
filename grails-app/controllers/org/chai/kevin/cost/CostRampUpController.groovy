@@ -55,7 +55,7 @@ class CostRampUpController extends AbstractEntityController {
 		return [rampUp: entity, years: costService.years]
 	}
 	
-	def exportEntity(){
+	def getEntityClass(){
 		return CostRampUp.class;
 	}
 	
@@ -85,11 +85,12 @@ class CostRampUpController extends AbstractEntityController {
 		List<CostRampUp> entities = CostRampUp.list(params)
 		
 		render (view: '/entity/list', model: [
-			entities: entities, 
+			entities: entities,
 			entityCount: CostRampUp.count(), 
 			years: costService.getYears(),
 			code: 'costrampup.label',
-			template: 'costRampUp/costRampUpList'
+			template: 'costRampUp/costRampUpList',
+			entityClass: getEntityClass()
 		])
 	}
 	

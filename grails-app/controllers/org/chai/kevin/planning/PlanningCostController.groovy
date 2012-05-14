@@ -70,7 +70,7 @@ class PlanningCostController extends AbstractEntityController {
 		]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return PlanningCost.class;
 	}
 	
@@ -94,7 +94,8 @@ class PlanningCostController extends AbstractEntityController {
 				template:"planningCostList",
 				entities: planningCosts,
 				entityCount: planningCosts.size(),
-				code: getLabel()
+				code: getLabel(),
+				entityClass: getEntityClass()
 			])
 		}
 	}

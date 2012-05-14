@@ -59,7 +59,7 @@ class EnumController extends AbstractEntityController {
 		[enumeration: entity]
 	}
 
-	def exportEntity(){
+	def getEntityClass(){
 		return Enum.class;
 	}
 	
@@ -92,8 +92,7 @@ class EnumController extends AbstractEntityController {
 			template: "data/enumList",
 			entityCount: enumService.countEnum(params['q']),
 			q:params['q'],
-			code: getLabel()
-			
+			code: getLabel()			
 		])
 	}
 	

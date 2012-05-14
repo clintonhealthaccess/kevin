@@ -4,14 +4,19 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LanguageService;
 import org.chai.kevin.entity.export.EntityHeaderSorter;
+import org.chai.kevin.entity.export.Exportable;
+import org.chai.kevin.util.Utils;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.supercsv.io.CsvListWriter;
@@ -59,11 +64,17 @@ public class EntityExportService {
 				}
 				headerClass = headerClass.getSuperclass();
 			}			
+			
+			//TODO custom headers/values
+			//ability to add custom headers
+			//and a custom "handle" method to add the custom values to each row			
+			
 			Collections.sort(entityFieldHeaders, EntityHeaderSorter.BY_FIELD());			
 			List<String> entityHeaders = new ArrayList<String>();
 			for(Field field : entityFieldHeaders){
-				entityHeaders.add(field.getName());
-			}			
+				entityHeaders.add(field.getName());				
+			}
+			
 			if(entityHeaders.toArray(new String[0]) != null)
 				writer.writeHeader(entityHeaders.toArray(new String[0]));									
 			
@@ -72,6 +83,11 @@ public class EntityExportService {
 			for(Object entity : entities){
 				if (log.isDebugEnabled()) log.debug("getExportFile(entity="+entity+")");				
 				List<String> entityData = getEntityData(entity, entityFieldHeaders);
+				
+				//TODO custom headers/values
+				//ability to add custom headers
+				//and a custom "handle" method to add the custom values to each row
+				
 				if(entityData != null && !entityData.isEmpty())
 					writer.write(entityData);
 			}
@@ -102,23 +118,59 @@ public class EntityExportService {
 					field.setAccessible(true);
 					isNotAccessible = true;
 				}
-				value = field.get(entity);
-				if(value != null){
-					if(value.toString() != null && !value.toString().isEmpty())
-						entityData.add(value.toString());
-					else
-						entityData.add("null");
+				
+				value = field.get(entity);				
+				
+				Class<?> valueClazz = field.getType();
+				Class<?> innerClazz = null;
+				
+				boolean isAssignable = Exportable.class.isAssignableFrom(valueClazz);				
+				Class<?>[] clazzInterfaces = valueClazz.getInterfaces();
+				
+				List<Object> exportValues = null;
+				if(valueClazz.equals(List.class)){
+					exportValues = (List<Object>) value;
+					
+					ParameterizedType type = (ParameterizedType) field.getGenericType();
+					innerClazz = (Class) type.getActualTypeArguments()[0];
+					
+					isAssignable = Exportable.class.isAssignableFrom(innerClazz);
+					clazzInterfaces = innerClazz.getInterfaces();	
 				}
-				else
-					entityData.add("null");
+				
+				boolean isExportable = false;
+				if(isAssignable && Arrays.asList(clazzInterfaces).contains(Exportable.class)){
+					isExportable = true;
+				}
+				
+				String exportValue = "null";				
+				if(value != null){
+					if(isExportable){
+						if(exportValues != null){
+							exportValue = Utils.getExportValues(exportValues);
+						}
+						else{
+							if(value instanceof Exportable){
+								Exportable exportableValue = (Exportable) value;
+								exportValue = Utils.getExportValue(exportableValue);	
+							}						
+						}		
+					}					
+					else {
+						exportValue = value.toString();
+					}
+				}
+				entityData.add(exportValue);
+				
 				if(isNotAccessible)
 					field.setAccessible(false);	
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
-			}			
+			}
 		}
 		return entityData;
 	}
+
 }
