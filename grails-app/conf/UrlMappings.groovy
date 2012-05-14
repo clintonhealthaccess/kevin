@@ -58,7 +58,7 @@ class UrlMappings {
 		
 		"/editPlanning/$action/$location?"(controller:"editPlanning")
 		
-		"/exporter/$action"(controller:"exporter")
+		"/exporter/$action/$exporter"(controller:"exporter")
 		
 		"/$controller/$action?"{
 			constraints {

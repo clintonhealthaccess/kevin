@@ -27,6 +27,7 @@
  */
 package org.chai.kevin.export
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.chai.kevin.AbstractController
 import org.chai.kevin.AbstractEntityController;
 import org.chai.kevin.LanguageService;
@@ -34,12 +35,16 @@ import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
 import org.chai.kevin.PeriodSorter
 import org.chai.kevin.data.Data;
+import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.survey.SurveyExportService;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder as CONF
 
 
 /**
@@ -50,10 +55,8 @@ class ExporterController extends AbstractEntityController {
 	def dataLocationService;
 	def exporterService;
 	def languageService;
+	def dataService;
 	
-	def getModel(def entity) {
-	}
-
 	def getEntity(def id) {
 		return Exporter.get(id);
 	}
@@ -63,7 +66,7 @@ class ExporterController extends AbstractEntityController {
 	}
 
 	def getTemplate() {
-		return "/exporter/createExporter"
+		return "/entity/exporter/createExporter"
 	}
 	
 	def getLabel() {
@@ -71,13 +74,73 @@ class ExporterController extends AbstractEntityController {
 	}
 	
 	def bindParams(def entity) {
-	
+		params.dataOld= entity.data;
+		params.locationsOld = entity.locations
+		entity.properties= params
+		if(entity.date==null)	
+			entity.date = new Date();
+		
+			
+		if(log.isDebugEnabled()) log.debug("export(bind="+entity+")")
+		
+		// we do this because automatic data binding does not work with polymorphic elements
+		Set<Data> rawDataElements = []
+		params.list('data').each { id ->
+			if (NumberUtils.isDigits(id)) {
+				def rawDataElement = dataService.getData(Long.parseLong(id), RawDataElement.class)
+				if (rawDataElement != null) rawDataElements.add(rawDataElement);
+			}
+		}
+		entity.data = rawDataElements
+		
+		Set<Period> periods = [];
+		params.list('periods').each { id ->
+			if (NumberUtils.isDigits(id)) {
+				def period = Period.get(id)
+				if (period != null) periods.add(period);
+			}
+		}
+		entity.periods = periods
+		
+		Set<CalculationLocation> locations = [];
+		params.list('locations').each { id ->
+			if (NumberUtils.isDigits(id)) {
+				def location = locationService.getCalculationLocation(Long.parseLong(id), CalculationLocation.class)
+				if (location != null) locations.add(location);
+			}
+		}
+		entity.locations = locations
+				
+		
+		// FIXME GRAILS-6967 makes this necessary
+		// http://jira.grails.org/browse/GRAILS-6967
+		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
-		
+	
+	def validateEntity(def entity) {
+		if(!entity.validate()){
+			entity.locations=params.locationsOld;
+			entity.data=params.rawDataElementsOld;
+		}
+	}
+    
+	def getModel(def entity) {
+		List<Data> data=[]
+		List<CalculationLocation> locations=[]
+		if(entity.data) data = new ArrayList(entity.data)
+		if(entity.locations) locations= new ArrayList(entity.locations)
+		[
+			exporter: entity,
+			periods: Period.list([cache: true]),
+			types: DataLocationType.list([cache: true]),
+			locations: locations,
+			data: data
+		]
+	}
+	
 	def export ={
-		Exporter export= Exporter.get(params.int('id'));
+		Exporter export= Exporter.get(Long.parse(params.int('export.id')));
 		if(log.isDebugEnabled()) log.debug("export(export="+export+")")
-		
 		if(export){
 			File csvFile = exporterService.exportData(export);
 			def zipFile = Utils.getZipFile(csvFile, export.names[languageService.getCurrentLanguage()])
@@ -96,7 +159,7 @@ class ExporterController extends AbstractEntityController {
 	
 	def list={
 		adaptParamsForList()
-		List<Exporter> exports = Exporter.list();
+		List<Exporter> exports = exporterService.getExporters("date","desc");
 		this.getExporterListModel(exports,exporterService,list)
 	}
 	
@@ -107,7 +170,7 @@ class ExporterController extends AbstractEntityController {
 	}
 	
 	def getExporterListModel(def exports, def exporterService, def method){
-		if(log.isDebugEnabled()) log.debug("getExporterModel(exports="+exports+",exporterService="+exporterService+")")
+		if(log.isDebugEnabled()) log.debug("getExporterModel(exports="+exports+",exporterService="+exporterService+"method="+method+")")
 		render (view: '/entity/list', model:[
 			template:"exporter/exporterList",
 			entities: exports,
@@ -117,10 +180,6 @@ class ExporterController extends AbstractEntityController {
 			q:params['q']
 		])
 	}
-	
-	
-
-		
 	
 }
 

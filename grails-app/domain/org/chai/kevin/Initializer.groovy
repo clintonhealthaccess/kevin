@@ -1270,26 +1270,51 @@ class Initializer {
 			def dEfour = RawDataElement.findByCode("CODE4");
 			def dEfive = RawDataElement.findByCode("CODE11");
 			def dEsix = RawDataElement.findByCode("CODE12");
+			def dMap = RawDataElement.findByCode("LISTMAP1");
 			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
 			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
+			def burera = Location.findByCode("Burera");
+			def est = Location.findByCode("East");
+			def south = Location.findByCode("South");
+			
+			
+			def exporterThree = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element Three"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,dataLocationTwo],
+				data:[dMap,dEtwo,dEthree,dEfive,dEsix],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
 			
 			def exporterTwo = new Exporter(
-				names: j(["en":"Exporter Raw Data Element Two"]),
-				date: getDate( 2012, 4, 9),
-				dataLocations:[dataLocationOne],
+				descriptions: j(["en":"Exporter Raw Data Element Two"]),
+				date: new Date(),
 				typeCodeString:"Health Center",
-				data:[dEtwo,dEthree],
+				locations:[south,burera],
+				data:[dEtwo,dEthree,dMap],
 				periods: [periodOne]
 				).save(failOnError: true)
 				
 			def exporterOne = new Exporter(
-				names: j(["en":"Exporter Raw Data Element One"]),
-				date: getDate( 2012, 4, 10 ),
-				dataLocations:[dataLocationOne,dataLocationTwo],
+				descriptions: j(["en":"Exporter Raw Data Element One"]),
+				date: new Date(),
+				locations:[est,burera,south],
 				typeCodeString:"District Hospital,Health Center",
-				data:[dEtwo,dEthree,dEfour,dEfive,dEsix],
+				data:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
 				periods: [periodOne,periodTwo]
 				).save(failOnError: true)
+				
+			def exporterFour = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element Four"]),
+				date: new Date(),
+				typeCodeString:"District Hospital",
+				locations:[est,dataLocationOne],
+				data:[dMap,dEtwo,dEfour,dEfive,dEsix],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+			
+			
 				
 		}
 	}

@@ -82,6 +82,7 @@ public class LocationService {
 		return levels;
 	}
 	
+
 	public Long getNumberOfDataLocationsForType(DataLocationType dataLocationType){
 		return (Long)sessionFactory.getCurrentSession().createCriteria(DataLocation.class)
 		.add(Restrictions.eq("type", dataLocationType))

@@ -55,6 +55,7 @@ import org.chai.kevin.location.DataLocationType;
 public class Utils {
 	
 	private final static String DATE_FORMAT = "dd-MM-yyyy";
+	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
 	private final static String CSV_FILE_EXTENSION = ".csv";
 	private final static String ZIP_FILE_EXTENSION = ".zip";
 
@@ -77,7 +78,7 @@ public class Utils {
 		
 		return StringUtils.join(result, ',');
 	}
-	
+		
 	@SuppressWarnings("unused")
 	private static boolean matches(String text, String value) {
 		if (value == null) return false;
@@ -95,6 +96,10 @@ public class Utils {
 	public static String formatDate(Date date) {
 		if (date == null) return null;
 		return new SimpleDateFormat(DATE_FORMAT).format(date);
+	}
+	public static String formatDateWithTime(Date date) {
+		if (date == null) return null;
+		return new SimpleDateFormat(DATE_FORMAT_TIME).format(date);
 	}
 	
 	public static Date parseDate(String string) throws ParseException {

@@ -26,6 +26,7 @@ class LocationController extends AbstractEntityController {
 
 	def locationService
 	def languageService;
+	def calculationLocationService
 	def surveyExportService;
 	final String COUNTRY = "Country"
 	final String PROVINCE = "Province"
@@ -36,7 +37,7 @@ class LocationController extends AbstractEntityController {
 	final String TYPE="Type"
 	final String FILENAME="DataLocation"
 	final String FILETYPE=".csv"
-	
+
 	def bindParams(def entity) {
 		entity.properties = params
 		
@@ -91,14 +92,29 @@ class LocationController extends AbstractEntityController {
 	}
 	
 	def getAjaxData = {
-		def locations = locationService.searchLocation(Location.class, params['term'], [:])
-		
+		def locations = locationService.searchLocation(Location.class, params['term'], [:])		
 		render(contentType:"text/json") {
 			elements = array {
 				locations.each { location ->
 					elem (
 						key: location.id,
 						value: i18n(field:location.names)
+					)
+				}
+			}
+		}
+	}
+	
+	def getCalculationLocationAjaxData ={
+		def calculationLocations = locationService.searchLocation(Location.class, params['term'], [:])
+		calculationLocations.addAll(locationService.searchLocation(DataLocation.class, params['term'], [:]))
+		
+		render(contentType:"text/json") {
+			elements = array {
+				calculationLocations.each { location ->
+					elem (
+						key: location.id,
+						value: '['+location.class.simpleName+'] '+i18n(field:location.names)
 					)
 				}
 			}

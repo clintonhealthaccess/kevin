@@ -37,12 +37,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
+import org.chai.kevin.Translation;
 import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.data.Type.ValueType;
+import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.importer.ImporterError;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -55,6 +58,8 @@ import org.chai.kevin.value.ValueService;
 
 import org.apache.commons.lang.StringUtils
 import org.hibernate.Criteria;
+import org.chai.kevin.survey.SurveyExportService.DataPointVisitor;
+import org.chai.kevin.survey.export.SurveyExportDataPoint;
 import org.chai.kevin.util.Utils
 import org.hibernate.criterion.MatchMode
 import org.hibernate.criterion.Order
@@ -92,24 +97,31 @@ class ExporterService {
 	private final static String DATA_VALUE_ADDRESS = "Data Value Address";
 	
 	public File exportData(Exporter export){
-		
 		List<DataLocationType> types = [];
-		List<DataLocation> locations = [];
+		List<DataLocation> dataLocations = [];
 		
 		for(String code: export.getTypeCodes()){
 			def type = locationService.findDataLocationTypeByCode(code)
 			if(type!=null) types.add(type)
 		}
-		for(DataLocation location: export.dataLocations)
-			if(types.contains(location.getType()))
-				locations.add(location)
-		if (log.isDebugEnabled()) log.debug(" export.names: " +export.names[languageService.getCurrentLanguage()]+" export.periods "+export.periods +" dataLocations "+locations+" data "+export.data +")");
-		return this.exportRawDataElement(export.names[languageService.getCurrentLanguage()],locations,export.periods,export.data);
+		
+		for(DataLocation dataLocation: export.dataLocations)
+			if(types.contains(dataLocation.getType()))
+				dataLocations.add(dataLocation)
+					
+		for(Location location: export.locations)
+			for(DataLocation dataLocation: location.dataLocations)
+				if(types.contains(dataLocation.getType()))
+					if(!dataLocations.contains(dataLocation))
+						dataLocations.add(dataLocation)
+					
+		if (log.isDebugEnabled()) log.debug(" export.names: " +export.descriptions[languageService.getCurrentLanguage()]+" export.periods "+export.periods +" dataLocations "+dataLocations+" data "+export.data +")");
+		return this.exportRawDataElement(export.descriptions[languageService.getCurrentLanguage()],dataLocations,export.periods,export.data);
 	}
 		
 	public File exportRawDataElement(String fileName,def dataLocations,def periods,def data){
 		if (log.isDebugEnabled()) log.debug(" exportData(List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " List<Data<DataValue>>: " + data + ")");
-		
+
 		File csvFile = File.createTempFile(fileName, CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
@@ -120,12 +132,13 @@ class ExporterService {
 				csvHeaders = getExportDataHeaders();
 				writer.writeHeader(csvHeaders);
 			}
-			Map<DataLocation,Map<Period,Data>> dataMap =new HashMap<DataLocation,Map<Period,Data>>();
 			for(DataLocation location: dataLocations)
-				for(Period period: periods)
-					for(Data dataEl :data)
-					 	this.writeLine(location, period, dataEl, writer);
-			
+				for(Period period: periods)	
+				for(Data dataEl: data){
+					List<String> basicInfo = this.getBasicInfo(location,period,dataEl);
+					RawDataElementValue rawDataElementValue = valueService.getDataElementValue(data, location, period);
+					this.writeData(location,period,data.getType(),rawDataElementValue.getValue(),basicInfo,writer);
+				}
 		} catch (IOException ioe){
 			// TODO throw something that make sense
 			throw ioe;
@@ -133,109 +146,95 @@ class ExporterService {
 			writer.close();
 		}
 		return csvFile;
-		
-	}
-	private writeLine(DataLocation location,Period period,Data data,ICsvListWriter writer){
-		def line=[]
-		this.addLocationTree(location, line)
-		line.add(languageService.getText(location.getNames()))
-		line.add(languageService.getText(location.type.getNames()))
-		line.add(location.code)
-		line.add(period.startDate.toString()+" - "+period.endDate.toString())
-		line.add(languageService.getText(data.getNames()))
-		line.add(data.code)
-		String value = this.getDataValue(location,period,data)
-		line.add(value.toString())
-		writer.write(line)
-		line = []
+
 	}
 	
-	private addLocationTree(DataLocation location,def line){
-		for (LocationLevel level : surveyExportService.getLevels()){
-			Location parent = locationService.getParentOfLevel(location, level);
-			if (parent != null) line.add(languageService.getText(parent.getNames()));
-			else line.add("");
-		}
-		
-	}
-	
-	private String getDataValue(DataLocation dataLocation,Period period, Data data){
-		if (log.isDebugEnabled()) log.debug(" getDataValue(DataLocation: " + dataLocation + " Period: "+ period + " RawDataElement: " + data + ") ");
-		Value storedValue =null;
-		Type type = data.getType();
-		String value = null;
-		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(data, dataLocation, period);
-				
-		if(rawDataElementValue) storedValue=rawDataElementValue.getValue();
-		if(storedValue != null && !storedValue.isNull()){
+	private writeData(DataLocation location,Period period,Type type,Value value,List<String> basicInfo,ICsvListWriter writer){
+		if (log.isDebugEnabled()) log.debug(" writeData(DataLocation: " + location + " Period: " + period + " Type: " + type + " Value: "+ value + " List<String>: "+ basicInfo + ")");
+		String values= [];
+		if(value != null && !value.isNull()){
 			switch (type.getType()) {
 				case 'NUMBER':
-					value = storedValue.getNumberValue().toString();
-					break;
 				case 'BOOL':
-					value = storedValue.getBooleanValue().toString();
-					break;
 				case 'STRING':
-					value = storedValue.getStringValue();
-					break;
 				case 'TEXT':
-					value = storedValue.getStringValue();
-					break;
 				case 'DATE':
-					if(storedValue.getDateValue() != null){
-						//TODO this should never be null!
-						value = storedValue.getDateValue().toString();
-					}
-					break;
 				case 'ENUM':
-					value = storedValue.getEnumValue();
+						basicInfo.addAll(this.getDataValue(type,value));
+					break;
+				case 'LIST':
+						this.addDataPoint(location,period,type,value)
+					break;
+				case 'MAP':
+						this.addDataPoint(location,period,type,value)
 					break;
 				default:
 					break;
 			}
 		}
-		return value;
+		writer.write(basicInfo);
 	}
 		
-
-	public Integer countExporter(Class<Exporter> clazz, String text) {
-		return getSearchCriteria(clazz,text).setProjection(Projections.count("id")).uniqueResult()
+    private addDataPoint(DataLocation dataLocation, Period period,Type type, Value value){
+		
+		Map<String,List<String>> dataPoints = new HashMap<String,List<String>>();
+		DataPointVisitor visitor = new DataPointVisitor(dataPoints);
+		type.visit(value, visitor);
+		dataPoints = visitor.getDataPoints();
 	}
 	
-	public <T extends Exporter> List<T>  searchExporter(Class<T> clazz, String text, Map<String, String> params) {
-		    def exporters=[]
-			def criteria = getSearchCriteria(clazz,text)
-			
-			if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-			if (params['max'] != null) criteria.setMaxResults(params['max'])
-			
-			if(params['sort']!=null)
-				exporters= criteria.addOrder(Order.asc(params['sort'])).list()
-			else
-				exporters= criteria.addOrder(Order.asc("id")).list()
-				
-			StringUtils.split(text).each { chunk ->
-				exporters.retainAll { exporter ->
-					Utils.matches(chunk, exporter.names[languageService.getCurrentLanguage()]);		
-				}
+	
+	
+	private List<String> getDataValue( Type dataType, Value dataValue){
+		if (log.isDebugEnabled()) log.debug(" getDataValue(Type: " + dataType + " Value: "+ dataValue + ")");
+		Value storedValue =null;
+		Type type = dataType.getType();
+		String values = [];
+		if(dataValue != null && !dataValue.isNull()){
+			switch (type.getType()) {
+				case 'NUMBER':
+					values.add(storedValue.getNumberValue().toString());
+					break;
+				case 'BOOL':
+					values.add(storedValue.getBooleanValue().toString());
+					break;
+				case 'STRING':
+					values.add(storedValue.getStringValue());
+					break;
+				case 'TEXT':
+					values.add(storedValue.getStringValue());
+					break;
+				case 'DATE':
+					if(storedValue.getDateValue() != null){
+						//TODO this should never be null!
+						values.add(storedValue.getDateValue().toString());
+					}
+					break;
+				case 'ENUM':
+					values.add(storedValue.getEnumValue());
+					break;
+				default:
+					break;
 			}
-			
-			return exporters;
-	}
-	
-	private Criteria getSearchCriteria(Class<Exporter> clazz, String text) {
-		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz);
-		def textRestrictions = Restrictions.conjunction()
-		StringUtils.split(text).each { chunk ->
-			def disjunction = Restrictions.disjunction();
-			disjunction.add(Restrictions.ilike("names.jsonText", chunk, MatchMode.ANYWHERE))
-			textRestrictions.add(disjunction)
 		}
-		criteria.add(textRestrictions)
-		return criteria
+		return values;
+	}
+	private List<String> getBasicInfo(DataLocation location,Period period, Data data){
+		def basicInfo=[]
+		for (LocationLevel level : surveyExportService.getLevels()){
+			Location parent = locationService.getParentOfLevel(location, level);
+			if (parent != null) basicInfo.add(languageService.getText(parent.getNames()));
+			else basicInfo.add("");
+		}
+		basicInfo.add(languageService.getText(location.getNames()))
+		basicInfo.add(languageService.getText(location.type.getNames()))
+		basicInfo.add(location.code)
+		basicInfo.add("[ "+period.startDate.toString()+" - "+period.endDate.toString()+" ]")
+		basicInfo.add(languageService.getText(data.getNames()))
+		basicInfo.add(data.code)
+		return basicInfo;
 	}
 	
-
 	private List getExportDataHeaders() {
 		List<String> headers = new ArrayList<String>();
 		headers.add(COUNTRY);
@@ -251,4 +250,76 @@ class ExporterService {
 		headers.add(DATA_VALUE_ADDRESS);
 		return headers;
 	}
+	
+	private class DataPointVisitor extends ValueVisitor{
+	
+		private Map<String,List<String>> dataPoints = new HashMap<String,List<String>>();
+		public Map<String,List<String>> getDataPoints(){
+			return dataPoints;
+		}
+		
+		public DataPointVisitor() {
+			dataPoints = new ArrayList<String>();
+		}
+
+		@Override
+		public void handle(Type type, Value value, String prefix, String genericPrefix) {
+			if(!type.isComplexType()){
+				String address
+				for(String genericTypeKey : this.getTypes().keySet()){
+					if(!this.getGenericTypes().get(genericTypeKey).getType().equals(ValueType.LIST)){
+						
+					}
+				}
+				if(!dataPoints.containsKey(address))
+					dataPoints.put(address, new ArrayList<String>())
+				//TODO get value from type //dataPoint.get(address).
+
+			}
+		}
+	}
+	public List<Exporter> getExporters(def sorter, def order){
+		return Exporter.list(sort:sorter,order:order);
+	}
+	public List<Exporter> getExporters(){
+		return Exporter.list();
+	}
+	public Integer countExporter(Class<Exporter> clazz, String text) {
+		return getSearchCriteria(clazz,text).setProjection(Projections.count("id")).uniqueResult()
+	}
+	
+	public <T extends Exporter> List<T>  searchExporter(Class<T> clazz, String text, Map<String, String> params) {
+			def exporters=[]
+			def criteria = getSearchCriteria(clazz,text)
+			
+			if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+			if (params['max'] != null) criteria.setMaxResults(params['max'])
+			
+			if(params['sort']!=null)
+				exporters= criteria.addOrder(Order.asc(params['sort'])).list()
+			else
+				exporters= criteria.addOrder(Order.desc("date")).list()
+				
+			StringUtils.split(text).each { chunk ->
+				exporters.retainAll { exporter ->
+					Utils.matches(chunk, exporter.descriptions[languageService.getCurrentLanguage()]);
+				}
+			}
+			
+			return exporters;
+	}
+	private Criteria getSearchCriteria(Class<Exporter> clazz, String text) {
+		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz);
+		def textRestrictions = Restrictions.conjunction()
+		StringUtils.split(text).each { chunk ->
+			def disjunction = Restrictions.disjunction();
+			disjunction.add(Restrictions.ilike("descriptions.jsonText", chunk, MatchMode.ANYWHERE))
+			textRestrictions.add(disjunction)
+		}
+		criteria.add(textRestrictions)
+		return criteria
+	}
+	
+	
 }
+

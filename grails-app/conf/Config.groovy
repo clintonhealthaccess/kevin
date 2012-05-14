@@ -238,7 +238,7 @@ dsr.skip.levels=[]
 fct.skip.levels=[]
 cost.skip.levels=[]
 
-export.skip.levels=["Country", "Sector"]
+export.skip.levels=["National","Sector"]
 
 info.group.level="District"
 dsr.group.level="District"
