@@ -54,9 +54,13 @@ class ExpressionController {
 			def valueMap = [:]
 			for (def period : periods) {
 				def valueList = []
+				int i = 0;
 				for (def location : locations) {
 					valueList.add(expressionService.calculateValue(dataElement, location, period))
-					sessionFactory.currentSession.clear()
+					if (i++ == 40) {
+						sessionFactory.currentSession.clear();
+						i = 0;
+					}
 				}
 				valueMap.put(period, valueList)
 			}
