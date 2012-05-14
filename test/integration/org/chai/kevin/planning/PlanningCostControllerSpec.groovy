@@ -13,7 +13,7 @@ class PlanningCostControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period)
 		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", "[_].key", planning)
 		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
-		def planningCost = newPlanningCost(PlanningCostType.INCOMING, dataElement, "[_].key", "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.INCOMING, dataElement, "value", planningType)
 		planningCostController = new PlanningCostController()
 		
 		when:

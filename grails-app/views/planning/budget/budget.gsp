@@ -41,7 +41,6 @@
 													<th><g:message code="planning.budget.table.incoming"/></th>
 													<th><g:message code="planning.budget.table.outgoing"/></th>
 													<th><g:message code="planning.budget.table.difference"/></th>
-													<th><g:message code="planning.budget.table.generalfund"/></th>
 													<th class="status"></th>
 												</tr>
 											</thead>
@@ -62,7 +61,6 @@
 															<td>(${planningTypeBudget.outgoing})</td>
 															<td>${planningTypeBudget.incoming}</td>
 															<td>${planningTypeBudget.difference}</td>
-															<td></td>
 															<td class="status"></td>
 														</tr>
 														<tr class="sub-tree js_foldable-container hidden">
@@ -87,7 +85,6 @@
 																				<td>(${budgetPlanningEntry.outgoing})</td>
 																				<td>${budgetPlanningEntry.incoming}</td>
 																				<td>${budgetPlanningEntry.difference}</td>
-																				<td><input type="checkbox" disabled="disabled"></td>
 																				<td class="status 
 																					${!budgetPlanningEntry.invalidSections.empty?'invalid':''} 
 																					${!budgetPlanningEntry.incompleteSections.empty?'incomplete':''}
@@ -98,14 +95,9 @@
 																				<td colspan="7" class="bucket">
 																					<table>
 																						<tbody>
-																							<!--
-																								OUTGOING costing formulas, only displayed if not empty
-																							-->
-																							<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.OUTGOING]"/>
-																							<!--
-																								INCOMING costing formulas, only displayed if not empty
-																							-->
-																							<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, costType: PlanningCostType.INCOMING]"/>
+																							<g:each in="${planningType.costs}" var="planningCost">
+																								<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, planningCost: planningCost]"/>
+																							</g:each>
 																						</tbody>
 																					</table>
 																				</td>
@@ -122,7 +114,6 @@
 													<td>${outgoing}</td>
 													<td>${incoming}</td>
 													<td>${difference}</td>
-													<td></td>
 													<td class="status"></td>
 												</tr>
 											</tbody>
@@ -130,16 +121,6 @@
 										<br />
 									</div>
 								
-									<div class="right table-aside">
-										<p class="context-message success push-20"><g:message code="planning.budget.balance" args="['xx']"/></p>
-										<div class="diff context-message hidden" id="js_budget-section-edit">
-											<div class="js_content">
-											</div>
-											<span class="hidden js_warning-message">
-												<g:message code="planning.budget.panel.error"/>
-											</span>
-										</div>
-									</div>
 								</g:else>
 							</div>
 						</div>
@@ -147,82 +128,5 @@
 				</div>
 			</div>
 		</div>
-		<r:script>
-			$(document).ready(function() {
-				${render(template:'/templates/messages')}
-
-				var dataEntry = new DataEntry({
-					element: $('#js_budget-section-edit'),
-					callback: function(dataEntry, data, element) {
-						if (data.complete) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').removeClass('incomplete')
-						else $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('incomplete')
-						if (data.valid) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').removeClass('invalid')
-						else $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('invalid')
-						
-						if ($(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').hasClass('incomplete')) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('tooltip');
-						if ($(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').hasClass('invalid')) $(escape('#planning-'+data.id+'-'+data.lineNumber)).find('.status').addClass('tooltip');
-						
-						if (data.budgetUpdated) $('#js_budget-warning').hide();
-						else $('#js_budget-warning').show();
-					},
-					url: "${createLink(controller:'editPlanning', action:'saveValue', params: [location: location.id])}", 
-					messages: messages,
-					trackEvent: ${grails.util.Environment.current==grails.util.Environment.PRODUCTION}
-				});
-
-				var queueName = 'queue'+Math.floor(Math.random()*11);
-				var rightPaneQueue = $.manageAjax.create(queueName, {
-					type : 'POST',
-					dataType: 'json',
-					queue: 'clear',
-					cacheResponse: false,
-					maxRequests: 1,
-					abortOld: true
-				});			
-		
-				$('.js_budget-section-link').bind('click', function(){
-					var row = $(this).parents('tr').first();
-					
-					rightPaneQueue.abort();
-					rightPaneQueue.clear();
-				
-					$.manageAjax.add(queueName, {
-						url: $(this).attr('href'),
-						beforeSend: function() {
-							$('.active-row').removeClass('active-row');
-							$('#js_budget-section-edit').show();
-							$('#js_budget-section-edit').removeClass('warning');
-							$('#js_budget-section-edit .js_warning-message').hide();
-							$('#js_budget-section-edit').addClass('loading');
-							$('#js_budget-section-edit .js_content').html('');
-						},
-						success: function(data) {
-							if (data.status == 'success') {
-								$('#js_budget-section-edit .js_content').html(data.html);
-								$('#js_budget-section-edit').removeClass('loading');
-								$('#js_budget-section-edit').removeClass('warning');
-								$('#js_budget-section-edit .js_warning-message').hide();
-								
-								dataEntry.enableAfterLoading();
-							}
-							else {
-								$('#js_budget-section-edit').removeClass('loading');
-								$('#js_budget-section-edit').addClass('warning');
-								$('#js_budget-section-edit .js_warning-message').show();
-							}
-							row.addClass('active-row');
-						},
-						error: function() {
-							$('#js_budget-section-edit').removeClass('loading');
-							$('#js_budget-section-edit').addClass('warning');
-							$('#js_budget-section-edit .js_warning-message').show();
-							row.addClass('active-row');
-						}
-					});
-					
-					return false;
-				});
-			});
-		</r:script>
 	</body>
 </html>

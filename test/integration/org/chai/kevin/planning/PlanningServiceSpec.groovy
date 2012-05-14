@@ -105,7 +105,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		when:
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()), 
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "[_].key1", "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
 		refreshNormalizedDataElement()
 		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
 		
@@ -129,7 +129,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(HEALTH_CENTER_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "[_].key1", "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
 		def planningTypeBudget = null
 		
 		when:
@@ -144,7 +144,6 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		then:
 		planningTypeBudget.planningEntryBudgetList.size() == 1
 		planningTypeBudget.planningEntryBudgetList[0].budgetCosts.size() == 0
-		planningTypeBudget.planningEntryBudgetList[0].getGroupSections(PlanningCostType.OUTGOING).size() == 0
 	}
 	
 	def "get budget lines when normalized data element does not apply"() {
@@ -167,7 +166,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(HEALTH_CENTER_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "[_].key1", "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
 		refreshNormalizedDataElement()
 		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
 		
@@ -199,7 +198,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		value.listValue[1].setAttribute("submitted", "true")
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '$'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0)']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "[_].key1", "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
 		refreshNormalizedDataElement()
 		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
 		
@@ -365,7 +364,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "[_].key1", "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
 		
 		when:
 		def value = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":null}}],\"uuid\":\"uuid\"}]}")
