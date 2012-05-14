@@ -57,7 +57,8 @@ class ExpressionController {
 				int i = 0;
 				for (def location : locations) {
 					valueList.add(expressionService.calculateValue(dataElement, location, period))
-					if (i++ == 40) {
+					if (i++ == 20) {
+						if (log.debugEnabled) log.debug('clearing session')
 						sessionFactory.currentSession.clear();
 						i = 0;
 					}
