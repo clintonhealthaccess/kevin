@@ -119,7 +119,6 @@ class EditPlanningController extends AbstractController {
 			lineNumber = lineNumberParam
 			complete = validatable.complete
 			valid = !validatable.invalid
-			budgetUpdated = planningEntry.budgetUpdated
 			sections = array {
 				planningType.sections.each { section ->
 					sect (
@@ -154,46 +153,42 @@ class EditPlanningController extends AbstractController {
 		}
 	}
 
-	def submit = {
-		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocation.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
-		
-		planningService.submit(planningType, location, lineNumber)
-		
-		redirect (uri: targetURI)
-	}
-	
-	def unsubmit = {
-		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocation.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
-		
-		planningService.unsubmit(planningType, location, lineNumber)
-		
-		redirect (uri: targetURI)
-	}
+//	def submit = {
+//		def planningType = PlanningType.get(params.int('planningType'))
+//		def location = DataLocation.get(params.int('location'))
+//		def lineNumber = params.int('lineNumber')
+//		
+//		planningService.submit(planningType, location, lineNumber)
+//		
+//		redirect (uri: targetURI)
+//	}
+//	
+//	def unsubmit = {
+//		def planningType = PlanningType.get(params.int('planningType'))
+//		def location = DataLocation.get(params.int('location'))
+//		def lineNumber = params.int('lineNumber')
+//		
+//		planningService.unsubmit(planningType, location, lineNumber)
+//		
+//		redirect (uri: targetURI)
+//	}
 	
 	def updateBudget = {
 		def planning = Planning.get(params.int('planning'))
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocation.get(params.int('location'))
 		
-		if (planning != null) planning.planningTypes.each {
-			planningService.refreshBudget(it, location)
-		}
-		else {
-			planning = planningType.planning
-			planningService.refreshBudget(planningType, location)
-		}
+		planningService.refreshBudget(planning, location)
 
 		redirect (action: 'budget', params:[planning: planning.id, location: location.id] )
-
 	}
 	
 	def budget = {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocation.get(params.int('location'))
+		
+		planningService.submitIfNeeded(planning, location)
+		
 		def planningLists = planning.planningTypes.collect {
 			planningService.getPlanningList(it, location)
 		}
@@ -201,7 +196,7 @@ class EditPlanningController extends AbstractController {
 		render (view: '/planning/budget/budget', model: [
 			planning: planning,
 			location: location,
-//			updatedBudget: isBudgetUpdated(planning, location),
+			budgetNeedsUpdate: planningService.budgetNeedsUpdate(planning, location),
 			planningLists: planningLists
 		])
 	}

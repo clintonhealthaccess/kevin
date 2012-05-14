@@ -38,6 +38,7 @@ public class PlanningList {
 		this.enums = enums;
 	}
 	
+	
 	public FormEnteredValue getFormEnteredValue() {
 		return formEnteredValue;
 	}
@@ -92,13 +93,6 @@ public class PlanningList {
 	
 	public Integer getNextLineNumber() {
 		return getPlanningEntries().size();
-	}
-	
-	public boolean isBudgetUpdated() {
-		for (PlanningEntry planningEntry : getPlanningEntries()) {
-			if (!planningEntry.isBudgetUpdated() && planningEntry.isSubmitted()) return false;
-		}
-		return true;
 	}
 	
 	public boolean isEmpty() {

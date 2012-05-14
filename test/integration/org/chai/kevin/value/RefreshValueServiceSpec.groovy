@@ -193,6 +193,58 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		
 	}
 	
+	def "test needs update when raw data element has value"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(KIVUYE), v("10"))
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(HEALTH_CENTER_GROUP):"\$"+rawDataElement.id]]))
+		
+		expect:
+		refreshValueService.needsUpdate(normalizedDataElement1, DataLocation.findByCode(KIVUYE), period)
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement1, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("10"))
+		
+		then:
+		!refreshValueService.needsUpdate(normalizedDataElement1, DataLocation.findByCode(KIVUYE), period)
+		
+		when:
+		normalizedDataElement1.timestamp = new Date()
+		normalizedDataElement1.save(failOnError: true)
+		
+		then:
+		refreshValueService.needsUpdate(normalizedDataElement1, DataLocation.findByCode(KIVUYE), period)
+		
+		when:
+		value1.timestamp = new Date()
+		value1.save(failOnError: true)
+		
+		then:
+		!refreshValueService.needsUpdate(normalizedDataElement1, DataLocation.findByCode(KIVUYE), period)
+		
+		when:
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
+		
+		then:
+		refreshValueService.needsUpdate(normalizedDataElement2, DataLocation.findByCode(KIVUYE), period)
+		
+		when:
+		newNormalizedDataElementValue(normalizedDataElement2, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("10"))
+		
+		then:
+		!refreshValueService.needsUpdate(normalizedDataElement2, DataLocation.findByCode(KIVUYE), period)
+		
+		when:
+		rawDataElement.setTimestamp(new Date())
+		
+		then:
+		refreshValueService.needsUpdate(normalizedDataElement2, DataLocation.findByCode(KIVUYE), period)
+		refreshValueService.needsUpdate(normalizedDataElement1, DataLocation.findByCode(KIVUYE), period)
+		
+	}
+	
 	// these are commented out because they don't work with the propagation=REQUIRES_NEW
 	// annotation in RefreshValueService
 //	def "test refresh normalized data elements respects dependency"() {

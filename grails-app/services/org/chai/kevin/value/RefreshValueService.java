@@ -23,7 +23,6 @@ import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.validator.util.privilegedactions.GetMethod;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +38,9 @@ public class RefreshValueService {
 	
 	@Transactional(readOnly = false)
 	public void refreshNormalizedDataElement(NormalizedDataElement normalizedDataElement) {
-		List<DataElement> dependencies = getOrderedDependencies(normalizedDataElement);
+		List<DataElement> dependencies = new ArrayList<DataElement>(); 
+		collectOrderedDependencies(normalizedDataElement, dependencies);
+		Collections.reverse(dependencies);
 		for (DataElement dependency : dependencies) {
 			if (dependency instanceof NormalizedDataElement) refreshNormalizedDataElementOnly((NormalizedDataElement)dependency);
 		}
@@ -98,7 +99,9 @@ public class RefreshValueService {
 		while (!normalizedDataElements.isEmpty()) {
 			NormalizedDataElement normalizedDataElement = normalizedDataElements.remove(0);
 			if (normalizedDataElement.getCalculated() == null || normalizedDataElement.needsRefresh()) {
-				List<DataElement> dependencies = getOrderedDependencies(normalizedDataElement);
+				List<DataElement> dependencies = new ArrayList<DataElement>();
+				collectOrderedDependencies(normalizedDataElement, dependencies);
+				Collections.reverse(dependencies);
 				for (DataElement dependentElement : dependencies) {
 					getMe().refreshNormalizedDataElementOnly((NormalizedDataElement)dependentElement);
 					
@@ -111,17 +114,17 @@ public class RefreshValueService {
 		}
 	}
 	
-	private List<DataElement> getOrderedDependencies(NormalizedDataElement normalizedDataElement) {
-		List<DataElement> elements = new ArrayList<DataElement>();
-		elements.add(normalizedDataElement);
-		for (String expression : normalizedDataElement.getExpressions()) {
-			Map<String, DataElement> dependencies = expressionService.getDataInExpression(expression, DataElement.class);
-			for (DataElement dependency : dependencies.values()) {
-				if (dependency != null && !elements.contains(dependency)) elements.add(dependency);
+	private void collectOrderedDependencies(DataElement dataElement, List<DataElement> dependencies) {
+		dependencies.add(dataElement);
+		if (dataElement instanceof NormalizedDataElement) {
+			NormalizedDataElement normalizedDataElement = (NormalizedDataElement)dataElement;
+			for (String expression : normalizedDataElement.getExpressions()) {
+				Map<String, DataElement> dependenciesMap = expressionService.getDataInExpression(expression, DataElement.class);
+				for (DataElement dependency : dependenciesMap.values()) {
+					if (dependency != null && !dependencies.contains(dependency)) collectOrderedDependencies(dependency, dependencies);
+				}
 			}
 		}
-		Collections.reverse(elements);
-		return elements;
 	}
 
 	@Transactional(readOnly = false)
@@ -142,11 +145,14 @@ public class RefreshValueService {
 	
 	@Transactional(readOnly = true)
 	public boolean needsUpdate(NormalizedDataElement normalizedDataElement, DataLocation location, Period period) {
-		List<DataElement> dependencies = getOrderedDependencies(normalizedDataElement);
-		for (DataElement dataElement : dependencies) {
-			StoredValue value = (StoredValue)valueService.getDataElementValue(dataElement, location, period);
+		List<DataElement> dependencies = new ArrayList<DataElement>();
+		collectOrderedDependencies(normalizedDataElement, dependencies);
+		Collections.reverse(dependencies);
+		for (DataElement dependency : dependencies) {
+			StoredValue value = (StoredValue)valueService.getDataElementValue(dependency, location, period);
+			if (value == null) return true;
+			if (!value.getTimestamp().after(dependency.getTimestamp())) return true;
 		}
-		
 		return false;
 	}
 	
@@ -161,9 +167,11 @@ public class RefreshValueService {
 	@Transactional(readOnly = false)
 	public void refreshNormalizedDataElement(NormalizedDataElement dataElement, DataLocation dataLocation, Period period) {
 		valueService.deleteValues(dataElement, dataLocation, period);
-		List<DataElement> dependencies = getOrderedDependencies(dataElement);
+		List<DataElement> dependencies = new ArrayList<DataElement>(); 
+		collectOrderedDependencies(dataElement, dependencies);
+		Collections.reverse(dependencies);
 		for (DataElement dependency : dependencies) {
-			valueService.save(expressionService.calculateValue((NormalizedDataElement)dependency, dataLocation, period));	
+			if (dependency instanceof NormalizedDataElement) valueService.save(expressionService.calculateValue((NormalizedDataElement)dependency, dataLocation, period));	
 		}
 	}
 
