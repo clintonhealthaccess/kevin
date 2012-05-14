@@ -1,18 +1,22 @@
 package org.chai.kevin.data
 
+import java.util.Set;
+
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
 import org.chai.kevin.Period;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.util.Utils;
 
 class ExpressionController {
 
 	def expressionService
 	def sessionFactory
+	def locationService
 	
 	def test = {
-		render (view: 'builder', model: [periods: Period.list([cache: true])])
+		render (view: 'builder', model: [periods: Period.list([cache: true]), types: DataLocationType.list()])
 	}
 	
 	def doTest = { ExpressionTestCommand cmd ->
@@ -31,7 +35,8 @@ class ExpressionController {
 		}
 		else {
 			def periods = cmd.periodIds.findAll {it!=null} collect {Period.get(it)}
-			def dataLocationTypes = DataLocationType.list([cache: true])
+			def dataLocationTypes = new HashSet( cmd.typeCodes.collect { DataLocationType.findByCode(it) } )
+			def locations = locationService.getRootLocation().collectDataLocations(null, dataLocationTypes)
 			
 			NormalizedDataElement dataElement = new NormalizedDataElement()
 			dataElement.type = cmd.type
@@ -46,7 +51,6 @@ class ExpressionController {
 			}
 			dataElement.expressionMap = expressionMap
 			
-			def locations = DataLocation.list()
 			def valueMap = [:]
 			for (def period : periods) {
 				def valueList = []
@@ -73,6 +77,14 @@ class ExpressionTestCommand {
 	String expression
 	Type type
 	List<Long> periodIds
+	String typeCodeString
+	
+	Set<String> getTypeCodes() {
+		return Utils.split(typeCodeString);
+	}
+	void setTypeCodes(Set<String> typeCodes) {
+		this.typeCodeString = Utils.unsplit(typeCodes);
+	}
 	
 	static constraints = {
 		expression (blank: false, expressionValid: true)
