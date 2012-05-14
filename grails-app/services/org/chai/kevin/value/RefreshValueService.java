@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Calculation;
+import org.chai.kevin.data.DataElement;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.location.CalculationLocation;
@@ -38,9 +39,9 @@ public class RefreshValueService {
 	
 	@Transactional(readOnly = false)
 	public void refreshNormalizedDataElement(NormalizedDataElement normalizedDataElement) {
-		List<NormalizedDataElement> dependencies = getOrderedDependencies(normalizedDataElement);
-		for (NormalizedDataElement dependency : dependencies) {
-			refreshNormalizedDataElementOnly(dependency);
+		List<DataElement> dependencies = getOrderedDependencies(normalizedDataElement);
+		for (DataElement dependency : dependencies) {
+			if (dependency instanceof NormalizedDataElement) refreshNormalizedDataElementOnly((NormalizedDataElement)dependency);
 		}
 	}
 	
@@ -97,9 +98,9 @@ public class RefreshValueService {
 		while (!normalizedDataElements.isEmpty()) {
 			NormalizedDataElement normalizedDataElement = normalizedDataElements.remove(0);
 			if (normalizedDataElement.getCalculated() == null || normalizedDataElement.needsRefresh()) {
-				List<NormalizedDataElement> dependencies = getOrderedDependencies(normalizedDataElement);
-				for (NormalizedDataElement dependentElement : dependencies) {
-					getMe().refreshNormalizedDataElementOnly(dependentElement);
+				List<DataElement> dependencies = getOrderedDependencies(normalizedDataElement);
+				for (DataElement dependentElement : dependencies) {
+					getMe().refreshNormalizedDataElementOnly((NormalizedDataElement)dependentElement);
 					
 					// we remove the element from the original list since it already has been updated
 					normalizedDataElements.remove(dependentElement);
@@ -110,12 +111,12 @@ public class RefreshValueService {
 		}
 	}
 	
-	private List<NormalizedDataElement> getOrderedDependencies(NormalizedDataElement normalizedDataElement) {
-		List<NormalizedDataElement> elements = new ArrayList<NormalizedDataElement>();
+	private List<DataElement> getOrderedDependencies(NormalizedDataElement normalizedDataElement) {
+		List<DataElement> elements = new ArrayList<DataElement>();
 		elements.add(normalizedDataElement);
 		for (String expression : normalizedDataElement.getExpressions()) {
-			Map<String, NormalizedDataElement> dependencies = expressionService.getDataInExpression(expression, NormalizedDataElement.class);
-			for (NormalizedDataElement dependency : dependencies.values()) {
+			Map<String, DataElement> dependencies = expressionService.getDataInExpression(expression, DataElement.class);
+			for (DataElement dependency : dependencies.values()) {
 				if (dependency != null && !elements.contains(dependency)) elements.add(dependency);
 			}
 		}
@@ -139,6 +140,16 @@ public class RefreshValueService {
 		}
 	}
 	
+	@Transactional(readOnly = true)
+	public boolean needsUpdate(NormalizedDataElement normalizedDataElement, DataLocation location, Period period) {
+		List<DataElement> dependencies = getOrderedDependencies(normalizedDataElement);
+		for (DataElement dataElement : dependencies) {
+			StoredValue value = (StoredValue)valueService.getDataElementValue(dataElement, location, period);
+		}
+		
+		return false;
+	}
+	
 	@Transactional(readOnly = false)
 	public void refreshCalculation(Calculation<?> calculation, CalculationLocation location, Period period) {
 		valueService.deleteValues(calculation, location, period);
@@ -150,9 +161,9 @@ public class RefreshValueService {
 	@Transactional(readOnly = false)
 	public void refreshNormalizedDataElement(NormalizedDataElement dataElement, DataLocation dataLocation, Period period) {
 		valueService.deleteValues(dataElement, dataLocation, period);
-		List<NormalizedDataElement> dependencies = getOrderedDependencies(dataElement);
-		for (NormalizedDataElement dependency : dependencies) {
-			valueService.save(expressionService.calculateValue(dependency, dataLocation, period));	
+		List<DataElement> dependencies = getOrderedDependencies(dataElement);
+		for (DataElement dependency : dependencies) {
+			valueService.save(expressionService.calculateValue((NormalizedDataElement)dependency, dataLocation, period));	
 		}
 	}
 

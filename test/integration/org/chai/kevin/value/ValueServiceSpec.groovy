@@ -34,6 +34,7 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -324,6 +325,45 @@ class ValueServiceSpec extends IntegrationTests {
 		then:
 		NormalizedDataElement.list()[0].timestamp.after(date)
 	}
+	
+	def "save raw data element value sets date of all dependencies"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+rawDataElement.id]]))
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+normalizedDataElement1.id]]))
+		
+		when:
+		def date1 = normalizedDataElement1.timestamp
+		def date2 = normalizedDataElement2.timestamp
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
+		valueService.save(rawDataElementValue);
+		
+		then:
+		NormalizedDataElement.list()[0].timestamp.after(date1)
+		NormalizedDataElement.list()[1].timestamp.after(date2)
+	}
+	
+	def "save raw data element value sets date of all dependencies calculation"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+rawDataElement.id]]))
+		def calculation = newSum("\$"+normalizedDataElement1.id, CODE(3))
+		
+		when:
+		def date1 = normalizedDataElement1.timestamp
+		def date2 = calculation.timestamp
+		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
+		valueService.save(rawDataElementValue);
+		
+		then:
+		NormalizedDataElement.list()[0].timestamp.after(date1)
+		Sum.list()[0].timestamp.after(date2)
+	}
+		
 		
 	def "test delete calculation values"() {
 		setup:
