@@ -21,7 +21,6 @@ public class ReportProgram extends ReportEntity {
 	private Long id;
 	private ReportProgram parent;
 	private List<ReportProgram> children = new ArrayList<ReportProgram>();
-	private List<AbstractReportTarget> targets = new ArrayList<AbstractReportTarget>();
 	
 	@Id
 	@GeneratedValue

@@ -13,7 +13,6 @@ abstract class FctIntegrationTests extends IntegrationTests {
 			program: program,
 			typeCodeString: Utils.unsplit(types)
 			).save(failOnError: true)
-			program.targets << target
 			program.save(failOnError: true)
 			return target
 	}
@@ -25,7 +24,6 @@ abstract class FctIntegrationTests extends IntegrationTests {
 			program: program,
 			typeCodeString: Utils.unsplit(types)
 			).save(failOnError: true)			
-			program.targets << target
 			program.save(failOnError: true)
 			return target
 	}
