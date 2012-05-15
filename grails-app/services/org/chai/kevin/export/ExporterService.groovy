@@ -47,6 +47,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type.ValueVisitor;
 import org.chai.kevin.importer.ImporterError;
+import org.chai.kevin.location.CalculationLocation
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
@@ -105,21 +106,21 @@ class ExporterService {
 			if(type!=null) types.add(type)
 		}
 		
-		for(DataLocation dataLocation: export.dataLocations)
-			if(types.contains(dataLocation.getType()))
-				dataLocations.add(dataLocation)
-					
-		for(Location location: export.locations)
-			for(DataLocation dataLocation: location.dataLocations)
-				if(types.contains(dataLocation.getType()))
+		for(CalculationLocation location: export.locations){
+			if(location instanceof DataLocation)
+				if(types.contains((DataLocation) location.type))
+					dataLocations.add(location)
+			if(location instanceof Location)
+				for(DataLocation dataLocation: location.collectDataLocations(null,types))
 					if(!dataLocations.contains(dataLocation))
 						dataLocations.add(dataLocation)
+		}
 					
 		if (log.isDebugEnabled()) log.debug(" export.names: " +export.descriptions[languageService.getCurrentLanguage()]+" export.periods "+export.periods +" dataLocations "+dataLocations+" data "+export.data +")");
 		return this.exportRawDataElement(export.descriptions[languageService.getCurrentLanguage()],dataLocations,export.periods,export.data);
 	}
 		
-	public File exportRawDataElement(String fileName,def dataLocations,def periods,def data){
+	public File exportRawDataElement(String fileName,List<DataLocation> dataLocations,List<Period> periods,List<Data<DataValue>> data){
 		if (log.isDebugEnabled()) log.debug(" exportData(List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " List<Data<DataValue>>: " + data + ")");
 
 		File csvFile = File.createTempFile(fileName, CSV_FILE_EXTENSION);
@@ -160,13 +161,7 @@ class ExporterService {
 				case 'TEXT':
 				case 'DATE':
 				case 'ENUM':
-						basicInfo.addAll(this.getDataValue(type,value));
-					break;
-				case 'LIST':
-						this.addDataPoint(location,period,type,value)
-					break;
-				case 'MAP':
-						this.addDataPoint(location,period,type,value)
+						basicInfo.addAll(type,value));
 					break;
 				default:
 					break;
@@ -183,42 +178,7 @@ class ExporterService {
 		dataPoints = visitor.getDataPoints();
 	}
 	
-	
-	
-	private List<String> getDataValue( Type dataType, Value dataValue){
-		if (log.isDebugEnabled()) log.debug(" getDataValue(Type: " + dataType + " Value: "+ dataValue + ")");
-		Value storedValue =null;
-		Type type = dataType.getType();
-		String values = [];
-		if(dataValue != null && !dataValue.isNull()){
-			switch (type.getType()) {
-				case 'NUMBER':
-					values.add(storedValue.getNumberValue().toString());
-					break;
-				case 'BOOL':
-					values.add(storedValue.getBooleanValue().toString());
-					break;
-				case 'STRING':
-					values.add(storedValue.getStringValue());
-					break;
-				case 'TEXT':
-					values.add(storedValue.getStringValue());
-					break;
-				case 'DATE':
-					if(storedValue.getDateValue() != null){
-						//TODO this should never be null!
-						values.add(storedValue.getDateValue().toString());
-					}
-					break;
-				case 'ENUM':
-					values.add(storedValue.getEnumValue());
-					break;
-				default:
-					break;
-			}
-		}
-		return values;
-	}
+
 	private List<String> getBasicInfo(DataLocation location,Period period, Data data){
 		def basicInfo=[]
 		for (LocationLevel level : surveyExportService.getLevels()){
