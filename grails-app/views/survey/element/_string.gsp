@@ -10,9 +10,7 @@
 		value="${value?.stringValue}" name="elements[${element.id}].value${suffix}"
 		class="${tooltipValue!=null?'tooltip':''} input idle-field ${!readonly?'loading-disabled':''}" disabled="disabled"/>
 
-	<g:if test="${showHints}">
-		<div class="admin-hint">Element: ${element.id} - Prefix: ${suffix}</div>
-	</g:if>
+	<g:render template="/survey/element/hints"/>
 
 	<div class="error-list">
 		<g:renderUserErrors element="${element}" validatable="${validatable}" suffix="${suffix}" location="${location}"/>

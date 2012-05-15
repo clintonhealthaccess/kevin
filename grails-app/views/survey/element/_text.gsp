@@ -9,9 +9,7 @@
 	<textarea name="elements[${element.id}].value${suffix}"  ${tooltipValue!=null?'title="'+tooltipValue+'"':''}
 			cols="${print? 130:100}" rows="${print? 12:4}" class="input idle-field ${tooltipValue!=null?'tooltip':''}" ${readonly?'disabled="disabled"':''}>${value?.stringValue}</textarea>
 
-	<g:if test="${showHints}">
-		<div class="admin-hint">Element: ${element.id} - Prefix: ${suffix}</div>
-	</g:if>
+	<g:render template="/survey/element/hints"/>
 
 	<div class="error-list">
 		<g:renderUserErrors element="${element}" validatable="${validatable}" suffix="${suffix}" location="${location}"/>
