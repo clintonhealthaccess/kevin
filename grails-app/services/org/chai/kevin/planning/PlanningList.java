@@ -38,7 +38,6 @@ public class PlanningList {
 		this.enums = enums;
 	}
 	
-	
 	public FormEnteredValue getFormEnteredValue() {
 		return formEnteredValue;
 	}

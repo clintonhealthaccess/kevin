@@ -232,17 +232,17 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		formValue.value.listValue.size() == 1
 		formValue.value.listValue[0].mapValue['key0'].stringValue == 'value'
 		formValue.value.listValue[0].mapValue['key1'].numberValue == 123d
-		formValue.value.listValue[0].getAttribute('budget_updated') == "false"
+		formValue.value.getAttribute('submitted') == "false"
 		
-		when: 'budget updated set to false when saving existing value'
-		formValue.value.listValue[0].setAttribute('budget_updated', 'true')
+		when: 'submitted set to false when saving existing value'
+		formValue.value.setAttribute('submitted', 'true')
 		formValue.save()
 		planningService.modify(planningType, DataLocation.findByCode(BUTARO), 0, ["elements":['[0]'], "elements[0].key0":"value", "elements[0].key1":'123'])
 		formValue = FormEnteredValue.list()[0]
 		
 		then:
 		formValue.list()[0].value.listValue.size() == 1
-		formValue.list()[0].value.listValue[0].getAttribute('budget_updated') == "false"
+		formValue.list()[0].value.getAttribute('submitted') == "false"
 		
 	}
 	
@@ -266,8 +266,13 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		formValue = FormEnteredValue.list()[0]
 		
 		then:
+		formValue.value.getAttribute("submitted") == "false"
 		formValue.value.listValue.size() == 1
 		formValue.getValidatable().getInvalidPrefixes().equals(s(['[0].key1']))
+		
+	}
+	
+	def "submit if needed does not submit when not needed"() {
 		
 	}
 	
@@ -285,39 +290,11 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		
 		when:
-		planningService.refreshBudget(planningType, DataLocation.findByCode(BUTARO))
+		planningService.refreshBudget(planning, DataLocation.findByCode(BUTARO))
 		
 		then:
-		RawDataElementValue.count() == 1
+		RawDataElementValue.count() == 0
 		FormEnteredValue.count() == 1
-	}
-	
-	def "refresh budget sets updated budget to true"() {
-		setup:
-		setupLocationTree()
-		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
-		def period = newPeriod()
-		def enume = newEnume(CODE(1))
-		newEnumOption(enume, "value")
-		def dataElement = newRawDataElement(CODE(2),
-			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
-		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
-		
-		def value1 = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}")
-		value1.listValue[0].setAttribute("submitted", "true")
-		def value2 = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}")
-		
-		def formValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO), value1)
-		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value2)
-		
-		when:
-		planningService.refreshBudget(planningType, DataLocation.findByCode(BUTARO))
-		
-		then:
-		FormEnteredValue.count() == 1
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute('budget_updated') == "true"
 	}
 	
 	def "refresh budget first updates raw data element"() {
@@ -341,7 +318,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value2)
 		
 		when:
-		planningService.refreshBudget(planningType, DataLocation.findByCode(BUTARO))
+		planningService.refreshBudget(planning, DataLocation.findByCode(BUTARO))
 		
 		then:
 		FormEnteredValue.count() == 1
@@ -371,14 +348,12 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		value.listValue[0].setAttribute("submitted", "true")
 		newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO), value)
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
-		planningService.refreshBudget(planningType, DataLocation.findByCode(BUTARO))
+		planningService.refreshBudget(planning, DataLocation.findByCode(BUTARO))
 		
 		then:
 		NormalizedDataElementValue.count() == 1
 		NormalizedDataElementValue.list()[0].value.listValue[0].isNull()	
 	}
-	
-	
 	
 	def "submit creates raw data element value"() {
 		setup:

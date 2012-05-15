@@ -132,26 +132,6 @@ class EditPlanningController extends AbstractController {
 		}
 	}
 
-//	def submit = {
-//		def planningType = PlanningType.get(params.int('planningType'))
-//		def location = DataLocation.get(params.int('location'))
-//		def lineNumber = params.int('lineNumber')
-//		
-//		planningService.submit(planningType, location, lineNumber)
-//		
-//		redirect (uri: targetURI)
-//	}
-//	
-//	def unsubmit = {
-//		def planningType = PlanningType.get(params.int('planningType'))
-//		def location = DataLocation.get(params.int('location'))
-//		def lineNumber = params.int('lineNumber')
-//		
-//		planningService.unsubmit(planningType, location, lineNumber)
-//		
-//		redirect (uri: targetURI)
-//	}
-	
 	def updateBudget = {
 		def planning = Planning.get(params.int('planning'))
 		def planningType = PlanningType.get(params.int('planningType'))
@@ -180,13 +160,6 @@ class EditPlanningController extends AbstractController {
 		])
 	}
 	
-//	def isBudgetUpdated(def planning, def location) {
-//		for (def planningType : planning.planningTypes) {
-//			if (!planningService.getPlanningList(planningType, location).isBudgetUpdated()) return false
-//		}
-//		return true
-//	}
-		
 	def planningList = {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocation.get(params.int('location'))

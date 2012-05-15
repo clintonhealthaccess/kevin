@@ -41,7 +41,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		FormEnteredValue.count() == 1
 		FormEnteredValue.list()[0].value.listValue[0].mapValue['key1'].numberValue == 123d
 		FormEnteredValue.list()[0].value.listValue[0].getAttribute('uuid') != null
-		FormEnteredValue.list()[0].value.listValue[0].getAttribute('budget_updated') == 'false'
+		FormEnteredValue.list()[0].value.getAttribute('submitted') == "false"
 		jsonResult.id == planningType.id
 		jsonResult.lineNumber == 0
 		jsonResult.complete == false
