@@ -26,7 +26,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.chai.kevin.dsr
+package org.chai.kevin.reports
 /**
 * @author Jean Kahigiso M.
 *
@@ -36,9 +36,8 @@ import grails.plugin.springcache.annotations.CacheFlush
 import org.chai.kevin.AbstractEntityController
 import org.chai.kevin.reports.ReportProgram
 
-class DsrProgramController extends AbstractEntityController{
-	
-	def locationService
+
+class ReportProgramController extends AbstractEntityController{
 	
 	def getEntity(def id) {
 		return ReportProgram.get(id)
@@ -49,34 +48,19 @@ class DsrProgramController extends AbstractEntityController{
 	}
 	
 	def getLabel() {
-		return "dsr.program.label"
+		return "reports.program.label"
 	}
 	
 	def getTemplate() {
-		return "/dsr/createProgram"
+		return "/entity/reports/createProgram"
 	}
 	
 	def getModel(def entity) {
-		[ program: entity ]
+		[ program: entity, programs: ReportProgram.list() ]
 	}
 	
 	def exportEntity(){
 		return ReportProgram.class;
-	}
-	
-	@CacheFlush("dsrCache")
-	def edit = {
-		super.edit()
-	}
-	
-	@CacheFlush("dsrCache")
-	def save = {
-		super.save()
-	}
-	
-	@CacheFlush("dsrCache")
-	def delete = {
-		super.delete()
 	}
 	
 	def bindParams(def entity) {
@@ -88,4 +72,16 @@ class DsrProgramController extends AbstractEntityController{
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 
+	def list = {
+		adaptParamsForList()
+		
+		List<ReportProgram> programs = ReportProgram.list(params);
+		
+		render (view: '/entity/list', model:[
+			entities: programs,
+			template: "reports/programList",
+			code: getLabel(),
+			entityCount: ReportProgram.count()
+		])
+	}
 }
