@@ -34,12 +34,16 @@ import org.chai.kevin.LocationService
 import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.security.User
+import org.chai.kevin.survey.summary.SummaryService
+import org.chai.kevin.survey.summary.SurveySummaryPage
 import org.chai.kevin.util.Utils;
 import org.hibernate.SessionFactory;
 
 class EditSurveyController extends AbstractController {
 
+	SummaryService summaryService;
 	SurveyPageService surveyPageService;
 	SurveyExportService surveyExportService;
 	FormValidationService formValidationService;
@@ -171,7 +175,7 @@ class EditSurveyController extends AbstractController {
 			redirect (action: "programPage", params: [location: dataLocation.id, program: currentProgram.id])
 		}
 	}
-
+	
 	def saveValue = {
 		if (log.isDebugEnabled()) log.debug("survey.saveValue, params:"+params)
 
