@@ -7,9 +7,10 @@ import org.chai.kevin.survey.summary.SurveySummaryPage;
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 class SurveySummaryController extends AbstractController {
-
+	
 	def summaryService
 	def languageService
+	def surveyPageService
 	
 	def index = {
 		redirect (action: 'summaryPage', params: params)
@@ -17,7 +18,7 @@ class SurveySummaryController extends AbstractController {
 	
 	// TODO refactor into several actions for survey/program/section
 	def summaryPage = {
-		Location entity = Location.get(params.int('location'))
+		Location location = Location.get(params.int('location'))
 
 		SurveySection section = SurveySection.get(params.int('section'))
 		SurveyProgram program = SurveyProgram.get(params.int('program'))
@@ -27,16 +28,16 @@ class SurveySummaryController extends AbstractController {
 		SurveySummaryPage summaryPage = null;
 		
 		// TODO build different classes for this and refactor into several actions
-		if (section != null && entity != null) {
-			summaryPage = summaryService.getSectionSummaryPage(entity, section)
+		if (section != null && location != null) {
+			summaryPage = summaryService.getSectionSummaryPage(location, section)
 			template = '/survey/summary/summarySectionTable'
 		}
-		else if (program != null && entity != null) {
-			summaryPage = summaryService.getProgramSummaryPage(entity, program)
+		else if (program != null && location != null) {
+			summaryPage = summaryService.getProgramSummaryPage(location, program)
 			template = '/survey/summary/summaryProgramTable'
 		}
-		else if (survey != null && entity != null) {
-			summaryPage = summaryService.getSurveySummaryPage(entity, survey);
+		else if (survey != null && location != null) {
+			summaryPage = summaryService.getSurveySummaryPage(location, survey);
 			template = '/survey/summary/summarySurveyTable'
 		}
 
@@ -46,7 +47,7 @@ class SurveySummaryController extends AbstractController {
 			currentSurvey: survey,
 			currentProgram: program,
 			currentSection: section,
-			currentLocation: entity,
+			currentLocation: location,
 			summaryPage: summaryPage,
 			surveys: Survey.list(),
 			template: template
@@ -77,4 +78,35 @@ class SurveySummaryController extends AbstractController {
 		])
 	}
 	
+	def submitAll = {
+		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
+
+		Survey survey = Survey.get(params.int('survey'))		
+		Location location = Location.get(params.int('location'));
+		
+		boolean success = surveyPageService.submitAll(location, survey);
+
+		if (success) {
+			flash.message = message(code: "survey.all.submitted", default: "Thanks for submitting.");
+		}
+		else {
+			flash.message = message(code: "survey.all.review", default: "The surveys could not be submitted, please review the programs and sections.");
+		}
+
+//		SurveySummaryPage summaryPage = summaryService.getSurveySummaryPage(location, survey);
+//		def template = '/survey/summary/summarySurveyTable'
+		
+//		if (summaryPage != null) summaryPage.sort(params.sort, params.order, languageService.currentLanguage)
+		
+		redirect(action: 'summaryPage', params: [location: location.id, survey: survey.id])
+//		render (view: '/survey/summary/summaryPage', model: [
+//			currentSurvey: survey,
+//			currentProgram: null,
+//			currentSection: null,
+//			currentLocation: location,
+//			summaryPage: summaryPage,
+//			surveys: Survey.list(),
+//			template: template
+//		])				
+	}
 }

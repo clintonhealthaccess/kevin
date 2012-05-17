@@ -200,7 +200,12 @@ public class SurveyPage {
 	}
 	
 	public boolean canSubmit(SurveyProgram surveyProgram) {
-		return !programs.get(surveyProgram).isClosed() && programs.get(surveyProgram).isComplete() && !programs.get(surveyProgram).isInvalid();
+		Map<SurveyProgram, SurveyEnteredProgram> programs = this.getEnteredPrograms();
+		boolean isClosed = programs.get(surveyProgram).isClosed();
+		boolean isComplete = programs.get(surveyProgram).isComplete();
+		boolean isInvalid = programs.get(surveyProgram).isInvalid();
+		boolean canSubmit = !isClosed && isComplete && !isInvalid;		
+		return canSubmit;
 	}
 	
 	public boolean isReadonly(SurveyProgram surveyProgram) {
