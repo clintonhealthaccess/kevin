@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
@@ -98,5 +99,14 @@ public class Planning {
 	
 	public String toString(){
 		return "Planning[getId()=" + getId() + ", getNames()=" + getNames() + "]";
+	}
+
+	@Transient
+	public List<PlanningCost> getPlanningCosts() {
+		List<PlanningCost> planningCosts = new ArrayList<PlanningCost>();
+		for (PlanningType planningType : planningTypes) {
+			planningCosts.addAll(planningType.getCosts());
+		}
+		return planningCosts;
 	}
 }

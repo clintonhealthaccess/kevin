@@ -238,6 +238,10 @@ public class ValidatableValue {
 		return CollectionUtils.subtract(nullPrefixes.keySet(), skippedPrefixes);
 	}
 	
+	public void setAttribute(String prefix, String attribute, String value) {
+		getType().setAttribute(getValue(), prefix, attribute, value);
+	}
+	
 	/**
 	 * Returns true if this value is complete. A value is complete if all the containing values are
 	 * valid, or skipped, or whose invalid rules are all accepted warning. 
@@ -331,5 +335,6 @@ public class ValidatableValue {
 		// set the new value
 		getType().setValue(getValue(), "", value);
 	}
+
 
 }

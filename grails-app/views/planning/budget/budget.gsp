@@ -24,7 +24,7 @@
 								<g:message code="planning.budget.budget"/>: <g:i18n field="${location.names}"/>
 							</h4>
 							<div class="budget">
-								<p id="js_budget-warning" class="context-message warning ${planningLists.find {!it.budgetUpdated}?'':'hidden'}">
+								<p id="js_budget-warning" class="context-message warning ${budgetNeedsUpdate?'':'hidden'}">
 									<g:message code="planning.budget.update"/> <a href="${createLink(controller:'editPlanning', action:'updateBudget', params:[location:location.id, planning:planning.id])}"><g:message code="planning.budget.update.link"/></a>.
 								</p>
 								<g:if test="${!planningLists.find {!it.planningEntryBudgetList.empty}}">

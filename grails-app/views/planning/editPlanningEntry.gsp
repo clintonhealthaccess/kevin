@@ -57,12 +57,7 @@
 						<ul class=" form-actions clearfix">
 							<li>
     		  					<button type="submit" class="loading-disabled">
-    		  						<g:if test="${!planningEntry.submitted}">
-    		  							<g:message code="planning.new.acceptinbudget"/>
-    		  						</g:if>
-    		  						<g:else>
-    		  							<g:message code="planning.new.updatebudget"/>
-    		  						</g:else>
+    		  						<g:message code="planning.new.save"/>
     		  					</button>
   		  					</li>
   		  					<li>
@@ -77,14 +72,6 @@
     		  				</li>
 		  				</div>
 		  				<br />
-		  				<g:if test="${planningEntry.submitted}">
-							<p class="context-message warning">
-								<g:message code="planning.new.removefrombudget.help"/>
-								<a class="next gray medium right pull-7" href="${createLink(controller:'editPlanning', action:'unsubmit', params: [location: location.id, planningType: planningType.id, lineNumber: planningEntry.lineNumber, targetURI: targetURI])}">
-									<g:message code="planning.new.removefrombudget"/>
-								</a>
-							</p>
-						</g:if>
 	  				</g:form>
 				</div>
 			</div>
