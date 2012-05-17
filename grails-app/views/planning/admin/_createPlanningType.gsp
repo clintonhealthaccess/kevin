@@ -45,6 +45,8 @@
 			</div>
 		</g:if>
 		
+		<g:input name="maxNumber" label="${message(code:'planning.planningtype.maxnumber.label')}" bean="${planningType}" field="maxNumber"/>
+		
 		<g:if test="${planningType?.formElement?.id != null}">
 			<input type="hidden" name="formElement.id" value="${planningType.formElement.id}"></input>
 		</g:if>

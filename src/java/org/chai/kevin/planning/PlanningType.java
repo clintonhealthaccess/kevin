@@ -41,7 +41,8 @@ public class PlanningType {
 	private Translation namesPlural = new Translation();
 	private String discriminator;
 	private String fixedHeader;
-	
+
+	private Integer maxNumber;
 	private Map<String, Translation> sectionDescriptions = new HashMap<String, Translation>();
 	
 	// TODO have that be the elements of the first MAP inside the LIST	 
@@ -121,6 +122,15 @@ public class PlanningType {
 	
 	public void setPlanning(Planning planning) {
 		this.planning = planning;
+	}
+	
+	@Basic
+	public Integer getMaxNumber() {
+		return maxNumber;
+	}
+	
+	public void setMaxNumber(Integer maxNumber) {
+		this.maxNumber = maxNumber;
 	}
 	
 	@Basic
