@@ -19,9 +19,11 @@
         
 						<ul class="clearfix" id="questions">
 							<li class="question push-20">
-								<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[planningType: planningType.id, location: location.id, lineNumber: planningList.nextLineNumber])}" class="next medium gray right">
-									<g:message code="planning.createnew" args="[i18n(field: planningType.names)]"/>
-								</a>
+								<g:if test="${planningList.nextLineNumber < planningList.planningType.maxNumber}">
+									<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[planningType: planningType.id, location: location.id, lineNumber: planningList.nextLineNumber])}" class="next medium gray right">
+										<g:message code="planning.createnew" args="[i18n(field: planningType.names)]"/>
+									</a>
+								</g:if>
 								<h4 class="section-title">
 									<span class="question-default">
 										<r:img uri="/images/icons/star_small.png"/>
