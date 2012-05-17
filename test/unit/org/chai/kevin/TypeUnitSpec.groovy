@@ -260,6 +260,19 @@ public class TypeUnitSpec extends UnitSpec {
 		then:
 		type.getJaqlValue(value) == "[10.0,null,]";
 		
+		when:
+		type = Type.TYPE_MAP(["key": Type.TYPE_STRING()])
+		value = Value.VALUE_MAP(["non_existant": Value.VALUE_STRING("value")])
+		
+		then:
+		type.getJaqlValue(value) == "{}"
+		
+		when:
+		type = Type.TYPE_MAP(["key": Type.TYPE_STRING()])
+		value = Value.VALUE_MAP(["key": Value.VALUE_STRING("value")])
+		
+		then:
+		type.getJaqlValue(value) == "{\"key\":\"value\",}"
 	}
 
 	

@@ -554,10 +554,12 @@ public class Type extends JSONValue {
 				case MAP:
 					result.append("{");
 					for (Entry<String, Value> entry : value.getMapValue().entrySet()) {
-						result.append("\""+entry.getKey()+"\"");
-						result.append(":");
-						result.append(getElementMap().get(entry.getKey()).getJaqlValue(entry.getValue()));
-						result.append(",");
+						if (getElementMap().containsKey(entry.getKey())) {
+							result.append("\""+entry.getKey()+"\"");
+							result.append(":");
+							result.append(getElementMap().get(entry.getKey()).getJaqlValue(entry.getValue()));
+							result.append(",");
+						}
 					}
 					result.append("}");
 					break;
