@@ -41,6 +41,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
@@ -54,6 +55,7 @@ import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.SurveyElement.SurveyElementSubmitter;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
@@ -204,7 +206,7 @@ public class SurveyPageService {
 		SurveyPage page = new SurveyPage(dataLocation, survey, currentProgram, null, programs, sections, questions, elements, enums);
 		if (log.isDebugEnabled()) log.debug("getSurveyPage(...)="+page);
 		return page;
-	}
+	}	
 	
 	@Transactional(readOnly = false)
 	public SurveyPage getSurveyPagePrint(DataLocation dataLocation,Survey survey) {
@@ -551,7 +553,8 @@ public class SurveyPageService {
 		evaluateRulesAndSave(dataLocation, elements, new HashMap<SurveyElement, FormEnteredValue>());
 		
 		// we get the updated survey and work from that
-		SurveyPage surveyPage = getSurveyPage(dataLocation, program);
+		SurveyPage surveyPage = getSurveyPage(dataLocation, program);			
+		
 		if (surveyPage.canSubmit(program)) {
 			SurveyElementSubmitter submitter = new SurveyElementSubmitter(surveyValueService, formElementService, valueService);
 
@@ -566,13 +569,55 @@ public class SurveyPageService {
 			surveyValueService.save(enteredProgram);
 	
 			// log the event
-			logSurveyEvent(dataLocation, program, "submit");
+			//logSurveyEvent(dataLocation, program, "submit");
 			
 			return true;
 		}
 		else return false;
 	}
 
+	@Transactional(readOnly = false)
+	public boolean submitAll(Location location, Survey survey) {				
+		
+		if (log.isDebugEnabled()) log.debug("submitAll(" + location + ", " + survey + ")");		
+		if(location == null || survey == null) 
+			return false;
+		
+		List<DataLocation> dataLocations = location.collectDataLocations(null, null);		
+		for (DataLocation dataLocation : dataLocations) {
+			List<SurveyProgram> surveyPrograms = survey.getPrograms(dataLocation.getType());
+			for (SurveyProgram surveyProgram : surveyPrograms) {								
+				
+				// we get whether to submit anyways if the program is not closed, even if it is incomplete or invalid
+				boolean isClosed = getSurveyEnteredProgram(dataLocation, surveyProgram).isClosed();				
+				if (!isClosed) {
+					
+					// first we make sure that the program is valid and complete, so we revalidate it
+					List<SurveyElement> elements = surveyProgram.getElements(dataLocation.getType());
+					evaluateRulesAndSave(dataLocation, elements, new HashMap<SurveyElement, FormEnteredValue>());
+					
+					SurveyElementSubmitter submitter = new SurveyElementSubmitter(surveyValueService, formElementService, valueService);
+
+					// save all the values to data values
+					for (SurveyElement element : elements) {
+						element.submit(dataLocation, element.getSurvey().getPeriod(), submitter);
+					}
+					
+					// close the program
+					SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, surveyProgram);
+					enteredProgram.setClosed(true);
+					surveyValueService.save(enteredProgram);
+			
+					// log the event
+					//logSurveyEvent(dataLocation, program, "submit");
+				}
+				
+				if (log.isDebugEnabled()) log.debug("submit(" + dataLocation + ", " + surveyProgram + ", )");				
+			}
+		}	
+		return true;
+	}
+	
 	private void logSurveyEvent(DataLocation dataLocation, SurveyProgram program, String event) {
 		SurveyLog surveyLog = new SurveyLog(program.getSurvey(), program, dataLocation);
 		surveyLog.setEvent(event);
