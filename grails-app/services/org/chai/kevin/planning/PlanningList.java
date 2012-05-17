@@ -94,13 +94,6 @@ public class PlanningList {
 		return getPlanningEntries().size();
 	}
 	
-	public boolean isBudgetUpdated() {
-		for (PlanningEntry planningEntry : getPlanningEntries()) {
-			if (!planningEntry.isBudgetUpdated() && planningEntry.isSubmitted()) return false;
-		}
-		return true;
-	}
-	
 	public boolean isEmpty() {
 		return getPlanningEntries().isEmpty();
 	}

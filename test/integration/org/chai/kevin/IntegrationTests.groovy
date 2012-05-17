@@ -275,22 +275,14 @@ abstract class IntegrationTests extends IntegrationSpec {
 		return newAggregation([:], expression, code)
 	}
 
-	static def newAverage(def names, String expression, def code, def calculated) {
-		return new Average(names: names, expression: expression, code: code, calculated: calculated).save(failOnError: true)
-	}
-
-	static def newAverage(def names, String expression, String code) {
-		return newAverage(names, expression, code, null)
+	static def newAverage(def names, String expression, def code) {
+		return new Average(names: names, expression: expression, code: code).save(failOnError: true)
 	}
 
 	static def newAverage(String expression, def code) {
-		return newAverage([:], expression, code, null)
+		return newAverage([:], expression, code)
 	}
 	
-	static def newAverage(String expression, def code, Date calculated) {
-		return newAverage([:], expression, code, calculated)
-	}
-
 	static Sum newSum(def names, def expression, def code) {
 		return new Sum(names: names, expression: expression, code: code).save(failOnError: true, flush: true)
 	}

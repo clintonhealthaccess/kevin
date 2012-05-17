@@ -59,7 +59,7 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 	public static Type TYPE = Type.TYPE_NUMBER();
 	
 	private String expression;
-	private Date calculated;
+	private Date refreshed;
 	
 	// extract partial expressions from the calculation
 	@Transient
@@ -88,27 +88,22 @@ public abstract class Calculation<T extends CalculationPartialValue> extends Dat
 		this.expression = expression;
 	}
 
-	@Column(nullable=true, columnDefinition="datetime")
-	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
-	public Date getCalculated() {
-		return calculated;
-	}
-	
-	public void setCalculated(Date calculated) {
-		this.calculated = calculated;
-	}
-	
-	@Transient
-	public boolean needsRefresh() {
-		if (getCalculated() == null) return true;
-		return getCalculated().before(getTimestamp());
-	}
-	
 	@Transient
 	@Override
 	public Type getType() {
 		return Calculation.TYPE;
 	}
+	
+	@Column(nullable=true, columnDefinition="datetime")
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	public Date getRefreshed() {
+		return refreshed;
+	}
+	
+	public void setRefreshed(Date refreshed) {
+		this.refreshed = refreshed;
+	}
+	
 	
 	@Override
 	public abstract String toString();

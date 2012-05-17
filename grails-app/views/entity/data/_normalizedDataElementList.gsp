@@ -8,7 +8,6 @@
   			<th><g:message code="entity.type.label"/></th>
   			<th><g:message code="entity.code.label"/></th>
   			<th><g:message code="normalizeddataelement.lastrefreshed.label"/></th>
-  			<th><g:message code="normalizeddataelement.uptodate.label"/></th>
   			<th></th>
   		</tr>
   	</thead>
@@ -31,8 +30,7 @@
   				</td>
   				<td><g:toHtml value="${normalizedDataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td>${normalizedDataElement.code}</td>
-  				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.calculated}"/></td>
-  				<td>${normalizedDataElement.needsRefresh()?'':'\u2713'}</td>
+  				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.refreshed}"/></td>
   				<td><a href="${createLink(controller:'data', action:'dataElementValueList', params:[data:normalizedDataElement.id])}">
   					<g:message code="dataelement.viewvalues.label"/>
   				</a></td>

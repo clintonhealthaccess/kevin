@@ -31,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class PlanningService {
 
+	static final String SUBMITTED = "submitted";
+
 	private FormValidationService formValidationService;
 	private FormElementService formElementService;
 	private ValueService valueService;
@@ -122,7 +124,7 @@ public class PlanningService {
 		
 		// first we merge the values to create a new value
 		planningEntry.mergeValues(params);
-		planningEntry.setBudgetUpdated(false);
+		planningEntry.getValidatable().setAttribute("", SUBMITTED, "false");
 		formElementService.save(planningList.getFormEnteredValue());
 		
 		// second we run the validation/skip rules
@@ -132,47 +134,29 @@ public class PlanningService {
 		
 		// last we set and save the value
 		for (FormEnteredValue formEnteredValue : affectedValues) {
+			formEnteredValue.getValidatable().setAttribute("", SUBMITTED, "false");
 			formElementService.save(formEnteredValue);
 		}
 		return planningEntry;
 	}
 	
-	@Transactional(readOnly=false)
-	public void submit(PlanningType type, DataLocation location, Integer lineNumber) {
-		PlanningList planningList = getPlanningList(type, location);
-		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
-		
-		// we submit the entry
-		planningEntry.setSubmitted(true);
-
-		// we refresh the corresponding raw data element
-		ElementSubmitter submitter = new PlanningElementSubmitter(formElementService, valueService);
-		type.getFormElement().submit(location, type.getPeriod(), submitter);
-		
-		// then we recalculate the budget
-		refreshBudget(planningEntry, location);
-		
-		// last we save the value
-		formElementService.save(planningList.getFormEnteredValue());
-	}
 	
 	@Transactional(readOnly=false)
-	public void unsubmit(PlanningType type, DataLocation location, Integer lineNumber) {
-		PlanningList planningList = getPlanningList(type, location);
-		PlanningEntry planningEntry = planningList.getOrCreatePlanningEntry(lineNumber);
-		
-		// we submit the entry
-		planningEntry.setSubmitted(false);
-
-		// we refresh the corresponding raw data element
-		ElementSubmitter submitter = new PlanningElementSubmitter(formElementService, valueService);
-		type.getFormElement().submit(location, type.getPeriod(), submitter);
-		
-		// then we recalculate the budget
-		refreshBudget(planningEntry, location);
+	public void submitIfNeeded(Planning planning, DataLocation location) {
+		for (PlanningType planningType : planning.getPlanningTypes()) {
+			PlanningList planningList = getPlanningList(planningType, location);
+			if (!"true".equals(planningList.getFormEnteredValue().getValidatable().getValue().getAttribute(SUBMITTED))) { 
+				// we refresh the corresponding raw data element
+				ElementSubmitter submitter = new PlanningElementSubmitter(formElementService, valueService);
+				planningType.getFormElement().submit(location, planning.getPeriod(), submitter);
+	
+				// set submitted true
+				planningList.getFormEnteredValue().getValidatable().setAttribute("", SUBMITTED, "true");
 				
-		// last we save the value
-		formElementService.save(planningList.getFormEnteredValue());
+				// last we save the value
+				formElementService.save(planningList.getFormEnteredValue());
+			}
+		}
 	}
 	
 	public static class PlanningElementSubmitter extends ElementSubmitter {
@@ -186,8 +170,7 @@ public class PlanningService {
 		public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
 			boolean modified = false;
 			
-			currentValue.setAttribute(PlanningEntry.BUDGET_UPDATED, null);
-			currentValue.setAttribute(PlanningEntry.SUBMITTED, null);
+			currentValue.setAttribute(SUBMITTED, null);
 
 //			if (currentType.getType() == ValueType.LIST) {
 //				for (Value value : currentValue.getListValue()) {
@@ -204,23 +187,9 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=false)
-	public void refreshBudget(PlanningType type, DataLocation location) {
-		ElementSubmitter submitter = new PlanningElementSubmitter(formElementService, valueService);
-		type.getFormElement().submit(location, type.getPeriod(), submitter);
-		
-		PlanningList planningList = getPlanningList(type, location);
-		for (PlanningEntry planningEntry : planningList.getPlanningEntries()) {
-			refreshBudget(planningEntry, location);
-		}
-		formElementService.save(planningList.getFormEnteredValue());
-	}
-	
-	private void refreshBudget(PlanningEntry planningEntry, DataLocation location) {
-		if (planningEntry.isSubmitted() && !planningEntry.isBudgetUpdated()) {
-			for (PlanningCost cost : planningEntry.getPlanningCosts()) {
-				refreshValueService.refreshNormalizedDataElement(cost.getDataElement(), location, cost.getPlanningType().getPeriod());
-			}
-			planningEntry.setBudgetUpdated(true);
+	public void refreshBudgetIfNeeded(Planning planning, DataLocation location) {
+		for (PlanningCost cost : planning.getPlanningCosts()) {
+			refreshValueService.refreshNormalizedDataElement(cost.getDataElement(), location, cost.getPlanningType().getPeriod());
 		}
 	}
 	

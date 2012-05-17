@@ -15,14 +15,10 @@ import org.chai.kevin.value.Value;
 
 public class PlanningEntry {
 
-	static final String BUDGET_UPDATED = "budget_updated";
-	static final String SUBMITTED = "submitted";
 	static final String UUID = "uuid";
 	private static final Set<String> ATTRIBUTES = new HashSet<String>();
 			
 	static {
-		ATTRIBUTES.add(BUDGET_UPDATED);
-		ATTRIBUTES.add(SUBMITTED);
 		ATTRIBUTES.add(UUID);
 	}
 	
@@ -52,22 +48,6 @@ public class PlanningEntry {
 		this.enums = enums;
 	}
 
-	public boolean isBudgetUpdated() {
-		return isAttributeSet(BUDGET_UPDATED);
-	}
-
-	public void setBudgetUpdated(Boolean value) {
-		setAttribute(BUDGET_UPDATED, value.toString());
-	}
-
-	public boolean isSubmitted() {
-		return isAttributeSet(SUBMITTED);
-	}
-	
-	public void setSubmitted(Boolean value) {
-		setAttribute(SUBMITTED, value.toString());
-	}
-	
 	public String getUuid() {
 		return getValue().getAttribute(UUID);
 	}
@@ -75,6 +55,10 @@ public class PlanningEntry {
 	protected void setUuid(String uuid) {
 		if (getValue().getAttribute(UUID) != null) throw new IllegalStateException("uuid already set");
 		setAttribute(UUID, uuid);
+	}
+	
+	private void setAttribute(String attribute, String value) {
+		validatable.getType().setAttribute(validatable.getValue(), getPrefix("[_]"), attribute, value);
 	}
 	
 	public Set<String> getInvalidSections() {
@@ -91,15 +75,6 @@ public class PlanningEntry {
 			if (!getValidatable().isTreeComplete(getPrefix(section))) result.add(section);
 		}
 		return result;
-	}
-	
-	private boolean isAttributeSet(String attribute) {
-		if (getValue().getAttribute(attribute) == null) return false;
-		return getValue().getAttribute(attribute).equals(Boolean.TRUE.toString());
-	}
-	
-	private void setAttribute(String attribute, String value) {
-		validatable.getType().setAttribute(validatable.getValue(), getPrefix("[_]"), attribute, value);
 	}
 	
 	public String getLineSuffix(String section) {

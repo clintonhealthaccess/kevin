@@ -55,10 +55,10 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		setupLocationTree()
 		def period = newPeriod()
 		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def date = normalizedDataElement.lastValueChanged
 		
 		then:
 		NormalizedDataElementValue.count() == 0
-		normalizedDataElement.calculated == null
 		
 		when:
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
@@ -66,15 +66,210 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		NormalizedDataElementValue.count() == 2
 		NormalizedDataElementValue.list()[0].timestamp != null
-		normalizedDataElement.calculated != null
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
 	}
 	
-	def "test refresh normalized elements updates timestamps"() {
+	def "test refresh normalized elements does not update anything when already up-to-date"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def date = normalizedDataElement.lastValueChanged
+		normalizedDataElement.refreshed = date
+		normalizedDataElement.save(failOnError: true)
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
+		def date2 = value2.timestamp
+		
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		
+		then:
+		NormalizedDataElementValue.count() == 2
+		NormalizedDataElementValue.list()[0].timestamp.equals(date1)
+		NormalizedDataElementValue.list()[1].timestamp.equals(date2)
+		NormalizedDataElement.list()[0].lastValueChanged.equals(date)
+		NormalizedDataElement.list()[0].refreshed.equals(date)
+	}
+	
+	def "test refresh normalized elements does not update anything when already up-to-date - with period and location"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def date = normalizedDataElement.lastValueChanged
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
+		
+		then:
+		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.list()[0].timestamp.equals(date1)
+		NormalizedDataElement.list()[0].lastValueChanged.equals(date)
+	}
+	
+	def "test refresh normalized elements updates when data element is updated"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def date = normalizedDataElement.lastValueChanged
+		normalizedDataElement.refreshed = date
+		normalizedDataElement.save(failOnError: true)
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
+		def date2 = value2.timestamp
+		normalizedDataElement.timestamp = new Date()
+		normalizedDataElement.save(failOnError: true)
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		
+		then:
+		NormalizedDataElementValue.count() == 2
+		NormalizedDataElementValue.list()[0].timestamp.after(date1)
+		NormalizedDataElementValue.list()[1].timestamp.after(date2)
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+		NormalizedDataElement.list()[0].refreshed.after(date)
+	}
+	
+	def "test refresh normalized elements updates when data element is updated - with period and location"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		def date = normalizedDataElement.lastValueChanged
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		normalizedDataElement.timestamp = new Date()
+		normalizedDataElement.save(failOnError: true)
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
+		
+		then:
+		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.list()[0].timestamp.after(date1)
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+	}
+	
+	def "test refresh normalized elements updates when dependent data element is updated"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def date = normalizedDataElement.lastValueChanged
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
+		def date2 = value2.timestamp
+		rawDataElement.lastValueChanged = new Date()
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		
+		then:
+		NormalizedDataElementValue.count() == 2
+		NormalizedDataElementValue.list()[0].timestamp.after(date1)
+		NormalizedDataElementValue.list()[1].timestamp.after(date2)
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+	}
+	
+	def "test refresh normalized elements does not update when dependent data element last value is changed - with period and location"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def date = normalizedDataElement.lastValueChanged
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		rawDataElement.lastValueChanged = new Date()
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
+		
+		then:
+		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.list()[0].timestamp.equals(date1)
+		NormalizedDataElement.list()[0].lastValueChanged.equals(date)
+	}
+	
+	def "test refresh normalized elements updates when dependent data element timestamp is changed - with period and location"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def date = normalizedDataElement.lastValueChanged
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		rawDataElement.timestamp = new Date()
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
+		
+		then:
+		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.list()[0].timestamp.after(date1)
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+	}
+	
+	def "test refresh normalized elements updates when dependent data element value is updated - with period and location"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def date = normalizedDataElement.lastValueChanged
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("1"))
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
+		
+		then:
+		NormalizedDataElementValue.count() == 1
+		NormalizedDataElementValue.list()[0].timestamp.after(date1)
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+	}
+	
+	def "test refresh normalized elements does not update when dependent data element is not updated"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement.id]]))
+		def date = normalizedDataElement.lastValueChanged
+		normalizedDataElement.refreshed = date
+		normalizedDataElement.save(failOnError: true)
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
+		def date2 = value2.timestamp
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		
+		then:
+		NormalizedDataElementValue.count() == 2
+		NormalizedDataElementValue.list()[0].timestamp.equals(date1)
+		NormalizedDataElementValue.list()[1].timestamp.equals(date2)
+		NormalizedDataElement.list()[0].lastValueChanged.equals(date)
+	}
+	
+	def "test refresh normalized elements updates value timestamps"() {
 		when:
 		def period = newPeriod()
 		setupLocationTree()
-		def calculated = new Date()
-		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]), calculated: calculated)
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
 		def normalizedDataElementValue = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.NULL_INSTANCE())
 		def timestamp = normalizedDataElementValue.timestamp
 		
@@ -87,7 +282,6 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		NormalizedDataElementValue.count() == 2
 		!NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)	
-		!normalizedDataElement.calculated.equals(calculated)
 	}
 	
 	def "test normalized data elements not calculated at non-data-location level"() {
@@ -109,7 +303,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		
 		then:
 		AveragePartialValue.count() == 0
-		average.calculated == null
+		average.refreshed == null
 		
 		when:
 		refreshValueService.refreshCalculation(average);
@@ -117,15 +311,17 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		AveragePartialValue.count() == 8
 		AveragePartialValue.list()[0].timestamp != null
-		average.calculated != null
+		average.refreshed != null
 	}
 	
 	def "test refresh calculations updates timestamps"() {
 		when:
+		def refreshed = new Date()
 		setupLocationTree()
 		def period = newPeriod()
-		def calculated = new Date()
-		def average = newAverage("1", CODE(2), calculated)
+		def average = newAverage("1", CODE(2))
+		average.refreshed = refreshed
+		average.save(failOnError: true)
 		def partialValue = newAveragePartialValue(average, period, Location.findByCode(BURERA), DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP), 1, v("1"))
 		def timestamp = partialValue.timestamp
 		
@@ -138,7 +334,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		then:
 		AveragePartialValue.count() == 8
 		!AveragePartialValue.list()[0].timestamp.equals(timestamp)	
-		!average.calculated.equals(calculated)
+		!average.refreshed.equals(refreshed)
 	}
 	
 	def "test refresh normalized data elements refreshes dependencies first"() {
@@ -175,6 +371,27 @@ class RefreshValueServiceSpec extends IntegrationTests {
 	}
 	
 	def "test refresh with circular dependencies"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement1 = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[:]]))
+		def normalizedDataElement2 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement1.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement1.id]]))
+		normalizedDataElement1.expressionMap = e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+normalizedDataElement2.id, (HEALTH_CENTER_GROUP):"\$"+normalizedDataElement2.id]])
+		normalizedDataElement1.save(failOnError: true)
+		
+		when:
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement2);
+		
+		then:
+		NormalizedDataElementValue.count() == 4
+		NormalizedDataElementValue.list()[0].value.isNull()
+		NormalizedDataElementValue.list()[1].value.isNull()
+		NormalizedDataElementValue.list()[2].value.isNull()
+		NormalizedDataElementValue.list()[3].value.isNull()
+		
+	}
+	
+	def "test refresh with circular dependencies - with location and period"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
