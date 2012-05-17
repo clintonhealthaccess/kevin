@@ -170,12 +170,14 @@ public class FormElement {
 		}
 		
 		public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
-			// if it is skipped we return NULL
-			if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL_INSTANCE().getJsonValue());
-			// we remove the attributes
-			currentValue.setAttribute("skipped", null);
-			currentValue.setAttribute("invalid", null);
-			currentValue.setAttribute("warning", null);
+			// if it is skipped, we return null
+			if (currentValue.getAttribute("skipped") != null){
+				currentValue.setJsonValue(Value.NULL_INSTANCE().getJsonValue());
+			}
+			
+			// if it is not skipped, we keep these attributes
+//			currentValue.setAttribute("invalid", null);
+//			currentValue.setAttribute("warning", null); //for when the user overrides an outlier value
 			
 			return true;
 		}	
