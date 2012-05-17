@@ -75,6 +75,9 @@ public class PlanningList {
 	}
 	
 	public PlanningEntry getOrCreatePlanningEntry(Integer lineNumber) {
+		if (planningType.getMaxNumber() != null && planningType.getMaxNumber() <= lineNumber) 
+			throw new IllegalArgumentException("lineNumber is bigger than the maximum allowed number of lines");
+		
 		PlanningEntry result = null;
 		if (lineNumber >= getPlanningEntries().size()) {
 			result = new PlanningEntry(dataLocation, planningType, formEnteredValue.getValidatable(), lineNumber, enums);
