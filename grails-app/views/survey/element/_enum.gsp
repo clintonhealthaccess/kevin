@@ -31,9 +31,7 @@
 		</g:eachOption>
 	</g:else>
 	
-	<g:if test="${showHints}">
-		<div class="admin-hint">Element: ${element.id} - Prefix: ${suffix}</div>
-	</g:if>
+	<g:render template="/survey/element/hints"/>
 	
 	<div class="error-list">
 		<g:renderUserErrors element="${element}" validatable="${validatable}" suffix="${suffix}" location="${location}"/>

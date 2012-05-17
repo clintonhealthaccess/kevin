@@ -1,8 +1,6 @@
 <!-- Value type question -->
 
-<div class="error-list">
-	<g:renderUserErrors element="${element}" validatable="${validatable}" suffix="${suffix}"/>
-</div>	
+<g:render template="/survey/element/hints"/>
 
 <ul id="element-${element.id}-${suffix}" class="adv-form element element-list ${validatable?.isSkipped(suffix)?'skipped':''} ${(validatable==null || validatable?.isValid(suffix))?'':'errors'}" data-element="${element.id}" data-suffix="${suffix}">
 	<a name="element-${element.id}-${suffix}"></a>
@@ -76,9 +74,9 @@
 		</g:if>
 	</g:else>
 
-	<g:if test="${showHints}">
+	<div class="error-list">
 		<g:renderUserErrors element="${element}" validatable="${validatable}" suffix="${suffix}" location="${location}"/>
-	</g:if>
+	</div>
 
 	<!-- TODO last value -->
 </ul>
