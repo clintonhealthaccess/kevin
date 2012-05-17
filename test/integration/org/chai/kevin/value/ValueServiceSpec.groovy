@@ -310,7 +310,21 @@ class ValueServiceSpec extends IntegrationTests {
 		RawDataElementValue.count() == 1
 	}
 	
-	def "save raw data element value sets date"() {
+	def "test delete data element sets last value changed date"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		
+		when:
+		def date = rawDataElement.getLastValueChanged()
+		valueService.deleteValues(rawDataElement, null, period1)
+		
+		then:
+		RawDataElement.list()[0].lastValueChanged.after(date)
+	}
+	
+	def "save raw data element value sets last value changed date"() {
 		setup:
 		setupLocationTree()
 		def period = newPeriod()
@@ -318,53 +332,14 @@ class ValueServiceSpec extends IntegrationTests {
 		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+rawDataElement.id]]))
 		
 		when:
-		def date = normalizedDataElement.timestamp
+		def date = rawDataElement.lastValueChanged
 		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
 		valueService.save(rawDataElementValue);
 		
 		then:
-		NormalizedDataElement.list()[0].timestamp.after(date)
+		RawDataElement.list()[0].lastValueChanged.after(date)
 	}
 	
-	def "save raw data element value sets date of all dependencies"() {
-		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+rawDataElement.id]]))
-		def normalizedDataElement2 = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+normalizedDataElement1.id]]))
-		
-		when:
-		def date1 = normalizedDataElement1.timestamp
-		def date2 = normalizedDataElement2.timestamp
-		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
-		valueService.save(rawDataElementValue);
-		
-		then:
-		NormalizedDataElement.list()[0].timestamp.after(date1)
-		NormalizedDataElement.list()[1].timestamp.after(date2)
-	}
-	
-	def "save raw data element value sets date of all dependencies calculation"() {
-		setup:
-		setupLocationTree()
-		def period = newPeriod()
-		def rawDataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
-		def normalizedDataElement1 = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+""):[DISTRICT_HOSPITAL_GROUP:"\$"+rawDataElement.id]]))
-		def calculation = newSum("\$"+normalizedDataElement1.id, CODE(3))
-		
-		when:
-		def date1 = normalizedDataElement1.timestamp
-		def date2 = calculation.timestamp
-		def rawDataElementValue = newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("40"))
-		valueService.save(rawDataElementValue);
-		
-		then:
-		NormalizedDataElement.list()[0].timestamp.after(date1)
-		Sum.list()[0].timestamp.after(date2)
-	}
-		
-		
 	def "test delete calculation values"() {
 		setup:
 		setupLocationTree()

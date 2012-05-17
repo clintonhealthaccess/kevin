@@ -35,6 +35,7 @@ abstract public class Data<T extends DataValue> {
 	
 	private Long id;
 	private Date timestamp = new Date();
+	private Date lastValueChanged = new Date();
 	
 	private String code;
 	private Translation names = new Translation();
@@ -93,6 +94,16 @@ abstract public class Data<T extends DataValue> {
 		this.code = code;
 	}
 
+	@Column(nullable=true, columnDefinition="datetime")
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	public Date getLastValueChanged() {
+		return lastValueChanged;
+	}
+	
+	public void setLastValueChanged(Date lastValueChanged) {
+		this.lastValueChanged = lastValueChanged;
+	}
+	
 	@Transient
 	public abstract Type getType();
 	

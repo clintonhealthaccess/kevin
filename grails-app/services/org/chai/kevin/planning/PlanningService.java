@@ -145,7 +145,7 @@ public class PlanningService {
 	public void submitIfNeeded(Planning planning, DataLocation location) {
 		for (PlanningType planningType : planning.getPlanningTypes()) {
 			PlanningList planningList = getPlanningList(planningType, location);
-			if (!planningList.getFormEnteredValue().getValidatable().getValue().getAttribute(SUBMITTED).equals("true")) { 
+			if (!"true".equals(planningList.getFormEnteredValue().getValidatable().getValue().getAttribute(SUBMITTED))) { 
 				// we refresh the corresponding raw data element
 				ElementSubmitter submitter = new PlanningElementSubmitter(formElementService, valueService);
 				planningType.getFormElement().submit(location, planning.getPeriod(), submitter);
@@ -187,19 +187,9 @@ public class PlanningService {
 	}
 	
 	@Transactional(readOnly=false)
-	public boolean budgetNeedsUpdate(Planning planning, DataLocation location) {
+	public void refreshBudgetIfNeeded(Planning planning, DataLocation location) {
 		for (PlanningCost cost : planning.getPlanningCosts()) {
-			if (refreshValueService.needsUpdate(cost.getDataElement(), location, planning.getPeriod())) return true;
-		}
-		return false;
-	}
-	
-	@Transactional(readOnly=false)
-	public void refreshBudget(Planning planning, DataLocation location) {
-		for (PlanningCost cost : planning.getPlanningCosts()) {
-			if (refreshValueService.needsUpdate(cost.getDataElement(), location, planning.getPeriod())) {
-				refreshValueService.refreshNormalizedDataElement(cost.getDataElement(), location, cost.getPlanningType().getPeriod());
-			}
+			refreshValueService.refreshNormalizedDataElement(cost.getDataElement(), location, cost.getPlanningType().getPeriod());
 		}
 	}
 	

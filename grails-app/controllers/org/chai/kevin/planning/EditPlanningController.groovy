@@ -132,21 +132,12 @@ class EditPlanningController extends AbstractController {
 		}
 	}
 
-	def updateBudget = {
-		def planning = Planning.get(params.int('planning'))
-		def planningType = PlanningType.get(params.int('planningType'))
-		def location = DataLocation.get(params.int('location'))
-		
-		planningService.refreshBudget(planning, location)
-
-		redirect (action: 'budget', params:[planning: planning.id, location: location.id] )
-	}
-	
 	def budget = {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocation.get(params.int('location'))
 		
 		planningService.submitIfNeeded(planning, location)
+		planningService.refreshBudgetIfNeeded(planning, location)
 		
 		def planningLists = planning.planningTypes.collect {
 			planningService.getPlanningList(it, location)
@@ -155,7 +146,7 @@ class EditPlanningController extends AbstractController {
 		render (view: '/planning/budget/budget', model: [
 			planning: planning,
 			location: location,
-			budgetNeedsUpdate: planningService.budgetNeedsUpdate(planning, location),
+			budgetNeedsUpdate: false,
 			planningLists: planningLists
 		])
 	}
