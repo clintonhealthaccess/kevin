@@ -262,13 +262,13 @@ public class SurveyPageService {
 			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
 			dataLocation = (DataLocation)sessionFactory.getCurrentSession().get(DataLocation.class, dataLocation.getId());
 
-			getMe().refreshSurveyForDataLocationWithNewTransaction(dataLocation, survey, closeIfComplete);
+			getMe().refreshSurveyForDataLocationInTransaction(dataLocation, survey, closeIfComplete);
 			sessionFactory.getCurrentSession().clear();
 		}
 	}
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshSurveyForDataLocationWithNewTransaction(DataLocation dataLocation, Survey survey, boolean closeIfComplete) {
+	public void refreshSurveyForDataLocationInTransaction(DataLocation dataLocation, Survey survey, boolean closeIfComplete) {
 		refreshSurveyForDataLocation(dataLocation, survey, closeIfComplete);
 	}
 	
@@ -579,43 +579,51 @@ public class SurveyPageService {
 	@Transactional(readOnly = false)
 	public boolean submitAll(Location location, Survey survey) {				
 		
-		if (log.isDebugEnabled()) log.debug("submitAll(" + location + ", " + survey + ")");		
+		if (log.isDebugEnabled()) log.debug("submitAll(" + location + ", " + survey + ")");
+		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+		
 		if(location == null || survey == null) 
 			return false;
 		
 		List<DataLocation> dataLocations = location.collectDataLocations(null, null);		
 		for (DataLocation dataLocation : dataLocations) {
-			List<SurveyProgram> surveyPrograms = survey.getPrograms(dataLocation.getType());
-			for (SurveyProgram surveyProgram : surveyPrograms) {								
-				
-				// we get whether to submit anyways if the program is not closed, even if it is incomplete or invalid
-				boolean isClosed = getSurveyEnteredProgram(dataLocation, surveyProgram).isClosed();				
-				if (!isClosed) {
-					
-					// first we make sure that the program is valid and complete, so we revalidate it
-					List<SurveyElement> elements = surveyProgram.getElements(dataLocation.getType());
-					evaluateRulesAndSave(dataLocation, elements, new HashMap<SurveyElement, FormEnteredValue>());
-					
-					SurveyElementSubmitter submitter = new SurveyElementSubmitter(surveyValueService, formElementService, valueService);
-
-					// save all the values to data values
-					for (SurveyElement element : elements) {
-						element.submit(dataLocation, element.getSurvey().getPeriod(), submitter);
-					}
-					
-					// close the program
-					SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, surveyProgram);
-					enteredProgram.setClosed(true);
-					surveyValueService.save(enteredProgram);
-			
-					// log the event
-					//logSurveyEvent(dataLocation, program, "submit");
-				}
-				
-				if (log.isDebugEnabled()) log.debug("submit(" + dataLocation + ", " + surveyProgram + ", )");				
-			}
+			// TODO do this in a transaction
+			submitIfNotClosed(survey, dataLocation);
 		}	
 		return true;
+	}
+
+	private void submitIfNotClosed(Survey survey, DataLocation dataLocation) {
+		
+		List<SurveyProgram> surveyPrograms = survey.getPrograms(dataLocation.getType());
+		for (SurveyProgram surveyProgram : surveyPrograms) {								
+			
+			// we get whether to submit anyways if the program is not closed, even if it is incomplete or invalid
+			boolean isClosed = getSurveyEnteredProgram(dataLocation, surveyProgram).isClosed();				
+			if (!isClosed) {
+				
+				// first we make sure that the program is valid and complete, so we revalidate it
+				List<SurveyElement> elements = surveyProgram.getElements(dataLocation.getType());
+				evaluateRulesAndSave(dataLocation, elements, new HashMap<SurveyElement, FormEnteredValue>());
+				
+				SurveyElementSubmitter submitter = new SurveyElementSubmitter(surveyValueService, formElementService, valueService);
+
+				// save all the values to data values
+				for (SurveyElement element : elements) {
+					element.submit(dataLocation, element.getSurvey().getPeriod(), submitter);
+				}
+				
+				// close the program
+				SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, surveyProgram);
+				enteredProgram.setClosed(true);
+				surveyValueService.save(enteredProgram);
+		
+				// log the event
+				//logSurveyEvent(dataLocation, program, "submit");
+			}
+			
+			if (log.isDebugEnabled()) log.debug("submit(" + dataLocation + ", " + surveyProgram + ", )");				
+		}
 	}
 	
 	private void logSurveyEvent(DataLocation dataLocation, SurveyProgram program, String event) {
