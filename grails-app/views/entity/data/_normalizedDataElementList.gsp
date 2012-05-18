@@ -8,7 +8,8 @@
   			<th><g:message code="entity.type.label"/></th>
   			<th><g:message code="entity.code.label"/></th>
   			<th><g:message code="normalizeddataelement.lastrefreshed.label"/></th>
-  			<th></th>
+  			<th><g:message code="normalizeddataelement.lastvaluechanged.label"/></th>
+  			<th><g:message code="entity.list.manage.label"/></th>
   		</tr>
   	</thead>
   	<tbody>
@@ -31,9 +32,31 @@
   				<td><g:toHtml value="${normalizedDataElement.type.getDisplayedValue(2, 2)}"/></td>
   				<td>${normalizedDataElement.code}</td>
   				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.refreshed}"/></td>
-  				<td><a href="${createLink(controller:'data', action:'dataElementValueList', params:[data:normalizedDataElement.id])}">
-  					<g:message code="dataelement.viewvalues.label"/>
-  				</a></td>
+  				<td><g:formatDate format="yyyy-MM-dd HH:mm" date="${normalizedDataElement.lastValueChanged}"/></td>
+  				<td>
+					<div class="js_dropdown dropdown"> 
+						<a class="selected manage-btn" href="#"><g:message code="entity.list.manage.label"/></a>
+						<div class="hidden manage-list dropdown-list js_dropdown-list">
+							<ul>
+								<li>
+  									<a href="${createLink(controller:'data', action:'dataElementValueList', params:[data:normalizedDataElement.id])}">
+  										<g:message code="dataelement.viewvalues.label"/>
+  									</a>
+  								</li>
+  								<li>
+  									<a href="${createLink(controller:'data', action:'calculateValues', params:[data:normalizedDataElement.id])}">
+  										<g:message code="dataelement.calculatevalues.label"/>
+  									</a>
+  								</li>
+  								<li>
+  									<a href="${createLinkWithTargetURI(controller:'data', action:'deleteValues', params:[data:normalizedDataElement.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+  										<g:message code="data.deletevalues.label"/>
+  									</a>
+  								</li>
+  							</ul>
+  						</div>
+  					</div>
+  				</td>
   			</tr>
   			<tr class="explanation-row">
   				<td colspan="8">

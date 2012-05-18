@@ -58,6 +58,23 @@ class DataController extends AbstractController {
 		}
 	}
 
+	def deleteValues = {
+		def data = dataService.getData(params.int('data'), Data.class)
+		if (data == null) {
+			response.sendError(404)
+		}
+		else {
+			valueService.deleteValues(data, null, null)
+			flash.message = message(code: 'data.values.deleted')
+			redirect(uri: getTargetURI())
+		}
+	}
+	
+	def calculateValues = {
+		
+	}
+	
+	// TODO move to DataElementController
 	def dataElementValueList = {
 		adaptParamsForList()
 		def data = dataService.getData(params.int('data'), DataElement.class)
