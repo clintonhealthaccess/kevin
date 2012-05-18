@@ -1127,6 +1127,7 @@ class Initializer {
 		def planning = new Planning(
 			period: Period.list([cache: true])[0],
 			names: j(["en":"Planning 2011"]),
+			typeCodeString: "Health Center",
 			active: true
 		).save(failOnError: true)
 		

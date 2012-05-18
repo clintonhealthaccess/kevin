@@ -220,6 +220,7 @@ beans = {
 		dataService = ref("dataService")
 		sessionFactory = ref("sessionFactory")
 		refreshValueService = ref("refreshValueService")
+		locationService = ref("locationService")
 	}
 	
 	// override the spring cache manager to use the same as hibernate

@@ -280,7 +280,6 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 	
 	def "access budget page when no data displays budget without redirect"() {
 		setup:
-		setup:
 		setupLocationTree()
 		def period = newPeriod()
 		def enume = newEnume(CODE(1))
@@ -301,6 +300,10 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.response.redirectedUrl == null
 		planningController.modelAndView.model.planning.equals (planning)
 		planningController.modelAndView.model.location.equals (DataLocation.findByCode(BUTARO))
+		
+	}
+	
+	def "overview with non active planning for type returns 404"() {
 		
 	}
 	
