@@ -40,6 +40,7 @@ import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
 import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
 import org.supercsv.io.CsvListWriter
 import org.supercsv.io.ICsvListWriter;
@@ -161,7 +162,7 @@ class ExporterServiceSpec  extends IntegrationTests {
 			
 	}
 	
-	def "test exportDataElements() with valid Simple DataElement Type"(){
+	def "test exportDataElements() with valid Simple RawDataElement Type"(){
 		setup:
 		setupLocationTree();
 		def date= new Date();
@@ -182,6 +183,34 @@ class ExporterServiceSpec  extends IntegrationTests {
 		listDataList.add("");
 		listDataList.add(dataElementDate.code);
 		listDataList.add(Utils.formatDate(date));
+		listDataList.add("");
+		def listOfList=[]
+		listOfList.add(listDataList)
+		
+		then:
+		lines.equals(listOfList);
+	}
+	
+	def "test exportDataElements() with valid Simple NormalizedDataElement Type"(){
+		setup:
+		setupLocationTree();
+		def date= new Date();
+		def period= newPeriod();
+		def locations= getDataLocations([KIVUYE]);
+
+		def normalizedDataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([(period.id+''):[(HEALTH_CENTER_GROUP):"1"]]))
+		
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, locations[0], period, Status.VALID, v("1"))
+		
+		when:
+		def lines = exporterService.getExportLineForValue(locations[0],period,normalizedDataElement)
+		def periodString = "[ "+(period.startDate).toString()+" - "+(period.endDate).toString()+" ]";
+		def listDataList=["Rwanda","North","Burera","","Kivuye HC","Health Center","Kivuye HC"]
+		listDataList.add(periodString);
+		listDataList.add(normalizedDataElement.id+"");
+		listDataList.add("");
+		listDataList.add(normalizedDataElement.code);
+		listDataList.add("1.0");
 		listDataList.add("");
 		def listOfList=[]
 		listOfList.add(listDataList)
