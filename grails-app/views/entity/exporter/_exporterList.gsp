@@ -29,7 +29,7 @@
 					<td><g:i18n field="${export.descriptions}"/></td>
 					<td>
 						<g:each in="${export.locations}" status="l" var="location">
-							<g:i18n field="${location.parent.names}"/> - <g:i18n field="${location.names}"/>
+							<g:i18n field="${location.parent?.names}"/> - <g:i18n field="${location.names}"/>
 							${(l < export.locations.size()-1)? ',' : ''}
 						</g:each>
 					</td>

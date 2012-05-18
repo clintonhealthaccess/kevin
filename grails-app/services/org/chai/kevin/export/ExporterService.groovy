@@ -146,12 +146,12 @@ class ExporterService {
 	public List<List<String>> getExportLineForValue(DataLocation location,Period period, Data data){
 		DataPointVisitor dataPointVisitor = new DataPointVisitor();
 		if(data!=null){
-			RawDataElementValue rawDataElementValue = valueService.getDataElementValue(data, location, period);
-			if(rawDataElementValue!=null){
+			DataValue dataValue = valueService.getDataElementValue(data, location, period);
+			if(dataValue!=null){
 				List<String> basicInfo = this.getBasicInfo(location,period,data);
 				dataPointVisitor.setBasicInfo(basicInfo);
-				data.getType().visit(rawDataElementValue.getValue(), dataPointVisitor);
-				sessionFactory.getCurrentSession().evict(rawDataElementValue);
+				data.getType().visit(dataValue.getValue(), dataPointVisitor);
+				sessionFactory.getCurrentSession().evict(dataValue);
 			}
 		}
 		return dataPointVisitor.getLines();
