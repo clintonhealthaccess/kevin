@@ -1,38 +1,4 @@
-import org.chai.kevin.ExpressionService
-import org.chai.kevin.InfoService
-import org.chai.kevin.JaqlService
-import org.chai.kevin.RefreshValueService
-import org.chai.kevin.chart.ChartService
-import org.chai.kevin.cost.CostTableService
-import org.chai.kevin.dashboard.DashboardService
-import org.chai.kevin.entity.EntityExportService
-import org.chai.kevin.maps.MapsService
-import org.chai.kevin.JaqlService
-import org.chai.kevin.LocationService
-import org.chai.kevin.chart.ChartService
-import org.chai.kevin.cost.CostTableService
-import org.chai.kevin.dashboard.DashboardPercentageService;
-import org.chai.kevin.dashboard.DashboardService
-import org.chai.kevin.data.InfoService;
-import org.chai.kevin.planning.PlanningService;
-import org.chai.kevin.reports.ReportService
-import org.chai.kevin.dsr.DsrService
-import org.chai.kevin.export.ExportDataElementService;
-import org.chai.kevin.fct.FctService
-import org.chai.kevin.form.FormValidationService;
-import org.chai.kevin.importer.ImporterService;
-import org.chai.kevin.maps.MapsService
-import org.chai.kevin.survey.SurveyCopyService
-import org.chai.kevin.survey.SurveyExportService
-import org.chai.kevin.survey.SurveyPageService
-import org.chai.kevin.survey.summary.SummaryService;
-import org.chai.kevin.value.ExpressionService;
-import org.chai.kevin.value.RefreshValueService;
-import org.chai.kevin.value.ValidationService;
-import org.chai.kevin.value.ValueService;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
-/*
+/**
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
@@ -60,6 +26,41 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import org.chai.kevin.ExpressionService
+import org.chai.kevin.InfoService
+import org.chai.kevin.JaqlService
+import org.chai.kevin.RefreshValueService
+import org.chai.kevin.chart.ChartService
+import org.chai.kevin.cost.CostTableService
+import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.entity.EntityExportService
+import org.chai.kevin.maps.MapsService
+import org.chai.kevin.JaqlService
+import org.chai.kevin.LocationService
+import org.chai.kevin.chart.ChartService
+import org.chai.kevin.cost.CostTableService
+import org.chai.kevin.dashboard.DashboardPercentageService;
+import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.data.InfoService;
+import org.chai.kevin.planning.PlanningService;
+import org.chai.kevin.reports.ReportService
+import org.chai.kevin.dsr.DsrService
+import org.chai.kevin.export.ExporterService;
+import org.chai.kevin.fct.FctService
+import org.chai.kevin.form.FormValidationService;
+import org.chai.kevin.importer.ImporterService;
+import org.chai.kevin.maps.MapsService
+import org.chai.kevin.survey.SurveyCopyService
+import org.chai.kevin.survey.SurveyExportService
+import org.chai.kevin.survey.SurveyPageService
+import org.chai.kevin.survey.summary.SummaryService;
+import org.chai.kevin.value.ExpressionService;
+import org.chai.kevin.value.RefreshValueService;
+import org.chai.kevin.value.ValidationService;
+import org.chai.kevin.value.ValueService;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
+
 def config = CH.config
 
 Set<String> reportSkipLevels = config.report.skip.levels
@@ -71,19 +72,11 @@ Set<String> surveyExportSkipLevels = config.survey.export.skip.levels
 String dsrGroupLevel= config.dsr.group.level
 
 beans = {
-	
-//	exportDataElementService(ExportDataElementService){
-//		dataElementService=ref("dataElementService")
-//		locationService = ref("locationService")
-//		valueService = ref("valueService")
-//		infoService = ref("infoService")
-//	}
-	
+		
 	importerService(ImporterService){
 		locationService = ref("locationService")
 		valueService = ref("valueService")
 		dataService=ref("dataService")
-
 	}
 
 	validationService(ValidationService){

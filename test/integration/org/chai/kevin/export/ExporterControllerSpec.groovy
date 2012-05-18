@@ -1,4 +1,4 @@
-/*
+/**
 * Copyright (c) 2011, Clinton Health Access Initiative.
 *
 * All rights reserved.
@@ -25,73 +25,41 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+package org.chai.kevin.export
 
-dataSource {
-	pooled = true
+import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.data.Type;
 
-	properties {
-		maxActive = 50
-		maxIdle = 25
-		minIdle = 5
-		initialSize = 5
-		timeBetweenEvictionRunsMillis=1000 * 60 * 30
-		numTestsPerEvictionRun=3
-		minEvictableIdleTimeMillis=1000 * 60 * 30
-		maxWait = 10000
-		testOnBorrow = true
-		testWhileIdle = true
-		testOnReturn = true
-		validationQuery = "SELECT 1"
-	}
-}
-hibernate {
-	cache.use_second_level_cache = true
-	cache.use_query_cache = true
-	cache.provider_class = 'net.sf.ehcache.hibernate.SingletonEhCacheProvider'
+/**
+ * @author Jean Kahigiso M.
+ *
+ */
+class ExporterControllerSpec extends IntegrationTests {
 	
-	naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
-	// performance improvement, but keep in mind that it might 
-	// affect data consistency
-	flush.mode = 'commit'
-    show_sql = false
-}
-naming_strategy = org.hibernate.cfg.DefaultNamingStrategy
+	def exporterController;
+	
+	def "get exporter"(){
+		setup:
+		setupLocationTree();
+		def periods=new HashSet([newPeriod()]);
+		def locationType="Health Center,District Hospital";
+		def typeOne = Type.TYPE_NUMBER();
+		def typeTwo = Type.TYPE_BOOL();
+		def dataElementOne = newRawDataElement(CODE(1), typeOne);
+		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
+		def locations=new HashSet();
+		locations.addAll(getLocations([BURERA]));
+		locations.addAll(getDataLocations([KIVUYE]));
+		def data=new HashSet([dataElementOne,dataElementTwo]);
+		def exporter = newExporter(j("en":"Testing Seach One"),periods, locationType, locations, data);
+		exporterController = new  ExporterController();
+		
+		when:
+		exporterController.params.('export.id')=exporter.id
+		exporterController.export()
+		then:
+		exporterController.response.getContentType() == "application/zip"
+		
+	}
 
-// environment specific settings
-environments {
-	development {
-		dataSource {
-			dbCreate = "update" // one of 'create', 'create-drop','update'
-			driverClassName = "org.h2.Driver"
-			url = "jdbc:h2:mem:devDB"
-			username = "sa";
-			password = "";
-		}
-		hibernate {
-//			dialect = "org.hibernate.dialect.HSQLDialect"
-		}
-	}
-	test {
-		dataSource {
-			dbCreate = "create-drop"
-			driverClassName = "org.h2.Driver"
-			url = "jdbc:h2:mem:testDb"
-			username = "sa";
-			password = "";
-
-		}
-		hibernate {
-//			dialect = "org.hibernate.dialect.HSQLDialect"
-		}
-	}
-	production {
-		dataSource {
-			dbCreate = "update"
-			driverClassName = "com.mysql.jdbc.Driver"
-			// configuration defined in ${home}/.grails/kevin-config.groovy
-		}
-		hibernate {
-//			dialect = "org.hibernate.dialect.MySQLDialect"
-		}
-	}
 }

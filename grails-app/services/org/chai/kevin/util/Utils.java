@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,15 +45,24 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.LanguageService;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.EnumService;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.value.Value;
 
 /**
  * @author Jean Kahigiso M.
  * 
  */
 public class Utils {
+	private static EnumService enumService;
+	private static LanguageService languageService;
 	
 	private final static String DATE_FORMAT = "dd-MM-yyyy";
+	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
 	private final static String CSV_FILE_EXTENSION = ".csv";
 	private final static String ZIP_FILE_EXTENSION = ".zip";
 
@@ -77,7 +85,7 @@ public class Utils {
 		
 		return StringUtils.join(result, ',');
 	}
-	
+		
 	@SuppressWarnings("unused")
 	private static boolean matches(String text, String value) {
 		if (value == null) return false;
@@ -95,6 +103,10 @@ public class Utils {
 	public static String formatDate(Date date) {
 		if (date == null) return null;
 		return new SimpleDateFormat(DATE_FORMAT).format(date);
+	}
+	public static String formatDateWithTime(Date date) {
+		if (date == null) return null;
+		return new SimpleDateFormat(DATE_FORMAT_TIME).format(date);
 	}
 	
 	public static Date parseDate(String string) throws ParseException {
@@ -121,6 +133,29 @@ public class Utils {
 		return noHtmlString.substring(0, length);
 	}
 	
+	public static String getValueString(Type type, Value value){
+		if(value != null && !value.isNull()){
+			switch (type.getType()) {
+			case NUMBER:
+				return value.getNumberValue().toString();
+			case BOOL:
+				return value.getBooleanValue().toString();
+			case STRING:
+				return value.getStringValue();
+			case TEXT:
+				return value.getStringValue();
+			case DATE:
+				if(value.getDateValue() != null) return Utils.formatDate(value.getDateValue());	
+				else return value.getStringValue();
+			case ENUM:
+				return value.getStringValue();
+			default:
+				throw new IllegalArgumentException("get value string can only be called on simple type");
+			}			
+		}
+		return "";
+	}
+	
 	public static File getZipFile(File file, String filename) throws IOException {		
 		
 		File zipFile = File.createTempFile(filename, ZIP_FILE_EXTENSION);
@@ -142,5 +177,6 @@ public class Utils {
 			
 		return zipFile;
 	}
+	
 	
 }

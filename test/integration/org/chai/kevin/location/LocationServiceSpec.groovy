@@ -29,6 +29,8 @@ package org.chai.kevin.location
 */
 
 import java.sql.Types;
+import java.util.Set;
+
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType
@@ -218,5 +220,43 @@ class LocationServiceSpec extends IntegrationTests {
 		
 		then:
 		levelAfter.equals(LocationLevel.findByCode(SECTOR))
+	}
+	def "test getDataLocation(Set<CalculationLocation> locations,Set<DataLocationType> types)"(){
+		setup:
+		setupLocationTree()
+		
+		def locations=new HashSet();
+		locations.addAll(getLocations([BURERA]));
+		locations.addAll(getDataLocations([KIVUYE]));
+		locations.addAll(getDataLocations([BUTARO]));
+		
+		def typeOne = new HashSet();
+		def typeTwo = new HashSet();
+		def typeThree = new HashSet();
+		
+		def hc = getDataLocationTypes([HEALTH_CENTER_GROUP]);
+		def dh = getDataLocationTypes([DISTRICT_HOSPITAL_GROUP]);
+		
+		
+		typeOne.add(hc[0]);
+		typeTwo.add(dh[0]);
+		typeThree.add(hc[0]);
+		typeThree.add(dh[0]);
+
+		
+		when:
+		def caseOne = locationService.getDataLocations(locations,typeOne);
+		def caseTwo = locationService.getDataLocations(locations,typeTwo);
+		def caseThree = locationService.getDataLocations(locations,typeThree);
+		def listDataLocations =[]
+		listDataLocations.add(getDataLocations([BUTARO])[0])
+		listDataLocations.add(getDataLocations([KIVUYE])[0])
+		then:
+		caseOne.equals(getDataLocations([KIVUYE]));
+		caseTwo.equals(getDataLocations([BUTARO]));
+		caseThree.size()==2
+		listDataLocations.size()==2
+		caseThree.equals(listDataLocations);
+		
 	}
 }

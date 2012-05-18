@@ -1,3 +1,4 @@
+<%@page import="org.chai.kevin.util.Utils"%>
 <table class="listing">
 	<thead>
 		<tr>
@@ -30,7 +31,7 @@
 				<td><g:i18n field="${survey.names}" /></td>
 				<td>${survey?.active?'\u2713':''}</td>
 				<td><g:i18n field="${survey.descriptions}" /></td>
-				<td>[${survey.period.startDate} - ${survey.period.startDate}]</td>
+				<td>[${Utils.formatDate(survey.period.startDate)} - ${Utils.formatDate(survey.period.startDate)}]</td>
 				<td>${survey.programs.size()}</td>
 				<td>
 					<div class="js_dropdown dropdown"> 

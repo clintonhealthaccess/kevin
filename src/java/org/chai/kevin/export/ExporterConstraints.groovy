@@ -25,31 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.chai.kevin.export;
-
-import org.chai.kevin.Period;
-import org.chai.kevin.data.DataElement;
-import org.chai.kevin.value.ValueService;
+package org.chai.kevin.export
 
 /**
  * @author Jean Kahigiso M.
  *
  */
-public class ExportDataElementService {
-
-	private ValueService dataValueService;
-//	private LocationService locationService;
-	
-	public ExportDataElement getDataElementExport(Period period,DataElement<?> dataElement){
-//		Map<Location, DataValue> values = new HashMap<Location,DataValue>();
-//		for(Location location: locations){
-//			Map<Location, DataValue> dataValue =new HashMap<Location,DataValue>();
-//			dataValue.put(location, dataValueService.getDataElementValue(dataElement, location.getLocation(), period));
-//			
-//		}
-//		
-//		return new ExportDataElement(period, dataElement, locations,values);
-		return null;
-	}
-
+constraints = {
+	periods(nullable:false,minSize: 1)
+	data(nullable:false, minSize: 1)
+	locations(nullable:false, minSize: 1)
+	typeCodeString(nullable:false,blank:false)
 }
