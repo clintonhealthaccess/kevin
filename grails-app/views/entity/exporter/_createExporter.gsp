@@ -22,8 +22,8 @@
 						from="${locations}" value="${exporter.locations*.id}" bean="${exporter}" 
 						values="${locations.collect {'['+it.class.simpleName+'] '+i18n(field:it.names)}}" />
 						
-				<g:selectFromList name="data" label="${message(code:'rawdataelement.label')}" field="data" 
-						optionKey="id" multiple="true" ajaxLink="${createLink(controller:'data', action:'getAjaxData',params:[class: 'RawDataElement'])}" 
+				<g:selectFromList name="data" label="${message(code:'dataelement.label')}" field="data" 
+						optionKey="id" multiple="true" ajaxLink="${createLink(controller:'data', action:'getAjaxData',params:[class: 'Data'])}" 
 						from="${data}" value="${exporter.data*.id}" bean="${exporter}" 
 						values="${data.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 						

@@ -44,8 +44,6 @@ import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.survey.SurveyExportService;
 import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.DataValue;
-import org.codehaus.groovy.grails.commons.ConfigurationHolder as CONF
-
 
 /**
  * @author Jean Kahigiso M.
@@ -77,10 +75,10 @@ class ExporterController extends AbstractEntityController {
 		params.dataOld= entity.data;
 		params.locationsOld = entity.locations
 		entity.properties= params
+		
 		if(entity.date==null)	
 			entity.date = new Date();
 		
-			
 		if(log.isDebugEnabled()) log.debug("export(bind="+entity+")")
 		
 		// we do this because automatic data binding does not work with polymorphic elements
@@ -111,19 +109,11 @@ class ExporterController extends AbstractEntityController {
 		}
 		entity.locations = locations
 				
-		
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
 	
-	def validateEntity(def entity) {
-		if(!entity.validate()){
-			entity.locations=params.locationsOld;
-			entity.data=params.rawDataElementsOld;
-		}
-	}
-    
 	def getModel(def entity) {
 		List<Data> data=[]
 		List<CalculationLocation> locations=[]
@@ -139,11 +129,11 @@ class ExporterController extends AbstractEntityController {
 	}
 	
 	def export ={
-		Exporter export= Exporter.get(Long.parse(params.int('export.id')));
+		Exporter export= Exporter.get(params.int('export.id'));
 		if(log.isDebugEnabled()) log.debug("export(export="+export+")")
 		if(export){
-			File csvFile = exporterService.exportData(export);
-			def zipFile = Utils.getZipFile(csvFile, export.names[languageService.getCurrentLanguage()])
+			File csvFile = exporterService.exportDataElement(export);
+			def zipFile = Utils.getZipFile(csvFile, export.descriptions[languageService.getCurrentLanguage()])
 			
 			if(zipFile.exists()){
 				response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());

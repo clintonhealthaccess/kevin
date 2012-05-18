@@ -46,7 +46,9 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.value.Value;
 
 /**
  * @author Jean Kahigiso M.
@@ -124,6 +126,29 @@ public class Utils {
 	
 		if (num == null || noHtmlString.length() <= num) return noHtmlString;
 		return noHtmlString.substring(0, length);
+	}
+	
+	public static String getValueString(Type type, Value value){
+		if(value != null && !value.isNull()){
+			switch (type.getType()) {
+			case NUMBER:
+				return value.getNumberValue().toString();
+			case BOOL:
+				return value.getBooleanValue().toString();
+			case STRING:
+				return value.getStringValue();
+			case TEXT:
+				return value.getStringValue();
+			case DATE:
+				if(value.getDateValue() != null) return Utils.formatDate(value.getDateValue());	
+				else return value.getStringValue();
+			case ENUM:
+				return value.getEnumValue();
+			default:
+				throw new IllegalArgumentException("get value string can only be called on simple type");
+			}			
+		}
+		return "";
 	}
 	
 	public static File getZipFile(File file, String filename) throws IOException {		

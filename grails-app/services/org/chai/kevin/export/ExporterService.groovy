@@ -32,6 +32,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,7 +60,6 @@ import org.chai.kevin.value.ValueService;
 
 import org.apache.commons.lang.StringUtils
 import org.hibernate.Criteria;
-import org.chai.kevin.survey.SurveyExportService.DataPointVisitor;
 import org.chai.kevin.survey.export.SurveyExportDataPoint;
 import org.chai.kevin.util.Utils
 import org.hibernate.criterion.MatchMode
@@ -85,9 +85,6 @@ class ExporterService {
 	def surveyExportService;
 	
 	private final static String CSV_FILE_EXTENSION = ".csv";
-	private final static String COUNTRY = "Country"
-	private final static String PROVINCE = "Province";
-	private final static String DISTRICT = "District";
 	private final static String LOCATION_TYPE = "Type";
 	private final static String HEALTH_FACILITY_CODE = "Health Facility Code";
 	private final static String HEALTH_FACILITY = "Health Facility";
@@ -97,35 +94,28 @@ class ExporterService {
 	private final static String DATA_VALUE = "Data Value";
 	private final static String DATA_VALUE_ADDRESS = "Data Value Address";
 	
-	public File exportData(Exporter export){
-		List<DataLocationType> types = [];
-		List<DataLocation> dataLocations = [];
+	public File exportDataElement(Exporter export){
+		if (log.isDebugEnabled()) log.debug("exportData("+export+")");
+		Set<DataLocationType> types = new HashSet();
 		
 		for(String code: export.getTypeCodes()){
 			def type = locationService.findDataLocationTypeByCode(code)
 			if(type!=null) types.add(type)
 		}
 		
-		for(CalculationLocation location: export.locations){
-			if(location instanceof DataLocation)
-				if(types.contains((DataLocation) location.type))
-					dataLocations.add(location)
-			if(location instanceof Location)
-				for(DataLocation dataLocation: location.collectDataLocations(null,types))
-					if(!dataLocations.contains(dataLocation))
-						dataLocations.add(dataLocation)
-		}
-					
-		if (log.isDebugEnabled()) log.debug(" export.names: " +export.descriptions[languageService.getCurrentLanguage()]+" export.periods "+export.periods +" dataLocations "+dataLocations+" data "+export.data +")");
-		return this.exportRawDataElement(export.descriptions[languageService.getCurrentLanguage()],dataLocations,export.periods,export.data);
+		List<DataLocation> dataLocations = locationService.getDataLocations(export.locations,types);
+		
+		if (log.isDebugEnabled()) log.debug(" Exporter dataLocations "+dataLocations+")");
+		return this.exportDataElement(export.descriptions[languageService.getCurrentLanguage()],dataLocations,export.periods,export.data);
 	}
 		
-	public File exportRawDataElement(String fileName,List<DataLocation> dataLocations,List<Period> periods,List<Data<DataValue>> data){
-		if (log.isDebugEnabled()) log.debug(" exportData(List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " List<Data<DataValue>>: " + data + ")");
-
+	public File exportDataElement(String fileName,List<DataLocation> dataLocations,Set<Period> periods,Set<Data<DataValue>> data){
+		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " Set<Data<DataValue>>: " + data + ")");
 		File csvFile = File.createTempFile(fileName, CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
+		DataPointVisitor dataPointVisitor = new DataPointVisitor(writer);
+
 		try{
 			String[] csvHeaders = null;
 			// headers
@@ -134,12 +124,14 @@ class ExporterService {
 				writer.writeHeader(csvHeaders);
 			}
 			for(DataLocation location: dataLocations)
-				for(Period period: periods)	
-				for(Data dataEl: data){
-					List<String> basicInfo = this.getBasicInfo(location,period,dataEl);
-					RawDataElementValue rawDataElementValue = valueService.getDataElementValue(data, location, period);
-					this.writeData(location,period,data.getType(),rawDataElementValue.getValue(),basicInfo,writer);
-				}
+				for(Period period: periods)
+					for(Data dataElement: data){
+						List<String> basicInfo = this.getBasicInfo(location,period,dataElement);
+						RawDataElementValue rawDataElementValue = valueService.getDataElementValue(dataElement, location, period);
+						dataPointVisitor.setBasicInfo(basicInfo);
+						if(rawDataElementValue!=null)
+							dataElement.getType().visit(rawDataElementValue.getValue(), dataPointVisitor);
+					}
 		} catch (IOException ioe){
 			// TODO throw something that make sense
 			throw ioe;
@@ -150,44 +142,16 @@ class ExporterService {
 
 	}
 	
-	private writeData(DataLocation location,Period period,Type type,Value value,List<String> basicInfo,ICsvListWriter writer){
-		if (log.isDebugEnabled()) log.debug(" writeData(DataLocation: " + location + " Period: " + period + " Type: " + type + " Value: "+ value + " List<String>: "+ basicInfo + ")");
-		String values= [];
-		if(value != null && !value.isNull()){
-			switch (type.getType()) {
-				case 'NUMBER':
-				case 'BOOL':
-				case 'STRING':
-				case 'TEXT':
-				case 'DATE':
-				case 'ENUM':
-						basicInfo.addAll(type,value));
-					break;
-				default:
-					break;
-			}
-		}
-		writer.write(basicInfo);
-	}
-		
-    private addDataPoint(DataLocation dataLocation, Period period,Type type, Value value){
-		
-		Map<String,List<String>> dataPoints = new HashMap<String,List<String>>();
-		DataPointVisitor visitor = new DataPointVisitor(dataPoints);
-		type.visit(value, visitor);
-		dataPoints = visitor.getDataPoints();
-	}
-	
-
 	private List<String> getBasicInfo(DataLocation location,Period period, Data data){
 		def basicInfo=[]
-		for (LocationLevel level : surveyExportService.getLevels()){
+		for (LocationLevel level : locationService.listLevels()){
 			Location parent = locationService.getParentOfLevel(location, level);
 			if (parent != null) basicInfo.add(languageService.getText(parent.getNames()));
 			else basicInfo.add("");
 		}
 		basicInfo.add(languageService.getText(location.getNames()))
 		basicInfo.add(languageService.getText(location.type.getNames()))
+
 		basicInfo.add(location.code)
 		basicInfo.add("[ "+period.startDate.toString()+" - "+period.endDate.toString()+" ]")
 		basicInfo.add(languageService.getText(data.getNames()))
@@ -197,9 +161,8 @@ class ExporterService {
 	
 	private List getExportDataHeaders() {
 		List<String> headers = new ArrayList<String>();
-		headers.add(COUNTRY);
-		headers.add(PROVINCE);
-		headers.add(DISTRICT);
+		for (LocationLevel level : locationService.listLevels())
+			headers.add(languageService.getText(level.getNames()));
 		headers.add(HEALTH_FACILITY);
 		headers.add(LOCATION_TYPE);
 		headers.add(HEALTH_FACILITY_CODE);
@@ -211,33 +174,6 @@ class ExporterService {
 		return headers;
 	}
 	
-	private class DataPointVisitor extends ValueVisitor{
-	
-		private Map<String,List<String>> dataPoints = new HashMap<String,List<String>>();
-		public Map<String,List<String>> getDataPoints(){
-			return dataPoints;
-		}
-		
-		public DataPointVisitor() {
-			dataPoints = new ArrayList<String>();
-		}
-
-		@Override
-		public void handle(Type type, Value value, String prefix, String genericPrefix) {
-			if(!type.isComplexType()){
-				String address
-				for(String genericTypeKey : this.getTypes().keySet()){
-					if(!this.getGenericTypes().get(genericTypeKey).getType().equals(ValueType.LIST)){
-						
-					}
-				}
-				if(!dataPoints.containsKey(address))
-					dataPoints.put(address, new ArrayList<String>())
-				//TODO get value from type //dataPoint.get(address).
-
-			}
-		}
-	}
 	public List<Exporter> getExporters(def sorter, def order){
 		return Exporter.list(sort:sorter,order:order);
 	}
@@ -247,26 +183,26 @@ class ExporterService {
 	public Integer countExporter(Class<Exporter> clazz, String text) {
 		return getSearchCriteria(clazz,text).setProjection(Projections.count("id")).uniqueResult()
 	}
-	
+
 	public <T extends Exporter> List<T>  searchExporter(Class<T> clazz, String text, Map<String, String> params) {
-			def exporters=[]
-			def criteria = getSearchCriteria(clazz,text)
-			
-			if (params['offset'] != null) criteria.setFirstResult(params['offset'])
-			if (params['max'] != null) criteria.setMaxResults(params['max'])
-			
-			if(params['sort']!=null)
-				exporters= criteria.addOrder(Order.asc(params['sort'])).list()
-			else
-				exporters= criteria.addOrder(Order.desc("date")).list()
-				
-			StringUtils.split(text).each { chunk ->
-				exporters.retainAll { exporter ->
-					Utils.matches(chunk, exporter.descriptions[languageService.getCurrentLanguage()]);
-				}
+		def exporters=[]
+		def criteria = getSearchCriteria(clazz,text)
+
+		if (params['offset'] != null) criteria.setFirstResult(params['offset'])
+		if (params['max'] != null) criteria.setMaxResults(params['max'])
+
+		if(params['sort']!=null)
+			exporters= criteria.addOrder(Order.asc(params['sort'])).list()
+		else
+			exporters= criteria.addOrder(Order.desc("date")).list()
+
+		StringUtils.split(text).each { chunk ->
+			exporters.retainAll { exporter ->
+				Utils.matches(chunk, exporter.descriptions[languageService.getCurrentLanguage()]);
 			}
-			
-			return exporters;
+		}
+
+		return exporters;
 	}
 	private Criteria getSearchCriteria(Class<Exporter> clazz, String text) {
 		def criteria = sessionFactory.getCurrentSession().createCriteria(clazz);
@@ -281,5 +217,26 @@ class ExporterService {
 	}
 	
 	
+}
+private class DataPointVisitor extends ValueVisitor{
+	private List<String> basicInfo = new ArrayList<String>();
+	private ICsvListWriter writer;
+
+	public DataPointVisitor(ICsvListWriter writer){
+		this.writer=writer;
+	}
+
+	@Override
+	public void handle(Type type, Value value, String prefix, String genericPrefix) {
+		if(!type.isComplexType()){
+			List<String> dataList = new ArrayList<String>(basicInfo);
+			dataList.add(Utils.getValueString(type, value));
+			dataList.add(prefix)
+			writer.write(dataList)
+		}
+	}
+	public void setBasicInfo(List<String> basicInfo){
+		this.basicInfo=basicInfo
+	}
 }
 
