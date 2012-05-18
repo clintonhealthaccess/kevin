@@ -181,6 +181,31 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElement.list()[0].lastValueChanged.after(date)
 	}
 	
+	def "test refresh normalized elements updates when dependency last value changed is null"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		rawDataElement1.lastValueChanged = null
+		rawDataElement1.save(failOnError: true)
+		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id+" + \$"+rawDataElement2.id]]))
+		def date = normalizedDataElement.lastValueChanged
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
+		def date2 = value2.timestamp
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		
+		then:
+		NormalizedDataElementValue.count() == 2
+		NormalizedDataElementValue.list()[0].timestamp.after(date1)
+		NormalizedDataElementValue.list()[1].timestamp.after(date2)
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+	}
+	
 	def "test refresh normalized elements does not update when dependent data element last value is changed - with period and location"() {
 		setup:
 		setupLocationTree()
