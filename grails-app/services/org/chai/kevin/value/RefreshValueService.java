@@ -91,6 +91,11 @@ public class RefreshValueService {
 				refreshNormalizedDataElementOnly(normalizedDataElement);
 			}
 			
+			// we refresh if a value was saved after the last refresh
+			else if (normalizedDataElement.getRefreshed() == null || normalizedDataElement.getLastValueChanged().after(normalizedDataElement.getRefreshed())) {
+				refreshNormalizedDataElementOnly(normalizedDataElement);
+			}
+			
 			// we refresh if the last value of the dependency is after the last refreshed date of this element
 			// this means some values of the dependency were changed after us
 			else if (latestDependency != null && latestDependency.after(normalizedDataElement.getRefreshed())) {
@@ -215,6 +220,11 @@ public class RefreshValueService {
 		
 		// we refresh if the data element was changed after the last refresh
 		if (calculation.getRefreshed() == null || calculation.getTimestamp().after(calculation.getRefreshed())) {
+			refreshCalculationOnly(calculation);
+		}
+		
+		// we refresh if a value was saved after the last refresh
+		else if (calculation.getRefreshed() == null || calculation.getLastValueChanged().after(calculation.getRefreshed())) {
 			refreshCalculationOnly(calculation);
 		}
 		

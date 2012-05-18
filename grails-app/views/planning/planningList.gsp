@@ -19,7 +19,7 @@
         
 						<ul class="clearfix" id="questions">
 							<li class="question push-20">
-								<g:if test="${planningList.nextLineNumber < planningList.planningType.maxNumber}">
+								<g:if test="${planningList.planningType.maxNumber == null || planningList.nextLineNumber < planningList.planningType.maxNumber}">
 									<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[planningType: planningType.id, location: location.id, lineNumber: planningList.nextLineNumber])}" class="next medium gray right">
 										<g:message code="planning.createnew" args="[i18n(field: planningType.names)]"/>
 									</a>
@@ -51,7 +51,7 @@
 											<tbody>
 												<g:each in="${planningList.planningEntries}" var="entry">
 													<tr>
-														<td class="status ${entry.submitted?'pos':'neg'}"></td>
+														<td class="status ${entry.invalidSections.empty && entry.incompleteSections.empty?'pos':'neg'}"></td>
 														<td>
 															<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">
 																<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="none entered"/>

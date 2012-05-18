@@ -34,6 +34,7 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -205,6 +206,24 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.list()[1].timestamp.after(date2)
 		NormalizedDataElement.list()[0].lastValueChanged.after(date)
 	}
+
+
+	def "test refresh normalized elements updates when last value changed is set after refresh"() {
+		setup:
+		def date = new Date()
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		
+		when:
+		normalizedDataElement.refreshed = date
+		normalizedDataElement.lastValueChanged = new Date();
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		
+		then:
+		NormalizedDataElementValue.count() == 2
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+	}
 	
 	def "test refresh normalized elements does not update when dependent data element last value is changed - with period and location"() {
 		setup:
@@ -337,6 +356,23 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		AveragePartialValue.count() == 8
 		AveragePartialValue.list()[0].timestamp != null
 		average.refreshed != null
+	}
+	
+	def "test refresh calculation updates when last value changed is set after refresh"() {
+		setup:
+		def date = new Date()
+		setupLocationTree()
+		def period = newPeriod()
+		def sum = newSum("1", CODE(2))
+		
+		when:
+		sum.refreshed = date
+		sum.lastValueChanged = new Date();
+		refreshValueService.refreshCalculation(sum);
+		
+		then:
+		SumPartialValue.count() == 8
+		Sum.list()[0].lastValueChanged.after(date)
 	}
 	
 	def "test refresh calculations updates timestamps"() {
