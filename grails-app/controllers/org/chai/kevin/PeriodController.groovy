@@ -29,6 +29,10 @@ class PeriodController extends AbstractEntityController  {
 		return [period: entity]
 	}
 
+	def exportEntity(){
+		return Period.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 	}

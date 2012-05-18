@@ -28,25 +28,6 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		then:
 		planningEntry.getValue("[_].key1") == null
 	}
-	def "budget updated"() {
-		setup:
-		def planningEntry = null
-		
-		when:
-		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]);
-		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING()]))
-		planningEntry = new PlanningEntry(new ValidatableValue(value, type), 0)
-
-		then:
-		planningEntry.isBudgetUpdated() == false
-		
-		when:
-		value.listValue[0].setAttribute("budget_updated", "true")
-				
-		then:
-		planningEntry.isBudgetUpdated() == true
-		
-	}
 	
 	def "set uuid"() {
 		setup:
@@ -65,29 +46,6 @@ class PlanningEntryUnitSpec extends UnitSpec {
 				
 		then:
 		value.listValue[0].getAttribute("uuid") == 'uuid'
-	}
-	
-	def "set budget updated"() {
-		setup:
-		def planningEntry = null
-		
-		when:
-		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]);
-		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
-		planningEntry = new PlanningEntry(new ValidatableValue(value, type), 0)
-
-		then:
-		value.listValue[0].getAttribute('budget_updated') == null
-		type.getAttribute(value, "[0]", "budget_updated") == null
-		
-		when:
-		planningEntry.setBudgetUpdated(true)
-				
-		then:
-		value.listValue[0].jsonValue.contains("budget_updated")
-		value.jsonValue.contains ("budget_updated")
-		value.listValue[0].getAttribute('budget_updated') == "true"
-		type.getAttribute(value, "[0]", "budget_updated") == "true"
 	}
 	
 	def "get invalid sections"() {
@@ -118,7 +76,7 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		def planningEntry = null
 		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":new Value("{\"value\":\"test\", \"invalid\":\"1\"}"), "key2":Value.VALUE_STRING("value")])]);
 		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
-		type.setAttribute(value, "[0]", "budget_updated", "true")
+		type.setAttribute(value, "[0]", "uuid", "true")
 				
 		when:
 		def planningType = Mock(PlanningType)
@@ -130,7 +88,7 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		planningEntry.mergeValues(["elements[0].value[0].key1":"value", "elements[0].value":"[0]"])
 		
 		then:
-		planningEntry.validatable.value.jsonValue.contains("budget_updated")
+		planningEntry.validatable.value.jsonValue.contains("uuid")
 		
 	}
 	
@@ -154,5 +112,57 @@ class PlanningEntryUnitSpec extends UnitSpec {
 		
 		then:
 		planningEntry.fixedHeaderValue.equals(null)
+		
+		when:
+		planningType = Mock(PlanningType)
+		planningType.getFixedHeader() >> '[_].key3'
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.fixedHeaderValue.equals(null)
+	}
+	
+	def "get discriminator value"() {
+		setup:
+		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]);
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
+		
+		when:
+		def planningType = Mock(PlanningType)
+		planningType.getDiscriminator() >> '[_].key1'
+		def planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.discriminatorValue.equals(Value.VALUE_STRING("value"))
+		
+		when:
+		planningType = Mock(PlanningType)
+		planningType.getDiscriminator() >> '[_].key2'
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.discriminatorValue.equals(null)
+		
+		when:
+		planningType = Mock(PlanningType)
+		planningType.getDiscriminator() >> '[_].key3'
+		planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.discriminatorValue.equals(null)
+	}
+	
+	def "get planning costs does not break when discriminator value is null"() {
+		setup:
+		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]);
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_STRING(), "key2":Type.TYPE_STRING()]))
+		
+		when:
+		def planningType = Mock(PlanningType)
+		planningType.getDiscriminator() >> '[_].key3'
+		def planningEntry = new PlanningEntry(null, planningType, new ValidatableValue(value, type), 0, null)
+		
+		then:
+		planningEntry.getPlanningCosts().empty
 	}
 }

@@ -33,6 +33,7 @@ import org.chai.kevin.RefreshValueService
 import org.chai.kevin.chart.ChartService
 import org.chai.kevin.cost.CostTableService
 import org.chai.kevin.dashboard.DashboardService
+import org.chai.kevin.entity.EntityExportService
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.JaqlService
 import org.chai.kevin.LocationService
@@ -67,7 +68,7 @@ Set<String> dashboardSkipLevels = config.dashboard.skip.levels
 Set<String> dsrSkipLevels = config.dsr.skip.levels
 Set<String> fctSkipLevels = config.fct.skip.levels
 Set<String> costSkipLevels = config.cost.skip.levels
-Set<String> exportSkipLevels = config.export.skip.levels
+Set<String> surveyExportSkipLevels = config.survey.export.skip.levels
 String dsrGroupLevel= config.dsr.group.level
 
 beans = {
@@ -122,8 +123,14 @@ beans = {
 		locationService = ref("locationService")
 		surveyValueService = ref("surveyValueService")
 		languageService = ref("languageService")
+		enumService = ref("enumService")
 		sessionFactory = ref("sessionFactory")
-		skipLevels = exportSkipLevels
+		skipLevels = surveyExportSkipLevels
+	}
+	
+	entityExportService(EntityExportService){
+		languageService = ref("languageService")
+		sessionFactory = ref("sessionFactory")
 	}
 	
 	chartService(ChartService){
@@ -142,6 +149,7 @@ beans = {
 	
 	dashboardService(DashboardService) {
 		reportService = ref("reportService")
+		languageService = ref("languageService")
 		sessionFactory = ref("sessionFactory")
 		dashboardPercentageService = ref("dashboardPercentageService")
 		skipLevels = dashboardSkipLevels
@@ -178,7 +186,6 @@ beans = {
 	
 	valueService(ValueService) {
 		sessionFactory = ref("sessionFactory")
-		dataService = ref("dataService")
 	}
 	
 	expressionService(ExpressionService) {

@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +45,10 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.chai.kevin.LanguageService;
+import org.chai.kevin.data.Enum;
+import org.chai.kevin.data.EnumOption;
+import org.chai.kevin.data.EnumService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.Value;
@@ -55,6 +58,8 @@ import org.chai.kevin.value.Value;
  * 
  */
 public class Utils {
+	private static EnumService enumService;
+	private static LanguageService languageService;
 	
 	private final static String DATE_FORMAT = "dd-MM-yyyy";
 	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
@@ -143,7 +148,13 @@ public class Utils {
 				if(value.getDateValue() != null) return Utils.formatDate(value.getDateValue());	
 				else return value.getStringValue();
 			case ENUM:
-				return value.getEnumValue();
+				String enumCode = type.getEnumCode();
+				Enum enume = enumService.getEnumByCode(enumCode);
+				if(enume != null){
+					EnumOption enumOption = enume.getOptionForValue(value.getEnumValue());
+					if (enumOption != null) return languageService.getText(enumOption.getNames());
+				}
+				return value.getStringValue();
 			default:
 				throw new IllegalArgumentException("get value string can only be called on simple type");
 			}			

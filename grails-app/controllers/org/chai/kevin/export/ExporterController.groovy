@@ -113,6 +113,9 @@ class ExporterController extends AbstractEntityController {
 		// http://jira.grails.org/browse/GRAILS-6967
 		if (params.descriptions!=null) entity.descriptions = params.descriptions
 	}
+	def exportEntity() {
+		return Exporter.class;
+	}
 	
 	def getModel(def entity) {
 		List<Data> data=[]
@@ -170,6 +173,8 @@ class ExporterController extends AbstractEntityController {
 			q:params['q']
 		])
 	}
+
+	
 	
 }
 

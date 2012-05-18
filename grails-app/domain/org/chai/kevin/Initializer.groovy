@@ -312,7 +312,8 @@ class Initializer {
 						"area": Type.TYPE_ENUM(Enum.findByCode('ENUM1').code),
 						"instances": Type.TYPE_NUMBER(),
 						"responsible": Type.TYPE_STRING(),
-						"new_structure": Type.TYPE_BOOL()
+						"new_structure": Type.TYPE_BOOL(),
+						"test": Type.TYPE_LIST(Type.TYPE_NUMBER()),
 					]),
 					"staffing": Type.TYPE_MAP([
 						"nurse": Type.TYPE_MAP([
@@ -678,12 +679,26 @@ class Initializer {
 			new NormalizedDataElement(names:j(["en":"Constant 30"]), descriptions:j([:]), code:"Constant 30", expressionMap: e([(period1.id+''):[(hc.code):"30", (dh.code):"30"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"Constant 40"]), descriptions:j([:]), code:"Constant 40", expressionMap: e([(period1.id+''):[(hc.code):"40", (dh.code):"40"]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
 			
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
-				code:"Element 1", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id, (dh.code):"\$"+RawDataElement.findByCode("CODE1").id+"+\$"+RawDataElement.findByCode("CODE1").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
-				code:"Element 2", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE2").id, (dh.code):"\$"+RawDataElement.findByCode("CODE2").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
-			new NormalizedDataElement(names:j(["en":"Constant 10"]), descriptions:j([:]), 
-				code:"Element 3", expressionMap: e([(period1.id+''):[(hc.code):"\$"+RawDataElement.findByCode("CODE3").id, (dh.code):"\$"+RawDataElement.findByCode("CODE3").id]]), type: Type.TYPE_NUMBER(), timestamp:new Date()).save(failOnError: true, flush: true)
+			def rd1 = RawDataElement.findByCode("CODE1").id
+			new NormalizedDataElement(names:j(["en":"Element 1"]), descriptions:j([:]), 
+				code:"Element 1", 
+				expressionMap: e([(period1.id+''):[(hc.code):"\$"+rd1+"+\$"+rd1, (dh.code):"\$"+rd1+"+\$"+rd1]]), 
+				type: Type.TYPE_NUMBER(), 
+				timestamp:new Date()).save(failOnError: true, flush: true)
+				
+			def rd2 = RawDataElement.findByCode("CODE2").id
+			new NormalizedDataElement(names:j(["en":"Element 2"]), descriptions:j([:]), 
+				code:"Element 2", 
+				expressionMap: e([(period1.id+''):[(hc.code):"\$"+rd2, (dh.code):"\$"+rd2]]), 
+				type: Type.TYPE_NUMBER(), 
+				timestamp:new Date()).save(failOnError: true, flush: true)
+				
+			def rd3 = RawDataElement.findByCode("CODE3").id
+			new NormalizedDataElement(names:j(["en":"Element 3"]), descriptions:j([:]), 
+				code:"Element 3", 
+				expressionMap: e([(period1.id+''):[(hc.code):"\$"+rd3, (dh.code):"\$"+rd3]]), 
+				type: Type.TYPE_NUMBER(), 
+				timestamp:new Date()).save(failOnError: true, flush: true)
 				
 			new NormalizedDataElement(names:j(["en":"TRUE"]), descriptions:j([:]), code:"TRUE", expressionMap: e([(period1.id+''):[(hc.code):"true", (dh.code):"true"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)
 			new NormalizedDataElement(names:j(["en":"FALSE"]), descriptions:j([:]), code:"FALSE", expressionMap: e([(period1.id+''):[(hc.code):"false", (dh.code):"false"]]), type: Type.TYPE_BOOL(), timestamp:new Date()).save(failOnError: true, flush: true)
@@ -1087,7 +1102,7 @@ class Initializer {
 			
 			FctTargetOption fctTargetOption4 = new FctTargetOption(
 				names:j(["en": "Target Option 4"]),
-				target: fctTarget1,
+				target: fctTarget2,
 				descriptions:j([:]),
 				code:"TARGET OPTION 4",
 				sum: sum4
@@ -1117,7 +1132,7 @@ class Initializer {
 		).save(failOnError: true)
 		
 		def formElement = new FormElement(
-				rawDataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
+				dataElement: RawDataElement.findByCode("PLANNINGELEMENT"),
 				headers: [
 					"[_].basic": j(["en":"Basic Information"]),
 					"[_].basic.description": j(["en":"Description"]),
@@ -1219,8 +1234,6 @@ class Initializer {
 			type: PlanningCostType.INCOMING,
 			discriminatorValueString: 'value1',
 			dataElement: planningElement1,
-			section: '[_].staffing',
-			groupSection: '[_].staffing',
 			names: j(["en":"Salaries"])
 		).save(failOnError: true)
 	
@@ -1235,7 +1248,6 @@ class Initializer {
 			type: PlanningCostType.OUTGOING,
 			discriminatorValueString: 'value1',
 			dataElement: planningElement2,
-			section: '[_].consumables',
 			names: j(["en":"Patient"])
 		).save(failOnError: true)
 		
@@ -1243,19 +1255,19 @@ class Initializer {
 		planningType.costs << planningCost2
 		planningType.save(failOnError: true)
 		
-//		new FormEnteredValue(
-//			formElement: formElement,
-//			dataLocation: DataLocation.findByCode("Kivuye HC"),
-//			value: Value.VALUE_LIST([
-//				Value.VALUE_MAP([
-//					"basic": Value.VALUE_MAP([
-//						"activity": Value.VALUE_STRING("value1"), 
-//						"instances": Value.VALUE_NUMBER(10)
-//					])
-//				])
-//			]),
-//			timestamp: new Date()
-//		).save(failOnError: true)
+		new FormEnteredValue(
+			formElement: formElement,
+			dataLocation: DataLocation.findByCode("Kivuye HC"),
+			value: Value.VALUE_LIST([
+				Value.VALUE_MAP([
+					"basic": Value.VALUE_MAP([
+						"activity": Value.VALUE_STRING("value1"), 
+						"instances": Value.VALUE_NUMBER(10)
+					])
+				])
+			]),
+			timestamp: new Date()
+		).save(failOnError: true)
 	}
 	
 	

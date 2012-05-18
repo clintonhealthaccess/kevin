@@ -24,7 +24,7 @@ class ValueTagLib {
 		def value = attrs['value']
 		def format = attrs['format']
 		
-		if (value.isNull()) {
+		if (value == null || value.isNull()) {
 			out << '<div class="report-value-null">'+message(code: 'report.value.null')+'</div>'
 		}
 		else {
@@ -144,7 +144,11 @@ class ValueTagLib {
 		if (value != null && !value.isNull()) {
 			switch (type.type) {
 				case (ValueType.ENUM):
-					def enume = enums?.get(type.enumCode)
+					def enume = null
+					 
+					if (enums == null) enume = dataService.findEnumByCode(type.enumCode);
+					else enume = enums?.get(type.enumCode)
+					
 					if (enume == null) result = value.enumValue
 					else {
 						def option = enume?.getOptionForValue(value.enumValue)

@@ -33,6 +33,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.chai.kevin.Period;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.RawDataElementValue;
 
 @Entity(name="RawDataElement")
@@ -58,8 +61,7 @@ public class RawDataElement extends DataElement<RawDataElementValue> {
 
 	@Override
 	public String toString() {
-		return "RawDataElement [info=" + info + ", getId()=" + getId()
-				+ ", getCode()=" + getCode() + "]";
+		return "RawDataElement[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 
 }

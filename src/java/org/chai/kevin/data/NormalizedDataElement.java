@@ -14,6 +14,8 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
 import org.chai.kevin.Period;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.value.ExpressionService;
 import org.chai.kevin.value.NormalizedDataElementValue;
 
 @Entity(name="NormalizedDataElement")
@@ -22,7 +24,7 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 
 	// json text example : {"1":{"DH":"$1 + $2"}, "2":{"HC":"$1 + $2 + $3"}}
 	private ExpressionMap expressionMap = new ExpressionMap();
-	private Date calculated;
+	private Date refreshed;
 	
 	@AttributeOverrides({
 		@AttributeOverride(name="jsonText", column=@Column(name="expressionMap", nullable=false))
@@ -37,12 +39,12 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 	
 	@Column(nullable=true, columnDefinition="datetime")
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
-	public Date getCalculated() {
-		return calculated;
+	public Date getRefreshed() {
+		return refreshed;
 	}
 	
-	public void setCalculated(Date calculated) {
-		this.calculated = calculated;
+	public void setRefreshed(Date refreshed) {
+		this.refreshed = refreshed;
 	}
 	
 	@Transient
@@ -67,17 +69,10 @@ public class NormalizedDataElement extends DataElement<NormalizedDataElementValu
 	public Class<NormalizedDataElementValue> getValueClass() {
 		return NormalizedDataElementValue.class;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "NormalizedDataElement [getId()=" + getId() + ", getCode()="
-				+ getCode() + "]";
+		return "NormalizedDataElement[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
-	
-	@Transient
-	public boolean needsRefresh() {
-		if (getCalculated() == null) return true;
-		return getCalculated().before(getTimestamp());
-	}
-	
+
 }

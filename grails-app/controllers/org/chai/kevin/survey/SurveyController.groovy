@@ -77,6 +77,10 @@ class SurveyController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return Survey.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 

@@ -21,7 +21,6 @@ public class ReportProgram extends ReportEntity {
 	private Long id;
 	private ReportProgram parent;
 	private List<ReportProgram> children = new ArrayList<ReportProgram>();
-	private List<AbstractReportTarget> targets = new ArrayList<AbstractReportTarget>();
 	
 	@Id
 	@GeneratedValue
@@ -54,6 +53,11 @@ public class ReportProgram extends ReportEntity {
 	public void addChild(ReportProgram child){
 		children.add(child);
 		child.setParent(this);
+	}
+	
+	@Override
+	public String toString() {
+		return "ReportProgram[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 	
 }

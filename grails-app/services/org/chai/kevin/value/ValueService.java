@@ -57,29 +57,16 @@ public class ValueService {
 
 	private static final Log log = LogFactory.getLog(ValueService.class);
 	
-	private DataService dataService;
 	private SessionFactory sessionFactory;
 	
 	@Transactional(readOnly=false)
 	public <T extends StoredValue> T save(T value) {
 		log.debug("save(value="+value+")");
 		
-		// set timestamp of all referencing data
-		// if saving value of RawDataElement
-		// TODO replace by a messaging system i.e. RabbitMQ
-		if (value instanceof RawDataElementValue) {
-			for (NormalizedDataElement normalizedDataElement : dataService.getReferencingNormalizedDataElements(value.getData())) {
-				normalizedDataElement.setTimestamp(new Date());
-				dataService.save(normalizedDataElement);
-			}
-			for (Calculation<?> calculation : dataService.getReferencingCalculations(value.getData())) {
-				calculation.setTimestamp(new Date());
-				dataService.save(calculation);
-			}
-		}
-		
 		value.setTimestamp(new Date());
 		sessionFactory.getCurrentSession().saveOrUpdate(value);
+		
+		setLastValueChanged(value.getData());
 		return value;
 	}
 	
@@ -109,7 +96,8 @@ public class ValueService {
 	@Transactional(readOnly=true)
 	public <T extends CalculationPartialValue> CalculationValue<T> getCalculationValue(Calculation<T> calculation, CalculationLocation location, Period period, Set<DataLocationType> types) {
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(calculation="+calculation+", period="+period+", location="+location+", types="+types+")");
-		CalculationValue<T> result = calculation.getCalculationValue(getPartialValues(calculation, location, period, types), period, location);
+		List<T> partialValues = getPartialValues(calculation, location, period, types);
+		CalculationValue<T> result = calculation.getCalculationValue(partialValues, period, location);
 		if (log.isDebugEnabled()) log.debug("getCalculationValue(...)="+result);
 		return result;
 	}
@@ -177,14 +165,17 @@ public class ValueService {
 		if (location != null) query.setParameter("location", location);
 		if (period != null) query.setParameter("period", period);
 		query.executeUpdate();
+		
+		setLastValueChanged(data);
+	}
+	
+	private void setLastValueChanged(Data<?> data) {
+		data.setLastValueChanged(new Date());
+		sessionFactory.getCurrentSession().save(data);
 	}
 	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
-	}
-
 }

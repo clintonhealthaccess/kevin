@@ -63,6 +63,10 @@ class TableRowController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return SurveyTableRow.class;
+	}
+	
 	def deleteEntity(def entity) {
 		for(Map.Entry<SurveyTableColumn, SurveyElement> surveyElement: entity.surveyElements)
 			if(surveyElement.getValue())
@@ -85,9 +89,12 @@ class TableRowController extends AbstractEntityController {
 				if (dataElement != null) {
 					def surveyElement = SurveyElement.get(params.int('surveyElement['+columnId+'].id'))
 					if (surveyElement == null) surveyElement = new SurveyElement();
+					if (log.isInfoEnabled()) log.info ("binding SurveyElement "+surveyElement)
 					surveyElement.setSurveyQuestion(entity.question)
-					surveyElement.rawDataElement = dataElement
+					surveyElement.dataElement = dataElement
+					if (log.isInfoEnabled()) log.info ("binding dataElement "+dataElement)
 					entity.surveyElements[column] = surveyElement
+					
 				}
 			}
 		}

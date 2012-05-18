@@ -12,7 +12,6 @@ import org.chai.kevin.util.Utils;
 class SurveyExportServiceSpec extends SurveyIntegrationTests {
 
 	def surveyExportService
-//	def surveyValueService
 		
 	def "test for export section"(){
 		setup:
@@ -34,6 +33,51 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		then:
 		dataPoints.size() == 1
 		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","NUMBER","question","10.0"])
+	}
+	
+	def "test missing enum"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(j(["en":"survey"]), period)
+		def program = newSurveyProgram(j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def type = Type.TYPE_ENUM('MISSING')
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
+		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("10"))
+		Map<SurveyElement, FormEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, FormEnteredValue>()
+		surveyElementValueMap.put(formEnteredValue.getFormElement(), formEnteredValue)
+		
+		when:
+		List<SurveyExportDataPoint> dataPoints = surveyExportService.getSurveyExportDataPoints(DataLocation.findByCode(BUTARO), survey, program, section, question, surveyElementValueMap)
+	
+		then:
+		dataPoints.size() == 1
+		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","ENUM","question","10"])
+	}
+	
+	def "test missing enum option"(){
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def survey = newSurvey(j(["en":"survey"]), period)
+		def program = newSurveyProgram(j(["en":"program"]), survey, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def section = newSurveySection(j(["en":"section"]), program, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def question = newSimpleQuestion(j(["en":"question"]), section, 1, [(DISTRICT_HOSPITAL_GROUP)])
+		def enume = newEnume("ENUM")
+		def type = Type.TYPE_ENUM('ENUM')
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), type))
+		FormEnteredValue formEnteredValue = newFormEnteredValue(element, period, DataLocation.findByCode(BUTARO), v("\"missing_option\""))
+		Map<SurveyElement, FormEnteredValue> surveyElementValueMap = new HashMap<SurveyElement, FormEnteredValue>()
+		surveyElementValueMap.put(formEnteredValue.getFormElement(), formEnteredValue)
+		
+		when:
+		List<SurveyExportDataPoint> dataPoints = surveyExportService.getSurveyExportDataPoints(DataLocation.findByCode(BUTARO), survey, program, section, question, surveyElementValueMap)
+	
+		then:
+		dataPoints.size() == 1
+		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","ENUM","question","missing_option"])
 	}
 
 	def "test for export program"(){
@@ -122,7 +166,7 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 	
 		then:
 		dataPoints.size() == 1		
-		!dataPoints.get(0).equals(["survey",COUNTRY,NORTH,BURERA,SECTOR,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","NUMBER","question","10.0"])
+		!dataPoints.get(0).equals(["survey",NATIONAL,NORTH,BURERA,SECTOR,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","NUMBER","question","10.0"])
 		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","NUMBER","question","10.0"])
 	}
 	
@@ -147,6 +191,8 @@ class SurveyExportServiceSpec extends SurveyIntegrationTests {
 		dataPoints.size() == 1
 		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","LIST","question",
 			"10.0", "header1"])
+//		dataPoints.get(0).equals(["survey",NORTH,BURERA,BUTARO,DISTRICT_HOSPITAL_GROUP,"program","section","SIMPLE","LIST","question",
+//			"10.0", "Line 1", "header1"])
 	}
 	
 	def "test for get zip file"(){

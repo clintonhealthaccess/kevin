@@ -55,6 +55,10 @@ class CostRampUpController extends AbstractEntityController {
 		return [rampUp: entity, years: costService.years]
 	}
 	
+	def exportEntity(){
+		return CostRampUp.class;
+	}
+	
 	def validateEntity(def entity) {
 		boolean valid = true;
 		entity.years.each { key, value ->

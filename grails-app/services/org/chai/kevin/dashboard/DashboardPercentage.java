@@ -28,6 +28,8 @@ package org.chai.kevin.dashboard;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.util.Date;
+
 import org.chai.kevin.Period;
 import org.chai.kevin.data.Gradient;
 import org.chai.kevin.location.CalculationLocation;
@@ -65,6 +67,11 @@ public class DashboardPercentage extends Gradient implements DataValue {
 	public Double getGradientValue() {
 		if (value.isNull()) return null;
 		else return value.getNumberValue().doubleValue();
+	}
+
+	@Override
+	public Date getTimestamp() {
+		return null;
 	}
 	
 }

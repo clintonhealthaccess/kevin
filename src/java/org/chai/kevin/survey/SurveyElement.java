@@ -1,6 +1,5 @@
 package org.chai.kevin.survey;
 
-import java.util.Map.Entry;
 import java.util.List;
 import java.util.Set;
 
@@ -12,14 +11,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.chai.kevin.LanguageService;
-import org.chai.kevin.Translation;
 import org.chai.kevin.form.FormCloner;
 import org.chai.kevin.form.FormElement;
 import org.chai.kevin.form.FormElementService;
 import org.chai.kevin.form.FormEnteredValue;
-import org.chai.kevin.form.FormValidationRule;
 import org.chai.kevin.form.FormValidationService;
-import org.chai.kevin.form.FormElement.ElementCalculator;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
@@ -70,11 +66,6 @@ public class SurveyElement extends FormElement {
 	public void deepCopy(FormElement copy, FormCloner cloner) {
 		super.deepCopy(copy, cloner);
 		((SurveyElement)copy).setSurveyQuestion(((SurveyCloner)cloner).getQuestion(getSurveyQuestion()));
-	}
-
-	@Override
-	public String toString() {
-		return "SurveyElement [id=" + id + "]";
 	}
 	
 	@Transient
@@ -132,4 +123,8 @@ public class SurveyElement extends FormElement {
 		
 	}
 
+	@Override
+	public String toString() {
+		return "SurveyElement[getId()=" + getId() + ", getDataElement()=" + getDataElement() + "]";
+	}
 }

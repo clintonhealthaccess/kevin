@@ -1,6 +1,7 @@
 package org.chai.kevin.value;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -38,6 +39,11 @@ public class AverageValue extends CalculationValue<AveragePartialValue> {
 	@Override
 	public String toString() {
 		return "AverageValue [getValue()=" + getValue() + "]";
+	}
+
+	@Override
+	public Date getTimestamp() {
+		return null;
 	}
 
 }

@@ -133,7 +133,7 @@ public class Location extends CalculationLocation {
 
 	@Override
 	public String toString() {
-		return "Location [getCode()=" + getCode() + "]";
+		return "Location[getId()=" + getId() + ", getCode()=" + getCode() + "]";
 	}
 
 }

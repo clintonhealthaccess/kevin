@@ -67,6 +67,10 @@ class NormalizedDataElementController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return NormalizedDataElement.class;
+	}
+	
 	def saveEntity(def entity) {
 		if (entity.id != null) valueService.deleteValues(entity, null, null)
 		
@@ -130,7 +134,8 @@ class NormalizedDataElementController extends AbstractEntityController {
 			entities: normalizedDataElements, 
 			entityCount: NormalizedDataElement.count(),
 			template: 'data/normalizedDataElementList',
-			code: getLabel()
+			code: getLabel(),
+			targetURI: getTargetURI()
 		])
 	}
 	

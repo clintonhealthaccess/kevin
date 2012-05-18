@@ -65,6 +65,10 @@ class CheckboxOptionController extends AbstractEntityController {
 		]
 	}
 	
+	def exportEntity(){
+		return SurveyCheckboxOption.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary

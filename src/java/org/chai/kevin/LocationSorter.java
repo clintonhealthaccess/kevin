@@ -41,26 +41,26 @@ public class LocationSorter {
 
 	public static final Comparator<DataLocation> BY_DATA_LOCATION_TYPE(final String language) {
 		return new Comparator<DataLocation>() {
-			public int compare(DataLocation org1, DataLocation org2) {			
-				if(org1 == null || org2 == null) return 0;
-				
-				if (org1.getType().getNames().get(language).equals(org2.getType().getNames().get(language)))
-					return compareTranslations(org1.getNames(), org2.getNames(), language);
+			public int compare(DataLocation dataLoc1, DataLocation dataLoc2) {			
+				if(dataLoc1 == null || dataLoc2 == null) 
+					return 0;				
+				if (dataLoc1.getType().getNames().get(language).equals(dataLoc2.getType().getNames().get(language)))
+					return compareTranslations(dataLoc1.getNames(), dataLoc2.getNames(), language);
 				else
-					return compareTranslations(org1.getType().getNames(), org2.getType().getNames(), language);
+					return compareTranslations(dataLoc1.getType().getNames(), dataLoc2.getType().getNames(), language);
 			}
 		};
 	}
 
 	public static final Comparator<Location> BY_LEVEL(final String language) {
 		return new Comparator<Location>() {
-			public int compare(Location org1, Location org2) {			
-				if(org1 == null || org2 == null) return 0;
-				
-				if (org1.getLevel().equals(org2.getLevel()))
-					return compareTranslations(org1.getNames(), org2.getNames(), language);
+			public int compare(Location loc1, Location loc2) {			
+				if(loc1 == null || loc2 == null) 
+					return 0;				
+				if (loc1.getLevel().equals(loc2.getLevel()))
+					return compareTranslations(loc1.getNames(), loc2.getNames(), language);
 				else
-					return org1.getLevel().compareTo(org2.getLevel());
+					return loc1.getLevel().compareTo(loc2.getLevel());
 			}
 		};
 	}

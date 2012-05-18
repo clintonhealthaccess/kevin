@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -40,11 +41,12 @@ public class PlanningType {
 	private Translation namesPlural = new Translation();
 	private String discriminator;
 	private String fixedHeader;
-	
+
+	private Integer maxNumber;
 	private Map<String, Translation> sectionDescriptions = new HashMap<String, Translation>();
 	
 	// TODO have that be the elements of the first MAP inside the LIST	 
-//	private List<String> sections;
+	//	private List<String> sections;
 	
 	// only accepts element of LIST<MAP> type
 	private FormElement formElement;
@@ -104,6 +106,7 @@ public class PlanningType {
 	}
 	
 	@OneToMany(mappedBy="planningType", targetEntity=PlanningCost.class)
+	@OrderBy("order")
 	public List<PlanningCost> getCosts() {
 		return costs;
 	}
@@ -119,6 +122,15 @@ public class PlanningType {
 	
 	public void setPlanning(Planning planning) {
 		this.planning = planning;
+	}
+	
+	@Basic
+	public Integer getMaxNumber() {
+		return maxNumber;
+	}
+	
+	public void setMaxNumber(Integer maxNumber) {
+		this.maxNumber = maxNumber;
 	}
 	
 	@Basic
@@ -156,7 +168,11 @@ public class PlanningType {
 	
 	@Transient
 	public Type getType(String section) {
-		return formElement.getDataElement().getType().getType(section);
+		try {
+			return formElement.getDataElement().getType().getType(section);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 	
 	@Transient
@@ -198,5 +214,9 @@ public class PlanningType {
 			}
 		});
 		return result;
+	}
+
+	public String toString(){
+		return "PlanningType[getId()=" + getId() + ", getNames()=" + getNames() + "]";
 	}
 }

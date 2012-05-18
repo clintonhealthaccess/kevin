@@ -8,9 +8,16 @@
 		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'create')+(request.queryString==null?'':'&'+request.queryString)}">
 		  					<g:message code="default.new.label" args="[entityName]"/>
 		  				</a>
+		  				&nbsp;
+		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'export')+(request.queryString==null?'':'&'+request.queryString)}">
+		  					<g:message code="default.export.label" args="[entityName]"/>
+		  				</a>
 		  			</g:if>
 		  			<g:else>
 		  				<g:render template="${addTemplate}"/>
+		  				<a href="${createLinkWithTargetURI(controller: controllerName, action:'export')+(request.queryString==null?'':'&'+request.queryString)}">
+		  					<g:message code="default.export.label" args="[entityName]"/>
+		  				</a>
 		  			</g:else>
 		     	</span>
 	     	</g:if>

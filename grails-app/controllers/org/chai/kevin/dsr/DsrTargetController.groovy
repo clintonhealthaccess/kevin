@@ -71,6 +71,10 @@ class DsrTargetController extends AbstractEntityController {
 		]
 	}
 
+	def exportEntity(){
+		return DsrTarget.class;
+	}
+	
 	def deleteEntity(def entity) {
 		if(entity.category != null){
 			entity.category.targets.remove(entity)

@@ -260,6 +260,19 @@ public class TypeUnitSpec extends UnitSpec {
 		then:
 		type.getJaqlValue(value) == "[10.0,null,]";
 		
+		when:
+		type = Type.TYPE_MAP(["key": Type.TYPE_STRING()])
+		value = Value.VALUE_MAP(["non_existant": Value.VALUE_STRING("value")])
+		
+		then:
+		type.getJaqlValue(value) == "{}"
+		
+		when:
+		type = Type.TYPE_MAP(["key": Type.TYPE_STRING()])
+		value = Value.VALUE_MAP(["key": Value.VALUE_STRING("value")])
+		
+		then:
+		type.getJaqlValue(value) == "{\"key\":\"value\",}"
 	}
 
 	
@@ -546,7 +559,7 @@ public class TypeUnitSpec extends UnitSpec {
 		expectedVisitedTypes.equals(visitedTypes)
 	}
 	
-	def "value visit"() {
+	def "test value visit"() {
 		setup:
 		def type = null
 		def value = null
@@ -585,6 +598,33 @@ public class TypeUnitSpec extends UnitSpec {
 		expectedVisitedValues.equals(visitedValues)
 		expectedVisitedTypes.equals(visitedTypeMap)
 	}
+	
+//	def "test value list visit"() {
+//		setup:
+//		def type = null
+//		def value = null
+//		
+//		when:
+//		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+//		value = new Value("{\"value\": [{\"value\":null}, {\"value\":11}]}")
+//		def expectedVisitedValues = [new Value("{\"value\":null}"), new Value("{\"value\":11}]}")]
+//		def expectedVisitedTypes = [["[0]":Type.TYPE_NUMBER()],["[1]":Type.TYPE_NUMBER()]]
+//		def visitedValues = []
+//		def visitedTypeMap = []
+//		def listType = type.getListType()		
+//		for (int i = 0; i < value.getListValue().size(); i++) {
+//			listType.listVisit(i, value.getListValue().get(i), new ValueVisitor() {
+//				public void handle(Type currentType, Value currentListValue, String prefix, String genericPrefix) {
+//					visitedValues << currentListValue
+//					visitedTypeMap << new TreeMap(getTypes())
+//				}
+//			})
+//		}
+//		
+//		then:
+//		expectedVisitedValues.equals(visitedValues)
+//		expectedVisitedTypes.equals(visitedTypeMap)
+//	}
 		
 	def "test value visit when value not complete"() {
 		setup:
@@ -850,6 +890,13 @@ public class TypeUnitSpec extends UnitSpec {
 		then:
 		type.getType('').equals(type)
 		type.getType('[_]').equals(Type.TYPE_NUMBER())
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_NUMBER())
+		
+		then:
+		type.getType('').equals(type)
+		type.getType('[1]').equals(Type.TYPE_NUMBER())
 	
 		when:
 		type = Type.TYPE_MAP(["key1": Type.TYPE_NUMBER()])
@@ -926,6 +973,27 @@ public class TypeUnitSpec extends UnitSpec {
 		
 	}
 	
+	def "test transform with type mismatch"() {
+		setup:
+		def predicate = null
+		def type = null
+		def value = null
+		
+		when:
+		type = Type.TYPE_MAP("test": Type.TYPE_NUMBER())
+		value = Value.VALUE_MAP(["test1": Value.VALUE_NUMBER(2)])
+		predicate = new ValuePredicate() {
+			public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
+				currentValue.setAttribute("attribute", "test");
+			}
+		}
+		type.transformValue(value, predicate);
+		
+		then:
+		type.getValue(value, "").getAttribute("attribute") == "test"
+		
+	}
+	
 	def "test setjsonvalue"() {
 		when:
 		def value = new Value("{\"value\":10}")
@@ -947,4 +1015,3 @@ public class TypeUnitSpec extends UnitSpec {
 	}
 	
 }
-

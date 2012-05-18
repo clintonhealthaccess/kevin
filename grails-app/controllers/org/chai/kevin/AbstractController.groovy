@@ -30,6 +30,7 @@ package org.chai.kevin;
 
 import org.apache.shiro.SecurityUtils;
 import org.chai.kevin.dsr.DsrTargetCategory
+import org.chai.kevin.entity.EntityExportService;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location
 import org.chai.kevin.location.LocationLevel
@@ -44,12 +45,14 @@ import org.chai.kevin.survey.SurveyProgram
 import org.chai.kevin.survey.SurveyPageService
 import org.chai.kevin.survey.SurveySection
 import org.chai.kevin.survey.summary.SurveySummaryPage;
+import org.chai.kevin.util.Utils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder;
 
 public abstract class AbstractController {
 
 	ReportService reportService;
 	LocationService locationService;
+	EntityExportService entityExportService;
 	
 	def getTargetURI() {
 		return params.targetURI?: "/"
@@ -117,6 +120,20 @@ public abstract class AbstractController {
 	def adaptParamsForList() {
 		params.max = Math.min(params.max ? params.int('max') : ConfigurationHolder.config.site.entity.list.max, 100)
 		params.offset = params.offset ? params.int('offset'): 0
+	}
+	
+	def export = {
+		def clazz = exportEntity();
+		String filename = entityExportService.getExportFilename(clazz);
+		File csvFile = entityExportService.getExportFile(filename, clazz);
+		def zipFile = Utils.getZipFile(csvFile, filename)
+			
+		if(zipFile.exists()){
+			response.setHeader("Content-disposition", "attachment; filename=" + zipFile.getName());
+			response.setContentType("application/zip");
+			response.setHeader("Content-length", zipFile.length().toString());
+			response.outputStream << zipFile.newInputStream()
+		}
 	}
 
 }

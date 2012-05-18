@@ -105,5 +105,11 @@ public class DashboardTarget extends DashboardEntity implements ReportTarget {
 		ReportProgram reportProgram = getProgram();
 		return reportProgram;
 	}
+	
+	@Override
+	public String toString() {
+		return "DashboardTarget [getId()=" + getId() + ", getCode()="
+				+ getCode() + "]";
+	}
 
 }

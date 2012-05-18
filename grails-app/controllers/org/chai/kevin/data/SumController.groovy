@@ -14,4 +14,7 @@ class SumController extends AbstractCalculationController {
 		return 'sum.label'
 	}
 	
+	def exportEntity(){
+		return Sum.class;
+	}
 }

@@ -21,9 +21,9 @@
 				<g:render template="/templates/help" model="[content: i18n(field: currentProgram.descriptions)]"/>			
 				<ul id="questions">
 		            <li class="question push-20">
-		                <g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>	                										
-						<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
+		                <g:render template="/templates/reportTableHeader" model="[table:'program', linkParams:params]"/>	                																
 						<g:if test="${fctTable != null && fctTable.hasData()}">
+							<g:render template="/fct/reportTargetFilter" model="[linkParams:params]"/>
 	              			<g:render template="/fct/reportProgramTable" model="[linkParams:params]"/>
 	              		</g:if>
 	              		<g:else><div><g:message code="fct.report.table.noselection.label"/></div></g:else>	

@@ -159,6 +159,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		newDataLocation("dummy", burera, dh)
+		normalizedDataElement.timestamp = new Date()
+		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
 		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
 		
@@ -201,6 +203,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		newDataLocation("dummy", burera, dh)
+		normalizedDataElement.timestamp = new Date()
+		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
 		result = expressionService.calculatePartialValues(sum, Location.findByCode(BURERA), period)
 		
@@ -243,6 +247,8 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		def burera = Location.findByCode(BURERA)
 		def dh = DataLocationType.findByCode(DISTRICT_HOSPITAL_GROUP)
 		newDataLocation("dummy", burera, dh)
+		normalizedDataElement.timestamp = new Date()
+		normalizedDataElement.save(failOnError: true)
 		refreshNormalizedDataElement()
 		result = expressionService.calculatePartialValues(average, Location.findByCode(BURERA), period)
 		
@@ -507,15 +513,17 @@ public class ExpressionServiceSpec extends IntegrationTests {
 				
 		when:
 		formula = "(1"
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		then:
-		!expressionService.expressionIsValid(formula, Data.class)
+		thrown IllegalArgumentException
 		
 		when:
 		formula = "if((10,1,0)"
+		expressionService.expressionIsValid(formula, Data.class)
 		
 		then:
-		!expressionService.expressionIsValid(formula, Data.class)
+		thrown IllegalArgumentException
 		
 		when:
 		formula = "123"

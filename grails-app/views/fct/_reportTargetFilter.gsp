@@ -1,12 +1,12 @@
 <div class="selector">
-	<g:if test="${fctTargets != null && !fctTargets.empty}">
+	<g:if test="${fctTable.targets != null && !fctTable.targets.empty}">
 		<g:form name="fctTarget-form" method="get" url="${[controller:'fct', action:'view']}">
 			
 			<g:linkParamFilter linkParams="${linkParams}" exclude="${['fctTarget']}" />
 			
 			<span><g:message code="fct.report.target.selector"/>:</span>
 			<select id="fctTarget" name="fctTarget">
-				<g:each in="${fctTargets}" var="target">
+				<g:each in="${fctTable.targets}" var="target">
 					<option ${target.id == currentTarget?.id ? 'selected="selected"' : ''} value="${target.id}">
 						<g:i18n field="${target.names}" />
 					</option>

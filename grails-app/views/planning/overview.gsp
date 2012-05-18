@@ -63,11 +63,13 @@
 					        						</a>
 				        						</p>
 				        					</g:else>
-				        					<p class="overview-new">
-				        						<a class="next gray medium" href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:planningList.nextLineNumber])}">
-				        							<g:message code="planning.createnew" args="[i18n(field: planningList.planningType.names)]"/>
-				        						</a>
-				        					</p>
+				        					<g:if test="${planningList.planningType.maxNumber == null || planningList.nextLineNumber < planningList.planningType.maxNumber}">
+					        					<p class="overview-new">
+					        						<a class="next gray medium" href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningList.planningType.id, lineNumber:planningList.nextLineNumber])}">
+					        							<g:message code="planning.createnew" args="[i18n(field: planningList.planningType.names)]"/>
+					        						</a>
+					        					</p>
+				        					</g:if>
 				        				</li>
 				        			</g:each>
 				        		</ul>

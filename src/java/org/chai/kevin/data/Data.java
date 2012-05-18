@@ -1,6 +1,7 @@
 package org.chai.kevin.data;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -16,8 +17,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+
+import org.chai.kevin.Period;
 import org.chai.kevin.Translation;
+import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.value.DataValue;
+import org.chai.kevin.value.ExpressionService;
+import org.chai.kevin.value.ValueService;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -29,6 +35,7 @@ abstract public class Data<T extends DataValue> {
 	
 	private Long id;
 	private Date timestamp = new Date();
+	private Date lastValueChanged = new Date();
 	
 	private String code;
 	private Translation names = new Translation();
@@ -87,17 +94,28 @@ abstract public class Data<T extends DataValue> {
 		this.code = code;
 	}
 
+	@Column(nullable=true, columnDefinition="datetime")
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	public Date getLastValueChanged() {
+		return lastValueChanged;
+	}
+	
+	public void setLastValueChanged(Date lastValueChanged) {
+		this.lastValueChanged = lastValueChanged;
+	}
+	
 	@Transient
 	public abstract Type getType();
 	
 	@Transient
 	public abstract Class<T> getValueClass();
-	
+
 	@Override
 	public String toString() {
-		return "Data [code=" + code + "]";
+		return "Data [getId()=" + getId() + ", getCode()="
+				+ getCode() + "]";
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

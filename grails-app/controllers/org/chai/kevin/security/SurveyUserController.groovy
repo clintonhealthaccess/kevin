@@ -63,5 +63,8 @@ class SurveyUserController  extends UserAbstractController {
 		]
 	}
 
+	def exportEntity(){
+		return SurveyUser.class;
+	}
 }
 

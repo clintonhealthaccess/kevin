@@ -74,7 +74,6 @@ public abstract class CalculationLocation {
 	
 	@Transient
 	public abstract Location getParent();		
-
 	
 	@Transient
 	public abstract List<DataLocation> getDataLocations();
@@ -143,4 +142,5 @@ public abstract class CalculationLocation {
 		return true;
 	}
 	
+	public abstract String toString();
 }

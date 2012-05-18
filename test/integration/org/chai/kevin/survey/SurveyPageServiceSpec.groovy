@@ -4,6 +4,7 @@ import org.chai.kevin.LanguageService
 import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 import org.chai.kevin.survey.validation.SurveyEnteredProgram;
 import org.chai.kevin.survey.validation.SurveyEnteredQuestion;
 import org.chai.kevin.survey.validation.SurveyEnteredSection;
@@ -45,7 +46,82 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		surveyPageService.submit(DataLocation.findByCode(KIVUYE), program) == true
 	}
 	
-	def "test submit program with skipped elemment"() {
+	def "test submit all"(){
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))		
+		newSurveyProgram(survey, 4, [(HEALTH_CENTER_GROUP)])
+		def program2 = newSurveyProgram(survey, 3, [(HEALTH_CENTER_GROUP)])
+		def section2 = newSurveySection(program2, 3, [(HEALTH_CENTER_GROUP)])
+		def question2 = newSimpleQuestion(section2, 3, [(HEALTH_CENTER_GROUP)])
+		def element2 = newSurveyElement(question2, newRawDataElement(CODE(3), Type.TYPE_NUMBER()))
+		
+		when:
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredSection(section, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredProgram(program, period, DataLocation.findByCode(KIVUYE), false, true, false)		
+		newFormEnteredValue(element2, period, DataLocation.findByCode(KIVUYE), v("1"))
+		newSurveyEnteredQuestion(question2, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredSection(section2, period, DataLocation.findByCode(KIVUYE), false, true)
+		newSurveyEnteredProgram(program2, period, DataLocation.findByCode(KIVUYE), false, true, false)
+		
+		then:
+		SurveyEnteredProgram.list()[0].closed == false
+		SurveyEnteredProgram.list()[1].closed == false
+		
+		when:		
+		def submitAll = surveyPageService.submitAll(Location.findByCode(BURERA), survey)
+		
+		then:
+		submitAll == true		
+		SurveyEnteredProgram.list()[0].closed == true
+		SurveyEnteredProgram.list()[1].closed == true		
+		RawDataElementValue.count() == 2
+		RawDataElementValue.list()[0].value.numberValue == 1
+		RawDataElementValue.list()[1].value.numberValue == 1
+	}	
+	
+	def "test submit all with warning and invalid values"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newUser('test', 'uuid'))
+		def period = newPeriod()
+		def survey = newSurvey(period)
+		
+		newSurveyProgram(survey, 2, [(HEALTH_CENTER_GROUP)])
+		def program = newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = newSimpleQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		
+		def element = newSurveyElement(question, newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
+		newFormEnteredValue(element, period, DataLocation.findByCode(KIVUYE), v("1"))
+		
+		def rule1 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 10", true, [])
+		def rule2 = newFormValidationRule(element, "", [(HEALTH_CENTER_GROUP)], "\$"+element.id+" > 100")		
+		
+		when:
+		surveyPageService.modify(DataLocation.findByCode(KIVUYE), program, [element], [("elements["+element.id+"].value"): "5"])
+		def submitAll = surveyPageService.submitAll(Location.findByCode(BURERA), survey)		
+		
+		then:
+		submitAll == true
+		SurveyEnteredProgram.list()[0].closed == true		
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].value.numberValue == 5
+		RawDataElementValue.list()[0].value.getAttribute("invalid").contains(rule1.id+"")
+		RawDataElementValue.list()[0].value.getAttribute("invalid").contains(rule2.id+"")
+	}
+	
+	def "test submit program with skipped element"() {
 		setup:
 		setupLocationTree()
 		setupSecurityManager(newUser('test', 'uuid'))
@@ -112,7 +188,7 @@ class SurveyPageServiceSpec extends SurveyIntegrationTests {
 		FormEnteredValue.count() == 1
 		FormEnteredValue.list()[0].value.numberValue == 1
 		SurveyEnteredQuestion.count() == 2
-		SurveyEnteredQuestion.list()[1].getSkippedRules().equals(new HashSet([skipRule]))
+		SurveyEnteredQuestion.list().find {it.question.equals(question2)}.skippedRules.equals(new HashSet([skipRule]))
 	}
 	
 	def "test modify with skipped question referring to non existing element"() {

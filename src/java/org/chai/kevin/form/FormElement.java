@@ -38,7 +38,7 @@ import org.chai.kevin.value.ValueService;
 public class FormElement {
 
 	protected Long id;
-	private RawDataElement rawDataElement;
+	private RawDataElement dataElement;
 	private List<FormValidationRule> validationRules = new ArrayList<FormValidationRule>();
 	private Map<String, Translation> headers = new HashMap<String, Translation>();
 
@@ -59,11 +59,11 @@ public class FormElement {
 	@ManyToOne(targetEntity = RawDataElement.class, optional = false)
 	@JoinColumn(nullable = false)
 	public RawDataElement getDataElement() {
-		return rawDataElement;
+		return dataElement;
 	}
 
-	public void setDataElement(RawDataElement rawDataElement) {
-		this.rawDataElement = rawDataElement;
+	public void setDataElement(RawDataElement dataElement) {
+		this.dataElement = dataElement;
 	}
 
 	@OneToMany(mappedBy = "formElement", targetEntity = FormValidationRule.class, orphanRemoval=true)
@@ -170,12 +170,14 @@ public class FormElement {
 		}
 		
 		public boolean transformValue(Value currentValue, Type currentType, String currentPrefix) {
-			// if it is skipped we return NULL
-			if (currentValue.getAttribute("skipped") != null) currentValue.setJsonValue(Value.NULL_INSTANCE().getJsonValue());
-			// we remove the attributes
-			currentValue.setAttribute("skipped", null);
-			currentValue.setAttribute("invalid", null);
-			currentValue.setAttribute("warning", null);
+			// if it is skipped, we return null
+			if (currentValue.getAttribute("skipped") != null){
+				currentValue.setJsonValue(Value.NULL_INSTANCE().getJsonValue());
+			}
+			
+			// if it is not skipped, we keep these attributes
+//			currentValue.setAttribute("invalid", null);
+//			currentValue.setAttribute("warning", null); //for when the user overrides an outlier value
 			
 			return true;
 		}	
@@ -248,4 +250,7 @@ public class FormElement {
 		return true;
 	}
 
+	public String toString(){
+		return "FormElement[getId()=" + getId() + ", getDataElement()=" + getDataElement() + "]";
+	}
 }

@@ -56,6 +56,10 @@ class PlanningSkipRuleController extends AbstractEntityController {
 		[skip: entity, languageService: languageService]
 	}
 
+	def exportEntity(){
+		return PlanningSkipRule.class;
+	}
+	
 	def bindParams(def entity) {
 		entity.properties = params
 		// FIXME GRAILS-6967 makes this necessary

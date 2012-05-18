@@ -20,13 +20,15 @@ import org.chai.kevin.value.Value;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Entity(name="Aggregation")
+@Entity(name = "Aggregation")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name="dhsst_data_calculation_aggregation")
+@Table(name = "dhsst_data_calculation_aggregation")
 public class Aggregation extends Calculation<AggregationPartialValue> {
 
 	@Override
-	public AggregationValue getCalculationValue(List<AggregationPartialValue> partialValues, Period period, CalculationLocation location) {
+	public AggregationValue getCalculationValue(
+			List<AggregationPartialValue> partialValues, Period period,
+			CalculationLocation location) {
 		return new AggregationValue(partialValues, this, period, location);
 	}
 
@@ -37,9 +39,12 @@ public class Aggregation extends Calculation<AggregationPartialValue> {
 	}
 
 	@Override
-	public AggregationPartialValue getCalculationPartialValue(String expression, Map<DataLocation, StatusValuePair> values, CalculationLocation location, Period period, DataLocationType type) {
+	public AggregationPartialValue getCalculationPartialValue(
+			String expression, Map<DataLocation, StatusValuePair> values,
+			CalculationLocation location, Period period, DataLocationType type) {
 		Value value = getValue(values.values());
-		return new AggregationPartialValue(this, location, period, type, expression, value);
+		return new AggregationPartialValue(this, location, period, type,
+				expression, value);
 	}
 
 	@Override
@@ -52,8 +57,8 @@ public class Aggregation extends Calculation<AggregationPartialValue> {
 
 	@Override
 	public String toString() {
-		return "Aggregation [getExpression()=" + getExpression() + ", getId()="
-				+ getId() + ", getCode()=" + getCode() + "]";
+		return "Aggregation[getId()=" + getId() + ", getCode()="
+				+ getCode() + ", getExpression()='" + getExpression() + "']";
 	}
 
 }
