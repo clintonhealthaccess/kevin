@@ -897,6 +897,14 @@ public class TypeUnitSpec extends UnitSpec {
 		then:
 		type.getType('').equals(type)
 		type.getType('[1]').equals(Type.TYPE_NUMBER())
+		
+		when:
+		type = Type.TYPE_LIST(Type.TYPE_MAP(["test": Type.TYPE_NUMBER()]))
+		
+		then:
+		type.getType('').equals(type)
+		type.getType('[1].test').equals(Type.TYPE_NUMBER())
+		type.getType('[12].test').equals(Type.TYPE_NUMBER())
 	
 		when:
 		type = Type.TYPE_MAP(["key1": Type.TYPE_NUMBER()])
