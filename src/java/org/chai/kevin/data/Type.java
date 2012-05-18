@@ -216,8 +216,8 @@ public class Type extends JSONValue {
 		case DATE:
 			throw new IllegalArgumentException();
 		case LIST:
-			if (!prefix.startsWith("[_]") && !prefix.matches("^\\[\\d*\\]")) throw new IllegalArgumentException("Prefix "+prefix+" not found in type: "+this);
-			return getListType().getType(prefix.substring(3));
+			if (!prefix.matches("^\\[(\\d*|_)\\].*")) throw new IllegalArgumentException("Prefix "+prefix+" not found in type: "+this);
+			return getListType().getType(prefix.replaceAll("^\\[(\\d*|_)\\]", ""));
 		case MAP:
 			boolean found = false;
 			for (Entry<String, Type> entry : getElementMap().entrySet()) {
