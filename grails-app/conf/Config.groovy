@@ -1,4 +1,3 @@
-import javax.media.jai.operator.PeriodicShiftDescriptor;
 
 import org.chai.kevin.Period;
 
