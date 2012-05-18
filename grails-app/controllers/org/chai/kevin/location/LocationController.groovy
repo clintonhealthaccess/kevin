@@ -28,16 +28,7 @@ class LocationController extends AbstractEntityController {
 	def languageService;
 	def calculationLocationService
 	def surveyExportService;
-	final String COUNTRY = "Country"
-	final String PROVINCE = "Province"
-	final String DISTRICT= "District"
-	final String SECTOR = "Sector"
-	final String FACILITY ="Facility"
-	final String CODE ="Code"
-	final String TYPE="Type"
-	final String FILENAME="DataLocation"
-	final String FILETYPE=".csv"
-
+	
 	def bindParams(def entity) {
 		entity.properties = params
 		

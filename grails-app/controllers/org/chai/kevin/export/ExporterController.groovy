@@ -132,7 +132,7 @@ class ExporterController extends AbstractEntityController {
 		Exporter export= Exporter.get(params.int('export.id'));
 		if(log.isDebugEnabled()) log.debug("export(export="+export+")")
 		if(export){
-			File csvFile = exporterService.exportDataElement(export);
+			File csvFile = exporterService.exportData(export);
 			def zipFile = Utils.getZipFile(csvFile, export.descriptions[languageService.getCurrentLanguage()])
 			
 			if(zipFile.exists()){

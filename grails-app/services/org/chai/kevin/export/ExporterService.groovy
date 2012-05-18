@@ -60,6 +60,7 @@ import org.chai.kevin.value.ValueService;
 
 import org.apache.commons.lang.StringUtils
 import org.hibernate.Criteria;
+import org.hibernate.SessionFactory;
 import org.chai.kevin.survey.export.SurveyExportDataPoint;
 import org.chai.kevin.util.Utils
 import org.hibernate.criterion.MatchMode
@@ -85,16 +86,17 @@ class ExporterService {
 	def surveyExportService;
 	
 	private final static String CSV_FILE_EXTENSION = ".csv";
-	private final static String LOCATION_TYPE = "Type";
+	private final static String LOCATION_TYPE = "Health Facility Type";
 	private final static String HEALTH_FACILITY_CODE = "Health Facility Code";
-	private final static String HEALTH_FACILITY = "Health Facility";
+	private final static String HEALTH_FACILITY_NAME = "Health Facility Name";
+	private final static String DATA_ELEMENT_ID = "Data Element Id";
 	private final static String DATA_ELEMENT_NAME = "Data Element Name";
 	private final static String DATA_ELEMENT_CODE = "Data Element Code";
 	private final static String PERIOD = "Period";
 	private final static String DATA_VALUE = "Data Value";
 	private final static String DATA_VALUE_ADDRESS = "Data Value Address";
 	
-	public File exportDataElement(Exporter export){
+	public File exportData(Exporter export){
 		if (log.isDebugEnabled()) log.debug("exportData("+export+")");
 		Set<DataLocationType> types = new HashSet();
 		
@@ -106,16 +108,20 @@ class ExporterService {
 		List<DataLocation> dataLocations = locationService.getDataLocations(export.locations,types);
 		
 		if (log.isDebugEnabled()) log.debug(" Exporter dataLocations "+dataLocations+")");
-		return this.exportDataElement(export.descriptions[languageService.getCurrentLanguage()],dataLocations,export.periods,export.data);
+		return this.exportDataElements(export.descriptions[languageService.getCurrentLanguage()],dataLocations,export.periods,export.data);
 	}
 		
-	public File exportDataElement(String fileName,List<DataLocation> dataLocations,Set<Period> periods,Set<Data<DataValue>> data){
+	public File exportDataElements(String fileName,List<DataLocation> dataLocations,Set<Period> periods,Set<Data<DataValue>> data){
 		if (log.isDebugEnabled()) log.debug(" exportDataElement(String "+fileName+" List<DataLocation>: " + dataLocations + " List<Period>: "+ periods + " Set<Data<DataValue>>: " + data + ")");
 		File csvFile = File.createTempFile(fileName, CSV_FILE_EXTENSION);
 		FileWriter csvFileWriter = new FileWriter(csvFile);
 		ICsvListWriter writer = new CsvListWriter(csvFileWriter, CsvPreference.EXCEL_PREFERENCE);
-		DataPointVisitor dataPointVisitor = new DataPointVisitor(writer);
+		this.writeDataElements(writer, dataLocations, periods, data)
+		return csvFile;
 
+	}
+
+	private writeDataElements(ICsvListWriter writer, List<DataLocation> dataLocations, Set<Period> periods,Set<Data<DataValue>> data) {
 		try{
 			String[] csvHeaders = null;
 			// headers
@@ -126,11 +132,9 @@ class ExporterService {
 			for(DataLocation location: dataLocations)
 				for(Period period: periods)
 					for(Data dataElement: data){
-						List<String> basicInfo = this.getBasicInfo(location,period,dataElement);
-						RawDataElementValue rawDataElementValue = valueService.getDataElementValue(dataElement, location, period);
-						dataPointVisitor.setBasicInfo(basicInfo);
-						if(rawDataElementValue!=null)
-							dataElement.getType().visit(rawDataElementValue.getValue(), dataPointVisitor);
+						List<List<String>> lines=this.getExportLineForValue(location,period,dataElement);
+						for(List<String> line: lines)
+							writer.write(line);
 					}
 		} catch (IOException ioe){
 			// TODO throw something that make sense
@@ -138,8 +142,19 @@ class ExporterService {
 		} finally {
 			writer.close();
 		}
-		return csvFile;
-
+	}
+	public List<List<String>> getExportLineForValue(DataLocation location,Period period, Data data){
+		DataPointVisitor dataPointVisitor = new DataPointVisitor();
+		if(data!=null){
+			RawDataElementValue rawDataElementValue = valueService.getDataElementValue(data, location, period);
+			if(rawDataElementValue!=null){
+				List<String> basicInfo = this.getBasicInfo(location,period,data);
+				dataPointVisitor.setBasicInfo(basicInfo);
+				data.getType().visit(rawDataElementValue.getValue(), dataPointVisitor);
+				sessionFactory.getCurrentSession().evict(rawDataElementValue);
+			}
+		}
+		return dataPointVisitor.getLines();
 	}
 	
 	private List<String> getBasicInfo(DataLocation location,Period period, Data data){
@@ -154,6 +169,7 @@ class ExporterService {
 
 		basicInfo.add(location.code)
 		basicInfo.add("[ "+period.startDate.toString()+" - "+period.endDate.toString()+" ]")
+		basicInfo.add(data.id+"")
 		basicInfo.add(languageService.getText(data.getNames()))
 		basicInfo.add(data.code)
 		return basicInfo;
@@ -163,10 +179,11 @@ class ExporterService {
 		List<String> headers = new ArrayList<String>();
 		for (LocationLevel level : locationService.listLevels())
 			headers.add(languageService.getText(level.getNames()));
-		headers.add(HEALTH_FACILITY);
-		headers.add(LOCATION_TYPE);
 		headers.add(HEALTH_FACILITY_CODE);
+		headers.add(HEALTH_FACILITY_NAME);
+		headers.add(LOCATION_TYPE);
 		headers.add(PERIOD);
+		headers.add(DATA_ELEMENT_ID);
 		headers.add(DATA_ELEMENT_NAME);
 		headers.add(DATA_ELEMENT_CODE);
 		headers.add(DATA_VALUE);
@@ -220,11 +237,7 @@ class ExporterService {
 }
 private class DataPointVisitor extends ValueVisitor{
 	private List<String> basicInfo = new ArrayList<String>();
-	private ICsvListWriter writer;
-
-	public DataPointVisitor(ICsvListWriter writer){
-		this.writer=writer;
-	}
+	private List<List<String>> lines= new ArrayList<List<String>>();
 
 	@Override
 	public void handle(Type type, Value value, String prefix, String genericPrefix) {
@@ -232,11 +245,14 @@ private class DataPointVisitor extends ValueVisitor{
 			List<String> dataList = new ArrayList<String>(basicInfo);
 			dataList.add(Utils.getValueString(type, value));
 			dataList.add(prefix)
-			writer.write(dataList)
+			lines.add(dataList)
 		}
 	}
 	public void setBasicInfo(List<String> basicInfo){
 		this.basicInfo=basicInfo
+	}
+	public List<List<String>> getLines(){
+		return lines;
 	}
 }
 

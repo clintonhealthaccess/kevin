@@ -236,7 +236,7 @@ class LocationServiceSpec extends IntegrationTests {
 		
 		def hc = getDataLocationTypes([HEALTH_CENTER_GROUP]);
 		def dh = getDataLocationTypes([DISTRICT_HOSPITAL_GROUP]);
-		def dhHc = getDataLocationTypes([HEALTH_CENTER_GROUP,DISTRICT_HOSPITAL_GROUP]);
+		
 		
 		typeOne.add(hc[0]);
 		typeTwo.add(dh[0]);
