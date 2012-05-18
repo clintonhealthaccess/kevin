@@ -148,12 +148,6 @@ public class Utils {
 				if(value.getDateValue() != null) return Utils.formatDate(value.getDateValue());	
 				else return value.getStringValue();
 			case ENUM:
-				String enumCode = type.getEnumCode();
-				Enum enume = enumService.getEnumByCode(enumCode);
-				if(enume != null){
-					EnumOption enumOption = enume.getOptionForValue(value.getEnumValue());
-					if (enumOption != null) return languageService.getText(enumOption.getNames());
-				}
 				return value.getStringValue();
 			default:
 				throw new IllegalArgumentException("get value string can only be called on simple type");
