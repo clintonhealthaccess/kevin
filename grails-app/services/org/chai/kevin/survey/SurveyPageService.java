@@ -587,13 +587,16 @@ public class SurveyPageService {
 		
 		List<DataLocation> dataLocations = location.collectDataLocations(null, null);		
 		for (DataLocation dataLocation : dataLocations) {
-			// TODO do this in a transaction
-			submitIfNotClosed(survey, dataLocation);
+			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
+			
+			submitIfNotClosedInTransaction(survey, dataLocation);
+			sessionFactory.getCurrentSession().clear();
 		}	
 		return true;
 	}
 
-	private void submitIfNotClosed(Survey survey, DataLocation dataLocation) {
+	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
+	public void submitIfNotClosedInTransaction(Survey survey, DataLocation dataLocation) {
 		
 		List<SurveyProgram> surveyPrograms = survey.getPrograms(dataLocation.getType());
 		for (SurveyProgram surveyProgram : surveyPrograms) {								
