@@ -11,6 +11,7 @@ class DataController extends AbstractController {
 	
 	def dataService
 	def valueService
+	def refreshValueService
 	
 	def getDescription = {
 		def data = dataService.getData(params.int('id'), Data.class)
@@ -71,7 +72,16 @@ class DataController extends AbstractController {
 	}
 	
 	def calculateValues = {
-		
+		def data = dataService.getData(params.int('data'), Data.class)
+		if (data == null) {
+			response.sendError(404)
+		}
+		else {
+			if (data instanceof NormalizedDataElement) refreshValueService.refreshNormalizedDataElement(data)
+			else if (data instanceof Calculation) refreshValueService.refreshCalculation(data)
+			
+			redirect(uri: getTargetURI())
+		}
 	}
 	
 	// TODO move to DataElementController

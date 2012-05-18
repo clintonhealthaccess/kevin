@@ -43,12 +43,12 @@
 						<div class="hidden manage-list dropdown-list js_dropdown-list">
 							<ul>
   								<li>
-  									<a href="${createLink(controller:'data', action:'calculateValues', params:[data:rawDataElement.id])}">
+  									<a href="${createLinkWithTargetURI(controller:'data', action:'calculateValues', params:[data:calculation.id])}">
   										<g:message code="dataelement.calculatevalues.label"/>
   									</a>
   								</li>
   								<li>
-  									<a href="${createLinkWithTargetURI(controller:'data', action:'deleteValues', params:[data:rawDataElement.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
+  									<a href="${createLinkWithTargetURI(controller:'data', action:'deleteValues', params:[data:calculation.id])}" onclick="return confirm('\${message(code: 'default.link.delete.confirm.message')}');">
   										<g:message code="data.deletevalues.label"/>
   									</a>
   								</li>
