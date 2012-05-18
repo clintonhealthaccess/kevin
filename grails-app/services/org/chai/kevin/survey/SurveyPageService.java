@@ -30,6 +30,7 @@ package org.chai.kevin.survey;
  * @author Jean Kahigiso M.
  *
  */
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -587,17 +588,13 @@ public class SurveyPageService {
 		
 		List<DataLocation> dataLocations = location.collectDataLocations(null, null);		
 		for (DataLocation dataLocation : dataLocations) {
-			survey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
-			
-			submitIfNotClosedInTransaction(survey, dataLocation);
-			sessionFactory.getCurrentSession().clear();
+			// TODO make this run in a transaction
+			submitIfNotClosed(survey, dataLocation);
 		}	
 		return true;
 	}
 
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
-	public void submitIfNotClosedInTransaction(Survey survey, DataLocation dataLocation) {
-		
+	private void submitIfNotClosed(Survey survey, DataLocation dataLocation) {
 		List<SurveyProgram> surveyPrograms = survey.getPrograms(dataLocation.getType());
 		for (SurveyProgram surveyProgram : surveyPrograms) {								
 			
