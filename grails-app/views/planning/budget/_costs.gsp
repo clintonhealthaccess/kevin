@@ -10,7 +10,7 @@
 	<g:if test="${planningCost.type == PlanningCostType.INCOMING}">
 		<td>-</td>
 	</g:if>
-	<td>${budgetCost*.value}</td>
+	<td><g:formatNumber number="${budgetCost?.value}" format="#,###"/></td>
 	<g:if test="${planningCost.type == PlanningCostType.OUTGOING}">
 		<td>-</td>
 	</g:if>
