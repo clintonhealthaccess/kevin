@@ -85,7 +85,7 @@ class ExporterController extends AbstractEntityController {
 		params.list('periods').each { id ->
 			if (NumberUtils.isDigits(id)) {
 				def period = Period.get(id)
-				if (period != null) periods.add(period);
+				if (period != null && !periods.contains(period)) periods.add(period);
 			}
 		}
 		entity.periods = periods
