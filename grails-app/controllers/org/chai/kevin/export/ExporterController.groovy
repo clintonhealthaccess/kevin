@@ -78,20 +78,10 @@ class ExporterController extends AbstractEntityController {
 		
 		if(entity.date==null)	
 			entity.date = new Date();
-		
 		if(log.isDebugEnabled()) log.debug("export(bind="+entity+")")
 		
 		// we do this because automatic data binding does not work with polymorphic elements
-		Set<Data> rawDataElements = []
-		params.list('data').each { id ->
-			if (NumberUtils.isDigits(id)) {
-				def rawDataElement = dataService.getData(Long.parseLong(id), RawDataElement.class)
-				if (rawDataElement != null) rawDataElements.add(rawDataElement);
-			}
-		}
-		entity.data = rawDataElements
-		
-		Set<Period> periods = [];
+		Set<Period> periods = new HashSet();;
 		params.list('periods').each { id ->
 			if (NumberUtils.isDigits(id)) {
 				def period = Period.get(id)
@@ -100,11 +90,20 @@ class ExporterController extends AbstractEntityController {
 		}
 		entity.periods = periods
 		
-		Set<CalculationLocation> locations = [];
+		Set<Data> dataS = new HashSet();
+		params.list('data').each { id ->
+			if (NumberUtils.isDigits(id)) {
+				def data = dataService.getData(Long.parseLong(id), Data.class)
+				if (data != null && !dataS.contains(data)) dataS.add(data);
+			}
+		}
+		entity.data = dataS
+		
+		Set<CalculationLocation> locations = new HashSet();
 		params.list('locations').each { id ->
 			if (NumberUtils.isDigits(id)) {
 				def location = locationService.getCalculationLocation(Long.parseLong(id), CalculationLocation.class)
-				if (location != null) locations.add(location);
+				if (location != null && !locations.contains(location)) locations.add(location);
 			}
 		}
 		entity.locations = locations
