@@ -43,7 +43,6 @@ import org.chai.kevin.data.Data;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.data.Type.ValueType;
 import org.chai.kevin.data.Type.ValueVisitor;
@@ -54,7 +53,6 @@ import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.DataValue;
-import org.chai.kevin.value.RawDataElementValue
 import org.chai.kevin.value.Value
 import org.chai.kevin.value.ValueService;
 
