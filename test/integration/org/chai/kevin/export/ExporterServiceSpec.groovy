@@ -128,7 +128,7 @@ class ExporterServiceSpec  extends IntegrationTests {
 		
 		def exporterOne = newExporter(j("en":"Testing Seach One"),periods, locationType, locations, dataOne);
 		when:
-		def dataLocations = locationService.getDataLocations(locations,locationTypes)
+		def dataLocations = locationService.getDataLocationsOfType(locations,locationTypes)
 		def exportedFileOne = exporterService.exportDataElements("Testing",dataLocations,exporterOne.periods,exporterOne.data);
 		then:
 		exportedFileOne!=null

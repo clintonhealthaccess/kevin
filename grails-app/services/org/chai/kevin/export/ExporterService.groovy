@@ -103,7 +103,7 @@ class ExporterService {
 			if(type!=null) types.add(type)
 		}
 		
-		List<DataLocation> dataLocations = locationService.getDataLocations(export.locations,types);
+		List<DataLocation> dataLocations = locationService.getDataLocationsOfType(export.locations,types);
 		
 		if (log.isDebugEnabled()) log.debug(" Exporter dataLocations "+dataLocations+")");
 		return this.exportDataElements(export.descriptions[languageService.getCurrentLanguage()],dataLocations,export.periods,export.data);
@@ -149,7 +149,6 @@ class ExporterService {
 				List<String> basicInfo = this.getBasicInfo(location,period,data);
 				dataPointVisitor.setBasicInfo(basicInfo);
 				data.getType().visit(dataValue.getValue(), dataPointVisitor);
-				sessionFactory.getCurrentSession().evict(dataValue);
 			}
 		}
 		return dataPointVisitor.getLines();

@@ -397,7 +397,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		planningService.refreshBudgetIfNeeded(planning, DataLocation.findByCode(BUTARO))
 		
 		then:
-		NormalizedDataElementValue.list()[0].timestamp.equals(date)
+		NormalizedDataElementValue.list()[0].timestamp.seconds == date.seconds
 	}
 	
 	def "needs update returns false when normalized data element is up-to-date"() {
@@ -423,7 +423,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		planningService.refreshBudgetIfNeeded(planning, DataLocation.findByCode(BUTARO))
 		
 		then:
-		NormalizedDataElementValue.list()[0].timestamp.equals(date)
+		NormalizedDataElementValue.list()[0].timestamp.seconds == date.seconds
 	}
 	
 	def "needs update returns true when normalized data element is not up-to-date"() {
