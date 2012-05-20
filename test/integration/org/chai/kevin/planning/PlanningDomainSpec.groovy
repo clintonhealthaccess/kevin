@@ -29,7 +29,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 	def "null constraints in planning type"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))
 		def formElement = newFormElement(dataElement)
 		
@@ -61,7 +61,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 	def "data element has to be LIST-MAP in planning type"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		
 		when:
 		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', formElement: 
@@ -93,7 +93,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 	def "discriminator must be a prefix of type"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))
 		def formElement = newFormElement(dataElement)
 		
@@ -119,7 +119,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 	def "header prefix must be a value prefix"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))
 		def formElement = newFormElement(dataElement)
 		
@@ -145,7 +145,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 	def "discriminator must reference an ENUM"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_ENUM("code"), "key2":Type.TYPE_NUMBER()])))
 		def formElement = newFormElement(dataElement)
 		
@@ -165,7 +165,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 	def "null constraints in planning cost"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", "[_].key", planning)
 		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
 		
@@ -198,7 +198,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 	def "skip rule - null constraints"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		
 		when:
 		new PlanningSkipRule(planning: planning, expression: "true").save(failOnError: true)

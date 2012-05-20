@@ -20,7 +20,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		// we create 2 form elements so they don't have the same ID as the type
 		def formElement1 = newFormElement(dataElement)
 		def formElement2 = newFormElement(dataElement)
@@ -54,7 +54,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
@@ -84,7 +84,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
@@ -113,7 +113,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def skipRule = newFormSkipRule("\$"+formElement.id+"[_].key1 == 1", [(formElement):"[_].key1"])
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
@@ -143,7 +143,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		// we create 2 form elements so they don't have the same ID as the type
 		def formElement1 = newFormElement(dataElement)
 		def formElement2 = newFormElement(dataElement)
@@ -178,7 +178,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		setupLocationTree()
 		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
 		def period = newPeriod()
-		def planning = newPlanning(period, true)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], true)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -206,7 +206,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		planningController = new EditPlanningController()
@@ -232,7 +232,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO),
@@ -260,7 +260,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
@@ -286,7 +286,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		planningController = new EditPlanningController()
@@ -303,8 +303,107 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		
 	}
 	
-	def "overview with non active planning for type returns 404"() {
+	def "overview with active planning"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
+		planningController = new EditPlanningController()
 		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planning = planning.id
+		planningController.overview()
+		
+		then:
+		planningController.modelAndView.model.planning.equals(planning)
+		planningController.modelAndView.model.location.equals(DataLocation.findByCode(BUTARO))
+	}
+	
+	def "overview with non active planning for type returns 404"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(KIVUYE).id
+		planningController.params.planning = planning.id
+		planningController.overview()
+		
+		then:
+		planningController.modelAndView == null
+	}
+	
+	def "planning list with non active planning for type returns 404"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(KIVUYE).id
+		planningController.params.planningType = planningType.id
+		planningController.planningList()
+		
+		then:
+		planningController.modelAndView == null
+	}
+	
+	def "budget with non active planning for type returns 404"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(KIVUYE).id
+		planningController.params.planning = planning.id
+		planningController.budget()
+		
+		then:
+		planningController.modelAndView == null
+	}
+	
+	def "summary page only shows active location types"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def enume = newEnume(CODE(1))
+		newEnumOption(enume, "value")
+		def dataElement = newRawDataElement(CODE(2),
+			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = Location.findByCode(RWANDA).id
+		planningController.params.planning = planning.id
+		planningController.summaryPage()
+		
+		then:
+		planningController.modelAndView.model.summaryPage.dataLocations.equals([DataLocation.findByCode(BUTARO)])
 	}
 	
 }

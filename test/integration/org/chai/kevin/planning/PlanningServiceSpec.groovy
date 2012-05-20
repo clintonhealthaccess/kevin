@@ -24,7 +24,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2), 
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		
@@ -44,7 +44,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2), 
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def planningList = null
@@ -66,7 +66,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def planningList = null
@@ -91,7 +91,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def planningTypeBudget = null
@@ -127,7 +127,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
@@ -158,7 +158,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def planningTypeBudget = null
@@ -187,7 +187,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def planningTypeBudget = null
@@ -221,7 +221,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def dataElementValue = null
@@ -258,7 +258,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def validationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
@@ -283,7 +283,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def formValue = null
@@ -306,7 +306,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		
@@ -327,7 +327,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
@@ -356,7 +356,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		newEnumOption(enume, "value")
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
@@ -381,7 +381,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def enume = newEnume(CODE(1))
 		newEnumOption(enume, "value")
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def formElement = newFormElement(dataElement)
@@ -407,7 +407,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def enume = newEnume(CODE(1))
 		newEnumOption(enume, "value")
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def formElement = newFormElement(dataElement)
@@ -433,7 +433,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def enume = newEnume(CODE(1))
 		newEnumOption(enume, "value")
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def formElement = newFormElement(dataElement)
@@ -461,7 +461,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def value = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}")
@@ -482,7 +482,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
@@ -503,7 +503,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
@@ -525,7 +525,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
@@ -546,7 +546,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def period = newPeriod()
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
 		def planningSummary = null
