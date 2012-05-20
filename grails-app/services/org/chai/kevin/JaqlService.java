@@ -14,7 +14,9 @@ import org.chai.kevin.value.Value;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 
 import com.ibm.jaql.json.type.JsonValue;
+import com.ibm.jaql.lang.Jaql;
 import com.ibm.jaql.lang.JaqlQuery;
+import com.ibm.jaql.lang.util.JaqlUtil;
 
 public class JaqlService {
 
