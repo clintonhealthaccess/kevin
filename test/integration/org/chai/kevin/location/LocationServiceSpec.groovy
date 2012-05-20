@@ -221,7 +221,7 @@ class LocationServiceSpec extends IntegrationTests {
 		then:
 		levelAfter.equals(LocationLevel.findByCode(SECTOR))
 	}
-	def "test getDataLocation(Set<CalculationLocation> locations,Set<DataLocationType> types)"(){
+	def "test get data locations of type"(){
 		setup:
 		setupLocationTree()
 		
@@ -237,17 +237,15 @@ class LocationServiceSpec extends IntegrationTests {
 		def hc = getDataLocationTypes([HEALTH_CENTER_GROUP]);
 		def dh = getDataLocationTypes([DISTRICT_HOSPITAL_GROUP]);
 		
-		
 		typeOne.add(hc[0]);
 		typeTwo.add(dh[0]);
 		typeThree.add(hc[0]);
 		typeThree.add(dh[0]);
 
-		
 		when:
-		def caseOne = locationService.getDataLocations(locations,typeOne);
-		def caseTwo = locationService.getDataLocations(locations,typeTwo);
-		def caseThree = locationService.getDataLocations(locations,typeThree);
+		def caseOne = locationService.getDataLocationsOfType(locations,typeOne);
+		def caseTwo = locationService.getDataLocationsOfType(locations,typeTwo);
+		def caseThree = locationService.getDataLocationsOfType(locations,typeThree);
 		def listDataLocations =[]
 		listDataLocations.add(getDataLocations([BUTARO])[0])
 		listDataLocations.add(getDataLocations([KIVUYE])[0])

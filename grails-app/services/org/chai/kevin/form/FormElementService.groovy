@@ -111,6 +111,7 @@ class FormElementService {
 		c.setFlushMode(FlushMode.COMMIT)
 		def result = c.uniqueResult();
 		if (log.isDebugEnabled()) log.debug("getFormEnteredValue(...)="+result);
+		
 		return result
 	}
 	

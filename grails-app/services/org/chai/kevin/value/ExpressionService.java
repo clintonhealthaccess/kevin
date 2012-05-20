@@ -54,6 +54,7 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
+import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ExpressionService {
@@ -146,7 +147,7 @@ public class ExpressionService {
 					valueMap.put(entry.getValue().getId().toString(), dataValue==null?null:dataValue.getValue());
 					typeMap.put(entry.getValue().getId().toString(), entry.getValue().getType());
 				}
-				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}"/*, typeMap={"+typeMap+"}"*/);
+//				if (expressionLog.isDebugEnabled()) expressionLog.debug("values and types: valueMap={"+valueMap+"}", typeMap={"+typeMap+"}");
 				
 				if (hasNullValues(valueMap.values())) {
 					if (expressionLog.isInfoEnabled()) expressionLog.info("found null values");
@@ -258,4 +259,5 @@ public class ExpressionService {
 	public void setJaqlService(JaqlService jaqlService) {
 		this.jaqlService = jaqlService;
 	}
+	
 }

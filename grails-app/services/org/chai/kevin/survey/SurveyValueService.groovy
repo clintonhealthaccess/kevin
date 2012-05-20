@@ -177,6 +177,7 @@ class SurveyValueService {
 		
 		def result = c.setFlushMode(FlushMode.COMMIT).list();
 		if (log.isDebugEnabled()) log.debug("getSurveyEnteredValue(...)="+result);
+		
 		return result
 	}
 	

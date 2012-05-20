@@ -82,7 +82,7 @@ public class LocationService {
 		return levels;
 	}
 	
-	public List<DataLocation> getDataLocations(Set<CalculationLocation> locations,Set<DataLocationType> types){
+	public List<DataLocation> getDataLocationsOfType(Set<CalculationLocation> locations,Set<DataLocationType> types){
 		if (log.isDebugEnabled()) log.debug("List<DataLocation> getDataLocations(Set<CalculationLocation> "+locations+"Set<DataLocationType>"+types+")");
 		List<DataLocation> dataLocations= new ArrayList<DataLocation>()
 		
