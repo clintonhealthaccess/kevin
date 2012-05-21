@@ -85,7 +85,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
 		
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
@@ -106,7 +106,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		def date1 = value1.timestamp
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
@@ -131,7 +131,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date2 = value2.timestamp
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
@@ -154,7 +154,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date1 = value1.timestamp
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
@@ -177,7 +177,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
 		rawDataElement.lastValueChanged = new Date()
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
@@ -203,7 +203,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date1 = value1.timestamp
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
@@ -243,7 +243,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		def date1 = value1.timestamp
 		rawDataElement.lastValueChanged = new Date()
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
@@ -264,7 +264,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		def date1 = value1.timestamp
 		rawDataElement.timestamp = new Date()
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
@@ -285,7 +285,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		def date1 = value1.timestamp
 		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("1"))
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
@@ -309,7 +309,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date1 = value1.timestamp
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
@@ -331,7 +331,7 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 1
 		
 		when:
-		Thread.sleep(1000)
+		Thread.sleep(1100)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 
 		then:
