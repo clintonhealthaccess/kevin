@@ -82,7 +82,7 @@ public class ExpressionServiceSpec extends IntegrationTests {
 				
 		then:
 		result.value == Value.NULL_INSTANCE()
-		result.status == Status.DOES_NOT_APPLY
+		result.status == Status.MISSING_EXPRESSION
 		
 		when: "everything is fine"
 		newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), v("40"))
@@ -101,6 +101,23 @@ public class ExpressionServiceSpec extends IntegrationTests {
 		then:
 		result.value == Value.NULL_INSTANCE()
 		result.status == Status.VALID
+	}
+	
+	def "test normalized data elements expression empty expressions treated as missing"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(10), Type.TYPE_NUMBER())
+		def normalizedDataElement = null
+		def result = null
+		
+		when: "data element is missing"
+		normalizedDataElement = new NormalizedDataElement(code: CODE(1), type: Type.TYPE_NUMBER(), expressionMap: e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):""]])).save(validate: false)
+		result = expressionService.calculateValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period)
+		
+		then:
+		result.value == Value.NULL_INSTANCE()
+		result.status == Status.MISSING_EXPRESSION
 	}
 	
 	def "test normalized data element with typing errors"() {
