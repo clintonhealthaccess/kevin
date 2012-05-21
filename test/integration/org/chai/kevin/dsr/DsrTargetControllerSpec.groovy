@@ -58,4 +58,21 @@ class DsrTargetControllerSpec extends DsrIntegrationTests {
 		DsrTarget.list()[0].dataElement.equals(dataElement)
 	}
 	
+	def "delete target" () {
+		setup:
+		setupLocationTree()
+		def program = newReportProgram(CODE(1))
+		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
+		def target = newDsrTarget(CODE(1), dataElement, [], program)
+		dsrTargetController = new DsrTargetController()
+		dsrTargetController.dataService = dataService
+		
+		when:
+		dsrTargetController.params.id = target.id
+		dsrTargetController.delete()
+		
+		then:
+		DsrTarget.count() == 0
+	}
+	
 }
