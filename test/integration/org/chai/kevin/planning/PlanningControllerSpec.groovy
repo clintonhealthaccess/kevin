@@ -7,7 +7,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 	def "planning list"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		planningController = new PlanningController()
 		
 		when:
@@ -34,7 +34,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 	def "create planning with active flag resets active flag on other planning"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period, true)
+		def planning = newPlanning(period, [], true)
 		planningController = new PlanningController()
 
 		when:
@@ -52,7 +52,7 @@ class PlanningControllerSpec extends PlanningIntegrationTests {
 	def "create planning with active flag does not reset active flag on other planning if planning incomplete"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period, true)
+		def planning = newPlanning(period, [], true)
 		planningController = new PlanningController()
 
 		when:
