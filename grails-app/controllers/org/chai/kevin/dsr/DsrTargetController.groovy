@@ -80,8 +80,6 @@ class DsrTargetController extends AbstractEntityController {
 			entity.category.targets.remove(entity)
 			entity.category.save()
 		}
-		entity.program.targets.remove(entity)
-		entity.program.save()
 		entity.delete()
 	}
 
