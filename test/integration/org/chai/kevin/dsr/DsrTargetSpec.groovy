@@ -12,7 +12,7 @@ class DsrTargetSpec extends DsrIntegrationTests {
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
-		new DsrTarget(program: program, typeCodes: [DISTRICT_HOSPITAL_GROUP], code: CODE(1), dataElement: dataElement).save(failOnError: true)
+		new DsrTarget(program: program, code: CODE(1), dataElement: dataElement).save(failOnError: true)
 		
 		then:
 		DsrTarget.count() == 1
@@ -23,7 +23,7 @@ class DsrTargetSpec extends DsrIntegrationTests {
 		def program = newReportProgram(CODE(1))
 		
 		when:
-		new DsrTarget(program: program, typeCodes: [DISTRICT_HOSPITAL_GROUP], code: CODE(1)).save(failOnError: true)
+		new DsrTarget(program: program, code: CODE(1)).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -35,7 +35,7 @@ class DsrTargetSpec extends DsrIntegrationTests {
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
 		
 		when:
-		new DsrTarget(program: program, typeCodes: [DISTRICT_HOSPITAL_GROUP], dataElement: dataElement).save(failOnError: true)
+		new DsrTarget(program: program, dataElement: dataElement).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

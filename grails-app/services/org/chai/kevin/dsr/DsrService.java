@@ -75,11 +75,8 @@ public class DsrService {
 	private Value getDsrValue(DsrTarget target, DataLocation dataLocation, Period period){
 		Value value = null;
 		
-		Set<String> targetUuids = Utils.split(target.getTypeCodeString());
-		if (targetUuids.contains(dataLocation.getType().getCode())) {
-			DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), dataLocation, period);
-			if (dataValue != null) value = dataValue.getValue();
-		}
+		DataValue dataValue = valueService.getDataElementValue(target.getDataElement(), dataLocation, period);
+		if (dataValue != null) value = dataValue.getValue();
 		
 		return value;
 	}
