@@ -127,7 +127,7 @@ public class ExpressionService {
 		
 		StatusValuePair statusValuePair = new StatusValuePair();
 		if (expression == null || expression.trim().isEmpty()) {
-			statusValuePair.status = Status.DOES_NOT_APPLY;
+			statusValuePair.status = Status.MISSING_EXPRESSION;
 			statusValuePair.value = Value.NULL_INSTANCE();
 		}
 		else {
