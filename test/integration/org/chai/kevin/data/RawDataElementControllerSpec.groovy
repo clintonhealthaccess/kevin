@@ -7,8 +7,11 @@ import org.chai.kevin.data.Type;
 import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.survey.SurveyCheckboxOption;
+import org.chai.kevin.survey.SurveyCheckboxQuestion;
 import org.chai.kevin.survey.SurveyElement;
 import org.chai.kevin.survey.SurveyIntegrationTests;
+import org.chai.kevin.survey.SurveyQuestion;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
 
@@ -260,6 +263,30 @@ class RawDataElementControllerSpec extends IntegrationTests {
 		then:
 		rawDataElementController.modelAndView.model.rawDataElement.equals(dataElement)
 		rawDataElementController.modelAndView.model.periodValues.isEmpty()
+	}
+	
+	def "delete data element with survey checkbox and no attached elements"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def dataElement = newRawDataElement(j(["en":"Element 1"]), CODE(27), Type.TYPE_BOOL())
+		def survey = SurveyIntegrationTests.newSurvey(period)
+		def program = SurveyIntegrationTests.newSurveyProgram(survey, 1, [(HEALTH_CENTER_GROUP)])
+		def section = SurveyIntegrationTests.newSurveySection(program, 1, [(HEALTH_CENTER_GROUP)])
+		def question = SurveyIntegrationTests.newCheckboxQuestion(section, 1, [(HEALTH_CENTER_GROUP)])
+		def option2 = SurveyIntegrationTests.newCheckboxOption(question, 1, [(HEALTH_CENTER_GROUP)])
+		def element = SurveyIntegrationTests.newSurveyElement(question, dataElement);
+		def option1 = SurveyIntegrationTests.newCheckboxOption(question, 1, [(HEALTH_CENTER_GROUP)], element)
+		rawDataElementController = new RawDataElementController()
+		
+		when:
+		rawDataElementController.params.id = dataElement.id
+		rawDataElementController.delete()
+		
+		then:
+		SurveyCheckboxQuestion.count() == 1
+		SurveyCheckboxOption.count() == 2
+		RawDataElement.count() == 0
 	}
 	
 }
