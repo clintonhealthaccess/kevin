@@ -27,7 +27,7 @@
 	
 		<g:selectFromEnum name="type" bean="${planningCost}" values="${PlanningCostType.values()}" field="type" label="${message(code:'planning.planningcost.type.label')}"/>
 	
-		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${target}" field="order"/>
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${planningCost}" field="order"/>
 	
 		<g:if test="${planningCost.id != null}">
 			<input type="hidden" name="id" value="${planningCost.id}"></input>
