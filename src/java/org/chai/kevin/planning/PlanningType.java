@@ -39,7 +39,6 @@ public class PlanningType {
 	private Planning planning;
 	private Translation names = new Translation();
 	private Translation namesPlural = new Translation();
-	private String discriminator;
 	private String fixedHeader;
 
 	private Integer maxNumber;
@@ -134,15 +133,6 @@ public class PlanningType {
 	}
 	
 	@Basic
-	public String getDiscriminator() {
-		return discriminator;
-	}
-	
-	public void setDiscriminator(String discriminator) {
-		this.discriminator = discriminator;
-	}
-	
-	@Basic
 	public String getFixedHeader() {
 		return fixedHeader;
 	}
@@ -157,11 +147,6 @@ public class PlanningType {
 	}
 	
 	@Transient
-	public Type getDiscriminatorType() {
-		return getType(getDiscriminator());
-	}
-	
-	@Transient
 	public Type getFixedHeaderType() {
 		return getType(getFixedHeader());
 	}
@@ -173,15 +158,6 @@ public class PlanningType {
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
-	}
-	
-	@Transient
-	public List<PlanningCost> getPlanningCosts(String discriminatorValue) {
-		List<PlanningCost> result = new ArrayList<PlanningCost>();
-		for (PlanningCost planningCost : getCosts()) {
-			if (planningCost.getDiscriminatorValues().contains(discriminatorValue)) result.add(planningCost);
-		}
-		return result;
 	}
 	
 	/**
@@ -200,7 +176,6 @@ public class PlanningType {
 		// we get rid of the discriminator
 		// TODO how do we handle lists
 		result.remove(getFixedHeader());
-		result.remove(getDiscriminator());
 		return result;
 	}
 	

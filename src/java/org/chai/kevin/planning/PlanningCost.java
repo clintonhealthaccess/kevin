@@ -41,13 +41,14 @@ public class PlanningCost extends Orderable<Integer> {
 
 	private Long id;
 	private Integer order;
-	private String discriminatorValueString;
 	
 	private PlanningCostType type;
 	private PlanningType planningType;
 
 	private NormalizedDataElement dataElement;
 	private Translation names = new Translation();
+	
+	private Boolean hideIfZero;
 	
 	@Id
 	@GeneratedValue
@@ -67,6 +68,15 @@ public class PlanningCost extends Orderable<Integer> {
 	
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+	
+	@Basic
+	public Boolean getHideIfZero() {
+		return hideIfZero;
+	}
+	
+	public void setHideIfZero(Boolean hideIfZero) {
+		this.hideIfZero = hideIfZero;
 	}
 	
 	@ManyToOne(targetEntity=NormalizedDataElement.class)
@@ -105,24 +115,6 @@ public class PlanningCost extends Orderable<Integer> {
 	
 	public void setPlanningType(PlanningType planningType) {
 		this.planningType = planningType;
-	}
-	
-	@Lob
-	public String getDiscriminatorValueString() {
-		return discriminatorValueString;
-	}
-	
-	public void setDiscriminatorValueString(String discriminatorValueString) {
-		this.discriminatorValueString = discriminatorValueString;
-	}
-
-	@Transient
-	public Set<String> getDiscriminatorValues() {
-		return Utils.split(discriminatorValueString);
-	}
-	
-	public void setDiscriminatorValues(Set<String> discriminatorValues) {
-		this.discriminatorValueString = Utils.unsplit(discriminatorValues);
 	}
 	
 	@Override
