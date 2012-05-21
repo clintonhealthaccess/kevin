@@ -81,9 +81,9 @@ class ExporterControllerSpec extends IntegrationTests {
 		exporterController = new  ExporterController();
 		
 		when:
-		exporterController.params.('locationids')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+"",Location.findByCode(BURERA).id+""]
-		exporterController.params.('periodids')=[Period.list()[0].id+""]
-		exporterController.params.('dataids')=[dataElementOne.id+"",dataElementTwo.id+""]
+		exporterController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+"",Location.findByCode(BURERA).id+""]
+		exporterController.params.('periodIds')=[Period.list()[0].id+""]
+		exporterController.params.('dataIds')=[dataElementOne.id+"",dataElementTwo.id+""]
 		exporterController.params.('typeCodes')="Health Center,District Hospital";
 		exporterController.save()
 		def exporters = Exporter.list();
@@ -113,9 +113,9 @@ class ExporterControllerSpec extends IntegrationTests {
 		exporterController = new  ExporterController();
 		
 		when:
-		exporterController.params.('locationids')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
-		exporterController.params.('periodids')=[Period.list()[0].id+""]
-		exporterController.params.('dataids')=[dataElementOne.id+"",dataElementTwo.id+"",dataElementTwo.id+""]
+		exporterController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
+		exporterController.params.('periodIds')=[Period.list()[0].id+""]
+		exporterController.params.('dataIds')=[dataElementOne.id+"",dataElementTwo.id+"",dataElementTwo.id+""]
 		exporterController.params.('typeCodes')="Health Center,District Hospital";
 		exporterController.save()
 		def exporters = Exporter.list();
@@ -144,9 +144,9 @@ class ExporterControllerSpec extends IntegrationTests {
 		exporterController = new  ExporterController();
 		
 		when:
-		exporterController.params.('locationids')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
-		exporterController.params.('periodids')=[Period.list()[0].id+"",Period.list()[0].id+""]
-		exporterController.params.('dataids')=[dataElementOne.id+"",dataElementTwo.id+""]
+		exporterController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
+		exporterController.params.('periodIds')=[Period.list()[0].id+"",Period.list()[0].id+""]
+		exporterController.params.('dataIds')=[dataElementOne.id+"",dataElementTwo.id+""]
 		exporterController.params.('typeCodes')="Health Center,District Hospital";
 		exporterController.save()
 		def exporters = Exporter.list();

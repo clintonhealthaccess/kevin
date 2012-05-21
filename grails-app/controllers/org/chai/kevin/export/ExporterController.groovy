@@ -82,7 +82,7 @@ class ExporterController extends AbstractEntityController {
 		
 		// we do this because automatic data binding does not work with polymorphic elements
 		Set<Period> periods = new HashSet();;
-		params.list('periodids').each { id ->
+		params.list('periodIds').each { id ->
 			if (NumberUtils.isDigits(id)) {
 				def period = Period.get(id)
 				if (period != null && !periods.contains(period)) periods.add(period);
@@ -90,23 +90,23 @@ class ExporterController extends AbstractEntityController {
 		}
 		entity.periods = periods
 		
-		Set<Data> dataS = new HashSet();
-		params.list('dataids').each { id ->
+		Set<Data> dataSet = new HashSet();
+		params.list('dataIds').each { id ->
 			if (NumberUtils.isDigits(id)) {
 				def data = dataService.getData(Long.parseLong(id), Data.class)
-				if (data != null && !dataS.contains(data)) dataS.add(data);
+				if (data != null && !dataSet.contains(data)) dataSet.add(data);
 			}
 		}
-		entity.data = dataS
+		entity.data = dataSet
 		
-		Set<CalculationLocation> locations = new HashSet();
-		params.list('locationids').each { id ->
+		Set<CalculationLocation> dataLocations = new HashSet();
+		params.list('locationIds').each { id ->
 			if (NumberUtils.isDigits(id)) {
-				def location = locationService.getCalculationLocation(Long.parseLong(id), CalculationLocation.class)
-				if (location != null && !locations.contains(location)) locations.add(location);
+				def dataLocation = locationService.getCalculationLocation(Long.parseLong(id), CalculationLocation.class)
+				if (dataLocation != null && !dataLocations.contains(dataLocation)) dataLocations.add(dataLocation);
 			}
 		}
-		entity.locations = locations
+		entity.locations = dataLocations
 				
 		// FIXME GRAILS-6967 makes this necessary
 		// http://jira.grails.org/browse/GRAILS-6967
