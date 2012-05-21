@@ -80,7 +80,7 @@ class UtilTagLib {
 	}
 	
 	def stripHtml = { attrs, body ->
-		def text = languageService.getText(attrs['field'])
+		def text = attrs['field']+''
 		if (text != null) out << Utils.stripHtml(text, attrs.int('chars'))
 	}
 }

@@ -31,7 +31,7 @@
 						<tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 							<td>${question.section.program.survey.period.startDate} &harr; ${question.section.program.survey.period.endDate}</td>
 							<td>${i18n(field:question.section.program.survey.names)}</td>
-							<td><g:stripHtml field="${question.names}" chars="100"/></a></td>
+							<td><g:stripHtml field="${i18n(field: question.names)}" chars="100"/></a></td>
 							<td>${surveyElement.value}</td>
 						</tr>
 					</g:each>
