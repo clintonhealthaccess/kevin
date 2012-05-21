@@ -28,7 +28,7 @@
 				</td>
 				<td><g:i18n field="${planningCost.names}"/></td>
 				<td>${planningCost.type}</td>
-				<td>${planningCost.discriminatorValueString}</td>
+				<td><g:stripHtml field="${planningCost.discriminatorValueString}" chars="100"/></td>
 				<td><g:i18n field="${planningCost.dataElement.names}"/>[${planningCost.dataElement.id}]</td>
 				<td>${planningCost.order}</td>
 			</tr>
