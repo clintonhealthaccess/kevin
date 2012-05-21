@@ -1,9 +1,6 @@
 package org.chai.kevin.planning;
 
-import org.chai.kevin.planning.PlanningCost;
 import org.chai.kevin.value.NormalizedDataElementValue;
-import org.chai.kevin.value.SumValue;
-import org.chai.kevin.value.Value;
 
 public class BudgetCost {
 	
@@ -17,6 +14,10 @@ public class BudgetCost {
 		this.value = value;
 	}
 
+	public Boolean isHidden() {
+		return planningCost.getHideIfZero() == null ? false: planningCost.getHideIfZero() && getValue() == 0d;
+	}
+	
 	public Double getValue() {
 		return value.getValue().getListValue().get(planningEntry.getLineNumber()).getNumberValue().doubleValue();
 	}

@@ -34,25 +34,19 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def formElement = newFormElement(dataElement)
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', formElement: formElement).save(failOnError: true)
+		new PlanningType(planning: planning, fixedHeader: '[_].key', formElement: formElement).save(failOnError: true)
 		
 		then:
 		PlanningType.count() == 1
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key').save(failOnError: true)
+		new PlanningType(planning: planning, fixedHeader: '[_].key').save(failOnError: true)
 
 		then:
 		thrown ValidationException
 		
 		when:
-		new PlanningType(planning: planning, formElement: formElement, fixedHeader: '[_].key').save(failOnError: true)
-
-		then:
-		thrown ValidationException
-
-		when:
-		new PlanningType(discriminator: '[_].key', formElement: formElement, fixedHeader: '[_].key').save(failOnError: true)
+		new PlanningType(formElement: formElement, fixedHeader: '[_].key').save(failOnError: true)
 		
 		then:
 		thrown ValidationException
@@ -64,7 +58,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period, [])
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', formElement: 
+		new PlanningType(planning: planning, fixedHeader: '[_].key', formElement: 
 			newFormElement(newRawDataElement(CODE(1), Type.TYPE_NUMBER()))
 		).save(failOnError: true)
 		
@@ -72,7 +66,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		thrown ValidationException
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', formElement: 
+		new PlanningType(planning: planning, fixedHeader: '[_].key', formElement: 
 			newFormElement(newRawDataElement(CODE(2), Type.TYPE_NUMBER()))
 		).save(failOnError: true)
 		
@@ -80,7 +74,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		thrown ValidationException
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', formElement:
+		new PlanningType(planning: planning, fixedHeader: '[_].key', formElement:
 			newFormElement(newRawDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")]))))
 		).save(failOnError: true)
 		
@@ -88,32 +82,6 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		PlanningType.count() == 1
 		
 		
-	}
-	
-	def "discriminator must be a prefix of type"() {
-		setup:
-		def period = newPeriod()
-		def planning = newPlanning(period, [])
-		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))
-		def formElement = newFormElement(dataElement)
-		
-		when:
-		new PlanningType(planning: planning, discriminator: '[_]', formElement: formElement, fixedHeader: '[_].key').save(failOnError: true)
-		
-		then:
-		thrown ValidationException
-		
-		when:
-		new PlanningType(planning: planning, discriminator: '[_].key2', formElement: formElement, fixedHeader: '[_].key').save(failOnError: true)
-		
-		then:
-		thrown ValidationException
-		
-		when:
-		new PlanningType(planning: planning, discriminator: '[_].key', formElement: formElement, fixedHeader: '[_].key').save(failOnError: true)
-		
-		then:
-		PlanningType.count() == 1
 	}
 	
 	def "header prefix must be a value prefix"() {
@@ -124,39 +92,19 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		def formElement = newFormElement(dataElement)
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_]', formElement: formElement).save(failOnError: true)
+		new PlanningType(planning: planning, fixedHeader: '[_]', formElement: formElement).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '', formElement: formElement).save(failOnError: true)
+		new PlanningType(planning: planning, fixedHeader: '', formElement: formElement).save(failOnError: true)
 		
 		then:
 		thrown ValidationException
 		
 		when:
-		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', formElement: formElement).save(failOnError: true)
-		
-		then:
-		PlanningType.count() == 1
-	}
-	
-	def "discriminator must reference an ENUM"() {
-		setup:
-		def period = newPeriod()
-		def planning = newPlanning(period, [])
-		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key1":Type.TYPE_ENUM("code"), "key2":Type.TYPE_NUMBER()])))
-		def formElement = newFormElement(dataElement)
-		
-		when:
-		new PlanningType(planning: planning, discriminator: '[_].key2', formElement: formElement, fixedHeader: '[_].key1').save(failOnError: true)
-		
-		then:
-		thrown ValidationException
-		
-		when:
-		new PlanningType(planning: planning, discriminator: '[_].key1', formElement: formElement, fixedHeader: '[_].key1').save(failOnError: true)
+		new PlanningType(planning: planning, fixedHeader: '[_].key', formElement: formElement).save(failOnError: true)
 		
 		then:
 		PlanningType.count() == 1
@@ -166,29 +114,23 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
-		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", "[_].key", planning)
+		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", planning)
 		def dataElement = newNormalizedDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_NUMBER()), e([:]))
 		
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement, type: PlanningCostType.INCOMING).save(failOnError: true)
+		new PlanningCost(planningType: planningType, dataElement: dataElement, type: PlanningCostType.INCOMING).save(failOnError: true)
 		
 		then:
 		PlanningCost.count() == 1
 		
 		when:
-		new PlanningCost(planningType: planningType, dataElement: dataElement, type: PlanningCostType.INCOMING).save(failOnError: true)
-
-		then:
-		thrown ValidationException
-		
-		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', type: PlanningCostType.INCOMING).save(failOnError: true)
+		new PlanningCost(planningType: planningType, type: PlanningCostType.INCOMING).save(failOnError: true)
 
 		then:
 		thrown ValidationException
 
 		when:
-		new PlanningCost(planningType: planningType, discriminatorValueString: 'value', dataElement: dataElement).save(failOnError: true)
+		new PlanningCost(planningType: planningType, dataElement: dataElement).save(failOnError: true)
 		
 		then:
 		thrown ValidationException

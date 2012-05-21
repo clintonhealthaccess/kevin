@@ -97,10 +97,6 @@ public class PlanningEntry {
 		return validatable.getType().getValue(validatable.getValue(), getPrefix(prefix));
 	}
 	
-	public Value getDiscriminatorValue() {
-		return getValue(type.getDiscriminator());
-	}
-	
 	public Value getFixedHeaderValue() {
 		return getValue(type.getFixedHeader());
 	}
@@ -127,12 +123,6 @@ public class PlanningEntry {
 			if (skip == null || i != skip) result.add("["+i+"]");
 		}
 		return result;
-	}
-	
-	public List<PlanningCost> getPlanningCosts() {
-		Value value = getDiscriminatorValue();
-		if (value != null) return type.getPlanningCosts(getDiscriminatorValue().getStringValue());
-		return new ArrayList<PlanningCost>();
 	}
 	
 	public Map<String, Enum> getEnums() {

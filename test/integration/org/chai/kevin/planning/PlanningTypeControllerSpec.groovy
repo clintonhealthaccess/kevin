@@ -10,7 +10,7 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
-		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", "[_].key", planning)
+		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", planning)
 		planningTypeController = new PlanningTypeController()
 		
 		when:
@@ -43,7 +43,6 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 		when:
 		planningTypeController.params['planning.id'] = planning.id
 		planningTypeController.params['formElement.id'] = formElement.id
-		planningTypeController.params['discriminator'] = '[_].key'
 		planningTypeController.params['fixedHeader'] = '[_].key'
 		planningTypeController.params['namesPlural'] = ['en': 'Activities']
 		planningTypeController.params['namesPlural'] = ['en': 'Activities']	
