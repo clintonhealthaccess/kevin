@@ -406,4 +406,60 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		planningController.modelAndView.model.summaryPage.dataLocations.equals([DataLocation.findByCode(BUTARO)])
 	}
 	
+	def "save when survey invalid stays on same page and does not submit"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
+		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement.id
+		planningController.params.lineNumber = 0
+		planningController.params.suffix = '[0].key1'
+		planningController.params['elements['+formElement.id+'].value[0].key1'] = '123'
+		planningController.save()
+		
+		then:
+		planningController.modelAndView.model.planningType.equals(planningType)
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.getAttribute('submitted') == "false"
+		
+	}
+	
+	def "save when valid submits and goes to target"() {
+		setup:
+		setupLocationTree()
+		setupSecurityManager(newSurveyUser('test', 'uuid', DataLocation.findByCode(BUTARO).id))
+		def period = newPeriod()
+		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
+		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
+		def formElement = newFormElement(dataElement)
+		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		planningController = new EditPlanningController()
+		
+		when:
+		planningController.params.targetURI = '/editPlanning/overview'
+		planningController.params.location = DataLocation.findByCode(BUTARO).id
+		planningController.params.planningType = planningType.id
+		planningController.params.element = formElement.id
+		planningController.params.lineNumber = 0
+		planningController.params.suffix = '[0].key1'
+		planningController.params['elements['+formElement.id+'].value[0].key1'] = '123'
+		planningController.save()
+		
+		then:
+		planningController.modelAndView == null
+		planningController.response.redirectedUrl == '/editPlanning/overview'
+		FormEnteredValue.count() == 1
+		FormEnteredValue.list()[0].value.getAttribute('submitted') == "true"
+	}
+	
 }

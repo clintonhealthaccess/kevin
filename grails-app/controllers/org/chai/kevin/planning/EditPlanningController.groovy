@@ -89,6 +89,30 @@ class EditPlanningController extends AbstractController {
 			redirect (uri: getTargetURI())
 		}
 	}
+	
+	def save = {
+		def planningType = PlanningType.get(params.int('planningType'))
+		def location = DataLocation.get(params.int('location'))
+		def lineNumberParam = params.int('lineNumber')
+		
+		def planningEntry = planningService.modify(planningType, location, lineNumberParam, params)
+		def validatable = planningEntry.validatable
+		
+		if (planningEntry.invalidSections.empty) {
+			planningService.submitIfNeeded(planningType.planning, location)
+			
+			redirect(uri: targetURI)
+		}
+		else {
+			flash.message = message(code: 'planning.new.save.invalid')
+			render (view: '/planning/editPlanningEntry', model: [
+				planningType: planningType,
+				planningEntry: planningEntry,
+				location: location,
+				targetURI: targetURI
+			])
+		}
+	}
 
 	def saveValue = {
 		def planningType = PlanningType.get(params.int('planningType'))

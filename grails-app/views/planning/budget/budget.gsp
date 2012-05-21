@@ -65,7 +65,7 @@
 														</tr>
 														<tr class="sub-tree js_foldable-container hidden">
 															<td colspan="7" class="bucket">
-														    <table>
+														    	<table>
 																	<tbody>
 																		
 																		<!-- 
@@ -74,10 +74,11 @@
 																			either OUTGOING or INCOMING or both
 																		-->
 																		<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
-																			<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable">
-																				<td class="js_foldable-toggle">
-																					<span style="margin-left: 20px;">
-																						<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
+																			<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable budget-entry">
+																				<td>
+																					<span class="js_foldable-toggle" style="margin-left: 20px;"> <a href="#">&zwnj;</a> </span>
+																					<span>
+																						<a class="js_budget-section-link" href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
 																							<g:value value="${budgetPlanningEntry.fixedHeaderValue}" type="${budgetPlanningEntry.type.fixedHeaderType}" nullText="none entered"/>
 																						</a>
 																					</span>
@@ -85,11 +86,7 @@
 																				<td><g:formatNumber number="${budgetPlanningEntry.outgoing}" format="#,###"/></td>
 																				<td><g:formatNumber number="${budgetPlanningEntry.incoming}" format="#,###"/></td>
 																				<td><g:formatNumber number="${budgetPlanningEntry.difference}" format="#,###"/></td>
-																				<td class="status 
-																					${!budgetPlanningEntry.invalidSections.empty?'invalid':''} 
-																					${!budgetPlanningEntry.incompleteSections.empty?'incomplete':''}
-																					${(!budgetPlanningEntry.incompleteSections.empty || !budgetPlanningEntry.incompleteSections.empty)?'tooltip-TODO':''}
-																					" title=""></td>
+																				<td class="status ${!budgetPlanningEntry.invalidSections.empty?'invalid':!budgetPlanningEntry.incompleteSections.empty?'incomplete':'complete'}" title=""></td>
 																			</tr>
 																			<tr class="sub-tree js_foldable-container hidden">
 																				<td colspan="7" class="bucket">
