@@ -154,7 +154,10 @@ class EditPlanningController extends AbstractController {
 				planning: planning,
 				location: location,
 				budgetNeedsUpdate: false,
-				planningLists: planningLists
+				planningLists: planningLists,
+				incoming: planningLists.sum {it.incoming},
+				outgoing: planningLists.sum {it.outgoing},
+				difference: planningLists.sum {it.difference}
 			])
 		}
 	}

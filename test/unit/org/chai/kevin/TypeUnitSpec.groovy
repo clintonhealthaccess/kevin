@@ -123,6 +123,13 @@ public class TypeUnitSpec extends UnitSpec {
 		value.getNumberValue() == 10
 		value.getStringValue() == "10"
 		
+		when:
+		value = new Value("{\"value\": 1.0E9}")
+		
+		then:
+		value.getNumberValue() == 1000000000
+		value.getStringValue() == "1.0E9"
+		
 		when: "value with attribute"
 		value = new Value("{\"value\":10, \"skipped\":\"33\"}")
 
@@ -444,6 +451,13 @@ public class TypeUnitSpec extends UnitSpec {
 		
 		then:
 		type.getValueFromJaql(jaql).equals(new Value("{\"value\": \"a\"}"))
+		
+		when:
+		type = Type.TYPE_NUMBER()
+		jaql = "1000000000"
+		
+		then:
+		type.getValueFromJaql(jaql).equals(new Value("{\"value\": 1.0E9}"))
 	}
 	
 	def "test null values"() {
