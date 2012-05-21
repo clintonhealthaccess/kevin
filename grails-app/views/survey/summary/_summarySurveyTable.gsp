@@ -8,7 +8,8 @@
 			<g:sortableColumn property="${SurveySummaryPage.LOCATION_SORT}" title="${message(code: 'location.label')}" params="${params}" defaultOrder="asc"/>
 			<th><g:message code="survey.summary.programsubmitted.label" /></th>
 			<g:sortableColumn property="${SurveySummaryPage.PROGRESS_SORT}" title="${message(code: 'survey.summary.progress')}" params="${params}" defaultOrder="desc"/>
-			<th></th>
+			<th>				
+			</th>
 		</thead>
 		<tbody>
 			<g:each in="${summaryPage.locations}" var="location">
@@ -48,6 +49,15 @@
 									</a>
 								</li>
 							</shiro:hasPermission>
+							<shiro:hasPermission permission="editSurvey:submitAll">
+								<g:if test="${programSummary.submittedPrograms < programSummary.programs}">
+										<li>
+											<a href="${createLink(controller: 'surveySummary', action: 'submitAll', params: [survey: currentSurvey.id, location: currentLocation.id, submitLocation: location.id])}">
+												<g:message code="survey.summary.submitsurvey.label" />
+											</a>
+										</li>														
+								</g:if>
+							</shiro:hasPermission>
 						</ul>
 					</td>
 				</tr>			
@@ -57,6 +67,19 @@
 					</td>
 				</tr>
 			</g:each>
+			<shiro:hasPermission permission="editSurvey:submitAll">
+				<g:if test="${!skipLevels.contains(currentLocation.level)}">
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td><a
+							href="${createLink(controller: 'surveySummary', action: 'submitAll', params: params << [survey: currentSurvey.id, submitLocation: currentLocation.id])}">
+								<g:message code="survey.summary.submitall.label" />
+						</a></td>
+					</tr>
+				</g:if>
+			</shiro:hasPermission>			
 		</tbody>
 	</table>
 </div>

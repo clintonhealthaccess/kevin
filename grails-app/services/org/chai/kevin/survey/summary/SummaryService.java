@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.chai.kevin.LocationService;
 import org.chai.kevin.location.DataLocation;
@@ -54,8 +55,8 @@ public class SummaryService {
 	}	
 	
 	@Transactional(readOnly = true)
-	public SurveySummaryPage getSurveySummaryPage(Location location, Survey survey) {
-		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
+	public SurveySummaryPage getSurveySummaryPage(Location location, Set<DataLocationType> types, Survey survey) {
+		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
 		
 		Map<DataLocationType, List<SurveyProgram>> programMap = new HashMap<DataLocationType, List<SurveyProgram>>();
 		Map<DataLocationType, List<SurveyQuestion>> questionMap = new HashMap<DataLocationType, List<SurveyQuestion>>();
@@ -93,8 +94,8 @@ public class SummaryService {
 	}
 	
 	@Transactional(readOnly = true)
-	public SurveySummaryPage getProgramSummaryPage(Location location, SurveyProgram program) {
-		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
+	public SurveySummaryPage getProgramSummaryPage(Location location, Set<DataLocationType> types, SurveyProgram program) {
+		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
 
 		Map<DataLocation, SurveyEnteredProgram> enteredProgramMap = new HashMap<DataLocation, SurveyEnteredProgram>();
 		Map<DataLocation, QuestionSummary> questionSummaryMap = new HashMap<DataLocation, QuestionSummary>();
@@ -118,8 +119,8 @@ public class SummaryService {
 	}
 	
 	@Transactional(readOnly = true)
-	public SurveySummaryPage getSectionSummaryPage(Location location, SurveySection section) {
-		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
+	public SurveySummaryPage getSectionSummaryPage(Location location, Set<DataLocationType> types, SurveySection section) {
+		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
 
 		Map<DataLocation, QuestionSummary> questionSummaryMap = new HashMap<DataLocation, QuestionSummary>();
 		

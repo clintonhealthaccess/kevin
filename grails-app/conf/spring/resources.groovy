@@ -68,6 +68,7 @@ Set<String> dsrSkipLevels = config.dsr.skip.levels
 Set<String> fctSkipLevels = config.fct.skip.levels
 Set<String> costSkipLevels = config.cost.skip.levels
 Set<String> surveyExportSkipLevels = config.survey.export.skip.levels
+Set<String> surveySubmitSkipLevels = config.survey.submit.skip.levels
 String dsrGroupLevel= config.dsr.group.level
 
 beans = {
@@ -117,9 +118,11 @@ beans = {
 		formElementService = ref("formElementService")
 		valueService = ref("valueService")
 		dataService = ref("dataService")
+		locationService = ref("locationService")
 		formValidationService = ref("formValidationService")
 		sessionFactory = ref("sessionFactory")
 		grailsApplication = ref("grailsApplication")
+		skipLevels = surveySubmitSkipLevels
 	}
 	
 	summaryService(SummaryService){

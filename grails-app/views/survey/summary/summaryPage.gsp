@@ -11,7 +11,8 @@
 		<div>
 			<div class="subnav">
 				<g:render template="/survey/summary/surveyFilter"/>
-				<g:locationFilter linkParams="${[survey: currentSurvey?.id, program: currentProgram?.id, section: currentSection?.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc']}" selected="${currentLocation}"/>
+				<g:locationFilter linkParams="${[survey: currentSurvey?.id, program: currentProgram?.id, section: currentSection?.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc']}" selected="${currentLocation}" selectedTypes="${currentLocationTypes}"/>
+				<g:dataLocationTypeFilter linkParams="${params}" selected="${currentLocationTypes}"/>
 			</div>
 						
 			<div class="main">			
@@ -25,20 +26,9 @@
 						</div>
 						<div>
 							<g:message code="survey.summary.progress"/>: <span class="js_progress-bar">${summaryPage.summary.completedQuestions}/${summaryPage.summary.questions}</span>
-						</div>
-						<g:if test="${currentLocation != null && currentSurvey != null && currentProgram == null && currentSection == null}">
-							<div>
-								<g:form url="${createLink(action: 'submitAll', params: [location: currentLocation.id, survey: currentSurvey.id])}">
-									<button type="submit">
-										Submit All <g:i18n field="${currentSurvey.names}" />
-										<br />
-										Surveys for <g:i18n field="${currentLocation.names}" />
-									</button>
-								</g:form>
-							</div>
-						</g:if>			
+						</div>									
 					</div>
-					<g:render template="${template}"/>					
+					<g:render template="${template}"/>				
 				</g:else>
 			</div>
 		</div>

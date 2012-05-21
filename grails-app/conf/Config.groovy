@@ -235,6 +235,7 @@ fct.skip.levels=[]
 cost.skip.levels=[]
 
 survey.export.skip.levels=["National", "Sector"]
+survey.submit.skip.levels=["National", "Province"]
 
 info.group.level="District"
 dsr.group.level="District"

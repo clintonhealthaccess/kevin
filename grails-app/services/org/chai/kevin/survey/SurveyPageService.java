@@ -57,6 +57,8 @@ import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.SurveyElement.SurveyElementSubmitter;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
@@ -85,9 +87,11 @@ public class SurveyPageService {
 	private SurveyValueService surveyValueService;
 	private ValueService valueService;
 	private DataService dataService;
+	private LocationService locationService;
 	private FormValidationService formValidationService;
 	private SessionFactory sessionFactory;
 	private GrailsApplication grailsApplication;
+	private Set<String> skipLevels;
 	
 	@Transactional(readOnly = true)
 	public Survey getDefaultSurvey() {
@@ -578,7 +582,7 @@ public class SurveyPageService {
 	}
 
 	@Transactional(readOnly = false)
-	public boolean submitAll(Location location, Survey survey) {				
+	public boolean submitAll(CalculationLocation location, Set<DataLocationType> types, Survey survey) {				
 		
 		if (log.isDebugEnabled()) log.debug("submitAll(" + location + ", " + survey + ")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
@@ -586,11 +590,11 @@ public class SurveyPageService {
 		if(location == null || survey == null) 
 			return false;
 		
-		List<DataLocation> dataLocations = location.collectDataLocations(null, null);		
+		List<DataLocation> dataLocations = location.collectDataLocations(null, types);		
 		for (DataLocation dataLocation : dataLocations) {
 			// TODO make this run in a transaction
 			submitIfNotClosed(survey, dataLocation);
-		}	
+		}
 		return true;
 	}
 
@@ -626,12 +630,12 @@ public class SurveyPageService {
 		}
 	}
 	
-	private void logSurveyEvent(DataLocation dataLocation, SurveyProgram program, String event) {
-		SurveyLog surveyLog = new SurveyLog(program.getSurvey(), program, dataLocation);
-		surveyLog.setEvent(event);
-		surveyLog.setTimestamp(new Date());
-		sessionFactory.getCurrentSession().save(surveyLog);
-	}
+//	private void logSurveyEvent(DataLocation dataLocation, SurveyProgram program, String event) {
+//		SurveyLog surveyLog = new SurveyLog(program.getSurvey(), program, dataLocation);
+//		surveyLog.setEvent(event);
+//		surveyLog.setTimestamp(new Date());
+//		sessionFactory.getCurrentSession().save(surveyLog);
+//	}
 	
 	public void reopen(DataLocation dataLocation, SurveyProgram program) {
 		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program); 
@@ -659,8 +663,6 @@ public class SurveyPageService {
 		return enteredSection;
 	}
 	
-	
-
 	private void deleteSurveyEnteredProgram(SurveyProgram program, DataLocation dataLocation) {
 		SurveyEnteredProgram enteredProgram = surveyValueService.getSurveyEnteredProgram(program, dataLocation);
 		if (enteredProgram != null) surveyValueService.delete(enteredProgram); 
@@ -717,8 +719,24 @@ public class SurveyPageService {
 		this.dataService = dataService;
 	}
 	
+	public void setLocationService(LocationService locationService) {
+		this.locationService = locationService;
+	}
+	
 	public void setGrailsApplication(GrailsApplication grailsApplication) {
 		this.grailsApplication = grailsApplication;
+	}
+	
+	public void setSkipLevels(Set<String> skipLevels) {
+		this.skipLevels = skipLevels;
+	}
+	
+	public Set<LocationLevel> getSkipLocationLevels() {
+		Set<LocationLevel> levels = new HashSet<LocationLevel>();
+		for (String skipLevel : this.skipLevels) {
+			levels.add(locationService.findLocationLevelByCode(skipLevel));
+		}
+		return levels;
 	}
 	
 	// for internal call through transactional proxy
