@@ -119,6 +119,10 @@ abstract class SurveyIntegrationTests extends IntegrationTests {
 		return question
 	}
 	
+	def static newCheckboxOption(def question, def order, def types) {
+		return newCheckboxOption(question, order, types, null)
+	}
+	
 	def static newCheckboxOption(def question, def order, def types, def element) {
 		def option = new SurveyCheckboxOption(question: question, order: order, typeCodeString: Utils.unsplit(types), surveyElement: element).save(failOnError: true)
 		question.addOption(option)

@@ -106,7 +106,7 @@ public class SurveyCheckboxQuestion extends SurveyQuestion {
 	@Override
 	public void removeSurveyElement(SurveyElement surveyElement) {
 		for (SurveyCheckboxOption option : getOptions()) {
-			if (option.getSurveyElement().equals(surveyElement)) option.setSurveyElement(null);
+			if (option.getSurveyElement() != null && option.getSurveyElement().equals(surveyElement)) option.setSurveyElement(null);
 		}
 	}
 
