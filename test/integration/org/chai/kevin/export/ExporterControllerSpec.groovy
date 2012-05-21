@@ -28,7 +28,10 @@
 package org.chai.kevin.export
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.Period;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.Location;
 
 /**
  * @author Jean Kahigiso M.
@@ -60,6 +63,99 @@ class ExporterControllerSpec extends IntegrationTests {
 		then:
 		exporterController.response.getContentType() == "application/zip"
 		
+	}
+	
+	def "bind params with duplicate location"(){
+		setup:
+		setupLocationTree();
+		def periods=new HashSet([newPeriod()]);
+		def locationType="Health Center,District Hospital";
+		def typeOne = Type.TYPE_NUMBER();
+		def typeTwo = Type.TYPE_BOOL();
+		def dataElementOne = newRawDataElement(CODE(1), typeOne);
+		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
+		def locations=new HashSet();
+		locations.addAll(getLocations([BURERA]));
+		locations.addAll(getDataLocations([KIVUYE]));
+		def data=new HashSet([dataElementOne,dataElementTwo]);
+		exporterController = new  ExporterController();
+		
+		when:
+		exporterController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+"",Location.findByCode(BURERA).id+""]
+		exporterController.params.('periodIds')=[Period.list()[0].id+""]
+		exporterController.params.('dataIds')=[dataElementOne.id+"",dataElementTwo.id+""]
+		exporterController.params.('typeCodes')="Health Center,District Hospital";
+		exporterController.save()
+		def exporters = Exporter.list();
+		then:
+		exporters.size()==1;
+		exporters[0].periods==periods;
+		exporters[0].typeCodeString.equals('Health Center,District Hospital');
+		exporters[0].locations==locations;
+		exporters[0].data==data;
+		
+	}
+	
+	
+	def "bind params with duplicate data"(){
+		setup:
+		setupLocationTree();
+		def periods=new HashSet([newPeriod()]);
+		def locationType="Health Center,District Hospital";
+		def typeOne = Type.TYPE_NUMBER();
+		def typeTwo = Type.TYPE_BOOL();
+		def dataElementOne = newRawDataElement(CODE(1), typeOne);
+		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
+		def locations=new HashSet();
+		locations.addAll(getLocations([BURERA]));
+		locations.addAll(getDataLocations([KIVUYE]));
+		def data=new HashSet([dataElementOne,dataElementTwo]);
+		exporterController = new  ExporterController();
+		
+		when:
+		exporterController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
+		exporterController.params.('periodIds')=[Period.list()[0].id+""]
+		exporterController.params.('dataIds')=[dataElementOne.id+"",dataElementTwo.id+"",dataElementTwo.id+""]
+		exporterController.params.('typeCodes')="Health Center,District Hospital";
+		exporterController.save()
+		def exporters = Exporter.list();
+		then:
+		exporters.size()==1;
+		exporters[0].periods==periods;
+		exporters[0].typeCodeString.equals('Health Center,District Hospital');
+		exporters[0].locations==locations;
+		exporters[0].data==data;
+		
+	}
+	
+	def "bind params with duplicate period"(){
+		setup:
+		setupLocationTree();
+		def periods=new HashSet([newPeriod()]);
+		def locationType="Health Center,District Hospital";
+		def typeOne = Type.TYPE_NUMBER();
+		def typeTwo = Type.TYPE_BOOL();
+		def dataElementOne = newRawDataElement(CODE(1), typeOne);
+		def dataElementTwo = newRawDataElement(CODE(2), typeTwo);
+		def locations=new HashSet();
+		locations.addAll(getLocations([BURERA]));
+		locations.addAll(getDataLocations([KIVUYE]));
+		def data=new HashSet([dataElementOne,dataElementTwo]);
+		exporterController = new  ExporterController();
+		
+		when:
+		exporterController.params.('locationIds')=[Location.findByCode(BURERA).id+"",DataLocation.findByCode(KIVUYE).id+""]
+		exporterController.params.('periodIds')=[Period.list()[0].id+"",Period.list()[0].id+""]
+		exporterController.params.('dataIds')=[dataElementOne.id+"",dataElementTwo.id+""]
+		exporterController.params.('typeCodes')="Health Center,District Hospital";
+		exporterController.save()
+		def exporters = Exporter.list();
+		then:
+		exporters.size()==1;
+		exporters[0].periods==periods;
+		exporters[0].typeCodeString.equals('Health Center,District Hospital');
+		exporters[0].locations==locations;
+		exporters[0].data==data;
 	}
 
 }
