@@ -9,7 +9,7 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 	def "planning type list"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		def planningType = newPlanningType(newFormElement(newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))), "[_].key", "[_].key", planning)
 		planningTypeController = new PlanningTypeController()
 		
@@ -35,7 +35,7 @@ class PlanningTypeControllerSpec extends PlanningIntegrationTests {
 	def "create planning type works ok"() {
 		setup:
 		def period = newPeriod()
-		def planning = newPlanning(period)
+		def planning = newPlanning(period, [])
 		def dataElement = newRawDataElement(CODE(1), Type.TYPE_LIST(Type.TYPE_MAP(["key":Type.TYPE_ENUM("code")])))
 		def formElement = newFormElement(dataElement)
 		planningTypeController = new PlanningTypeController()
