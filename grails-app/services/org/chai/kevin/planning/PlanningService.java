@@ -2,10 +2,13 @@ package org.chai.kevin.planning;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
@@ -18,6 +21,7 @@ import org.chai.kevin.form.FormEnteredValue;
 import org.chai.kevin.form.FormValidationService;
 import org.chai.kevin.form.FormValidationService.ValidatableLocator;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.RawDataElementValue;
@@ -33,6 +37,7 @@ public class PlanningService {
 
 	static final String SUBMITTED = "submitted";
 
+	private LocationService locationService;
 	private FormValidationService formValidationService;
 	private FormElementService formElementService;
 	private ValueService valueService;
@@ -45,9 +50,17 @@ public class PlanningService {
 				.createCriteria(Planning.class).add(Restrictions.eq("active", true)).uniqueResult();
 	}
 	
+	private Set<DataLocationType> getDataLocationTypes(Planning planning) {
+		Set<DataLocationType> result = new HashSet<DataLocationType>();
+		for (String code : planning.getTypeCodes()) {
+			result.add(locationService.findDataLocationTypeByCode(code));
+		}
+		return result;
+	}
+	
 	@Transactional(readOnly=true)
 	public PlanningSummaryPage getSummaryPage(Planning planning, Location location) {
-		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
+		List<DataLocation> dataLocations = location.collectDataLocations(null, getDataLocationTypes(planning));
 		Map<PlanningType, PlanningTypeSummary> summaries = new HashMap<PlanningType, PlanningTypeSummary>();
 		for (PlanningType planningType : planning.getPlanningTypes()) {
 			summaries.put(planningType, getPlanningTypeSummary(planningType, dataLocations));
@@ -215,6 +228,10 @@ public class PlanningService {
 	
 	public void setFormElementService(FormElementService formElementService) {
 		this.formElementService = formElementService;
+	}
+	
+	public void setLocationService(LocationService locationService) {
+		this.locationService = locationService;
 	}
 	
 }

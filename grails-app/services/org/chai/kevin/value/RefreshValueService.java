@@ -82,12 +82,17 @@ public class RefreshValueService {
 			for (DataElement dependency : dependencies) {
 				if (!uptodateElements.contains(dependency)) {
 					Date dependencyDate = refreshDataElement(dependency, uptodateElements);
-					if (latestDependency == null || dependencyDate.after(latestDependency)) latestDependency = dependencyDate;
+					if (latestDependency == null || (dependencyDate != null && dependencyDate.after(latestDependency))) latestDependency = dependencyDate;
 				}
 			}
 			
 			// we refresh if the data element was changed after the last refresh
 			if (normalizedDataElement.getRefreshed() == null || normalizedDataElement.getTimestamp().after(normalizedDataElement.getRefreshed())) {
+				refreshNormalizedDataElementOnly(normalizedDataElement);
+			}
+			
+			// we refresh if a value was saved after the last refresh
+			else if (normalizedDataElement.getRefreshed() == null || normalizedDataElement.getLastValueChanged().after(normalizedDataElement.getRefreshed())) {
 				refreshNormalizedDataElementOnly(normalizedDataElement);
 			}
 			
@@ -125,7 +130,7 @@ public class RefreshValueService {
 			for (DataElement dependency : dependencies) {
 				if (!uptodateElements.contains(dependency)) {
 					Date dependencyDate = refreshDataElement(dependency, dataLocation, period, uptodateElements);
-					if (latestDependency == null || dependencyDate.after(latestDependency)) latestDependency = dependencyDate;
+					if (latestDependency == null || (dependencyDate != null && dependencyDate.after(latestDependency))) latestDependency = dependencyDate;
 				}
 			}
 			
@@ -210,11 +215,16 @@ public class RefreshValueService {
 		Date latestDependency = null;
 		for (NormalizedDataElement dependency : dependenciesMap.values()) {
 			Date dependencyDate = refreshDataElement(dependency, new ArrayList<NormalizedDataElement>());
-			if (latestDependency == null || dependencyDate.after(latestDependency)) latestDependency = dependencyDate;
+			if (latestDependency == null || (dependencyDate != null && dependencyDate.after(latestDependency))) latestDependency = dependencyDate;
 		}
 		
 		// we refresh if the data element was changed after the last refresh
 		if (calculation.getRefreshed() == null || calculation.getTimestamp().after(calculation.getRefreshed())) {
+			refreshCalculationOnly(calculation);
+		}
+		
+		// we refresh if a value was saved after the last refresh
+		else if (calculation.getRefreshed() == null || calculation.getLastValueChanged().after(calculation.getRefreshed())) {
 			refreshCalculationOnly(calculation);
 		}
 		

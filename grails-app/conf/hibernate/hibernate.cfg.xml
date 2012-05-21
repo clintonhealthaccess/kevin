@@ -68,6 +68,8 @@
 		<mapping class="org.chai.kevin.location.DataLocationType" />
 		<mapping class="org.chai.kevin.location.Location" />
 		<mapping class="org.chai.kevin.location.LocationLevel" />
+		
+		<mapping class="org.chai.kevin.export.Exporter" />
 	</session-factory>
 
 </hibernate-configuration>

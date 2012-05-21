@@ -24,17 +24,17 @@ class EditPlanningController extends AbstractController {
 		def user = getUser()
 
 		if (user.hasProperty('dataLocation') && user.dataLocation != null) {
-			Planning dataEntry = Planning.get(params.int('planning'))
+			Planning planning = Planning.get(params.int('planning'))
 
-			if (dataEntry == null) {
-				dataEntry = planningService.getDefaultPlanning()
+			if (planning == null) {
+				planning = planningService.getDefaultPlanning()
 			}
-			if (dataEntry == null) {
+			if (planning == null) {
 				log.info("no planning found - redirecting to 404")
 				response.sendError(404)
 			}
 			else {
-				redirect (action: 'overview', params: [planning: dataEntry?.id, location: user.dataLocation.id])
+				redirect (action: 'overview', params: [planning: planning?.id, location: user.dataLocation.id])
 			}
 		}
 		else {
@@ -57,31 +57,37 @@ class EditPlanningController extends AbstractController {
 			plannings: Planning.list(),
 			currentPlanning: planning,
 			currentLocation: location
-		])	
+		])
 	}
 	
 	def editPlanningEntry = {	
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocation.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
-		def planningEntry = planningService.getOrCreatePlanningEntry(planningType, location, lineNumber)
 		
-		render (view: '/planning/editPlanningEntry', model: [
-			planningType: planningType, 
-			planningEntry: planningEntry,
-			location: location,
-			targetURI: targetURI
-		])
+		if (validate(planningType.planning, location)) {
+			def lineNumber = params.int('lineNumber')
+			def planningEntry = planningService.getOrCreatePlanningEntry(planningType, location, lineNumber)
+			
+			render (view: '/planning/editPlanningEntry', model: [
+				planningType: planningType, 
+				planningEntry: planningEntry,
+				location: location,
+				targetURI: targetURI
+			])
+		}
 	}
 	
 	def deletePlanningEntry = {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocation.get(params.int('location'))
-		def lineNumber = params.int('lineNumber')
 		
-		planningService.deletePlanningEntry(planningType, location, lineNumber)
-		
-		redirect (uri: getTargetURI())
+		if (validate(planningType.planning, location)) {
+			def lineNumber = params.int('lineNumber')
+			
+			planningService.deletePlanningEntry(planningType, location, lineNumber)
+			
+			redirect (uri: getTargetURI())
+		}
 	}
 
 	def saveValue = {
@@ -135,52 +141,69 @@ class EditPlanningController extends AbstractController {
 	def budget = {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocation.get(params.int('location'))
-		
-		planningService.submitIfNeeded(planning, location)
-		planningService.refreshBudgetIfNeeded(planning, location)
-		
-		def planningLists = planning.planningTypes.collect {
-			planningService.getPlanningList(it, location)
-		}
 
-		render (view: '/planning/budget/budget', model: [
-			planning: planning,
-			location: location,
-			budgetNeedsUpdate: false,
-			planningLists: planningLists
-		])
+		if (validate(planning, location)) {
+			planningService.submitIfNeeded(planning, location)
+			planningService.refreshBudgetIfNeeded(planning, location)
+			
+			def planningLists = planning.planningTypes.collect {
+				planningService.getPlanningList(it, location)
+			}
+	
+			render (view: '/planning/budget/budget', model: [
+				planning: planning,
+				location: location,
+				budgetNeedsUpdate: false,
+				planningLists: planningLists,
+				incoming: planningLists.sum {it.incoming},
+				outgoing: planningLists.sum {it.outgoing},
+				difference: planningLists.sum {it.difference}
+			])
+		}
 	}
 	
 	def planningList = {
 		def planningType = PlanningType.get(params.int('planningType'))
 		def location = DataLocation.get(params.int('location'))
-		def sectionNumber = params.int('section')
-		if (sectionNumber == null) sectionNumber = 0
 		
-		def planningList = planningService.getPlanningList(planningType, location)
+		if (validate(planningType.planning, location)) {
+			def sectionNumber = params.int('section')
+			if (sectionNumber == null) sectionNumber = 0
+			
+			def planningList = planningService.getPlanningList(planningType, location)
 		
-		
-		render (view: '/planning/planningList', model: [
-			location: location,
-			planning: planningList.planningType.planning,
-			planningType: planningList.planningType,
-			planningList: planningList,
-			section: planningType.sections[sectionNumber]
-		])
+			render (view: '/planning/planningList', model: [
+				location: location,
+				planning: planningList.planningType.planning,
+				planningType: planningList.planningType,
+				planningList: planningList,
+				section: planningType.sections[sectionNumber]
+			])
+		}
 	}
 	
 	def overview = {
 		def planning = Planning.get(params.int('planning'))
 		def location = DataLocation.get(params.int('location'))
-		
-		def planningLists = planning.planningTypes.collect {
-			planningService.getPlanningList(it, location)
+
+		if (validate(planning, location)) {		
+			def planningLists = planning.planningTypes.collect {
+				planningService.getPlanningList(it, location)
+			}
+			
+			render (view: '/planning/overview', model: [
+				location: location,
+				planning: planning,
+				planningLists: planningLists
+			])
 		}
-		
-		render (view: '/planning/overview', model: [
-			location: location,
-			planning: planning,
-			planningLists: planningLists
-		])
+	}
+	
+	def validate(def planning, def location) {
+		if (location == null || planning == null || !planning.typeCodes.contains(location.type.code)) {
+			response.sendError(404)
+			return false
+		}
+		return true
 	}
 }

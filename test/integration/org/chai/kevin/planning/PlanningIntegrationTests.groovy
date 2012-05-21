@@ -1,6 +1,7 @@
 package org.chai.kevin.planning
 
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.util.Utils;
 import org.hibernate.loader.custom.Return;
 
 abstract class PlanningIntegrationTests extends IntegrationTests {
@@ -9,8 +10,12 @@ abstract class PlanningIntegrationTests extends IntegrationTests {
 		return newPlanning(period, false)
 	}
 	
-	static def newPlanning(def period, def active) {
-		return new Planning(period: period, active: active).save(failOnError: true)
+	static def newPlanning(def period, def types) {
+		return newPlanning(period, types, false)
+	}
+	
+	static def newPlanning(def period, def types, def active) {
+		return new Planning(period: period, typeCodeString: Utils.unsplit(types), active: active).save(failOnError: true)
 	}
 	
 	static def newPlanningType(def formElement, def discriminator, def fixedHeader, def planning) {

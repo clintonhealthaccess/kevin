@@ -334,42 +334,8 @@ public class SurveyExportService {
 		if(dataValue == null || dataValue.isNull()) {
 			surveyExportDataPoint.add(formatExportDataItem(null));
 		}
-		
 		if(dataValue != null && !dataValue.isNull()){
-			String value = null;	
-			
-			switch (dataType.getType()) {
-			case NUMBER:
-				value = dataValue.getNumberValue().toString();
-				break;
-			case BOOL:
-				value = dataValue.getBooleanValue().toString();
-				break;
-			case STRING:
-				value = dataValue.getStringValue();
-				break;
-			case TEXT:
-				value = dataValue.getStringValue();
-				break;
-			case DATE:
-				if(dataValue.getDateValue() != null){
-					//TODO this should never be null!
-					value = dataValue.getDateValue().toString();	
-				}
-				break;
-			case ENUM:
-				value = dataValue.getEnumValue();
-				String enumCode = dataType.getEnumCode();
-				Enum enume = enumService.getEnumByCode(enumCode);
-				if(enume != null){
-					EnumOption enumOption = enume.getOptionForValue(value);
-					if (enumOption != null) value = languageService.getText(enumOption.getNames());
-				}
-				break;
-			default:
-				break;
-			}			
-			surveyExportDataPoint.add(formatExportDataItem(value));
+			surveyExportDataPoint.add(formatExportDataItem(Utils.getValueString(dataType,dataValue)));
 		}
 	}
 	

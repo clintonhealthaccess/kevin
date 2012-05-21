@@ -106,6 +106,7 @@ class BootStrap {
 			Initializer.createMaps();
 			Initializer.createQuestionaire();
 			Initializer.createPlanning();
+			Initializer.createExporter();
 			
 			break;
 		}

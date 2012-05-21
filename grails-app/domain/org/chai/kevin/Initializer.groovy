@@ -68,6 +68,7 @@ import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
 import org.chai.kevin.dsr.DsrTarget;
 import org.chai.kevin.dsr.DsrTargetCategory;
+import org.chai.kevin.export.Exporter;
 import org.chai.kevin.fct.FctTarget
 import org.chai.kevin.fct.FctTargetOption
 import org.chai.kevin.form.FormElement;
@@ -1127,6 +1128,7 @@ class Initializer {
 		def planning = new Planning(
 			period: Period.list([cache: true])[0],
 			names: j(["en":"Planning 2011"]),
+			typeCodeString: "Health Center",
 			active: true
 		).save(failOnError: true)
 		
@@ -1268,6 +1270,69 @@ class Initializer {
 			timestamp: new Date()
 		).save(failOnError: true)
 	}
+	
+	
+	static def createExporter(){
+		if(!Exporter.count()){
+			def dh = DataLocationType.findByCode("District Hospital")
+			def hc = DataLocationType.findByCode("Health Center")
+			def periodOne = Period.list()[0];
+			def periodTwo = Period.list()[1];
+			def dEtwo = RawDataElement.findByCode("CODE2");
+			def dEthree = RawDataElement.findByCode("CODE3");
+			def dEfour = RawDataElement.findByCode("CODE4");
+			def dEfive = RawDataElement.findByCode("CODE11");
+			def dEsix = RawDataElement.findByCode("CODE12");
+			def dMap = RawDataElement.findByCode("LISTMAP1");
+			def dataLocationOne = DataLocation.findByCode("Kivuye HC");
+			def dataLocationTwo = DataLocation.findByCode("Butaro DH");
+			def burera = Location.findByCode("Burera");
+			def est = Location.findByCode("East");
+			def south = Location.findByCode("South");
+			
+			
+			def exporterThree = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element Three"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,dataLocationTwo],
+				data:[dMap,dEtwo,dEthree,dEfive,dEsix],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+			
+			def exporterTwo = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element Two"]),
+				date: new Date(),
+				typeCodeString:"Health Center",
+				locations:[south,burera],
+				data:[dEtwo,dEthree,dMap],
+				periods: [periodOne]
+				).save(failOnError: true)
+				
+			def exporterOne = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element One"]),
+				date: new Date(),
+				locations:[est,burera,south],
+				typeCodeString:"District Hospital,Health Center",
+				data:[dMap,dEtwo,dEthree,dEfour,dEfive,dEsix],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+				
+			def exporterFour = new Exporter(
+				descriptions: j(["en":"Exporter Raw Data Element Four"]),
+				date: new Date(),
+				typeCodeString:"District Hospital",
+				locations:[est,dataLocationOne],
+				data:[dMap,dEtwo,dEfour,dEfive,dEsix],
+				periods: [periodOne,periodTwo]
+				).save(failOnError: true)
+			
+			
+				
+		}
+	}
+	
+	
 	
 	static def createQuestionaire(){
 		if(!Survey.count()){

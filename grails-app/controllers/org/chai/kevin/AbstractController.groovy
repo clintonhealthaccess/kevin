@@ -99,6 +99,18 @@ public abstract class AbstractController {
 		return types
 	}
 	
+	public Set<Period> getPeriods() {
+		Set<Period> periods =null
+		if (params.list('currentPeriods') != null && !params.list('currentPeriods').empty) {
+			def selectedPeriods = params.list('currentPeriods')
+			periods = new HashSet<Period>(selectedPeriods.collect{ Periods.get(it) })
+		}
+		else {
+			periods = new HashSet<Period>().add(Period.list()[Period.list().size()-1]);
+		}
+		return periods
+		
+	}
 	def getLevel(){
 		LocationLevel level = null
 		level = LocationLevel.get(params.int('level'));

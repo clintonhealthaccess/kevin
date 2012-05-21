@@ -2,6 +2,7 @@ package org.chai.kevin.data;
 
 import org.chai.kevin.IntegrationTests;
 import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.value.NormalizedDataElementValue;
 import org.chai.kevin.value.Status;
 import org.chai.kevin.value.Value;
 
@@ -97,4 +98,34 @@ class DataControllerSpec extends IntegrationTests {
 		dataController.modelAndView.model.entities.equals([(period1):[dataElementValue]])
 	}
 	
+	def "delete values"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		newNormalizedDataElementValue(dataElement, DataLocation.findByCode(BUTARO), period1, Status.VALID, v("1"))
+		dataController = new DataController()
+		
+		when:
+		dataController.params.data = dataElement.id
+		dataController.deleteValues()
+		
+		then:
+		NormalizedDataElementValue.count() == 0
+	}
+	
+	def "calculate values"() {
+		setup:
+		setupLocationTree()
+		def period1 = newPeriod()
+		def dataElement = newNormalizedDataElement(CODE(1), Type.TYPE_NUMBER(), e([:]))
+		dataController = new DataController()
+		
+		when:
+		dataController.params.data = dataElement.id
+		dataController.calculateValues()
+		
+		then:
+		NormalizedDataElementValue.count() == 2
+	}
 }

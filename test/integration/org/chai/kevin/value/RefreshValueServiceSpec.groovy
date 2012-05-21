@@ -34,6 +34,7 @@ import org.chai.kevin.data.Average;
 import org.chai.kevin.data.Calculation;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.NormalizedDataElement;
+import org.chai.kevin.data.Sum;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
@@ -84,12 +85,13 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
 		
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
 		NormalizedDataElementValue.count() == 2
-		NormalizedDataElementValue.list()[0].timestamp.equals(date1)
-		NormalizedDataElementValue.list()[1].timestamp.equals(date2)
+		NormalizedDataElementValue.list()[0].timestamp.seconds == date1.seconds
+		NormalizedDataElementValue.list()[1].timestamp.seconds == date2.seconds
 		NormalizedDataElement.list()[0].lastValueChanged.equals(date)
 		NormalizedDataElement.list()[0].refreshed.equals(date)
 	}
@@ -104,11 +106,12 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		when:
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		def date1 = value1.timestamp
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
 		NormalizedDataElementValue.count() == 1
-		NormalizedDataElementValue.list()[0].timestamp.equals(date1)
+		NormalizedDataElementValue.list()[0].timestamp.seconds == date1.seconds
 		NormalizedDataElement.list()[0].lastValueChanged.equals(date)
 	}
 	
@@ -128,12 +131,13 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date2 = value2.timestamp
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
 		NormalizedDataElementValue.count() == 2
-		NormalizedDataElementValue.list()[0].timestamp.after(date1)
-		NormalizedDataElementValue.list()[1].timestamp.after(date2)
+		NormalizedDataElementValue.list()[0].timestamp.seconds != date1.seconds
+		NormalizedDataElementValue.list()[1].timestamp.seconds != date2.seconds
 		NormalizedDataElement.list()[0].lastValueChanged.after(date)
 		NormalizedDataElement.list()[0].refreshed.after(date)
 	}
@@ -150,11 +154,12 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date1 = value1.timestamp
 		normalizedDataElement.timestamp = new Date()
 		normalizedDataElement.save(failOnError: true)
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
 		NormalizedDataElementValue.count() == 1
-		NormalizedDataElementValue.list()[0].timestamp.after(date1)
+		NormalizedDataElementValue.list()[0].timestamp.seconds != date1.seconds
 		NormalizedDataElement.list()[0].lastValueChanged.after(date)
 	}
 	
@@ -172,12 +177,57 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
 		rawDataElement.lastValueChanged = new Date()
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
 		NormalizedDataElementValue.count() == 2
-		NormalizedDataElementValue.list()[0].timestamp.after(date1)
-		NormalizedDataElementValue.list()[1].timestamp.after(date2)
+		NormalizedDataElementValue.list()[0].timestamp.seconds != date1.seconds
+		NormalizedDataElementValue.list()[1].timestamp.seconds != date2.seconds
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+	}
+	
+	def "test refresh normalized elements updates when dependency last value changed is null"() {
+		setup:
+		setupLocationTree()
+		def period = newPeriod()
+		def rawDataElement1 = newRawDataElement(CODE(1), Type.TYPE_NUMBER())
+		rawDataElement1.lastValueChanged = null
+		rawDataElement1.save(failOnError: true)
+		def rawDataElement2 = newRawDataElement(CODE(2), Type.TYPE_NUMBER())
+		def normalizedDataElement = newNormalizedDataElement(CODE(3), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"\$"+rawDataElement1.id+" + \$"+rawDataElement2.id]]))
+		def date = normalizedDataElement.lastValueChanged
+		
+		when:
+		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
+		def date1 = value1.timestamp
+		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
+		def date2 = value2.timestamp
+		Thread.sleep(1000)
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		
+		then:
+		NormalizedDataElementValue.count() == 2
+		NormalizedDataElementValue.list()[0].timestamp.seconds != date1.seconds
+		NormalizedDataElementValue.list()[1].timestamp.seconds != date2.seconds
+		NormalizedDataElement.list()[0].lastValueChanged.after(date)
+	}
+
+
+	def "test refresh normalized elements updates when last value changed is set after refresh"() {
+		setup:
+		def date = new Date()
+		setupLocationTree()
+		def period = newPeriod()
+		def normalizedDataElement = newNormalizedDataElement(CODE(2), Type.TYPE_NUMBER(), e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP):"1"]]))
+		
+		when:
+		normalizedDataElement.refreshed = date
+		normalizedDataElement.lastValueChanged = new Date();
+		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
+		
+		then:
+		NormalizedDataElementValue.count() == 2
 		NormalizedDataElement.list()[0].lastValueChanged.after(date)
 	}
 	
@@ -193,11 +243,12 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		def date1 = value1.timestamp
 		rawDataElement.lastValueChanged = new Date()
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
 		NormalizedDataElementValue.count() == 1
-		NormalizedDataElementValue.list()[0].timestamp.equals(date1)
+		NormalizedDataElementValue.list()[0].timestamp.seconds == date1.seconds
 		NormalizedDataElement.list()[0].lastValueChanged.equals(date)
 	}
 	
@@ -213,11 +264,12 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		def date1 = value1.timestamp
 		rawDataElement.timestamp = new Date()
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
 		NormalizedDataElementValue.count() == 1
-		NormalizedDataElementValue.list()[0].timestamp.after(date1)
+		NormalizedDataElementValue.list()[0].timestamp.seconds != date1.seconds
 		NormalizedDataElement.list()[0].lastValueChanged.after(date)
 	}
 	
@@ -233,11 +285,12 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def value1 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(BUTARO), period, Status.VALID, v("1"))
 		def date1 = value1.timestamp
 		newRawDataElementValue(rawDataElement, period, DataLocation.findByCode(BUTARO), v("1"))
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement, DataLocation.findByCode(BUTARO), period);
 		
 		then:
 		NormalizedDataElementValue.count() == 1
-		NormalizedDataElementValue.list()[0].timestamp.after(date1)
+		NormalizedDataElementValue.list()[0].timestamp.seconds != date1.seconds
 		NormalizedDataElement.list()[0].lastValueChanged.after(date)
 	}
 	
@@ -256,12 +309,13 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		def date1 = value1.timestamp
 		def value2 = newNormalizedDataElementValue(normalizedDataElement, DataLocation.findByCode(KIVUYE), period, Status.VALID, v("1"))
 		def date2 = value2.timestamp
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 		
 		then:
 		NormalizedDataElementValue.count() == 2
-		NormalizedDataElementValue.list()[0].timestamp.equals(date1)
-		NormalizedDataElementValue.list()[1].timestamp.equals(date2)
+		NormalizedDataElementValue.list()[0].timestamp.seconds == date1.seconds
+		NormalizedDataElementValue.list()[1].timestamp.seconds == date2.seconds
 		NormalizedDataElement.list()[0].lastValueChanged.equals(date)
 	}
 	
@@ -277,11 +331,12 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		NormalizedDataElementValue.count() == 1
 		
 		when:
+		Thread.sleep(1000)
 		refreshValueService.refreshNormalizedDataElement(normalizedDataElement);
 
 		then:
 		NormalizedDataElementValue.count() == 2
-		!NormalizedDataElementValue.list()[0].timestamp.equals(timestamp)	
+		NormalizedDataElementValue.list()[0].timestamp.seconds != timestamp.seconds	
 	}
 	
 	def "test normalized data elements not calculated at non-data-location level"() {
@@ -312,6 +367,23 @@ class RefreshValueServiceSpec extends IntegrationTests {
 		AveragePartialValue.count() == 8
 		AveragePartialValue.list()[0].timestamp != null
 		average.refreshed != null
+	}
+	
+	def "test refresh calculation updates when last value changed is set after refresh"() {
+		setup:
+		def date = new Date()
+		setupLocationTree()
+		def period = newPeriod()
+		def sum = newSum("1", CODE(2))
+		
+		when:
+		sum.refreshed = date
+		sum.lastValueChanged = new Date();
+		refreshValueService.refreshCalculation(sum);
+		
+		then:
+		SumPartialValue.count() == 8
+		Sum.list()[0].lastValueChanged.after(date)
 	}
 	
 	def "test refresh calculations updates timestamps"() {

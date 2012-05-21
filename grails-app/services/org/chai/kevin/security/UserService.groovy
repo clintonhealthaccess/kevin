@@ -60,13 +60,11 @@ class UserService {
 		
 		StringUtils.split(text).each { chunk ->
 			users.retainAll { user ->
-				// we look in "info" if it is a data element
 				Utils.matches(chunk, user.username) ||
 				Utils.matches(chunk, user.email) ||
 				Utils.matches(chunk, user.firstname) ||
 				Utils.matches(chunk, user.lastname) ||
 				Utils.matches(chunk, user.location)
-
 			}
 		}
 		return users

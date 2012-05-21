@@ -38,8 +38,8 @@
 											<thead>
 												<tr>
 													<th></th>
-													<th><g:message code="planning.budget.table.incoming"/></th>
 													<th><g:message code="planning.budget.table.outgoing"/></th>
+													<th><g:message code="planning.budget.table.incoming"/></th>
 													<th><g:message code="planning.budget.table.difference"/></th>
 													<th class="status"></th>
 												</tr>
@@ -58,9 +58,9 @@
 																	<g:i18n field="${planningTypeBudget.planningType.namesPlural}"/>
 																</span>
 															</td>
-															<td>(${planningTypeBudget.outgoing})</td>
-															<td>${planningTypeBudget.incoming}</td>
-															<td>${planningTypeBudget.difference}</td>
+															<td><g:formatNumber number="${planningTypeBudget.outgoing}" format="#,###"/></td>
+															<td><g:formatNumber number="${planningTypeBudget.incoming}" format="#,###"/></td>
+															<td><g:formatNumber number="${planningTypeBudget.difference}" format="#,###"/></td>
 															<td class="status"></td>
 														</tr>
 														<tr class="sub-tree js_foldable-container hidden">
@@ -82,9 +82,9 @@
 																						</a>
 																					</span>
 																				</td>
-																				<td>(${budgetPlanningEntry.outgoing})</td>
-																				<td>${budgetPlanningEntry.incoming}</td>
-																				<td>${budgetPlanningEntry.difference}</td>
+																				<td><g:formatNumber number="${budgetPlanningEntry.outgoing}" format="#,###"/></td>
+																				<td><g:formatNumber number="${budgetPlanningEntry.incoming}" format="#,###"/></td>
+																				<td><g:formatNumber number="${budgetPlanningEntry.difference}" format="#,###"/></td>
 																				<td class="status 
 																					${!budgetPlanningEntry.invalidSections.empty?'invalid':''} 
 																					${!budgetPlanningEntry.incompleteSections.empty?'incomplete':''}
@@ -111,9 +111,9 @@
 												</g:each>
 												<tr class="total">
 													<td><g:message code="planning.budget.table.total"/>:</td>
-													<td>${outgoing}</td>
-													<td>${incoming}</td>
-													<td>${difference}</td>
+													<td><g:formatNumber number="${outgoing}" format="#,###"/></td>
+													<td><g:formatNumber number="${incoming}" format="#,###"/></td>
+													<td><g:formatNumber number="${difference}" format="#,###"/></td>
 													<td class="status"></td>
 												</tr>
 											</tbody>
