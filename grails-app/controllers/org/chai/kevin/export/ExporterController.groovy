@@ -82,7 +82,7 @@ class ExporterController extends AbstractEntityController {
 		
 		// we do this because automatic data binding does not work with polymorphic elements
 		Set<Period> periods = new HashSet();;
-		params.list('periods').each { id ->
+		params.list('periodids').each { id ->
 			if (NumberUtils.isDigits(id)) {
 				def period = Period.get(id)
 				if (period != null && !periods.contains(period)) periods.add(period);
@@ -91,7 +91,7 @@ class ExporterController extends AbstractEntityController {
 		entity.periods = periods
 		
 		Set<Data> dataS = new HashSet();
-		params.list('data').each { id ->
+		params.list('dataids').each { id ->
 			if (NumberUtils.isDigits(id)) {
 				def data = dataService.getData(Long.parseLong(id), Data.class)
 				if (data != null && !dataS.contains(data)) dataS.add(data);
@@ -100,7 +100,7 @@ class ExporterController extends AbstractEntityController {
 		entity.data = dataS
 		
 		Set<CalculationLocation> locations = new HashSet();
-		params.list('locations').each { id ->
+		params.list('locationids').each { id ->
 			if (NumberUtils.isDigits(id)) {
 				def location = locationService.getCalculationLocation(Long.parseLong(id), CalculationLocation.class)
 				if (location != null && !locations.contains(location)) locations.add(location);

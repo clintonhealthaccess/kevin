@@ -11,18 +11,18 @@
 			<g:form url="[controller:'exporter', action:'save', params: [targetURI: targetURI]]" useToken="true">
 				<g:i18nTextarea name="descriptions" bean="${exporter}" value="${exporter.descriptions}" label="${message(code:'entity.description.label')}" field="descriptions" height="150"  width="300" maxHeight="150" />
 				
-				<g:selectFromList name="periods" label="${message(code:'period.label')}" bean="${exporter}" field="periods" 
+				<g:selectFromList name="periodids" label="${message(code:'period.label')}" bean="${exporter}" field="periods" 
 				from="${periods}" value="${exporter.periods*.id}" values="${periods.collect{Utils.formatDate(it.startDate)+' to '+Utils.formatDate(it.endDate)}}" optionKey="id" multiple="true"/>
 				
 				<g:selectFromList name="typeCodes" label="${message(code:'entity.datalocationtype.label')}" bean="${exporter}" field="typeCodeString" 
 			from="${types}" value="${exporter.typeCodes*.toString()}" values="${types.collect{i18n(field:it.names)}}" optionKey="code" multiple="true"/>
 				
-				<g:selectFromList name="locations" label="${message(code:'location.label')}" field="locations" 
+				<g:selectFromList name="locationids" label="${message(code:'location.label')}" field="locations" 
 						optionKey="id" multiple="true" ajaxLink="${createLink(controller:'location', action:'getCalculationLocationAjaxData')}" 
 						from="${locations}" value="${exporter.locations*.id}" bean="${exporter}" 
 						values="${locations.collect {'['+it.class.simpleName+'] '+i18n(field:it.names)}}" />
 						
-				<g:selectFromList name="data" label="${message(code:'dataelement.label')}" field="data" 
+				<g:selectFromList name="dataids" label="${message(code:'dataelement.label')}" field="data" 
 						optionKey="id" multiple="true" ajaxLink="${createLink(controller:'data', action:'getAjaxData',params:[class: 'Data'])}" 
 						from="${data}" value="${exporter.data*.id}" bean="${exporter}" 
 						values="${data.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
