@@ -116,7 +116,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		PlanningType.count() == 1
 	}
 	
-	def "header prefix must be a value prefix"() {
+	def "header prefix must be a value prefix or empty"() {
 		setup:
 		def period = newPeriod()
 		def planning = newPlanning(period, [])
@@ -133,13 +133,13 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '', formElement: formElement).save(failOnError: true)
 		
 		then:
-		thrown ValidationException
+		PlanningType.count() == 1
 		
 		when:
 		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', formElement: formElement).save(failOnError: true)
 		
 		then:
-		PlanningType.count() == 1
+		PlanningType.count() == 2
 	}
 	
 	def "discriminator must reference an ENUM"() {

@@ -54,7 +54,15 @@
 														<td class="status ${!entry.invalidSections.empty?'invalid':!entry.incompleteSections.empty?'incomplete':'complete'}"></td>
 														<td>
 															<a href="${createLinkWithTargetURI(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningType.id, lineNumber:entry.lineNumber])}">
-																<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="none entered"/>
+																<g:if test="${planningType.fixedHeader != null && !planningType.fixedHeader.empty}">
+																	<g:value value="${entry.fixedHeaderValue}" type="${entry.type.fixedHeaderType}" nullText="none entered"/>
+																</g:if>
+																<g:else>
+																	<g:i18n field="${planningType.names}"/>
+																	<g:if test="${planningType.maxNumber != 1}">
+																		${entry.lineNumber + 1}
+																	</g:if>
+																</g:else>
 															</a>
 														</td>
 														<td>
