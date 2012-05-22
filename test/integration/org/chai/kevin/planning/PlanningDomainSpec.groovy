@@ -139,7 +139,7 @@ class PlanningDomainSpec extends PlanningIntegrationTests {
 		new PlanningType(planning: planning, discriminator: '[_].key', fixedHeader: '[_].key', formElement: formElement).save(failOnError: true)
 		
 		then:
-		PlanningType.count() == 1
+		PlanningType.count() == 2
 	}
 	
 	def "discriminator must reference an ENUM"() {
