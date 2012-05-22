@@ -81,7 +81,7 @@
 				<shiro:hasPermission permission="menu:survey">
 					<li><a class="${controllerName=='editSurvey'||controllerName=='summary'?'active':''}" href="${createLink(controller: 'editSurvey', action:'view')}"><g:message code="header.navigation.survey"/></a></li>
 				</shiro:hasPermission>
-				<shiro:hasPermission permission="menu:admin">
+				<shiro:hasPermission permission="menu:planning">
 					<li><a class="${controllerName=='editPlanning'?'active':''}" href="${createLink(controller: 'editPlanning', action:'view')}"><g:message code="header.navigation.planning"/></a></li>
 				</shiro:hasPermission>
 				<shiro:hasPermission permission="menu:reports">
