@@ -12,22 +12,18 @@
 	
 		<g:i18nInput name="names" bean="${planningCost}" value="${planningCost.names}" label="${message(code:'entity.name.label')}" field="names"/>
 
-		<g:if test="${enume != null}">
-			<g:selectFromList name="discriminatorValues" label="${message(code:'planning.planningcost.discriminatorvalue.label')}" bean="${planningCost}" field="discriminatorValueString" multiple="true"
-				from="${enume.activeEnumOptions*.value}" value="${planningCost.discriminatorValues}"/>
-		</g:if>
-		<g:else>
-			<g:input name="discriminatorValues" label="${message(code:'planning.planningcost.discriminatorvalue.label')}" field="discriminatorValueString" 
-				value="${planningCost.discriminatorValueString}" bean="${planningCost}"/> 
-		</g:else>
-		
 		<g:selectFromList name="dataElement.id" label="${message(code:'planning.planningcost.dataelement.label')}" bean="${planningCost}" field="dataElement" optionKey="id" multiple="false"
 			ajaxLink="${createLink(controller:'data', action:'getAjaxData', params:[class:'NormalizedDataElement'])}"
 			from="${dataElements}" value="${planningCost.dataElement?.id}" values="${dataElements.collect{i18n(field:it.names)+' ['+it.code+'] ['+it.class.simpleName+']'}}" />
 	
 		<g:selectFromEnum name="type" bean="${planningCost}" values="${PlanningCostType.values()}" field="type" label="${message(code:'planning.planningcost.type.label')}"/>
 	
-		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${target}" field="order"/>
+		<div class="row">
+			<label><g:message code="planning.planningcost.hideifzero.label"/></label>
+			<g:checkBox name="hideIfZero" value="${planningCost.hideIfZero}" />
+		</div>
+		
+		<g:input name="order" label="${message(code:'entity.order.label')}" bean="${planningCost}" field="order"/>
 	
 		<g:if test="${planningCost.id != null}">
 			<input type="hidden" name="id" value="${planningCost.id}"></input>

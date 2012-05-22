@@ -64,48 +64,52 @@
 															<td class="status"></td>
 														</tr>
 														<tr class="sub-tree js_foldable-container hidden">
-															<td colspan="7" class="bucket">
-														    <table>
-																	<tbody>
-																		
-																		<!-- 
-																			Each INDIVIDUAL UNDERTAKINGS, this is always
-																			displayed because we assume there's costing for each undertaking,
-																			either OUTGOING or INCOMING or both
-																		-->
-																		<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
-																			<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable">
-																				<td class="js_foldable-toggle">
-																					<span style="margin-left: 20px;">
-																						<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
-																							<g:value value="${budgetPlanningEntry.fixedHeaderValue}" type="${budgetPlanningEntry.type.fixedHeaderType}" nullText="none entered"/>
-																						</a>
-																					</span>
-																				</td>
-																				<td><g:formatNumber number="${budgetPlanningEntry.outgoing}" format="#,###"/></td>
-																				<td><g:formatNumber number="${budgetPlanningEntry.incoming}" format="#,###"/></td>
-																				<td><g:formatNumber number="${budgetPlanningEntry.difference}" format="#,###"/></td>
-																				<td class="status 
-																					${!budgetPlanningEntry.invalidSections.empty?'invalid':''} 
-																					${!budgetPlanningEntry.incompleteSections.empty?'incomplete':''}
-																					${(!budgetPlanningEntry.incompleteSections.empty || !budgetPlanningEntry.incompleteSections.empty)?'tooltip-TODO':''}
-																					" title=""></td>
-																			</tr>
-																			<tr class="sub-tree js_foldable-container hidden">
-																				<td colspan="7" class="bucket">
-																					<table>
-																						<tbody>
-																							<g:each in="${planningType.costs}" var="planningCost">
-																								<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, planningCost: planningCost]"/>
-																							</g:each>
-																						</tbody>
-																					</table>
-																				</td>
-																			</tr>
-																		</g:each>
-																	</tbody>
-																</table>
-															</td>
+															<g:if test="${planningType.maxNumber != 1}">
+																<td colspan="7" class="bucket">
+															    	<table>
+																		<tbody>
+																			<!-- 
+																				Each INDIVIDUAL UNDERTAKINGS, this is always
+																				displayed because we assume there's costing for each undertaking,
+																				either OUTGOING or INCOMING or both
+																			-->
+																			<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
+																				<tr id="planning-${planningType.id}-${budgetPlanningEntry.lineNumber}" class="tree-sign js_foldable budget-entry">
+																					<td>
+																						<span class="js_foldable-toggle" style="margin-left: 20px;"> <a href="#">&zwnj;</a> </span>
+																						<span>
+																							<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber])}">
+																								<g:if test="${planningType.fixedHeader != null && !planningType.fixedHeader.empty}">
+																									<g:value value="${budgetPlanningEntry.fixedHeaderValue}" type="${budgetPlanningEntry.type.fixedHeaderType}" nullText="none entered"/>
+																								</g:if>
+																								<g:else>
+																									<g:i18n field="${planningType.names}"/> ${budgetPlanningEntry.lineNumber + 1}
+																								</g:else>
+																							</a>
+																						</span>
+																					</td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.outgoing}" format="#,###"/></td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.incoming}" format="#,###"/></td>
+																					<td><g:formatNumber number="${budgetPlanningEntry.difference}" format="#,###"/></td>
+																					<td class="status ${!budgetPlanningEntry.invalidSections.empty?'invalid':!budgetPlanningEntry.incompleteSections.empty?'incomplete':'complete'}" title=""></td>
+																				</tr>
+																				<tr class="sub-tree js_foldable-container hidden">
+																					<td colspan="7" class="bucket">
+																						<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 40]"/>
+																					</td>
+																				</tr>
+																			</g:each>
+																		</tbody>
+																	</table>
+																</td>
+															</g:if>
+															<g:else>
+																<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
+																	<td colspan="7" class="bucket">
+																		<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 20]"/>
+																	</td>
+																</g:each>
+															</g:else>
 														</tr>
 													</g:if>
 												</g:each>

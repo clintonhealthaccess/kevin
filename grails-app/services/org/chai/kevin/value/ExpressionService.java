@@ -127,8 +127,8 @@ public class ExpressionService {
 		if (expressionLog.isInfoEnabled()) expressionLog.info("getting expression status-value for: expression={"+expression+"}, type={"+type+"}, period={"+period+"}, dataLocation={"+dataLocation+"}");
 		
 		StatusValuePair statusValuePair = new StatusValuePair();
-		if (expression == null) {
-			statusValuePair.status = Status.DOES_NOT_APPLY;
+		if (expression == null || expression.trim().isEmpty()) {
+			statusValuePair.status = Status.MISSING_EXPRESSION;
 			statusValuePair.value = Value.NULL_INSTANCE();
 		}
 		else {

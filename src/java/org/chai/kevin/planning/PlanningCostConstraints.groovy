@@ -36,5 +36,4 @@ constraints ={
 	dataElement (nullable: false)
 	type (nullable: false)
 	planningType (nullable: false)
-	discriminatorValueString (nullable: false, blank: false)
 }

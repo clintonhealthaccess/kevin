@@ -19,7 +19,7 @@
 		    	<g:render template="/templates/help" model="[content: message(code:'planning.new.help')]"/>
 					
 				<div id="questions">
-					<g:form url="[controller:'editPlanning', action:'submit', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
+					<g:form url="[controller:'editPlanning', action:'save', params: [location: location.id, planningType: planningType.id, targetURI: targetURI]]">
 		  				<input class="js_always-send" type="hidden" name="lineNumber" value="${planningEntry.lineNumber}"/>
 		
 						<div id="element-${planningType.formElement.id}">

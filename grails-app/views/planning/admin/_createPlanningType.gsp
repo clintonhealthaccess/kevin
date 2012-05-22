@@ -11,9 +11,6 @@
 		<g:i18nInput name="names" bean="${planningType}" value="${planningType.names}" label="${message(code:'entity.name.label')}" field="names"/>
 		<g:i18nInput name="namesPlural" bean="${planningType}" value="${planningType.namesPlural}" label="${message(code:'planning.planningtype.nameplural.label')}" field="namesPlural"/>
 
-		<g:selectFromList name="discriminator" label="${message(code:'planning.planningtype.discriminator.label')}" bean="${planningType}" field="discriminator" multiple="false"
-			from="${valuePrefixes}" value="${planningType.discriminator}"/>
-
 		<g:selectFromList name="fixedHeader" label="${message(code:'planning.planningtype.fixedheader.label')}" bean="${planningType}" field="fixedHeader" multiple="false"
 			from="${valuePrefixes}" value="${planningType.fixedHeader}"/>
 		
