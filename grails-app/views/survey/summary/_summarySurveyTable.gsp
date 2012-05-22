@@ -12,9 +12,11 @@
 			</th>
 		</thead>
 		<tbody>
+			<g:set var="surveysClosed" value="${true}"/>
 			<g:each in="${summaryPage.locations}" var="location">
 				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(location)}" />
 				<g:set var="programSummary" value="${summaryPage.getProgramSummary(location)}" />
+				<g:set var="surveyClosed" value="${programSummary.submittedPrograms == programSummary.programs}" />
 				<tr>
 					<td class="program-table-link" data-location="${location.id}">
 						<a href="${createLink(controller: 'surveySummary', action: 'programTable', params: [survey: currentSurvey.id, location: location.id])}"><g:i18n field="${location.names}"/></a>
@@ -49,13 +51,14 @@
 									</a>
 								</li>
 							</shiro:hasPermission>
-							<shiro:hasPermission permission="editSurvey:submitAll">
-								<g:if test="${programSummary.submittedPrograms < programSummary.programs}">
-										<li>
-											<a href="${createLink(controller: 'surveySummary', action: 'submitAll', params: [survey: currentSurvey.id, location: currentLocation.id, submitLocation: location.id])}">
-												<g:message code="survey.summary.submitsurvey.label" />
-											</a>
-										</li>														
+							<shiro:hasPermission permission="surveySummary:submitAll">
+								<g:if test="${!surveyClosed}">
+									<g:set var="surveysClosed" value="${false}"/>
+									<li>
+										<a href="${createLink(controller: 'surveySummary', action: 'submitAll', params: [survey: currentSurvey?.id, location: currentLocation.id, submitLocation: location.id])}">
+											<g:message code="survey.summary.submitsurvey.label" />
+										</a>
+									</li>														
 								</g:if>
 							</shiro:hasPermission>
 						</ul>
@@ -67,15 +70,15 @@
 					</td>
 				</tr>
 			</g:each>
-			<shiro:hasPermission permission="editSurvey:submitAll">
-				<g:if test="${!skipLevels.contains(currentLocation.level)}">
+			<shiro:hasPermission permission="surveySummary:submitAll">
+				<g:if test="${!submitSkipLevels.contains(currentLocation.level) && !surveysClosed}">
 					<tr>
 						<td></td>
 						<td></td>
 						<td></td>
 						<td><a
-							href="${createLink(controller: 'surveySummary', action: 'submitAll', params: params << [survey: currentSurvey.id, submitLocation: currentLocation.id])}">
-								<g:message code="survey.summary.submitall.label" />
+							href="${createLink(controller: 'surveySummary', action: 'submitAll', params: params << [survey: currentSurvey?.id, submitLocation: currentLocation.id])}">
+								<g:message code="survey.summary.submitallsurvey.label" />
 						</a></td>
 					</tr>
 				</g:if>

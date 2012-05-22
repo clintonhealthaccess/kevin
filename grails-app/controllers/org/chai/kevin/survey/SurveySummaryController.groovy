@@ -43,7 +43,8 @@ class SurveySummaryController extends AbstractController {
 			template = '/survey/summary/summarySurveyTable'
 		}
 
-		def skipLevels = surveyPageService.getSkipLocationLevels()
+		def locationSkipLevels = surveyPageService.getSkipLocationLevels()
+		def submitSkipLevels = surveyPageService.getSkipSubmitLevels()
 		
 		if (summaryPage != null) summaryPage.sort(params.sort, params.order, languageService.currentLanguage)
 			
@@ -55,8 +56,9 @@ class SurveySummaryController extends AbstractController {
 			currentLocationTypes: dataLocationTypes,
 			summaryPage: summaryPage,
 			surveys: Survey.list(),
-			skipLevels: skipLevels,
-			template: template
+			template: template,
+			locationSkipLevels: locationSkipLevels,
+			submitSkipLevels: submitSkipLevels
 		])
 	}
 
@@ -87,23 +89,32 @@ class SurveySummaryController extends AbstractController {
 	def submitAll = {
 		if (log.isDebugEnabled()) log.debug("survey.submit, params:"+params)
 
+		SurveyProgram program = SurveyProgram.get(params.int('program'))
 		Survey survey = Survey.get(params.int('survey'))
-		Location location = Location.get(params.int('location'))
 		
+		Location location = Location.get(params.int('location'))		
 		def submitLocation = Location.get(params.int('submitLocation'))
-		if(submitLocation == null) submitLocation = DataLocation.get(params.int('submitLocation'))
-						
+		if(submitLocation == null) submitLocation = DataLocation.get(params.int('submitLocation'))						
 		Set<DataLocationType> dataLocationTypes = getLocationTypes()
 		
-		boolean success = surveyPageService.submitAll(submitLocation, dataLocationTypes, survey);
+		boolean success = false
+		if (submitLocation != null && dataLocationTypes != null && (survey != null || program != null)) {
+			success = surveyPageService.submitAll(submitLocation, dataLocationTypes, survey, program);
+		}
 
 		if (success) {
 			flash.message = message(code: "survey.all.submitted", default: "Thanks for submitting.");
 		}
-		else {
-			flash.message = message(code: "survey.all.review", default: "The surveys could not be submitted, please review the programs and sections.");
-		}
+		else{
+			if(program != null) flash.message = message(code: "program.all.review", default: "The programs could not be submitted.");
+			else flash.message = message(code: "survey.all.review", default: "The surveys could not be submitted.");
+		}		
 		
-		redirect(action: 'summaryPage', params: [location: location.id, survey: survey.id, dataLocationTypes: dataLocationTypes])			
+		redirect(action: 'summaryPage', params: [
+			location: location.id, 
+			survey: survey?.id, 
+			program: program?.id, 
+			dataLocationTypes: dataLocationTypes.collect { it.getId() }
+		])
 	}
 }

@@ -11,7 +11,8 @@
 		<div>
 			<div class="subnav">
 				<g:render template="/survey/summary/surveyFilter"/>
-				<g:locationFilter linkParams="${[survey: currentSurvey?.id, program: currentProgram?.id, section: currentSection?.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc']}" selected="${currentLocation}" selectedTypes="${currentLocationTypes}"/>
+				<g:locationFilter linkParams="${[survey: currentSurvey?.id, program: currentProgram?.id, section: currentSection?.id, sort: SurveySummaryPage.PROGRESS_SORT, order:'desc']}" 
+					selected="${currentLocation}" selectedTypes="${currentLocationTypes}" skipLevels="${locationSkipLevels}"/>
 				<g:dataLocationTypeFilter linkParams="${params}" selected="${currentLocationTypes}"/>
 			</div>
 						

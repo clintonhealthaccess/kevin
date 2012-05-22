@@ -88,10 +88,12 @@ public class SurveyPageService {
 	private ValueService valueService;
 	private DataService dataService;
 	private LocationService locationService;
+	private ReportService reportService;
 	private FormValidationService formValidationService;
 	private SessionFactory sessionFactory;
 	private GrailsApplication grailsApplication;
-	private Set<String> skipLevels;
+	private Set<String> submitSkipLevels;
+	private Set<String> locationSkipLevels;
 	
 	@Transactional(readOnly = true)
 	public Survey getDefaultSurvey() {
@@ -550,57 +552,39 @@ public class SurveyPageService {
 		question.setComplete(complete);
 	}
 	
-	@Transactional(readOnly = false)
-	public boolean submit(DataLocation dataLocation, SurveyProgram program) {
+	public boolean submitAll(CalculationLocation location, Set<DataLocationType> types, Survey survey, SurveyProgram program){
 		
-		// first we make sure that the program is valid and complete, so we revalidate it
-		List<SurveyElement> elements = program.getElements(dataLocation.getType());
-		evaluateRulesAndSave(dataLocation, elements, new HashMap<SurveyElement, FormEnteredValue>());
-		
-		// we get the updated survey and work from that
-		SurveyPage surveyPage = getSurveyPage(dataLocation, program);			
-		
-		if (surveyPage.canSubmit(program)) {
-			SurveyElementSubmitter submitter = new SurveyElementSubmitter(surveyValueService, formElementService, valueService);
-
-			// save all the values to data values
-			for (SurveyElement element : elements) {
-				element.submit(dataLocation, element.getSurvey().getPeriod(), submitter);
-			}
-			
-			// close the program
-			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
-			enteredProgram.setClosed(true);
-			surveyValueService.save(enteredProgram);
-	
-			// log the event
-			//logSurveyEvent(dataLocation, program, "submit");
-			
-			return true;
-		}
-		else return false;
-	}
-
-	@Transactional(readOnly = false)
-	public boolean submitAll(CalculationLocation location, Set<DataLocationType> types, Survey survey) {				
-		
-		if (log.isDebugEnabled()) log.debug("submitAll(" + location + ", " + survey + ")");
+		if (log.isDebugEnabled()) log.debug("submitAll(" + location + ", " + survey + ", " + program + ")");
 		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
-		if(location == null || survey == null) 
-			return false;
-		
-		List<DataLocation> dataLocations = location.collectDataLocations(null, types);		
+		boolean result = false;		
+		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
+		result = submitAll(dataLocations, survey, program);
+		return result;
+	}
+	
+	@Transactional(readOnly = false)
+	public boolean submitAll(List<DataLocation> dataLocations, Survey survey, SurveyProgram program) {		
+				
 		for (DataLocation dataLocation : dataLocations) {
-			// TODO make this run in a transaction
-			submitIfNotClosed(survey, dataLocation);
+			// TODO make this run in a transaction						
+			submitIfNotClosed(dataLocation, survey, program);
 		}
 		return true;
 	}
-
-	private void submitIfNotClosed(Survey survey, DataLocation dataLocation) {
-		List<SurveyProgram> surveyPrograms = survey.getPrograms(dataLocation.getType());
-		for (SurveyProgram surveyProgram : surveyPrograms) {								
+	
+	private void submitIfNotClosed(DataLocation dataLocation, Survey survey, SurveyProgram program) {
+		
+		List<SurveyProgram> surveyPrograms = new ArrayList<SurveyProgram>();
+		if(program != null){
+			if(program.getSurvey().getPrograms(dataLocation.getType()).contains(program))
+				surveyPrograms.add(program);	
+		}
+		else surveyPrograms = survey.getPrograms(dataLocation.getType());
+		
+		for (SurveyProgram surveyProgram : surveyPrograms) {
+			
+			if(!surveyProgram.getTypeCodes().contains(dataLocation.getType().getCode())) continue;
 			
 			// we get whether to submit anyways if the program is not closed, even if it is incomplete or invalid
 			boolean isClosed = getSurveyEnteredProgram(dataLocation, surveyProgram).isClosed();				
@@ -723,19 +707,40 @@ public class SurveyPageService {
 		this.locationService = locationService;
 	}
 	
+	public void setReportService(ReportService reportService) {
+		this.reportService = reportService;
+	}
+	
 	public void setGrailsApplication(GrailsApplication grailsApplication) {
 		this.grailsApplication = grailsApplication;
 	}
 	
-	public void setSkipLevels(Set<String> skipLevels) {
-		this.skipLevels = skipLevels;
+	public Set<String> getSubmitSkipLevels() {
+		return submitSkipLevels;
+	}
+
+	public void setSubmitSkipLevels(Set<String> submitSkipLevels) {
+		this.submitSkipLevels = submitSkipLevels;
+	}
+	
+	public Set<LocationLevel> getSkipSubmitLevels() {
+		Set<LocationLevel> levels = new HashSet<LocationLevel>();
+		for (String skipLevel : this.submitSkipLevels) {
+			levels.add(locationService.findLocationLevelByCode(skipLevel));
+		}
+		return levels;
+	}
+	
+	public void getLocationSkipLevels(Set<String> skipLevels) {
+		this.locationSkipLevels = skipLevels;
+	}
+	
+	public void setLocationSkipLevels(Set<String> skipLevels) {
+		this.locationSkipLevels = skipLevels;
 	}
 	
 	public Set<LocationLevel> getSkipLocationLevels() {
-		Set<LocationLevel> levels = new HashSet<LocationLevel>();
-		for (String skipLevel : this.skipLevels) {
-			levels.add(locationService.findLocationLevelByCode(skipLevel));
-		}
+		Set<LocationLevel> levels = reportService.getSkipLocationLevels(locationSkipLevels);
 		return levels;
 	}
 	
@@ -743,4 +748,6 @@ public class SurveyPageService {
 	private SurveyPageService getMe() {
 		return grailsApplication.getMainContext().getBean(SurveyPageService.class);
 	}
+
+		
 }

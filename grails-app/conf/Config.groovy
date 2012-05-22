@@ -236,8 +236,11 @@ dashboard.skip.levels=[]
 dsr.skip.levels=[]
 fct.skip.levels=[]
 cost.skip.levels=[]
-survey.export.skip.levels=["National", "Sector"]
+survey.skip.levels=[]
+
 survey.submit.skip.levels=["National", "Province"]
+
+survey.export.skip.levels=["National", "Sector"]
 
 info.group.level="District"
 dsr.group.level="District"

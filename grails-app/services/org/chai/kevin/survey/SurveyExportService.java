@@ -74,12 +74,12 @@ public class SurveyExportService {
 		this.skipLevels = skipLevels;
 	}
 	
-	private Set<LocationLevel> getSkipLocationLevels() {
-		Set<LocationLevel> levels = new HashSet<LocationLevel>();
-		for (String skipLevel : this.skipLevels) {
-			levels.add(locationService.findLocationLevelByCode(skipLevel));
+	public List<LocationLevel> getLevels() {
+		List<LocationLevel> result = locationService.listLevels();
+		for (String level : skipLevels) {
+			result.remove(locationService.findLocationLevelByCode(level));
 		}
-		return levels;
+		return result;
 	}
 	
 	private final static String CSV_FILE_EXTENSION = ".csv";
@@ -99,7 +99,7 @@ public class SurveyExportService {
 		List<String> headers = new ArrayList<String>();
 		
 		headers.add(SURVEY_HEADER);		
-		for(LocationLevel level : getSkipLocationLevels()){
+		for(LocationLevel level : getLevels()){
 			headers.add(languageService.getText(level.getNames()));
 		}
 		headers.add(DATA_LOCATION_HEADER);
@@ -306,7 +306,7 @@ public class SurveyExportService {
 		SurveyExportDataPoint dataPoint = new SurveyExportDataPoint();
 		dataPoint.add(formatExportDataItem(languageService.getText(survey.getNames())));
 		
-		for (LocationLevel level : getSkipLocationLevels()){			
+		for (LocationLevel level : getLevels()){			
 			Location parent = locationService.getParentOfLevel(dataLocation, level);
 			if (parent != null) dataPoint.add(formatExportDataItem(languageService.getText(parent.getNames())));
 			else dataPoint.add("");
