@@ -24,7 +24,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		// we create 2 form elements so they don't have the same ID as the type
 		def formElement1 = newFormElement(dataElement)
 		def formElement2 = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement2, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement2, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -57,7 +57,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
 		
@@ -87,7 +87,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
 		
@@ -116,7 +116,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def skipRule = newFormSkipRule("\$"+formElement.id+"[_].key1 == 1", [(formElement):"[_].key1"])
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		def jsonResult
 		
@@ -147,7 +147,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		// we create 2 form elements so they don't have the same ID as the type
 		def formElement1 = newFormElement(dataElement)
 		def formElement2 = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement2, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement2, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -208,7 +208,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -234,7 +234,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO),
 			Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		)
@@ -262,7 +262,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def value = Value.VALUE_LIST([Value.VALUE_MAP(["key0":Value.VALUE_STRING("value"), "key1":Value.VALUE_NUMBER(10)])])
 		value.listValue[0].setAttribute('budget_updated', 'true')
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
@@ -288,7 +288,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -354,7 +354,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -415,7 +415,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
 		def formValidationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:
@@ -442,7 +442,7 @@ class EditPlanningControllerSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2), Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		planningController = new EditPlanningController()
 		
 		when:

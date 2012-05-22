@@ -60,11 +60,9 @@ class PlanningCostController extends AbstractEntityController {
 		def dataElements = []
 		if (entity.dataElement != null) dataElements << entity.dataElement
 		
-		def enume = Enum.findByCode(entity.planningType.discriminatorType.enumCode)
 		[
 			planningCost: entity,
 			dataElements: dataElements,
-			enume: enume
 		]
 	}
 

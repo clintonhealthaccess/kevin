@@ -26,7 +26,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		
 		when:
 		def planningList = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
@@ -46,7 +46,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def planningList = null
 		
 		when:
@@ -68,7 +68,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def planningList = null
 		
 		when:
@@ -93,7 +93,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def planningTypeBudget = null
 		
 		when:
@@ -108,7 +108,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		when:
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()), 
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		refreshNormalizedDataElement()
 		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
 		
@@ -129,10 +129,10 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(HEALTH_CENTER_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		def planningTypeBudget = null
 		
 		when:
@@ -160,7 +160,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def planningTypeBudget = null
 		
 		when:
@@ -169,7 +169,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(HEALTH_CENTER_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		refreshNormalizedDataElement()
 		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
 		
@@ -189,7 +189,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def planningTypeBudget = null
 		
 		when:
@@ -201,7 +201,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		value.listValue[1].setAttribute("submitted", "true")
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '$'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0)']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		refreshNormalizedDataElement()
 		planningTypeBudget = planningService.getPlanningList(planningType, DataLocation.findByCode(BUTARO))
 		
@@ -223,7 +223,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def dataElementValue = null
 		def formValue = null
 		
@@ -260,7 +260,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def validationRule = newFormValidationRule(formElement, "[_].key1", [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], "\$"+formElement.id+"[_].key1 < 100", [])
 		def formValue = null
 		
@@ -285,7 +285,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def formValue = null
 		
 		when:
@@ -308,7 +308,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		
 		when:
 		planningService.refreshBudgetIfNeeded(planning, DataLocation.findByCode(BUTARO))
@@ -329,10 +329,10 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		
 		def value = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}")
 		def elementValue = newRawDataElementValue(dataElement, period, DataLocation.findByCode(BUTARO), value)
@@ -358,10 +358,10 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		
 		when:
 		def value = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":null}}],\"uuid\":\"uuid\"}]}")
@@ -385,10 +385,10 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '($'+dataElement.id+' -> transform each x (if (x.key0 == "value") x.key1 * 2 else 0))']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		
 		def elementValue = newNormalizedDataElementValue(element, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.VALUE_LIST([Value.VALUE_NUMBER(2d)]))
 		def date = elementValue.timestamp
@@ -411,10 +411,10 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '2.0']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		
 		def elementValue = newNormalizedDataElementValue(element, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.VALUE_LIST([Value.VALUE_NUMBER(2d)]))
 		def date = elementValue.timestamp
@@ -437,10 +437,10 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 		def dataElement = newRawDataElement(CODE(2),
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def element = newNormalizedDataElement(CODE(3), Type.TYPE_LIST(Type.TYPE_NUMBER()),
 			e([(period.id+''):[(DISTRICT_HOSPITAL_GROUP): '2.0']]))
-		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, "value", planningType)
+		def planningCost = newPlanningCost(PlanningCostType.OUTGOING, element, planningType)
 		def elementValue = newNormalizedDataElementValue(element, DataLocation.findByCode(BUTARO), period, Status.VALID, Value.VALUE_LIST([Value.VALUE_NUMBER(2d)]))
 		def date = new Date()
 		element.setTimestamp(date)
@@ -463,7 +463,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def value = new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}")
 		value.setAttribute("submitted", "true")
 		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO), value)
@@ -484,7 +484,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
 			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}"))
 		
@@ -505,7 +505,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
 			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}"))
 		elementValue.value.setAttribute("submitted", "false")
@@ -527,7 +527,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def elementValue = newFormEnteredValue(formElement, period, DataLocation.findByCode(BUTARO),
 			new Value("{\"value\":[{\"value\":[{\"map_key\":\"key0\", \"map_value\":{\"value\":\"value\"}},{\"map_key\":\"key1\", \"map_value\":{\"value\":1}}],\"uuid\":\"uuid\"}]}"))
 		elementValue.value.setAttribute("submitted", "true")
@@ -548,7 +548,7 @@ class PlanningServiceSpec extends PlanningIntegrationTests {
 			Type.TYPE_LIST(Type.TYPE_MAP(["key0":Type.TYPE_ENUM(CODE(1)), "key1":Type.TYPE_NUMBER()])))
 		def planning = newPlanning(period, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP])
 		def formElement = newFormElement(dataElement)
-		def planningType = newPlanningType(formElement, "[_].key0", "[_].key1", planning)
+		def planningType = newPlanningType(formElement, "[_].key1", planning)
 		def planningSummary = null
 		
 		when:

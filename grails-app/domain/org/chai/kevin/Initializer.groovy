@@ -1217,7 +1217,6 @@ class Initializer {
 				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
 			],
 			formElement: formElement,
-			discriminator: '[_].basic.activity',
 			fixedHeader: '[_].basic.description',
 			planning: planning
 		).save(failOnError: true);
@@ -1233,7 +1232,6 @@ class Initializer {
 		def planningCost1 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.INCOMING,
-			discriminatorValueString: 'value1',
 			dataElement: planningElement1,
 			names: j(["en":"Salaries"])
 		).save(failOnError: true)
@@ -1247,7 +1245,6 @@ class Initializer {
 		def planningCost2 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.OUTGOING,
-			discriminatorValueString: 'value1',
 			dataElement: planningElement2,
 			names: j(["en":"Patient"])
 		).save(failOnError: true)

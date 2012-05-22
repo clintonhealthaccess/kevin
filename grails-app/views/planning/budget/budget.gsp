@@ -78,7 +78,7 @@
 																					<td>
 																						<span class="js_foldable-toggle" style="margin-left: 20px;"> <a href="#">&zwnj;</a> </span>
 																						<span>
-																							<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningSection', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber, section: planningTypeBudget.planningType.sections[0]])}">
+																							<a class="js_budget-section-link" href="${createLink(controller:'editPlanning', action:'editPlanningEntry', params:[location:location.id, planningType:planningTypeBudget.planningType.id, lineNumber: budgetPlanningEntry.lineNumber])}">
 																								<g:if test="${planningType.fixedHeader != null && !planningType.fixedHeader.empty}">
 																									<g:value value="${budgetPlanningEntry.fixedHeaderValue}" type="${budgetPlanningEntry.type.fixedHeaderType}" nullText="none entered"/>
 																								</g:if>
@@ -101,15 +101,15 @@
 																			</g:each>
 																		</tbody>
 																	</table>
-																</g:if>
-																<g:else>
-																	<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
-																		<td colspan="7" class="bucket">
-																			<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 20]"/>
-																		</td>
-																	</g:each>
-																</g:else>
-															</td>
+																</td>
+															</g:if>
+															<g:else>
+																<g:each in="${planningTypeBudget.planningEntryBudgetList}" var="budgetPlanningEntry">
+																	<td colspan="7" class="bucket">
+																		<g:render template="/planning/budget/costs" model="[budgetPlanningEntry: budgetPlanningEntry, planningType: planningTypeBudget.planningType, margin: 20]"/>
+																	</td>
+																</g:each>
+															</g:else>
 														</tr>
 													</g:if>
 												</g:each>
