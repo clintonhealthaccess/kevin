@@ -81,7 +81,7 @@ class FilterTagLib {
 			def model = new HashMap(attrs)
 			def location = attrs['selected']
 			def locationFilterRoot = locationService.getRootLocation()	
-			def locationFilterTree = locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], null)
+			def locationFilterTree = locationFilterRoot.collectTreeWithDataLocations(attrs['skipLevels'], attrs['selectedTypes'])
 			model << 
 				[
 					currentLocation: location,
