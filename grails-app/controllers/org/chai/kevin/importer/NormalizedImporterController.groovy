@@ -31,10 +31,14 @@ package org.chai.kevin.importer
 import java.io.InputStreamReader
 
 import org.chai.kevin.AbstractController
+import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
+import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.ValueService;
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
@@ -44,7 +48,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile
  *
  */
 class NormalizedImporterController extends AbstractController {
-	ImporterService importerService;
+	LocationService locationService;
+	ValueService valueService;
+	DataService dataService;
 	final String IMPORT_FORM = "normalizedImport";
 	final String IMPORT_OUTPUT = "importOutput";
 	
@@ -55,10 +61,10 @@ class NormalizedImporterController extends AbstractController {
 	def uploader = { NormalizedImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
-			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());
-			importerService.importNormalizedData(cmd.dataElement,csvInputStreamReader, cmd.period,errorManager);
-			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
+			NormalizedDataImporter importer = new NormalizedDataImporter(locationService,valueService,valueService,errorManager, cmd.dataElement, cmd.period);
+			importer.importUnzipFile(cmd.file);
+			this.getModel(cmd,errorManager,IMPORT_FORM);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
 		}	
@@ -88,14 +94,6 @@ class NormalizedImporterCommand {
 	static constraints = {
 		period(blank:false,nullable:false)
 		dataElement(blank:false,nullable:false)
-		file(blank:false,nullable:false, validator: { val, obj ->
-
-			final String FILE_TYPE = "text/csv";
-			boolean valid = true;
-			if(val != null)
-				if(!val.contentType.equals(FILE_TYPE))
-					return valid=false;
-			return valid;
-		})
+		
 	}
 }

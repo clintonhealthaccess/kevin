@@ -28,8 +28,11 @@
 package org.chai.kevin.importer;
 
 import org.chai.kevin.AbstractController;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
+import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
+import org.chai.kevin.value.ValueService;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -37,7 +40,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  *
  */
 class GeneralImporterController extends AbstractController {
-	ImporterService importerService;
+	LocationService locationService;
+	ValueService valueService;
+	DataService dataService;
 	final String IMPORT_FORM = "generalImport";
 	final String IMPORT_OUTPUT = "importOutput";
 	
@@ -48,9 +53,9 @@ class GeneralImporterController extends AbstractController {
 	def uploader = { GeneralImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
 		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",period="+cmd.period+")")
-			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());
-			importerService.importGeneralData(csvInputStreamReader, cmd.period,errorManager);
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+")")
+			GeneralDataImporter importer = new GeneralDataImporter(locationService,valueService,dataService,errorManager, cmd.period);
+			importer.importUnzipFile(cmd.file)
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
@@ -76,13 +81,5 @@ class GeneralImporterCommand {
 	
 	static constraints = {
 		period(blank:false,nullable:false)
-		file(blank:false,nullable:false, validator: { val, obj ->
-			final String FILE_TYPE = "text/csv";
-			boolean valid = true;
-			if(val != null)
-				if(!val.contentType.equals(FILE_TYPE))
-					valid=false;
-			return valid;
-		})
 	}
 }

@@ -48,7 +48,6 @@ import org.chai.kevin.dsr.DsrService
 import org.chai.kevin.export.ExporterService;
 import org.chai.kevin.fct.FctService
 import org.chai.kevin.form.FormValidationService;
-import org.chai.kevin.importer.ImporterService;
 import org.chai.kevin.maps.MapsService
 import org.chai.kevin.survey.SurveyCopyService
 import org.chai.kevin.survey.SurveyExportService
@@ -73,12 +72,6 @@ String dsrGroupLevel= config.dsr.group.level
 
 beans = {
 		
-	importerService(ImporterService){
-		locationService = ref("locationService")
-		valueService = ref("valueService")
-		dataService=ref("dataService")
-	}
-
 	validationService(ValidationService){
 		jaqlService = ref("jaqlService")
 	}
