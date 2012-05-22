@@ -37,7 +37,8 @@ import org.chai.kevin.data.Type.ValueType;
 constraints = {
 	planning (nullable:false)
 	formElement (nullable:false)
-	fixedHeader (nullable: false, blank: false, validator: {val, obj ->
+	fixedHeader (validator: {val, obj ->
+		if (val == null || val.trim().empty) return true
 		if (obj.formElement?.dataElement == null) return false
 		if (!obj.formElement.dataElement.getValuePrefixes('').contains(val)) return false
 	})
