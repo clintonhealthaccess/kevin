@@ -2,12 +2,13 @@ package org.chai.kevin.security
 
 import org.chai.kevin.location.DataLocation;
 
-class SurveyUser extends User {
+class DataUser extends User {
 
 	// TODO assign several surveys to a user
 	// instead of an location unit
 	Long dataLocationId;
-
+	String landingPage;
+	
 	def getDataLocation () {
 		return DataLocation.get(dataLocationId)
 	}
