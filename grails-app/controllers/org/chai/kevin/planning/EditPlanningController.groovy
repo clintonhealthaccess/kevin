@@ -18,7 +18,7 @@ class EditPlanningController extends AbstractController {
 	}
 	
 	def view = {
-		// this action redirects to the current survey if a SurveyUser logs in
+		// this action redirects to the current survey if a DataUser logs in
 		// or to a survey summary page if an admin logs in
 		if (log.isDebugEnabled()) log.debug("planning.view, params:"+params)
 		def user = getUser()

@@ -62,7 +62,7 @@ import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.planning.PlanningSkipRule;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.SurveyUser;
+import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
@@ -116,10 +116,16 @@ class Initializer {
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def kivuye = new SurveyUser(username: "kivuye", dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
-		kivuye.addToPermissions("editSurvey:view")
-		kivuye.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Kivuye HC").id)
-		kivuye.addToPermissions("menu:survey")
+		def butaro = new DataUser(username: "butaro", landingPage: HomeController.SURVEY_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid')
+		butaro.addToPermissions("editSurvey:view")
+		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Butaro DH").id)
+		butaro.addToPermissions("menu:survey")
+		butaro.save(failOnError: true)
+		
+		def kivuye = new DataUser(username: "kivuye", landingPage: HomeController.PLANNING_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
+		kivuye.addToPermissions("editPlanning:view")
+		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("Kivuye HC").id)
+		kivuye.addToPermissions("menu:planning")
 		kivuye.save(failOnError: true)
 	}
 

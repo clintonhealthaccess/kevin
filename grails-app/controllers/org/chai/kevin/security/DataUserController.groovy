@@ -34,22 +34,22 @@ package org.chai.kevin.security
 
 import org.chai.kevin.location.DataLocation;
 
-class SurveyUserController  extends UserAbstractController {
+class DataUserController  extends UserAbstractController {
 
 	def getEntity(def id) {
-		return SurveyUser.get(id)
+		return DataUser.get(id)
 	}
 
 	def createEntity() {
-		return new SurveyUser()
+		return new DataUser()
 	}
 
 	def getLabel() {
-		return 'surveyuser.label'
+		return 'datauser.label'
 	}
 	
 	def getTemplate() {
-		return "/entity/user/createSurveyUser"
+		return "/entity/user/createDataUser"
 	}
 	
 	def getModel(def entity) {
@@ -64,7 +64,7 @@ class SurveyUserController  extends UserAbstractController {
 	}
 
 	def exportEntity(){
-		return SurveyUser.class;
+		return DataUser.class;
 	}
 }
 
