@@ -33,12 +33,14 @@ package org.chai.kevin.importer;
  */
 public class ImporterError {
 	
+	String fileName;
 	Integer lineNumber;
 	String header;
 	String messageCode;
 
-	public ImporterError(Integer lineNumber, String header, String messageCode) {
+	public ImporterError(String fileName,Integer lineNumber, String header, String messageCode) {
 		super();
+		this.fileName= fileName;
 		this.lineNumber = lineNumber;
 		this.header = header;
 		this.messageCode = messageCode;
@@ -63,15 +65,19 @@ public class ImporterError {
 		this.messageCode = messageCode;
 	}
 	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((fileName == null) ? 0 : fileName.hashCode());
 		result = prime * result + ((header == null) ? 0 : header.hashCode());
 		result = prime * result
 				+ ((lineNumber == null) ? 0 : lineNumber.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -81,6 +87,11 @@ public class ImporterError {
 		if (getClass() != obj.getClass())
 			return false;
 		ImporterError other = (ImporterError) obj;
+		if (fileName == null) {
+			if (other.fileName != null)
+				return false;
+		} else if (!fileName.equals(other.fileName))
+			return false;
 		if (header == null) {
 			if (other.header != null)
 				return false;
@@ -93,8 +104,12 @@ public class ImporterError {
 			return false;
 		return true;
 	}
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "ImporterError [fileName=" + fileName + ", lineNumber="
+				+ lineNumber + ", header=" + header + ", messageCode="
+				+ messageCode + "]";
+	}
 
 }

@@ -31,10 +31,16 @@ package org.chai.kevin.importer
 import java.io.InputStreamReader
 
 import org.chai.kevin.AbstractController
+import org.chai.kevin.LocationService;
 import org.chai.kevin.Period;
+import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.util.Utils;
 import org.chai.kevin.value.RawDataElementValue;
+import org.chai.kevin.value.ValueService;
+import org.hibernate.SessionFactory;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
@@ -44,7 +50,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile
  *
  */
 class NormalizedImporterController extends AbstractController {
-	ImporterService importerService;
+	
+	LocationService locationService;
+	ValueService valueService;
+	DataService dataService;
+	SessionFactory sessionFactory;
+	PlatformTransactionManager transactionManager;
+	
 	final String IMPORT_FORM = "normalizedImport";
 	final String IMPORT_OUTPUT = "importOutput";
 	
@@ -54,10 +66,23 @@ class NormalizedImporterController extends AbstractController {
 	
 	def uploader = { NormalizedImporterCommand cmd ->
 		ImporterErrorManager errorManager = new ImporterErrorManager();
+		errorManager.setNumberOfSavedRows(0)
+		errorManager.setNumberOfUnsavedRows(0)
+		errorManager.setNumberOfRowsSavedWithError(0)
 		if (!cmd.hasErrors()) {
-			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file.getInputStream()+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
-			InputStreamReader csvInputStreamReader = new InputStreamReader(cmd.file.getInputStream());
-			importerService.importNormalizedData(cmd.dataElement,csvInputStreamReader, cmd.period,errorManager);
+			if(log.isDebugEnabled()) log.debug("uploader(file="+cmd.file+",period="+cmd.period+",dataElement="+cmd.dataElement+")")
+			
+			NormalizedDataImporter importer = new NormalizedDataImporter(
+				locationService, valueService, dataService,
+				sessionFactory, transactionManager,
+				errorManager, cmd.dataElement, cmd.period
+			);
+			if(cmd.file.getContentType().equals(FILE_TYPE_ZIP))
+				importer.importZipFiles(cmd.file.getInputStream())
+			if(cmd.file.getContentType().equals(FILE_TYPE_CSV))
+				importer.importCsvFile(cmd.file.getName(),cmd.file.getInputStream())
+			cmd.file.getInputStream().close();
+			
 			this.getModel(cmd,errorManager,IMPORT_OUTPUT);
 		}else{
 			this.getModel(cmd,errorManager,IMPORT_FORM);
@@ -88,14 +113,6 @@ class NormalizedImporterCommand {
 	static constraints = {
 		period(blank:false,nullable:false)
 		dataElement(blank:false,nullable:false)
-		file(blank:false,nullable:false, validator: { val, obj ->
-
-			final String FILE_TYPE = "text/csv";
-			boolean valid = true;
-			if(val != null)
-				if(!val.contentType.equals(FILE_TYPE))
-					return valid=false;
-			return valid;
-		})
+		
 	}
 }

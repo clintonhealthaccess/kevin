@@ -36,11 +36,20 @@ import java.util.List;
  */
 public class ImporterErrorManager {
 	
+	String currentFileName;
 	Integer numberOfSavedRows;
 	Integer numberOfUnsavedRows;
 	Integer numberOfRowsSavedWithError;
 	List<ImporterError> errors = new ArrayList<ImporterError>();
 
+	public String getCurrentFileName() {
+		return currentFileName;
+	}
+
+	public void setCurrentFileName(String currentFileName) {
+		this.currentFileName = currentFileName;
+	}
+	
 	public Integer getNumberOfSavedRows() {
 		return numberOfSavedRows;
 	}

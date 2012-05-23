@@ -151,6 +151,7 @@ public class FormElement {
 	public void submit(DataLocation dataLocation, Period period, ElementSubmitter submitter) {
 		Value valueToSave = getValue(dataLocation, submitter);
 		
+		// TODO this value should be evicted at some point
 		RawDataElementValue rawDataElementValue = submitter.getValueService().getDataElementValue(getDataElement(), dataLocation, period);
 		if (rawDataElementValue == null) {
 			rawDataElementValue = new RawDataElementValue(getDataElement(), dataLocation, period, null);

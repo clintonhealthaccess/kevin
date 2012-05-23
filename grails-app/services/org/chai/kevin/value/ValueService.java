@@ -78,7 +78,6 @@ public class ValueService {
 		if (values.size() > 0) result = values.get(0);
 		if (log.isDebugEnabled()) log.debug("getDataElementValue(...)="+result);
 		
-		sessionFactory.getCurrentSession().evict(result);
 		return result;
 	}
 	

@@ -27,12 +27,24 @@
  */
 package org.chai.kevin.importer
 
+import java.text.SimpleDateFormat;
 import org.chai.kevin.IntegrationTests;
+import org.chai.kevin.LocationService;
+import org.chai.kevin.Period;
+import org.chai.kevin.data.DataService;
+import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.data.Type;
+import org.chai.kevin.location.DataLocation;
+import org.chai.kevin.location.DataLocationType;
+import org.chai.kevin.location.Location;
+import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.value.RawDataElementValue;
 import org.chai.kevin.value.Value;
+import org.chai.kevin.value.ValueService;
+import org.hibernate.SessionFactory;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -41,7 +53,61 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 class NormalizedImporterControllerSpec extends IntegrationTests {
 	
+	// there is no rollback so each element inserted is kept between tests
+	static transactional = false
+	
+	LocationService locationService;
+	ValueService valueService;
+	DataService dataService;
+	SessionFactory sessionFactory;
+	PlatformTransactionManager transactionManager;
+	
+	def importerService;
 	def normalizedImporterController;
+
+	def setupSpec() {
+		setupLocationTree()
+		newPeriod()
+	}
+	
+	def cleanup() {
+		RawDataElementValue.executeUpdate("delete RawDataElementValue")
+		RawDataElement.executeUpdate("delete RawDataElement")
+	}
+	
+	def cleanupSpec() {
+		DataLocation.executeUpdate("delete DataLocation")
+		Location.executeUpdate("delete Location")
+		LocationLevel.executeUpdate("delete LocationLevel")
+		DataLocationType.executeUpdate("delete DataLocationType")
+		Period.executeUpdate("delete Period")
+	}
+	
+	def "test system don't break if the file from zip is not csv"(){
+		when:
+		
+		def typeDate = Type.TYPE_LIST(Type.TYPE_MAP(["birth_date": Type.TYPE_DATE()]))
+		def dataDateElement = newRawDataElement(CODE(3), typeDate)
+
+		def importerErrorManagerDate = new ImporterErrorManager();
+		importerErrorManagerDate.setNumberOfSavedRows(0)
+		importerErrorManagerDate.setNumberOfUnsavedRows(0)
+		importerErrorManagerDate.setNumberOfRowsSavedWithError(0)
+		
+		NormalizedDataImporter importer = new NormalizedDataImporter(
+			locationService, valueService, dataService,
+			sessionFactory, transactionManager,
+			importerErrorManagerDate, dataDateElement, Period.list()[0]
+		);
+	
+	    File file = new File("test/integration/org/chai/kevin/importer/testFile.csv.zip");
+		importer.importZipFiles(new FileInputStream(file));
+		then:
+		importerErrorManagerDate.errors.size() == 1
+		RawDataElementValue.count()==1
+		typeDate.getValue(RawDataElementValue.list()[0].value, "[0].birth_date").getDateValue().equals(new SimpleDateFormat("dd-MM-yyyy").parse("15-08-1971"));
+		
+	}
 	
 	//TODO find a way to test a controller using  CommonsMultipartFile
 /*
@@ -72,4 +138,10 @@ class NormalizedImporterControllerSpec extends IntegrationTests {
 		normalizedImporterController.modelAndView.model.errorManager.errors.size()==1
 		}
 */
+	
+	// TODO
+//	def "shows error page after succesful import"(){ 
+//		
+//	}
+	
 }

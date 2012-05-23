@@ -335,10 +335,12 @@ public class SurveyPageService {
 		Survey survey = element.getSurvey();
 		
 		FormEnteredValue enteredValue = formElementService.getOrCreateFormEnteredValue(dataLocation, element);
+		// TODO this value should be evicted at some point
 		RawDataElementValue rawDataElementValue = valueService.getDataElementValue(element.getDataElement(), dataLocation, survey.getPeriod());
 		if (rawDataElementValue != null) enteredValue.setValue(rawDataElementValue.getValue());
 		else enteredValue.setValue(Value.NULL_INSTANCE());
 		if (survey.getLastPeriod() != null) {
+			// TODO this value should be evicted at some point
 			RawDataElementValue lastDataValue = valueService.getDataElementValue(element.getDataElement(), dataLocation, survey.getLastPeriod());
 			if (lastDataValue != null) enteredValue.setLastValue(lastDataValue.getValue());
 			else enteredValue.setLastValue(Value.NULL_INSTANCE());

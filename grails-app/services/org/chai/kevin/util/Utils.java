@@ -40,26 +40,21 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.chai.kevin.LanguageService;
-import org.chai.kevin.data.Enum;
-import org.chai.kevin.data.EnumOption;
-import org.chai.kevin.data.EnumService;
 import org.chai.kevin.data.Type;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.value.Value;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author Jean Kahigiso M.
  * 
  */
 public class Utils {
-	private static EnumService enumService;
-	private static LanguageService languageService;
 	
 	private final static String DATE_FORMAT = "dd-MM-yyyy";
 	private final static String DATE_FORMAT_TIME = "dd-MM-yyyy hh:mm:ss";
