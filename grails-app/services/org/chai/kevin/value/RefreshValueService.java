@@ -19,13 +19,13 @@ import org.chai.kevin.data.NormalizedDataElement;
 import org.chai.kevin.data.RawDataElement;
 import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.hibernate.CacheMode;
-import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 public class RefreshValueService {
 
@@ -33,32 +33,35 @@ public class RefreshValueService {
 	
 	private DataService dataService;
 	private SessionFactory sessionFactory;
+	private PlatformTransactionManager transactionManager;
 	private ExpressionService expressionService;
 	private ValueService valueService;
-	private GrailsApplication grailsApplication;
+	
+	private TransactionTemplate transactionTemplate;
+	
+	private TransactionTemplate getTransactionTemplate() {
+		if (transactionTemplate == null) {
+			transactionTemplate = new TransactionTemplate(transactionManager);
+			transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+		}
+		return transactionTemplate;
+	}
 	
 	@Transactional(readOnly = false)
 	public void refreshNormalizedDataElements() {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
-		
-		List<NormalizedDataElement> normalizedDataElements = sessionFactory.getCurrentSession().createCriteria(NormalizedDataElement.class).list();
+		final List<NormalizedDataElement> normalizedDataElements = sessionFactory.getCurrentSession().createCriteria(NormalizedDataElement.class).list();
 		while (!normalizedDataElements.isEmpty()) {
-			NormalizedDataElement normalizedDataElement = normalizedDataElements.get(0);
-			List<NormalizedDataElement> uptodateElements = getMe().refreshNormalizedDataElementInTransaction(normalizedDataElement);
-			normalizedDataElements.removeAll(uptodateElements);
+			final NormalizedDataElement normalizedDataElement = normalizedDataElements.get(0);
+			
+			getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
+				@Override
+				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+					List<NormalizedDataElement> uptodateElements = refreshNormalizedDataElement(normalizedDataElement);
+					normalizedDataElements.removeAll(uptodateElements);
+				}
+			});
 			sessionFactory.getCurrentSession().clear();
 		}
-	}
-	
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
-	public List<NormalizedDataElement> refreshNormalizedDataElementInTransaction(NormalizedDataElement normalizedDataElement) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
-		
-		List<NormalizedDataElement> uptodateElements = new ArrayList<NormalizedDataElement>();
-		refreshDataElement(normalizedDataElement, uptodateElements);
-		return uptodateElements;
 	}
 	
 	@Transactional(readOnly = false)
@@ -188,24 +191,18 @@ public class RefreshValueService {
 	
 	@Transactional(readOnly = false)
 	public void refreshCalculations() {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
-		
 		// TODO get only those who need to be refreshed
 		List<Calculation<?>> calculations = sessionFactory.getCurrentSession().createCriteria(Calculation.class).list();
 		
-		for (Calculation<?> calculation : calculations) {
-			getMe().refreshCalculationInTransaction(calculation);
+		for (final Calculation<?> calculation : calculations) {
+			getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
+				@Override
+				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+					refreshCalculation(calculation);
+				}
+			});
 			sessionFactory.getCurrentSession().clear();
 		}
-	}
-	
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW)
-	public void refreshCalculationInTransaction(Calculation<?> calculation) {
-		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
-		sessionFactory.getCurrentSession().setCacheMode(CacheMode.IGNORE);
-		
-		refreshCalculation(calculation);
 	}
 	
 	@Transactional(readOnly = false)
@@ -279,16 +276,8 @@ public class RefreshValueService {
 		this.dataService = dataService;
 	}
 	
-	public GrailsApplication getGrailsApplication() {
-		return grailsApplication;
-	}
-	
-	public void setGrailsApplication(GrailsApplication grailsApplication) {
-		this.grailsApplication = grailsApplication;
-	}
-	
-	public RefreshValueService getMe() {
-		return grailsApplication.getMainContext().getBean(RefreshValueService.class);
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
 	}
 	
 }

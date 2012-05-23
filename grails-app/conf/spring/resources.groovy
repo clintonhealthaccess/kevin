@@ -98,7 +98,7 @@ beans = {
 		valueService = ref("valueService")
 		sessionFactory = ref("sessionFactory")
 		dataService = ref("dataService")
-		grailsApplication = ref("grailsApplication")
+		transactionManager = ref("transactionManager")
 	}
 	
 	formValidationService(FormValidationService){
@@ -111,8 +111,8 @@ beans = {
 		valueService = ref("valueService")
 		dataService = ref("dataService")
 		formValidationService = ref("formValidationService")
+		transactionManager = ref("transactionManager")
 		sessionFactory = ref("sessionFactory")
-		grailsApplication = ref("grailsApplication")
 	}
 	
 	summaryService(SummaryService){
