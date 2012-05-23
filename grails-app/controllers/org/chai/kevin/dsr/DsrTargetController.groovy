@@ -65,7 +65,6 @@ class DsrTargetController extends AbstractEntityController {
 		[
 			target: entity,
 			programs: ReportProgram.list(),
-			types: DataLocationType.list([cache: true]),
 			categories: DsrTargetCategory.list(),
 			dataElements: entity.dataElement!=null?[entity.dataElement]:[]
 		]
@@ -96,10 +95,10 @@ class DsrTargetController extends AbstractEntityController {
 	def list = {
 		adaptParamsForList()
 		
-		List<DsrTarget> programs = DsrTarget.list(params);
+		List<DsrTarget> targets = DsrTarget.list(params);
 		
 		render (view: '/entity/list', model:[
-			entities: programs,
+			entities: targets,
 			template: "dsr/targetList",
 			code: getLabel(),
 			entityCount: DsrTarget.count()

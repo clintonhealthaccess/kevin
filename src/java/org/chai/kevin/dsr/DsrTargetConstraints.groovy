@@ -37,5 +37,4 @@ constraints = {
 	dataElement (nullable: false)
 //	category(nullable: false)
 	program (nullable: false)
-	typeCodeString (nullable: null)
 }

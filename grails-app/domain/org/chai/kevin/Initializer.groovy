@@ -891,7 +891,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 8,
-					typeCodeString: "Health Center",
 					code: "Accountant"
 					).save(failOnError:true)
 
@@ -900,7 +899,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 1,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Days Of Nurse Training"
 					).save(failOnError:true)
 
@@ -909,7 +907,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("TRUE"),
 					order: 2,
-					typeCodeString: "Health Center",
 					code: "A1"
 					).save(failOnError:true)
 
@@ -918,7 +915,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("FALSE"),
 					order: 5,
-					typeCodeString: "District Hospital,Health Center",
 					code:"A2"
 					).save(failOnError:true)
 
@@ -927,7 +923,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
-					typeCodeString: "District Hospital,Health Center",
 					code: "A3"
 					).save(failOnError:true)
 
@@ -936,7 +931,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 4,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Testing Category Human Resource"
 					).save(failOnError:true)
 
@@ -945,7 +939,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 6,
-					typeCodeString: "District Hospital,Health Center",
 					code: "In-Facility Birth Ratio"
 					).save(failOnError:true)
 
@@ -954,7 +947,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Mental Health Service"
 					).save(failOnError:true)
 
@@ -963,7 +955,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
-					typeCodeString: "Health Center",
 					code: "Malaria Rapid Test"
 					).save(failOnError:true)
 
@@ -972,7 +963,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
-					typeCodeString: "District Hospital,Health Center",
 					code: "HIV Rapid Test"
 					).save(failOnError:true)
 
@@ -981,7 +971,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
-					typeCodeString: "Health Center",
 					code: "TB Stain Test"
 					).save(failOnError:true)
 
@@ -990,7 +979,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 12,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Catchment Population per CHW"
 					).save(failOnError:true)
 
@@ -999,7 +987,6 @@ class Initializer {
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 1,
-					typeCodeString: "Health Center",
 					code: "Consultation Room"
 					).save(failOnError:true)
 
@@ -1008,7 +995,6 @@ class Initializer {
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Facility Water Status"
 					).save(failOnError:true)
 
@@ -1017,7 +1003,6 @@ class Initializer {
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Incinerator Availability"
 					).save(failOnError:true)
 
@@ -1025,7 +1010,6 @@ class Initializer {
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					typeCodeString: "District Hospital,Health Center",
 					code: "Facility Power Status"
 					).save(failOnError:true)
 

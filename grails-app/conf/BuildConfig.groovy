@@ -123,7 +123,7 @@ grails.project.dependency.resolution = {
 		compile ":mail:1.0"
 		compile ":build-info-tag:0.1"
 		
-		test (":spock:0.6-SNAPSHOT") {changing = false}
+		test (":spock:0.6") {changing = false}
 	}
 
 	

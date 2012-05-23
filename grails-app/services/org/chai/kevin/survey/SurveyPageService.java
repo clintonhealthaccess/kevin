@@ -41,6 +41,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.chai.kevin.LocationService;
 import org.chai.kevin.data.DataService;
 import org.chai.kevin.data.Enum;
 import org.chai.kevin.data.Type;
@@ -55,6 +56,8 @@ import org.chai.kevin.location.CalculationLocation;
 import org.chai.kevin.location.DataLocation;
 import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
+import org.chai.kevin.location.LocationLevel;
+import org.chai.kevin.reports.ReportService;
 import org.chai.kevin.survey.SurveyElement.SurveyElementCalculator;
 import org.chai.kevin.survey.SurveyElement.SurveyElementSubmitter;
 import org.chai.kevin.survey.SurveyQuestion.QuestionType;
@@ -84,12 +87,16 @@ public class SurveyPageService {
 	private SurveyValueService surveyValueService;
 	private ValueService valueService;
 	private DataService dataService;
+	private LocationService locationService;
 	private FormValidationService formValidationService;
 	private SessionFactory sessionFactory;
 	private PlatformTransactionManager transactionManager;
 	
 	private TransactionTemplate transactionTemplate;
 	
+	private Set<String> submitSkipLevels;
+	private Set<String> locationSkipLevels;
+
 	private TransactionTemplate getTransactionTemplate() {
 		if (transactionTemplate == null) {
 			transactionTemplate = new TransactionTemplate(transactionManager);
@@ -548,63 +555,48 @@ public class SurveyPageService {
 	}
 	
 	@Transactional(readOnly = false)
-	public boolean submit(DataLocation dataLocation, SurveyProgram program) {
+	public boolean submitAll(CalculationLocation location, Set<DataLocationType> types, Survey survey, SurveyProgram program){
+		if (log.isDebugEnabled()) log.debug("submitAll(location=" + location + ", survey=" + survey + ", program="+program+")");
+//		sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
 		
-		// first we make sure that the program is valid and complete, so we revalidate it
-		List<SurveyElement> elements = program.getElements(dataLocation.getType());
-		evaluateRulesAndSave(dataLocation, elements, new HashMap<SurveyElement, FormEnteredValue>());
-		
-		// we get the updated survey and work from that
-		SurveyPage surveyPage = getSurveyPage(dataLocation, program);			
-		
-		if (surveyPage.canSubmit(program)) {
-			SurveyElementSubmitter submitter = new SurveyElementSubmitter(surveyValueService, formElementService, valueService);
-
-			// save all the values to data values
-			for (SurveyElement element : elements) {
-				element.submit(dataLocation, element.getSurvey().getPeriod(), submitter);
-			}
-			
-			// close the program
-			SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program);
-			enteredProgram.setClosed(true);
-			surveyValueService.save(enteredProgram);
-	
-			// log the event
-			//logSurveyEvent(dataLocation, program, "submit");
-			
-			return true;
-		}
-		else return false;
+		boolean result = false;		
+		List<DataLocation> dataLocations = location.collectDataLocations(null, types);
+		result = submitAll(dataLocations, survey, program);
+		return result;
 	}
-
-	@Transactional(readOnly = false)
-	public boolean submitAll(final Location location, final Survey survey) {				
-		if (log.isDebugEnabled()) log.debug("submitAll(location=" + location + ", survey=" + survey + ")");
+	
+	private boolean submitAll(List<DataLocation> dataLocations, Survey survey, SurveyProgram program) {		
 		
-		List<DataLocation> dataLocations = location.collectDataLocations(null, null);
-		for (final DataLocation dataLocation : dataLocations) {
-			submitIfNotClosed(survey, dataLocation);
-		}	
+		for (DataLocation dataLocation : dataLocations) {
+			submitIfNotClosed(dataLocation, survey, program);
+		}
 		
 		// commented do to Hibernate bug https://hibernate.onjira.com/browse/HHH-2763
-//			getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
-//				@Override
-//				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
-//					Survey newSurvey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
-//					submitIfNotClosed(survey, dataLocation);
-//				}
-//			});
-//			sessionFactory.getCurrentSession().clear();
+//		getTransactionTemplate().execute(new TransactionCallbackWithoutResult() {
+//			@Override
+//			protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+//				Survey newSurvey = (Survey)sessionFactory.getCurrentSession().load(Survey.class, survey.getId());
+//				submitIfNotClosed(survey, dataLocation);
+//			}
+//		});
+//		sessionFactory.getCurrentSession().clear();
 		
 		return true;
 	}
-
-	private void submitIfNotClosed(Survey survey, DataLocation dataLocation) {
+	
+	private void submitIfNotClosed(DataLocation dataLocation, Survey survey, SurveyProgram program) {
 		if (log.isDebugEnabled()) log.debug("submitIfNotClosed(survey=" + survey + ", location=" + dataLocation + ")");
 		
-		List<SurveyProgram> surveyPrograms = survey.getPrograms(dataLocation.getType());
-		for (SurveyProgram surveyProgram : surveyPrograms) {								
+		List<SurveyProgram> surveyPrograms = new ArrayList<SurveyProgram>();
+		if(program != null){
+			if(program.getSurvey().getPrograms(dataLocation.getType()).contains(program))
+				surveyPrograms.add(program);	
+		}
+		else surveyPrograms = survey.getPrograms(dataLocation.getType());
+		
+		for (SurveyProgram surveyProgram : surveyPrograms) {
+			
+			if(!surveyProgram.getTypeCodes().contains(dataLocation.getType().getCode())) continue;
 			
 			// we get whether to submit anyways if the program is not closed, even if it is incomplete or invalid
 			boolean isClosed = getSurveyEnteredProgram(dataLocation, surveyProgram).isClosed();				
@@ -634,12 +626,12 @@ public class SurveyPageService {
 		}
 	}
 	
-	private void logSurveyEvent(DataLocation dataLocation, SurveyProgram program, String event) {
-		SurveyLog surveyLog = new SurveyLog(program.getSurvey(), program, dataLocation);
-		surveyLog.setEvent(event);
-		surveyLog.setTimestamp(new Date());
-		sessionFactory.getCurrentSession().save(surveyLog);
-	}
+//	private void logSurveyEvent(DataLocation dataLocation, SurveyProgram program, String event) {
+//		SurveyLog surveyLog = new SurveyLog(program.getSurvey(), program, dataLocation);
+//		surveyLog.setEvent(event);
+//		surveyLog.setTimestamp(new Date());
+//		sessionFactory.getCurrentSession().save(surveyLog);
+//	}
 	
 	public void reopen(DataLocation dataLocation, SurveyProgram program) {
 		SurveyEnteredProgram enteredProgram = getSurveyEnteredProgram(dataLocation, program); 
@@ -727,4 +719,32 @@ public class SurveyPageService {
 		this.transactionManager = transactionManager;
 	}
 
+	public void setLocationService(LocationService locationService) {
+		this.locationService = locationService;
+	}
+	
+	public void setSubmitSkipLevels(Set<String> submitSkipLevels) {
+		this.submitSkipLevels = submitSkipLevels;
+	}
+	
+	public void setLocationSkipLevels(Set<String> locationSkipLevels) {
+		this.locationSkipLevels = locationSkipLevels;
+	}
+	
+	public Set<LocationLevel> getSkipSubmitLevels() {
+		Set<LocationLevel> levels = new HashSet<LocationLevel>();
+		for (String skipLevel : this.submitSkipLevels) {
+			levels.add(locationService.findLocationLevelByCode(skipLevel));
+		}
+		return levels;
+	}
+	
+	public Set<LocationLevel> getSkipLocationLevels() {
+		Set<LocationLevel> levels = new HashSet<LocationLevel>();
+		for (String skipLevel : this.locationSkipLevels) {
+			levels.add(locationService.findLocationLevelByCode(skipLevel));
+		}
+		return levels;
+	}
+	
 }

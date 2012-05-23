@@ -11,13 +11,13 @@
 				<div class="hidden js_dropdown-list dropdown-list" id="js_location-type-filter">
 					<ul>
 						<li><a id="js_checkall" class="dropdown-check" href="#"><g:message code="filter.datalocationtype.checkall"/></a>
-						<a id="js_uncheckall" class="dropdown-check" href="#" ><g:message code="filter.datalocationtype.uncheckall"/></a>
-						<g:each in="${dataLocationTypes}" var="type">
-								<li class="check_filter">								
-									<input class="dataLocationType-checkbox" name="dataLocationTypes" type="checkbox" value="${type.id}" 
-									${currentLocationTypes != null && !currentLocationTypes.empty && currentLocationTypes.contains(type)?'checked="checked"':''}/>
-									<label for="${type.id}"><g:i18n field="${type.names}"/></label>								
-								</li>
+							<a id="js_uncheckall" class="dropdown-check" href="#" ><g:message code="filter.datalocationtype.uncheckall"/></a>
+							<g:each in="${dataLocationTypes}" var="type">
+									<li class="check_filter">								
+										<input class="dataLocationType-checkbox" name="dataLocationTypes" type="checkbox" value="${type.id}" 
+										${currentLocationTypes != null && !currentLocationTypes.empty && currentLocationTypes.contains(type)?'checked="checked"':''}/>
+										<label for="${type.id}"><g:i18n field="${type.names}"/></label>								
+									</li>
 							</g:each>	        
 						<li><button id="dataLocationType-submit" type="submit"><g:message code="filter.datalocationtype.filter"/></button></li>
 					</ul>
