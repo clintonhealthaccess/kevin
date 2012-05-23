@@ -114,6 +114,39 @@ class ImporterSpec extends IntegrationTests {
 		importerErrorManager.errors.size() == 0 
 	}
 	
+	def "import data when data already exists csv"(){
+		when:
+		def type = Type.TYPE_LIST(Type.TYPE_MAP(["key1": Type.TYPE_STRING()]))
+		def csvString =
+			"code,key1\n"+
+			BUTARO+",value\n"
+			
+		def dataElement = newRawDataElement(CODE(1), type)
+		def rawDataElementValue = newRawDataElementValue(dataElement,Period.list()[0],DataLocation.findByCode(BUTARO),Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("test")])]))
+		
+		def importerErrorManager = new ImporterErrorManager();
+		importerErrorManager.setNumberOfSavedRows(0)
+		importerErrorManager.setNumberOfUnsavedRows(0)
+		importerErrorManager.setNumberOfRowsSavedWithError(0)
+		
+		NormalizedDataImporter importer = new NormalizedDataImporter(
+			locationService, valueService, dataService,
+			sessionFactory, transactionManager,
+			importerErrorManager, dataElement, Period.list()[0]
+		);
+	
+		importer.importData("File Name",new StringReader(csvString))
+			
+		then:
+		RawDataElementValue.count() == 1
+		RawDataElementValue.list()[0].location.equals(DataLocation.findByCode(BUTARO))
+		RawDataElementValue.list()[0].data.equals(RawDataElement.findByCode(CODE(1)))
+		//RawDataElementValue.list()[0].period.equals(Period.list()[0])
+		RawDataElementValue.list()[0].value.equals(Value.VALUE_LIST([Value.VALUE_MAP(["key1":Value.VALUE_STRING("value")])]))
+		importerErrorManager.errors.size() == 0
+	}
+	
+	
 	def "get normalized import bool data from csv"(){
 		when:
 		def typeBool = Type.TYPE_LIST(Type.TYPE_MAP(["marital_status": Type.TYPE_BOOL()]))

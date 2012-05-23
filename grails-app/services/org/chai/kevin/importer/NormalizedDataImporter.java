@@ -62,7 +62,7 @@ import org.supercsv.prefs.CsvPreference;
  */
 public class NormalizedDataImporter extends Importer {
 	
-	private static final Integer NUMBER_OF_LINES_TO_IMPORT = 200;
+	private static final Integer NUMBER_OF_LINES_TO_IMPORT = 100;
 	private static final Log log = LogFactory.getLog(NormalizedDataImporter.class);
 	
 	private LocationService locationService;
@@ -204,7 +204,6 @@ public class NormalizedDataImporter extends Importer {
 			if (log.isTraceEnabled()) log.trace("value after merge " + rawDataElementValue.getValue());
 			
 			valueService.save(rawDataElementValue);
-			sessionFactory.getCurrentSession().evict(rawDataElementValue);
 			if (log.isTraceEnabled()) log.trace("saved rawDataElement: "+ rawDataElementValue.getValue());
 		}
 	}
