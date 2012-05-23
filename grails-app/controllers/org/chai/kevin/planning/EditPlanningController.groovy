@@ -18,7 +18,7 @@ class EditPlanningController extends AbstractController {
 	}
 	
 	def view = {
-		// this action redirects to the current survey if a SurveyUser logs in
+		// this action redirects to the current survey if a DataUser logs in
 		// or to a survey summary page if an admin logs in
 		if (log.isDebugEnabled()) log.debug("planning.view, params:"+params)
 		def user = getUser()
@@ -87,6 +87,30 @@ class EditPlanningController extends AbstractController {
 			planningService.deletePlanningEntry(planningType, location, lineNumber)
 			
 			redirect (uri: getTargetURI())
+		}
+	}
+	
+	def save = {
+		def planningType = PlanningType.get(params.int('planningType'))
+		def location = DataLocation.get(params.int('location'))
+		def lineNumberParam = params.int('lineNumber')
+		
+		def planningEntry = planningService.modify(planningType, location, lineNumberParam, params)
+		def validatable = planningEntry.validatable
+		
+		if (planningEntry.invalidSections.empty) {
+			planningService.submitIfNeeded(planningType.planning, location)
+			
+			redirect(uri: targetURI)
+		}
+		else {
+			flash.message = message(code: 'planning.new.save.invalid')
+			render (view: '/planning/editPlanningEntry', model: [
+				planningType: planningType,
+				planningEntry: planningEntry,
+				location: location,
+				targetURI: targetURI
+			])
 		}
 	}
 

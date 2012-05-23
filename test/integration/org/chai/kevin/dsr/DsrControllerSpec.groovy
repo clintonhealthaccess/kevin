@@ -14,7 +14,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)		
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newDsrTarget(CODE(4), 1, dataElement, program)
 		
 		when: "valid table"
 		dsrController = new DsrController()
@@ -38,7 +38,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newDsrTarget(CODE(4), 1, dataElement, program)
 		
 		when: "no program and no location"
 		dsrController = new DsrController()
@@ -79,7 +79,7 @@ class DsrControllerSpec extends DsrIntegrationTests {
 		def period = newPeriod()
 		def program = newReportProgram(ROOT)
 		def dataElement = newRawDataElement(CODE(3), Type.TYPE_NUMBER())
-		def target = newDsrTarget(CODE(4), 1, dataElement, [DISTRICT_HOSPITAL_GROUP, HEALTH_CENTER_GROUP], program)
+		def target = newDsrTarget(CODE(4), 1, dataElement, program)
 		
 		when:
 		dsrController = new DsrController()

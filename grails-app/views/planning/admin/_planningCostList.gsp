@@ -4,8 +4,8 @@
 			<th/>
 			<th><g:message code="entity.name.label"/></th>
 			<th><g:message code="planning.planningcost.type.label"/></th>
-			<th><g:message code="planning.planningcost.discriminatorvalue.label"/></th>
 			<th><g:message code="planning.planningcost.dataelement.label"/></th>
+			<th><g:message code="planning.planningcost.hideifzero.label"/></th>
 			<th><g:message code="entity.order.label"/></th>
 		</tr>
 	</thead>
@@ -28,8 +28,8 @@
 				</td>
 				<td><g:i18n field="${planningCost.names}"/></td>
 				<td>${planningCost.type}</td>
-				<td><g:stripHtml field="${planningCost.discriminatorValueString}" chars="100"/></td>
 				<td><g:i18n field="${planningCost.dataElement.names}"/>[${planningCost.dataElement.id}]</td>
+				<td>${planningCost?.hideIfZero?'\u2713':''}</td>
 				<td>${planningCost.order}</td>
 			</tr>
 		</g:each>

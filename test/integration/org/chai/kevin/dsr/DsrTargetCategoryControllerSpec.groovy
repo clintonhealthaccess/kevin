@@ -40,9 +40,9 @@ class DsrTargetCategoryControllerSpec extends DsrIntegrationTests {
 		setup:
 		def program = newReportProgram(CODE(1))
 		def category1 = newDsrTargetCategory(CODE(1), 1)
-		newDsrTarget(CODE(1), 1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()), [], program, category1);
-		newDsrTarget(CODE(2), 2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()), [], program, category1);
-		newDsrTarget(CODE(3), 3, newRawDataElement(CODE(3), Type.TYPE_NUMBER()), [], program, category1);
+		newDsrTarget(CODE(1), 1, newRawDataElement(CODE(1), Type.TYPE_NUMBER()), program, category1);
+		newDsrTarget(CODE(2), 2, newRawDataElement(CODE(2), Type.TYPE_NUMBER()), program, category1);
+		newDsrTarget(CODE(3), 3, newRawDataElement(CODE(3), Type.TYPE_NUMBER()), program, category1);
 		
 		def category2 = newDsrTargetCategory(CODE(2), 2)
 		def category3 = newDsrTargetCategory(CODE(3), 3)

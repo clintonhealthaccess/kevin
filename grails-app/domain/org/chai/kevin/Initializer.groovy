@@ -62,7 +62,7 @@ import org.chai.kevin.planning.PlanningCost.PlanningCostType;
 import org.chai.kevin.planning.PlanningSkipRule;
 import org.chai.kevin.planning.PlanningType;
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.SurveyUser;
+import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
 import org.chai.kevin.security.Role;
 import org.chai.kevin.survey.*;
@@ -116,10 +116,16 @@ class Initializer {
 		admin.addToPermissions("*")
 		admin.save(failOnError: true)
 
-		def kivuye = new SurveyUser(username: "kivuye", dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
-		kivuye.addToPermissions("editSurvey:view")
-		kivuye.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Kivuye HC").id)
-		kivuye.addToPermissions("menu:survey")
+		def butaro = new DataUser(username: "butaro", landingPage: HomeController.SURVEY_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Butaro DH").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'butaro_uuid')
+		butaro.addToPermissions("editSurvey:view")
+		butaro.addToPermissions("editSurvey:*:"+DataLocation.findByCode("Butaro DH").id)
+		butaro.addToPermissions("menu:survey")
+		butaro.save(failOnError: true)
+		
+		def kivuye = new DataUser(username: "kivuye", landingPage: HomeController.PLANNING_LANDING_PAGE, dataLocationId: DataLocation.findByCode("Kivuye HC").id, passwordHash: new Sha256Hash("123").toHex(), active: true, confirmed: true, uuid: 'kivuye_uuid')
+		kivuye.addToPermissions("editPlanning:view")
+		kivuye.addToPermissions("editPlanning:*:"+DataLocation.findByCode("Kivuye HC").id)
+		kivuye.addToPermissions("menu:planning")
 		kivuye.save(failOnError: true)
 	}
 
@@ -885,7 +891,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 8,
-					typeCodeString: "Health Center",
 					code: "Accountant"
 					).save(failOnError:true)
 
@@ -894,7 +899,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 1,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Days Of Nurse Training"
 					).save(failOnError:true)
 
@@ -903,7 +907,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("TRUE"),
 					order: 2,
-					typeCodeString: "Health Center",
 					code: "A1"
 					).save(failOnError:true)
 
@@ -912,7 +915,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("FALSE"),
 					order: 5,
-					typeCodeString: "District Hospital,Health Center",
 					code:"A2"
 					).save(failOnError:true)
 
@@ -921,7 +923,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
-					typeCodeString: "District Hospital,Health Center",
 					code: "A3"
 					).save(failOnError:true)
 
@@ -930,7 +931,6 @@ class Initializer {
 					program: hmr,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 4,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Testing Category Human Resource"
 					).save(failOnError:true)
 
@@ -939,7 +939,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 6,
-					typeCodeString: "District Hospital,Health Center",
 					code: "In-Facility Birth Ratio"
 					).save(failOnError:true)
 
@@ -948,7 +947,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 11,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Mental Health Service"
 					).save(failOnError:true)
 
@@ -957,7 +955,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 7,
-					typeCodeString: "Health Center",
 					code: "Malaria Rapid Test"
 					).save(failOnError:true)
 
@@ -966,7 +963,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 9,
-					typeCodeString: "District Hospital,Health Center",
 					code: "HIV Rapid Test"
 					).save(failOnError:true)
 
@@ -975,7 +971,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 20"),
 					order: 10,
-					typeCodeString: "Health Center",
 					code: "TB Stain Test"
 					).save(failOnError:true)
 
@@ -984,7 +979,6 @@ class Initializer {
 					program: finacss,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 12,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Catchment Population per CHW"
 					).save(failOnError:true)
 
@@ -993,7 +987,6 @@ class Initializer {
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 1,
-					typeCodeString: "Health Center",
 					code: "Consultation Room"
 					).save(failOnError:true)
 
@@ -1002,7 +995,6 @@ class Initializer {
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 3,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Facility Water Status"
 					).save(failOnError:true)
 
@@ -1011,7 +1003,6 @@ class Initializer {
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
 					order: 2,
-					typeCodeString: "District Hospital,Health Center",
 					code: "Incinerator Availability"
 					).save(failOnError:true)
 
@@ -1019,7 +1010,6 @@ class Initializer {
 					names:j(["en":"Facility Power Status"]), descriptions:j(["en":"Facility Power Status"]),
 					program: instCap,
 					dataElement: NormalizedDataElement.findByCode("Constant 10"),
-					typeCodeString: "District Hospital,Health Center",
 					code: "Facility Power Status"
 					).save(failOnError:true)
 
@@ -1217,7 +1207,6 @@ class Initializer {
 				"[_].funding_sources": j(["en":"Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."])
 			],
 			formElement: formElement,
-			discriminator: '[_].basic.activity',
 			fixedHeader: '[_].basic.description',
 			planning: planning
 		).save(failOnError: true);
@@ -1233,7 +1222,6 @@ class Initializer {
 		def planningCost1 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.INCOMING,
-			discriminatorValueString: 'value1',
 			dataElement: planningElement1,
 			names: j(["en":"Salaries"])
 		).save(failOnError: true)
@@ -1247,7 +1235,6 @@ class Initializer {
 		def planningCost2 = new PlanningCost(
 			planningType: planningType,
 			type: PlanningCostType.OUTGOING,
-			discriminatorValueString: 'value1',
 			dataElement: planningElement2,
 			names: j(["en":"Patient"])
 		).save(failOnError: true)

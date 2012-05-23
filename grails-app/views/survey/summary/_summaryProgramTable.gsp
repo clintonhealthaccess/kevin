@@ -11,7 +11,9 @@
 			<th></th>
 		</thead>
 		<tbody>
+			<g:set var="programsClosed" value="${true}"/>
 			<g:each in="${summaryPage.locations}" var="location">
+				<g:set var="programClosed" value="${summaryPage.getSurveyEnteredProgram(location)?.closed}" />
 				<g:set var="questionSummary" value="${summaryPage.getQuestionSummary(location)}" />
 				<tr>
 					<td class="section-table-link" data-program="${currentProgram.id}" data-location="${location.id}">
@@ -19,17 +21,33 @@
 							<g:i18n field="${location.names}"/>
 						</a>
 					</td>
-					<td>${summaryPage.getSurveyEnteredProgram(location)?.closed?'\u2713':''}</td>
+					<td>${programClosed?'\u2713':''}</td>
 					<td><span class="js_progress-bar">${questionSummary.completedQuestions}/${questionSummary.questions}</span></td>
 					<td>
-						<a href="${createLink(controller: 'editSurvey', action: 'programPage', params: [program: currentProgram.id, location: location.id])}">
-							<g:message code="survey.summary.viewsurvey.label" />
-						</a> 
-						<shiro:hasPermission permission="editSurvey:export"> 
-							<a href="${createLink(controller: 'editSurvey', action: 'export', params: [program: currentProgram.id, location: location.id])}">
-								<g:message code="survey.summary.exportprogram.label" />
-							</a>
-						</shiro:hasPermission>
+						<ul class="horizontal">
+							<li>
+								<a href="${createLink(controller: 'editSurvey', action: 'programPage', params: [program: currentProgram.id, location: location.id])}">
+									<g:message code="survey.summary.viewprogram.label" />
+								</a>
+							</li> 
+							<shiro:hasPermission permission="editSurvey:export">
+								<li> 
+									<a href="${createLink(controller: 'editSurvey', action: 'export', params: [program: currentProgram.id, location: location.id])}">
+										<g:message code="survey.summary.exportprogram.label" />
+									</a>
+								</li>
+							</shiro:hasPermission>
+							<shiro:hasPermission permission="surveySummary:submitAll">
+								<g:if test="${!programClosed}">
+									<g:set var="programsClosed" value="${false}"/>
+									<li> 
+										<a href="${createLink(controller: 'surveySummary', action: 'submitAll', params: [program: currentProgram.id, location: currentLocation.id, submitLocation: location.id])}">
+											<g:message code="survey.summary.submitprogram.label" />
+										</a>
+									</li>
+								</g:if>
+							</shiro:hasPermission>
+						</ul>
 					</td>					
 				</tr>
 				<tr class="explanation-row">
@@ -38,6 +56,19 @@
 					</td>
 				</tr>
 			</g:each>
+			<shiro:hasPermission permission="surveySummary:submitAll">
+				<g:if test="${!submitSkipLevels.contains(currentLocation.level) && !programsClosed}">
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td><a
+							href="${createLink(controller: 'surveySummary', action: 'submitAll', params: params << [program: currentProgram?.id, submitLocation: currentLocation.id])}">
+								<g:message code="survey.summary.submitallprogram.label" />
+						</a></td>
+					</tr>
+				</g:if>
+			</shiro:hasPermission>
 		</tbody>
 	</table>
 	<r:script>

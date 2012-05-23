@@ -2,12 +2,12 @@
 	
 	<div class="entity-form-header">
 		<h3 class="title">
-			<g:message code="default.new.label" args="[message(code:'surveyuser.label')]"/>
+			<g:message code="default.new.label" args="[message(code:'datauser.label')]"/>
 		</h3>
 		<g:locales/>
 	</div>
 	<div class="data-field-column">
-		<g:form url="[controller:'surveyUser', action:'save', params: [targetURI: targetURI]]" useToken="true">
+		<g:form url="[controller:'dataUser', action:'save', params: [targetURI: targetURI]]" useToken="true">
 			<g:input name="username" label="${message(code:'user.username.label')}" bean="${user}" field="username"/>
 			<g:input name="firstname" label="${message(code:'user.firstname.label')}" bean="${user}" field="firstname"/>
 			<g:input name="lastname" label="${message(code:'user.lastname.label')}" bean="${user}" field="lastname"/>
@@ -17,7 +17,7 @@
 			<g:input name="password" label="${message(code:'user.password.label')}" type="password" bean="${cmd}" field="password"/>
 			<g:input name="repeat" label="${message(code:'user.repeatpassword.label')}" type="password" bean="${cmd}"  field="repeat"/>
 			
-			<g:selectFromList name="dataLocationId" label="${message(code:'surveyuser.datalocation.label')}" bean="${user}" field="dataLocationId" optionKey="id" multiple="false"
+			<g:selectFromList name="dataLocationId" label="${message(code:'datauser.datalocation.label')}" bean="${user}" field="dataLocationId" optionKey="id" multiple="false"
 				ajaxLink="${createLink(controller:'dataLocation', action:'getAjaxData')}"
 				from="${dataLocations}" value="${user.dataLocation?.id}" values="${dataLocations.collect{i18n(field:it.names)}}" />
 						

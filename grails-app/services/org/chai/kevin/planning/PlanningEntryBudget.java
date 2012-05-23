@@ -23,7 +23,7 @@ public class PlanningEntryBudget extends PlanningEntry {
 	private Map<PlanningCost, BudgetCost> getBudgetCosts() {
 		if (budgetCosts == null) {
 			budgetCosts = new HashMap<PlanningCost, BudgetCost>();
-			for (PlanningCost planningCost : getPlanningCosts()) {
+			for (PlanningCost planningCost : type.getCosts()) {
 				NormalizedDataElementValue value = budgetValues.get(planningCost);
 				if (value != null && !value.getValue().isNull()) {
 					if (!value.getValue().getListValue().get(getLineNumber()).isNull()) {
@@ -49,7 +49,7 @@ public class PlanningEntryBudget extends PlanningEntry {
 
 	public Double getSum(PlanningCostType costType) {
 		Double result = 0d;
-		for (PlanningCost planningCost : getPlanningCosts()) {
+		for (PlanningCost planningCost : type.getCosts()) {
 			if (planningCost.getType().equals(costType)) {
 				if (getBudgetCost(planningCost) != null) result += getBudgetCost(planningCost).getValue();
 			}

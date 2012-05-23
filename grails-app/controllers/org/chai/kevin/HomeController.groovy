@@ -1,7 +1,7 @@
 package org.chai.kevin
 
 import org.apache.shiro.SecurityUtils;
-import org.chai.kevin.security.SurveyUser;
+import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
 
 /*
@@ -34,14 +34,19 @@ import org.chai.kevin.security.User;
 
 class HomeController {
 	
+	static String SURVEY_LANDING_PAGE = "survey";
+	static String PLANNING_LANDING_PAGE = "planning";
+	
 	def languageService
 	
 	def index = {
 		if (log.isDebugEnabled()) log.debug("home.index, params:"+params)
 		User user = User.findByUuid(SecurityUtils.subject.principal, [cache: true])
 		
-		if (user instanceof SurveyUser) {
-			redirect (controller: "editSurvey", action: "view")
+		if (user instanceof DataUser) {
+			if (user.landingPage == SURVEY_LANDING_PAGE) redirect (controller: "editSurvey", action: "view")
+			else if (user.landingPage == PLANNING_LANDING_PAGE) redirect (controller: "editPlanning", action: "view")
+			else response.sendError(404)
 		}
 		else {
 			redirect (controller: "dashboard", action: "view")

@@ -68,7 +68,7 @@ import org.chai.kevin.location.DataLocationType;
 import org.chai.kevin.location.Location;
 import org.chai.kevin.location.LocationLevel;
 import org.chai.kevin.reports.ReportProgram
-import org.chai.kevin.security.SurveyUser;
+import org.chai.kevin.security.DataUser;
 import org.chai.kevin.security.User;
 
 abstract class IntegrationTests extends IntegrationSpec {
@@ -204,7 +204,11 @@ abstract class IntegrationTests extends IntegrationSpec {
 	}
 	
 	static def newSurveyUser(def username, def uuid, def dataLocationId) {
-		return new SurveyUser(username: username, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
+		return new DataUser(username: username, landingPage: HomeController.SURVEY_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
+	}
+	
+	static def newPlanningUser(def username, def uuid, def dataLocationId) {
+		return new DataUser(username: username, landingPage: HomeController.PLANNING_LANDING_PAGE, permissionString: '', passwordHash:'', uuid: uuid, dataLocationId: dataLocationId).save(failOnError: true)
 	}
 	
 	static def newReportProgram(def code) {

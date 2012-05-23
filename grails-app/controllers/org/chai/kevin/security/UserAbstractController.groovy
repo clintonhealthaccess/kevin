@@ -3,7 +3,7 @@ package org.chai.kevin.security
 import org.apache.shiro.crypto.hash.Sha256Hash
 import org.chai.kevin.AbstractEntityController
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.chai.kevin.security.SurveyUser;
+import org.chai.kevin.security.DataUser;
 
 abstract class UserAbstractController extends AbstractEntityController {
 
