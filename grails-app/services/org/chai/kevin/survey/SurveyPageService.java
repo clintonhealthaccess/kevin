@@ -714,6 +714,10 @@ public class SurveyPageService {
 	public void setGrailsApplication(GrailsApplication grailsApplication) {
 		this.grailsApplication = grailsApplication;
 	}
+
+	public void setSubmitSkipLevels(Set<String> submitSkipLevels) {
+		this.submitSkipLevels = submitSkipLevels;
+	}
 	
 	public Set<LocationLevel> getSkipSubmitLevels() {
 		Set<LocationLevel> levels = new HashSet<LocationLevel>();
@@ -721,6 +725,10 @@ public class SurveyPageService {
 			levels.add(locationService.findLocationLevelByCode(skipLevel));
 		}
 		return levels;
+	}
+	
+	public void setLocationSkipLevels(Set<String> locationSkipLevels) {
+		this.locationSkipLevels = locationSkipLevels;
 	}
 	
 	public Set<LocationLevel> getSkipLocationLevels() {
